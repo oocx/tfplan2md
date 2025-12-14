@@ -1,0 +1,41 @@
+# Build outputs
+bin/
+obj/
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+*.nuget.cache
+project.lock.json
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# VS Code (uncomment if you want to ignore)
+# .vscode/
+
+# Test results and coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+CoverletSourceRootsMapping_*
+.msCoverageSourceRootsMapping_*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Publish output
+publish/

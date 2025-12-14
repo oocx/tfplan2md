@@ -24,5 +24,5 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - Always think about what other methods and areas of code might be affected by code changes
 - Only make changes and give answers with high confidence. "I don't know" is an acceptable answer when you are not sure about something
 - When asking the user for more information, focus on one topic at a time
-- When you have follow-up questions, ask them one at a time, and wait for the answer before asking the next question or before proceeding to the next topic
+- When you have follow-up questions, ask them one at a time, and wait for the answer before asking the next question. **Never list multiple questions or considerations at once, even in plans or summaries.**
 - Always ensure that you have up-to-date information. Use web search if you think that your information might be outdated (example: new versions of frameworks, libraries, tools, etc.)

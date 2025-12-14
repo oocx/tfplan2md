@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g., v0.1.1)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -23,11 +29,14 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Extract version from tag
         id: version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          TAG="${{ inputs.tag || github.ref }}"
+          VERSION=${TAG#refs/tags/v}
+          VERSION=${VERSION#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f1-2)

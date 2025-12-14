@@ -1,11 +1,13 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 
 var options = ParseArguments(args);
 if (options is null)
+{
     return 1;
+}
 
 if (options.ShowHelp)
 {

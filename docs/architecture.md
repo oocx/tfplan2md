@@ -26,3 +26,36 @@ When implementing plan-to-markdown conversion:
 - Use custom exception types inheriting from `ApplicationException`
 - Avoid bare `catch` blocks; always log the exception
 - Return meaningful error messages to users, not stack traces
+
+## Build Configuration
+
+### Shared Build Properties
+The `Directory.Build.props` file at the repository root defines shared build configuration:
+- `TreatWarningsAsErrors`: All warnings are treated as errors
+- `EnforceCodeStyleInBuild`: Code style is enforced during build
+- `EnableNETAnalyzers`: .NET analyzers are enabled
+- `AnalysisLevel`: Set to `latest-recommended` for current best practices
+- Microsoft.CodeAnalysis.NetAnalyzers package is included for static analysis
+
+### SDK Version
+The `global.json` file pins the .NET SDK version to ensure consistent builds across environments.
+
+### Code Style
+The `.editorconfig` file defines comprehensive C# code style rules including:
+- Naming conventions (interfaces, types, fields, constants)
+- Formatting rules (braces, spacing, indentation)
+- Language feature preferences (var, expression-bodied members, pattern matching)
+- Analyzer severity configurations
+
+### Local Tools
+The `dotnet-tools.json` manifest defines local .NET tools:
+- **Husky.Net**: Git hooks for pre-commit validation and commit message linting
+
+## Git Hooks
+
+Pre-commit and commit-msg hooks are configured via Husky.Net (`.husky/` directory):
+
+| Hook | Tasks |
+|------|-------|
+| `pre-commit` | `dotnet format --verify-no-changes`, `dotnet build` |
+| `commit-msg` | Validate Conventional Commits format |

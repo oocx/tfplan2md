@@ -2,6 +2,8 @@
 
 Convert Terraform plan JSON files into human-readable Markdown reports.
 
+NOTE: I used this tool as an example use case to see how far I can go with implementing as much as possible with AI support. Most of this code and specs were generated with Github CoPilot.
+
 ## Features
 
 - 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output
@@ -110,26 +112,67 @@ Templates have access to:
 
 ### Prerequisites
 
-- .NET 10 SDK
-- Docker (for container builds)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Docker](https://www.docker.com/) (for container builds and integration tests)
+- [Git](https://git-scm.com/)
 
-### Build
+### Getting Started
 
 ```bash
+# Clone the repository
+git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+
+# Restore tools (including Husky for git hooks)
+dotnet tool restore
+
+# Install git hooks
+dotnet husky install
+
+# Build and test
 dotnet build
-```
-
-### Test
-
-```bash
 dotnet test
 ```
+
+### Pre-commit Hooks
+
+This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git hooks:
+
+- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build`
+- **commit-msg**: Validates commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format
 
 ### Docker Build
 
 ```bash
 docker build -t tfplan2md .
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+
+- Branch naming conventions
+- Commit message format (Conventional Commits)
+- Pull request process
+- Code style requirements
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|----------|
+| **PR Validation** | Pull requests to `main` | Format check, build, test, vulnerability scan |
+| **CI** | Push to `main` | Build, test, auto-version with [Versionize](https://github.com/versionize/versionize) |
+| **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
+
+### Versioning
+
+Versioning is automated using [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` commits bump the **minor** version
+- `fix:` commits bump the **patch** version
+- `BREAKING CHANGE` or `!` bumps the **major** version
 
 ## License
 

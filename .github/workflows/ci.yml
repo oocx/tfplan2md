@@ -3,75 +3,66 @@ name: CI
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
-      
+          global-json-file: global.json
+
       - name: Restore dependencies
         run: dotnet restore
-      
-      - name: Build
-        run: dotnet build --no-restore -c Release
-      
-      - name: Test
-        run: dotnet test --no-build -c Release --verbosity normal
-      
-      - name: Publish
-        run: dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -o publish
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan2md
-          path: publish/
 
-  docker:
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+  version:
+    name: Version and Tag
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Extract version
-        id: version
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Install Versionize
+        run: dotnet tool install --global Versionize
+
+      - name: Configure Git
         run: |
-          VERSION=$(grep -oP '(?<=<Version>)[^<]+' src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj || echo "0.1.0")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          MAJOR=$(echo $VERSION | cut -d. -f1)
-          MINOR=$(echo $VERSION | cut -d. -f1-2)
-          echo "major=$MAJOR" >> $GITHUB_OUTPUT
-          echo "minor=$MINOR" >> $GITHUB_OUTPUT
-      
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:${{ steps.version.outputs.version }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:${{ steps.version.outputs.minor }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:${{ steps.version.outputs.major }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Versionize
+        id: versionize
+        run: |
+          versionize --exit-insignificant-commits --skip-dirty
+          echo "version_bumped=true" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Push changes
+        if: steps.versionize.outcome == 'success'
+        run: git push --follow-tags

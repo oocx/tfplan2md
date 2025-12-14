@@ -14,7 +14,9 @@ public class DockerFixture : IAsyncLifetime
     {
         IsDockerAvailable = await CheckDockerAvailableAsync();
         if (!IsDockerAvailable)
+        {
             return;
+        }
 
         ImageBuilt = await BuildDockerImageAsync();
     }
@@ -37,7 +39,9 @@ public class DockerFixture : IAsyncLifetime
 
             using var process = Process.Start(psi);
             if (process == null)
+            {
                 return false;
+            }
 
             await process.WaitForExitAsync();
             return process.ExitCode == 0;
@@ -52,7 +56,9 @@ public class DockerFixture : IAsyncLifetime
     {
         var repoRoot = FindRepositoryRoot();
         if (repoRoot == null)
+        {
             return false;
+        }
 
         var psi = new ProcessStartInfo("docker", $"build -t {FullImageName} .")
         {
@@ -64,7 +70,9 @@ public class DockerFixture : IAsyncLifetime
 
         using var process = Process.Start(psi);
         if (process == null)
+        {
             return false;
+        }
 
         await process.WaitForExitAsync();
         return process.ExitCode == 0;
@@ -76,7 +84,10 @@ public class DockerFixture : IAsyncLifetime
         while (directory != null)
         {
             if (File.Exists(Path.Combine(directory, "Dockerfile")))
+            {
                 return directory;
+            }
+
             directory = Directory.GetParent(directory)?.FullName;
         }
         return null;
@@ -118,7 +129,9 @@ public class DockerFixture : IAsyncLifetime
 
         using var process = Process.Start(psi);
         if (process == null)
+        {
             return (-1, "", "Failed to start docker process");
+        }
 
         var stdout = await process.StandardOutput.ReadToEndAsync();
         var stderr = await process.StandardError.ReadToEndAsync();
@@ -148,7 +161,9 @@ public class DockerFixture : IAsyncLifetime
 
         using var process = Process.Start(psi);
         if (process == null)
+        {
             return (-1, "", "Failed to start docker process");
+        }
 
         await process.StandardInput.WriteAsync(input);
         process.StandardInput.Close();

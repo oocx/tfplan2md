@@ -84,18 +84,32 @@ Simple single-command interface with flags:
 ### Docker Image
 
 - **Base image**: .NET Chiseled (distroless) for minimal attack surface
-- **Registry**: Docker Hub
-- **Tagging**: Semantic versioning (`1.0.0`, `1.0`, `1`, `latest`)
+- **Registry**: Docker Hub (`oocx/tfplan2md`)
+- **Tagging**: Semantic versioning with multiple tags per release:
+  - Full version: `1.2.3`
+  - Minor version: `1.2` (updated with each patch)
+  - Major version: `1` (updated with each minor/patch)
+  - `latest` (always points to the most recent release)
 
 ### Usage Example
 
 ```bash
-# From stdin
-terraform show -json plan.tfplan | docker run -i tfplan2md
+# From stdin (using latest)
+terraform show -json plan.tfplan | docker run -i oocx/tfplan2md
+
+# Pin to specific version
+docker run -i oocx/tfplan2md:1.2.3
+
+# Pin to minor version (get patch updates automatically)
+docker run -i oocx/tfplan2md:1.2
 
 # From file (mounted volume)
-docker run -v $(pwd):/data tfplan2md /data/plan.json --output /data/plan.md
+docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json --output /data/plan.md
 ```
+
+### Releases
+
+Docker images are automatically built and pushed when a new version tag is created. See [spec.md](spec.md) for details on the CI/CD process and versioning strategy.
 
 ## Future Considerations
 

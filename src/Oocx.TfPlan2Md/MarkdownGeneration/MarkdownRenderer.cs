@@ -64,7 +64,9 @@ public class MarkdownRenderer
     private static string ToSnakeCase(string name)
     {
         if (string.IsNullOrEmpty(name))
+        {
             return name;
+        }
 
         var sb = new StringBuilder();
         for (var i = 0; i < name.Length; i++)
@@ -73,7 +75,10 @@ public class MarkdownRenderer
             if (char.IsUpper(c))
             {
                 if (i > 0)
+                {
                     sb.Append('_');
+                }
+
                 sb.Append(char.ToLowerInvariant(c));
             }
             else
@@ -88,7 +93,7 @@ public class MarkdownRenderer
     {
         var assembly = Assembly.GetExecutingAssembly();
         using var stream = assembly.GetManifestResourceStream(DefaultTemplateResourceName);
-        
+
         if (stream is null)
         {
             throw new MarkdownRenderException($"Default template not found: {DefaultTemplateResourceName}");

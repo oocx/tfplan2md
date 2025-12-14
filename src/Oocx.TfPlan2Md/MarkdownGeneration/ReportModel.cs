@@ -112,13 +112,25 @@ public class ReportModelBuilder
     private static string DetermineAction(IReadOnlyList<string> actions)
     {
         if (actions.Contains("create") && actions.Contains("delete"))
+        {
             return "replace";
+        }
+
         if (actions.Contains("create"))
+        {
             return "create";
+        }
+
         if (actions.Contains("delete"))
+        {
             return "delete";
+        }
+
         if (actions.Contains("update"))
+        {
             return "update";
+        }
+
         return "no-op";
     }
 
@@ -146,7 +158,7 @@ public class ReportModelBuilder
         {
             beforeDict.TryGetValue(key, out var beforeValue);
             afterDict.TryGetValue(key, out var afterValue);
-            
+
             var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
 
             result.Add(new AttributeChangeModel
@@ -165,9 +177,15 @@ public class ReportModelBuilder
     {
         // Check if the key or any parent key is marked as sensitive
         if (beforeSensitive.TryGetValue(key, out var bv) && bv == "true")
+        {
             return true;
+        }
+
         if (afterSensitive.TryGetValue(key, out var av) && av == "true")
+        {
             return true;
+        }
+
         return false;
     }
 
@@ -175,7 +193,9 @@ public class ReportModelBuilder
     {
         var result = new Dictionary<string, string?>();
         if (obj is null)
+        {
             return result;
+        }
 
         if (obj is JsonElement element)
         {

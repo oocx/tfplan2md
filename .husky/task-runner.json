@@ -1,0 +1,37 @@
+{
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "dotnet-format",
+      "group": "pre-commit",
+      "command": "dotnet",
+      "args": ["format", "--verify-no-changes", "--verbosity", "minimal"]
+    },
+    {
+      "name": "dotnet-build",
+      "group": "pre-commit",
+      "command": "dotnet",
+      "args": ["build", "--configuration", "Release", "--no-restore"]
+    },
+    {
+      "name": "commit-message-linter",
+      "group": "commit-msg",
+      "command": "bash",
+      "args": [
+        "-c",
+        "if ! grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\(.+\\))?!?: .{1,}$' \"${args[0]}\"; then echo 'ERROR: Commit message does not follow Conventional Commits format.' && echo 'Expected: <type>[optional scope]: <description>' && echo 'Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert' && echo '' && echo 'Your message:' && cat \"${args[0]}\" && exit 1; fi",
+        "${args[0]}"
+      ],
+      "windows": {
+        "command": "pwsh",
+        "args": [
+          "-NoProfile",
+          "-Command",
+          "$msg = Get-Content $args[0] -Raw; if ($msg -notmatch '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\\(.+\\))?!?: .{1,}') { Write-Error 'Commit message does not follow Conventional Commits format.'; Write-Host 'Expected: <type>[optional scope]: <description>'; Write-Host 'Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert'; exit 1 }",
+          "${args[0]}"
+        ]
+      }
+    }
+  ]
+}
+

@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <LangVersion>13</LangVersion>
+    <!-- Allow underscores in test method names (common convention) -->
+    <NoWarn>CA1707;CA1711</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

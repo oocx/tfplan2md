@@ -24,7 +24,7 @@
 - **Module:** `{{ change.module_address }}`
 {{ end }}
 
-{{ if change.attribute_changes.size > 0 }}
+{{ if change.attribute_changes && change.attribute_changes.size > 0 }}
 <details>
 <summary>Attribute Changes</summary>
 

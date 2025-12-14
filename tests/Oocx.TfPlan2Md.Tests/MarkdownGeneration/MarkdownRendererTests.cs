@@ -97,4 +97,123 @@ public class MarkdownRendererTests
         Assert.Contains("- azurerm_virtual_network.old", markdown);
         Assert.Contains("-/+ azuredevops_git_repository.main", markdown);
     }
+
+    [Fact]
+    public void Render_EmptyPlan_ProducesValidMarkdown()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/empty-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        Assert.Contains("## Summary", markdown);
+        Assert.Contains("**Terraform Version:** 1.14.0", markdown);
+        Assert.Contains("➕ Add | 0", markdown);
+        Assert.Contains("🔄 Change | 0", markdown);
+        Assert.Contains("❌ Destroy | 0", markdown);
+        Assert.Contains("**Total** | **0**", markdown);
+    }
+
+    [Fact]
+    public void Render_NoOpPlan_ProducesValidMarkdown()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/no-op-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        Assert.Contains("## Summary", markdown);
+        Assert.Contains("azurerm_resource_group.main", markdown);
+        Assert.Contains("no-op", markdown);
+    }
+
+    [Fact]
+    public void Render_MinimalPlan_HandlesNullAttributes()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        Assert.Contains("null_resource.test", markdown);
+        Assert.Contains("+ null_resource.test", markdown);
+        // Should not contain the Attribute Changes details section since there are no changes
+        Assert.DoesNotContain("<details>", markdown);
+    }
+
+    [Fact]
+    public void Render_CreateOnlyPlan_ShowsAllCreates()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/create-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        Assert.Contains("+ azurerm_resource_group.main", markdown);
+        Assert.Contains("+ azurerm_storage_account.main", markdown);
+        Assert.Contains("➕ Add | 2", markdown);
+    }
+
+    [Fact]
+    public void Render_DeleteOnlyPlan_ShowsAllDeletes()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/delete-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        Assert.Contains("- azurerm_storage_account.old", markdown);
+        Assert.Contains("- azurerm_resource_group.old", markdown);
+        Assert.Contains("❌ Destroy | 2", markdown);
+    }
+
+    [Fact]
+    public void Render_WithInvalidTemplate_ThrowsMarkdownRenderException()
+    {
+        // Arrange
+        var model = new ReportModel
+        {
+            TerraformVersion = "1.0.0",
+            FormatVersion = "1.0",
+            Changes = [],
+            Summary = new SummaryModel()
+        };
+        var tempFile = Path.GetTempFileName();
+        File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");
+
+        try
+        {
+            // Act & Assert
+            Assert.Throws<MarkdownRenderException>(() => _renderer.Render(model, tempFile));
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

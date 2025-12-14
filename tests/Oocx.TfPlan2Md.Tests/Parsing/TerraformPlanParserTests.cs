@@ -127,4 +127,77 @@ public class TerraformPlanParserTests
         // Act & Assert
         Assert.Throws<TerraformPlanParseException>(() => _parser.Parse(emptyJson));
     }
+
+    [Fact]
+    public void Parse_EmptyPlan_ReturnsEmptyResourceChanges()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/empty-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        Assert.Empty(plan.ResourceChanges);
+        Assert.Equal("1.14.0", plan.TerraformVersion);
+        Assert.Equal("1.2", plan.FormatVersion);
+    }
+
+    [Fact]
+    public void Parse_NoOpPlan_ParsesNoOpAction()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/no-op-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        var resource = Assert.Single(plan.ResourceChanges);
+        Assert.Single(resource.Change.Actions);
+        Assert.Contains("no-op", resource.Change.Actions);
+    }
+
+    [Fact]
+    public void Parse_MinimalPlan_HandlesNullBeforeAndAfter()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        var resource = Assert.Single(plan.ResourceChanges);
+        Assert.Null(resource.Change.Before);
+        Assert.Null(resource.Change.After);
+    }
+
+    [Fact]
+    public void Parse_CreateOnlyPlan_ParsesMultipleCreates()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/create-only-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        Assert.Equal(2, plan.ResourceChanges.Count);
+        Assert.All(plan.ResourceChanges, r => Assert.Contains("create", r.Change.Actions));
+    }
+
+    [Fact]
+    public void Parse_DeleteOnlyPlan_ParsesMultipleDeletes()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/delete-only-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        Assert.Equal(2, plan.ResourceChanges.Count);
+        Assert.All(plan.ResourceChanges, r => Assert.Contains("delete", r.Change.Actions));
+    }
 }

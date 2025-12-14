@@ -57,8 +57,23 @@ public class MarkdownRenderer
             throw new MarkdownRenderException($"Template parsing failed: {errors}");
         }
 
-        var result = template.Render(model, member => ToSnakeCase(member.Name));
-        return result;
+        // Create a script object that properly exposes all properties including nested collections
+        var scriptObject = new ScriptObject();
+        scriptObject.Import(model, renamer: member => ToSnakeCase(member.Name));
+
+        var context = new TemplateContext();
+        context.PushGlobal(scriptObject);
+        context.MemberRenamer = member => ToSnakeCase(member.Name);
+
+        try
+        {
+            var result = template.Render(context);
+            return result;
+        }
+        catch (Scriban.Syntax.ScriptRuntimeException ex)
+        {
+            throw new MarkdownRenderException($"Error rendering template: {ex.Message}", ex);
+        }
     }
 
     private static string ToSnakeCase(string name)

@@ -31,6 +31,14 @@ Tests use a shared test data file `TestData/azurerm-azuredevops-plan.json` conta
 - Various change actions (create, update, delete, replace)
 - Sensitive values for testing masking behavior
 
+Additional test data files for edge cases:
+
+- `empty-plan.json` - Plan with no resource changes (empty `resource_changes` array)
+- `no-op-plan.json` - Plan with only no-op changes (resources with no modifications)
+- `minimal-plan.json` - Minimal valid plan with null before/after values
+- `create-only-plan.json` - Plan with only create operations (new infrastructure deployment)
+- `delete-only-plan.json` - Plan with only delete operations (infrastructure teardown)
+
 ---
 
 ## Test Catalog
@@ -72,6 +80,11 @@ Tests for parsing Terraform plan JSON files into the internal model.
 | `Parse_ValidPlan_ParsesAzureDevOpsProvider` | Verifies that provider names are correctly extracted (e.g., `registry.terraform.io/microsoft/azuredevops`) |
 | `Parse_InvalidJson_ThrowsTerraformPlanParseException` | Verifies that malformed JSON throws a `TerraformPlanParseException` |
 | `Parse_EmptyJson_ThrowsTerraformPlanParseException` | Verifies that empty input throws a `TerraformPlanParseException` |
+| `Parse_EmptyPlan_ReturnsEmptyResourceChanges` | Verifies that a plan with empty `resource_changes` array is parsed correctly |
+| `Parse_NoOpPlan_ParsesNoOpAction` | Verifies that resources with "no-op" action are correctly identified |
+| `Parse_MinimalPlan_HandlesNullBeforeAndAfter` | Verifies that plans with null before/after values are parsed without errors |
+| `Parse_CreateOnlyPlan_ParsesMultipleCreates` | Verifies that plans with only create operations are parsed correctly |
+| `Parse_DeleteOnlyPlan_ParsesMultipleDeletes` | Verifies that plans with only delete operations are parsed correctly |
 
 ### Report Model Builder Tests (`MarkdownGeneration/ReportModelBuilderTests.cs`)
 
@@ -84,6 +97,11 @@ Tests for building the report model from a parsed Terraform plan.
 | `Build_WithSensitiveValues_MasksByDefault` | Verifies that sensitive values are masked with "(sensitive)" by default |
 | `Build_WithShowSensitiveTrue_DoesNotMask` | Verifies that sensitive values are shown when `showSensitive` is true |
 | `Build_ValidPlan_PreservesTerraformVersion` | Verifies that Terraform and format versions are preserved in the model |
+| `Build_EmptyPlan_ReturnsZeroSummary` | Verifies that an empty plan returns zero counts for all summary fields |
+| `Build_NoOpPlan_CountsNoOpCorrectly` | Verifies that no-op resources are counted correctly in the summary |
+| `Build_MinimalPlan_HandlesNullBeforeAndAfter` | Verifies that plans with null before/after values produce empty attribute changes |
+| `Build_CreateOnlyPlan_CountsCreatesCorrectly` | Verifies that create-only plans are summarized correctly |
+| `Build_DeleteOnlyPlan_CountsDeletesCorrectly` | Verifies that delete-only plans are summarized correctly |
 
 ### Markdown Renderer Tests (`MarkdownGeneration/MarkdownRendererTests.cs`)
 
@@ -96,6 +114,12 @@ Tests for rendering the report model to Markdown output.
 | `Render_ValidPlan_ContainsTerraformVersion` | Verifies that the Terraform version (1.14.0) appears in the rendered output |
 | `Render_ValidPlan_ContainsProviderInfo` | Verifies that provider names (azurerm, azuredevops) appear in the rendered output |
 | `Render_ValidPlan_ContainsActionSymbols` | Verifies that action symbols with resource addresses appear correctly (`+`, `~`, `-`, `-/+`) |
+| `Render_EmptyPlan_ProducesValidMarkdown` | Verifies that an empty plan renders without errors and shows zero counts |
+| `Render_NoOpPlan_ProducesValidMarkdown` | Verifies that a no-op plan renders correctly with the no-op action displayed |
+| `Render_MinimalPlan_HandlesNullAttributes` | Verifies that resources with null before/after render without attribute details section |
+| `Render_CreateOnlyPlan_ShowsAllCreates` | Verifies that create-only plans render all create operations with correct symbols |
+| `Render_DeleteOnlyPlan_ShowsAllDeletes` | Verifies that delete-only plans render all delete operations with correct symbols |
+| `Render_WithInvalidTemplate_ThrowsMarkdownRenderException` | Verifies that invalid template syntax throws a `MarkdownRenderException` |
 
 ### Docker Integration Tests (`Docker/DockerIntegrationTests.cs`)
 

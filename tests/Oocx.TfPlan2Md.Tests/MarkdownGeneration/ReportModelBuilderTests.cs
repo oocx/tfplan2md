@@ -106,4 +106,105 @@ public class ReportModelBuilderTests
         Assert.Equal("1.14.0", model.TerraformVersion);
         Assert.Equal("1.2", model.FormatVersion);
     }
+
+    [Fact]
+    public void Build_EmptyPlan_ReturnsZeroSummary()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/empty-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        Assert.Equal(0, model.Summary.ToAdd);
+        Assert.Equal(0, model.Summary.ToChange);
+        Assert.Equal(0, model.Summary.ToDestroy);
+        Assert.Equal(0, model.Summary.ToReplace);
+        Assert.Equal(0, model.Summary.NoOp);
+        Assert.Equal(0, model.Summary.Total);
+        Assert.Empty(model.Changes);
+    }
+
+    [Fact]
+    public void Build_NoOpPlan_CountsNoOpCorrectly()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/no-op-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        Assert.Equal(0, model.Summary.ToAdd);
+        Assert.Equal(0, model.Summary.ToChange);
+        Assert.Equal(0, model.Summary.ToDestroy);
+        Assert.Equal(0, model.Summary.ToReplace);
+        Assert.Equal(1, model.Summary.NoOp);
+        Assert.Equal(1, model.Summary.Total);
+        var change = Assert.Single(model.Changes);
+        Assert.Equal("no-op", change.Action);
+        Assert.Equal(" ", change.ActionSymbol);
+    }
+
+    [Fact]
+    public void Build_MinimalPlan_HandlesNullBeforeAndAfter()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        Assert.Equal(1, model.Summary.ToAdd);
+        var change = Assert.Single(model.Changes);
+        Assert.Equal("create", change.Action);
+        // With null before and after, there should be no attribute changes
+        Assert.Empty(change.AttributeChanges);
+    }
+
+    [Fact]
+    public void Build_CreateOnlyPlan_CountsCreatesCorrectly()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/create-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        Assert.Equal(2, model.Summary.ToAdd);
+        Assert.Equal(0, model.Summary.ToChange);
+        Assert.Equal(0, model.Summary.ToDestroy);
+        Assert.Equal(2, model.Summary.Total);
+        Assert.All(model.Changes, c => Assert.Equal("create", c.Action));
+    }
+
+    [Fact]
+    public void Build_DeleteOnlyPlan_CountsDeletesCorrectly()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/delete-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        Assert.Equal(0, model.Summary.ToAdd);
+        Assert.Equal(0, model.Summary.ToChange);
+        Assert.Equal(2, model.Summary.ToDestroy);
+        Assert.Equal(2, model.Summary.Total);
+        Assert.All(model.Changes, c => Assert.Equal("delete", c.Action));
+    }
 }

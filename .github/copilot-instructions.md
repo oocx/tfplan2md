@@ -26,3 +26,10 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - When asking the user for more information, focus on one topic at a time
 - When you have follow-up questions, ask them one at a time, and wait for the answer before asking the next question. **Never list multiple questions or considerations at once, even in plans or summaries.**
 - Always ensure that you have up-to-date information. Use web search if you think that your information might be outdated (example: new versions of frameworks, libraries, tools, etc.)
+
+## Documentation
+- Ensure that you follow instructions from the `docs/spec.md` and other documentation files in the /docs folder
+- Ensure that all documentation files are updated with any code changes
+- Ensure that all documentation files are consistent with each, do not contradict each other and do not contain outdated information
+- When writing documentation, ensure that it is clear, concise, and easy to understand
+- Ensure that the implementation and the documentation are aligned with each other

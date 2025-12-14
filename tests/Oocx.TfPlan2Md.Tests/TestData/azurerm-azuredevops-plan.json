@@ -1,0 +1,160 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_resource_group.main",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "location": "westeurope",
+          "name": "rg-tfplan2md-prod",
+          "tags": {
+            "environment": "production",
+            "managed_by": "terraform"
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.main",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "account_tier": "Standard",
+          "account_replication_type": "LRS",
+          "name": "sttfplan2mdprod",
+          "resource_group_name": "rg-tfplan2md-prod",
+          "location": "westeurope",
+          "access_tier": "Hot",
+          "primary_access_key": "supersecretkey123",
+          "primary_connection_string": "DefaultEndpointsProtocol=https;AccountName=sttfplan2mdprod;AccountKey=supersecretkey123"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "primary_access_key": true,
+          "primary_connection_string": true
+        }
+      }
+    },
+    {
+      "address": "azurerm_key_vault.main",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "kv-tfplan2md-prod",
+          "location": "westeurope",
+          "sku_name": "standard",
+          "soft_delete_retention_days": 7
+        },
+        "after": {
+          "name": "kv-tfplan2md-prod",
+          "location": "westeurope",
+          "sku_name": "premium",
+          "soft_delete_retention_days": 90
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_virtual_network.old",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "old",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "vnet-old",
+          "address_space": ["10.0.0.0/16"],
+          "location": "westeurope"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_project.main",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_project",
+      "name": "main",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "tfplan2md",
+          "description": "Project for tfplan2md tool",
+          "visibility": "private",
+          "version_control": "Git",
+          "work_item_template": "Agile"
+        },
+        "after_unknown": {
+          "id": true,
+          "process_template_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_git_repository.main",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_git_repository",
+      "name": "main",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "name": "tfplan2md-old",
+          "project_id": "12345678-1234-1234-1234-123456789012"
+        },
+        "after": {
+          "name": "tfplan2md",
+          "project_id": "12345678-1234-1234-1234-123456789012",
+          "initialization": {
+            "init_type": "Clean"
+          }
+        },
+        "after_unknown": {
+          "id": true,
+          "default_branch": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

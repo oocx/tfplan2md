@@ -1,0 +1,136 @@
+# tfplan2md
+
+Convert Terraform plan JSON files into human-readable Markdown reports.
+
+## Features
+
+- 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output
+- 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
+- 📝 **Customizable templates** - Use Scriban templates for custom report formats
+- 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines
+
+## Installation
+
+### Docker (Recommended)
+
+```bash
+docker pull oocx/tfplan2md:latest
+```
+
+### From Source
+
+Requires .NET 10 SDK.
+
+```bash
+git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+dotnet build
+```
+
+## Usage
+
+### From stdin (pipe from Terraform)
+
+```bash
+terraform show -json plan.tfplan | docker run -i oocx/tfplan2md
+```
+
+### From file
+
+```bash
+# Using Docker with mounted volume
+docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json
+
+# Or with .NET
+dotnet run --project src/Oocx.TfPlan2Md -- plan.json
+```
+
+### With output file
+
+```bash
+terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md
+```
+
+### CLI Options
+
+| Option | Description |
+|--------|-------------|
+| `--output`, `-o <file>` | Write output to a file instead of stdout |
+| `--template`, `-t <file>` | Use a custom Scriban template file |
+| `--show-sensitive` | Show sensitive values unmasked |
+| `--help`, `-h` | Display help information |
+| `--version`, `-v` | Display version information |
+
+## Example Output
+
+```markdown
+# Terraform Plan Report
+
+**Terraform Version:** 1.14.0
+
+## Summary
+
+| Action | Count |
+|--------|-------|
+| ➕ Add | 3 |
+| 🔄 Change | 1 |
+| ♻️ Replace | 1 |
+| ❌ Destroy | 1 |
+| **Total** | **6** |
+
+## Resource Changes
+
+### + azurerm_resource_group.main
+
+- **Type:** `azurerm_resource_group`
+- **Provider:** `registry.terraform.io/hashicorp/azurerm`
+- **Action:** create
+```
+
+## Custom Templates
+
+Create custom Scriban templates for your own report format:
+
+```bash
+docker run -i -v $(pwd):/data oocx/tfplan2md --template /data/my-template.sbn < plan.json
+```
+
+See [Scriban documentation](https://github.com/scriban/scriban) for template syntax.
+
+### Template Variables
+
+Templates have access to:
+
+- `terraform_version` - Terraform version string
+- `format_version` - Plan format version
+- `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `total`
+- `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
+
+## Development
+
+### Prerequisites
+
+- .NET 10 SDK
+- Docker (for container builds)
+
+### Build
+
+```bash
+dotnet build
+```
+
+### Test
+
+```bash
+dotnet test
+```
+
+### Docker Build
+
+```bash
+docker build -t tfplan2md .
+```
+
+## License
+
+MIT

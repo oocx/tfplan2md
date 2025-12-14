@@ -1,0 +1,40 @@
+# Terraform Plan Report
+
+**Terraform Version:** {{ terraform_version }}
+
+## Summary
+
+| Action | Count |
+|--------|-------|
+| ➕ Add | {{ summary.to_add }} |
+| 🔄 Change | {{ summary.to_change }} |
+| ♻️ Replace | {{ summary.to_replace }} |
+| ❌ Destroy | {{ summary.to_destroy }} |
+| **Total** | **{{ summary.total }}** |
+
+## Resource Changes
+
+{{ for change in changes }}
+### {{ change.action_symbol }} {{ change.address }}
+
+- **Type:** `{{ change.type }}`
+- **Provider:** `{{ change.provider_name }}`
+- **Action:** {{ change.action }}
+{{ if change.module_address }}
+- **Module:** `{{ change.module_address }}`
+{{ end }}
+
+{{ if change.attribute_changes.size > 0 }}
+<details>
+<summary>Attribute Changes</summary>
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+{{ for attr in change.attribute_changes }}
+| `{{ attr.name }}` | {{ if attr.before }}{{ attr.before }}{{ else }}-{{ end }} | {{ if attr.after }}{{ attr.after }}{{ else }}-{{ end }} |
+{{ end }}
+
+</details>
+{{ end }}
+
+{{ end }}

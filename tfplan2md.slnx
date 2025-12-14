@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Oocx.TfPlan2Md.Tests/Oocx.TfPlan2Md.Tests.csproj" />
+  </Folder>
+</Solution>

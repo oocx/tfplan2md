@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
+    <RootNamespace>Oocx.TfPlan2Md</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyName>tfplan2md</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Scriban" Version="6.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="MarkdownGeneration/Templates/default.sbn" />
+  </ItemGroup>
+
+</Project>

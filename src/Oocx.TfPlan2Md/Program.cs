@@ -153,4 +153,3 @@ static void PrintVersion()
         ?.InformationalVersion ?? "0.0.0";
     Console.WriteLine($"tfplan2md {version}");
 }
-

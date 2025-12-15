@@ -218,7 +218,7 @@ public class MarkdownRendererTests
     }
 
     [Fact]
-    public void Render_AttributeChangesTable_HasBugWithExtraNewlines()
+    public void Render_AttributeChangesTable_DoesNotContainExtraNewlines()
     {
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
@@ -229,21 +229,20 @@ public class MarkdownRendererTests
         // Act
         var markdown = _renderer.Render(model);
 
-        // Assert - Currently the bug exists: extra newlines between table rows
-        // The bug manifests as blank lines between table rows like:
+        // Assert - Check that attribute changes table rows are consecutive without blank lines
+        // The fix produces:
         // | Attribute | Before | After |
         // |-----------|--------|-------|
-        //
         // | `location` | westeurope | westeurope |
-        //
         // | `sku_name` | standard | premium |
+        //
+        // (no blank lines between rows)
 
         // Extract the attribute changes table section for azurerm_key_vault.main (which has multiple attributes)
         var keyVaultSection = markdown.Split("### ~ azurerm_key_vault.main")[1].Split("###")[0];
 
-        // BUG: The table currently HAS the pattern of "|\n\n|" which indicates blank lines between rows
-        // This test documents the current buggy behavior and will be updated when the bug is fixed
-        Assert.Contains("|\n\n|", keyVaultSection);
+        // FIXED: The table should NOT have the pattern of "|\n\n|" which indicates blank lines between rows
+        Assert.DoesNotContain("|\n\n|", keyVaultSection);
 
         // Verify the table exists and has the expected structure
         Assert.Contains("| Attribute | Before | After |", keyVaultSection);

@@ -139,16 +139,15 @@ public class ReportModelBuilderTests
         // Act
         var model = builder.Build(plan);
 
-        // Assert
+        // Assert - no-op resources are counted in summary but not included in Changes
+        // to avoid exceeding Scriban's iteration limit on large plans
         Assert.Equal(0, model.Summary.ToAdd);
         Assert.Equal(0, model.Summary.ToChange);
         Assert.Equal(0, model.Summary.ToDestroy);
         Assert.Equal(0, model.Summary.ToReplace);
         Assert.Equal(1, model.Summary.NoOp);
         Assert.Equal(1, model.Summary.Total);
-        var change = Assert.Single(model.Changes);
-        Assert.Equal("no-op", change.Action);
-        Assert.Equal(" ", change.ActionSymbol);
+        Assert.Empty(model.Changes); // no-op resources are filtered out
     }
 
     [Fact]

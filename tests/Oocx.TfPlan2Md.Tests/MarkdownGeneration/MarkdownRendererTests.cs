@@ -116,9 +116,10 @@ public class MarkdownRendererTests
         // Act
         var markdown = _renderer.Render(model);
 
-        // Assert
+        // Assert - Summary section should exist, but no-op resources are not displayed
+        // in the Resource Changes section to avoid iteration limit issues
         Assert.Contains("## Summary", markdown);
-        Assert.Contains("azurerm_resource_group.main", markdown);
+        Assert.DoesNotContain("azurerm_resource_group.main", markdown); // no-op resources are filtered
     }
 
     [Fact]
@@ -232,5 +233,60 @@ public class MarkdownRendererTests
         Assert.Contains("| Attribute | Before | After |", keyVaultSection);
         Assert.Contains("| `location` |", keyVaultSection);
         Assert.Contains("| `sku_name` |", keyVaultSection);
+    }
+
+    [Fact]
+    public void Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit()
+    {
+        // Arrange - Create a large plan with many no-op resources to test that the template
+        // does not exceed Scriban's default iteration limit of 1000
+        // See: https://github.com/scriban/scriban/issues/226
+        var resourceChanges = new List<ResourceChange>();
+
+        // Create 200 no-op resources, each with 10 attributes
+        // This would cause 200 * 10 = 2000 iterations in the nested loop without the fix
+        for (var i = 0; i < 200; i++)
+        {
+            var attributes = new Dictionary<string, object?>();
+            for (var j = 0; j < 10; j++)
+            {
+                attributes[$"attribute_{j}"] = $"value_{j}";
+            }
+
+            var attributesElement = System.Text.Json.JsonSerializer.SerializeToElement(attributes);
+            var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+            var change = new Change(
+                Actions: ["no-op"],
+                Before: attributesElement,
+                After: attributesElement,
+                AfterUnknown: emptyElement,
+                BeforeSensitive: emptyElement,
+                AfterSensitive: emptyElement
+            );
+
+            resourceChanges.Add(new ResourceChange(
+                Address: $"azurerm_resource_group.rg_{i}",
+                ModuleAddress: null,
+                Mode: "managed",
+                Type: "azurerm_resource_group",
+                Name: $"rg_{i}",
+                ProviderName: "registry.terraform.io/hashicorp/azurerm",
+                Change: change
+            ));
+        }
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.2",
+            TerraformVersion: "1.14.0",
+            ResourceChanges: resourceChanges
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act & Assert - Should NOT throw "Exceeding number of iteration limit '1000' for loop statement"
+        var exception = Record.Exception(() => _renderer.Render(model));
+        Assert.Null(exception);
     }
 }

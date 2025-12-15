@@ -30,9 +30,9 @@
 
 | Attribute | Before | After |
 |-----------|--------|-------|
-{{ for attr in change.attribute_changes }}
+{{ for attr in change.attribute_changes -}}
 | `{{ attr.name }}` | {{ if attr.before }}{{ attr.before }}{{ else }}-{{ end }} | {{ if attr.after }}{{ attr.after }}{{ else }}-{{ end }} |
-{{ end }}
+{{ end -}}
 
 </details>
 {{ end }}

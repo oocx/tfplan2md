@@ -136,10 +136,10 @@ public class ReportModelBuilder
 
     private static string GetActionSymbol(string action) => action switch
     {
-        "create" => "+",
-        "delete" => "-",
-        "update" => "~",
-        "replace" => "-/+",
+        "create" => "➕",
+        "delete" => "❌",
+        "update" => "🔄",
+        "replace" => "♻️",
         _ => " "
     };
 

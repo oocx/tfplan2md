@@ -26,6 +26,7 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - When asking the user for more information, focus on one topic at a time
 - When you have follow-up questions, ask them one at a time, and wait for the answer before asking the next question. **Never list multiple questions or considerations at once, even in plans or summaries.**
 - Always ensure that you have up-to-date information. Use web search if you think that your information might be outdated (example: new versions of frameworks, libraries, tools, etc.)
+- Use pre-commit hooks and linters to ensure code quality and consistency
 
 ## Documentation
 - Ensure that you follow instructions from the `docs/spec.md` and other documentation files in the /docs folder
@@ -37,3 +38,14 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 ## Fixing Bugs
 - Before you fix a bug, you always must first create at least one test that catches the incorrect behavior. Do not start fixing the bug before you were able to detect the bug with a test.
   
+## Code Style Perferences
+- Follow the Common C# Coding conventions ([code style](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions))
+- Use `_camelCase` naming convention for private fields (e.g., `private readonly bool _showSensitive`)
+- Prefer immutable data structures (`IReadOnlyList<T>`, `IReadOnlyDictionary<K,V>`) over mutable types (`List<T>`, `Dictionary<K,V>`) when modification is not required
+- Prefer modern C# language features when they improve readability:
+  - Collection expressions: `List<string> items = [];` instead of `new List<string>()`
+  - Primary constructors for simple dependency injection
+  - Pattern matching with `is`, `is not`, `and`, `or`
+  - Target-typed `new()` when type is apparent
+  - Expression-bodied members for simple single-line implementations
+- Code Style enforcement must be automated (pre-commit hooks, CI/CD checks, .editorconfig etc.)

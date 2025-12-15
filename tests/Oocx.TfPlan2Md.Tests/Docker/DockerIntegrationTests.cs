@@ -25,6 +25,7 @@ public class DockerIntegrationTests
         var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath);
 
         Assert.Equal(0, exitCode);
+        Assert.Empty(stderr);
         Assert.Contains("# Terraform Plan", stdout);
         Assert.Contains("azurerm_resource_group.main", stdout);
     }
@@ -38,6 +39,7 @@ public class DockerIntegrationTests
         var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync(json);
 
         Assert.Equal(0, exitCode);
+        Assert.Empty(stderr);
         Assert.Contains("# Terraform Plan", stdout);
         Assert.Contains("azurerm_resource_group.main", stdout);
     }
@@ -50,6 +52,7 @@ public class DockerIntegrationTests
         var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--help"]);
 
         Assert.Equal(0, exitCode);
+        Assert.Empty(stderr);
         Assert.Contains("tfplan2md", stdout);
         Assert.Contains("--help", stdout);
     }
@@ -62,6 +65,7 @@ public class DockerIntegrationTests
         var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--version"]);
 
         Assert.Equal(0, exitCode);
+        Assert.Empty(stderr);
         Assert.Contains("tfplan2md", stdout);
     }
 
@@ -70,7 +74,7 @@ public class DockerIntegrationTests
     {
         SkipIfDockerNotAvailable();
 
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("{ invalid json }");
+        var (exitCode, _, stderr) = await _fixture.RunContainerWithStdinAsync("{ invalid json }");
 
         Assert.NotEqual(0, exitCode);
         Assert.Contains("Error", stderr);
@@ -84,6 +88,7 @@ public class DockerIntegrationTests
         var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath);
 
         Assert.Equal(0, exitCode);
+        Assert.Empty(stderr);
         // Verify expected resources from the test data are in the output
         Assert.Contains("azurerm_resource_group.main", stdout);
         Assert.Contains("azurerm_key_vault.main", stdout);

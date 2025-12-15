@@ -56,14 +56,9 @@ public class AttributeChangeModel
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
-public class ReportModelBuilder
+public class ReportModelBuilder(bool showSensitive = false)
 {
-    private readonly bool _showSensitive;
-
-    public ReportModelBuilder(bool showSensitive = false)
-    {
-        _showSensitive = showSensitive;
-    }
+    private readonly bool _showSensitive = showSensitive;
 
     public ReportModel Build(TerraformPlan plan)
     {
@@ -153,8 +148,6 @@ public class ReportModelBuilder
 
     private List<AttributeChangeModel> BuildAttributeChanges(Change change)
     {
-        var result = new List<AttributeChangeModel>();
-
         var beforeDict = ConvertToFlatDictionary(change.Before);
         var afterDict = ConvertToFlatDictionary(change.After);
         var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
@@ -162,44 +155,33 @@ public class ReportModelBuilder
 
         var allKeys = beforeDict.Keys.Union(afterDict.Keys).OrderBy(k => k);
 
-        foreach (var key in allKeys)
+        return allKeys.Select(key =>
         {
             beforeDict.TryGetValue(key, out var beforeValue);
             afterDict.TryGetValue(key, out var afterValue);
 
             var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
 
-            result.Add(new AttributeChangeModel
+            return new AttributeChangeModel
             {
                 Name = key,
                 Before = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue,
                 After = isSensitive && !_showSensitive ? "(sensitive)" : afterValue,
                 IsSensitive = isSensitive
-            });
-        }
-
-        return result;
+            };
+        }).ToList();
     }
 
     private static bool IsSensitiveAttribute(string key, Dictionary<string, string?> beforeSensitive, Dictionary<string, string?> afterSensitive)
     {
-        // Check if the key or any parent key is marked as sensitive
-        if (beforeSensitive.TryGetValue(key, out var bv) && bv == "true")
-        {
-            return true;
-        }
-
-        if (afterSensitive.TryGetValue(key, out var av) && av == "true")
-        {
-            return true;
-        }
-
-        return false;
+        // Check if the key is marked as sensitive in either before or after state
+        return (beforeSensitive.TryGetValue(key, out var bv) && bv == "true")
+            || (afterSensitive.TryGetValue(key, out var av) && av == "true");
     }
 
     private static Dictionary<string, string?> ConvertToFlatDictionary(object? obj, string prefix = "")
     {
-        var result = new Dictionary<string, string?>();
+        Dictionary<string, string?> result = [];
         if (obj is null)
         {
             return result;

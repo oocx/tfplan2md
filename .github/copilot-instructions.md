@@ -33,3 +33,7 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - Ensure that all documentation files are consistent with each, do not contradict each other and do not contain outdated information
 - When writing documentation, ensure that it is clear, concise, and easy to understand
 - Ensure that the implementation and the documentation are aligned with each other
+
+## Fixing Bugs
+- Before you fix a bug, you always must first create at least one test that catches the incorrect behavior. Do not start fixing the bug before you were able to detect the bug with a test.
+  

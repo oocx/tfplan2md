@@ -120,6 +120,24 @@ public class MarkdownRendererTests
         // in the Resource Changes section to avoid iteration limit issues
         Assert.Contains("## Summary", markdown);
         Assert.DoesNotContain("azurerm_resource_group.main", markdown); // no-op resources are filtered
+        Assert.Contains("No changes", markdown); // Should show "No changes" when all resources are no-op
+    }
+
+    [Fact]
+    public void Render_EmptyPlan_ShowsNoChangesMessage()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/empty-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        Assert.Contains("## Resource Changes", markdown);
+        Assert.Contains("No changes", markdown);
     }
 
     [Fact]

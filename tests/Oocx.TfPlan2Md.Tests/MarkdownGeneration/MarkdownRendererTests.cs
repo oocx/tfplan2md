@@ -1,3 +1,4 @@
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 
@@ -21,10 +22,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("## Summary", markdown);
-        Assert.Contains("➕ Add", markdown);
-        Assert.Contains("🔄 Change", markdown);
-        Assert.Contains("❌ Destroy", markdown);
+        markdown.Should().Contain("## Summary")
+            .And.Contain("➕ Add")
+            .And.Contain("🔄 Change")
+            .And.Contain("❌ Destroy");
     }
 
     [Fact]
@@ -40,10 +41,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("azurerm_resource_group.main", markdown);
-        Assert.Contains("azurerm_storage_account.main", markdown);
-        Assert.Contains("azurerm_key_vault.main", markdown);
-        Assert.Contains("azuredevops_project.main", markdown);
+        markdown.Should().Contain("azurerm_resource_group.main")
+            .And.Contain("azurerm_storage_account.main")
+            .And.Contain("azurerm_key_vault.main")
+            .And.Contain("azuredevops_project.main");
     }
 
     [Fact]
@@ -59,7 +60,7 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("1.14.0", markdown);
+        markdown.Should().Contain("1.14.0");
     }
 
 
@@ -77,10 +78,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("➕ azurerm_resource_group.main", markdown);
-        Assert.Contains("🔄 azurerm_key_vault.main", markdown);
-        Assert.Contains("❌ azurerm_virtual_network.old", markdown);
-        Assert.Contains("♻️ azuredevops_git_repository.main", markdown);
+        markdown.Should().Contain("➕ azurerm_resource_group.main")
+            .And.Contain("🔄 azurerm_key_vault.main")
+            .And.Contain("❌ azurerm_virtual_network.old")
+            .And.Contain("♻️ azuredevops_git_repository.main");
     }
 
     [Fact]
@@ -96,12 +97,12 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("## Summary", markdown);
-        Assert.Contains("**Terraform Version:** 1.14.0", markdown);
-        Assert.Contains("➕ Add | 0", markdown);
-        Assert.Contains("🔄 Change | 0", markdown);
-        Assert.Contains("❌ Destroy | 0", markdown);
-        Assert.Contains("**Total** | **0**", markdown);
+        markdown.Should().Contain("## Summary")
+            .And.Contain("**Terraform Version:** 1.14.0")
+            .And.Contain("➕ Add | 0")
+            .And.Contain("🔄 Change | 0")
+            .And.Contain("❌ Destroy | 0")
+            .And.Contain("**Total** | **0**");
     }
 
     [Fact]
@@ -118,9 +119,9 @@ public class MarkdownRendererTests
 
         // Assert - Summary section should exist, but no-op resources are not displayed
         // in the Resource Changes section to avoid iteration limit issues
-        Assert.Contains("## Summary", markdown);
-        Assert.DoesNotContain("azurerm_resource_group.main", markdown); // no-op resources are filtered
-        Assert.Contains("No changes", markdown); // Should show "No changes" when all resources are no-op
+        markdown.Should().Contain("## Summary")
+            .And.NotContain("azurerm_resource_group.main") // no-op resources are filtered
+            .And.Contain("No changes"); // Should show "No changes" when all resources are no-op
     }
 
     [Fact]
@@ -136,8 +137,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("## Resource Changes", markdown);
-        Assert.Contains("No changes", markdown);
+        markdown.Should().Contain("## Resource Changes")
+            .And.Contain("No changes");
     }
 
     [Fact]
@@ -153,10 +154,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("null_resource.test", markdown);
-        Assert.Contains("➕ null_resource.test", markdown);
-        // Should not contain the Attribute Changes details section since there are no changes
-        Assert.DoesNotContain("<details>", markdown);
+        markdown.Should().Contain("null_resource.test")
+            .And.Contain("➕ null_resource.test")
+            // Should not contain the Attribute Changes details section since there are no changes
+            .And.NotContain("<details>");
     }
 
     [Fact]
@@ -172,9 +173,9 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("➕ azurerm_resource_group.main", markdown);
-        Assert.Contains("➕ azurerm_storage_account.main", markdown);
-        Assert.Contains("➕ Add | 2", markdown);
+        markdown.Should().Contain("➕ azurerm_resource_group.main")
+            .And.Contain("➕ azurerm_storage_account.main")
+            .And.Contain("➕ Add | 2");
     }
 
     [Fact]
@@ -190,9 +191,9 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("❌ azurerm_storage_account.old", markdown);
-        Assert.Contains("❌ azurerm_resource_group.old", markdown);
-        Assert.Contains("❌ Destroy | 2", markdown);
+        markdown.Should().Contain("❌ azurerm_storage_account.old")
+            .And.Contain("❌ azurerm_resource_group.old")
+            .And.Contain("❌ Destroy | 2");
     }
 
     [Fact]
@@ -211,8 +212,11 @@ public class MarkdownRendererTests
 
         try
         {
-            // Act & Assert
-            Assert.Throws<MarkdownRenderException>(() => _renderer.Render(model, tempFile));
+            // Act
+            var act = () => _renderer.Render(model, tempFile);
+
+            // Assert
+            act.Should().Throw<MarkdownRenderException>();
         }
         finally
         {
@@ -245,12 +249,12 @@ public class MarkdownRendererTests
         var keyVaultSection = markdown.Split("### 🔄 azurerm_key_vault.main")[1].Split("###")[0];
 
         // FIXED: The table should NOT have the pattern of "|\n\n|" which indicates blank lines between rows
-        Assert.DoesNotContain("|\n\n|", keyVaultSection);
+        keyVaultSection.Should().NotContain("|\n\n|");
 
         // Verify the table exists and has the expected structure
-        Assert.Contains("| Attribute | Before | After |", keyVaultSection);
-        Assert.Contains("| `location` |", keyVaultSection);
-        Assert.Contains("| `sku_name` |", keyVaultSection);
+        keyVaultSection.Should().Contain("| Attribute | Before | After |")
+            .And.Contain("| `location` |")
+            .And.Contain("| `sku_name` |");
     }
 
     [Fact]
@@ -304,7 +308,7 @@ public class MarkdownRendererTests
         var model = builder.Build(plan);
 
         // Act & Assert - Should NOT throw "Exceeding number of iteration limit '1000' for loop statement"
-        var exception = Record.Exception(() => _renderer.Render(model));
-        Assert.Null(exception);
+        var act = () => _renderer.Render(model);
+        act.Should().NotThrow();
     }
 }

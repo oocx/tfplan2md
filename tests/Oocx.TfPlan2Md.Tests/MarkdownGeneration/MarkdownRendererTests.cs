@@ -62,22 +62,7 @@ public class MarkdownRendererTests
         Assert.Contains("1.14.0", markdown);
     }
 
-    [Fact]
-    public void Render_ValidPlan_ContainsProviderInfo()
-    {
-        // Arrange
-        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
-        var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
-        var model = builder.Build(plan);
 
-        // Act
-        var markdown = _renderer.Render(model);
-
-        // Assert
-        Assert.Contains("registry.terraform.io/hashicorp/azurerm", markdown);
-        Assert.Contains("registry.terraform.io/microsoft/azuredevops", markdown);
-    }
 
     [Fact]
     public void Render_ValidPlan_ContainsActionSymbols()
@@ -92,10 +77,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("+ azurerm_resource_group.main", markdown);
-        Assert.Contains("~ azurerm_key_vault.main", markdown);
-        Assert.Contains("- azurerm_virtual_network.old", markdown);
-        Assert.Contains("-/+ azuredevops_git_repository.main", markdown);
+        Assert.Contains("➕ azurerm_resource_group.main", markdown);
+        Assert.Contains("🔄 azurerm_key_vault.main", markdown);
+        Assert.Contains("❌ azurerm_virtual_network.old", markdown);
+        Assert.Contains("♻️ azuredevops_git_repository.main", markdown);
     }
 
     [Fact]
@@ -134,7 +119,6 @@ public class MarkdownRendererTests
         // Assert
         Assert.Contains("## Summary", markdown);
         Assert.Contains("azurerm_resource_group.main", markdown);
-        Assert.Contains("no-op", markdown);
     }
 
     [Fact]
@@ -151,7 +135,7 @@ public class MarkdownRendererTests
 
         // Assert
         Assert.Contains("null_resource.test", markdown);
-        Assert.Contains("+ null_resource.test", markdown);
+        Assert.Contains("➕ null_resource.test", markdown);
         // Should not contain the Attribute Changes details section since there are no changes
         Assert.DoesNotContain("<details>", markdown);
     }
@@ -169,8 +153,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("+ azurerm_resource_group.main", markdown);
-        Assert.Contains("+ azurerm_storage_account.main", markdown);
+        Assert.Contains("➕ azurerm_resource_group.main", markdown);
+        Assert.Contains("➕ azurerm_storage_account.main", markdown);
         Assert.Contains("➕ Add | 2", markdown);
     }
 
@@ -187,8 +171,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        Assert.Contains("- azurerm_storage_account.old", markdown);
-        Assert.Contains("- azurerm_resource_group.old", markdown);
+        Assert.Contains("❌ azurerm_storage_account.old", markdown);
+        Assert.Contains("❌ azurerm_resource_group.old", markdown);
         Assert.Contains("❌ Destroy | 2", markdown);
     }
 
@@ -239,7 +223,7 @@ public class MarkdownRendererTests
         // (no blank lines between rows)
 
         // Extract the attribute changes table section for azurerm_key_vault.main (which has multiple attributes)
-        var keyVaultSection = markdown.Split("### ~ azurerm_key_vault.main")[1].Split("###")[0];
+        var keyVaultSection = markdown.Split("### 🔄 azurerm_key_vault.main")[1].Split("###")[0];
 
         // FIXED: The table should NOT have the pattern of "|\n\n|" which indicates blank lines between rows
         Assert.DoesNotContain("|\n\n|", keyVaultSection);

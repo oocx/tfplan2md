@@ -1,8 +1,11 @@
 # tfplan2md
 
+![tfplan2md](tfplan2md-logo.svg)
+
+
 Convert Terraform plan JSON files into human-readable Markdown reports.
 
-NOTE: I used this tool as an example use case to see how far I can go with implementing as much as possible with AI support. Most of this code and specs were generated with Github CoPilot.
+**NOTE:** I used this tool as an example use case to see how far I can go with implementing as much as possible with AI support. Most of this code and specs were generated with Github CoPilot.
 
 ## Features
 
@@ -82,11 +85,16 @@ terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md 
 
 ## Resource Changes
 
-### + azurerm_resource_group.main
+### ➕ azurerm_resource_group.main
 
-- **Type:** `azurerm_resource_group`
-- **Provider:** `registry.terraform.io/hashicorp/azurerm`
-- **Action:** create
+<details>
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+| `location` | - | westeurope |
+| `name` | - | example-rg |
+
+</details>
 ```
 
 ## Custom Templates
@@ -105,8 +113,8 @@ Templates have access to:
 
 - `terraform_version` - Terraform version string
 - `format_version` - Plan format version
-- `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `total`
-- `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
+- `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op`, `total`
+- `changes` - List of resource changes with `address`, `type`, `name`, `module_address`, `provider_name`, `action`, `action_symbol`, `attribute_changes`
 
 ## Development
 

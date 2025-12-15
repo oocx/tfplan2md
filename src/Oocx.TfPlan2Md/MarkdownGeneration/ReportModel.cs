@@ -67,25 +67,33 @@ public class ReportModelBuilder
 
     public ReportModel Build(TerraformPlan plan)
     {
-        var changes = plan.ResourceChanges
+        // Build all resource change models first (for summary counting)
+        var allChanges = plan.ResourceChanges
             .Select(BuildResourceChangeModel)
+            .ToList();
+
+        // Filter out no-op resources from the changes list passed to the template
+        // No-op resources have no meaningful changes to display and including them
+        // can cause the template to exceed Scriban's iteration limit of 1000
+        var displayChanges = allChanges
+            .Where(c => c.Action != "no-op")
             .ToList();
 
         var summary = new SummaryModel
         {
-            ToAdd = changes.Count(c => c.Action == "create"),
-            ToChange = changes.Count(c => c.Action == "update"),
-            ToDestroy = changes.Count(c => c.Action == "delete"),
-            ToReplace = changes.Count(c => c.Action == "replace"),
-            NoOp = changes.Count(c => c.Action == "no-op"),
-            Total = changes.Count
+            ToAdd = allChanges.Count(c => c.Action == "create"),
+            ToChange = allChanges.Count(c => c.Action == "update"),
+            ToDestroy = allChanges.Count(c => c.Action == "delete"),
+            ToReplace = allChanges.Count(c => c.Action == "replace"),
+            NoOp = allChanges.Count(c => c.Action == "no-op"),
+            Total = allChanges.Count
         };
 
         return new ReportModel
         {
             TerraformVersion = plan.TerraformVersion,
             FormatVersion = plan.FormatVersion,
-            Changes = changes,
+            Changes = displayChanges,
             Summary = summary
         };
     }

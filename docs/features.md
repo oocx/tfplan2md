@@ -32,6 +32,12 @@ The default report includes:
 - **Summary**: Overview of changes (e.g., "3 to add, 1 to change, 2 to destroy")
 - **Detailed changes**: List of affected resources with their actions and attribute changes
 
+### No-Op Resources
+
+Resources with no changes (no-op) are counted in the summary but are **not displayed** in the detailed changes section. This design choice:
+- Reduces output noise when reviewing plans with many unchanged resources
+- Enables processing of large Terraform plans without hitting template iteration limits
+
 ### Sensitive Values
 
 - Sensitive values are **masked by default** for security

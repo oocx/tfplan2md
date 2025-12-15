@@ -246,10 +246,10 @@ public class MarkdownRendererTests
 
         // Extract the attribute changes table section for azurerm_key_vault.main (which has multiple attributes)
         var keyVaultSection = markdown.Split("### ~ azurerm_key_vault.main")[1].Split("###")[0];
-        
+
         // The table should not have the pattern of "|\n\n|" which indicates blank lines between rows
         Assert.DoesNotContain("|\n\n|", keyVaultSection);
-        
+
         // Verify the table exists and has the expected structure
         Assert.Contains("| Attribute | Before | After |", keyVaultSection);
         Assert.Contains("| `location` |", keyVaultSection);

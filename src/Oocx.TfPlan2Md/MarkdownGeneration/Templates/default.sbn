@@ -14,6 +14,9 @@
 
 ## Resource Changes
 
+{{ if changes.size == 0 }}
+No changes.
+{{ else }}
 {{ for change in changes }}
 ### {{ change.action_symbol }} {{ change.address }}
 
@@ -33,4 +36,5 @@
 </details>
 {{ end }}
 
+{{ end }}
 {{ end }}

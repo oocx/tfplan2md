@@ -39,3 +39,5 @@ Thumbs.db
 
 # Publish output
 publish/
+
+plan.tfplan

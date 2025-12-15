@@ -39,16 +39,16 @@ public class ReportModelBuilderTests
 
         // Assert
         var createChange = model.Changes.First(c => c.Action == "create");
-        Assert.Equal("+", createChange.ActionSymbol);
+        Assert.Equal("➕", createChange.ActionSymbol);
 
         var updateChange = model.Changes.First(c => c.Action == "update");
-        Assert.Equal("~", updateChange.ActionSymbol);
+        Assert.Equal("🔄", updateChange.ActionSymbol);
 
         var deleteChange = model.Changes.First(c => c.Action == "delete");
-        Assert.Equal("-", deleteChange.ActionSymbol);
+        Assert.Equal("❌", deleteChange.ActionSymbol);
 
         var replaceChange = model.Changes.First(c => c.Action == "replace");
-        Assert.Equal("-/+", replaceChange.ActionSymbol);
+        Assert.Equal("♻️", replaceChange.ActionSymbol);
     }
 
     [Fact]

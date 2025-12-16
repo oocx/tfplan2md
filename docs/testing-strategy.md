@@ -134,6 +134,7 @@ Tests for rendering the report model to Markdown output.
 | `Render_Delete_OmitsNullAttributes` | Verifies that null attributes are omitted from delete tables |
 | `Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit` | Verifies that large plans don't exceed Scriban's iteration limit of 1000 |
 | `RenderResourceChange_FirewallRuleCollection_ReturnsResourceSpecificMarkdown` | Verifies that firewall rule collections use the resource-specific template |
+| `Render_FirewallRuleCollection_UsesResourceSpecificTemplate` | Verifies that the full `Render` applies resource-specific templates automatically when available |
 | `RenderResourceChange_FirewallRuleCollection_ShowsAddedRules` | Verifies that added rules are shown with ➕ indicator |
 | `RenderResourceChange_FirewallRuleCollection_ShowsModifiedRules` | Verifies that modified rules are shown with 🔄 indicator |
 | `RenderResourceChange_FirewallRuleCollection_ShowsRemovedRules` | Verifies that removed rules are shown with ❌ indicator |
@@ -145,6 +146,7 @@ Tests for rendering the report model to Markdown output.
 | `RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible` | Verifies that modified rule details are in a collapsible section |
 | `Render_MultiModulePlan_GroupsModulesAndPreservesOrder` | Verifies that plans with multiple and nested modules are grouped into module sections and that module ordering follows the hierarchy (root first, children after parents) |
 | `Render_MultiModulePlan_HeadingsAndHierarchyAreCorrect` | Verifies module headers use H3 (`### Module: ...`) and resources inside modules use H4 headings (`#### <action> <address>`), and that each resource appears under its module section |
+| `RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible` | (removed) Previously verified collapsible modified details — no longer applicable; modified rule data is shown in the main table |
 
 ### Scriban Helpers Tests (`MarkdownGeneration/ScribanHelpersTests.cs`)
 

@@ -27,11 +27,29 @@ No changes.
 {{ if change.attribute_changes && change.attribute_changes.size > 0 }}
 <details>
 
+{{ if change.action == "create" }}
+| Attribute | Value |
+|-----------|-------|
+{{ for attr in change.attribute_changes -}}
+{{ if attr.after }}| `{{ attr.name }}` | {{ attr.after }} |
+{{ end -}}
+{{ end -}}
+
+{{ else if change.action == "delete" }}
+| Attribute | Value |
+|-----------|-------|
+{{ for attr in change.attribute_changes -}}
+{{ if attr.before }}| `{{ attr.name }}` | {{ attr.before }} |
+{{ end -}}
+{{ end -}}
+
+{{ else }}
 | Attribute | Before | After |
 |-----------|--------|-------|
 {{ for attr in change.attribute_changes -}}
 | `{{ attr.name }}` | {{ if attr.before }}{{ attr.before }}{{ else }}-{{ end }} | {{ if attr.after }}{{ attr.after }}{{ else }}-{{ end }} |
 {{ end -}}
+{{ end }}
 
 </details>
 {{ end }}

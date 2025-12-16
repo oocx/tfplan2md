@@ -51,6 +51,16 @@ Resources are displayed with emoji symbols indicating the action:
 - Sensitive values are **masked by default** for security
 - Use `--show-sensitive` flag to reveal sensitive values in the output
 
+### Attribute Tables
+
+Attribute tables in the default template now vary by the resource change action to make output more concise and meaningful:
+
+- **create**: 2-column table (`Attribute | Value`) showing the *after* values
+- **delete**: 2-column table (`Attribute | Value`) showing the *before* values
+- **update** and **replace**: 3-column table (`Attribute | Before | After`)
+
+Null or unknown attributes are omitted from the tables to avoid meaningless rows, and sensitive attributes are masked unless `--show-sensitive` is used.
+
 ## Templates
 
 Reports are generated using customizable templates powered by [Scriban](https://github.com/scriban/scriban).

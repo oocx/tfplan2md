@@ -179,6 +179,29 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void Render_CreateOnlyPlan_ShowsAttributeValueTable()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/create-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - For creates we should show a 2-column table (Attribute | Value) and the expected values
+        var rgSection = markdown.Split("### ➕ azurerm_resource_group.main")[1].Split("###")[0];
+        rgSection.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `name` | rg-new-project |")
+            .And.Contain("| `location` | westeurope |");
+
+        var stSection = markdown.Split("### ➕ azurerm_storage_account.main")[1].Split("###")[0];
+        stSection.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `account_tier` | Standard |");
+    }
+
+    [Fact]
     public void Render_DeleteOnlyPlan_ShowsAllDeletes()
     {
         // Arrange
@@ -194,6 +217,254 @@ public class MarkdownRendererTests
         markdown.Should().Contain("❌ azurerm_storage_account.old")
             .And.Contain("❌ azurerm_resource_group.old")
             .And.Contain("❌ Destroy | 2");
+    }
+
+    [Fact]
+    public void Render_DeleteOnlyPlan_ShowsAttributeValueTable()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/delete-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - For deletes we should show a 2-column table (Attribute | Value) and the expected values
+        var stSection = markdown.Split("### ❌ azurerm_storage_account.old")[1].Split("###")[0];
+        stSection.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `account_tier` | Standard |")
+            .And.Contain("| `name` | stoldproject |");
+
+        var rgSection = markdown.Split("### ❌ azurerm_resource_group.old")[1].Split("###")[0];
+        rgSection.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `name` | rg-old-project |")
+            .And.Contain("| `location` | westeurope |");
+    }
+
+    [Fact]
+    public void Render_ReplacePlan_ShowsBeforeAndAfterColumns()
+    {
+        // Arrange - construct a replace (create+delete) change
+        var before = new Dictionary<string, object?>
+        {
+            ["name"] = "old",
+            ["size"] = "small"
+        };
+
+        var after = new Dictionary<string, object?>
+        {
+            ["name"] = "new",
+            ["size"] = "large"
+        };
+
+        var beforeElement = System.Text.Json.JsonSerializer.SerializeToElement(before);
+        var afterElement = System.Text.Json.JsonSerializer.SerializeToElement(after);
+        var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var change = new Change(
+            Actions: ["create", "delete"],
+            Before: beforeElement,
+            After: afterElement,
+            AfterUnknown: emptyElement,
+            BeforeSensitive: emptyElement,
+            AfterSensitive: emptyElement
+        );
+
+        var resourceChange = new ResourceChange(
+            Address: "example_resource.replace_me",
+            ModuleAddress: null,
+            Mode: "managed",
+            Type: "example_resource",
+            Name: "replace_me",
+            ProviderName: "registry.terraform.io/hashicorp/example",
+            Change: change
+        );
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.2",
+            TerraformVersion: "1.14.0",
+            ResourceChanges: new List<ResourceChange> { resourceChange }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - replace should use the Before/After table
+        var section = markdown.Split("### ♻️ example_resource.replace_me")[1].Split("###")[0];
+        section.Should().Contain("| Attribute | Before | After |")
+            .And.Contain("| `name` | old | new |")
+            .And.Contain("| `size` | small | large |");
+    }
+
+    [Fact]
+    public void Render_CreatePlan_MasksSensitiveAttributes()
+    {
+        // Arrange - create with a sensitive attribute in after
+        var after = new Dictionary<string, object?>
+        {
+            ["name"] = "sensitive_resource",
+            ["api_key"] = "secret-value"
+        };
+
+        var afterSensitive = new Dictionary<string, object?>
+        {
+            ["api_key"] = true
+        };
+
+        var afterElement = System.Text.Json.JsonSerializer.SerializeToElement(after);
+        var afterSensitiveElement = System.Text.Json.JsonSerializer.SerializeToElement(afterSensitive);
+        var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var change = new Change(
+            Actions: ["create"],
+            Before: null,
+            After: afterElement,
+            AfterUnknown: emptyElement,
+            BeforeSensitive: emptyElement,
+            AfterSensitive: afterSensitiveElement
+        );
+
+        var resourceChange = new ResourceChange(
+            Address: "example_resource.sensitive",
+            ModuleAddress: null,
+            Mode: "managed",
+            Type: "example_resource",
+            Name: "sensitive",
+            ProviderName: "registry.terraform.io/hashicorp/example",
+            Change: change
+        );
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.2",
+            TerraformVersion: "1.14.0",
+            ResourceChanges: new List<ResourceChange> { resourceChange }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - sensitive attribute should be masked in the Value column
+        var section = markdown.Split("### ➕ example_resource.sensitive")[1].Split("###")[0];
+        section.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `api_key` | (sensitive) |")
+            .And.Contain("| `name` | sensitive_resource |");
+    }
+
+    [Fact]
+    public void Render_Create_OmitsNullAndUnknownAttributes()
+    {
+        // Arrange - create with a null attribute and an unknown attribute
+        var after = new Dictionary<string, object?>
+        {
+            ["name"] = null,
+            ["location"] = "westeurope"
+        };
+
+        var afterUnknown = new Dictionary<string, object?>
+        {
+            ["id"] = true
+        };
+
+        var afterElement = System.Text.Json.JsonSerializer.SerializeToElement(after);
+        var afterUnknownElement = System.Text.Json.JsonSerializer.SerializeToElement(afterUnknown);
+        var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var change = new Change(
+            Actions: ["create"],
+            Before: null,
+            After: afterElement,
+            AfterUnknown: afterUnknownElement,
+            BeforeSensitive: emptyElement,
+            AfterSensitive: emptyElement
+        );
+
+        var resourceChange = new ResourceChange(
+            Address: "example_resource.partial",
+            ModuleAddress: null,
+            Mode: "managed",
+            Type: "example_resource",
+            Name: "partial",
+            ProviderName: "registry.terraform.io/hashicorp/example",
+            Change: change
+        );
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.2",
+            TerraformVersion: "1.14.0",
+            ResourceChanges: new List<ResourceChange> { resourceChange }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - the null `name` and unknown `id` should not be shown; only `location` should appear
+        var section = markdown.Split("### ➕ example_resource.partial")[1].Split("###")[0];
+        section.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `location` | westeurope |")
+            .And.NotContain("`name`")
+            .And.NotContain("`id`");
+    }
+
+    [Fact]
+    public void Render_Delete_OmitsNullAttributes()
+    {
+        // Arrange - delete with a null attribute in before
+        var before = new Dictionary<string, object?>
+        {
+            ["name"] = "rg-old-project",
+            ["location"] = null
+        };
+
+        var beforeElement = System.Text.Json.JsonSerializer.SerializeToElement(before);
+        var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var change = new Change(
+            Actions: ["delete"],
+            Before: beforeElement,
+            After: null,
+            AfterUnknown: emptyElement,
+            BeforeSensitive: emptyElement,
+            AfterSensitive: emptyElement
+        );
+
+        var resourceChange = new ResourceChange(
+            Address: "example_resource.partial_delete",
+            ModuleAddress: null,
+            Mode: "managed",
+            Type: "example_resource",
+            Name: "partial_delete",
+            ProviderName: "registry.terraform.io/hashicorp/example",
+            Change: change
+        );
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.2",
+            TerraformVersion: "1.14.0",
+            ResourceChanges: new List<ResourceChange> { resourceChange }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - the null `location` should not be shown; only `name` should appear
+        var section = markdown.Split("### ❌ example_resource.partial_delete")[1].Split("###")[0];
+        section.Should().Contain("| Attribute | Value |")
+            .And.Contain("| `name` | rg-old-project |")
+            .And.NotContain("`location`");
     }
 
     [Fact]

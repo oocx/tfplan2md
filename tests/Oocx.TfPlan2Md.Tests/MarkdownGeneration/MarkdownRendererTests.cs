@@ -687,6 +687,7 @@ public class MarkdownRendererTests
         result.Should().Contain("web_tier").And.Contain("Rule Changes");
     }
 
+
     [Fact]
     public void RenderResourceChange_FirewallRuleCollection_ShowsAddedRules()
     {
@@ -757,6 +758,66 @@ public class MarkdownRendererTests
         // Assert - allow-https was unchanged
         result.Should().NotBeNull();
         result.Should().Contain("allow-https").And.Contain("⏺️");
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_Add_ShowsPerRuleTableAndCombinedAddresses()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - added rule allow-dns is shown in the main rule table with combined Source/Destination
+        result.Should().NotBeNull();
+        result.Should().Contain("➕").And.Contain("allow-dns");
+        result.Should().Contain("10.0.1.0/24, 10.0.2.0/24");
+        result.Should().Contain("168.63.129.16");
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_Modified_ShowsBeforeAfterTableAndCombinedAddresses()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - modified rule allow-http is shown in the main rule table with combined Source values
+        result.Should().NotBeNull();
+        result.Should().Contain("🔄").And.Contain("allow-http");
+        result.Should().Contain("10.0.1.0/24, 10.0.3.0/24");
+        result.Should().Contain("Allow HTTP traffic from web and API tiers");
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_Removed_ShowsPerRuleTable()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - removed rule allow-ssh-old is shown in the main rule table with combined values
+        result.Should().NotBeNull();
+        result.Should().Contain("❌").And.Contain("allow-ssh-old");
+        result.Should().Contain("10.0.0.0/8");
+        result.Should().Contain("10.0.2.0/24");
     }
 
     [Fact]
@@ -833,23 +894,6 @@ public class MarkdownRendererTests
         result.Should().Contain("Allow HTTPS traffic");
     }
 
-    [Fact]
-    public void RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible()
-    {
-        // Arrange
-        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
-        var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
-        var model = builder.Build(plan);
-        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
-
-        // Act
-        var result = _renderer.RenderResourceChange(firewallChange);
-
-        // Assert - Modified rule details should be in collapsible section
-        result.Should().NotBeNull();
-        result.Should().Contain("<details>").And.Contain("Modified Rule Details").And.Contain("</details>");
-    }
 
     #endregion
 }

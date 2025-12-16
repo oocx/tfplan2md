@@ -39,7 +39,7 @@ For a resource of type `azurerm_firewall_network_rule_collection`:
 2. **Provider-default**: `Templates/azurerm/default.sbn` (future consideration)
 3. **Global default**: `Templates/default.sbn`
 
-The first matching template is used. If no resource-specific template exists, the global default renders attribute tables. Note that the default template now renders different table formats depending on the `action`:
+The first matching template is used. When rendering the full report (for example via the CLI), the default renderer will automatically apply resource-specific templates for matching resources; if no resource-specific template exists, the global default renders attribute tables. Note that the default template now renders different table formats depending on the `action`:
 
 - **create**: 2-column `Attribute | Value` (shows the planned/after values)
 - **delete**: 2-column `Attribute | Value` (shows the prior/before values)
@@ -187,13 +187,7 @@ The `ITemplateLoader` restricts includes to the custom template directory for se
 | ❌ | legacy-ftp | TCP | 10.0.1.0/24 | 10.0.2.5 | 21 |
 | — | allow-http | TCP | 10.0.0.0/16 | * | 80 |
 
-<details>
-<summary>Modified rule details</summary>
-
-**allow-https**
-- `source_addresses`: `10.0.1.0/24` → `10.0.0.0/16`
-
-</details>
+<!-- Modified rule details removed; modified info is presented in the main 'Rule Changes' table -->
 ```
 
 ### Display Requirements

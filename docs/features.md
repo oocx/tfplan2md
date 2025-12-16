@@ -174,11 +174,23 @@ Resource-specific templates solve this by:
 - Showing which items were added, removed, modified, or unchanged
 - Providing clear, table-based output for complex nested structures
 
+When rendering the full report, the default renderer applies resource-specific templates automatically for any resources that have a matching template; if none exists, the global default template is used.
+
 ### Supported Resources
 
 | Provider | Resource Type | Template |
 |----------|--------------|----------|
 | azurerm | `azurerm_firewall_network_rule_collection` | Semantic rule diffing with `diff_array` |
+
+#### Firewall Rule Collections
+
+For `azurerm_firewall_network_rule_collection`, changed rules are rendered as individual tables — one table per rule — and the tables preserve the rule order shown in the plan. Each rule table includes the standard attributes: Name, Protocols, Source, Destination, Destination Ports, and Description. Source and Destination combine addresses, IP groups and FQDNs into a single column to keep the tables concise.
+
+- Added rules: 2-column table showing the *after* values for the rule.
+- Removed rules: 2-column table showing the *before* values for the rule.
+- Modified / Replaced rules: 3-column table (`Attribute | Before | After`) showing before and after values for the rule only.
+
+This layout makes it easy to inspect per-rule changes without index-shift noise from array diffs.
 
 ### Helper Functions
 

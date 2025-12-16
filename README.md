@@ -112,7 +112,7 @@ See [Scriban documentation](https://github.com/scriban/scriban) for template syn
 
 ### Resource-Specific Templates
 
-For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes.
+For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes. The default renderer (used by the CLI) applies resource-specific templates automatically when a matching template is available; the global default template is used as a fallback.
 
 **Currently supported:**
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged

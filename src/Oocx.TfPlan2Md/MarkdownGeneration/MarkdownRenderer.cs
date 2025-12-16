@@ -62,9 +62,9 @@ public class MarkdownRenderer
             }
 
             // Find the corresponding change section in the default-rendered document and replace it.
-            // Default resource headings look like: "### {action_symbol} {address}"
-            var heading = $"### {change.ActionSymbol} {change.Address}";
-            var pattern = $"(?ms)^{Regex.Escape(heading)}.*?(?=^###\\s|\\z)";
+            // Match any heading level that contains the action symbol and address (handles template changes where headings may be '###' or '####').
+            var headingText = $"{change.ActionSymbol} {change.Address}";
+            var pattern = $"(?ms)^\\s*#+\\s+{Regex.Escape(headingText)}.*?(?=^\\s*#+\\s|\\z)";
             rendered = Regex.Replace(rendered, pattern, specific);
         }
 
@@ -220,7 +220,11 @@ public class MarkdownRenderer
 
         try
         {
-            return template.Render(context);
+            var rendered = template.Render(context);
+            // Post-process: collapse blank lines that appear before table rows (leading '|')
+            // This prevents Markdown table breakage caused by accidental blank lines in templates.
+            rendered = Regex.Replace(rendered, @"\n\s*\n(?=\|)", "\n");
+            return rendered;
         }
         catch (Scriban.Syntax.ScriptRuntimeException ex)
         {

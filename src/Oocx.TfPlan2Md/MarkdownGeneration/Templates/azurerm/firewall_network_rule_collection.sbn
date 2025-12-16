@@ -18,45 +18,18 @@
 |---|-----------|-----------|------------------|----------------------|-------------------|-------------|
 {{~ for rule in diff.added ~}}
 | ➕ | {{ rule.name }} | {{ rule.protocols | array.join ", " }} | {{ rule.source_addresses | array.join ", " }} | {{ rule.destination_addresses | array.join ", " }} | {{ rule.destination_ports | array.join ", " }} | {{ rule.description ?? "" }} |
-{{~ end ~}}
+{{ end }}
 {{~ for item in diff.modified ~}}
 | 🔄 | {{ item.after.name }} | {{ item.after.protocols | array.join ", " }} | {{ item.after.source_addresses | array.join ", " }} | {{ item.after.destination_addresses | array.join ", " }} | {{ item.after.destination_ports | array.join ", " }} | {{ item.after.description ?? "" }} |
-{{~ end ~}}
+{{ end }}
 {{~ for rule in diff.removed ~}}
 | ❌ | {{ rule.name }} | {{ rule.protocols | array.join ", " }} | {{ rule.source_addresses | array.join ", " }} | {{ rule.destination_addresses | array.join ", " }} | {{ rule.destination_ports | array.join ", " }} | {{ rule.description ?? "" }} |
-{{~ end ~}}
+{{ end }}
 {{~ for rule in diff.unchanged ~}}
 | ⏺️ | {{ rule.name }} | {{ rule.protocols | array.join ", " }} | {{ rule.source_addresses | array.join ", " }} | {{ rule.destination_addresses | array.join ", " }} | {{ rule.destination_ports | array.join ", " }} | {{ rule.description ?? "" }} |
 {{~ end ~}}
 
-{{~ if diff.modified.size > 0 ~}}
-<details>
-<summary>Modified Rule Details</summary>
 
-{{~ for item in diff.modified ~}}
-##### {{ item.after.name }}
-
-| Property | Before | After |
-|----------|--------|-------|
-{{~ if item.before.protocols != item.after.protocols ~}}
-| Protocols | {{ item.before.protocols | array.join ", " }} | {{ item.after.protocols | array.join ", " }} |
-{{~ end ~}}
-{{~ if item.before.source_addresses != item.after.source_addresses ~}}
-| Source Addresses | {{ item.before.source_addresses | array.join ", " }} | {{ item.after.source_addresses | array.join ", " }} |
-{{~ end ~}}
-{{~ if item.before.destination_addresses != item.after.destination_addresses ~}}
-| Destination Addresses | {{ item.before.destination_addresses | array.join ", " }} | {{ item.after.destination_addresses | array.join ", " }} |
-{{~ end ~}}
-{{~ if item.before.destination_ports != item.after.destination_ports ~}}
-| Destination Ports | {{ item.before.destination_ports | array.join ", " }} | {{ item.after.destination_ports | array.join ", " }} |
-{{~ end ~}}
-{{~ if item.before.description != item.after.description ~}}
-| Description | {{ item.before.description ?? "" }} | {{ item.after.description ?? "" }} |
-{{~ end ~}}
-
-{{~ end ~}}
-</details>
-{{~ end ~}}
 
 {{~ else if action == "create" && after_json && after_json.rule ~}}
 #### Rules

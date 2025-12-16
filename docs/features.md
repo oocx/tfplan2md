@@ -117,8 +117,38 @@ docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json --output /data/plan.md
 
 Docker images are automatically built and pushed when a new version tag is created. See [spec.md](spec.md) for details on the CI/CD process and versioning strategy.
 
+## Resource-Specific Templates
+
+Complex Terraform resources like firewall rule collections can have misleading diffs when using simple attribute-based comparison. When items shift indices in arrays, the default diff shows changes to every attribute after the insertion point.
+
+Resource-specific templates solve this by:
+- Comparing collection items semantically by key (e.g., rule name)
+- Showing which items were added, removed, modified, or unchanged
+- Providing clear, table-based output for complex nested structures
+
+### Supported Resources
+
+| Provider | Resource Type | Template |
+|----------|--------------|----------|
+| azurerm | `azurerm_firewall_network_rule_collection` | Semantic rule diffing with `diff_array` |
+
+### Helper Functions
+
+Templates have access to the `diff_array` function for semantic collection diffing:
+
+```scriban
+{{ diff = diff_array before_json.rule after_json.rule "name" }}
+{{ for rule in diff.added }}
+  ➕ {{ rule.name }}
+{{ end }}
+```
+
+See [resource-specific-templates.md](features/resource-specific-templates.md) for full specification.
+
 ## Future Considerations
 
-The following features are not in scope for the initial version but may be added later:
+The following features may be added in future versions:
 
-- Specialized output formatting for specific resource types (e.g., firewall rules as tables)
+- Additional resource-specific templates based on user feedback
+- Provider-default templates (e.g., `Templates/azurerm/default.sbn`)
+- `--list-templates` CLI option to list bundled templates

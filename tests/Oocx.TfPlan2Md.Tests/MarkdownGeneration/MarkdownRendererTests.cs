@@ -307,4 +307,208 @@ public class MarkdownRendererTests
         var exception = Record.Exception(() => _renderer.Render(model));
         Assert.Null(exception);
     }
+
+    #region Resource-Specific Template Tests
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ReturnsResourceSpecificMarkdown()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Contains("web_tier", result);
+        Assert.Contains("Rule Changes", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ShowsAddedRules()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - allow-dns was added
+        Assert.NotNull(result);
+        Assert.Contains("allow-dns", result);
+        Assert.Contains("➕", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ShowsModifiedRules()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - allow-http was modified (source_addresses changed)
+        Assert.NotNull(result);
+        Assert.Contains("allow-http", result);
+        Assert.Contains("🔄", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ShowsRemovedRules()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - allow-ssh-old was removed
+        Assert.NotNull(result);
+        Assert.Contains("allow-ssh-old", result);
+        Assert.Contains("❌", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ShowsUnchangedRules()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - allow-https was unchanged
+        Assert.NotNull(result);
+        Assert.Contains("allow-https", result);
+        Assert.Contains("⏺️", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_Create_ShowsAllRules()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.database_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Contains("database-tier-rules", result);
+        Assert.Contains("allow-sql", result);
+        Assert.Contains("allow-mysql", result);
+        Assert.Contains("1433", result);
+        Assert.Contains("3306", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_Delete_ShowsAllRulesBeingDeleted()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.legacy");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Contains("legacy-rules", result);
+        Assert.Contains("allow-ftp", result);
+        Assert.Contains("being deleted", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_NonFirewallResource_ReturnsNull()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var resourceGroup = model.Changes.First(c => c.Type == "azurerm_resource_group");
+
+        // Act
+        var result = _renderer.RenderResourceChange(resourceGroup);
+
+        // Assert - No resource-specific template exists, should return null
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ContainsRuleDetailsTable()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - Should contain table headers including Description
+        Assert.NotNull(result);
+        Assert.Contains("Rule Name", result);
+        Assert.Contains("Description", result);
+        Assert.Contains("Protocols", result);
+        Assert.Contains("Source Addresses", result);
+        Assert.Contains("Destination Addresses", result);
+        Assert.Contains("Destination Ports", result);
+
+        // Assert - Should contain actual description content
+        Assert.Contains("Allow HTTPS traffic", result);
+    }
+
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert - Modified rule details should be in collapsible section
+        Assert.NotNull(result);
+        Assert.Contains("<details>", result);
+        Assert.Contains("Modified Rule Details", result);
+        Assert.Contains("</details>", result);
+    }
+
+    #endregion
 }

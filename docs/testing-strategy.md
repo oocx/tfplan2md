@@ -42,6 +42,7 @@ Additional test data files for edge cases:
 - `create-only-plan.json` - Plan with only create operations (new infrastructure deployment)
 - `delete-only-plan.json` - Plan with only delete operations (infrastructure teardown)
 - `firewall-rule-changes.json` - Firewall rule collection with semantic diff scenarios (add, modify, remove rules)
+- `multi-module-plan.json` - Plan with multiple modules and nested modules to validate module grouping, ordering, and heading hierarchy
 
 ---
 
@@ -142,6 +143,8 @@ Tests for rendering the report model to Markdown output.
 | `RenderResourceChange_NonFirewallResource_ReturnsNull` | Verifies that resources without specific templates return null for default handling |
 | `RenderResourceChange_FirewallRuleCollection_ContainsRuleDetailsTable` | Verifies the table contains expected columns (Rule Name, Description, Protocols, etc.) and description content |
 | `RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible` | Verifies that modified rule details are in a collapsible section |
+| `Render_MultiModulePlan_GroupsModulesAndPreservesOrder` | Verifies that plans with multiple and nested modules are grouped into module sections and that module ordering follows the hierarchy (root first, children after parents) |
+| `Render_MultiModulePlan_HeadingsAndHierarchyAreCorrect` | Verifies module headers use H3 (`### Module: ...`) and resources inside modules use H4 headings (`#### <action> <address>`), and that each resource appears under its module section |
 
 ### Scriban Helpers Tests (`MarkdownGeneration/ScribanHelpersTests.cs`)
 

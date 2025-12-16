@@ -14,15 +14,16 @@
 
 ## Resource Changes
 
-{{ if changes.size == 0 }}
+{{ if module_changes.size == 0 }}
 No changes.
 {{ else }}
-{{ for change in changes }}
-### {{ change.action_symbol }} {{ change.address }}
+{{ for module in module_changes }}
+### Module: {{ if module.module_address && module.module_address != "" }}`{{ module.module_address }}`{{ else }}root{{ end }}
 
-{{ if change.module_address }}
-- **Module:** `{{ change.module_address }}`
-{{ end }}
+
+
+{{ for change in module.changes }}
+#### {{ change.action_symbol }} {{ change.address }}
 
 {{ if change.attribute_changes && change.attribute_changes.size > 0 }}
 <details>
@@ -54,5 +55,8 @@ No changes.
 </details>
 {{ end }}
 
+{{ end }}
+
+---
 {{ end }}
 {{ end }}

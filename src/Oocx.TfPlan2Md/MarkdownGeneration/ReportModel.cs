@@ -40,6 +40,18 @@ public class ResourceChangeModel
     public required string Action { get; init; }
     public required string ActionSymbol { get; init; }
     public required IReadOnlyList<AttributeChangeModel> AttributeChanges { get; init; }
+
+    /// <summary>
+    /// Raw JSON representation of the resource state before the change.
+    /// Used by resource-specific templates for semantic diffing.
+    /// </summary>
+    public object? BeforeJson { get; init; }
+
+    /// <summary>
+    /// Raw JSON representation of the resource state after the change.
+    /// Used by resource-specific templates for semantic diffing.
+    /// </summary>
+    public object? AfterJson { get; init; }
 }
 
 /// <summary>
@@ -108,7 +120,9 @@ public class ReportModelBuilder(bool showSensitive = false)
             ProviderName = rc.ProviderName,
             Action = action,
             ActionSymbol = actionSymbol,
-            AttributeChanges = attributeChanges
+            AttributeChanges = attributeChanges,
+            BeforeJson = rc.Change.Before,
+            AfterJson = rc.Change.After
         };
     }
 

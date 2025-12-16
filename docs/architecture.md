@@ -22,6 +22,32 @@ When implementing plan-to-markdown conversion:
 - Handle structured outputs with strongly-typed C# classes
 - Support incremental resource processing for large plans
 
+## Template System
+
+Markdown reports are generated using [Scriban](https://github.com/scriban/scriban) templates.
+
+### Template Resolution
+
+For resource-specific templates, resolution follows this order:
+1. Custom template directory (if provided): `{customDir}/{provider}/{resource}.sbn`
+2. Embedded resource-specific: `Templates/{provider}/{resource}.sbn`
+3. Global default: `Templates/default.sbn`
+
+The provider is extracted from the resource type (e.g., `azurerm_firewall_network_rule_collection` → provider: `azurerm`, resource: `firewall_network_rule_collection`).
+
+### Key Components
+
+| Class | Purpose |
+|-------|--------|
+| `MarkdownRenderer` | Renders reports, resolves templates, converts JSON to Scriban objects |
+| `ScribanHelpers` | Custom helper functions (`diff_array`) and JSON conversion utilities |
+| `ReportModel` | Data model passed to templates with `before_json`/`after_json` for raw state access |
+
+### Helper Functions
+
+- `diff_array(before, after, key)` - Semantic diff of arrays by key property, returns `{added, removed, modified, unchanged}`
+- `ConvertToScriptObject(JsonElement)` - Converts JSON to Scriban-navigable objects
+
 ## Error Handling
 - Use custom exception types inheriting from `ApplicationException`
 - Avoid bare `catch` blocks; always log the exception

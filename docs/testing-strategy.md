@@ -38,6 +38,7 @@ Additional test data files for edge cases:
 - `minimal-plan.json` - Minimal valid plan with null before/after values
 - `create-only-plan.json` - Plan with only create operations (new infrastructure deployment)
 - `delete-only-plan.json` - Plan with only delete operations (infrastructure teardown)
+- `firewall-rule-changes.json` - Firewall rule collection with semantic diff scenarios (add, modify, remove rules)
 
 ---
 
@@ -121,7 +122,37 @@ Tests for rendering the report model to Markdown output.
 | `Render_DeleteOnlyPlan_ShowsAllDeletes` | Verifies that delete-only plans render all delete operations with correct symbols |
 | `Render_WithInvalidTemplate_ThrowsMarkdownRenderException` | Verifies that invalid template syntax throws a `MarkdownRenderException` |
 | `Render_AttributeChangesTable_DoesNotContainExtraNewlines` | Verifies that attribute changes table rows are consecutive without blank lines |
-| `Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit` | Verifies that large plans with many no-op resources don't exceed Scriban's iteration limit |
+| `Render_LargePlanWithManyNoOpResources_DoesNotExceedIterationLimit` | Verifies that large plans don't exceed Scriban's iteration limit of 1000 |
+| `RenderResourceChange_FirewallRuleCollection_ReturnsResourceSpecificMarkdown` | Verifies that firewall rule collections use the resource-specific template |
+| `RenderResourceChange_FirewallRuleCollection_ShowsAddedRules` | Verifies that added rules are shown with ➕ indicator |
+| `RenderResourceChange_FirewallRuleCollection_ShowsModifiedRules` | Verifies that modified rules are shown with 🔄 indicator |
+| `RenderResourceChange_FirewallRuleCollection_ShowsRemovedRules` | Verifies that removed rules are shown with ❌ indicator |
+| `RenderResourceChange_FirewallRuleCollection_ShowsUnchangedRules` | Verifies that unchanged rules are shown with ⏺️ indicator |
+| `RenderResourceChange_FirewallRuleCollection_Create_ShowsAllRules` | Verifies that new rule collections show all rules being created |
+| `RenderResourceChange_FirewallRuleCollection_Delete_ShowsAllRulesBeingDeleted` | Verifies that deleted rule collections show all rules being removed |
+| `RenderResourceChange_NonFirewallResource_ReturnsNull` | Verifies that resources without specific templates return null for default handling |
+| `RenderResourceChange_FirewallRuleCollection_ContainsRuleDetailsTable` | Verifies the table contains expected columns (Rule Name, Description, Protocols, etc.) and description content |
+| `RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible` | Verifies that modified rule details are in a collapsible section |
+
+### Scriban Helpers Tests (`MarkdownGeneration/ScribanHelpersTests.cs`)
+
+Tests for the custom Scriban helper functions used in templates.
+
+| Test Name | Description |
+|-----------|-------------|
+| `DiffArray_WithAddedItems_ReturnsAddedCollection` | Verifies that items present only in the after array are returned as added |
+| `DiffArray_WithRemovedItems_ReturnsRemovedCollection` | Verifies that items present only in the before array are returned as removed |
+| `DiffArray_WithModifiedItems_ReturnsModifiedCollectionWithBeforeAndAfter` | Verifies that items with changed values are returned with both before and after states |
+| `DiffArray_WithUnchangedItems_ReturnsUnchangedCollection` | Verifies that identical items are returned as unchanged |
+| `DiffArray_WithMixedChanges_ReturnsAllCategories` | Verifies that mixed add/remove/modify/unchanged scenarios are handled correctly |
+| `DiffArray_WithEmptyBeforeArray_ReturnsAllAsAdded` | Verifies that all items are added when before array is empty |
+| `DiffArray_WithEmptyAfterArray_ReturnsAllAsRemoved` | Verifies that all items are removed when after array is empty |
+| `DiffArray_WithNullBeforeArray_ReturnsAllAsAdded` | Verifies that null before array is handled as empty |
+| `DiffArray_WithNullAfterArray_ReturnsAllAsRemoved` | Verifies that null after array is handled as empty |
+| `DiffArray_WithMissingKeyProperty_ThrowsScribanHelperException` | Verifies that missing key property throws descriptive exception |
+| `DiffArray_WithNestedArrays_ComparesCorrectly` | Verifies that nested array changes are detected |
+| `DiffArray_WithNestedObjects_ComparesCorrectly` | Verifies that nested object changes are detected |
+| `RegisterHelpers_AddsDiffArrayFunction` | Verifies that `diff_array` function is registered with ScriptObject |
 
 ### Docker Integration Tests (`Docker/DockerIntegrationTests.cs`)
 

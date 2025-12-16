@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="MarkdownGeneration/Templates/default.sbn" />
+    <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" />
   </ItemGroup>
 
 </Project>

@@ -107,14 +107,40 @@ docker run -i -v $(pwd):/data oocx/tfplan2md --template /data/my-template.sbn < 
 
 See [Scriban documentation](https://github.com/scriban/scriban) for template syntax.
 
+### Resource-Specific Templates
+
+For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes.
+
+**Currently supported:**
+- `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
+
+Example output for a firewall rule update:
+
+```markdown
+### 🔄 azurerm_firewall_network_rule_collection.web_tier
+
+**Collection:** `web-tier-rules` | **Priority:** 100 | **Action:** Allow
+
+#### Rule Changes
+
+| | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports |
+|---|-----------|-----------|------------------|----------------------|-------------------|
+| ➕ | allow-dns | UDP | 10.0.1.0/24, 10.0.2.0/24 | 168.63.129.16 | 53 |
+| 🔄 | allow-http | TCP | 10.0.1.0/24, 10.0.3.0/24 | * | 80 |
+| ❌ | allow-ssh-old | TCP | 10.0.0.0/8 | 10.0.2.0/24 | 22 |
+| ⏺️ | allow-https | TCP | 10.0.1.0/24 | * | 443 |
+```
+
+See [docs/features/resource-specific-templates.md](docs/features/resource-specific-templates.md) for creating custom resource templates.
+
 ### Template Variables
 
 Templates have access to:
 
 - `terraform_version` - Terraform version string
 - `format_version` - Plan format version
-- `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op`, `total`
-- `changes` - List of resource changes with `address`, `type`, `name`, `module_address`, `provider_name`, `action`, `action_symbol`, `attribute_changes`
+- `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `total`
+- `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
 
 ## Development
 

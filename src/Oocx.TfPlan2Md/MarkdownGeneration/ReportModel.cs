@@ -11,7 +11,17 @@ public class ReportModel
     public required string TerraformVersion { get; init; }
     public required string FormatVersion { get; init; }
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
+    public required IReadOnlyList<ModuleChangeGroup> ModuleChanges { get; init; }
     public required SummaryModel Summary { get; init; }
+}
+
+public class ModuleChangeGroup
+{
+    /// <summary>
+    /// The module address (e.g. "module.network.module.subnet"). Empty string represents the root module.
+    /// </summary>
+    public required string ModuleAddress { get; init; }
+    public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
 }
 
 /// <summary>
@@ -33,7 +43,7 @@ public class SummaryModel
 public class ResourceChangeModel
 {
     public required string Address { get; init; }
-    public string? ModuleAddress { get; init; }
+    public string? ModuleAddress { get; set; }
     public required string Type { get; init; }
     public required string Name { get; init; }
     public required string ProviderName { get; init; }
@@ -86,6 +96,15 @@ public class ReportModelBuilder(bool showSensitive = false)
             .Where(c => c.Action != "no-op")
             .ToList();
 
+        // Update ResourceChangeModel.ModuleAddress to be empty string when null for consistency
+        foreach (var c in displayChanges)
+        {
+            if (c.ModuleAddress is null)
+            {
+                c.ModuleAddress = string.Empty;
+            }
+        }
+
         var summary = new SummaryModel
         {
             ToAdd = allChanges.Count(c => c.Action == "create"),
@@ -96,11 +115,34 @@ public class ReportModelBuilder(bool showSensitive = false)
             Total = allChanges.Count
         };
 
+        // Group changes by module. Use empty string for root module. Sort so root comes first,
+        // then modules in lexicographic order which ensures parents precede children (flat grouping).
+        // Preserve the order of modules as they appear in the plan while ensuring the root
+        // module is listed first. This keeps child modules next to their parent modules
+        // (flat grouping but ordered by appearance).
+        var moduleGroups = displayChanges
+            .GroupBy(c => c.ModuleAddress ?? string.Empty)
+            .Select(g => new
+            {
+                Key = g.Key,
+                Changes = g.ToList(),
+                FirstIndex = displayChanges.FindIndex(c => (c.ModuleAddress ?? string.Empty) == g.Key)
+            })
+            .OrderBy(g => g.Key == string.Empty ? 0 : 1)
+            .ThenBy(g => g.FirstIndex)
+            .Select(g => new ModuleChangeGroup
+            {
+                ModuleAddress = g.Key, // empty string represents root
+                Changes = g.Changes
+            })
+            .ToList();
+
         return new ReportModel
         {
             TerraformVersion = plan.TerraformVersion,
             FormatVersion = plan.FormatVersion,
             Changes = displayChanges,
+            ModuleChanges = moduleGroups,
             Summary = summary
         };
     }

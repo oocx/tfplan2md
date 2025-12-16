@@ -17,10 +17,13 @@ Test JSON parsing and markdown generation end-to-end. As the application is dist
 ## Test Infrastructure
 
 - **Framework**: xUnit 2.9.3
+- **Assertion Library**: AwesomeAssertions (fluent-style assertions)
 - **Test SDK**: Microsoft.NET.Test.Sdk 17.14.1
 - **Coverage**: Coverlet 6.0.4
 - **Skippable Tests**: Xunit.SkippableFact 1.5.23 (for conditional test execution when Docker is unavailable)
 - **Shared Fixtures**: `DockerFixture` provides a shared Docker container context for integration tests using xUnit's `IAsyncLifetime` and `ICollectionFixture`
+
+> Note: Tests were migrated from `xUnit.Assert` to `AwesomeAssertions` to improve readability and expressiveness of test assertions.
 
 ## Test Data
 

@@ -1,3 +1,5 @@
+using AwesomeAssertions;
+
 namespace Oocx.TfPlan2Md.Tests.Docker;
 
 [Collection(nameof(DockerCollection))]
@@ -24,10 +26,10 @@ public class DockerIntegrationTests
 
         var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath);
 
-        Assert.Equal(0, exitCode);
-        Assert.Empty(stderr);
-        Assert.Contains("# Terraform Plan", stdout);
-        Assert.Contains("azurerm_resource_group.main", stdout);
+        exitCode.Should().Be(0);
+        stderr.Should().BeEmpty();
+        stdout.Should().Contain("# Terraform Plan");
+        stdout.Should().Contain("azurerm_resource_group.main");
     }
 
     [SkippableFact]
@@ -38,10 +40,10 @@ public class DockerIntegrationTests
         var json = await File.ReadAllTextAsync(TestDataPath);
         var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync(json);
 
-        Assert.Equal(0, exitCode);
-        Assert.Empty(stderr);
-        Assert.Contains("# Terraform Plan", stdout);
-        Assert.Contains("azurerm_resource_group.main", stdout);
+        exitCode.Should().Be(0);
+        stderr.Should().BeEmpty();
+        stdout.Should().Contain("# Terraform Plan");
+        stdout.Should().Contain("azurerm_resource_group.main");
     }
 
     [SkippableFact]
@@ -51,10 +53,10 @@ public class DockerIntegrationTests
 
         var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--help"]);
 
-        Assert.Equal(0, exitCode);
-        Assert.Empty(stderr);
-        Assert.Contains("tfplan2md", stdout);
-        Assert.Contains("--help", stdout);
+        exitCode.Should().Be(0);
+        stderr.Should().BeEmpty();
+        stdout.Should().Contain("tfplan2md");
+        stdout.Should().Contain("--help");
     }
 
     [SkippableFact]
@@ -64,9 +66,9 @@ public class DockerIntegrationTests
 
         var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--version"]);
 
-        Assert.Equal(0, exitCode);
-        Assert.Empty(stderr);
-        Assert.Contains("tfplan2md", stdout);
+        exitCode.Should().Be(0);
+        stderr.Should().BeEmpty();
+        stdout.Should().Contain("tfplan2md");
     }
 
     [SkippableFact]
@@ -76,8 +78,8 @@ public class DockerIntegrationTests
 
         var (exitCode, _, stderr) = await _fixture.RunContainerWithStdinAsync("{ invalid json }");
 
-        Assert.NotEqual(0, exitCode);
-        Assert.Contains("Error", stderr);
+        exitCode.Should().NotBe(0);
+        stderr.Should().Contain("Error");
     }
 
     [SkippableFact]
@@ -87,13 +89,9 @@ public class DockerIntegrationTests
 
         var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath);
 
-        Assert.Equal(0, exitCode);
-        Assert.Empty(stderr);
+        exitCode.Should().Be(0);
+        stderr.Should().BeEmpty();
         // Verify expected resources from the test data are in the output
-        Assert.Contains("azurerm_resource_group.main", stdout);
-        Assert.Contains("azurerm_key_vault.main", stdout);
-        Assert.Contains("azurerm_virtual_network.old", stdout);
-        Assert.Contains("azuredevops_project.main", stdout);
-        Assert.Contains("azuredevops_git_repository.main", stdout);
+        stdout.Should().Contain("azurerm_resource_group.main").And.Contain("azurerm_key_vault.main").And.Contain("azurerm_virtual_network.old").And.Contain("azuredevops_project.main").And.Contain("azuredevops_git_repository.main");
     }
 }

@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Scriban;
 using Scriban.Runtime;
 
@@ -39,8 +40,35 @@ public class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model)
     {
-        var templateText = LoadDefaultTemplate();
-        return RenderWithTemplate(model, templateText);
+        // Render using the default template first (this produces the overall document including Summary and Resource Changes)
+        var defaultTemplate = LoadDefaultTemplate();
+        var rendered = RenderWithTemplate(model, defaultTemplate);
+
+        // For each change, if a resource-specific template exists, render that resource separately
+        // and replace the corresponding section in the default-rendered output.
+        foreach (var change in model.Changes)
+        {
+            var resourceTemplate = ResolveResourceTemplate(change.Type);
+            if (resourceTemplate is null)
+            {
+                continue;
+            }
+
+            // Render using the resource-specific template (may return an error message if rendering fails)
+            var specific = RenderResourceChange(change);
+            if (specific is null)
+            {
+                continue;
+            }
+
+            // Find the corresponding change section in the default-rendered document and replace it.
+            // Default resource headings look like: "### {action_symbol} {address}"
+            var heading = $"### {change.ActionSymbol} {change.Address}";
+            var pattern = $"(?ms)^{Regex.Escape(heading)}.*?(?=^###\\s|\\z)";
+            rendered = Regex.Replace(rendered, pattern, specific);
+        }
+
+        return rendered;
     }
 
     /// <summary>

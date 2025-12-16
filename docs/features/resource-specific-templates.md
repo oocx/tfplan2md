@@ -47,6 +47,32 @@ The first matching template is used. If no resource-specific template exists, th
 
 This avoids empty or meaningless columns for create/delete scenarios and makes the output more concise and readable.
 
+### Module Grouping & Template Data
+
+The default template renders resource changes grouped by module via a top-level `module_changes` collection. Use `module_changes` when implementing custom templates that should follow the grouped output.
+
+Each `module` item contains:
+
+- `module_address` - The full module path (string). Empty string indicates the root module and should be rendered as `root`.
+- `changes` - Array of resource change objects (same structure as described in the main template data section).
+
+Example:
+
+```scriban
+{{ for module in module_changes }}
+### Module: {{ if module.module_address && module.module_address != "" }}`{{ module.module_address }}`{{ else }}root{{ end }}
+
+{{ for change in module.changes }}
+#### {{ change.action_symbol }} {{ change.address }}
+  ...
+{{ end }}
+
+---
+{{ end }}
+```
+
+Note: Modules without any resource changes are omitted from `module_changes` to keep reports concise.
+
 ### Custom Templates
 
 When a user provides a custom template via `--template`, the same resolution applies within their template directory. Users can override bundled templates or add new ones. If no matching template is found in the custom directory, the bundled templates are used as fallback.

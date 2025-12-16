@@ -61,6 +61,36 @@ Attribute tables in the default template now vary by the resource change action 
 
 Null or unknown attributes are omitted from the tables to avoid meaningless rows, and sensitive attributes are masked unless `--show-sensitive` is used.
 
+### Module Grouping (NEW)
+
+Resource changes in the report are now grouped by Terraform module. Each module with at least one change is rendered as its own section (module sections for modules without changes are omitted to keep reports concise).
+
+- **Module header**: Each module is shown as an H3 heading ("### Module: <module_address>"), where `module_address` is the full module path from the Terraform plan (e.g., `module.network.module.subnet`). The root module is shown as `root`.
+- **Resource headings**: Resources within a module are shown as H4 headings ("#### <action_symbol> <address>") to preserve a proper document hierarchy.
+- **Ordering**: Modules are listed so that the root module appears first, followed by other modules in lexicographic order. Nested modules are presented in a flat list but the sort order ensures child modules follow their parent modules.
+- **Template variable**: Templates have access to a top-level `module_changes` collection (in addition to the existing `changes` collection). Each item has:
+  - `module_address` (string, empty for root)
+  - `changes` (array of resource change objects, same structure as items in `changes`)
+
+Example usage in a Scriban template:
+
+```scriban
+{{ for module in module_changes }}
+### Module: {{ if module.module_address && module.module_address != "" }}`{{ module.module_address }}`{{ else }}root{{ end }}
+
+{{ for change in module.changes }}
+#### {{ change.action_symbol }} {{ change.address }}
+
+... render attribute tables ...
+
+{{ end }}
+
+---
+{{ end }}
+```
+
+This grouping is enabled by default and cannot be disabled (it keeps reports concise and improves readability for multi-module plans).
+
 ## Templates
 
 Reports are generated using customizable templates powered by [Scriban](https://github.com/scriban/scriban).

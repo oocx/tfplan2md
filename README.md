@@ -13,6 +13,7 @@ Convert Terraform plan JSON files into human-readable Markdown reports.
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
 - 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines
+- 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
 
 ## Installation
 
@@ -85,7 +86,9 @@ terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md 
 
 ## Resource Changes
 
-### ➕ azurerm_resource_group.main
+### Module: root
+
+#### ➕ azurerm_resource_group.main
 
 <details>
 

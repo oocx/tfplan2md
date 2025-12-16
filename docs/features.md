@@ -38,6 +38,14 @@ Resources with no changes (no-op) are counted in the summary but are **not displ
 - Reduces output noise when reviewing plans with many unchanged resources
 - Enables processing of large Terraform plans without hitting template iteration limits
 
+### Action Symbols
+
+Resources are displayed with emoji symbols indicating the action:
+- `➕` - create (add new resource)
+- `🔄` - update (modify existing resource)
+- `❌` - delete (remove resource)
+- `♻️` - replace (delete and recreate resource)
+
 ### Sensitive Values
 
 - Sensitive values are **masked by default** for security

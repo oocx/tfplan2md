@@ -1,3 +1,4 @@
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.CLI;
 
 namespace Oocx.TfPlan2Md.Tests.CLI;
@@ -14,12 +15,12 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Null(options.InputFile);
-        Assert.Null(options.OutputFile);
-        Assert.Null(options.TemplatePath);
-        Assert.False(options.ShowSensitive);
-        Assert.False(options.ShowHelp);
-        Assert.False(options.ShowVersion);
+        options.InputFile.Should().BeNull();
+        options.OutputFile.Should().BeNull();
+        options.TemplatePath.Should().BeNull();
+        options.ShowSensitive.Should().BeFalse();
+        options.ShowHelp.Should().BeFalse();
+        options.ShowVersion.Should().BeFalse();
     }
 
     [Fact]
@@ -32,7 +33,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Equal("plan.json", options.InputFile);
+        options.InputFile.Should().Be("plan.json");
     }
 
     [Fact]
@@ -45,7 +46,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Equal("output.md", options.OutputFile);
+        options.OutputFile.Should().Be("output.md");
     }
 
     [Fact]
@@ -58,7 +59,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Equal("output.md", options.OutputFile);
+        options.OutputFile.Should().Be("output.md");
     }
 
     [Fact]
@@ -71,7 +72,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Equal("custom.sbn", options.TemplatePath);
+        options.TemplatePath.Should().Be("custom.sbn");
     }
 
     [Fact]
@@ -84,7 +85,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Equal("custom.sbn", options.TemplatePath);
+        options.TemplatePath.Should().Be("custom.sbn");
     }
 
     [Fact]
@@ -97,7 +98,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.True(options.ShowSensitive);
+        options.ShowSensitive.Should().BeTrue();
     }
 
     [Fact]
@@ -110,7 +111,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.True(options.ShowHelp);
+        options.ShowHelp.Should().BeTrue();
     }
 
     [Fact]
@@ -123,7 +124,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.True(options.ShowHelp);
+        options.ShowHelp.Should().BeTrue();
     }
 
     [Fact]
@@ -136,7 +137,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.True(options.ShowVersion);
+        options.ShowVersion.Should().BeTrue();
     }
 
     [Fact]
@@ -149,7 +150,7 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.True(options.ShowVersion);
+        options.ShowVersion.Should().BeTrue();
     }
 
     [Fact]
@@ -168,10 +169,10 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        Assert.Equal("plan.json", options.InputFile);
-        Assert.Equal("output.md", options.OutputFile);
-        Assert.Equal("custom.sbn", options.TemplatePath);
-        Assert.True(options.ShowSensitive);
+        options.InputFile.Should().Be("plan.json");
+        options.OutputFile.Should().Be("output.md");
+        options.TemplatePath.Should().Be("custom.sbn");
+        options.ShowSensitive.Should().BeTrue();
     }
 
     [Fact]
@@ -180,8 +181,11 @@ public class CliParserTests
         // Arrange
         var args = new[] { "--unknown-option" };
 
-        // Act & Assert
-        Assert.Throws<CliParseException>(() => CliParser.Parse(args));
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>();
     }
 
     [Fact]
@@ -190,8 +194,11 @@ public class CliParserTests
         // Arrange
         var args = new[] { "--output" };
 
-        // Act & Assert
-        Assert.Throws<CliParseException>(() => CliParser.Parse(args));
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>();
     }
 
     [Fact]
@@ -200,7 +207,10 @@ public class CliParserTests
         // Arrange
         var args = new[] { "--template" };
 
-        // Act & Assert
-        Assert.Throws<CliParseException>(() => CliParser.Parse(args));
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>();
     }
 }

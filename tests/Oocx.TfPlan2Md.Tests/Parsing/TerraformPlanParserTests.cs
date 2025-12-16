@@ -1,3 +1,4 @@
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.Parsing;
 
 namespace Oocx.TfPlan2Md.Tests.Parsing;
@@ -16,8 +17,8 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        Assert.Equal("1.14.0", plan.TerraformVersion);
-        Assert.Equal("1.2", plan.FormatVersion);
+        plan.TerraformVersion.Should().Be("1.14.0");
+        plan.FormatVersion.Should().Be("1.2");
     }
 
     [Fact]
@@ -30,7 +31,7 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        Assert.Equal(6, plan.ResourceChanges.Count);
+        plan.ResourceChanges.Should().HaveCount(6);
     }
 
     [Fact]
@@ -44,8 +45,8 @@ public class TerraformPlanParserTests
 
         // Assert
         var resourceGroup = plan.ResourceChanges.First(r => r.Address == "azurerm_resource_group.main");
-        Assert.Single(resourceGroup.Change.Actions);
-        Assert.Contains("create", resourceGroup.Change.Actions);
+        resourceGroup.Change.Actions.Should().ContainSingle()
+            .Which.Should().Be("create");
     }
 
     [Fact]
@@ -59,8 +60,8 @@ public class TerraformPlanParserTests
 
         // Assert
         var keyVault = plan.ResourceChanges.First(r => r.Address == "azurerm_key_vault.main");
-        Assert.Single(keyVault.Change.Actions);
-        Assert.Contains("update", keyVault.Change.Actions);
+        keyVault.Change.Actions.Should().ContainSingle()
+            .Which.Should().Be("update");
     }
 
     [Fact]
@@ -74,8 +75,8 @@ public class TerraformPlanParserTests
 
         // Assert
         var vnet = plan.ResourceChanges.First(r => r.Address == "azurerm_virtual_network.old");
-        Assert.Single(vnet.Change.Actions);
-        Assert.Contains("delete", vnet.Change.Actions);
+        vnet.Change.Actions.Should().ContainSingle()
+            .Which.Should().Be("delete");
     }
 
     [Fact]
@@ -89,9 +90,9 @@ public class TerraformPlanParserTests
 
         // Assert
         var gitRepo = plan.ResourceChanges.First(r => r.Address == "azuredevops_git_repository.main");
-        Assert.Equal(2, gitRepo.Change.Actions.Count);
-        Assert.Contains("create", gitRepo.Change.Actions);
-        Assert.Contains("delete", gitRepo.Change.Actions);
+        gitRepo.Change.Actions.Should().HaveCount(2)
+            .And.Contain("create")
+            .And.Contain("delete");
     }
 
     [Fact]
@@ -105,7 +106,7 @@ public class TerraformPlanParserTests
 
         // Assert
         var project = plan.ResourceChanges.First(r => r.Type == "azuredevops_project");
-        Assert.Equal("registry.terraform.io/microsoft/azuredevops", project.ProviderName);
+        project.ProviderName.Should().Be("registry.terraform.io/microsoft/azuredevops");
     }
 
     [Fact]
@@ -114,8 +115,11 @@ public class TerraformPlanParserTests
         // Arrange
         var invalidJson = "{ invalid json }";
 
-        // Act & Assert
-        Assert.Throws<TerraformPlanParseException>(() => _parser.Parse(invalidJson));
+        // Act
+        var act = () => _parser.Parse(invalidJson);
+
+        // Assert
+        act.Should().Throw<TerraformPlanParseException>();
     }
 
     [Fact]
@@ -124,8 +128,11 @@ public class TerraformPlanParserTests
         // Arrange
         var emptyJson = "";
 
-        // Act & Assert
-        Assert.Throws<TerraformPlanParseException>(() => _parser.Parse(emptyJson));
+        // Act
+        var act = () => _parser.Parse(emptyJson);
+
+        // Assert
+        act.Should().Throw<TerraformPlanParseException>();
     }
 
     [Fact]
@@ -138,9 +145,9 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        Assert.Empty(plan.ResourceChanges);
-        Assert.Equal("1.14.0", plan.TerraformVersion);
-        Assert.Equal("1.2", plan.FormatVersion);
+        plan.ResourceChanges.Should().BeEmpty();
+        plan.TerraformVersion.Should().Be("1.14.0");
+        plan.FormatVersion.Should().Be("1.2");
     }
 
     [Fact]
@@ -153,9 +160,9 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        var resource = Assert.Single(plan.ResourceChanges);
-        Assert.Single(resource.Change.Actions);
-        Assert.Contains("no-op", resource.Change.Actions);
+        plan.ResourceChanges.Should().ContainSingle()
+            .Which.Change.Actions.Should().ContainSingle()
+            .Which.Should().Be("no-op");
     }
 
     [Fact]
@@ -168,9 +175,9 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        var resource = Assert.Single(plan.ResourceChanges);
-        Assert.Null(resource.Change.Before);
-        Assert.Null(resource.Change.After);
+        var resource = plan.ResourceChanges.Should().ContainSingle().Subject;
+        resource.Change.Before.Should().BeNull();
+        resource.Change.After.Should().BeNull();
     }
 
     [Fact]
@@ -183,8 +190,8 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        Assert.Equal(2, plan.ResourceChanges.Count);
-        Assert.All(plan.ResourceChanges, r => Assert.Contains("create", r.Change.Actions));
+        plan.ResourceChanges.Should().HaveCount(2)
+            .And.OnlyContain(r => r.Change.Actions.Contains("create"));
     }
 
     [Fact]
@@ -197,7 +204,7 @@ public class TerraformPlanParserTests
         var plan = _parser.Parse(json);
 
         // Assert
-        Assert.Equal(2, plan.ResourceChanges.Count);
-        Assert.All(plan.ResourceChanges, r => Assert.Contains("delete", r.Change.Actions));
+        plan.ResourceChanges.Should().HaveCount(2)
+            .And.OnlyContain(r => r.Change.Actions.Contains("delete"));
     }
 }

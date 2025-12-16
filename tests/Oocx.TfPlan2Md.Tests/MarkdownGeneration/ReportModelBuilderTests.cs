@@ -1,3 +1,4 @@
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 
@@ -19,11 +20,11 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        Assert.Equal(3, model.Summary.ToAdd);      // resource_group, storage_account, azuredevops_project
-        Assert.Equal(1, model.Summary.ToChange);   // key_vault
-        Assert.Equal(1, model.Summary.ToDestroy);  // virtual_network
-        Assert.Equal(1, model.Summary.ToReplace);  // git_repository
-        Assert.Equal(6, model.Summary.Total);
+        model.Summary.ToAdd.Should().Be(3);      // resource_group, storage_account, azuredevops_project
+        model.Summary.ToChange.Should().Be(1);   // key_vault
+        model.Summary.ToDestroy.Should().Be(1);  // virtual_network
+        model.Summary.ToReplace.Should().Be(1);  // git_repository
+        model.Summary.Total.Should().Be(6);
     }
 
     [Fact]
@@ -39,16 +40,16 @@ public class ReportModelBuilderTests
 
         // Assert
         var createChange = model.Changes.First(c => c.Action == "create");
-        Assert.Equal("➕", createChange.ActionSymbol);
+        createChange.ActionSymbol.Should().Be("➕");
 
         var updateChange = model.Changes.First(c => c.Action == "update");
-        Assert.Equal("🔄", updateChange.ActionSymbol);
+        updateChange.ActionSymbol.Should().Be("🔄");
 
         var deleteChange = model.Changes.First(c => c.Action == "delete");
-        Assert.Equal("❌", deleteChange.ActionSymbol);
+        deleteChange.ActionSymbol.Should().Be("❌");
 
         var replaceChange = model.Changes.First(c => c.Action == "replace");
-        Assert.Equal("♻️", replaceChange.ActionSymbol);
+        replaceChange.ActionSymbol.Should().Be("♻️");
     }
 
     [Fact]
@@ -65,9 +66,9 @@ public class ReportModelBuilderTests
         // Assert
         var storageAccount = model.Changes.First(c => c.Address == "azurerm_storage_account.main");
         var sensitiveAttr = storageAccount.AttributeChanges.FirstOrDefault(a => a.Name == "primary_access_key");
-        Assert.NotNull(sensitiveAttr);
-        Assert.True(sensitiveAttr.IsSensitive);
-        Assert.Equal("(sensitive)", sensitiveAttr.After);
+        sensitiveAttr.Should().NotBeNull();
+        sensitiveAttr!.IsSensitive.Should().BeTrue();
+        sensitiveAttr.After.Should().Be("(sensitive)");
     }
 
     [Fact]
@@ -85,10 +86,10 @@ public class ReportModelBuilderTests
         // Assert - when showSensitive is true, sensitive values should not be masked
         var storageAccount = model.Changes.First(c => c.Address == "azurerm_storage_account.main");
         var sensitiveAttr = storageAccount.AttributeChanges.FirstOrDefault(a => a.Name == "primary_access_key");
-        Assert.NotNull(sensitiveAttr);
-        Assert.True(sensitiveAttr.IsSensitive);
+        sensitiveAttr.Should().NotBeNull();
+        sensitiveAttr!.IsSensitive.Should().BeTrue();
         // The value should NOT be "(sensitive)" when showSensitive is true
-        Assert.NotEqual("(sensitive)", sensitiveAttr.After);
+        sensitiveAttr.After.Should().NotBe("(sensitive)");
     }
 
     [Fact]
@@ -103,8 +104,8 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        Assert.Equal("1.14.0", model.TerraformVersion);
-        Assert.Equal("1.2", model.FormatVersion);
+        model.TerraformVersion.Should().Be("1.14.0");
+        model.FormatVersion.Should().Be("1.2");
     }
 
     [Fact]
@@ -119,13 +120,13 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        Assert.Equal(0, model.Summary.ToAdd);
-        Assert.Equal(0, model.Summary.ToChange);
-        Assert.Equal(0, model.Summary.ToDestroy);
-        Assert.Equal(0, model.Summary.ToReplace);
-        Assert.Equal(0, model.Summary.NoOp);
-        Assert.Equal(0, model.Summary.Total);
-        Assert.Empty(model.Changes);
+        model.Summary.ToAdd.Should().Be(0);
+        model.Summary.ToChange.Should().Be(0);
+        model.Summary.ToDestroy.Should().Be(0);
+        model.Summary.ToReplace.Should().Be(0);
+        model.Summary.NoOp.Should().Be(0);
+        model.Summary.Total.Should().Be(0);
+        model.Changes.Should().BeEmpty();
     }
 
     [Fact]
@@ -141,13 +142,13 @@ public class ReportModelBuilderTests
 
         // Assert - no-op resources are counted in summary but not included in Changes
         // to avoid exceeding Scriban's iteration limit on large plans
-        Assert.Equal(0, model.Summary.ToAdd);
-        Assert.Equal(0, model.Summary.ToChange);
-        Assert.Equal(0, model.Summary.ToDestroy);
-        Assert.Equal(0, model.Summary.ToReplace);
-        Assert.Equal(1, model.Summary.NoOp);
-        Assert.Equal(1, model.Summary.Total);
-        Assert.Empty(model.Changes); // no-op resources are filtered out
+        model.Summary.ToAdd.Should().Be(0);
+        model.Summary.ToChange.Should().Be(0);
+        model.Summary.ToDestroy.Should().Be(0);
+        model.Summary.ToReplace.Should().Be(0);
+        model.Summary.NoOp.Should().Be(1);
+        model.Summary.Total.Should().Be(1);
+        model.Changes.Should().BeEmpty(); // no-op resources are filtered out
     }
 
     [Fact]
@@ -162,11 +163,11 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        Assert.Equal(1, model.Summary.ToAdd);
-        var change = Assert.Single(model.Changes);
-        Assert.Equal("create", change.Action);
+        model.Summary.ToAdd.Should().Be(1);
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be("create");
         // With null before and after, there should be no attribute changes
-        Assert.Empty(change.AttributeChanges);
+        change.AttributeChanges.Should().BeEmpty();
     }
 
     [Fact]
@@ -181,11 +182,11 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        Assert.Equal(2, model.Summary.ToAdd);
-        Assert.Equal(0, model.Summary.ToChange);
-        Assert.Equal(0, model.Summary.ToDestroy);
-        Assert.Equal(2, model.Summary.Total);
-        Assert.All(model.Changes, c => Assert.Equal("create", c.Action));
+        model.Summary.ToAdd.Should().Be(2);
+        model.Summary.ToChange.Should().Be(0);
+        model.Summary.ToDestroy.Should().Be(0);
+        model.Summary.Total.Should().Be(2);
+        model.Changes.Should().OnlyContain(c => c.Action == "create");
     }
 
     [Fact]
@@ -200,10 +201,10 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        Assert.Equal(0, model.Summary.ToAdd);
-        Assert.Equal(0, model.Summary.ToChange);
-        Assert.Equal(2, model.Summary.ToDestroy);
-        Assert.Equal(2, model.Summary.Total);
-        Assert.All(model.Changes, c => Assert.Equal("delete", c.Action));
+        model.Summary.ToAdd.Should().Be(0);
+        model.Summary.ToChange.Should().Be(0);
+        model.Summary.ToDestroy.Should().Be(2);
+        model.Summary.Total.Should().Be(2);
+        model.Changes.Should().OnlyContain(c => c.Action == "delete");
     }
 }

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
+using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Scriban.Runtime;
 
@@ -29,10 +30,10 @@ public class ScribanHelpersTests
 
         // Assert
         var added = result["added"] as ScriptArray;
-        Assert.NotNull(added);
-        Assert.Single(added);
+        added.Should().NotBeNull();
+        added.Should().ContainSingle();
         var addedItem = added[0] as ScriptObject;
-        Assert.Equal("rule2", addedItem?["name"]);
+        addedItem?["name"].Should().Be("rule2");
     }
 
     [Fact]
@@ -57,10 +58,10 @@ public class ScribanHelpersTests
 
         // Assert
         var removed = result["removed"] as ScriptArray;
-        Assert.NotNull(removed);
-        Assert.Single(removed);
+        removed.Should().NotBeNull();
+        removed.Should().ContainSingle();
         var removedItem = removed[0] as ScriptObject;
-        Assert.Equal("rule2", removedItem?["name"]);
+        removedItem?["name"].Should().Be("rule2");
     }
 
     [Fact]
@@ -84,17 +85,17 @@ public class ScribanHelpersTests
 
         // Assert
         var modified = result["modified"] as ScriptArray;
-        Assert.NotNull(modified);
-        Assert.Single(modified);
+        modified.Should().NotBeNull();
+        modified.Should().ContainSingle();
 
         var modifiedItem = modified[0] as ScriptObject;
-        Assert.NotNull(modifiedItem);
+        modifiedItem.Should().NotBeNull();
 
         var before = modifiedItem["before"] as ScriptObject;
         var after = modifiedItem["after"] as ScriptObject;
 
-        Assert.Equal(80L, Convert.ToInt64(before?["port"], CultureInfo.InvariantCulture));
-        Assert.Equal(8080L, Convert.ToInt64(after?["port"], CultureInfo.InvariantCulture));
+        Convert.ToInt64(before?["port"], CultureInfo.InvariantCulture).Should().Be(80L);
+        Convert.ToInt64(after?["port"], CultureInfo.InvariantCulture).Should().Be(8080L);
     }
 
     [Fact]
@@ -118,14 +119,14 @@ public class ScribanHelpersTests
 
         // Assert
         var unchanged = result["unchanged"] as ScriptArray;
-        Assert.NotNull(unchanged);
-        Assert.Single(unchanged);
+        unchanged.Should().NotBeNull();
+        unchanged.Should().ContainSingle();
         var unchangedItem = unchanged[0] as ScriptObject;
-        Assert.Equal("rule1", unchangedItem?["name"]);
+        unchangedItem?["name"].Should().Be("rule1");
 
-        Assert.Empty((ScriptArray)result["added"]!);
-        Assert.Empty((ScriptArray)result["removed"]!);
-        Assert.Empty((ScriptArray)result["modified"]!);
+        ((ScriptArray)result["added"]!).Should().BeEmpty();
+        ((ScriptArray)result["removed"]!).Should().BeEmpty();
+        ((ScriptArray)result["modified"]!).Should().BeEmpty();
     }
 
     [Fact]
@@ -152,10 +153,10 @@ public class ScribanHelpersTests
         var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
 
         // Assert
-        Assert.Single((ScriptArray)result["added"]!);
-        Assert.Single((ScriptArray)result["removed"]!);
-        Assert.Single((ScriptArray)result["modified"]!);
-        Assert.Single((ScriptArray)result["unchanged"]!);
+        ((ScriptArray)result["added"]!).Should().ContainSingle();
+        ((ScriptArray)result["removed"]!).Should().ContainSingle();
+        ((ScriptArray)result["modified"]!).Should().ContainSingle();
+        ((ScriptArray)result["unchanged"]!).Should().ContainSingle();
     }
 
     [Fact]
@@ -173,10 +174,10 @@ public class ScribanHelpersTests
         var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
 
         // Assert
-        Assert.Single((ScriptArray)result["added"]!);
-        Assert.Empty((ScriptArray)result["removed"]!);
-        Assert.Empty((ScriptArray)result["modified"]!);
-        Assert.Empty((ScriptArray)result["unchanged"]!);
+        ((ScriptArray)result["added"]!).Should().ContainSingle();
+        ((ScriptArray)result["removed"]!).Should().BeEmpty();
+        ((ScriptArray)result["modified"]!).Should().BeEmpty();
+        ((ScriptArray)result["unchanged"]!).Should().BeEmpty();
     }
 
     [Fact]
@@ -194,10 +195,10 @@ public class ScribanHelpersTests
         var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
 
         // Assert
-        Assert.Empty((ScriptArray)result["added"]!);
-        Assert.Single((ScriptArray)result["removed"]!);
-        Assert.Empty((ScriptArray)result["modified"]!);
-        Assert.Empty((ScriptArray)result["unchanged"]!);
+        ((ScriptArray)result["added"]!).Should().BeEmpty();
+        ((ScriptArray)result["removed"]!).Should().ContainSingle();
+        ((ScriptArray)result["modified"]!).Should().BeEmpty();
+        ((ScriptArray)result["unchanged"]!).Should().BeEmpty();
     }
 
     [Fact]
@@ -214,8 +215,8 @@ public class ScribanHelpersTests
         var result = ScribanHelpers.DiffArray(null, afterJson, "name");
 
         // Assert
-        Assert.Single((ScriptArray)result["added"]!);
-        Assert.Empty((ScriptArray)result["removed"]!);
+        ((ScriptArray)result["added"]!).Should().ContainSingle();
+        ((ScriptArray)result["removed"]!).Should().BeEmpty();
     }
 
     [Fact]
@@ -232,8 +233,8 @@ public class ScribanHelpersTests
         var result = ScribanHelpers.DiffArray(beforeJson, null, "name");
 
         // Assert
-        Assert.Empty((ScriptArray)result["added"]!);
-        Assert.Single((ScriptArray)result["removed"]!);
+        ((ScriptArray)result["added"]!).Should().BeEmpty();
+        ((ScriptArray)result["removed"]!).Should().ContainSingle();
     }
 
     [Fact]
@@ -253,12 +254,9 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act & Assert
-        var ex = Assert.Throws<ScribanHelperException>(() =>
-            ScribanHelpers.DiffArray(beforeJson, afterJson, "name"));
-
-        Assert.Contains("missing required key property 'name'", ex.Message);
-        Assert.Contains("index 0", ex.Message);
-        Assert.Contains("'after'", ex.Message);
+        Action act = () => ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        act.Should().Throw<ScribanHelperException>()
+            .Which.Message.Should().Contain("missing required key property 'name'").And.Contain("index 0").And.Contain("'after'");
     }
 
     [Fact]
@@ -282,8 +280,8 @@ public class ScribanHelpersTests
 
         // Assert
         var modified = result["modified"] as ScriptArray;
-        Assert.NotNull(modified);
-        Assert.Single(modified);
+        modified.Should().NotBeNull();
+        modified.Should().ContainSingle();
     }
 
     [Fact]
@@ -307,8 +305,8 @@ public class ScribanHelpersTests
 
         // Assert
         var modified = result["modified"] as ScriptArray;
-        Assert.NotNull(modified);
-        Assert.Single(modified);
+        modified.Should().NotBeNull();
+        modified.Should().ContainSingle();
     }
 
     [Fact]
@@ -321,6 +319,6 @@ public class ScribanHelpersTests
         ScribanHelpers.RegisterHelpers(scriptObject);
 
         // Assert
-        Assert.True(scriptObject.ContainsKey("diff_array"));
+        scriptObject.ContainsKey("diff_array").Should().BeTrue();
     }
 }

@@ -166,6 +166,8 @@ dotnet husky install
 # Build and test
 dotnet build
 dotnet test
+
+Tests use **xUnit** with **AwesomeAssertions** for fluent, readable assertions.
 ```
 
 ### Pre-commit Hooks

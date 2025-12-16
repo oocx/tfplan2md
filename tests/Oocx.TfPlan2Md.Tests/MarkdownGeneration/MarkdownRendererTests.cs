@@ -328,9 +328,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Contains("web_tier", result);
-        Assert.Contains("Rule Changes", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("web_tier").And.Contain("Rule Changes");
     }
 
     [Fact]
@@ -347,9 +346,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert - allow-dns was added
-        Assert.NotNull(result);
-        Assert.Contains("allow-dns", result);
-        Assert.Contains("➕", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("allow-dns").And.Contain("➕");
     }
 
     [Fact]
@@ -366,9 +364,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert - allow-http was modified (source_addresses changed)
-        Assert.NotNull(result);
-        Assert.Contains("allow-http", result);
-        Assert.Contains("🔄", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("allow-http").And.Contain("🔄");
     }
 
     [Fact]
@@ -385,9 +382,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert - allow-ssh-old was removed
-        Assert.NotNull(result);
-        Assert.Contains("allow-ssh-old", result);
-        Assert.Contains("❌", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("allow-ssh-old").And.Contain("❌");
     }
 
     [Fact]
@@ -404,9 +400,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert - allow-https was unchanged
-        Assert.NotNull(result);
-        Assert.Contains("allow-https", result);
-        Assert.Contains("⏺️", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("allow-https").And.Contain("⏺️");
     }
 
     [Fact]
@@ -423,12 +418,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Contains("database-tier-rules", result);
-        Assert.Contains("allow-sql", result);
-        Assert.Contains("allow-mysql", result);
-        Assert.Contains("1433", result);
-        Assert.Contains("3306", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("database-tier-rules").And.Contain("allow-sql").And.Contain("allow-mysql").And.Contain("1433").And.Contain("3306");
     }
 
     [Fact]
@@ -445,10 +436,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Contains("legacy-rules", result);
-        Assert.Contains("allow-ftp", result);
-        Assert.Contains("being deleted", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("legacy-rules").And.Contain("allow-ftp").And.Contain("being deleted");
     }
 
     [Fact]
@@ -465,7 +454,7 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(resourceGroup);
 
         // Assert - No resource-specific template exists, should return null
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -482,16 +471,11 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert - Should contain table headers including Description
-        Assert.NotNull(result);
-        Assert.Contains("Rule Name", result);
-        Assert.Contains("Description", result);
-        Assert.Contains("Protocols", result);
-        Assert.Contains("Source Addresses", result);
-        Assert.Contains("Destination Addresses", result);
-        Assert.Contains("Destination Ports", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("Rule Name").And.Contain("Description").And.Contain("Protocols").And.Contain("Source Addresses").And.Contain("Destination Addresses").And.Contain("Destination Ports");
 
         // Assert - Should contain actual description content
-        Assert.Contains("Allow HTTPS traffic", result);
+        result.Should().Contain("Allow HTTPS traffic");
     }
 
     [Fact]
@@ -508,10 +492,8 @@ public class MarkdownRendererTests
         var result = _renderer.RenderResourceChange(firewallChange);
 
         // Assert - Modified rule details should be in collapsible section
-        Assert.NotNull(result);
-        Assert.Contains("<details>", result);
-        Assert.Contains("Modified Rule Details", result);
-        Assert.Contains("</details>", result);
+        result.Should().NotBeNull();
+        result.Should().Contain("<details>").And.Contain("Modified Rule Details").And.Contain("</details>");
     }
 
     #endregion

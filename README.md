@@ -142,6 +142,14 @@ Templates have access to:
 - `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `total`
 - `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
 
+**Notes:** Attribute tables now vary depending on the resource change action:
+
+- **create** resources show a 2-column table (`Attribute | Value`) containing the *after* values.
+- **delete** resources show a 2-column table (`Attribute | Value`) containing the *before* values.
+- **update** and **replace** resources show a 3-column table (`Attribute | Before | After`).
+
+This makes create/delete outputs more concise and avoids empty columns when a side is missing.
+
 ## Development
 
 ### Prerequisites

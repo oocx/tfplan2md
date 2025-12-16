@@ -39,7 +39,13 @@ For a resource of type `azurerm_firewall_network_rule_collection`:
 2. **Provider-default**: `Templates/azurerm/default.sbn` (future consideration)
 3. **Global default**: `Templates/default.sbn`
 
-The first matching template is used. If no resource-specific template exists, the global default renders the flattened attribute diff as before.
+The first matching template is used. If no resource-specific template exists, the global default renders attribute tables. Note that the default template now renders different table formats depending on the `action`:
+
+- **create**: 2-column `Attribute | Value` (shows the planned/after values)
+- **delete**: 2-column `Attribute | Value` (shows the prior/before values)
+- **update** and **replace**: 3-column `Attribute | Before | After`
+
+This avoids empty or meaningless columns for create/delete scenarios and makes the output more concise and readable.
 
 ### Custom Templates
 

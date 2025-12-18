@@ -6,11 +6,11 @@ model: Claude Sonnet 4.5
 tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'terminalLastCommand', 'getTerminalOutput', 'microsoftdocs/*', 'copilot_conta/*', 'github/*']
 handoffs:
   - label: Request Rework
-    agent: developer
+    agent: "Developer"
     prompt: Address the issues identified in the code review above.
     send: false
   - label: Prepare Release
-    agent: release-manager
+    agent: "Release Manager"
     prompt: The code review is approved. Prepare the release.
     send: false
 ---

@@ -6,11 +6,11 @@ model: Claude Sonnet 4.5
 tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'memory/*']
 handoffs:
   - label: Start Architecture Design
-    agent: architect
+    agent: "Architect"
     prompt: Review the feature specification created above and design the technical solution.
     send: false
   - label: Create User Stories
-    agent: product-owner
+    agent: "Product Owner"
     prompt: Review the feature specification created above and create actionable user stories.
     send: false
 ---

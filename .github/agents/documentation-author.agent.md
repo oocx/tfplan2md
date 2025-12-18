@@ -6,7 +6,7 @@ model: Claude Sonnet 4.5
 tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'mcp-mermaid/*']
 handoffs:
   - label: Request Code Review
-    agent: code-reviewer
+    agent: "Code Reviewer"
     prompt: Review the implementation and documentation updates for quality and completeness.
     send: false
 ---

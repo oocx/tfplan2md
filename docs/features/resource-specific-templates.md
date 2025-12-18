@@ -183,11 +183,9 @@ The `ITemplateLoader` restricts includes to the custom template directory for se
 | | Rule Name | Protocols | Source | Destination | Ports |
 |-|-----------|-----------|--------|-------------|-------|
 | ➕ | allow-dns | UDP | 10.0.0.0/16 | 168.63.129.16 | 53 |
-| 🔄 | allow-https | TCP | 10.0.0.0/16 | * | 443 |
+| 🔄 | allow-https | TCP | - 10.0.0.0/16<br>+ 10.0.0.0/16, 10.0.1.0/24 | * | 443 |
 | ❌ | legacy-ftp | TCP | 10.0.1.0/24 | 10.0.2.5 | 21 |
 | — | allow-http | TCP | 10.0.0.0/16 | * | 80 |
-
-<!-- Modified rule details removed; modified info is presented in the main 'Rule Changes' table -->
 ```
 
 ### Display Requirements
@@ -197,7 +195,7 @@ The `ITemplateLoader` restricts includes to the custom template directory for se
 - **Sort order**: Added → Modified → Removed → Unchanged
 - **Unchanged rules**: Shown with muted indicator for complete picture
 - **Multi-value fields**: Joined with commas (protocols, ports, addresses)
-- **Modified details**: Expandable section showing specific attribute changes
+- **Modified rules**: Show before/after values for changed attributes using `-` and `+` prefixes on separate lines
 - **Diff key**: `rule.name` uniquely identifies rules within a collection
 
 ## CLI Extensions

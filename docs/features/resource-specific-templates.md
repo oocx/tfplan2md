@@ -144,6 +144,40 @@ Computes semantic differences between two arrays using a key property.
 {{ end }}
 ```
 
+### `format_diff`
+
+Formats a before/after pair into a single diff-style string for display in table cells.
+
+**Signature:**
+```scriban
+{{ format_diff <before_value> <after_value> }}
+```
+
+**Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `before_value` | string | Original value (nullable) |
+| `after_value` | string | Updated value (nullable) |
+
+**Returns:** 
+- If values are equal: Returns the value as-is
+- If values differ: Returns `"- {before}<br>+ {after}"`
+- Null values are treated as empty strings
+
+**Example:**
+```scriban
+{{ for item in diff.modified }}
+  | 🔄 | {{ item.after.name }} | {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }} |
+{{ end }}
+```
+
+**Output:**
+```markdown
+| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 |
+```
+
+This helper is particularly useful for displaying modified items in tables where changed attributes need clear visual distinction from unchanged ones.
+
 ## User Extension Mechanisms
 
 ### Template-Defined Functions
@@ -180,22 +214,22 @@ The `ITemplateLoader` restricts includes to the custom template directory for se
 
 #### Rule Changes
 
-| | Rule Name | Protocols | Source | Destination | Ports |
-|-|-----------|-----------|--------|-------------|-------|
-| ➕ | allow-dns | UDP | 10.0.0.0/16 | 168.63.129.16 | 53 |
-| 🔄 | allow-https | TCP | - 10.0.0.0/16<br>+ 10.0.0.0/16, 10.0.1.0/24 | * | 443 |
-| ❌ | legacy-ftp | TCP | 10.0.1.0/24 | 10.0.2.5 | 21 |
-| — | allow-http | TCP | 10.0.0.0/16 | * | 80 |
+| | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
+|---|-----------|-----------|------------------|----------------------|-------------------|-------------|
+| ➕ | allow-dns | UDP | 10.0.1.0/24, 10.0.2.0/24 | 168.63.129.16 | 53 | Allow DNS queries |
+| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP<br>+ Allow HTTP from web and API |
+| ❌ | legacy-ftp | TCP | 10.0.1.0/24 | 10.0.2.5 | 21 | Deprecated FTP |
+| ⏺️ | allow-https | TCP | 10.0.0.0/16 | * | 443 | Allow HTTPS |
 ```
 
 ### Display Requirements
 
 - **Collection metadata**: Name, priority, and action shown prominently
-- **Status icons**: ➕ (added), 🔄 (modified), ❌ (removed), — (unchanged)
+- **Status icons**: ➕ (added), 🔄 (modified), ❌ (removed), ⏺️ (unchanged)
 - **Sort order**: Added → Modified → Removed → Unchanged
-- **Unchanged rules**: Shown with muted indicator for complete picture
+- **Unchanged rules**: Shown with ⏺️ indicator for complete picture
 - **Multi-value fields**: Joined with commas (protocols, ports, addresses)
-- **Modified rules**: Show before/after values for changed attributes using `-` and `+` prefixes on separate lines
+- **Modified rules**: Use `format_diff` helper to show before/after values for changed attributes with `-` and `+` prefixes on separate lines (`<br>` separator). Unchanged attributes show single value without prefix.
 - **Diff key**: `rule.name` uniquely identifies rules within a collection
 
 ## CLI Extensions

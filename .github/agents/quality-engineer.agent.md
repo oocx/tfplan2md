@@ -28,6 +28,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
 - Consider edge cases, error conditions, and boundary values
+- Commit test plan when approved
 
 ### ⚠️ Ask First
 - Adding new test infrastructure or frameworks
@@ -162,7 +163,16 @@ Your work is complete when:
 - [ ] All acceptance criteria have mapped test cases
 - [ ] Edge cases and error scenarios are covered
 - [ ] Test cases follow project conventions
+- [ ] Changes are committed to the feature branch
 - [ ] The maintainer has approved the test plan
+
+## Committing Your Work
+
+After the test plan is approved:
+```bash
+git add docs/features/<feature-name>/test-plan.md
+git commit -m "docs: add test plan for <feature-name>"
+```
 
 ## Handoff
 

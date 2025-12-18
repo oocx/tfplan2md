@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>13</LangVersion>
     <RootNamespace>Oocx.TfPlan2Md</RootNamespace>
-    <Version>0.13.0</Version>
+    <Version>0.13.1</Version>
     <AssemblyName>tfplan2md</AssemblyName>
   </PropertyGroup>
 

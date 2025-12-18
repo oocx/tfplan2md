@@ -1,8 +1,9 @@
 ---
 description: Gather and document user requirements for new features
 name: Requirements Engineer
+target: vscode
 model: Claude Sonnet 4.5
-tools: ['read_file', 'list_dir', 'file_search', 'semantic_search', 'fetch_webpage']
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'fetch', 'githubRepo']
 handoffs:
   - label: Start Architecture Design
     agent: architect
@@ -116,3 +117,7 @@ After the specification is approved, use the handoff buttons to transition to th
 - If the feature seems to overlap with existing functionality, highlight this.
 - If scope is unclear or growing, suggest breaking it into smaller features.
 - Never assume requirements - always ask.
+
+## Tool Usage Reminder
+
+Use VS Code Copilot built-in tools like `readFile`, `listDirectory`, `codebase`, `usages`, and the `search` tool set. If you’re unsure what’s available in a given session, type `#` in the chat input to see the current tool list.

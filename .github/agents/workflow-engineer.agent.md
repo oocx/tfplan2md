@@ -43,6 +43,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 
 Before making changes, familiarize yourself with:
 - [docs/agents.md](docs/agents.md) - The complete workflow documentation (your primary reference)
+- [docs/ai-model-reference.md](docs/ai-model-reference.md) - **Model performance benchmarks, availability, and pricing data**
 - [.github/copilot-instructions.md](.github/copilot-instructions.md) - Project-wide Copilot instructions including tool naming conventions
 - All existing agents in `.github/agents/*.agent.md` - Current agent definitions
 - [docs/spec.md](docs/spec.md) - Project specification
@@ -50,6 +51,10 @@ Before making changes, familiarize yourself with:
 ## Reference Documentation
 
 When designing or modifying agents, consult these authoritative sources:
+Internal References (Priority Order)
+1. **[docs/ai-model-reference.md](docs/ai-model-reference.md)** - ⭐ Model benchmarks, availability, pricing (check first)
+2. **[docs/agents.md](docs/agents.md)** - Workflow documentation and agent responsibilities
+3. **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Tool naming conventions, coding standards
 
 ### VS Code Copilot Documentation
 - [Custom Agents Overview](https://code.visualstudio.com/docs/copilot/customization/custom-agents) - How to create and configure custom agents
@@ -58,44 +63,97 @@ When designing or modifying agents, consult these authoritative sources:
 - [Chat Tools Reference](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools) - Complete list of available tools
 - [Language Models](https://code.visualstudio.com/docs/copilot/customization/language-models) - Model selection and configuration
 
-### Model Selection Resources
-- [LiveBench AI Benchmarks](https://livebench.ai/#/) - Current model performance benchmarks for coding tasks
+### External References (Use when updating ai-model-reference.md)
+- [LiveBench](https://livebench.ai/) - Current model performance benchmarks
+- [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models) - Model availability and pricing
 - [GitHub Models Pricing](https://docs.github.com/en/billing/reference/costs-for-github-models) - Cost reference for GitHub Copilot Pro models
 
 
 
 ## Model Selection Guidelines
 
-When creating or modifying agents, choose the appropriate language model based on task complexity and cost efficiency. Use GitHub Copilot Pro pricing as a reference.
+When creating or modifying agents, choose the appropriate language model based on task-specific performance benchmarks, availability, and cost efficiency.
 
-### Model Selection Criteria
+### Reference Data
 
-| Factor | Consideration |
-|--------|---------------|
-| **Task Complexity** | Complex reasoning tasks (architecture, code review) need stronger models |
-| **Context Requirements** | Large codebase analysis benefits from models with larger context windows |
-| **Speed vs Quality** | Routine tasks can use faster, cheaper models |
-| **Cost Efficiency** | Balance model capability with token costs |
+**Always consult [docs/ai-model-reference.md](docs/ai-model-reference.md)** for:
+- Current performance benchmarks by category (Coding, Reasoning, Language, Instruction Following, etc.)
+- Model availability in GitHub Copilot Pro
+- Premium request multipliers (cost)
+- Recommended model assignments by agent type
 
-### Recommended Model Assignments
+This reference is updated periodically with latest benchmark data.
 
-| Task Type | Recommended Models | Rationale |
-|-----------|-------------------|-----------|
-| **Complex reasoning** (Architect, Code Reviewer) | Claude Sonnet 4, GPT-4.1, Gemini 2.5 Pro | Requires deep analysis and nuanced decisions |
-| **Creative/exploratory** (Requirements Engineer) | Claude Sonnet 4.5, GPT-4.1 | Benefits from broader thinking |
-| **Structured output** (Product Owner, QE) | Claude Sonnet 4, GPT-4.1 | Good at following templates |
-| **Implementation** (Developer) | Claude Sonnet 4, Gemini 2.5 Pro | Strong coding capabilities |
-| **Documentation** (Doc Author) | Claude Sonnet 4, GPT-4.1 | Clear writing, format adherence |
-| **Meta-tasks** (Workflow Engineer) | Claude Sonnet 4.5 | Needs broad understanding of agent design |
+### Critical Learnings
 
-### Model Evaluation Process
+1. **Use task-specific benchmarks, not overall scores**
+   - Different models excel at different tasks
+   - Example: GPT-5.1 Codex Max leads in Coding (90.80) but Claude Sonnet 4.5 is better for Language (76.00)
 
-When selecting a model for an agent:
+2. **Claude Sonnet 4.5 has poor Instruction Following** (score: 23.52)
+   - Unsuitable for agents that follow templates (Product Owner, Quality Engineer)
+   - Use Gemini models instead for structured output (scores: 65-75)
 
-1. **Check current benchmarks** - Fetch [LiveBench](https://livebench.ai/#/) for latest coding benchmark scores
-2. **Review pricing** - Check [GitHub Models pricing](https://docs.github.com/en/billing/reference/costs-for-github-models) for cost per token
-3. **Consider task frequency** - High-frequency agents benefit more from cost optimization
-4. **Test and iterate** - Try the model on representative tasks before finalizing
+3. **Gemini 3 Flash offers best value for many tasks**
+   - 0.33x premium multiplier (cost-effective)
+   - Strong Instruction Following (74.86)
+   - Good Language performance (84.56)
+   - Ideal for: Product Owner, Release Manager, high-frequency agents
+
+4. **GPT-5.1 Codex Max is the coding leader**
+   - Coding score: 90.80 (#1)
+   - Clear choice for Developer agent
+   - Also solid for Code Reviewer
+
+5. **Always verify model availability**
+   - Check against official GitHub Copilot documentation
+   - Model names must match exactly (case-sensitive)
+   - Don't add "(Preview)" suffix in agent frontmatter
+
+### Model Selection Process
+
+When selecting or changing a model:
+
+1. **Identify the agent's primary task categories** (from ai-model-reference.md)
+   - Coding, Reasoning, Language, Instruction Following, etc.
+
+2. **Check category-specific performance**
+   - Look up relevant benchmarks in ai-model-reference.md
+   - Compare top 3-5 performers in that category
+
+3. **Consider cost vs frequency**
+   - High-frequency agents → favor lower multipliers (0.33x, 0x)
+   - Critical accuracy agents → favor best performer regardless of cost
+
+4. **Verify availability**
+   - Confirm model is listed in "Available Models" section
+   - Check it's available for VS Code (required)
+
+5. **Document your reasoning**
+   - Include benchmark scores in proposal
+   - Explain trade-offs made
+
+### Example Model Selection
+
+**Scenario**: Selecting model for Quality Engineer agent
+
+1. **Primary tasks**: Define test plans following specific template format
+2. **Key categories**: Instruction Following (critical), Reasoning (important)
+3. **Benchmark lookup** (from ai-model-reference.md):
+   - Gemini 3 Flash: Instruction Following 74.86, 0.33x cost ✅
+   - Gemini 3 Pro: Instruction Following 65.85, 1x cost ✅
+   - Claude Sonnet 4.5: Instruction Following 23.52 ❌ (disqualified)
+4. **Decision**: Gemini 3 Pro (balance of performance and cost)
+5. **Rationale**: Strong instruction following (65.85), reasonable cost (1x), good for template-based work
+
+### When to Update Model Assignments
+
+Reassess models when:
+- New benchmark data shows significant performance changes
+- Agent is underperforming its tasks consistently
+- New models are released with better performance
+- Cost optimization is needed
+- ai-model-reference.md is updated with new data
 
 ## Agent File Structure
 
@@ -188,10 +246,11 @@ Ask clarifying questions one at a time if the goal is unclear:
 Review current state and gather best practices:
 - Read all affected agent files in `.github/agents/`
 - Check workflow documentation in `docs/agents.md`
+- Consult [docs/ai-model-reference.md](docs/ai-model-reference.md) for model data (if selecting/changing models)
 - Review handoff relationships between agents
-- Fetch latest model benchmarks from [LiveBench](https://livebench.ai/#/) if selecting models
-- Check [GitHub Models pricing](https://docs.github.com/en/billing/reference/costs-for-github-models) for cost analysis
 - Consult [VS Code Copilot docs](https://code.visualstudio.com/docs/copilot/customization/custom-agents) for tool reference
+
+**Note**: Only fetch external data (LiveBench, GitHub docs) if ai-model-reference.md is outdated (>1 month old) or missing needed information
 
 ### 3. Propose Before Implementing
 Present your plan with:
@@ -259,26 +318,44 @@ When updating `docs/agents.md`, verify all of these:
 ### Creating a New Agent
 1. Research similar agents and best practices
 2. Define clear persona and specific goal
-3. Select appropriate model based on task complexity
-4. Choose minimal necessary tools
+3. Select appropriate model:
+   - Consult [docs/ai-model-reference.md](docs/ai-model-reference.md)
+   - Match model to agent's primary task categories
+   - Consider frequency and cost
+4. Choose minimal necessary tools (see Tool Selection Guide)
 5. Create `.github/agents/<name>.agent.md`
-6. Add to `docs/agents.md` (diagram, tables, descriptions)
-7. Commit and create PR
+6. Add comprehensive Boundaries section (✅/⚠️/🚫)
+7. Add to `docs/agents.md` (diagram, tables, descriptions)
+8. Commit and create PR
 
 ### Improving Existing Agent
 1. Identify specific problem or gap
 2. Read current agent definition completely
-3. Propose targeted improvement
-4. Test change doesn't break handoffs
-5. Update documentation if role/handoffs change
-6. Commit and create PR
+3. Consult [docs/ai-model-reference.md](docs/ai-model-reference.md) if model change considered
+4. Propose targeted improvement with data/rationale
+5. Test change doesn't break handoffs
+6. Update documentation if role/handoffs change
+7. Commit and create PR
 
-### Selecting Agent Models
-1. Fetch [LiveBench benchmarks](https://livebench.ai/#/)
-2. Check [GitHub Models pricing](https://docs.github.com/en/billing/reference/costs-for-github-models)
-3. Consider: task complexity, frequency, context needs
-4. Balance performance vs cost
-5. Document rationale in commit message
+### Reviewing All Agents (Periodic Maintenance)
+1. Check [docs/ai-model-reference.md](docs/ai-model-reference.md) update date
+2. If >1 month old, recommend updating it first
+3. Review each agent's model against current benchmarks
+4. Verify all tool names are valid (check recent VS Code updates)
+5. Ensure all agents have Boundaries sections
+6. Check for consistency in structure and format
+7. Propose changes with clear data-driven rationale
+
+### Updating Model Reference Data
+1. Fetch latest [LiveBench benchmarks](https://livebench.ai/)
+2. Check [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
+3. Update [docs/ai-model-reference.md](docs/ai-model-reference.md):
+   - Model availability table
+   - Category-specific performance tables
+   - Premium multipliers
+   - "Last Updated" date
+4. Review agent recommendations and update if needed
+5. Commit with clear note about data source and date
 
 ## Example Agent Improvements
 

@@ -6,7 +6,7 @@ model: Claude Sonnet 4.5
 tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'runTests', 'testFailure', 'problems', 'microsoftdocs/*', 'github/*']
 handoffs:
   - label: Start Implementation
-    agent: developer
+    agent: "Developer"
     prompt: Review the test plan above and begin implementation, including the specified tests.
     send: false
 ---

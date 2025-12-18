@@ -6,11 +6,11 @@ model: Gemini 3 Pro (Preview)
 tools: ['search', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'memory/*', 'mcp-mermaid/*', 'createFile', 'editFile']
 handoffs:
   - label: Create User Stories
-    agent: product-owner
+    agent: "Product Owner"
     prompt: Review the architecture decisions above and create actionable user stories for implementation.
     send: false
   - label: Define Test Plan
-    agent: quality-engineer
+    agent: "Quality Engineer"
     prompt: Review the architecture decisions above and define the test plan.
     send: false
 ---

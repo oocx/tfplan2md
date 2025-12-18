@@ -6,11 +6,11 @@ model: Claude Sonnet 4.5
 tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'microsoftdocs/*', 'github/*', 'memory/*']
 handoffs:
   - label: Define Test Plan
-    agent: quality-engineer
+    agent: "Quality Engineer"
     prompt: Review the user stories above and define the test plan and test cases.
     send: false
   - label: Start Implementation
-    agent: developer
+    agent: "Developer"
     prompt: Review the user stories above and begin implementation.
     send: false
 ---

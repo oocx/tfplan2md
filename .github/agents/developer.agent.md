@@ -6,11 +6,11 @@ model: GPT-5.1-Codex-Max
 tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'terminalLastCommand', 'getTerminalOutput', 'microsoftdocs/*', 'copilot_conta/*', 'github/*', 'mcp-mermaid/*']
 handoffs:
   - label: Update Documentation
-    agent: documentation-author
+    agent: "Documentation Author"
     prompt: Review the implementation above and update the documentation accordingly.
     send: false
   - label: Request Code Review
-    agent: code-reviewer
+    agent: "Code Reviewer"
     prompt: Review the implementation above for code quality and adherence to standards.
     send: false
 ---

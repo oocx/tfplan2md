@@ -57,21 +57,27 @@ Follow the project's coding conventions strictly:
 
 ## Implementation Approach
 
-1. **Review all inputs** - Read the specification, architecture, tasks, and test plan thoroughly.
+1. **Prepare branch** - Before starting any implementation, ensure your local `main` branch is up to date with the remote and create a new feature branch based on it:
+   - Update local `main` from remote: `git fetch origin && git switch main && git pull --ff-only origin main`
+   - Create and switch to a feature branch: `git switch -c feature/<short-description>`
+   - Use a descriptive branch name that references the issue or feature (for example: `feature/123-add-report-template`).
+   - If you prefer rebasing rather than merging, replace the pull with `git pull --rebase origin main`.
 
-2. **Work task by task** - Implement one task at a time from the tasks document.
+2. **Review all inputs** - Read the specification, architecture, tasks, and test plan thoroughly.
 
-3. **Write tests first** - For each task:
+3. **Work task by task** - Implement one task at a time from the tasks document.
+
+4. **Write tests first** - For each task:
    - Implement the test cases from the test plan
    - Run tests to confirm they fail
    - Implement the feature code
    - Run tests to confirm they pass
 
-4. **Run all tests** - Before considering work complete, run the full test suite.
+5. **Run all tests** - Before considering work complete, run the full test suite.
 
-5. **Check for errors** - Use `get_errors` to verify no compile or lint errors.
+6. **Check for errors** - Use `get_errors` to verify no compile or lint errors.
 
-6. **Ask one question at a time** - If clarification is needed, ask focused questions.
+7. **Ask one question at a time** - If clarification is needed, ask focused questions.
 
 ## Commands
 

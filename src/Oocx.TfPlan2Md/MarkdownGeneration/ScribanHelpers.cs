@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using Scriban.Runtime;
 
@@ -13,7 +14,27 @@ public static class ScribanHelpers
     /// </summary>
     public static void RegisterHelpers(ScriptObject scriptObject)
     {
+        scriptObject.Import("format_diff", new Func<string?, string?, string>(FormatDiff));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
+    }
+
+    /// <summary>
+    /// Formats a before/after pair into a single diff-style string.
+    /// </summary>
+    /// <param name="before">The original value.</param>
+    /// <param name="after">The updated value.</param>
+    /// <returns>The unchanged value when equal; otherwise "- before&lt;br&gt;+ after".</returns>
+    public static string FormatDiff(string? before, string? after)
+    {
+        var beforeValue = before ?? string.Empty;
+        var afterValue = after ?? string.Empty;
+
+        if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
+        {
+            return afterValue;
+        }
+
+        return $"- {beforeValue}<br>+ {afterValue}";
     }
 
     /// <summary>

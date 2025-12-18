@@ -146,7 +146,9 @@ Tests for rendering the report model to Markdown output.
 | `RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible` | Verifies that modified rule details are in a collapsible section |
 | `Render_MultiModulePlan_GroupsModulesAndPreservesOrder` | Verifies that plans with multiple and nested modules are grouped into module sections and that module ordering follows the hierarchy (root first, children after parents) |
 | `Render_MultiModulePlan_HeadingsAndHierarchyAreCorrect` | Verifies module headers use H3 (`### Module: ...`) and resources inside modules use H4 headings (`#### <action> <address>`), and that each resource appears under its module section |
-| `RenderResourceChange_FirewallRuleCollection_ModifiedDetailsInCollapsible` | (removed) Previously verified collapsible modified details — no longer applicable; modified rule data is shown in the main table |
+| `Render_FirewallModifiedRules_ShowsDiffForChangedAttributes` | Verifies that modified firewall rules show before/after diff format with `-` and `+` prefixes for changed attributes |
+| `Render_FirewallModifiedRules_ShowsSingleValueForUnchangedAttributes` | Verifies that unchanged attributes in modified firewall rules show single values without diff formatting |
+| `Render_FirewallNonModifiedRules_DisplayAsExpected` | Verifies that added, removed, and unchanged firewall rules display correctly without diff formatting |
 
 ### Scriban Helpers Tests (`MarkdownGeneration/ScribanHelpersTests.cs`)
 
@@ -167,6 +169,19 @@ Tests for the custom Scriban helper functions used in templates.
 | `DiffArray_WithNestedArrays_ComparesCorrectly` | Verifies that nested array changes are detected |
 | `DiffArray_WithNestedObjects_ComparesCorrectly` | Verifies that nested object changes are detected |
 | `RegisterHelpers_AddsDiffArrayFunction` | Verifies that `diff_array` function is registered with ScriptObject |
+
+### Scriban Helpers Format Diff Tests (`MarkdownGeneration/ScribanHelpersFormatDiffTests.cs`)
+
+Tests for the `format_diff` helper function used to display before/after values in templates.
+
+| Test Name | Description |
+|-----------|-------------|
+| `FormatDiff_EqualStrings_ReturnsSingleValue` | Verifies that equal before and after values return the value as-is without diff formatting |
+| `FormatDiff_DifferentStrings_ReturnsDiffFormat` | Verifies that different values return `"- before<br>+ after"` format |
+| `FormatDiff_NullBefore_ReturnsDiffFormat` | Verifies that null before value is treated as empty string in diff format |
+| `FormatDiff_NullAfter_ReturnsDiffFormat` | Verifies that null after value is treated as empty string in diff format |
+| `FormatDiff_BothNull_ReturnsEmptyString` | Verifies that both null values return empty string |
+| `FormatDiff_EmptyStrings_HandledCorrectly` | Verifies that empty strings are handled correctly and distinguished from null |
 
 ### Docker Integration Tests (`Docker/DockerIntegrationTests.cs`)
 

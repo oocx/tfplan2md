@@ -3,7 +3,7 @@ description: Implement features and tests according to specifications
 name: Developer
 target: vscode
 model: GPT-5.1-Codex-Max
-tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages']
+tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'terminalLastCommand', 'getTerminalOutput', 'microsoftdocs/*', 'copilot_conta/*', 'github/*', 'mcp-mermaid/*']
 handoffs:
   - label: Update Documentation
     agent: documentation-author

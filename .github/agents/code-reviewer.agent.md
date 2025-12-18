@@ -3,7 +3,7 @@ description: Review code for quality, standards, and correctness
 name: Code Reviewer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages']
+tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'terminalLastCommand', 'getTerminalOutput', 'microsoftdocs/*', 'copilot_conta/*', 'github/*']
 handoffs:
   - label: Request Rework
     agent: developer

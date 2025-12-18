@@ -3,7 +3,7 @@ description: Create actionable user stories and tasks from specifications
 name: Product Owner
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase']
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'microsoftdocs/*', 'github/*', 'memory/*']
 handoffs:
   - label: Define Test Plan
     agent: quality-engineer

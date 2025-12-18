@@ -184,11 +184,11 @@ When rendering the full report, the default renderer applies resource-specific t
 
 #### Firewall Rule Collections
 
-For `azurerm_firewall_network_rule_collection`, changed rules are rendered as individual tables — one table per rule — and the tables preserve the rule order shown in the plan. Each rule table includes the standard attributes: Name, Protocols, Source, Destination, Destination Ports, and Description. Source and Destination combine addresses, IP groups and FQDNs into a single column to keep the tables concise.
+For `azurerm_firewall_network_rule_collection`, rules are rendered in a single table to provide a concise overview. Each rule is displayed as a row with standard attributes: Name, Protocols, Source, Destination, Destination Ports, and Description.
 
-- Added rules: 2-column table showing the *after* values for the rule.
-- Removed rules: 2-column table showing the *before* values for the rule.
-- Modified / Replaced rules: 3-column table (`Attribute | Before | After`) showing before and after values for the rule only.
+- **Added rules**: Shown with ➕ icon and the new values.
+- **Removed rules**: Shown with ❌ icon and the old values.
+- **Modified rules**: Shown with 🔄 icon. Changed attributes display both before and after values in the same cell, prefixed with `-` and `+` respectively. Unchanged attributes show the single value.
 
 This layout makes it easy to inspect per-rule changes without index-shift noise from array diffs.
 

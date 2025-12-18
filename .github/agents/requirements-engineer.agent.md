@@ -60,6 +60,7 @@ Before starting, familiarize yourself with:
    - Update local `main` from remote: `git fetch origin && git switch main && git pull --ff-only origin main`
    - Create and switch to a feature branch: `git switch -c feature/<short-description>`
    - Use a descriptive branch name that references the issue or feature (e.g., `feature/123-firewall-diff-display`)
+   - **Important**: Use `runInTerminal` tool with git commands above. Do NOT use GitHub API tools (`github/create_branch`) - they create remote branches without switching your local working directory.
 
 2. **Listen first** - Let the maintainer describe their feature idea completely before asking questions.
 

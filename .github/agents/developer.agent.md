@@ -1,8 +1,9 @@
 ---
 description: Implement features and tests according to specifications
 name: Developer
+target: vscode
 model: GPT-5.1-Codex-Max
-tools: ['read_file', 'list_dir', 'file_search', 'semantic_search', 'grep_search', 'create_file', 'replace_string_in_file', 'run_in_terminal', 'get_errors', 'runTests']
+tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages']
 handoffs:
   - label: Update Documentation
     agent: documentation-author
@@ -75,7 +76,7 @@ Follow the project's coding conventions strictly:
 
 5. **Run all tests** - Before considering work complete, run the full test suite.
 
-6. **Check for errors** - Use `get_errors` to verify no compile or lint errors.
+6. **Check for errors** - Use `problems` to verify there are no workspace errors after `dotnet build`/`dotnet test`.
 
 7. **Ask one question at a time** - If clarification is needed, ask focused questions.
 

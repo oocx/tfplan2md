@@ -1,8 +1,9 @@
 ---
 description: Review code for quality, standards, and correctness
 name: Code Reviewer
+target: vscode
 model: Claude Sonnet 4.5
-tools: ['read_file', 'list_dir', 'file_search', 'semantic_search', 'grep_search', 'run_in_terminal', 'get_errors', 'runTests', 'create_file', 'replace_string_in_file']
+tools: ['search', 'edit', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages']
 handoffs:
   - label: Request Rework
     agent: developer
@@ -39,7 +40,7 @@ Before starting, familiarize yourself with:
 - [ ] Code implements all acceptance criteria from the tasks
 - [ ] All test cases from the test plan are implemented
 - [ ] Tests pass (`dotnet test`)
-- [ ] No compile errors or warnings (`get_errors`)
+- [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 
 ### Code Quality

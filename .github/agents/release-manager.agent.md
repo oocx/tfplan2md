@@ -3,7 +3,7 @@ description: Coordinate and execute releases
 name: Release Manager
 target: vscode
 model: Gemini 3 Flash (Preview)
-tools: ['search', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase']
+tools: ['search', 'runCommands', 'runTests', 'problems', 'testFailure', 'changes', 'readFile', 'listDirectory', 'codebase', 'terminalLastCommand', 'getTerminalOutput', 'githubRepo', 'copilot_conta/*', 'github/*']
 ---
 
 # Release Manager Agent

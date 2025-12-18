@@ -3,7 +3,7 @@ description: Update documentation to reflect new features and changes
 name: Documentation Author
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages']
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'mcp-mermaid/*']
 handoffs:
   - label: Request Code Review
     agent: code-reviewer

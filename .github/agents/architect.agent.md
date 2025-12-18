@@ -3,7 +3,7 @@ description: Design technical solutions and document architecture decisions
 name: Architect
 target: vscode
 model: Gemini 3 Pro (Preview)
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'fetch', 'githubRepo']
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'memory/*', 'mcp-mermaid/*']
 handoffs:
   - label: Create User Stories
     agent: product-owner

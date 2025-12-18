@@ -31,6 +31,7 @@ Break down the feature into clear, prioritized work items with well-defined acce
 - Prioritize tasks based on dependencies and risk
 - Ensure each task maps back to the Feature Specification
 - Consider implementation order (foundational work first)
+- Commit tasks document when approved
 
 ### ⚠️ Ask First
 - Changing the scope defined in the Feature Specification
@@ -130,7 +131,16 @@ Your work is complete when:
 - [ ] All aspects of the specification are covered by tasks
 - [ ] Each task has clear, testable acceptance criteria
 - [ ] Tasks are prioritized and ordered logically
+- [ ] Changes are committed to the feature branch
 - [ ] The maintainer has approved the tasks
+
+## Committing Your Work
+
+After the tasks are approved:
+```bash
+git add docs/features/<feature-name>/tasks.md
+git commit -m "docs: add tasks for <feature-name>"
+```
 
 ## Handoff
 

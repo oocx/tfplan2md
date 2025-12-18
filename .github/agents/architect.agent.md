@@ -33,6 +33,7 @@ Transform a Feature Specification into a clear technical design with documented 
 - Verify design aligns with project goals in docs/spec.md
 - Address security, reliability, and maintainability concerns
 - Create or update ADRs in docs/ or docs/features/<feature-name>/
+- Commit architecture documents when approved
 
 ### ⚠️ Ask First
 - Proposing significant changes to existing architecture
@@ -175,8 +176,17 @@ Your work is complete when:
 - [ ] The technical approach is clearly documented (or documented as "no changes needed")
 - [ ] Alternatives were considered and trade-offs explained (if applicable)
 - [ ] The design aligns with existing architecture patterns
+- [ ] Changes are committed to the feature branch
 - [ ] The maintainer has approved the architecture decision
 - [ ] **No source code was written** - only documentation files were created/modified
+
+## Committing Your Work
+
+After the architecture is approved:
+```bash
+git add docs/features/<feature-name>/architecture.md docs/adr-*.md
+git commit -m "docs: add architecture decision for <feature-name>"
+```
 
 ## Handoff
 

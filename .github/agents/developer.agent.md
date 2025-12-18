@@ -26,7 +26,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 ## Boundaries
 
 ### ✅ Always Do
-- Update local `main` and create feature branch before starting
+- Verify you're on the correct feature branch (created by Requirements Engineer)
 - Write tests before implementation (test-first approach)
 - Run full test suite before considering work complete
 - Follow C# coding conventions and use modern C# features
@@ -84,11 +84,11 @@ Follow the project's coding conventions strictly:
 
 ## Implementation Approach
 
-1. **Prepare branch** - Before starting any implementation, ensure your local `main` branch is up to date with the remote and create a new feature branch based on it:
-   - Update local `main` from remote: `git fetch origin && git switch main && git pull --ff-only origin main`
-   - Create and switch to a feature branch: `git switch -c feature/<short-description>`
-   - Use a descriptive branch name that references the issue or feature (for example: `feature/123-add-report-template`).
-   - If you prefer rebasing rather than merging, replace the pull with `git pull --rebase origin main`.
+1. **Verify branch** - Ensure you're on the feature branch created by the Requirements Engineer:
+   ```bash
+   git status  # Confirm you're on feature/<name> branch
+   git pull origin main --rebase  # Update with any changes from main
+   ```
 
 2. **Review all inputs** - Read the specification, architecture, tasks, and test plan thoroughly.
 

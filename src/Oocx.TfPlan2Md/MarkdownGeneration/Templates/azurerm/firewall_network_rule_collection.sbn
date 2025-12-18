@@ -20,7 +20,7 @@
 | ➕ | {{ rule.name }} | {{ rule.protocols | array.join ", " }} | {{ rule.source_addresses | array.join ", " }} | {{ rule.destination_addresses | array.join ", " }} | {{ rule.destination_ports | array.join ", " }} | {{ rule.description ?? "" }} |
 {{ end }}
 {{~ for item in diff.modified ~}}
-| 🔄 | {{ item.after.name }} | {{ item.after.protocols | array.join ", " }} | {{ item.after.source_addresses | array.join ", " }} | {{ item.after.destination_addresses | array.join ", " }} | {{ item.after.destination_ports | array.join ", " }} | {{ item.after.description ?? "" }} |
+| 🔄 | {{ item.after.name }} | {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }} | {{ format_diff (item.before.source_addresses | array.join ", ") (item.after.source_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_addresses | array.join ", ") (item.after.destination_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_ports | array.join ", ") (item.after.destination_ports | array.join ", ") }} | {{ format_diff (item.before.description ?? "") (item.after.description ?? "") }} |
 {{ end }}
 {{~ for rule in diff.removed ~}}
 | ❌ | {{ rule.name }} | {{ rule.protocols | array.join ", " }} | {{ rule.source_addresses | array.join ", " }} | {{ rule.destination_addresses | array.join ", " }} | {{ rule.destination_ports | array.join ", " }} | {{ rule.description ?? "" }} |

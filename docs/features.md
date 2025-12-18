@@ -188,20 +188,33 @@ For `azurerm_firewall_network_rule_collection`, rules are rendered in a single t
 
 - **Added rules**: Shown with ➕ icon and the new values.
 - **Removed rules**: Shown with ❌ icon and the old values.
-- **Modified rules**: Shown with 🔄 icon. Changed attributes display both before and after values in the same cell, prefixed with `-` and `+` respectively. Unchanged attributes show the single value.
+- **Modified rules**: Shown with 🔄 icon. Changed attributes display both before and after values in the same cell, prefixed with `-` and `+` respectively, separated by `<br>` for visual clarity. Unchanged attributes show the single value without any prefix.
+- **Unchanged rules**: Shown with ⏺️ icon for completeness.
 
-This layout makes it easy to inspect per-rule changes without index-shift noise from array diffs.
+Example of a modified rule with changed source addresses and description:
+```markdown
+| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |
+```
+
+This layout makes it easy to inspect per-rule changes without index-shift noise from array diffs, and the diff-style formatting clearly shows what changed.
 
 ### Helper Functions
 
-Templates have access to the `diff_array` function for semantic collection diffing:
+Templates have access to custom Scriban helper functions:
 
+**`diff_array`** - Semantic collection diffing:
 ```scriban
 {{ diff = diff_array before_json.rule after_json.rule "name" }}
 {{ for rule in diff.added }}
   ➕ {{ rule.name }}
 {{ end }}
 ```
+
+**`format_diff`** - Before/after diff formatting:
+```scriban
+{{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }}
+```
+Returns the single value if unchanged, or `"- before<br>+ after"` if different.
 
 See [resource-specific-templates.md](features/resource-specific-templates.md) for full specification.
 

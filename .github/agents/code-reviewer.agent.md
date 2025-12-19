@@ -26,6 +26,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 ## Boundaries
 
 ### ✅ Always Do
+- Check Docker availability before running Docker build (ask maintainer to start if needed)
 - Run `dotnet test` and `docker build` to verify functionality
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
@@ -92,7 +93,14 @@ Before starting, familiarize yourself with:
 
 ## Review Approach
 
-1. **Run verification** - Execute tests and check for errors:
+1. **Check Docker availability** (if Docker tests/build are required):
+   ```bash
+   docker ps
+   ```
+   - If Docker is not running, ask the maintainer: "Docker verification is required but Docker is not available. Please start Docker Desktop and confirm when ready."
+   - Wait for confirmation before proceeding with Docker build/tests
+
+2. **Run verification** - Execute tests and check for errors:
    ```bash
    dotnet test
    docker build -t tfplan2md:local .

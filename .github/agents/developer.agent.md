@@ -27,6 +27,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 
 ### ✅ Always Do
 - Verify you're on the correct feature branch (created by Requirements Engineer)
+- Check Docker availability before running Docker tests (ask maintainer to start if needed)
 - Write tests before implementation (test-first approach)
 - Run full test suite before considering work complete
 - Follow C# coding conventions and use modern C# features
@@ -94,7 +95,14 @@ Follow the project's coding conventions strictly:
 
 3. **Work task by task** - Implement one task at a time from the tasks document.
 
-4. **Write tests first** - For each task:
+4. **Check Docker availability** (if Docker tests are required):
+   ```bash
+   docker ps
+   ```
+   - If Docker is not running, ask the maintainer: "Docker tests are required but Docker is not available. Please start Docker Desktop and confirm when ready."
+   - Wait for confirmation before proceeding with Docker tests
+
+5. **Write tests first** - For each task:
    - Implement the test cases from the test plan
    - Run tests to confirm they fail
    - Implement the feature code

@@ -105,7 +105,6 @@ Your work is complete when:
 - [ ] README.md is updated if the feature affects basic usage
 - [ ] docs/features.md includes the new feature
 - [ ] docs/spec.md is updated if project goals changed
-- [ ] docs/testing-strategy.md is updated with new test cases
 - [ ] Documentation is consistent with existing style
 - [ ] No contradictions exist between documentation files
 - [ ] The maintainer has approved the documentation

@@ -179,36 +179,6 @@ This feature can be implemented using existing patterns:
 
 2. Proceed to handoff to the next agent.
 
-## When No Architectural Changes Are Needed
-
-Sometimes a feature can be implemented using existing patterns and architecture without any new decisions. In this case:
-
-1. Create `docs/features/<feature-name>/architecture.md` with the following content:
-
-```markdown
-# Architecture: <Feature Name>
-
-## Status
-
-No architectural changes required.
-
-## Analysis
-
-<Explain why the existing architecture is sufficient>
-
-## Implementation Guidance
-
-This feature can be implemented using existing patterns:
-- <List the existing components/patterns to use>
-- <Reference relevant existing code or ADRs>
-
-## Components Affected
-
-- <List files or modules that will need changes, without implementing them>
-```
-
-2. Proceed to handoff to the next agent.
-
 ## Definition of Done
 
 Your work is complete when:

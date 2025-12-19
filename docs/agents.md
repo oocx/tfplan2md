@@ -8,84 +8,96 @@ Agents work locally and produce artifacts as markdown files in the repository. T
 
 ## Entry Point
 
-The workflow begins when the **project maintainer** creates a new feature request by starting a chat session with the **Requirements Engineer** agent in Visual Studio Code. The maintainer provides an initial description of the desired feature, and the Requirements Engineer gathers additional details through conversation before producing the Feature Specification.
+The workflow begins when a **developer** (human) identifies a need for a new feature or improvement. The developer starts a chat session with the **Requirements Engineer** agent in Visual Studio Code, providing an initial feature request. The Requirements Engineer gathers additional details through conversation before producing the Feature Specification.
+
+Throughout the workflow, the developer acts as the **project maintainer**, coordinating handoffs between agents and providing clarifications as needed.
 
 ---
 
 ## Workflow Overview
 
 ```mermaid
+%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
 flowchart TB
-	%% Styles
-	classDef agent fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
-	classDef artifact fill:#fff3e0,stroke:#f57c00,stroke-width:2px,shape:cylinder;
-	classDef metaagent fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+	%% Modern styles optimized for dark backgrounds
+	classDef agent fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+	classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:6,ry:6;
+	classDef metaagent fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+	classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
+
+	%% Human starting point (stadium shape for actor-like appearance)
+	HUMAN(["👤 <b>Developer</b><br/>(Human)"])
 
 	%% Agents and artifacts in vertical order
-	RE[Requirements Engineer]
-	FS[Feature Specification]
-	AR[Architect]
-	ADR[Architecture Decision Records]
-	PO[Product Owner]
-	US[User Stories / Tasks]
-	QE[Quality Engineer]
-	TP[Test Plan & Test Cases]
-	DEV[Developer]
-	CODE[Code & Tests]
-	DOC[Documentation Author]
-	DOCS[Documentation]
-	CR[Code Reviewer]
-	CRR[Code Review Report]
-	RM[Release Manager]
-	REL[Release Notes]
+	RE["<b>Requirements Engineer</b>"]
+	FS["📄 Feature Specification"]
+	AR["<b>Architect</b>"]
+	ADR["📐 Architecture Decision Records"]
+	PO["<b>Product Owner</b>"]
+	US["📋 User Stories / Tasks"]
+	QE["<b>Quality Engineer</b>"]
+	TP["✓ Test Plan & Test Cases"]
+	DEV["<b>Developer</b>"]
+	CODE["💻 Code & Tests"]
+	DOC["<b>Documentation Author</b>"]
+	DOCS["📚 Documentation"]
+	CR["<b>Code Reviewer</b>"]
+	CRR["✅ Code Review Report"]
+	RM["<b>Release Manager</b>"]
+	REL["🚀 Release Notes"]
+	PR["🔀 Pull Request"]
 
 	%% Meta-agent (operates on the workflow itself)
-	WE[Workflow Engineer]
-	WD[Workflow Documentation]
+	WE["<b>Workflow Engineer</b>"]
+	WD["⚙️ Workflow Documentation"]
 
-	%% Main vertical workflow
-	RE -- Produces --> FS
-	FS -- Consumed by --> AR
-    FS -- Consumed by --> PO
-	AR -- Produces --> ADR
-	ADR -- Consumed by --> PO
-	PO -- Produces --> US
-	US -- Consumed by --> QE
-	QE -- Produces --> TP
-	TP -- Consumed by --> DEV
-	DEV -- Produces --> CODE
-	CODE -- Consumed by --> DOC
-	DOC -- Produces --> DOCS
-	DOCS -- Consumed by --> CR
-	CR -- Produces --> CRR
-    CRR -- Consumed by --> DEV
-	CRR -- Consumed by --> RM
-	CODE -- Consumed by --> CR
-	TP -- Consumed by --> CR
-	US -- Consumed by --> DEV
-	ADR -- Consumed by --> QE
-    ADR -- Consumed by --> DEV
-	US -- Consumed by --> DOC
-	CODE -- Consumed by --> RM
-	DOCS -- Consumed by --> RM
-	REL -- Consumed by --> RM
-	RM -- Produces --> REL
+	%% Main vertical workflow with styled links
+	HUMAN == "Feature Request" ==> RE
+	HUMAN == "Workflow Improvement" ==> WE
+	RE -- "Produces" --> FS
+	FS -- "Consumed by" --> AR
+    FS -- "Consumed by" --> PO
+	AR -- "Produces" --> ADR
+	ADR -- "Consumed by" --> PO
+	PO -- "Produces" --> US
+	US -- "Consumed by" --> QE
+	QE -- "Produces" --> TP
+	TP -- "Consumed by" --> DEV
+	DEV -- "Produces" --> CODE
+	CODE -- "Consumed by" --> DOC
+	DOC -- "Produces" --> DOCS
+	DOCS -- "Consumed by" --> CR
+	CR -- "Produces" --> CRR
+    CRR -- "Consumed by" --> DEV
+	CRR -- "Consumed by" --> RM
+	CODE -- "Consumed by" --> CR
+	TP -- "Consumed by" --> CR
+	US -- "Consumed by" --> DEV
+	ADR -- "Consumed by" --> QE
+    ADR -- "Consumed by" --> DEV
+	US -- "Consumed by" --> DOC
+	CODE -- "Consumed by" --> RM
+	DOCS -- "Consumed by" --> RM
+	REL -- "Consumed by" --> RM
+	RM -- "Produces" --> REL
+	RM -- "Produces" --> PR
 
 	%% Workflow Engineer operates on workflow artifacts
-	WE -- Produces --> WD
-	WE -. Modifies .-> RE
-	WE -. Modifies .-> AR
-	WE -. Modifies .-> PO
-	WE -. Modifies .-> QE
-	WE -. Modifies .-> DEV
-	WE -. Modifies .-> DOC
-	WE -. Modifies .-> CR
-	WE -. Modifies .-> RM
+	WE -- "Produces" --> WD
+	WE -. "Modifies" .-> RE
+	WE -. "Modifies" .-> AR
+	WE -. "Modifies" .-> PO
+	WE -. "Modifies" .-> QE
+	WE -. "Modifies" .-> DEV
+	WE -. "Modifies" .-> DOC
+	WE -. "Modifies" .-> CR
+	WE -. "Modifies" .-> RM
 
 	%% Apply styles
+	class HUMAN human;
 	class RE,AR,PO,QE,DEV,DOC,CR,RM agent;
 	class WE metaagent;
-	class FS,US,ADR,TP,CODE,DOCS,CRR,REL,WD artifact;
+	class FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD artifact;
 ```
 
 _Agents produce and consume artifacts. Arrows show artifact creation and consumption. Communication for feedback/questions between agents (regarding consumed artifacts) is always possible, but intentionally omitted from the diagram for clarity._
@@ -141,8 +153,8 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ### 8. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
-- **Deliverables:** Release notes, versioning, deployment plan, and post-release checklist.
-- **Definition of Done:** Release is published, documented, and verified.
+- **Deliverables:** Pull request, release notes, versioning, deployment plan, and post-release checklist.
+- **Definition of Done:** PR is created and merged, release is published, documented, and verified.
 
 ### 9. Workflow Engineer (Meta-Agent)
 - **Goal:** Analyze, improve, and maintain the agent-based workflow.
@@ -165,8 +177,22 @@ This section describes the purpose and format of each artifact produced and cons
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |
+| **Pull Request** | Pull request created for merging the feature branch into main. Triggers CI/CD pipeline for validation and deployment. | GitHub Pull Request with title, description, and link to feature documentation. | GitHub repository |
 | **Release Notes** | Summary of changes, new features, bug fixes, and breaking changes for the release. | Markdown following conventional changelog format. Auto-generated by Versionize in CI. | `CHANGELOG.md` |
 | **Workflow Documentation** | Updated agent definitions and workflow documentation reflecting process improvements. | Agent markdown files and workflow docs. | `.github/agents/*.agent.md`, `docs/agents.md` |
+
+---
+
+## Branch Naming Conventions
+
+Different types of work use different branch prefixes to maintain clarity:
+
+| Work Type | Branch Prefix | Example | Used By Agent |
+|-----------|---------------|---------|---------------|
+| Feature Development | `feature/` | `feature/123-firewall-diff-display` | Requirements Engineer, Developer |
+| Workflow Improvements | `workflow/` | `workflow/add-security-agent` | Workflow Engineer |
+
+**Note:** The Requirements Engineer creates the feature branch at the start of the workflow. All subsequent agents (Architect, Product Owner, Quality Engineer, Developer, Documentation Author) work on the same branch until Release Manager creates the pull request.
 
 ---
 
@@ -176,14 +202,14 @@ Each agent hands off to the next by producing a specific deliverable. The follow
 
 | From Agent              | To Agent                | Handoff Trigger / Deliverable                        |
 |-------------------------|-------------------------|------------------------------------------------------|
-| Requirements Engineer   | Architect, Product Owner| Feature Specification, User Stories                  |
+| Requirements Engineer   | Architect (preferred), Product Owner (for simple features with no architecture changes) | Feature Specification |
 | Architect               | Product Owner, QE, DEV  | Architecture Decision Records (ADRs)                 |
 | Product Owner           | QE, DEV, DOC            | User Stories / Tasks with Acceptance Criteria        |
 | Quality Engineer        | Developer, Code Reviewer| Test Plan & Test Cases                               |
 | Developer               | Documentation Author, Code Reviewer, Release Manager | Code & Tests         |
 | Documentation Author    | Code Reviewer, Release Manager | Updated Documentation                      |
 | Code Reviewer           | Release Manager         | Code Review Report (approval or feedback)            |
-| Release Manager         | All (for feedback loop) | Release Notes, Release Feedback                      |
+| Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
 
 Handoffs are triggered when the deliverable is complete and meets the "Definition of Done" for that agent. Automation (e.g., GitHub Actions) can be used to detect completion and notify the next agent(s).
 

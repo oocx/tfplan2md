@@ -8,7 +8,11 @@ Agents work locally and produce artifacts as markdown files in the repository. T
 
 ## Entry Point
 
-The workflow begins when a **developer** (human) identifies a need for a new feature or improvement. The developer starts a chat session with the **Requirements Engineer** agent in Visual Studio Code, providing an initial feature request. The Requirements Engineer gathers additional details through conversation before producing the Feature Specification.
+The workflow begins when a **developer** (human) identifies a need:
+
+- **New Feature**: Start with the **Requirements Engineer** agent to gather requirements and create a Feature Specification
+- **Bug Fix / Incident**: Start with the **Support Engineer** agent to investigate and document the issue
+- **Workflow Improvement**: Start with the **Workflow Engineer** agent to modify the development process itself
 
 Throughout the workflow, the developer acts as the **project maintainer**, coordinating handoffs between agents and providing clarifications as needed.
 
@@ -29,6 +33,8 @@ flowchart TB
 	HUMAN(["👤 <b>Developer</b><br/>(Human)"])
 
 	%% Agents and artifacts in vertical order
+	SE["<b>Support Engineer</b>"]
+	IA["🔍 Issue Analysis"]
 	RE["<b>Requirements Engineer</b>"]
 	FS["📄 Feature Specification"]
 	AR["<b>Architect</b>"]
@@ -52,8 +58,12 @@ flowchart TB
 	WD["⚙️ Workflow Documentation"]
 
 	%% Main vertical workflow with styled links
+	HUMAN == "Bug/Incident" ==> SE
 	HUMAN == "Feature Request" ==> RE
 	HUMAN == "Workflow Improvement" ==> WE
+	SE -- "Produces" --> IA
+	IA -- "Consumed by" --> DEV
+	IA -- "Consumed by" --> CR
 	RE -- "Produces" --> FS
 	FS -- "Consumed by" --> AR
     FS -- "Consumed by" --> PO
@@ -95,38 +105,44 @@ flowchart TB
 
 	%% Apply styles
 	class HUMAN human;
-	class RE,AR,PO,QE,DEV,DOC,CR,RM agent;
+	class SE,RE,AR,PO,QE,DEV,DOC,CR,RM agent;
 	class WE metaagent;
-	class FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD artifact;
+	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD artifact;
 ```
 
 _Agents produce and consume artifacts. Arrows show artifact creation and consumption. Communication for feedback/questions between agents (regarding consumed artifacts) is always possible, but intentionally omitted from the diagram for clarity._
 
-1. **Requirements Engineer** gathers and clarifies requirements.
-2. **Architect** designs the solution and documents decisions.
-3. **Product Owner** creates and prioritizes actionable work items.
-4. **Quality Engineer** defines the test plan and cases.
-5. **Developer** implements the feature and tests.
-6. **Documentation Author** updates all relevant documentation (markdown files in the repository).
-7. **Code Reviewer** reviews and approves the work.
-8. **Release Manager** prepares, coordinates, and executes the release.
+1. **Support Engineer** investigates bugs, incidents, and technical problems.
+2. **Requirements Engineer** gathers and clarifies requirements for new features.
+3. **Architect** designs the solution and documents decisions.
+4. **Product Owner** creates and prioritizes actionable work items.
+5. **Quality Engineer** defines the test plan and cases.
+6. **Developer** implements features/fixes and tests.
+7. **Documentation Author** updates all relevant documentation (markdown files in the repository).
+8. **Code Reviewer** reviews and approves the work.
+9. **Release Manager** prepares, coordinates, and executes the release.
 
 **Meta-Agent:**
 - **Workflow Engineer** improves and maintains the agent workflow itself (operates outside the normal feature flow).
 
 ## Agent Roles & Responsibilities
 
-### 1. Requirements Engineer
-- **Goal:** Gather, clarify, and document user needs.
+### 1. Support Engineer
+- **Goal:** Investigate and document bugs, incidents, and technical issues.
+- **Deliverables:** Issue analysis with root cause, diagnostic data, and suggested fix approach.
+- **Definition of Done:** Issue is clearly documented and ready for Developer to implement fix.
+
+### 2. Requirements Engineer
+- **Goal:** Gather, clarify, and document user needs for new features.
 - **Deliverables:** High level feature specification from an end-user perspective
 - **Definition of Done:** Requirements are clear, unambiguous, and approved.
 
-### 2. Architect
+### 3. Architect
 - **Goal:** Design the technical solution and document decisions.
 - **Deliverables:** Architecture overview, ADRs, technology choices.
 - **Definition of Done:** Architecture is documented and approved.
 
-### 3. Product Owner
+### 4. Product Owner
 - **Goal:** Translate requirements and architecture into actionable work items.
 - **Deliverables:** User stories/tasks with acceptance criteria and priorities.
 - **Definition of Done:** Work items are clear, actionable, and prioritized.
@@ -136,27 +152,27 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Deliverables:** Test plan, test cases, quality criteria.
 - **Definition of Done:** Test plan covers all acceptance criteria.
 
-### 5. Developer
+### 6. Developer
 - **Goal:** Implement features and tests as specified.
 - **Deliverables:** Code, tests, and passing CI.
 - **Definition of Done:** Code and tests meet requirements and pass all checks.
 
-### 6. Documentation Author
+### 7. Documentation Author
 - **Goal:** Update and maintain all relevant documentation.
 - **Deliverables:** Updated user and developer docs.
 - **Definition of Done:** Documentation is accurate and complete.
 
-### 7. Code Reviewer
+### 8. Code Reviewer
 - **Goal:** Ensure code quality and process adherence.
 - **Deliverables:** Code review feedback or approval.
 - **Definition of Done:** Code is reviewed and approved or sent back for rework.
 
-### 8. Release Manager
+### 9. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
 - **Deliverables:** Pull request, release notes, versioning, deployment plan, and post-release checklist.
 - **Definition of Done:** PR is created and merged, release is published, documented, and verified.
 
-### 9. Workflow Engineer (Meta-Agent)
+### 10. Workflow Engineer (Meta-Agent)
 - **Goal:** Analyze, improve, and maintain the agent-based workflow.
 - **Deliverables:** New or updated agent definitions, workflow documentation updates, PRs with workflow changes.
 - **Definition of Done:** Workflow changes are documented, committed, and PR is created.
@@ -170,6 +186,7 @@ This section describes the purpose and format of each artifact produced and cons
 
 | Artifact | Purpose | Format | Location |
 |----------|---------|--------|----------|
+| **Issue Analysis** | Documents bug reports, diagnostic information, root cause analysis, and suggested fix approach. Serves as the foundation for implementing fixes. | Markdown document with sections: Problem Description, Steps to Reproduce, Root Cause Analysis, Suggested Fix Approach, Related Tests. | `docs/issues/<issue-description>/analysis.md` |
 | **Feature Specification** | Documents user needs, goals, and scope from an end-user perspective. Serves as the foundation for architecture and planning. | Markdown document with sections: Overview, User Goals, Scope, Out of Scope, Success Criteria. | `docs/features/<feature-name>/specification.md` |
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/<feature-name>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress. | Markdown document with: Title, Description, Acceptance Criteria checklist, Priority. | `docs/features/<feature-name>/tasks.md` |
@@ -190,9 +207,10 @@ Different types of work use different branch prefixes to maintain clarity:
 | Work Type | Branch Prefix | Example | Used By Agent |
 |-----------|---------------|---------|---------------|
 | Feature Development | `feature/` | `feature/123-firewall-diff-display` | Requirements Engineer, Developer |
+| Bug Fixes / Incidents | `fix/` | `fix/docker-hub-secret-in-release-workflow` | Support Engineer, Developer |
 | Workflow Improvements | `workflow/` | `workflow/add-security-agent` | Workflow Engineer |
 
-**Note:** The Requirements Engineer creates the feature branch at the start of the workflow. All subsequent agents (Architect, Product Owner, Quality Engineer, Developer, Documentation Author) work on the same branch until Release Manager creates the pull request.
+**Note:** The Requirements Engineer creates the feature branch at the start of the feature workflow. The Support Engineer creates the fix branch at the start of the bug fix workflow. All subsequent agents work on the same branch until Release Manager creates the pull request.
 
 ---
 
@@ -202,13 +220,14 @@ Each agent hands off to the next by producing a specific deliverable. The follow
 
 | From Agent              | To Agent                | Handoff Trigger / Deliverable                        |
 |-------------------------|-------------------------|------------------------------------------------------|
+| Support Engineer        | Developer, Code Reviewer| Issue Analysis with root cause and fix approach      |
 | Requirements Engineer   | Architect (preferred), Product Owner (for simple features with no architecture changes) | Feature Specification |
 | Architect               | Product Owner, QE, DEV  | Architecture Decision Records (ADRs)                 |
 | Product Owner           | QE, DEV, DOC            | User Stories / Tasks with Acceptance Criteria        |
 | Quality Engineer        | Developer, Code Reviewer| Test Plan & Test Cases                               |
 | Developer               | Documentation Author, Code Reviewer, Release Manager | Code & Tests         |
 | Documentation Author    | Code Reviewer, Release Manager | Updated Documentation                      |
-| Code Reviewer           | Release Manager         | Code Review Report (approval or feedback)            |
+| Code Reviewer           | Developer (if rework needed), Release Manager | Code Review Report (approval or feedback)            |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
 
 Handoffs are triggered when the deliverable is complete and meets the "Definition of Done" for that agent. Automation (e.g., GitHub Actions) can be used to detect completion and notify the next agent(s).

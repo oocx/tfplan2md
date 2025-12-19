@@ -2,8 +2,8 @@
 description: Create actionable user stories and tasks from specifications
 name: Product Owner
 target: vscode
-model: Gemini 3 Flash
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'microsoftdocs/*', 'github/*', 'memory/*']
+model: Gemini 3 Flash (Preview)
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'microsoftdocs/*', 'github/*', 'memory/*', 'runInTerminal']
 handoffs:
   - label: Define Test Plan
     agent: "Quality Engineer"
@@ -136,11 +136,15 @@ Your work is complete when:
 
 ## Committing Your Work
 
-After the tasks are approved:
-```bash
-git add docs/features/<feature-name>/tasks.md
-git commit -m "docs: add tasks for <feature-name>"
-```
+**After the tasks are approved by the maintainer:**
+
+1. **Commit locally**:
+   ```bash
+   git add docs/features/<feature-name>/tasks.md
+   git commit -m "docs: add tasks for <feature-name>"
+   ```
+
+2. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
 
 ## Handoff
 

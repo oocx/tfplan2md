@@ -3,7 +3,7 @@ description: Design technical solutions and document architecture decisions
 name: Architect
 target: vscode
 model: Gemini 3 Pro (Preview)
-tools: ['search', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'memory/*', 'mcp-mermaid/*', 'createFile', 'editFile']
+tools: ['search', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'memory/*', 'mcp-mermaid/*', 'createFile', 'editFile', 'runInTerminal']
 handoffs:
   - label: Create User Stories
     agent: "Product Owner"
@@ -215,17 +215,28 @@ Your work is complete when:
 - [ ] You have analyzed the feature requirements against existing architecture
 - [ ] The technical approach is clearly documented (or documented as "no changes needed")
 - [ ] Alternatives were considered and trade-offs explained (if applicable)
-- [ ] You have analyzed the feature requirements against existing architecture
-- [ ] The technical approach is clearly documented (or documented as "no changes needed")
-- [ ] Alternatives were considered and trade-offs explained (if applicable)
 - [ ] The design aligns with existing architecture patterns
-- [ ] Changes are committed to the feature branch
 - [ ] The maintainer has approved the architecture decision
+- [ ] Changes are committed to the feature branch
 - [ ] **No source code was written** - only documentation files were created/modified
+
+## Committing Your Work
+
+**After the architecture is approved by the maintainer:**
+
+1. **Ask for confirmation**: "Is the architecture approved? Can I commit these changes?"
+
+2. **Commit locally**:
+   ```bash
+   git add docs/features/<feature-name>/architecture.md
+   git commit -m "docs: add architecture for <feature-name>"
+   ```
+
+3. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
 
 ## Handoff
 
-After the ADR is approved, use the handoff buttons to transition to the **Product Owner** or **Quality Engineer** agents.
+After committing, use the handoff buttons to transition to the **Product Owner** or **Quality Engineer** agents.
 
 ## Communication Guidelines
 

@@ -2,8 +2,8 @@
 description: Define test plans and test cases for features
 name: Quality Engineer
 target: vscode
-model: Gemini 3 Pro
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'runTests', 'problems', 'microsoftdocs/*', 'github/*']
+model: Gemini 3 Pro (Preview)
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'runTests', 'problems', 'microsoftdocs/*', 'github/*', 'runInTerminal']
 handoffs:
   - label: Start Implementation
     agent: "Developer"
@@ -168,11 +168,15 @@ Your work is complete when:
 
 ## Committing Your Work
 
-After the test plan is approved:
-```bash
-git add docs/features/<feature-name>/test-plan.md
-git commit -m "docs: add test plan for <feature-name>"
-```
+**After the test plan is approved by the maintainer:**
+
+1. **Commit locally**:
+   ```bash
+   git add docs/features/<feature-name>/test-plan.md
+   git commit -m "docs: add test plan for <feature-name>"
+   ```
+
+2. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
 
 ## Handoff
 

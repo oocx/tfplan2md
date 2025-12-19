@@ -63,7 +63,6 @@ flowchart TB
 	HUMAN == "Workflow Improvement" ==> WE
 	SE -- "Produces" --> IA
 	IA -- "Consumed by" --> DEV
-	IA -- "Consumed by" --> CR
 	RE -- "Produces" --> FS
 	FS -- "Consumed by" --> AR
     FS -- "Consumed by" --> PO
@@ -220,7 +219,7 @@ Each agent hands off to the next by producing a specific deliverable. The follow
 
 | From Agent              | To Agent                | Handoff Trigger / Deliverable                        |
 |-------------------------|-------------------------|------------------------------------------------------|
-| Support Engineer        | Developer, Code Reviewer| Issue Analysis with root cause and fix approach      |
+| Support Engineer        | Developer               | Issue Analysis with root cause and fix approach      |
 | Requirements Engineer   | Architect (preferred), Product Owner (for simple features with no architecture changes) | Feature Specification |
 | Architect               | Product Owner, QE, DEV  | Architecture Decision Records (ADRs)                 |
 | Product Owner           | QE, DEV, DOC            | User Stories / Tasks with Acceptance Criteria        |

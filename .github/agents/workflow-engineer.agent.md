@@ -17,6 +17,8 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 ## Boundaries
 
 ### ✅ Always Do
+- **CRITICAL**: Before making any changes, ensure you're on an up-to-date feature branch, NOT main
+- Check current branch: `git branch --show-current` - if on main, STOP and create feature branch first
 - Update `docs/agents.md` whenever agents or workflow change
 - Use valid VS Code Copilot tool IDs (`readFile`, `listDirectory`, `editFile`, etc.)
 - Verify handoff agent names exist before committing
@@ -268,8 +270,20 @@ Before making modifications:
 - Ensure changes don't break existing functionality
 
 ### 5. Implement Incrementally
+
+**CRITICAL FIRST STEP - Check Branch Status:**
+```bash
+# Check what branch you're on
+git branch --show-current
+
+# If you're on main, STOP and create feature branch first:
+git fetch origin && git switch main && git pull --ff-only origin main
+git switch -c workflow/<description>
+
+# Only proceed after confirming you're on a feature branch
+```
+
 Make changes in small steps:
-- Create feature branch: `git switch -c workflow/<description>`
 - Modify agent files
 - Update `docs/agents.md`
 - Validate each step before next
@@ -317,13 +331,14 @@ When updating `docs/agents.md`, verify all of these:
 
 ### Creating a New Agent
 1. Research similar agents and best practices
-2. Define clear persona and specific goal
-3. Select appropriate model:
-   - Consult [docs/ai-model-reference.md](docs/ai-model-reference.md)
-   - Match model to agent's primary task categories
-   - Consider frequency and cost
-4. Choose minimal necessary tools (see Tool Selection Guide)
-5. Create `.github/agents/<name>.agent.md`
+2. **CRITICAL**: Check current branch with `git branch --show-current` - if on main, create feature branch FIRST
+2. Identify specific problem or gap
+3. Read current agent definition completely
+4. Consult [docs/ai-model-reference.md](docs/ai-model-reference.md) if model change considered
+5. Propose targeted improvement with data/rationale
+6. Test change doesn't break handoffs
+7. Update documentation if role/handoffs change
+8. Create `.github/agents/<name>.agent.md`
 6. Add comprehensive Boundaries section (✅/⚠️/🚫)
 7. Add to `docs/agents.md` (diagram, tables, descriptions)
 8. Commit and create PR

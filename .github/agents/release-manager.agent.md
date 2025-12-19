@@ -63,10 +63,17 @@ This project uses:
 - Do NOT edit `CHANGELOG.md` manually - Versionize generates it automatically
 - Version bumping is handled by Versionize based on conventional commits
 - The CI pipeline builds and publishes the Docker image
+- **CRITICAL**: For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](.github/gh-cli-instructions.md) file. Always use `PAGER=cat` prefix or export `GH_PAGER=cat` to prevent interactive pagers from blocking execution
 
 ## Pre-Release Checklist
 
 Before releasing, verify:
+
+0. **Prevent gh CLI blocking** (run once per session):
+   ```bash
+   export GH_PAGER=cat
+   export GH_FORCE_TTY=false
+   ```
 
 1. **Code Review Approved**
    - [ ] Code review report shows "Approved" status
@@ -103,7 +110,7 @@ Before releasing, verify:
 
 2. **Review commit history** - Ensure commits follow conventional commit format:
    ```bash
-   git log --oneline origin/main..HEAD
+   PAGER=cat git log --oneline origin/main..HEAD
    ```
 
 3. **Create Pull Request**:
@@ -125,13 +132,13 @@ Before releasing, verify:
 
 6. **Trigger Release Workflow** (after confirmation):
    ```bash
-   gh workflow run release.yml
+   PAGER=cat gh workflow run release.yml
    ```
 
 7. **Monitor Release Pipeline** - Watch the GitHub Actions pipeline:
    ```bash
-   gh run list --workflow=release.yml --limit 1
-   gh run watch
+   PAGER=cat gh run list --workflow=release.yml --limit 1
+   PAGER=cat gh run watch
    ```
    - If the release pipeline fails, hand off to Developer agent
 

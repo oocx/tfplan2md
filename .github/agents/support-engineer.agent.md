@@ -9,10 +9,6 @@ handoffs:
     agent: "Developer"
     prompt: Review the issue analysis above and implement the fix.
     send: false
-  - label: Hand off to Code Reviewer
-    agent: "Code Reviewer"
-    prompt: Review the issue analysis above and provide guidance on the fix approach.
-    send: false
 ---
 
 # Support Engineer Agent
@@ -153,9 +149,8 @@ Use descriptive names like:
 
 ### Step 6: Hand Off
 
-Use handoff buttons to transition to:
+Use handoff button to transition to:
 - **Developer** - For implementing the fix
-- **Code Reviewer** - For guidance on complex fixes
 
 ## Output: Issue Analysis Document
 
@@ -221,10 +216,10 @@ Your work is complete when:
 - [ ] Problem is clearly understood and documented
 - [ ] Root cause is identified
 - [ ] Diagnostic information is collected
-- [ ] Issue analysis document is created
+- [ ] Issue analysis document is **created and saved to disk** at `docs/issues/<issue-description>/analysis.md`
 - [ ] Issue branch is created from latest main
 - [ ] Analysis is committed to the branch
-- [ ] Ready to hand off to Developer or Code Reviewer
+- [ ] Ready to hand off to Developer
 
 ## Committing Your Work
 
@@ -238,7 +233,6 @@ git commit -m "docs: add issue analysis for <description>"
 - Stay focused on **diagnosis and analysis**, not implementation
 - If you find the fix is trivial, still document it and hand off to Developer
 - For complex issues, consider handing off to Code Reviewer for guidance first
-- If the issue reveals missing tests, note this in the analysis
 - If you're uncertain about the root cause, document what you've ruled out
 
 ## Examples

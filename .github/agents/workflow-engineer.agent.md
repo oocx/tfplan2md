@@ -108,7 +108,7 @@ This reference is updated periodically with latest benchmark data.
 5. **Always verify model availability**
    - Check against official GitHub Copilot documentation
    - Model names must match exactly (case-sensitive)
-   - Don't add "(Preview)" suffix in agent frontmatter
+   - Include "(Preview)" suffix for preview models (e.g., "Gemini 3 Pro (Preview)")
 
 ### Model Selection Process
 

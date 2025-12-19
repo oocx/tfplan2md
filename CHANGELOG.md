@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.15.0"></a>
+## [0.15.0](https://github.com/oocx/tfplan2md/compare/v0.14.0...v0.15.0) (2025-12-19)
+
+### ✨ Features
+
+* enhance Architect agent documentation with new tools and clarify constraints ([7a0842c](https://github.com/oocx/tfplan2md/commit/7a0842c8f79982b3604a908c5c12fdef78aa6dbb))
+* implement cumulative release notes for docker deployments ([d3d89a8](https://github.com/oocx/tfplan2md/commit/d3d89a89ac3386b9953a20e36a68f91165947092))
+* show before and after values for modified firewall rules ([b3b5bbd](https://github.com/oocx/tfplan2md/commit/b3b5bbdc4f9db9dc994e43d6e1931d81be6dcc4d))
+
+### 🐛 Bug Fixes
+
+* require Requirements Engineer to use local git commands for branch creation ([27a3334](https://github.com/oocx/tfplan2md/commit/27a3334d6d38b85da30d9083fd1b898d42ace265))
+
+### 📚 Documentation
+
+* add architecture and tasks for cumulative release notes ([08c516d](https://github.com/oocx/tfplan2md/commit/08c516d4db54be0b0240d974c610859c086739bb))
+* add feature specification for cumulative release notes ([3a75a12](https://github.com/oocx/tfplan2md/commit/3a75a1273795ca21d1a15503f5d5d18724928638))
+* add test plan for cumulative release notes ([91aba8a](https://github.com/oocx/tfplan2md/commit/91aba8a190ae3f0d14e5a0e930a7ff66d398b75b))
+
 <a name="0.14.0"></a>
 ## [0.14.0](https://github.com/oocx/tfplan2md/compare/v0.13.1...v0.14.0) (2025-12-18)
 

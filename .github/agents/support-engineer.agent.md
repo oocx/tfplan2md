@@ -95,11 +95,11 @@ Collect relevant data:
 
 **Commands to use:**
 ```bash
-# Check workflow runs
-gh run list --limit 5
+# Check workflow runs (non-blocking)
+PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
 
-# View specific workflow run
-gh run view <run-id> --log-failed
+# View specific workflow run (non-blocking)
+PAGER=cat gh run view <run-id> --log-failed
 
 # Check git history
 git log --oneline --since="1 week ago" -- <relevant-path>
@@ -113,6 +113,8 @@ dotnet test --verbosity normal
 # Check for problems in workspace
 # Use the 'problems' tool to see diagnostics
 ```
+
+**Important:** For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](.github/gh-cli-instructions.md) file. Always use `PAGER=cat` prefix to prevent interactive pagers from blocking execution.
 
 ### Step 3: Analyze the Issue
 

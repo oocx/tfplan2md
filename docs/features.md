@@ -91,6 +91,25 @@ Example usage in a Scriban template:
 
 This grouping is enabled by default and cannot be disabled (it keeps reports concise and improves readability for multi-module plans).
 
+## CI/CD Integration
+
+### Cumulative Release Notes
+
+When creating GitHub releases and Docker deployments, the release workflow automatically generates cumulative release notes that include all changes since the last release. This is particularly useful when not every version is deployed to Docker Hub.
+
+**How it works:**
+- The release workflow queries the GitHub API to find the last published release
+- It extracts all changelog sections between that version and the current version being released
+- GitHub release notes include accumulated changes from all intermediate versions
+- If no previous release exists (first release), only the current version's changes are included
+
+**Example:**
+- Last Docker release: v0.8.0
+- Versions created since then: v0.9.0, v0.10.0, v0.11.0
+- When releasing v0.12.0, the release notes will include changes from v0.9.0, v0.10.0, v0.11.0, and v0.12.0
+
+This ensures Docker Hub users can see the complete set of changes included in each deployment, even when intermediate versions were skipped.
+
 ## Templates
 
 Reports are generated using customizable templates powered by [Scriban](https://github.com/scriban/scriban).

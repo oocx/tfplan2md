@@ -35,7 +35,9 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 |----------|------|---------|----------|
 | PR Validation | `pr-validation.yml` | Pull requests to `main` | Format check, build, test, vulnerability scan |
 | CI | `ci.yml` | Push to `main` | Build, test, run Versionize to bump version and create tag |
-| Release | `release.yml` | Version tags (`v*`) | Create GitHub Release with changelog, build and push Docker image |
+| Release | `release.yml` | Version tags (`v*`) or manual | Create GitHub Release with cumulative changelog, build and push Docker image |
+
+**Release Notes:** The release workflow generates cumulative release notes that include all changes since the last GitHub release. This ensures Docker deployments contain complete change history even when intermediate versions are not released.
 
 ### Code Quality
 - **Analyzers**: Microsoft.CodeAnalysis.NetAnalyzers with `TreatWarningsAsErrors`

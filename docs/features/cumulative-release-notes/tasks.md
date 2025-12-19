@@ -18,12 +18,12 @@ Reference:
 Create a robust bash script or command sequence that identifies the last GitHub release version and extracts all relevant changelog entries from `CHANGELOG.md`.
 
 **Acceptance Criteria:**
-- [ ] Uses `gh release list --limit 1 --json tagName --jq '.[0].tagName'` (or similar) to find the last release.
-- [ ] If no previous release exists, extracts only the current version's section.
-- [ ] If a previous release exists, extracts all sections from the current version (inclusive) down to the last release (exclusive).
-- [ ] Preserves all Markdown formatting, including headers, lists, and links.
-- [ ] Handles version strings with and without the `v` prefix consistently.
-- [ ] Logic is idempotent (re-running for the same version produces the same output).
+- [x] Uses `gh release list --limit 1 --json tagName --jq '.[0].tagName'` (or similar) to find the last release.
+- [x] If no previous release exists, extracts only the current version's section.
+- [x] If a previous release exists, extracts all sections from the current version (inclusive) down to the last release (exclusive).
+- [x] Preserves all Markdown formatting, including headers, lists, and links.
+- [x] Handles version strings with and without the `v` prefix consistently.
+- [x] Logic is idempotent (re-running for the same version produces the same output).
 
 **Dependencies:** None
 
@@ -37,11 +37,11 @@ Create a robust bash script or command sequence that identifies the last GitHub 
 Integrate the new extraction logic into the `.github/workflows/release.yml` file.
 
 **Acceptance Criteria:**
-- [ ] The `Extract changelog for version` step in `release.yml` is replaced with the new logic.
-- [ ] The `release-notes.md` file generated contains the accumulated changes.
-- [ ] The `softprops/action-gh-release` step uses the accumulated `release-notes.md`.
-- [ ] The workflow correctly handles both `push: tags` and `workflow_dispatch` triggers.
-- [ ] The `GITHUB_TOKEN` has sufficient permissions to run `gh release list`.
+- [x] The `Extract changelog for version` step in `release.yml` is replaced with the new logic.
+- [x] The `release-notes.md` file generated contains the accumulated changes.
+- [x] The `softprops/action-gh-release` step uses the accumulated `release-notes.md`.
+- [x] The workflow correctly handles both `push: tags` and `workflow_dispatch` triggers.
+- [x] The `GITHUB_TOKEN` has sufficient permissions to run `gh release list`.
 
 **Dependencies:** Task 1
 
@@ -55,11 +55,11 @@ Integrate the new extraction logic into the `.github/workflows/release.yml` file
 Validate the implementation against various scenarios using a test script or manual verification with mock data.
 
 **Acceptance Criteria:**
-- [ ] Test Case 1: First release (no previous releases) -> Only current version notes.
-- [ ] Test Case 2: Consecutive versions (v0.1.0 then v0.1.1) -> Only v0.1.1 notes.
-- [ ] Test Case 3: Version gap (v0.1.0 then v0.5.0) -> Notes for v0.1.1 through v0.5.0 (if they exist in CHANGELOG.md).
-- [ ] Test Case 4: Re-run of same version -> Same notes as previous run.
-- [ ] Test Case 5: Version not found in CHANGELOG.md -> Graceful fallback (e.g., "Release vX.Y.Z").
+- [x] Test Case 1: First release (no previous releases) -> Only current version notes.
+- [x] Test Case 2: Consecutive versions (v0.1.0 then v0.1.1) -> Only v0.1.1 notes.
+- [x] Test Case 3: Version gap (v0.1.0 then v0.5.0) -> Notes for v0.1.1 through v0.5.0 (if they exist in CHANGELOG.md).
+- [x] Test Case 4: Re-run of same version -> Same notes as previous run.
+- [x] Test Case 5: Version not found in CHANGELOG.md -> Graceful fallback (e.g., "Release vX.Y.Z").
 
 **Dependencies:** Task 2
 
@@ -73,9 +73,9 @@ Validate the implementation against various scenarios using a test script or man
 Ensure all documentation is up to date and the feature branch is ready for merge.
 
 **Acceptance Criteria:**
-- [ ] `docs/features/cumulative-release-notes/tasks.md` is committed.
-- [ ] Architecture and Specification documents are updated if any implementation details changed.
-- [ ] Feature branch is clean and follows project conventions.
+- [x] `docs/features/cumulative-release-notes/tasks.md` is committed.
+- [x] Architecture and Specification documents are updated if any implementation details changed.
+- [x] Feature branch is clean and follows project conventions.
 
 **Dependencies:** Task 3
 

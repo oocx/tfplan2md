@@ -202,7 +202,28 @@ code block line 2
         Normalize(output).Should().Be(string.Empty);
     }
 
-    private static string RunExtraction(string changelogFile, string currentVersion, string? lastVersion)
+    [Fact]
+    public void Works_with_posix_awk()
+    {
+        SkipIfBashUnavailable();
+
+        var output = RunExtraction("changelog-full.md", "0.12.0", "0.11.0", usePosixAwk: true);
+
+        var expected = """
+<a name="0.12.0"></a>
+## [0.12.0] - 2025-12-18
+
+### ✨ Features
+* feature twelve
+
+### 🐛 Bug Fixes
+* fix twelve
+""";
+
+        Normalize(output).Should().Be(Normalize(expected));
+    }
+
+    private static string RunExtraction(string changelogFile, string currentVersion, string? lastVersion, bool usePosixAwk = false)
     {
         var scriptPath = Path.Combine(RepoRoot.Value, "scripts", "extract-changelog.sh");
         var changelogPath = Path.Combine(RepoRoot.Value, "tests", "Oocx.TfPlan2Md.Tests", "TestData", changelogFile);
@@ -221,6 +242,11 @@ code block line 2
             UseShellExecute = false,
             WorkingDirectory = RepoRoot.Value
         };
+
+        if (usePosixAwk)
+        {
+            startInfo.Environment["POSIXLY_CORRECT"] = "1";
+        }
 
         foreach (var argument in arguments)
         {

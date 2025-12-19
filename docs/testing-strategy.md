@@ -22,6 +22,7 @@ Test JSON parsing and markdown generation end-to-end. As the application is dist
 - **Coverage**: Coverlet 6.0.4
 - **Skippable Tests**: Xunit.SkippableFact 1.5.23 (for conditional test execution when Docker is unavailable)
 - **Shared Fixtures**: `DockerFixture` provides a shared Docker container context for integration tests using xUnit's `IAsyncLifetime` and `ICollectionFixture`
+- **Shell compatibility**: Release script tests include a POSIX-only run (`POSIXLY_CORRECT=1`) to ensure no GNU awk extensions are required.
 
 > Note: Tests were migrated from `xUnit.Assert` to `AwesomeAssertions` to improve readability and expressiveness of test assertions.
 

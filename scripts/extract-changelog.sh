@@ -17,9 +17,10 @@ if [[ ! -f "$CHANGELOG_PATH" ]]; then
 fi
 
 awk -v current="$CURRENT_VERSION" -v last="$LAST_VERSION" '
-  function header_version(line,   m) {
-    if (match(line, /^##[[:space:]]+\[?v?([0-9]+\.[0-9]+\.[0-9]+)\]?/, m)) {
-      return m[1];
+  function header_version(line) {
+    if (line ~ /^##[[:space:]]+\[?v?[0-9]+\.[0-9]+\.[0-9]+\]?/) {
+      match(line, /[0-9]+\.[0-9]+\.[0-9]+/);
+      return substr(line, RSTART, RLENGTH);
     }
     return "";
   }

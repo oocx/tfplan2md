@@ -114,6 +114,7 @@ git commit -m "feat(api)!: rename TerraformPlan to PlanResult"
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - [Git](https://git-scm.com/)
 - [Docker](https://www.docker.com/) (for running integration tests)
+- **Shell tools**: Keep release scripts POSIX-compatible; avoid GNU awk-only extensions (e.g., function-local params, match capture arrays). Use `POSIXLY_CORRECT=1` when testing shell changes locally.
 
 ### Getting Started
 

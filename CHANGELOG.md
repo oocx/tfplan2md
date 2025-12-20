@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.17.0"></a>
+## [0.17.0](https://github.com/oocx/tfplan2md/compare/v0.16.5...v0.17.0) (2025-12-20)
+
+### ✨ Features
+
+* add resource type breakdown to summary table ([16cd606](https://github.com/oocx/tfplan2md/commit/16cd606fd775d5210bb6decaced8ff2d01d19cd8))
+
+### 📚 Documentation
+
+* add architecture for summary resource type breakdown ([dd8457d](https://github.com/oocx/tfplan2md/commit/dd8457d31b2846fdcc7a3451b2377670d182387a))
+* add feature specification for summary resource type breakdown ([5883ac2](https://github.com/oocx/tfplan2md/commit/5883ac2e887213ae8ad19b33f785e95f9feb1f39))
+* add procedure for fixing agents during feature development ([188163d](https://github.com/oocx/tfplan2md/commit/188163d0521a4f1ea4cf14beee7e6f9f12d965c3))
+* add tasks for summary resource type breakdown ([8ad1733](https://github.com/oocx/tfplan2md/commit/8ad17332c25d2beb082505294d23c484e73b2e31))
+* add test plan for summary resource type breakdown ([1b322de](https://github.com/oocx/tfplan2md/commit/1b322deed9e770962704bde56aaa3fa8c9d7903a))
+
 <a name="0.16.5"></a>
 ## [0.16.5](https://github.com/oocx/tfplan2md/compare/v0.16.4...v0.16.5) (2025-12-20)
 

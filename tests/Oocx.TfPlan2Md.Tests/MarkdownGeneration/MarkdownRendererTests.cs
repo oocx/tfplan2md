@@ -1,3 +1,4 @@
+using System;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -87,6 +88,70 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void Render_SummaryTable_ShowsResourceTypeBreakdown()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/create-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        markdown.Should().Contain("| Resource Types |");
+        markdown.Should().Contain("| ➕ Add | 2 |");
+        markdown.Should().Contain("1 azurerm_resource_group<br/>");
+        markdown.Should().Contain("1 azurerm_storage_account");
+        markdown.Should().NotContain("<br/> |");
+
+        var addRowIndex = markdown.IndexOf("| ➕ Add |", StringComparison.Ordinal);
+        var resourceGroupIndex = markdown.IndexOf("azurerm_resource_group", addRowIndex, StringComparison.Ordinal);
+        var storageAccountIndex = markdown.IndexOf("azurerm_storage_account", addRowIndex, StringComparison.Ordinal);
+        resourceGroupIndex.Should().BeGreaterThan(-1);
+        storageAccountIndex.Should().BeGreaterThan(-1);
+        resourceGroupIndex.Should().BeLessThan(storageAccountIndex);
+    }
+
+    [Fact]
+    public void Render_SummaryTable_NoTrailingBreakInAnyAction()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert - no trailing <br/> at end of any summary row
+        markdown.Should().NotContain("<br/> |");
+
+        // And ensure multiple types render on separate lines for Add
+        markdown.Should().Contain("azuredevops_project<br/>")
+            .And.Contain("azurerm_resource_group")
+            .And.Contain("azurerm_storage_account");
+    }
+
+    [Fact]
+    public void Render_SummaryTable_ShowsEmptyCellWhenNoActionResources()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/create-only-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        markdown.Should().Contain("| ❌ Destroy | 0 |");
+    }
+
+    [Fact]
     public void Render_EmptyPlan_ProducesValidMarkdown()
     {
         // Arrange
@@ -101,10 +166,10 @@ public class MarkdownRendererTests
         // Assert
         markdown.Should().Contain("## Summary")
             .And.Contain("**Terraform Version:** 1.14.0")
-            .And.Contain("➕ Add | 0")
-            .And.Contain("🔄 Change | 0")
-            .And.Contain("❌ Destroy | 0")
-            .And.Contain("**Total** | **0**");
+            .And.Contain("| ➕ Add | 0 |")
+            .And.Contain("| 🔄 Change | 0 |")
+            .And.Contain("| ❌ Destroy | 0 |")
+            .And.Contain("| **Total** | **0** | |");
 
         // And resource changes section should show No changes (module_changes is empty)
         markdown.Should().Contain("## Resource Changes")
@@ -184,7 +249,7 @@ public class MarkdownRendererTests
         // Assert
         markdown.Should().Contain("➕ azurerm_resource_group.main")
             .And.Contain("➕ azurerm_storage_account.main")
-            .And.Contain("➕ Add | 2")
+            .And.Contain("| ➕ Add | 2 |")
             .And.Contain("Module: root");
     }
 
@@ -487,7 +552,15 @@ public class MarkdownRendererTests
             FormatVersion = "1.0",
             Changes = [],
             ModuleChanges = [],
-            Summary = new SummaryModel()
+            Summary = new SummaryModel
+            {
+                ToAdd = new ActionSummary(0, []),
+                ToChange = new ActionSummary(0, []),
+                ToDestroy = new ActionSummary(0, []),
+                ToReplace = new ActionSummary(0, []),
+                NoOp = new ActionSummary(0, []),
+                Total = 0
+            }
         };
         var tempFile = Path.GetTempFileName();
         File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");

@@ -76,13 +76,13 @@ terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md 
 
 ## Summary
 
-| Action | Count |
-|--------|-------|
-| ➕ Add | 3 |
-| 🔄 Change | 1 |
-| ♻️ Replace | 1 |
-| ❌ Destroy | 1 |
-| **Total** | **6** |
+| Action | Count | Resource Types |
+|--------|-------|----------------|
+| ➕ Add | 3 | 1 azurerm_resource_group<br/>2 azurerm_storage_account |
+| 🔄 Change | 1 | 1 azurerm_key_vault |
+| ♻️ Replace | 1 | 1 azuredevops_git_repository |
+| ❌ Destroy | 1 | 1 azurerm_virtual_network |
+| **Total** | **6** | |
 
 ## Resource Changes
 
@@ -142,7 +142,11 @@ Templates have access to:
 
 - `terraform_version` - Terraform version string
 - `format_version` - Plan format version
-- `summary` - Summary object with `to_add`, `to_change`, `to_destroy`, `to_replace`, `total`
+- `summary` - Summary object with action details:
+  - `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op` - Each is an `ActionSummary` object containing:
+    - `count` - Number of resources for this action
+    - `breakdown` - Array of `ResourceTypeBreakdown` objects, each with `type` (resource type name) and `count` (number of that type)
+  - `total` - Total number of resources with changes
 - `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
 
 **Notes:** Attribute tables now vary depending on the resource change action:

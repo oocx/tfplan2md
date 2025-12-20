@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.23.0"></a>
+## [0.23.0](https://github.com/oocx/tfplan2md/compare/v0.22.0...v0.23.0) (2025-12-20)
+
+### ✨ Features
+
+* add comprehensive demo and normalize markdown heading spacing ([fa03bb2](https://github.com/oocx/tfplan2md/commit/fa03bb28e7f4195e75c929e08cca03a94be1a79a))
+
+### 📚 Documentation
+
+* add specification and architecture for comprehensive-demo ([0bbb619](https://github.com/oocx/tfplan2md/commit/0bbb61985be6ff0d4b4e1f72071620f3b66e048e))
+* add tasks for comprehensive-demo ([a318082](https://github.com/oocx/tfplan2md/commit/a31808202746f43a2a56d0d2bd2ed9c47ea75bfb))
+* add test plan for comprehensive-demo ([56a2ed0](https://github.com/oocx/tfplan2md/commit/56a2ed03706f6d86d7b5e18ce7b9b40d784476f9))
+
 <a name="0.22.0"></a>
 ## [0.22.0](https://github.com/oocx/tfplan2md/compare/v0.21.0...v0.22.0) (2025-12-20)
 

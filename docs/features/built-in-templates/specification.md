@@ -1,5 +1,9 @@
 # Feature: Built-in Templates
 
+## Status
+
+✅ **Implemented** - All requirements completed and tests passing.
+
 ## Overview
 
 Add support for multiple built-in templates that users can easily select via the `--template` option. This feature introduces a "summary" built-in template optimized for brief notifications (e.g., Teams messages for drift detection alerts) and establishes a pattern for adding more built-in templates in the future.

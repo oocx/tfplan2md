@@ -109,6 +109,21 @@ public class ReportModelBuilderTests
     }
 
     [Fact]
+    public void Build_PlanWithTimestamp_PreservesTimestamp()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/timestamp-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.Timestamp.Should().Be("2025-12-20T10:00:00Z");
+    }
+
+    [Fact]
     public void Build_EmptyPlan_ReturnsZeroSummary()
     {
         // Arrange

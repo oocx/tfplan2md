@@ -13,8 +13,14 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// </summary>
 public class MarkdownRenderer
 {
-    private const string DefaultTemplateResourceName = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.default.sbn";
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
+
+    private static readonly IReadOnlyDictionary<string, string> BuiltInTemplates =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["default"] = $"{TemplateResourcePrefix}default.sbn",
+            ["summary"] = $"{TemplateResourcePrefix}summary.sbn"
+        };
 
     private readonly string? _customTemplateDirectory;
     private readonly Azure.IPrincipalMapper _principalMapper;
@@ -44,8 +50,7 @@ public class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model)
     {
-        // Render using the default template first (this produces the overall document including Summary and Resource Changes)
-        var defaultTemplate = LoadDefaultTemplate();
+        var defaultTemplate = GetBuiltInTemplate("default");
         var rendered = RenderWithTemplate(model, defaultTemplate);
 
         // For each change, if a resource-specific template exists, render that resource separately
@@ -76,14 +81,15 @@ public class MarkdownRenderer
     }
 
     /// <summary>
-    /// Renders a report model to Markdown using a custom template file.
+    /// Renders a report model to Markdown using a built-in template name or custom template file.
+    /// Built-in names take precedence over file paths.
     /// </summary>
     /// <param name="model">The report model to render.</param>
-    /// <param name="templatePath">Path to the custom template file.</param>
+    /// <param name="templateNameOrPath">Built-in template name (e.g., "summary") or path to a custom template file.</param>
     /// <returns>The rendered Markdown string.</returns>
-    public string Render(ReportModel model, string templatePath)
+    public string Render(ReportModel model, string templateNameOrPath)
     {
-        var templateText = File.ReadAllText(templatePath);
+        var templateText = ResolveTemplateText(templateNameOrPath);
         return RenderWithTemplate(model, templateText);
     }
 
@@ -96,8 +102,66 @@ public class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public async Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
     {
-        var templateText = await File.ReadAllTextAsync(templatePath, cancellationToken);
+        var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
         return RenderWithTemplate(model, templateText);
+    }
+
+    private string ResolveTemplateText(string templateNameOrPath)
+    {
+        if (TryGetBuiltInTemplate(templateNameOrPath, out var builtInTemplate))
+        {
+            return builtInTemplate;
+        }
+
+        if (File.Exists(templateNameOrPath))
+        {
+            return File.ReadAllText(templateNameOrPath);
+        }
+
+        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates.Keys)}");
+    }
+
+    private async Task<string> ResolveTemplateTextAsync(string templateNameOrPath, CancellationToken cancellationToken)
+    {
+        if (TryGetBuiltInTemplate(templateNameOrPath, out var builtInTemplate))
+        {
+            return builtInTemplate;
+        }
+
+        if (File.Exists(templateNameOrPath))
+        {
+            return await File.ReadAllTextAsync(templateNameOrPath, cancellationToken);
+        }
+
+        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates.Keys)}");
+    }
+
+    private bool TryGetBuiltInTemplate(string templateName, out string templateText)
+    {
+        if (BuiltInTemplates.TryGetValue(templateName, out var resourceName))
+        {
+            var loaded = LoadEmbeddedTemplate(resourceName);
+            if (loaded is null)
+            {
+                throw new MarkdownRenderException($"Built-in template not found: {resourceName}");
+            }
+
+            templateText = loaded;
+            return true;
+        }
+
+        templateText = string.Empty;
+        return false;
+    }
+
+    private string GetBuiltInTemplate(string templateName)
+    {
+        if (TryGetBuiltInTemplate(templateName, out var templateText))
+        {
+            return templateText;
+        }
+
+        throw new MarkdownRenderException($"Built-in template '{templateName}' not found.");
     }
 
     /// <summary>
@@ -295,17 +359,4 @@ public class MarkdownRenderer
         return sb.ToString();
     }
 
-    private static string LoadDefaultTemplate()
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream(DefaultTemplateResourceName);
-
-        if (stream is null)
-        {
-            throw new MarkdownRenderException($"Default template not found: {DefaultTemplateResourceName}");
-        }
-
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
-    }
 }

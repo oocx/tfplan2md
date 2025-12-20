@@ -207,4 +207,17 @@ public class TerraformPlanParserTests
         plan.ResourceChanges.Should().HaveCount(2)
             .And.OnlyContain(r => r.Change.Actions.Contains("delete"));
     }
+
+    [Fact]
+    public void Parse_PlanWithTimestamp_ParsesTimestamp()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/timestamp-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        plan.Timestamp.Should().Be("2025-12-20T10:00:00Z");
+    }
 }

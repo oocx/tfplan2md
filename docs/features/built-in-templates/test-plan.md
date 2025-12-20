@@ -1,5 +1,9 @@
 # Test Plan: Built-in Templates
 
+## Status
+
+✅ **All tests implemented and passing** - 145 tests passing, 0 failures.
+
 ## Overview
 
 This test plan covers the "Built-in Templates" feature, which introduces a new "summary" template, enhances the `--template` option to support built-in template names, and adds support for parsing the plan timestamp.

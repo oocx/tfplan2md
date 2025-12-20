@@ -33,4 +33,14 @@ public class HelpTextProviderTests
             line[expectedDescriptionIndex - 1].Should().Be(' ');
         }
     }
+
+    [Fact]
+    public void GetHelpText_IncludesBuiltInTemplatesSection()
+    {
+        var help = HelpTextProvider.GetHelpText();
+
+        help.Should().Contain("Built-in templates:")
+            .And.Contain("default")
+            .And.Contain("summary");
+    }
 }

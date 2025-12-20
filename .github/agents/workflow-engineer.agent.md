@@ -352,6 +352,42 @@ When updating `docs/agents.md`, verify all of these:
 6. Update documentation if role/handoffs change
 7. Commit and create PR
 
+### Fixing Agents While Working on a Feature
+
+**When a workflow issue is discovered during feature development:**
+
+1. **Stash current work** - Preserve feature work without committing:
+   ```bash
+   git stash push -m "WIP: <feature description>"
+   ```
+
+2. **Create workflow branch** - Switch to a clean workflow branch:
+   ```bash
+   git switch main && git pull --ff-only origin main
+   git switch -c workflow/<issue-description>
+   ```
+
+3. **Make workflow fixes** - Update only workflow-related files:
+   - Agent definitions in `.github/agents/`
+   - Workflow documentation in `docs/agents.md`
+   - Do NOT include any feature implementation files
+
+4. **Commit and create PR**:
+   ```bash
+   git add .github/agents/ docs/agents.md
+   git commit -m "fix: <clear description of workflow fix>"
+   git push -u origin HEAD
+   gh pr create --title "fix: <title>" --body "<description>"
+   ```
+
+5. **Return to feature work** - Switch back and restore:
+   ```bash
+   git switch <feature-branch-name>
+   git stash pop
+   ```
+
+**Key principle**: Never commit workflow fixes and feature work together. They have different scopes and should be in separate PRs.
+
 ### Reviewing All Agents (Periodic Maintenance)
 1. Check [docs/ai-model-reference.md](docs/ai-model-reference.md) update date
 2. If >1 month old, recommend updating it first

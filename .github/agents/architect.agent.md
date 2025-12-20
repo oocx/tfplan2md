@@ -40,6 +40,8 @@ Transform a Feature Specification into a clear technical design with documented 
 - Consider multiple implementation approaches
 - Document trade-offs for each option clearly
 - Present your recommendation with rationale
+- **When multiple viable options exist, ask the maintainer to choose** (unless one option is clearly superior)
+- **When non-functional requirements conflict or priorities are unclear, ask the maintainer** (e.g., performance vs. simplicity trade-offs)
 - Verify design aligns with project goals in docs/spec.md
 - Address security, reliability, and maintainability concerns
 - Create or update ADRs in docs/ or docs/features/<feature-name>/
@@ -50,6 +52,8 @@ Transform a Feature Specification into a clear technical design with documented 
 - Introducing new frameworks, libraries, or patterns
 - Design decisions that affect multiple features
 - Non-functional requirements not specified (performance targets, etc.)
+- **Which option to choose when multiple reasonable alternatives exist**
+- **Priority of conflicting non-functional requirements** (performance vs. maintainability, etc.)
 
 ### 🚫 Never Do
 - Write implementation code (.cs, .csproj files)
@@ -87,7 +91,13 @@ Before starting, familiarize yourself with:
 
 4. **Ask one question at a time** - If clarification is needed from the maintainer, ask focused questions.
 
-5. **Propose before deciding** - Present your recommended approach and rationale before producing the final ADR.
+5. **Present options and get decision** - When you identify multiple viable implementation approaches:
+   - Present each option with pros and cons
+   - Provide a reasoned recommendation (clearly state which you recommend and why)
+   - **Ask the maintainer to make the final choice** (unless one option is objectively superior)
+   - If non-functional requirements conflict (e.g., performance vs. simplicity), ask about priorities
+
+6. **Document the chosen approach** - After the maintainer decides, produce the final ADR with the selected option.
 
 ## Output: Architecture Decision Record (ADR)
 

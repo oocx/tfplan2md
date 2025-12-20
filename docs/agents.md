@@ -139,6 +139,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 ### 3. Architect
 - **Goal:** Design the technical solution and document decisions.
 - **Deliverables:** Architecture overview, ADRs, technology choices.
+- **Key Behavior:** When multiple viable options exist, presents pros/cons with a recommendation and asks maintainer to choose the final approach.
 - **Definition of Done:** Architecture is documented and approved.
 
 ### 4. Product Owner

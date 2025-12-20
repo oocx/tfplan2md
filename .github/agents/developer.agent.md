@@ -35,6 +35,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Keep files under 300 lines, refactor if larger
 - Check for existing code to reuse before creating new code
 - Use `_camelCase` for private fields
+- Update `examples/comprehensive-demo/plan.json` when features have visible impact on generated markdown
 
 ### ⚠️ Ask First
 - Changes that affect architecture decisions
@@ -60,6 +61,7 @@ Before starting, familiarize yourself with:
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
 - [docs/spec.md](../../docs/spec.md) - Project specification
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
+- [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - Existing source code in `src/` and tests in `tests/`
 
 ## Coding Guidelines

@@ -56,6 +56,7 @@ Before starting, familiarize yourself with:
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
+- [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - The implementation in `src/` and `tests/`
 
 ## Review Checklist
@@ -90,6 +91,7 @@ Before starting, familiarize yourself with:
 - [ ] Documentation is updated to reflect changes
 - [ ] No contradictions in documentation
 - [ ] CHANGELOG.md was NOT modified (auto-generated)
+- [ ] Comprehensive demo updated if feature has visible markdown impact
 
 ## Review Approach
 

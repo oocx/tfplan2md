@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.16.4"></a>
+## [0.16.4](https://github.com/oocx/tfplan2md/compare/v0.16.3...v0.16.4) (2025-12-20)
+
+### 🐛 Bug Fixes
+
+* add runInTerminal tool to Requirements Engineer and strengthen branch creation instructions ([2b9b2ec](https://github.com/oocx/tfplan2md/commit/2b9b2ec2c95c7bb234596ae50c63b7dbf30c4c10))
+
 <a name="0.16.3"></a>
 ## [0.16.3](https://github.com/oocx/tfplan2md/compare/v0.16.2...v0.16.3) (2025-12-19)
 

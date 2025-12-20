@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using Oocx.TfPlan2Md.Parsing;
 
@@ -25,15 +26,25 @@ public class ModuleChangeGroup
 }
 
 /// <summary>
+/// Breakdown of resource types for a specific action.
+/// </summary>
+public record ResourceTypeBreakdown(string Type, int Count);
+
+/// <summary>
+/// Summary details for a specific action (e.g., add, change).
+/// </summary>
+public record ActionSummary(int Count, IReadOnlyList<ResourceTypeBreakdown> Breakdown);
+
+/// <summary>
 /// Summary of changes in the Terraform plan.
 /// </summary>
 public class SummaryModel
 {
-    public int ToAdd { get; init; }
-    public int ToChange { get; init; }
-    public int ToDestroy { get; init; }
-    public int ToReplace { get; init; }
-    public int NoOp { get; init; }
+    public required ActionSummary ToAdd { get; init; }
+    public required ActionSummary ToChange { get; init; }
+    public required ActionSummary ToDestroy { get; init; }
+    public required ActionSummary ToReplace { get; init; }
+    public required ActionSummary NoOp { get; init; }
     public int Total { get; init; }
 }
 
@@ -107,11 +118,11 @@ public class ReportModelBuilder(bool showSensitive = false)
 
         var summary = new SummaryModel
         {
-            ToAdd = allChanges.Count(c => c.Action == "create"),
-            ToChange = allChanges.Count(c => c.Action == "update"),
-            ToDestroy = allChanges.Count(c => c.Action == "delete"),
-            ToReplace = allChanges.Count(c => c.Action == "replace"),
-            NoOp = allChanges.Count(c => c.Action == "no-op"),
+            ToAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create")),
+            ToChange = BuildActionSummary(allChanges.Where(c => c.Action == "update")),
+            ToDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete")),
+            ToReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace")),
+            NoOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op")),
             Total = allChanges.Count
         };
 
@@ -145,6 +156,19 @@ public class ReportModelBuilder(bool showSensitive = false)
             ModuleChanges = moduleGroups,
             Summary = summary
         };
+    }
+
+    private static ActionSummary BuildActionSummary(IEnumerable<ResourceChangeModel> changes)
+    {
+        var changeList = changes.ToList();
+
+        var breakdown = changeList
+            .GroupBy(c => c.Type)
+            .Select(g => new ResourceTypeBreakdown(g.Key, g.Count()))
+            .OrderBy(b => b.Type, StringComparer.Ordinal)
+            .ToList();
+
+        return new ActionSummary(changeList.Count, breakdown);
     }
 
     private ResourceChangeModel BuildResourceChangeModel(ResourceChange rc)

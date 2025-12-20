@@ -29,8 +29,30 @@ This document describes the features of `tfplan2md` from a user perspective.
 
 The default report includes:
 
-- **Summary**: Overview of changes (e.g., "3 to add, 1 to change, 2 to destroy")
+- **Summary**: Overview of changes with count and resource type breakdown for each action (e.g., "3 to add: 1 azurerm_resource_group, 2 azurerm_storage_account")
 - **Detailed changes**: List of affected resources with their actions and attribute changes
+
+### Summary Resource Type Breakdown
+
+The summary table includes a "Resource Types" column that shows which resource types are affected by each action. This helps users quickly understand what types of resources are being created, modified, replaced, or destroyed without reading through the detailed changes section.
+
+**Features:**
+- Shows count and full resource type name for each type (e.g., "3 azurerm_storage_account")
+- Resource types are sorted alphabetically within each action
+- Each resource type appears on its own line using HTML `<br/>` tags
+- Empty when an action has 0 resources
+- The Total row does not show a breakdown (only the total count)
+
+**Example:**
+```markdown
+| Action | Count | Resource Types |
+|--------|-------|----------------|
+| ➕ Add | 6 | 1 azurerm_resource_group<br/>3 azurerm_storage_account<br/>2 azurerm_virtual_network |
+| 🔄 Change | 3 | 2 azurerm_app_service<br/>1 azurerm_sql_database |
+| ♻️ Replace | 1 | 1 azurerm_kubernetes_cluster |
+| ❌ Destroy | 0 | |
+| **Total** | **10** | |
+```
 
 ### No-Op Resources
 

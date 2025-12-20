@@ -20,10 +20,10 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        model.Summary.ToAdd.Should().Be(3);      // resource_group, storage_account, azuredevops_project
-        model.Summary.ToChange.Should().Be(1);   // key_vault
-        model.Summary.ToDestroy.Should().Be(1);  // virtual_network
-        model.Summary.ToReplace.Should().Be(1);  // git_repository
+        model.Summary.ToAdd.Count.Should().Be(3);      // resource_group, storage_account, azuredevops_project
+        model.Summary.ToChange.Count.Should().Be(1);   // key_vault
+        model.Summary.ToDestroy.Count.Should().Be(1);  // virtual_network
+        model.Summary.ToReplace.Count.Should().Be(1);  // git_repository
         model.Summary.Total.Should().Be(6);
     }
 
@@ -120,11 +120,11 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        model.Summary.ToAdd.Should().Be(0);
-        model.Summary.ToChange.Should().Be(0);
-        model.Summary.ToDestroy.Should().Be(0);
-        model.Summary.ToReplace.Should().Be(0);
-        model.Summary.NoOp.Should().Be(0);
+        model.Summary.ToAdd.Count.Should().Be(0);
+        model.Summary.ToChange.Count.Should().Be(0);
+        model.Summary.ToDestroy.Count.Should().Be(0);
+        model.Summary.ToReplace.Count.Should().Be(0);
+        model.Summary.NoOp.Count.Should().Be(0);
         model.Summary.Total.Should().Be(0);
         model.Changes.Should().BeEmpty();
     }
@@ -142,11 +142,11 @@ public class ReportModelBuilderTests
 
         // Assert - no-op resources are counted in summary but not included in Changes
         // to avoid exceeding Scriban's iteration limit on large plans
-        model.Summary.ToAdd.Should().Be(0);
-        model.Summary.ToChange.Should().Be(0);
-        model.Summary.ToDestroy.Should().Be(0);
-        model.Summary.ToReplace.Should().Be(0);
-        model.Summary.NoOp.Should().Be(1);
+        model.Summary.ToAdd.Count.Should().Be(0);
+        model.Summary.ToChange.Count.Should().Be(0);
+        model.Summary.ToDestroy.Count.Should().Be(0);
+        model.Summary.ToReplace.Count.Should().Be(0);
+        model.Summary.NoOp.Count.Should().Be(1);
         model.Summary.Total.Should().Be(1);
         model.Changes.Should().BeEmpty(); // no-op resources are filtered out
     }
@@ -163,7 +163,7 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        model.Summary.ToAdd.Should().Be(1);
+        model.Summary.ToAdd.Count.Should().Be(1);
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be("create");
         // With null before and after, there should be no attribute changes
@@ -182,11 +182,82 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        model.Summary.ToAdd.Should().Be(2);
-        model.Summary.ToChange.Should().Be(0);
-        model.Summary.ToDestroy.Should().Be(0);
+        model.Summary.ToAdd.Count.Should().Be(2);
+        model.Summary.ToChange.Count.Should().Be(0);
+        model.Summary.ToDestroy.Count.Should().Be(0);
         model.Summary.Total.Should().Be(2);
         model.Changes.Should().OnlyContain(c => c.Action == "create");
+    }
+
+    [Fact]
+    public void Build_ComputesBreakdownByTypePerAction()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"], null, null, null, null, null)),
+                new("type_a.two", null, "managed", "type_a", "two", "provider", new Change(["create"], null, null, null, null, null)),
+                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["create"], null, null, null, null, null))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.Summary.ToAdd.Count.Should().Be(3);
+        model.Summary.ToAdd.Breakdown.Should().HaveCount(2);
+        model.Summary.ToAdd.Breakdown.First(b => b.Type == "type_a").Count.Should().Be(2);
+        model.Summary.ToAdd.Breakdown.First(b => b.Type == "type_b").Count.Should().Be(1);
+    }
+
+    [Fact]
+    public void Build_SortsBreakdownAlphabetically()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["update"], null, null, null, null, null)),
+                new("type_c.one", null, "managed", "type_c", "one", "provider", new Change(["update"], null, null, null, null, null)),
+                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["update"], null, null, null, null, null))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.Summary.ToChange.Breakdown.Select(b => b.Type).Should().Equal("type_a", "type_b", "type_c");
+    }
+
+    [Fact]
+    public void Build_ActionWithNoResources_HasEmptyBreakdown()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"], null, null, null, null, null))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.Summary.ToDestroy.Count.Should().Be(0);
+        model.Summary.ToDestroy.Breakdown.Should().BeEmpty();
     }
 
     [Fact]
@@ -201,9 +272,9 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        model.Summary.ToAdd.Should().Be(0);
-        model.Summary.ToChange.Should().Be(0);
-        model.Summary.ToDestroy.Should().Be(2);
+        model.Summary.ToAdd.Count.Should().Be(0);
+        model.Summary.ToChange.Count.Should().Be(0);
+        model.Summary.ToDestroy.Count.Should().Be(2);
         model.Summary.Total.Should().Be(2);
         model.Changes.Should().OnlyContain(c => c.Action == "delete");
     }

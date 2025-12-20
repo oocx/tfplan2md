@@ -11,6 +11,7 @@ public class ReportModel
 {
     public required string TerraformVersion { get; init; }
     public required string FormatVersion { get; init; }
+    public string? Timestamp { get; init; }
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
     public required IReadOnlyList<ModuleChangeGroup> ModuleChanges { get; init; }
     public required SummaryModel Summary { get; init; }
@@ -152,6 +153,7 @@ public class ReportModelBuilder(bool showSensitive = false)
         {
             TerraformVersion = plan.TerraformVersion,
             FormatVersion = plan.FormatVersion,
+            Timestamp = plan.Timestamp,
             Changes = displayChanges,
             ModuleChanges = moduleGroups,
             Summary = summary

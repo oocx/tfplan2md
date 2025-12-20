@@ -11,7 +11,7 @@ public static class HelpTextProvider
         var options = new (string Option, string Description)[]
         {
             ("-o, --output <file>", "Write output to a file instead of stdout."),
-            ("-t, --template <file>", "Use a custom Scriban template file."),
+            ("-t, --template <name|file>", "Use a built-in template by name or a custom Scriban template file."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
             ("--show-sensitive", "Show sensitive values unmasked."),
             ("-h, --help", "Display this help message."),
@@ -51,6 +51,11 @@ public static class HelpTextProvider
             sb.Append(option.PadRight(OptionPadding));
             sb.AppendLine(description);
         }
+
+        sb.AppendLine();
+        sb.AppendLine("Built-in templates:");
+        sb.AppendLine("  default  Full report with resource changes (default)");
+        sb.AppendLine("  summary  Compact summary with counts and resource type breakdown");
         sb.AppendLine();
         sb.AppendLine("Examples:");
         foreach (var example in examples)

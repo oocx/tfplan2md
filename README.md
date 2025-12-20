@@ -57,12 +57,18 @@ dotnet run --project src/Oocx.TfPlan2Md -- plan.json
 terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md
 ```
 
+### Summary-only output
+
+```bash
+terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summary
+```
+
 ### CLI Options
 
 | Option | Description |
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
-| `--template`, `-t <file>` | Use a custom Scriban template file |
+| `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--principal-mapping`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help`, `-h` | Display help information |
@@ -109,6 +115,10 @@ Create custom Scriban templates for your own report format:
 docker run -i -v $(pwd):/data oocx/tfplan2md --template /data/my-template.sbn < plan.json
 ```
 
+Built-in templates:
+- `default` (implicit when not specified): Full report with resource changes
+- `summary`: Compact summary with Terraform version, plan timestamp, and action counts only
+
 See [Scriban documentation](https://github.com/scriban/scriban) for template syntax.
 
 ### Resource-Specific Templates
@@ -144,12 +154,14 @@ Templates have access to:
 
 - `terraform_version` - Terraform version string
 - `format_version` - Plan format version
+- `timestamp` - Plan generation timestamp (RFC3339 format), if available
 - `summary` - Summary object with action details:
   - `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op` - Each is an `ActionSummary` object containing:
     - `count` - Number of resources for this action
     - `breakdown` - Array of `ResourceTypeBreakdown` objects, each with `type` (resource type name) and `count` (number of that type)
   - `total` - Total number of resources with changes
 - `changes` - List of resource changes with `address`, `type`, `action`, `action_symbol`, `attribute_changes`
+- `module_changes` - Resource changes grouped by module
 
 **Notes:** Attribute tables now vary depending on the resource change action:
 

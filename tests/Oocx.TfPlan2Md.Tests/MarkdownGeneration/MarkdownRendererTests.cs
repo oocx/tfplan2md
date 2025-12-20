@@ -30,6 +30,88 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void Render_WithSummaryTemplateName_RendersSummaryOnly()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/timestamp-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model, "summary");
+
+        // Assert
+        markdown.Should().Contain("Terraform Plan Summary")
+            .And.Contain("2025-12-20T10:00:00Z")
+            .And.Contain("| Action | Count | Resource Types |")
+            .And.NotContain("Resource Changes");
+    }
+
+    [Fact]
+    public void Render_WithDefaultTemplateName_UsesDefaultBuiltIn()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var viaName = _renderer.Render(model, "default");
+        var viaDefault = _renderer.Render(model);
+
+        // Assert
+        viaName.Should().Be(viaDefault);
+    }
+
+    [Fact]
+    public void Render_WithCustomTemplateFile_UsesFile()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".sbn");
+        File.WriteAllText(tempFile, "Custom: {{ terraform_version }}");
+
+        try
+        {
+            // Act
+            var markdown = _renderer.Render(model, tempFile);
+
+            // Assert
+            markdown.Should().Contain("Custom: 1.14.0");
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [Fact]
+    public void Render_WithUnknownTemplate_ThrowsHelpfulError()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var act = () => _renderer.Render(model, "nonexistent-template");
+
+        // Assert
+        var exception = act.Should().Throw<MarkdownRenderException>()
+            .Which;
+        exception.Message.Should().Contain("Template 'nonexistent-template' not found")
+            .And.Contain("default")
+            .And.Contain("summary");
+    }
+
+    [Fact]
     public void Render_ValidPlan_ContainsResourceChanges()
     {
         // Arrange

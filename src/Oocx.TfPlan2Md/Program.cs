@@ -92,11 +92,6 @@ static async Task<int> RunAsync(CliOptions options)
     string markdown;
     if (options.TemplatePath is not null)
     {
-        if (!File.Exists(options.TemplatePath))
-        {
-            await Console.Error.WriteLineAsync($"Error: Template file not found: {options.TemplatePath}");
-            return 1;
-        }
         markdown = await renderer.RenderAsync(model, options.TemplatePath);
     }
     else

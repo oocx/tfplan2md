@@ -136,19 +136,54 @@ This ensures Docker Hub users can see the complete set of changes included in ea
 
 Reports are generated using customizable templates powered by [Scriban](https://github.com/scriban/scriban).
 
-- **Default template**: A built-in template is included in the Docker image
-- **Custom templates**: Provide a custom template file using the `--template` flag
-  ```bash
-  tfplan2md plan.json --template /path/to/custom-template.md
-  ```
+### Built-in Templates
 
-### Template Data
+tfplan2md includes multiple built-in templates that can be selected by name:
 
-Templates have access to all data required to render detailed change information, including:
-- Resource addresses and types
-- Change actions (create, update, delete, replace)
-- Attribute changes (before/after values)
-- Metadata from the Terraform plan
+- **`default`** (used when no template is specified): Full report with summary and detailed resource changes
+- **`summary`**: Compact summary showing only Terraform version, plan timestamp, and action counts with resource type breakdown
+
+Select a built-in template using the `--template` option:
+```bash
+tfplan2md plan.json --template summary
+```
+
+### Custom Templates
+
+Provide a custom template file using the `--template` flag:
+```bash
+tfplan2md plan.json --template /path/to/custom-template.sbn
+```
+
+**Template resolution order:**
+1. Check if the provided value matches a built-in template name
+2. If not, attempt to load it as a file path
+3. If neither exists, display an error listing available built-in templates
+
+### Template Variables
+
+Templates have access to the following variables:
+
+- **`terraform_version`** - Terraform version string (e.g., "1.14.0")
+- **`format_version`** - Plan format version (e.g., "1.2")
+- **`timestamp`** - Plan generation timestamp in RFC3339 format (e.g., "2025-12-20T10:00:00Z"), if available in the plan JSON
+- **`summary`** - Summary object with action details:
+  - `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op` - Each is an `ActionSummary` object containing:
+    - `count` - Number of resources for this action
+    - `breakdown` - Array of `ResourceTypeBreakdown` objects, each with `type` (resource type name) and `count` (number of that type)
+  - `total` - Total number of resources with changes
+- **`changes`** - List of resource changes (no-op resources excluded), each with:
+  - `address` - Full resource address
+  - `type` - Resource type
+  - `action` - Action string ("create", "update", "delete", "replace")
+  - `action_symbol` - Emoji symbol for the action
+  - `attribute_changes` - List of attribute changes with `name`, `before`, `after`, and `is_sensitive`
+  - `before_json`, `after_json` - Raw JSON state (for resource-specific templates)
+- **`module_changes`** - Resource changes grouped by module, each with:
+  - `module_address` - Module address (empty string for root)
+  - `changes` - Array of resource changes for this module
+
+**Note:** The `timestamp` field is optional and may be `null` if not present in the Terraform plan JSON.
 
 ## CLI Interface
 
@@ -157,7 +192,7 @@ Simple single-command interface with flags:
 | Flag | Description |
 |------|-------------|
 | `--output <file>` | Write output to a file instead of stdout |
-| `--template <file>` | Use a custom Scriban template file |
+| `--template <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help` | Display help information |

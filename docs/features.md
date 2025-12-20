@@ -360,6 +360,16 @@ Returns the single value if unchanged, or `"- before<br>+ after"` if different.
 
 See [resource-specific-templates.md](features/resource-specific-templates.md) for full specification.
 
+## Markdown Rendering Quality
+
+tfplan2md ensures high-quality markdown output that renders correctly in all markdown viewers:
+
+- **Heading spacing**: All headings are automatically preceded by a blank line, preventing content from running into headings
+- **Table formatting**: Blank lines before table rows are collapsed to prevent table breakage
+- **Consistent structure**: Proper document hierarchy with module sections (H3) and resource entries (H4)
+
+These improvements are applied automatically during rendering and require no configuration.
+
 ## Future Considerations
 
 The following features may be added in future versions:

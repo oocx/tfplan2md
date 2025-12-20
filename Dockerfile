@@ -17,6 +17,7 @@ RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -o /app -
 FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS runtime
 WORKDIR /app
 COPY --from=build /app .
+COPY examples/comprehensive-demo /examples/comprehensive-demo
 
 # Set the entrypoint
 ENTRYPOINT ["dotnet", "tfplan2md.dll"]

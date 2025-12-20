@@ -13,4 +13,4 @@
 | 🔄 Change | {{ summary.to_change.count }} | {{ for type in summary.to_change.breakdown }}{{ type.count }} {{ type.type }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 | ♻️ Replace | {{ summary.to_replace.count }} | {{ for type in summary.to_replace.breakdown }}{{ type.count }} {{ type.type }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 | ❌ Destroy | {{ summary.to_destroy.count }} | {{ for type in summary.to_destroy.breakdown }}{{ type.count }} {{ type.type }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
-| **Total** | **{{ summary.total }}** | |
+| Total | {{ summary.total }} | |

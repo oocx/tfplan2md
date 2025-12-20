@@ -23,6 +23,8 @@ Convert Terraform plan JSON files into human-readable Markdown reports.
 docker pull oocx/tfplan2md:latest
 ```
 
+The Docker image includes a comprehensive demo at `/examples/comprehensive-demo/` showcasing all features.
+
 ### From Source
 
 Requires .NET 10 SDK.
@@ -106,6 +108,31 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 
 </details>
 ```
+
+## Examples
+
+A comprehensive demo is available in the Docker image and the repository:
+
+```bash
+# View the demo report (Docker)
+docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
+  --principals /examples/comprehensive-demo/demo-principals.json
+
+# View the demo locally
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+  examples/comprehensive-demo/plan.json \
+  --principals examples/comprehensive-demo/demo-principals.json
+```
+
+The demo includes:
+- Module grouping (root, module.network, module.security, nested modules)
+- All action types (create, update, replace, delete, no-op)
+- Firewall rule semantic diffing
+- Role assignments with principal mapping
+- Sensitive value handling
+- Complex nested attributes
+
+See [examples/comprehensive-demo/README.md](examples/comprehensive-demo/README.md) for details.
 
 ## Custom Templates
 

@@ -94,4 +94,25 @@ public class DockerIntegrationTests
         // Verify expected resources from the test data are in the output
         stdout.Should().Contain("azurerm_resource_group.main").And.Contain("azurerm_key_vault.main").And.Contain("azurerm_virtual_network.old").And.Contain("azuredevops_project.main").And.Contain("azuredevops_git_repository.main");
     }
+
+    [SkippableFact]
+    public async Task Docker_Includes_ComprehensiveDemoFiles()
+    {
+        SkipIfDockerNotAvailable();
+
+        var args = new[]
+        {
+            "/examples/comprehensive-demo/plan.json",
+            "--principals",
+            "/examples/comprehensive-demo/demo-principals.json",
+            "--template",
+            "summary"
+        };
+
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(null, args);
+
+        exitCode.Should().Be(0);
+        stderr.Should().BeEmpty();
+        stdout.Should().Contain("Terraform Plan Summary");
+    }
 }

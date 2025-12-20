@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.22.0"></a>
+## [0.22.0](https://github.com/oocx/tfplan2md/compare/v0.21.0...v0.22.0) (2025-12-20)
+
+### ✨ Features
+
+* implement built-in summary template and plan timestamp support ([a41965f](https://github.com/oocx/tfplan2md/commit/a41965f04a453ef9631b695de5f19c19c52e2f33))
+
+### 📚 Documentation
+
+* add architecture for built-in templates ([7b7c812](https://github.com/oocx/tfplan2md/commit/7b7c812af2feb7d29f83e7c748bd995c1e48c9f1))
+* add feature specification for built-in templates ([bc8af99](https://github.com/oocx/tfplan2md/commit/bc8af995ea6b40ca625012d6ace38582c4f1e076))
+* add tasks for built-in templates ([c21d7b8](https://github.com/oocx/tfplan2md/commit/c21d7b8fd4e50df1abc017d350149072b5d4bdb4))
+* add test plan for built-in templates ([d40c327](https://github.com/oocx/tfplan2md/commit/d40c327593cd0e857c482a634c801fb38f95402a))
+
 <a name="0.21.0"></a>
 ## [0.21.0](https://github.com/oocx/tfplan2md/compare/v0.20.0...v0.21.0) (2025-12-20)
 

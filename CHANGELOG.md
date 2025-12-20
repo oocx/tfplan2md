@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.24.0"></a>
+## [0.24.0](https://github.com/oocx/tfplan2md/compare/v0.23.0...v0.24.0) (2025-12-20)
+
+### ✨ Features
+
+* add Scriban reference and comprehensive demo requirements to agents ([9d6fae6](https://github.com/oocx/tfplan2md/commit/9d6fae6e7747aa610e13d2f4b79afea2dbdfea9a))
+
 <a name="0.23.0"></a>
 ## [0.23.0](https://github.com/oocx/tfplan2md/compare/v0.22.0...v0.23.0) (2025-12-20)
 

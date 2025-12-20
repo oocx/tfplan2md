@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Oocx.TfPlan2Md.Azure;
 using Scriban;
 using Scriban.Runtime;
 
@@ -16,21 +17,24 @@ public class MarkdownRenderer
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
 
     private readonly string? _customTemplateDirectory;
+    private readonly Azure.IPrincipalMapper _principalMapper;
 
     /// <summary>
     /// Creates a new MarkdownRenderer using embedded templates.
     /// </summary>
-    public MarkdownRenderer()
+    public MarkdownRenderer(Azure.IPrincipalMapper? principalMapper = null)
     {
+        _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
     }
 
     /// <summary>
     /// Creates a new MarkdownRenderer with a custom template directory.
     /// </summary>
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
-    public MarkdownRenderer(string customTemplateDirectory)
+    public MarkdownRenderer(string customTemplateDirectory, Azure.IPrincipalMapper? principalMapper = null)
     {
         _customTemplateDirectory = customTemplateDirectory;
+        _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
     }
 
     /// <summary>
@@ -189,7 +193,7 @@ public class MarkdownRenderer
         return reader.ReadToEnd();
     }
 
-    private static string RenderResourceWithTemplate(ResourceChangeModel change, string templateText)
+    private string RenderResourceWithTemplate(ResourceChangeModel change, string templateText)
     {
         var template = Template.Parse(templateText);
         if (template.HasErrors)
@@ -212,7 +216,7 @@ public class MarkdownRenderer
         }
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject);
+        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper);
 
         var context = new TemplateContext();
         context.PushGlobal(scriptObject);
@@ -232,7 +236,7 @@ public class MarkdownRenderer
         }
     }
 
-    private static string RenderWithTemplate(ReportModel model, string templateText)
+    private string RenderWithTemplate(ReportModel model, string templateText)
     {
         var template = Template.Parse(templateText);
         if (template.HasErrors)
@@ -246,7 +250,7 @@ public class MarkdownRenderer
         scriptObject.Import(model, renamer: member => ToSnakeCase(member.Name));
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject);
+        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper);
 
         var context = new TemplateContext();
         context.PushGlobal(scriptObject);

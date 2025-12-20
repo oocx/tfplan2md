@@ -158,6 +158,7 @@ Simple single-command interface with flags:
 |------|-------------|
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <file>` | Use a custom Scriban template file |
+| `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help` | Display help information |
 | `--version` | Display version information |
@@ -173,6 +174,71 @@ Simple single-command interface with flags:
 
 - Supports Terraform **1.14 and later**
 - Lenient parsing approach—does not validate the full plan format, only the fields needed for report generation
+
+## Enhanced Azure Role Assignment Display
+
+The `azurerm_role_assignment` resource now displays human-readable information instead of cryptic GUIDs and technical paths.
+
+**Features:**
+- **Comprehensive built-in role mapping**: All 473 Azure built-in role definition GUIDs are automatically mapped to friendly names (e.g., "Reader", "Contributor", "Storage Blob Data Reader")
+- **Hierarchical scope display**: Azure resource scopes are parsed and displayed with clear context:
+  - Management Groups: `**my-mg** (Management Group)`
+  - Subscriptions: `subscription **sub-id**`
+  - Resource Groups: `**my-rg** in subscription **sub-id**`
+  - Resources: Recognizes 20+ common Azure resource types with friendly names:
+    - Compute: Virtual Machine, Virtual Machine Scale Set, AKS Cluster, Managed Disk
+    - Storage: Storage Account, Key Vault, Container Registry, Cosmos DB Account
+    - Networking: Virtual Network, Subnet, Load Balancer, Application Gateway, Azure Firewall, Private Endpoint
+    - Web/Apps: App Service, App Service Plan, SQL Server, SQL Database
+    - Monitoring: Log Analytics Workspace, Application Insights
+    - Data: Azure Cache for Redis, Event Hubs Namespace, Service Bus Namespace
+    - Graceful fallback to capitalized type names for unmapped resources
+- **Optional principal mapping**: Map principal IDs to names using a JSON file with the `--principal-mapping` flag
+
+**Example output:**
+```markdown
+#### ➕ azurerm_role_assignment.example (create)
+
+- **scope**: **my-rg** in subscription **12345678-1234-1234-1234-123456789012**
+- **role_definition_id**: Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)
+- **principal_id**: John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789]
+```
+
+**Usage:**
+```bash
+# Without principal mapping (role and scope are still enhanced)
+tfplan2md plan.json
+
+# With principal mapping
+tfplan2md --principal-mapping principals.json plan.json
+
+# Docker with principal mapping
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json /data/plan.json
+```
+
+**Creating a principal mapping file:**
+```bash
+# Generate mapping for all Azure AD principals
+{
+  echo "{"
+  az ad user list --query "[].{id:id,name:displayName}" -o tsv | \
+    awk '{printf "  \"%s\": \"%s (User)\",\n", $1, $2}'
+  az ad group list --query "[].{id:id,name:displayName}" -o tsv | \
+    awk '{printf "  \"%s\": \"%s (Group)\",\n", $1, $2}'
+  az ad sp list --all --query "[].{id:id,name:displayName}" -o tsv | \
+    awk '{printf "  \"%s\": \"%s (Service Principal)\",\n", $1, $2}' | \
+    sed '$ s/,$//'
+  echo "}"
+} > principals.json
+```
+
+The principal mapping JSON format:
+```json
+{
+  "principal-guid": "Display Name (Type)"
+}
+```
 
 ## Distribution
 

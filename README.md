@@ -63,6 +63,7 @@ terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md 
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <file>` | Use a custom Scriban template file |
+| `--principal-mapping`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
@@ -116,6 +117,7 @@ For complex resources like firewall rule collections, tfplan2md provides resourc
 
 **Currently supported:**
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
+- `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information
 
 Example output for a firewall rule update:
 

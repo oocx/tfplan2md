@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using Oocx.TfPlan2Md.Azure;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -12,10 +13,13 @@ public static class ScribanHelpers
     /// <summary>
     /// Registers all custom helper functions with the given ScriptObject.
     /// </summary>
-    public static void RegisterHelpers(ScriptObject scriptObject)
+    public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper)
     {
         scriptObject.Import("format_diff", new Func<string?, string?, string>(FormatDiff));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
+        scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
+        scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
+        scriptObject.Import("azure_principal_name", new Func<string?, string>(p => ResolvePrincipalName(p, principalMapper)));
     }
 
     /// <summary>
@@ -204,6 +208,16 @@ public static class ScribanHelpers
         }
 
         return scriptObj;
+    }
+
+    private static string ResolvePrincipalName(string? principalId, IPrincipalMapper principalMapper)
+    {
+        if (principalId is null)
+        {
+            return string.Empty;
+        }
+
+        return principalMapper.GetPrincipalName(principalId);
     }
 
     private static object? ConvertJsonValue(JsonElement element)

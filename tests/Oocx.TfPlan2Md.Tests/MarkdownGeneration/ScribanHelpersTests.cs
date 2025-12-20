@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Scriban.Runtime;
 
@@ -316,9 +317,17 @@ public class ScribanHelpersTests
         var scriptObject = new ScriptObject();
 
         // Act
-        ScribanHelpers.RegisterHelpers(scriptObject);
+        ScribanHelpers.RegisterHelpers(scriptObject, new NullMapper());
 
         // Assert
         scriptObject.ContainsKey("diff_array").Should().BeTrue();
+    }
+
+    private sealed class NullMapper : IPrincipalMapper
+    {
+        public string GetPrincipalName(string principalId)
+        {
+            return principalId;
+        }
     }
 }

@@ -34,6 +34,11 @@ public record CliOptions
     /// Whether to show version information.
     /// </summary>
     public bool ShowVersion { get; init; }
+
+    /// <summary>
+    /// Optional principal mapping file path.
+    /// </summary>
+    public string? PrincipalMappingFile { get; init; }
 }
 
 /// <summary>
@@ -46,6 +51,7 @@ public static class CliParser
         string? inputFile = null;
         string? outputFile = null;
         string? templatePath = null;
+        string? principalMappingFile = null;
         var showSensitive = false;
         var showHelp = false;
         var showVersion = false;
@@ -85,6 +91,16 @@ public static class CliParser
                         throw new CliParseException("--template requires a file path argument.");
                     }
                     break;
+                case "--principal-mapping" or "--principals" or "-p":
+                    if (i + 1 < args.Length)
+                    {
+                        principalMappingFile = args[++i];
+                    }
+                    else
+                    {
+                        throw new CliParseException("--principal-mapping requires a file path argument.");
+                    }
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -103,7 +119,8 @@ public static class CliParser
             TemplatePath = templatePath,
             ShowSensitive = showSensitive,
             ShowHelp = showHelp,
-            ShowVersion = showVersion
+            ShowVersion = showVersion,
+            PrincipalMappingFile = principalMappingFile
         };
     }
 }

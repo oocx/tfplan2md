@@ -1,0 +1,5 @@
+#### {{ action_symbol }} {{ address }} ({{ action }})
+
+- **scope**: {{ azure_scope after_json.scope }}
+- **role_definition_id**: {{ azure_role_name after_json.role_definition_id }}
+- **principal_id**: {{ azure_principal_name after_json.principal_id }}

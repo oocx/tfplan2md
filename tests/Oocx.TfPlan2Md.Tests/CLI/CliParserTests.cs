@@ -213,4 +213,43 @@ public class CliParserTests
         // Assert
         act.Should().Throw<CliParseException>();
     }
+
+    [Fact]
+    public void Parse_PrincipalMappingFlag_SetsPrincipalMappingFile()
+    {
+        // Arrange
+        var args = new[] { "--principal-mapping", "principals.json" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.PrincipalMappingFile.Should().Be("principals.json");
+    }
+
+    [Fact]
+    public void Parse_PrincipalMappingShortFlag_SetsPrincipalMappingFile()
+    {
+        // Arrange
+        var args = new[] { "-p", "principals.json" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.PrincipalMappingFile.Should().Be("principals.json");
+    }
+
+    [Fact]
+    public void Parse_PrincipalsAlias_SetsPrincipalMappingFile()
+    {
+        // Arrange
+        var args = new[] { "--principals", "principals.json" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.PrincipalMappingFile.Should().Be("principals.json");
+    }
 }

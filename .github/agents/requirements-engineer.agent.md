@@ -3,7 +3,7 @@ description: Gather and document user requirements for new features
 name: Requirements Engineer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'microsoftdocs/*', 'github/*', 'memory/*']
+tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'runInTerminal', 'microsoftdocs/*', 'github/*', 'memory/*']
 handoffs:
   - label: Start Architecture Design
     agent: "Architect"
@@ -82,11 +82,25 @@ Before proceeding, check if this is actually a new feature request:
 
 ### Step 1: Create Feature Branch
 
-Only if this is a confirmed feature request:
-   - Update local `main` from remote: `git fetch origin && git switch main && git pull --ff-only origin main`
-   - Create and switch to a feature branch: `git switch -c feature/<short-description>`
-   - Use a descriptive branch name that references the issue or feature (e.g., `feature/123-firewall-diff-display`)
-   - **Important**: Use `runInTerminal` tool with git commands above. Do NOT use GitHub API tools (`github/create_branch`) - they create remote branches without switching your local working directory.
+Only if this is a confirmed feature request, **IMMEDIATELY execute these commands** using the `runInTerminal` tool:
+
+1. First, update and switch to main:
+   ```bash
+   git fetch origin && git switch main && git pull --ff-only origin main
+   ```
+
+2. Then create and switch to feature branch:
+   ```bash
+   git switch -c feature/<short-description>
+   ```
+   
+   Use a descriptive branch name that references the issue or feature (e.g., `feature/123-firewall-diff-display`)
+
+**CRITICAL**: 
+- Do NOT just show these commands in a code block - you MUST execute them with `runInTerminal`
+- Do NOT use GitHub API tools (`github/create_branch`) - they create remote branches without switching your local working directory
+- Verify the branch was created successfully by checking the terminal output
+- If branch creation fails, stop and ask for help
 
 ### Step 2: Listen First
 

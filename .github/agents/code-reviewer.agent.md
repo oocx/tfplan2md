@@ -54,8 +54,8 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md`
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
-- [.github/copilot-instructions.md](.github/copilot-instructions.md) - Coding guidelines
-- [docs/testing-strategy.md](docs/testing-strategy.md) - Testing conventions
+- [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
+- [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
 - The implementation in `src/` and `tests/`
 
 ## Review Checklist

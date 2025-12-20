@@ -66,10 +66,10 @@ Transform a Feature Specification into a clear technical design with documented 
 
 Before starting, familiarize yourself with:
 - The Feature Specification in `docs/features/<feature-name>/specification.md` (created by the Requirements Engineer)
-- [docs/spec.md](docs/spec.md) - Project specification and technical constraints
-- [docs/architecture.md](docs/architecture.md) - Existing architecture overview
+- [docs/spec.md](../../docs/spec.md) - Project specification and technical constraints
+- [docs/architecture.md](../../docs/architecture.md) - Existing architecture overview
 - Existing ADRs in `docs/` (files matching `adr-*.md`) - Previous architecture decisions
-- [docs/agents.md](docs/agents.md) - Workflow overview and artifact formats
+- [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - Relevant source code in `src/` to understand current patterns
 
 ## Conversation Approach

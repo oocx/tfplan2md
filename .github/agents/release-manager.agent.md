@@ -51,8 +51,8 @@ Ensure the feature is ready for release, create the release branch or tag, and v
 Before starting, familiarize yourself with:
 - The Feature Specification in `docs/features/<feature-name>/specification.md`
 - The Code Review Report in `docs/features/<feature-name>/code-review.md`
-- [docs/spec.md](docs/spec.md) - Project specification
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution and release guidelines
+- [docs/spec.md](../../docs/spec.md) - Project specification
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution and release guidelines
 - Current version in `Directory.Build.props`
 
 ## Release Process
@@ -67,7 +67,7 @@ This project uses:
 - Do NOT edit `CHANGELOG.md` manually - Versionize generates it automatically
 - Version bumping is handled by Versionize based on conventional commits
 - The CI pipeline builds and publishes the Docker image
-- **CRITICAL**: For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](.github/gh-cli-instructions.md) file. Always use `PAGER=cat` prefix or export `GH_PAGER=cat` to prevent interactive pagers from blocking execution
+- **CRITICAL**: For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](../gh-cli-instructions.md) file. Always use `PAGER=cat` prefix or export `GH_PAGER=cat` to prevent interactive pagers from blocking execution
 
 ## Pre-Release Checklist
 

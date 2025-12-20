@@ -58,8 +58,8 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md`
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
-- [docs/spec.md](docs/spec.md) - Project specification
-- [.github/copilot-instructions.md](.github/copilot-instructions.md) - Coding guidelines
+- [docs/spec.md](../../docs/spec.md) - Project specification
+- [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - Existing source code in `src/` and tests in `tests/`
 
 ## Coding Guidelines

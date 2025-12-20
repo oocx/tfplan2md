@@ -61,9 +61,9 @@ Gather diagnostic information, perform initial analysis, and document the proble
 ## Context to Read
 
 Before investigating, review relevant context:
-- [docs/spec.md](docs/spec.md) - Project specification
-- [docs/architecture.md](docs/architecture.md) - Architecture overview
-- [README.md](README.md) - Project overview and usage
+- [docs/spec.md](../../docs/spec.md) - Project specification
+- [docs/architecture.md](../../docs/architecture.md) - Architecture overview
+- [README.md](../../README.md) - Project overview and usage
 - Recent commits: `git log --oneline -10`
 - CI/CD workflow files in `.github/workflows/`
 
@@ -110,7 +110,7 @@ dotnet test --verbosity normal
 # Use the 'problems' tool to see diagnostics
 ```
 
-**Important:** For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](.github/gh-cli-instructions.md) file. Always use `PAGER=cat` prefix to prevent interactive pagers from blocking execution.
+**Important:** For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](../gh-cli-instructions.md) file. Always use `PAGER=cat` prefix to prevent interactive pagers from blocking execution.
 
 ### Step 3: Analyze the Issue
 
@@ -180,7 +180,7 @@ What actually happens (include error messages).
 ## Root Cause Analysis
 
 ### Affected Components
-- File: [path/to/file.ext](path/to/file.ext#L123)
+- File: `path/to/file.ext#L123`
 - Component: Description
 
 ### What's Broken

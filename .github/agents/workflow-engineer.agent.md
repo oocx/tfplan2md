@@ -44,19 +44,19 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 ## Context to Read
 
 Before making changes, familiarize yourself with:
-- [docs/agents.md](docs/agents.md) - The complete workflow documentation (your primary reference)
-- [docs/ai-model-reference.md](docs/ai-model-reference.md) - **Model performance benchmarks, availability, and pricing data**
-- [.github/copilot-instructions.md](.github/copilot-instructions.md) - Project-wide Copilot instructions including tool naming conventions
+- [docs/agents.md](../../docs/agents.md) - The complete workflow documentation (your primary reference)
+- [docs/ai-model-reference.md](../../docs/ai-model-reference.md) - **Model performance benchmarks, availability, and pricing data**
+- [.github/copilot-instructions.md](../copilot-instructions.md) - Project-wide Copilot instructions including tool naming conventions
 - All existing agents in `.github/agents/*.agent.md` - Current agent definitions
-- [docs/spec.md](docs/spec.md) - Project specification
+- [docs/spec.md](../../docs/spec.md) - Project specification
 
 ## Reference Documentation
 
 When designing or modifying agents, consult these authoritative sources:
 Internal References (Priority Order)
-1. **[docs/ai-model-reference.md](docs/ai-model-reference.md)** - ⭐ Model benchmarks, availability, pricing (check first)
-2. **[docs/agents.md](docs/agents.md)** - Workflow documentation and agent responsibilities
-3. **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Tool naming conventions, coding standards
+1. **[docs/ai-model-reference.md](../../docs/ai-model-reference.md)** - ⭐ Model benchmarks, availability, pricing (check first)
+2. **[docs/agents.md](../../docs/agents.md)** - Workflow documentation and agent responsibilities
+3. **[.github/copilot-instructions.md](../copilot-instructions.md)** - Tool naming conventions, coding standards
 
 ### VS Code Copilot Documentation
 - [Custom Agents Overview](https://code.visualstudio.com/docs/copilot/customization/custom-agents) - How to create and configure custom agents
@@ -78,7 +78,7 @@ When creating or modifying agents, choose the appropriate language model based o
 
 ### Reference Data
 
-**Always consult [docs/ai-model-reference.md](docs/ai-model-reference.md)** for:
+**Always consult [docs/ai-model-reference.md](../../docs/ai-model-reference.md)** for:
 - Current performance benchmarks by category (Coding, Reasoning, Language, Instruction Following, etc.)
 - Model availability in GitHub Copilot Pro
 - Premium request multipliers (cost)
@@ -264,7 +264,7 @@ Ask clarifying questions one at a time if the goal is unclear:
 Review current state and gather best practices:
 - Read all affected agent files in `.github/agents/`
 - Check workflow documentation in `docs/agents.md`
-- Consult [docs/ai-model-reference.md](docs/ai-model-reference.md) for model data (if selecting/changing models)
+- Consult [docs/ai-model-reference.md](../../docs/ai-model-reference.md) for model data (if selecting/changing models)
 - Review handoff relationships between agents
 - Consult [VS Code Copilot docs](https://code.visualstudio.com/docs/copilot/customization/custom-agents) for tool reference
 
@@ -350,7 +350,7 @@ When updating `docs/agents.md`, verify all of these:
 2. **CRITICAL**: Check current branch with `git branch --show-current` - if on main, create feature branch FIRST
 2. Identify specific problem or gap
 3. Read current agent definition completely
-4. Consult [docs/ai-model-reference.md](docs/ai-model-reference.md) if model change considered
+4. Consult [docs/ai-model-reference.md](../../docs/ai-model-reference.md) if model change considered
 5. Propose targeted improvement with data/rationale
 6. Test change doesn't break handoffs
 7. Update documentation if role/handoffs change
@@ -362,7 +362,7 @@ When updating `docs/agents.md`, verify all of these:
 ### Improving Existing Agent
 1. Identify specific problem or gap
 2. Read current agent definition completely
-3. Consult [docs/ai-model-reference.md](docs/ai-model-reference.md) if model change considered
+3. Consult [docs/ai-model-reference.md](../../docs/ai-model-reference.md) if model change considered
 4. Propose targeted improvement with data/rationale
 5. Test change doesn't break handoffs
 6. Update documentation if role/handoffs change
@@ -405,7 +405,7 @@ When updating `docs/agents.md`, verify all of these:
 **Key principle**: Never commit workflow fixes and feature work together. They have different scopes and should be in separate PRs.
 
 ### Reviewing All Agents (Periodic Maintenance)
-1. Check [docs/ai-model-reference.md](docs/ai-model-reference.md) update date
+1. Check [docs/ai-model-reference.md](../../docs/ai-model-reference.md) update date
 2. If >1 month old, recommend updating it first
 3. Review each agent's model against current benchmarks
 4. Verify all tool names are valid (check recent VS Code updates)
@@ -416,7 +416,7 @@ When updating `docs/agents.md`, verify all of these:
 ### Updating Model Reference Data
 1. Fetch latest [LiveBench benchmarks](https://livebench.ai/)
 2. Check [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
-3. Update [docs/ai-model-reference.md](docs/ai-model-reference.md):
+3. Update [docs/ai-model-reference.md](../../docs/ai-model-reference.md):
    - Model availability table
    - Category-specific performance tables
    - Premium multipliers

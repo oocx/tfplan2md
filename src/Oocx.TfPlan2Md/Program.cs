@@ -1,4 +1,5 @@
 using System.Reflection;
+using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -84,8 +85,10 @@ static async Task<int> RunAsync(CliOptions options)
     var modelBuilder = new ReportModelBuilder(options.ShowSensitive);
     var model = modelBuilder.Build(plan);
 
+    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile);
+
     // Render to Markdown
-    var renderer = new MarkdownRenderer();
+    var renderer = new MarkdownRenderer(principalMapper);
     string markdown;
     if (options.TemplatePath is not null)
     {
@@ -116,34 +119,7 @@ static async Task<int> RunAsync(CliOptions options)
 
 static void PrintHelp()
 {
-    Console.WriteLine("""
-        tfplan2md - Convert Terraform plan JSON to Markdown
-        
-        Usage:
-          tfplan2md [options] [input-file]
-          terraform show -json plan.tfplan | tfplan2md
-        
-        Arguments:
-          input-file           Path to the Terraform plan JSON file.
-                               If omitted, reads from stdin.
-        
-        Options:
-          -o, --output <file>  Write output to a file instead of stdout.
-          -t, --template <file> Use a custom Scriban template file.
-          --show-sensitive     Show sensitive values unmasked.
-          -h, --help           Display this help message.
-          -v, --version        Display version information.
-        
-        Examples:
-          # From stdin
-          terraform show -json plan.tfplan | tfplan2md
-        
-          # From file
-          tfplan2md plan.json
-        
-          # With output file and custom template
-          tfplan2md plan.json --output plan.md --template my-template.sbn
-        """);
+    Console.WriteLine(HelpTextProvider.GetHelpText());
 }
 
 static void PrintVersion()

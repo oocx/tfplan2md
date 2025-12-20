@@ -48,10 +48,10 @@ Before starting, familiarize yourself with:
 - The Feature Specification in `docs/features/<feature-name>/specification.md`
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
 - The implementation in `src/` (focus on public interfaces and user-facing behavior)
-- [README.md](README.md) - Main project documentation
-- [docs/spec.md](docs/spec.md) - Project specification
-- [docs/features.md](docs/features.md) - Feature descriptions
-- [docs/agents.md](docs/agents.md) - Workflow overview and artifact formats
+- [README.md](../../README.md) - Main project documentation
+- [docs/spec.md](../../docs/spec.md) - Project specification
+- [docs/features.md](../../docs/features.md) - Feature descriptions
+- [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - Existing documentation in `docs/`
 
 ## Documentation Standards

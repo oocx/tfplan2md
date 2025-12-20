@@ -64,10 +64,10 @@ Transform an initial feature idea into a clear, unambiguous Feature Specificatio
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- [docs/spec.md](docs/spec.md) - Project specification and goals
-- [docs/features.md](docs/features.md) and feature descriptions in `docs/features/` - Existing features
-- [docs/agents.md](docs/agents.md) - Workflow overview and artifact formats
-- [README.md](README.md) - Project overview
+- [docs/spec.md](../../docs/spec.md) - Project specification and goals
+- [docs/features.md](../../docs/features.md) and feature descriptions in `docs/features/` - Existing features
+- [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
+- [README.md](../../README.md) - Project overview
 
 ## Conversation Approach
 

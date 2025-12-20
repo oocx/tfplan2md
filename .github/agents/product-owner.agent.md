@@ -49,8 +49,8 @@ Break down the feature into clear, prioritized work items with well-defined acce
 Before starting, familiarize yourself with:
 - The Feature Specification in `docs/features/<feature-name>/specification.md`
 - The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
-- [docs/agents.md](docs/agents.md) - Workflow overview and artifact formats
-- [docs/spec.md](docs/spec.md) - Project goals and constraints
+- [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
+- [docs/spec.md](../../docs/spec.md) - Project goals and constraints
 
 ## Conversation Approach
 

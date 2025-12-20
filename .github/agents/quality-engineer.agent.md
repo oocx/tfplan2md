@@ -47,8 +47,8 @@ Before starting, familiarize yourself with:
 - The Feature Specification in `docs/features/<feature-name>/specification.md`
 - The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
-- [docs/testing-strategy.md](docs/testing-strategy.md) - Project testing conventions and infrastructure
-- [docs/agents.md](docs/agents.md) - Workflow overview and artifact formats
+- [docs/testing-strategy.md](../../docs/testing-strategy.md) - Project testing conventions and infrastructure
+- [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - Existing tests in `tests/` to understand patterns and conventions
 
 ## Project Testing Conventions

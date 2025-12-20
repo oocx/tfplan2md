@@ -28,7 +28,10 @@ Ensure the feature is ready for release, create the release branch or tag, and v
 - Check that working directory is clean
 - Verify branch is up to date with main
 - Review commit messages follow conventional commit format
-- Guide maintainer with clear, step-by-step instructions
+- Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
+- Wait for CI on main to complete before triggering release workflow
+- Detect and use the version tag created by Versionize
+- Verify all release artifacts after pipeline completes
 
 ### ⚠️ Ask First
 - Proceeding with release if any check fails
@@ -39,8 +42,9 @@ Ensure the feature is ready for release, create the release branch or tag, and v
 - Edit CHANGELOG.md manually (auto-generated)
 - Skip pre-release verification checks
 - Proceed with release if tests fail
-- Trigger release workflow without maintainer confirmation
+- Trigger release workflow before CI on main completes
 - Manually bump version numbers (Versionize handles this)
+- Use the wrong tag or skip tag detection
 
 ## Context to Read
 
@@ -128,24 +132,52 @@ Before releasing, verify:
 
 ### Phase 2: Post-Merge Release
 
-5. **After PR is merged** - Ask maintainer for confirmation: "The PR has been merged to main. Should I trigger the release workflow now?"
-
-6. **Trigger Release Workflow** (after confirmation):
+5. **Monitor CI on Main Branch** - After PR is merged, wait for CI to complete:
    ```bash
-   PAGER=cat gh workflow run release.yml
+   export GH_PAGER=cat && export GH_FORCE_TTY=false
+   gh run list --branch main --limit 1
+   gh run watch <run-id>
    ```
+   - Wait for CI pipeline to complete successfully
+   - CI runs Versionize which creates the version tag
+   - If CI fails, hand off to Developer agent
 
-7. **Monitor Release Pipeline** - Watch the GitHub Actions pipeline:
+6. **Detect Version Tag** - After CI completes, find the new version tag:
    ```bash
-   PAGER=cat gh run list --workflow=release.yml --limit 1
-   PAGER=cat gh run watch
+   git fetch --tags
+   git tag --sort=-v:refname | head -n 1
    ```
+   - Verify Versionize created a new tag (e.g., v0.17.0)
+   - Extract and display the tag name
+
+7. **Trigger Release Workflow** - Use the detected tag:
+   ```bash
+   gh workflow run release.yml --field tag=<detected-tag>
+   ```
+   - Wait a few seconds for workflow to be queued
+
+8. **Monitor Release Workflow** - Watch the release pipeline:
+   ```bash
+   gh run list --workflow=release.yml --limit 1
+   gh run watch <release-run-id>
+   ```
+   - Wait for release workflow to complete
    - If the release pipeline fails, hand off to Developer agent
 
-8. **Verify Release** - Confirm the new version is available:
-   - Docker Hub has the new image tag
-   - CHANGELOG.md was updated by Versionize
-   - GitHub release created
+9. **Verify Release Artifacts** - Confirm all artifacts are published:
+   ```bash
+   # Update local main branch
+   git fetch origin main && git reset --hard origin/main
+   
+   # Check CHANGELOG.md was updated
+   head -n 20 CHANGELOG.md
+   
+   # Verify GitHub Release created
+   gh release view <tag>
+   ```
+   - [ ] CHANGELOG.md updated with new version and commits
+   - [ ] GitHub Release created with release notes
+   - [ ] Docker image tags mentioned in release notes
 
 ## Conversation Approach
 
@@ -196,12 +228,23 @@ After the release pipeline completes, verify:
 
 Your work is complete when:
 - [ ] All pre-release checks pass
-- [ ] Release summary is provided to the maintainer
-- [ ] Maintainer has the information needed to complete the release
+- [ ] PR created and merged to main
+- [ ] CI pipeline on main completes successfully
+- [ ] Version tag detected (created by Versionize)
+- [ ] Release workflow triggered with correct tag
+- [ ] Release workflow completes successfully
+- [ ] Release artifacts verified:
+  - [ ] GitHub Release created with correct notes
+  - [ ] CHANGELOG.md updated on main
+  - [ ] Docker image tags mentioned in release
+- [ ] Release summary provided to maintainer
 
 ## Communication Guidelines
 
-- Be explicit about what the maintainer needs to do manually.
-- If any check fails, explain what needs to be fixed before release.
-- Do not attempt to push to remote or create PRs directly - guide the maintainer.
-- Report any unexpected issues in the CI pipeline.
+- Execute release steps autonomously when safe to do so
+- Be explicit about what the maintainer needs to do manually (PR approval only)
+- If any check fails, explain what needs to be fixed before release
+- Create PRs and trigger workflows directly using GitHub CLI
+- Monitor and report progress at each step
+- Report any unexpected issues in the CI pipeline
+- Provide clear status updates showing what's complete and what's in progress

@@ -28,8 +28,9 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 ### ✅ Always Do
 - Verify you're on the correct feature branch (created by Requirements Engineer)
 - Check Docker availability before running Docker tests (ask maintainer to start if needed)
+- When tests are skipped, identify why and ask maintainer to resolve (e.g., start Docker) before marking work complete
 - Write tests before implementation (test-first approach)
-- Run full test suite before considering work complete
+- Run full test suite with NO skipped tests before considering work complete
 - Follow C# coding conventions and use modern C# features
 - Keep files under 300 lines, refactor if larger
 - Check for existing code to reuse before creating new code
@@ -108,11 +109,17 @@ Follow the project's coding conventions strictly:
    - Implement the feature code
    - Run tests to confirm they pass
 
-5. **Run all tests** - Before considering work complete, run the full test suite.
+6. **Run all tests** - Before considering work complete:
+   - Run the full test suite: `dotnet test`
+   - **Check test output for skipped tests**
+   - If tests are skipped (e.g., Docker integration tests), identify the reason
+   - Ask maintainer to start required services: "I see X tests are being skipped because [reason]. Please start [service] and confirm when ready so I can verify all tests pass."
+   - Re-run tests after services are started to ensure all tests run and pass
+   - Work is NOT complete until all tests run successfully with zero skipped tests
 
-6. **Check for errors** - Use `problems` to verify there are no workspace errors after `dotnet build`/`dotnet test`.
+7. **Check for errors** - Use `problems` to verify there are no workspace errors after `dotnet build`/`dotnet test`.
 
-7. **Ask one question at a time** - If clarification is needed, ask focused questions.
+8. **Ask one question at a time** - If clarification is needed, ask focused questions.
 
 ## Commands
 
@@ -153,7 +160,7 @@ For each task, verify:
 
 For the complete feature:
 - [ ] All tasks are complete
-- [ ] Full test suite passes (`dotnet test`)
+- [ ] Full test suite passes with ZERO skipped tests (`dotnet test`)
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
 - [ ] The maintainer has reviewed the implementation

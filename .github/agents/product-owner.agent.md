@@ -3,7 +3,7 @@ description: Create actionable user stories and tasks from specifications
 name: Product Owner
 target: vscode
 model: Gemini 3 Flash (Preview)
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'microsoftdocs/*', 'github/*', 'memory/*', 'runInTerminal']
+tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'github/*', 'memory/*', 'execute/runInTerminal']
 handoffs:
   - label: Define Test Plan
     agent: "Quality Engineer"

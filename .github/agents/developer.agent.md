@@ -3,7 +3,7 @@ description: Implement features and tests according to specifications
 name: Developer
 target: vscode
 model: GPT-5.1-Codex-Max
-tools: ['search', 'edit', 'runInTerminal', 'runTests', 'problems', 'changes', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'terminalLastCommand', 'getTerminalOutput', 'microsoftdocs/*', 'github/*', 'mcp-mermaid/*']
+tools: ['search', 'edit', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'search/changes', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'mcp-mermaid/*', 'microsoft-learn/*', 'io.github.hashicorp/terraform-mcp-server/*']
 handoffs:
   - label: Update Documentation
     agent: "Documentation Author"

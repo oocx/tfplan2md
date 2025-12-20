@@ -3,7 +3,7 @@ description: Analyze, improve, and maintain the agent-based development workflow
 name: Workflow Engineer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'readFile', 'listDirectory', 'codebase', 'usages', 'selection', 'fetch', 'githubRepo', 'runCommands', 'runInTerminal', 'github/*', 'memory/*', 'mcp-mermaid/*']
+tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'web/fetch', 'web/githubRepo', 'execute/runInTerminal', 'execute/getTerminalOutput', 'read/terminalLastCommand', 'github/*', 'memory/*', 'mcp-mermaid/*', 'microsoft-learn/*']
 ---
 
 # Workflow Engineer Agent
@@ -208,30 +208,46 @@ What this agent produces
 ### Available VS Code Copilot Tools
 Use these official tool IDs in agent frontmatter (reference: [Chat Tools](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools)):
 
-**File Operations:**
-- `readFile`, `listDirectory`, `fileSearch`, `textSearch` - File access
-- `search` - Combined search capabilities (recommended over individual search tools)
-- `edit`, `createFile`, `editFile` - File modification
+**Tool Sets (enable multiple related tools at once):**
+- `search` - Combined search capabilities (includes listDirectory, codebase, changes, etc.)
+- `edit` - File modification (includes createFile, editFiles, editNotebook)
 
-**Code Intelligence:**
-- `codebase` - Semantic code search
-- `usages` - Find symbol usages
-- `selection` - Access editor selection
+**Read Operations (`read/` prefix):**
+- `read/readFile` - Read file contents
+- `read/problems` - Diagnostics and errors
+- `read/terminalLastCommand` - Get last terminal command
+- `read/terminalSelection` - Get terminal selection
 
-**Execution & Testing:**
-- `runCommands`, `runInTerminal` - Command execution
-- `runTests` - Test execution
-- `problems` - Diagnostics and errors
+**Search Operations (`search/` prefix):**
+- `search/listDirectory` - List directory contents
+- `search/codebase` - Semantic code search
+- `search/usages` - Find symbol usages (references, definitions, implementations)
+- `search/changes` - Git changes
 
-**External:**
-- `fetch` - Web content retrieval
-- `githubRepo` - GitHub repository search
+**Edit Operations (`edit/` prefix):**
+- `edit/createFile` - Create new files
+- `edit/editFiles` - Modify existing files
+- `edit/editNotebook` - Edit Jupyter notebooks
+- `edit/createDirectory` - Create directories
 
-**MCP Servers:**
+**Execute Operations (`execute/` prefix):**
+- `execute/runInTerminal` - Run terminal commands
+- `execute/getTerminalOutput` - Get terminal output
+- `execute/runTests` - Run tests
+- `execute/testFailure` - Test failure diagnostics
+
+**Web Operations (`web/` prefix):**
+- `web/fetch` - Web content retrieval
+- `web/githubRepo` - GitHub repository search
+
+**MCP Servers (use `*` suffix for all operations):**
 - `github/*` - GitHub operations (PRs, issues, etc.)
 - `memory/*` - Knowledge graph persistence
 - `mcp-mermaid/*` - Diagram generation
-- `microsoftdocs/*` - Microsoft documentation
+- `microsoft-learn/*` - Microsoft Learn docs search/fetch (tools: `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`)
+- `io.github.hashicorp/terraform-mcp-server/*` - Terraform operations (useful for this project)
+
+**Note:** Tool sets (like `search`, `edit`) are shorthand that enable multiple related tools. For granular control, use the prefixed individual tools.
 
 **Critical:** Never use snake_case names like `read_file` or `run_in_terminal` - VS Code silently ignores invalid tool names.
 

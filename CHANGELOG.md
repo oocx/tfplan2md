@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.20.0"></a>
+## [0.20.0](https://github.com/oocx/tfplan2md/compare/v0.19.0...v0.20.0) (2025-12-20)
+
+### ✨ Features
+
+* enhanced Azure role assignment display with comprehensive role mapping and scope parsing ([72458bb](https://github.com/oocx/tfplan2md/commit/72458bb4c77284073d43ea24e45385798160e46f))
+
+### 📚 Documentation
+
+* add architecture for role-assignment-readable-display ([eb2dd44](https://github.com/oocx/tfplan2md/commit/eb2dd445ad42088759fc57db6fc933ee98ce44da))
+* add feature specification for role assignment readable display ([825a1e5](https://github.com/oocx/tfplan2md/commit/825a1e5cf99a2665cd93c613e7ffd660d2d3ff87))
+* add tasks for role-assignment-readable-display ([31c77d5](https://github.com/oocx/tfplan2md/commit/31c77d50265c513a3cd90a3df7d7040951e688b6))
+* add test plan for role-assignment-readable-display ([23b7573](https://github.com/oocx/tfplan2md/commit/23b7573a8d6f417879c11322647af3304ce65f68))
+
 <a name="0.19.0"></a>
 ## [0.19.0](https://github.com/oocx/tfplan2md/compare/v0.18.0...v0.19.0) (2025-12-20)
 

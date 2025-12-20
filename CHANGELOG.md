@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.21.0"></a>
+## [0.21.0](https://github.com/oocx/tfplan2md/compare/v0.20.0...v0.21.0) (2025-12-20)
+
+### ✨ Features
+
+* add MCP server tools to agents based on role requirements ([555007a](https://github.com/oocx/tfplan2md/commit/555007ab976a2cd79d48a9ef1f4f8bf46bbab53b))
+
+### 🐛 Bug Fixes
+
+* add runCommands tool to Requirements Engineer agent ([02abe9a](https://github.com/oocx/tfplan2md/commit/02abe9a74bef3e1c3dfdc8ff99378a249021120a))
+* update agent file links to use correct relative paths ([c3b26d2](https://github.com/oocx/tfplan2md/commit/c3b26d2a4b68a62c837aa192ee696826f1e19cc6))
+
 <a name="0.20.0"></a>
 ## [0.20.0](https://github.com/oocx/tfplan2md/compare/v0.19.0...v0.20.0) (2025-12-20)
 

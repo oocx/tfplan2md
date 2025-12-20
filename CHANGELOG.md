@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.19.0"></a>
+## [0.19.0](https://github.com/oocx/tfplan2md/compare/v0.18.0...v0.19.0) (2025-12-20)
+
+### ✨ Features
+
+* make Architect defer decisions to maintainer when multiple options exist ([004e685](https://github.com/oocx/tfplan2md/commit/004e6859ae947e747c8b834370ef0c3f98c2c56f))
+
 <a name="0.18.0"></a>
 ## [0.18.0](https://github.com/oocx/tfplan2md/compare/v0.17.0...v0.18.0) (2025-12-20)
 

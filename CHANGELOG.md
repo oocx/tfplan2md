@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.18.0"></a>
+## [0.18.0](https://github.com/oocx/tfplan2md/compare/v0.17.0...v0.18.0) (2025-12-20)
+
+### ✨ Features
+
+* make Release Manager agent more autonomous ([3c73a06](https://github.com/oocx/tfplan2md/commit/3c73a06ef59f668e031f2433868910d2e9eb5ce8))
+
 <a name="0.17.0"></a>
 ## [0.17.0](https://github.com/oocx/tfplan2md/compare/v0.16.5...v0.17.0) (2025-12-20)
 

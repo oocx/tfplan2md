@@ -20,8 +20,6 @@ No changes.
 {{ for module in module_changes }}
 ### Module: {{ if module.module_address && module.module_address != "" }}`{{ module.module_address }}`{{ else }}root{{ end }}
 
-
-
 {{ for change in module.changes }}
 #### {{ change.action_symbol }} {{ change.address }}
 

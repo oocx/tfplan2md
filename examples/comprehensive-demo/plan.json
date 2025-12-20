@@ -1,0 +1,1126 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "timestamp": "2025-12-20T14:30:00Z",
+  "resource_changes": [
+    {
+      "address": "azurerm_resource_group.core",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "core",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "tags": {
+            "environment": "demo",
+            "owner": "tfplan2md"
+          }
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_virtual_network.hub",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "hub",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "vnet-hub",
+          "location": "eastus",
+          "address_space": ["10.0.0.0/16"],
+          "resource_group_name": "rg-tfplan2md-demo"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_virtual_network.spoke",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "spoke",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "vnet-spoke",
+          "location": "eastus",
+          "address_space": ["10.1.0.0/16"],
+          "resource_group_name": "rg-tfplan2md-demo"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_subnet.app",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "snet-app",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "virtual_network_name": "vnet-spoke",
+          "address_prefixes": ["10.1.1.0/24"],
+          "service_endpoints": ["Microsoft.Storage"],
+          "delegation": []
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.logs",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "logs",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "sttfplan2mdlogs",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "account_tier": "Standard",
+          "account_replication_type": "LRS",
+          "min_tls_version": "TLS1_2",
+          "allow_blob_public_access": false,
+          "tags": {
+            "environment": "demo",
+            "cost_center": "ops"
+          }
+        },
+        "after_unknown": { "id": true, "primary_access_key": true },
+        "before_sensitive": {},
+        "after_sensitive": { "primary_access_key": true }
+      }
+    },
+    {
+      "address": "module.security.azurerm_role_assignment.rg_reader",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "rg_reader",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo",
+          "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principal_id": "00000000-0000-0000-0000-000000000001"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.security.azurerm_role_assignment.storage_reader",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "storage_reader",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.Storage/storageAccounts/sttfplan2mdlogs",
+          "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1",
+          "principal_id": "00000000-0000-0000-0000-000000000002"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.security.azurerm_key_vault.main",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "kv-tfplan2md",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "tenant_id": "11111111-2222-3333-4444-555555555555",
+          "sku_name": "standard",
+          "enabled_for_deployment": true,
+          "public_network_access_enabled": true,
+          "tags": {
+            "environment": "demo",
+            "owner": "security"
+          }
+        },
+        "after_unknown": { "id": true, "vault_uri": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_firewall_network_rule_collection.new_public",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_firewall_network_rule_collection",
+      "name": "new_public",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "public-egress",
+          "priority": 110,
+          "action": "Allow",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "azure_firewall_name": "fw-demo",
+          "rule": [
+            {
+              "name": "allow-http",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["*"],
+              "destination_ports": ["80"],
+              "description": "Allow outbound HTTP"
+            },
+            {
+              "name": "allow-https",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["*"],
+              "destination_ports": ["443"],
+              "description": "Allow outbound HTTPS"
+            }
+          ]
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.module.monitoring.azurerm_log_analytics_workspace.core",
+      "module_address": "module.network.module.monitoring",
+      "mode": "managed",
+      "type": "azurerm_log_analytics_workspace",
+      "name": "core",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "law-core",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "sku": "PerGB2018",
+          "retention_in_days": 30
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.security.azurerm_log_analytics_workspace.security",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_log_analytics_workspace",
+      "name": "security",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "law-security",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "sku": "PerGB2018",
+          "retention_in_days": 90
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.security.azurerm_key_vault_secret.db_password",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_key_vault_secret",
+      "name": "db_password",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "db-password",
+          "value": "super-secret-value",
+          "content_type": "password",
+          "key_vault_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": { "value": true }
+      }
+    },
+
+    {
+      "address": "azurerm_storage_account.data",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "data",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "sttfplan2mddata",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "account_tier": "Standard",
+          "account_replication_type": "LRS",
+          "tags": {
+            "environment": "demo",
+            "owner": "data"
+          }
+        },
+        "after": {
+          "name": "sttfplan2mddata",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "account_tier": "Standard",
+          "account_replication_type": "GRS",
+          "tags": {
+            "environment": "demo",
+            "owner": "data",
+            "cost_center": "1234"
+          }
+        },
+        "after_unknown": { "primary_access_key": true },
+        "before_sensitive": {},
+        "after_sensitive": { "primary_access_key": true }
+      }
+    },
+    {
+      "address": "module.security.azurerm_storage_account.analytics",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "analytics",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "sttfplan2mdanalytics",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "account_tier": "Standard",
+          "account_replication_type": "LRS",
+          "tags": {
+            "environment": "demo",
+            "owner": "analytics"
+          }
+        },
+        "after": {
+          "name": "sttfplan2mdanalytics",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "account_tier": "Standard",
+          "account_replication_type": "ZRS",
+          "min_tls_version": "TLS1_2",
+          "tags": {
+            "environment": "demo",
+            "owner": "analytics",
+            "retention": "long"
+          }
+        },
+        "after_unknown": { "primary_access_key": true },
+        "before_sensitive": {},
+        "after_sensitive": { "primary_access_key": true }
+      }
+    },
+    {
+      "address": "module.network.azurerm_virtual_network.branch",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "branch",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "vnet-branch",
+          "location": "eastus",
+          "address_space": ["10.2.0.0/16"],
+          "resource_group_name": "rg-tfplan2md-demo"
+        },
+        "after": {
+          "name": "vnet-branch",
+          "location": "eastus",
+          "address_space": ["10.2.0.0/16", "10.3.0.0/16"],
+          "resource_group_name": "rg-tfplan2md-demo"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_firewall_network_rule_collection.network_rules",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_firewall_network_rule_collection",
+      "name": "network_rules",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "network-rules",
+          "priority": 120,
+          "action": "Allow",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "azure_firewall_name": "fw-demo",
+          "rule": [
+            {
+              "name": "allow-dns",
+              "protocols": ["UDP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["168.63.129.16"],
+              "destination_ports": ["53"],
+              "description": "DNS to Azure"
+            },
+            {
+              "name": "allow-api",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.1.2.0/24"],
+              "destination_ports": ["8443"],
+              "description": "API tier"
+            },
+            {
+              "name": "allow-web",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.1.3.0/24"],
+              "destination_ports": ["80"],
+              "description": "Legacy HTTP"
+            },
+            {
+              "name": "allow-monitoring",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.1.4.0/24"],
+              "destination_ports": ["443"],
+              "description": "Monitoring"
+            }
+          ]
+        },
+        "after": {
+          "name": "network-rules",
+          "priority": 120,
+          "action": "Allow",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "azure_firewall_name": "fw-demo",
+          "rule": [
+            {
+              "name": "allow-dns",
+              "protocols": ["UDP"],
+              "source_addresses": ["10.1.1.0/24", "10.1.2.0/24"],
+              "destination_addresses": ["168.63.129.16"],
+              "destination_ports": ["53"],
+              "description": "DNS to Azure"
+            },
+            {
+              "name": "allow-api",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.2.2.0/24"],
+              "destination_ports": ["8443", "9443"],
+              "description": "API tier"
+            },
+            {
+              "name": "allow-monitoring",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.1.4.0/24"],
+              "destination_ports": ["443"],
+              "description": "Monitoring"
+            },
+            {
+              "name": "allow-web-secure",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.1.3.0/24"],
+              "destination_ports": ["443"],
+              "description": "Secure web"
+            },
+            {
+              "name": "allow-log-ingest",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.4.0/24"],
+              "destination_addresses": ["10.1.5.0/24"],
+              "destination_ports": ["8080"],
+              "description": "Log ingestion"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.security.azurerm_key_vault.audit",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "audit",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "kv-audit",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "tenant_id": "11111111-2222-3333-4444-555555555555",
+          "sku_name": "standard",
+          "enabled_for_deployment": true,
+          "public_network_access_enabled": true,
+          "tags": {
+            "environment": "demo",
+            "owner": "security"
+          }
+        },
+        "after": {
+          "name": "kv-audit",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "tenant_id": "11111111-2222-3333-4444-555555555555",
+          "sku_name": "standard",
+          "enabled_for_deployment": true,
+          "public_network_access_enabled": false,
+          "tags": {
+            "environment": "demo",
+            "owner": "security",
+            "tier": "gold"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+
+    {
+      "address": "module.network.azurerm_subnet.db",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "db",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "name": "snet-db",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "virtual_network_name": "vnet-spoke",
+          "address_prefixes": ["10.1.2.0/24"]
+        },
+        "after": {
+          "name": "snet-db",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "virtual_network_name": "vnet-spoke",
+          "address_prefixes": ["10.1.20.0/24"]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_network_security_group.app",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "name": "nsg-app",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "security_rule": [
+            {
+              "name": "allow-http",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "80",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*"
+            }
+          ]
+        },
+        "after": {
+          "name": "nsg-app",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "location": "eastus",
+          "security_rule": [
+            {
+              "name": "allow-https",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "443",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+
+    {
+      "address": "azurerm_storage_account.legacy",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "legacy",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "sttfplan2mdlegacy",
+          "resource_group_name": "rg-old",
+          "location": "eastus",
+          "account_tier": "Standard",
+          "account_replication_type": "LRS",
+          "tags": { "environment": "old" }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.security.azurerm_role_assignment.obsolete",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "obsolete",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-old",
+          "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principal_id": "00000000-0000-0000-0000-000000000005"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "module.network.azurerm_virtual_network.decom",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "decom",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "vnet-old",
+          "location": "eastus",
+          "address_space": ["10.50.0.0/16"],
+          "resource_group_name": "rg-old"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop0",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop0",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag0",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag0",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop1",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop1",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag1",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag1",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop2",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop2",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag2",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag2",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop3",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop3",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag3",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag3",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop4",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop4",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag4",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag4",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop5",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop5",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag5",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag5",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop6",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop6",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag6",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag6",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop7",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop7",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag7",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag7",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop8",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop8",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag8",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag8",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop9",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop9",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag9",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag9",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop10",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop10",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag10",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag10",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop11",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop11",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag11",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag11",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop12",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop12",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag12",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag12",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop13",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop13",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag13",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag13",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop14",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop14",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag14",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag14",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop15",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop15",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag15",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag15",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop16",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop16",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag16",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag16",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop17",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop17",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag17",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag17",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop18",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop18",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag18",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag18",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_monitor_diagnostic_setting.noop19",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_monitor_diagnostic_setting",
+      "name": "noop19",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [],
+        "before": {
+          "name": "diag19",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after": {
+          "name": "diag19",
+          "log_analytics_workspace_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.OperationalInsights/workspaces/law-core"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

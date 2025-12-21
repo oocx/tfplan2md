@@ -15,6 +15,45 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 - Features of tfplan2md (from a user perspective) are described in /docs/features.md
 - Contribution guidelines are in /CONTRIBUTING.md
 
+## Coding Standards
+
+### Access Modifiers
+
+**This is NOT a class library** - tfplan2md is a standalone CLI tool that is not referenced by other .NET projects. Therefore:
+
+- **Use the most restrictive access modifier that works**
+  - Prefer `private` for class members whenever possible
+  - Use `internal` for types and members that need cross-assembly visibility within the solution
+  - Avoid `public` unless there is a clear justification
+
+- **Valid reasons for `public` access:**
+  - Main entry points (e.g., `Program.cs` top-level statements or `Main` method)
+  - Types/members that must be visible to test projects
+
+- **Test Access Strategy:**
+  - Use `InternalsVisibleTo` attribute to expose `internal` members to test projects
+  - Do NOT make members `public` solely for testing purposes
+  - Add this to the main project's `.csproj` or `AssemblyInfo.cs`:
+    ```csharp
+    [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.Tests")]
+    ```
+
+- **Why this matters:**
+  - Agents were considering backwards compatibility and breaking changes for `public` methods even though no external consumers exist
+  - Restrictive access modifiers clearly communicate that members are internal implementation details
+  - This prevents false concerns about API stability and breaking changes
+
+### Code Comments
+
+- **All class members must have XML documentation comments** (including private members)
+- Comments should explain "why" something was done, not just repeat what the code shows
+- Follow the comprehensive guidelines in [docs/commenting-guidelines.md](commenting-guidelines.md)
+- Key requirements:
+  - Use `<summary>`, `<param>`, `<returns>`, `<remarks>` tags appropriately
+  - Reference related features/specifications for traceability
+  - Keep comments synchronized with code changes
+  - Provide examples for complex methods using `<example>` and `<code>` tags
+
 ## CI/CD and Versioning
 
 ### Versioning Strategy

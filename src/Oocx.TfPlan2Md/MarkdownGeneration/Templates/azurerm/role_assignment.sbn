@@ -58,7 +58,6 @@
 | `{{ attr | escape_markdown }}` | {{ string.strip(before_value) | escape_markdown }} | {{ string.strip(after_value) | escape_markdown }} |
 {{~ end }}
 {{ else }}
-
 | Attribute | Value |
 | ----------- | ------- |
 {{~ for attr in attributes ~}}

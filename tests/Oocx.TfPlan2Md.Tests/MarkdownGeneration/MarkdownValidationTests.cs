@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AwesomeAssertions;
 using Markdig;
 using Markdig.Extensions.Tables;
@@ -123,5 +124,71 @@ public class MarkdownValidationTests
         html.Should().Contain("<table", "because tables must render as HTML, not raw markdown");
         html.Should().Contain("<h2 id=\"summary\">Summary</h2>", "because headings must render correctly");
         html.Should().NotContain("| Action |", "because table markup should not remain in the rendered HTML");
+    }
+
+    /// <summary>
+    /// Verifies that the output does not contain multiple consecutive blank lines (MD012).
+    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// </summary>
+    [Fact]
+    public void Render_ComprehensiveDemo_NoMultipleBlankLines()
+    {
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+
+        var markdown = renderer.Render(model);
+
+        // Regex matches 3 or more consecutive newlines (which means 2 or more blank lines)
+        var matches = Regex.Matches(markdown, @"\n{3,}");
+
+        matches.Should().BeEmpty("because multiple consecutive blank lines violate MD012");
+    }
+
+    /// <summary>
+    /// Verifies that no blank lines exist between table rows, which would break table rendering.
+    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// </summary>
+    [Fact]
+    public void Render_ComprehensiveDemo_NoBlankLinesInTables()
+    {
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+
+        var markdown = renderer.Render(model);
+
+        // Regex matches a blank line that is immediately preceded by a table row and followed by a table row
+        // (?<=\|[^\n]*)\n\s*\n(?=\|)
+        var matches = Regex.Matches(markdown, @"(?<=\|[^\n]*)\n\s*\n(?=\|)");
+
+        matches.Should().BeEmpty("because blank lines between table rows break markdown table rendering");
+    }
+
+    /// <summary>
+    /// Verifies that the number of tables parsed matches the expected number of resources.
+    /// This ensures no tables are broken into text blocks.
+    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// </summary>
+    [Fact]
+    public void Render_ComprehensiveDemo_TableCountMatchesResources()
+    {
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+
+        var markdown = renderer.Render(model);
+
+        var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+        var document = Markdown.Parse(markdown, pipeline);
+        var tables = document.Descendants<Table>().ToList();
+
+        // Expected: 1 Summary table + 1 table per resource change
+        var expectedTableCount = 1 + model.Changes.Count;
+
+        tables.Count.Should().Be(expectedTableCount, "because every resource change should render exactly one table, plus the summary table");
     }
 }

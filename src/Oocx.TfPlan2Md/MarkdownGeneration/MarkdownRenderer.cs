@@ -289,9 +289,10 @@ public class MarkdownRenderer
         try
         {
             var rendered = template.Render(context);
-            // Post-process: collapse blank lines that appear before table rows (leading '|')
-            // This prevents Markdown table breakage caused by accidental blank lines in templates.
-            rendered = Regex.Replace(rendered, @"\n\s*\n(?=\|)", "\n");
+            // Collapse blank lines between table rows (which breaks tables)
+            rendered = Regex.Replace(rendered, @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)", "\n");
+            // Remove indentation from table rows (which causes them to be treated as code blocks)
+            rendered = Regex.Replace(rendered, @"\n[ \t]+(\|)", "\n$1");
             rendered = NormalizeHeadingSpacing(rendered);
             return rendered;
         }
@@ -367,7 +368,7 @@ public class MarkdownRenderer
     private static string NormalizeHeadingSpacing(string markdown)
     {
         // Collapse runs of multiple blank lines (including whitespace-only lines) to a single blank line.
-        markdown = Regex.Replace(markdown, @"(\n[ \t]*){2,}", "\n\n");
+        markdown = Regex.Replace(markdown, @"\n([ \t]*\n){2,}", "\n\n");
 
         // Ensure exactly one blank line before any heading that follows non-blank content.
         // Match: newline, optional horizontal whitespace, non-whitespace content, newline(s), then heading.

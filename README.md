@@ -10,6 +10,7 @@ Convert Terraform plan JSON files into human-readable Markdown reports.
 ## Features
 
 - 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output
+- ✅ **Validated markdown output** - Comprehensive testing ensures GitHub/Azure DevOps compatibility
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
 - 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines

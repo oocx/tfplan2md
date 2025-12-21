@@ -19,12 +19,12 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.create_no_description");
 
-        section.Should().Contain($"**Summary:** `{Escape("Jane Doe")}` ({Escape("User")}) → `{Escape("Reader")}` on `{Escape("rg-tfplan2md-demo")}`");
+        section.Should().Contain("**Summary:** `Jane Doe` (User) → `Reader` on `rg-tfplan2md-demo`");
         section.Should().Contain("<details>");
         section.Should().Contain("| Attribute | Value |");
-        section.Should().Contain($"| `{Escape("scope")}` | {Escape("rg-tfplan2md-demo in subscription sub-one")} |");
-        section.Should().Contain($"| `{Escape("role_definition_id")}` | {Escape("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)")} |");
-        section.Should().Contain($"| `{Escape("principal_id")}` | {Escape("Jane Doe (User) [11111111-1111-1111-1111-111111111111]")} |");
+        section.Should().Contain("| `scope` | rg-tfplan2md-demo in subscription sub-one |");
+        section.Should().Contain("| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) |");
+        section.Should().Contain("| `principal_id` | Jane Doe (User) [11111111-1111-1111-1111-111111111111] |");
     }
 
     [Fact]
@@ -33,9 +33,9 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.create_with_description");
 
-        section.Should().Contain($"**Summary:** `{Escape("DevOps Team")}` ({Escape("Group")}) → `{Escape("Storage Blob Data Reader")}` on Storage Account `{Escape("sttfplan2mdlogs-with-extended-name-1234567890")}`");
+        section.Should().Contain("**Summary:** `DevOps Team` (Group) → `Storage Blob Data Reader` on Storage Account `sttfplan2mdlogs-with-extended-name-1234567890`");
         section.Should().Contain("Allow DevOps team to read logs from the storage account");
-        section.Should().Contain($"| `{Escape("scope")}` | {Escape("Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one")} |");
+        section.Should().Contain("| `scope` | Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one |");
     }
 
     [Fact]
@@ -44,12 +44,12 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.update_assignment");
 
-        section.Should().Contain($"**Summary:** `{Escape("Security Team")}` ({Escape("Group")}) → `{Escape("Storage Blob Data Contributor")}` on Storage Account `{Escape("sttfplan2mddata")}`");
+        section.Should().Contain("**Summary:** `Security Team` (Group) → `Storage Blob Data Contributor` on Storage Account `sttfplan2mddata`");
         section.Should().Contain("| Attribute | Before | After |");
-        section.Should().Contain($"| `{Escape("scope")}` | {Escape("Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscription sub-one")} | {Escape("Storage Account sttfplan2mddata in resource group rg-tfplan2md-demo of subscription sub-one")} |");
-        section.Should().Contain($"| `{Escape("role_definition_id")}` | {Escape("Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1)")} | {Escape("Storage Blob Data Contributor (ba92f5b4-2d11-453d-a403-e96b0029c9fe)")} |");
-        section.Should().Contain($"| `{Escape("principal_id")}` | {Escape("DevOps Team (Group) [22222222-2222-2222-2222-222222222222]")} | {Escape("Security Team (Group) [33333333-3333-3333-3333-333333333333]")} |");
-        section.Should().Contain($"| `{Escape("description")}` | {Escape("Allow team to read storage data")} | {Escape("Upgraded permissions for security auditing")} |");
+        section.Should().Contain("| `scope` | Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscription sub-one | Storage Account sttfplan2mddata in resource group rg-tfplan2md-demo of subscription sub-one |");
+        section.Should().Contain("| `role_definition_id` | Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1) | Storage Blob Data Contributor (ba92f5b4-2d11-453d-a403-e96b0029c9fe) |");
+        section.Should().Contain("| `principal_id` | DevOps Team (Group) [22222222-2222-2222-2222-222222222222] | Security Team (Group) [33333333-3333-3333-3333-333333333333] |");
+        section.Should().Contain("| `description` | Allow team to read storage data | Upgraded permissions for security auditing |");
     }
 
     [Fact]
@@ -69,9 +69,9 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.replace_assignment");
 
-        section.Should().Contain($"**Summary:** recreate as `{Escape("Security Team")}` ({Escape("Group")}) → `{Escape("Custom Contributor Long Name 1234567890")}` on `{Escape("rg-production")}`");
+        section.Should().Contain("**Summary:** recreate as `Security Team` (Group) → `Custom Contributor Long Name 1234567890` on `rg-production`");
         section.Should().Contain("| Attribute | Before | After |");
-        section.Should().Contain($"| `{Escape("role_definition_id")}` | {Escape("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)")} | {Escape("Custom Contributor Long Name 1234567890")} |");
+        section.Should().Contain("| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) | Custom Contributor Long Name 1234567890 |");
     }
 
     [Fact]
@@ -80,9 +80,9 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.delete_assignment");
 
-        section.Should().Contain($"**Summary:** remove `{Escape("Contributor")}` on `{Escape("rg-legacy")}` from User `{Escape("John Doe")}`");
+        section.Should().Contain("**Summary:** remove `Contributor` on `rg-legacy` from User `John Doe`");
         section.Should().Contain("| Attribute | Value |");
-        section.Should().Contain($"| `{Escape("principal_id")}` | {Escape("John Doe (User) [33333333-3333-3333-3333-333333333333]")} |");
+        section.Should().Contain("| `principal_id` | John Doe (User) [33333333-3333-3333-3333-333333333333] |");
     }
 
     [Fact]
@@ -91,8 +91,8 @@ public class RoleAssignmentTemplateTests
         var markdown = Render(new UnmappedPrincipalMapper());
         var section = ExtractSection(markdown, "azurerm_role_assignment.unmapped_principal");
 
-        section.Should().Contain($"**Summary:** `{Escape("99999999-9999-9999-9999-999999999999")}` ({Escape("ServicePrincipal")}) → `{Escape("Extremely Verbose Custom Role Name For Long Output Validation 1234567890")}` on `{Escape("rg-long-names-example")}`");
-        section.Should().Contain(Escape("Extremely Verbose Custom Role Name For Long Output Validation 1234567890"));
+        section.Should().Contain("**Summary:** `99999999-9999-9999-9999-999999999999` (ServicePrincipal) → `Extremely Verbose Custom Role Name For Long Output Validation 1234567890` on `rg-long-names-example`");
+        section.Should().Contain("Extremely Verbose Custom Role Name For Long Output Validation 1234567890");
     }
 
     private string Render(IPrincipalMapper? mapper = null)

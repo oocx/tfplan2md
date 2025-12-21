@@ -515,8 +515,8 @@ public class MarkdownRendererTests
         // Assert - sensitive attribute should be masked in the Value column
         var section = markdown.Split(Heading("➕", "example_resource.sensitive"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("api_key")}` | {Escape("(sensitive)")} |")
-            .And.Contain($"| `{Escape("name")}` | {Escape("sensitive_resource")} |");
+            .And.Contain("| `api_key` | (sensitive) |")
+            .And.Contain("| `name` | sensitive_resource |");
     }
 
     [Fact]

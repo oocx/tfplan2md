@@ -35,7 +35,7 @@ public class MarkdownValidationTests
 
         var markdown = _renderer.Render(model);
 
-        markdown.Should().Contain("rg-with-pipe\\|and\\*asterisk", "because pipes and asterisks must be escaped in tables");
+        markdown.Should().Contain("rg-with-pipe\\|and*asterisk", "because pipes must be escaped in tables");
         markdown.Should().NotContain("rg-with-pipe|and*asterisk", "because raw pipes break markdown tables");
     }
 
@@ -140,10 +140,25 @@ public class MarkdownValidationTests
 
         var markdown = renderer.Render(model);
 
-        // Regex matches 3 or more consecutive newlines (which means 2 or more blank lines)
-        var matches = Regex.Matches(markdown, @"\n{3,}");
+        // Check for 2+ consecutive blank lines (MD012 rule)
+        // A blank line is a line containing only whitespace or nothing
+        var lines = markdown.Split('\n');
+        var consecutiveBlanks = 0;
+        var maxConsecutiveBlanks = 0;
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(lines[i]))
+            {
+                consecutiveBlanks++;
+                maxConsecutiveBlanks = Math.Max(maxConsecutiveBlanks, consecutiveBlanks);
+            }
+            else
+            {
+                consecutiveBlanks = 0;
+            }
+        }
 
-        matches.Should().BeEmpty("because multiple consecutive blank lines violate MD012");
+        maxConsecutiveBlanks.Should().BeLessThan(2, "because multiple consecutive blank lines violate MD012");
     }
 
     /// <summary>

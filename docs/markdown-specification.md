@@ -24,16 +24,11 @@ This document defines the markdown subset used by `tfplan2md` that renders relia
 
 ## Escaping Rules
 
-The `escape_markdown` helper must be applied to **all external input** from Terraform plans (resource names, attribute values, tag keys/values, module addresses, role names, scopes, etc.). It performs:
+The `escape_markdown` helper must be applied to **all external input** from Terraform plans (resource names, attribute values, tag keys/values, module addresses, role names, scopes, etc.). It performs only the escaping needed to keep tables and headings structurally valid:
 
 - Backslash: `\\`
 - Pipes: `\|`
-- Asterisks: `\*`
-- Underscores: `\_`
-- Brackets: `\[`, `\]`
-- Parentheses: `\(`, `\)`
-- Hash: `\#`
-- Backtick: `\``
+- Backtick: ``\``
 - Angle brackets: `\<`, `\>`
 - Ampersand: `&amp;`
 - Newlines (`\r`, `\n`, `\r\n`): replaced with `<br/>`
@@ -48,6 +43,18 @@ The `escape_markdown` helper must be applied to **all external input** from Terr
 - `markdownlint-cli2` is the reference linter configuration for this subset.
 - Developers must run the linter against the generated **comprehensive demo** report before opening a PR.
 - CI runs the linter on the generated comprehensive demo report and fails on violations.
+
+### Automated Validation
+
+All generated markdown is automatically validated through:
+
+1. **Docker-based markdownlint integration** - Uses `davidanson/markdownlint-cli2:v0.20.0` image
+2. **Property-based invariant tests** - Verifies 12 markdown invariants across all test plans
+3. **Snapshot testing** - Compares output against 6 approved baselines
+4. **Template isolation testing** - Each template tested independently
+5. **Fuzz testing** - Edge cases with special characters, Unicode, long values
+
+See [testing-strategy.md](testing-strategy.md) for complete testing documentation.
 
 ## Out of Scope
 

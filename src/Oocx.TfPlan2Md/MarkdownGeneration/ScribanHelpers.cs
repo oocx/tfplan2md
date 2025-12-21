@@ -29,7 +29,7 @@ public static class ScribanHelpers
     }
 
     /// <summary>
-    /// Escapes markdown-sensitive characters to keep generated tables and headings valid.
+    /// Escapes only markdown-breaking characters to keep generated tables and headings valid while preserving readability.
     /// Related feature: docs/features/markdown-quality-validation/specification.md
     /// </summary>
     /// <param name="input">The raw value to escape.</param>
@@ -45,13 +45,6 @@ public static class ScribanHelpers
 
         value = value.Replace("\\", "\\\\");
         value = value.Replace("|", "\\|");
-        value = value.Replace("*", "\\*");
-        value = value.Replace("_", "\\_");
-        value = value.Replace("[", "\\[");
-        value = value.Replace("]", "\\]");
-        value = value.Replace("(", "\\(");
-        value = value.Replace(")", "\\)");
-        value = value.Replace("#", "\\#");
         value = value.Replace("`", "\\`");
         value = value.Replace("<", "\\<");
         value = value.Replace(">", "\\>");

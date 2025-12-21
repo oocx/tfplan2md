@@ -5,10 +5,6 @@ target: vscode
 model: Gemini 3 Pro (Preview)
 tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'web/fetch', 'web/githubRepo', 'github/*', 'memory/*', 'mcp-mermaid/*', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 'microsoft-learn/*']
 handoffs:
-  - label: Create User Stories
-    agent: "Product Owner"
-    prompt: Review the architecture decisions above and create actionable user stories for implementation.
-    send: false
   - label: Define Test Plan
     agent: "Quality Engineer"
     prompt: Review the architecture decisions above and define the test plan.

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.26.0"></a>
+## [0.26.0](https://github.com/oocx/tfplan2md/compare/v0.25.0...v0.26.0) (2025-12-21)
+
+### ✨ Features
+
+* implement markdown quality validation and linting ([7cc7632](https://github.com/oocx/tfplan2md/commit/7cc7632d2f7e3b40385db6bb88e32c8c83035e7d))
+
+### 📚 Documentation
+
+* add architecture for markdown quality validation ([b9857ab](https://github.com/oocx/tfplan2md/commit/b9857ab7e3b3bbb310d5e5a8f648b1b48781db9e))
+* add feature specification for markdown quality validation ([ff3b823](https://github.com/oocx/tfplan2md/commit/ff3b823179d9bf3b58e045af7834e6b714167d8e))
+* add tasks for markdown quality validation ([f92046b](https://github.com/oocx/tfplan2md/commit/f92046bbf33a9047f400a8e4f03f5b153f735c8d))
+* add test plan for markdown quality validation ([9b4b04b](https://github.com/oocx/tfplan2md/commit/9b4b04b6610da178ee20fa12615ba81dc70b3b39))
+
 <a name="0.25.0"></a>
 ## [0.25.0](https://github.com/oocx/tfplan2md/compare/v0.24.0...v0.25.0) (2025-12-21)
 

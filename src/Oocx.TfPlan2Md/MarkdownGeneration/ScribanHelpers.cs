@@ -18,6 +18,7 @@ public static class ScribanHelpers
     {
         scriptObject.Import("format_diff", new Func<string?, string?, string>(FormatDiff));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
+        scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
         scriptObject.Import("azure_principal_name", new Func<string?, string>(p => ResolvePrincipalName(p, principalMapper)));
@@ -25,6 +26,42 @@ public static class ScribanHelpers
         scriptObject.Import("azure_role_info", new Func<string?, string?, ScriptObject>(GetRoleInfo));
         scriptObject.Import("azure_principal_info", new Func<string?, string?, ScriptObject>((id, type) => GetPrincipalInfo(id, type, principalMapper)));
         scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
+    }
+
+    /// <summary>
+    /// Escapes markdown-sensitive characters to keep generated tables and headings valid.
+    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// </summary>
+    /// <param name="input">The raw value to escape.</param>
+    /// <returns>A markdown-safe string with newlines replaced by &lt;br/&gt;.</returns>
+    public static string EscapeMarkdown(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
+        var value = input;
+
+        value = value.Replace("\\", "\\\\");
+        value = value.Replace("|", "\\|");
+        value = value.Replace("*", "\\*");
+        value = value.Replace("_", "\\_");
+        value = value.Replace("[", "\\[");
+        value = value.Replace("]", "\\]");
+        value = value.Replace("(", "\\(");
+        value = value.Replace(")", "\\)");
+        value = value.Replace("#", "\\#");
+        value = value.Replace("`", "\\`");
+        value = value.Replace("<", "\\<");
+        value = value.Replace(">", "\\>");
+        value = value.Replace("&", "&amp;");
+
+        value = value.Replace("\r\n", "<br/>");
+        value = value.Replace("\n", "<br/>");
+        value = value.Replace("\r", "<br/>");
+
+        return value;
     }
 
     private static ScriptObject GetScopeInfo(string? scope)

@@ -33,6 +33,19 @@ jobs:
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity normal
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate comprehensive demo report
+        run: |
+          mkdir -p artifacts
+          dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
+
+      - name: Lint comprehensive demo markdown
+        run: npx markdownlint-cli2 artifacts/comprehensive-demo.md
+
       - name: Check for vulnerable packages
         run: |
           dotnet list package --vulnerable --include-transitive 2>&1 | tee vulnerability-report.txt

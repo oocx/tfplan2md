@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 
 namespace Oocx.TfPlan2Md.Tests.Docker;
 
@@ -7,6 +8,8 @@ public class DockerIntegrationTests
 {
     private readonly DockerFixture _fixture;
     private const string TestDataPath = "TestData/azurerm-azuredevops-plan.json";
+
+    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
     public DockerIntegrationTests(DockerFixture fixture)
     {
@@ -29,7 +32,7 @@ public class DockerIntegrationTests
         exitCode.Should().Be(0);
         stderr.Should().BeEmpty();
         stdout.Should().Contain("# Terraform Plan");
-        stdout.Should().Contain("azurerm_resource_group.main");
+        stdout.Should().Contain(Escape("azurerm_resource_group.main"));
     }
 
     [SkippableFact]
@@ -43,7 +46,7 @@ public class DockerIntegrationTests
         exitCode.Should().Be(0);
         stderr.Should().BeEmpty();
         stdout.Should().Contain("# Terraform Plan");
-        stdout.Should().Contain("azurerm_resource_group.main");
+        stdout.Should().Contain(Escape("azurerm_resource_group.main"));
     }
 
     [SkippableFact]
@@ -92,7 +95,11 @@ public class DockerIntegrationTests
         exitCode.Should().Be(0);
         stderr.Should().BeEmpty();
         // Verify expected resources from the test data are in the output
-        stdout.Should().Contain("azurerm_resource_group.main").And.Contain("azurerm_key_vault.main").And.Contain("azurerm_virtual_network.old").And.Contain("azuredevops_project.main").And.Contain("azuredevops_git_repository.main");
+        stdout.Should().Contain(Escape("azurerm_resource_group.main"))
+            .And.Contain(Escape("azurerm_key_vault.main"))
+            .And.Contain(Escape("azurerm_virtual_network.old"))
+            .And.Contain(Escape("azuredevops_project.main"))
+            .And.Contain(Escape("azuredevops_git_repository.main"));
     }
 
     [SkippableFact]

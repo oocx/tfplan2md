@@ -129,6 +129,11 @@ Follow the project's coding conventions strictly:
    - Run the full test suite: `dotnet test`
    - **Check test output for skipped tests**
    - If tests are skipped (e.g., Docker integration tests), identify the reason
+6. **Run markdown linter on comprehensive demo output** - Before opening a PR:
+   ```bash
+   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
+   npx markdownlint-cli2 artifacts/comprehensive-demo.md
+   ```
    - Ask maintainer to start required services: "I see X tests are being skipped because [reason]. Please start [service] and confirm when ready so I can verify all tests pass."
    - Re-run tests after services are started to ensure all tests run and pass
    - Work is NOT complete until all tests run successfully with zero skipped tests

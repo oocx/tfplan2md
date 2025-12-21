@@ -7,6 +7,8 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class MarkdownRendererRoleAssignmentTests
 {
+    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
+
     [Fact]
     public void Render_RoleAssignment_UsesEnhancedTemplate()
     {
@@ -19,11 +21,11 @@ public class MarkdownRendererRoleAssignmentTests
 
         // Assert
         result.Should().NotBeNull();
-        result!.Should().Contain("**Summary:** `John Doe` (User) → `Reader` on `my-rg`");
+        result!.Should().Contain($"**Summary:** `{Escape("John Doe")}` ({Escape("User")}) → `{Escape("Reader")}` on `{Escape("my-rg")}`");
         result.Should().Contain("| Attribute | Value |");
-        result.Should().Contain("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)");
+        result.Should().Contain(Escape("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)"));
         result.Should().Contain("my-rg in subscription sub-id");
-        result.Should().Contain("John Doe (User) [principal-id]");
+        result.Should().Contain(Escape("John Doe (User) [principal-id]"));
     }
 
     [Fact]

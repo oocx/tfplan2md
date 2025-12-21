@@ -10,6 +10,10 @@ public class MarkdownRendererTests
     private readonly TerraformPlanParser _parser = new();
     private readonly MarkdownRenderer _renderer = new();
 
+    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
+
+    private static string Heading(string actionSymbol, string address) => $"#### {actionSymbol} {Escape(address)}";
+
     [Fact]
     public void Render_ValidPlan_ContainsSummarySection()
     {
@@ -126,10 +130,10 @@ public class MarkdownRendererTests
         // Assert - Module headers should be present and resources grouped under them
         markdown.Should().Contain("Module: root")
             .And.Contain("Module:")
-            .And.Contain("azurerm_resource_group.main")
-            .And.Contain("azurerm_storage_account.main")
-            .And.Contain("azurerm_key_vault.main")
-            .And.Contain("azuredevops_project.main");
+            .And.Contain(Escape("azurerm_resource_group.main"))
+            .And.Contain(Escape("azurerm_storage_account.main"))
+            .And.Contain(Escape("azurerm_key_vault.main"))
+            .And.Contain(Escape("azuredevops_project.main"));
     }
 
     [Fact]
@@ -163,10 +167,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - action symbol lines should exist under module sections
-        markdown.Should().Contain("➕ azurerm_resource_group.main")
-            .And.Contain("🔄 azurerm_key_vault.main")
-            .And.Contain("❌ azurerm_virtual_network.old")
-            .And.Contain("♻️ azuredevops_git_repository.main");
+        markdown.Should().Contain($"➕ {Escape("azurerm_resource_group.main")}")
+            .And.Contain($"🔄 {Escape("azurerm_key_vault.main")}")
+            .And.Contain($"❌ {Escape("azurerm_virtual_network.old")}")
+            .And.Contain($"♻️ {Escape("azuredevops_git_repository.main")}");
     }
 
     [Fact]
@@ -184,13 +188,13 @@ public class MarkdownRendererTests
         // Assert
         markdown.Should().Contain("| Resource Types |");
         markdown.Should().Contain("| ➕ Add | 2 |");
-        markdown.Should().Contain("1 azurerm_resource_group<br/>");
-        markdown.Should().Contain("1 azurerm_storage_account");
+        markdown.Should().Contain($"1 {Escape("azurerm_resource_group")}<br/>");
+        markdown.Should().Contain($"1 {Escape("azurerm_storage_account")}");
         markdown.Should().NotContain("<br/> |");
 
         var addRowIndex = markdown.IndexOf("| ➕ Add |", StringComparison.Ordinal);
-        var resourceGroupIndex = markdown.IndexOf("azurerm_resource_group", addRowIndex, StringComparison.Ordinal);
-        var storageAccountIndex = markdown.IndexOf("azurerm_storage_account", addRowIndex, StringComparison.Ordinal);
+        var resourceGroupIndex = markdown.IndexOf(Escape("azurerm_resource_group"), addRowIndex, StringComparison.Ordinal);
+        var storageAccountIndex = markdown.IndexOf(Escape("azurerm_storage_account"), addRowIndex, StringComparison.Ordinal);
         resourceGroupIndex.Should().BeGreaterThan(-1);
         storageAccountIndex.Should().BeGreaterThan(-1);
         resourceGroupIndex.Should().BeLessThan(storageAccountIndex);
@@ -212,9 +216,9 @@ public class MarkdownRendererTests
         markdown.Should().NotContain("<br/> |");
 
         // And ensure multiple types render on separate lines for Add
-        markdown.Should().Contain("azuredevops_project<br/>")
-            .And.Contain("azurerm_resource_group")
-            .And.Contain("azurerm_storage_account");
+        markdown.Should().Contain($"{Escape("azuredevops_project")}<br/>")
+            .And.Contain(Escape("azurerm_resource_group"))
+            .And.Contain(Escape("azurerm_storage_account"));
     }
 
     [Fact]
@@ -310,8 +314,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - ensure resource shows within a module section
-        markdown.Should().Contain("null_resource.test")
-            .And.Contain("➕ null_resource.test")
+        markdown.Should().Contain(Escape("null_resource.test"))
+            .And.Contain($"➕ {Escape("null_resource.test")}")
             // Should not contain the Attribute Changes details section since there are no changes
             .And.NotContain("<details>");
     }
@@ -329,8 +333,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain("➕ azurerm_resource_group.main")
-            .And.Contain("➕ azurerm_storage_account.main")
+        markdown.Should().Contain($"➕ {Escape("azurerm_resource_group.main")}")
+            .And.Contain($"➕ {Escape("azurerm_storage_account.main")}")
             .And.Contain("| ➕ Add | 2 |")
             .And.Contain("Module: root");
     }
@@ -348,14 +352,14 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - For creates we should show a 2-column table (Attribute | Value) and the expected values
-        var rgSection = markdown.Split("#### ➕ azurerm_resource_group.main")[1].Split("###")[0];
+        var rgSection = markdown.Split(Heading("➕", "azurerm_resource_group.main"))[1].Split("###")[0];
         rgSection.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `name` | rg-new-project |")
-            .And.Contain("| `location` | westeurope |");
+            .And.Contain($"| `{Escape("name")}` | {Escape("rg-new-project")} |")
+            .And.Contain($"| `{Escape("location")}` | {Escape("westeurope")} |");
 
-        var stSection = markdown.Split("#### ➕ azurerm_storage_account.main")[1].Split("###")[0];
+        var stSection = markdown.Split(Heading("➕", "azurerm_storage_account.main"))[1].Split("###")[0];
         stSection.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `account_tier` | Standard |");
+            .And.Contain($"| `{Escape("account_tier")}` | {Escape("Standard")} |");
     }
 
     [Fact]
@@ -371,8 +375,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain("❌ azurerm_storage_account.old")
-            .And.Contain("❌ azurerm_resource_group.old")
+        markdown.Should().Contain($"❌ {Escape("azurerm_storage_account.old")}")
+            .And.Contain($"❌ {Escape("azurerm_resource_group.old")}")
             .And.Contain("❌ Destroy | 2");
     }
 
@@ -389,15 +393,15 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - For deletes we should show a 2-column table (Attribute | Value) and the expected values
-        var stSection = markdown.Split("#### ❌ azurerm_storage_account.old")[1].Split("###")[0];
+        var stSection = markdown.Split(Heading("❌", "azurerm_storage_account.old"))[1].Split("###")[0];
         stSection.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `account_tier` | Standard |")
-            .And.Contain("| `name` | stoldproject |");
+            .And.Contain($"| `{Escape("account_tier")}` | {Escape("Standard")} |")
+            .And.Contain($"| `{Escape("name")}` | {Escape("stoldproject")} |");
 
-        var rgSection = markdown.Split("#### ❌ azurerm_resource_group.old")[1].Split("###")[0];
+        var rgSection = markdown.Split(Heading("❌", "azurerm_resource_group.old"))[1].Split("###")[0];
         rgSection.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `name` | rg-old-project |")
-            .And.Contain("| `location` | westeurope |");
+            .And.Contain($"| `{Escape("name")}` | {Escape("rg-old-project")} |")
+            .And.Contain($"| `{Escape("location")}` | {Escape("westeurope")} |");
     }
 
     [Fact]
@@ -452,10 +456,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - replace should use the Before/After table
-        var section = markdown.Split("#### ♻️ example_resource.replace_me")[1].Split("###")[0];
+        var section = markdown.Split(Heading("♻️", "example_resource.replace_me"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Before | After |")
-            .And.Contain("| `name` | old | new |")
-            .And.Contain("| `size` | small | large |");
+            .And.Contain($"| `{Escape("name")}` | {Escape("old")} | {Escape("new")} |")
+            .And.Contain($"| `{Escape("size")}` | {Escape("small")} | {Escape("large")} |");
     }
 
     [Fact]
@@ -509,10 +513,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - sensitive attribute should be masked in the Value column
-        var section = markdown.Split("#### ➕ example_resource.sensitive")[1].Split("###")[0];
+        var section = markdown.Split(Heading("➕", "example_resource.sensitive"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `api_key` | (sensitive) |")
-            .And.Contain("| `name` | sensitive_resource |");
+            .And.Contain($"| `{Escape("api_key")}` | {Escape("(sensitive)")} |")
+            .And.Contain($"| `{Escape("name")}` | {Escape("sensitive_resource")} |");
     }
 
     [Fact]
@@ -566,11 +570,11 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - the null `name` and unknown `id` should not be shown; only `location` should appear
-        var section = markdown.Split("#### ➕ example_resource.partial")[1].Split("###")[0];
+        var section = markdown.Split(Heading("➕", "example_resource.partial"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `location` | westeurope |")
-            .And.NotContain("`name`")
-            .And.NotContain("`id`");
+            .And.Contain($"| `{Escape("location")}` | {Escape("westeurope")} |")
+            .And.NotContain($"`{Escape("name")}`")
+            .And.NotContain($"`{Escape("id")}`");
     }
 
     [Fact]
@@ -618,10 +622,10 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - the null `location` should not be shown; only `name` should appear
-        var section = markdown.Split("#### ❌ example_resource.partial_delete")[1].Split("###")[0];
+        var section = markdown.Split(Heading("❌", "example_resource.partial_delete"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `name` | rg-old-project |")
-            .And.NotContain("`location`");
+            .And.Contain($"| `{Escape("name")}` | {Escape("rg-old-project")} |")
+            .And.NotContain($"`{Escape("location")}`");
     }
 
     [Fact]
@@ -683,7 +687,7 @@ public class MarkdownRendererTests
         // (no blank lines between rows)
 
         // Extract the attribute changes table section for azurerm_key_vault.main (which has multiple attributes)
-        var keyVaultSection = markdown.Split("#### 🔄 azurerm_key_vault.main")[1].Split("###")[0];
+        var keyVaultSection = markdown.Split(Heading("🔄", "azurerm_key_vault.main"))[1].Split("###")[0];
 
         // FIXED: The table should NOT have the pattern of "|\n\n|" which indicates blank lines between rows
         keyVaultSection.Should().NotContain("|\n\n|");
@@ -691,7 +695,7 @@ public class MarkdownRendererTests
         // Verify the table exists and has the expected structure
         keyVaultSection.Should().Contain("| Attribute | Before | After |")
             .And.Contain("| `location` |")
-            .And.Contain("| `sku_name` |");
+            .And.Contain($"| `{Escape("sku_name")}` |");
     }
 
     [Fact]
@@ -775,11 +779,11 @@ public class MarkdownRendererTests
         }
 
         // Also assert resources are within their modules
-        markdown.Should().Contain("azurerm_resource_group.rg_root")
-            .And.Contain("azurerm_virtual_network.vnet")
-            .And.Contain("azurerm_subnet.subnet1")
-            .And.Contain("azurerm_app_service.app")
-            .And.Contain("azurerm_postgresql_server.db");
+        markdown.Should().Contain(Escape("azurerm_resource_group.rg_root"))
+            .And.Contain(Escape("azurerm_virtual_network.vnet"))
+            .And.Contain(Escape("azurerm_subnet.subnet1"))
+            .And.Contain(Escape("azurerm_app_service.app"))
+            .And.Contain(Escape("azurerm_postgresql_server.db"));
     }
 
     [Fact]
@@ -806,11 +810,11 @@ public class MarkdownRendererTests
 
         var resourceHeadings = new[]
         {
-            "#### ➕ azurerm_resource_group.rg_root",
-            "#### ➕ module.network.azurerm_virtual_network.vnet",
-            "#### ➕ module.network.module.subnet.azurerm_subnet.subnet1",
-            "#### 🔄 module.app.azurerm_app_service.app",
-            "#### ➕ module.app.module.database.azurerm_postgresql_server.db"
+            Heading("➕", "azurerm_resource_group.rg_root"),
+            Heading("➕", "module.network.azurerm_virtual_network.vnet"),
+            Heading("➕", "module.network.module.subnet.azurerm_subnet.subnet1"),
+            Heading("🔄", "module.app.azurerm_app_service.app"),
+            Heading("➕", "module.app.module.database.azurerm_postgresql_server.db")
         };
 
         for (var i = 0; i < moduleHeaders.Length; i++)
@@ -839,7 +843,7 @@ public class MarkdownRendererTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().Contain("web_tier").And.Contain("Rule Changes");
+        result.Should().Contain(Escape("web_tier")).And.Contain("Rule Changes");
     }
 
 

@@ -8,6 +8,7 @@ public class MarkdownRendererResourceTemplateTests
 {
     private readonly TerraformPlanParser _parser = new();
     private readonly MarkdownRenderer _renderer = new();
+    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
     private string RenderFirewallPlan()
     {
@@ -37,9 +38,9 @@ public class MarkdownRendererResourceTemplateTests
         var result = RenderFirewallPlan();
 
         // Assert
-        result.Should().Contain("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24");
-        result.Should().Contain("- Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers");
-        result.Should().Contain("| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |");
+        result.Should().Contain(Escape("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24"));
+        result.Should().Contain(Escape("- Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers"));
+        result.Should().Contain($"| 🔄 | {Escape("allow-http")} | TCP | {Escape("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24")} | {Escape("*")} | 80 | {Escape("- Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers")} |");
     }
 
     [Fact]
@@ -49,11 +50,11 @@ public class MarkdownRendererResourceTemplateTests
         var result = RenderFirewallPlan();
 
         // Assert
-        result.Should().Contain("| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |");
+        result.Should().Contain($"| 🔄 | {Escape("allow-http")} | TCP | {Escape("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24")} | {Escape("*")} | 80 | {Escape("- Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers")} |");
         result.Should().NotContain("- TCP");
         result.Should().NotContain("+ TCP");
-        result.Should().NotContain("- *<br>");
-        result.Should().NotContain("+ *");
+        result.Should().NotContain($"- {Escape("*")}<br>");
+        result.Should().NotContain($"+ {Escape("*")}");
         result.Should().NotContain("- 80<br>");
         result.Should().NotContain("+ 80");
     }
@@ -67,7 +68,7 @@ public class MarkdownRendererResourceTemplateTests
         // Assert
         result.Should().Contain("| ➕ | allow-dns | UDP | 10.0.1.0/24, 10.0.2.0/24 | 168.63.129.16 | 53 | Allow DNS queries to Azure DNS |");
         result.Should().Contain("| ❌ | allow-ssh-old | TCP | 10.0.0.0/8 | 10.0.2.0/24 | 22 | Legacy SSH access - to be removed |");
-        result.Should().Contain("| ⏺️ | allow-https | TCP | 10.0.1.0/24 | * | 443 | Allow HTTPS traffic to internet |");
+        result.Should().Contain($"| ⏺️ | allow-https | TCP | 10.0.1.0/24 | {Escape("*")} | 443 | Allow HTTPS traffic to internet |");
         result.Should().NotContain("- allow-dns");
         result.Should().NotContain("+ allow-dns");
     }

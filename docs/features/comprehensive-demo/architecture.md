@@ -92,6 +92,7 @@ Key sections to populate:
 - Users have an immediate "try it now" experience with Docker.
 - We have a stable test fixture that doesn't change unless we want it to.
 - No external dependencies for the demo.
+- The demo output serves as a markdown quality validation target in CI.
 
 ### Negative
 - The `plan.json` is a large file that must be kept valid manually.

@@ -72,8 +72,8 @@ public class MarkdownRenderer
 
             // Find the corresponding change section in the default-rendered document and replace it.
             // Match any heading level that contains the action symbol and address (handles template changes where headings may be '###' or '####').
-            var headingText = $"{change.ActionSymbol} {change.Address}";
-            var pattern = $"(?ms)^[ \\t]*#+\\s+{Regex.Escape(headingText)}.*?(?=^[ \\t]*#+\\s|\\z)";
+            var escapedHeading = $"{change.ActionSymbol} {ScribanHelpers.EscapeMarkdown(change.Address)}";
+            var pattern = $"(?ms)^[ \t]*#+\\s+{Regex.Escape(escapedHeading)}.*?(?=^[ \t]*#+\\s|\\z)";
             rendered = Regex.Replace(rendered, pattern, specific);
         }
 
@@ -361,18 +361,25 @@ public class MarkdownRenderer
     }
 
     /// <summary>
-    /// Normalizes markdown output to ensure all headings are preceded by a blank line.
-    /// This prevents rendering issues where content runs directly into a heading.
+    /// Normalizes markdown output to ensure headings and surrounding content are separated by blank lines.
+    /// This prevents rendering issues where content runs directly into headings or tables.
     /// </summary>
     private static string NormalizeHeadingSpacing(string markdown)
     {
-        // Collapse runs of 3+ newlines to a single blank line to avoid vertical gaps.
-        markdown = Regex.Replace(markdown, @"\n{3,}", "\n\n");
+        // Collapse runs of multiple blank lines (including whitespace-only lines) to a single blank line.
+        markdown = Regex.Replace(markdown, @"(\n[ \t]*){2,}", "\n\n");
 
         // Ensure exactly one blank line before any heading that follows non-blank content.
         // Match: newline, optional horizontal whitespace, non-whitespace content, newline(s), then heading.
         // If there's already a blank line (\n\n or more), the heading is fine.
         // Only add a blank line when there's exactly one newline before the heading.
-        return Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2");
+        markdown = Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2");
+
+        // Ensure a blank line after headings when the following line is not already blank.
+        markdown = Regex.Replace(markdown, @"(#{1,6}\s.+)\n(?!\n)", "$1\n\n");
+
+        // Remove trailing blank lines while keeping a single newline at EOF for POSIX tools.
+        markdown = markdown.TrimEnd();
+        return $"{markdown}\n";
     }
 }

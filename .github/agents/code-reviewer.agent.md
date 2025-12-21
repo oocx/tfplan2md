@@ -54,6 +54,8 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md`
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
+- [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
+- [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
@@ -75,6 +77,21 @@ Before starting, familiarize yourself with:
 - [ ] Uses modern C# features appropriately
 - [ ] Files are under 300 lines
 - [ ] No unnecessary code duplication
+
+### Access Modifiers
+- [ ] Uses most restrictive access modifier (prefer `private`, then `internal`)
+- [ ] No `public` members except main entry points
+- [ ] Test access uses `InternalsVisibleTo`, not `public`
+- [ ] No false concerns about API backwards compatibility
+
+### Code Comments
+- [ ] All members have XML doc comments (public, internal, private)
+- [ ] Comments explain "why" not just "what"
+- [ ] Required tags present: `<summary>`, `<param>`, `<returns>`
+- [ ] Complex methods have `<example>` with `<code>`
+- [ ] Feature/spec references included where applicable
+- [ ] Comments are synchronized with code (no outdated comments)
+- [ ] Follows [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md)
 
 ### Architecture
 - [ ] Changes align with the architecture document

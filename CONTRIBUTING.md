@@ -105,12 +105,69 @@ git commit -m "feat(api)!: rename TerraformPlan to PlanResult"
    ```
 4. **Push your branch** and create a Pull Request
 5. **Wait for review** — PR validation will run automatically
+6. **Merge using "Rebase and merge"** — This project requires a linear history
 
 ### PR Requirements
 
 - All CI checks must pass (build, test, format, vulnerability scan)
 - Code follows the project's style guidelines (enforced by `.editorconfig`)
 - Commit messages follow Conventional Commits format
+
+### Merge Strategy
+
+**This project uses rebase and merge to maintain a linear Git history.**
+
+- When merging a PR, use the "Rebase and merge" button
+- If "Rebase and merge" is not available due to conflicts:
+  1. Update your branch by rebasing onto main: `git pull --rebase origin main`
+  2. Resolve any conflicts
+  3. Force-push your branch: `git push --force-with-lease`
+  4. The PR will then be ready to merge
+- Do NOT use "Squash and merge" or "Create a merge commit"
+
+## Coding Standards
+
+### Access Modifiers
+
+tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:
+
+- ✅ `private` - Default for class members
+- ✅ `internal` - For cross-assembly visibility within the solution
+- ⚠️ `public` - Only for main entry points or when absolutely necessary
+
+**Never use `public` just for testing.** Instead, use `InternalsVisibleTo` to expose `internal` members to test projects.
+
+**Why:** This prevents false concerns about API backwards compatibility and breaking changes, since there are no external consumers of the code.
+
+### Code Comments
+
+All code must be thoroughly documented following [docs/commenting-guidelines.md](docs/commenting-guidelines.md):
+
+- **All members** (public, internal, private) require XML doc comments
+- Comments must explain **"why"** not just **"what"**
+- Use standard XML tags: `<summary>`, `<param>`, `<returns>`, `<remarks>`, `<example>`
+- Reference related features/specifications for traceability
+- Keep comments synchronized with code changes
+
+Examples:
+
+```csharp
+/// <summary>
+/// Parses Terraform plan JSON and extracts resource changes.
+/// </summary>
+/// <param name="planFilePath">Absolute path to the plan JSON file.</param>
+/// <returns>Collection of resource changes found in the plan.</returns>
+/// <remarks>
+/// Uses streaming deserialization for memory efficiency on large files.
+/// Related feature: docs/features/comprehensive-demo/
+/// </remarks>
+internal async Task<IReadOnlyList<ResourceChange>> ParseAsync(string planFilePath)
+{
+    // Implementation
+}
+```
+
+See [docs/commenting-guidelines.md](docs/commenting-guidelines.md) for complete guidelines.
 
 ## Local Development Setup
 

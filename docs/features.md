@@ -6,6 +6,21 @@ This document describes the features of `tfplan2md` from a user perspective.
 
 `tfplan2md` is a CLI tool that converts Terraform plan JSON files into human-readable markdown reports. It is designed primarily for use in CI/CD pipelines and is distributed as a Docker image.
 
+## Markdown Quality Validation
+
+**Status:** ✅ Implemented (v0.26.0+)
+
+All generated markdown is validated to ensure correct rendering on GitHub and Azure DevOps:
+
+- **Automated linting** - CI runs markdownlint-cli2 on generated reports
+- **Property-based invariants** - Tests verify markdown properties that must always hold (no consecutive blank lines, proper table structure, balanced HTML tags)
+- **Snapshot testing** - Detects unexpected changes in output
+- **Template isolation testing** - Each template is tested independently
+- **Fuzz testing** - Edge cases (special characters, Unicode, long values) are automatically tested
+- **Docker-based tools** - No local tool dependencies required
+
+See [docs/markdown-specification.md](markdown-specification.md) for the supported markdown subset and [docs/testing-strategy.md](testing-strategy.md) for testing details.
+
 ## Input
 
 - **Stdin (default)**: Read Terraform plan JSON from standard input
@@ -137,7 +152,7 @@ This ensures Docker Hub users can see the complete set of changes included in ea
 tfplan2md ensures generated markdown is valid and renders correctly on GitHub and Azure DevOps:
 
 - **Automatic escaping**: All external input (resource names, attribute values, module addresses) is automatically escaped to prevent broken tables and headings
-- **Special character handling**: Pipes (`|`), asterisks (`*`), underscores (`_`), brackets, and other markdown-sensitive characters are escaped
+- **Selective escaping**: Only structural characters that break markdown (pipes `|`, backticks `` ` ``, angle brackets `<>`, ampersands `&`, backslashes `\`) are escaped; readable characters like parentheses, brackets, asterisks, and underscores are preserved
 - **Newline normalization**: Newlines in attribute values are converted to `<br/>` tags for table compatibility
 - **Heading spacing**: Blank lines are automatically added before and after headings to ensure proper rendering
 - **Table formatting**: Tables use padded separator rows that satisfy markdownlint requirements

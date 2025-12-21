@@ -40,7 +40,7 @@ public class ComprehensiveDemoTests
         markdown.Should().Contain(Escape("azurerm_firewall_network_rule_collection.network_rules"))
             .And.Contain("Rule Changes")
             .And.Contain(Escape("azurerm_role_assignment.rg_reader"))
-            .And.Contain(Escape("Jane Doe (User)"));
+            .And.Contain("Jane Doe (User)");
     }
 
     [Fact]

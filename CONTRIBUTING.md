@@ -25,6 +25,43 @@ Use these branch prefixes:
 - `chore/` — Maintenance tasks
 - `workflow/` — Agent/workflow changes (`.github/agents/`, workflow documentation)
 
+## Testing Requirements
+
+All changes must include appropriate tests. The project uses a comprehensive testing strategy:
+
+### Test Types
+
+1. **Unit Tests** - Test individual components in isolation
+2. **Integration Tests** - Test end-to-end workflows, including Docker-based tests
+3. **Invariant Tests** - Property-based tests that verify markdown invariants that must always hold
+4. **Snapshot Tests** - Golden file tests that detect unexpected output changes
+5. **Template Isolation Tests** - Test each template independently
+6. **Fuzz Tests** - Test with edge-case inputs (special characters, Unicode, long values)
+7. **Markdownlint Integration** - Docker-based linting with actual markdownlint-cli2
+
+### Running Tests
+
+```bash
+# Run all tests
+dotnet test
+
+# Run specific test categories
+dotnet test --filter "FullyQualifiedName~MarkdownInvariantTests"
+dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"
+```
+
+### Markdown Quality Requirements
+
+All generated markdown must:
+- Pass markdownlint validation (MD012 and other rules)
+- Parse correctly with Markdig
+- Render correctly on GitHub and Azure DevOps
+- Have proper table structure (no blank lines between rows)
+- Have proper heading spacing (blank lines before/after)
+- Have balanced HTML tags (`<details>`, `<summary>`)
+
+See [docs/testing-strategy.md](docs/testing-strategy.md) for complete testing documentation.
+
 ## Commit Messages
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/) to automate versioning and changelog generation.

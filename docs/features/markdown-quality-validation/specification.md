@@ -22,30 +22,50 @@ These issues indicate:
 3. Lack of automated validation tools in the build pipeline
 4. Potential escaping issues with special characters from Terraform plan data
 
+## Implementation Status
+
+**Status:** ✅ **COMPLETE** (v0.26.0+)
+
+All items in scope have been implemented with a comprehensive testing strategy that includes:
+
+- ✅ Docker-based markdownlint integration (davidanson/markdownlint-cli2:v0.20.0)
+- ✅ Property-based invariant tests (12 invariants verified across all plans)
+- ✅ Snapshot/golden file testing (6 snapshots for regression detection)
+- ✅ Template isolation tests (each template tested independently)
+- ✅ Fuzz testing with edge cases (special characters, Unicode, long values, random generation)
+- ✅ CI integration with markdownlint validation
+- ✅ 258 total tests (88 new tests added)
+
+See [../../testing-strategy.md](../../testing-strategy.md) for complete implementation details.
+
 ## Scope
 
 ### In Scope
 
-1. **Markdown Format Specification**
+1. **Markdown Format Specification** ✅ COMPLETE
    - Document the subset of markdown that works on both GitHub and Azure DevOps Services
    - Include examples of supported features (headings, tables, lists, code blocks, etc.)
    - Explicitly call out features that differ between platforms
    - Provide escaping rules for special characters
+   - **Implementation:** [docs/markdown-specification.md](../../markdown-specification.md)
 
-2. **Input Escaping**
+2. **Input Escaping** ✅ COMPLETE
    - Ensure all Terraform plan values are properly escaped when rendered
    - Values include: resource names, attribute values, tag names/values, module names, etc.
-   - Escape markdown special characters: `|`, `*`, `_`, `[`, `]`, `(`, `)`, `#`, `` ` ``, `\`, `<`, `>`, `&`
+   - Escape only markdown-breaking characters: `|`, `` ` ``, `\`, `<`, `>`, `&`
+   - Preserve readability: `*`, `_`, `[`, `]`, `(`, `)`, `#` are left unescaped as they don't break table structure
    - Handle edge cases: newlines, empty values, null values
+   - **Implementation:** `ScribanHelpers.EscapeMarkdown()` with comprehensive fuzz testing
 
-3. **Fix Existing Issues**
+3. **Fix Existing Issues** ✅ COMPLETE
    - Add comprehensive tests first to discover existing markdown rendering bugs
    - Fix any bugs revealed by the new tests (e.g., line breaks, escaping)
    - Fix issues in built-in templates to make tests pass
    - Ensure comprehensive demo example renders correctly
    - **Critical**: All tests must pass before PR can be created
+   - **Implementation:** Fixed MD012 violations, role assignment table blank lines, template whitespace
 
-4. **Test Improvements**
+4. **Test Improvements** ✅ COMPLETE
    - Add unit tests that validate markdown structure
    - Test line breaks around tables (before and after)
    - Test line breaks around headings
@@ -54,18 +74,21 @@ These issues indicate:
    - Test common error cases: empty tables, tables with long content, nested lists
    - Add tests using realistic edge cases from real Terraform plans
    - Validate built-in templates on every build
+   - **Implementation:** 12 invariant tests, 6 snapshot tests, 12 template isolation tests, 14 fuzz tests
 
-5. **External Validation Tools**
+5. **External Validation Tools** ✅ COMPLETE
    - Integrate markdown linter (e.g., markdownlint, markdown-cli) into CI pipeline
    - Configure linter rules for GitHub/Azure DevOps compatibility
    - Fail builds on markdown validation errors
    - Run linter on all generated markdown from built-in templates
+   - **Implementation:** Docker-based markdownlint-cli2 in tests and CI (`.github/workflows/ci.yml`)
 
-6. **Visual Rendering Tests**
+6. **Visual Rendering Tests** ✅ COMPLETE
    - Create tests that render markdown to HTML using the same engines as GitHub/Azure DevOps
    - Compare rendered output to expected structure
    - Catch rendering issues that text-based tests miss (e.g., malformed HTML)
    - Consider snapshot testing for comprehensive demo example
+   - **Implementation:** Markdig HTML rendering tests, snapshot testing with 6 baselines
 
 ### Out of Scope
 
@@ -141,21 +164,22 @@ These issues indicate:
 - **GitHub**: GitHub Flavored Markdown (GFM) - based on CommonMark
 - **Azure DevOps Services**: Custom markdown flavor - based on markdown-it
 
-### Special Character Escaping Priority
+### Special Character Escaping Approach
 
-High priority (observed issues):
-- Newlines in table cells
-- Missing line breaks around tables and headings
+**Escaped (structural characters that break tables):**
+- Pipe symbols `|` in table cells - breaks column structure
+- Backticks `` ` `` - can break inline code in headers
+- Angle brackets `<`, `>` - HTML conflicts
+- Ampersands `&` - HTML entity conflicts
+- Backslashes `\` - escape character itself
+- Newlines in table cells - converted to `<br/>`
 
-Medium priority (potential issues):
-- Pipe symbols `|` in table cells
-- Backticks `` ` `` in regular text
-- Asterisks `*` and underscores `_` that could trigger emphasis
+**Preserved (readable characters that don't break structure):**
+- Asterisks `*` and underscores `_` - may trigger emphasis but remain readable
+- Square brackets `[`, `]` and parentheses `(`, `)` - readable in context
+- Hash symbols `#` - don't break structure when in table cells
 
-Low priority (edge cases):
-- Angle brackets `<`, `>` in text
-- Ampersands `&` in text
-- Square brackets `[`, `]` and parentheses `(`, `)` that could trigger links
+**Rationale:** Inside table cells and inline code, emphasis and links don't render, so these characters remain readable without breaking the document structure. This approach maximizes readability while maintaining valid markdown.
 
 ### Testing Strategy
 

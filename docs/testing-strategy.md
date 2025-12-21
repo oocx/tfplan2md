@@ -196,3 +196,85 @@ End-to-end integration tests that run the application in a Docker container. The
 | `Docker_WithVersionFlag_DisplaysVersion` | Verifies that the `--version` flag displays version information in the container |
 | `Docker_WithInvalidInput_ReturnsNonZeroExitCode` | Verifies that invalid JSON input results in a non-zero exit code and error message |
 | `Docker_ParsesAllResourceChanges` | Verifies that all expected resources from the test data appear in the container's output |
+### Markdown Lint Integration Tests (`MarkdownGeneration/MarkdownLintIntegrationTests.cs`)
+
+Docker-based integration tests that run the actual markdownlint-cli2 tool to validate markdown output. These tests use the `davidanson/markdownlint-cli2:v0.20.0` Docker image to ensure consistent validation across all environments.
+
+| Test Name | Description |
+|-----------|-------------|
+| `Lint_ComprehensiveDemo_PassesAllRules` | Verifies the comprehensive demo output passes all markdownlint rules |
+| `Lint_AllTestPlans_PassAllRules` | Verifies all test plans in TestData produce valid markdown |
+| `Lint_SummaryTemplate_PassesAllRules` | Verifies the summary template produces valid markdown |
+| `Lint_BreakingPlan_PassesAllRules` | Verifies markdown with special characters passes linting |
+
+### Markdown Invariant Tests (`MarkdownGeneration/MarkdownInvariantTests.cs`)
+
+Property-based tests that verify markdown invariants that must ALWAYS hold, regardless of input. These tests define the "contract" of valid markdown output.
+
+| Test Name | Description |
+|-----------|-------------|
+| `Invariant_NoConsecutiveBlankLines_AllPlans` | MD012: Verifies no plan produces more than one consecutive blank line |
+| `Invariant_NoConsecutiveBlankLines_ComprehensiveDemo` | MD012: Specific check for comprehensive demo |
+| `Invariant_AllTablesParseCorrectly_AllPlans` | Verifies all tables parse correctly with Markdig |
+| `Invariant_NoBlankLinesBetweenTableRows_AllPlans` | Verifies table rows are consecutive without blank lines |
+| `Invariant_NoRawNewlinesInTableCells_AllPlans` | Verifies no raw newlines exist inside table cells |
+| `Invariant_PipesEscapedInTableCells_BreakingPlan` | Verifies pipes are escaped in table cells |
+| `Invariant_NewlinesConvertedToBr_BreakingPlan` | Verifies newlines are converted to `<br/>` |
+| `Invariant_HeadingsSurroundedByBlankLines_AllPlans` | Verifies headings have proper spacing |
+| `Invariant_DetailsTagsBalanced_AllPlans` | Verifies all `<details>` tags are properly closed |
+| `Invariant_SummaryTagsBalanced_AllPlans` | Verifies all `<summary>` tags are properly closed |
+| `Invariant_HasTerraformPlanHeading_AllPlans` | Verifies every plan has a Terraform Plan heading |
+| `Invariant_HasSummarySection_NonEmptyPlans` | Verifies non-empty plans have a Summary section |
+
+### Markdown Snapshot Tests (`MarkdownGeneration/MarkdownSnapshotTests.cs`)
+
+Golden file tests that detect unexpected changes in markdown output by comparing against approved baselines.
+
+| Test Name | Description |
+|-----------|-------------|
+| `Snapshot_ComprehensiveDemo_MatchesBaseline` | Verifies comprehensive demo matches stored snapshot |
+| `Snapshot_SummaryTemplate_MatchesBaseline` | Verifies summary template matches stored snapshot |
+| `Snapshot_BreakingPlan_MatchesBaseline` | Verifies breaking plan (special chars) matches stored snapshot |
+| `Snapshot_RoleAssignments_MatchesBaseline` | Verifies role assignment rendering matches stored snapshot |
+| `Snapshot_FirewallRules_MatchesBaseline` | Verifies firewall rule rendering matches stored snapshot |
+| `Snapshot_MultiModule_MatchesBaseline` | Verifies multi-module plan matches stored snapshot |
+
+### Template Isolation Tests (`MarkdownGeneration/TemplateIsolationTests.cs`)
+
+Tests that verify each template produces valid markdown with controlled inputs. These tests isolate template behavior from full plan complexity.
+
+| Test Name | Description |
+|-----------|-------------|
+| `DefaultTemplate_CreateAction_ProducesValidMarkdown` | Verifies default template with create actions |
+| `DefaultTemplate_DeleteAction_ProducesValidMarkdown` | Verifies default template with delete actions |
+| `DefaultTemplate_EmptyPlan_ProducesValidMarkdown` | Verifies default template with empty plans |
+| `DefaultTemplate_SpecialCharacters_EscapesCorrectly` | Verifies special character escaping |
+| `RoleAssignmentTemplate_WithPrincipals_ProducesValidMarkdown` | Verifies role assignment template |
+| `RoleAssignmentTemplate_WithoutPrincipals_ProducesValidMarkdown` | Verifies role assignment without principal mapping |
+| `RoleAssignmentTemplate_NoBlankLinesBetweenTableRows` | Verifies no blank lines in role assignment tables |
+| `FirewallTemplate_RuleChanges_ProducesValidMarkdown` | Verifies firewall template |
+| `FirewallTemplate_ShowsRuleComparison` | Verifies firewall rule comparison display |
+| `SummaryTemplate_ProducesValidMarkdown` | Verifies summary template |
+| `SummaryTemplate_EmptyPlan_ProducesValidMarkdown` | Verifies summary template with empty plans |
+| `MultiModule_ProperHeadingHierarchy` | Verifies multi-module heading hierarchy |
+
+### Markdown Fuzz Tests (`MarkdownGeneration/MarkdownFuzzTests.cs`)
+
+Fuzz testing with random/edge-case inputs to find escaping bugs and edge cases that break markdown rendering.
+
+| Test Name | Description |
+|-----------|-------------|
+| `Fuzz_PipeInResourceName_EscapedCorrectly` (Theory) | Verifies pipe escaping in resource names |
+| `Fuzz_AsterisksInValues_RenderedCorrectly` (Theory) | Verifies asterisks remain readable while tables stay valid |
+| `Fuzz_UnderscoresInValues_EscapedCorrectly` (Theory) | Verifies underscores remain readable in table cells |
+| `Fuzz_BracketsInValues_EscapedCorrectly` (Theory) | Verifies bracket escaping |
+| `Fuzz_HashInValues_EscapedCorrectly` (Theory) | Verifies hash symbol handling |
+| `Fuzz_BackticksInValues_EscapedCorrectly` (Theory) | Verifies backtick escaping |
+| `Fuzz_NewlinesInValues_ConvertedToBr` (Theory) | Verifies newline conversion |
+| `Fuzz_UnicodeInValues_HandledCorrectly` (Theory) | Verifies Unicode character handling |
+| `Fuzz_LongValues_DontBreakTables` (Theory) | Verifies long values don't break tables |
+| `Fuzz_LongResourceNames_DontBreakTables` (Theory) | Verifies long names don't break tables |
+| `Fuzz_EmptyValues_DontBreakTables` | Verifies empty value handling |
+| `Fuzz_WhitespaceValues_DontBreakTables` (Theory) | Verifies whitespace-only value handling |
+| `Fuzz_CombinedSpecialChars_AllEscaped` (Theory) | Verifies combined special characters |
+| `Fuzz_RandomPlans_ProduceValidMarkdown` | Generates random plans and validates output |

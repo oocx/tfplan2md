@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.Json;
 using Oocx.TfPlan2Md.Azure;
 using Scriban.Runtime;
@@ -20,6 +21,79 @@ public static class ScribanHelpers
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
         scriptObject.Import("azure_principal_name", new Func<string?, string>(p => ResolvePrincipalName(p, principalMapper)));
+        scriptObject.Import("azure_scope_info", new Func<string?, ScriptObject>(GetScopeInfo));
+        scriptObject.Import("azure_role_info", new Func<string?, string?, ScriptObject>(GetRoleInfo));
+        scriptObject.Import("azure_principal_info", new Func<string?, string?, ScriptObject>((id, type) => GetPrincipalInfo(id, type, principalMapper)));
+        scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
+    }
+
+    private static ScriptObject GetScopeInfo(string? scope)
+    {
+        var info = AzureScopeParser.Parse(scope);
+
+        return new ScriptObject
+        {
+            ["name"] = info.Name,
+            ["type"] = info.Type,
+            ["subscription_id"] = info.SubscriptionId ?? string.Empty,
+            ["resource_group"] = info.ResourceGroup ?? string.Empty,
+            ["level"] = info.Level.ToString(),
+            ["summary"] = info.Summary,
+            ["summary_label"] = info.SummaryLabel,
+            ["summary_name"] = info.SummaryName,
+            ["details"] = info.Details
+        };
+    }
+
+    private static ScriptObject GetRoleInfo(string? roleDefinitionId, string? roleDefinitionName)
+    {
+        var info = AzureRoleDefinitionMapper.GetRoleDefinition(roleDefinitionId, roleDefinitionName);
+
+        return new ScriptObject
+        {
+            ["name"] = info.Name,
+            ["id"] = info.Id,
+            ["full_name"] = info.FullName
+        };
+    }
+
+    private static ScriptObject GetPrincipalInfo(string? principalId, string? principalType, IPrincipalMapper principalMapper)
+    {
+        var id = principalId ?? string.Empty;
+        var type = principalType ?? string.Empty;
+        var name = principalMapper.GetName(id, type) ?? id;
+        var fullName = BuildPrincipalFullName(name, id, type);
+
+        return new ScriptObject
+        {
+            ["name"] = name,
+            ["id"] = id,
+            ["type"] = type,
+            ["full_name"] = fullName
+        };
+    }
+
+    private static ScriptArray CollectAttributes(object? before, object? after)
+    {
+        var beforeDict = ToDictionary(before);
+        var afterDict = ToDictionary(after);
+        var keys = beforeDict.Keys.Union(afterDict.Keys).ToList();
+
+        var attributes = new ScriptArray();
+        foreach (var key in keys)
+        {
+            beforeDict.TryGetValue(key, out var beforeValue);
+            afterDict.TryGetValue(key, out var afterValue);
+
+            if (IsNullValue(beforeValue) && IsNullValue(afterValue))
+            {
+                continue;
+            }
+
+            attributes.Add(key);
+        }
+
+        return attributes;
     }
 
     /// <summary>
@@ -218,6 +292,63 @@ public static class ScribanHelpers
         }
 
         return principalMapper.GetPrincipalName(principalId);
+    }
+
+    private static string BuildPrincipalFullName(string name, string? principalId, string? principalType)
+    {
+        var typePart = string.IsNullOrWhiteSpace(principalType) ? string.Empty : $" ({principalType})";
+        var idPart = string.IsNullOrWhiteSpace(principalId) ? string.Empty : $" [{principalId}]";
+        return $"{name}{typePart}{idPart}".Trim();
+    }
+
+    private static Dictionary<string, object?> ToDictionary(object? obj)
+    {
+        var result = new Dictionary<string, object?>();
+
+        if (obj is null)
+        {
+            return result;
+        }
+
+        if (obj is JsonElement element)
+        {
+            if (element.ValueKind != JsonValueKind.Object)
+            {
+                return result;
+            }
+
+            foreach (var property in element.EnumerateObject())
+            {
+                result[property.Name] = ConvertJsonValue(property.Value);
+            }
+
+            return result;
+        }
+
+        if (obj is ScriptObject scriptObject)
+        {
+            foreach (var key in scriptObject.Keys)
+            {
+                result[key] = scriptObject[key];
+            }
+        }
+
+        return result;
+    }
+
+    private static bool IsNullValue(object? value)
+    {
+        if (value is null)
+        {
+            return true;
+        }
+
+        if (value is JsonElement element)
+        {
+            return element.ValueKind == JsonValueKind.Null;
+        }
+
+        return false;
     }
 
     private static object? ConvertJsonValue(JsonElement element)

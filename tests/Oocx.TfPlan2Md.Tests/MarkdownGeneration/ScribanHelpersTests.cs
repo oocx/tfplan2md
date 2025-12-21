@@ -329,5 +329,10 @@ public class ScribanHelpersTests
         {
             return principalId;
         }
+
+        public string? GetName(string principalId)
+        {
+            return null;
+        }
     }
 }

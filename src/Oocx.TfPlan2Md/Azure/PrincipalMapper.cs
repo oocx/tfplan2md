@@ -14,17 +14,38 @@ public class PrincipalMapper : IPrincipalMapper
 
     public string GetPrincipalName(string principalId)
     {
+        var name = GetName(principalId);
+
         if (string.IsNullOrWhiteSpace(principalId))
         {
             return principalId ?? string.Empty;
         }
 
-        if (_principals.TryGetValue(principalId, out var name))
+        return name is null
+            ? principalId
+            : $"{name} [{principalId}]";
+    }
+
+    public string? GetName(string principalId)
+    {
+        if (string.IsNullOrWhiteSpace(principalId))
         {
-            return $"{name} [{principalId}]";
+            return null;
         }
 
-        return principalId;
+        return _principals.TryGetValue(principalId, out var name)
+            ? name
+            : null;
+    }
+
+    public string GetPrincipalName(string principalId, string? principalType)
+    {
+        return GetPrincipalName(principalId);
+    }
+
+    public string? GetName(string principalId, string? principalType)
+    {
+        return GetName(principalId);
     }
 
     private static FrozenDictionary<string, string> LoadMappings(string? mappingFile)
@@ -45,8 +66,11 @@ public class PrincipalMapper : IPrincipalMapper
 
             return parsed.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
         }
-        catch
+        catch (Exception ex)
         {
+            // Intentional swallow after logging: malformed or unreadable mapping files should gracefully
+            // fall back to raw principal IDs instead of failing plan generation, but the user should know why.
+            Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
             return FrozenDictionary<string, string>.Empty;
         }
     }

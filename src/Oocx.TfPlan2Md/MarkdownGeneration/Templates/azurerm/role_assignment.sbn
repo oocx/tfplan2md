@@ -1,10 +1,69 @@
-{{~ assignment = after_json ?? before_json ~}}
-#### {{ action_symbol }} {{ address }} ({{ action }})
+{{- before_state = before_json -}}
+{{- after_state = after_json -}}
 
-{{~ if assignment ~}}
-- **scope**: {{ azure_scope assignment.scope }}
-- **role_definition_id**: {{ azure_role_name assignment.role_definition_id }}
-- **principal_id**: {{ azure_principal_name assignment.principal_id }}
-{{~ else ~}}
-- (no assignment data)
-{{~ end ~}}
+{{- before_scope = azure_scope_info(before_state != null ? before_state.scope : null) -}}
+{{- after_scope = azure_scope_info(after_state != null ? after_state.scope : null) -}}
+{{- before_role = azure_role_info(before_state != null ? before_state.role_definition_id : null, before_state != null ? before_state.role_definition_name : null) -}}
+{{- after_role = azure_role_info(after_state != null ? after_state.role_definition_id : null, after_state != null ? after_state.role_definition_name : null) -}}
+{{- before_principal = azure_principal_info(before_state != null ? before_state.principal_id : null, before_state != null ? before_state.principal_type : null) -}}
+{{- after_principal = azure_principal_info(after_state != null ? after_state.principal_id : null, after_state != null ? after_state.principal_type : null) -}}
+
+{{- active_scope = action == "delete" ? before_scope : after_scope -}}
+{{- active_role = action == "delete" ? before_role : after_role -}}
+{{- active_principal = action == "delete" ? before_principal : after_principal -}}
+{{- summary_scope = active_scope.summary_label + "`" + active_scope.summary_name + "`" -}}
+{{- principal_type = active_principal.type }}
+
+{{ func normalize(value) }}
+    {{- text = "" + value -}}
+    {{- cleaned = string.replace(string.replace(text, "\r", ""), "\n", " ") -}}
+    {{ ret cleaned }}
+{{ end }}
+
+{{ func format_value(attr, value, scope, role, principal) }}
+    {{ if attr == "scope" }}{{ ret normalize(scope.details) }}{{ end }}
+    {{ if attr == "role_definition_id" }}{{ ret normalize(role.full_name) }}{{ end }}
+    {{ if attr == "principal_id" }}{{ ret normalize(principal.full_name) }}{{ end }}
+    {{ if value == null }}{{ ret "" }}{{ end }}
+    {{ ret normalize(value) }}
+{{ end }}
+
+#### {{ action_symbol }} {{ address }}
+
+{{ if action == "replace" }}
+**Summary:** recreate as `{{ active_principal.name }}`{{ if principal_type != "" }} ({{ principal_type }}){{ end }} → `{{ active_role.name }}` on {{ summary_scope }}
+{{ else if action == "delete" }}
+**Summary:** remove `{{ active_role.name }}` on {{ summary_scope }} from {{ if principal_type != "" }}{{ principal_type }} {{ end }}`{{ active_principal.name }}`
+{{ else }}
+**Summary:** `{{ active_principal.name }}`{{ if principal_type != "" }} ({{ principal_type }}){{ end }} → `{{ active_role.name }}` on {{ summary_scope }}
+{{ end }}
+
+{{- description = action == "delete" ? (before_state != null ? before_state.description : null) : (after_state != null ? after_state.description : null) -}}
+{{ if description && description != "" }}
+{{ description }}
+{{ end }}
+
+<details>
+
+{{- attributes = collect_attributes(before_state, after_state) -}}
+
+{{ if action == "update" || action == "replace" }}
+| Attribute | Before | After |
+|-----------|--------|-------|
+{{~ for attr in attributes ~}}
+{{- if attr == "role_definition_name" }}{{ continue }}{{ end }}
+{{- before_value = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal) -}}
+{{- after_value = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal) -}}
+| `{{ attr }}` | {{ string.strip(before_value) }} | {{ string.strip(after_value) }} |
+{{~ end }}
+{{ else }}
+| Attribute | Value |
+|-----------|-------|
+{{~ for attr in attributes ~}}
+{{- if attr == "role_definition_name" }}{{ continue }}{{ end }}
+{{- value = format_value(attr, action == "delete" ? (before_state != null ? before_state[attr] : null) : (after_state != null ? after_state[attr] : null), active_scope, active_role, active_principal) -}}
+| `{{ attr }}` | {{ string.strip(value) }} |
+{{~ end }}
+{{ end }}
+
+</details>

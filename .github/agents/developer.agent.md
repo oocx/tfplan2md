@@ -51,6 +51,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Introduce new patterns unless existing approaches are exhausted
 - Skip tests or commit failing tests
 - Create code without verifying no duplication exists
+- Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 
 ## Context to Read
 

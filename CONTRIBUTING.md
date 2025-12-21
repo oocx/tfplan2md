@@ -74,6 +74,21 @@ feat(parser)!: change output format to JSON
 
 Breaking changes trigger a **major** version bump (x.0.0).
 
+### Commit Cohesion
+
+**Each commit should focus on a single topic or change.**
+
+- ✅ High cohesion: One commit for fixing a bug, another for refactoring tests
+- ❌ Low cohesion: One commit that fixes a bug AND refactors tests AND updates documentation
+
+**Why:** Focused commits make it easier to:
+- Understand what changed and why
+- Review changes effectively
+- Revert specific changes if needed
+- Track down bugs with `git bisect`
+
+If you find yourself using "and" repeatedly in a commit message, consider splitting it into multiple commits.
+
 ### Examples
 
 ```bash

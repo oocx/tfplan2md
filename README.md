@@ -78,6 +78,8 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 
 ## Example Output
 
+All generated markdown is automatically validated and linted for correct formatting. Special characters in resource names and attribute values are properly escaped to ensure tables and headings render correctly on GitHub and Azure DevOps.
+
 ```markdown
 # Terraform Plan Report
 

@@ -72,9 +72,11 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 
 | Workflow | File | Trigger | Purpose |
 |----------|------|---------|----------|
-| PR Validation | `pr-validation.yml` | Pull requests to `main` | Format check, build, test, vulnerability scan |
-| CI | `ci.yml` | Push to `main` | Build, test, run Versionize to bump version and create tag |
+| PR Validation | `pr-validation.yml` | Pull requests to `main` | Format check, build, test, markdown lint, vulnerability scan |
+| CI | `ci.yml` | Push to `main` | Build, test, markdown lint, run Versionize to bump version and create tag |
 | Release | `release.yml` | Version tags (`v*`) or manual | Create GitHub Release with cumulative changelog, build and push Docker image |
+
+**Markdown Quality:** Both PR validation and CI workflows generate the comprehensive demo report and validate it with `markdownlint-cli2` to ensure templates produce valid markdown.
 
 **Release Notes:** The release workflow generates cumulative release notes that include all changes since the last GitHub release. This ensures Docker deployments contain complete change history even when intermediate versions are not released.
 

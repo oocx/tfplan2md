@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
@@ -10,6 +11,8 @@ public class ComprehensiveDemoTests
 {
     private readonly TerraformPlanParser _parser = new();
     private readonly MarkdownRenderer _renderer;
+
+    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
     public ComprehensiveDemoTests()
     {
@@ -34,10 +37,10 @@ public class ComprehensiveDemoTests
             .And.Contain("♻️")
             .And.Contain("❌");
 
-        markdown.Should().Contain("azurerm_firewall_network_rule_collection.network_rules")
+        markdown.Should().Contain(Escape("azurerm_firewall_network_rule_collection.network_rules"))
             .And.Contain("Rule Changes")
-            .And.Contain("azurerm_role_assignment.rg_reader")
-            .And.Contain("Jane Doe (User)");
+            .And.Contain(Escape("azurerm_role_assignment.rg_reader"))
+            .And.Contain(Escape("Jane Doe (User)"));
     }
 
     [Fact]
@@ -80,6 +83,9 @@ public class ComprehensiveDemoTests
         // Verify that headings following </details> have at least one blank line between them.
         // This ensures proper Markdown rendering (content not running into heading).
         // The regex checks for </details> followed by at least 2 newlines before a heading.
-        markdown.Should().MatchRegex(@"</details>\n\n+### ➕ module\.network\.azurerm_firewall_network_rule_collection\.new_public");
+        var heading = $"### ➕ {Escape("module.network.azurerm_firewall_network_rule_collection.new_public")}";
+        var pattern = $"</details>\\n\\n+{Regex.Escape(heading)}";
+
+        markdown.Should().MatchRegex(pattern);
     }
 }

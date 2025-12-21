@@ -125,6 +125,12 @@ Before starting, familiarize yourself with:
    docker build -t tfplan2md:local .
    ```
 
+   Generate and lint the comprehensive demo output:
+   ```bash
+   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
+   npx markdownlint-cli2 artifacts/comprehensive-demo.md
+   ```
+
 2. **Read the code** - Review all changed files against the checklist.
 
 3. **Compare to specification** - Verify all acceptance criteria are met.

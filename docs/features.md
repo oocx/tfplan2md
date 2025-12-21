@@ -132,6 +132,21 @@ When creating GitHub releases and Docker deployments, the release workflow autom
 
 This ensures Docker Hub users can see the complete set of changes included in each deployment, even when intermediate versions were skipped.
 
+## Markdown Quality and Validation
+
+tfplan2md ensures generated markdown is valid and renders correctly on GitHub and Azure DevOps:
+
+- **Automatic escaping**: All external input (resource names, attribute values, module addresses) is automatically escaped to prevent broken tables and headings
+- **Special character handling**: Pipes (`|`), asterisks (`*`), underscores (`_`), brackets, and other markdown-sensitive characters are escaped
+- **Newline normalization**: Newlines in attribute values are converted to `<br/>` tags for table compatibility
+- **Heading spacing**: Blank lines are automatically added before and after headings to ensure proper rendering
+- **Table formatting**: Tables use padded separator rows that satisfy markdownlint requirements
+- **CI validation**: The comprehensive demo output is validated with markdownlint-cli2 on every PR and commit to main
+
+The escaping logic is centralized in the `escape_markdown` Scriban helper, which all templates must use for external input.
+
+For details on the markdown subset and formatting rules, see [docs/markdown-specification.md](markdown-specification.md).
+
 ## Templates
 
 Reports are generated using customizable templates powered by [Scriban](https://github.com/scriban/scriban).
@@ -159,6 +174,8 @@ tfplan2md plan.json --template /path/to/custom-template.sbn
 1. Check if the provided value matches a built-in template name
 2. If not, attempt to load it as a file path
 3. If neither exists, display an error listing available built-in templates
+
+**Important:** Custom templates must use the `escape_markdown` helper on all external input to ensure valid markdown output. See built-in templates for examples.
 
 ### Template Variables
 

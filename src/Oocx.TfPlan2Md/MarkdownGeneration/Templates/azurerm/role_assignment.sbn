@@ -11,7 +11,7 @@
 {{- active_scope = action == "delete" ? before_scope : after_scope -}}
 {{- active_role = action == "delete" ? before_role : after_role -}}
 {{- active_principal = action == "delete" ? before_principal : after_principal -}}
-{{- summary_scope = active_scope.summary_label + "`" + active_scope.summary_name + "`" -}}
+{{- summary_scope = active_scope.summary_label + "`" + (active_scope.summary_name | escape_markdown) + "`" -}}
 {{- principal_type = active_principal.type }}
 
 {{ func normalize(value) }}
@@ -28,41 +28,43 @@
     {{ ret normalize(value) }}
 {{ end }}
 
-#### {{ action_symbol }} {{ address }}
+#### {{ action_symbol }} {{ address | escape_markdown }}
 
 {{ if action == "replace" }}
-**Summary:** recreate as `{{ active_principal.name }}`{{ if principal_type != "" }} ({{ principal_type }}){{ end }} → `{{ active_role.name }}` on {{ summary_scope }}
+**Summary:** recreate as `{{ active_principal.name | escape_markdown }}`{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → `{{ active_role.name | escape_markdown }}` on {{ summary_scope }}
 {{ else if action == "delete" }}
-**Summary:** remove `{{ active_role.name }}` on {{ summary_scope }} from {{ if principal_type != "" }}{{ principal_type }} {{ end }}`{{ active_principal.name }}`
+**Summary:** remove `{{ active_role.name | escape_markdown }}` on {{ summary_scope }} from {{ if principal_type != "" }}{{ principal_type | escape_markdown }} {{ end }}`{{ active_principal.name | escape_markdown }}`
 {{ else }}
-**Summary:** `{{ active_principal.name }}`{{ if principal_type != "" }} ({{ principal_type }}){{ end }} → `{{ active_role.name }}` on {{ summary_scope }}
+**Summary:** `{{ active_principal.name | escape_markdown }}`{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → `{{ active_role.name | escape_markdown }}` on {{ summary_scope }}
 {{ end }}
 
 {{- description = action == "delete" ? (before_state != null ? before_state.description : null) : (after_state != null ? after_state.description : null) -}}
 {{ if description && description != "" }}
-{{ description }}
+{{ description | escape_markdown }}
 {{ end }}
 
 <details>
 
-{{- attributes = collect_attributes(before_state, after_state) -}}
+{{ attributes = collect_attributes(before_state, after_state) }}
 
 {{ if action == "update" || action == "replace" }}
+
 | Attribute | Before | After |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 {{~ for attr in attributes ~}}
-{{- if attr == "role_definition_name" }}{{ continue }}{{ end }}
+{{~ if attr == "role_definition_name" ~}}{{ continue }}{{~ end ~}}
 {{- before_value = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal) -}}
 {{- after_value = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal) -}}
-| `{{ attr }}` | {{ string.strip(before_value) }} | {{ string.strip(after_value) }} |
+| `{{ attr | escape_markdown }}` | {{ string.strip(before_value) | escape_markdown }} | {{ string.strip(after_value) | escape_markdown }} |
 {{~ end }}
 {{ else }}
+
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 {{~ for attr in attributes ~}}
-{{- if attr == "role_definition_name" }}{{ continue }}{{ end }}
+{{~ if attr == "role_definition_name" ~}}{{ continue }}{{~ end ~}}
 {{- value = format_value(attr, action == "delete" ? (before_state != null ? before_state[attr] : null) : (after_state != null ? after_state[attr] : null), active_scope, active_role, active_principal) -}}
-| `{{ attr }}` | {{ string.strip(value) }} |
+| `{{ attr | escape_markdown }}` | {{ string.strip(value) | escape_markdown }} |
 {{~ end }}
 {{ end }}
 

@@ -36,6 +36,11 @@
         "type": "chore",
         "section": "🔧 Maintenance",
         "hidden": true
+      },
+      {
+        "type": "workflow",
+        "section": "🔧 Workflow",
+        "hidden": true
       }
     ],
     "linkTemplates": {

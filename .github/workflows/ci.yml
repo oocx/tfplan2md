@@ -3,6 +3,10 @@ name: CI
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/agents/**'
+      - 'docs/agents.md'
+      - 'docs/ai-model-reference.md'
 
 permissions:
   contents: write

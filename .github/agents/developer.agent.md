@@ -59,7 +59,8 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md`
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
-- [docs/spec.md](../../docs/spec.md) - Project specification
+- [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
+- [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - Existing source code in `src/` and tests in `tests/`
@@ -74,6 +75,22 @@ Follow the project's coding conventions strictly:
 - Prefer immutable data structures (`IReadOnlyList<T>`, `IReadOnlyDictionary<K,V>`)
 - Use modern C# features: collection expressions, primary constructors, pattern matching
 - Keep files under 200-300 lines; refactor if larger
+
+### Access Modifiers
+- **Use the most restrictive access modifier that works**
+  - Prefer `private` for members whenever possible
+  - Use `internal` for cross-assembly visibility
+  - Avoid `public` unless absolutely necessary (main entry points only)
+- **Never use `public` for testing** - Use `InternalsVisibleTo` instead
+- **This is NOT a class library** - No external consumers exist, so no API compatibility concerns
+
+### Code Comments
+- **All members must have XML doc comments** (public, internal, AND private)
+- Follow [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) strictly
+- Comments must explain **"why"** not just **"what"**
+- Required tags: `<summary>`, `<param>`, `<returns>`
+- Reference features/specs for traceability: `/// Related feature: docs/features/...`
+- Use `<example>` with `<code>` for complex methods
 
 ### Development Approach
 - **Simple solutions first** - Avoid overengineering

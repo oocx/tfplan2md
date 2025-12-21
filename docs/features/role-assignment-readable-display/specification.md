@@ -81,36 +81,64 @@ docker run --rm -v $(pwd):/workspace oocx/tfplan2md:latest \
 
 ### Markdown Output
 
-**Current output (technical):**
-```markdown
-### azurerm_role_assignment.example (create)
+**Implemented output format:**
 
-- **scope**: /subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/my-rg
-- **role_definition_id**: /subscriptions/12345678-1234-1234-1234-123456789012/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7
-- **principal_id**: abcdef01-2345-6789-abcd-ef0123456789
+Role assignments now use a table-based format with a human-readable summary line and collapsible details:
+
+```markdown
+#### ➕ azurerm_role_assignment.example
+
+**Summary:** `John Doe` (User) → `Reader` on `my-rg`
+
+<details>
+
+| Attribute | Value |
+|-----------|-------|
+| `scope` | my-rg in subscription 12345678-1234-1234-1234-123456789012 |
+| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) |
+| `principal_id` | John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789] |
+| `principal_type` | User |
+
+</details>
 ```
 
-**Enhanced output:**
+**For update/replace actions**, the table shows Before/After columns:
+
 ```markdown
-### azurerm_role_assignment.example (create)
+#### 🔄 azurerm_role_assignment.example
 
-- **scope**: **my-rg** in subscription **example-sub** (12345678-1234-1234-1234-123456789012)
-- **role_definition_id**: Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)
-- **principal_id**: John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789]
+**Summary:** `Security Team` (Group) → `Storage Blob Data Contributor` on Storage Account `sttfplan2mddata`
+
+Upgraded permissions for security auditing
+
+<details>
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+| `scope` | Storage Account sttfplan2mdlogs in resource group rg-demo of subscription sub-one | Storage Account sttfplan2mddata in resource group rg-demo of subscription sub-one |
+| `role_definition_id` | Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1) | Storage Blob Data Contributor (ba92f5b4-2d11-453d-a403-e96b0029c9fe) |
+| `principal_id` | DevOps Team (Group) [22222222-2222-2222-2222-222222222222] | Security Team (Group) [33333333-3333-3333-3333-333333333333] |
+| `principal_type` | Group | Group |
+| `description` | Allow team to read storage data | Upgraded permissions for security auditing |
+
+</details>
 ```
-
-*Note: Exact styling/formatting to be determined during implementation*
 
 ### Principal Mapping File Format
 
 **JSON structure:**
+
+The mapping file is a simple JSON object mapping principal IDs (GUIDs) to display names. The principal type (User, Group, ServicePrincipal) is automatically detected from the Terraform plan's `principal_type` attribute.
+
 ```json
 {
-  "abcdef01-2345-6789-abcd-ef0123456789": "John Doe (User)",
-  "11111111-2222-3333-4444-555555555555": "DevOps Team (Group)",
-  "99999999-8888-7777-6666-555555555555": "terraform-sp (Service Principal)"
+  "abcdef01-2345-6789-abcd-ef0123456789": "John Doe",
+  "11111111-2222-3333-4444-555555555555": "DevOps Team",
+  "99999999-8888-7777-6666-555555555555": "terraform-sp"
 }
 ```
+
+The display format includes both the name and type: `"John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789]"`. The type comes from the Terraform plan itself, not from the mapping file.
 
 ### Generating Principal Mapping
 
@@ -141,25 +169,50 @@ az ad sp list --filter "startswith(displayName,'terraform')" \
 
 ## Success Criteria
 
-- [ ] Built-in Azure role definition GUIDs are mapped to friendly names
-- [ ] Role display format includes both name and GUID
-- [ ] Scope paths are parsed and displayed with hierarchical context
-- [ ] Management group, subscription, resource group, and resource-level scopes are handled
-- [ ] Resource names are visually distinguished from connecting text
-- [ ] Optional `--principal-mapping` CLI argument loads JSON mapping file
-- [ ] Principal IDs are enhanced when mapping is provided
-- [ ] Principal IDs display raw GUID when no mapping exists
-- [ ] Unmapped principals gracefully fall back to GUID display
-- [ ] Documentation includes Azure CLI commands for generating mapping file
-- [ ] Changes only affect `azurerm_role_assignment` resource type
-- [ ] Tests cover all scope types and mapping scenarios
-- [ ] Tests verify behavior with and without principal mapping
-- [ ] Backward compatibility maintained (existing reports still work)
+- [x] Built-in Azure role definition GUIDs are mapped to friendly names (473 Azure built-in roles)
+- [x] Role display format includes both name and GUID: `Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)`
+- [x] Scope paths are parsed and displayed with hierarchical context
+- [x] Management group, subscription, resource group, and resource-level scopes are handled
+- [x] Resource names in scopes use backtick code formatting for visual distinction
+- [x] Optional `--principal-mapping` (alias: `--principals`, `-p`) CLI argument loads JSON mapping file
+- [x] Principal IDs are enhanced when mapping is provided: `John Doe (User) [guid]`
+- [x] Principal IDs display raw GUID when no mapping exists
+- [x] Unmapped principals gracefully fall back to GUID display
+- [x] Documentation includes Azure CLI commands for generating mapping file
+- [x] Changes only affect `azurerm_role_assignment` resource type (resource-specific template)
+- [x] Tests cover all scope types and mapping scenarios
+- [x] Tests verify behavior with and without principal mapping
+- [x] Backward compatibility maintained (existing reports still work)
 
-## Open Questions
+## Implementation Notes
 
-1. **Styling approach**: How should resource names be visually differentiated from connecting text in markdown? (bold, code backticks, combination?)
-2. **Subscription name handling**: Should we support user-provided subscription name mapping similar to principals?
-3. **Error handling**: What should happen if the principal mapping file is malformed JSON?
-4. **Azure role mapping source**: Should the built-in role mapping be embedded in code or loaded from a JSON file?
-5. **Resource type coverage**: Which specific Azure resource types should be prioritized for resource-level scope parsing? (Key Vault, Storage Account, VM, etc.)
+**Output Format:**
+- Table-based layout with collapsible `<details>` sections
+- Summary line shows principal → role → scope in a single line
+- Description field (if present) appears between summary and details table
+- `role_definition_name` attribute is not shown in the table (redundant with the enhanced `role_definition_id` display)
+
+**Technical Details:**
+- Scope parsing handles 20+ Azure resource types with friendly names
+- Role mapping embedded in code for all Azure built-in roles
+- Principal mapping loaded from JSON file via `PrincipalMapper` class
+- Type-aware principal names use the `principal_type` attribute from Terraform plan
+- Template helper functions: `azure_scope_info`, `azure_role_info`, `azure_principal_info`, `collect_attributes`
+
+## Resolved Design Decisions
+
+1. **Styling approach**: Resource names in scopes use backtick code formatting (e.g., `` `my-rg` ``). Principal and role names in the summary use backticks. The table content does not use additional formatting to keep it clean.
+
+2. **Subscription name handling**: Not implemented. Subscription IDs are shown directly since there's no reliable way to map subscription IDs to names without API calls or additional configuration files.
+
+3. **Error handling**: Malformed principal mapping files are handled gracefully—the mapper returns an empty dictionary and falls back to showing raw GUIDs. No error is thrown to the user.
+
+4. **Azure role mapping source**: Built-in role mapping is embedded in code (`AzureRoleDefinitionMapper.Roles.cs`) for simplicity and performance. This avoids external file dependencies and ensures the mapping is always available.
+
+5. **Resource type coverage**: Implemented 20+ common Azure resource types including:
+   - Compute: Virtual Machine, AKS Cluster, Virtual Machine Scale Set, Managed Disk
+   - Storage: Storage Account, Key Vault, Container Registry, Cosmos DB Account
+   - Networking: Virtual Network, Subnet, Load Balancer, Application Gateway, Azure Firewall
+   - Web/Data: App Service, SQL Server, SQL Database, Event Hubs, Service Bus
+   - Monitoring: Log Analytics Workspace, Application Insights
+   - Graceful fallback to capitalized type names for unmapped resources

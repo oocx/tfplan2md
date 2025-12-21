@@ -212,14 +212,14 @@ Simple single-command interface with flags:
 
 ## Enhanced Azure Role Assignment Display
 
-The `azurerm_role_assignment` resource now displays human-readable information instead of cryptic GUIDs and technical paths.
+The `azurerm_role_assignment` resource uses a table-based format with human-readable summaries instead of cryptic GUIDs and technical paths.
 
 **Features:**
 - **Comprehensive built-in role mapping**: All 473 Azure built-in role definition GUIDs are automatically mapped to friendly names (e.g., "Reader", "Contributor", "Storage Blob Data Reader")
 - **Hierarchical scope display**: Azure resource scopes are parsed and displayed with clear context:
-  - Management Groups: `**my-mg** (Management Group)`
-  - Subscriptions: `subscription **sub-id**`
-  - Resource Groups: `**my-rg** in subscription **sub-id**`
+  - Management Groups: `my-mg (Management Group)`
+  - Subscriptions: `subscription sub-id`
+  - Resource Groups: `my-rg in subscription sub-id`
   - Resources: Recognizes 20+ common Azure resource types with friendly names:
     - Compute: Virtual Machine, Virtual Machine Scale Set, AKS Cluster, Managed Disk
     - Storage: Storage Account, Key Vault, Container Registry, Cosmos DB Account
@@ -228,15 +228,26 @@ The `azurerm_role_assignment` resource now displays human-readable information i
     - Monitoring: Log Analytics Workspace, Application Insights
     - Data: Azure Cache for Redis, Event Hubs Namespace, Service Bus Namespace
     - Graceful fallback to capitalized type names for unmapped resources
-- **Optional principal mapping**: Map principal IDs to names using a JSON file with the `--principal-mapping` flag
+- **Optional principal mapping**: Map principal IDs to names using a JSON file with the `--principal-mapping` (or `--principals`, `-p`) flag
+- **Table-based output**: Clean collapsible `<details>` sections with attribute tables
+- **Smart summaries**: One-line summary showing principal → role → scope relationship
 
 **Example output:**
 ```markdown
-#### ➕ azurerm_role_assignment.example (create)
+#### ➕ azurerm_role_assignment.example
 
-- **scope**: **my-rg** in subscription **12345678-1234-1234-1234-123456789012**
-- **role_definition_id**: Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)
-- **principal_id**: John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789]
+**Summary:** `John Doe` (User) → `Reader` on `my-rg`
+
+<details>
+
+| Attribute | Value |
+|-----------|-------|
+| `scope` | my-rg in subscription 12345678-1234-1234-1234-123456789012 |
+| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) |
+| `principal_id` | John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789] |
+| `principal_type` | User |
+
+</details>
 ```
 
 **Usage:**
@@ -258,11 +269,11 @@ docker run -v $(pwd):/data oocx/tfplan2md \
 {
   echo "{"
   az ad user list --query "[].{id:id,name:displayName}" -o tsv | \
-    awk '{printf "  \"%s\": \"%s (User)\",\n", $1, $2}'
+    awk '{printf "  \"%s\": \"%s\",\n", $1, $2}'
   az ad group list --query "[].{id:id,name:displayName}" -o tsv | \
-    awk '{printf "  \"%s\": \"%s (Group)\",\n", $1, $2}'
+    awk '{printf "  \"%s\": \"%s\",\n", $1, $2}'
   az ad sp list --all --query "[].{id:id,name:displayName}" -o tsv | \
-    awk '{printf "  \"%s\": \"%s (Service Principal)\",\n", $1, $2}' | \
+    awk '{printf "  \"%s\": \"%s\",\n", $1, $2}' | \
     sed '$ s/,$//'
   echo "}"
 } > principals.json
@@ -271,9 +282,11 @@ docker run -v $(pwd):/data oocx/tfplan2md \
 The principal mapping JSON format:
 ```json
 {
-  "principal-guid": "Display Name (Type)"
+  "principal-guid": "Display Name"
 }
 ```
+
+The type (User, Group, ServicePrincipal) is automatically read from the Terraform plan's `principal_type` attribute and displayed as: `Display Name (Type) [guid]`.
 
 ## Distribution
 

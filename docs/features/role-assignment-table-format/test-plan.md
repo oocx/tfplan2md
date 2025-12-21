@@ -37,6 +37,7 @@ Verifies that a `create` operation renders with the correct summary format and d
 
 **Preconditions:**
 - Test data with `azurerm_role_assignment` having `change.actions = ["create"]`.
+- Resource does NOT have a `description`.
 
 **Test Steps:**
 1. Parse the test plan containing a create operation.
@@ -45,6 +46,7 @@ Verifies that a `create` operation renders with the correct summary format and d
 
 **Expected Result:**
 - Summary line: `**Summary:** \`Principal Name\` (Type) → \`Role Name\` on \`Scope Name\``
+- No description line is rendered below the summary.
 - Details block is wrapped in `<details>`.
 - Table contains columns "Attribute" and "Value".
 - Table rows include `scope`, `role_definition_id`, `principal_id`.
@@ -148,25 +150,27 @@ Verifies that the `description` field appears below the summary line when presen
 
 ---
 
-### TC-06: Omit Null Attributes
+### TC-06: Optional Attributes Handling
 
 **Type:** Integration
 
 **Description:**
-Verifies that attributes which are null in both "before" and "after" states are not included in the details table.
+Verifies that optional attributes are included when present and omitted when null.
 
 **Preconditions:**
-- Test data includes attributes like `condition` or `delegated_managed_identity_resource_id` set to null.
+- Test data includes a resource with an optional attribute (e.g. `condition`) set to a value.
+- Test data includes a resource with an optional attribute (e.g. `delegated_managed_identity_resource_id`) set to null.
 
 **Test Steps:**
 1. Parse the test plan.
 2. Render the markdown report.
 
 **Expected Result:**
+- The details table includes rows for non-null optional attributes (e.g. `condition`).
 - The details table does NOT contain rows for the null attributes.
 
 **Test Data:**
-`role-assignments.json` (Scenario: Null Attributes)
+`role-assignments.json` (Scenario: Optional Attributes)
 
 ---
 

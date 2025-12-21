@@ -4,23 +4,35 @@ public static partial class AzureRoleDefinitionMapper
 {
     public static string GetRoleName(string? roleDefinitionId)
     {
+        return GetRoleDefinition(roleDefinitionId, null).FullName;
+    }
+
+    public static RoleDefinitionInfo GetRoleDefinition(string? roleDefinitionId, string? roleDefinitionName)
+    {
         if (string.IsNullOrWhiteSpace(roleDefinitionId))
         {
-            return roleDefinitionId ?? string.Empty;
+            var fallbackName = roleDefinitionName ?? string.Empty;
+            return new RoleDefinitionInfo(fallbackName, string.Empty, fallbackName);
         }
 
         var roleGuid = ExtractGuid(roleDefinitionId);
-        if (string.IsNullOrEmpty(roleGuid))
-        {
-            return roleDefinitionId;
-        }
+        var mappedName = string.Empty;
+        var hasMapping = !string.IsNullOrEmpty(roleGuid) && Roles.TryGetValue(roleGuid, out mappedName);
 
-        if (Roles.TryGetValue(roleGuid, out var name))
-        {
-            return $"{name} ({roleGuid})";
-        }
+        var name = hasMapping
+            ? mappedName
+            : roleDefinitionName ?? (string.IsNullOrEmpty(roleGuid) ? roleDefinitionId : roleGuid) ?? string.Empty;
 
-        return roleDefinitionId;
+        var fullName = hasMapping
+            ? $"{mappedName} ({roleGuid})"
+            : roleDefinitionName ?? roleDefinitionId ?? string.Empty;
+
+        var id = string.IsNullOrEmpty(roleGuid) ? roleDefinitionId : roleGuid;
+
+        var safeName = name ?? string.Empty;
+        var safeId = id ?? string.Empty;
+
+        return new RoleDefinitionInfo(safeName, safeId, fullName);
     }
 
     private static string ExtractGuid(string roleDefinitionId)

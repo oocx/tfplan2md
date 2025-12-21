@@ -11,16 +11,18 @@ public class MarkdownRendererRoleAssignmentTests
     public void Render_RoleAssignment_UsesEnhancedTemplate()
     {
         // Arrange
-        var change = CreateRoleAssignmentChange("principal-id");
-        var renderer = new MarkdownRenderer(principalMapper: new StubPrincipalMapper("principal-id", "John Doe (User)"));
+        var change = CreateRoleAssignmentChange("principal-id", "User");
+        var renderer = new MarkdownRenderer(principalMapper: new StubPrincipalMapper("principal-id", "John Doe"));
 
         // Act
         var result = renderer.RenderResourceChange(change);
 
         // Assert
         result.Should().NotBeNull();
-        result!.Should().Contain("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)");
-        result.Should().Contain("**my-rg** in subscription **sub-id**");
+        result!.Should().Contain("**Summary:** `John Doe` (User) → `Reader` on `my-rg`");
+        result.Should().Contain("| Attribute | Value |");
+        result.Should().Contain("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)");
+        result.Should().Contain("my-rg in subscription sub-id");
         result.Should().Contain("John Doe (User) [principal-id]");
     }
 
@@ -28,20 +30,20 @@ public class MarkdownRendererRoleAssignmentTests
     public void Render_RoleAssignment_WithoutPrincipalMapping_FallsBackToGuid()
     {
         // Arrange
-        var change = CreateRoleAssignmentChange("missing-principal");
-        var renderer = new MarkdownRenderer(principalMapper: new StubPrincipalMapper("principal-id", "John Doe (User)"));
+        var change = CreateRoleAssignmentChange("missing-principal", "Group");
+        var renderer = new MarkdownRenderer(principalMapper: new StubPrincipalMapper("principal-id", "John Doe"));
 
         // Act
         var result = renderer.RenderResourceChange(change);
 
         // Assert
         result.Should().NotBeNull();
-        result!.Should().Contain("missing-principal");
+        result!.Should().Contain("`missing-principal`");
     }
 
-    private static ResourceChangeModel CreateRoleAssignmentChange(string principalId)
+    private static ResourceChangeModel CreateRoleAssignmentChange(string principalId, string principalType)
     {
-        var json = $"{{\n  \"scope\": \"/subscriptions/sub-id/resourceGroups/my-rg\",\n  \"role_definition_id\": \"/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\n  \"principal_id\": \"{principalId}\"\n}}";
+        var json = $"{{\n  \"scope\": \"/subscriptions/sub-id/resourceGroups/my-rg\",\n  \"role_definition_id\": \"/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\n  \"principal_id\": \"{principalId}\",\n  \"principal_type\": \"{principalType}\"\n}}";
         var afterJson = JsonDocument.Parse(json).RootElement;
 
         return new ResourceChangeModel
@@ -66,6 +68,11 @@ public class MarkdownRendererRoleAssignmentTests
             return principalId == id
                 ? $"{name} [{principalId}]"
                 : principalId;
+        }
+
+        public string? GetName(string principalId)
+        {
+            return principalId == id ? name : null;
         }
     }
 }

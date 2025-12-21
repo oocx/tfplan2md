@@ -71,7 +71,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
-| `--principal-mapping`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
+| `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |

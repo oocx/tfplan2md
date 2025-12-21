@@ -4,29 +4,48 @@ namespace Oocx.TfPlan2Md.Azure;
 
 public static class AzureScopeParser
 {
-    public static string ParseScope(string? scope)
+    public static ScopeInfo Parse(string? scope)
     {
         if (string.IsNullOrWhiteSpace(scope))
         {
-            return scope ?? string.Empty;
+            return ScopeInfo.Empty;
         }
 
         var parts = scope.Split('/', StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0)
         {
-            return scope;
+            return new ScopeInfo(scope, string.Empty, string.Empty, string.Empty, ScopeLevel.Unknown, scope, string.Empty, scope, scope);
         }
 
         if (IsManagementGroupScope(parts))
         {
             var managementGroup = parts[3];
-            return $"**{managementGroup}** (Management Group)";
+            var summary = $"{managementGroup} (Management Group)";
+            return new ScopeInfo(
+                managementGroup,
+                "Management Group",
+                null,
+                null,
+                ScopeLevel.ManagementGroup,
+                summary,
+                "management group ",
+                managementGroup,
+                $"{managementGroup} (Management Group)");
         }
 
         if (IsSubscriptionScope(parts))
         {
             var subscriptionId = parts[1];
-            return $"subscription **{subscriptionId}**";
+            return new ScopeInfo(
+                subscriptionId,
+                "Subscription",
+                subscriptionId,
+                null,
+                ScopeLevel.Subscription,
+                $"subscription {subscriptionId}",
+                "subscription ",
+                subscriptionId,
+                $"subscription {subscriptionId}");
         }
 
         if (IsResourceScope(parts))
@@ -35,17 +54,49 @@ public static class AzureScopeParser
             var resourceGroup = parts[3];
             var resourceType = GetResourceType(parts);
             var resourceName = parts[^1];
-            return $"{resourceType} **{resourceName}** in resource group **{resourceGroup}** of subscription **{subscriptionId}**";
+            return new ScopeInfo(
+                resourceName,
+                resourceType,
+                subscriptionId,
+                resourceGroup,
+                ScopeLevel.Resource,
+                $"{resourceType} {resourceName}",
+                $"{resourceType} ",
+                resourceName,
+                $"{resourceType} {resourceName} in resource group {resourceGroup} of subscription {subscriptionId}");
         }
 
         if (IsResourceGroupScope(parts))
         {
             var subscriptionId = parts[1];
             var resourceGroup = parts[3];
-            return $"**{resourceGroup}** in subscription **{subscriptionId}**";
+            return new ScopeInfo(
+                resourceGroup,
+                "Resource Group",
+                subscriptionId,
+                resourceGroup,
+                ScopeLevel.ResourceGroup,
+                resourceGroup,
+                string.Empty,
+                resourceGroup,
+                $"{resourceGroup} in subscription {subscriptionId}");
         }
 
-        return scope;
+        return new ScopeInfo(scope, string.Empty, string.Empty, string.Empty, ScopeLevel.Unknown, scope, string.Empty, scope, scope);
+    }
+
+    public static string ParseScope(string? scope)
+    {
+        var parsed = Parse(scope);
+
+        return parsed.Level switch
+        {
+            ScopeLevel.ManagementGroup => $"**{parsed.Name}** (Management Group)",
+            ScopeLevel.Subscription => $"subscription **{parsed.SubscriptionId}**",
+            ScopeLevel.Resource => $"{parsed.Type} **{parsed.Name}** in resource group **{parsed.ResourceGroup}** of subscription **{parsed.SubscriptionId}**",
+            ScopeLevel.ResourceGroup => $"**{parsed.ResourceGroup}** in subscription **{parsed.SubscriptionId}**",
+            _ => parsed.Details
+        };
     }
 
     private static bool IsManagementGroupScope(string[] parts)

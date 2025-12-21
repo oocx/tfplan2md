@@ -99,4 +99,36 @@ public class AzureScopeParserTests
         // Assert
         result.Should().Be(scope);
     }
+
+    [Fact]
+    public void Parse_ReturnsScopeInfo_ForResourceGroup()
+    {
+        const string scope = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/my-rg";
+
+        var result = AzureScopeParser.Parse(scope);
+
+        result.Name.Should().Be("my-rg");
+        result.Type.Should().Be("Resource Group");
+        result.SubscriptionId.Should().Be("12345678-1234-1234-1234-123456789012");
+        result.ResourceGroup.Should().Be("my-rg");
+        result.Level.Should().Be(ScopeLevel.ResourceGroup);
+        result.Summary.Should().Be("my-rg");
+        result.Details.Should().Be("my-rg in subscription 12345678-1234-1234-1234-123456789012");
+    }
+
+    [Fact]
+    public void Parse_ReturnsScopeInfo_ForResource()
+    {
+        const string scope = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.Storage/storageAccounts/sttfplan2mddata";
+
+        var result = AzureScopeParser.Parse(scope);
+
+        result.Name.Should().Be("sttfplan2mddata");
+        result.Type.Should().Be("Storage Account");
+        result.SubscriptionId.Should().Be("sub-id");
+        result.ResourceGroup.Should().Be("my-rg");
+        result.Level.Should().Be(ScopeLevel.Resource);
+        result.Summary.Should().Be("Storage Account sttfplan2mddata");
+        result.Details.Should().Be("Storage Account sttfplan2mddata in resource group my-rg of subscription sub-id");
+    }
 }

@@ -2,51 +2,61 @@
 
 ## Summary
 
-The "Enhanced Azure Role Assignment Display" feature has been successfully implemented with comprehensive test coverage (133 tests passing). The implementation transforms cryptic Azure role assignment GUIDs and paths into human-readable information through role mapping, scope parsing, and optional principal ID mapping. The code follows established patterns, maintains backward compatibility, and integrates cleanly with the existing resource-specific template system.
+Comprehensive implementation of the Azure role assignment feature that transforms technical GUIDs and paths into human-readable information. The implementation uses a table-based format with collapsible details sections, smart summaries, and type-aware principal mapping. All tests pass, Docker builds successfully, and the code follows project conventions.
 
 ## Verification Results
 
-- **Tests**: ✅ Pass (138 passed, 0 failed, 0 skipped in 21.8s)
-- **Build**: ✅ Success (Build succeeded in 23.3s)
-- **Docker**: ✅ Builds successfully
-- **Errors**: None
+- **Tests:** ✅ Pass (162/162 tests passed, 0 failed, 0 skipped)
+- **Build:** ✅ Success
+- **Docker:** ✅ Builds successfully  
+- **Errors:** ✅ None (excluding unrelated agent file warnings)
 
 ### Test Execution Output
 ```
-Passed!  - Failed:     0, Passed:   138, Skipped:     0, Total:   138, Duration: 21 s
+Test summary: total: 162, failed: 0, succeeded: 162, skipped: 0, duration: 25.8s
+Build succeeded in 30.3s
 ```
 
 **Test coverage additions:**
-- 2 new help text formatting tests in [HelpTextProviderTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/CLI/HelpTextProviderTests.cs)
-- 3 new resource type mapping tests in [AzureScopeParserTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs)
+- 9 new role assignment template tests covering all action types (create, update, replace, delete)
+- Enhanced Azure mapper/parser tests with structured info types
+- Type-aware principal mapping test scenarios
+- Comprehensive test data file with multiple role assignment scenarios
 
 ### Docker Build Output
 ```
-[+] Building 0.6s (16/16) FINISHED
+[+] Building 0.6s (17/17) FINISHED
 => exporting to image
-=> => naming to docker.io/library/tfplan2md:review
+=> => naming to docker.io/library/tfplan2md:local
 ```
-
-### Help Text Verification
-The Docker container correctly displays the new `--principal-mapping` option:
-```
--p, --principal-mapping <file>
-                             Map principal IDs to names using a JSON file.
-```
-
-**Note**: Minor formatting inconsistency observed - indentation of the principal-mapping option description is wider than other options. This is a cosmetic issue in the help text generation.
 
 ## Review Decision
 
 **Status:** ✅ Approved
 
-The implementation successfully meets all acceptance criteria and quality standards. All identified issues have been resolved.
+The implementation successfully meets all acceptance criteria and quality standards. Ready for release.
 
 ## Issues Found
 
 ### Blockers
 
 None
+
+### Major Issues
+
+None
+
+### Minor Issues
+
+None
+
+### Suggestions
+
+1. **Test data location**: The `role-assignments.json` test file is quite large (171 lines). Consider whether some test scenarios could be simplified or combined to reduce maintenance burden.
+
+2. **Type-aware principal mapping**: The `IPrincipalMapper` interface includes default implementations for the type-aware overloads. This is good for backward compatibility, but consider documenting this design choice in the interface comments to clarify the intended usage pattern.
+
+3. **Error handling documentation**: While the `PrincipalMapper.LoadMappings` gracefully handles errors with try-catch, the exception is silently swallowed. Consider whether logging would be beneficial for debugging malformed JSON files in production scenarios (though this aligns with the spec's requirement for graceful fallback).
 
 ### Major Issues
 

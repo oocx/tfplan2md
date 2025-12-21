@@ -16,6 +16,9 @@ This test plan validates the "Markdown Quality Validation" feature, which ensure
 | Built-in templates produce valid markdown | TC-06 | Integration |
 | Comprehensive demo renders correctly | TC-06 | Integration |
 | CI fails on invalid markdown | TC-07 | CI/Linting |
+| Exact table count matches resources | TC-08 | Integration |
+| No multiple consecutive blank lines | TC-09 | Unit |
+| No blank lines within tables | TC-10 | Unit |
 
 ## Test Cases
 
@@ -95,6 +98,65 @@ Verifies that a plan containing "breaking" characters (pipes, newlines) renders 
 
 **Expected Result:**
 Markdig successfully parses the tables, meaning the markdown structure is valid.
+
+---
+
+### TC-08: Render_ValidatesTableCount
+
+**Type:** Integration
+
+**Description:**
+Verifies that the number of tables parsed by Markdig matches the expected number of resources in the plan. This ensures that no tables are broken (rendered as text) or fragmented.
+
+**Preconditions:**
+- A plan with known number of resources (e.g., `markdown-breaking-plan.json`).
+
+**Test Steps:**
+1. Render the plan.
+2. Parse with Markdig.
+3. Count `Table` objects.
+4. Assert count equals (Summary Table + Resource Changes).
+
+**Expected Result:**
+Table count matches exactly.
+
+---
+
+### TC-09: Render_NoMultipleBlankLines
+
+**Type:** Unit
+
+**Description:**
+Verifies that the output does not contain multiple consecutive blank lines (MD012), even when templates produce extra whitespace or around section separators.
+
+**Preconditions:**
+- None
+
+**Test Steps:**
+1. Render a plan that triggers edge cases (e.g., `ComprehensiveDemo`).
+2. Check output against Regex `\n\n\n+`.
+
+**Expected Result:**
+No matches for multiple blank lines.
+
+---
+
+### TC-10: Render_NoBlankLinesInTables
+
+**Type:** Unit
+
+**Description:**
+Verifies that no blank lines exist between table rows, which would break table rendering.
+
+**Preconditions:**
+- None
+
+**Test Steps:**
+1. Render a plan with tables (e.g., `ComprehensiveDemo`).
+2. Check output against Regex `(?<=\|[^\n]*)\n\s*\n(?=\|)`.
+
+**Expected Result:**
+No matches for blank lines between table rows.
 
 ---
 

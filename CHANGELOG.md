@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.27.0"></a>
+## [0.27.0](https://github.com/oocx/tfplan2md/compare/v0.26.0...v0.27.0) (2025-12-21)
+
+### ✨ Features
+
+* implement selective markdown escaping and comprehensive quality validation ([65fe49f](https://github.com/oocx/tfplan2md/commit/65fe49f24f3f42275315c7814cf035a4d6a34505))
+
+### 🐛 Bug Fixes
+
+* resolve markdown rendering issues and enhance test coverage ([4bc947a](https://github.com/oocx/tfplan2md/commit/4bc947aa14f51b9400ebcc40b3ab44504a90cc58))
+
+### 📚 Documentation
+
+* add issue analysis for markdown rendering errors in v0.26.0 ([6174b65](https://github.com/oocx/tfplan2md/commit/6174b65ac3d507418072372bece59fde7674c254))
+
 <a name="0.26.0"></a>
 ## [0.26.0](https://github.com/oocx/tfplan2md/compare/v0.25.0...v0.26.0) (2025-12-21)
 

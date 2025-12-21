@@ -23,6 +23,7 @@ Use these branch prefixes:
 - `docs/` — Documentation changes
 - `refactor/` — Code refactoring
 - `chore/` — Maintenance tasks
+- `workflow/` — Agent/workflow changes (`.github/agents/`, workflow documentation)
 
 ## Commit Messages
 
@@ -52,6 +53,7 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/) t
 | `build` | Build system or dependency changes | None |
 | `ci` | CI configuration changes | None |
 | `chore` | Other maintenance tasks | None |
+| `workflow` | Agent/workflow changes (`.github/agents/`, `docs/agents.md`) | None |
 | `revert` | Reverting a previous commit | Depends |
 
 ### Breaking Changes
@@ -83,6 +85,9 @@ git commit -m "fix(parser): handle empty resource changes array"
 
 # Documentation
 git commit -m "docs: update installation instructions"
+
+# Workflow changes
+git commit -m "workflow: update Product Owner agent model"
 
 # Breaking change
 git commit -m "feat(api)!: rename TerraformPlan to PlanResult"

@@ -5,9 +5,9 @@ target: vscode
 model: Gemini 3 Pro (Preview)
 tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'execute/runTests', 'read/problems', 'github/*', 'execute/runInTerminal', 'microsoft-learn/*']
 handoffs:
-  - label: Start Implementation
-    agent: "Developer"
-    prompt: Review the test plan above and begin implementation, including the specified tests.
+  - label: Create User Stories
+    agent: "Product Owner"
+    prompt: Review the test plan above and create actionable user stories for implementation.
     send: false
 ---
 

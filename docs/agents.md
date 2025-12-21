@@ -65,13 +65,12 @@ flowchart TB
 	IA -- "Consumed by" --> DEV
 	RE -- "Produces" --> FS
 	FS -- "Consumed by" --> AR
-    FS -- "Consumed by" --> PO
 	AR -- "Produces" --> ADR
-	ADR -- "Consumed by" --> PO
-	PO -- "Produces" --> US
-	US -- "Consumed by" --> QE
+	ADR -- "Consumed by" --> QE
 	QE -- "Produces" --> TP
-	TP -- "Consumed by" --> DEV
+	TP -- "Consumed by" --> PO
+	PO -- "Produces" --> US
+	US -- "Consumed by" --> DEV
 	DEV -- "Produces" --> CODE
 	CODE -- "Consumed by" --> DOC
 	DOC -- "Produces" --> DOCS
@@ -81,10 +80,7 @@ flowchart TB
 	CRR -- "Consumed by" --> RM
 	CODE -- "Consumed by" --> CR
 	TP -- "Consumed by" --> CR
-	US -- "Consumed by" --> DEV
-	ADR -- "Consumed by" --> QE
-    ADR -- "Consumed by" --> DEV
-	US -- "Consumed by" --> DOC
+	ADR -- "Consumed by" --> DEV
 	CODE -- "Consumed by" --> RM
 	DOCS -- "Consumed by" --> RM
 	REL -- "Consumed by" --> RM
@@ -111,11 +107,13 @@ flowchart TB
 
 _Agents produce and consume artifacts. Arrows show artifact creation and consumption. Communication for feedback/questions between agents (regarding consumed artifacts) is always possible, but intentionally omitted from the diagram for clarity._
 
+**Linear Workflow:**
+
 1. **Support Engineer** investigates bugs, incidents, and technical problems.
 2. **Requirements Engineer** gathers and clarifies requirements for new features.
 3. **Architect** designs the solution and documents decisions.
-4. **Product Owner** creates and prioritizes actionable work items.
-5. **Quality Engineer** defines the test plan and cases.
+4. **Quality Engineer** defines the test plan and cases (consumes architecture).
+5. **Product Owner** creates and prioritizes actionable work items (consumes test plan).
 6. **Developer** implements features/fixes and tests.
 7. **Documentation Author** updates all relevant documentation (markdown files in the repository).
 8. **Code Reviewer** reviews and approves the work.
@@ -216,19 +214,21 @@ Different types of work use different branch prefixes to maintain clarity:
 
 ## Agent Handoff Criteria
 
-Each agent hands off to the next by producing a specific deliverable. The following table clarifies what triggers each handoff and what the expected deliverable is:
+Each agent hands off to the next by producing a specific deliverable. The workflow follows a **linear sequence** to ensure consistency and completeness:
 
 | From Agent              | To Agent                | Handoff Trigger / Deliverable                        |
 |-------------------------|-------------------------|------------------------------------------------------|
 | Support Engineer        | Developer               | Issue Analysis with root cause and fix approach      |
-| Requirements Engineer   | Architect (preferred), Product Owner (for simple features with no architecture changes) | Feature Specification |
-| Architect               | Product Owner, QE, DEV  | Architecture Decision Records (ADRs)                 |
-| Product Owner           | QE, DEV, DOC            | User Stories / Tasks with Acceptance Criteria        |
-| Quality Engineer        | Developer, Code Reviewer| Test Plan & Test Cases                               |
-| Developer               | Documentation Author, Code Reviewer, Release Manager | Code & Tests         |
-| Documentation Author    | Code Reviewer, Release Manager | Updated Documentation                      |
-| Code Reviewer           | Developer (if rework needed), Release Manager | Code Review Report (approval or feedback)            |
+| Requirements Engineer   | Architect               | Feature Specification                                |
+| Architect               | Quality Engineer        | Architecture Decision Records (ADRs)                 |
+| Quality Engineer        | Product Owner           | Test Plan & Test Cases                               |
+| Product Owner           | Developer               | User Stories / Tasks with Acceptance Criteria        |
+| Developer               | Documentation Author    | Code & Tests                                         |
+| Documentation Author    | Code Reviewer           | Updated Documentation                                |
+| Code Reviewer           | Release Manager (approved) <br/> Developer (rework needed) | Code Review Report            |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
+
+**Exception:** Code Reviewer has two possible handoffs depending on approval status. Release Manager may hand back to Developer if build/release fails.
 
 Handoffs are triggered when the deliverable is complete and meets the "Definition of Done" for that agent. Automation (e.g., GitHub Actions) can be used to detect completion and notify the next agent(s).
 

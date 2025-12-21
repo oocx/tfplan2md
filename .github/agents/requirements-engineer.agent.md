@@ -9,10 +9,6 @@ handoffs:
     agent: "Architect"
     prompt: Review the feature specification created above and design the technical solution.
     send: false
-  - label: Create User Stories
-    agent: "Product Owner"
-    prompt: Review the feature specification created above and create actionable user stories.
-    send: false
 ---
 
 # Requirements Engineer Agent

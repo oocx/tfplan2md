@@ -9,10 +9,6 @@ handoffs:
     agent: "Documentation Author"
     prompt: Review the implementation above and update the documentation accordingly.
     send: false
-  - label: Request Code Review
-    agent: "Code Reviewer"
-    prompt: Review the implementation above for code quality and adherence to standards.
-    send: false
 ---
 
 # Developer Agent

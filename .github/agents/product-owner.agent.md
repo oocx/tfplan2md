@@ -5,10 +5,6 @@ target: vscode
 model: Gemini 3 Flash (Preview)
 tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'github/*', 'memory/*', 'execute/runInTerminal']
 handoffs:
-  - label: Define Test Plan
-    agent: "Quality Engineer"
-    prompt: Review the user stories above and define the test plan and test cases.
-    send: false
   - label: Start Implementation
     agent: "Developer"
     prompt: Review the user stories above and begin implementation.

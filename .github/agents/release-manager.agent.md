@@ -45,6 +45,7 @@ Ensure the feature is ready for release, create the release branch or tag, and v
 - Trigger release workflow before CI on main completes
 - Manually bump version numbers (Versionize handles this)
 - Use the wrong tag or skip tag detection
+- Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 
 ## Context to Read
 

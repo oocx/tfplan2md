@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.25.0"></a>
+## [0.25.0](https://github.com/oocx/tfplan2md/compare/v0.24.0...v0.25.0) (2025-12-21)
+
+### ✨ Features
+
+* **azure:** implement table format for role assignments ([7535945](https://github.com/oocx/tfplan2md/commit/75359455c0d19d43e449e003e674f0a1f89c9923))
+
+### 📚 Documentation
+
+* add architecture and test plan for role assignment table format ([dd2804a](https://github.com/oocx/tfplan2md/commit/dd2804a23d403ecdcd43efdf86bfd621e278eb8a))
+* add feature specification for role assignment table format ([ba7dfb4](https://github.com/oocx/tfplan2md/commit/ba7dfb49e74e42c2af061ca43322c9eb41e75e0a))
+* add tasks for role assignment table format ([6e513bf](https://github.com/oocx/tfplan2md/commit/6e513bfbf6ddd7d4500e180418461d454f442605))
+
 <a name="0.24.0"></a>
 ## [0.24.0](https://github.com/oocx/tfplan2md/compare/v0.23.0...v0.24.0) (2025-12-20)
 

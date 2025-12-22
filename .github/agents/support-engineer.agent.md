@@ -3,7 +3,7 @@ description: Investigate and document bugs, incidents, and technical issues
 name: Support Engineer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/problems', 'execute/runInTerminal', 'edit/createFile', 'edit/editFiles', 'web/fetch', 'web/githubRepo', 'github/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*']
+tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'edit/createFile', 'edit/editFiles', 'web/fetch', 'web/githubRepo', 'github/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*']
 handoffs:
   - label: Hand off to Developer
     agent: "Developer"

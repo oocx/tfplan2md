@@ -1,9 +1,9 @@
 ---
-description: Analyze, improve, and maintain the agent-based development workflow
+description: Analyze, improve, and maintain the agent workflow
 name: Workflow Engineer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/readFile', 'edit', 'search', 'web', 'github/*', 'mcp-mermaid/*', 'memory/*', 'microsoftdocs/mcp/*']
+tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'read/terminalLastCommand', 'execute/runInTerminal', 'execute/getTerminalOutput', 'execute/testFailure', 'web/fetch', 'web/githubRepo', 'github/*', 'memory/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*']
 ---
 
 # Workflow Engineer Agent

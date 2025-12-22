@@ -56,7 +56,7 @@ The summary table includes a "Resource Types" column that shows which resource t
 - Resource types are sorted alphabetically within each action
 - Each resource type appears on its own line using HTML `<br/>` tags
 - Empty when an action has 0 resources
-- The Total row does not show a breakdown (only the total count)
+- The Total row shows only the sum of displayed actions (Add + Change + Replace + Destroy), excluding no-op resources
 
 **Example:**
 ```markdown
@@ -71,9 +71,12 @@ The summary table includes a "Resource Types" column that shows which resource t
 
 ### No-Op Resources
 
-Resources with no changes (no-op) are counted in the summary but are **not displayed** in the detailed changes section. This design choice:
+Resources with no changes (no-op) are **excluded from the Total count** and are **not displayed** in the detailed changes section. This design choice:
+- Keeps the Total consistent with the visible action rows in the summary table
 - Reduces output noise when reviewing plans with many unchanged resources
 - Enables processing of large Terraform plans without hitting template iteration limits
+
+The `summary.no_op` count is available to custom templates but not shown in the default template.
 
 ### Action Symbols
 
@@ -249,7 +252,7 @@ Templates have access to the following variables:
   - `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op` - Each is an `ActionSummary` object containing:
     - `count` - Number of resources for this action
     - `breakdown` - Array of `ResourceTypeBreakdown` objects, each with `type` (resource type name) and `count` (number of that type)
-  - `total` - Total number of resources with changes
+  - `total` - Total number of resources with changes (excludes no-op resources)
 - **`changes`** - List of resource changes (no-op resources excluded), each with:
   - `address` - Full resource address
   - `type` - Resource type

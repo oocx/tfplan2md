@@ -69,7 +69,7 @@ public class ComprehensiveDemoTests
             .And.Contain("🔄 Change | 5")
             .And.Contain("♻️ Replace | 2")
             .And.Contain("❌ Destroy | 3")
-            .And.Contain("Total | 42");
+                .And.Contain("Total | 22");
     }
 
     [Fact]

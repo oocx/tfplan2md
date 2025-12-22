@@ -162,7 +162,7 @@ public class ReportModelBuilderTests
         model.Summary.ToDestroy.Count.Should().Be(0);
         model.Summary.ToReplace.Count.Should().Be(0);
         model.Summary.NoOp.Count.Should().Be(1);
-        model.Summary.Total.Should().Be(1);
+        model.Summary.Total.Should().Be(0);
         model.Changes.Should().BeEmpty(); // no-op resources are filtered out
     }
 

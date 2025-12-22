@@ -8,8 +8,13 @@ on:
       - 'docs/agents.md'
       - 'docs/ai-model-reference.md'
 
+concurrency:
+  group: versioning-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
+  workflows: write
 
 jobs:
   build:

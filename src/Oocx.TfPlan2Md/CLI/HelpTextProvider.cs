@@ -13,6 +13,7 @@ public static class HelpTextProvider
             ("-o, --output <file>", "Write output to a file instead of stdout."),
             ("-t, --template <name|file>", "Use a built-in template by name or a custom Scriban template file."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
+            ("--show-unchanged-values", "Include unchanged attribute values in tables."),
             ("--show-sensitive", "Show sensitive values unmasked."),
             ("-h, --help", "Display this help message."),
             ("-v, --version", "Display version information."),

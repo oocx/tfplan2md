@@ -3,7 +3,7 @@ description: Investigate and document bugs, incidents, and technical issues
 name: Support Engineer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/problems', 'execute/runInTerminal', 'web/fetch', 'web/githubRepo', 'github/*', 'microsoft-learn/*', 'io.github.hashicorp/terraform-mcp-server/*']
+tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/problems', 'execute/runInTerminal', 'edit/createFile', 'edit/editFiles', 'web/fetch', 'web/githubRepo', 'github/*', 'microsoft-learn/*', 'io.github.hashicorp/terraform-mcp-server/*']
 handoffs:
   - label: Hand off to Developer
     agent: "Developer"
@@ -43,6 +43,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 - Review recent changes that might have caused the issue
 - Search codebase for relevant code
 - Document findings clearly with file paths and line numbers
+- Create issue analysis document at docs/issues/<issue-description>/analysis.md
 - Propose initial analysis, not final solutions
 - Create issue branch when ready to hand off to Developer
 

@@ -124,23 +124,31 @@ Follow the project's coding conventions strictly:
    - Run tests to confirm they fail
    - Implement the feature code
    - Run tests to confirm they pass
+   - Mark the task as completed in docs/features/<feature-name>/tasks.md
 
 6. **Run all tests** - Before considering work complete:
    - Run the full test suite: `dotnet test`
    - **Check test output for skipped tests**
    - If tests are skipped (e.g., Docker integration tests), identify the reason
-6. **Run markdown linter on comprehensive demo output** - Before opening a PR:
-   ```bash
-   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
-   npx markdownlint-cli2 artifacts/comprehensive-demo.md
-   ```
+6. **Update comprehensive demo if feature has visible markdown impact**:
+   - If your feature changes markdown output, update examples/comprehensive-demo/plan.json to demonstrate the feature
+   - Regenerate the comprehensive demo output:
+     ```bash
+     dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
+     ```
+   - Verify markdown quality using Docker-based markdownlint:
+     ```bash
+     docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
+     ```
+
+7. **Verify all tests pass** - Before considering work complete:
    - Ask maintainer to start required services: "I see X tests are being skipped because [reason]. Please start [service] and confirm when ready so I can verify all tests pass."
    - Re-run tests after services are started to ensure all tests run and pass
    - Work is NOT complete until all tests run successfully with zero skipped tests
 
-7. **Check for errors** - Use `problems` to verify there are no workspace errors after `dotnet build`/`dotnet test`.
+8. **Check for errors** - Use `problems` to verify there are no workspace errors after `dotnet build`/`dotnet test`.
 
-8. **Ask one question at a time** - If clarification is needed, ask focused questions.
+9. **Ask one question at a time** - If clarification is needed, ask focused questions.
 
 ## Commands
 
@@ -180,10 +188,11 @@ For each task, verify:
 - [ ] Files remain under 300 lines
 
 For the complete feature:
-- [ ] All tasks are complete
+- [ ] All tasks are complete and marked as done in tasks.md
 - [ ] Full test suite passes with ZERO skipped tests (`dotnet test`)
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
+- [ ] Comprehensive demo updated if feature has visible markdown impact
 - [ ] The maintainer has reviewed the implementation
 
 ## Handoff

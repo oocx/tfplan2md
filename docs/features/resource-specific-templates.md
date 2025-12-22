@@ -229,7 +229,7 @@ The `ITemplateLoader` restricts includes to the custom template directory for se
 - **Sort order**: Added → Modified → Removed → Unchanged
 - **Unchanged rules**: Shown with ⏺️ indicator for complete picture
 - **Multi-value fields**: Joined with commas (protocols, ports, addresses)
-- **Modified rules**: Use `format_diff` helper to show before/after values for changed attributes with `-` and `+` prefixes on separate lines (`<br>` separator). Unchanged attributes show single value without prefix.
+- **Modified rules**: Use `format_diff` helper to show before/after values for changed attributes with `-` and `+` prefixes on separate lines (`<br>` separator). The helper escapes the before/after values internally while preserving the `<br>` tag to render properly in markdown tables. Unchanged attributes show single value without prefix.
 - **Diff key**: `rule.name` uniquely identifies rules within a collection
 
 ## CLI Extensions

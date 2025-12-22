@@ -127,22 +127,34 @@ public static class ScribanHelpers
     }
 
     /// <summary>
-    /// Formats a before/after pair into a single diff-style string.
+    /// Formats a before/after pair into a diff-style string while preserving intended line breaks.
     /// </summary>
     /// <param name="before">The original value.</param>
     /// <param name="after">The updated value.</param>
-    /// <returns>The unchanged value when equal; otherwise "- before&lt;br&gt;+ after".</returns>
+    /// <returns>
+    /// The escaped updated value when the inputs are equal; otherwise "- escapedBefore&lt;br&gt;+ escapedAfter" with values escaped but the line break tag preserved.
+    /// </returns>
+    /// <remarks>Related feature: docs/features/firewall-rule-before-after-display/specification.md</remarks>
+    /// <example>
+    /// <code>
+    /// FormatDiff("TCP", "UDP"); // returns "- TCP<br>+ UDP"
+    /// FormatDiff("|before|", "|after|"); // returns "- \\|before\\|<br>+ \\|after\\|"
+    /// </code>
+    /// </example>
     public static string FormatDiff(string? before, string? after)
     {
         var beforeValue = before ?? string.Empty;
         var afterValue = after ?? string.Empty;
 
+        var escapedBefore = EscapeMarkdown(beforeValue);
+        var escapedAfter = EscapeMarkdown(afterValue);
+
         if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
         {
-            return afterValue;
+            return escapedAfter;
         }
 
-        return $"- {beforeValue}<br>+ {afterValue}";
+        return $"- {escapedBefore}<br>+ {escapedAfter}";
     }
 
     /// <summary>

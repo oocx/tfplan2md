@@ -401,7 +401,7 @@ Templates have access to custom Scriban helper functions:
 ```scriban
 {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }}
 ```
-Returns the single value if unchanged, or `"- before<br>+ after"` if different.
+Returns the single escaped value if unchanged, or `"- escapedBefore<br>+ escapedAfter"` if different. Values are escaped for markdown safety while the `<br>` tag is preserved to render as a line break in tables.
 
 See [resource-specific-templates.md](features/resource-specific-templates.md) for full specification.
 

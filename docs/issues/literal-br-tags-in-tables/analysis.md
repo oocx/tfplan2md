@@ -277,6 +277,39 @@ The recommended approach (Option 1) achieves this by having `FormatDiff` escape 
 
 ---
 
-**Analysis completed by:** Support Engineer Agent  
+## Implementation Status
+
+✅ **RESOLVED** - December 22, 2025
+
+### Changes Made
+
+**Code Changes:**
+- Updated `FormatDiff` in [ScribanHelpers.cs](../../../src/Oocx.TfPlan2Md/MarkdownGeneration/ScribanHelpers.cs#L129-L158) to escape values internally while preserving `<br>` tags
+- Modified [firewall_network_rule_collection.sbn](../../../src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/firewall_network_rule_collection.sbn#L23) template to remove `escape_markdown` from `format_diff` outputs
+
+**Test Updates:**
+- Updated all unit tests in [ScribanHelpersFormatDiffTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersFormatDiffTests.cs) to verify escaping behavior
+- Updated integration tests in [MarkdownRendererResourceTemplateTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererResourceTemplateTests.cs) to expect unescaped `<br>` tags
+- Updated snapshots: [firewall-rules.md](../../../tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md) and [comprehensive-demo.md](../../../tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md)
+- Added new test `FormatDiff_EscapesValuesAndPreservesLineBreakTags` to verify markdown-sensitive characters are escaped while `<br>` remains intact
+
+**Documentation Updates:**
+- Updated [docs/features.md](../../features.md) to clarify `format_diff` escaping behavior
+- Updated [docs/features/resource-specific-templates.md](../resource-specific-templates.md) to document internal escaping
+
+### Verification
+
+All tests pass (259/259):
+```
+dotnet test
+Test summary: total: 259, failed: 0, succeeded: 259, skipped: 0
+```
+
+The `<br>` tags now render correctly as line breaks in markdown tables while maintaining security by escaping all user data.
+
+---
+
+**Analysis completed by:** Documentation Author Agent  
 **Date:** December 22, 2025  
-**Ready for handoff to:** Developer Agent
+**Implementation completed by:** Developer Agent  
+**Date:** December 22, 2025

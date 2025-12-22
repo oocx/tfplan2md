@@ -18,6 +18,8 @@
 
 #### ➕ azurerm_resource_group.breaking_name
 
+**Summary:** `rg-with-pipe\|and*asterisk` (eastus)
+
 <details>
 
 | Attribute | Value |
@@ -30,6 +32,8 @@
 </details>
 
 #### 🔄 azurerm_storage_account.multiline
+
+**Summary:** `azurerm_storage_account.multiline` | Changed: tags.note
 
 <details>
 

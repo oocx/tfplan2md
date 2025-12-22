@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -80,6 +81,18 @@ public class ResourceChangeModel
     /// Used by resource-specific templates for semantic diffing.
     /// </summary>
     public object? AfterJson { get; init; }
+
+    /// <summary>
+    /// Paths to attributes that triggered replacement (from Terraform plan replace_paths).
+    /// Related feature: docs/features/replacement-reasons-and-summaries/specification.md
+    /// </summary>
+    public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; set; }
+
+    /// <summary>
+    /// Human-readable summary of the resource change for quick scanning in templates.
+    /// Related feature: docs/features/replacement-reasons-and-summaries/specification.md
+    /// </summary>
+    public string? Summary { get; set; }
 }
 
 /// <summary>
@@ -96,10 +109,11 @@ public class AttributeChangeModel
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
-public class ReportModelBuilder(bool showSensitive = false, bool showUnchangedValues = false)
+public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false)
 {
     private readonly bool _showSensitive = showSensitive;
     private readonly bool _showUnchangedValues = showUnchangedValues;
+    private readonly IResourceSummaryBuilder _summaryBuilder = summaryBuilder ?? new ResourceSummaryBuilder();
 
     public ReportModel Build(TerraformPlan plan)
     {
@@ -187,7 +201,7 @@ public class ReportModelBuilder(bool showSensitive = false, bool showUnchangedVa
         var actionSymbol = GetActionSymbol(action);
         var attributeChanges = BuildAttributeChanges(rc.Change);
 
-        return new ResourceChangeModel
+        var model = new ResourceChangeModel
         {
             Address = rc.Address,
             ModuleAddress = rc.ModuleAddress,
@@ -198,8 +212,13 @@ public class ReportModelBuilder(bool showSensitive = false, bool showUnchangedVa
             ActionSymbol = actionSymbol,
             AttributeChanges = attributeChanges,
             BeforeJson = rc.Change.Before,
-            AfterJson = rc.Change.After
+            AfterJson = rc.Change.After,
+            ReplacePaths = rc.Change.ReplacePaths
         };
+
+        model.Summary = _summaryBuilder.BuildSummary(model);
+
+        return model;
     }
 
     private static string DetermineAction(IReadOnlyList<string> actions)

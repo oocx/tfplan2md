@@ -15,6 +15,8 @@ Convert Terraform plan JSON files into human-readable Markdown reports.
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
 - 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines
 - 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
+- 📝 **Resource summaries** - Each resource change shows a concise one-line summary for quick scanning
+- 🔄 **Replacement reasons** - Resources being replaced show which attributes forced the replacement
 
 ## Installation
 
@@ -103,12 +105,14 @@ All generated markdown is automatically validated and linted for correct formatt
 
 #### ➕ azurerm_resource_group.main
 
+**Summary:** `example-rg` (westeurope)
+
 <details>
 
-| Attribute | Before | After |
-|-----------|--------|-------|
-| `location` | - | westeurope |
-| `name` | - | example-rg |
+| Attribute | Value |
+|-----------|-------|
+| `location` | westeurope |
+| `name` | example-rg |
 
 </details>
 ```

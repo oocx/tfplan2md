@@ -82,7 +82,7 @@ static async Task<int> RunAsync(CliOptions options)
     var plan = parser.Parse(json);
 
     // Build the report model
-    var modelBuilder = new ReportModelBuilder(options.ShowSensitive, options.ShowUnchangedValues);
+    var modelBuilder = new ReportModelBuilder(showSensitive: options.ShowSensitive, showUnchangedValues: options.ShowUnchangedValues);
     var model = modelBuilder.Build(plan);
 
     var principalMapper = new PrincipalMapper(options.PrincipalMappingFile);

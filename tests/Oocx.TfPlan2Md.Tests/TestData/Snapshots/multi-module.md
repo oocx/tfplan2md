@@ -18,6 +18,8 @@
 
 #### ➕ azurerm_resource_group.rg_root
 
+**Summary:** `rg-root` (westeurope)
+
 <details>
 
 | Attribute | Value |
@@ -32,6 +34,8 @@
 ### Module: `module.network`
 
 #### ➕ module.network.azurerm_virtual_network.vnet
+
+**Summary:** `vnet` | 10.0.0.0/16
 
 <details>
 
@@ -48,6 +52,8 @@
 
 #### ➕ module.network.module.subnet.azurerm_subnet.subnet1
 
+**Summary:** `subnet1`
+
 <details>
 
 | Attribute | Value |
@@ -63,6 +69,8 @@
 
 #### 🔄 module.app.azurerm_app_service.app
 
+**Summary:** `example-app` | Changed: plan
+
 <details>
 
 | Attribute | Before | After |
@@ -76,6 +84,8 @@
 ### Module: `module.app.module.database`
 
 #### ➕ module.app.module.database.azurerm_postgresql_server.db
+
+**Summary:** `example-db`
 
 <details>
 

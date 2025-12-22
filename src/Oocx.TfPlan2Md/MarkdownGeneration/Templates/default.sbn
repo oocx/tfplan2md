@@ -23,6 +23,11 @@ No changes.
 {{ for change in module.changes }}
 #### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
+{{ if change.summary }}
+**Summary:** {{ change.summary }}
+
+{{ end }}
+
 {{ if change.attribute_changes && change.attribute_changes.size > 0 }}
 <details>
 

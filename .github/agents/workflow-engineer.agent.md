@@ -3,7 +3,7 @@ description: Analyze, improve, and maintain the agent-based development workflow
 name: Workflow Engineer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'web/fetch', 'web/githubRepo', 'execute/runInTerminal', 'execute/getTerminalOutput', 'read/terminalLastCommand', 'github/*', 'memory/*', 'mcp-mermaid/*', 'microsoft-learn/*']
+tools: ['execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/readFile', 'edit', 'search', 'web', 'github/*', 'mcp-mermaid/*', 'memory/*', 'microsoftdocs/mcp/*']
 ---
 
 # Workflow Engineer Agent
@@ -244,7 +244,7 @@ Use these official tool IDs in agent frontmatter (reference: [Chat Tools](https:
 - `github/*` - GitHub operations (PRs, issues, etc.)
 - `memory/*` - Knowledge graph persistence
 - `mcp-mermaid/*` - Diagram generation
-- `microsoft-learn/*` - Microsoft Learn docs search/fetch (tools: `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`)
+- `microsoftdocs/mcp/*` - Microsoft Learn docs search/fetch (tools: `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`)
 - `io.github.hashicorp/terraform-mcp-server/*` - Terraform operations (useful for this project)
 
 **Note:** Tool sets (like `search`, `edit`) are shorthand that enable multiple related tools. For granular control, use the prefixed individual tools.

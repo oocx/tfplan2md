@@ -53,6 +53,11 @@ public class SummaryModel
     public required ActionSummary ToDestroy { get; init; }
     public required ActionSummary ToReplace { get; init; }
     public required ActionSummary NoOp { get; init; }
+
+    /// <summary>
+    /// Total count of resources with changes, excluding no-op resources.
+    /// Calculated as: ToAdd.Count + ToChange.Count + ToDestroy.Count + ToReplace.Count.
+    /// </summary>
     public int Total { get; init; }
 }
 
@@ -138,14 +143,20 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             }
         }
 
+        var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
+        var toChange = BuildActionSummary(allChanges.Where(c => c.Action == "update"));
+        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete"));
+        var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
+        var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
+
         var summary = new SummaryModel
         {
-            ToAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create")),
-            ToChange = BuildActionSummary(allChanges.Where(c => c.Action == "update")),
-            ToDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete")),
-            ToReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace")),
-            NoOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op")),
-            Total = allChanges.Count
+            ToAdd = toAdd,
+            ToChange = toChange,
+            ToDestroy = toDestroy,
+            ToReplace = toReplace,
+            NoOp = noOp,
+            Total = toAdd.Count + toChange.Count + toDestroy.Count + toReplace.Count
         };
 
         // Group changes by module. Use empty string for root module. Sort so root comes first,

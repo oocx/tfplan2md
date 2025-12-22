@@ -10,7 +10,7 @@
 | 🔄 Change | 1 | 1 azurerm_firewall_network_rule_collection |
 | ♻️ Replace | 0 |  |
 | ❌ Destroy | 1 | 1 azurerm_firewall_network_rule_collection |
-| **Total** | **4** | |
+| **Total** | **3** | |
 
 ## Resource Changes
 

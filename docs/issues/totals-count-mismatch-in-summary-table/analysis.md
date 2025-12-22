@@ -1,8 +1,10 @@
 # Issue: Totals Count Mismatch in Summary Table
 
+**Status:** ✅ Resolved
+
 ## Problem Description
 
-The "Total" row in the summary table shows an incorrect count that doesn't match the sum of the individual action rows above it.
+The "Total" row in the summary table showed an incorrect count that didn't match the sum of the individual action rows above it.
 
 ### Example from comprehensive-demo.md
 
@@ -67,23 +69,36 @@ The summary table template ([default.sbn](../../src/Oocx.TfPlan2Md/MarkdownGener
 
 It doesn't display a row for "no-op" changes, so the Total should exclude those changes.
 
-## Suggested Fix Approach
+## Implemented Fix
 
-Update line 149 in [ReportModel.cs](../../src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs#L149) to only sum the counts from the displayed action rows:
+Updated [ReportModel.cs](../../src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs#L120-L137) to calculate Total from displayed action counts:
 
 ```csharp
-Total = summary.ToAdd.Count + summary.ToChange.Count + summary.ToDestroy.Count + summary.ToReplace.Count
+var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
+var toChange = BuildActionSummary(allChanges.Where(c => c.Action == "update"));
+var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete"));
+var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
+var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
+
+var summary = new SummaryModel
+{
+    ToAdd = toAdd,
+    ToChange = toChange,
+    ToDestroy = toDestroy,
+    ToReplace = toReplace,
+    NoOp = noOp,
+    Total = toAdd.Count + toChange.Count + toDestroy.Count + toReplace.Count
+};
 ```
 
-This ensures the Total matches what's visible in the table.
+This ensures the Total matches what's visible in the summary table.
 
-## Related Tests
+## Test Coverage
 
-Tests that should pass after the fix:
-
-- [ ] Existing tests should continue to pass
-- [ ] New test: `Build_SummaryTotal_ExcludesNoOpActions` - Verify Total excludes no-op changes
-- [ ] Snapshot tests need updating - comprehensive-demo and other snapshots with no-op resources
+- ✅ New test: `Build_SummaryTotal_ExcludesNoOpActions` - Verifies Total excludes no-op changes ([ReportModelBuilderNoOpTests.cs](../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderNoOpTests.cs))
+- ✅ Updated existing test expectations for no-op plans
+- ✅ Snapshot tests updated - comprehensive-demo, summary-template, firewall-rules
+- ✅ All 261 tests passing
 
 ## Additional Context
 

@@ -10,7 +10,7 @@
 | 🔄 Change | 5 | 1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network |
 | ♻️ Replace | 2 | 1 azurerm_network_security_group<br/>1 azurerm_subnet |
 | ❌ Destroy | 3 | 1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network |
-| **Total** | **42** | |
+| **Total** | **22** | |
 
 ## Resource Changes
 

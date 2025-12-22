@@ -18,6 +18,8 @@
 
 #### ➕ azurerm_resource_group.core
 
+**Summary:** `rg-tfplan2md-demo` (eastus)
+
 <details>
 
 | Attribute | Value |
@@ -30,6 +32,8 @@
 </details>
 
 #### ➕ azurerm_storage_account.logs
+
+**Summary:** `sttfplan2mdlogs` in `rg-tfplan2md-demo` (eastus) | Standard LRS
 
 <details>
 
@@ -49,6 +53,8 @@
 
 #### 🔄 azurerm_storage_account.data
 
+**Summary:** `sttfplan2mddata` | Changed: account_replication_type, tags.cost_center
+
 <details>
 
 | Attribute | Before | After |
@@ -59,6 +65,8 @@
 </details>
 
 #### ❌ azurerm_storage_account.legacy
+
+**Summary:** `sttfplan2mdlegacy`
 
 <details>
 
@@ -79,6 +87,8 @@
 
 #### ➕ module.network.azurerm_virtual_network.hub
 
+**Summary:** `vnet-hub` in `rg-tfplan2md-demo` (eastus) | 10.0.0.0/16
+
 <details>
 
 | Attribute | Value |
@@ -92,6 +102,8 @@
 
 #### ➕ module.network.azurerm_virtual_network.spoke
 
+**Summary:** `vnet-spoke` in `rg-tfplan2md-demo` (eastus) | 10.1.0.0/16
+
 <details>
 
 | Attribute | Value |
@@ -104,6 +116,8 @@
 </details>
 
 #### ➕ module.network.azurerm_subnet.app
+
+**Summary:** `snet-app` | vnet-spoke | 10.1.1.0/24
 
 <details>
 
@@ -130,6 +144,8 @@
 
 #### 🔄 module.network.azurerm_virtual_network.branch
 
+**Summary:** `vnet-branch` | Changed: address_space[1]
+
 <details>
 
 | Attribute | Before | After |
@@ -155,6 +171,8 @@
 
 #### ♻️ module.network.azurerm_subnet.db
 
+**Summary:** recreating `snet-db` (1 changed)
+
 <details>
 
 | Attribute | Before | After |
@@ -164,6 +182,8 @@
 </details>
 
 #### ♻️ module.network.azurerm_network_security_group.app
+
+**Summary:** recreating `nsg-app` (2 changed)
 
 <details>
 
@@ -175,6 +195,8 @@
 </details>
 
 #### ❌ module.network.azurerm_virtual_network.decom
+
+**Summary:** `vnet-old`
 
 <details>
 
@@ -221,6 +243,8 @@
 
 #### ➕ module.security.azurerm_key_vault.main
 
+**Summary:** `kv-tfplan2md` in `rg-tfplan2md-demo` (eastus) | standard
+
 <details>
 
 | Attribute | Value |
@@ -239,6 +263,8 @@
 
 #### ➕ module.security.azurerm_log_analytics_workspace.security
 
+**Summary:** `law-security` in `rg-tfplan2md-demo` (eastus) | PerGB2018
+
 <details>
 
 | Attribute | Value |
@@ -253,6 +279,8 @@
 
 #### ➕ module.security.azurerm_key_vault_secret.db_password
 
+**Summary:** `db-password` | /subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md
+
 <details>
 
 | Attribute | Value |
@@ -266,6 +294,8 @@
 
 #### 🔄 module.security.azurerm_storage_account.analytics
 
+**Summary:** `sttfplan2mdanalytics` | Changed: account_replication_type, min_tls_version, tags.retention
+
 <details>
 
 | Attribute | Before | After |
@@ -277,6 +307,8 @@
 </details>
 
 #### 🔄 module.security.azurerm_key_vault.audit
+
+**Summary:** `kv-audit` | Changed: public_network_access_enabled, tags.tier
 
 <details>
 
@@ -304,6 +336,8 @@
 ### Module: `module.network.module.monitoring`
 
 #### ➕ module.network.module.monitoring.azurerm_log_analytics_workspace.core
+
+**Summary:** `law-core` in `rg-tfplan2md-demo` (eastus) | PerGB2018
 
 <details>
 

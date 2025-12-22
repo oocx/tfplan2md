@@ -34,5 +34,7 @@ public record Change(
     [property: JsonPropertyName("after")] object? After,
     [property: JsonPropertyName("after_unknown")] object? AfterUnknown,
     [property: JsonPropertyName("before_sensitive")] object? BeforeSensitive,
-    [property: JsonPropertyName("after_sensitive")] object? AfterSensitive
+    [property: JsonPropertyName("after_sensitive")] object? AfterSensitive,
+    [property: JsonPropertyName("replace_paths"), JsonConverter(typeof(ReplacePathsConverter))]
+    IReadOnlyList<IReadOnlyList<object>>? ReplacePaths = null
 );

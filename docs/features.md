@@ -83,6 +83,46 @@ Resources are displayed with emoji symbols indicating the action:
 - `❌` - delete (remove resource)
 - `♻️` - replace (delete and recreate resource)
 
+### Resource Summaries
+
+**Status:** ✅ Implemented
+
+Each resource change displays a concise one-line summary above the `<details>` section to help users quickly scan and understand changes without expanding every resource.
+
+**Summary formats by action:**
+
+- **CREATE**: Shows resource name and key identifying attributes based on resource type
+  - Example: `` `sttfplan2mdlogs` in `rg-tfplan2md-demo` (eastus) | Standard LRS ``
+  - Uses resource-specific attribute mappings for 43 azurerm resources, plus fallbacks for azuredevops, azuread, azapi, and msgraph providers
+
+- **UPDATE**: Shows resource name and list of changed attributes (up to 3, then "+ N more")
+  - Example: `` `sttfplan2mddata` | Changed: account_replication_type, tags.cost_center ``
+
+- **REPLACE**: Shows resource name and replacement reason when available (Terraform 1.2+)
+  - With reason: `` recreate `snet-db` (address_prefixes changed: force replacement) ``
+  - Without reason: `` recreating `nsg-app` (1 changed) ``
+  - Shows up to 3 attributes that forced replacement, then "+ N more"
+
+- **DELETE**: Shows resource name
+  - Example: `` `sttfplan2mdlegacy` ``
+
+**Provider-specific mappings:**
+
+The summary builder includes intelligent attribute selection for multiple providers:
+- **azurerm**: 43 resource types with specific mappings (storage accounts, VMs, networks, databases, etc.)
+- **azuredevops**: Projects and pipelines
+- **azuread**: Groups, users, service principals
+- **azapi**: Generic resources and actions
+- **msgraph**: Microsoft Graph API resources
+
+When no specific mapping exists, the tool falls back to provider-level defaults (e.g., azurerm → name, resource_group_name, location) or generic fallbacks (name, display_name).
+
+**Replacement reasons:**
+
+For resources with action "replace", the summary includes which attribute(s) caused the replacement. This information is parsed from the `replace_paths` field in Terraform plan JSON (available in Terraform 1.2+). When this field is not available, the summary shows the count of changed attributes instead.
+
+All summary values are automatically escaped to ensure valid markdown output.
+
 ### Sensitive Values
 
 - Sensitive values are **masked by default** for security
@@ -215,6 +255,8 @@ Templates have access to the following variables:
   - `type` - Resource type
   - `action` - Action string ("create", "update", "delete", "replace")
   - `action_symbol` - Emoji symbol for the action
+  - `summary` - One-line summary of the resource change (auto-generated)
+  - `replace_paths` - Array of attribute paths that triggered replacement (Terraform 1.2+, may be null)
   - `attribute_changes` - List of attribute changes with `name`, `before`, `after`, and `is_sensitive`
   - `before_json`, `after_json` - Raw JSON state (for resource-specific templates)
 - **`module_changes`** - Resource changes grouped by module, each with:

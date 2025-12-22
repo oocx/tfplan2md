@@ -19,9 +19,9 @@ This feature adds concise summary lines to all resource changes in the generated
 Update the core data models to support `replace_paths` and the new `Summary` property.
 
 **Acceptance Criteria:**
-- [ ] `Change` record in `src/Oocx.TfPlan2Md/Parsing/TerraformPlan.cs` includes `ReplacePaths` property with `JsonPropertyName("replace_paths")`.
-- [ ] `ResourceChangeModel` in `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` includes `ReplacePaths` and `Summary` properties.
-- [ ] Code compiles successfully.
+- [x] `Change` record in `src/Oocx.TfPlan2Md/Parsing/TerraformPlan.cs` includes `ReplacePaths` property with `JsonPropertyName("replace_paths")`.
+- [x] `ResourceChangeModel` in `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` includes `ReplacePaths` and `Summary` properties.
+- [x] Code compiles successfully.
 
 **Dependencies:** None
 
@@ -35,8 +35,8 @@ Update the core data models to support `replace_paths` and the new `Summary` pro
 Ensure the `TerraformPlanParser` correctly deserializes the `replace_paths` field from the plan JSON.
 
 **Acceptance Criteria:**
-- [ ] `TerraformPlanParser` parses `replace_paths` into the `Change` record.
-- [ ] Unit test `TC-01` (from test plan) passes.
+- [x] `TerraformPlanParser` parses `replace_paths` into the `Change` record.
+- [x] Unit test `TC-01` (from test plan) passes.
 
 **Dependencies:** Task 1
 
@@ -50,9 +50,9 @@ Ensure the `TerraformPlanParser` correctly deserializes the `replace_paths` fiel
 Create the `IResourceSummaryBuilder` interface and a registry for resource-specific attribute mappings.
 
 **Acceptance Criteria:**
-- [ ] `IResourceSummaryBuilder` interface created in `src/Oocx.TfPlan2Md/MarkdownGeneration/Summaries/`.
-- [ ] `ResourceAttributeMappingRegistry` (or similar internal structure) contains all 49+ mappings defined in the specification.
-- [ ] Registry supports provider-level fallbacks for `azurerm`, `azuredevops`, `azuread`, `azapi`, and `msgraph`.
+- [x] `IResourceSummaryBuilder` interface created in `src/Oocx.TfPlan2Md/MarkdownGeneration/Summaries/`.
+- [x] `ResourceAttributeMappingRegistry` (or similar internal structure) contains all 49+ mappings defined in the specification.
+- [x] Registry supports provider-level fallbacks for `azurerm`, `azuredevops`, `azuread`, `azapi`, and `msgraph`.
 
 **Dependencies:** Task 1
 
@@ -66,12 +66,12 @@ Create the `IResourceSummaryBuilder` interface and a registry for resource-speci
 Implement the core logic for generating summary strings based on action types and attribute mappings.
 
 **Acceptance Criteria:**
-- [ ] `BuildSummary` handles `create` action using key attribute mappings (TC-03, TC-04, TC-05).
-- [ ] `BuildSummary` handles `update` action showing changed attributes (TC-06, TC-07).
-- [ ] `BuildSummary` handles `replace` action with replacement reasons (TC-08, TC-09).
-- [ ] `BuildSummary` handles `delete` action (TC-10).
-- [ ] `msgraph` resources are handled correctly using `url` and `body.displayName` (TC-12).
-- [ ] All unit tests for `ResourceSummaryBuilder` pass.
+- [x] `BuildSummary` handles `create` action using key attribute mappings (TC-03, TC-04, TC-05).
+- [x] `BuildSummary` handles `update` action showing changed attributes (TC-06, TC-07).
+- [x] `BuildSummary` handles `replace` action with replacement reasons (TC-08, TC-09).
+- [x] `BuildSummary` handles `delete` action (TC-10).
+- [x] `msgraph` resources are handled correctly using `url` and `body.displayName` (TC-12).
+- [x] All unit tests for `ResourceSummaryBuilder` pass.
 
 **Dependencies:** Task 3
 
@@ -85,10 +85,10 @@ Implement the core logic for generating summary strings based on action types an
 Update `ReportModelBuilder` to use `IResourceSummaryBuilder` during the model building process.
 
 **Acceptance Criteria:**
-- [ ] `ReportModelBuilder` constructor accepts `IResourceSummaryBuilder`.
-- [ ] `BuildResourceChangeModel` calls `summaryBuilder.BuildSummary`.
-- [ ] `ResourceChangeModel.Summary` is populated in the final `ReportModel`.
-- [ ] Integration test `TC-02` passes.
+- [x] `ReportModelBuilder` constructor accepts `IResourceSummaryBuilder`.
+- [x] `BuildResourceChangeModel` calls `summaryBuilder.BuildSummary`.
+- [x] `ResourceChangeModel.Summary` is populated in the final `ReportModel`.
+- [x] Integration test `TC-02` passes.
 
 **Dependencies:** Task 4
 
@@ -102,9 +102,9 @@ Update `ReportModelBuilder` to use `IResourceSummaryBuilder` during the model bu
 Wire up the new services in `Program.cs`.
 
 **Acceptance Criteria:**
-- [ ] `ResourceSummaryBuilder` is instantiated in `Program.cs`.
-- [ ] `ResourceSummaryBuilder` is passed to `ReportModelBuilder`.
-- [ ] Application runs without errors.
+- [x] `ResourceSummaryBuilder` is instantiated in `Program.cs`.
+- [x] `ResourceSummaryBuilder` is passed to `ReportModelBuilder`.
+- [x] Application runs without errors.
 
 **Dependencies:** Task 5
 
@@ -118,9 +118,9 @@ Wire up the new services in `Program.cs`.
 Update the `default.sbn` template to display the summary line.
 
 **Acceptance Criteria:**
-- [ ] `default.sbn` includes `**Summary:** {{ change.summary }}` above the `<details>` tag.
-- [ ] Summary is only displayed if it is not null or empty.
-- [ ] Snapshot test `TC-13` passes.
+- [x] `default.sbn` includes `**Summary:** {{ change.summary }}` above the `<details>` tag.
+- [x] Summary is only displayed if it is not null or empty.
+- [x] Snapshot test `TC-13` passes.
 
 **Dependencies:** Task 5
 
@@ -134,8 +134,8 @@ Update the `default.sbn` template to display the summary line.
 Update the comprehensive demo and any relevant user documentation to reflect the new feature.
 
 **Acceptance Criteria:**
-- [ ] `examples/comprehensive-demo/report.md` (or similar) shows the new summaries.
-- [ ] README or other docs mention the new summary feature.
+- [x] `examples/comprehensive-demo/report.md` (or similar) shows the new summaries.
+- [x] README or other docs mention the new summary feature.
 
 **Dependencies:** Task 7
 

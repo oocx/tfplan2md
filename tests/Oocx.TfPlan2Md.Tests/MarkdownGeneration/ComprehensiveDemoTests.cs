@@ -47,7 +47,7 @@ public class ComprehensiveDemoTests
     public void Render_WithShowSensitive_RevealsSecretValues()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var builder = new ReportModelBuilder(true);
+        var builder = new ReportModelBuilder(showSensitive: true);
         var model = builder.Build(plan);
 
         var markdown = _renderer.Render(model);

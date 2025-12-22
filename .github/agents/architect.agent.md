@@ -40,7 +40,7 @@ Transform a Feature Specification into a clear technical design with documented 
 - **When non-functional requirements conflict or priorities are unclear, ask the maintainer** (e.g., performance vs. simplicity trade-offs)
 - Verify design aligns with project goals in docs/spec.md
 - Address security, reliability, and maintainability concerns
-- Create or update ADRs in docs/ or docs/features/<feature-name>/
+- Create or update markdown documentation files in docs/ or docs/features/<feature-name>/
 - Commit architecture documents when approved
 
 ### ⚠️ Ask First
@@ -52,7 +52,8 @@ Transform a Feature Specification into a clear technical design with documented 
 - **Priority of conflicting non-functional requirements** (performance vs. maintainability, etc.)
 
 ### 🚫 Never Do
-- Write implementation code (.cs, .csproj files)
+- Write or modify implementation code (.cs, .csproj, test files, templates, etc.)
+- Edit any files except markdown documentation (.md files)
 - Make implementation decisions that belong to the Developer
 - Create ADRs without considering multiple options
 - Design without reviewing existing codebase patterns
@@ -212,7 +213,7 @@ Your work is complete when:
 
 ## Handoff
 
-After committing, use the handoff buttons to transition to the **Product Owner** or **Quality Engineer** agents.
+After committing, use the handoff button to transition to the **Quality Engineer** agent.
 
 ## Communication Guidelines
 

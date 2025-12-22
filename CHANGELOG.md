@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.27.1"></a>
+## [0.27.1](https://github.com/oocx/tfplan2md/compare/v0.27.0...v0.27.1) (2025-12-22)
+
+### 🐛 Bug Fixes
+
+* render line breaks in tables correctly by escaping values internally in format_diff ([4849a2e](https://github.com/oocx/tfplan2md/commit/4849a2eb012856c16371d9e8679ebeb6be3e4ddc))
+
+### 📚 Documentation
+
+* add issue analysis for literal br tags in tables ([3636750](https://github.com/oocx/tfplan2md/commit/363675099f22ae4f68b994968a53499bb8ec4645))
+
 <a name="0.27.0"></a>
 ## [0.27.0](https://github.com/oocx/tfplan2md/compare/v0.26.0...v0.27.0) (2025-12-21)
 

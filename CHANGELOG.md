@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.28.0"></a>
+## [0.28.0](https://github.com/oocx/tfplan2md/compare/v0.27.1...v0.28.0) (2025-12-22)
+
+### ✨ Features
+
+* add --show-unchanged-values CLI option to filter attribute tables ([1f9984b](https://github.com/oocx/tfplan2md/commit/1f9984b6ad6470019ffade96b3783a8ebaa37bd2))
+* add diagnostic tools to agent definitions ([8020673](https://github.com/oocx/tfplan2md/commit/8020673f63704590f2501ade160c400d5343b37c))
+
+### 🐛 Bug Fixes
+
+* correct MCP server name from microsoft-learn/* to microsoftdocs/mcp/* ([3b6fbcd](https://github.com/oocx/tfplan2md/commit/3b6fbcd3658d73f8bd9e45f213ac04558268101f))
+* strengthen agent boundaries and tool assignments ([c7cc9a0](https://github.com/oocx/tfplan2md/commit/c7cc9a0cf12dcadc1f63eecc7514c2ec43973755))
+* **ci:** add .github/workflows/** to paths-ignore to skip CI for workflow-only changes ([ef186f0](https://github.com/oocx/tfplan2md/commit/ef186f031d5d427e392a6c4e30553eee905e9534))
+* **ci:** add concurrency control and workflows permission to CI pipeline ([cb9816a](https://github.com/oocx/tfplan2md/commit/cb9816a503d534b81da466736b90390938e05975))
+* **ci:** remove invalid workflows permission ([bd96929](https://github.com/oocx/tfplan2md/commit/bd96929951c0968d7e083913c3213fb8fc56abc8))
+
+### 📚 Documentation
+
+* add architecture for unchanged values CLI option ([df95a47](https://github.com/oocx/tfplan2md/commit/df95a47c0fff869019671ce270f4e215a9038905))
+* add feature specification for unchanged values CLI option ([ed47492](https://github.com/oocx/tfplan2md/commit/ed47492fb6cc6da02fcf3685cbcdba6c123c5fae))
+* add tasks for unchanged values CLI option ([b151f57](https://github.com/oocx/tfplan2md/commit/b151f570d5f2d854afa785e9682212288da22965))
+* add test plan for unchanged values CLI option ([9697f51](https://github.com/oocx/tfplan2md/commit/9697f51ade134e3efc85bc470fd3f5b13c078186))
+* update AI model reference with GPT-5.2 benchmark data ([294d18e](https://github.com/oocx/tfplan2md/commit/294d18ea0127c8eac2a084dd95fa9454bed6b1a9))
+
 <a name="0.27.1"></a>
 ## [0.27.1](https://github.com/oocx/tfplan2md/compare/v0.27.0...v0.27.1) (2025-12-22)
 

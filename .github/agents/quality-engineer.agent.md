@@ -3,7 +3,7 @@ description: Define test plans and test cases for features
 name: Quality Engineer
 target: vscode
 model: Gemini 3 Pro (Preview)
-tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'edit/createFile', 'edit/editFiles', 'execute/runTests', 'read/problems', 'github/*', 'execute/runInTerminal', 'microsoft-learn/*']
+tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'edit/createFile', 'edit/editFiles', 'execute/runTests', 'read/problems', 'github/*', 'execute/runInTerminal', 'microsoftdocs/mcp/*']
 handoffs:
   - label: Create User Stories
     agent: "Product Owner"

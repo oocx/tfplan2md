@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.29.0"></a>
+## [0.29.0](https://github.com/oocx/tfplan2md/compare/v0.28.0...v0.29.0) (2025-12-22)
+
+### ✨ Features
+
+* implement replacement reasons and resource summaries ([391b2be](https://github.com/oocx/tfplan2md/commit/391b2be1d09f8022728470c74183160452d9fc17))
+
+### 📚 Documentation
+
+* add architecture for replacement reasons and summaries ([2699a8f](https://github.com/oocx/tfplan2md/commit/2699a8f85dd6800ecb946ad0bc8e15658602caa2))
+* add tasks for replacement reasons and summaries ([751879c](https://github.com/oocx/tfplan2md/commit/751879c9cd4b24ee0f0d356ae78eaeb38eba3825))
+* add test plan for replacement reasons and summaries ([b04324f](https://github.com/oocx/tfplan2md/commit/b04324fb4a6e2c1e022519da9c07e9fb53f5c0fe))
+
 <a name="0.28.0"></a>
 ## [0.28.0](https://github.com/oocx/tfplan2md/compare/v0.27.1...v0.28.0) (2025-12-22)
 

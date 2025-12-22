@@ -1,6 +1,6 @@
 # AI Model Reference for GitHub Copilot Agents
 
-**Last Updated**: December 19, 2025  
+**Last Updated**: December 22, 2025  
 **Data Source**: LiveBench 2025-11-25, GitHub Copilot Documentation
 
 This document provides reference data for selecting AI models when creating or modifying custom GitHub Copilot agents. It includes performance benchmarks, availability, and cost information to support data-driven model selection.
@@ -78,6 +78,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | GPT-5.1 Codex Max | 90.80 | **Best overall** |
 | GPT-5.1 Codex | 87.97 | Strong alternative |
 | GPT-5 Pro | 87.59 | Solid choice |
+| GPT-5.2 | 86.28 | Strong general model |
 | Claude 4.5 Opus Thinking | 84.12 | Expensive (3x) |
 | Gemini 3 Pro | 79.89 | Good balance |
 | Gemini 3 Flash | 75.40 | Cost-effective |
@@ -90,10 +91,10 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | Claude 4 Sonnet | 80.74 | Best Sonnet |
 | Claude Sonnet 4.5 Thinking | 80.36 | Reasoning mode |
 | Claude 4.5 Opus Thinking | 79.65 | Premium |
-| Claude Sonnet 4.5 | 76.07 | Solid choice |
-| GPT-5.2 | 76.07 | Tied with Sonnet |
-| Gemini 3 Pro | 74.60 | Good alternative |
+| GPT-5.2 | 76.07 | Strong general model |
+| Claude Sonnet 4.5 | 76.07 | Tied with GPT-5.2 |
 | GPT-5.1 Codex Max | 74.98 | Strong all-around |
+| Gemini 3 Pro | 74.60 | Good alternative |
 
 #### Language (Critical for: Requirements Engineer, Documentation Author)
 
@@ -102,6 +103,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | Gemini 3 Flash | 84.56 | Excellent |
 | Gemini 3 Pro | 84.62 | Excellent |
 | Claude 4.5 Opus Thinking | 81.26 | Premium |
+| GPT-5.2 | 79.81 | Strong general model |
 | Claude 4.1 Opus | 76.75 | Expensive |
 | Claude Sonnet 4.5 | 76.00 | Good choice |
 | GPT-5.1 Codex Max | 76.06 | Solid |
@@ -113,6 +115,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | Gemini 3 Flash | 74.86 | **Best value** |
 | GPT-5.1 Codex Max | 73.90 | Solid |
 | Gemini 3 Pro | 65.85 | Good |
+| GPT-5.2 | 61.77 | Acceptable |
 | Claude 4.5 Opus Medium | 28.11 | Poor |
 | Claude Sonnet 4.5 | 23.52 | **Very poor** |
 

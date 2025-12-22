@@ -67,7 +67,6 @@
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `name` | example-app | example-app |
 | `plan` | B1 | S1 |
 
 </details>

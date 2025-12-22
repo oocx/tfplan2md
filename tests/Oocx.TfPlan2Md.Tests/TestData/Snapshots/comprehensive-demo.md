@@ -54,13 +54,7 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | `account_replication_type` | LRS | GRS |
-| `account_tier` | Standard | Standard |
-| `location` | eastus | eastus |
-| `name` | sttfplan2mddata | sttfplan2mddata |
-| `resource_group_name` | rg-tfplan2md-demo | rg-tfplan2md-demo |
 | `tags.cost_center` | - | 1234 |
-| `tags.environment` | demo | demo |
-| `tags.owner` | data | data |
 
 </details>
 
@@ -140,11 +134,7 @@
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `address_space[0]` | 10.2.0.0/16 | 10.2.0.0/16 |
 | `address_space[1]` | - | 10.3.0.0/16 |
-| `location` | eastus | eastus |
-| `name` | vnet-branch | vnet-branch |
-| `resource_group_name` | rg-tfplan2md-demo | rg-tfplan2md-demo |
 
 </details>
 
@@ -170,9 +160,6 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | `address_prefixes[0]` | 10.1.2.0/24 | 10.1.20.0/24 |
-| `name` | snet-db | snet-db |
-| `resource_group_name` | rg-tfplan2md-demo | rg-tfplan2md-demo |
-| `virtual_network_name` | vnet-spoke | vnet-spoke |
 
 </details>
 
@@ -182,18 +169,8 @@
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `location` | eastus | eastus |
-| `name` | nsg-app | nsg-app |
-| `resource_group_name` | rg-tfplan2md-demo | rg-tfplan2md-demo |
-| `security_rule[0].access` | Allow | Allow |
-| `security_rule[0].destination_address_prefix` | * | * |
 | `security_rule[0].destination_port_range` | 80 | 443 |
-| `security_rule[0].direction` | Inbound | Inbound |
 | `security_rule[0].name` | allow-http | allow-https |
-| `security_rule[0].priority` | 100 | 100 |
-| `security_rule[0].protocol` | Tcp | Tcp |
-| `security_rule[0].source_address_prefix` | * | * |
-| `security_rule[0].source_port_range` | * | * |
 
 </details>
 
@@ -294,13 +271,7 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | `account_replication_type` | LRS | ZRS |
-| `account_tier` | Standard | Standard |
-| `location` | eastus | eastus |
 | `min_tls_version` | - | TLS1_2 |
-| `name` | sttfplan2mdanalytics | sttfplan2mdanalytics |
-| `resource_group_name` | rg-tfplan2md-demo | rg-tfplan2md-demo |
-| `tags.environment` | demo | demo |
-| `tags.owner` | analytics | analytics |
 | `tags.retention` | - | long |
 
 </details>
@@ -311,16 +282,8 @@
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `enabled_for_deployment` | true | true |
-| `location` | eastus | eastus |
-| `name` | kv-audit | kv-audit |
 | `public_network_access_enabled` | true | false |
-| `resource_group_name` | rg-tfplan2md-demo | rg-tfplan2md-demo |
-| `sku_name` | standard | standard |
-| `tags.environment` | demo | demo |
-| `tags.owner` | security | security |
 | `tags.tier` | - | gold |
-| `tenant_id` | 11111111-2222-3333-4444-555555555555 | 11111111-2222-3333-4444-555555555555 |
 
 </details>
 

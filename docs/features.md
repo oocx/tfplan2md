@@ -96,6 +96,11 @@ Attribute tables in the default template now vary by the resource change action 
 - **delete**: 2-column table (`Attribute | Value`) showing the *before* values
 - **update** and **replace**: 3-column table (`Attribute | Before | After`)
 
+**Unchanged attribute filtering (default behavior):**
+- Attributes where the before and after values are identical are **hidden by default** to reduce noise and help users quickly identify actual changes
+- Use `--show-unchanged-values` flag to display all attributes including unchanged ones
+- This filtering applies to all attribute change tables regardless of which template is used
+
 Null or unknown attributes are omitted from the tables to avoid meaningless rows, and sensitive attributes are masked unless `--show-sensitive` is used.
 
 ### Module Grouping (NEW)
@@ -199,6 +204,7 @@ Templates have access to the following variables:
 - **`terraform_version`** - Terraform version string (e.g., "1.14.0")
 - **`format_version`** - Plan format version (e.g., "1.2")
 - **`timestamp`** - Plan generation timestamp in RFC3339 format (e.g., "2025-12-20T10:00:00Z"), if available in the plan JSON
+- **`show_unchanged_values`** - Boolean indicating whether unchanged attribute values are included in the output
 - **`summary`** - Summary object with action details:
   - `to_add`, `to_change`, `to_destroy`, `to_replace`, `no_op` - Each is an `ActionSummary` object containing:
     - `count` - Number of resources for this action
@@ -226,6 +232,7 @@ Simple single-command interface with flags:
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
+| `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help` | Display help information |
 | `--version` | Display version information |

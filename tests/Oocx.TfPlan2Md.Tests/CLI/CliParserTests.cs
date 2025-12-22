@@ -19,6 +19,7 @@ public class CliParserTests
         options.OutputFile.Should().BeNull();
         options.TemplatePath.Should().BeNull();
         options.ShowSensitive.Should().BeFalse();
+        options.ShowUnchangedValues.Should().BeFalse();
         options.ShowHelp.Should().BeFalse();
         options.ShowVersion.Should().BeFalse();
     }
@@ -102,6 +103,19 @@ public class CliParserTests
     }
 
     [Fact]
+    public void Parse_ShowUnchangedValuesFlag_SetsShowUnchangedValues()
+    {
+        // Arrange
+        var args = new[] { "--show-unchanged-values" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.ShowUnchangedValues.Should().BeTrue();
+    }
+
+    [Fact]
     public void Parse_HelpFlag_SetsShowHelp()
     {
         // Arrange
@@ -162,7 +176,8 @@ public class CliParserTests
             "plan.json",
             "--output", "output.md",
             "--template", "custom.sbn",
-            "--show-sensitive"
+            "--show-sensitive",
+            "--show-unchanged-values"
         };
 
         // Act
@@ -173,6 +188,7 @@ public class CliParserTests
         options.OutputFile.Should().Be("output.md");
         options.TemplatePath.Should().Be("custom.sbn");
         options.ShowSensitive.Should().BeTrue();
+        options.ShowUnchangedValues.Should().BeTrue();
     }
 
     [Fact]

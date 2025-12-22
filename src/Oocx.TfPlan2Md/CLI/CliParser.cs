@@ -39,6 +39,12 @@ public record CliOptions
     /// Optional principal mapping file path.
     /// </summary>
     public string? PrincipalMappingFile { get; init; }
+
+    /// <summary>
+    /// Determines whether unchanged attribute values are included in the output.
+    /// Related feature: docs/features/unchanged-values-cli-option/specification.md
+    /// </summary>
+    public bool ShowUnchangedValues { get; init; }
 }
 
 /// <summary>
@@ -55,6 +61,7 @@ public static class CliParser
         var showSensitive = false;
         var showHelp = false;
         var showVersion = false;
+        var showUnchangedValues = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -101,6 +108,9 @@ public static class CliParser
                         throw new CliParseException("--principal-mapping requires a file path argument.");
                     }
                     break;
+                case "--show-unchanged-values":
+                    showUnchangedValues = true;
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -120,7 +130,8 @@ public static class CliParser
             ShowSensitive = showSensitive,
             ShowHelp = showHelp,
             ShowVersion = showVersion,
-            PrincipalMappingFile = principalMappingFile
+            PrincipalMappingFile = principalMappingFile,
+            ShowUnchangedValues = showUnchangedValues
         };
     }
 }

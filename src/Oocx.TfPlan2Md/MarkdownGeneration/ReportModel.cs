@@ -15,6 +15,12 @@ public class ReportModel
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
     public required IReadOnlyList<ModuleChangeGroup> ModuleChanges { get; init; }
     public required SummaryModel Summary { get; init; }
+
+    /// <summary>
+    /// Indicates whether unchanged attribute values are included in attribute change tables.
+    /// Related feature: docs/features/unchanged-values-cli-option/specification.md
+    /// </summary>
+    public required bool ShowUnchangedValues { get; init; }
 }
 
 public class ModuleChangeGroup
@@ -90,9 +96,10 @@ public class AttributeChangeModel
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
-public class ReportModelBuilder(bool showSensitive = false)
+public class ReportModelBuilder(bool showSensitive = false, bool showUnchangedValues = false)
 {
     private readonly bool _showSensitive = showSensitive;
+    private readonly bool _showUnchangedValues = showUnchangedValues;
 
     public ReportModel Build(TerraformPlan plan)
     {
@@ -156,7 +163,8 @@ public class ReportModelBuilder(bool showSensitive = false)
             Timestamp = plan.Timestamp,
             Changes = displayChanges,
             ModuleChanges = moduleGroups,
-            Summary = summary
+            Summary = summary,
+            ShowUnchangedValues = _showUnchangedValues
         };
     }
 
@@ -228,6 +236,16 @@ public class ReportModelBuilder(bool showSensitive = false)
         _ => " "
     };
 
+    /// <summary>
+    /// Builds attribute changes for a resource, filtering unchanged values when configured.
+    /// </summary>
+    /// <param name="change">The resource change containing before and after state.</param>
+    /// <returns>Attribute changes prepared for rendering.</returns>
+    /// <remarks>
+    /// Compares raw values before masking to avoid dropping masked sensitive creates that would
+    /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
+    /// Related feature: docs/features/unchanged-values-cli-option/specification.md
+    /// </remarks>
     private List<AttributeChangeModel> BuildAttributeChanges(Change change)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
@@ -237,21 +255,34 @@ public class ReportModelBuilder(bool showSensitive = false)
 
         var allKeys = beforeDict.Keys.Union(afterDict.Keys).OrderBy(k => k);
 
-        return allKeys.Select(key =>
+        var changes = new List<AttributeChangeModel>();
+
+        foreach (var key in allKeys)
         {
             beforeDict.TryGetValue(key, out var beforeValue);
             afterDict.TryGetValue(key, out var afterValue);
 
             var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
+            var beforeDisplay = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue;
+            var afterDisplay = isSensitive && !_showSensitive ? "(sensitive)" : afterValue;
 
-            return new AttributeChangeModel
+            var valuesEqual = string.Equals(beforeValue, afterValue, StringComparison.Ordinal);
+
+            if (!_showUnchangedValues && valuesEqual)
+            {
+                continue;
+            }
+
+            changes.Add(new AttributeChangeModel
             {
                 Name = key,
-                Before = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue,
-                After = isSensitive && !_showSensitive ? "(sensitive)" : afterValue,
+                Before = beforeDisplay,
+                After = afterDisplay,
                 IsSensitive = isSensitive
-            };
-        }).ToList();
+            });
+        }
+
+        return changes;
     }
 
     private static bool IsSensitiveAttribute(string key, Dictionary<string, string?> beforeSensitive, Dictionary<string, string?> afterSensitive)

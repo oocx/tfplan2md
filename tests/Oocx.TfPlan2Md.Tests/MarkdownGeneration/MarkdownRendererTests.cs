@@ -646,7 +646,8 @@ public class MarkdownRendererTests
                 ToReplace = new ActionSummary(0, []),
                 NoOp = new ActionSummary(0, []),
                 Total = 0
-            }
+            },
+            ShowUnchangedValues = false
         };
         var tempFile = Path.GetTempFileName();
         File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");
@@ -678,11 +679,11 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - Check that attribute changes table rows are consecutive without blank lines
-        // The fix produces:
+        // The fix produces (only changed attributes are shown by default):
         // | Attribute | Before | After |
         // |-----------|--------|-------|
-        // | `location` | westeurope | westeurope |
         // | `sku_name` | standard | premium |
+        // | `soft_delete_retention_days` | 7 | 90 |
         //
         // (no blank lines between rows)
 
@@ -694,8 +695,9 @@ public class MarkdownRendererTests
 
         // Verify the table exists and has the expected structure
         keyVaultSection.Should().Contain("| Attribute | Before | After |")
-            .And.Contain("| `location` |")
-            .And.Contain($"| `{Escape("sku_name")}` |");
+            .And.Contain($"| `{Escape("sku_name")}` |")
+            .And.Contain("soft_delete_retention_days")
+            .And.NotContain("| `location` |");
     }
 
     [Fact]

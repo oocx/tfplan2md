@@ -45,4 +45,11 @@ public class ScribanHelpersFormatDiffTests
         ScribanHelpers.FormatDiff("", "value").Should().Be("- <br>+ value");
         ScribanHelpers.FormatDiff("value", "").Should().Be("- value<br>+ ");
     }
+
+    [Fact]
+    public void FormatDiff_EscapesValuesAndPreservesLineBreakTags()
+    {
+        ScribanHelpers.FormatDiff("<before>", "<after>")
+            .Should().Be("- \\<before\\><br>+ \\<after\\>");
+    }
 }

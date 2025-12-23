@@ -37,6 +37,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 ## Boundaries
 
 ### ✅ Always Do
+- Create new fix branch from latest main BEFORE starting investigation
 - Ask one clarifying question at a time
 - Reproduce the issue if possible
 - Check error messages, logs, and diagnostics
@@ -45,7 +46,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 - Document findings clearly with file paths and line numbers
 - Create issue analysis document at docs/issues/<issue-description>/analysis.md
 - Propose initial analysis, not final solutions
-- Create issue branch when ready to hand off to Developer
+- Commit analysis document before handing off to Developer
 
 ### ⚠️ Ask First
 - If the issue requires access to external systems or credentials
@@ -54,6 +55,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 
 ### 🚫 Never Do
 - Implement fixes yourself (hand off to Developer)
+- Start investigation without creating a fix branch from latest main
 - List multiple questions at once
 - Make assumptions without verification
 - Skip diagnostic steps
@@ -69,6 +71,30 @@ Before investigating, review relevant context:
 - CI/CD workflow files in `.github/workflows/`
 
 ## Investigation Approach
+
+### Step 0: Create Fix Branch
+
+**ALWAYS do this FIRST, before any investigation:**
+
+```bash
+# Sync with latest main
+git fetch origin && git switch main && git pull --ff-only origin main
+
+# Create fix branch with descriptive name
+git switch -c fix/<short-description>
+```
+
+Use descriptive names like:
+- `fix/docker-hub-secret-in-release-workflow`
+- `fix/null-reference-in-parser`
+- `fix/failing-integration-tests`
+- `fix/markdownlint-table-formatting`
+
+**Why this matters:**
+- Ensures you're working from the latest code
+- Prevents merge conflicts later
+- Keeps investigation work isolated
+- Ready for Developer handoff
 
 ### Step 1: Understand the Problem
 
@@ -132,23 +158,13 @@ Create a clear issue analysis document with:
 - Suggested fix approach (high-level)
 - Related tests that need to pass
 
-### Step 5: Create Issue Branch
+### Step 5: Hand Off
 
-When ready to hand off:
+Commit your analysis document:
 ```bash
-# Update main
-git fetch origin && git switch main && git pull --ff-only origin main
-
-# Create issue branch
-git switch -c fix/<short-description>
+git add docs/issues/<issue-description>/analysis.md
+git commit -m "docs: add issue analysis for <description>"
 ```
-
-Use descriptive names like:
-- `fix/docker-hub-secret-in-release-workflow`
-- `fix/null-reference-in-parser`
-- `fix/failing-integration-tests`
-
-### Step 6: Hand Off
 
 Use handoff button to transition to:
 - **Developer** - For implementing the fix
@@ -214,20 +230,13 @@ Links to:
 ## Definition of Done
 
 Your work is complete when:
+- [ ] Fix branch created from latest main (done at Step 0)
 - [ ] Problem is clearly understood and documented
 - [ ] Root cause is identified
 - [ ] Diagnostic information is collected
 - [ ] Issue analysis document is **created and saved to disk** at `docs/issues/<issue-description>/analysis.md`
-- [ ] Issue branch is created from latest main
 - [ ] Analysis is committed to the branch
 - [ ] Ready to hand off to Developer
-
-## Committing Your Work
-
-```bash
-git add docs/issues/<issue-description>/analysis.md
-git commit -m "docs: add issue analysis for <description>"
-```
 
 ## Communication Guidelines
 

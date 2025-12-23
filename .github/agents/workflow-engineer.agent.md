@@ -47,6 +47,7 @@ Before making changes, familiarize yourself with:
 - [docs/agents.md](../../docs/agents.md) - The complete workflow documentation (your primary reference)
 - [docs/ai-model-reference.md](../../docs/ai-model-reference.md) - **Model performance benchmarks, availability, and pricing data**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Project-wide Copilot instructions including tool naming conventions
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI usage for automated agents**
 - All existing agents in `.github/agents/*.agent.md` - Current agent definitions
 - [docs/spec.md](../../docs/spec.md) - Project specification
 
@@ -393,7 +394,7 @@ When updating `docs/agents.md`, verify all of these:
    git add .github/agents/ docs/agents.md
    git commit -m "fix: <clear description of workflow fix>"
    git push -u origin HEAD
-   gh pr create --title "fix: <title>" --body "<description>"
+   PAGER=cat gh pr create --title "fix: <title>" --body "<description>"
    ```
 
 5. **Return to feature work** - Switch back and restore:

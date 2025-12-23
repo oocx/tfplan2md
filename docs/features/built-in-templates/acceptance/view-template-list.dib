@@ -1,0 +1,50 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"pwsh","items":[{"name":"pwsh","languageName":"PowerShell","aliases":["powershell"]}]}}
+
+#!markdown
+
+# View Built-In Template List
+
+## User Goal
+As a user, I want to see a list of all available built-in templates so I can select the appropriate template for my documentation needs.
+
+## Setup
+No special setup required. The `--list-templates` flag should work independently.
+
+#!markdown
+
+## Execute Feature
+
+#!pwsh
+
+# Run tfplan2md with --list-templates flag
+dotnet run --project ../../../src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- --list-templates
+
+#!markdown
+
+## Expected Output
+
+The command should display:
+- Clear heading "Available Built-In Templates:"
+- List of template names (e.g., "architecture", "specification", "test-plan")
+- Brief description for each template
+- Well-formatted markdown (if output is markdown)
+- Clean, readable table or list format
+
+## Validation Checklist
+
+- [ ] All built-in templates are listed
+- [ ] Template names match files in `src/Oocx.TfPlan2Md/MarkdownGeneration/BuiltInTemplates/`
+- [ ] Descriptions are clear and helpful
+- [ ] Output renders correctly (no markdown formatting issues)
+- [ ] No error messages or warnings displayed
+
+## Feedback Opportunities
+
+**For Maintainer Review:**
+1. Is the output format user-friendly?
+2. Are the descriptions helpful enough to choose the right template?
+3. Should we show example usage for each template?
+4. Is the ordering logical (alphabetical vs. by use case)?
+5. Any rendering issues when viewed in terminal vs. markdown viewer?

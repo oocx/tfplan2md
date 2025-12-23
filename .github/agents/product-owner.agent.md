@@ -47,6 +47,7 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [docs/spec.md](../../docs/spec.md) - Project goals and constraints
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
 
 ## Conversation Approach
 
@@ -144,7 +145,7 @@ Your work is complete when:
 
 ## Handoff
 
-After the tasks are approved, use the handoff buttons to transition to the **Quality Engineer** or **Developer** agents.
+After the tasks are approved, use the handoff button to transition to the **Developer** agent.
 
 ## Communication Guidelines
 

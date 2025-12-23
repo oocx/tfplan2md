@@ -420,6 +420,7 @@ When rendering the full report, the default renderer applies resource-specific t
 | Provider | Resource Type | Template |
 |----------|--------------|----------|
 | azurerm | `azurerm_firewall_network_rule_collection` | Semantic rule diffing with `diff_array` |
+| azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
 
 #### Firewall Rule Collections
 
@@ -436,6 +437,21 @@ Example of a modified rule with changed source addresses and description:
 ```
 
 This layout makes it easy to inspect per-rule changes without index-shift noise from array diffs, and the diff-style formatting clearly shows what changed.
+
+#### Network Security Groups
+
+For `azurerm_network_security_group`, security rules are rendered in a single table with columns for Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, and Description. Rules are matched by name, categorized (➕, 🔄, ❌, ⏺️), and sorted by ascending priority.
+
+- **Added rules**: ➕ with the new values.
+- **Removed rules**: ❌ with the old values.
+- **Modified rules**: 🔄 with before/after values in the same cell using `-` and `+` prefixes separated by `<br>`.
+- **Unchanged rules**: ⏺️ for completeness.
+
+Example of a modified NSG rule with a port change and description update:
+
+```markdown
+| 🔄 | allow-http | 110 | Inbound | Allow | Tcp | - *<br>+ 10.0.1.0/24, 10.0.2.0/24 | * | * | - 80<br>+ 8080 | - Allow HTTP<br>+ Allow alternate HTTP |
+```
 
 ### Helper Functions
 

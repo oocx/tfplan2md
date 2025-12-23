@@ -99,19 +99,68 @@ NSG rules can have multiple values for addresses and ports (e.g., `source_addres
 
 ## Success Criteria
 
-- [ ] Template created for `azurerm_network_security_group` resource type
-- [ ] Rules categorized correctly as Added, Modified, Removed, or Unchanged using `diff_array` helper with `name` as the key
-- [ ] Rules sorted by ascending priority within the rendered table
-- [ ] All specified columns displayed: Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
-- [ ] Modified rules show before/after values with `-` and `+` prefixes for changed attributes
-- [ ] Unchanged attributes in modified rules show single value without prefix
-- [ ] Multi-value fields (address prefixes, port ranges) rendered as comma-separated lists
-- [ ] Template uses `format_diff` helper for displaying changed attributes
-- [ ] All existing tests pass
-- [ ] New tests verify NSG rule rendering with added/modified/removed/unchanged rules
-- [ ] Documentation updated in [docs/features.md](../features.md) and [docs/features/resource-specific-templates.md](resource-specific-templates.md)
-- [ ] Example output included in documentation
+- [x] Template created for `azurerm_network_security_group` resource type
+- [x] Rules categorized correctly as Added, Modified, Removed, or Unchanged using `diff_array` helper with `name` as the key
+- [x] Rules sorted by ascending priority within the rendered table
+- [x] All specified columns displayed: Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
+- [x] Modified rules show before/after values with `-` and `+` prefixes for changed attributes
+- [x] Unchanged attributes in modified rules show single value without prefix
+- [x] Multi-value fields (address prefixes, port ranges) rendered as comma-separated lists
+- [x] Template uses `format_diff` helper for displaying changed attributes
+- [x] All existing tests pass
+- [x] New tests verify NSG rule rendering with added/modified/removed/unchanged rules
+- [x] Documentation updated in [docs/features.md](../features.md) and [docs/features/resource-specific-templates.md](resource-specific-templates.md)
+- [x] Example output included in documentation
+
+## Implementation Notes
+
+### Template Design
+
+The template is implemented at `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn` and uses:
+
+1. **Helper Functions**: Four template-defined functions handle the singular/plural field precedence:
+   - `source_addresses(rule)`: Returns source address prefix(es) or `*`
+   - `destination_addresses(rule)`: Returns destination address prefix(es) or `*`
+   - `source_ports(rule)`: Returns source port range(s) or `*`
+   - `destination_ports(rule)`: Returns destination port range(s) or `*`
+
+2. **Scriban `ret` Statement**: Functions use the `ret` statement to return clean string values without introducing whitespace into the output.
+
+3. **Whitespace Control**: The template uses normal `{{ }}` delimiters (not `{{~ ~}}`) for table row loops to preserve proper newlines between rows and prevent table breakage.
+
+4. **Three Rendering Modes**:
+   - **Update mode**: Shows the full diff table with all four categories (Added, Modified, Removed, Unchanged)
+   - **Create mode**: Shows a simpler table without the Change column (no icons needed)
+   - **Delete mode**: Shows "Security Rules (being deleted)" with all rules listed
+   - **Fallback**: Falls back to default attribute table if no security_rule array exists
+
+### Testing
+
+Comprehensive test coverage was added:
+
+- **Unit tests** (`MarkdownRendererNsgTemplateTests.cs`):
+  - Create, update, and delete scenarios
+  - Priority-based sorting verification
+  - Singular/plural field handling
+  - Semantic diff verification
+
+- **Integration tests** (`TemplateIsolationTests.cs`):
+  - Template validity checks
+  - Markdown structure validation (no blank lines between table rows)
+
+- **Test data** (`nsg-rule-changes.json`):
+  - Covers all four rule states (Added, Modified, Removed, Unchanged)
+  - Tests both singular and plural address/port fields
+  - Includes realistic NSG configurations
+
+### Differences from Firewall Template
+
+While similar in structure to the firewall rule template, the NSG template has some key differences:
+
+1. **More columns**: NSG rules have separate source/destination addresses and ports (8 data columns vs 5 for firewall rules)
+2. **Field handling**: NSG rules use both singular and plural forms for addresses and ports, requiring helper functions
+3. **No nested structures**: NSG rules are simpler objects without nested application/fqdn target groups
 
 ## Open Questions
 
-None - all requirements are clearly defined.
+None - all requirements are clearly defined and implemented.

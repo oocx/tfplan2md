@@ -136,6 +136,7 @@ The demo includes:
 - Module grouping (root, module.network, module.security, nested modules)
 - All action types (create, update, replace, delete, no-op)
 - Firewall rule semantic diffing
+- Network security group rule semantic diffing
 - Role assignments with principal mapping
 - Sensitive value handling
 - Complex nested attributes

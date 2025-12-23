@@ -189,8 +189,8 @@
 
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-| ➕ | allow-https | 100 | Inbound | Allow | Tcp | * | * | * | 443 |  |
-| ❌ | allow-http | 100 | Inbound | Allow | Tcp | * | * | * | 80 |  |
+| ➕ | allow-https | 100 | Inbound | Allow | Tcp | * | * | * | 443 | - |
+| ❌ | allow-http | 100 | Inbound | Allow | Tcp | * | * | * | 80 | - |
 
 #### ❌ module.network.azurerm_virtual_network.decom
 

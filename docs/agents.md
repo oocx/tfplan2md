@@ -45,6 +45,7 @@ flowchart TB
 	TP["✓ Test Plan & Test Cases"]
 	DEV["<b>Developer</b>"]
 	CODE["💻 Code & Tests"]
+	AN["🧪 Acceptance Notebooks"]
 	DOC["<b>Documentation Author</b>"]
 	DOCS["📚 Documentation"]
 	CR["<b>Code Reviewer</b>"]
@@ -72,7 +73,9 @@ flowchart TB
 	PO -- "Produces" --> US
 	US -- "Consumed by" --> DEV
 	DEV -- "Produces" --> CODE
+	DEV -- "Produces" --> AN
 	CODE -- "Consumed by" --> DOC
+	AN -- "Consumed by" --> CR
 	DOC -- "Produces" --> DOCS
 	DOCS -- "Consumed by" --> CR
 	CR -- "Produces" --> CRR
@@ -112,11 +115,11 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 1. **Support Engineer** investigates bugs, incidents, and technical problems.
 2. **Requirements Engineer** gathers and clarifies requirements for new features.
 3. **Architect** designs the solution and documents decisions.
-4. **Quality Engineer** defines the test plan and cases (consumes architecture).
+4. **Quality Engineer** defines the test plan and cases (consumes architecture). For user-facing features, defines acceptance scenarios for manual review.
 5. **Product Owner** creates and prioritizes actionable work items (consumes test plan).
-6. **Developer** implements features/fixes and tests.
+6. **Developer** implements features/fixes and tests. For user-facing features, creates acceptance notebooks for maintainer review.
 7. **Documentation Author** updates all relevant documentation (markdown files in the repository).
-8. **Code Reviewer** reviews and approves the work.
+8. **Code Reviewer** reviews and approves the work. Verifies acceptance notebooks execute successfully (maintainer reviews output separately).
 9. **Release Manager** prepares, coordinates, and executes the release.
 
 **Meta-Agent:**
@@ -146,14 +149,14 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Definition of Done:** Work items are clear, actionable, and prioritized.
 
 ### 4. Quality Engineer
-- **Goal:** Define how the feature will be tested.
-- **Deliverables:** Test plan, test cases, quality criteria.
-- **Definition of Done:** Test plan covers all acceptance criteria.
+- **Goal:** Define how the feature will be tested and validated.
+- **Deliverables:** Test plan, test cases, quality criteria. For user-facing features, user acceptance scenarios for manual review.
+- **Definition of Done:** Test plan covers all acceptance criteria. User-facing features have clear acceptance scenarios defined.
 
 ### 6. Developer
 - **Goal:** Implement features and tests as specified.
-- **Deliverables:** Code, tests, and passing CI.
-- **Definition of Done:** Code and tests meet requirements and pass all checks.
+- **Deliverables:** Code, tests, passing CI. For user-facing features, acceptance notebooks for maintainer review.
+- **Definition of Done:** Code and tests meet requirements and pass all checks. User-facing features have interactive acceptance notebooks.
 
 ### 7. Documentation Author
 - **Goal:** Update and maintain all relevant documentation.
@@ -188,7 +191,8 @@ This section describes the purpose and format of each artifact produced and cons
 | **Feature Specification** | Documents user needs, goals, and scope from an end-user perspective. Serves as the foundation for architecture and planning. | Markdown document with sections: Overview, User Goals, Scope, Out of Scope, Success Criteria. | `docs/features/<feature-name>/specification.md` |
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/<feature-name>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress. | Markdown document with: Title, Description, Acceptance Criteria checklist, Priority. | `docs/features/<feature-name>/tasks.md` |
-| **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix. | `docs/features/<feature-name>/test-plan.md` |
+| **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/<feature-name>/test-plan.md` |
+| **User Acceptance Notebooks** | Interactive demonstrations of user-facing features for manual maintainer review. Used to catch rendering bugs, validate real-world usage, and gather feedback before merge. | Polyglot Notebook (.dib) files with PowerShell code cells executing actual CLI commands and markdown narratives explaining expected behavior and validation criteria. | `docs/features/<feature-name>/acceptance/*.dib` |
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |

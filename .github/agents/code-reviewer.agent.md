@@ -28,12 +28,14 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 ### ✅ Always Do
 - Check Docker availability before running Docker build (ask maintainer to start if needed)
 - Run `dotnet test` and `docker build` to verify functionality
+- Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
 - Ensure tests follow naming convention and are meaningful
 - Confirm documentation is updated
 - Check that CHANGELOG.md was NOT modified
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
+- When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
 
 ### ⚠️ Ask First
 - Suggesting significant architectural changes
@@ -45,6 +47,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Modify source code or test files - hand off to Developer for fixes
 - Edit any files except markdown documentation (.md files in docs/features/<feature-name>/)
 - Approve code with failing tests
+- Approve code with markdownlint errors (these are Blocker issues)
 - Approve code that doesn't meet acceptance criteria
 - Request changes without clear justification
 - Block on minor style issues (use Suggestion category instead)
@@ -60,6 +63,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - The implementation in `src/` and `tests/`
@@ -111,10 +115,11 @@ Before starting, familiarize yourself with:
 - [ ] Documentation is updated to reflect changes
 - [ ] No contradictions in documentation
 - [ ] CHANGELOG.md was NOT modified (auto-generated)
-- [ ] Comprehensive demo updated if feature has visible markdown impact:
-  - [ ] examples/comprehensive-demo/plan.json updated (if needed)
+- [ ] Comprehensive demo output passes markdownlint (required for all reviews):
   - [ ] artifacts/comprehensive-demo.md regenerated
-  - [ ] Markdown linter passes on comprehensive demo output
+  - [ ] Markdown linter shows 0 errors
+  - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
+- [ ] For user-facing features: Acceptance notebooks execute successfully (maintainer will review output for feedback)
 
 ## Review Approach
 
@@ -135,6 +140,16 @@ Before starting, familiarize yourself with:
    ```bash
    dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
    docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
+   ```
+
+   For user-facing features, verify acceptance notebooks execute:
+   ```bash
+   # List acceptance notebooks
+   find docs/features/*/acceptance -name "*.dib" 2>/dev/null
+   
+   # If notebooks exist, manually open each in VS Code and run all cells
+   # Purpose: Verify commands execute without error
+   # Note: Maintainer will review OUTPUT for rendering quality and feedback
    ```
 
 2. **Read the code** - Review all changed files against the checklist.
@@ -219,7 +234,11 @@ Your work is complete when:
 ## Handoff
 
 - If **Changes Requested**: Use the handoff button to return to the **Developer** agent.
+  - This applies to both initial reviews and reviews of rework after failed PR/CI validation
+  - After Developer fixes issues, work returns to Code Reviewer for re-approval
 - If **Approved**: Use the handoff button to proceed to the **Release Manager** agent.
+  - This applies to both new features and fixes for failed PR/CI validation
+  - Release Manager will create (or update) the PR
 
 ## Communication Guidelines
 

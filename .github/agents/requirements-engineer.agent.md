@@ -63,6 +63,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and goals
 - [docs/features.md](../../docs/features.md) and feature descriptions in `docs/features/` - Existing features
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
 - [README.md](../../README.md) - Project overview
 
 ## Conversation Approach
@@ -196,7 +197,7 @@ git commit -m "docs: add feature specification for <feature-name>"
 
 ## Handoff
 
-After the specification is approved, use the handoff buttons to transition to the **Architect** or **Product Owner** agents.
+After the specification is approved, use the handoff button to transition to the **Architect** agent.
 
 ## Communication Guidelines
 

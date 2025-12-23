@@ -23,7 +23,8 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
-- Ensure all tests are fully automated (no manual steps)
+- Ensure all automated tests are fully automated (no manual steps)
+- For user-facing features (CLI changes, rendering changes), define user acceptance scenarios for maintainer review
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
@@ -52,6 +53,7 @@ Before starting, familiarize yourself with:
 - The Tasks document in `docs/features/<feature-name>/tasks.md`
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Project testing conventions and infrastructure
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
 - Existing tests in `tests/` to understand patterns and conventions
 
 ## Project Testing Conventions
@@ -101,6 +103,39 @@ Brief summary of what is being tested and reference to the specification.
 |---------------------|--------------|-----------|
 | Criterion from spec | TC-01, TC-02 | Unit |
 | ... | ... | ... |
+
+## User Acceptance Scenarios
+
+> **Purpose**: For user-facing features, define scenarios for manual maintainer review using interactive notebooks. These help catch rendering bugs, validate real-world usage, and gather feedback before merge.
+
+### Scenario 1: <Descriptive Name>
+
+**User Goal**: What the user wants to accomplish (e.g., "View built-in template documentation")
+
+**Steps**:
+1. Setup: `<command to prepare environment>`
+2. Execute: `<actual feature command>`
+3. Inspect: `<what to examine in output>`
+
+**Expected Output**:
+- Describe what the maintainer should see
+- Key visual elements, format, content
+
+**Success Criteria**:
+- [ ] Output renders correctly in Markdown
+- [ ] Information is accurate and complete
+- [ ] Feature solves the stated user problem
+
+**Feedback Opportunities**:
+- What could be improved?
+- Does format meet user needs?
+- Are there edge cases to consider?
+
+---
+
+### Scenario 2: <Another Scenario>
+
+...
 
 ## Test Cases
 
@@ -183,7 +218,7 @@ Your work is complete when:
 
 ## Handoff
 
-After the test plan is approved, use the handoff button to transition to the **Developer** agent.
+After the test plan is approved, use the handoff button to transition to the **Product Owner** agent.
 
 ## Communication Guidelines
 

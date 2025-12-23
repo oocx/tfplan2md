@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.30.0"></a>
+## [0.30.0](https://github.com/oocx/tfplan2md/compare/v0.29.1...v0.30.0) (2025-12-23)
+
+### ✨ Features
+
+* add specialized template for Azure Network Security Group rules ([dffb253](https://github.com/oocx/tfplan2md/commit/dffb2538e42a18e98255e4afcbb8204509b71023))
+
+### 🐛 Bug Fixes
+
+* avoid markdownlint errors for NSG empty descriptions ([5beeaff](https://github.com/oocx/tfplan2md/commit/5beeaffde75a0c6f63f537483ddfd67b6ea59496))
+
+### 📚 Documentation
+
+* add architecture for NSG security rule template ([eb58b20](https://github.com/oocx/tfplan2md/commit/eb58b20c482a7139a9e0bd18181761c0fed521df))
+* add feature specification for NSG security rule template ([2c2082c](https://github.com/oocx/tfplan2md/commit/2c2082cc69b9ecd8e63983b3984e5ab9af2a0568))
+* add tasks for NSG security rule template ([4b043e0](https://github.com/oocx/tfplan2md/commit/4b043e0fbc3d1b1e88b87e62b1bc6855ae8cff77))
+* add test plan for NSG security rule template ([e30b553](https://github.com/oocx/tfplan2md/commit/e30b553084343e5631602778cfe6a94c7939fc57))
+
 <a name="0.29.1"></a>
 ## [0.29.1](https://github.com/oocx/tfplan2md/compare/v0.29.0...v0.29.1) (2025-12-23)
 

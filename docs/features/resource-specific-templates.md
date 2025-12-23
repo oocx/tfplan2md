@@ -232,6 +232,34 @@ The `ITemplateLoader` restricts includes to the custom template directory for se
 - **Modified rules**: Use `format_diff` helper to show before/after values for changed attributes with `-` and `+` prefixes on separate lines (`<br>` separator). The helper escapes the before/after values internally while preserving the `<br>` tag to render properly in markdown tables. Unchanged attributes show single value without prefix.
 - **Diff key**: `rule.name` uniquely identifies rules within a collection
 
+## Resource Template: azurerm_network_security_group
+
+### Output Format
+
+```markdown
+### 🔄 azurerm_network_security_group.app
+
+**Network Security Group:** `nsg-app`
+
+#### Security Rules
+
+| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
+| -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | allow-https | 100 | Inbound | Allow | Tcp | * | * | * | 443 | Allow HTTPS traffic |
+| 🔄 | allow-http | 110 | Inbound | Allow | Tcp | - *<br>+ 10.0.1.0/24, 10.0.2.0/24 | * | * | - 80<br>+ 8080 | - Allow HTTP<br>+ Allow alternate HTTP |
+| ❌ | allow-ssh | 120 | Inbound | Allow | Tcp | 10.0.0.0/8 | * | * | 22 | Legacy SSH access |
+| ⏺️ | allow-dns | 130 | Outbound | Allow | Udp | * | * | 168.63.129.16 | 53 | Azure DNS |
+```
+
+### Display Requirements
+
+- **Status icons**: ➕ (added), 🔄 (modified), ❌ (removed), ⏺️ (unchanged)
+- **Sort order**: Added → Modified → Removed → Unchanged, each sorted by ascending `priority`
+- **Columns**: Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
+- **Multi-value fields**: Plural fields take precedence; values are comma-separated. If no value exists, render `*`.
+- **Modified rules**: `format_diff` shows before/after with `-` and `+` prefixes on separate lines (`<br>`). Unchanged attributes show single value.
+- **Diff key**: `rule.name` uniquely identifies rules within an NSG
+
 ## CLI Extensions
 
 ### `--list-templates`
@@ -243,6 +271,7 @@ $ tfplan2md --list-templates
 
 Bundled Resource Templates:
   azurerm/firewall_network_rule_collection  - Firewall rules with semantic diff
+  azurerm/network_security_group            - NSG security rules with semantic diff
 
 Use --template <path> to provide custom templates.
 ```
@@ -264,6 +293,7 @@ Use --template <path> to provide custom templates.
 | `diff_array` helper function | ✅ | Returns `added`, `removed`, `modified`, `unchanged` collections |
 | Error handling per resource | ✅ | Renders error message for resource, continues with others |
 | azurerm_firewall_network_rule_collection template | ✅ | Full semantic diff with collapsible details |
+| azurerm_network_security_group template | ✅ | Semantic diff of security rules with priority-based ordering |
 | Custom template directory support | ✅ | Via `MarkdownRenderer(customTemplateDirectory)` constructor |
 
 ### Not Yet Implemented 📋

@@ -4,18 +4,29 @@
 
 This test plan covers the verification of the specialized Scriban template for `azurerm_network_security_group`. The goal is to ensure that security rules are rendered in a semantic, easy-to-read table that highlights changes (added, modified, removed, unchanged) and respects priority ordering.
 
+## Implementation Status
+
+**Status**: ✅ All tests implemented and passing
+
+All test cases defined in this plan have been implemented in:
+- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs`
+- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/TemplateIsolationTests.cs`
+- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownInvariantTests.cs` (existing invariant tests cover NSG output)
+
+Test data: `tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json`
+
 ## Test Coverage Matrix
 
-| Acceptance Criterion | Test Case(s) | Test Type |
-|---------------------|--------------|-----------|
-| Template created for `azurerm_network_security_group` | TC-01, TC-02, TC-03 | Unit |
-| Rules categorized correctly (Added, Modified, Removed, Unchanged) | TC-03 | Unit |
-| Rules sorted by ascending priority | TC-03, TC-04 | Unit |
-| All specified columns displayed | TC-01, TC-03 | Unit |
-| Modified rules show before/after values with `-`/`+` prefixes | TC-03 | Unit |
-| Unchanged attributes in modified rules show single value | TC-03 | Unit |
-| Multi-value fields (address prefixes, port ranges) rendered correctly | TC-05 | Unit |
-| Singular vs Plural field precedence handled correctly | TC-05 | Unit |
+| Acceptance Criterion | Test Case(s) | Test Type | Status |
+|---------------------|--------------|-----------|--------|
+| Template created for `azurerm_network_security_group` | TC-01, TC-02, TC-03 | Unit | ✅ |
+| Rules categorized correctly (Added, Modified, Removed, Unchanged) | TC-03 | Unit | ✅ |
+| Rules sorted by ascending priority | TC-03, TC-04 | Unit | ✅ |
+| All specified columns displayed | TC-01, TC-03 | Unit | ✅ |
+| Modified rules show before/after values with `-`/`+` prefixes | TC-03 | Unit | ✅ |
+| Unchanged attributes in modified rules show single value | TC-03 | Unit | ✅ |
+| Multi-value fields (address prefixes, port ranges) rendered correctly | TC-05 | Unit | ✅ |
+| Singular vs Plural field precedence handled correctly | TC-05 | Unit | ✅ |
 
 ## Test Cases
 

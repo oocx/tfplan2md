@@ -2,7 +2,9 @@
 
 ## Status
 
-No architectural changes required.
+✅ **Implemented** - No architectural changes were required.
+
+The NSG template was successfully implemented following the existing resource-specific template pattern.
 
 ## Analysis
 
@@ -50,4 +52,48 @@ This template applies to the `azurerm_network_security_group` resource. Rules de
 
 ## Components Affected
 
-- `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn` (New file)
+### New Files
+- `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn` - NSG rule template
+- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs` - Unit tests
+- `tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` - Test data
+
+### Modified Files
+- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/TemplateIsolationTests.cs` - Added NSG template validation
+- `docs/features.md` - Updated with NSG template documentation
+- `docs/features/resource-specific-templates.md` - Added NSG template example
+- `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md` - Updated snapshot
+- `artifacts/comprehensive-demo.md` - Regenerated with NSG template rendering
+
+## Implementation Details
+
+### Template Structure
+
+The template follows the established pattern:
+
+1. **Header Section**: Displays the NSG name and action
+2. **Helper Functions**: Four custom functions handle singular/plural field precedence:
+   ```scriban
+   {{ func source_addresses(rule) }}
+     {{- if rule.source_address_prefixes && rule.source_address_prefixes.size > 0 -}}{{ ret rule.source_address_prefixes | array.join ", " }}{{- end -}}
+     {{- if rule.source_address_prefix && rule.source_address_prefix != "" -}}{{ ret rule.source_address_prefix }}{{- end -}}
+     {{ ret "*" }}
+   {{ end }}
+   ```
+3. **Conditional Rendering**: Three paths based on action type (update/create/delete)
+4. **Fallback**: Default attribute table if no security_rule array exists
+
+### Key Design Decisions
+
+1. **Function Returns**: Used Scriban `ret` statements in helper functions to return clean strings without whitespace
+2. **Whitespace Control**: Used standard `{{ }}` delimiters for table rows (not `{{~ ~}}`) to preserve newlines
+3. **Sorting**: Applied `| array.sort "priority"` and `| array.sort "after.priority"` for proper ordering
+4. **Priority Handling**: In modified rules, used `format_diff` on priority values directly (without string conversion)
+
+### Testing Strategy
+
+Implemented comprehensive test coverage:
+- **Create/Delete scenarios**: Verify table structure and content for add/remove operations
+- **Update scenarios**: Verify semantic diffing with all four categories (Added, Modified, Removed, Unchanged)
+- **Priority sorting**: Verify rules appear in ascending priority order
+- **Field handling**: Verify singular/plural precedence for addresses and ports
+- **Integration**: Template isolation tests ensure valid Scriban syntax and proper markdown structure

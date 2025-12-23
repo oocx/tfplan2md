@@ -212,6 +212,45 @@ public class TemplateIsolationTests
 
     #endregion
 
+    #region Network Security Group Template Tests
+
+    /// <summary>
+    /// Verifies the NSG template produces valid markdown.
+    /// </summary>
+    [Fact]
+    public void NetworkSecurityGroupTemplate_ProducesValidMarkdown()
+    {
+        var json = File.ReadAllText("TestData/nsg-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var model = new ReportModelBuilder().Build(plan);
+        var renderer = new MarkdownRenderer();
+
+        var markdown = renderer.Render(model);
+
+        AssertValidMarkdown(markdown, "network security group template");
+    }
+
+    /// <summary>
+    /// Verifies NSG tables contain no blank lines between rows.
+    /// </summary>
+    [Fact]
+    public void NetworkSecurityGroupTemplate_NoBlankLinesBetweenTableRows()
+    {
+        var json = File.ReadAllText("TestData/nsg-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var model = new ReportModelBuilder().Build(plan);
+        var renderer = new MarkdownRenderer();
+
+        var markdown = renderer.Render(model);
+
+        var tableRowPattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)");
+        var matches = tableRowPattern.Matches(markdown);
+
+        matches.Should().BeEmpty("because blank lines between table rows break markdown tables");
+    }
+
+    #endregion
+
     #region Summary Template Tests
 
     /// <summary>

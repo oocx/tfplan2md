@@ -181,18 +181,16 @@
 
 </details>
 
-#### ♻️ module.network.azurerm_network_security_group.app
+### ♻️ module.network.azurerm_network_security_group.app
 
-**Summary:** recreating `nsg-app` (2 changed)
+**Network Security Group:** `nsg-app`
 
-<details>
+#### Security Rules
 
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-| `security_rule[0].destination_port_range` | 80 | 443 |
-| `security_rule[0].name` | allow-http | allow-https |
-
-</details>
+| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
+| -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | allow-https | 100 | Inbound | Allow | Tcp | * | * | * | 443 |  |
+| ❌ | allow-http | 100 | Inbound | Allow | Tcp | * | * | * | 80 |  |
 
 #### ❌ module.network.azurerm_virtual_network.decom
 

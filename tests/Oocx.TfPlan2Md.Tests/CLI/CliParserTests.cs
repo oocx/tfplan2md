@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.CLI;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 
 namespace Oocx.TfPlan2Md.Tests.CLI;
 
@@ -267,5 +268,44 @@ public class CliParserTests
 
         // Assert
         options.PrincipalMappingFile.Should().Be("principals.json");
+    }
+
+    [Fact]
+    public void Parse_LargeValueFormatStandardDiff_SetsOption()
+    {
+        // Arrange
+        var args = new[] { "plan.json", "--large-value-format", "standard-diff" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.LargeValueFormat.Should().Be(LargeValueFormat.StandardDiff);
+    }
+
+    [Fact]
+    public void Parse_LargeValueFormatDefault_IsInlineDiff()
+    {
+        // Arrange
+        var args = Array.Empty<string>();
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.LargeValueFormat.Should().Be(LargeValueFormat.InlineDiff);
+    }
+
+    [Fact]
+    public void Parse_LargeValueFormat_IsCaseInsensitive()
+    {
+        // Arrange
+        var args = new[] { "--large-value-format", "INLINE-DIFF" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.LargeValueFormat.Should().Be(LargeValueFormat.InlineDiff);
     }
 }

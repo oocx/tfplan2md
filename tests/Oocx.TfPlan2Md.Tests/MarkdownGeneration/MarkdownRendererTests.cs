@@ -647,7 +647,8 @@ public class MarkdownRendererTests
                 NoOp = new ActionSummary(0, []),
                 Total = 0
             },
-            ShowUnchangedValues = false
+            ShowUnchangedValues = false,
+            LargeValueFormat = LargeValueFormat.InlineDiff
         };
         var tempFile = Path.GetTempFileName();
         File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");

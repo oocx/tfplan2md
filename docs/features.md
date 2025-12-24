@@ -146,6 +146,26 @@ Attribute tables in the default template now vary by the resource change action 
 
 Null or unknown attributes are omitted from the tables to avoid meaningless rows, and sensitive attributes are masked unless `--show-sensitive` is used.
 
+## Large Attribute Value Display
+
+**Status:** ✅ Implemented
+
+To improve readability, large attribute values (multi-line or >100 characters) are automatically moved from the main attribute table to a collapsible `<details>` section below the resource summary.
+
+**Features:**
+- **Automatic detection**: Attributes with newlines or long values are automatically identified.
+- **Collapsible section**: All large attributes are grouped in a single "Large attributes" section.
+- **Summary line**: Shows the count of large attributes and total lines (e.g., "Large attributes (2 attributes, 147 lines)").
+- **Display formats**:
+  - **`inline-diff`** (default): Azure DevOps-optimized HTML with line-by-line and character-level diff highlighting.
+  - **`standard-diff`**: Cross-platform markdown code blocks with `diff` syntax highlighting.
+
+**Usage:**
+Control the display format using the `--large-value-format` CLI option:
+```bash
+tfplan2md plan.json --large-value-format standard-diff
+```
+
 ### Module Grouping (NEW)
 
 Resource changes in the report are now grouped by Terraform module. Each module with at least one change is rendered as its own section (module sections for modules without changes are omitted to keep reports concise).
@@ -276,6 +296,7 @@ Simple single-command interface with flags:
 |------|-------------|
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
+| `--large-value-format <format>` | Format for large/multi-line attributes: `inline-diff` (default, HTML with inline diff) or `standard-diff` (markdown diff fence) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |

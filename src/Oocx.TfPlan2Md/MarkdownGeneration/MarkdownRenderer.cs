@@ -71,9 +71,9 @@ public class MarkdownRenderer
             }
 
             // Find the corresponding change section in the default-rendered document and replace it.
-            // Match any heading level that contains the action symbol and address (handles template changes where headings may be '###' or '####').
+            // Resource changes are at level 4 (####), so match until next level 1-4 heading or separator
             var escapedHeading = $"{change.ActionSymbol} {ScribanHelpers.EscapeMarkdown(change.Address)}";
-            var pattern = $"(?ms)^[ \t]*#+\\s+{Regex.Escape(escapedHeading)}.*?(?=^[ \t]*#+\\s|\\z)";
+            var pattern = $"(?ms)^[ \t]*####\\s+{Regex.Escape(escapedHeading)}.*?(?=^[ \t]*####\\s|^[ \t]*###\\s|^[ \t]*##\\s|^[ \t]*#\\s|^---$|\\z)";
             rendered = Regex.Replace(rendered, pattern, specific);
         }
 

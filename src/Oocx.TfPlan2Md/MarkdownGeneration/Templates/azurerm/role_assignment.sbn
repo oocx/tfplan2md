@@ -14,18 +14,18 @@
 {{- summary_scope = active_scope.summary_label + "`" + (active_scope.summary_name | escape_markdown) + "`" -}}
 {{- principal_type = active_principal.type }}
 
-{{ func normalize(value) }}
+{{ func normalize_for_table(value) }}
     {{- text = "" + value -}}
-    {{- cleaned = string.replace(string.replace(text, "\r", ""), "\n", " ") -}}
-    {{ ret cleaned }}
+    {{ ret string.replace(string.replace(text, "\r", ""), "\n", " ") }}
 {{ end }}
 
-{{ func format_value(attr, value, scope, role, principal) }}
-    {{ if attr == "scope" }}{{ ret normalize(scope.details) }}{{ end }}
-    {{ if attr == "role_definition_id" }}{{ ret normalize(role.full_name) }}{{ end }}
-    {{ if attr == "principal_id" }}{{ ret normalize(principal.full_name) }}{{ end }}
+{{ func format_value(attr, value, scope, role, principal, for_table) }}
+    {{ if attr == "scope" }}{{ ret for_table ? normalize_for_table(scope.details) : scope.details }}{{ end }}
+    {{ if attr == "role_definition_id" }}{{ ret for_table ? normalize_for_table(role.full_name) : role.full_name }}{{ end }}
+    {{ if attr == "principal_id" }}{{ ret for_table ? normalize_for_table(principal.full_name) : principal.full_name }}{{ end }}
     {{ if value == null }}{{ ret "" }}{{ end }}
-    {{ ret normalize(value) }}
+    {{ text = "" + value }}
+    {{ if for_table }}{{ ret normalize_for_table(text) }}{{ else }}{{ ret text }}{{ end }}
 {{ end }}
 
 #### {{ action_symbol }} {{ address | escape_markdown }}
@@ -43,28 +43,66 @@
 {{ description | escape_markdown }}
 {{ end }}
 
+{{ attributes = collect_attributes(before_state, after_state) }}
+{{ small_attrs = [] }}
+{{ large_attrs = [] }}
+
+{{ for attr in attributes }}
+{{ if attr == "role_definition_name" }}{{ continue }}{{ end }}
+{{- before_value_raw = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal, false) -}}
+{{- after_value_raw = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal, false) -}}
+{{- before_value_table = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal, true) -}}
+{{- after_value_table = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal, true) -}}
+
+{{ attr_obj = { name: attr, before: before_value_raw, after: after_value_raw, before_table: before_value_table, after_table: after_value_table } }}
+
+{{ if is_large_value(before_value_raw) || is_large_value(after_value_raw) }}
+{{ large_attrs = large_attrs + [ attr_obj ] }}
+{{ else }}
+{{ small_attrs = small_attrs + [ attr_obj ] }}
+{{ end }}
+{{ end }}
+
+{{ if small_attrs.size > 0 }}
 <details>
 
-{{ attributes = collect_attributes(before_state, after_state) }}
-
-{{ if action == "update" || action == "replace" }}
-
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-{{~ for attr in attributes ~}}
-{{~ if attr == "role_definition_name" ~}}{{ continue }}{{~ end ~}}
-{{- before_value = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal) -}}
-{{- after_value = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal) -}}
-| `{{ attr | escape_markdown }}` | {{ string.strip(before_value) | escape_markdown }} | {{ string.strip(after_value) | escape_markdown }} |
-{{~ end }}
-{{ else }}
+{{ if action == "create" }}
 | Attribute | Value |
 | ----------- | ------- |
-{{~ for attr in attributes ~}}
-{{~ if attr == "role_definition_name" ~}}{{ continue }}{{~ end ~}}
-{{- value = format_value(attr, action == "delete" ? (before_state != null ? before_state[attr] : null) : (after_state != null ? after_state[attr] : null), active_scope, active_role, active_principal) -}}
-| `{{ attr | escape_markdown }}` | {{ string.strip(value) | escape_markdown }} |
-{{~ end }}
+{{ for attr in small_attrs -}}
+{{ if attr.after_table }}| `{{ attr.name | escape_markdown }}` | {{ attr.after_table | escape_markdown }} |
+{{ end -}}
+{{ end -}}
+
+{{ else if action == "delete" }}
+| Attribute | Value |
+| ----------- | ------- |
+{{ for attr in small_attrs -}}
+{{ if attr.before_table }}| `{{ attr.name | escape_markdown }}` | {{ attr.before_table | escape_markdown }} |
+{{ end -}}
+{{ end -}}
+
+{{ else }}
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+{{ for attr in small_attrs -}}
+| `{{ attr.name | escape_markdown }}` | {{ if attr.before_table }}{{ attr.before_table | escape_markdown }}{{ else }}-{{ end }} | {{ if attr.after_table }}{{ attr.after_table | escape_markdown }}{{ else }}-{{ end }} |
+{{ end -}}
 {{ end }}
 
 </details>
+{{ end }}
+
+{{ if large_attrs.size > 0 }}
+<details>
+<summary>{{ large_attributes_summary(large_attrs) }}</summary>
+
+{{ for attr in large_attrs }}
+##### `{{ attr.name | escape_markdown }}`
+
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
+
+{{ end }}
+
+</details>
+{{ end }}

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -34,5 +37,50 @@ public class MarkdownRendererTemplateFormattingTests
         indexOfBlank.Should().BeGreaterThan(0);
         var linesWithinTable = afterHeader.Take(indexOfBlank);
         linesWithinTable.Should().NotContain("<details>");
+    }
+
+    [Fact]
+    public void Render_LargeAttributes_MoveToDetailsSection()
+    {
+        // Arrange
+        var beforeJson = JsonDocument.Parse("{\"name\":\"vm-app-01\",\"custom_data\":\"line1\\nline2\"}").RootElement;
+        var afterJson = JsonDocument.Parse("{\"name\":\"vm-app-02\",\"custom_data\":\"line1\\nline3\"}").RootElement;
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.0",
+            TerraformVersion: "1.6.0",
+            ResourceChanges: new List<ResourceChange>
+            {
+                new(
+                    Address: "azurerm_example.large",
+                    ModuleAddress: null,
+                    Mode: "managed",
+                    Type: "azurerm_example",
+                    Name: "large",
+                    ProviderName: "provider.azurerm",
+                    Change: new Change(
+                        Actions: new List<string>{"update"},
+                        Before: beforeJson,
+                        After: afterJson,
+                        AfterUnknown: null,
+                        BeforeSensitive: null,
+                        AfterSensitive: null
+                    )
+                )
+            }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        var section = markdown.Split("#### ", StringSplitOptions.RemoveEmptyEntries).First(s => s.Contains("azurerm_example.large"));
+        section.Should().Contain("| `name` | vm-app-01 | vm-app-02 |");
+        section.Should().NotContain("custom_data | line1");
+        section.Should().Contain("<summary>Large values: custom_data (3 lines, 2 changed)</summary>");
+        section.Should().Contain("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
     }
 }

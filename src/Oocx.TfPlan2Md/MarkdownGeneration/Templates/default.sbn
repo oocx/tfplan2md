@@ -29,12 +29,23 @@ No changes.
 {{ end }}
 
 {{ if change.attribute_changes && change.attribute_changes.size > 0 }}
+{{ small_attrs = [] }}
+{{ large_attrs = [] }}
+{{ for attr in change.attribute_changes }}
+{{ if is_large_value(attr.before) || is_large_value(attr.after) }}
+{{ large_attrs = large_attrs + [attr] }}
+{{ else }}
+{{ small_attrs = small_attrs + [attr] }}
+{{ end }}
+{{ end }}
+
+{{ if small_attrs.size > 0 }}
 <details>
 
 {{ if change.action == "create" }}
 | Attribute | Value |
 | ----------- | ------- |
-{{ for attr in change.attribute_changes -}}
+{{ for attr in small_attrs -}}
 {{ if attr.after }}| `{{ attr.name | escape_markdown }}` | {{ attr.after | escape_markdown }} |
 {{ end -}}
 {{ end -}}
@@ -42,7 +53,7 @@ No changes.
 {{ else if change.action == "delete" }}
 | Attribute | Value |
 | ----------- | ------- |
-{{ for attr in change.attribute_changes -}}
+{{ for attr in small_attrs -}}
 {{ if attr.before }}| `{{ attr.name | escape_markdown }}` | {{ attr.before | escape_markdown }} |
 {{ end -}}
 {{ end -}}
@@ -50,12 +61,27 @@ No changes.
 {{ else }}
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-{{ for attr in change.attribute_changes -}}
+{{ for attr in small_attrs -}}
 | `{{ attr.name | escape_markdown }}` | {{ if attr.before }}{{ attr.before | escape_markdown }}{{ else }}-{{ end }} | {{ if attr.after }}{{ attr.after | escape_markdown }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
 
 </details>
+{{ end }}
+
+{{ if large_attrs.size > 0 }}
+<details>
+<summary>{{ large_attributes_summary(large_attrs) }}</summary>
+
+{{ for attr in large_attrs }}
+##### `{{ attr.name | escape_markdown }}`
+
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
+
+{{ end }}
+
+</details>
+{{ end }}
 {{ end }}
 {{ end }}
 

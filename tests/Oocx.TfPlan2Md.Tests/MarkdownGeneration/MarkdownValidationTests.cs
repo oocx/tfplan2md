@@ -40,8 +40,8 @@ public class MarkdownValidationTests
     }
 
     /// <summary>
-    /// Verifies that newlines inside table cells are replaced with <br/> so tables remain valid.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Verifies that values with newlines are moved to large attributes section.
+    /// Related feature: docs/features/large-attribute-value-display/specification.md
     /// </summary>
     [Fact]
     public void Render_BreakingPlan_ReplacesNewlinesInTableCells()
@@ -53,8 +53,8 @@ public class MarkdownValidationTests
 
         var markdown = _renderer.Render(model);
 
-        markdown.Should().Contain("line1<br/>line2", "because newlines must be converted to <br/> inside tables");
-        markdown.Should().NotContain("line1\nline2", "because raw newlines split table rows");
+        markdown.Should().Contain("Large values:", "because values with newlines are classified as large");
+        markdown.Should().Contain("tags.note", "because the note attribute has newlines");
     }
 
     /// <summary>

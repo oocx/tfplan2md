@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ public static class ScribanHelpers
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
+        scriptObject.Import("large_attributes_summary", new Func<object?, string>(LargeAttributesSummary));
         scriptObject.Import("is_large_value", new Func<string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
@@ -119,14 +121,49 @@ public static class ScribanHelpers
         };
     }
 
+    /// <summary>
+    /// Builds the summary string for a set of large attributes.
+    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// </summary>
+    /// <param name="attributes">Collection of attribute change objects (ScriptArray) with name/before/after.</param>
+    /// <returns>Summary string like "Large values: policy (3 lines, 2 changed)" or empty when none.</returns>
+    public static string LargeAttributesSummary(object? attributes)
+    {
+        var attrList = ToAttributeList(attributes);
+        if (attrList.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var parts = new List<string>();
+        foreach (var attr in attrList)
+        {
+            var before = attr.Before ?? string.Empty;
+            var after = attr.After ?? string.Empty;
+
+            var totalLines = CountTotalLines(before, after);
+            var changedLines = CountChangedLines(before, after);
+
+            var totalLabel = totalLines == 1 ? "line" : "lines";
+            var changedLabel = changedLines == 1 ? "changed" : "changed"; // label text stays the same, but kept for clarity
+            parts.Add($"{attr.Name} ({totalLines} {totalLabel}, {changedLines} {changedLabel})");
+        }
+
+        return $"Large values: {string.Join(", ", parts)}";
+    }
+
     private static LargeValueFormat ParseLargeValueFormat(string format)
     {
         var normalized = (format ?? string.Empty).Trim().ToLowerInvariant();
+        var compact = normalized
+            .Replace("-", string.Empty, StringComparison.Ordinal)
+            .Replace("_", string.Empty, StringComparison.Ordinal);
 
-        return normalized switch
+        return compact switch
         {
-            "inline-diff" => LargeValueFormat.InlineDiff,
-            "standard-diff" => LargeValueFormat.StandardDiff,
+            "" => LargeValueFormat.InlineDiff,
+            "inlinediff" => LargeValueFormat.InlineDiff,
+            "standarddiff" => LargeValueFormat.StandardDiff,
             _ => throw new ScribanHelperException("Unsupported large value format. Use 'inline-diff' or 'standard-diff'.")
         };
     }
@@ -229,6 +266,27 @@ public static class ScribanHelpers
 
         sb.Append("</code></pre>");
         return sb.ToString();
+    }
+
+    private static int CountTotalLines(string before, string after)
+    {
+        var beforeLines = SplitLines(before);
+        var afterLines = SplitLines(after);
+        var set = new HashSet<string>(beforeLines, StringComparer.Ordinal);
+        foreach (var line in afterLines)
+        {
+            set.Add(line);
+        }
+
+        return set.Count;
+    }
+
+    private static int CountChangedLines(string before, string after)
+    {
+        var beforeLines = SplitLines(before);
+        var afterLines = SplitLines(after);
+        var diff = BuildLineDiff(beforeLines, afterLines);
+        return diff.Count(d => d.Kind != DiffKind.Unchanged);
     }
 
     private static void AppendStyledLine(StringBuilder sb, string line, bool removed)
@@ -334,6 +392,54 @@ public static class ScribanHelpers
         }
 
         return result;
+    }
+
+    private static List<AttributeChangeInfo> ToAttributeList(object? attributes)
+    {
+        var list = new List<AttributeChangeInfo>();
+
+        if (attributes is null)
+        {
+            return list;
+        }
+
+        if (attributes is IEnumerable enumerable && attributes is not string)
+        {
+            foreach (var item in enumerable)
+            {
+                if (item is null)
+                {
+                    continue;
+                }
+
+                list.Add(ToAttributeChangeInfo(item));
+            }
+        }
+
+        return list;
+    }
+
+    private static AttributeChangeInfo ToAttributeChangeInfo(object item)
+    {
+        if (item is ScriptObject obj)
+        {
+            var name = obj.TryGetValue("name", out var n) ? n?.ToString() ?? string.Empty : string.Empty;
+            var before = obj.TryGetValue("before", out var b) ? b?.ToString() : null;
+            var after = obj.TryGetValue("after", out var a) ? a?.ToString() : null;
+
+            return new AttributeChangeInfo(name, before, after);
+        }
+
+        var type = item.GetType();
+        var nameProp = type.GetProperty("Name");
+        var beforeProp = type.GetProperty("Before");
+        var afterProp = type.GetProperty("After");
+
+        var resolvedName = nameProp?.GetValue(item)?.ToString() ?? string.Empty;
+        var resolvedBefore = beforeProp?.GetValue(item)?.ToString();
+        var resolvedAfter = afterProp?.GetValue(item)?.ToString();
+
+        return new AttributeChangeInfo(resolvedName, resolvedBefore, resolvedAfter);
     }
 
     private static List<LcsPair> ComputeLcsPairs(string[] before, string[] after)
@@ -451,6 +557,8 @@ public static class ScribanHelpers
     }
 
     private readonly record struct DiffEntry(DiffKind Kind, string Text);
+
+    private readonly record struct AttributeChangeInfo(string Name, string? Before, string? After);
 
     private enum DiffKind
     {

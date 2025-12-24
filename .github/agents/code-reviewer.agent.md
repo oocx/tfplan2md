@@ -36,6 +36,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Check that CHANGELOG.md was NOT modified
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
 - When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
+- For features affecting rendering, create and manage User Acceptance PRs in GitHub and Azure DevOps
 
 ### ⚠️ Ask First
 - Suggesting significant architectural changes
@@ -119,7 +120,7 @@ Before starting, familiarize yourself with:
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
-- [ ] For user-facing features: Acceptance notebooks execute successfully (maintainer will review output for feedback)
+- [ ] For rendering changes: User Acceptance PRs created and approved by Maintainer (GitHub and Azure DevOps)
 
 ## Review Approach
 
@@ -142,15 +143,39 @@ Before starting, familiarize yourself with:
    docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
    ```
 
-   For user-facing features, verify acceptance notebooks execute:
-   ```bash
-   # List acceptance notebooks
-   find docs/features/*/acceptance -name "*.dib" 2>/dev/null
+   **User Acceptance Testing (UAT)**:
+   If the feature changes markdown rendering (e.g., snapshots or examples are modified):
    
-   # If notebooks exist, manually open each in VS Code and run all cells
-   # Purpose: Verify commands execute without error
-   # Note: Maintainer will review OUTPUT for rendering quality and feedback
-   ```
+   1. **GitHub UAT**:
+      - Create a test PR in `oocx/tfplan2md` (this repo) with the changes:
+        ```bash
+        gh pr create --title "UAT: <Feature Name>" --body-file artifacts/comprehensive-demo.md --base main --head <current-branch>
+        ```
+      - **Action**: Output the PR link and ask the Maintainer to review it.
+      - **WAIT** for the Maintainer to respond in the chat. Do NOT simulate feedback or proceed without user input.
+      - **When Maintainer asks to check feedback**:
+        - Poll for comments: `PAGER=cat gh pr view <pr-number> --comments`
+        - If Maintainer requests changes (in comments): Fix issues, push changes, and ask for review again.
+        - If Maintainer approves (in comments): Close the PR: `gh pr close <pr-number> --delete-branch`.
+      
+   2. **Azure DevOps UAT**:
+      - Check authentication: `az account show`
+      - **If not authenticated**: STOP and ask Maintainer to run `az login` in the terminal. Wait for confirmation before proceeding.
+      - Push branch to Azure DevOps test repo:
+        ```bash
+        git remote add azdo https://oocx@dev.azure.com/oocx/test/_git/test || true
+        git push azdo HEAD:<current-branch>
+        ```
+      - Create a test PR in `https://dev.azure.com/oocx`, Project "test", Repository "test":
+        ```bash
+        az repos pr create --organization https://dev.azure.com/oocx --project test --repository test --source-branch <current-branch> --target-branch main --title "UAT: <Feature Name>" --description "$(cat artifacts/comprehensive-demo.md)"
+        ```
+      - **Action**: Output the PR link and ask the Maintainer to review it.
+      - **WAIT** for the Maintainer to respond in the chat.
+      - **When Maintainer asks to check feedback**:
+        - Poll for comments: `az repos pr thread list --organization https://dev.azure.com/oocx --project test --repository test --pull-request-id <pr-id>`.
+        - If Maintainer requests changes: Fix issues, push changes, and ask for review again.
+        - If Maintainer approves: Close/abandon the PR: `az repos pr update --id <pr-id> --status abandoned --organization https://dev.azure.com/oocx`.
 
 3. **Read the code** - Review all changed files against the checklist.
 

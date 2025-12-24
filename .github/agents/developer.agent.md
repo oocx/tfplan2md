@@ -29,7 +29,6 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Verify acceptance criteria are satisfied before moving to next task
 - Commit after EACH task with descriptive conventional commit message
 - Update task status in tasks.md after each task completion
-- For user-facing features (CLI changes, rendering changes), create acceptance notebooks for Maintainer review
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
@@ -188,50 +187,6 @@ Follow the project's coding conventions strictly:
       ```bash
       git add artifacts/comprehensive-demo.md examples/comprehensive-demo/plan.json
       git commit -m "docs: update comprehensive demo for <feature-name>"
-      ```
-
-   e. **Create user acceptance notebooks** (for user-facing features only):
-      - Location: `docs/features/<feature-name>/acceptance/`
-      - One `.dib` (Polyglot Notebook) file per acceptance scenario from test plan
-      - Purpose: Demonstrate feature for Maintainer review to catch rendering bugs and validate usability
-      
-      **Notebook Structure**:
-      ```markdown
-      # <Scenario Name>
-      
-      ## User Goal
-      [What the user wants to accomplish]
-      
-      ## Setup
-      [Any preparation steps]
-      
-      ## Execute Feature
-      ```
-      
-      ```powershell
-      # Run the actual command
-      dotnet run --project ../../src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- <args>
-      ```
-      
-      ```markdown
-      ## Expected Output
-      [Description of what Maintainer should see]
-      
-      ## Validation
-      - [ ] Output renders correctly
-      - [ ] Feature solves stated problem
-      - [ ] No rendering issues
-      ```
-      
-      **Example**:
-      - File: `docs/features/built-in-templates/acceptance/view-templates.dib`
-      - Demonstrates: Running `tfplan2md --list-templates` and examining output
-      - Shows: Actual command execution and resulting markdown
-      
-      **Commit notebooks**:
-      ```bash
-      git add docs/features/<feature-name>/acceptance/*.dib
-      git commit -m "test: add acceptance notebooks for <feature-name>"
       ```
 
 6. **Ask one question at a time** - If clarification is needed, ask focused questions.

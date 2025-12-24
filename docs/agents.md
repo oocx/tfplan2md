@@ -63,9 +63,8 @@ flowchart TB
 	%% Row 9: Developer
 	DEV["<b>Developer</b>"]
 
-	%% Row 10: Code & Notebooks
+	%% Row 10: Code & Tests
 	CODE["💻 Code & Tests"]
-	AN["🧪 Acceptance Notebooks"]
 
 	%% Row 11: Tech Writer
 	TW["<b>Technical Writer</b>"]
@@ -78,6 +77,7 @@ flowchart TB
 
 	%% Row 14: Review Report
 	CRR["✅ Code Review Report"]
+	UAT["🧪 User Acceptance PRs"]
 
 	%% Row 15: Release Manager
 	RM["<b>Release Manager</b>"]
@@ -106,11 +106,12 @@ flowchart TB
 	TP_AGENT --> US --> DEV
 
 	DEV --> CODE --> TW
-	DEV --> AN --> CR
+	DEV --> CODE --> CR
 
 	TW --> DOCS --> CR
 
 	CR --> CRR
+	CR --> UAT
 	CRR -. "Rework" .-> DEV
 	CRR -- "Approved" --> RM
 
@@ -124,7 +125,7 @@ flowchart TB
 	class HUMAN human;
 	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,RM,RETRO_AGENT agent;
 	class WE metaagent;
-	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,AN,RETRO artifact;
+	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,UAT,RETRO artifact;
 ```
 
 _Agents produce and consume artifacts. Arrows show artifact creation and consumption. Communication for feedback/questions between agents (regarding consumed artifacts) is always possible, but intentionally omitted from the diagram for clarity._
@@ -136,9 +137,9 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 3. **Architect** designs the solution and documents decisions.
 4. **Quality Engineer** defines the test plan and cases (consumes architecture). For user-facing features, defines acceptance scenarios for manual review.
 5. **Task Planner** creates and prioritizes actionable work items (consumes test plan).
-6. **Developer** implements features/fixes and tests. For user-facing features, creates acceptance notebooks for Maintainer review.
+6. **Developer** implements features/fixes and tests.
 7. **Technical Writer** updates all relevant documentation (markdown files in the repository).
-8. **Code Reviewer** reviews and approves the work. Verifies acceptance notebooks execute successfully (Maintainer reviews output separately).
+8. **Code Reviewer** reviews and approves the work. For user-facing features, creates User Acceptance PRs for Maintainer review.
 9. **Release Manager** prepares, coordinates, and executes the release.
 
 **Meta-Agent:**
@@ -164,7 +165,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ### 4. Quality Engineer
 - **Goal:** Define how the feature will be tested and validated.
-- **Deliverables:** Test plan, test cases, quality criteria. For user-facing features, user acceptance scenarios for manual review.
+- **Deliverables:** Test plan, test cases, quality criteria. For user-facing features, user acceptance scenarios for manual review via PRs.
 - **Definition of Done:** Test plan covers all acceptance criteria. User-facing features have clear acceptance scenarios defined.
 
 ### 5. Task Planner
@@ -174,8 +175,8 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ### 6. Developer
 - **Goal:** Implement features and tests as specified.
-- **Deliverables:** Code, tests, passing CI. For user-facing features, acceptance notebooks for Maintainer review.
-- **Definition of Done:** Code and tests meet requirements and pass all checks. User-facing features have interactive acceptance notebooks.
+- **Deliverables:** Code, tests, passing CI.
+- **Definition of Done:** Code and tests meet requirements and pass all checks.
 
 ### 7. Technical Writer
 - **Goal:** Update and maintain all relevant documentation.
@@ -184,8 +185,8 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ### 8. Code Reviewer
 - **Goal:** Ensure code quality and process adherence.
-- **Deliverables:** Code review feedback or approval.
-- **Definition of Done:** Code is reviewed and approved or sent back for rework.
+- **Deliverables:** Code review feedback or approval. For user-facing features, creates and manages User Acceptance PRs in GitHub and Azure DevOps.
+- **Definition of Done:** Code is reviewed and approved or sent back for rework. User Acceptance PRs are verified and closed.
 
 ### 9. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
@@ -216,7 +217,7 @@ This section describes the purpose and format of each artifact produced and cons
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/<feature-name>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress. | Markdown document with: Title, Description, Acceptance Criteria checklist, Priority. | `docs/features/<feature-name>/tasks.md` |
 | **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/<feature-name>/test-plan.md` |
-| **User Acceptance Notebooks** | Interactive demonstrations of user-facing features for manual Maintainer review. Used to catch rendering bugs, validate real-world usage, and gather feedback before merge. | Polyglot Notebook (.dib) files with PowerShell code cells executing actual CLI commands and markdown narratives explaining expected behavior and validation criteria. | `docs/features/<feature-name>/acceptance/*.dib` |
+| **User Acceptance PRs** | Test Pull Requests created in real environments (GitHub, Azure DevOps) to verify rendering quality and integration. Used to catch rendering bugs and validate real-world usage before merge. | Real Pull Requests in `oocx/tfplan2md` (GitHub) and `oocx/test` (Azure DevOps). | GitHub and Azure DevOps |
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |
@@ -254,7 +255,7 @@ Each agent hands off to the next by producing a specific deliverable. The workfl
 | Task Planner            | Developer               | User Stories / Tasks with Acceptance Criteria        |
 | Developer               | Technical Writer        | Code & Tests                                         |
 | Technical Writer        | Code Reviewer           | Updated Documentation                                |
-| Code Reviewer           | Release Manager (approved) <br/> Developer (rework needed) | Code Review Report            |
+| Code Reviewer           | Release Manager (approved) <br/> Developer (rework needed) | Code Review Report & User Acceptance PRs             |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
 | Release Manager         | Retrospective           | Deployment Complete                                  |
 | Retrospective           | Workflow Engineer       | Retrospective Report with Action Items               |

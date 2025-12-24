@@ -24,7 +24,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
 - Ensure all automated tests are fully automated (no manual steps)
-- For user-facing features (CLI changes, rendering changes), define user acceptance scenarios for Maintainer review
+- For user-facing features (CLI changes, rendering changes), define user acceptance scenarios for Maintainer review via PRs
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
@@ -105,23 +105,23 @@ Brief summary of what is being tested and reference to the specification.
 
 ## User Acceptance Scenarios
 
-> **Purpose**: For user-facing features, define scenarios for manual Maintainer review using interactive notebooks. These help catch rendering bugs, validate real-world usage, and gather feedback before merge.
+> **Purpose**: For user-facing features (especially rendering changes), define scenarios for manual Maintainer review via Test PRs in GitHub and Azure DevOps. These help catch rendering bugs and validate real-world usage before merge.
 
 ### Scenario 1: <Descriptive Name>
 
 **User Goal**: What the user wants to accomplish (e.g., "View built-in template documentation")
 
-**Steps**:
-1. Setup: `<command to prepare environment>`
-2. Execute: `<actual feature command>`
-3. Inspect: `<what to examine in output>`
+**Test PR Context**:
+- **GitHub**: Verify rendering in GitHub PR comments/description.
+- **Azure DevOps**: Verify rendering in Azure DevOps PR description.
 
 **Expected Output**:
-- Describe what the Maintainer should see
+- Describe what the Maintainer should see in the PR
 - Key visual elements, format, content
 
 **Success Criteria**:
-- [ ] Output renders correctly in Markdown
+- [ ] Output renders correctly in GitHub Markdown
+- [ ] Output renders correctly in Azure DevOps Markdown
 - [ ] Information is accurate and complete
 - [ ] Feature solves the stated user problem
 

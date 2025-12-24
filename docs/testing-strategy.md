@@ -14,6 +14,44 @@ Test individual components in isolation to verify correct behavior of parsing, m
 
 Test JSON parsing and markdown generation end-to-end. As the application is distributed via Docker, Docker-based integration tests verify the final CLI behavior in a containerized environment.
 
+### User Acceptance Testing (UAT)
+
+For features that affect markdown rendering (e.g., changes to templates, snapshots, or examples), we perform manual verification in real environments to ensure compatibility with different markdown renderers.
+
+**Workflow:**
+1. **Trigger**: Feature changes rendering output.
+2. **GitHub UAT**:
+   - Code Reviewer agent creates a test PR in `oocx/tfplan2md`.
+   - Maintainer reviews the PR comment/description rendering.
+   - **Feedback Loop**: Maintainer provides feedback via PR comments. Agent polls for new comments to identify issues.
+   - Feedback is addressed until approved.
+3. **Azure DevOps UAT**:
+   - Code Reviewer agent creates a test PR in Azure DevOps (`oocx` organization, `test` project).
+   - Maintainer reviews the PR description rendering.
+   - **Feedback Loop**: Maintainer provides feedback via PR comments. Agent polls for new comments to identify issues.
+   - Feedback is addressed until approved.
+
+**Technical Instructions:**
+
+**GitHub:**
+- **Create PR**: `gh pr create --title "UAT: <Feature Name>" --body-file artifacts/comprehensive-demo.md --base main --head <feature-branch>`
+- **Poll Comments**: `PAGER=cat gh pr view <pr-number> --comments` (Always use PAGER=cat to avoid blocking)
+- **Update PR**: Push changes to the feature branch.
+
+**Azure DevOps:**
+- **Authenticate**: Check `az account show`. If failed, ask user to run `az login`.
+- **Push Branch**:
+  ```bash
+  git remote add azdo https://oocx@dev.azure.com/oocx/test/_git/test || true
+  git push azdo HEAD:<feature-branch>
+  ```
+- **Create PR**:
+  ```bash
+  az repos pr create --organization https://dev.azure.com/oocx --project test --repository test --source-branch <feature-branch> --target-branch main --title "UAT: <Feature Name>" --description "$(cat artifacts/comprehensive-demo.md)"
+  ```
+- **Poll Comments**: `az repos pr thread list --organization https://dev.azure.com/oocx --project test --repository test --pull-request-id <pr-id>`
+- **Update PR**: Push changes to the feature branch.
+
 ## Test Infrastructure
 
 - **Framework**: xUnit 2.9.3

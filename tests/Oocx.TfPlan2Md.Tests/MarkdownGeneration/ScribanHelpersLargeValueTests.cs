@@ -62,4 +62,36 @@ public class ScribanHelpersLargeValueTests
         result.Should().Contain("+ new");
         result.Should().EndWith("```");
     }
+
+    [Fact]
+    public void FormatLargeValue_InlineDiff_WithCommonLines_RendersPreWithStyles()
+    {
+        var before = "common\nold";
+        var after = "common\nnew";
+
+        var result = ScribanHelpers.FormatLargeValue(before, after, "inline-diff");
+
+        result.Should().StartWith("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
+        result.Should().Contain("common\n");
+        result.Should().Contain("background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;");
+        result.Should().Contain("background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;");
+        result.Should().Contain("background-color: #ffc0c0;");
+        result.Should().Contain("background-color: #acf2bd;");
+        result.Should().EndWith("</code></pre>");
+    }
+
+    [Fact]
+    public void FormatLargeValue_InlineDiff_NoCommonLines_ShowsBeforeAfterBlocks()
+    {
+        var before = "foo";
+        var after = "bar";
+
+        var result = ScribanHelpers.FormatLargeValue(before, after, "inline-diff");
+
+        result.Should().Contain("**Before:**");
+        result.Should().Contain("**After:**");
+        result.Should().Contain("```\nfoo\n```");
+        result.Should().Contain("```\nbar\n```");
+        result.Should().NotContain("<pre");
+    }
 }

@@ -20,7 +20,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 - **CRITICAL**: Before making any changes, ensure you're on an up-to-date feature branch, NOT main
 - Check current branch: `git branch --show-current` - if on main, STOP and create feature branch first
 - Update `docs/agents.md` whenever agents or workflow change
-- Use valid VS Code Copilot tool IDs (`readFile`, `listDirectory`, `editFile`, etc.)
+- Use valid VS Code Copilot tool IDs (lookup from available tools)
 - Verify handoff agent names exist before committing
 - Create feature branches following `workflow/<description>` naming convention
 - Use conventional commit messages (`feat:`, `refactor:`, `fix:`, `docs:`)
@@ -40,6 +40,13 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 - Skip documentation updates
 - Change agent core responsibilities without approval
 - Add handoffs to non-existent agents
+
+## VS Code Copilot tool names
+
+- When editing `.github/agents/*.agent.md`, you must always lookup tool names and descriptions from the list of tools available to you in the current session.
+- Do not rely on hardcoded lists, examples, or assumptions about tool names (e.g. `read_file` vs `readFile`).
+- You have been assigned all available tools, so you can inspect your own tool definitions to find the correct IDs (e.g., `readFile`, `listDirectory`, `edit`, `runInTerminal`).
+- Always use the exact tool IDs found in your available tools list when configuring agents.
 
 ## Context to Read
 

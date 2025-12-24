@@ -95,29 +95,31 @@ public static class ScribanHelpers
     /// <returns>Markdown string containing the formatted value.</returns>
     public static string FormatLargeValue(string? before, string? after, string format)
     {
+        var normalizedBefore = string.IsNullOrWhiteSpace(before) ? null : before;
+        var normalizedAfter = string.IsNullOrWhiteSpace(after) ? null : after;
         var parsedFormat = ParseLargeValueFormat(format);
 
-        if (after is null && before is null)
+        if (normalizedAfter is null && normalizedBefore is null)
         {
             return string.Empty;
         }
 
-        if (after is null)
+        if (normalizedAfter is null)
         {
             // Delete
-            return CodeFence(before ?? string.Empty);
+            return CodeFence(normalizedBefore ?? string.Empty);
         }
 
-        if (before is null)
+        if (normalizedBefore is null)
         {
             // Create
-            return CodeFence(after);
+            return CodeFence(normalizedAfter);
         }
 
         return parsedFormat switch
         {
-            LargeValueFormat.StandardDiff => BuildStandardDiff(before, after),
-            _ => BuildInlineDiff(before, after)
+            LargeValueFormat.StandardDiff => BuildStandardDiff(normalizedBefore, normalizedAfter),
+            _ => BuildInlineDiff(normalizedBefore, normalizedAfter)
         };
     }
 

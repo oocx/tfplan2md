@@ -252,17 +252,18 @@ public class MarkdownInvariantTests
     }
 
     /// <summary>
-    /// INVARIANT: Newlines in values must be converted to &lt;br/&gt;.
+    /// INVARIANT: Newlines in values are moved to large attributes section with code fences.
+    /// Short values with newlines are treated as "large" per the large-attribute-value-display feature.
     /// </summary>
     [Fact]
     public void Invariant_NewlinesConvertedToBr_BreakingPlan()
     {
         var markdown = RenderPlan("TestData/markdown-breaking-plan.json");
 
-        // The test data contains "line1\nline2"
-        // After conversion, it should be "line1<br/>line2"
-        markdown.Should().Contain("line1<br/>line2",
-            "because newlines must be converted to <br/> in table cells");
+        // The test data contains "line1\nline2" which is classified as large due to newline
+        // It should appear in a large attributes section, not in a table with <br/>
+        markdown.Should().Contain("Large values:",
+            "because values with newlines are moved to large attributes section");
     }
 
     #endregion

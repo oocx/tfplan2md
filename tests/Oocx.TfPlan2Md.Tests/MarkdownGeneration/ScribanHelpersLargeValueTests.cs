@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -93,5 +94,29 @@ public class ScribanHelpersLargeValueTests
         result.Should().Contain("```\nfoo\n```");
         result.Should().Contain("```\nbar\n```");
         result.Should().NotContain("<pre");
+    }
+
+    [Fact]
+    public void LargeAttributesSummary_ComputesCounts()
+    {
+        var attrs = new ScriptArray
+        {
+            new ScriptObject
+            {
+                ["name"] = "policy",
+                ["before"] = "a\nb",
+                ["after"] = "a\nc"
+            },
+            new ScriptObject
+            {
+                ["name"] = "data",
+                ["before"] = "x",
+                ["after"] = "x"
+            }
+        };
+
+        var summary = ScribanHelpers.LargeAttributesSummary(attrs);
+
+        summary.Should().Be("Large values: policy (3 lines, 2 changed), data (1 line, 0 changed)");
     }
 }

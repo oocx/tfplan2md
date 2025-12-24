@@ -233,9 +233,25 @@
 
 | Attribute | Value |
 | ----------- | ------- |
-| `scope` | Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscription 12345678-1234-1234-1234-123456789012 |
 | `role_definition_id` | Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1) |
 | `principal_id` | DevOps Team (Group) [00000000-0000-0000-0000-000000000002] |
+
+</details>
+
+<details>
+<summary>Large values: scope (2 lines, 2 changed)</summary>
+
+##### `scope`
+
+**Before:**
+```
+
+```
+
+**After:**
+```
+Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscription 12345678-1234-1234-1234-123456789012
+```
 
 </details>
 
@@ -284,9 +300,19 @@
 | Attribute | Value |
 | ----------- | ------- |
 | `content_type` | password |
-| `key_vault_id` | /subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md |
 | `name` | db-password |
 | `value` | (sensitive) |
+
+</details>
+
+<details>
+<summary>Large values: key_vault_id (2 lines, 2 changed)</summary>
+
+##### `key_vault_id`
+
+```
+/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md
+```
 
 </details>
 
@@ -330,6 +356,7 @@
 | `principal_id` | 00000000-0000-0000-0000-000000000005 [00000000-0000-0000-0000-000000000005] |
 
 </details>
+---
 
 ### Module: `module.network.module.monitoring`
 

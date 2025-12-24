@@ -42,12 +42,28 @@ Allow DevOps team to read logs from the storage account
 
 | Attribute | Value |
 | ----------- | ------- |
-| `scope` | Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one |
 | `role_definition_id` | Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1) |
 | `principal_id` | 22222222-2222-2222-2222-222222222222 (Group) [22222222-2222-2222-2222-222222222222] |
 | `principal_type` | Group |
 | `description` | Allow DevOps team to read logs from the storage account |
 | `name` | ra-storage-reader |
+
+</details>
+
+<details>
+<summary>Large values: scope (2 lines, 2 changed)</summary>
+
+##### `scope`
+
+**Before:**
+```
+
+```
+
+**After:**
+```
+Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one
+```
 
 </details>
 
@@ -121,3 +137,4 @@ Legacy access
 | `name` | unmapped |
 
 </details>
+---

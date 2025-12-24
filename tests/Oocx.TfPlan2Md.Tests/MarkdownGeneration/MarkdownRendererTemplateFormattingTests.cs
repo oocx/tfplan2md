@@ -77,10 +77,10 @@ public class MarkdownRendererTemplateFormattingTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        var section = markdown.Split("#### ", StringSplitOptions.RemoveEmptyEntries).First(s => s.Contains("azurerm_example.large"));
-        section.Should().Contain("| `name` | vm-app-01 | vm-app-02 |");
-        section.Should().NotContain("custom_data | line1");
-        section.Should().Contain("<summary>Large values: custom_data (3 lines, 2 changed)</summary>");
-        section.Should().Contain("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
+        markdown.Should().Contain("| `name` | vm-app-01 | vm-app-02 |", "because small attributes should be in the table");
+        markdown.Should().NotContain("custom_data | line1", "because large attributes should not be in the main table");
+        markdown.Should().Contain("<summary>Large values: custom_data (3 lines, 2 changed)</summary>", "because large attributes should have a summary");
+        markdown.Should().Contain("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", "because inline-diff uses styled HTML pre blocks");
+        markdown.Should().Contain("##### `custom_data`", "because large attribute headings should be level 5");
     }
 }

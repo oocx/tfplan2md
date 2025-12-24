@@ -35,7 +35,7 @@ public class RoleAssignmentTemplateTests
 
         section.Should().Contain("**Summary:** `DevOps Team` (Group) → `Storage Blob Data Reader` on Storage Account `sttfplan2mdlogs-with-extended-name-1234567890`");
         section.Should().Contain("Allow DevOps team to read logs from the storage account");
-        section.Should().Contain("| `scope` | Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one |");
+        section.Should().Contain("<summary>Large values: scope (2 lines, 2 changed)</summary>", "because scope is over 100 characters and classified as large");
     }
 
     [Fact]

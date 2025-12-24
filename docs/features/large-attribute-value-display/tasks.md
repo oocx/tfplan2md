@@ -115,11 +115,13 @@ Enhance the `inline-diff` with character-level highlighting for changed lines.
 **Description:**
 Implement the logic to generate the summary string for the collapsible section.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] New helper `large_attributes_summary(attributes_list, before_obj, after_obj)` in `ScribanHelpers.cs`.
-- [ ] Correctly calculates total lines and changed lines for each attribute.
-- [ ] Format matches: `Large values: attr1 (X lines, Y changed), ...`
-- [ ] Unit test (TC-09) passes.
+- [x] New helper `large_attributes_summary(attributes_list)` in `ScribanHelpers.cs`.
+- [x] Correctly calculates total lines and changed lines for each attribute.
+- [x] Format matches: `Large values: attr1 (X lines, Y changed), ...`
+- [x] Unit test (TC-09) passes.
 
 **Dependencies:** Task 2
 
@@ -132,12 +134,17 @@ Implement the logic to generate the summary string for the collapsible section.
 **Description:**
 Update the `default.sbn` template to use the new helpers and implement the hybrid layout.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] `default.sbn` separates attributes into "small" and "large" groups.
-- [ ] Small attributes are rendered in the existing table.
-- [ ] Large attributes are rendered in a `<details>` section below the table.
-- [ ] The `<summary>` tag uses the output from `large_attributes_summary`.
-- [ ] Integration test (TC-10) passes.
+- [x] `default.sbn` separates attributes into "small" and "large" groups.
+- [x] Small attributes are rendered in the existing table.
+- [x] Large attributes are rendered in a `<details>` section below the table.
+- [x] The `<summary>` tag uses the output from `large_attributes_summary`.
+- [x] Integration test (TC-10) passes.
+- [x] Heading hierarchy fixed (##### for attribute names under #### resources).
+- [x] Resource-specific templates updated (role_assignment).
+- [x] All 286 non-Docker tests passing.
 
 **Dependencies:** Task 3, Task 4, Task 6
 

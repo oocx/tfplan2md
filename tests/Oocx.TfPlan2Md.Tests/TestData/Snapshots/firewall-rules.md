@@ -49,3 +49,4 @@
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 | allow-ftp | TCP | * | 10.0.5.0/24 | 21 | Deprecated FTP access - security risk |
+---

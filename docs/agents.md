@@ -29,83 +29,102 @@ flowchart TB
 	classDef metaagent fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff,rx:8,ry:8;
 	classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
 
-	%% Human starting point (stadium shape for actor-like appearance)
+	%% Nodes
 	HUMAN(["👤 <b>Maintainer</b><br/>(Human)"])
 
-	%% Agents and artifacts in vertical order
-	IA_AGENT["<b>Issue Analyst</b>"]
-	IA["🔍 Issue Analysis"]
+	%% Row 1: Entry Agents
 	RE["<b>Requirements Engineer</b>"]
+	IA_AGENT["<b>Issue Analyst</b>"]
+	WE["<b>Workflow Engineer</b>"]
+
+	%% Row 2: Artifacts from Entry
 	FS["📄 Feature Specification"]
+	IA["🔍 Issue Analysis"]
+	WD["⚙️ Workflow Documentation"]
+
+	%% Row 3: Planning Agents
 	AR["<b>Architect</b>"]
+	
+	%% Row 4: Planning Artifacts
 	ADR["📐 Architecture Decision Records"]
-	TP_AGENT["<b>Task Planner</b>"]
-	US["📋 User Stories / Tasks"]
+
+	%% Row 5: Quality & Tasks
 	QE["<b>Quality Engineer</b>"]
+	
+	%% Row 6: Test Plan
 	TP["✓ Test Plan & Test Cases"]
+
+	%% Row 7: Task Planner
+	TP_AGENT["<b>Task Planner</b>"]
+
+	%% Row 8: User Stories
+	US["📋 User Stories / Tasks"]
+
+	%% Row 9: Developer
 	DEV["<b>Developer</b>"]
+
+	%% Row 10: Code & Notebooks
 	CODE["💻 Code & Tests"]
 	AN["🧪 Acceptance Notebooks"]
+
+	%% Row 11: Tech Writer
 	TW["<b>Technical Writer</b>"]
+
+	%% Row 12: Docs
 	DOCS["📚 Documentation"]
+
+	%% Row 13: Code Reviewer
 	CR["<b>Code Reviewer</b>"]
+
+	%% Row 14: Review Report
 	CRR["✅ Code Review Report"]
+
+	%% Row 15: Release Manager
 	RM["<b>Release Manager</b>"]
+
+	%% Row 16: Release Artifacts
 	REL["🚀 Release Notes"]
 	PR["🔀 Pull Request"]
 
-	%% Meta-agent (operates on the workflow itself)
-	WE["<b>Workflow Engineer</b>"]
-	WD["⚙️ Workflow Documentation"]
+	%% Row 17: Retrospective
+	RETRO_AGENT["<b>Retrospective</b>"]
 
-	%% Main vertical workflow with styled links
-	HUMAN == "Bug/Incident" ==> IA_AGENT
-	HUMAN == "Feature Request" ==> RE
-	HUMAN == "Workflow Improvement" ==> WE
-	IA_AGENT -- "Produces" --> IA
-	IA -- "Consumed by" --> DEV
-	RE -- "Produces" --> FS
-	FS -- "Consumed by" --> AR
-	AR -- "Produces" --> ADR
-	ADR -- "Consumed by" --> QE
-	QE -- "Produces" --> TP
-	TP -- "Consumed by" --> TP_AGENT
-	TP_AGENT -- "Produces" --> US
-	US -- "Consumed by" --> DEV
-	DEV -- "Produces" --> CODE
-	DEV -- "Produces" --> AN
-	CODE -- "Consumed by" --> TW
-	AN -- "Consumed by" --> CR
-	TW -- "Produces" --> DOCS
-	DOCS -- "Consumed by" --> CR
-	CR -- "Produces" --> CRR
-    CRR -- "Consumed by" --> DEV
-	CRR -- "Consumed by" --> RM
-	CODE -- "Consumed by" --> CR
-	TP -- "Consumed by" --> CR
-	ADR -- "Consumed by" --> DEV
-	CODE -- "Consumed by" --> RM
-	DOCS -- "Consumed by" --> RM
-	REL -- "Consumed by" --> RM
-	RM -- "Produces" --> REL
-	RM -- "Produces" --> PR
+	%% Row 18: Retro Report
+	RETRO["📝 Retrospective Report"]
 
-	%% Workflow Engineer operates on workflow artifacts
-	WE -- "Produces" --> WD
-	WE -. "Modifies" .-> RE
-	WE -. "Modifies" .-> AR
-	WE -. "Modifies" .-> TP_AGENT
-	WE -. "Modifies" .-> QE
-	WE -. "Modifies" .-> DEV
-	WE -. "Modifies" .-> TW
-	WE -. "Modifies" .-> CR
-	WE -. "Modifies" .-> RM
+	%% Connections - Main Flow
+	HUMAN ==> RE
+	HUMAN ==> IA_AGENT
+	HUMAN ==> WE
 
-	%% Apply styles
+	RE --> FS --> AR
+	IA_AGENT --> IA --> DEV
+	WE --> WD
+
+	AR --> ADR --> QE
+	QE --> TP --> TP_AGENT
+	TP_AGENT --> US --> DEV
+
+	DEV --> CODE --> TW
+	DEV --> AN --> CR
+
+	TW --> DOCS --> CR
+
+	CR --> CRR
+	CRR -. "Rework" .-> DEV
+	CRR -- "Approved" --> RM
+
+	RM --> REL
+	RM --> PR
+	RM --> RETRO_AGENT
+
+	RETRO_AGENT --> RETRO --> WE
+
+	%% Styling
 	class HUMAN human;
-	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,RM agent;
+	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,RM,RETRO_AGENT agent;
 	class WE metaagent;
-	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,AN artifact;
+	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,AN,RETRO artifact;
 ```
 
 _Agents produce and consume artifacts. Arrows show artifact creation and consumption. Communication for feedback/questions between agents (regarding consumed artifacts) is always possible, but intentionally omitted from the diagram for clarity._
@@ -173,7 +192,12 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Deliverables:** Pull request, release notes, versioning, deployment plan, and post-release checklist.
 - **Definition of Done:** PR is created and merged, release is published, documented, and verified.
 
-### 10. Workflow Engineer (Meta-Agent)
+### 10. Retrospective
+- **Goal:** Identify improvement opportunities for the development workflow.
+- **Deliverables:** Retrospective report with summary, successes, failures, and improvement opportunities.
+- **Definition of Done:** Report is generated and action items are identified.
+
+### 11. Workflow Engineer (Meta-Agent)
 - **Goal:** Analyze, improve, and maintain the agent-based workflow.
 - **Deliverables:** New or updated agent definitions, workflow documentation updates, PRs with workflow changes.
 - **Definition of Done:** Workflow changes are documented, committed, and PR is created.
@@ -198,6 +222,7 @@ This section describes the purpose and format of each artifact produced and cons
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |
 | **Pull Request** | Pull request created for merging the feature branch into main. Triggers CI/CD pipeline for validation and deployment. | GitHub Pull Request with title, description, and link to feature documentation. | GitHub repository |
 | **Release Notes** | Summary of changes, new features, bug fixes, and breaking changes for the release. | Markdown following conventional changelog format. Auto-generated by Versionize in CI. | `CHANGELOG.md` |
+| **Retrospective Report** | Summary of the development cycle, highlighting successes, failures, and improvement opportunities. | Markdown document with sections: Summary, What Went Well, What Didn't Go Well, Improvement Opportunities. | `docs/features/<feature-name>/retrospective.md` or `docs/issues/<issue-id>/retrospective.md` |
 | **Workflow Documentation** | Updated agent definitions and workflow documentation reflecting process improvements. | Agent markdown files and workflow docs. | `.github/agents/*.agent.md`, `docs/agents.md` |
 
 ---
@@ -231,6 +256,8 @@ Each agent hands off to the next by producing a specific deliverable. The workfl
 | Technical Writer        | Code Reviewer           | Updated Documentation                                |
 | Code Reviewer           | Release Manager (approved) <br/> Developer (rework needed) | Code Review Report            |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
+| Release Manager         | Retrospective           | Deployment Complete                                  |
+| Retrospective           | Workflow Engineer       | Retrospective Report with Action Items               |
 
 **Exception:** Code Reviewer has two possible handoffs depending on approval status. Release Manager may hand back to Developer if build/release fails.
 

@@ -62,9 +62,3 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 
 ## Tooling specific instructions
 - For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the `.github/gh-cli-instructions.md` file in the repository
-
-## VS Code Copilot tool names
-
-- When editing `.github/agents/*.agent.md`, use the official VS Code Copilot tool IDs (for example: `readFile`, `listDirectory`, `fileSearch`, `textSearch`, `fetch`, `githubRepo`, `runInTerminal`, `runTests`, `problems`, and tool sets like `search`, `edit`, `runCommands`).
-- Avoid snake_case or made-up tool IDs (for example: `read_file`, `list_dir`, `fetch_webpage`, `run_in_terminal`, `get_errors`). VS Code will silently ignore unknown tools in agent frontmatter.
-- To discover what tools are available in your current VS Code chat session, type `#` in the chat input and pick from the list.

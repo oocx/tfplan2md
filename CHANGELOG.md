@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.31.1"></a>
+## [0.31.1](https://github.com/oocx/tfplan2md/compare/v0.31.0...v0.31.1) (2025-12-24)
+
+### 🐛 Bug Fixes
+
+* update agent models — Documentation Author, Quality Engineer, Support Engineer, Code Reviewer ([3e7a552](https://github.com/oocx/tfplan2md/commit/3e7a552f31fc29bb4d30e9f2a1e98ecadfb64051))
+
+### ♻️ Refactoring
+
+* rename agents for clarity and consistency ([6b74f79](https://github.com/oocx/tfplan2md/commit/6b74f7917f0c07e17667c2e3cdc0fa44208bc2fa))
+
+### 📚 Documentation
+
+* add independent LiveBench mappings for AI model recommendations ([005380d](https://github.com/oocx/tfplan2md/commit/005380dbf01c21248938cfd1614286bb37fe09df))
+* update AI model reference and agent configurations ([8dbabf0](https://github.com/oocx/tfplan2md/commit/8dbabf0b2091b53de008d643ddf02d263f9b349a))
+* update remaining references to use new agent names ([d6baf4a](https://github.com/oocx/tfplan2md/commit/d6baf4a39c2fe3717b21b5f0940472a86068549a))
+
 <a name="0.31.0"></a>
 ## [0.31.0](https://github.com/oocx/tfplan2md/compare/v0.30.0...v0.31.0) (2025-12-23)
 

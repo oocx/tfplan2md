@@ -97,14 +97,14 @@ This reference is updated periodically with latest benchmark data.
    - Example: GPT-5.1 Codex Max leads in Coding (90.80) but Claude Sonnet 4.5 is better for Language (76.00)
 
 2. **Claude Sonnet 4.5 has poor Instruction Following** (score: 23.52)
-   - Unsuitable for agents that follow templates (Product Owner, Quality Engineer)
+   - Unsuitable for agents that follow templates (Task Planner, Quality Engineer)
    - Use Gemini models instead for structured output (scores: 65-75)
 
 3. **Gemini 3 Flash offers best value for many tasks**
    - 0.33x premium multiplier (cost-effective)
    - Strong Instruction Following (74.86)
    - Good Language performance (84.56)
-   - Ideal for: Product Owner, Release Manager, high-frequency agents
+   - Ideal for: Task Planner, Release Manager, high-frequency agents
 
 4. **GPT-5.1 Codex Max is the coding leader**
    - Coding score: 90.80 (#1)

@@ -141,7 +141,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | Claude 4.5 Opus Medium | N/A (benchmark-only variant) | 28.11 | Poor |
 | Claude Sonnet 4.5 | Claude Sonnet 4.5 | 23.52 | **Very poor** |
 
-**Critical Finding**: Claude Sonnet 4.5 (non-thinking) has very poor Instruction Following performance (23.52), making it unsuitable for agents that need to follow templates or structured formats strictly (Product Owner, Quality Engineer).
+**Critical Finding**: Claude Sonnet 4.5 (non-thinking) has very poor Instruction Following performance (23.52), making it unsuitable for agents that need to follow templates or structured formats strictly (Task Planner, Quality Engineer).
 
 ## Model Selection Guidelines
 
@@ -149,13 +149,14 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 
 | Agent Type | Primary Needs | Recommended Models | Rationale |
 |------------|--------------|-------------------|-----------|
+| **Issue Analyst** | Reasoning + debugging | GPT-5.2, GPT-5.1 Codex Max | Strong reasoning for root cause analysis |
 | **Developer** | Code generation, debugging | GPT-5.1 Codex Max | Top coding score (90.80) |
 | **Architect** | Complex reasoning, analysis | Gemini 3 Pro, Claude Sonnet 4 | Balanced reasoning + coding |
 | **Code Reviewer** | Code understanding + reasoning | Claude Sonnet 4.5, GPT-5.1 Codex Max | Deep analysis + code understanding |
 | **Quality Engineer** | Instruction following + structure | Gemini 3 Pro, Gemini 3 Flash | Strong instruction following (65-75) |
-| **Product Owner** | Instruction following + language | Gemini 3 Flash, Gemini 3 Pro | Best instruction following + cost |
+| **Task Planner** | Instruction following + language | Gemini 3 Flash, Gemini 3 Pro | Best instruction following + cost |
 | **Requirements Engineer** | Language + reasoning | Claude Sonnet 4.5 | Strong language (76.00) + reasoning (76.07) |
-| **Documentation Author** | Language + writing | Claude Sonnet 4.5 | Excellent language skills |
+| **Technical Writer** | Language + writing | Claude Sonnet 4.5 | Excellent language skills |
 | **Release Manager** | Instruction following + checklists | Gemini 3 Flash | Cost-effective + good instruction following |
 
 ### Cost Considerations

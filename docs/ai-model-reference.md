@@ -1,7 +1,7 @@
 # AI Model Reference for GitHub Copilot Agents
 
-**Last Updated**: December 22, 2025  
-**Data Source**: LiveBench 2025-11-25, GitHub Copilot Documentation
+**Last Updated**: December 24, 2025  
+**Data Source**: LiveBench 2025-12-23, GitHub Copilot Documentation
 
 This document provides reference data for selecting AI models when creating or modifying custom GitHub Copilot agents. It includes performance benchmarks, availability, and cost information to support data-driven model selection.
 
@@ -60,6 +60,11 @@ Source: [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/ref
 
 Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 
+**Important:** LiveBench model names often differ from GitHub Copilot's model IDs.
+
+- **LiveBench Model Name**: How the model appears in benchmark results.
+- **Copilot Model ID**: The exact string to use in agent frontmatter (`model:`).
+
 ### Category Definitions
 
 - **Coding**: Code generation, debugging, understanding
@@ -73,51 +78,68 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 
 #### Coding (Critical for: Developer, Code Reviewer)
 
-| Model | Score | Notes |
-|-------|-------|-------|
-| GPT-5.1 Codex Max | 90.80 | **Best overall** |
-| GPT-5.1 Codex | 87.97 | Strong alternative |
-| GPT-5 Pro | 87.59 | Solid choice |
-| GPT-5.2 | 86.28 | Strong general model |
-| Claude 4.5 Opus Thinking | 84.12 | Expensive (3x) |
-| Gemini 3 Pro | 79.89 | Good balance |
-| Gemini 3 Flash | 75.40 | Cost-effective |
-| Claude Sonnet 4.5 | 45.72 | **Poor for coding** |
+| LiveBench Model Name | Copilot Model ID | Score | Notes |
+|---------------------|-----------------|-------|-------|
+| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 84.60 | **Best overall** |
+| GPT-5.2 | GPT-5.2 | 83.21 | Strong general model |
+| GPT-5.1 Codex | GPT-5.1-Codex | 81.98 | Strong alternative |
+| GPT-5.1 | GPT-5.1 | 78.79 | Strong general model |
+| Gemini 3 Pro | Gemini 3 Pro (Preview) | 77.42 | Good balance |
+| Gemini 3 Flash | Gemini 3 Flash (Preview) | 74.55 | Cost-effective |
+| Gemini 2.5 Pro | Gemini 2.5 Pro | 70.81 | Balanced |
+| GPT-5 mini | GPT-5 mini | 68.32 | **Best free model** |
+| GPT-5.1 Codex Mini | GPT-5.1-Codex-Mini | 64.71 | Specialized but weaker |
+| Grok Code Fast | Grok Code Fast 1 | 42.30 | Poor performance |
+| Claude Haiku 4.5 | Claude Haiku 4.5 | 33.94 | **Avoid for coding** |
+| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 42.29 | **Poor for coding** |
 
 #### Reasoning (Critical for: Architect, Code Reviewer)
+| Claude Sonnet 4.5 | 76.07 | Strong reasoning |
+| GPT-5.2 | GPT-5.2 | 76.07 | Strong general model |
+| Gemini 2.5 Pro | Gemini 2.5 Pro | 75.69 | Good reasoning |
+| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 74.98 | Strong all-around |
+| Gemini 3 Pro | Gemini 3 Pro (Preview) | 74.60 | Good alternative |
+| GPT-5.1 | GPT-5.1 | 72.49 | Decent reasoning |
+| Claude Haiku 4.5 | Claude Haiku 4.5 | 72.17 | Good for size |
+| GPT-5.1 Codex Mini | GPT-5.1-Codex-Mini | 69.93 | Acceptable |
+| GPT-5 mini | GPT-5 mini | 68.20 | **Great value** |
+| Grok Code Fast | Grok Code Fast 1 | 64.44 | Weak| Premium |
+| GPT-5.2 | GPT-5.2 | 76.07 | Strong general model |
+| Claude SoPro | Gemini 3 Pro (Preview) | 84.62 | Excellent |
+| Gemini 3 Flash | Gemini 3 Flash (Preview) | 84.56 | Excellent |
+| GPT-5.2 | GPT-5.2 | 79.81 | Strong general model |
+| GPT-5.1 | GPT-5.1 | 79.26 | Strong language |
+| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 76.00 | Good choice |
+| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 76.06 | Solid |
+| GPT-5 mini | GPT-5 mini | 75.52 | **Excellent for free** |
+| Gemini 2.5 Pro | Gemini 2.5 Pro | 75.50 | Good |
+| GPT-5.1 Codex Mini | GPT-5.1-Codex-Mini | 63.01 | Weak |
+| Claude Haiku 4.5 | Claude Haiku 4.5 | 57.05 | Weak |
+| Grok Code Fast | Grok Code Fast 1 | 48.56 | Poores |
+|---------------------|-----------------|-------|-------|
+| Gemini 3 Flash | Gemini 3 Flash (Preview) | 84.56 | Excellent |
+| Gemini 3 Pro | Gemini 3 Pro (Preview) | 84.62 | Excellent |
+| Claude 4.5 Opus Thinking | N/A (benchmark-only variant) | 81.26 | Premium |
+| GPT-5.2 | GPT-5.2 | 79.81 | Strong general model |
+| Claude 4.1 Opus | Claude Opus 4.1 | 76.75 | Expensive |
+| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 76.00 | Good choice |
+| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 76.06 | Solid |
+ mini | GPT-5 mini | 65.27 | **Excellent free option** |
+| GPT-5.1 | GPT-5.1 | 63.90 | Decent |
+| GPT-5.2 | GPT-5.2 | 61.77 | Acceptable |
+| GPT-5.1 Codex Mini | GPT-5.1-Codex-Mini | 59.02 | Mediocre |
+| Gemini 2.5 Pro | Gemini 2.5 Pro | 33.07 | Poor |
+| Grok Code Fast | Grok Code Fast 1 | 22.27 | Very poor |
+| Claude Haiku 4.5 | Claude Haiku 4.5 | 17.75 | **Avoid**eer, Release Manager)
 
-| Model | Score | Notes |
-|-------|-------|-------|
-| Claude 4 Sonnet | 80.74 | Best Sonnet |
-| Claude Sonnet 4.5 Thinking | 80.36 | Reasoning mode |
-| Claude 4.5 Opus Thinking | 79.65 | Premium |
-| GPT-5.2 | 76.07 | Strong general model |
-| Claude Sonnet 4.5 | 76.07 | Tied with GPT-5.2 |
-| GPT-5.1 Codex Max | 74.98 | Strong all-around |
-| Gemini 3 Pro | 74.60 | Good alternative |
-
-#### Language (Critical for: Requirements Engineer, Documentation Author)
-
-| Model | Score | Notes |
-|-------|-------|-------|
-| Gemini 3 Flash | 84.56 | Excellent |
-| Gemini 3 Pro | 84.62 | Excellent |
-| Claude 4.5 Opus Thinking | 81.26 | Premium |
-| GPT-5.2 | 79.81 | Strong general model |
-| Claude 4.1 Opus | 76.75 | Expensive |
-| Claude Sonnet 4.5 | 76.00 | Good choice |
-| GPT-5.1 Codex Max | 76.06 | Solid |
-
-#### Instruction Following (Critical for: Product Owner, Quality Engineer, Release Manager)
-
-| Model | Score | Notes |
-|-------|-------|-------|
-| Gemini 3 Flash | 74.86 | **Best value** |
-| GPT-5.1 Codex Max | 73.90 | Solid |
-| Gemini 3 Pro | 65.85 | Good |
-| GPT-5.2 | 61.77 | Acceptable |
-| Claude 4.5 Opus Medium | 28.11 | Poor |
-| Claude Sonnet 4.5 | 23.52 | **Very poor** |
+| LiveBench Model Name | Copilot Model ID | Score | Notes |
+|---------------------|-----------------|-------|-------|
+| Gemini 3 Flash | Gemini 3 Flash (Preview) | 74.86 | **Best value** |
+| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 73.90 | Solid |
+| Gemini 3 Pro | Gemini 3 Pro (Preview) | 65.85 | Good |
+| GPT-5.2 | GPT-5.2 | 61.77 | Acceptable |
+| Claude 4.5 Opus Medium | N/A (benchmark-only variant) | 28.11 | Poor |
+| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 23.52 | **Very poor** |
 
 **Critical Finding**: Claude Sonnet 4.5 (non-thinking) has very poor Instruction Following performance (23.52), making it unsuitable for agents that need to follow templates or structured formats strictly (Product Owner, Quality Engineer).
 
@@ -139,9 +161,10 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 ### Cost Considerations
 
 **Premium Request Multipliers** (for Copilot Pro monthly allowance):
-
-- **0x (Included)**: GPT-4.1, GPT-5 mini, Raptor mini - Don't count against quota
-- **0.25x**: Grok Code Fast 1 - Very cheap (temporary promo)
+PT-5 mini**: 0x multiplier (Free), surprisingly strong performance (beats paid models in IF/Coding).
+- **Gemini 3 Flash**: 0.33x multiplier, strong across multiple categories.
+- **GPT-5.1 Codex Max**: 1x multiplier, best coding performance.
+- **Claude Sonnet 4.5**: 1x multiplier, strong language/reasoning (but poor instruction following).
 - **0.33x**: Claude Haiku 4.5, Gemini 3 Flash, GPT-5.1-Codex-Mini - Cost-effective
 - **1x**: Most standard models - Normal cost
 - **3x**: Claude Opus 4.5 - Premium
@@ -193,7 +216,7 @@ When selecting a model for an agent:
 - **Use Gemini models for instruction following** - Significantly better than Claude
 - **Use Claude Sonnet for language/reasoning** - Strong in these categories
 - **Consider Gemini 3 Flash for high-volume** - 0.33x multiplier with good performance
-- **Verify model names match exactly** - GitHub Copilot is case-sensitive
+- **Verify model IDs match exactly** - Use the **Copilot Model ID** string (case-sensitive)
 
 ## Update Process
 
@@ -212,7 +235,8 @@ This document should be updated when:
 
 ## References
 
-- **LiveBench**: https://livebench.ai/ - Contamination-free LLM benchmark
-- **GitHub Copilot Models**: https://docs.github.com/en/copilot/reference/ai-models/supported-models
-- **Model Comparison**: https://docs.github.com/en/copilot/reference/ai-models/model-comparison
-- **Premium Requests**: https://docs.github.com/en/copilot/managing-copilot/monitoring-usage-and-entitlements/about-premium-requests
+- **LiveBench**: [https://livebench.ai/](https://livebench.ai/) - A challenging, contamination-free LLM benchmark that regularly releases new questions with objective ground-truth answers across categories like Coding, Reasoning, and Instruction Following.
+- **GitHub Copilot Supported Models**: [https://docs.github.com/en/copilot/reference/ai-models/supported-models](https://docs.github.com/en/copilot/reference/ai-models/supported-models) - Official list of all AI models available in GitHub Copilot, including their release status, plan availability, and premium request multipliers.
+- **Model Comparison Guide**: [https://docs.github.com/en/copilot/reference/ai-models/model-comparison](https://docs.github.com/en/copilot/reference/ai-models/model-comparison) - A task-based guide for picking the best model for general-purpose coding, deep reasoning, fast help, or visual tasks.
+- **Comparing Models by Task**: [https://docs.github.com/en/copilot/tutorials/compare-ai-models](https://docs.github.com/en/copilot/tutorials/compare-ai-models) - A tutorial with real-world examples, sample prompts, and responses showing how different models handle specific developer tasks.
+- **About Premium Requests**: [https://docs.github.com/en/copilot/managing-copilot/monitoring-usage-and-entitlements/about-premium-requests](https://docs.github.com/en/copilot/managing-copilot/monitoring-usage-and-entitlements/about-premium-requests) - Detailed information on how premium requests are calculated, consumed via model multipliers, and managed across different Copilot plans.

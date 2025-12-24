@@ -50,7 +50,6 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 Before starting, familiarize yourself with:
 - The Feature Specification in `docs/features/<feature-name>/specification.md`
 - The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
-- The Tasks document in `docs/features/<feature-name>/tasks.md`
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Project testing conventions and infrastructure
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed

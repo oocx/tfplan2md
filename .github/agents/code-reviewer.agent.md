@@ -3,7 +3,7 @@ description: Review code for quality, standards, and correctness
 name: Code Reviewer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['search', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*']
+tools: ['search', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*', 'ms-toolsai.jupyter/*', 'copilot-container-tools/*']
 handoffs:
   - label: Request Rework
     agent: "Developer"
@@ -152,17 +152,17 @@ Before starting, familiarize yourself with:
    # Note: Maintainer will review OUTPUT for rendering quality and feedback
    ```
 
-2. **Read the code** - Review all changed files against the checklist.
+3. **Read the code** - Review all changed files against the checklist.
 
-3. **Compare to specification** - Verify all acceptance criteria are met.
+4. **Compare to specification** - Verify all acceptance criteria are met.
 
-4. **Identify issues** - Note any problems, categorized by severity:
+5. **Identify issues** - Note any problems, categorized by severity:
    - **Blocker** - Must fix before approval
    - **Major** - Should fix, significant quality issue
    - **Minor** - Nice to fix, style or minor improvement
    - **Suggestion** - Optional improvement for consideration
 
-5. **Produce the review report** - Document findings and decision.
+6. **Produce the review report** - Document findings and decision.
 
 ## Output: Code Review Report
 

@@ -2,8 +2,8 @@
 description: Analyze, improve, and maintain the agent workflow
 name: Workflow Engineer
 target: vscode
-model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'read/terminalLastCommand', 'execute/runInTerminal', 'execute/getTerminalOutput', 'execute/testFailure', 'web/fetch', 'web/githubRepo', 'github/*', 'memory/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*']
+model: Gemini 3 Pro (Preview)
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'memory/*', 'microsoftdocs/mcp/*', 'agent', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest', 'ms-toolsai.jupyter/configureNotebook', 'ms-toolsai.jupyter/listNotebookPackages', 'ms-toolsai.jupyter/installNotebookPackages', 'todo']
 ---
 
 # Workflow Engineer Agent
@@ -66,9 +66,11 @@ Internal References (Priority Order)
 - [Chat Tools Reference](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools) - Complete list of available tools
 - [Language Models](https://code.visualstudio.com/docs/copilot/customization/language-models) - Model selection and configuration
 
-### External References (Use when updating ai-model-reference.md)
-- [LiveBench](https://livebench.ai/) - Current model performance benchmarks
-- [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models) - Model availability and pricing
+### External References
+- [LiveBench](https://livebench.ai/) - Current model performance benchmarks (use for data-driven selection)
+- [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models) - Model availability, status, and multipliers
+- [Model Comparison Guide](https://docs.github.com/en/copilot/reference/ai-models/model-comparison) - Task-based guidance for picking models
+- [Comparing Models by Task](https://docs.github.com/en/copilot/tutorials/compare-ai-models) - Real-world examples and sample prompts for model comparison
 - [GitHub Models Pricing](https://docs.github.com/en/billing/reference/costs-for-github-models) - Cost reference for GitHub Copilot Pro models
 
 
@@ -84,6 +86,7 @@ When creating or modifying agents, choose the appropriate language model based o
 - Model availability in GitHub Copilot Pro
 - Premium request multipliers (cost)
 - Recommended model assignments by agent type
+- **Task-based guidance and tutorials** (via external links with descriptions)
 
 This reference is updated periodically with latest benchmark data.
 
@@ -206,47 +209,10 @@ What this agent produces
 
 ## Tool Selection Guide
 
+**Tool Awareness:** You are always provided with a list of all available tools, even though you will not need to use many of them. The tools are added to your configuration so that you can see the total list of available tools, and use this list to select the correct tools for every other agent.
+
 ### Available VS Code Copilot Tools
-Use these official tool IDs in agent frontmatter (reference: [Chat Tools](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools)):
-
-**Tool Sets (enable multiple related tools at once):**
-- `search` - Combined search capabilities (includes listDirectory, codebase, changes, etc.)
-- `edit` - File modification (includes createFile, editFiles, editNotebook)
-
-**Read Operations (`read/` prefix):**
-- `read/readFile` - Read file contents
-- `read/problems` - Diagnostics and errors
-- `read/terminalLastCommand` - Get last terminal command
-- `read/terminalSelection` - Get terminal selection
-
-**Search Operations (`search/` prefix):**
-- `search/listDirectory` - List directory contents
-- `search/codebase` - Semantic code search
-- `search/usages` - Find symbol usages (references, definitions, implementations)
-- `search/changes` - Git changes
-
-**Edit Operations (`edit/` prefix):**
-- `edit/createFile` - Create new files
-- `edit/editFiles` - Modify existing files
-- `edit/editNotebook` - Edit Jupyter notebooks
-- `edit/createDirectory` - Create directories
-
-**Execute Operations (`execute/` prefix):**
-- `execute/runInTerminal` - Run terminal commands
-- `execute/getTerminalOutput` - Get terminal output
-- `execute/runTests` - Run tests
-- `execute/testFailure` - Test failure diagnostics
-
-**Web Operations (`web/` prefix):**
-- `web/fetch` - Web content retrieval
-- `web/githubRepo` - GitHub repository search
-
-**MCP Servers (use `*` suffix for all operations):**
-- `github/*` - GitHub operations (PRs, issues, etc.)
-- `memory/*` - Knowledge graph persistence
-- `mcp-mermaid/*` - Diagram generation
-- `microsoftdocs/mcp/*` - Microsoft Learn docs search/fetch (tools: `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`)
-- `io.github.hashicorp/terraform-mcp-server/*` - Terraform operations (useful for this project)
+For a complete reference of official tool IDs, consult the [VS Code Copilot Chat Tools documentation](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools).
 
 **Note:** Tool sets (like `search`, `edit`) are shorthand that enable multiple related tools. For granular control, use the prefixed individual tools.
 
@@ -269,7 +235,7 @@ Review current state and gather best practices:
 - Review handoff relationships between agents
 - Consult [VS Code Copilot docs](https://code.visualstudio.com/docs/copilot/customization/custom-agents) for tool reference
 
-**Note**: Only fetch external data (LiveBench, GitHub docs) if ai-model-reference.md is outdated (>1 month old) or missing needed information
+**Note**: Use the descriptions in [docs/ai-model-reference.md](../../docs/ai-model-reference.md) to decide when to fetch external data (LiveBench, GitHub tutorials, etc.). Fetch external data if the internal reference is outdated (>1 month old), missing needed information, or if you need specific task-based examples from the tutorials.
 
 ### 3. Propose Before Implementing
 Present your plan with:

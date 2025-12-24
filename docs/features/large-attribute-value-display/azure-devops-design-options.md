@@ -17,11 +17,11 @@ Shows entire lines with light backgrounds. No character-level highlighting.
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;/set-header&gt;</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -49,11 +49,11 @@ Shows line backgrounds with darker highlighting for specific changes within line
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0;">20</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #acf2bd;">50</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;/set-header&gt;</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0; color: #24292e;">20</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #acf2bd; color: #24292e;">50</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -81,11 +81,11 @@ Uses `- ` and `+ ` prefixes combined with line backgrounds (hybrid approach).
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>     &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   &lt;/set-header&gt;</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>     &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -113,11 +113,11 @@ Light backgrounds with colored left border for emphasis.
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;/set-header&gt;</span>
+<span style="background-color: #fff5f5; color: #24292e; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -178,10 +178,10 @@ Shows deletions with strikethrough styling.
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
 <span style="background-color: #ffeef0; text-decoration: line-through; color: #6a737d; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="20" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    &lt;/set-header&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;rate-limit calls="50" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -211,14 +211,14 @@ Here's how each option looks with a more complex example:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>[
   {
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    "name": "http",</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "name": "https",</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "name": "http",</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "name": "https",</span>
     "protocol": "Tcp",
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": 80,</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": 443,</span>
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": 8080</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": 8443,</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "idle_timeout_in_minutes": 10</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": 80,</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": 443,</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": 8080</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": 8443,</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "idle_timeout_in_minutes": 10</span>
   },
   {
     "name": "ssh",
@@ -239,14 +239,14 @@ Here's how each option looks with a more complex example:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>[
   {
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    "name": "<span style="background-color: #ffc0c0;">http</span>",</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "name": "<span style="background-color: #acf2bd;">https</span>",</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "name": "<span style="background-color: #ffc0c0; color: #24292e;">http</span>",</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "name": "<span style="background-color: #acf2bd; color: #24292e;">https</span>",</span>
     "protocol": "Tcp",
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": <span style="background-color: #ffc0c0;">80</span>,</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": <span style="background-color: #acf2bd;">443</span>,</span>
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": <span style="background-color: #ffc0c0;">8080</span></span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": <span style="background-color: #acf2bd;">8443</span>,</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;">    "idle_timeout_in_minutes": 10</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": <span style="background-color: #ffc0c0; color: #24292e;">80</span>,</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "frontend_port": <span style="background-color: #acf2bd; color: #24292e;">443</span>,</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": <span style="background-color: #ffc0c0; color: #24292e;">8080</span></span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "backend_port": <span style="background-color: #acf2bd; color: #24292e;">8443</span>,</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;">    "idle_timeout_in_minutes": 10</span>
   },
   {
     "name": "ssh",
@@ -267,14 +267,14 @@ Here's how each option looks with a more complex example:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>[
   {
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   "name": "http",</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "name": "https",</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   "name": "http",</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "name": "https",</span>
     "protocol": "Tcp",
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   "frontend_port": 80,</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "frontend_port": 443,</span>
-<span style="background-color: #ffeef0; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   "backend_port": 8080</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "backend_port": 8443,</span>
-<span style="background-color: #e6ffed; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "idle_timeout_in_minutes": 10</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   "frontend_port": 80,</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "frontend_port": 443,</span>
+<span style="background-color: #ffeef0; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #d73a49; font-weight: bold;">-</span>   "backend_port": 8080</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "backend_port": 8443,</span>
+<span style="background-color: #e6ffed; color: #24292e; display: block; padding-left: 4px; margin-left: -4px;"><span style="color: #28a745; font-weight: bold;">+</span>   "idle_timeout_in_minutes": 10</span>
   },
   {
     "name": "ssh",
@@ -311,11 +311,11 @@ Combines character-level highlighting (Option B) with border accent (Option D) f
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0;">20</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #acf2bd;">50</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;/set-header&gt;</span>
+<span style="background-color: #fff5f5; color: #24292e; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0; color: #24292e;">20</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #acf2bd; color: #24292e;">50</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -344,24 +344,24 @@ Shows how the new summary format looks with multiple large attributes:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0;">20</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #acf2bd;">50</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;/set-header&gt;</span>
+<span style="background-color: #fff5f5; color: #24292e; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0; color: #24292e;">20</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;rate-limit calls="<span style="background-color: #acf2bd; color: #24292e;">50</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
 ### `custom_data`
 
-<pre style="font-family: monospace; line-height: 1.5;"><code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">#!/bin/bash</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">#!/usr/bin/env bash</span>
+<pre style="font-family: monospace; line-height: 1.5;"><code><span style="background-color: #fff5f5; color: #24292e; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">#!/bin/bash</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">#!/usr/bin/env bash</span>
 apt-get update
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">apt-get install -y docker.io</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">apt-get install -y docker.io</span>
 apt-get install -y nginx
-<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">apt-get install -y curl</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">systemctl enable docker</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">systemctl start docker</span></code></pre>
+<span style="background-color: #fff5f5; color: #24292e; border-left: 3px solid #d73a49; display: block; padding-left: 8px; margin-left: -4px;">apt-get install -y curl</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">systemctl enable docker</span>
+<span style="background-color: #f0fff4; color: #24292e; border-left: 3px solid #28a745; display: block; padding-left: 8px; margin-left: -4px;">systemctl start docker</span></code></pre>
 
 </details>
 

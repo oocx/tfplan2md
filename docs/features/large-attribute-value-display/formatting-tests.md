@@ -75,13 +75,13 @@ Attribute: `policy` (100+ lines of XML)
 
 ### `policy`
 
-<pre><code><span style="background-color: #ffdddd; color: #000000;">&lt;policies&gt;
+<pre><code><span style="background-color: #ffdddd; color: #24292e; color: #000000;">&lt;policies&gt;
   &lt;inbound&gt;
     &lt;rate-limit calls="20" renewal-period="90" /&gt;
   &lt;/inbound&gt;
 &lt;/policies&gt;</span>
 
-<span style="background-color: #ddffdd; color: #000000;">&lt;policies&gt;
+<span style="background-color: #ddffdd; color: #24292e; color: #000000;">&lt;policies&gt;
   &lt;inbound&gt;
     &lt;rate-limit calls="50" renewal-period="90" /&gt;
     &lt;set-header name="X-Custom" exists-action="override"&gt;
@@ -215,11 +215,11 @@ For create operations, only show the new value:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #ffdddd;">    &lt;rate-limit calls="<span style="background-color: #ffaaaa;">20</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #ddffdd;">    &lt;rate-limit calls="<span style="background-color: #aaffaa;">50</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #ddffdd;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #ddffdd;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #ddffdd;">    &lt;/set-header&gt;</span>
+<span style="background-color: #ffdddd; color: #24292e;">    &lt;rate-limit calls="<span style="background-color: #ffaaaa; color: #24292e;">20</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #ddffdd; color: #24292e;">    &lt;rate-limit calls="<span style="background-color: #aaffaa; color: #24292e;">50</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #ddffdd; color: #24292e;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #ddffdd; color: #24292e;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #ddffdd; color: #24292e;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -243,11 +243,11 @@ For create operations, only show the new value:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>&lt;policies&gt;
   &lt;inbound&gt;
-<span style="background-color: #ffeef0;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0;">20</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed;">    &lt;rate-limit calls="<span style="background-color: #acf2bd;">50</span>" renewal-period="90" /&gt;</span>
-<span style="background-color: #e6ffed;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
-<span style="background-color: #e6ffed;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
-<span style="background-color: #e6ffed;">    &lt;/set-header&gt;</span>
+<span style="background-color: #ffeef0; color: #24292e;">    &lt;rate-limit calls="<span style="background-color: #ffc0c0; color: #24292e;">20</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e;">    &lt;rate-limit calls="<span style="background-color: #acf2bd; color: #24292e;">50</span>" renewal-period="90" /&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e;">    &lt;set-header name="X-Custom" exists-action="override"&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e;">      &lt;value&gt;custom-value&lt;/value&gt;</span>
+<span style="background-color: #e6ffed; color: #24292e;">    &lt;/set-header&gt;</span>
   &lt;/inbound&gt;
 &lt;/policies&gt;</code></pre>
 
@@ -271,14 +271,14 @@ For create operations, only show the new value:
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>[
   {
-<span style="background-color: #ffeef0;">    "name": "<span style="background-color: #ffc0c0;">http</span>",</span>
-<span style="background-color: #e6ffed;">    "name": "<span style="background-color: #acf2bd;">https</span>",</span>
+<span style="background-color: #ffeef0; color: #24292e;">    "name": "<span style="background-color: #ffc0c0; color: #24292e;">http</span>",</span>
+<span style="background-color: #e6ffed; color: #24292e;">    "name": "<span style="background-color: #acf2bd; color: #24292e;">https</span>",</span>
     "protocol": "Tcp",
-<span style="background-color: #ffeef0;">    "frontend_port": <span style="background-color: #ffc0c0;">80</span>,</span>
-<span style="background-color: #e6ffed;">    "frontend_port": <span style="background-color: #acf2bd;">443</span>,</span>
-<span style="background-color: #ffeef0;">    "backend_port": <span style="background-color: #ffc0c0;">8080</span></span>
-<span style="background-color: #e6ffed;">    "backend_port": <span style="background-color: #acf2bd;">8443</span>,</span>
-<span style="background-color: #e6ffed;">    "idle_timeout_in_minutes": 10</span>
+<span style="background-color: #ffeef0; color: #24292e;">    "frontend_port": <span style="background-color: #ffc0c0; color: #24292e;">80</span>,</span>
+<span style="background-color: #e6ffed; color: #24292e;">    "frontend_port": <span style="background-color: #acf2bd; color: #24292e;">443</span>,</span>
+<span style="background-color: #ffeef0; color: #24292e;">    "backend_port": <span style="background-color: #ffc0c0; color: #24292e;">8080</span></span>
+<span style="background-color: #e6ffed; color: #24292e;">    "backend_port": <span style="background-color: #acf2bd; color: #24292e;">8443</span>,</span>
+<span style="background-color: #e6ffed; color: #24292e;">    "idle_timeout_in_minutes": 10</span>
   },
   {
     "name": "ssh",

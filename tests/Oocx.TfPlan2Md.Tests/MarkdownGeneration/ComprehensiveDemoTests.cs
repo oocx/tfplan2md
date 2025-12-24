@@ -66,10 +66,10 @@ public class ComprehensiveDemoTests
 
         summary.Should().Contain("Terraform Plan Summary")
             .And.Contain("➕ Add | 12")
-            .And.Contain("🔄 Change | 5")
+            .And.Contain("🔄 Change | 6")
             .And.Contain("♻️ Replace | 2")
             .And.Contain("❌ Destroy | 3")
-                .And.Contain("Total | 22");
+                .And.Contain("Total | 23");
     }
 
     [Fact]

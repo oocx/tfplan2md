@@ -56,5 +56,3 @@ This has a | pipe and a
 </code></pre>
 
 </details>
-
----

@@ -292,6 +292,32 @@
         "after_sensitive": { "value": true }
       }
     },
+    {
+      "address": "module.security.azurerm_key_vault_secret.audit_policy",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_key_vault_secret",
+      "name": "audit_policy",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "audit-policy",
+          "value": "line1: allow\nline2: log old activity\nline3: end",
+          "content_type": "text",
+          "key_vault_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+        },
+        "after": {
+          "name": "audit-policy",
+          "value": "line1: allow\nline2: log critical activity\nline3: end",
+          "content_type": "text",
+          "key_vault_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
 
     {
       "address": "azurerm_storage_account.data",

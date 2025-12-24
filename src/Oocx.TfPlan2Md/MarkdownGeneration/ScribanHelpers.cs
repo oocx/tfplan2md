@@ -19,6 +19,7 @@ public static class ScribanHelpers
         scriptObject.Import("format_diff", new Func<string?, string?, string>(FormatDiff));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
+        scriptObject.Import("is_large_value", new Func<string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
         scriptObject.Import("azure_principal_name", new Func<string?, string>(p => ResolvePrincipalName(p, principalMapper)));
@@ -55,6 +56,27 @@ public static class ScribanHelpers
         value = value.Replace("\r", "<br/>");
 
         return value;
+    }
+
+    /// <summary>
+    /// Determines whether a value should be treated as large based on newlines or length.
+    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// </summary>
+    /// <param name="input">The raw value.</param>
+    /// <returns>True when the value contains newlines or exceeds 100 characters; otherwise false.</returns>
+    public static bool IsLargeValue(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return false;
+        }
+
+        if (input.Contains('\n', StringComparison.Ordinal) || input.Contains('\r', StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        return input.Length > 100;
     }
 
     private static ScriptObject GetScopeInfo(string? scope)

@@ -74,11 +74,24 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
+| `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `standard-diff` (cross-platform) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
+
+#### Large Value Formatting
+
+Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
+
+- **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for GitHub and Azure DevOps rendering. 
+- **`standard-diff`**: Traditional diff format with `+`/`-` markers. Cross-platform compatible with plain markdown viewers.
+
+Example:
+```bash
+terraform show -json plan.tfplan | tfplan2md --large-value-format standard-diff
+```
 
 ## Example Output
 
@@ -113,6 +126,32 @@ All generated markdown is automatically validated and linted for correct formatt
 |-----------|-------|
 | `location` | westeurope |
 | `name` | example-rg |
+
+</details>
+
+#### 🔄 azurerm_storage_account.logs
+
+**Summary:** `stlogs` | Changed: custom_data, tags.environment
+
+<details>
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+| `tags.environment` | dev | production |
+
+</details>
+
+<details>
+<summary>Large values: custom_data (5 lines, 2 changed)</summary>
+
+##### `custom_data`
+
+<pre style="font-family: monospace; line-height: 1.5;"><code>#!/bin/bash
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">echo "Installing<span style="background-color: #ffc0c0; color: #24292e;"> v1.0</span>"</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">echo "Installing<span style="background-color: #acf2bd; color: #24292e;"> v2.0</span>"</span>
+apt-get update
+apt-get install -y nginx
+</code></pre>
 
 </details>
 ```

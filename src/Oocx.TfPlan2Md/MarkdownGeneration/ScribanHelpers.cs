@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using Oocx.TfPlan2Md.Azure;
 using Scriban.Runtime;
@@ -113,7 +115,7 @@ public static class ScribanHelpers
         return parsedFormat switch
         {
             LargeValueFormat.StandardDiff => BuildStandardDiff(before, after),
-            _ => BuildStandardDiff(before, after) // inline handled in later tasks; fallback for now
+            _ => BuildInlineDiff(before, after)
         };
     }
 
@@ -166,6 +168,298 @@ public static class ScribanHelpers
         return value.Replace("\r", string.Empty, StringComparison.Ordinal)
             .Split('\n', StringSplitOptions.None);
     }
+
+    private static string BuildInlineDiff(string before, string after)
+    {
+        var beforeLines = SplitLines(before);
+        var afterLines = SplitLines(after);
+
+        var commonLength = ComputeLcsLength(beforeLines, afterLines);
+        if (commonLength == 0)
+        {
+            // Complete replacement fallback
+            var sbNoCommon = new StringBuilder();
+            sbNoCommon.AppendLine("**Before:**");
+            sbNoCommon.AppendLine(CodeFence(before));
+            sbNoCommon.AppendLine();
+            sbNoCommon.AppendLine("**After:**");
+            sbNoCommon.Append(CodeFence(after));
+            return sbNoCommon.ToString();
+        }
+
+        var diff = BuildLineDiff(beforeLines, afterLines);
+        var sb = new StringBuilder();
+        sb.Append("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
+
+        var index = 0;
+        while (index < diff.Count)
+        {
+            var entry = diff[index];
+            if (entry.Kind == DiffKind.Unchanged)
+            {
+                sb.Append(HtmlEncode(entry.Text));
+                sb.Append('\n');
+                index++;
+                continue;
+            }
+
+            if (entry.Kind == DiffKind.Removed && index + 1 < diff.Count && diff[index + 1].Kind == DiffKind.Added)
+            {
+                var addEntry = diff[index + 1];
+                AppendStyledLineWithCharDiff(sb, entry.Text, addEntry.Text, removed: true);
+                AppendStyledLineWithCharDiff(sb, addEntry.Text, entry.Text, removed: false);
+                index += 2;
+                continue;
+            }
+
+            if (entry.Kind == DiffKind.Removed)
+            {
+                AppendStyledLine(sb, entry.Text, removed: true);
+                index++;
+                continue;
+            }
+
+            if (entry.Kind == DiffKind.Added)
+            {
+                AppendStyledLine(sb, entry.Text, removed: false);
+                index++;
+                continue;
+            }
+        }
+
+        sb.Append("</code></pre>");
+        return sb.ToString();
+    }
+
+    private static void AppendStyledLine(StringBuilder sb, string line, bool removed)
+    {
+        var lineStyle = removed
+            ? "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;"
+            : "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;";
+
+        sb.Append("<span style=\"");
+        sb.Append(lineStyle);
+        sb.Append('\"');
+        sb.Append('>');
+        sb.Append(HtmlEncode(line));
+        sb.AppendLine("</span>");
+    }
+
+    private static void AppendStyledLineWithCharDiff(StringBuilder sb, string line, string otherLine, bool removed)
+    {
+        var pairs = ComputeLcsPairs(line, otherLine);
+        var commonMask = BuildCommonMask(line.Length, pairs.Select(p => p.BeforeIndex));
+        var highlightColor = removed ? "#ffc0c0" : "#acf2bd";
+        var lineStyle = removed
+            ? "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;"
+            : "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;";
+
+        sb.Append("<span style=\"");
+        sb.Append(lineStyle);
+        sb.Append('\"');
+        sb.Append('>');
+        sb.Append(ApplyCharHighlights(line, commonMask, highlightColor));
+        sb.AppendLine("</span>");
+    }
+
+    private static string ApplyCharHighlights(string line, bool[] commonMask, string highlightColor)
+    {
+        var sb = new StringBuilder();
+        var inHighlight = false;
+
+        for (var i = 0; i < line.Length; i++)
+        {
+            var isCommon = i < commonMask.Length && commonMask[i];
+            if (!isCommon && !inHighlight)
+            {
+                sb.Append("<span style=\"background-color: ");
+                sb.Append(highlightColor);
+                sb.Append("; color: #24292e;\">");
+                inHighlight = true;
+            }
+            else if (isCommon && inHighlight)
+            {
+                sb.Append("</span>");
+                inHighlight = false;
+            }
+
+            sb.Append(HtmlEncode(line[i].ToString()));
+        }
+
+        if (inHighlight)
+        {
+            sb.Append("</span>");
+        }
+
+        return sb.ToString();
+    }
+
+    private static List<DiffEntry> BuildLineDiff(string[] before, string[] after)
+    {
+        var pairs = ComputeLcsPairs(before, after);
+        var result = new List<DiffEntry>();
+
+        var beforeIndex = 0;
+        var afterIndex = 0;
+
+        foreach (var pair in pairs)
+        {
+            while (beforeIndex < pair.BeforeIndex)
+            {
+                result.Add(new DiffEntry(DiffKind.Removed, before[beforeIndex]));
+                beforeIndex++;
+            }
+
+            while (afterIndex < pair.AfterIndex)
+            {
+                result.Add(new DiffEntry(DiffKind.Added, after[afterIndex]));
+                afterIndex++;
+            }
+
+            result.Add(new DiffEntry(DiffKind.Unchanged, before[pair.BeforeIndex]));
+            beforeIndex++;
+            afterIndex++;
+        }
+
+        while (beforeIndex < before.Length)
+        {
+            result.Add(new DiffEntry(DiffKind.Removed, before[beforeIndex]));
+            beforeIndex++;
+        }
+
+        while (afterIndex < after.Length)
+        {
+            result.Add(new DiffEntry(DiffKind.Added, after[afterIndex]));
+            afterIndex++;
+        }
+
+        return result;
+    }
+
+    private static List<LcsPair> ComputeLcsPairs(string[] before, string[] after)
+    {
+        var m = before.Length;
+        var n = after.Length;
+        var lengths = new int[m + 1, n + 1];
+
+        for (var i = m - 1; i >= 0; i--)
+        {
+            for (var j = n - 1; j >= 0; j--)
+            {
+                if (string.Equals(before[i], after[j], StringComparison.Ordinal))
+                {
+                    lengths[i, j] = lengths[i + 1, j + 1] + 1;
+                }
+                else
+                {
+                    lengths[i, j] = Math.Max(lengths[i + 1, j], lengths[i, j + 1]);
+                }
+            }
+        }
+
+        var pairs = new List<LcsPair>();
+        var x = 0;
+        var y = 0;
+        while (x < m && y < n)
+        {
+            if (string.Equals(before[x], after[y], StringComparison.Ordinal))
+            {
+                pairs.Add(new LcsPair(x, y));
+                x++;
+                y++;
+            }
+            else if (lengths[x + 1, y] >= lengths[x, y + 1])
+            {
+                x++;
+            }
+            else
+            {
+                y++;
+            }
+        }
+
+        return pairs;
+    }
+
+    private static int ComputeLcsLength(string[] before, string[] after)
+    {
+        return ComputeLcsPairs(before, after).Count;
+    }
+
+    private static List<LcsPair> ComputeLcsPairs(string before, string after)
+    {
+        var m = before.Length;
+        var n = after.Length;
+        var lengths = new int[m + 1, n + 1];
+
+        for (var i = m - 1; i >= 0; i--)
+        {
+            for (var j = n - 1; j >= 0; j--)
+            {
+                if (before[i] == after[j])
+                {
+                    lengths[i, j] = lengths[i + 1, j + 1] + 1;
+                }
+                else
+                {
+                    lengths[i, j] = Math.Max(lengths[i + 1, j], lengths[i, j + 1]);
+                }
+            }
+        }
+
+        var pairs = new List<LcsPair>();
+        var x = 0;
+        var y = 0;
+        while (x < m && y < n)
+        {
+            if (before[x] == after[y])
+            {
+                pairs.Add(new LcsPair(x, y));
+                x++;
+                y++;
+            }
+            else if (lengths[x + 1, y] >= lengths[x, y + 1])
+            {
+                x++;
+            }
+            else
+            {
+                y++;
+            }
+        }
+
+        return pairs;
+    }
+
+    private static bool[] BuildCommonMask(int length, IEnumerable<int> indices)
+    {
+        var mask = new bool[length];
+        foreach (var index in indices)
+        {
+            if (index >= 0 && index < length)
+            {
+                mask[index] = true;
+            }
+        }
+
+        return mask;
+    }
+
+    private static string HtmlEncode(string value)
+    {
+        return HtmlEncoder.Default.Encode(value);
+    }
+
+    private readonly record struct DiffEntry(DiffKind Kind, string Text);
+
+    private enum DiffKind
+    {
+        Unchanged,
+        Removed,
+        Added
+    }
+
+    private readonly record struct LcsPair(int BeforeIndex, int AfterIndex);
 
     private static ScriptObject GetScopeInfo(string? scope)
     {

@@ -127,7 +127,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ## Agent Roles & Responsibilities
 
-### 1. Support Engineer
+### 1. Issue Analyst
 - **Goal:** Investigate and document bugs, incidents, and technical issues.
 - **Deliverables:** Issue analysis with root cause, diagnostic data, and suggested fix approach.
 - **Definition of Done:** Issue is clearly documented and ready for Developer to implement fix.

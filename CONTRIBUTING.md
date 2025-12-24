@@ -139,7 +139,7 @@ git commit -m "fix(parser): handle empty resource changes array"
 git commit -m "docs: update installation instructions"
 
 # Workflow changes
-git commit -m "workflow: update Product Owner agent model"
+git commit -m "workflow: update Task Planner agent model"
 
 # Breaking change
 git commit -m "feat(api)!: rename TerraformPlan to PlanResult"

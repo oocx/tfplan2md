@@ -1,0 +1,18 @@
+namespace Oocx.TfPlan2Md.MarkdownGeneration;
+
+/// <summary>
+/// Defines available rendering formats for large attribute values.
+/// Related feature: docs/features/large-attribute-value-display/specification.md
+/// </summary>
+public enum LargeValueFormat
+{
+    /// <summary>
+    /// Azure DevOps-optimized inline diff with HTML styling.
+    /// </summary>
+    InlineDiff,
+
+    /// <summary>
+    /// Cross-platform standard diff fenced code block.
+    /// </summary>
+    StandardDiff
+}

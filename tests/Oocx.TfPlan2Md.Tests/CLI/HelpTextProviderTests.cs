@@ -23,7 +23,7 @@ public class HelpTextProviderTests
             .ToList();
 
         optionLines.Should().NotBeEmpty();
-        const int expectedDescriptionIndex = 34; // 2 spaces indent + OptionPadding (32)
+        const int expectedDescriptionIndex = 52; // 2 spaces indent + OptionPadding (50)
 
         foreach (var line in optionLines)
         {
@@ -42,5 +42,14 @@ public class HelpTextProviderTests
         help.Should().Contain("Built-in templates:")
             .And.Contain("default")
             .And.Contain("summary");
+    }
+
+    [Fact]
+    public void GetHelpText_IncludesLargeValueFormatOption()
+    {
+        var help = HelpTextProvider.GetHelpText();
+
+        help.Should().Contain("--large-value-format <inline-diff|standard-diff>")
+            .And.Contain("Controls rendering of large attribute values");
     }
 }

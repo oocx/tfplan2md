@@ -22,6 +22,12 @@ public class ReportModel
     /// Related feature: docs/features/unchanged-values-cli-option/specification.md
     /// </summary>
     public required bool ShowUnchangedValues { get; init; }
+
+    /// <summary>
+    /// Rendering format to use for large attribute values.
+    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// </summary>
+    public required LargeValueFormat LargeValueFormat { get; init; }
 }
 
 public class ModuleChangeGroup
@@ -114,11 +120,12 @@ public class AttributeChangeModel
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
-public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false)
+public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
 {
     private readonly bool _showSensitive = showSensitive;
     private readonly bool _showUnchangedValues = showUnchangedValues;
     private readonly IResourceSummaryBuilder _summaryBuilder = summaryBuilder ?? new ResourceSummaryBuilder();
+    private readonly LargeValueFormat _largeValueFormat = largeValueFormat;
 
     public ReportModel Build(TerraformPlan plan)
     {
@@ -189,7 +196,8 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             Changes = displayChanges,
             ModuleChanges = moduleGroups,
             Summary = summary,
-            ShowUnchangedValues = _showUnchangedValues
+            ShowUnchangedValues = _showUnchangedValues,
+            LargeValueFormat = _largeValueFormat
         };
     }
 

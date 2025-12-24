@@ -1,3 +1,5 @@
+using Oocx.TfPlan2Md.MarkdownGeneration;
+
 namespace Oocx.TfPlan2Md.CLI;
 
 /// <summary>
@@ -45,6 +47,12 @@ public record CliOptions
     /// Related feature: docs/features/unchanged-values-cli-option/specification.md
     /// </summary>
     public bool ShowUnchangedValues { get; init; }
+
+    /// <summary>
+    /// Controls the rendering format for large attribute values.
+    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// </summary>
+    public LargeValueFormat LargeValueFormat { get; init; }
 }
 
 /// <summary>
@@ -62,6 +70,7 @@ public static class CliParser
         var showHelp = false;
         var showVersion = false;
         var showUnchangedValues = false;
+        var largeValueFormat = LargeValueFormat.InlineDiff;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -111,6 +120,17 @@ public static class CliParser
                 case "--show-unchanged-values":
                     showUnchangedValues = true;
                     break;
+                case "--large-value-format":
+                    if (i + 1 < args.Length)
+                    {
+                        var formatValue = args[++i];
+                        largeValueFormat = ParseLargeValueFormat(formatValue);
+                    }
+                    else
+                    {
+                        throw new CliParseException("--large-value-format requires a format argument (inline-diff or standard-diff).");
+                    }
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -131,7 +151,20 @@ public static class CliParser
             ShowHelp = showHelp,
             ShowVersion = showVersion,
             PrincipalMappingFile = principalMappingFile,
-            ShowUnchangedValues = showUnchangedValues
+            ShowUnchangedValues = showUnchangedValues,
+            LargeValueFormat = largeValueFormat
+        };
+    }
+
+    private static LargeValueFormat ParseLargeValueFormat(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+
+        return normalized switch
+        {
+            "inline-diff" => LargeValueFormat.InlineDiff,
+            "standard-diff" => LargeValueFormat.StandardDiff,
+            _ => throw new CliParseException("--large-value-format must be 'inline-diff' or 'standard-diff'.")
         };
     }
 }

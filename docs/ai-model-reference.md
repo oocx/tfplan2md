@@ -240,3 +240,21 @@ This document should be updated when:
 - **Model Comparison Guide**: [https://docs.github.com/en/copilot/reference/ai-models/model-comparison](https://docs.github.com/en/copilot/reference/ai-models/model-comparison) - A task-based guide for picking the best model for general-purpose coding, deep reasoning, fast help, or visual tasks.
 - **Comparing Models by Task**: [https://docs.github.com/en/copilot/tutorials/compare-ai-models](https://docs.github.com/en/copilot/tutorials/compare-ai-models) - A tutorial with real-world examples, sample prompts, and responses showing how different models handle specific developer tasks.
 - **About Premium Requests**: [https://docs.github.com/en/copilot/managing-copilot/monitoring-usage-and-entitlements/about-premium-requests](https://docs.github.com/en/copilot/managing-copilot/monitoring-usage-and-entitlements/about-premium-requests) - Detailed information on how premium requests are calculated, consumed via model multipliers, and managed across different Copilot plans.
+
+## Independent LiveBench mappings (actionable evidence)
+
+The table below maps Copilot model IDs from this document to the closest independent LiveBench leaderboard variant (search links provided). Use these LiveBench rows as the primary independent evidence when updating model recommendations. Where a clear LiveBench variant was not found, the model is flagged as "No independent scores found" or "Ambiguous".
+
+- **GPT-5.1-Codex-Max**: LiveBench variant "GPT-5.1 Codex Max" — https://livebench.ai/?search=GPT-5.1%20Codex%20Max (strong coding + instruction-following scores; actionable)
+- **GPT-5 family (GPT-5, GPT-5.1, GPT-5.2, GPT-5 Pro, GPT-5 mini)**: LiveBench variants "GPT-5.2 High", "GPT-5 Pro", "GPT-5.1 High", "GPT-5 Mini High" — https://livebench.ai/?search=GPT-5 (independent per-category scores available; verify exact Copilot ID → LiveBench variant mapping before changing recommendations)
+- **GPT-5-Codex / GPT-5.1-Codex / GPT-5.1-Codex-Mini**: LiveBench variants include "GPT-5.1 Codex" and "GPT-5.1 Codex Max" — https://livebench.ai/?search=GPT-5.1%20Codex (Codex and Codex Max: actionable; Codex-Mini: limited independent runs)
+- **Claude Haiku 4.5**: LiveBench variant "Claude Haiku 4.5" — https://livebench.ai/?search=Claude%20Haiku%204.5 (independent per-category scores available)
+- **Claude Opus 4.1 / Opus 4.5**: LiveBench variants "Claude Opus" / "Claude Opus 4.1/4.5" — https://livebench.ai/?search=Claude%20Opus (actionable; map effort/thinking modes to Copilot IDs)
+- **Gemini 2.5 Pro**: LiveBench variant "Gemini 2.5 Pro" — https://livebench.ai/?search=Gemini%202.5%20Pro (independent scores available)
+- **Raptor mini**: No independent LiveBench / HELM rows found for the exact "Raptor mini" ID — https://livebench.ai/?search=Raptor%20mini (flagged: No independent scores found; recommend vendor confirmation)
+- **GPT-4.1**: Ambiguous mapping on LiveBench (no unambiguous row labelled exactly "GPT-4.1"); related GPT-4 variant data exists but treat as "Ambiguous" — https://livebench.ai/?search=GPT-4.1 (recommend caution and cross-checking before using as primary evidence)
+
+Notes:
+- Primary independent source: LiveBench (https://livebench.ai/) and its Hugging Face datasets (https://huggingface.co/collections/livebench/livebench-67eaef9bb68b45b17a197a98).
+- "Effort" / "Thinking" / "High" tags in LiveBench affect scores — always record the exact LiveBench variant (including effort) when citing scores.
+- For models flagged as "No independent scores found" or "Ambiguous", document that gap in agent guidance and recommend vendor/model-card confirmation or targeted evaluation.

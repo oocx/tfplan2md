@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using Oocx.TfPlan2Md.Azure;
 using Scriban.Runtime;
@@ -19,6 +20,7 @@ public static class ScribanHelpers
         scriptObject.Import("format_diff", new Func<string?, string?, string>(FormatDiff));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
+        scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
         scriptObject.Import("is_large_value", new Func<string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
@@ -77,6 +79,92 @@ public static class ScribanHelpers
         }
 
         return input.Length > 100;
+    }
+
+    /// <summary>
+    /// Formats large attribute values according to the requested rendering format.
+    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// </summary>
+    /// <param name="before">The previous value; null indicates creation.</param>
+    /// <param name="after">The new value; null indicates deletion.</param>
+    /// <param name="format">The rendering format ("inline-diff" or "standard-diff").</param>
+    /// <returns>Markdown string containing the formatted value.</returns>
+    public static string FormatLargeValue(string? before, string? after, string format)
+    {
+        var parsedFormat = ParseLargeValueFormat(format);
+
+        if (after is null && before is null)
+        {
+            return string.Empty;
+        }
+
+        if (after is null)
+        {
+            // Delete
+            return CodeFence(before ?? string.Empty);
+        }
+
+        if (before is null)
+        {
+            // Create
+            return CodeFence(after);
+        }
+
+        return parsedFormat switch
+        {
+            LargeValueFormat.StandardDiff => BuildStandardDiff(before, after),
+            _ => BuildStandardDiff(before, after) // inline handled in later tasks; fallback for now
+        };
+    }
+
+    private static LargeValueFormat ParseLargeValueFormat(string format)
+    {
+        var normalized = (format ?? string.Empty).Trim().ToLowerInvariant();
+
+        return normalized switch
+        {
+            "inline-diff" => LargeValueFormat.InlineDiff,
+            "standard-diff" => LargeValueFormat.StandardDiff,
+            _ => throw new ScribanHelperException("Unsupported large value format. Use 'inline-diff' or 'standard-diff'.")
+        };
+    }
+
+    private static string CodeFence(string content, string? language = null)
+    {
+        var fenceLang = string.IsNullOrWhiteSpace(language) ? string.Empty : language;
+        var sb = new StringBuilder();
+        sb.Append("```");
+        sb.AppendLine(fenceLang);
+        sb.AppendLine(content);
+        sb.Append("```");
+        return sb.ToString();
+    }
+
+    private static string BuildStandardDiff(string before, string after)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("```diff");
+
+        foreach (var line in SplitLines(before))
+        {
+            sb.Append("- ");
+            sb.AppendLine(line);
+        }
+
+        foreach (var line in SplitLines(after))
+        {
+            sb.Append("+ ");
+            sb.AppendLine(line);
+        }
+
+        sb.Append("```");
+        return sb.ToString();
+    }
+
+    private static string[] SplitLines(string value)
+    {
+        return value.Replace("\r", string.Empty, StringComparison.Ordinal)
+            .Split('\n', StringSplitOptions.None);
     }
 
     private static ScriptObject GetScopeInfo(string? scope)

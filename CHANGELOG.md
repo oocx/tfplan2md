@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.32.0"></a>
+## [0.32.0](https://github.com/oocx/tfplan2md/compare/v0.31.1...v0.32.0) (2025-12-24)
+
+### ✨ Features
+
+* add inline diff formatting with char highlighting ([7a3e34d](https://github.com/oocx/tfplan2md/commit/7a3e34d97a08e028f10b08013e0522e12439a52f))
+* add large value detection helper ([696d7f5](https://github.com/oocx/tfplan2md/commit/696d7f5e3e77d0f5e81f204dd89f5e6afd5d0a2b))
+* add large-value-format cli option ([18ce46d](https://github.com/oocx/tfplan2md/commit/18ce46d75ddacc8121273e6384a24d0cf34e432f))
+* add standard diff formatting for large values ([0c29164](https://github.com/oocx/tfplan2md/commit/0c29164757865ebba1dceaebf64afb5443361bbc))
+* complete Task 7 - template integration ([05fbb86](https://github.com/oocx/tfplan2md/commit/05fbb86772cd5fe440db9530d079db5ec243d10f))
+* implement large-attribute-value-display feature ([424b4c6](https://github.com/oocx/tfplan2md/commit/424b4c6ab70565ec1c740a74447b491710435d00))
+
+### 🐛 Bug Fixes
+
+* handle empty before blocks and remove stray template separator ([e3fa75a](https://github.com/oocx/tfplan2md/commit/e3fa75adc454c1d605b622df64ab285b74f85b89))
+
+### 📚 Documentation
+
+* add architecture for large-attribute-value-display ([2709dca](https://github.com/oocx/tfplan2md/commit/2709dca05c6fdae3bdab29e5f1aa1b7920da7e50))
+* add feature specification for large attribute value display ([5a4cd2c](https://github.com/oocx/tfplan2md/commit/5a4cd2cf60e1cd8201f60ce876c4ce016ca249bd))
+* add tasks for large-attribute-value-display ([74dc831](https://github.com/oocx/tfplan2md/commit/74dc8312b26a4a28e4c41bc60723577577d6fc0a))
+* add test plan for large-attribute-value-display ([dd768f5](https://github.com/oocx/tfplan2md/commit/dd768f504453ee4ed251033d7178b5c3e7f77fac))
+* add text color for dark mode compatibility in example outputs ([43777e6](https://github.com/oocx/tfplan2md/commit/43777e67e4c85c687c88a9432dcc80890c95ddf4))
+* complete Task 8 - documentation updates ([993ff09](https://github.com/oocx/tfplan2md/commit/993ff09a5d313e2a98d585054af446c8822c9e52))
+* finalize documentation and code review for large value display ([2525400](https://github.com/oocx/tfplan2md/commit/252540081f29619da3c73606d31ddba106420d50))
+* mark inline diff tasks as done ([3a64660](https://github.com/oocx/tfplan2md/commit/3a646602916cef8cc200b76ff0fbb5c7d4072d56))
+* mark task1 large-value-format cli as done ([e2a8358](https://github.com/oocx/tfplan2md/commit/e2a8358c560ce8b9f543f0ae7728487eb60b4202))
+* mark task2 large value detection as done ([8efaa0f](https://github.com/oocx/tfplan2md/commit/8efaa0ffa5d7b192bfd5db5b106047ee96d8847b))
+* mark task3 standard diff as done ([3e470cb](https://github.com/oocx/tfplan2md/commit/3e470cbf4e95f022e402a7733eaf28b70cf1bdd5))
+* update large value feature docs ([d46a9b6](https://github.com/oocx/tfplan2md/commit/d46a9b64bd1774a7af52493c1d14fb8db78541f0))
+
 <a name="0.31.1"></a>
 ## [0.31.1](https://github.com/oocx/tfplan2md/compare/v0.31.0...v0.31.1) (2025-12-24)
 

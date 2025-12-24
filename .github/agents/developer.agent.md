@@ -3,7 +3,7 @@ description: Implement features and tests according to specifications
 name: Developer
 target: vscode
 model: GPT-5.1-Codex-Max
-tools: ['search', 'edit', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*']
+tools: ['search', 'edit', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*', 'ms-toolsai.jupyter/*', 'copilot-container-tools/*']
 handoffs:
   - label: Update Documentation
     agent: "Technical Writer"
@@ -114,8 +114,7 @@ Follow the project's coding conventions strictly:
 1. **Sync with latest main** - ALWAYS do this first, whether starting new work or rework:
    ```bash
    git status  # Confirm you're on feature/<name> branch
-   git fetch origin main
-   git rebase origin/main  # Get latest changes from main
+   git fetch origin && git rebase origin/main  # Get latest changes from main
    ```
    - This prevents merge conflicts later
    - Required for both initial implementation and rework after failed PR/CI validation

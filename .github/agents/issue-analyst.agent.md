@@ -242,7 +242,6 @@ Your work is complete when:
 
 - Stay focused on **diagnosis and analysis**, not implementation
 - If you find the fix is trivial, still document it and hand off to Developer
-- For complex issues, consider handing off to Code Reviewer for guidance first
 - If you're uncertain about the root cause, document what you've ruled out
 
 ## Examples

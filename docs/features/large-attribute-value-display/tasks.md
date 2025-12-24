@@ -77,12 +77,14 @@ Implement the cross-platform compatible `standard-diff` formatting.
 **Description:**
 Implement the Azure DevOps-optimized `inline-diff` formatting at the line level, including the "Complete Replacement" logic.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] `format_large_value` supports `inline-diff`.
-- [ ] Generates HTML `<pre>` block with specified inline styles (background colors, left borders).
-- [ ] Includes `color: #24292e` for dark mode compatibility.
-- [ ] **Complete Replacement**: If no common lines exist, switches to separate "Before:" and "After:" code blocks.
-- [ ] Unit tests (TC-07, TC-08) pass for line-level changes.
+- [x] `format_large_value` supports `inline-diff`.
+- [x] Generates HTML `<pre>` block with specified inline styles (background colors, left borders).
+- [x] Includes `color: #24292e` for dark mode compatibility.
+- [x] **Complete Replacement**: If no common lines exist, switches to separate "Before:" and "After:" code blocks.
+- [x] Unit tests (TC-07, TC-08) pass for line-level changes.
 
 **Dependencies:** Task 3
 
@@ -95,10 +97,12 @@ Implement the Azure DevOps-optimized `inline-diff` formatting at the line level,
 **Description:**
 Enhance the `inline-diff` with character-level highlighting for changed lines.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] Within changed lines in `inline-diff` mode, specific changed characters are wrapped in `<span>` with darker background colors (`#ffc0c0` for deletions, `#acf2bd` for additions).
-- [ ] Correctly handles escaping of HTML special characters (`<`, `>`, `&`) within the diff.
-- [ ] Character-level highlighting is precise (uses LCS or similar algorithm).
+- [x] Within changed lines in `inline-diff` mode, specific changed characters are wrapped in `<span>` with darker background colors (`#ffc0c0` for deletions, `#acf2bd` for additions).
+- [x] Correctly handles escaping of HTML special characters (`<`, `>`, `&`) within the diff.
+- [x] Character-level highlighting is precise (uses LCS or similar algorithm).
 
 **Dependencies:** Task 4
 

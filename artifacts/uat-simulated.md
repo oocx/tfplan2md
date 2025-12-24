@@ -1,13 +1,12 @@
-# UAT Simulation Output (Intentionally Broken)
+# UAT Simulation Output (Fixed)
 
-This PR simulates a markdown rendering issue.
+This PR simulates a markdown rendering issue and its fix.
 
 | Column | Value |
 | --- | --- |
 | OK | Works |
-| BUG | <details><summary>Broken details</summary>
-This is missing a closing tag so rendering may break below.
+| FIXED | <details><summary>Details render safely</summary><br/>This details block is properly closed.</details> |
 
-## Content After Bug
+## Content After Fix
 
-If you can read this normally, the renderer is forgiving.
+This content should render normally.

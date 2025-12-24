@@ -18,12 +18,14 @@ Reference:
 **Description:**
 Add the new `--large-value-format` CLI option and update the internal models to carry this preference.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] `CliOptions` includes `LargeValueFormat` enum (values: `InlineDiff`, `StandardDiff`).
-- [ ] `CliParser` correctly parses `--large-value-format` (case-insensitive).
-- [ ] Default value for `LargeValueFormat` is `InlineDiff`.
-- [ ] `ReportModel` includes `LargeValueFormat` property.
-- [ ] `ReportModelBuilder` populates `LargeValueFormat` from CLI options.
+- [x] `CliOptions` includes `LargeValueFormat` enum (values: `InlineDiff`, `StandardDiff`).
+- [x] `CliParser` correctly parses `--large-value-format` (case-insensitive).
+- [x] Default value for `LargeValueFormat` is `InlineDiff`.
+- [x] `ReportModel` includes `LargeValueFormat` property.
+- [x] `ReportModelBuilder` populates `LargeValueFormat` from CLI options.
 
 **Dependencies:** None
 

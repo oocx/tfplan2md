@@ -85,8 +85,8 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 
 Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
 
-- **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for GitHub and Azure DevOps rendering. 
-- **`standard-diff`**: Traditional diff format with `+`/`-` markers. Cross-platform compatible with plain markdown viewers.
+- **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps (GitHub strips styles but content remains readable).
+- **`standard-diff`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
 
 Example:
 ```bash

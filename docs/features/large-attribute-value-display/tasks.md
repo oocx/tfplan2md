@@ -38,12 +38,14 @@ Add the new `--large-value-format` CLI option and update the internal models to 
 **Description:**
 Implement the logic to identify which attributes should be treated as "large".
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] New helper `is_large_value(value)` in `ScribanHelpers.cs`.
-- [ ] Returns `true` if value contains `\n`, `\r`, or `\r\n`.
-- [ ] Returns `true` if value length > 100 characters.
-- [ ] Returns `false` for short single-line values and null/empty values.
-- [ ] Unit tests (TC-01, TC-02, TC-03) pass.
+- [x] New helper `is_large_value(value)` in `ScribanHelpers.cs`.
+- [x] Returns `true` if value contains `\n`, `\r`, or `\r\n`.
+- [x] Returns `true` if value length > 100 characters.
+- [x] Returns `false` for short single-line values and null/empty values.
+- [x] Unit tests (TC-01, TC-02, TC-03) pass.
 
 **Dependencies:** Task 1
 

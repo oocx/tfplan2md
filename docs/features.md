@@ -98,6 +98,30 @@ Each resource change displays a concise one-line summary above the `<details>` s
   - Example: `` `sttfplan2mdlogs` in `rg-tfplan2md-demo` (eastus) | Standard LRS ``
   - Uses resource-specific attribute mappings for 43 azurerm resources, plus fallbacks for azuredevops, azuread, azapi, and msgraph providers
 
+### Large Attribute Value Display
+
+**Status:** ✅ Implemented
+
+Large attribute values (multi-line text or strings > 100 characters) are automatically moved from the main attribute table to a separate collapsible `<details>` section to improve readability.
+
+**Features:**
+- **Automatic Detection**: Values with newlines or exceeding 100 characters are treated as large.
+- **Collapsible Section**: Large values are grouped in a `<details>` section below the resource table.
+- **Summary Line**: The summary shows the number of lines and changed lines for each large attribute.
+- **Formatting Options**:
+  - `inline-diff` (default): Azure DevOps-optimized HTML with character-level diff highlighting.
+  - `standard-diff`: GitHub-compatible markdown diff blocks.
+- **Complete Replacement**: If a value is completely replaced (no common lines), it shows separate "Before" and "After" blocks.
+
+**Usage:**
+```bash
+# Default (inline-diff)
+tfplan2md plan.json
+
+# Standard diff (better for GitHub)
+tfplan2md plan.json --large-value-format standard-diff
+```
+
 - **UPDATE**: Shows resource name and list of changed attributes (up to 3, then "+ N more")
   - Example: `` `sttfplan2mddata` | Changed: account_replication_type, tags.cost_center ``
 
@@ -157,8 +181,8 @@ To improve readability, large attribute values (multi-line or >100 characters) a
 - **Collapsible section**: All large attributes are grouped in a single "Large attributes" section.
 - **Summary line**: Shows the count of large attributes and total lines (e.g., "Large attributes (2 attributes, 147 lines)").
 - **Display formats**:
-  - **`inline-diff`** (default): Azure DevOps-optimized HTML with line-by-line and character-level diff highlighting.
-  - **`standard-diff`**: Cross-platform markdown code blocks with `diff` syntax highlighting.
+  - **`inline-diff`** (default): Azure DevOps-optimized HTML with line-by-line and character-level diff highlighting. Note that GitHub strips these HTML styles (content remains readable), so this format is best for Azure DevOps.
+  - **`standard-diff`**: Cross-platform markdown code blocks with `diff` syntax highlighting. This format is fully portable and works on both GitHub and Azure DevOps.
 
 **Usage:**
 Control the display format using the `--large-value-format` CLI option:

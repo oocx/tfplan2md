@@ -242,22 +242,22 @@ Server=tcp:new-server.database.windows.net,1433;Database=NewDB;User=newadmin;Pas
 
 ## Success Criteria
 
-- [ ] Values with newlines are automatically treated as large
-- [ ] Values exceeding 100 characters (single line) are automatically treated as large
-- [ ] Small attributes continue to display in tables unchanged
-- [ ] Large attributes are grouped in a single collapsible section per resource
-- [ ] Summary line accurately shows count and total line count
-- [ ] `--large-value-format inline-diff` produces VS Code-style output with HTML colors
-- [ ] `--large-value-format standard-diff` produces standard diff code fences
-- [ ] Default format is `inline-diff`
-- [ ] Inline-diff format renders correctly in Azure DevOps with colors
-- [ ] Standard-diff format renders correctly on both GitHub and Azure DevOps
-- [ ] Create/delete operations show single value in code block
-- [ ] Update/replace operations show before/after comparison
-- [ ] All markdown output passes markdownlint validation
-- [ ] Sensitive values in large attributes are masked unless `--show-sensitive` is used
-- [ ] Existing tests remain passing with small values in tables
-- [ ] New tests cover large value detection and formatting
+- [x] Values with newlines are automatically treated as large
+- [x] Values exceeding 100 characters (single line) are automatically treated as large
+- [x] Small attributes continue to display in tables unchanged
+- [x] Large attributes are grouped in a single collapsible section per resource
+- [x] Summary line accurately shows count and total line count
+- [x] `--large-value-format inline-diff` produces VS Code-style output with HTML colors
+- [x] `--large-value-format standard-diff` produces standard diff code fences
+- [x] Default format is `inline-diff`
+- [x] Inline-diff format renders correctly in Azure DevOps with colors (validated manually)
+- [x] Standard-diff format renders correctly on both GitHub and Azure DevOps
+- [x] Create/delete operations show single value in code block
+- [x] Update/replace operations show before/after comparison
+- [x] All markdown output passes markdownlint validation
+- [x] Sensitive values in large attributes are masked unless `--show-sensitive` is used
+- [x] Existing tests remain passing with small values in tables
+- [x] New tests cover large value detection and formatting
 
 ## Open Questions
 

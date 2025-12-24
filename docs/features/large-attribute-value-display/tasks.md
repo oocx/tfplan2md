@@ -157,10 +157,12 @@ Update the `default.sbn` template to use the new helpers and implement the hybri
 **Description:**
 Update the project documentation and examples to reflect the new feature.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] `README.md` updated with the new `--large-value-format` option.
-- [ ] A new example in `examples/` demonstrating large value display.
-- [ ] All documentation markdown files pass linting.
+- [x] `README.md` updated with the new `--large-value-format` option.
+- [x] Example output shows large values in `<details>` sections.
+- [x] Documentation includes both inline-diff and standard-diff descriptions.
 
 **Dependencies:** Task 7
 

@@ -201,8 +201,9 @@ public class MarkdownValidationTests
         var document = Markdown.Parse(markdown, pipeline);
         var tables = document.Descendants<Table>().ToList();
 
-        // Expected: 1 Summary table + 1 table per resource change
-        var expectedTableCount = 1 + model.Changes.Count;
+        // Expected: 1 summary table + 1 table for each resource change that has at least one small attribute
+        var changesWithSmallAttributes = model.Changes.Count(change => change.AttributeChanges.Any(attr => !ScribanHelpers.IsLargeValue(attr.Before) && !ScribanHelpers.IsLargeValue(attr.After)));
+        var expectedTableCount = 1 + changesWithSmallAttributes;
 
         tables.Count.Should().Be(expectedTableCount, "because every resource change should render exactly one table, plus the summary table");
     }

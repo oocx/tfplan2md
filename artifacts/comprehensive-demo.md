@@ -7,10 +7,10 @@
 | Action | Count | Resource Types |
 | -------- | ------- | ---------------- |
 | ➕ Add | 12 | 1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_log_analytics_workspace<br/>1 azurerm_resource_group<br/>2 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_subnet<br/>2 azurerm_virtual_network |
-| 🔄 Change | 5 | 1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network |
+| 🔄 Change | 6 | 1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network |
 | ♻️ Replace | 2 | 1 azurerm_network_security_group<br/>1 azurerm_subnet |
 | ❌ Destroy | 3 | 1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network |
-| **Total** | **22** | |
+| **Total** | **23** | |
 
 ## Resource Changes
 
@@ -80,8 +80,6 @@
 | `tags.environment` | old |
 
 </details>
-
----
 
 ### Module: `module.network`
 
@@ -207,8 +205,6 @@
 
 </details>
 
----
-
 ### Module: `module.security`
 
 #### ➕ module.security.azurerm_role_assignment.rg_reader
@@ -243,12 +239,6 @@
 
 ##### `scope`
 
-**Before:**
-```
-
-```
-
-**After:**
 ```
 Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscription 12345678-1234-1234-1234-123456789012
 ```
@@ -316,6 +306,23 @@ Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscript
 
 </details>
 
+#### 🔄 module.security.azurerm_key_vault_secret.audit_policy
+
+**Summary:** `audit-policy` | Changed: value
+
+<details>
+<summary>Large values: value (4 lines, 2 changed)</summary>
+
+##### `value`
+
+<pre style="font-family: monospace; line-height: 1.5;"><code>line1: allow
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">line2: log <span style="background-color: #ffc0c0; color: #24292e;">o</span>l<span style="background-color: #ffc0c0; color: #24292e;">d</span> activity</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">line2: log <span style="background-color: #acf2bd; color: #24292e;">critica</span>l activity</span>
+line3: end
+</code></pre>
+
+</details>
+
 #### 🔄 module.security.azurerm_storage_account.analytics
 
 **Summary:** `sttfplan2mdanalytics` | Changed: account_replication_type, min_tls_version, tags.retention
@@ -356,7 +363,6 @@ Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscript
 | `principal_id` | 00000000-0000-0000-0000-000000000005 [00000000-0000-0000-0000-000000000005] |
 
 </details>
----
 
 ### Module: `module.network.module.monitoring`
 
@@ -375,5 +381,3 @@ Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscript
 | `sku` | PerGB2018 |
 
 </details>
-
----

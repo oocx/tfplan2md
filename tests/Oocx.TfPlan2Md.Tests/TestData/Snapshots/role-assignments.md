@@ -55,12 +55,6 @@ Allow DevOps team to read logs from the storage account
 
 ##### `scope`
 
-**Before:**
-```
-
-```
-
-**After:**
 ```
 Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one
 ```
@@ -137,4 +131,3 @@ Legacy access
 | `name` | unmapped |
 
 </details>
----

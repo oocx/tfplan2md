@@ -29,8 +29,6 @@
 
 </details>
 
----
-
 ### Module: `module.network`
 
 #### ➕ module.network.azurerm_virtual_network.vnet
@@ -45,8 +43,6 @@
 | `name` | vnet |
 
 </details>
-
----
 
 ### Module: `module.network.module.subnet`
 
@@ -63,8 +59,6 @@
 
 </details>
 
----
-
 ### Module: `module.app`
 
 #### 🔄 module.app.azurerm_app_service.app
@@ -78,8 +72,6 @@
 | `plan` | B1 | S1 |
 
 </details>
-
----
 
 ### Module: `module.app.module.database`
 
@@ -95,5 +87,3 @@
 | `sku` | GP_Gen5_2 |
 
 </details>
-
----

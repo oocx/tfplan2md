@@ -2,19 +2,19 @@
 
 This document describes the agent-based workflow for feature development in this project. The workflow is inspired by best practices from the GitHub Copilot agents article, the VS Code Copilot Custom Agents documentation, and modern software engineering principles.
 
-Agents work locally and produce artifacts as markdown files in the repository. The **project maintainer** coordinates handoffs between agents by starting chat sessions with each agent in VS Code. Agents may ask the maintainer for clarification or request that feedback be relayed to a previous agent.
+Agents work locally and produce artifacts as markdown files in the repository. The **Maintainer** coordinates handoffs between agents by starting chat sessions with each agent in VS Code. Agents may ask the Maintainer for clarification or request that feedback be relayed to a previous agent.
 
 ---
 
 ## Entry Point
 
-The workflow begins when a **developer** (human) identifies a need:
+The workflow begins when the **Maintainer** identifies a need:
 
 - **New Feature**: Start with the **Requirements Engineer** agent to gather requirements and create a Feature Specification
-- **Bug Fix / Incident**: Start with the **Support Engineer** agent to investigate and document the issue
+- **Bug Fix / Incident**: Start with the **Issue Analyst** agent to investigate and document the issue
 - **Workflow Improvement**: Start with the **Workflow Engineer** agent to modify the development process itself
 
-Throughout the workflow, the developer acts as the **project maintainer**, coordinating handoffs between agents and providing clarifications as needed.
+Throughout the workflow, the Maintainer coordinates handoffs between agents and provides clarifications as needed.
 
 ---
 
@@ -30,23 +30,23 @@ flowchart TB
 	classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
 
 	%% Human starting point (stadium shape for actor-like appearance)
-	HUMAN(["👤 <b>Developer</b><br/>(Human)"])
+	HUMAN(["👤 <b>Maintainer</b><br/>(Human)"])
 
 	%% Agents and artifacts in vertical order
-	SE["<b>Support Engineer</b>"]
+	IA_AGENT["<b>Issue Analyst</b>"]
 	IA["🔍 Issue Analysis"]
 	RE["<b>Requirements Engineer</b>"]
 	FS["📄 Feature Specification"]
 	AR["<b>Architect</b>"]
 	ADR["📐 Architecture Decision Records"]
-	PO["<b>Product Owner</b>"]
+	TP_AGENT["<b>Task Planner</b>"]
 	US["📋 User Stories / Tasks"]
 	QE["<b>Quality Engineer</b>"]
 	TP["✓ Test Plan & Test Cases"]
 	DEV["<b>Developer</b>"]
 	CODE["💻 Code & Tests"]
 	AN["🧪 Acceptance Notebooks"]
-	DOC["<b>Documentation Author</b>"]
+	TW["<b>Technical Writer</b>"]
 	DOCS["📚 Documentation"]
 	CR["<b>Code Reviewer</b>"]
 	CRR["✅ Code Review Report"]
@@ -59,24 +59,24 @@ flowchart TB
 	WD["⚙️ Workflow Documentation"]
 
 	%% Main vertical workflow with styled links
-	HUMAN == "Bug/Incident" ==> SE
+	HUMAN == "Bug/Incident" ==> IA_AGENT
 	HUMAN == "Feature Request" ==> RE
 	HUMAN == "Workflow Improvement" ==> WE
-	SE -- "Produces" --> IA
+	IA_AGENT -- "Produces" --> IA
 	IA -- "Consumed by" --> DEV
 	RE -- "Produces" --> FS
 	FS -- "Consumed by" --> AR
 	AR -- "Produces" --> ADR
 	ADR -- "Consumed by" --> QE
 	QE -- "Produces" --> TP
-	TP -- "Consumed by" --> PO
-	PO -- "Produces" --> US
+	TP -- "Consumed by" --> TP_AGENT
+	TP_AGENT -- "Produces" --> US
 	US -- "Consumed by" --> DEV
 	DEV -- "Produces" --> CODE
 	DEV -- "Produces" --> AN
-	CODE -- "Consumed by" --> DOC
+	CODE -- "Consumed by" --> TW
 	AN -- "Consumed by" --> CR
-	DOC -- "Produces" --> DOCS
+	TW -- "Produces" --> DOCS
 	DOCS -- "Consumed by" --> CR
 	CR -- "Produces" --> CRR
     CRR -- "Consumed by" --> DEV
@@ -94,32 +94,32 @@ flowchart TB
 	WE -- "Produces" --> WD
 	WE -. "Modifies" .-> RE
 	WE -. "Modifies" .-> AR
-	WE -. "Modifies" .-> PO
+	WE -. "Modifies" .-> TP_AGENT
 	WE -. "Modifies" .-> QE
 	WE -. "Modifies" .-> DEV
-	WE -. "Modifies" .-> DOC
+	WE -. "Modifies" .-> TW
 	WE -. "Modifies" .-> CR
 	WE -. "Modifies" .-> RM
 
 	%% Apply styles
 	class HUMAN human;
-	class SE,RE,AR,PO,QE,DEV,DOC,CR,RM agent;
+	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,RM agent;
 	class WE metaagent;
-	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD artifact;
+	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,AN artifact;
 ```
 
 _Agents produce and consume artifacts. Arrows show artifact creation and consumption. Communication for feedback/questions between agents (regarding consumed artifacts) is always possible, but intentionally omitted from the diagram for clarity._
 
 **Linear Workflow:**
 
-1. **Support Engineer** investigates bugs, incidents, and technical problems.
+1. **Issue Analyst** investigates bugs, incidents, and technical problems.
 2. **Requirements Engineer** gathers and clarifies requirements for new features.
 3. **Architect** designs the solution and documents decisions.
 4. **Quality Engineer** defines the test plan and cases (consumes architecture). For user-facing features, defines acceptance scenarios for manual review.
-5. **Product Owner** creates and prioritizes actionable work items (consumes test plan).
-6. **Developer** implements features/fixes and tests. For user-facing features, creates acceptance notebooks for maintainer review.
-7. **Documentation Author** updates all relevant documentation (markdown files in the repository).
-8. **Code Reviewer** reviews and approves the work. Verifies acceptance notebooks execute successfully (maintainer reviews output separately).
+5. **Task Planner** creates and prioritizes actionable work items (consumes test plan).
+6. **Developer** implements features/fixes and tests. For user-facing features, creates acceptance notebooks for Maintainer review.
+7. **Technical Writer** updates all relevant documentation (markdown files in the repository).
+8. **Code Reviewer** reviews and approves the work. Verifies acceptance notebooks execute successfully (Maintainer reviews output separately).
 9. **Release Manager** prepares, coordinates, and executes the release.
 
 **Meta-Agent:**
@@ -143,22 +143,22 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Key Behavior:** When multiple viable options exist, presents pros/cons with a recommendation and asks maintainer to choose the final approach.
 - **Definition of Done:** Architecture is documented and approved.
 
-### 4. Product Owner
-- **Goal:** Translate requirements and architecture into actionable work items.
-- **Deliverables:** User stories/tasks with acceptance criteria and priorities.
-- **Definition of Done:** Work items are clear, actionable, and prioritized.
-
 ### 4. Quality Engineer
 - **Goal:** Define how the feature will be tested and validated.
 - **Deliverables:** Test plan, test cases, quality criteria. For user-facing features, user acceptance scenarios for manual review.
 - **Definition of Done:** Test plan covers all acceptance criteria. User-facing features have clear acceptance scenarios defined.
 
+### 5. Task Planner
+- **Goal:** Translate requirements and architecture into actionable work items.
+- **Deliverables:** User stories/tasks with acceptance criteria and priorities.
+- **Definition of Done:** Work items are clear, actionable, and prioritized.
+
 ### 6. Developer
 - **Goal:** Implement features and tests as specified.
-- **Deliverables:** Code, tests, passing CI. For user-facing features, acceptance notebooks for maintainer review.
+- **Deliverables:** Code, tests, passing CI. For user-facing features, acceptance notebooks for Maintainer review.
 - **Definition of Done:** Code and tests meet requirements and pass all checks. User-facing features have interactive acceptance notebooks.
 
-### 7. Documentation Author
+### 7. Technical Writer
 - **Goal:** Update and maintain all relevant documentation.
 - **Deliverables:** Updated user and developer docs.
 - **Definition of Done:** Documentation is accurate and complete.
@@ -192,7 +192,7 @@ This section describes the purpose and format of each artifact produced and cons
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/<feature-name>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress. | Markdown document with: Title, Description, Acceptance Criteria checklist, Priority. | `docs/features/<feature-name>/tasks.md` |
 | **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/<feature-name>/test-plan.md` |
-| **User Acceptance Notebooks** | Interactive demonstrations of user-facing features for manual maintainer review. Used to catch rendering bugs, validate real-world usage, and gather feedback before merge. | Polyglot Notebook (.dib) files with PowerShell code cells executing actual CLI commands and markdown narratives explaining expected behavior and validation criteria. | `docs/features/<feature-name>/acceptance/*.dib` |
+| **User Acceptance Notebooks** | Interactive demonstrations of user-facing features for manual Maintainer review. Used to catch rendering bugs, validate real-world usage, and gather feedback before merge. | Polyglot Notebook (.dib) files with PowerShell code cells executing actual CLI commands and markdown narratives explaining expected behavior and validation criteria. | `docs/features/<feature-name>/acceptance/*.dib` |
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |
@@ -209,10 +209,10 @@ Different types of work use different branch prefixes to maintain clarity:
 | Work Type | Branch Prefix | Example | Used By Agent |
 |-----------|---------------|---------|---------------|
 | Feature Development | `feature/` | `feature/123-firewall-diff-display` | Requirements Engineer, Developer |
-| Bug Fixes / Incidents | `fix/` | `fix/docker-hub-secret-in-release-workflow` | Support Engineer, Developer |
+| Bug Fixes / Incidents | `fix/` | `fix/docker-hub-secret-in-release-workflow` | Issue Analyst, Developer |
 | Workflow Improvements | `workflow/` | `workflow/add-security-agent` | Workflow Engineer |
 
-**Note:** The Requirements Engineer creates the feature branch at the start of the feature workflow. The Support Engineer creates the fix branch at the start of the bug fix workflow. All subsequent agents work on the same branch until Release Manager creates the pull request.
+**Note:** The Requirements Engineer creates the feature branch at the start of the feature workflow. The Issue Analyst creates the fix branch at the start of the bug fix workflow. All subsequent agents work on the same branch until Release Manager creates the pull request.
 
 ---
 
@@ -222,13 +222,13 @@ Each agent hands off to the next by producing a specific deliverable. The workfl
 
 | From Agent              | To Agent                | Handoff Trigger / Deliverable                        |
 |-------------------------|-------------------------|------------------------------------------------------|
-| Support Engineer        | Developer               | Issue Analysis with root cause and fix approach      |
+| Issue Analyst           | Developer               | Issue Analysis with root cause and fix approach      |
 | Requirements Engineer   | Architect               | Feature Specification                                |
 | Architect               | Quality Engineer        | Architecture Decision Records (ADRs)                 |
-| Quality Engineer        | Product Owner           | Test Plan & Test Cases                               |
-| Product Owner           | Developer               | User Stories / Tasks with Acceptance Criteria        |
-| Developer               | Documentation Author    | Code & Tests                                         |
-| Documentation Author    | Code Reviewer           | Updated Documentation                                |
+| Quality Engineer        | Task Planner            | Test Plan & Test Cases                               |
+| Task Planner            | Developer               | User Stories / Tasks with Acceptance Criteria        |
+| Developer               | Technical Writer        | Code & Tests                                         |
+| Technical Writer        | Code Reviewer           | Updated Documentation                                |
 | Code Reviewer           | Release Manager (approved) <br/> Developer (rework needed) | Code Review Report            |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
 
@@ -240,14 +240,14 @@ Handoffs are triggered when the deliverable is complete and meets the "Definitio
 
 ## Handoffs and Communication
 
-All agent coordination is managed by the **project maintainer**:
+All agent coordination is managed by the **Maintainer**:
 
-1. **Starting an agent** - The maintainer opens a new chat session in VS Code and selects the appropriate agent from the agents dropdown.
-2. **Providing context** - The maintainer points the agent to relevant artifacts from previous steps (e.g., "Review the specification in docs/features/X/specification.md").
+1. **Starting an agent** - The Maintainer opens a new chat session in VS Code and selects the appropriate agent from the agents dropdown.
+2. **Providing context** - The Maintainer points the agent to relevant artifacts from previous steps (e.g., "Review the specification in docs/features/X/specification.md").
 3. **Handoff buttons** - Agents provide handoff buttons that pre-fill prompts for the next agent in the workflow.
-4. **Feedback relay** - If an agent needs clarification from a previous step, it asks the maintainer, who either answers directly or relays the question to the appropriate agent.
+4. **Feedback relay** - If an agent needs clarification from a previous step, it asks the Maintainer, who either answers directly or relays the question to the appropriate agent.
 
-This approach keeps the workflow simple and gives the maintainer full visibility and control over all agent interactions.
+This approach keeps the workflow simple and gives the Maintainer full visibility and control over all agent interactions.
 
 ---
 
@@ -264,8 +264,8 @@ When the **Code Reviewer** requests changes, the following process applies:
 5. This cycle continues until the Code Reviewer approves.
 
 For significant rework that affects requirements or architecture:
-- The maintainer may need to consult the **Product Owner** or **Architect** agents for clarification.
-- If the rework reveals gaps in the original specification, the maintainer may return to the **Requirements Engineer** agent.
+- The Maintainer may need to consult the **Task Planner** or **Architect** agents for clarification.
+- If the rework reveals gaps in the original specification, the Maintainer may return to the **Requirements Engineer** agent.
 
 ---
 
@@ -273,8 +273,8 @@ For significant rework that affects requirements or architecture:
 
 Agents may encounter blockers or need clarification from previous steps. The following approach applies:
 
-- **Ask the maintainer** - Agents should clearly state what information is missing or what decision is needed.
-- **Maintainer relays** - The maintainer decides whether to answer directly or consult another agent.
+- **Ask the Maintainer** - Agents should clearly state what information is missing or what decision is needed.
+- **Maintainer relays** - The Maintainer decides whether to answer directly or consult another agent.
 - **Document blockers** - If work cannot proceed, the agent should document the blocker in its output and wait for resolution.
 
 This keeps all decisions traceable through the conversation history and artifact files.
@@ -286,7 +286,7 @@ This keeps all decisions traceable through the conversation history and artifact
 - **Clear Agent Boundaries:** Each agent should have a single responsibility and clear handoff criteria.
 - **Extensibility:** Design agents to be composable and customizable for different project needs.
 - **Traceability:** Document all decisions, requirements, and changes in artifact files.
-- **Maintainer Control:** The maintainer coordinates all handoffs and has final approval on all artifacts.
+- **Maintainer Control:** The Maintainer coordinates all handoffs and has final approval on all artifacts.
 - **Continuous Improvement:** Regularly review and refine agent roles and workflow.
 
 ---

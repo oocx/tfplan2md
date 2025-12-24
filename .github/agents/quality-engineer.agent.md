@@ -6,7 +6,7 @@ model: Gemini 3 Pro (Preview)
 tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'edit/createFile', 'edit/editFiles', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'execute/runInTerminal', 'microsoftdocs/mcp/*']
 handoffs:
   - label: Create User Stories
-    agent: "Product Owner"
+    agent: "Task Planner"
     prompt: Review the test plan above and create actionable user stories for implementation.
     send: false
 ---
@@ -24,7 +24,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
 - Ensure all automated tests are fully automated (no manual steps)
-- For user-facing features (CLI changes, rendering changes), define user acceptance scenarios for maintainer review
+- For user-facing features (CLI changes, rendering changes), define user acceptance scenarios for Maintainer review
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
@@ -106,7 +106,7 @@ Brief summary of what is being tested and reference to the specification.
 
 ## User Acceptance Scenarios
 
-> **Purpose**: For user-facing features, define scenarios for manual maintainer review using interactive notebooks. These help catch rendering bugs, validate real-world usage, and gather feedback before merge.
+> **Purpose**: For user-facing features, define scenarios for manual Maintainer review using interactive notebooks. These help catch rendering bugs, validate real-world usage, and gather feedback before merge.
 
 ### Scenario 1: <Descriptive Name>
 
@@ -118,7 +118,7 @@ Brief summary of what is being tested and reference to the specification.
 3. Inspect: `<what to examine in output>`
 
 **Expected Output**:
-- Describe what the maintainer should see
+- Describe what the Maintainer should see
 - Key visual elements, format, content
 
 **Success Criteria**:
@@ -202,11 +202,11 @@ Your work is complete when:
 - [ ] Edge cases and error scenarios are covered
 - [ ] Test cases follow project conventions
 - [ ] Changes are committed to the feature branch
-- [ ] The maintainer has approved the test plan
+- [ ] The Maintainer has approved the test plan
 
 ## Committing Your Work
 
-**After the test plan is approved by the maintainer:**
+**After the test plan is approved by the Maintainer:**
 
 1. **Commit locally**:
    ```bash
@@ -218,11 +218,11 @@ Your work is complete when:
 
 ## Handoff
 
-After the test plan is approved, use the handoff button to transition to the **Product Owner** agent.
+After the test plan is approved, use the handoff button to transition to the **Task Planner** agent.
 
 ## Communication Guidelines
 
-- If acceptance criteria are ambiguous, ask the maintainer for clarification.
+- If acceptance criteria are ambiguous, ask the Maintainer for clarification.
 - Reference the existing test catalog in `docs/testing-strategy.md` for naming patterns.
 - Consider what test data already exists before proposing new files.
 - Highlight any gaps in testability (e.g., missing interfaces for mocking).

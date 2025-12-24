@@ -58,11 +58,13 @@ Implement the logic to identify which attributes should be treated as "large".
 **Description:**
 Implement the cross-platform compatible `standard-diff` formatting.
 
+**Status:** Done
+
 **Acceptance Criteria:**
-- [ ] New helper `format_large_value(before, after, format)` in `ScribanHelpers.cs`.
-- [ ] For `standard-diff`, generates a markdown code block with `diff` syntax highlighting.
-- [ ] Correctly handles Create (before is null) and Delete (after is null) operations.
-- [ ] Unit tests (TC-04, TC-05, TC-06) pass.
+- [x] New helper `format_large_value(before, after, format)` in `ScribanHelpers.cs`.
+- [x] For `standard-diff`, generates a markdown code block with `diff` syntax highlighting.
+- [x] Correctly handles Create (before is null) and Delete (after is null) operations.
+- [x] Unit tests (TC-04, TC-05, TC-06) pass.
 
 **Dependencies:** Task 2
 

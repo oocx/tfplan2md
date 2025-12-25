@@ -201,7 +201,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 ### 9. UAT Tester
 - **Goal:** Validate user-facing features in real-world environments.
 - **Deliverables:** User Acceptance PRs in GitHub and Azure DevOps with rendering verification.
-- **Definition of Done:** Maintainer approves rendering in both platforms, or aborts with documented issues.
+- **Definition of Done:** Maintainer approves rendering in both platforms, or aborts with documented issues. For Azure DevOps, approval is based on an approval comment or a reviewer vote (not thread resolution alone).
 
 ### 10. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.

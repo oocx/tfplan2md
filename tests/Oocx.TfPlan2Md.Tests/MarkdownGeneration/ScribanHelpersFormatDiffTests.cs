@@ -68,4 +68,14 @@ public class ScribanHelpersFormatDiffTests
             .And.Contain("<br>")
             .And.NotContain("```", "inline diff should be table-compatible without fenced code blocks");
     }
+
+    [Fact]
+    public void FormatDiff_InlineDiff_PrefixesAddedAndRemovedLines()
+    {
+        var result = ScribanHelpers.FormatDiff("old line", "new line", "inline-diff");
+
+        result.Should().Contain("- ")
+            .And.Contain("+ ")
+            .And.Contain("<span", "still styled for inline rendering");
+    }
 }

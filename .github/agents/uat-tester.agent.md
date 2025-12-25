@@ -41,6 +41,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 - If unsure whether a feature requires UAT
 
 ### 🚫 Never Do
+- Ask for confirmation in chat — proceed autonomously through all UAT steps (VS Code UI handles Allow/Deny)
 - Run `dotnet test`, `dotnet build`, or any code compilation (that's the Code Reviewer's job)
 - Modify C# source code or test files
 - Review code quality or architecture (that's the Code Reviewer's job)
@@ -135,17 +136,23 @@ When the Maintainer provides feedback (detected via polling):
 
 ### 5. Cleanup
 
-After approval (or abort):
+After approval (or abort), close PRs **before** switching branches:
 
 ```bash
-# Clean up both PRs
+# Close BOTH PRs first (while still on UAT branch with access to scripts)
 scripts/uat-github.sh cleanup "$GH_PR"
 scripts/uat-azdo.sh cleanup "$AZDO_PR"
 
-# Restore original branch
+# Now restore original branch
 git checkout "$ORIGINAL_BRANCH"
 echo "Restored to branch: $ORIGINAL_BRANCH"
+
+# Delete remote UAT branches (from feature branch)
+git push origin --delete "uat/<feature-name>" || true
+git push azdo --delete "uat/<feature-name>" || true
 ```
+
+**Important:** Always close both PRs in a single command block before switching branches. The scripts only exist on the feature branch.
 
 ## Approval Criteria
 

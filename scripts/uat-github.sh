@@ -137,9 +137,12 @@ cmd_cleanup() {
     fi
     
     log_info "Closing PR #$pr_number..."
-    PAGER=cat gh pr close "$pr_number" --delete-branch || log_warn "PR may already be closed"
+    # Note: Do NOT use --delete-branch here. Branch deletion causes immediate
+    # checkout to main, which breaks subsequent commands that need scripts.
+    # Delete branches manually after both cleanups complete.
+    PAGER=cat gh pr close "$pr_number" || log_warn "PR may already be closed"
     
-    log_info "Cleanup complete."
+    log_info "Cleanup complete. Remember to delete the remote branch manually."
 }
 
 # Main dispatch

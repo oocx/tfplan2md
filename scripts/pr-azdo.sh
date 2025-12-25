@@ -12,6 +12,9 @@ AZDO_REMOTE_NAME="${AZDO_REMOTE_NAME:-azdo}"
 usage() {
   cat <<'USAGE'
 Usage:
+  scripts/pr-azdo.sh preview --title <title> --description <text>
+  scripts/pr-azdo.sh preview --fill
+
   scripts/pr-azdo.sh create --title <title> --description <text>
   scripts/pr-azdo.sh create --fill
   scripts/pr-azdo.sh abandon --id <pr-id>
@@ -90,6 +93,45 @@ derive_from_git() {
   fi
 }
 
+ensure_origin_main_exists() {
+  if git show-ref --verify --quiet refs/remotes/origin/main; then
+    return 0
+  fi
+
+  git fetch origin main >/dev/null 2>&1 || true
+}
+
+print_preview() {
+  local base_ref="origin/main"
+  ensure_origin_main_exists
+  if ! git show-ref --verify --quiet refs/remotes/origin/main; then
+    base_ref="main"
+  fi
+
+  local file_count
+  local add_total
+  local del_total
+  local shortstat
+  local top_files
+
+  file_count="$(git diff --name-only "$base_ref"...HEAD | wc -l | tr -d ' ')"
+  add_total="$(git diff --numstat "$base_ref"...HEAD | awk '{a+=$1} END {print a+0}')"
+  del_total="$(git diff --numstat "$base_ref"...HEAD | awk '{d+=$2} END {print d+0}')"
+  shortstat="$(git diff --shortstat "$base_ref"...HEAD || true)"
+  top_files="$(git diff --name-only "$base_ref"...HEAD | head -n 3 | sed 's/^/- /')"
+
+  echo "PR Preview"
+  echo "Title: $TITLE"
+  echo "Summary:"
+  if [[ -n "$top_files" ]]; then
+    echo "$top_files"
+  fi
+  echo "- $file_count file(s) changed; +$add_total/-$del_total lines"
+  if [[ -n "$shortstat" ]]; then
+    echo "- $shortstat"
+  fi
+}
+
 parse_args() {
   local cmd="$1"
   shift
@@ -131,6 +173,17 @@ parse_args() {
 
   case "$cmd" in
     create)
+      if [[ "$FILL" == "true" ]]; then
+        derive_from_git
+      else
+        if [[ -z "$TITLE" || -z "$DESCRIPTION" ]]; then
+          echo "Error: provide --fill OR both --title and --description." >&2
+          usage
+          exit 2
+        fi
+      fi
+      ;;
+    preview)
       if [[ "$FILL" == "true" ]]; then
         derive_from_git
       else
@@ -211,6 +264,13 @@ main() {
     require_clean_worktree
   fi
 
+  parse_args "$cmd" "$@"
+
+  if [[ "$cmd" == "preview" ]]; then
+    print_preview
+    return 0
+  fi
+
   if ! command -v az >/dev/null 2>&1; then
     echo "Error: az is not installed." >&2
     exit 2
@@ -222,7 +282,6 @@ main() {
   fi
 
   ensure_azdo_auth
-  parse_args "$cmd" "$@"
 
   case "$cmd" in
     create)

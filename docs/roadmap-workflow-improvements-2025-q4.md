@@ -23,8 +23,8 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
 - ✅ Added stable wrapper scripts to reduce ad-hoc commands: GitHub ([#87](https://github.com/oocx/tfplan2md/pull/87)), Azure DevOps ([#88](https://github.com/oocx/tfplan2md/pull/88)), AzDO abandon cleanup ([#89](https://github.com/oocx/tfplan2md/pull/89))
 - ✅ Added UAT watch scripts/skills for polling: ([#90](https://github.com/oocx/tfplan2md/pull/90))
 - ✅ Hardened GitHub UAT polling to use structured JSON and filter agent comments: ([#92](https://github.com/oocx/tfplan2md/pull/92))
-- ⏳ `scripts/uat-run.sh` wrapper (single end-to-end UAT command) not implemented yet
-- ⏳ Guardrails against wrong artifacts + canonical artifact enforcement not implemented yet
+- ✅ Added `scripts/uat-run.sh` end-to-end wrapper (GitHub + AzDO orchestration): ([#95](https://github.com/oocx/tfplan2md/pull/95))
+- ✅ Added initial guardrails against wrong artifacts in UAT scripts (canonical artifact enforcement still pending): ([#95](https://github.com/oocx/tfplan2md/pull/95))
 
 ## 2. 🤝 Agent Communication & Role Clarity
 
@@ -55,6 +55,7 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
 **Progress**
 - ✅ Added skill design guidance to minimize Maintainer approvals (prefer stable wrapper commands): ([#86](https://github.com/oocx/tfplan2md/pull/86))
 - ✅ PR creation skills now require a chat preview (title + summary) before creating PRs: ([#93](https://github.com/oocx/tfplan2md/pull/93))
+- ✅ Wrapper scripts add a `preview` helper command to generate the chat preview consistently: ([#96](https://github.com/oocx/tfplan2md/pull/96))
 - ⏳ Doc alignment gate in Code Review not implemented yet
 - ⏳ Report style guide wiring into agent instructions not implemented yet
 - ⏳ Release Manager merge-method enforcement not implemented yet

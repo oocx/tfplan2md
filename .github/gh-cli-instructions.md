@@ -44,7 +44,12 @@ PAGER=cat gh pr list --json number,title,state,author
 # View pull request details
 PAGER=cat gh pr view 123 --json number,title,body,state,commits,reviews
 
-# Create pull request
+# Create pull request (preferred: repo wrapper scripts)
+# CRITICAL: Show the preview output in chat BEFORE creating/merging a PR.
+scripts/pr-github.sh preview --fill
+scripts/pr-github.sh create --fill
+
+# Manual fallback (only if wrapper scripts are unavailable)
 PAGER=cat gh pr create --title "Title" --body "Description" --base main --head feature-branch
 
 # Check pull request status

@@ -30,9 +30,9 @@ We will upgrade `ScribanHelpers.FormatDiff` and update the Scriban templates.
 ### 1. Update `ScribanHelpers.FormatDiff`
 - Change signature to `public static string FormatDiff(string? before, string? after, string format = "standard-diff")`.
 - Implement logic to parse the format string (using `ParseLargeValueFormat` or similar).
-- Use the same diff rendering logic as `FormatLargeValue` to support:
-  - `inline-diff`: HTML-based diff with character highlighting.
-  - `standard-diff`: Text-based diff with `+`/`-` markers.
+- Use a **table-compatible** rendering logic (avoiding block elements like `<pre>` or ` ``` `):
+  - `inline-diff`: HTML-based diff with character highlighting, using `<br>` for line breaks and `<code>` spans.
+  - `standard-diff`: Text-based diff with `+`/`-` markers, using `<br>` for line breaks.
 - Ensure it handles "small" values correctly (no collapsing needed, just formatting).
 
 ### 2. Update Scriban Templates

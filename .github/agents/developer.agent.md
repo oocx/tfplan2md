@@ -29,6 +29,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Verify acceptance criteria are satisfied before moving to next task
 - Commit after EACH task with descriptive conventional commit message
 - Update task status in tasks.md after each task completion
+- For user-facing features (CLI changes, rendering changes), ensure the output is easy to validate in User Acceptance PRs (handled by Code Reviewer)
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete

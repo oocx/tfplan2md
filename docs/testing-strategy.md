@@ -15,42 +15,41 @@ Test individual components in isolation to verify correct behavior of parsing, m
 Test JSON parsing and markdown generation end-to-end. As the application is distributed via Docker, Docker-based integration tests verify the final CLI behavior in a containerized environment.
 
 ### User Acceptance Testing (UAT)
+For user-facing changes (especially markdown rendering), run UAT in real environments using **temporary pull requests** in:
 
-For features that affect markdown rendering (e.g., changes to templates, snapshots, or examples), we perform manual verification in real environments to ensure compatibility with different markdown renderers.
+- GitHub PRs in `oocx/tfplan2md`
+- Azure DevOps PRs in `https://dev.azure.com/oocx` (project `test`, repository `test`)
 
-**Workflow:**
-1. **Trigger**: Feature changes rendering output.
-2. **GitHub UAT**:
-   - Code Reviewer agent creates a test PR in `oocx/tfplan2md`.
-   - Maintainer reviews the PR comment/description rendering.
-   - **Feedback Loop**: Maintainer provides feedback via PR comments. Agent polls for new comments to identify issues.
-   - Feedback is addressed until approved.
-3. **Azure DevOps UAT**:
-   - Code Reviewer agent creates a test PR in Azure DevOps (`oocx` organization, `test` project).
-   - Maintainer reviews the PR description rendering.
-   - **Feedback Loop**: Maintainer provides feedback via PR comments. Agent polls for new comments to identify issues.
-   - Feedback is addressed until approved.
+The UAT loop is **comment-driven**:
 
-**Technical Instructions:**
+1. Create a UAT PR with the generated markdown pasted into the PR body/description.
+2. Maintainer reviews in the real PR UI and leaves feedback as PR comments/threads.
+3. Apply fixes, push updates, and update the PR body/description.
+4. Repeat until Maintainer explicitly says **approve** or **abort**.
 
-**GitHub:**
-- **Create PR**: `gh pr create --title "UAT: <Feature Name>" --body-file artifacts/comprehensive-demo.md --base main --head <feature-branch>`
-- **Poll Comments**: `PAGER=cat gh pr view <pr-number> --comments` (Always use PAGER=cat to avoid blocking)
-- **Update PR**: Push changes to the feature branch.
+**Rules**:
+- Do not close/abandon UAT PRs unless the Maintainer explicitly says **approve** or **abort**.
+- Poll for new feedback until explicit approval/abort.
 
-**Azure DevOps:**
-- **Authenticate**: Check `az account show`. If failed, ask user to run `az login`.
-- **Push Branch**:
-  ```bash
-  git remote add azdo https://oocx@dev.azure.com/oocx/test/_git/test || true
-  git push azdo HEAD:<feature-branch>
-  ```
-- **Create PR**:
-  ```bash
-  az repos pr create --organization https://dev.azure.com/oocx --project test --repository test --source-branch <feature-branch> --target-branch main --title "UAT: <Feature Name>" --description "$(cat artifacts/comprehensive-demo.md)"
-  ```
-- **Poll Comments**: `az repos pr thread list --organization https://dev.azure.com/oocx --project test --repository test --pull-request-id <pr-id>`
-- **Update PR**: Push changes to the feature branch.
+**GitHub (non-blocking polling)**:
+```bash
+# Create PR and set body from artifact
+PAGER=cat gh pr create --title "UAT: <short description>" --body-file artifacts/<uat-file>.md
+
+# Poll comments (repeat until approval/abort)
+PAGER=cat gh pr view <pr-number> --comments
+```
+
+**Azure DevOps (threads via az devops invoke)**:
+```bash
+az account show >/dev/null || az login
+az devops configure --defaults organization=https://dev.azure.com/oocx project=test
+
+# Poll PR threads (repeat until approval/abort)
+az devops invoke --area git --resource pullrequestthreads \
+	--route-parameters project=test repositoryId=test pullRequestId=<pr-id> \
+	--api-version 7.1
+```
 
 ## Test Infrastructure
 
@@ -91,49 +90,41 @@ Additional test data files for edge cases:
 
 Tests for command-line argument parsing logic.
 
-| Test Name | Description |
-|-----------|-------------|
-| `Parse_NoArgs_ReturnsDefaultOptions` | Verifies that parsing empty arguments returns default option values (all nulls and false flags) |
-| `Parse_InputFileArg_SetsInputFile` | Verifies that a positional argument is correctly parsed as the input file path |
-| `Parse_OutputFlag_SetsOutputFile` | Verifies that `--output` flag correctly sets the output file path |
-| `Parse_ShortOutputFlag_SetsOutputFile` | Verifies that `-o` short flag correctly sets the output file path |
-| `Parse_TemplateFlag_SetsTemplatePath` | Verifies that `--template` flag correctly sets the custom template path |
-| `Parse_ShortTemplateFlag_SetsTemplatePath` | Verifies that `-t` short flag correctly sets the custom template path |
-| `Parse_ShowSensitiveFlag_SetsShowSensitive` | Verifies that `--show-sensitive` flag enables display of sensitive values |
-| `Parse_HelpFlag_SetsShowHelp` | Verifies that `--help` flag sets the help display option |
-| `Parse_ShortHelpFlag_SetsShowHelp` | Verifies that `-h` short flag sets the help display option |
-| `Parse_VersionFlag_SetsShowVersion` | Verifies that `--version` flag sets the version display option |
-| `Parse_ShortVersionFlag_SetsShowVersion` | Verifies that `-v` short flag sets the version display option |
-| `Parse_AllOptions_ParsesCorrectly` | Verifies that combining multiple options (input file, output, template, show-sensitive) parses correctly |
-| `Parse_UnknownOption_ThrowsCliParseException` | Verifies that unrecognized options throw a `CliParseException` |
-| `Parse_OutputWithoutValue_ThrowsCliParseException` | Verifies that `--output` without a value throws a `CliParseException` |
-| `Parse_TemplateWithoutValue_ThrowsCliParseException` | Verifies that `--template` without a value throws a `CliParseException` |
+For user-facing changes (especially markdown rendering), run UAT in real environments using **temporary pull requests** in:
 
-### Terraform Plan Parser Tests (`Parsing/TerraformPlanParserTests.cs`)
+- GitHub PRs in `oocx/tfplan2md`
+- Azure DevOps PRs in `https://dev.azure.com/oocx` (project `test`, repository `test`)
 
-Tests for parsing Terraform plan JSON files into the internal model.
+The UAT loop is **comment-driven**:
 
-| Test Name | Description |
-|-----------|-------------|
-| `Parse_ValidPlan_ReturnsCorrectVersion` | Verifies that the parser correctly extracts Terraform version (1.14.0) and format version (1.2) |
-| `Parse_ValidPlan_ReturnsCorrectResourceCount` | Verifies that all 6 resource changes are parsed from the test plan |
-| `Parse_ValidPlan_ParsesCreateAction` | Verifies that resources with "create" action are correctly identified (e.g., `azurerm_resource_group.main`) |
-| `Parse_ValidPlan_ParsesUpdateAction` | Verifies that resources with "update" action are correctly identified (e.g., `azurerm_key_vault.main`) |
-| `Parse_ValidPlan_ParsesDeleteAction` | Verifies that resources with "delete" action are correctly identified (e.g., `azurerm_virtual_network.old`) |
-| `Parse_ValidPlan_ParsesReplaceAction` | Verifies that resources with replace (create+delete) action are correctly identified (e.g., `azuredevops_git_repository.main`) |
-| `Parse_ValidPlan_ParsesAzureDevOpsProvider` | Verifies that provider names are correctly extracted (e.g., `registry.terraform.io/microsoft/azuredevops`) |
-| `Parse_InvalidJson_ThrowsTerraformPlanParseException` | Verifies that malformed JSON throws a `TerraformPlanParseException` |
-| `Parse_EmptyJson_ThrowsTerraformPlanParseException` | Verifies that empty input throws a `TerraformPlanParseException` |
-| `Parse_EmptyPlan_ReturnsEmptyResourceChanges` | Verifies that a plan with empty `resource_changes` array is parsed correctly |
-| `Parse_NoOpPlan_ParsesNoOpAction` | Verifies that resources with "no-op" action are correctly identified |
-| `Parse_MinimalPlan_HandlesNullBeforeAndAfter` | Verifies that plans with null before/after values are parsed without errors |
-| `Parse_CreateOnlyPlan_ParsesMultipleCreates` | Verifies that plans with only create operations are parsed correctly |
-| `Parse_DeleteOnlyPlan_ParsesMultipleDeletes` | Verifies that plans with only delete operations are parsed correctly |
+1. Create a UAT PR with the generated markdown pasted into the PR body/description.
+2. Maintainer reviews in the real PR UI and leaves feedback as PR comments/threads.
+3. Apply fixes, push updates, and update the PR body/description.
+4. Repeat until Maintainer explicitly says **approve** or **abort**.
 
-### Report Model Builder Tests (`MarkdownGeneration/ReportModelBuilderTests.cs`)
+**Rules**:
+- Do not close/abandon UAT PRs unless the Maintainer explicitly says **approve** or **abort**.
+- Poll for new feedback until explicit approval/abort.
 
-Tests for building the report model from a parsed Terraform plan.
+**GitHub (non-blocking polling)**:
+```bash
+# Create PR and set body from artifact
+PAGER=cat gh pr create --title "UAT: <short description>" --body-file artifacts/<uat-file>.md
 
+# Poll comments (repeat until approval/abort)
+PAGER=cat gh pr view <pr-number> --comments
+```
+
+**Azure DevOps (threads via az devops invoke)**:
+```bash
+az account show >/dev/null || az login
+az devops configure --defaults organization=https://dev.azure.com/oocx project=test
+
+# Poll PR threads (repeat until approval/abort)
+az devops invoke --area git --resource pullrequestthreads \
+  --route-parameters project=test repositoryId=test pullRequestId=<pr-id> \
+  --api-version 7.1
+```
 | Test Name | Description |
 |-----------|-------------|
 | `Build_ValidPlan_ReturnsCorrectSummary` | Verifies that the summary correctly counts: 3 to add, 1 to change, 1 to destroy, 1 to replace, 6 total |

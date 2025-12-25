@@ -139,7 +139,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 5. **Task Planner** creates and prioritizes actionable work items (consumes test plan).
 6. **Developer** implements features/fixes and tests.
 7. **Technical Writer** updates all relevant documentation (markdown files in the repository).
-8. **Code Reviewer** reviews and approves the work. For user-facing features, creates User Acceptance PRs for Maintainer review.
+8. **Code Reviewer** reviews and approves the work. For user-facing features (e.g., markdown rendering), runs User Acceptance Testing (UAT) via real pull requests in GitHub and Azure DevOps and waits for Maintainer approval/abort.
 9. **Release Manager** prepares, coordinates, and executes the release.
 
 **Meta-Agent:**
@@ -217,7 +217,7 @@ This section describes the purpose and format of each artifact produced and cons
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/<feature-name>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress. | Markdown document with: Title, Description, Acceptance Criteria checklist, Priority. | `docs/features/<feature-name>/tasks.md` |
 | **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/<feature-name>/test-plan.md` |
-| **User Acceptance PRs** | Test Pull Requests created in real environments (GitHub, Azure DevOps) to verify rendering quality and integration. Used to catch rendering bugs and validate real-world usage before merge. | Real Pull Requests in `oocx/tfplan2md` (GitHub) and `oocx/test` (Azure DevOps). | GitHub and Azure DevOps |
+| **User Acceptance PRs** | Real-environment verification for user-facing features (especially markdown rendering). Used to catch rendering bugs, validate real-world usage, and gather Maintainer feedback via PR comments. | Temporary pull requests in GitHub and Azure DevOps with the generated markdown report pasted into the PR body/description. Feedback is exchanged via PR comments/threads; fixes are pushed until Maintainer explicitly approves or aborts. | GitHub + Azure DevOps |
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |

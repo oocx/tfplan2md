@@ -120,7 +120,7 @@ Before starting, familiarize yourself with:
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
-- [ ] For rendering changes: User Acceptance PRs created and approved by Maintainer (GitHub and Azure DevOps)
+- [ ] For user-facing features: UAT PRs created and resolved (Maintainer approved or explicitly aborted)
 
 ## Review Approach
 
@@ -144,21 +144,26 @@ Before starting, familiarize yourself with:
    ```
 
    **User Acceptance Testing (UAT)**:
-   If the feature changes markdown rendering (e.g., snapshots or examples are modified):
-   
+   If the change is user-facing (especially markdown rendering), run UAT via real PRs in GitHub and Azure DevOps.
+
+   **Rules**:
+   - Do not close/abandon UAT PRs unless Maintainer explicitly says **approve** or **abort**.
+   - Poll for new comments/threads until explicit approval/abort.
+
    1. **GitHub UAT**:
-      - Create a test PR in `oocx/tfplan2md` (this repo) with the changes:
+      - Create a test PR in `oocx/tfplan2md` with the rendered markdown in the PR body:
         ```bash
-        gh pr create --title "UAT: <Feature Name>" --body-file artifacts/comprehensive-demo.md --base main --head <current-branch>
+        PAGER=cat gh pr create --title "UAT: <Feature Name>" --body-file artifacts/<uat-file>.md --base main --head <current-branch>
         ```
       - **Action**: Output the PR link and ask the Maintainer to review it.
-      - **WAIT** for the Maintainer to respond in the chat. Do NOT simulate feedback or proceed without user input.
+      - **WAIT** for the Maintainer to respond in chat. Do NOT simulate feedback or proceed without user input.
       - **When Maintainer asks to check feedback**:
-        - Poll for comments: `PAGER=cat gh pr view <pr-number> --comments`
+        - Poll comments (non-blocking): `PAGER=cat gh pr view <pr-number> --comments`
         - If Maintainer requests changes (in comments): Fix issues, push changes, and ask for review again.
-        - If Maintainer approves (in comments): Close the PR: `gh pr close <pr-number> --delete-branch`.
-      
-   2. **Azure DevOps UAT**:
+        - If Maintainer approves or aborts (in comments): close the PR and delete the branch:
+          `gh pr close <pr-number> --delete-branch`
+
+   2. **Azure DevOps UAT** (org `oocx`, project `test`, repo `test`):
       - Check authentication: `az account show`
       - **If not authenticated**: STOP and ask Maintainer to run `az login` in the terminal. Wait for confirmation before proceeding.
       - Push branch to Azure DevOps test repo:
@@ -166,16 +171,26 @@ Before starting, familiarize yourself with:
         git remote add azdo https://oocx@dev.azure.com/oocx/test/_git/test || true
         git push azdo HEAD:<current-branch>
         ```
-      - Create a test PR in `https://dev.azure.com/oocx`, Project "test", Repository "test":
+      - Create a test PR with the rendered markdown in the PR description:
         ```bash
-        az repos pr create --organization https://dev.azure.com/oocx --project test --repository test --source-branch <current-branch> --target-branch main --title "UAT: <Feature Name>" --description "$(cat artifacts/comprehensive-demo.md)"
+        az repos pr create --organization https://dev.azure.com/oocx --project test --repository test --source-branch <current-branch> --target-branch main --title "UAT: <Feature Name>" --description "$(cat artifacts/<uat-file>.md)"
         ```
       - **Action**: Output the PR link and ask the Maintainer to review it.
-      - **WAIT** for the Maintainer to respond in the chat.
+      - **WAIT** for the Maintainer to respond in chat.
       - **When Maintainer asks to check feedback**:
-        - Poll for comments: `az repos pr thread list --organization https://dev.azure.com/oocx --project test --repository test --pull-request-id <pr-id>`.
+        - Poll PR threads (comments) via `az devops invoke`:
+          ```bash
+          az devops configure --defaults organization=https://dev.azure.com/oocx project=test
+          az devops invoke --area git --resource pullrequestthreads \
+            --route-parameters project=test repositoryId=test pullRequestId=<pr-id> \
+            --api-version 7.1
+          ```
         - If Maintainer requests changes: Fix issues, push changes, and ask for review again.
-        - If Maintainer approves: Close/abandon the PR: `az repos pr update --id <pr-id> --status abandoned --organization https://dev.azure.com/oocx`.
+        - If Maintainer approves or aborts: abandon the PR:
+          `az repos pr update --id <pr-id> --status abandoned --organization https://dev.azure.com/oocx`
+
+   **Cadence**:
+   - While waiting: poll on demand when Maintainer says they commented, otherwise poll periodically (e.g., every 2 minutes) until explicit approval/abort.
 
 3. **Read the code** - Review all changed files against the checklist.
 

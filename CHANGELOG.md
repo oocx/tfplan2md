@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.44.0"></a>
+## [0.44.0](https://github.com/oocx/tfplan2md/compare/v0.43.0...v0.44.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** default UAT artifacts per platform ([94e1418](https://github.com/oocx/tfplan2md/commit/94e1418b2a4cb4ed2074d111c43bc78c6fefda72))
+
+### 📚 Documentation
+
+* **testing:** update UAT instructions to use scripts ([acc9a06](https://github.com/oocx/tfplan2md/commit/acc9a0688588451c1a00a616789005a055dfab71))
+* **workflow:** link latest retrospective follow-ups ([5903082](https://github.com/oocx/tfplan2md/commit/590308242087c9ca3a4df8dc99edb29433c8f74b))
+* **workflow:** prefer PR wrapper scripts in gh instructions ([1362f99](https://github.com/oocx/tfplan2md/commit/1362f9941a422db426994c6265309cb3c01c0fa3))
+* **workflow:** require PR preview in agent prompts ([82d84ce](https://github.com/oocx/tfplan2md/commit/82d84ce7fa5d77c6457cc39a69574450052e03a3))
+
 <a name="0.43.0"></a>
 ## [0.43.0](https://github.com/oocx/tfplan2md/compare/v0.42.0...v0.43.0) (2025-12-25)
 

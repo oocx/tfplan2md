@@ -317,6 +317,7 @@ public static class ScribanHelpers
         sb.Append(lineStyle);
         sb.Append('\"');
         sb.Append('>');
+        sb.Append(removed ? "- " : "+ ");
         sb.Append(HtmlEncode(line));
         sb.AppendLine("</span>");
     }
@@ -332,8 +333,9 @@ public static class ScribanHelpers
 
         sb.Append("<span style=\"");
         sb.Append(lineStyle);
-        sb.Append('\"');
+        sb.Append('"');
         sb.Append('>');
+        sb.Append(removed ? "- " : "+ ");
         sb.Append(ApplyCharHighlights(line, commonMask, highlightColor));
         sb.AppendLine("</span>");
     }

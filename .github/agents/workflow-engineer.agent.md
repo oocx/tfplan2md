@@ -309,10 +309,10 @@ git commit -m "feat: <clear description>"
 git push -u origin HEAD
 
 # CRITICAL: PR preview must be shown in chat BEFORE creation.
-scripts/pr-github.sh preview --fill
+scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
 
 # Create PR (repo wrapper)
-scripts/pr-github.sh create --fill
+scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
 ```
 
 ## Documentation Updates Checklist
@@ -380,10 +380,10 @@ When updating `docs/agents.md`, verify all of these:
    git push -u origin HEAD
 
    # CRITICAL: PR preview must be shown in chat BEFORE creation.
-   scripts/pr-github.sh preview --fill
+   scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
 
    # Create PR (repo wrapper)
-   scripts/pr-github.sh create --fill
+   scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
    ```
 
 5. **Return to feature work** - Switch back and restore:

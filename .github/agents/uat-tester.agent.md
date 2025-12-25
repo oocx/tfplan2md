@@ -2,7 +2,7 @@
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester
 target: vscode
-model: GPT-4.1
+model: GPT-5 mini
 tools: ['execute/runInTerminal', 'read/readFile', 'edit/createFile', 'edit/editFiles', 'search/listDirectory', 'read/terminalLastCommand', 'execute/getTerminalOutput']
 handoffs:
   - label: UAT Passed

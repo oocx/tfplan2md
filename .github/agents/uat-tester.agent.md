@@ -80,22 +80,18 @@ If authentication is missing (GitHub CLI or Azure CLI), ask the user to run `gh 
 If no artifact exists, or if the user asks for a "simulation", generate a test markdown file in `artifacts/`:
 
 ```markdown
-# UAT Simulation Report
+# UAT Minimal Markdown
 
-This is a simulated UAT markdown artifact for testing rendering.
+This is a minimal artifact for validating PR comment rendering.
 
-## Table Example
+## Table
 
-| Resource | Change | Before | After |
-|----------|--------|--------|-------|
-| azurerm_role_assignment | updated | Owner | Contributor |
-| azurerm_network_security_rule | created | - | Allow SSH |
+| Attribute | Value |
+| --- | --- |
+| `name` | `example-rg` |
+| `location` | `westeurope` |
 
-## List Example
-- Item 1
-- Item 2
-
-## Code Block Example
+## Code Block
 
 ```hcl
 resource "azurerm_resource_group" "example" {
@@ -104,19 +100,20 @@ resource "azurerm_resource_group" "example" {
 }
 ```
 
-## Notes
-- This artifact is for UAT simulation only.
-- Please provide feedback on rendering or formatting issues.
+## List
+
+- `inline code` inside a list item
+- Plain text item
 ```
 
-Save this to `artifacts/uat-simulation-YYYY-MM-DD.md`.
+Save this to `artifacts/uat-minimal.md` (or `artifacts/uat-simulation-YYYY-MM-DD.md` if you need date-stamped runs).
 
 **When the user provides feedback** (e.g., "render values as code"), generate a **new fixed version** of the report with the requested changes applied, save it to the same file, commit, and post to both PRs.
 
 ### Default Parameters
 
 When not specified by the user, use these defaults:
-- **Artifact**: Use the most recently modified `.md` file in `artifacts/`
+- **Artifact**: Prefer `artifacts/uat-minimal.md` if present; otherwise use the most recently modified `.md` file in `artifacts/`
 - **UAT Branch Name**: `uat/simulation-YYYY-MM-DD` where YYYY-MM-DD is today's date
 - **If branch already exists**: Append `-v2`, `-v3`, etc. to make it unique
 
@@ -214,7 +211,9 @@ scripts/uat-azdo.sh create "$ARTIFACT"
 
 #### Step 5: Start Polling Loop
 
-**Execute this loop in the foreground. Do not use background processes.**
+**Execute polling as single-shot steps in the foreground (no long-running loops in one terminal command).**
+
+Rationale: long multi-iteration polling loops can fail silently (e.g., terminal/tool disconnects). Single-shot polling makes failures obvious and ensures you keep the Maintainer updated.
 
 ```bash
 # Poll GitHub
@@ -235,6 +234,13 @@ After each poll:
 - **Both platforms approved** → Go to Step 7 (cleanup)
 - **Abort detected** → Go to Step 7 (cleanup)
 - **Nothing actionable** → Wait 15 seconds, poll again
+
+**Azure DevOps approval criteria:**
+- Approval keyword in a comment from a non-agent user (e.g., "approved", "lgtm"), OR
+- A reviewer vote of "Approved" / "Approved with suggestions" (vote >= 5), OR
+- PR status becomes "completed".
+
+Do NOT treat "resolved threads" as approval.
 
 #### Step 6: Apply Feedback (When Detected)
 

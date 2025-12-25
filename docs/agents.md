@@ -44,6 +44,12 @@ Guidelines:
 - If there are no good options to recommend, do not list options; instead state that the agent can't recommend any specific next steps right now.
 - If options are listed, include a recommendation (or explicitly say no recommendation).
 
+Todo lists:
+
+- Use a todo list when the work is multi-step (3+ steps) or when the agent expects to run tools/commands or edit files.
+- Keep the todo list updated as steps move from not-started → in-progress → completed.
+- Skip todo lists for simple Q&A or one-step actions.
+
 Format:
 
 ```text

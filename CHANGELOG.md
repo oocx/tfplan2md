@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.36.0"></a>
+## [0.36.0](https://github.com/oocx/tfplan2md/compare/v0.35.0...v0.36.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** add agent skills and UAT skills ([693e51f](https://github.com/oocx/tfplan2md/commit/693e51f275c697263f991c9d1d7ebd591ce42adc))
+
+### 📚 Documentation
+
+* **retrospective:** lead time + metrics guidance ([d5406e3](https://github.com/oocx/tfplan2md/commit/d5406e39db76d673c64c5edab2b3de269da4e8bc))
+
 <a name="0.35.0"></a>
 ## [0.35.0](https://github.com/oocx/tfplan2md/compare/v0.34.0...v0.35.0) (2025-12-25)
 

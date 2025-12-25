@@ -1,13 +1,12 @@
-# UAT Simulation Output (Intentionally Broken #2)
+# UAT Simulation Output (Fixed #2)
 
-This PR intentionally contains a markdown rendering bug.
+This PR intentionally contained a markdown rendering bug and now contains the fix.
 
 | Column | Value |
 | --- | --- |
 | OK | Works |
-| BUG | <details><summary>Broken</summary>
-This is unclosed and may break subsequent rendering.
+| FIXED | <details><summary>Not broken</summary><br/>This details block is properly closed.</details> |
 
-## Content After Bug
+## Content After Fix
 
-This heading might render inside the details block depending on renderer.
+This heading should render normally (outside of the details block).

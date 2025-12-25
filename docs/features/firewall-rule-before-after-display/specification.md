@@ -45,7 +45,7 @@ This only shows the "after" values, so users cannot see what changed.
 When a firewall rule is modified, changed attributes will show both before and after values in the same cell with diff-style prefixes:
 
 ```markdown
-| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |
+| 🔄 | `allow-http` | `TCP` | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | `*` | `80` | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |
 ```
 
 Where:

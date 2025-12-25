@@ -64,7 +64,7 @@ public class MarkdownRenderer
             }
 
             // Render using the resource-specific template (may return an error message if rendering fails)
-            var specific = RenderResourceChange(change);
+            var specific = RenderResourceChange(change, model.LargeValueFormat);
             if (specific is null)
             {
                 continue;
@@ -170,7 +170,7 @@ public class MarkdownRenderer
     /// </summary>
     /// <param name="change">The resource change to render.</param>
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
-    public string? RenderResourceChange(ResourceChangeModel change)
+    public string? RenderResourceChange(ResourceChangeModel change, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
     {
         var templateText = ResolveResourceTemplate(change.Type);
         if (templateText is null)
@@ -180,7 +180,7 @@ public class MarkdownRenderer
 
         try
         {
-            return RenderResourceWithTemplate(change, templateText);
+            return RenderResourceWithTemplate(change, templateText, largeValueFormat);
         }
         catch (ScribanHelperException ex)
         {
@@ -257,7 +257,7 @@ public class MarkdownRenderer
         return reader.ReadToEnd();
     }
 
-    private string RenderResourceWithTemplate(ResourceChangeModel change, string templateText)
+    private string RenderResourceWithTemplate(ResourceChangeModel change, string templateText, LargeValueFormat largeValueFormat)
     {
         var template = Template.Parse(templateText);
         if (template.HasErrors)
@@ -280,7 +280,7 @@ public class MarkdownRenderer
         }
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper);
+        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, largeValueFormat);
 
         var context = new TemplateContext();
         context.PushGlobal(scriptObject);
@@ -316,7 +316,7 @@ public class MarkdownRenderer
         scriptObject.Import(model, renamer: member => ToSnakeCase(member.Name));
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper);
+        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);
 
         var context = new TemplateContext();
         context.PushGlobal(scriptObject);

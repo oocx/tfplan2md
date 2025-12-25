@@ -21,7 +21,7 @@ public class ResourceSummaryBuilderTests
 
         var summary = _builder.BuildSummary(change);
 
-        summary.Should().Be("`st1` in `rg1` (eastus) | Standard LRS");
+        summary.Should().Be("`st1` in `rg1` (`eastus`) | `Standard LRS`");
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ResourceSummaryBuilderTests
 
         var summary = _builder.BuildSummary(change);
 
-        summary.Should().Be("`res1` in `rg1` (westeurope)");
+        summary.Should().Be("`res1` in `rg1` (`westeurope`)");
     }
 
     [Fact]

@@ -115,21 +115,27 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var keys = ResolveKeys(change.Type);
         var values = ExtractValues(keys, state);
 
+        static string WrapCode(string? value)
+        {
+            return string.IsNullOrEmpty(value) ? string.Empty : $"`{value}`";
+        }
+
         var name = Escape(GetDisplayName(values, state, change));
         var resourceGroup = Escape(TryGet(values, "resource_group_name"));
         var location = Escape(TryGet(values, "location"));
         var url = Escape(TryGet(values, "url"));
 
         var parts = new List<string>();
-        var namePart = name is not null ? $"`{name}`" : null;
+        var namePart = name is not null ? WrapCode(name) : null;
         if (!string.IsNullOrEmpty(resourceGroup))
         {
-            namePart = namePart is null ? $"`{resourceGroup}`" : $"{namePart} in `{resourceGroup}`";
+            namePart = namePart is null ? WrapCode(resourceGroup) : $"{namePart} in {WrapCode(resourceGroup)}";
         }
 
         if (!string.IsNullOrEmpty(location))
         {
-            namePart = namePart is null ? location : $"{namePart} ({location})";
+            var wrappedLocation = WrapCode(location);
+            namePart = namePart is null ? wrappedLocation : $"{namePart} ({wrappedLocation})";
         }
 
         if (!string.IsNullOrEmpty(namePart))
@@ -162,7 +168,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
             var combined = $"{accountTier} {accountReplication}".Trim();
             if (!string.IsNullOrEmpty(combined))
             {
-                parts.Add(combined);
+                parts.Add(WrapCode(combined));
             }
             values.Remove("account_tier");
             values.Remove("account_replication_type");
@@ -184,7 +190,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
             var escaped = Escape(value);
             if (!string.IsNullOrEmpty(escaped))
             {
-                parts.Add(escaped);
+                parts.Add(WrapCode(escaped));
             }
         }
 

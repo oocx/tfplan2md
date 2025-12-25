@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.Azure;
 
@@ -48,12 +50,16 @@ public class PrincipalMapperTests
     }
 
     [Fact]
-    public void GetPrincipalName_WithMalformedJson_DoesNotThrowAndReturnsOriginal()
+    public void GetPrincipalName_WithMalformedJson_LogsWarningAndReturnsOriginal()
     {
         // Arrange
         var mappingPath = CreateTempMapping("{ this-is-not-json }");
         try
         {
+            var originalError = Console.Error;
+            using var capture = new StringWriter();
+            Console.SetError(capture);
+
             var mapper = new PrincipalMapper(mappingPath);
 
             // Act
@@ -61,6 +67,12 @@ public class PrincipalMapperTests
 
             // Assert
             result.Should().Be("abc-123");
+
+            var stderr = capture.ToString();
+            stderr.Should().Contain("Could not read principal mapping file")
+                .And.Contain(mappingPath);
+
+            Console.SetError(originalError);
         }
         finally
         {

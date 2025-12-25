@@ -18,9 +18,11 @@ public static class ScribanHelpers
     /// <summary>
     /// Registers all custom helper functions with the given ScriptObject.
     /// </summary>
-    public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper)
+    public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, LargeValueFormat largeValueFormat)
     {
-        scriptObject.Import("format_diff", new Func<string?, string?, string>(FormatDiff));
+        var formatString = largeValueFormat == LargeValueFormat.StandardDiff ? "standard-diff" : "inline-diff";
+
+        scriptObject.Import("format_diff", new Func<string?, string?, string>((before, after) => FormatDiff(before, after, formatString)));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
@@ -170,6 +172,11 @@ public static class ScribanHelpers
         };
     }
 
+    private static string WrapInlineCode(string content)
+    {
+        return string.IsNullOrEmpty(content) ? string.Empty : $"<code>{content}</code>";
+    }
+
     private static string CodeFence(string content, string? language = null)
     {
         var fenceLang = string.IsNullOrWhiteSpace(language) ? string.Empty : language;
@@ -202,6 +209,11 @@ public static class ScribanHelpers
         return sb.ToString();
     }
 
+    private static string BuildStandardDiffTable(string escapedBefore, string escapedAfter)
+    {
+        return $"- `{escapedBefore}`<br>+ `{escapedAfter}`";
+    }
+
     private static string[] SplitLines(string value)
     {
         return value.Replace("\r", string.Empty, StringComparison.Ordinal)
@@ -212,20 +224,6 @@ public static class ScribanHelpers
     {
         var beforeLines = SplitLines(before);
         var afterLines = SplitLines(after);
-
-        var commonLength = ComputeLcsLength(beforeLines, afterLines);
-        if (commonLength == 0)
-        {
-            // Complete replacement fallback
-            var sbNoCommon = new StringBuilder();
-            sbNoCommon.AppendLine("**Before:**");
-            sbNoCommon.AppendLine(CodeFence(before));
-            sbNoCommon.AppendLine();
-            sbNoCommon.AppendLine("**After:**");
-            sbNoCommon.Append(CodeFence(after));
-            return sbNoCommon.ToString();
-        }
-
         var diff = BuildLineDiff(beforeLines, afterLines);
         var sb = new StringBuilder();
         sb.Append("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
@@ -268,6 +266,24 @@ public static class ScribanHelpers
 
         sb.Append("</code></pre>");
         return sb.ToString();
+    }
+
+    private static string BuildInlineDiffTable(string before, string after)
+    {
+        var block = BuildInlineDiff(before, after);
+        var content = block
+            .Replace("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", string.Empty, StringComparison.Ordinal)
+            .Replace("</code></pre>", string.Empty, StringComparison.Ordinal)
+            .Replace("display: block;", "display: inline-block;", StringComparison.Ordinal);
+
+        content = content.Replace("\r", string.Empty, StringComparison.Ordinal).Replace("\n", "<br>", StringComparison.Ordinal);
+
+        if (content.EndsWith("<br>", StringComparison.Ordinal))
+        {
+            content = content[..^4];
+        }
+
+        return content;
     }
 
     private static int CountTotalLines(string before, string after)
@@ -489,11 +505,6 @@ public static class ScribanHelpers
         return pairs;
     }
 
-    private static int ComputeLcsLength(string[] before, string[] after)
-    {
-        return ComputeLcsPairs(before, after).Count;
-    }
-
     private static List<LcsPair> ComputeLcsPairs(string before, string after)
     {
         var m = before.Length;
@@ -641,34 +652,39 @@ public static class ScribanHelpers
     }
 
     /// <summary>
-    /// Formats a before/after pair into a diff-style string while preserving intended line breaks.
+    /// Formats a before/after pair into a diff-style string while preserving table compatibility.
     /// </summary>
     /// <param name="before">The original value.</param>
     /// <param name="after">The updated value.</param>
+    /// <param name="format">Diff format: "inline-diff" or "standard-diff".</param>
     /// <returns>
-    /// The escaped updated value when the inputs are equal; otherwise "- escapedBefore&lt;br&gt;+ escapedAfter" with values escaped but the line break tag preserved.
+    /// Code-formatted output containing either styled HTML (inline) or +/- markers (standard). Returns empty when both values are null or empty.
     /// </returns>
-    /// <remarks>Related feature: docs/features/firewall-rule-before-after-display/specification.md</remarks>
-    /// <example>
-    /// <code>
-    /// FormatDiff("TCP", "UDP"); // returns "- TCP<br>+ UDP"
-    /// FormatDiff("|before|", "|after|"); // returns "- \\|before\\|<br>+ \\|after\\|"
-    /// </code>
-    /// </example>
-    public static string FormatDiff(string? before, string? after)
+    /// <remarks>
+    /// Related features: docs/features/firewall-rule-before-after-display/specification.md, docs/features/consistent-value-formatting/specification.md
+    /// </remarks>
+    public static string FormatDiff(string? before, string? after, string format)
     {
         var beforeValue = before ?? string.Empty;
         var afterValue = after ?? string.Empty;
 
-        var escapedBefore = EscapeMarkdown(beforeValue);
-        var escapedAfter = EscapeMarkdown(afterValue);
+        var parsedFormat = ParseLargeValueFormat(format);
+
+        if (string.IsNullOrEmpty(beforeValue) && string.IsNullOrEmpty(afterValue))
+        {
+            return string.Empty;
+        }
 
         if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
         {
-            return escapedAfter;
+            return WrapInlineCode(EscapeMarkdown(afterValue));
         }
 
-        return $"- {escapedBefore}<br>+ {escapedAfter}";
+        return parsedFormat switch
+        {
+            LargeValueFormat.StandardDiff => BuildStandardDiffTable(EscapeMarkdown(beforeValue), EscapeMarkdown(afterValue)),
+            _ => WrapInlineCode(BuildInlineDiffTable(beforeValue, afterValue))
+        };
     }
 
     /// <summary>

@@ -89,11 +89,13 @@ public class ScribanHelpersLargeValueTests
 
         var result = ScribanHelpers.FormatLargeValue(before, after, "inline-diff");
 
-        result.Should().Contain("**Before:**");
-        result.Should().Contain("**After:**");
-        result.Should().Contain("```\nfoo\n```");
-        result.Should().Contain("```\nbar\n```");
-        result.Should().NotContain("<pre");
+        result.Should().StartWith("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
+        result.Should().Contain("foo");
+        result.Should().Contain("bar");
+        result.Should().Contain("background-color: #fff5f5");
+        result.Should().Contain("background-color: #f0fff4");
+        result.Should().EndWith("</code></pre>");
+        result.Should().NotContain("**Before:**");
     }
 
     [Fact]

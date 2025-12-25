@@ -16,12 +16,12 @@ Reference: [Specification](specification.md), [Architecture](architecture.md), [
 Update the `format_diff` helper to support styled diffs (inline and standard) and update the registration logic to capture the global configuration.
 
 **Acceptance Criteria:**
-- [ ] `ScribanHelpers.FormatDiff` signature updated to `FormatDiff(string? before, string? after, string format)`.
-- [ ] `FormatDiff` implements table-compatible `inline-diff` (HTML with `<br>`).
-- [ ] `FormatDiff` implements table-compatible `standard-diff` (text with `<br>`).
-- [ ] `ScribanHelpers.RegisterHelpers` updated to accept `LargeValueFormat`.
-- [ ] `format_diff` registered as a closure: `(b, a) => FormatDiff(b, a, formatString)`.
-- [ ] Unit tests for `FormatDiff` (TC-05, TC-06) pass.
+- [x] `ScribanHelpers.FormatDiff` signature updated to `FormatDiff(string? before, string? after, string format)`.
+- [x] `FormatDiff` implements table-compatible `inline-diff` (HTML with `<br>`).
+- [x] `FormatDiff` implements table-compatible `standard-diff` (text with `<br>`).
+- [x] `ScribanHelpers.RegisterHelpers` updated to accept `LargeValueFormat`.
+- [x] `format_diff` registered as a closure: `(b, a) => FormatDiff(b, a, formatString)`.
+- [x] Unit tests for `FormatDiff` (TC-05, TC-06) pass.
 
 **Dependencies:** None
 
@@ -35,9 +35,9 @@ Update the `format_diff` helper to support styled diffs (inline and standard) an
 Update `MarkdownRenderer` to pass the `LargeValueFormat` from the `ReportModel` to the helper registration.
 
 **Acceptance Criteria:**
-- [ ] `MarkdownRenderer.Render` passes `model.LargeValueFormat` to `RegisterHelpers`.
-- [ ] `RenderResourceChange` and `RenderResourceWithTemplate` updated to accept and pass `LargeValueFormat`.
-- [ ] Integration test for configuration propagation (TC-07) passes.
+- [x] `MarkdownRenderer.Render` passes `model.LargeValueFormat` to `RegisterHelpers`.
+- [x] `RenderResourceChange` and `RenderResourceWithTemplate` updated to accept and pass `LargeValueFormat`.
+- [x] Integration test for configuration propagation (TC-07) passes.
 
 **Dependencies:** Task 1
 
@@ -51,10 +51,10 @@ Update `MarkdownRenderer` to pass the `LargeValueFormat` from the `ReportModel` 
 Reverse backtick formatting in attribute tables and refine role assignment summaries.
 
 **Acceptance Criteria:**
-- [ ] `default.sbn`: Attribute names are plain text, values are code-formatted.
-- [ ] `role_assignment.sbn`: Attribute names are plain text, values are code-formatted.
-- [ ] `role_assignment.sbn`: Summary lines only code-format data values (TC-08).
-- [ ] Unit tests for templates (TC-01, TC-02) pass.
+- [x] `default.sbn`: Attribute names are plain text, values are code-formatted.
+- [x] `role_assignment.sbn`: Attribute names are plain text, values are code-formatted.
+- [x] `role_assignment.sbn`: Summary lines only code-format data values (TC-08).
+- [x] Unit tests for templates (TC-01, TC-02) pass.
 
 **Dependencies:** Task 2
 
@@ -68,10 +68,10 @@ Reverse backtick formatting in attribute tables and refine role assignment summa
 Update firewall and NSG templates to use consistent code formatting for data values in headers and tables.
 
 **Acceptance Criteria:**
-- [ ] `firewall_network_rule_collection.sbn`: Headers and rule tables use code formatting for data (TC-03).
-- [ ] `network_security_group.sbn`: Headers use plain text for names, rule tables use code formatting for data (TC-04).
-- [ ] `format_diff` calls in these templates now produce styled output automatically.
-- [ ] Unit tests for templates (TC-03, TC-04) pass.
+- [x] `firewall_network_rule_collection.sbn`: Headers and rule tables use code formatting for data (TC-03).
+- [x] `network_security_group.sbn`: Headers use plain text for names, rule tables use code formatting for data (TC-04).
+- [x] `format_diff` calls in these templates now produce styled output automatically.
+- [x] Unit tests for templates (TC-03, TC-04) pass.
 
 **Dependencies:** Task 2
 
@@ -85,9 +85,9 @@ Update firewall and NSG templates to use consistent code formatting for data val
 Perform final verification of the generated reports and update any relevant documentation.
 
 **Acceptance Criteria:**
-- [ ] Manual verification of Scenario 1 (Default Report) and Scenario 2 (Firewall Diffs).
-- [ ] All existing tests pass (regression check).
-- [ ] Documentation examples in `docs/` reflect the new formatting.
+- [x] Manual verification of Scenario 1 (Default Report) and Scenario 2 (Firewall Diffs).
+- [x] All existing tests pass (regression check).
+- [x] Documentation examples in `docs/` reflect the new formatting.
 
 **Dependencies:** Task 3, Task 4
 

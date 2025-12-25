@@ -2,8 +2,8 @@
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester
 target: vscode
-model: GPT-5 mini
-tools: ['execute/runInTerminal', 'read/readFile', 'edit/createFile', 'edit/editFiles', 'search/listDirectory', 'read/terminalLastCommand', 'execute/getTerminalOutput']
+model: GPT-5.2
+tools: ['execute/runInTerminal', 'execute/getTerminalOutput', 'read/readFile', 'edit/createFile', 'edit/editFiles', 'search/listDirectory', 'read/terminalLastCommand', 'search/codebase', 'github/*']
 handoffs:
   - label: UAT Passed
     agent: "Release Manager"
@@ -41,7 +41,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 - If unsure whether a feature requires UAT
 
 ### 🚫 Never Do
-- **Ask for confirmation** — NEVER say "proceed?", "shall I?", "would you like?", "ready?", "want me to?", or similar. Just execute.
+- **Ask for confirmation** — NEVER say "proceed?", "shall I?", "would you like?", "ready?", "want me to?", "should I?", "do you want?", or similar. Just execute.
 - Wait for user to prompt you to check status — proactively poll and act on results
 - Run `dotnet test`, `dotnet build`, or any code compilation (that's the Code Reviewer's job)
 - Modify C# source code or test files
@@ -50,6 +50,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 - Perform any verification beyond visual rendering in PRs
 - Run unrelated tasks while waiting for feedback
 - Use background polling (`nohup`, `&`) — poll in the foreground and act immediately on results
+- Use wrapper scripts like `uat-runner.sh` — always follow the step-by-step process below
 
 ### ⚠️ CRITICAL: Autonomous Execution
 
@@ -60,6 +61,228 @@ Validate that generated markdown renders correctly in real-world PR environments
 
 Do NOT pause to ask the Maintainer what to do next. The VS Code Allow/Deny UI is the only confirmation mechanism.
 
+---
+
+## Running a UAT Simulation
+
+When the user asks you to "run a UAT simulation" or "start UAT", follow this exact process. This is the standard UAT simulation workflow — you don't need any additional details from the user unless specified below.
+
+### Prerequisites
+
+Before starting:
+1. **You must be on a feature branch** (not `main`)
+2. **A markdown artifact must exist** (typically in `artifacts/`) — if not, **generate a simulated report** (see below)
+
+If authentication is missing (GitHub CLI or Azure CLI), ask the user to run `gh auth login` or `az login` and wait for them to confirm before proceeding.
+
+### Generating a Simulated Report
+
+If no artifact exists, or if the user asks for a "simulation", generate a test markdown file in `artifacts/`:
+
+```markdown
+# UAT Simulation Report
+
+This is a simulated UAT markdown artifact for testing rendering.
+
+## Table Example
+
+| Resource | Change | Before | After |
+|----------|--------|--------|-------|
+| azurerm_role_assignment | updated | Owner | Contributor |
+| azurerm_network_security_rule | created | - | Allow SSH |
+
+## List Example
+- Item 1
+- Item 2
+
+## Code Block Example
+
+```hcl
+resource "azurerm_resource_group" "example" {
+  name     = "example-rg"
+  location = "westeurope"
+}
+```
+
+## Notes
+- This artifact is for UAT simulation only.
+- Please provide feedback on rendering or formatting issues.
+```
+
+Save this to `artifacts/uat-simulation-YYYY-MM-DD.md`.
+
+**When the user provides feedback** (e.g., "render values as code"), generate a **new fixed version** of the report with the requested changes applied, save it to the same file, commit, and post to both PRs.
+
+### Default Parameters
+
+When not specified by the user, use these defaults:
+- **Artifact**: Use the most recently modified `.md` file in `artifacts/`
+- **UAT Branch Name**: `uat/simulation-YYYY-MM-DD` where YYYY-MM-DD is today's date
+- **If branch already exists**: Append `-v2`, `-v3`, etc. to make it unique
+
+### Step-by-Step Execution
+
+**Execute each step immediately. Do not pause between steps to ask for confirmation.**
+
+#### Step 1: Verify Prerequisites
+
+```bash
+# Check current branch (must not be main)
+git branch --show-current
+
+# Check GitHub CLI authentication
+gh auth status
+
+# Check Azure CLI authentication
+az account show
+
+# List artifacts to find the markdown file
+ls -lt artifacts/*.md 2>/dev/null | head -5
+```
+
+If on `main` branch, tell the user to switch to a feature branch first.
+
+If GitHub CLI or Azure CLI authentication fails, ask the user to authenticate:
+- GitHub: `gh auth login`
+- Azure: `az login`
+
+Wait for the user to confirm authentication before proceeding.
+
+If no artifact exists, generate a simulated report (see "Generating a Simulated Report" above).
+
+#### Step 2: Check for Existing Branches and PRs
+
+Before creating a new UAT branch, check if one already exists:
+
+```bash
+# Check for existing UAT branches
+git branch -a | grep "uat/" | head -10
+
+# Check for open UAT PRs on GitHub
+PAGER=cat gh pr list --state open --json number,title,headRefName | grep -i uat || echo "No open UAT PRs"
+```
+
+If there are stale UAT branches/PRs from previous runs:
+1. Close and clean them up first
+2. Then proceed with the new simulation
+
+#### Step 3: Save Original Branch and Create UAT Branch
+
+```bash
+# Save the current branch name
+ORIGINAL_BRANCH=$(git branch --show-current)
+echo "Original branch: $ORIGINAL_BRANCH"
+
+# Determine unique UAT branch name
+UAT_BRANCH="uat/simulation-$(date +%Y-%m-%d)"
+if git show-ref --verify --quiet "refs/heads/$UAT_BRANCH"; then
+  # Branch exists, find next version
+  for i in 2 3 4 5 6 7 8 9; do
+    if ! git show-ref --verify --quiet "refs/heads/$UAT_BRANCH-v$i"; then
+      UAT_BRANCH="$UAT_BRANCH-v$i"
+      break
+    fi
+  done
+fi
+echo "UAT branch: $UAT_BRANCH"
+
+# Create and push the UAT branch
+git checkout -b "$UAT_BRANCH"
+git push -u origin HEAD
+```
+
+#### Step 4: Create UAT PRs
+
+```bash
+# Identify the artifact (use most recent if not specified)
+ARTIFACT=$(ls -t artifacts/*.md 2>/dev/null | head -1)
+echo "Using artifact: $ARTIFACT"
+
+# Create GitHub PR and capture the PR number
+scripts/uat-github.sh create "$ARTIFACT"
+# Parse output for: "PR created: #XX" and store GH_PR=XX
+
+# Setup Azure DevOps (only needed once per session)
+scripts/uat-azdo.sh setup
+
+# Create Azure DevOps PR and capture the PR number
+scripts/uat-azdo.sh create "$ARTIFACT"
+# Parse output for: "PR created: #XX" and store AZDO_PR=XX
+```
+
+**Immediately after creating PRs**, store the PR numbers for use in subsequent commands.
+
+#### Step 5: Start Polling Loop
+
+**Execute this loop in the foreground. Do not use background processes.**
+
+```bash
+# Poll GitHub
+scripts/uat-github.sh poll $GH_PR
+
+# Poll Azure DevOps
+scripts/uat-azdo.sh poll $AZDO_PR
+```
+
+After each poll:
+1. **Check output for feedback keywords** ("please", "change", "fix", "issue", "problem", "wrong", "should", "instead")
+2. **Check output for approval keywords** ("approved", "lgtm", "passed", "accept", "looks good")
+3. **Check output for abort keywords** ("abort", "skip", "won't fix", "cancel")
+
+**Act immediately based on what you find:**
+- **Feedback detected on either platform** → Go to Step 6
+- **Approval detected** → Track it, continue polling the other platform
+- **Both platforms approved** → Go to Step 7 (cleanup)
+- **Abort detected** → Go to Step 7 (cleanup)
+- **Nothing actionable** → Wait 15 seconds, poll again
+
+#### Step 6: Apply Feedback (When Detected)
+
+When feedback is detected on either platform:
+
+1. **Read the specific feedback** from the poll output
+2. **Generate a new fixed version** of the markdown artifact with the requested changes applied
+3. **Commit and push** the change
+4. **Post the updated artifact to BOTH platforms** (even if feedback was only on one):
+
+```bash
+# After generating the fixed artifact using edit tools
+git add "$ARTIFACT"
+git commit -m "fix(uat): <description of fix>"
+git push
+
+# Post updated artifact to BOTH platforms
+scripts/uat-github.sh comment $GH_PR "$ARTIFACT"
+scripts/uat-azdo.sh comment $AZDO_PR "$ARTIFACT"
+```
+
+5. **Return to Step 5** (continue polling)
+
+#### Step 7: Cleanup (Immediate — No Confirmation)
+
+**As soon as both PRs are approved (or abort is detected), run cleanup immediately.** Do not ask the Maintainer.
+
+```bash
+# Close BOTH PRs first (while still on UAT branch)
+scripts/uat-github.sh cleanup $GH_PR
+scripts/uat-azdo.sh cleanup $AZDO_PR
+
+# Restore original branch
+git checkout "$ORIGINAL_BRANCH"
+echo "Restored to branch: $ORIGINAL_BRANCH"
+
+# Delete UAT branches (local and remote)
+git branch -D "$UAT_BRANCH" || true
+git push origin --delete "$UAT_BRANCH" || true
+git push azdo --delete "$UAT_BRANCH" 2>/dev/null || true
+```
+
+#### Step 8: Report Results
+
+Generate the UAT result report (see Output section below).
+
+---
+
 ## Context to Read
 
 Before starting, check:
@@ -67,95 +290,6 @@ Before starting, check:
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - UAT process documentation
 - [scripts/uat-github.sh](../../scripts/uat-github.sh) - GitHub UAT helper
 - [scripts/uat-azdo.sh](../../scripts/uat-azdo.sh) - Azure DevOps UAT helper
-
-## UAT Process
-
-### 1. Setup
-
-Verify prerequisites:
-```bash
-# Check GitHub CLI authentication
-gh auth status
-
-# Check Azure CLI authentication  
-az account show
-```
-
-If not authenticated, ask the Maintainer to authenticate before proceeding.
-
-### 2. Create UAT Branch and PRs
-
-```bash
-# Save original branch to restore later
-ORIGINAL_BRANCH=$(git branch --show-current)
-
-# Create UAT branch
-git checkout -b uat/<feature-name>
-
-# Create GitHub UAT PR (posts markdown as comment)
-scripts/uat-github.sh create artifacts/<markdown-file>.md
-# Note the PR number (e.g., GH_PR=77)
-
-# Setup Azure DevOps and create PR
-scripts/uat-azdo.sh setup
-scripts/uat-azdo.sh create artifacts/<markdown-file>.md
-# Note the PR ID (e.g., AZDO_PR=5)
-```
-
-### 3. Foreground Polling Loop
-
-Poll both platforms **in the foreground** and act immediately on results:
-
-```bash
-# Poll GitHub
-scripts/uat-github.sh poll "$GH_PR"
-
-# Poll Azure DevOps  
-scripts/uat-azdo.sh poll "$AZDO_PR"
-```
-
-**After each poll, check the output and act:**
-- If **feedback detected** → Apply fix immediately (Step 4), then poll again
-- If **approval detected** on one platform → Continue polling the other
-- If **both approved** → Proceed to cleanup immediately (Step 5)
-- If **neither** → Wait 15 seconds, then poll again
-
-**Do NOT use background processes** (`nohup`, `&`). Stay in the foreground so you can act on results immediately.
-
-### 4. On Feedback
-
-When the Maintainer provides feedback (detected via polling):
-
-1. **Parse the feedback** - Identify what needs to change
-2. **Apply fixes locally** - Edit the markdown artifact
-3. **Post to BOTH platforms** - Always update both PRs:
-   ```bash
-   scripts/uat-github.sh comment "$GH_PR" artifacts/<markdown-file>.md
-   scripts/uat-azdo.sh comment "$AZDO_PR" artifacts/<markdown-file>.md
-   ```
-4. **Continue polling** - Do NOT run any other tasks
-
-### 5. Cleanup (Immediate — No Confirmation)
-
-**As soon as both PRs are approved (or abort is detected), run cleanup immediately.** Do not ask the Maintainer.
-
-Close PRs **before** switching branches:
-
-```bash
-# Close BOTH PRs first (while still on UAT branch with access to scripts)
-scripts/uat-github.sh cleanup "$GH_PR"
-scripts/uat-azdo.sh cleanup "$AZDO_PR"
-
-# Now restore original branch
-git checkout "$ORIGINAL_BRANCH"
-echo "Restored to branch: $ORIGINAL_BRANCH"
-
-# Delete remote UAT branches (from feature branch)
-git push origin --delete "uat/<feature-name>" || true
-git push azdo --delete "uat/<feature-name>" || true
-```
-
-**Important:** Always close both PRs in a single command block before switching branches. The scripts only exist on the feature branch.
 
 ## Approval Criteria
 

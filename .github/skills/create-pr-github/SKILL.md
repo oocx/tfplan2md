@@ -16,6 +16,9 @@ This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minim
 - Work on a non-`main` branch.
 - Ensure the working tree is clean before creating a PR.
 - Push the branch to `origin` before creating the PR.
+- Before creating the PR, post a short PR preview in chat:
+  - **Title**: the exact PR title you plan to use
+  - **Summary**: 1–3 bullets describing the change
 - Use **Rebase and merge** for merging PRs to maintain a linear history (see `CONTRIBUTING.md`).
 
 ### Must Not
@@ -23,6 +26,11 @@ This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minim
 - Use “Squash and merge” or “Create a merge commit”.
 
 ## Actions
+
+### 0. PR Preview (Required)
+Before running any PR creation command, provide in chat:
+- **PR title** (exact)
+- **PR summary** (1–3 bullets)
 
 ### Recommended: One-Command Wrapper
 Create a PR:

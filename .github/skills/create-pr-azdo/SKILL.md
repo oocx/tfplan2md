@@ -9,6 +9,8 @@ compatibility: Requires git, Azure CLI (az) with azure-devops extension, authent
 ## Purpose
 Create an Azure DevOps pull request in a consistent way, while still encoding the repository’s preference for a **linear history**.
 
+This skill prefers using the repo wrapper script `scripts/pr-azdo.sh` to minimize Maintainer approval interruptions (single terminal invocation).
+
 ## Notes on Merge Policy
 `CONTRIBUTING.md` specifies **Rebase and merge** as the required merge strategy for this repo.
 
@@ -25,6 +27,11 @@ Azure DevOps UI/merge options differ by project settings. When merging an Azure 
 - Merge using a strategy that introduces merge commits unless the Maintainer explicitly requests it.
 
 ## Actions
+
+### Recommended: One-Command Wrapper
+```bash
+scripts/pr-azdo.sh create --fill
+```
 
 ### 1. Pre-flight Checks
 ```bash

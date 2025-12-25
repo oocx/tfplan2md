@@ -35,6 +35,12 @@ Standardize the creation of new Agent Skills to ensure they are consistent, disc
 - **Self-Contained**: A skill should include all necessary scripts and templates within its folder.
 - **Progressive Disclosure**: Copilot only loads the skill body when the description matches the user's intent. Keep descriptions specific.
 - **Verification**: Test skills by asking Copilot "How do I <skill description>?" and verifying it loads the skill.
+- **Approval Minimization**: Design skills to reduce the number of Maintainer approval prompts (terminal command approvals) so agents can execute workflows with minimal interruptions.
+	- Prefer a small number of **stable wrapper commands** over many one-off commands.
+	- Batch related operations into a single command where practical (and safe).
+	- Prefer tool-based reads (editor tools) over shell commands for read-only actions when available.
+	- Reuse existing repo scripts (e.g., `scripts/uat-*.sh`) instead of duplicating multi-step command sequences.
+	- If a workflow is inherently risky (force-push, merge, deleting branches), keep it explicit and gated, but still consolidate the surrounding steps.
 
 ## Actions
 
@@ -43,6 +49,7 @@ Ask the user for:
 - **Skill Name**: Short, descriptive, kebab-case (e.g., `run-uat`, `deploy-docs`).
 - **Description**: One sentence explaining what the skill does and *when* Copilot should load it.
 - **Purpose**: Detailed explanation of the skill's goal.
+- **Approval Plan**: Which commands will run, and how to structure them to minimize approvals (prefer a small number of stable wrappers).
 
 ### 2. Create Directory Structure
 Run the following command to create the skill directory:

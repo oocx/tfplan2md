@@ -36,33 +36,33 @@ Before running any PR creation command, provide in chat:
 
 Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
 ```bash
-scripts/pr-github.sh preview --fill
+scripts/pr-github.sh preview --title "<type(scope): summary>" --body "<why + what + testing notes>"
 ```
 
-Preferred when you already have an agent-authored title/body:
+Fallback (best-effort title/body derived from commits; may be less descriptive):
 ```bash
-scripts/pr-github.sh preview --title "<type(scope): summary>" --body "<why + what + testing notes>"
+scripts/pr-github.sh preview --fill
 ```
 
 ### Recommended: One-Command Wrapper
 Create a PR:
 ```bash
-scripts/pr-github.sh create --fill
+scripts/pr-github.sh create --title "<type(scope): summary>" --body "<why + what + testing notes>"
 ```
 
-Preferred (explicit, matches the agent-authored description):
+Fallback:
 ```bash
-scripts/pr-github.sh create --title "<type(scope): summary>" --body "<why + what + testing notes>"
+scripts/pr-github.sh create --fill
 ```
 
 Create and merge (only when explicitly requested):
 ```bash
-scripts/pr-github.sh create-and-merge --fill
+scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body "<why + what + testing notes>"
 ```
 
-Preferred (explicit):
+Fallback:
 ```bash
-scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body "<why + what + testing notes>"
+scripts/pr-github.sh create-and-merge --fill
 ```
 
 ### 1. Pre-flight Checks

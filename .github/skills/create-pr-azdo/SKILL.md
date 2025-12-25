@@ -40,22 +40,22 @@ Before running any PR creation command, provide in chat:
 
 Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
 ```bash
-scripts/pr-azdo.sh preview --fill
+scripts/pr-azdo.sh preview --title "<type(scope): summary>" --description "<why + what + testing notes>"
 ```
 
-Preferred when you already have an agent-authored title/description:
+Fallback (best-effort title/description derived from commits; may be less descriptive):
 ```bash
-scripts/pr-azdo.sh preview --title "<type(scope): summary>" --description "<why + what + testing notes>"
+scripts/pr-azdo.sh preview --fill
 ```
 
 ### Recommended: One-Command Wrapper
 ```bash
-scripts/pr-azdo.sh create --fill
+scripts/pr-azdo.sh create --title "<type(scope): summary>" --description "<why + what + testing notes>"
 ```
 
-Preferred (explicit, matches the agent-authored description):
+Fallback:
 ```bash
-scripts/pr-azdo.sh create --title "<type(scope): summary>" --description "<why + what + testing notes>"
+scripts/pr-azdo.sh create --fill
 ```
 
 Abandon a test PR (cleanup):

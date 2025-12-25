@@ -9,9 +9,13 @@ handoffs:
     agent: "Developer"
     prompt: Address the issues identified in the code review above.
     send: false
-  - label: Prepare Release
+  - label: Run User Acceptance Testing
+    agent: "UAT Tester"
+    prompt: The code review is approved. Run UAT to validate markdown rendering in GitHub and Azure DevOps PRs.
+    send: false
+  - label: Prepare Release (No UAT Needed)
     agent: "Release Manager"
-    prompt: The code review is approved. Prepare the release.
+    prompt: The code review is approved and this change does not require UAT. Prepare the release.
     send: false
 ---
 
@@ -36,7 +40,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Check that CHANGELOG.md was NOT modified
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
 - When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
-- For features affecting rendering, create and manage User Acceptance PRs in GitHub and Azure DevOps
+- For user-facing features affecting markdown rendering, hand off to UAT Tester after code approval
 
 ### ⚠️ Ask First
 - Suggesting significant architectural changes
@@ -53,6 +57,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Request changes without clear justification
 - Block on minor style issues (use Suggestion category instead)
 - Approve code with Blocker issues unresolved
+- Run UAT (User Acceptance Testing) - that's the UAT Tester's job
 
 ## Context to Read
 
@@ -120,10 +125,7 @@ Before starting, familiarize yourself with:
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
-- [ ] For user-facing features: UAT completed via `scripts/uat-github.sh` and `scripts/uat-azdo.sh`
-  - [ ] Markdown posted as PR comments (not description)
-  - [ ] Polling ran automatically until approval
-  - [ ] PRs cleaned up after approval/abort
+- [ ] For user-facing features: UAT required (hand off to UAT Tester after approval)
 
 ## Review Approach
 
@@ -145,119 +147,6 @@ Before starting, familiarize yourself with:
    dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
    docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
    ```
-
-   **User Acceptance Testing (UAT)**:
-   If the change is user-facing (especially markdown rendering), run UAT via real PRs in GitHub and Azure DevOps.
-
-   > ⚠️ **UAT is ONLY for visual rendering validation.**
-   > Do NOT run `dotnet test`, `dotnet build`, or other code verification during UAT.
-   > UAT validates that markdown renders correctly in the PR UI—nothing else.
-
-   **Key Principles**:
-   - The markdown report is added as a **PR comment** (not PR description) so rendering can be validated in real PR UI.
-   - Comments are prefixed with "🤖 **Copilot Code Reviewer**" to distinguish agent comments from human comments.
-   - Each fix/update is posted as a **new comment** so Maintainer can see the progression.
-   - **Fixes must be posted to BOTH platforms**: When feedback is received on either GitHub or Azure DevOps, apply the fix and post the updated markdown to BOTH PRs.
-   - Agent **polls automatically** every 15 seconds without requiring Maintainer prompts.
-   - UAT PRs are **cleaned up automatically** after approval or abort.
-
-   **Approval Criteria**:
-   - **GitHub**: Maintainer comments "approved", "passed", "lgtm", "accept" OR closes the PR.
-   - **Azure DevOps**: Maintainer comments "approved"/"passed"/etc. OR marks the latest comment thread as "Resolved".
-
-   Use the helper scripts in `scripts/` for simplified interaction:
-
-   1. **GitHub UAT** (use `scripts/uat-github.sh`):
-      ```bash
-      # One-time: ensure on UAT branch
-      git checkout -b uat/<feature-name>
-      
-      # Create PR and add markdown as comment
-      scripts/uat-github.sh create artifacts/<uat-file>.md
-      # Returns: PR number
-      
-      # Poll automatically (run in loop or call repeatedly)
-      scripts/uat-github.sh poll <pr-number>
-      # Returns: exit 0 if approved, exit 1 if still waiting
-      
-      # After fix, add updated markdown as new comment
-      scripts/uat-github.sh comment <pr-number> artifacts/<uat-file>.md
-      
-      # After approval, clean up
-      scripts/uat-github.sh cleanup <pr-number>
-      ```
-
-   2. **Azure DevOps UAT** (use `scripts/uat-azdo.sh`):
-      ```bash
-      # One-time setup (verifies auth, configures defaults)
-      scripts/uat-azdo.sh setup
-      # If not authenticated, run: az login
-      
-      # Create PR and add markdown as comment
-      scripts/uat-azdo.sh create artifacts/<uat-file>.md
-      # Returns: PR ID
-      
-      # Poll automatically (run in loop or call repeatedly)
-      scripts/uat-azdo.sh poll <pr-id>
-      # Returns: exit 0 if approved/resolved, exit 1 if still waiting
-      
-      # After fix, add updated markdown as new comment
-      scripts/uat-azdo.sh comment <pr-id> artifacts/<uat-file>.md
-      
-      # After approval, clean up
-      scripts/uat-azdo.sh cleanup <pr-id>
-      ```
-
-   **Autonomous Polling Loop**:
-   After creating both PRs, run polling automatically without waiting for Maintainer prompts:
-   ```bash
-   # Save original branch to restore later
-   ORIGINAL_BRANCH=$(git branch --show-current)
-   
-   # Poll both platforms every 15 seconds until approved
-   while true; do
-       echo "=== Polling GitHub PR #$GH_PR ==="
-       if scripts/uat-github.sh poll "$GH_PR"; then
-           echo "GitHub UAT approved!"
-           GH_APPROVED=true
-       fi
-       
-       echo "=== Polling Azure DevOps PR #$AZDO_PR ==="
-       if scripts/uat-azdo.sh poll "$AZDO_PR"; then
-           echo "Azure DevOps UAT approved!"
-           AZDO_APPROVED=true
-       fi
-       
-       if [[ "${GH_APPROVED:-}" == "true" && "${AZDO_APPROVED:-}" == "true" ]]; then
-           echo "Both UATs approved! Cleaning up..."
-           scripts/uat-github.sh cleanup "$GH_PR"
-           scripts/uat-azdo.sh cleanup "$AZDO_PR"
-           break
-       fi
-       
-       sleep 15
-   done
-   
-   # Restore original branch
-   git checkout "$ORIGINAL_BRANCH"
-   echo "Restored to branch: $ORIGINAL_BRANCH"
-   ```
-
-   **On Feedback (detected via polling)**:
-   - Parse the comment content to identify requested changes.
-   - Apply fixes to the markdown artifact locally.
-   - **Post updated markdown to BOTH platforms** as new comments:
-     ```bash
-     scripts/uat-github.sh comment "$GH_PR" artifacts/<uat-file>.md
-     scripts/uat-azdo.sh comment "$AZDO_PR" artifacts/<uat-file>.md
-     ```
-   - Continue polling—do NOT run unrelated tasks (no `dotnet test`, no code review, no other verification).
-   - Stay focused on the UAT feedback loop until approval or abort.
-
-   **Cleanup**:
-   - After all tests pass: close GitHub PR, abandon Azure DevOps PR, delete branches.
-   - If Maintainer says "abort", "skip", or "won't fix": clean up immediately without further fixes.
-   - **Always restore the original feature branch** after UAT cleanup: `git checkout <original-branch>`
 
 3. **Read the code** - Review all changed files against the checklist.
 
@@ -343,9 +232,9 @@ Your work is complete when:
 - If **Changes Requested**: Use the handoff button to return to the **Developer** agent.
   - This applies to both initial reviews and reviews of rework after failed PR/CI validation
   - After Developer fixes issues, work returns to Code Reviewer for re-approval
-- If **Approved**: Use the handoff button to proceed to the **Release Manager** agent.
-  - This applies to both new features and fixes for failed PR/CI validation
-  - Release Manager will create (or update) the PR
+- If **Approved** and **user-facing feature** (markdown rendering): Use the handoff button to proceed to the **UAT Tester** agent.
+  - UAT Tester will validate rendering in real GitHub and Azure DevOps PRs
+- If **Approved** and **no UAT needed** (internal changes, non-rendering features): Use the handoff button to proceed to the **Release Manager** agent.
 
 ## Communication Guidelines
 

@@ -77,9 +77,14 @@ flowchart TB
 
 	%% Row 14: Review Report
 	CRR["✅ Code Review Report"]
+
+	%% Row 15: UAT Tester
+	UAT_AGENT["<b>UAT Tester</b>"]
+
+	%% Row 16: UAT Artifacts
 	UAT["🧪 User Acceptance PRs"]
 
-	%% Row 15: Release Manager
+	%% Row 17: Release Manager
 	RM["<b>Release Manager</b>"]
 
 	%% Row 16: Release Artifacts
@@ -111,9 +116,13 @@ flowchart TB
 	TW --> DOCS --> CR
 
 	CR --> CRR
-	CR --> UAT
 	CRR -. "Rework" .-> DEV
-	CRR -- "Approved" --> RM
+	CRR -- "Approved (UAT needed)" --> UAT_AGENT
+	CRR -- "Approved (no UAT)" --> RM
+
+	UAT_AGENT --> UAT
+	UAT -. "Rendering Issues" .-> DEV
+	UAT -- "Approved" --> RM
 
 	RM --> REL
 	RM --> PR
@@ -123,7 +132,7 @@ flowchart TB
 
 	%% Styling
 	class HUMAN human;
-	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,RM,RETRO_AGENT agent;
+	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,UAT_AGENT,RM,RETRO_AGENT agent;
 	class WE metaagent;
 	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,UAT,RETRO artifact;
 ```
@@ -135,12 +144,13 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 1. **Issue Analyst** investigates bugs, incidents, and technical problems.
 2. **Requirements Engineer** gathers and clarifies requirements for new features.
 3. **Architect** designs the solution and documents decisions.
-4. **Quality Engineer** defines the test plan and cases (consumes architecture). For user-facing features, defines acceptance scenarios for manual review.
+4. **Quality Engineer** defines the test plan and cases (consumes architecture). For user-facing features, defines acceptance scenarios for UAT.
 5. **Task Planner** creates and prioritizes actionable work items (consumes test plan).
 6. **Developer** implements features/fixes and tests.
 7. **Technical Writer** updates all relevant documentation (markdown files in the repository).
-8. **Code Reviewer** reviews and approves the work. For user-facing features (e.g., markdown rendering), runs User Acceptance Testing (UAT) via real pull requests in GitHub and Azure DevOps and waits for Maintainer approval/abort.
-9. **Release Manager** prepares, coordinates, and executes the release.
+8. **Code Reviewer** reviews and approves the work. Hands off to UAT Tester for user-facing features, or directly to Release Manager for internal changes.
+9. **UAT Tester** validates user-facing features (e.g., markdown rendering) via real pull requests in GitHub and Azure DevOps. Waits for Maintainer approval/abort.
+10. **Release Manager** prepares, coordinates, and executes the release.
 
 **Meta-Agent:**
 - **Workflow Engineer** improves and maintains the agent workflow itself (operates outside the normal feature flow).
@@ -185,10 +195,15 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ### 8. Code Reviewer
 - **Goal:** Ensure code quality and process adherence.
-- **Deliverables:** Code review feedback or approval. For user-facing features, creates and manages User Acceptance PRs in GitHub and Azure DevOps.
-- **Definition of Done:** Code is reviewed and approved or sent back for rework. User Acceptance PRs are verified and closed.
+- **Deliverables:** Code review feedback or approval.
+- **Definition of Done:** Code is reviewed and approved or sent back for rework.
 
-### 9. Release Manager
+### 9. UAT Tester
+- **Goal:** Validate user-facing features in real-world environments.
+- **Deliverables:** User Acceptance PRs in GitHub and Azure DevOps with rendering verification.
+- **Definition of Done:** Maintainer approves rendering in both platforms, or aborts with documented issues.
+
+### 10. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
 - **Deliverables:** Pull request, release notes, versioning, deployment plan, and post-release checklist.
 - **Definition of Done:** PR is created and merged, release is published, documented, and verified.
@@ -198,7 +213,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Deliverables:** Retrospective report with summary, successes, failures, and improvement opportunities.
 - **Definition of Done:** Report is generated and action items are identified.
 
-### 11. Workflow Engineer (Meta-Agent)
+### 12. Workflow Engineer (Meta-Agent)
 - **Goal:** Analyze, improve, and maintain the agent-based workflow.
 - **Deliverables:** New or updated agent definitions, workflow documentation updates, PRs with workflow changes.
 - **Definition of Done:** Workflow changes are documented, committed, and PR is created.
@@ -217,7 +232,7 @@ This section describes the purpose and format of each artifact produced and cons
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/<feature-name>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress. | Markdown document with: Title, Description, Acceptance Criteria checklist, Priority. | `docs/features/<feature-name>/tasks.md` |
 | **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/<feature-name>/test-plan.md` |
-| **User Acceptance PRs** | Real-environment verification for user-facing features (especially markdown rendering). Used to catch rendering bugs and validate real-world usage. | Temporary PRs in GitHub and Azure DevOps. Markdown report is posted as **PR comment** (not description). Fixes posted as new comments. Agent polls automatically; approved when Maintainer comments "approved"/"passed" or (Azure DevOps) marks thread "Resolved" or (GitHub) closes PR. PRs cleaned up after approval. | GitHub + Azure DevOps (via `scripts/uat-*.sh`) |
+| **User Acceptance PRs** | Real-environment verification for user-facing features (especially markdown rendering). Used to catch rendering bugs and validate real-world usage. Managed by UAT Tester agent. | Temporary PRs in GitHub and Azure DevOps. Markdown report is posted as **PR comment** (not description). Fixes posted as new comments. Agent polls automatically; approved when Maintainer comments "approved"/"passed" or (Azure DevOps) marks thread "Resolved" or (GitHub) closes PR. PRs cleaned up after approval. | GitHub + Azure DevOps (via `scripts/uat-*.sh`) |
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/<feature-name>/code-review.md` |
@@ -255,12 +270,13 @@ Each agent hands off to the next by producing a specific deliverable. The workfl
 | Task Planner            | Developer               | User Stories / Tasks with Acceptance Criteria        |
 | Developer               | Technical Writer        | Code & Tests                                         |
 | Technical Writer        | Code Reviewer           | Updated Documentation                                |
-| Code Reviewer           | Release Manager (approved) <br/> Developer (rework needed) | Code Review Report & User Acceptance PRs             |
+| Code Reviewer           | UAT Tester (user-facing features) <br/> Release Manager (internal changes) <br/> Developer (rework needed) | Code Review Report |
+| UAT Tester              | Release Manager (approved) <br/> Developer (rendering issues) | User Acceptance PRs verified in both platforms |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
 | Release Manager         | Retrospective           | Deployment Complete                                  |
 | Retrospective           | Workflow Engineer       | Retrospective Report with Action Items               |
 
-**Exception:** Code Reviewer has two possible handoffs depending on approval status. Release Manager may hand back to Developer if build/release fails.
+**Exception:** Code Reviewer has three possible handoffs depending on approval status and feature type. UAT Tester hands back to Developer if rendering issues are found. Release Manager may hand back to Developer if build/release fails.
 
 Handoffs are triggered when the deliverable is complete and meets the "Definition of Done" for that agent. Automation (e.g., GitHub Actions) can be used to detect completion and notify the next agent(s).
 

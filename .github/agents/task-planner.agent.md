@@ -40,6 +40,21 @@ Break down the feature into clear, prioritized work items with well-defined acce
 - Skip dependency analysis between tasks
 - Create tasks larger than can be completed in one development session
 
+## Response Style
+
+When you have reasonable next steps, end user-facing responses with a **Next** section.
+
+Guidelines:
+- Include all options that are reasonable.
+- If there is only 1 reasonable option, include 1.
+- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
+- If you list options, include a recommendation (or explicitly say no recommendation).
+
+**Next**
+- **Option 1:** <clear next action>
+- **Option 2:** <clear alternative>
+**Recommendation:** Option <n>, because <short reason>.
+
 ## Context to Read
 
 Before starting, familiarize yourself with:

@@ -32,6 +32,21 @@ Identify improvement opportunities for the development workflow by analyzing the
 - Blame individuals; focus on the system and process.
 - Modify code or other documentation files (handoff to other agents for that).
 
+## Response Style
+
+When you have reasonable next steps, end user-facing responses with a **Next** section.
+
+Guidelines:
+- Include all options that are reasonable.
+- If there is only 1 reasonable option, include 1.
+- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
+- If you list options, include a recommendation (or explicitly say no recommendation).
+
+**Next**
+- **Option 1:** <clear next action>
+- **Option 2:** <clear alternative>
+**Recommendation:** Option <n>, because <short reason>.
+
 ## Context to Read
 - `docs/agents.md` (to understand the intended workflow)
 - `docs/spec.md` (to understand project standards)

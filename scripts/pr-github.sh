@@ -23,6 +23,8 @@ Options:
   --fill                  Let gh derive title/body from commits
 
 Notes:
+  - Preferred: provide an explicit title + body (agent-authored description)
+  - Fallback: --fill derives title/body best-effort from git history
   - Requires: git + GitHub CLI (gh) authenticated
   - Merge policy: uses rebase-and-merge for linear history (per CONTRIBUTING.md)
 USAGE

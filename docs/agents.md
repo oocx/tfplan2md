@@ -33,6 +33,26 @@ Before an agent runs any command that creates (or creates-and-merges) a pull req
 
 The agent is expected to author a meaningful PR description. The wrapper preview output is a confirmation against the branch diff, not a substitute for a proper description.
 
+### Response Style
+
+When agents have reasonable next steps, they should end user-facing responses with a **Next** section.
+
+Guidelines:
+
+- Include all options that are reasonable.
+- If there is only 1 reasonable option, include 1.
+- If there are no good options to recommend, do not list options; instead state that the agent can't recommend any specific next steps right now.
+- If options are listed, include a recommendation (or explicitly say no recommendation).
+
+Format:
+
+```text
+**Next**
+- **Option 1:** <clear next action>
+- **Option 2:** <clear alternative>
+**Recommendation:** Option <n>, because <short reason>.
+```
+
 ### Available Skills
 
 | Skill Name | Description |

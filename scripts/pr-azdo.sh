@@ -25,15 +25,17 @@ Options:
   --fill                   Derive title/description from git commits (best-effort)
   --id <pr-id>             Pull request ID (for abandon)
 
+Notes:
+  - Preferred: provide an explicit title + description (agent-authored)
+  - Fallback: --fill derives title/description best-effort from git history
+  - Requires: git, Azure CLI (az) + azure-devops extension, jq
+  - Merge policy: maintain linear history. In Azure DevOps UI, pick the most rebase/linear option available.
+
 Environment:
   AZDO_ORG                 Azure DevOps org URL (default: https://dev.azure.com/oocx)
   AZDO_PROJECT             Azure DevOps project (default: test)
   AZDO_REPO                Azure DevOps repo (default: test)
   AZDO_REMOTE_NAME         git remote name used for pushing (default: azdo)
-
-Notes:
-  - Requires: git, Azure CLI (az) + azure-devops extension, jq
-  - Merge policy: maintain linear history. In Azure DevOps UI, pick the most rebase/linear option available.
 USAGE
 }
 

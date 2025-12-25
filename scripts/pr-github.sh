@@ -38,13 +38,9 @@ require_not_main() {
 }
 
 parse_args() {
-  local -n _mode="$1"
-  local -n _title="$2"
-  local -n _body_file="$3"
-  local -n _fill="$4"
-
-  _mode="${1:-}"
-  shift || true
+  local -n _title="$1"
+  local -n _body_file="$2"
+  local -n _fill="$3"
 
   _title=""
   _body_file=""
@@ -142,12 +138,11 @@ main() {
     exit 2
   fi
 
-  MODE="$cmd"
   TITLE=""
   BODY_FILE=""
   FILL="false"
 
-  parse_args MODE TITLE BODY_FILE FILL "$@"
+  parse_args TITLE BODY_FILE FILL "$@"
 
   git push -u origin HEAD
 

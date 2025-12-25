@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.42.0"></a>
+## [0.42.0](https://github.com/oocx/tfplan2md/compare/v0.41.1...v0.42.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** add uat-run wrapper and artifact guardrails ([e7dca79](https://github.com/oocx/tfplan2md/commit/e7dca79be2b55565f9a5372cecc8299c28a8829f))
+
+### 📚 Documentation
+
+* **workflow:** show PR title and summary before create ([d3c48f8](https://github.com/oocx/tfplan2md/commit/d3c48f80aa6adb3833a0e656ff1260cce3a6786e))
+* **workflow:** track retrospective follow-up progress ([e31c619](https://github.com/oocx/tfplan2md/commit/e31c6190682a6c688e77cb01aa3c85128f61294f))
+
 <a name="0.41.1"></a>
 ## [0.41.1](https://github.com/oocx/tfplan2md/compare/v0.41.0...v0.41.1) (2025-12-25)
 

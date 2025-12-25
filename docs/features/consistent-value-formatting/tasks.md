@@ -1,33 +1,104 @@
 # Tasks: Consistent Value Formatting
 
-## Implementation
+## Overview
 
-- [ ] Update `ScribanHelpers.FormatDiff` signature and implementation
-  - [ ] Change signature to `FormatDiff(string? before, string? after, string format)`
-  - [ ] Implement table-compatible `inline-diff` rendering (HTML with `<br>`)
-  - [ ] Implement table-compatible `standard-diff` rendering (HTML with `<br>`)
-- [ ] Update `ScribanHelpers.RegisterHelpers`
-  - [ ] Add `LargeValueFormat` parameter
-  - [ ] Register `format_diff` as a closure capturing the format
-- [ ] Update `MarkdownRenderer`
-  - [ ] Pass `LargeValueFormat` to `RegisterHelpers`
-  - [ ] Thread `LargeValueFormat` through `RenderResourceChange` and `RenderResourceWithTemplate`
-- [ ] Update `default.sbn`
-  - [ ] Reverse backticks in attribute tables (Name plain, Value code)
-- [ ] Update `role_assignment.sbn`
-  - [ ] Reverse backticks in attribute tables
-  - [ ] Update summary lines to only code-format values
-- [ ] Update `firewall_network_rule_collection.sbn`
-  - [ ] Update header formatting
-  - [ ] Update rule table formatting (code-format all data columns)
-- [ ] Update `network_security_group.sbn`
-  - [ ] Update header formatting
-  - [ ] Update rule table formatting
+This document outlines the tasks required to implement the "Consistent Value Formatting" feature. The goal is to improve readability by code-formatting actual data values while keeping labels and attribute names as plain text, and providing enhanced diff formatting for small values.
 
-## Testing
+Reference: [Specification](specification.md), [Architecture](architecture.md), [Test Plan](test-plan.md)
 
-- [ ] Verify attribute tables in default output
-- [ ] Verify role assignment output
-- [ ] Verify firewall rule output (inline and standard diffs)
-- [ ] Verify NSG rule output (inline and standard diffs)
-- [ ] Verify `large_value_format` CLI option affects `format_diff` output
+## Tasks
+
+### Task 1: Enhance `format_diff` Helper and Registration
+
+**Priority:** High
+
+**Description:**
+Update the `format_diff` helper to support styled diffs (inline and standard) and update the registration logic to capture the global configuration.
+
+**Acceptance Criteria:**
+- [ ] `ScribanHelpers.FormatDiff` signature updated to `FormatDiff(string? before, string? after, string format)`.
+- [ ] `FormatDiff` implements table-compatible `inline-diff` (HTML with `<br>`).
+- [ ] `FormatDiff` implements table-compatible `standard-diff` (text with `<br>`).
+- [ ] `ScribanHelpers.RegisterHelpers` updated to accept `LargeValueFormat`.
+- [ ] `format_diff` registered as a closure: `(b, a) => FormatDiff(b, a, formatString)`.
+- [ ] Unit tests for `FormatDiff` (TC-05, TC-06) pass.
+
+**Dependencies:** None
+
+---
+
+### Task 2: Update `MarkdownRenderer` to Thread Configuration
+
+**Priority:** High
+
+**Description:**
+Update `MarkdownRenderer` to pass the `LargeValueFormat` from the `ReportModel` to the helper registration.
+
+**Acceptance Criteria:**
+- [ ] `MarkdownRenderer.Render` passes `model.LargeValueFormat` to `RegisterHelpers`.
+- [ ] `RenderResourceChange` and `RenderResourceWithTemplate` updated to accept and pass `LargeValueFormat`.
+- [ ] Integration test for configuration propagation (TC-07) passes.
+
+**Dependencies:** Task 1
+
+---
+
+### Task 3: Update Core Templates (`default.sbn`, `role_assignment.sbn`)
+
+**Priority:** Medium
+
+**Description:**
+Reverse backtick formatting in attribute tables and refine role assignment summaries.
+
+**Acceptance Criteria:**
+- [ ] `default.sbn`: Attribute names are plain text, values are code-formatted.
+- [ ] `role_assignment.sbn`: Attribute names are plain text, values are code-formatted.
+- [ ] `role_assignment.sbn`: Summary lines only code-format data values (TC-08).
+- [ ] Unit tests for templates (TC-01, TC-02) pass.
+
+**Dependencies:** Task 2
+
+---
+
+### Task 4: Update Resource-Specific Templates (Firewall, NSG)
+
+**Priority:** Medium
+
+**Description:**
+Update firewall and NSG templates to use consistent code formatting for data values in headers and tables.
+
+**Acceptance Criteria:**
+- [ ] `firewall_network_rule_collection.sbn`: Headers and rule tables use code formatting for data (TC-03).
+- [ ] `network_security_group.sbn`: Headers use plain text for names, rule tables use code formatting for data (TC-04).
+- [ ] `format_diff` calls in these templates now produce styled output automatically.
+- [ ] Unit tests for templates (TC-03, TC-04) pass.
+
+**Dependencies:** Task 2
+
+---
+
+### Task 5: Final Verification and Documentation Update
+
+**Priority:** Low
+
+**Description:**
+Perform final verification of the generated reports and update any relevant documentation.
+
+**Acceptance Criteria:**
+- [ ] Manual verification of Scenario 1 (Default Report) and Scenario 2 (Firewall Diffs).
+- [ ] All existing tests pass (regression check).
+- [ ] Documentation examples in `docs/` reflect the new formatting.
+
+**Dependencies:** Task 3, Task 4
+
+## Implementation Order
+
+1. **Task 1 & 2** - Foundational work to enable styled diffs and configuration propagation.
+2. **Task 3** - Core formatting changes affecting most reports.
+3. **Task 4** - Resource-specific formatting and diff verification.
+4. **Task 5** - Final polish and verification.
+
+## Open Questions
+
+None.
+

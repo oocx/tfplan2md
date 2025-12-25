@@ -15,40 +15,78 @@ Test individual components in isolation to verify correct behavior of parsing, m
 Test JSON parsing and markdown generation end-to-end. As the application is distributed via Docker, Docker-based integration tests verify the final CLI behavior in a containerized environment.
 
 ### User Acceptance Testing (UAT)
+
 For user-facing changes (especially markdown rendering), run UAT in real environments using **temporary pull requests** in:
 
 - GitHub PRs in `oocx/tfplan2md`
 - Azure DevOps PRs in `https://dev.azure.com/oocx` (project `test`, repository `test`)
 
-The UAT loop is **comment-driven**:
+#### Key Principles
 
-1. Create a UAT PR with the generated markdown pasted into the PR body/description.
-2. Maintainer reviews in the real PR UI and leaves feedback as PR comments/threads.
-3. Apply fixes, push updates, and update the PR body/description.
-4. Repeat until Maintainer explicitly says **approve** or **abort**.
+1. **Markdown as PR Comment**: The generated markdown report is posted as a **PR comment** (not PR description) so the actual rendering can be validated in the real PR UI.
+2. **Incremental Updates**: Each fix/update is posted as a **new comment** so Maintainer can see progression.
+3. **Autonomous Polling**: Agent polls automatically every 30 seconds without requiring Maintainer prompts.
+4. **Automatic Cleanup**: UAT PRs are closed/abandoned and branches deleted after approval or abort.
 
-**Rules**:
-- Do not close/abandon UAT PRs unless the Maintainer explicitly says **approve** or **abort**.
-- Poll for new feedback until explicit approval/abort.
+#### Approval Criteria
 
-**GitHub (non-blocking polling)**:
+| Platform | Approval Detected When |
+|----------|----------------------|
+| **GitHub** | Maintainer comments "approved", "passed", "lgtm", "accept" **OR** closes the PR |
+| **Azure DevOps** | Maintainer comments "approved"/"passed"/etc. **OR** marks the latest comment thread as "Resolved" |
+
+#### Helper Scripts
+
+Use the scripts in `scripts/` for simplified UAT workflow:
+
+**GitHub** (`scripts/uat-github.sh`):
 ```bash
-# Create PR and set body from artifact
-PAGER=cat gh pr create --title "UAT: <short description>" --body-file artifacts/<uat-file>.md
+# Create PR and post markdown as comment
+scripts/uat-github.sh create artifacts/<file>.md
 
-# Poll comments (repeat until approval/abort)
-PAGER=cat gh pr view <pr-number> --comments
+# Poll for approval (exit 0 = approved, exit 1 = waiting)
+scripts/uat-github.sh poll <pr-number>
+
+# Post updated markdown after fix
+scripts/uat-github.sh comment <pr-number> artifacts/<file>.md
+
+# Clean up after approval
+scripts/uat-github.sh cleanup <pr-number>
 ```
 
-**Azure DevOps (threads via az devops invoke)**:
+**Azure DevOps** (`scripts/uat-azdo.sh`):
 ```bash
-az account show >/dev/null || az login
-az devops configure --defaults organization=https://dev.azure.com/oocx project=test
+# One-time setup (verifies auth, configures defaults)
+scripts/uat-azdo.sh setup
 
-# Poll PR threads (repeat until approval/abort)
-az devops invoke --area git --resource pullrequestthreads \
-	--route-parameters project=test repositoryId=test pullRequestId=<pr-id> \
-	--api-version 7.1
+# Create PR and post markdown as comment
+scripts/uat-azdo.sh create artifacts/<file>.md
+
+# Poll for approval (exit 0 = approved/resolved, exit 1 = waiting)
+scripts/uat-azdo.sh poll <pr-id>
+
+# Post updated markdown after fix
+scripts/uat-azdo.sh comment <pr-id> artifacts/<file>.md
+
+# Clean up after approval
+scripts/uat-azdo.sh cleanup <pr-id>
+```
+
+#### Autonomous Polling Loop
+
+After creating PRs, run polling automatically:
+```bash
+while true; do
+    scripts/uat-github.sh poll "$GH_PR" && GH_OK=true
+    scripts/uat-azdo.sh poll "$AZDO_PR" && AZDO_OK=true
+    
+    [[ "${GH_OK:-}" == "true" && "${AZDO_OK:-}" == "true" ]] && break
+    sleep 30
+done
+
+# Cleanup
+scripts/uat-github.sh cleanup "$GH_PR"
+scripts/uat-azdo.sh cleanup "$AZDO_PR"
 ```
 
 ## Test Infrastructure

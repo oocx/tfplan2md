@@ -120,7 +120,10 @@ Before starting, familiarize yourself with:
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
-- [ ] For user-facing features: UAT PRs created and resolved (Maintainer approved or explicitly aborted)
+- [ ] For user-facing features: UAT completed via `scripts/uat-github.sh` and `scripts/uat-azdo.sh`
+  - [ ] Markdown posted as PR comments (not description)
+  - [ ] Polling ran automatically until approval
+  - [ ] PRs cleaned up after approval/abort
 
 ## Review Approach
 
@@ -146,51 +149,96 @@ Before starting, familiarize yourself with:
    **User Acceptance Testing (UAT)**:
    If the change is user-facing (especially markdown rendering), run UAT via real PRs in GitHub and Azure DevOps.
 
-   **Rules**:
-   - Do not close/abandon UAT PRs unless Maintainer explicitly says **approve** or **abort**.
-   - Poll for new comments/threads until explicit approval/abort.
+   **Key Principles**:
+   - The markdown report is added as a **PR comment** (not PR description) so rendering can be validated in real PR UI.
+   - Each fix/update is posted as a **new comment** so Maintainer can see the progression.
+   - Agent **polls automatically** every 30 seconds without requiring Maintainer prompts.
+   - UAT PRs are **cleaned up automatically** after approval or abort.
 
-   1. **GitHub UAT**:
-      - Create a test PR in `oocx/tfplan2md` with the rendered markdown in the PR body:
-        ```bash
-        PAGER=cat gh pr create --title "UAT: <Feature Name>" --body-file artifacts/<uat-file>.md --base main --head <current-branch>
-        ```
-      - **Action**: Output the PR link and ask the Maintainer to review it.
-      - **WAIT** for the Maintainer to respond in chat. Do NOT simulate feedback or proceed without user input.
-      - **When Maintainer asks to check feedback**:
-        - Poll comments (non-blocking): `PAGER=cat gh pr view <pr-number> --comments`
-        - If Maintainer requests changes (in comments): Fix issues, push changes, and ask for review again.
-        - If Maintainer approves or aborts (in comments): close the PR and delete the branch:
-          `gh pr close <pr-number> --delete-branch`
+   **Approval Criteria**:
+   - **GitHub**: Maintainer comments "approved", "passed", "lgtm", "accept" OR closes the PR.
+   - **Azure DevOps**: Maintainer comments "approved"/"passed"/etc. OR marks the latest comment thread as "Resolved".
 
-   2. **Azure DevOps UAT** (org `oocx`, project `test`, repo `test`):
-      - Check authentication: `az account show`
-      - **If not authenticated**: STOP and ask Maintainer to run `az login` in the terminal. Wait for confirmation before proceeding.
-      - Push branch to Azure DevOps test repo:
-        ```bash
-        git remote add azdo https://oocx@dev.azure.com/oocx/test/_git/test || true
-        git push azdo HEAD:<current-branch>
-        ```
-      - Create a test PR with the rendered markdown in the PR description:
-        ```bash
-        az repos pr create --organization https://dev.azure.com/oocx --project test --repository test --source-branch <current-branch> --target-branch main --title "UAT: <Feature Name>" --description "$(cat artifacts/<uat-file>.md)"
-        ```
-      - **Action**: Output the PR link and ask the Maintainer to review it.
-      - **WAIT** for the Maintainer to respond in chat.
-      - **When Maintainer asks to check feedback**:
-        - Poll PR threads (comments) via `az devops invoke`:
-          ```bash
-          az devops configure --defaults organization=https://dev.azure.com/oocx project=test
-          az devops invoke --area git --resource pullrequestthreads \
-            --route-parameters project=test repositoryId=test pullRequestId=<pr-id> \
-            --api-version 7.1
-          ```
-        - If Maintainer requests changes: Fix issues, push changes, and ask for review again.
-        - If Maintainer approves or aborts: abandon the PR:
-          `az repos pr update --id <pr-id> --status abandoned --organization https://dev.azure.com/oocx`
+   Use the helper scripts in `scripts/` for simplified interaction:
 
-   **Cadence**:
-   - While waiting: poll on demand when Maintainer says they commented, otherwise poll periodically (e.g., every 2 minutes) until explicit approval/abort.
+   1. **GitHub UAT** (use `scripts/uat-github.sh`):
+      ```bash
+      # One-time: ensure on UAT branch
+      git checkout -b uat/<feature-name>
+      
+      # Create PR and add markdown as comment
+      scripts/uat-github.sh create artifacts/<uat-file>.md
+      # Returns: PR number
+      
+      # Poll automatically (run in loop or call repeatedly)
+      scripts/uat-github.sh poll <pr-number>
+      # Returns: exit 0 if approved, exit 1 if still waiting
+      
+      # After fix, add updated markdown as new comment
+      scripts/uat-github.sh comment <pr-number> artifacts/<uat-file>.md
+      
+      # After approval, clean up
+      scripts/uat-github.sh cleanup <pr-number>
+      ```
+
+   2. **Azure DevOps UAT** (use `scripts/uat-azdo.sh`):
+      ```bash
+      # One-time setup (verifies auth, configures defaults)
+      scripts/uat-azdo.sh setup
+      # If not authenticated, run: az login
+      
+      # Create PR and add markdown as comment
+      scripts/uat-azdo.sh create artifacts/<uat-file>.md
+      # Returns: PR ID
+      
+      # Poll automatically (run in loop or call repeatedly)
+      scripts/uat-azdo.sh poll <pr-id>
+      # Returns: exit 0 if approved/resolved, exit 1 if still waiting
+      
+      # After fix, add updated markdown as new comment
+      scripts/uat-azdo.sh comment <pr-id> artifacts/<uat-file>.md
+      
+      # After approval, clean up
+      scripts/uat-azdo.sh cleanup <pr-id>
+      ```
+
+   **Autonomous Polling Loop**:
+   After creating both PRs, run polling automatically without waiting for Maintainer prompts:
+   ```bash
+   # Poll both platforms every 30 seconds until approved
+   while true; do
+       echo "=== Polling GitHub PR #$GH_PR ==="
+       if scripts/uat-github.sh poll "$GH_PR"; then
+           echo "GitHub UAT approved!"
+           GH_APPROVED=true
+       fi
+       
+       echo "=== Polling Azure DevOps PR #$AZDO_PR ==="
+       if scripts/uat-azdo.sh poll "$AZDO_PR"; then
+           echo "Azure DevOps UAT approved!"
+           AZDO_APPROVED=true
+       fi
+       
+       if [[ "${GH_APPROVED:-}" == "true" && "${AZDO_APPROVED:-}" == "true" ]]; then
+           echo "Both UATs approved! Cleaning up..."
+           scripts/uat-github.sh cleanup "$GH_PR"
+           scripts/uat-azdo.sh cleanup "$AZDO_PR"
+           break
+       fi
+       
+       sleep 30
+   done
+   ```
+
+   **On Feedback (detected via polling)**:
+   - Parse the comment content to identify requested changes.
+   - Apply fixes to the markdown artifact.
+   - Post updated markdown as a **new comment** (not edit).
+   - Continue polling.
+
+   **Cleanup**:
+   - After all tests pass: close GitHub PR, abandon Azure DevOps PR, delete branches.
+   - If Maintainer says "abort", "skip", or "won't fix": clean up immediately without further fixes.
 
 3. **Read the code** - Review all changed files against the checklist.
 

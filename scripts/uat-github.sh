@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+# UAT Helper Script for GitHub
+# Usage: scripts/uat-github.sh <action> [args]
+#
+# Actions:
+#   create <file>   - Create a UAT PR with initial comment from <file>
+#   comment <pr-number> <file> - Add a comment to PR from <file>
+#   poll <pr-number> - Poll for new comments and check for approval
+#   cleanup <pr-number> - Close the PR after UAT completion
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+log_info() { echo -e "${GREEN}[INFO]${NC} $*"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+
+cmd_create() {
+    local file="${1:-}"
+    if [[ -z "$file" || ! -f "$file" ]]; then
+        log_error "Usage: $0 create <markdown-file>"
+        exit 1
+    fi
+    
+    local branch
+    branch=$(git branch --show-current)
+    local title="UAT: $(basename "$file" .md)"
+    
+    log_info "Pushing branch to GitHub..."
+    git push -u origin HEAD --force
+    
+    log_info "Creating PR..."
+    local pr_url
+    pr_url=$(PAGER=cat gh pr create \
+        --title "$title" \
+        --body "UAT PR for markdown rendering validation. See comments for test content." \
+        --base main \
+        --head "$branch")
+    
+    local pr_number
+    pr_number=$(echo "$pr_url" | grep -oE '[0-9]+$')
+    
+    log_info "PR created: #$pr_number"
+    
+    # Add the markdown content as a comment
+    log_info "Adding initial UAT content as comment..."
+    cmd_comment "$pr_number" "$file"
+    
+    echo ""
+    echo "========================================="
+    echo "UAT PR Created: #$pr_number"
+    echo "URL: $pr_url"
+    echo "========================================="
+    echo ""
+    echo "Next steps:"
+    echo "  1. Maintainer reviews the PR comment in GitHub"
+    echo "  2. Poll for feedback: $0 poll $pr_number"
+    echo "  3. After approval: $0 cleanup $pr_number"
+}
+
+cmd_comment() {
+    local pr_number="${1:-}"
+    local file="${2:-}"
+    
+    if [[ -z "$pr_number" || -z "$file" || ! -f "$file" ]]; then
+        log_error "Usage: $0 comment <pr-number> <markdown-file>"
+        exit 1
+    fi
+    
+    PAGER=cat gh pr comment "$pr_number" --body-file "$file"
+    log_info "Comment added to PR #$pr_number"
+}
+
+cmd_poll() {
+    local pr_number="${1:-}"
+    
+    if [[ -z "$pr_number" ]]; then
+        log_error "Usage: $0 poll <pr-number>"
+        exit 1
+    fi
+    
+    log_info "Polling comments for PR #$pr_number..."
+    
+    # Get PR state
+    local pr_state
+    pr_state=$(PAGER=cat gh pr view "$pr_number" --json state -q '.state')
+    
+    if [[ "$pr_state" == "CLOSED" || "$pr_state" == "MERGED" ]]; then
+        echo -e "${GREEN}✓ PR CLOSED${NC}"
+        echo "PR has been closed by Maintainer. UAT passed."
+        return 0
+    fi
+    
+    # Get comments and check for approval keywords
+    local comments
+    comments=$(PAGER=cat gh pr view "$pr_number" --comments --json comments -q '.comments[].body' 2>/dev/null || echo "")
+    
+    echo ""
+    echo "=== Recent Comments ==="
+    PAGER=cat gh pr view "$pr_number" --comments 2>/dev/null | tail -30 || echo "(no comments)"
+    echo ""
+    
+    local approval_found
+    approval_found=$(echo "$comments" | grep -iE '(approved|passed|accept|lgtm)' || true)
+    
+    if [[ -n "$approval_found" ]]; then
+        echo -e "${GREEN}✓ APPROVAL DETECTED${NC}"
+        echo "Approval keyword found in comments. UAT passed."
+        return 0
+    fi
+    
+    echo -e "${YELLOW}⏳ AWAITING FEEDBACK${NC}"
+    echo "No approval detected yet. Continue polling or check GitHub UI."
+    return 1
+}
+
+cmd_cleanup() {
+    local pr_number="${1:-}"
+    
+    if [[ -z "$pr_number" ]]; then
+        log_error "Usage: $0 cleanup <pr-number>"
+        exit 1
+    fi
+    
+    log_info "Closing PR #$pr_number..."
+    PAGER=cat gh pr close "$pr_number" --delete-branch || log_warn "PR may already be closed"
+    
+    log_info "Cleanup complete."
+}
+
+# Main dispatch
+action="${1:-}"
+shift || true
+
+case "$action" in
+    create)  cmd_create "$@" ;;
+    comment) cmd_comment "$@" ;;
+    poll)    cmd_poll "$@" ;;
+    cleanup) cmd_cleanup "$@" ;;
+    *)
+        echo "UAT Helper Script for GitHub"
+        echo ""
+        echo "Usage: $0 <action> [args]"
+        echo ""
+        echo "Actions:"
+        echo "  create <file>   - Create a UAT PR with initial comment from <file>"
+        echo "  comment <pr-number> <file> - Add a comment to PR from <file>"
+        echo "  poll <pr-number> - Poll for new comments and check for approval"
+        echo "  cleanup <pr-number> - Close the PR after UAT completion"
+        exit 1
+        ;;
+esac

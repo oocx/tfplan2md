@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.40.0"></a>
+## [0.40.0](https://github.com/oocx/tfplan2md/compare/v0.39.0...v0.40.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** add azdo PR abandon wrapper ([ad05196](https://github.com/oocx/tfplan2md/commit/ad051963730d30ff6a9099dce214a99446c6e251))
+
 <a name="0.39.0"></a>
 ## [0.39.0](https://github.com/oocx/tfplan2md/compare/v0.38.0...v0.39.0) (2025-12-25)
 

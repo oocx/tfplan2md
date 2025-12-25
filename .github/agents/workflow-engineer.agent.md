@@ -305,9 +305,14 @@ git add .github/agents/ docs/agents.md
 # Commit with conventional commit format
 git commit -m "feat: <clear description>"
 
-# Push and create PR
+# Push branch
 git push -u origin HEAD
-gh pr create --title "feat: <title>" --body "<description>"
+
+# CRITICAL: PR preview must be shown in chat BEFORE creation.
+scripts/pr-github.sh preview --fill
+
+# Create PR (repo wrapper)
+scripts/pr-github.sh create --fill
 ```
 
 ## Documentation Updates Checklist
@@ -373,7 +378,12 @@ When updating `docs/agents.md`, verify all of these:
    git add .github/agents/ docs/agents.md
    git commit -m "fix: <clear description of workflow fix>"
    git push -u origin HEAD
-   PAGER=cat gh pr create --title "fix: <title>" --body "<description>"
+
+   # CRITICAL: PR preview must be shown in chat BEFORE creation.
+   scripts/pr-github.sh preview --fill
+
+   # Create PR (repo wrapper)
+   scripts/pr-github.sh create --fill
    ```
 
 5. **Return to feature work** - Switch back and restore:

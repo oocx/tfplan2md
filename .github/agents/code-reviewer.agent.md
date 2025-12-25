@@ -149,10 +149,16 @@ Before starting, familiarize yourself with:
    **User Acceptance Testing (UAT)**:
    If the change is user-facing (especially markdown rendering), run UAT via real PRs in GitHub and Azure DevOps.
 
+   > ⚠️ **UAT is ONLY for visual rendering validation.**
+   > Do NOT run `dotnet test`, `dotnet build`, or other code verification during UAT.
+   > UAT validates that markdown renders correctly in the PR UI—nothing else.
+
    **Key Principles**:
    - The markdown report is added as a **PR comment** (not PR description) so rendering can be validated in real PR UI.
+   - Comments are prefixed with "🤖 **Copilot Code Reviewer**" to distinguish agent comments from human comments.
    - Each fix/update is posted as a **new comment** so Maintainer can see the progression.
-   - Agent **polls automatically** every 30 seconds without requiring Maintainer prompts.
+   - **Fixes must be posted to BOTH platforms**: When feedback is received on either GitHub or Azure DevOps, apply the fix and post the updated markdown to BOTH PRs.
+   - Agent **polls automatically** every 15 seconds without requiring Maintainer prompts.
    - UAT PRs are **cleaned up automatically** after approval or abort.
 
    **Approval Criteria**:
@@ -239,9 +245,14 @@ Before starting, familiarize yourself with:
 
    **On Feedback (detected via polling)**:
    - Parse the comment content to identify requested changes.
-   - Apply fixes to the markdown artifact.
-   - Post updated markdown as a **new comment** (not edit).
-   - Continue polling.
+   - Apply fixes to the markdown artifact locally.
+   - **Post updated markdown to BOTH platforms** as new comments:
+     ```bash
+     scripts/uat-github.sh comment "$GH_PR" artifacts/<uat-file>.md
+     scripts/uat-azdo.sh comment "$AZDO_PR" artifacts/<uat-file>.md
+     ```
+   - Continue polling—do NOT run unrelated tasks (no `dotnet test`, no code review, no other verification).
+   - Stay focused on the UAT feedback loop until approval or abort.
 
    **Cleanup**:
    - After all tests pass: close GitHub PR, abandon Azure DevOps PR, delete branches.

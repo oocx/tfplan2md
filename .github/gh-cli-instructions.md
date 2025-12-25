@@ -46,6 +46,12 @@ PAGER=cat gh pr view 123 --json number,title,body,state,commits,reviews
 
 # Create pull request (preferred: repo wrapper scripts)
 # CRITICAL: Show the preview output in chat BEFORE creating/merging a PR.
+
+# Preferred (agent-authored title + description; preview is confirmation):
+scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+
+# Fallback (best-effort title/body derived from commits; may be less descriptive):
 scripts/pr-github.sh preview --fill
 scripts/pr-github.sh create --fill
 

@@ -59,6 +59,11 @@ Guidelines:
 - If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
 - If you list options, include a recommendation (or explicitly say no recommendation).
 
+Todo lists:
+- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
+- Keep the todo list updated as steps move from not-started → in-progress → completed.
+- Skip todo lists for simple Q&A or one-step actions.
+
 **Next**
 - **Option 1:** <clear next action>
 - **Option 2:** <clear alternative>

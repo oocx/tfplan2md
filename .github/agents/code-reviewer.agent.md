@@ -205,7 +205,10 @@ Before starting, familiarize yourself with:
    **Autonomous Polling Loop**:
    After creating both PRs, run polling automatically without waiting for Maintainer prompts:
    ```bash
-   # Poll both platforms every 30 seconds until approved
+   # Save original branch to restore later
+   ORIGINAL_BRANCH=$(git branch --show-current)
+   
+   # Poll both platforms every 15 seconds until approved
    while true; do
        echo "=== Polling GitHub PR #$GH_PR ==="
        if scripts/uat-github.sh poll "$GH_PR"; then
@@ -226,8 +229,12 @@ Before starting, familiarize yourself with:
            break
        fi
        
-       sleep 30
+       sleep 15
    done
+   
+   # Restore original branch
+   git checkout "$ORIGINAL_BRANCH"
+   echo "Restored to branch: $ORIGINAL_BRANCH"
    ```
 
    **On Feedback (detected via polling)**:
@@ -239,6 +246,7 @@ Before starting, familiarize yourself with:
    **Cleanup**:
    - After all tests pass: close GitHub PR, abandon Azure DevOps PR, delete branches.
    - If Maintainer says "abort", "skip", or "won't fix": clean up immediately without further fixes.
+   - **Always restore the original feature branch** after UAT cleanup: `git checkout <original-branch>`
 
 3. **Read the code** - Review all changed files against the checklist.
 

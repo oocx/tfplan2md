@@ -76,17 +76,21 @@ scripts/uat-azdo.sh cleanup <pr-id>
 
 After creating PRs, run polling automatically:
 ```bash
+# Save original branch
+ORIGINAL_BRANCH=$(git branch --show-current)
+
 while true; do
     scripts/uat-github.sh poll "$GH_PR" && GH_OK=true
     scripts/uat-azdo.sh poll "$AZDO_PR" && AZDO_OK=true
     
     [[ "${GH_OK:-}" == "true" && "${AZDO_OK:-}" == "true" ]] && break
-    sleep 30
+    sleep 15
 done
 
-# Cleanup
+# Cleanup and restore branch
 scripts/uat-github.sh cleanup "$GH_PR"
 scripts/uat-azdo.sh cleanup "$AZDO_PR"
+git checkout "$ORIGINAL_BRANCH"
 ```
 
 ## Test Infrastructure

@@ -22,6 +22,8 @@ Throughout the workflow, the Maintainer coordinates handoffs between agents and 
 
 Agents are empowered by **Agent Skills**, which are specialized, reusable capabilities stored in `.github/skills/`. Skills encapsulate complex workflows, scripts, and strict procedures (like UAT or Release) that can be loaded on-demand by agents. This ensures consistency and reduces the cognitive load on the primary agent prompts.
 
+When authoring skills, prefer designs that **minimize Maintainer approval interruptions** (terminal approvals): use a small number of stable wrapper commands, batch steps when practical, and reuse existing repo scripts.
+
 ### Available Skills
 
 | Skill Name | Description |

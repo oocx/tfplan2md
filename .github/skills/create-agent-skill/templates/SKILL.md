@@ -12,6 +12,7 @@ description: {{description}}
 ### Must
 - [ ] Rule 1
 - [ ] Rule 2
+- [ ] Minimize Maintainer approvals by using a small number of stable, batched commands (prefer repo scripts/wrappers over many one-off commands).
 
 ### Must Not
 - [ ] Rule 3

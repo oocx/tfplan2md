@@ -3,9 +3,15 @@
 ## Implementation
 
 - [ ] Update `ScribanHelpers.FormatDiff` signature and implementation
-  - [ ] Add `format` parameter
+  - [ ] Change signature to `FormatDiff(string? before, string? after, string format)`
   - [ ] Implement table-compatible `inline-diff` rendering (HTML with `<br>`)
   - [ ] Implement table-compatible `standard-diff` rendering (HTML with `<br>`)
+- [ ] Update `ScribanHelpers.RegisterHelpers`
+  - [ ] Add `LargeValueFormat` parameter
+  - [ ] Register `format_diff` as a closure capturing the format
+- [ ] Update `MarkdownRenderer`
+  - [ ] Pass `LargeValueFormat` to `RegisterHelpers`
+  - [ ] Thread `LargeValueFormat` through `RenderResourceChange` and `RenderResourceWithTemplate`
 - [ ] Update `default.sbn`
   - [ ] Reverse backticks in attribute tables (Name plain, Value code)
 - [ ] Update `role_assignment.sbn`
@@ -14,11 +20,9 @@
 - [ ] Update `firewall_network_rule_collection.sbn`
   - [ ] Update header formatting
   - [ ] Update rule table formatting (code-format all data columns)
-  - [ ] Pass `large_value_format` to `format_diff` calls
 - [ ] Update `network_security_group.sbn`
   - [ ] Update header formatting
   - [ ] Update rule table formatting
-  - [ ] Pass `large_value_format` to `format_diff` calls
 
 ## Testing
 

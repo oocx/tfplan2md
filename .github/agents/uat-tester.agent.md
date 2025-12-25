@@ -3,7 +3,7 @@ description: Validate user-facing features via real PR rendering in GitHub and A
 name: UAT Tester
 target: vscode
 model: GPT-5.2
-tools: ['execute/runInTerminal', 'execute/getTerminalOutput', 'read/readFile', 'edit/createFile', 'edit/editFiles', 'search/listDirectory', 'read/terminalLastCommand', 'search/codebase', 'github/*']
+tools: ['execute/runInTerminal', 'execute/getTerminalOutput', 'read/readFile', 'edit/createFile', 'edit/editFiles', 'search/listDirectory', 'read/terminalLastCommand', 'search/codebase', 'github/*', 'todo']
 handoffs:
   - label: UAT Passed
     agent: "Release Manager"

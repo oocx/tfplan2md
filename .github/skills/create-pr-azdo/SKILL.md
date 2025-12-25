@@ -22,11 +22,19 @@ Azure DevOps UI/merge options differ by project settings. When merging an Azure 
 - Ensure the working tree is clean before creating a PR.
 - Push the branch before creating the PR.
 - Keep PR title and description conventional and review-friendly.
+- Before creating the PR, post a short PR preview in chat:
+  - **Title**: the exact PR title you plan to use
+  - **Summary**: 1–3 bullets describing the change
 
 ### Must Not
 - Merge using a strategy that introduces merge commits unless the Maintainer explicitly requests it.
 
 ## Actions
+
+### 0. PR Preview (Required)
+Before running any PR creation command, provide in chat:
+- **PR title** (exact)
+- **PR summary** (1–3 bullets)
 
 ### Recommended: One-Command Wrapper
 ```bash

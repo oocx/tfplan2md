@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.37.0"></a>
+## [0.37.0](https://github.com/oocx/tfplan2md/compare/v0.36.0...v0.37.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** add PR creation skills ([321ffab](https://github.com/oocx/tfplan2md/commit/321ffab4e07027e50c2da0012dfaa5675deec83d))
+
+### 📚 Documentation
+
+* **workflow:** add skill approval-minimization guidance ([b30cf52](https://github.com/oocx/tfplan2md/commit/b30cf525720b5d2490cc7e2ba2664a5c0b99818b))
+
 <a name="0.36.0"></a>
 ## [0.36.0](https://github.com/oocx/tfplan2md/compare/v0.35.0...v0.36.0) (2025-12-25)
 

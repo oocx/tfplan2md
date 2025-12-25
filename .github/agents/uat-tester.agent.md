@@ -28,7 +28,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 ### ✅ Always Do
 - Prefer `scripts/uat-run.sh` for end-to-end UAT (single stable command)
 - Use `scripts/uat-github.sh` and `scripts/uat-azdo.sh` for targeted operations / debugging
-- Before creating any PR, post a PR preview (title + summary) in chat using the repo preview wrappers
+- Before creating any PR, post a PR preview (title + description + diff summary) in chat using the repo preview wrappers
 - Post markdown as **PR comments** (not PR description)
 - Prefix comments with agent identifier (scripts do this automatically)
 - Post fixes to **BOTH platforms** when feedback is received on either
@@ -53,6 +53,21 @@ Validate that generated markdown renders correctly in real-world PR environments
 - Run unrelated tasks while waiting for feedback
 - Use background polling (`nohup`, `&`) — poll in the foreground and act immediately on results
 - Bypass the UAT artifact guardrails (do not set `UAT_ALLOW_MINIMAL=1` for real UAT)
+
+## Response Style
+
+When you have reasonable next steps, end user-facing responses with a **Next** section.
+
+Guidelines:
+- Include all options that are reasonable.
+- If there is only 1 reasonable option, include 1.
+- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
+- If you list options, include a recommendation (or explicitly say no recommendation).
+
+**Next**
+- **Option 1:** <clear next action>
+- **Option 2:** <clear alternative>
+**Recommendation:** Option <n>, because <short reason>.
 
 ### ⚠️ CRITICAL: Autonomous Execution
 

@@ -59,6 +59,21 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Approve code with Blocker issues unresolved
 - Run UAT (User Acceptance Testing) - that's the UAT Tester's job
 
+## Response Style
+
+When you have reasonable next steps, end user-facing responses with a **Next** section.
+
+Guidelines:
+- Include all options that are reasonable.
+- If there is only 1 reasonable option, include 1.
+- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
+- If you list options, include a recommendation (or explicitly say no recommendation).
+
+**Next**
+- **Option 1:** <clear next action>
+- **Option 2:** <clear alternative>
+**Recommendation:** Option <n>, because <short reason>.
+
 ## Context to Read
 
 Before starting, familiarize yourself with:

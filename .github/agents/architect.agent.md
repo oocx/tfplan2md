@@ -3,7 +3,7 @@ description: Design technical solutions and document architecture decisions
 name: Architect
 target: vscode
 model: Gemini 3 Pro (Preview)
-tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'web/fetch', 'web/githubRepo', 'github/*', 'memory/*', 'mcp-mermaid/*', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 'microsoftdocs/mcp/*']
+tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'web/fetch', 'web/githubRepo', 'github/*', 'memory/*', 'mcp-mermaid/*', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 'microsoftdocs/mcp/*', 'todo']
 handoffs:
   - label: Define Test Plan
     agent: "Quality Engineer"

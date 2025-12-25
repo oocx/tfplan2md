@@ -126,10 +126,10 @@ Before releasing, verify:
    git push -u origin HEAD
 
    # CRITICAL: Always show PR preview in chat BEFORE creation.
-   scripts/pr-github.sh preview --fill
+   scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
 
    # For new PR (repo wrapper):
-   scripts/pr-github.sh create --fill
+   scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
    # For existing PR (rework after failed validation):
    # PR is automatically updated by the push
    ```

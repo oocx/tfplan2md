@@ -14,11 +14,13 @@ usage() {
 Usage:
   scripts/pr-azdo.sh create --title <title> --description <text>
   scripts/pr-azdo.sh create --fill
+  scripts/pr-azdo.sh abandon --id <pr-id>
 
 Options:
   --title <title>          PR title
   --description <text>     PR description
   --fill                   Derive title/description from git commits (best-effort)
+  --id <pr-id>             Pull request ID (for abandon)
 
 Environment:
   AZDO_ORG                 Azure DevOps org URL (default: https://dev.azure.com/oocx)
@@ -95,6 +97,7 @@ parse_args() {
   TITLE=""
   DESCRIPTION=""
   FILL="false"
+  PR_ID=""
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -110,6 +113,10 @@ parse_args() {
         FILL="true"
         shift
         ;;
+      --id)
+        PR_ID="$2"
+        shift 2
+        ;;
       -h|--help)
         usage
         exit 0
@@ -122,21 +129,31 @@ parse_args() {
     esac
   done
 
-  if [[ "$cmd" != "create" ]]; then
-    echo "Error: unknown command: $cmd" >&2
-    usage
-    exit 2
-  fi
-
-  if [[ "$FILL" == "true" ]]; then
-    derive_from_git
-  else
-    if [[ -z "$TITLE" || -z "$DESCRIPTION" ]]; then
-      echo "Error: provide --fill OR both --title and --description." >&2
+  case "$cmd" in
+    create)
+      if [[ "$FILL" == "true" ]]; then
+        derive_from_git
+      else
+        if [[ -z "$TITLE" || -z "$DESCRIPTION" ]]; then
+          echo "Error: provide --fill OR both --title and --description." >&2
+          usage
+          exit 2
+        fi
+      fi
+      ;;
+    abandon)
+      if [[ -z "$PR_ID" ]]; then
+        echo "Error: provide --id for abandon." >&2
+        usage
+        exit 2
+      fi
+      ;;
+    *)
+      echo "Error: unknown command: $cmd" >&2
       usage
       exit 2
-    fi
-  fi
+      ;;
+  esac
 }
 
 create_pr() {
@@ -170,6 +187,16 @@ create_pr() {
   echo "- Avoid squash/merge commits unless Maintainer requests otherwise." >&2
 }
 
+abandon_pr() {
+  echo "Abandoning PR #$PR_ID in Azure DevOps..." >&2
+  az repos pr update \
+    --id "$PR_ID" \
+    --status abandoned \
+    --organization "$AZDO_ORG" \
+    --output none
+  echo "Abandoned PR #$PR_ID" >&2
+}
+
 main() {
   if [[ $# -lt 1 ]]; then
     usage
@@ -179,8 +206,10 @@ main() {
   local cmd="$1"
   shift
 
-  require_not_main
-  require_clean_worktree
+  if [[ "$cmd" == "create" ]]; then
+    require_not_main
+    require_clean_worktree
+  fi
 
   if ! command -v az >/dev/null 2>&1; then
     echo "Error: az is not installed." >&2
@@ -195,7 +224,14 @@ main() {
   ensure_azdo_auth
   parse_args "$cmd" "$@"
 
-  create_pr
+  case "$cmd" in
+    create)
+      create_pr
+      ;;
+    abandon)
+      abandon_pr
+      ;;
+  esac
 }
 
 main "$@"

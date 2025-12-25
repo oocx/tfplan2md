@@ -33,6 +33,11 @@ Azure DevOps UI/merge options differ by project settings. When merging an Azure 
 scripts/pr-azdo.sh create --fill
 ```
 
+Abandon a test PR (cleanup):
+```bash
+scripts/pr-azdo.sh abandon --id <pr-id>
+```
+
 ### 1. Pre-flight Checks
 ```bash
 git branch --show-current

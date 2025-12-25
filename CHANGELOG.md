@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.44.1"></a>
+## [0.44.1](https://github.com/oocx/tfplan2md/compare/v0.44.0...v0.44.1) (2025-12-25)
+
+### 🐛 Bug Fixes
+
+* **workflow:** require PR description previews ([05af78e](https://github.com/oocx/tfplan2md/commit/05af78eb95c5cd0129af5f0f450e48a6f4986ecb))
+* **workflow:** standardize response style and preview guidance ([4f5214f](https://github.com/oocx/tfplan2md/commit/4f5214f66acb46fb105d34f373ec28b32033790f))
+
+### 📚 Documentation
+
+* **gh:** prefer explicit PR body ([8f07fb2](https://github.com/oocx/tfplan2md/commit/8f07fb2a58e1cf2dd703dd4cf1b4faa2fff425bd))
+* **release:** prefer explicit PR body ([6acee4a](https://github.com/oocx/tfplan2md/commit/6acee4aa76f5e61b7efc54e54e88eb9a36fa966b))
+* **skills:** make explicit PR body default ([e745a9b](https://github.com/oocx/tfplan2md/commit/e745a9bb458cc2b485e2eba463fda17df9c247c9))
+* **workflow:** define when to use todo lists ([cb5ff60](https://github.com/oocx/tfplan2md/commit/cb5ff60120a36414d3a6606eedb463db117d1ee9))
+* **workflow:** prefer explicit PR body ([c0a4ee7](https://github.com/oocx/tfplan2md/commit/c0a4ee705aad328ae34739724ea424bc4cb55080))
+
 <a name="0.44.0"></a>
 ## [0.44.0](https://github.com/oocx/tfplan2md/compare/v0.43.0...v0.44.0) (2025-12-25)
 

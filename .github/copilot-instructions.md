@@ -62,10 +62,11 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 
 ## Terminal Command Guidelines
 
-- **Always explain before running**: Before executing any terminal command, briefly state:
-  1. What the command does
-  2. Why you need to run it
-  This helps the user make informed allow/deny decisions and improves transparency.
+- **Explain then Execute**: Before executing any terminal command, briefly state what the command does and why you need to run it.
+- **Do NOT ask for permission in chat**: Immediately follow your explanation with the tool call in the same response. The user will use the VS Code UI buttons to Allow or Deny the command.
+  - Bad: "I will run `git status`. Is that okay?" (waits for user reply)
+  - Bad: "I will run `git status`." (waits for user reply)
+  - Good: "I will run `git status` to check changes." [Tool Call]
 - Avoid running commands that are not necessary for the current task.
 - When a command fails, explain the error and propose a solution before retrying.
 

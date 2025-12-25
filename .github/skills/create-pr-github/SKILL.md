@@ -9,6 +9,8 @@ compatibility: Requires git and GitHub CLI (gh) authenticated, plus network acce
 ## Purpose
 Create a GitHub pull request in a consistent, policy-compliant way, and include the repo’s preferred merge method guidance (rebase and merge).
 
+This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minimize Maintainer approval interruptions (single terminal invocation).
+
 ## Hard Rules
 ### Must
 - Work on a non-`main` branch.
@@ -21,6 +23,17 @@ Create a GitHub pull request in a consistent, policy-compliant way, and include 
 - Use “Squash and merge” or “Create a merge commit”.
 
 ## Actions
+
+### Recommended: One-Command Wrapper
+Create a PR:
+```bash
+scripts/pr-github.sh create --fill
+```
+
+Create and merge (only when explicitly requested):
+```bash
+scripts/pr-github.sh create-and-merge --fill
+```
 
 ### 1. Pre-flight Checks
 ```bash

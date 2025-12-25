@@ -42,6 +42,8 @@ parse_args() {
   local -n _body_file="$2"
   local -n _fill="$3"
 
+  shift 3
+
   _title=""
   _body_file=""
   _fill="false"

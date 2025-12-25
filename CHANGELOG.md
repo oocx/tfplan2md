@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.34.0"></a>
+## [0.34.0](https://github.com/oocx/tfplan2md/compare/v0.33.0...v0.34.0) (2025-12-25)
+
+### ✨ Features
+
+* add UAT Tester agent and refactor Code Reviewer ([bd4318e](https://github.com/oocx/tfplan2md/commit/bd4318efe029facdf3d4f940292f479ee87cc602))
+* improve UAT workflow with helper scripts and autonomous polling ([9b0b142](https://github.com/oocx/tfplan2md/commit/9b0b1429e1e5ba16deeffe2aa23342033d781d05))
+* replace acceptance notebooks with UAT PRs ([3ae417b](https://github.com/oocx/tfplan2md/commit/3ae417b8bdb3fd950a23f4bdc6b82d9d887f51e7))
+
+### 🐛 Bug Fixes
+
+* address UAT simulation findings ([a56a1ab](https://github.com/oocx/tfplan2md/commit/a56a1abc511071fedf817c59470b42edc4a3e598))
+* improve UAT workflow reliability ([41bcb39](https://github.com/oocx/tfplan2md/commit/41bcb39b0ee74f644b08636c4130c83092669a3f))
+* reduce UAT polling to 15s and restore branch after cleanup ([b10ec24](https://github.com/oocx/tfplan2md/commit/b10ec2423870620993d055a582e9ea1ba1cca7fb))
+* strengthen UAT Tester autonomous execution instructions ([7568c27](https://github.com/oocx/tfplan2md/commit/7568c27459127cd57893655491c5239f955ce9be))
+* tighten AzDO UAT approval and simplify simulation ([688c126](https://github.com/oocx/tfplan2md/commit/688c126a30d80220a5fdfcf19ac596e167d4958e))
+* update UAT Tester agent with GPT-5.2, correct tool names, and simulation instructions ([20f39fb](https://github.com/oocx/tfplan2md/commit/20f39fbeb97f2781bc9886f0e14fd1b06623706a))
+
+### ♻️ Refactoring
+
+* use GPT-5 mini for UAT Tester agent ([57103c5](https://github.com/oocx/tfplan2md/commit/57103c5c5ab55e9eae2f7637c9bcad0777582193))
+
+### 📚 Documentation
+
+* finalize PR-based UAT workflow ([e3aaa46](https://github.com/oocx/tfplan2md/commit/e3aaa465cdb20deb2b116c245fd4e03f87bcd341))
+* update terminal command guidelines ([69b52d9](https://github.com/oocx/tfplan2md/commit/69b52d9da308e122406cfc597b040454d996fb17))
+
 <a name="0.33.0"></a>
 ## [0.33.0](https://github.com/oocx/tfplan2md/compare/v0.32.0...v0.33.0) (2025-12-24)
 

@@ -120,9 +120,16 @@ print_preview() {
   shortstat="$(git diff --shortstat "$base_ref"...HEAD || true)"
   top_files="$(git diff --name-only "$base_ref"...HEAD | head -n 3 | sed 's/^/- /')"
 
-  echo "PR Preview"
-  echo "Title: $TITLE"
-  echo "Summary:"
+  echo "## PR Preview"
+  echo ""
+  echo "**Title**"
+  echo "- $TITLE"
+  echo ""
+  echo "**Description**"
+  echo ""
+  echo "$DESCRIPTION"
+  echo ""
+  echo "**Diff Summary**"
   if [[ -n "$top_files" ]]; then
     echo "$top_files"
   fi

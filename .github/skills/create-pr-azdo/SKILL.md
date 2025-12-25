@@ -22,9 +22,10 @@ Azure DevOps UI/merge options differ by project settings. When merging an Azure 
 - Ensure the working tree is clean before creating a PR.
 - Push the branch before creating the PR.
 - Keep PR title and description conventional and review-friendly.
-- Before creating the PR, post a short PR preview in chat:
+- Before creating the PR, post a PR preview in chat:
   - **Title**: the exact PR title you plan to use
-  - **Summary**: 1–3 bullets describing the change
+  - **Description**: a meaningful, review-friendly body (why + what + testing notes)
+  - **Diff summary**: 1–3 bullets confirming the change
 
 ### Must Not
 - Merge using a strategy that introduces merge commits unless the Maintainer explicitly requests it.
@@ -34,16 +35,27 @@ Azure DevOps UI/merge options differ by project settings. When merging an Azure 
 ### 0. PR Preview (Required)
 Before running any PR creation command, provide in chat:
 - **PR title** (exact)
-- **PR summary** (1–3 bullets)
+- **PR description** (why + what + testing notes)
+- **Diff summary** (1–3 bullets)
 
-Recommended way to generate the preview (best-effort, based on current branch diff):
+Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
 ```bash
 scripts/pr-azdo.sh preview --fill
+```
+
+Preferred when you already have an agent-authored title/description:
+```bash
+scripts/pr-azdo.sh preview --title "<type(scope): summary>" --description "<why + what + testing notes>"
 ```
 
 ### Recommended: One-Command Wrapper
 ```bash
 scripts/pr-azdo.sh create --fill
+```
+
+Preferred (explicit, matches the agent-authored description):
+```bash
+scripts/pr-azdo.sh create --title "<type(scope): summary>" --description "<why + what + testing notes>"
 ```
 
 Abandon a test PR (cleanup):

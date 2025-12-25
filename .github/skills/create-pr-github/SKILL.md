@@ -32,6 +32,11 @@ Before running any PR creation command, provide in chat:
 - **PR title** (exact)
 - **PR summary** (1–3 bullets)
 
+Recommended way to generate the preview (best-effort, based on current branch diff):
+```bash
+scripts/pr-github.sh preview --fill
+```
+
 ### Recommended: One-Command Wrapper
 Create a PR:
 ```bash

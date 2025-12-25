@@ -4,6 +4,9 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
+  scripts/pr-github.sh preview --title <title> --body-file <path>
+  scripts/pr-github.sh preview --fill
+
   scripts/pr-github.sh create --title <title> --body-file <path>
   scripts/pr-github.sh create --fill
 
@@ -19,6 +22,53 @@ Notes:
   - Requires: git + GitHub CLI (gh) authenticated
   - Merge policy: uses rebase-and-merge for linear history (per CONTRIBUTING.md)
 USAGE
+}
+
+ensure_origin_main_exists() {
+  if git show-ref --verify --quiet refs/remotes/origin/main; then
+    return 0
+  fi
+
+  git fetch origin main >/dev/null 2>&1 || true
+}
+
+print_preview() {
+  local base_ref="origin/main"
+
+  ensure_origin_main_exists
+  if ! git show-ref --verify --quiet refs/remotes/origin/main; then
+    base_ref="main"
+  fi
+
+  local title
+  local file_count
+  local add_total
+  local del_total
+  local shortstat
+  local top_files
+
+  if [[ "$FILL" == "true" ]]; then
+    title="$(git log -1 --pretty=%s)"
+  else
+    title="$TITLE"
+  fi
+
+  file_count="$(git diff --name-only "$base_ref"...HEAD | wc -l | tr -d ' ')"
+  add_total="$(git diff --numstat "$base_ref"...HEAD | awk '{a+=$1} END {print a+0}')"
+  del_total="$(git diff --numstat "$base_ref"...HEAD | awk '{d+=$2} END {print d+0}')"
+  shortstat="$(git diff --shortstat "$base_ref"...HEAD || true)"
+  top_files="$(git diff --name-only "$base_ref"...HEAD | head -n 3 | sed 's/^/- /')"
+
+  echo "PR Preview"
+  echo "Title: $title"
+  echo "Summary:"
+  if [[ -n "$top_files" ]]; then
+    echo "$top_files"
+  fi
+  echo "- $file_count file(s) changed; +$add_total/-$del_total lines"
+  if [[ -n "$shortstat" ]]; then
+    echo "- $shortstat"
+  fi
 }
 
 require_clean_worktree() {
@@ -118,7 +168,7 @@ main() {
   shift
 
   case "$cmd" in
-    create|create-and-merge)
+    preview|create|create-and-merge)
       ;;
     *)
       echo "Error: unknown command: $cmd" >&2
@@ -128,6 +178,18 @@ main() {
   esac
 
   require_not_main
+
+  TITLE=""
+  BODY_FILE=""
+  FILL="false"
+
+  parse_args TITLE BODY_FILE FILL "$@"
+
+  if [[ "$cmd" == "preview" ]]; then
+    print_preview
+    exit 0
+  fi
+
   require_clean_worktree
 
   if ! command -v gh >/dev/null 2>&1; then
@@ -139,12 +201,6 @@ main() {
     echo "Error: gh is not authenticated. Run: gh auth login" >&2
     exit 2
   fi
-
-  TITLE=""
-  BODY_FILE=""
-  FILL="false"
-
-  parse_args TITLE BODY_FILE FILL "$@"
 
   git push -u origin HEAD
 

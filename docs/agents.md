@@ -27,6 +27,8 @@ Agents are empowered by **Agent Skills**, which are specialized, reusable capabi
 | Skill Name | Description |
 | :--- | :--- |
 | `create-agent-skill` | Create a new Agent Skill following project standards and templates. |
+| `create-pr-github` | Create and (optionally) merge a GitHub pull request using gh, following the repo policy to use rebase and merge for a linear history. |
+| `create-pr-azdo` | Create an Azure DevOps pull request using az devops tooling; include the repo’s linear-history merge preference and ask the Maintainer if merge options differ. |
 | `git-rebase-main` | Safely rebase the current feature branch on top of the latest origin/main. |
 | `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
 | `run-uat` | Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. |

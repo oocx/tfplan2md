@@ -16,9 +16,10 @@ This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minim
 - Work on a non-`main` branch.
 - Ensure the working tree is clean before creating a PR.
 - Push the branch to `origin` before creating the PR.
-- Before creating the PR, post a short PR preview in chat:
+- Before creating the PR, post a PR preview in chat:
   - **Title**: the exact PR title you plan to use
-  - **Summary**: 1–3 bullets describing the change
+  - **Description**: a meaningful, review-friendly body (why + what + testing notes)
+  - **Diff summary**: 1–3 bullets confirming the change
 - Use **Rebase and merge** for merging PRs to maintain a linear history (see `CONTRIBUTING.md`).
 
 ### Must Not
@@ -30,11 +31,17 @@ This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minim
 ### 0. PR Preview (Required)
 Before running any PR creation command, provide in chat:
 - **PR title** (exact)
-- **PR summary** (1–3 bullets)
+- **PR description** (why + what + testing notes)
+- **Diff summary** (1–3 bullets)
 
-Recommended way to generate the preview (best-effort, based on current branch diff):
+Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
 ```bash
 scripts/pr-github.sh preview --fill
+```
+
+Preferred when you already have an agent-authored title/body:
+```bash
+scripts/pr-github.sh preview --title "<type(scope): summary>" --body "<why + what + testing notes>"
 ```
 
 ### Recommended: One-Command Wrapper
@@ -43,9 +50,19 @@ Create a PR:
 scripts/pr-github.sh create --fill
 ```
 
+Preferred (explicit, matches the agent-authored description):
+```bash
+scripts/pr-github.sh create --title "<type(scope): summary>" --body "<why + what + testing notes>"
+```
+
 Create and merge (only when explicitly requested):
 ```bash
 scripts/pr-github.sh create-and-merge --fill
+```
+
+Preferred (explicit):
+```bash
+scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body "<why + what + testing notes>"
 ```
 
 ### 1. Pre-flight Checks

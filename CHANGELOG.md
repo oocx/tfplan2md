@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.38.0"></a>
+## [0.38.0](https://github.com/oocx/tfplan2md/compare/v0.37.0...v0.38.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** add one-command GitHub PR script ([8017fef](https://github.com/oocx/tfplan2md/commit/8017fef6adbfdf82af1a8665f9e578510957eade))
+
+### 🐛 Bug Fixes
+
+* **workflow:** fix pr-github wrapper arg parsing ([878b6fe](https://github.com/oocx/tfplan2md/commit/878b6fec5ccc7b37ed64e1b0d2e5a002417df9c1))
+* **workflow:** fix pr-github wrapper option parsing ([07bebbd](https://github.com/oocx/tfplan2md/commit/07bebbdaad7a1652831f50aba6c5e3ba8826f768))
+
 <a name="0.37.0"></a>
 ## [0.37.0](https://github.com/oocx/tfplan2md/compare/v0.36.0...v0.37.0) (2025-12-25)
 

@@ -21,6 +21,19 @@ All generated markdown is validated to ensure correct rendering on GitHub and Az
 
 See [docs/markdown-specification.md](markdown-specification.md) for the supported markdown subset and [docs/testing-strategy.md](testing-strategy.md) for testing details.
 
+## Consistent Value Formatting
+
+**Status:** ✅ Implemented
+
+To improve readability and scannability, `tfplan2md` uses a consistent formatting strategy across all reports:
+
+- **Data Values**: All actual data values (resource names, IP addresses, configuration settings) are formatted as `inline code` (backticks). This makes them visually distinct from labels and descriptions.
+- **Labels & Keys**: Attribute names, table headers, and descriptive text are rendered as plain text.
+- **Summaries**: Resource summaries use code formatting for all identifiers and configuration values (e.g., `name`, `resource_group`, `location`).
+- **Diffs**: Large value diffs support both styled HTML (inline-diff) and standard text (standard-diff) formats, configurable via CLI.
+
+This ensures that the most important information—the values changing in your infrastructure—always stands out.
+
 ## Input
 
 - **Stdin (default)**: Read Terraform plan JSON from standard input

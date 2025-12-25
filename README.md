@@ -118,14 +118,14 @@ All generated markdown is automatically validated and linted for correct formatt
 
 #### ➕ azurerm_resource_group.main
 
-**Summary:** `example-rg` (westeurope)
+**Summary:** `example-rg` (`westeurope`)
 
 <details>
 
 | Attribute | Value |
 |-----------|-------|
-| `location` | westeurope |
-| `name` | example-rg |
+| location | `westeurope` |
+| name | `example-rg` |
 
 </details>
 
@@ -137,14 +137,14 @@ All generated markdown is automatically validated and linted for correct formatt
 
 | Attribute | Before | After |
 |-----------|--------|-------|
-| `tags.environment` | dev | production |
+| tags.environment | `dev` | `production` |
 
 </details>
 
 <details>
 <summary>Large values: custom_data (5 lines, 2 changed)</summary>
 
-##### `custom_data`
+##### **custom_data:**
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>#!/bin/bash
 <span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">echo "Installing<span style="background-color: #ffc0c0; color: #24292e;"> v1.0</span>"</span>

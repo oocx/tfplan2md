@@ -18,14 +18,14 @@
 
 #### ➕ azurerm_resource_group.rg_root
 
-**Summary:** `rg-root` (westeurope)
+**Summary:** `rg-root` (`westeurope`)
 
 <details>
 
 | Attribute | Value |
 | ----------- | ------- |
-| `location` | westeurope |
-| `name` | rg-root |
+| location | `westeurope` |
+| name | `rg-root` |
 
 </details>
 
@@ -33,14 +33,14 @@
 
 #### ➕ module.network.azurerm_virtual_network.vnet
 
-**Summary:** `vnet` | 10.0.0.0/16
+**Summary:** `vnet` | `10.0.0.0/16`
 
 <details>
 
 | Attribute | Value |
 | ----------- | ------- |
-| `address_space[0]` | 10.0.0.0/16 |
-| `name` | vnet |
+| address_space[0] | `10.0.0.0/16` |
+| name | `vnet` |
 
 </details>
 
@@ -54,8 +54,8 @@
 
 | Attribute | Value |
 | ----------- | ------- |
-| `address_prefix` | 10.0.1.0/24 |
-| `name` | subnet1 |
+| address_prefix | `10.0.1.0/24` |
+| name | `subnet1` |
 
 </details>
 
@@ -69,7 +69,7 @@
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `plan` | B1 | S1 |
+| plan | `B1` | `S1` |
 
 </details>
 
@@ -83,7 +83,7 @@
 
 | Attribute | Value |
 | ----------- | ------- |
-| `name` | example-db |
-| `sku` | GP_Gen5_2 |
+| name | `example-db` |
+| sku | `GP_Gen5_2` |
 
 </details>

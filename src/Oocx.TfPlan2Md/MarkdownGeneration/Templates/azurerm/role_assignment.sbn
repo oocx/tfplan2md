@@ -20,12 +20,46 @@
 {{ end }}
 
 {{ func format_value(attr, value, scope, role, principal, for_table) }}
-    {{ if attr == "scope" }}{{ ret for_table ? normalize_for_table(scope.details) : scope.details }}{{ end }}
-    {{ if attr == "role_definition_id" }}{{ ret for_table ? normalize_for_table(role.full_name) : role.full_name }}{{ end }}
-    {{ if attr == "principal_id" }}{{ ret for_table ? normalize_for_table(principal.full_name) : principal.full_name }}{{ end }}
+    {{ func safe(text) }}
+        {{ if text == null }}{{ ret "" }}{{ end }}
+        {{ ret escape_markdown(text) }}
+    {{ end }}
+
+    {{ func wrap_code(text) }}
+        {{ cleaned = safe(text) }}
+        {{ if cleaned == "" }}{{ ret "" }}{{ end }}
+        {{ ret "`" + cleaned + "`" }}
+    {{ end }}
+
+    {{ if attr == "scope" }}
+        {{ if scope.resource_group != "" && scope.subscription_id != "" }}
+            {{ ret wrap_code(scope.resource_group) + " in subscription " + wrap_code(scope.subscription_id) }}
+        {{ end }}
+        {{ if scope.summary_name != "" }}
+            {{ ret scope.summary_label + " " + wrap_code(scope.summary_name) }}
+        {{ end }}
+        {{ if scope.details != "" }}{{ ret safe(scope.details) }}{{ end }}
+        {{ ret "" }}
+    {{ end }}
+
+    {{ if attr == "role_definition_id" }}
+        {{ roleName = wrap_code(role.name) }}
+        {{ roleId = wrap_code(role.id) }}
+        {{ if roleName == "" && roleId == "" }}{{ ret "" }}{{ end }}
+        {{ if roleId == "" }}{{ ret roleName }}{{ end }}
+        {{ if roleName == "" }}{{ ret roleId }}{{ end }}
+        {{ ret roleName + " (" + roleId + ")" }}
+    {{ end }}
+
+    {{ if attr == "principal_id" }}
+        {{ text = wrap_code(principal.name) }}
+        {{ if principal.type != "" }}{{ text = text + " (" + safe(principal.type) + ")" }}{{ end }}
+        {{ if principal.id != "" }}{{ text = text + " [" + wrap_code(principal.id) + "]" }}{{ end }}
+        {{ ret text }}
+    {{ end }}
+
     {{ if value == null }}{{ ret "" }}{{ end }}
-    {{ text = "" + value }}
-    {{ if for_table }}{{ ret normalize_for_table(text) }}{{ else }}{{ ret text }}{{ end }}
+    {{ ret wrap_code("" + value) }}
 {{ end }}
 
 #### {{ action_symbol }} {{ address | escape_markdown }}
@@ -70,7 +104,7 @@
 | Attribute | Value |
 | ----------- | ------- |
 {{ for attr in small_attrs -}}
-{{ if attr.after_table }}| `{{ attr.name | escape_markdown }}` | {{ attr.after_table | escape_markdown }} |
+{{ if attr.after_table }}| {{ attr.name | escape_markdown }} | {{ attr.after_table }} |
 {{ end -}}
 {{ end -}}
 
@@ -78,7 +112,7 @@
 | Attribute | Value |
 | ----------- | ------- |
 {{ for attr in small_attrs -}}
-{{ if attr.before_table }}| `{{ attr.name | escape_markdown }}` | {{ attr.before_table | escape_markdown }} |
+{{ if attr.before_table }}| {{ attr.name | escape_markdown }} | {{ attr.before_table }} |
 {{ end -}}
 {{ end -}}
 
@@ -86,7 +120,7 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{ for attr in small_attrs -}}
-| `{{ attr.name | escape_markdown }}` | {{ if attr.before_table }}{{ attr.before_table | escape_markdown }}{{ else }}-{{ end }} | {{ if attr.after_table }}{{ attr.after_table | escape_markdown }}{{ else }}-{{ end }} |
+| {{ attr.name | escape_markdown }} | {{ if attr.before_table != null && attr.before_table != "" }}{{ attr.before_table }}{{ else }}-{{ end }} | {{ if attr.after_table != null && attr.after_table != "" }}{{ attr.after_table }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
 
@@ -98,7 +132,7 @@
 <summary>{{ large_attributes_summary(large_attrs) }}</summary>
 
 {{ for attr in large_attrs }}
-##### `{{ attr.name | escape_markdown }}`
+##### **{{ attr.name | escape_markdown }}:**
 
 {{ format_large_value(attr.before, attr.after, large_value_format) }}
 

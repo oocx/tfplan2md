@@ -317,7 +317,7 @@ public class ScribanHelpersTests
         var scriptObject = new ScriptObject();
 
         // Act
-        ScribanHelpers.RegisterHelpers(scriptObject, new NullMapper());
+        ScribanHelpers.RegisterHelpers(scriptObject, new NullMapper(), LargeValueFormat.InlineDiff);
 
         // Assert
         scriptObject.ContainsKey("diff_array").Should().BeTrue();

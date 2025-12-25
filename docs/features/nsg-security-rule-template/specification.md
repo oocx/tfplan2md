@@ -75,10 +75,10 @@ With the specialized template, the same changes are rendered semantically:
 
 | | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 |---|------|----------|-----------|--------|----------|------------------|--------------|----------------------|-------------------|-------------|
-| ➕ | allow-https | 100 | Inbound | Allow | TCP | * | * | * | 443 | Allow HTTPS traffic |
-| 🔄 | allow-http | 110 | Inbound | Allow | TCP | * | * | * | - 80<br>+ 8080 | - Allow HTTP<br>+ Allow alternate HTTP |
-| ❌ | allow-ssh | 120 | Inbound | Allow | TCP | 10.0.0.0/8 | * | * | 22 | Legacy SSH access |
-| ⏺️ | allow-dns | 130 | Outbound | Allow | UDP | * | * | 168.63.129.16 | 53 | Azure DNS |
+| ➕ | `allow-https` | `100` | `Inbound` | `Allow` | `TCP` | `*` | `*` | `*` | `443` | `Allow HTTPS traffic` |
+| 🔄 | `allow-http` | `110` | `Inbound` | `Allow` | `TCP` | `*` | `*` | `*` | - 80<br>+ 8080 | - Allow HTTP<br>+ Allow alternate HTTP |
+| ❌ | `allow-ssh` | `120` | `Inbound` | `Allow` | `TCP` | `10.0.0.0/8` | `*` | `*` | `22` | `Legacy SSH access` |
+| ⏺️ | `allow-dns` | `130` | `Outbound` | `Allow` | `UDP` | `*` | `*` | `168.63.129.16` | `53` | `Azure DNS` |
 ```
 
 ### Visual Formatting

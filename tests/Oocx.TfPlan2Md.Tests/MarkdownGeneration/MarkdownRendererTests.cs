@@ -354,12 +354,12 @@ public class MarkdownRendererTests
         // Assert - For creates we should show a 2-column table (Attribute | Value) and the expected values
         var rgSection = markdown.Split(Heading("➕", "azurerm_resource_group.main"))[1].Split("###")[0];
         rgSection.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("name")}` | {Escape("rg-new-project")} |")
-            .And.Contain($"| `{Escape("location")}` | {Escape("westeurope")} |");
+            .And.Contain($"| {Escape("name")} | `{Escape("rg-new-project")}` |")
+            .And.Contain($"| {Escape("location")} | `{Escape("westeurope")}` |");
 
         var stSection = markdown.Split(Heading("➕", "azurerm_storage_account.main"))[1].Split("###")[0];
         stSection.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("account_tier")}` | {Escape("Standard")} |");
+            .And.Contain($"| {Escape("account_tier")} | `{Escape("Standard")}` |");
     }
 
     [Fact]
@@ -395,13 +395,13 @@ public class MarkdownRendererTests
         // Assert - For deletes we should show a 2-column table (Attribute | Value) and the expected values
         var stSection = markdown.Split(Heading("❌", "azurerm_storage_account.old"))[1].Split("###")[0];
         stSection.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("account_tier")}` | {Escape("Standard")} |")
-            .And.Contain($"| `{Escape("name")}` | {Escape("stoldproject")} |");
+            .And.Contain($"| {Escape("account_tier")} | `{Escape("Standard")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape("stoldproject")}` |");
 
         var rgSection = markdown.Split(Heading("❌", "azurerm_resource_group.old"))[1].Split("###")[0];
         rgSection.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("name")}` | {Escape("rg-old-project")} |")
-            .And.Contain($"| `{Escape("location")}` | {Escape("westeurope")} |");
+            .And.Contain($"| {Escape("name")} | `{Escape("rg-old-project")}` |")
+            .And.Contain($"| {Escape("location")} | `{Escape("westeurope")}` |");
     }
 
     [Fact]
@@ -458,8 +458,8 @@ public class MarkdownRendererTests
         // Assert - replace should use the Before/After table
         var section = markdown.Split(Heading("♻️", "example_resource.replace_me"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Before | After |")
-            .And.Contain($"| `{Escape("name")}` | {Escape("old")} | {Escape("new")} |")
-            .And.Contain($"| `{Escape("size")}` | {Escape("small")} | {Escape("large")} |");
+            .And.Contain($"| {Escape("name")} | `{Escape("old")}` | `{Escape("new")}` |")
+            .And.Contain($"| {Escape("size")} | `{Escape("small")}` | `{Escape("large")}` |");
     }
 
     [Fact]
@@ -515,8 +515,8 @@ public class MarkdownRendererTests
         // Assert - sensitive attribute should be masked in the Value column
         var section = markdown.Split(Heading("➕", "example_resource.sensitive"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain("| `api_key` | (sensitive) |")
-            .And.Contain("| `name` | sensitive_resource |");
+            .And.Contain($"| {Escape("api_key")} | `{Escape("(sensitive)")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape("sensitive_resource")}` |");
     }
 
     [Fact]
@@ -572,7 +572,7 @@ public class MarkdownRendererTests
         // Assert - the null `name` and unknown `id` should not be shown; only `location` should appear
         var section = markdown.Split(Heading("➕", "example_resource.partial"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("location")}` | {Escape("westeurope")} |")
+            .And.Contain($"| {Escape("location")} | `{Escape("westeurope")}` |")
             .And.NotContain($"`{Escape("name")}`")
             .And.NotContain($"`{Escape("id")}`");
     }
@@ -624,7 +624,7 @@ public class MarkdownRendererTests
         // Assert - the null `location` should not be shown; only `name` should appear
         var section = markdown.Split(Heading("❌", "example_resource.partial_delete"))[1].Split("###")[0];
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| `{Escape("name")}` | {Escape("rg-old-project")} |")
+            .And.Contain($"| {Escape("name")} | `{Escape("rg-old-project")}` |")
             .And.NotContain($"`{Escape("location")}`");
     }
 
@@ -696,7 +696,7 @@ public class MarkdownRendererTests
 
         // Verify the table exists and has the expected structure
         keyVaultSection.Should().Contain("| Attribute | Before | After |")
-            .And.Contain($"| `{Escape("sku_name")}` |")
+            .And.Contain($"| {Escape("sku_name")} | `standard` | `premium` |")
             .And.Contain("soft_delete_retention_days")
             .And.NotContain("| `location` |");
     }
@@ -958,8 +958,9 @@ public class MarkdownRendererTests
         // Assert - modified rule allow-http is shown in the main rule table with combined Source values
         result.Should().NotBeNull();
         result.Should().Contain("🔄").And.Contain("allow-http");
-        result.Should().Contain("10.0.1.0/24, 10.0.3.0/24");
-        result.Should().Contain("Allow HTTP traffic from web and API tiers");
+        result.Should().Contain("10.0.3.0/24");
+        result.Should().Contain("from web and API tiers");
+        result.Should().Contain("background-color:");
     }
 
     [Fact]

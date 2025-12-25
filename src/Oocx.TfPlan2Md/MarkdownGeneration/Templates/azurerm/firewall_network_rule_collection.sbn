@@ -4,9 +4,9 @@
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
 {{~ if after_json ~}}
-**Collection:** `{{ after_json.name | escape_markdown }}` | **Priority:** {{ after_json.priority | escape_markdown }} | **Action:** {{ after_json.action | escape_markdown }}
+**Collection:** `{{ after_json.name | escape_markdown }}` | **Priority:** `{{ after_json.priority | escape_markdown }}` | **Action:** `{{ after_json.action | escape_markdown }}`
 {{~ else if before_json ~}}
-**Collection:** `{{ before_json.name | escape_markdown }}` | **Priority:** {{ before_json.priority | escape_markdown }} | **Action:** {{ before_json.action | escape_markdown }}
+**Collection:** `{{ before_json.name | escape_markdown }}` | **Priority:** `{{ before_json.priority | escape_markdown }}` | **Action:** `{{ before_json.action | escape_markdown }}`
 {{~ end ~}}
 
 {{~ if before_json && after_json && before_json.rule && after_json.rule ~}}
@@ -17,16 +17,16 @@
 | Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 {{~ for rule in diff.added ~}}
-| ➕ | {{ rule.name | escape_markdown }} | {{ rule.protocols | array.join ", " | escape_markdown }} | {{ rule.source_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_ports | array.join ", " | escape_markdown }} | {{ (rule.description ?? "") | escape_markdown }} |
+| ➕ | `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{ end }}
 {{~ for item in diff.modified ~}}
-| 🔄 | {{ item.after.name | escape_markdown }} | {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }} | {{ format_diff (item.before.source_addresses | array.join ", ") (item.after.source_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_addresses | array.join ", ") (item.after.destination_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_ports | array.join ", ") (item.after.destination_ports | array.join ", ") }} | {{ format_diff (item.before.description ?? "") (item.after.description ?? "") }} |
+| 🔄 | `{{ item.after.name | escape_markdown }}` | {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }} | {{ format_diff (item.before.source_addresses | array.join ", ") (item.after.source_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_addresses | array.join ", ") (item.after.destination_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_ports | array.join ", ") (item.after.destination_ports | array.join ", ") }} | {{ format_diff (item.before.description ?? "") (item.after.description ?? "") }} |
 {{ end }}
 {{~ for rule in diff.removed ~}}
-| ❌ | {{ rule.name | escape_markdown }} | {{ rule.protocols | array.join ", " | escape_markdown }} | {{ rule.source_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_ports | array.join ", " | escape_markdown }} | {{ (rule.description ?? "") | escape_markdown }} |
+| ❌ | `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{ end }}
 {{~ for rule in diff.unchanged ~}}
-| ⏺️ | {{ rule.name | escape_markdown }} | {{ rule.protocols | array.join ", " | escape_markdown }} | {{ rule.source_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_ports | array.join ", " | escape_markdown }} | {{ (rule.description ?? "") | escape_markdown }} |
+| ⏺️ | `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{~ end ~}}
 
 
@@ -36,7 +36,7 @@
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 {{~ for rule in after_json.rule ~}}
-| {{ rule.name | escape_markdown }} | {{ rule.protocols | array.join ", " | escape_markdown }} | {{ rule.source_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_ports | array.join ", " | escape_markdown }} | {{ (rule.description ?? "") | escape_markdown }} |
+| `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{~ end ~}}
 
 {{~ else if action == "delete" && before_json && before_json.rule ~}}
@@ -45,7 +45,7 @@
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 {{~ for rule in before_json.rule ~}}
-| {{ rule.name | escape_markdown }} | {{ rule.protocols | array.join ", " | escape_markdown }} | {{ rule.source_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_addresses | array.join ", " | escape_markdown }} | {{ rule.destination_ports | array.join ", " | escape_markdown }} | {{ (rule.description ?? "") | escape_markdown }} |
+| `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{~ end ~}}
 
 {{~ else ~}}

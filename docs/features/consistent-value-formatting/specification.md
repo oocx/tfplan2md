@@ -2,7 +2,7 @@
 
 ## Overview
 
-Improve readability and consistency across all Markdown output by code-formatting actual data values (what changes) while keeping labels, attribute names, and action indicators as plain text. This makes the important information—the values—visually prominent and easy to scan.
+Improve readability and consistency across all Markdown output by code-formatting actual data values (what changes) while keeping labels, attribute names, and action indicators as plain text. This makes the important information—the values—visually prominent and easy to scan. Large-value sections also get a consistent heading style so collapsible blocks remain readable.
 
 ## User Goals
 
@@ -28,7 +28,7 @@ Improve readability and consistency across all Markdown output by code-formattin
 - Action value: code-formatted (already has backticks, keep them)
 
 **3. Network Security Group Headers (network_security_group.sbn)**
-- NSG name: plain text (remove backticks if present)
+- NSG name: code-formatted (wrap in backticks), consistent with firewall headers
 
 **4. Firewall Rule Tables (firewall_network_rule_collection.sbn)**
 - All data values code-formatted: rule name, protocols, addresses, ports, descriptions
@@ -45,11 +45,16 @@ Improve readability and consistency across all Markdown output by code-formattin
 - Support both inline-diff (HTML with character-level highlighting) and standard-diff (+/- markers)
 - Respect the `--large-value-format` CLI option
 - Apply code formatting to diff outputs
+- Standard diff mode wraps individual before/after values in backticks; inline diff mode uses a `<code>` wrapper around styled spans for table safety
 - Applies to: all `format_diff` calls in firewall and NSG templates
 
 **7. Resource Summary Builder (ResourceSummaryBuilder.cs)**
 - Resource names in summaries: code-formatted (already implemented, keep as-is)
-- Other contextual values (resource groups, locations): plain text (already implemented, keep as-is)
+- Other contextual values (resource groups, locations, tiers): code-formatted (changed from plain text)
+
+**8. Large Value Headings**
+- Large value sections use H5 headings with bold labels and trailing colon: `##### **<attribute_name>:**`
+- Applies to collapsible large-value blocks across templates
 
 ### Out of Scope
 
@@ -57,8 +62,7 @@ Improve readability and consistency across all Markdown output by code-formattin
 - Changes to resource addresses in headings
 - Changes to module names
 - Changes to action symbols (➕, 🔄, ❌, ♻️, ⏺️)
-- Changes to markdown bold/italic formatting
-- Changes to "Large values" collapsible section formatting
+- Changes to markdown bold/italic formatting (other than the specified large-value headings style)
 
 ## User Experience
 
@@ -105,9 +109,9 @@ Format_diff uses styled diff formatting matching `format_large_value`:
 | 🔄 | `allow-dns` | `UDP` | <span style="background-color: #ffdddd;">10.1.1.0/24</span> <span style="background-color: #ddffdd;">10.1.1.0/24, 10.1.2.0/24</span> | `168.63.129.16` | `53` | `DNS to Azure` |
 ```
 
-**Standard-diff format** (+/- markers):
+**Standard-diff format** (+/- markers, backtick-wrapped values):
 ```markdown
-| 🔄 | `allow-dns` | `UDP` | `- 10.1.1.0/24`<br>`+ 10.1.1.0/24, 10.1.2.0/24` | `168.63.129.16` | `53` | `DNS to Azure` |
+| 🔄 | `allow-dns` | `UDP` | - `10.1.1.0/24`<br>+ `10.1.1.0/24, 10.1.2.0/24` | `168.63.129.16` | `53` | `DNS to Azure` |
 ```
 
 ### Command Line
@@ -127,7 +131,7 @@ terraform show -json plan.tfplan | tfplan2md --large-value-format standard-diff
 - [ ] All attribute names in change tables are plain text (no backticks)
 - [ ] All attribute values in change tables are code-formatted (backticks)
 - [ ] Firewall collection headers have all values code-formatted
-- [ ] NSG headers have names as plain text
+- [ ] NSG headers have names code-formatted
 - [ ] All firewall rule table values are code-formatted
 - [ ] All NSG rule table values are code-formatted
 - [ ] Action symbols remain plain (no backticks)

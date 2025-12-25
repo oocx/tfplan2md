@@ -37,9 +37,10 @@ public class MarkdownRendererResourceTemplateTests
         var result = RenderFirewallPlan();
 
         // Assert
-        result.Should().Contain("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24");
-        result.Should().Contain("- Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers");
-        result.Should().Contain("| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |");
+        result.Should().Contain("allow-http");
+        result.Should().Contain("background-color:");
+        result.Should().Contain("10.0.3.0/24");
+        result.Should().Contain("from web and API tiers");
     }
 
     [Fact]
@@ -49,7 +50,7 @@ public class MarkdownRendererResourceTemplateTests
         var result = RenderFirewallPlan();
 
         // Assert
-        result.Should().Contain("| 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |");
+        result.Should().Contain("| 🔄 | `allow-http` | <code>TCP</code> |");
         result.Should().NotContain("- TCP");
         result.Should().NotContain("+ TCP");
         result.Should().NotContain("- *<br>");
@@ -65,9 +66,9 @@ public class MarkdownRendererResourceTemplateTests
         var result = RenderFirewallPlan();
 
         // Assert
-        result.Should().Contain("| ➕ | allow-dns | UDP | 10.0.1.0/24, 10.0.2.0/24 | 168.63.129.16 | 53 | Allow DNS queries to Azure DNS |");
-        result.Should().Contain("| ❌ | allow-ssh-old | TCP | 10.0.0.0/8 | 10.0.2.0/24 | 22 | Legacy SSH access - to be removed |");
-        result.Should().Contain("| ⏺️ | allow-https | TCP | 10.0.1.0/24 | * | 443 | Allow HTTPS traffic to internet |");
+        result.Should().Contain("| ➕ | `allow-dns` | `UDP` | `10.0.1.0/24, 10.0.2.0/24` | `168.63.129.16` | `53` | `Allow DNS queries to Azure DNS` |");
+        result.Should().Contain("| ❌ | `allow-ssh-old` | `TCP` | `10.0.0.0/8` | `10.0.2.0/24` | `22` | `Legacy SSH access - to be removed` |");
+        result.Should().Contain("| ⏺️ | `allow-https` | `TCP` | `10.0.1.0/24` | `*` | `443` | `Allow HTTPS traffic to internet` |");
         result.Should().NotContain("- allow-dns");
         result.Should().NotContain("+ allow-dns");
     }

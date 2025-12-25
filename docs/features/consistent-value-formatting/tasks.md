@@ -69,7 +69,7 @@ Update firewall and NSG templates to use consistent code formatting for data val
 
 **Acceptance Criteria:**
 - [x] `firewall_network_rule_collection.sbn`: Headers and rule tables use code formatting for data (TC-03).
-- [x] `network_security_group.sbn`: Headers use plain text for names, rule tables use code formatting for data (TC-04).
+- [x] `network_security_group.sbn`: Headers use code formatting for names, rule tables use code formatting for data (TC-04).
 - [x] `format_diff` calls in these templates now produce styled output automatically.
 - [x] Unit tests for templates (TC-03, TC-04) pass.
 

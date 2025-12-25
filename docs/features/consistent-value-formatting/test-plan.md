@@ -13,7 +13,7 @@ Reference: [Specification](specification.md), [Architecture](architecture.md)
 | Attribute names in change tables are plain text | TC-01, TC-02 | Unit (Template) |
 | Attribute values in change tables are code-formatted | TC-01, TC-02 | Unit (Template) |
 | Firewall collection headers have all values code-formatted | TC-03 | Unit (Template) |
-| NSG headers have names as plain text | TC-04 | Unit (Template) |
+| NSG headers have names code-formatted | TC-04 | Unit (Template) |
 | Firewall rule table values are code-formatted | TC-03 | Unit (Template) |
 | NSG rule table values are code-formatted | TC-04 | Unit (Template) |
 | `format_diff` produces styled output (inline-diff) | TC-05 | Unit (Helper) |
@@ -129,7 +129,7 @@ Verify that firewall rule collections use code formatting for all data values in
 **Type:** Unit (Template)
 
 **Description:**
-Verify that NSG templates use plain text for NSG names in headers and code formatting for all data values in rule tables.
+Verify that NSG templates use code formatting for NSG names in headers and code formatting for all data values in rule tables.
 
 **Preconditions:**
 - An NSG change.
@@ -140,7 +140,7 @@ Verify that NSG templates use plain text for NSG names in headers and code forma
 3. Check the security rule table rows.
 
 **Expected Result:**
-- Header: `**Network Security Group:** nsg-app`
+- Header: `**Network Security Group:** `nsg-app``
 - Table: `| `AllowHTTP` | `100` | `Inbound` | `Allow` | `TCP` | `*` | `80` | `Allow HTTP` |`
 
 ---

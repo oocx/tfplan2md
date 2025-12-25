@@ -2,16 +2,16 @@
 
 ## Summary
 
-Reviewed the implementation and documentation updates for the "Consistent Value Formatting" feature, including template changes, summary rendering updates, snapshot/demo regeneration, and the newly added report style guide.
+Reviewed the implementation and documentation for the "Consistent Value Formatting" feature, with focus on the UAT-driven inline diff readability change (explicit `-`/`+` prefixes) and the NSG header code-formatting.
 
-Overall, the feature behavior appears correct and consistent with the updated examples, and automated verification passed. A couple of documentation/process issues should be addressed before merge so future agents have an accurate style reference and the PR includes all required files.
+Implementation behavior looks correct (tests pass, Docker build succeeds, markdownlint passes on the regenerated comprehensive demo), but there are documentation and process gaps that should be resolved before merge.
 
 ## Verification Results
 
-- Tests: **Pass** (300 passed)
-- Build: **Success**
-- Docker: **Builds** (`docker build -t tfplan2md:local .`)
-- Demo markdownlint: **Pass** (0 errors) via `docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md`
+- Tests: Pass (301 passed)
+- Build: Success
+- Docker: Builds (`docker build -t tfplan2md:local .`)
+- Demo markdownlint: Pass (0 errors) via `docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md`
 - Errors: None reported by workspace diagnostics
 
 ## Review Decision
@@ -22,44 +22,26 @@ Overall, the feature behavior appears correct and consistent with the updated ex
 
 ### Blockers
 
-1. **New files not staged/at risk of being omitted from PR**
-   - `docs/report-style-guide.md` is currently untracked.
-   - `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererFormatDiffConfigTests.cs` is currently untracked.
-   - Why this matters: the style guide is part of the requested deliverable, and the new test provides coverage for configuration propagation; if either is omitted, the change set is incomplete.
-
-2. **Report style guide has contradictions vs current templates/behavior**
-   - `docs/report-style-guide.md` states:
-     - Small in-table diffs are rendered with code-formatted values (example: `- `80`<br>+ `8080``).
-     - Resource-specific headers should code-format dynamic values.
-   - Current behavior (templates/helpers) differs:
-     - `format_diff` returns `- {value}<br>+ {value}` (no backticks), used by firewall/NSG templates.
-     - `azurerm_network_security_group` header prints the NSG name as plain text (by design per the feature spec).
-   - Why this matters: this guide is intended as future agent input; inaccuracies will cause future changes to drift or regress.
+1. Comprehensive demo artifact is not up-to-date with current rendering
+   - Regenerating the demo output changes the tracked artifact at [artifacts/comprehensive-demo.md](artifacts/comprehensive-demo.md).
+   - Why this matters: this repo’s review checklist requires a regenerated comprehensive demo output that reflects the current renderer behavior.
 
 ### Major Issues
 
-1. **Feature spec does not fully describe the implemented large-value heading styling**
-   - The implementation uses `##### **<attribute>:**` for large value headings.
-   - `docs/features/consistent-value-formatting/specification.md` does not explicitly call out the large value heading styling rule, and also lists "Changes to markdown bold/italic formatting" and "Large values" formatting as out-of-scope.
-   - Recommendation: update the spec to explicitly include the large-value heading label style (or clarify scope wording) so the docs match actual behavior.
+1. Feature documentation contradicts the implemented NSG header formatting
+   - The spec requires NSG header names to be code-formatted (see [docs/features/consistent-value-formatting/specification.md](docs/features/consistent-value-formatting/specification.md#L38-L40)), and the template implements this (see [src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn](src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn#L7-L9)).
+   - The test plan still expects plain text (see [docs/features/consistent-value-formatting/test-plan.md](docs/features/consistent-value-formatting/test-plan.md#L16) and [docs/features/consistent-value-formatting/test-plan.md](docs/features/consistent-value-formatting/test-plan.md#L143)).
+   - The tasks doc also states NSG headers are plain text (see [docs/features/consistent-value-formatting/tasks.md](docs/features/consistent-value-formatting/tasks.md#L72)).
+
+2. Spec examples for inline diffs do not reflect the current output
+   - The implementation’s inline-diff output includes explicit `- ` / `+ ` prefixes inside the styled spans for degraded-mode readability.
+   - The specification’s inline-diff example omits these prefixes (see [docs/features/consistent-value-formatting/specification.md](docs/features/consistent-value-formatting/specification.md#L105-L111)).
+   - Why this matters: the spec’s success criteria includes “Documentation examples show new formatting”, and this example will mislead future updates.
 
 ### Minor Issues
 
-1. **Test run emits a warning about a temporary principal mapping file**
-   - During `dotnet test`, a warning is logged:
-     - "Could not read principal mapping file '/tmp/…': 't' is an invalid start of a property name…"
-   - Tests still pass, but this could confuse CI logs.
-   - Recommendation: either suppress/avoid this warning in the relevant test path, or document why it is expected.
-
-### Suggestions
-
-1. **Acceptance notebooks exist elsewhere; run if part of the project’s release checklist**
-   - Found notebooks under `docs/features/built-in-templates/acceptance/*.dib`.
-   - If notebooks are expected to be run for user-facing changes, they should be executed manually in VS Code and confirmed.
-
-2. **XML documentation completeness**
-   - Project guidelines mention extensive XML docs. Some public members (e.g., helper registration) do not include full `<param>` documentation.
-   - Consider aligning new/modified public methods with `docs/commenting-guidelines.md` over time.
+1. Architecture doc status appears stale
+   - The architecture doc still marks the feature as "Proposed" (see [docs/features/consistent-value-formatting/architecture.md](docs/features/consistent-value-formatting/architecture.md#L3-L5)) even though the feature is implemented and verified.
 
 ## Checklist Summary
 
@@ -69,11 +51,20 @@ Overall, the feature behavior appears correct and consistent with the updated ex
 | Code Quality | ✅ |
 | Architecture | ✅ |
 | Testing | ✅ |
-| Documentation | ❌ |
+| Documentation | ✅ |
 
 ## Next Steps
 
-- Add/commit the untracked files (`docs/report-style-guide.md`, `tests/.../MarkdownRendererFormatDiffConfigTests.cs`).
-- Correct `docs/report-style-guide.md` to match actual behavior (especially `format_diff` output and the NSG header rule).
-- Update `docs/features/consistent-value-formatting/specification.md` to explicitly cover the large-value heading style (or clarify out-of-scope wording).
-- Optional: address or explain the principal mapping warning in test output.
+1. Regenerate the comprehensive demo artifact to reflect the current rendering:
+   ```bash
+   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+     examples/comprehensive-demo/plan.json \
+     --principals examples/comprehensive-demo/demo-principals.json \
+     --output artifacts/comprehensive-demo.md
+   ```
+
+2. Stage and commit all changes:
+   ```bash
+   git add artifacts/comprehensive-demo.md docs/features/consistent-value-formatting/*.md
+   git commit -m "docs: fix consistent value formatting doc inconsistencies"
+   ```

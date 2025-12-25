@@ -106,7 +106,7 @@ Format_diff uses styled diff formatting matching `format_large_value`:
 
 **Inline-diff format** (HTML with background colors):
 ```markdown
-| 🔄 | `allow-dns` | `UDP` | <span style="background-color: #ffdddd;">10.1.1.0/24</span> <span style="background-color: #ddffdd;">10.1.1.0/24, 10.1.2.0/24</span> | `168.63.129.16` | `53` | `DNS to Azure` |
+| 🔄 | `allow-dns` | `UDP` | <span style="background-color: #ffdddd;">- 10.1.1.0/24</span> <span style="background-color: #ddffdd;">+ 10.1.1.0/24, 10.1.2.0/24</span> | `168.63.129.16` | `53` | `DNS to Azure` |
 ```
 
 **Standard-diff format** (+/- markers, backtick-wrapped values):

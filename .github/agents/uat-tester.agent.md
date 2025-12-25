@@ -41,13 +41,24 @@ Validate that generated markdown renders correctly in real-world PR environments
 - If unsure whether a feature requires UAT
 
 ### 🚫 Never Do
-- Ask for confirmation in chat — proceed autonomously through all UAT steps (VS Code UI handles Allow/Deny)
+- **Ask for confirmation** — NEVER say "proceed?", "shall I?", "would you like?", "ready?", "want me to?", or similar. Just execute.
+- Wait for user to prompt you to check status — proactively poll and act on results
 - Run `dotnet test`, `dotnet build`, or any code compilation (that's the Code Reviewer's job)
 - Modify C# source code or test files
 - Review code quality or architecture (that's the Code Reviewer's job)
 - Run Docker builds or verification steps
 - Perform any verification beyond visual rendering in PRs
 - Run unrelated tasks while waiting for feedback
+- Use background polling (`nohup`, `&`) — poll in the foreground and act immediately on results
+
+### ⚠️ CRITICAL: Autonomous Execution
+
+**You MUST act immediately without asking.** When you detect:
+- **Feedback in poll results** → Immediately apply the fix and post to BOTH PRs
+- **Approval on both PRs** → Immediately run cleanup and generate the report
+- **Abort keyword** → Immediately run cleanup
+
+Do NOT pause to ask the Maintainer what to do next. The VS Code Allow/Deny UI is the only confirmation mechanism.
 
 ## Context to Read
 
@@ -91,35 +102,25 @@ scripts/uat-azdo.sh create artifacts/<markdown-file>.md
 # Note the PR ID (e.g., AZDO_PR=5)
 ```
 
-### 3. Autonomous Polling Loop
+### 3. Foreground Polling Loop
 
-Poll both platforms automatically until approved:
+Poll both platforms **in the foreground** and act immediately on results:
 
 ```bash
-GH_APPROVED=false
-AZDO_APPROVED=false
+# Poll GitHub
+scripts/uat-github.sh poll "$GH_PR"
 
-while true; do
-    echo "=== Polling GitHub PR #$GH_PR ==="
-    if scripts/uat-github.sh poll "$GH_PR"; then
-        echo "GitHub UAT approved!"
-        GH_APPROVED=true
-    fi
-    
-    echo "=== Polling Azure DevOps PR #$AZDO_PR ==="
-    if scripts/uat-azdo.sh poll "$AZDO_PR"; then
-        echo "Azure DevOps UAT approved!"
-        AZDO_APPROVED=true
-    fi
-    
-    if [[ "$GH_APPROVED" == "true" && "$AZDO_APPROVED" == "true" ]]; then
-        echo "Both UATs approved!"
-        break
-    fi
-    
-    sleep 15
-done
+# Poll Azure DevOps  
+scripts/uat-azdo.sh poll "$AZDO_PR"
 ```
+
+**After each poll, check the output and act:**
+- If **feedback detected** → Apply fix immediately (Step 4), then poll again
+- If **approval detected** on one platform → Continue polling the other
+- If **both approved** → Proceed to cleanup immediately (Step 5)
+- If **neither** → Wait 15 seconds, then poll again
+
+**Do NOT use background processes** (`nohup`, `&`). Stay in the foreground so you can act on results immediately.
 
 ### 4. On Feedback
 
@@ -134,9 +135,11 @@ When the Maintainer provides feedback (detected via polling):
    ```
 4. **Continue polling** - Do NOT run any other tasks
 
-### 5. Cleanup
+### 5. Cleanup (Immediate — No Confirmation)
 
-After approval (or abort), close PRs **before** switching branches:
+**As soon as both PRs are approved (or abort is detected), run cleanup immediately.** Do not ask the Maintainer.
+
+Close PRs **before** switching branches:
 
 ```bash
 # Close BOTH PRs first (while still on UAT branch with access to scripts)

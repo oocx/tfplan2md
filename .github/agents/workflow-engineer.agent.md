@@ -214,6 +214,12 @@ What this agent produces
 - **Examples over explanations** - Show real code examples, not abstract descriptions
 - **Boundaries first** - Clear rules prevent mistakes
 
+## Agent Skills
+
+Agent Skills are reusable capabilities (instructions + scripts) that agents can load on demand. Skills live in `.github/skills/<skill-name>/` and are listed in `docs/agents.md`.
+
+**To create a new skill**, use the `create-agent-skill` skill which provides templates and step-by-step guidance.
+
 ## Tool Selection Guide
 
 **Tool Awareness:** You are always provided with a list of all available tools, even though you will not need to use many of them. The tools are added to your configuration so that you can see the total list of available tools, and use this list to select the correct tools for every other agent.

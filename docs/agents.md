@@ -18,6 +18,22 @@ Throughout the workflow, the Maintainer coordinates handoffs between agents and 
 
 ---
 
+## Agent Skills
+
+Agents are empowered by **Agent Skills**, which are specialized, reusable capabilities stored in `.github/skills/`. Skills encapsulate complex workflows, scripts, and strict procedures (like UAT or Release) that can be loaded on-demand by agents. This ensures consistency and reduces the cognitive load on the primary agent prompts.
+
+### Available Skills
+
+| Skill Name | Description |
+| :--- | :--- |
+| `create-agent-skill` | Create a new Agent Skill following project standards and templates. |
+| `git-rebase-main` | Safely rebase the current feature branch on top of the latest origin/main. |
+| `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
+| `run-uat` | Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. |
+| `simulate-uat` | Simulate the UAT workflow (create PR, comment, poll) on GitHub or Azure DevOps using a minimal test artifact and simulated fixes. |
+
+---
+
 ## Workflow Overview
 
 ```mermaid

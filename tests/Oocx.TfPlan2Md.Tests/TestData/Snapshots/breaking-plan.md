@@ -52,7 +52,7 @@ This has a | pipe and a
 ##### **tags.note:**
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>line1
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">line2</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">+ line2</span>
 </code></pre>
 
 </details>

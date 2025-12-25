@@ -60,5 +60,14 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
   - Expression-bodied members for simple single-line implementations
 - Code Style enforcement must be automated (pre-commit hooks, CI/CD checks, .editorconfig etc.)
 
+## Terminal Command Guidelines
+
+- **Always explain before running**: Before executing any terminal command, briefly state:
+  1. What the command does
+  2. Why you need to run it
+  This helps the user make informed allow/deny decisions and improves transparency.
+- Avoid running commands that are not necessary for the current task.
+- When a command fails, explain the error and propose a solution before retrying.
+
 ## Tooling specific instructions
 - For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the `.github/gh-cli-instructions.md` file in the repository

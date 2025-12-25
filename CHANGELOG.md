@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.35.0"></a>
+## [0.35.0](https://github.com/oocx/tfplan2md/compare/v0.34.0...v0.35.0) (2025-12-25)
+
+### ✨ Features
+
+* align consistent value formatting ([b4892aa](https://github.com/oocx/tfplan2md/commit/b4892aa42cf98e88034606633ef0e37a85e714c1))
+
+### 🐛 Bug Fixes
+
+* add +/- markers to inline diffs for readability ([e86b7c5](https://github.com/oocx/tfplan2md/commit/e86b7c54e8a8377d40191563303949ca7a8b4793))
+
+### 📚 Documentation
+
+* add architecture for consistent-value-formatting ([adb8fdb](https://github.com/oocx/tfplan2md/commit/adb8fdbc4b8e47f5cd452b3eccc351219052de7b))
+* add feature specification for consistent value formatting ([f00a05a](https://github.com/oocx/tfplan2md/commit/f00a05a3e170d82138a06eb2b50043b84b3c207a))
+* add tasks for consistent-value-formatting ([aee0f34](https://github.com/oocx/tfplan2md/commit/aee0f348b3cb7c2fca77354a96065680cc16675e))
+* add test plan for consistent-value-formatting ([23681c5](https://github.com/oocx/tfplan2md/commit/23681c5d13e203ef1885b697d718099fb89305b1))
+* mark consistent value formatting review approved ([38c55f0](https://github.com/oocx/tfplan2md/commit/38c55f09d6d40be186840590fab63e32ee882228))
+* refine architecture to specify table-compatible diff formatting ([af43ae7](https://github.com/oocx/tfplan2md/commit/af43ae7130419d73b5abcded888f71bfcd188ebe))
+* regenerate comprehensive demo ([88db09e](https://github.com/oocx/tfplan2md/commit/88db09ed09fc4567b4bbc37f021c7965968a1fdf))
+* update architecture to use registered helper configuration ([e50c1fd](https://github.com/oocx/tfplan2md/commit/e50c1fd4014d71a0a13c87c1e11c215aa39222f4))
+* update examples with proper rendering and refined role assignment formatting ([a0ae233](https://github.com/oocx/tfplan2md/commit/a0ae23304a3c67aa35d192b8ac86c37a060f1416))
+* update tasks for registered helper configuration ([24ee0c3](https://github.com/oocx/tfplan2md/commit/24ee0c3f0eae555bb525a5eea1ee479871e77c73))
+* update tasks with actionable user stories ([ce79cdc](https://github.com/oocx/tfplan2md/commit/ce79cdc65880d8efd8bed9322ee4fe92a7d6f0ce))
+* **uat:** capture consistent value formatting findings ([30cb80a](https://github.com/oocx/tfplan2md/commit/30cb80acb7d146550fbe766509421d9487d99d04))
+
 <a name="0.34.0"></a>
 ## [0.34.0](https://github.com/oocx/tfplan2md/compare/v0.33.0...v0.34.0) (2025-12-25)
 

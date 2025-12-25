@@ -17,25 +17,33 @@ Reference: [Specification](specification.md)
 - **Pros:** clear separation from existing `format_diff`.
 - **Cons:** `format_diff` is already widely used; better to upgrade it than replace it everywhere with a new name.
 
-### Option 2: Upgrade `format_diff` (Recommended)
-- Update `format_diff` to accept an optional `format` parameter.
-- Use the same rendering logic as `format_large_value` (supporting `inline-diff` and `standard-diff`).
-- **Pros:** consistent API, reuses existing logic, easy to update templates.
-- **Cons:** requires updating `ScribanHelpers.cs`.
+### Option 3: Register Configured Helper (Selected)
+- Update `RegisterHelpers` to accept the configuration (e.g., `LargeValueFormat`).
+- Register `format_diff` as a closure that captures this configuration.
+- **Pros:** Keeps templates clean (`{{ format_diff before after }}`), prevents errors (forgetting to pass the arg), centralizes configuration.
+- **Cons:** Requires threading configuration through `MarkdownRenderer`.
 
 ## Decision
 
-We will upgrade `ScribanHelpers.FormatDiff` and update the Scriban templates.
+We will upgrade `ScribanHelpers.FormatDiff` and register it with the configured format.
 
 ### 1. Update `ScribanHelpers.FormatDiff`
-- Change signature to `public static string FormatDiff(string? before, string? after, string format = "standard-diff")`.
+- Change signature to `public static string FormatDiff(string? before, string? after, string format)`.
 - Implement logic to parse the format string (using `ParseLargeValueFormat` or similar).
 - Use a **table-compatible** rendering logic (avoiding block elements like `<pre>` or ` ``` `):
   - `inline-diff`: HTML-based diff with character highlighting, using `<br>` for line breaks and `<code>` spans.
   - `standard-diff`: Text-based diff with `+`/`-` markers, using `<br>` for line breaks.
 - Ensure it handles "small" values correctly (no collapsing needed, just formatting).
 
-### 2. Update Scriban Templates
+### 2. Update `ScribanHelpers.RegisterHelpers`
+- Update signature to accept `LargeValueFormat`.
+- Register `format_diff` as a closure: `(b, a) => FormatDiff(b, a, formatString)`.
+
+### 3. Update `MarkdownRenderer`
+- Pass `ReportModel.LargeValueFormat` to `RegisterHelpers`.
+- Update `RenderResourceChange` and `RenderResourceWithTemplate` to accept `LargeValueFormat`.
+
+### 4. Update Scriban Templates
 - **`default.sbn`**:
   - Swap backticks in attribute tables: `| {{ attr.name }} | `{{ attr.value }}` |`.
 - **`role_assignment.sbn`**:
@@ -44,16 +52,16 @@ We will upgrade `ScribanHelpers.FormatDiff` and update the Scriban templates.
 - **`firewall_network_rule_collection.sbn` & `network_security_group.sbn`**:
   - Update headers to code-format values (Collection name, Priority, Action).
   - Update rule tables to code-format all data columns.
-  - Update `format_diff` calls to pass `large_value_format` (e.g., `{{ format_diff rule.protocols.before rule.protocols.after large_value_format }}`).
+  - **No change needed for `format_diff` calls** (they remain `{{ format_diff ... }}`).
 
 ## Rationale
 
+- **Clean Templates:** Templates don't need to know about global configuration options.
 - **Consistency:** Using the same diff logic for small and large values ensures a uniform look and feel.
-- **Configurability:** Passing `large_value_format` allows the user to control the diff style globally via the existing CLI option.
-- **Readability:** Reversing the backticks focuses attention on the data, which is the primary goal of the report.
+- **Configurability:** The `format_diff` helper automatically respects the CLI option.
+- **Readability:** Reversing the backticks focuses attention on the data.
 
 ## Implementation Notes
 
 - **Shared Logic:** Consider refactoring the diff rendering logic from `FormatLargeValue` into a private helper method to avoid code duplication in `FormatDiff`.
-- **Template Variable:** The `large_value_format` variable is available in the root `ReportModel` and can be accessed in templates.
 - **Escaping:** Ensure `EscapeMarkdown` is called correctly within the new `FormatDiff` implementation to prevent XSS or broken markdown.

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.39.0"></a>
+## [0.39.0](https://github.com/oocx/tfplan2md/compare/v0.38.0...v0.39.0) (2025-12-25)
+
+### ✨ Features
+
+* **workflow:** add one-command Azure DevOps PR script ([30d3864](https://github.com/oocx/tfplan2md/commit/30d38649a24a4ce2be54dcf126be106aca11ef6f))
+
 <a name="0.38.0"></a>
 ## [0.38.0](https://github.com/oocx/tfplan2md/compare/v0.37.0...v0.38.0) (2025-12-25)
 

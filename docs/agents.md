@@ -24,6 +24,13 @@ Agents are empowered by **Agent Skills**, which are specialized, reusable capabi
 
 When authoring skills, prefer designs that **minimize Maintainer approval interruptions** (terminal approvals): use a small number of stable wrapper commands, batch steps when practical, and reuse existing repo scripts.
 
+### PR Preview Guardrail
+
+Before an agent runs any command that creates (or creates-and-merges) a pull request, it must:
+
+1. Run the appropriate repo wrapper preview command (`scripts/pr-github.sh preview ...` or `scripts/pr-azdo.sh preview ...`).
+2. Paste the preview output into the chat (title + summary) so the Maintainer can make an informed Allow/Deny decision.
+
 ### Available Skills
 
 | Skill Name | Description |

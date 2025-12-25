@@ -124,8 +124,12 @@ Before releasing, verify:
 3. **Create or Update Pull Request**:
    ```bash
    git push -u origin HEAD
-   # For new PR:
-   PAGER=cat gh pr create --title "feat: <feature-name>" --body "<description>"
+
+   # CRITICAL: Always show PR preview in chat BEFORE creation.
+   scripts/pr-github.sh preview --fill
+
+   # For new PR (repo wrapper):
+   scripts/pr-github.sh create --fill
    # For existing PR (rework after failed validation):
    # PR is automatically updated by the push
    ```

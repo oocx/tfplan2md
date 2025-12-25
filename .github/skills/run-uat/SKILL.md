@@ -13,7 +13,7 @@ Execute end-to-end User Acceptance Testing by posting the comprehensive demo art
 ### Must
 - Generate fresh artifacts before posting (use `generate-demo-artifacts` skill).
 - Create a unique UAT branch to avoid collisions.
-- Use the canonical artifact: `artifacts/comprehensive-demo.md`.
+- Default to the comprehensive demo artifact when there are no special requirements.
 - Clean up (close/abandon) the UAT PR after testing.
 - Report platform-specific rendering issues clearly.
 
@@ -32,13 +32,26 @@ Execute end-to-end User Acceptance Testing by posting the comprehensive demo art
 This repository provides a stable wrapper that creates UAT PR(s), polls for approval, and cleans up in one command.
 
 ```bash
-scripts/uat-run.sh artifacts/comprehensive-demo.md
+# Default artifact selection:
+# - GitHub: $UAT_ARTIFACT_GITHUB (fallback: artifacts/comprehensive-demo.md)
+# - AzDO:   $UAT_ARTIFACT_AZDO   (fallback: artifacts/comprehensive-demo.md)
+scripts/uat-run.sh
+```
+
+If a feature requires a different report (e.g., summary-only, custom template tests), pass the artifact explicitly:
+
+```bash
+scripts/uat-run.sh artifacts/<feature-specific-report>.md
 ```
 
 If you need to target only one platform:
 ```bash
-scripts/uat-run.sh artifacts/comprehensive-demo.md --platform github
-scripts/uat-run.sh artifacts/comprehensive-demo.md --platform azdo
+scripts/uat-run.sh --platform github
+scripts/uat-run.sh --platform azdo
+
+# Or with an explicit artifact override for a feature-specific UAT:
+scripts/uat-run.sh artifacts/<feature-specific-report>.md --platform github
+scripts/uat-run.sh artifacts/<feature-specific-report>.md --platform azdo
 ```
 
 ### 0. Recommended: Rebase on Latest Main

@@ -140,7 +140,7 @@ git push -u origin HEAD
 ### 3. Run GitHub Simulation
 ```bash
 # Create PR with simulation label
-scripts/uat-github.sh create artifacts/uat-simulation.md
+UAT_ALLOW_MINIMAL=1 scripts/uat-github.sh create artifacts/uat-simulation.md
 # PR title will be: "UAT: uat-minimal"
 
 # Poll for comments/feedback
@@ -181,7 +181,7 @@ scripts/uat-github.sh cleanup <pr-number>
 ### 4. Run Azure DevOps Simulation
 ```bash
 scripts/uat-azdo.sh setup
-scripts/uat-azdo.sh create artifacts/uat-simulation.md
+UAT_ALLOW_MINIMAL=1 scripts/uat-azdo.sh create artifacts/uat-simulation.md
 scripts/uat-azdo.sh poll <pr-id>
 # Handle feedback with simulated response file
 scripts/uat-azdo.sh comment <pr-id> /tmp/uat-simulated-fix.md

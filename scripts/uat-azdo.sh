@@ -55,7 +55,19 @@ cmd_create() {
         log_error "Usage: $0 create <markdown-file>"
         exit 1
     fi
+
+    # Guardrail: prevent accidental posting of minimal/simulation artifacts for real UAT.
+    # Override by setting UAT_ALLOW_MINIMAL=1 (intended for simulate-uat).
+    if [[ "${UAT_ALLOW_MINIMAL:-}" != "1" ]]; then
+        if echo "$(basename "$file")" | grep -qiE '(minimal|simulation)'; then
+            log_error "Refusing to use a minimal/simulation artifact for real UAT: $file"
+            log_error "Use artifacts/comprehensive-demo.md (recommended), or set UAT_ALLOW_MINIMAL=1 to override."
+            exit 1
+        fi
+    fi
     
+    log_info "Using artifact: $file"
+
     local branch
     branch=$(git branch --show-current)
     local title="UAT: $(basename "$file" .md)"

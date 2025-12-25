@@ -26,7 +26,8 @@ Validate that generated markdown renders correctly in real-world PR environments
 ## Boundaries
 
 ### ✅ Always Do
-- Use `scripts/uat-github.sh` and `scripts/uat-azdo.sh` for all UAT operations
+- Prefer `scripts/uat-run.sh` for end-to-end UAT (single stable command)
+- Use `scripts/uat-github.sh` and `scripts/uat-azdo.sh` for targeted operations / debugging
 - Post markdown as **PR comments** (not PR description)
 - Prefix comments with agent identifier (scripts do this automatically)
 - Post fixes to **BOTH platforms** when feedback is received on either
@@ -50,7 +51,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 - Perform any verification beyond visual rendering in PRs
 - Run unrelated tasks while waiting for feedback
 - Use background polling (`nohup`, `&`) — poll in the foreground and act immediately on results
-- Use wrapper scripts like `uat-runner.sh` — always follow the step-by-step process below
+- Bypass the UAT artifact guardrails (do not set `UAT_ALLOW_MINIMAL=1` for real UAT)
 
 ### ⚠️ CRITICAL: Autonomous Execution
 

@@ -28,6 +28,19 @@ Execute end-to-end User Acceptance Testing by posting the comprehensive demo art
 
 ## Actions
 
+### Recommended: Single Wrapper Command
+This repository provides a stable wrapper that creates UAT PR(s), polls for approval, and cleans up in one command.
+
+```bash
+scripts/uat-run.sh artifacts/comprehensive-demo.md
+```
+
+If you need to target only one platform:
+```bash
+scripts/uat-run.sh artifacts/comprehensive-demo.md --platform github
+scripts/uat-run.sh artifacts/comprehensive-demo.md --platform azdo
+```
+
 ### 0. Recommended: Rebase on Latest Main
 Before running UAT, ensure your branch is up to date to avoid testing against stale base changes.
 Use the `git-rebase-main` skill.

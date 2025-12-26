@@ -34,7 +34,7 @@ The chat export only contains the VS Code infrastructure agent (`github.copilot.
 - Cannot determine which agent definitions performed best
 - Cross-feature analysis loses agent context
 
-**Workaround:** Use file naming conventions to annotate which agent was used (e.g., save as `chat-developer.json`).
+**Note:** A single feature chat typically includes work from multiple agents, so per-agent analysis would require VS Code to record this information in the export format.
 
 ## Quick Start
 

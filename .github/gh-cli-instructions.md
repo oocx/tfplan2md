@@ -4,13 +4,18 @@
 
 GitHub CLI (`gh`) may trigger interactive pagers that block agent execution. **Always disable the pager** when running `gh` commands.
 
-## Required Pattern: Always Set PAGER
+## Required Pattern: Always Disable Paging
 
 **Use this pattern for EVERY `gh` command:**
 
 ```bash
-PAGER=cat gh [command] [options]
+GH_PAGER=cat GH_FORCE_TTY=false gh [command] [options]
 ```
+
+Why `GH_PAGER`?
+
+- `GH_PAGER` is `gh`’s own pager override (most reliable way to prevent `gh` from launching `less`).
+- `PAGER` is a general-purpose pager variable used by many tools; it can still be useful, but it’s easier to miss and can affect unrelated commands.
 
 Alternatively, set it once at the beginning of your session:
 
@@ -30,7 +35,7 @@ export GH_FORCE_TTY=false
 
 ```bash
 # Safe non-interactive issue creation
-echo "Automated issue body" | PAGER=cat GH_FORCE_TTY=false gh issue create --title "Automated" --body-file -
+echo "Automated issue body" | GH_PAGER=cat GH_FORCE_TTY=false gh issue create --title "Automated" --body-file -
 ```
 
 ## Common Commands - Correct Usage
@@ -39,10 +44,10 @@ echo "Automated issue body" | PAGER=cat GH_FORCE_TTY=false gh issue create --tit
 
 ```bash
 # List pull requests
-PAGER=cat gh pr list --json number,title,state,author
+GH_PAGER=cat GH_FORCE_TTY=false gh pr list --json number,title,state,author
 
 # View pull request details
-PAGER=cat gh pr view 123 --json number,title,body,state,commits,reviews
+GH_PAGER=cat GH_FORCE_TTY=false gh pr view 123 --json number,title,body,state,commits,reviews
 
 # Create pull request (preferred: repo wrapper scripts)
 # CRITICAL: Show the preview output in chat BEFORE creating/merging a PR.
@@ -56,26 +61,26 @@ scripts/pr-github.sh preview --fill
 scripts/pr-github.sh create --fill
 
 # Manual fallback (only if wrapper scripts are unavailable)
-PAGER=cat gh pr create --title "Title" --body "Description" --base main --head feature-branch
+GH_PAGER=cat GH_FORCE_TTY=false gh pr create --title "Title" --body "Description" --base main --head feature-branch
 
 # Check pull request status
-PAGER=cat gh pr status --json number,title,state
+GH_PAGER=cat GH_FORCE_TTY=false gh pr status --json number,title,state
 ```
 
 ### Issues
 
 ```bash
 # List issues
-PAGER=cat gh issue list --json number,title,state,author
+GH_PAGER=cat GH_FORCE_TTY=false gh issue list --json number,title,state,author
 
 # View issue details
-PAGER=cat gh issue view 123 --json number,title,body,state,comments
+GH_PAGER=cat GH_FORCE_TTY=false gh issue view 123 --json number,title,body,state,comments
 
 # Create issue
-PAGER=cat gh issue create --title "Title" --body "Description"
+GH_PAGER=cat GH_FORCE_TTY=false gh issue create --title "Title" --body "Description"
 
 # Close issue
-PAGER=cat gh issue close 123
+GH_PAGER=cat GH_FORCE_TTY=false gh issue close 123
 ```
 
 ### Repository Information

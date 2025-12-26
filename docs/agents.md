@@ -405,6 +405,13 @@ This keeps all decisions traceable through the conversation history and artifact
 ## Best Practices
 
 - **Clear Agent Boundaries:** Each agent should have a single responsibility and clear handoff criteria.
+- **Artifact Ownership:** Each artifact type has exactly one responsible agent. Agents must NOT edit artifacts owned by other agents:
+  - Source code (`src/`, `tests/`) → Developer only
+  - Documentation (`docs/`, `README.md`) → Technical Writer only
+  - Code Review Reports → Code Reviewer only
+  - Retrospective Reports → Retrospective agent only
+  - UAT PRs/Comments → UAT Tester only
+  - Release artifacts → Release Manager only
 - **Extensibility:** Design agents to be composable and customizable for different project needs.
 - **Traceability:** Document all decisions, requirements, and changes in artifact files.
 - **Maintainer Control:** The Maintainer coordinates all handoffs and has final approval on all artifacts.

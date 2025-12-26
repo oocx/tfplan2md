@@ -33,7 +33,7 @@ Ensure the feature is ready for release, create the pull request (for both new f
 - Verify branch is up to date with main
 - Review commit messages follow conventional commit format
 - Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
-- **Prefer `Rebase and merge`** when merging PRs; the repository is configured to **allow rebase-only merges**. Use `scripts/pr-github.sh create-and-merge` (which uses `--rebase --delete-branch`) or `gh pr merge --rebase --delete-branch`.
+- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`) or `gh pr merge --rebase --delete-branch`.
 - Wait for PR Validation workflow to complete successfully before merging PR
 - Wait for CI on main to complete before triggering release workflow
 - Detect and use the version tag created by Versionize
@@ -52,6 +52,7 @@ Ensure the feature is ready for release, create the pull request (for both new f
 - Trigger release workflow before CI on main completes
 - Manually bump version numbers (Versionize handles this)
 - Use the wrong tag or skip tag detection
+- Use squash merges or merge commits (UI buttons, API, or CLI)
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 
 ## Response Style
@@ -160,9 +161,9 @@ Before releasing, verify:
 
 5. **Merge Pull Request** - After ALL checks pass:
    - Inform maintainer that PR validation passed and PR is ready to merge
-   - **Merge using: Rebase and merge.**
-     - **Preferred (for merges):** Use `scripts/pr-github.sh create-and-merge` — this script is the authoritative, repo-standard merge tool and will perform a `rebase` merge and delete the branch.
-     - **Preferred (for PR creation/inspection):** Use GitHub chat tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation.
+    - **Merge using: Rebase and merge.**
+       - **Preferred (for merges):** Use `scripts/pr-github.sh create-and-merge` — this script is the authoritative, repo-standard merge tool and will perform a `rebase` merge and delete the branch. Abort if the script/CLI reports rebase is unavailable; fix repository settings before merging.
+       - **Preferred (for PR creation/inspection):** Use GitHub chat tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation. Do not click squash/merge-commit buttons.
    - Wait for maintainer to approve and merge (or merge if authorized)
 
 ### Phase 2: Post-Merge Release

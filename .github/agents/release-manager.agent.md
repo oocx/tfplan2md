@@ -9,6 +9,10 @@ handoffs:
     agent: "Developer"
     prompt: The PR build validation or release pipeline failed. Please investigate and fix the issues.
     send: false
+  - label: Conduct Retrospective
+    agent: "Retrospective"
+    prompt: The release is complete. Please conduct a retrospective to identify workflow improvements.
+    send: false
 ---
 
 # Release Manager Agent

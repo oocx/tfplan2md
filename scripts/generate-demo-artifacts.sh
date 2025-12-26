@@ -48,7 +48,7 @@ log_info "✓ artifacts/comprehensive-demo.md generated successfully (inline-dif
 log_info "Generating artifacts/comprehensive-demo-standard-diff.md (for GitHub UAT)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
-  --diff-format standard \
+  --large-value-format standard-diff \
   --output artifacts/comprehensive-demo-standard-diff.md \
   examples/comprehensive-demo/plan.json
 

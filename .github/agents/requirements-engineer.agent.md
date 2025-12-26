@@ -82,6 +82,7 @@ Todo lists:
 Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and goals
 - [docs/features.md](../../docs/features.md) and feature descriptions in `docs/features/` - Existing features
+- [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards** (critical when specifying markdown output)
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - [README.md](../../README.md) - Project overview

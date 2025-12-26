@@ -63,7 +63,7 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
 - ✅ Doc alignment gate added to Code Reviewer ([#113](https://github.com/oocx/tfplan2md/pull/113))
 - ✅ Report style guide wired into Requirements Engineer, Developer, Code Reviewer, Technical Writer, UAT Tester ([#112](https://github.com/oocx/tfplan2md/pull/112))
 - ✅ Release Manager → Retrospective handoff added ([#111](https://github.com/oocx/tfplan2md/pull/111))
-- ⏳ Release Manager merge-method enforcement not explicitly added yet (rebase policy exists in Release Manager Always Do section)
+- ✅ Release Manager merge-method enforcement added (rebase-only with script/CLI guardrails)
 
 ## 4. 📊 Metrics & Retrospectives
 

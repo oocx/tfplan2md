@@ -143,6 +143,11 @@ Before starting, familiarize yourself with:
 - [ ] Documentation is updated to reflect changes
 - [ ] No contradictions in documentation
 - [ ] CHANGELOG.md was NOT modified (auto-generated)
+- [ ] **Documentation Alignment** (critical gate before approval):
+  - [ ] Spec, tasks, and test plan agree on key acceptance criteria
+  - [ ] Spec examples match actual implementation behavior
+  - [ ] No conflicting requirements between documents
+  - [ ] Feature descriptions are consistent across all docs
 - [ ] Comprehensive demo output passes markdownlint (required for all reviews):
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors

@@ -27,11 +27,13 @@ Extract structured metrics from VS Code Copilot chat exports to support retrospe
 
 **Recommended: Use the extraction script**
 ```bash
-# Generate a complete analysis report
-.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-analysis-results.md
+# Generate analysis files (both markdown and JSON)
+.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-metrics
 ```
 
-This single command extracts all metrics and generates a markdown report.
+This creates:
+- `chat-metrics.md` - Human-readable report for review
+- `chat-metrics.json` - Raw data for cross-feature analysis (**commit this file**)
 
 ## Export Structure Reference
 
@@ -90,9 +92,13 @@ Ask the Maintainer to:
 
 ### 2. Run Extraction Script (Recommended)
 ```bash
-# Generate full analysis report
-.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-analysis-results.md
+# Generate analysis report (creates both .md and .json files)
+.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-metrics
 ```
+
+This creates two files:
+- `chat-metrics.md` - Human-readable markdown report
+- `chat-metrics.json` - Raw metrics data for cross-feature analysis (commit this file)
 
 The script outputs a markdown report with:
 - Session overview (duration, requests, time breakdown)

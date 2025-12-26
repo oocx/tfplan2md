@@ -16,53 +16,43 @@ This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minim
 - Work on a non-`main` branch.
 - Ensure the working tree is clean before creating a PR.
 - Push the branch to `origin` before creating the PR.
-- Before creating the PR, post a PR preview in chat:
-  - **Title**: the exact PR title you plan to use
-  - **Description**: a meaningful, review-friendly body (why + what + testing notes)
-  - **Diff summary**: 1–3 bullets confirming the change
+- Before creating the PR, post the **exact Title and Description** in chat.
+- Use the standard PR body template (Problem / Change / Verification).
 - Use **Rebase and merge** for merging PRs to maintain a linear history (see `CONTRIBUTING.md`).
 
 ### Must Not
 - Create PRs from `main`.
 - Use “Squash and merge” or “Create a merge commit”.
+- Use `--fill` or any heuristic that guesses title/body (not supported by the wrapper).
 
 ## Actions
 
-### 0. PR Preview (Required)
+### 0. Title + Description (Required)
 Before running any PR creation command, provide in chat:
+
 - **PR title** (exact)
-- **PR description** (why + what + testing notes)
-- **Diff summary** (1–3 bullets)
+- **PR description** (exact), using this template:
 
-Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
-```bash
-scripts/pr-github.sh preview --title "<type(scope): summary>" --body "<why + what + testing notes>"
-```
+```markdown
+## Problem
+<why is this change needed?>
 
-Fallback (best-effort title/body derived from commits; may be less descriptive):
-```bash
-scripts/pr-github.sh preview --fill
+## Change
+<what changed?>
+
+## Verification
+<how was it validated?>
 ```
 
 ### Recommended: One-Command Wrapper
 Create a PR:
 ```bash
-scripts/pr-github.sh create --title "<type(scope): summary>" --body "<why + what + testing notes>"
-```
-
-Fallback:
-```bash
-scripts/pr-github.sh create --fill
+scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
 ```
 
 Create and merge (only when explicitly requested):
 ```bash
-scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body "<why + what + testing notes>"
-```
-
-Fallback:
-```bash
-scripts/pr-github.sh create-and-merge --fill
+scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
 ```
 
 ### 1. Pre-flight Checks
@@ -82,7 +72,7 @@ PAGER=cat gh pr create \
   --base main \
   --head "$(git branch --show-current)" \
   --title "<type(scope): summary>" \
-  --body "<why + what + testing notes>"
+  --body-file <path-to-pr-body.md>
 ```
 
 ### 4. Merge (Only When Explicitly Requested)

@@ -68,5 +68,5 @@ GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> --json body --jq '.body'
 ```
 
 ## When To Prefer Wrapper Scripts
-- If you are about to **create** or **merge** a PR: use `scripts/pr-github.sh preview/create/create-and-merge`.
+- If you are about to **create** or **merge** a PR: use `scripts/pr-github.sh create` / `scripts/pr-github.sh create-and-merge`.
 - If you just need to **inspect** PR state/checks/reviews: use this skill’s `gh` patterns.

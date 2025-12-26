@@ -71,6 +71,18 @@ cmd_create() {
     local branch
     branch=$(git branch --show-current)
     local title="UAT: $(basename "$file" .md)"
+    local description
+    description=$(cat <<'EOF'
+## Problem
+Validate markdown rendering in real PR UIs.
+
+## Change
+Create a UAT PR and post the test markdown as PR comments.
+
+## Verification
+Maintainer visually reviews the PR comment rendering in Azure DevOps.
+EOF
+)
     
     # Ensure remote exists
     if ! git remote get-url azdo >/dev/null 2>&1; then
@@ -90,7 +102,7 @@ cmd_create() {
         --source-branch "$branch" \
         --target-branch main \
         --title "$title" \
-        --description "UAT PR for markdown rendering validation. See comments for test content." \
+        --description "$description" \
         --output json)
     
     local pr_id

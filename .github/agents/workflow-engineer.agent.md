@@ -328,8 +328,7 @@ git commit -m "feat: <clear description>"
 # Push branch
 git push -u origin HEAD
 
-# CRITICAL: PR preview must be shown in chat BEFORE creation.
-scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+# CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
 
 # Create PR (repo wrapper)
 scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
@@ -399,8 +398,7 @@ When updating `docs/agents.md`, verify all of these:
    git commit -m "fix: <clear description of workflow fix>"
    git push -u origin HEAD
 
-   # CRITICAL: PR preview must be shown in chat BEFORE creation.
-   scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+   # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
 
    # Create PR (repo wrapper)
    scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>

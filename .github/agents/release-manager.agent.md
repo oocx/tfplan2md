@@ -125,7 +125,6 @@ Before releasing, verify:
 
 5. **Branch is Up to Date**
    ```bash
-   git fetch origin main
    git log HEAD..origin/main --oneline
    ```
    - [ ] No missing commits from main
@@ -145,8 +144,7 @@ Before releasing, verify:
    ```bash
    git push -u origin HEAD
 
-   # CRITICAL: Always show PR preview in chat BEFORE creation.
-   scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+   # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
 
    # For new PR (repo wrapper):
    scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>

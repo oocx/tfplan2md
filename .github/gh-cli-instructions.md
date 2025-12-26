@@ -50,15 +50,19 @@ GH_PAGER=cat GH_FORCE_TTY=false gh pr list --json number,title,state,author
 GH_PAGER=cat GH_FORCE_TTY=false gh pr view 123 --json number,title,body,state,commits,reviews
 
 # Create pull request (preferred: repo wrapper scripts)
-# CRITICAL: Show the preview output in chat BEFORE creating/merging a PR.
+# CRITICAL: Post the exact PR Title + Description in chat BEFORE creating/merging a PR.
 
-# Preferred (agent-authored title + description; preview is confirmation):
-scripts/pr-github.sh preview --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+# Standard PR body template:
+#   ## Problem
+#   <why is this change needed?>
+#
+#   ## Change
+#   <what changed?>
+#
+#   ## Verification
+#   <how was it validated?>
+
 scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
-
-# Fallback (best-effort title/body derived from commits; may be less descriptive):
-scripts/pr-github.sh preview --fill
-scripts/pr-github.sh create --fill
 
 # Manual fallback (only if wrapper scripts are unavailable)
 GH_PAGER=cat GH_FORCE_TTY=false gh pr create --title "Title" --body "Description" --base main --head feature-branch

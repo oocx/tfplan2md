@@ -22,40 +22,33 @@ Azure DevOps UI/merge options differ by project settings. When merging an Azure 
 - Ensure the working tree is clean before creating a PR.
 - Push the branch before creating the PR.
 - Keep PR title and description conventional and review-friendly.
-- Before creating the PR, post a PR preview in chat:
-  - **Title**: the exact PR title you plan to use
-  - **Description**: a meaningful, review-friendly body (why + what + testing notes)
-  - **Diff summary**: 1–3 bullets confirming the change
+- Before creating the PR, post the **exact Title and Description** in chat.
+- Use the standard description template (Problem / Change / Verification).
 
 ### Must Not
 - Merge using a strategy that introduces merge commits unless the Maintainer explicitly requests it.
 
 ## Actions
-
-### 0. PR Preview (Required)
+### 0. Title + Description (Required)
 Before running any PR creation command, provide in chat:
+
 - **PR title** (exact)
-- **PR description** (why + what + testing notes)
-- **Diff summary** (1–3 bullets)
+- **PR description** (exact), using this template:
 
-Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
-```bash
-scripts/pr-azdo.sh preview --title "<type(scope): summary>" --description "<why + what + testing notes>"
-```
+```markdown
+## Problem
+<why is this change needed?>
 
-Fallback (best-effort title/description derived from commits; may be less descriptive):
-```bash
-scripts/pr-azdo.sh preview --fill
+## Change
+<what changed?>
+
+## Verification
+<how was it validated?>
 ```
 
 ### Recommended: One-Command Wrapper
 ```bash
 scripts/pr-azdo.sh create --title "<type(scope): summary>" --description "<why + what + testing notes>"
-```
-
-Fallback:
-```bash
-scripts/pr-azdo.sh create --fill
 ```
 
 Abandon a test PR (cleanup):

@@ -87,7 +87,7 @@ Before starting, familiarize yourself with:
 - [docs/architecture.md](../../docs/architecture.md) - Existing architecture overview
 - Existing ADRs in `docs/` (files matching `adr-*.md`) - Previous architecture decisions
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - Relevant source code in `src/` to understand current patterns
 
 ## Conversation Approach

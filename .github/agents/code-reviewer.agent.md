@@ -89,7 +89,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - The implementation in `src/` and `tests/`

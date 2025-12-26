@@ -149,7 +149,7 @@ When not specified by the user, use these defaults:
 # Check current branch (must not be main)
 git branch --show-current
 
-# Check GitHub CLI authentication
+# Check GitHub CLI authentication (required for repo UAT scripts)
 gh auth status
 
 # Check Azure CLI authentication
@@ -176,8 +176,13 @@ Before creating a new UAT branch, check if one already exists:
 ```bash
 # Check for existing UAT branches
 git branch -a | grep "uat/" | head -10
+```
 
-# Check for open UAT PRs on GitHub
+Preferred in VS Code chat:
+- Use GitHub chat tools to find open UAT PRs (search PRs with `uat` in title, and/or list open PRs and filter by head branch).
+
+Fallback (terminal):
+```bash
 PAGER=cat gh pr list --state open --json number,title,headRefName | grep -i uat || echo "No open UAT PRs"
 ```
 

@@ -67,7 +67,7 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [docs/spec.md](../../docs/spec.md) - Project goals and constraints
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 
 ## Conversation Approach
 

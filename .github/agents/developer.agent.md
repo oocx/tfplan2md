@@ -87,7 +87,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI usage (when checking failed workflows)**
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI fallback guidance (when checking failed workflows)**
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
 - Existing source code in `src/` and tests in `tests/`
 
@@ -243,6 +243,10 @@ docker run --rm -v $(pwd):/data tfplan2md:local /data/plan.json
 
 When fixing PR/CI failures, check workflow logs:
 
+Preferred in VS Code chat:
+- Use GitHub chat tools to fetch PR status checks.
+- If you do not have repo context (owner/repo) or a tool is missing, fall back to `gh`.
+
 ```bash
 # List recent workflow runs (non-blocking)
 PAGER=cat gh run list --limit 5
@@ -250,11 +254,11 @@ PAGER=cat gh run list --limit 5
 # View specific failed run
 PAGER=cat gh run view <run-id> --log-failed
 
-# Check PR validation status
+# PR validation status (fallback)
 PAGER=cat gh pr checks <pr-number>
 ```
 
-**Important**: Always use `PAGER=cat` prefix with `gh` commands to prevent interactive pagers from blocking. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for details.
+**Important**: If you run `gh`, always use `PAGER=cat` (or `GH_PAGER=cat`) to prevent interactive pagers from blocking. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for details.
 
 ## Definition of Done
 

@@ -138,7 +138,10 @@ Collect relevant data:
 
 **Commands to use:**
 ```bash
-# Check workflow runs (non-blocking)
+# Preferred in VS Code chat:
+# - Use GitHub chat tools to inspect PR status checks, PR details, and PR comments.
+#
+# Fallback: check workflow runs via gh (non-blocking)
 PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
 
 # View specific workflow run (non-blocking)
@@ -157,7 +160,7 @@ dotnet test --verbosity normal
 # Use the 'problems' tool to see diagnostics
 ```
 
-**Important:** For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](../gh-cli-instructions.md) file. Always use `PAGER=cat` prefix to prevent interactive pagers from blocking execution.
+**Important:** Prefer GitHub chat tools when available. If you must use `gh`, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging (`PAGER=cat` / `GH_PAGER=cat`) to prevent blocking.
 
 ### Step 3: Analyze the Issue
 

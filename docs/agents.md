@@ -70,6 +70,7 @@ Format:
 | `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
 | `run-uat` | Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. |
 | `simulate-uat` | Simulate the UAT workflow (create PR, comment, poll) on GitHub or Azure DevOps using a minimal test artifact and simulated fixes. |
+| `view-pr-github` | View a GitHub PR safely (non-interactive) using gh with pager disabled. |
 | `watch-uat-github-pr` | Watch a GitHub UAT PR for maintainer feedback or approval by polling comments until approved/passed. |
 | `watch-uat-azdo-pr` | Watch an Azure DevOps UAT PR for maintainer feedback or approval by polling threads and reviewer votes until approved/passed. |
 

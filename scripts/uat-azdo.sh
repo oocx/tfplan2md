@@ -30,6 +30,43 @@ log_info() { echo -e "${GREEN}[INFO]${NC} $*"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
+# Validate and set default artifact path
+# Args: $1=artifact path (or empty for default), $2=simulate flag, $3=force flag
+validate_artifact() {
+    local artifact="${1:-}"
+    local simulate="${2:-false}"
+    local force="${3:-false}"
+    
+    # Default to comprehensive demo with inline-diff format for Azure DevOps
+    if [[ -z "$artifact" ]]; then
+        # Azure DevOps requires inline-diff format for better rendering
+        if [[ -f "examples/comprehensive-demo/report-inline-diff.md" ]]; then
+            artifact="examples/comprehensive-demo/report-inline-diff.md"
+        else
+            # Fallback to standard format if inline-diff not available
+            artifact="examples/comprehensive-demo/report.md"
+        fi
+        log_info "No artifact specified, using Azure DevOps default: $artifact"
+    fi
+    
+    # Check if artifact exists
+    if [[ ! -f "$artifact" ]]; then
+        log_error "Artifact not found: $artifact"
+        exit 1
+    fi
+    
+    # Block simulation artifacts in real UAT runs
+    if [[ "$artifact" =~ simulation ]] && [[ "$simulate" != "true" ]] && [[ "$force" != "true" ]]; then
+        log_error "Simulation artifact detected: $artifact"
+        log_error "Simulation artifacts should not be used for real UAT."
+        log_error "Use --simulate flag for simulation mode, or --force to override."
+        exit 1
+    fi
+    
+    log_info "✓ Using artifact: $artifact"
+    echo "$artifact"
+}
+
 cmd_setup() {
     log_info "Checking Azure CLI authentication..."
     if ! az account show >/dev/null 2>&1; then
@@ -51,22 +88,11 @@ cmd_setup() {
 
 cmd_create() {
     local file="${1:-}"
-    if [[ -z "$file" || ! -f "$file" ]]; then
-        log_error "Usage: $0 create <markdown-file>"
-        exit 1
-    fi
-
-    # Guardrail: prevent accidental posting of minimal/simulation artifacts for real UAT.
-    # Override by setting UAT_ALLOW_MINIMAL=1 (intended for simulate-uat).
-    if [[ "${UAT_ALLOW_MINIMAL:-}" != "1" ]]; then
-        if echo "$(basename "$file")" | grep -qiE '(minimal|simulation)'; then
-            log_error "Refusing to use a minimal/simulation artifact for real UAT: $file"
-            log_error "Use artifacts/comprehensive-demo.md (recommended), or set UAT_ALLOW_MINIMAL=1 to override."
-            exit 1
-        fi
-    fi
+    local simulate="${UAT_SIMULATE:-false}"
+    local force="${UAT_FORCE:-false}"
     
-    log_info "Using artifact: $file"
+    # Validate and potentially set default artifact
+    file="$(validate_artifact "$file" "$simulate" "$force")"
 
     local branch
     branch=$(git branch --show-current)

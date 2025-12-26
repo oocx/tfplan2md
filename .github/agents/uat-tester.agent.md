@@ -29,8 +29,8 @@ Validate that generated markdown renders correctly in real-world PR environments
 - Prefer `scripts/uat-run.sh` for end-to-end UAT (single stable command)
 - Use `scripts/uat-github.sh` and `scripts/uat-azdo.sh` for targeted operations / debugging
 - **Platform-specific artifacts are automatically selected if not specified:**
-  - GitHub: `examples/comprehensive-demo/report.md` (standard diff format)
-  - Azure DevOps: `examples/comprehensive-demo/report-inline-diff.md` (inline diff format, if available)
+  - GitHub: `artifacts/comprehensive-demo-standard-diff.md` (standard diff format)
+  - Azure DevOps: `artifacts/comprehensive-demo.md` (inline diff format, default)
   - For simulations: use `artifacts/uat-simulation-*.md` (requires `UAT_SIMULATE=true`)
 - Before creating any PR, post the **exact Title and Description** in chat using the standard template (Problem / Change / Verification)
 - Post markdown as **PR comments** (not PR description)
@@ -140,8 +140,8 @@ Save this to `artifacts/uat-minimal.md` (or `artifacts/uat-simulation-YYYY-MM-DD
 ### Default Parameters
 
 When not specified by the user, use these defaults:
-- **Artifact (GitHub)**: `examples/comprehensive-demo/report.md` (automatically selected by `uat-github.sh`)
-- **Artifact (Azure DevOps)**: `examples/comprehensive-demo/report-inline-diff.md` (automatically selected by `uat-azdo.sh`)
+- **Artifact (GitHub)**: `artifacts/comprehensive-demo-standard-diff.md` (standard diff, automatically selected by `uat-github.sh`)
+- **Artifact (Azure DevOps)**: `artifacts/comprehensive-demo.md` (inline diff, automatically selected by `uat-azdo.sh`)
 - **For simulations**: Use `artifacts/uat-simulation-*.md` and set `UAT_SIMULATE=true` environment variable
 - **UAT Branch Name**: `uat/simulation-YYYY-MM-DD` where YYYY-MM-DD is today's date
 - **If branch already exists**: Append `-v2`, `-v3`, etc. to make it unique

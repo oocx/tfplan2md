@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.48.0"></a>
+## [0.48.0](https://github.com/oocx/tfplan2md/compare/v0.47.0...v0.48.0) (2025-12-26)
+
+### ✨ Features
+
+* **workflow:** add comprehensive-demo-standard-diff artifact for GitHub UAT ([c05f367](https://github.com/oocx/tfplan2md/commit/c05f36717e2fa97af471d74a07c1575b5184fb36))
+* **workflow:** add stable scripts for demo generation and snapshot updates ([57b0cf2](https://github.com/oocx/tfplan2md/commit/57b0cf22117d65fb0bc7aa079daa6219823a98c7))
+* **workflow:** update Developer agent to use stable demo and snapshot scripts ([8090d24](https://github.com/oocx/tfplan2md/commit/8090d24f1e72e4a008d68ec6faf789cb83201b5f))
+
+### 🐛 Bug Fixes
+
+* **workflow:** copy snapshots from bin output to source directory ([975b753](https://github.com/oocx/tfplan2md/commit/975b753b2056a4f3becd765d3b5af133d22273b3))
+* **workflow:** correct CLI option to --large-value-format in demo generation script ([003b080](https://github.com/oocx/tfplan2md/commit/003b0802b362932ace6d8592a8533de7940c3a1f))
+
+### 📚 Documentation
+
+* update retrospective and roadmap with PR [#117](https://github.com/oocx/tfplan2md/issues/117) progress ([ecb7f96](https://github.com/oocx/tfplan2md/commit/ecb7f9621b068f6c188ba15a2b430231585e2581))
+
 <a name="0.47.0"></a>
 ## [0.47.0](https://github.com/oocx/tfplan2md/compare/v0.46.0...v0.47.0) (2025-12-26)
 

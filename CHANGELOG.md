@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.44.2"></a>
+## [0.44.2](https://github.com/oocx/tfplan2md/compare/v0.44.1...v0.44.2) (2025-12-26)
+
+### 🐛 Bug Fixes
+
+* **workflow:** fix Husky commit-msg args variable ([7156326](https://github.com/oocx/tfplan2md/commit/71563269d7f43e878ac7d1d998317b1d77022f5c))
+
 <a name="0.44.1"></a>
 ## [0.44.1](https://github.com/oocx/tfplan2md/compare/v0.44.0...v0.44.1) (2025-12-25)
 

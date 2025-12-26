@@ -4,10 +4,8 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '.github/agents/**'
-      - '.github/workflows/**'
-      - 'docs/agents.md'
-      - 'docs/ai-model-reference.md'
+      - 'docs/**'
+      - '.github/**'
 
 concurrency:
   group: versioning-${{ github.ref }}

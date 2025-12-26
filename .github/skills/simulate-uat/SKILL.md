@@ -1,7 +1,7 @@
 ---
 name: simulate-uat
 description: Simulate the UAT workflow (create PR, comment, poll) on GitHub or Azure DevOps using a minimal test artifact and simulated fixes.
-compatibility: Requires git, GitHub CLI (gh) and/or Azure CLI (az) + azure-devops extension, plus network access.
+compatibility: Requires git. GitHub simulation uses repo scripts which require GitHub CLI (gh) authenticated. Azure DevOps simulation requires Azure CLI (az) + azure-devops extension. Network access required.
 ---
 
 # Simulate UAT

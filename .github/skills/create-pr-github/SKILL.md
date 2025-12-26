@@ -1,7 +1,7 @@
 ---
 name: create-pr-github
-description: Create and (optionally) merge a GitHub pull request using gh, following the repo policy to use rebase and merge for a linear history.
-compatibility: Requires git and GitHub CLI (gh) authenticated, plus network access.
+description: Create and (optionally) merge a GitHub pull request (prefer GitHub chat tools; gh/wrappers are fallback), following the repo policy to use rebase and merge for a linear history.
+compatibility: Preferred: GitHub chat tools configured for the repo. Fallback: git + GitHub CLI (gh) authenticated, plus network access.
 ---
 
 # Create PR (GitHub)
@@ -9,7 +9,7 @@ compatibility: Requires git and GitHub CLI (gh) authenticated, plus network acce
 ## Purpose
 Create a GitHub pull request in a consistent, policy-compliant way, and include the repo’s preferred merge method guidance (rebase and merge).
 
-This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minimize Maintainer approval interruptions (single terminal invocation).
+This skill prefers using GitHub chat tools because they can be permanently allowed in VS Code and avoid terminal pager/editor issues. If chat tools are unavailable (or repo context is unknown), fall back to the repo wrapper script `scripts/pr-github.sh`.
 
 ## Hard Rules
 ### Must
@@ -67,6 +67,14 @@ git push -u origin HEAD
 ```
 
 ### 3. Create the PR
+#### Preferred: GitHub chat tools
+Use the GitHub PR creation tool with an explicit title + body (same template as above).
+
+Notes:
+- This requires repo context (`owner` + `repo`) and your pushed branch name.
+- If you do not know `owner`/`repo` reliably, use the wrapper fallback below.
+
+#### Fallback: `gh` CLI
 ```bash
 PAGER=cat gh pr create \
   --base main \
@@ -78,6 +86,10 @@ PAGER=cat gh pr create \
 ### 4. Merge (Only When Explicitly Requested)
 This repository requires **rebase and merge**.
 
+#### Preferred: GitHub chat tools
+Use the GitHub PR merge tool with `merge_method=rebase`.
+
+#### Fallback: `gh` CLI
 ```bash
 PAGER=cat gh pr merge <pr-number> --rebase --delete-branch
 ```

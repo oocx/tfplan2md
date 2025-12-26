@@ -95,5 +95,5 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 - GitHub branch protection rules (requiring status checks) require GitHub Pro for private repositories
 - Until the repository is made public, PRs CAN be merged before the "PR Validation" workflow completes
 - **CRITICAL**: Agents and maintainers must manually verify "PR Validation" shows ✅ success before merging
-- The Release Manager agent enforces this requirement by monitoring PR checks with `gh pr checks --watch`
+- The Release Manager agent enforces this requirement by monitoring PR status checks (prefer GitHub chat tools; `gh pr checks --watch` is a fallback)
 - Once the repository is public, configure branch protection to require the "PR Validation" workflow as a required status check

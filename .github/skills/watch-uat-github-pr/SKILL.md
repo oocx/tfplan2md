@@ -1,15 +1,18 @@
 ---
 name: watch-uat-github-pr
 description: Watch a GitHub UAT PR for maintainer feedback or approval by polling comments until approved/passed.
-compatibility: Requires GitHub CLI (gh) authenticated, plus network access.
+compatibility: Preferred: GitHub chat tools configured for the repo. Fallback: repo wrapper scripts (requires GitHub CLI (gh) authenticated), plus network access.
 ---
 
 # Watch UAT PR (GitHub)
 
 ## Purpose
-UAT comment polling is historically brittle. This skill standardizes the watch loop so the agent can reliably wait for Maintainer feedback/approval using a single stable command.
+UAT comment polling is historically brittle. This skill standardizes the watch loop so the agent can reliably wait for Maintainer feedback/approval.
 
-This skill uses the repo wrapper script `scripts/uat-watch-github.sh`, which repeatedly calls `scripts/uat-github.sh poll` until:
+Preferred: use GitHub chat tools to poll PR state + comments (avoids terminal output/pager issues).
+Fallback: use the stable wrapper command.
+
+Fallback path uses the repo wrapper script `scripts/uat-watch-github.sh`, which repeatedly calls `scripts/uat-github.sh poll` until:
 - approval keywords are detected, or
 - the PR is closed/merged, or
 - a timeout is reached.
@@ -25,6 +28,15 @@ This skill uses the repo wrapper script `scripts/uat-watch-github.sh`, which rep
 - Run many ad-hoc `gh` commands; prefer the wrapper.
 
 ## Actions
+
+### Preferred: Poll using GitHub chat tools
+Repeatedly:
+- Fetch PR details (state)
+- Fetch PR conversation comments
+- Stop and report if the PR is closed/merged
+- Treat any detected approval (`approved|passed|accept|lgtm`) as UAT passed
+
+### Fallback: One-command wrapper
 
 ### 1. Watch the PR
 ```bash

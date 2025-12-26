@@ -54,6 +54,28 @@ GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> \
   --jq '{latestReviews: [.latestReviews[] | {author: .author.login, state, submittedAt}], reviewRequests: [.reviewRequests[].login]}'
 ```
 
+### 3a) View PR Conversation Comments (timeline discussion)
+
+These are the “issue comments” on the PR conversation.
+
+```bash
+GH_PAGER=cat GH_FORCE_TTY=false gh api \
+  --paginate \
+  "/repos/{owner}/{repo}/issues/<pr-number>/comments" \
+  --jq '.[] | {author: .user.login, createdAt: .created_at, url: .html_url, body: .body}'
+```
+
+### 3b) View Review Comments (inline on diffs)
+
+These are the code-review comments attached to specific lines/paths in the diff.
+
+```bash
+GH_PAGER=cat GH_FORCE_TTY=false gh api \
+  --paginate \
+  "/repos/{owner}/{repo}/pulls/<pr-number>/comments" \
+  --jq '.[] | {author: .user.login, createdAt: .created_at, url: .html_url, path: .path, line: .line, side: .side, body: .body}'
+```
+
 ### 4) View Changed Files (names only)
 
 ```bash
@@ -70,3 +92,17 @@ GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> --json body --jq '.body'
 ## When To Prefer Wrapper Scripts
 - If you are about to **create** or **merge** a PR: use `scripts/pr-github.sh create` / `scripts/pr-github.sh create-and-merge`.
 - If you just need to **inspect** PR state/checks/reviews: use this skill’s `gh` patterns.
+
+## When To Use `gh` CLI vs GitHub Chat Tools
+
+### Prefer GitHub Chat Tools when
+- You’re already in chat and just need **structured PR metadata** (details, changed files, status checks, comments).
+- You want to avoid terminal-side pitfalls (auth prompts, pager behavior, large output).
+- A tool exists that directly answers the question (e.g., a “get PR details” tool, “list PR comments”, active/open PR helpers).
+
+### Prefer `gh` CLI when
+- You need an API surface the chat tools don’t expose (or you need `gh api` flexibility).
+- You need commands that are easy for Maintainers to reproduce locally.
+- You’re following a documented repo workflow that standardizes on wrapper scripts and `gh`.
+
+**Rule of thumb:** if a GitHub chat tool can fetch the data you need, use it; otherwise use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` (or `gh api`) from this skill.

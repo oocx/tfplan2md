@@ -1,3 +1,6 @@
+# GitHub CLI (gh) Instructions
+
+## Pager / Non-Interactive Mode
 # GitHub CLI Usage Instructions for Agents
 
 ## Critical: Prevent Interactive Mode
@@ -48,6 +51,13 @@ GH_PAGER=cat GH_FORCE_TTY=false gh pr list --json number,title,state,author
 
 # View pull request details
 GH_PAGER=cat GH_FORCE_TTY=false gh pr view 123 --json number,title,body,state,commits,reviews
+GH_PAGER=cat GH_FORCE_TTY=false gh pr view 123 --json number,title,body,state,commits,reviews
+
+## Prefer GitHub Chat Tools In VS Code
+
+When operating inside VS Code chat, prefer GitHub chat tools for read-only PR inspection (details, files, reviews, status checks, comments). This makes it easier for the Maintainer to permanently allow a small set of tools and reduces repeated terminal approvals.
+
+Use `gh` only as a fallback when there is no matching GitHub chat tool (or for `gh api` flexibility).
 
 # Create pull request (preferred: repo wrapper scripts)
 # CRITICAL: Post the exact PR Title + Description in chat BEFORE creating/merging a PR.

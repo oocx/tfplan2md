@@ -54,6 +54,7 @@ Transform a Feature Specification into a clear technical design with documented 
 ### 🚫 Never Do
 - Write or modify implementation code (.cs, .csproj, test files, templates, etc.)
 - Edit any files except markdown documentation (.md files)
+- Create or edit tasks.md (Task Planner owns this deliverable)
 - Make implementation decisions that belong to the Developer
 - Create ADRs without considering multiple options
 - Design without reviewing existing codebase patterns
@@ -78,6 +79,17 @@ Todo lists:
 - **Option 1:** <clear next action>
 - **Option 2:** <clear alternative>
 **Recommendation:** Option <n>, because <short reason>.
+
+### Handoff Template
+
+When handing off to another agent, include:
+```
+**Handoff Summary:**
+- ✅ Completed: <what was done>
+- 📄 Artifacts: <list of created/updated files>
+- ⏭️ Next Step: <specific next action for receiving agent>
+- 🚦 Status: Ready / Blocked (if blocked, state reason)
+```
 
 ## Context to Read
 

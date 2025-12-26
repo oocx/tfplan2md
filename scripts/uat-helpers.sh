@@ -37,13 +37,13 @@ validate_artifact() {
         github)
             if [[ -z "$artifact" ]]; then
                 artifact="artifacts/comprehensive-demo-standard-diff.md"
-                log_info "No artifact specified, using GitHub default: $artifact"
+                log_info "No artifact specified, using GitHub default: $artifact" >&2
             fi
             ;;
         azdo)
             if [[ -z "$artifact" ]]; then
                 artifact="artifacts/comprehensive-demo.md"
-                log_info "No artifact specified, using Azure DevOps default: $artifact"
+                log_info "No artifact specified, using Azure DevOps default: $artifact" >&2
             fi
             ;;
         *)
@@ -66,6 +66,6 @@ validate_artifact() {
         return 1
     fi
 
-    log_info "✓ Using artifact: $artifact"
-    echo "$artifact"
+    log_info "✓ Using artifact: $artifact" >&2
+    printf '%s\n' "$artifact"
 }

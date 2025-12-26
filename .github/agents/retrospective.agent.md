@@ -64,6 +64,9 @@ Todo lists:
 - `docs/spec.md` (to understand project standards)
 - The feature or issue documentation (e.g., `specification.md`, `tasks.md`) to understand the scope.
 
+## Skills
+- **`analyze-chat-export`**: Use this skill for extracting metrics from exported chat logs. It provides jq queries for model usage, tool invocations, approval patterns, and timing data.
+
 ## Workflow
 
 ### 1. Log Issues (During Development)
@@ -78,25 +81,31 @@ When the user invokes you after a release to conduct the retrospective:
 1.  **Export Chat History**:
     *   Ask the Maintainer to focus the chat panel.
     *   Run the `workbench.action.chat.export` command to export the chat.
-    *   Ask the Maintainer to save the file to `docs/features/<feature-name>/chat-log.json` (or `.md`).
-    *   **Redact sensitive information**: Read the exported file and replace any passwords, tokens, API keys, secrets, or PII with `[REDACTED]`. Save the redacted version.
+    *   Ask the Maintainer to save the file to `docs/features/<feature-name>/chat.json`.
+    *   **Redact sensitive information**: Use the `analyze-chat-export` skill's redaction command to remove passwords, tokens, API keys, secrets, and PII.
     *   Commit the redacted chat log.
-2.  **Analyze Chat Log**:
-    *   **Read the exported chat log** file thoroughly.
-    *   Identify patterns indicating workflow issues: repeated attempts, errors, confusion, tool failures, boundary violations, wasted effort.
-    *   Note timestamps to calculate actual duration and identify slow phases.
+2.  **Analyze Chat Log** (use `analyze-chat-export` skill):
+    *   Run the jq extraction queries from the skill to gather:
+        *   Session metrics (duration, total requests, agent work time)
+        *   Model usage breakdown
+        *   Tool invocation counts
+        *   Manual approval count (workflow friction indicator)
+    *   Identify patterns indicating workflow issues: repeated attempts, errors, confusion, tool failures, boundary violations.
     *   Extract specific quotes or examples that illustrate problems or successes.
-    *   Count approximate chat turns per agent to assess workload distribution.
 3.  **Gather Additional Context (Full Lifecycle)**:
     *   Read the `## Draft Notes` from `retrospective.md` (if it exists).
     *   **Analyze the COMPLETE lifecycle**: requirements → architecture → planning → implementation → documentation → code review → UAT → release.
     *   Review feature artifacts (`specification.md`, `architecture.md`, `tasks.md`, `test-plan.md`, `code-review.md`).
     *   **Analyze Agent Performance**: For each agent involved, evaluate their effectiveness based on chat log evidence. Consider tool usage, model performance, and adherence to instructions.
     *   Ask the user for their input: "What went well?", "What didn't go well?", "What should we do differently?"
-4.  **Collect Metrics (REQUIRED)**:
-    *   **Start/End Timestamp**: Extract from chat log — first and last message timestamps.
+4.  **Collect Metrics (REQUIRED)** (use `analyze-chat-export` skill):
+    *   **Start/End Timestamp**: Extract from chat log using jq queries.
     *   **Duration**: Calculate elapsed time in hours and minutes (e.g., `4h 30m` or `1d 2h 15m`).
-    *   **Estimated Interactions**: Count from chat log — number of user messages/turns.
+    *   **Estimated Interactions**: Total request count from chat log.
+    *   **Agent Work Time**: Total processing time from `timeSpentWaiting` field.
+    *   **Model Usage**: Breakdown by model with counts and percentages.
+    *   **Tool Invocations**: Total count and breakdown by tool.
+    *   **Manual Approvals**: Count of type 0 and type 4 confirmations (workflow friction).
     *   **Files Changed**: Count of files modified.
     *   **Tests**: Number of tests added/total tests passing.
 5.  **Generate Report**:
@@ -132,8 +141,15 @@ A markdown file named `retrospective.md` in the feature or issue folder.
 - **End:** YYYY-MM-DD HH:MM
 - **Duration:** Xh Ym (or Xd Yh Zm)
 - **Est. Interactions:** ~N turns
+- **Agent Work Time:** Xh Ym
+- **Tool Invocations:** N (M manual approvals)
 - **Files Changed:** N
 - **Tests:** N added, N total passing
+
+### Model Usage
+| Model | Count | % |
+|-------|-------|---|
+| ... | ... | ... |
 
 ## Agent Performance
 

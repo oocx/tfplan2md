@@ -210,7 +210,7 @@ public class ScribanHelpersTests
 
         var result = ScribanHelpers.FormatValue(value, providerName);
 
-        result.Should().Be("Key Vault **my-kv** in resource group **my-rg** of subscription **sub-id**");
+        result.Should().Be("Key Vault `my-kv` in resource group `my-rg` of subscription `sub-id`");
     }
 
     [Fact]

@@ -100,7 +100,7 @@ Verifies that `FormatValue` uses `AzureScopeParser.ParseScope` for Azure IDs whe
    - `providerName`: `registry.terraform.io/hashicorp/azurerm`
 
 **Expected Result:**
-Returns `Key Vault **my-kv** in resource group **my-rg** of subscription **sub-id**`.
+Returns: Key Vault `my-kv` in resource group `my-rg` of subscription `sub-id`.
 
 ---
 
@@ -140,7 +140,7 @@ Verifies that a resource with a long Azure ID renders it in the change table usi
 
 **Expected Result:**
 - The `key_vault_id` attribute is present in the `<details>` table of the resource.
-- The value is formatted and bolded.
+- The value is formatted with inline code for values.
 - There is no "Large attributes" section for this resource.
 
 ---

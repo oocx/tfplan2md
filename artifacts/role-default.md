@@ -46,8 +46,8 @@ Allow DevOps team to read logs from the storage account
 | role_definition_id | `Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |
 | principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] |
 | principal_type | `Group` |
-| description | `Allow DevOps team to read logs from the storage account` |
 | name | `ra-storage-reader` |
+| description | `Allow DevOps team to read logs from the storage account` |
 
 </details>
 
@@ -64,7 +64,6 @@ Upgraded permissions for security auditing
 | scope | `rg-tfplan2md-demo` in subscription `sub-one` | `rg-tfplan2md-demo` in subscription `sub-one` |
 | role_definition_id | `Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) | `Storage Blob Data Contributor` (`ba92f5b4-2d11-453d-a403-e96b0029c9fe`) |
 | principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] | `33333333-3333-3333-3333-333333333333` (Group) [`33333333-3333-3333-3333-333333333333`] |
-| principal_type | `Group` | `Group` |
 | description | `Allow team to read storage data` | `Upgraded permissions for security auditing` |
 | condition | - | `request.clientip != '10.0.0.0/24'` |
 | skip_service_principal_aad_check | `false` | `true` |
@@ -81,10 +80,8 @@ Updated role assignment with new permissions
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| scope | `rg-production` in subscription `sub-two` | `rg-production` in subscription `sub-two` |
 | role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `Custom Contributor Long Name 1234567890` |
 | principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] | `33333333-3333-3333-3333-333333333333` (Group) [`33333333-3333-3333-3333-333333333333`] |
-| principal_type | `Group` | `Group` |
 | description | `Read-only access for DevOps` | `Updated role assignment with new permissions` |
 
 </details>

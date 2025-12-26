@@ -33,7 +33,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("**my-mg** (Management Group)");
+        result.Should().Be("`my-mg` (Management Group)");
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("subscription **12345678-1234-1234-1234-123456789012**");
+        result.Should().Be("subscription `12345678-1234-1234-1234-123456789012`");
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("**my-rg** in subscription **12345678-1234-1234-1234-123456789012**");
+        result.Should().Be("`my-rg` in subscription `12345678-1234-1234-1234-123456789012`");
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("Key Vault **my-kv** in resource group **my-rg** of subscription **sub-id**");
+        result.Should().Be("Key Vault `my-kv` in resource group `my-rg` of subscription `sub-id`");
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("App Service **myapp** in resource group **app-rg** of subscription **sub-id**");
+        result.Should().Be("App Service `myapp` in resource group `app-rg` of subscription `sub-id`");
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("SQL Database **mydb** in resource group **db-rg** of subscription **sub-id**");
+        result.Should().Be("SQL Database `mydb` in resource group `db-rg` of subscription `sub-id`");
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("AKS Cluster **aks1** in resource group **aks-rg** of subscription **sub-id**");
+        result.Should().Be("AKS Cluster `aks1` in resource group `aks-rg` of subscription `sub-id`");
     }
 
     [Fact]

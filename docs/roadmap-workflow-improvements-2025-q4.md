@@ -2,7 +2,7 @@
 
 **Source:** [Retrospective: Consistent Value Formatting](features/consistent-value-formatting/retrospective.md)
 **Date:** 2025-12-25
-**Status:** In progress
+**Status:** Complete
 
 This roadmap outlines a series of workflow improvements derived from the "Consistent Value Formatting" feature retrospective. The goal is to reduce friction (especially in UAT), clarify agent roles, and improve process measurability.
 

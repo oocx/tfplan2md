@@ -39,6 +39,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Check for existing code to reuse before creating new code
 - Use `_camelCase` for private fields
 - Update `examples/comprehensive-demo/plan.json` when features have visible impact on generated markdown
+- Follow [docs/report-style-guide.md](../../docs/report-style-guide.md) for all markdown rendering code
 
 ### ⚠️ Ask First
 - Changes that affect architecture decisions
@@ -86,6 +87,7 @@ Before starting, familiarize yourself with:
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
+- [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI fallback guidance (when checking failed workflows)**
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work

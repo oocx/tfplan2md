@@ -41,6 +41,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
 - When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
 - For user-facing features affecting markdown rendering, hand off to UAT Tester after code approval
+- Verify markdown rendering changes follow [docs/report-style-guide.md](../../docs/report-style-guide.md)
 
 ### ⚠️ Ask First
 - Suggesting significant architectural changes
@@ -88,6 +89,7 @@ Before starting, familiarize yourself with:
 - The Test Plan in `docs/features/<feature-name>/test-plan.md`
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
+- [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions

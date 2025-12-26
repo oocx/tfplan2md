@@ -28,6 +28,7 @@ Ensure all user-facing and developer documentation is accurate, complete, and co
 - Ensure consistency across all documentation files
 - Match style and tone of existing documentation
 - Verify no contradictions between documents
+- Follow [docs/report-style-guide.md](../../docs/report-style-guide.md) when documenting markdown output
 
 ### ⚠️ Ask First
 - Major restructuring of existing documentation
@@ -71,6 +72,7 @@ Before starting, familiarize yourself with:
 - [README.md](../../README.md) - Main project documentation
 - [docs/spec.md](../../docs/spec.md) - Project specification
 - [docs/features.md](../../docs/features.md) - Feature descriptions
+- [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards**
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - Existing documentation in `docs/`

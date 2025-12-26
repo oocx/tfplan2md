@@ -41,3 +41,5 @@ Thumbs.db
 publish/
 
 plan.tfplan
+# VS Code Copilot chat exports (large, may contain sensitive data)
+**/chat.json

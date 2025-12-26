@@ -50,11 +50,12 @@ Update `ScribanHelpers` to exempt Azure IDs from large value classification and 
 **Priority:** High
 
 **Description:**
-Modify `default.sbn` to use the new `format_value` helper and pass provider information to `is_large_value`.
+Update the C# model to precompute `IsLarge` status (exempting Azure IDs) and modify `default.sbn` to use this property.
 
 **Acceptance Criteria:**
-- [x] `is_large_value` calls in `default.sbn` updated to pass `change.provider_name`.
-- [x] Attribute value rendering in tables (Create, Delete, Update/Replace) updated to use `format_value(attr.value, change.provider_name)`.
+- [x] `ReportModel` updated to compute `IsLarge` for each attribute, passing provider name to `IsLargeValue`.
+- [x] `default.sbn` updated to use `attr.is_large` instead of calling the helper function.
+- [x] Attribute value rendering in tables updated to use `format_value(attr.value, change.provider_name)`.
 - [x] Manual backtick wrapping removed where `format_value` is used.
 - [x] Template continues to render correctly for non-Azure resources.
 

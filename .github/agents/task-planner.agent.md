@@ -40,6 +40,8 @@ Break down the feature into clear, prioritized work items with well-defined acce
 - Add new requirements not in the Feature Specification
 - Skip dependency analysis between tasks
 - Create tasks larger than can be completed in one development session
+- Start implementing code — your deliverable is the plan (`tasks.md`), not the implementation
+- Write source code, tests, or make code changes — hand off to Developer after the plan is approved
 
 ## Response Style
 
@@ -162,6 +164,8 @@ Your work is complete when:
 - [ ] Tasks are prioritized and ordered logically
 - [ ] Changes are committed to the feature branch
 - [ ] The maintainer has approved the tasks
+
+**STOP HERE.** After approval, use the handoff button to transition to the Developer agent. Do not start implementing tasks yourself.
 
 ## Committing Your Work
 

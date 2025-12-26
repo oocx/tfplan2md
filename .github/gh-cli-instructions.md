@@ -3,6 +3,10 @@
 ## Pager / Non-Interactive Mode
 # GitHub CLI Usage Instructions for Agents
 
+Preferred: use GitHub chat tools for GitHub PR/issue inspection and management.
+
+Use `gh` only as a fallback when the required operation is not available via chat tools or when a maintainer explicitly requests CLI reproduction steps.
+
 ## Critical: Prevent Interactive Mode
 
 GitHub CLI (`gh`) may trigger interactive pagers that block agent execution. **Always disable the pager** when running `gh` commands.
@@ -42,6 +46,18 @@ echo "Automated issue body" | GH_PAGER=cat GH_FORCE_TTY=false gh issue create --
 ```
 
 ## Common Commands - Correct Usage
+
+## Prefer GitHub Chat Tools (When Available)
+
+When you are operating inside VS Code Copilot chat and a GitHub tool exists for the task, prefer it.
+
+Examples (non-exhaustive):
+- PR details: get pull request details tool
+- PR files: list changed files tool
+- PR reviews / review comments: reviews + review comments tools
+- PR status checks: PR status tool
+
+Only use the `gh` examples below if the tool surface is missing what you need.
 
 ### Pull Requests
 

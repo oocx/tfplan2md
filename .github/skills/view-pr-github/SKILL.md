@@ -1,13 +1,16 @@
 ---
 name: view-pr-github
-description: View GitHub PR status/details safely (non-interactive) using gh.
-compatibility: Requires GitHub CLI (gh) authenticated, plus network access.
+description: View GitHub PR status/details (prefer GitHub chat tools; gh is fallback).
+compatibility: Preferred: GitHub chat tools configured for the repo. Fallback: GitHub CLI (gh) authenticated, plus network access.
 ---
 
 # View PR (GitHub)
 
 ## Purpose
-Read pull request status/details from GitHub without triggering an interactive pager.
+Read pull request status/details from GitHub.
+
+Preferred: use GitHub chat tools (stable, structured, avoids pager/editor pitfalls).
+Fallback: use non-interactive `gh` patterns.
 
 Use this skill for **read-only PR inspection** (status, checks, reviewers, files, body). For creating/merging PRs, prefer the repo wrapper scripts (see the `create-pr-github` skill).
 
@@ -25,10 +28,11 @@ Use the `gh` CLI patterns below only when there is no matching chat tool (or you
 
 ## Hard Rules
 ### Must
-- Use a **non-interactive pager** for every `gh` call:
+- Prefer GitHub chat tools when they can answer the question.
+- If using `gh`, use a **non-interactive pager** for every `gh` call:
   - Prefer `GH_PAGER=cat` (gh-specific, overrides gh’s internal pager logic)
   - Also set `GH_FORCE_TTY=false` to reduce TTY-driven behavior
-- Prefer structured output (`--json`) and keep output small with `--jq` when practical.
+  - Prefer structured output (`--json`) and keep output small with `--jq` when practical.
 
 ### Must Not
 - Run plain `gh ...` without `GH_PAGER=cat` (it may open `less` and block).
@@ -36,7 +40,17 @@ Use the `gh` CLI patterns below only when there is no matching chat tool (or you
 
 ## Patterns
 
-### Minimal Safe Prefix
+### Preferred: GitHub Chat Tools
+Use chat tools for:
+- PR details/metadata
+- changed files
+- reviews
+- status checks
+- conversation comments and inline review comments
+
+If a tool exists that directly answers the question, use it. If not, use the `gh` fallback patterns below.
+
+### Fallback: Minimal Safe Prefix
 Use this prefix for every command:
 
 ```bash

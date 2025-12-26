@@ -1,7 +1,7 @@
 ---
 name: run-uat
 description: Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. Use when validating markdown rendering in real platforms.
-compatibility: Requires git, GitHub CLI (gh) and/or Azure CLI (az) + azure-devops extension, plus network access.
+compatibility: Requires git. GitHub UAT uses repo scripts which require GitHub CLI (gh) authenticated. Azure DevOps UAT requires Azure CLI (az) + azure-devops extension. Network access required.
 ---
 
 # Run UAT
@@ -23,8 +23,10 @@ Execute end-to-end User Acceptance Testing by posting the comprehensive demo art
 - Modify any source code during UAT.
 
 ## Pre-requisites
-- GitHub CLI (`gh`) authenticated for GitHub UAT.
-- Azure CLI (`az`) with DevOps extension for Azure DevOps UAT.
+- GitHub UAT: repo scripts require GitHub CLI (`gh`) authenticated.
+- Azure DevOps UAT: Azure CLI (`az`) with DevOps extension.
+
+For read-only inspection of PR state/comments during UAT (outside the scripts), prefer GitHub chat tools when available.
 
 ## Actions
 

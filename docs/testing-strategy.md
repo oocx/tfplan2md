@@ -172,7 +172,10 @@ scripts/uat-azdo.sh cleanup <pr-id>
 
 **Manual fallbacks (only for debugging)**:
 
-**GitHub**:
+**GitHub (preferred in VS Code chat)**:
+- Use GitHub chat tools to fetch PR conversation comments and review comments.
+
+**GitHub (CLI fallback)**:
 ```bash
 PAGER=cat gh pr view <pr-number> --comments
 ```

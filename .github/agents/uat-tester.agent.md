@@ -32,6 +32,7 @@ Validate that generated markdown renders correctly in real-world PR environments
   - GitHub: `artifacts/comprehensive-demo-standard-diff.md` (standard diff format)
   - Azure DevOps: `artifacts/comprehensive-demo.md` (inline diff format, default)
   - For simulations: use `artifacts/uat-simulation-*.md` (requires `UAT_SIMULATE=true`)
+- **Do NOT use minimal artifacts for real UAT**: files with `minimal` or `uat-minimal` in their name are rejected unless `UAT_FORCE=true` is set
 - Before creating any PR, post the **exact Title and Description** in chat using the standard template (Problem / Change / Verification)
 - Post markdown as **PR comments** (not PR description)
 - Prefix comments with agent identifier (scripts do this automatically)

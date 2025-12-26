@@ -99,7 +99,7 @@ This section tracks follow-up implementation progress from this retrospective.
 | Skill authoring guidance (approval minimization) | ✅ Done | Added explicit guidance to prefer stable wrapper commands to reduce approvals ([#86](https://github.com/oocx/tfplan2md/pull/86)). |
 | UAT run/simulate skills foundation | ✅ Done | Initial UAT-related skills and scripts registered in workflow docs ([#85](https://github.com/oocx/tfplan2md/pull/85)). |
 | Standard metrics section in retrospectives | ✅ Done | Added/standardized metrics guidance in workflow docs/retrospective artifacts ([#84](https://github.com/oocx/tfplan2md/pull/84)). |
-| Guardrails against wrong UAT artifact | ✅ Partial | Added guardrails in UAT scripts and updated UAT guidance to prefer the UAT wrapper ([#95](https://github.com/oocx/tfplan2md/pull/95)). Canonical artifact enforcement still pending. |
+| Guardrails against wrong UAT artifact | ✅ Done | Added guardrails in UAT scripts and updated UAT guidance to prefer the UAT wrapper ([#95](https://github.com/oocx/tfplan2md/pull/95)). Filename-based canonical artifact enforcement implemented in `scripts/uat-helpers.sh` and tests added. |
 | Doc alignment gate in Code Review | ✅ Done | Added documentation alignment checklist gate to Code Reviewer ([#113](https://github.com/oocx/tfplan2md/pull/113)). |
 | Role boundaries + handoff/status templates | ✅ Done | Enforced role boundaries (Architect/Task Planner), added handoff template, added Developer status template ([#114](https://github.com/oocx/tfplan2md/pull/114)). |
 | Wire report style guide into agents | ✅ Done | Added report style guide references to Requirements Engineer, Developer, Code Reviewer, Technical Writer, UAT Tester ([#112](https://github.com/oocx/tfplan2md/pull/112)). |

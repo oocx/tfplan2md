@@ -65,6 +65,15 @@ if [[ -n "$artifact_arg" ]]; then
   artifact_azdo="$artifact_arg"
 fi
 
+# Apply user-facing defaults for visibility, and summarize chosen artifacts before creating PRs
+if [[ -z "$artifact_github" ]]; then
+  artifact_github="artifacts/comprehensive-demo-standard-diff.md"
+fi
+if [[ -z "$artifact_azdo" ]]; then
+  artifact_azdo="artifacts/comprehensive-demo.md"
+fi
+log_info "Artifacts to be used: GitHub: $artifact_github, AzDO: $artifact_azdo"
+
 # Note: Artifact existence checks moved to individual scripts
 # which will also apply smart defaults if artifact is empty
 

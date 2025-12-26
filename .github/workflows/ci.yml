@@ -63,6 +63,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -89,6 +90,6 @@ jobs:
         env:
           GIT_TERMINAL_PROMPT: '0'
         run: |
-          # Ensure we push using the workflow token even if default auth was altered
-          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          # Use RELEASE_TOKEN to bypass branch protection
+          git remote set-url origin "https://x-access-token:${{ secrets.RELEASE_TOKEN }}@github.com/${{ github.repository }}.git"
           git push --follow-tags

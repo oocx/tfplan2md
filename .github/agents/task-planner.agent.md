@@ -27,6 +27,7 @@ Break down the feature into clear, prioritized work items with well-defined acce
 - Prioritize tasks based on dependencies and risk
 - Ensure each task maps back to the Feature Specification
 - Consider implementation order (foundational work first)
+- Create and own tasks.md (this is your exclusive deliverable)
 - Commit tasks document when approved
 
 ### ⚠️ Ask First
@@ -59,6 +60,17 @@ Todo lists:
 - **Option 1:** <clear next action>
 - **Option 2:** <clear alternative>
 **Recommendation:** Option <n>, because <short reason>.
+
+### Handoff Template
+
+When handing off to another agent, include:
+```
+**Handoff Summary:**
+- ✅ Completed: <what was done>
+- 📄 Artifacts: <list of created/updated files>
+- ⏭️ Next Step: <specific next action for receiving agent>
+- 🚦 Status: Ready / Blocked (if blocked, state reason)
+```
 
 ## Context to Read
 

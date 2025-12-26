@@ -40,6 +40,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Use `_camelCase` for private fields
 - Update `examples/comprehensive-demo/plan.json` when features have visible impact on generated markdown
 - Follow [docs/report-style-guide.md](../../docs/report-style-guide.md) for all markdown rendering code
+- Provide explicit status at end of every turn using the Status Template (see Response Style section)
 
 ### ⚠️ Ask First
 - Changes that affect architecture decisions
@@ -77,6 +78,33 @@ Todo lists:
 - **Option 1:** <clear next action>
 - **Option 2:** <clear alternative>
 **Recommendation:** Option <n>, because <short reason>.
+
+### Status Template
+
+At the end of every turn, provide:
+```
+**Status:** Done / In Progress / Blocked
+
+**What Changed:**
+- <specific changes made this turn>
+
+**What's Next:**
+- <next steps or what needs to happen>
+
+**What I Need:**
+- <any blockers or questions for Maintainer, or "Nothing" if unblocked>
+```
+
+### Handoff Template
+
+When handing off to another agent, include:
+```
+**Handoff Summary:**
+- ✅ Completed: <what was done>
+- 📄 Artifacts: <list of created/updated files>
+- ⏭️ Next Step: <specific next action for receiving agent>
+- 🚦 Status: Ready / Blocked (if blocked, state reason)
+```
 
 ## Context to Read
 

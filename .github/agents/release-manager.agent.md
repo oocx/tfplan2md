@@ -33,6 +33,7 @@ Ensure the feature is ready for release, create the pull request (for both new f
 - Verify branch is up to date with main
 - Review commit messages follow conventional commit format
 - Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
+- **Prefer `Rebase and merge`** when merging PRs; the repository is configured to **allow rebase-only merges**. Use `scripts/pr-github.sh create-and-merge` (which uses `--rebase --delete-branch`) or `gh pr merge --rebase --delete-branch`.
 - Wait for PR Validation workflow to complete successfully before merging PR
 - Wait for CI on main to complete before triggering release workflow
 - Detect and use the version tag created by Versionize
@@ -149,30 +150,19 @@ Before releasing, verify:
    git push -u origin HEAD
 
    # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
-
-   # For new PR (repo wrapper):
-   scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
-   # For existing PR (rework after failed validation):
-   # PR is automatically updated by the push
-   ```
-   - If PR already exists (rework scenario), the push updates it automatically
-   - Provide the PR link to the maintainer
-
-4. **Wait for PR Validation** - Monitor PR checks and wait for completion:
-   Preferred in VS Code chat:
-   - Use GitHub chat tools to fetch PR status checks.
-   - Re-check until all required checks show success.
-
-   Fallback (terminal):
-   ```bash
-   PAGER=cat gh pr checks --watch
-   ```
+    ```
+    - **Preferred (create & merge):** Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them — this script is the authoritative, repo-standard tool for PR lifecycle operations.
+    - **Fallback:** When the script does not support a required or advanced task (rare), use GitHub chat tools (`github/*`) in VS Code for creation/inspection and ad-hoc actions.
+    - Use GitHub chat tools to fetch PR status checks and to inspect checks; re-check until all required checks show success.
    - **CRITICAL**: Do NOT merge until "PR Validation" shows ✅ success
    - All checks must pass: format, build, test, markdownlint, vulnerability scan
    - If checks fail, hand off to Developer agent to fix issues and return to step 1
 
 5. **Merge Pull Request** - After ALL checks pass:
    - Inform maintainer that PR validation passed and PR is ready to merge
+   - **Merge using: Rebase and merge.**
+     - **Preferred (for merges):** Use `scripts/pr-github.sh create-and-merge` — this script is the authoritative, repo-standard merge tool and will perform a `rebase` merge and delete the branch.
+     - **Preferred (for PR creation/inspection):** Use GitHub chat tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation.
    - Wait for maintainer to approve and merge (or merge if authorized)
 
 ### Phase 2: Post-Merge Release

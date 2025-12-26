@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Implemented (model-driven large attribute classification)
 
 ## Context
 
@@ -27,9 +27,10 @@ We already have logic in `AzureScopeParser` to format these IDs into readable st
 We will implement **Option 2: Pattern-Based Detection**.
 
 We will modify the rendering pipeline to:
-1.  Detect if a value is an Azure Resource ID using `AzureScopeParser`.
-2.  If detected (and provider is `azurerm`), exempt it from "Large Value" classification so it stays in the main table.
-3.  Format the value using `AzureScopeParser.ParseScope` instead of displaying the raw string.
+1. Detect if a value is an Azure Resource ID using `AzureScopeParser`.
+2. If detected (and provider is `azurerm`), exempt it from "Large Value" classification so it stays in the main table.
+3. Format the value using `AzureScopeParser.ParseScope` instead of displaying the raw string.
+4. Compute a per-attribute `IsLarge` flag in C# (considering provider-aware rules) and expose it on `AttributeChangeModel`, so templates no longer need to call `is_large_value` with provider context.
 
 ## Rationale
 
@@ -53,18 +54,17 @@ We will modify the rendering pipeline to:
 - Implementation should rely on `Parse(scope).Level != ScopeLevel.Unknown`.
 
 ### 2. `ScribanHelpers` Updates
-- Update `IsLargeValue` signature to accept `string? providerName`.
-- Update `IsLargeValue` logic:
-  - If `providerName` contains "azurerm" (case-insensitive) AND `AzureScopeParser.IsAzureResourceId(input)`: return `false`.
-  - Else: use existing length/newline logic.
-- Add `FormatValue(string? value, string? providerName)` helper:
-  - If `providerName` contains "azurerm" AND `AzureScopeParser.IsAzureResourceId(value)`: return `AzureScopeParser.ParseScope(value)`.
-  - Else: return `` `EscapeMarkdown(value)` `` (wrapped in backticks).
+- `IsLargeValue` remains available for custom templates but is now consumed by the model builder to set `AttributeChangeModel.IsLarge`.
+- `FormatValue(string? value, string? providerName)` remains the canonical formatter used by templates for provider-aware rendering (Azure IDs → readable scopes; others → backticked).
 
-### 3. Template Updates (`default.sbn`)
-- Pass `change.provider_name` to `is_large_value` calls.
-- Replace manual backtick formatting in the "small attributes" table with `format_value(attr.value, change.provider_name)`.
-- Apply to Create, Delete, and Update tables.
+### 3. Model Updates (`AttributeChangeModel` and `ReportModelBuilder`)
+- Add `IsLarge` flag to `AttributeChangeModel`.
+- Compute `IsLarge` in `ReportModelBuilder.BuildAttributeChanges` using `IsLargeValue` with provider context and displayed values (after sensitivity masking).
+- This moves provider-aware large-value classification out of Scriban and into C#.
+
+### 4. Template Updates (`default.sbn`, `azurerm/role_assignment.sbn`)
+- Templates classify attributes using `attr.is_large` instead of calling `is_large_value` or passing `provider_name`.
+- Tables still use `format_value` with `change.provider_name` for provider-aware display, but large-value routing is now model-driven.
 
 ### 4. Testing
 - Verify `IsLargeValue` returns false for long Azure IDs.

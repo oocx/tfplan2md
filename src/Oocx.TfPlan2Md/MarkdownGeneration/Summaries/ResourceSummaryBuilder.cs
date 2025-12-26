@@ -91,7 +91,13 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
 
     private static readonly IReadOnlyList<string> GenericFallback = ["name", "display_name"];
 
-    private static string? Escape(string? value)
+    private static string? FormatSummaryValue(string? value, string providerName)
+    {
+        var formatted = ScribanHelpers.FormatValue(value, providerName);
+        return string.IsNullOrEmpty(formatted) ? null : formatted;
+    }
+
+    private static string? FormatPlainValue(string? value)
     {
         return string.IsNullOrEmpty(value) ? null : ScribanHelpers.EscapeMarkdown(value);
     }
@@ -115,27 +121,21 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var keys = ResolveKeys(change.Type);
         var values = ExtractValues(keys, state);
 
-        static string WrapCode(string? value)
-        {
-            return string.IsNullOrEmpty(value) ? string.Empty : $"`{value}`";
-        }
-
-        var name = Escape(GetDisplayName(values, state, change));
-        var resourceGroup = Escape(TryGet(values, "resource_group_name"));
-        var location = Escape(TryGet(values, "location"));
-        var url = Escape(TryGet(values, "url"));
+        var name = FormatSummaryValue(GetDisplayName(values, state, change), change.ProviderName);
+        var resourceGroup = FormatSummaryValue(TryGet(values, "resource_group_name"), change.ProviderName);
+        var location = FormatSummaryValue(TryGet(values, "location"), change.ProviderName);
+        var url = FormatPlainValue(TryGet(values, "url"));
 
         var parts = new List<string>();
-        var namePart = name is not null ? WrapCode(name) : null;
+        var namePart = name;
         if (!string.IsNullOrEmpty(resourceGroup))
         {
-            namePart = namePart is null ? WrapCode(resourceGroup) : $"{namePart} in {WrapCode(resourceGroup)}";
+            namePart = namePart is null ? resourceGroup : $"{namePart} in {resourceGroup}";
         }
 
         if (!string.IsNullOrEmpty(location))
         {
-            var wrappedLocation = WrapCode(location);
-            namePart = namePart is null ? wrappedLocation : $"{namePart} ({wrappedLocation})";
+            namePart = namePart is null ? location : $"{namePart} ({location})";
         }
 
         if (!string.IsNullOrEmpty(namePart))
@@ -161,14 +161,15 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         }
 
         // Combine storage tier + redundancy when both are present for a compact output
-        var accountTier = Escape(TryGet(values, "account_tier"));
-        var accountReplication = Escape(TryGet(values, "account_replication_type"));
+        var accountTier = TryGet(values, "account_tier");
+        var accountReplication = TryGet(values, "account_replication_type");
         if (!string.IsNullOrEmpty(accountTier) || !string.IsNullOrEmpty(accountReplication))
         {
             var combined = $"{accountTier} {accountReplication}".Trim();
-            if (!string.IsNullOrEmpty(combined))
+            var formattedCombined = FormatSummaryValue(combined, change.ProviderName);
+            if (!string.IsNullOrEmpty(formattedCombined))
             {
-                parts.Add(WrapCode(combined));
+                parts.Add(formattedCombined);
             }
             values.Remove("account_tier");
             values.Remove("account_replication_type");
@@ -187,10 +188,10 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
                 continue;
             }
 
-            var escaped = Escape(value);
-            if (!string.IsNullOrEmpty(escaped))
+            var formatted = FormatSummaryValue(value, change.ProviderName);
+            if (!string.IsNullOrEmpty(formatted))
             {
-                parts.Add(WrapCode(escaped));
+                parts.Add(formatted);
             }
         }
 
@@ -200,7 +201,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
     private string? BuildUpdateSummary(ResourceChangeModel change)
     {
         var state = GetStateDictionary(change.AfterJson) ?? GetStateDictionary(change.BeforeJson);
-        var name = Escape(GetDisplayName(state, change, preferAfter: true));
+        var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: true), change.ProviderName);
         var changeNames = change.AttributeChanges
             .Select(a => ScribanHelpers.EscapeMarkdown(a.Name))
             .ToList();
@@ -214,14 +215,14 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var suffix = changeNames.Count > 3 ? $", +{changeNames.Count - 3} more" : string.Empty;
 
         return name is not null
-            ? $"`{name}` | Changed: {string.Join(", ", visible)}{suffix}"
+            ? $"{name} | Changed: {string.Join(", ", visible)}{suffix}"
             : $"Changed: {string.Join(", ", visible)}{suffix}";
     }
 
     private string? BuildReplaceSummary(ResourceChangeModel change)
     {
         var state = GetStateDictionary(change.AfterJson) ?? GetStateDictionary(change.BeforeJson);
-        var name = Escape(GetDisplayName(state, change, preferAfter: true));
+        var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: true), change.ProviderName);
 
         if (change.ReplacePaths is { Count: > 0 })
         {
@@ -234,21 +235,21 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
             var suffix = change.ReplacePaths.Count > 3 ? $", +{change.ReplacePaths.Count - 3} more" : string.Empty;
             var reason = string.Join(", ", formatted.Select(r => ScribanHelpers.EscapeMarkdown(r!)));
             return name is not null
-                ? $"recreate `{name}` ({reason} changed: force replacement{suffix})"
+                ? $"recreate {name} ({reason} changed: force replacement{suffix})"
                 : $"recreate ({reason} changed: force replacement{suffix})";
         }
 
         var changedCount = change.AttributeChanges.Count;
         return name is not null
-            ? $"recreating `{name}` ({changedCount} changed)"
+            ? $"recreating {name} ({changedCount} changed)"
             : $"recreating ({changedCount} changed)";
     }
 
     private string? BuildDeleteSummary(ResourceChangeModel change)
     {
         var state = GetStateDictionary(change.BeforeJson);
-        var name = Escape(GetDisplayName(state, change, preferAfter: false));
-        return name is not null ? $"`{name}`" : null;
+        var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: false), change.ProviderName);
+        return name is not null ? name : null;
     }
 
     private static string? GetDisplayName(Dictionary<string, string?>? values, ResourceChangeModel change, bool preferAfter)

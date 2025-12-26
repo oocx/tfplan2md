@@ -203,6 +203,28 @@ public class ScribanHelpersTests
     }
 
     [Fact]
+    public void FormatValue_AzureResourceId_FormatsWithScopeParser()
+    {
+        const string providerName = "registry.terraform.io/hashicorp/azurerm";
+        const string value = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
+
+        var result = ScribanHelpers.FormatValue(value, providerName);
+
+        result.Should().Be("Key Vault **my-kv** in resource group **my-rg** of subscription **sub-id**");
+    }
+
+    [Fact]
+    public void FormatValue_NonAzureId_ReturnsBacktickedValue()
+    {
+        const string providerName = "registry.terraform.io/hashicorp/azurerm";
+        const string value = "standard-value";
+
+        var result = ScribanHelpers.FormatValue(value, providerName);
+
+        result.Should().Be("`standard-value`");
+    }
+
+    [Fact]
     public void DiffArray_WithNullBeforeArray_ReturnsAllAsAdded()
     {
         // Arrange

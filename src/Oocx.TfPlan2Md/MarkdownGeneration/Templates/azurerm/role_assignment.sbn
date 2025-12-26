@@ -19,7 +19,7 @@
     {{ ret string.replace(string.replace(text, "\r", ""), "\n", " ") }}
 {{ end }}
 
-{{ func format_value(attr, value, scope, role, principal, for_table) }}
+{{ func format_role_value(attr, value, scope, role, principal, for_table) }}
     {{ func safe(text) }}
         {{ if text == null }}{{ ret "" }}{{ end }}
         {{ ret escape_markdown(text) }}
@@ -77,24 +77,70 @@
 {{ description | escape_markdown }}
 {{ end }}
 
-{{ attributes = collect_attributes(before_state, after_state) }}
+{{ attributes = attribute_changes }}
+
+{{ desired_order = [
+    "scope",
+    "role_definition_id",
+    "principal_id",
+    "principal_type",
+    "name",
+    "description",
+    "condition",
+    "skip_service_principal_aad_check",
+    "delegated_managed_identity_resource_id"
+] }}
+
+{{ if attributes == null || attributes.size == 0 }}
+{{ attributes = [
+    { name: "scope", is_large: false },
+    { name: "role_definition_id", is_large: false },
+    { name: "principal_id", is_large: false },
+    { name: "principal_type", is_large: false },
+    { name: "name", is_large: false },
+    { name: "description", is_large: false }
+] }}
+{{ end }}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}
 
+{{ small_attrs_unsorted = [] }}
+{{ large_attrs_unsorted = [] }}
+
 {{ for attr in attributes }}
-{{ if attr == "role_definition_name" }}{{ continue }}{{ end }}
-{{- before_value_raw = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal, false) -}}
-{{- after_value_raw = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal, false) -}}
-{{- before_value_table = format_value(attr, before_state != null ? before_state[attr] : null, before_scope, before_role, before_principal, true) -}}
-{{- after_value_table = format_value(attr, after_state != null ? after_state[attr] : null, after_scope, after_role, after_principal, true) -}}
+{{ if attr.name == "role_definition_name" }}{{ continue }}{{ end }}
+{{- before_value_raw = format_role_value(attr.name, before_state != null ? before_state[attr.name] : null, before_scope, before_role, before_principal, false) -}}
+{{- after_value_raw = format_role_value(attr.name, after_state != null ? after_state[attr.name] : null, after_scope, after_role, after_principal, false) -}}
+{{- before_value_table = format_role_value(attr.name, before_state != null ? before_state[attr.name] : null, before_scope, before_role, before_principal, true) -}}
+{{- after_value_table = format_role_value(attr.name, after_state != null ? after_state[attr.name] : null, after_scope, after_role, after_principal, true) -}}
 
-{{ attr_obj = { name: attr, before: before_value_raw, after: after_value_raw, before_table: before_value_table, after_table: after_value_table } }}
+{{ attr_obj = { name: attr.name, before: before_value_raw, after: after_value_raw, before_table: before_value_table, after_table: after_value_table, is_large: attr.is_large } }}
 
-{{ if is_large_value(before_value_raw) || is_large_value(after_value_raw) }}
-{{ large_attrs = large_attrs + [ attr_obj ] }}
+{{ if attr.is_large }}
+{{ large_attrs_unsorted = large_attrs_unsorted + [ attr_obj ] }}
 {{ else }}
-{{ small_attrs = small_attrs + [ attr_obj ] }}
+{{ small_attrs_unsorted = small_attrs_unsorted + [ attr_obj ] }}
 {{ end }}
+{{ end }}
+
+{{ small_attrs = [] }}
+{{ large_attrs = [] }}
+
+{{ for name in desired_order }}
+{{ for attr in small_attrs_unsorted }}
+{{ if attr.name == name }}{{ small_attrs = small_attrs + [ attr ] }}{{ end }}
+{{ end }}
+{{ for attr in large_attrs_unsorted }}
+{{ if attr.name == name }}{{ large_attrs = large_attrs + [ attr ] }}{{ end }}
+{{ end }}
+{{ end }}
+
+{{ for attr in small_attrs_unsorted }}
+{{ if !(array.contains desired_order attr.name) }}{{ small_attrs = small_attrs + [ attr ] }}{{ end }}
+{{ end }}
+
+{{ for attr in large_attrs_unsorted }}
+{{ if !(array.contains desired_order attr.name) }}{{ large_attrs = large_attrs + [ attr ] }}{{ end }}
 {{ end }}
 
 {{ if small_attrs.size > 0 }}

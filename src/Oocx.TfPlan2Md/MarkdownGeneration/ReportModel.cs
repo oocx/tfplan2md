@@ -115,6 +115,12 @@ public class AttributeChangeModel
     public string? Before { get; init; }
     public string? After { get; init; }
     public bool IsSensitive { get; init; }
+
+    /// <summary>
+    /// Indicates whether the attribute value should be rendered as a large value block (collapsible section).
+    /// Related feature: docs/features/azure-resource-id-formatting/specification.md
+    /// </summary>
+    public bool IsLarge { get; init; }
 }
 
 /// <summary>
@@ -218,7 +224,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     {
         var action = DetermineAction(rc.Change.Actions);
         var actionSymbol = GetActionSymbol(action);
-        var attributeChanges = BuildAttributeChanges(rc.Change);
+        var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName);
 
         var model = new ResourceChangeModel
         {
@@ -284,7 +290,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
     /// Related feature: docs/features/unchanged-values-cli-option/specification.md
     /// </remarks>
-    private List<AttributeChangeModel> BuildAttributeChanges(Change change)
+    private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
         var afterDict = ConvertToFlatDictionary(change.After);
@@ -311,12 +317,16 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
                 continue;
             }
 
+            var isLarge = ScribanHelpers.IsLargeValue(beforeDisplay, providerName)
+                || ScribanHelpers.IsLargeValue(afterDisplay, providerName);
+
             changes.Add(new AttributeChangeModel
             {
                 Name = key,
                 Before = beforeDisplay,
                 After = afterDisplay,
-                IsSensitive = isSensitive
+                IsSensitive = isSensitive,
+                IsLarge = isLarge
             });
         }
 

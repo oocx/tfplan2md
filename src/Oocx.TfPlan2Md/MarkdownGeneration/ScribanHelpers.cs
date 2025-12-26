@@ -26,8 +26,9 @@ public static class ScribanHelpers
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
+        scriptObject.Import("format_value", new Func<string?, string?, string>(FormatValue));
         scriptObject.Import("large_attributes_summary", new Func<object?, string>(LargeAttributesSummary));
-        scriptObject.Import("is_large_value", new Func<string?, bool>(IsLargeValue));
+        scriptObject.Import("is_large_value", new Func<string?, string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
         scriptObject.Import("azure_principal_name", new Func<string?, string>(p => ResolvePrincipalName(p, principalMapper)));
@@ -68,11 +69,12 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether a value should be treated as large based on newlines or length.
-    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// Related features: docs/features/large-attribute-value-display/specification.md, docs/features/azure-resource-id-formatting/specification.md
     /// </summary>
     /// <param name="input">The raw value.</param>
-    /// <returns>True when the value contains newlines or exceeds 100 characters; otherwise false.</returns>
-    public static bool IsLargeValue(string? input)
+    /// <param name="providerName">The Terraform provider name to allow azurerm-specific exemptions.</param>
+    /// <returns>True when the value contains newlines or exceeds 100 characters (unless exempt); otherwise false.</returns>
+    public static bool IsLargeValue(string? input, string? providerName = null)
     {
         if (string.IsNullOrEmpty(input))
         {
@@ -84,7 +86,40 @@ public static class ScribanHelpers
             return true;
         }
 
+        if (IsAzurermProvider(providerName) && AzureScopeParser.IsAzureResourceId(input))
+        {
+            return false;
+        }
+
         return input.Length > 100;
+    }
+
+    /// <summary>
+    /// Formats attribute values with provider-aware logic (Azure IDs are rendered readably; others as inline code).
+    /// Related feature: docs/features/azure-resource-id-formatting/specification.md
+    /// </summary>
+    /// <param name="value">The raw value.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <returns>Formatted markdown string for table rendering.</returns>
+    public static string FormatValue(string? value, string? providerName)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        if (IsAzurermProvider(providerName) && AzureScopeParser.IsAzureResourceId(value))
+        {
+            return AzureScopeParser.ParseScope(value);
+        }
+
+        return $"`{EscapeMarkdown(value)}`";
+    }
+
+    private static bool IsAzurermProvider(string? providerName)
+    {
+        return !string.IsNullOrWhiteSpace(providerName)
+            && providerName.Contains("azurerm", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

@@ -16,10 +16,10 @@ Reference: [Specification](specification.md), [Architecture](architecture.md), [
 Add a method to `AzureScopeParser` to detect if a string matches an Azure resource ID pattern.
 
 **Acceptance Criteria:**
-- [ ] `public static bool IsAzureResourceId(string? scope)` method added to `AzureScopeParser`.
-- [ ] Method returns `true` if `Parse(scope).Level != ScopeLevel.Unknown`.
-- [ ] Unit tests (TC-01, TC-02) verify detection for Subscriptions, Resource Groups, Resources, and Management Groups.
-- [ ] Unit tests verify that invalid formats return `false`.
+- [x] `public static bool IsAzureResourceId(string? scope)` method added to `AzureScopeParser`.
+- [x] Method returns `true` if `Parse(scope).Level != ScopeLevel.Unknown`.
+- [x] Unit tests (TC-01, TC-02) verify detection for Subscriptions, Resource Groups, Resources, and Management Groups.
+- [x] Unit tests verify that invalid formats return `false`.
 
 **Dependencies:** None
 
@@ -33,13 +33,13 @@ Add a method to `AzureScopeParser` to detect if a string matches an Azure resour
 Update `ScribanHelpers` to exempt Azure IDs from large value classification and provide a universal formatting helper.
 
 **Acceptance Criteria:**
-- [ ] `IsLargeValue` signature updated to `IsLargeValue(string? input, string? providerName = null)`.
-- [ ] `IsLargeValue` logic updated: returns `false` if `providerName` is `azurerm` and `AzureScopeParser.IsAzureResourceId(input)` is true (unless it contains newlines).
-- [ ] `FormatValue(string? value, string? providerName)` helper added.
-- [ ] `FormatValue` uses `AzureScopeParser.ParseScope(value)` for Azure IDs in `azurerm` resources.
-- [ ] `FormatValue` returns backticked and escaped value for other strings.
-- [ ] New helpers registered in `RegisterHelpers`.
-- [ ] Unit tests (TC-03, TC-04, TC-06) verify the new logic.
+- [x] `IsLargeValue` signature updated to `IsLargeValue(string? input, string? providerName = null)`.
+- [x] `IsLargeValue` logic updated: returns `false` if `providerName` is `azurerm` and `AzureScopeParser.IsAzureResourceId(input)` is true (unless it contains newlines).
+- [x] `FormatValue(string? value, string? providerName)` helper added.
+- [x] `FormatValue` uses `AzureScopeParser.ParseScope(value)` for Azure IDs in `azurerm` resources.
+- [x] `FormatValue` returns backticked and escaped value for other strings.
+- [x] New helpers registered in `RegisterHelpers`.
+- [x] Unit tests (TC-03, TC-04, TC-06) verify the new logic.
 
 **Dependencies:** Task 1
 
@@ -53,10 +53,10 @@ Update `ScribanHelpers` to exempt Azure IDs from large value classification and 
 Modify `default.sbn` to use the new `format_value` helper and pass provider information to `is_large_value`.
 
 **Acceptance Criteria:**
-- [ ] `is_large_value` calls in `default.sbn` updated to pass `change.provider_name`.
-- [ ] Attribute value rendering in tables (Create, Delete, Update/Replace) updated to use `format_value(attr.value, change.provider_name)`.
-- [ ] Manual backtick wrapping removed where `format_value` is used.
-- [ ] Template continues to render correctly for non-Azure resources.
+- [x] `is_large_value` calls in `default.sbn` updated to pass `change.provider_name`.
+- [x] Attribute value rendering in tables (Create, Delete, Update/Replace) updated to use `format_value(attr.value, change.provider_name)`.
+- [x] Manual backtick wrapping removed where `format_value` is used.
+- [x] Template continues to render correctly for non-Azure resources.
 
 **Dependencies:** Task 2
 
@@ -70,10 +70,10 @@ Modify `default.sbn` to use the new `format_value` helper and pass provider info
 Create test data and integration tests to verify the end-to-end behavior.
 
 **Acceptance Criteria:**
-- [ ] `azure-resource-ids.json` test data created with various `azurerm` resources and long IDs.
-- [ ] Integration tests (TC-05, TC-08) verify that long Azure IDs stay in the table and are formatted.
-- [ ] Regression tests (TC-07) verify that role assignment formatting is unchanged.
-- [ ] Snapshot tests updated if necessary.
+- [x] `azure-resource-ids.json` test data created with various `azurerm` resources and long IDs.
+- [x] Integration tests (TC-05, TC-08) verify that long Azure IDs stay in the table and are formatted.
+- [x] Regression tests (TC-07) verify that role assignment formatting is unchanged.
+- [x] Snapshot tests updated if necessary.
 
 **Dependencies:** Task 3
 
@@ -87,8 +87,8 @@ Create test data and integration tests to verify the end-to-end behavior.
 Update the main features documentation to reflect the universal Azure ID formatting.
 
 **Acceptance Criteria:**
-- [ ] `docs/features.md` updated with a section on Universal Azure Resource ID Formatting.
-- [ ] Documentation includes examples of before/after formatting.
+- [x] `docs/features.md` updated with a section on Universal Azure Resource ID Formatting.
+- [x] Documentation includes examples of before/after formatting.
 
 **Dependencies:** Task 4
 

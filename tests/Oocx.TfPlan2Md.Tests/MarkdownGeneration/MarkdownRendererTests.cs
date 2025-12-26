@@ -34,6 +34,25 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void Render_AzureResourceIds_StayInTableWithReadableFormat()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/azure-resource-ids.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        markdown.Should().Contain("key_vault_id")
+            .And.Contain("Key Vault **kv-long-name** in resource group **rg-with-a-very-long-name-that-exceeds-one-hundred-characters-threshold** of subscription **12345678-1234-1234-1234-123456789012**");
+        markdown.Should().NotContain("Large attributes");
+        markdown.Should().NotContain("/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-with-a-very-long-name-that-exceeds-one-hundred-characters-threshold/providers/Microsoft.KeyVault/vaults/kv-long-name");
+    }
+
+    [Fact]
     public void Render_WithSummaryTemplateName_RendersSummaryOnly()
     {
         // Arrange

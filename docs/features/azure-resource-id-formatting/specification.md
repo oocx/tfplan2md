@@ -85,13 +85,13 @@ Any azurerm resource with ID attributes:
 
 ## Success Criteria
 
-- [ ] Azure resource IDs in all azurerm resources are automatically detected by pattern
-- [ ] Detected IDs are formatted using the existing AzureScopeParser logic
-- [ ] Formatted IDs appear in change tables, not in large values sections
-- [ ] No false positives (non-resource-ID values incorrectly formatted)
-- [ ] All existing role assignment formatting tests continue to pass
-- [ ] New tests verify formatting for common ID attributes (key_vault_id, workspace_id, subnet_id, etc.)
-- [ ] Documentation updated to reflect universal Azure resource ID formatting
+- [x] Azure resource IDs in all azurerm resources are automatically detected by pattern
+- [x] Detected IDs are formatted using the existing AzureScopeParser logic
+- [x] Formatted IDs appear in change tables, not in large values sections
+- [x] No false positives (non-resource-ID values incorrectly formatted)
+- [x] All existing role assignment formatting tests continue to pass
+- [x] New tests verify formatting for common ID attributes (key_vault_id, workspace_id, subnet_id, etc.)
+- [x] Documentation updated to reflect universal Azure resource ID formatting
 
 ## Open Questions
 

@@ -1,21 +1,29 @@
 #!/usr/bin/env bash
 # extract-metrics.sh - Extract metrics from VS Code chat export JSON
 #
-# Usage: ./extract-metrics.sh <chat.json> [output.md]
+# Usage: ./extract-metrics.sh <chat.json> [output-base]
 #
-# If output.md is not specified, outputs to stdout.
+# If output-base is specified, generates:
+#   - <output-base>.md   - Human-readable markdown report
+#   - <output-base>.json - Raw metrics data for cross-feature analysis
+# If output-base is not specified, outputs markdown to stdout.
 
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <chat.json> [output.md]" >&2
-    echo "  chat.json  - Path to VS Code chat export file" >&2
-    echo "  output.md  - Optional: output markdown file (default: stdout)" >&2
+    echo "Usage: $0 <chat.json> [output-base]" >&2
+    echo "  chat.json    - Path to VS Code chat export file" >&2
+    echo "  output-base  - Optional: base name for output files (generates .md and .json)" >&2
+    echo "" >&2
+    echo "Examples:" >&2
+    echo "  $0 chat.json                    # Output markdown to stdout" >&2
+    echo "  $0 chat.json analysis           # Creates analysis.md and analysis.json" >&2
+    echo "  $0 chat.json results/metrics    # Creates results/metrics.md and results/metrics.json" >&2
     exit 1
 fi
 
 CHAT_FILE="$1"
-OUTPUT_FILE="${2:-}"
+OUTPUT_BASE="${2:-}"
 
 if [[ ! -f "$CHAT_FILE" ]]; then
     echo "Error: File not found: $CHAT_FILE" >&2
@@ -256,11 +264,78 @@ fi)
 EOF
 }
 
+# --- Generate JSON Data ---
+
+generate_json() {
+    local session_metrics model_usage tool_usage approval_types
+    local model_success response_times error_codes user_votes
+    
+    # Extract all metrics
+    session_metrics=$(extract_session_metrics)
+    model_usage=$(extract_model_usage)
+    tool_usage=$(extract_tool_usage)
+    approval_types=$(extract_approval_types)
+    model_success=$(extract_model_success_rates)
+    response_times=$(extract_response_times)
+    error_codes=$(extract_error_codes)
+    user_votes=$(extract_user_votes)
+    
+    # Calculate derived metrics
+    local total_approvals auto_approved manual_approved
+    total_approvals=$(echo "$approval_types" | jq '[.[].count] | add // 0')
+    auto_approved=$(echo "$approval_types" | jq '[.[] | select(.type == 1 or .type == 3) | .count] | add // 0')
+    manual_approved=$(echo "$approval_types" | jq '[.[] | select(.type == 4) | .count] | add // 0')
+    
+    # Build complete JSON object
+    jq -n \
+        --arg source "$(basename "$CHAT_FILE")" \
+        --arg date "$(date +%Y-%m-%d)" \
+        --arg generator "extract-metrics.sh" \
+        --argjson session "$session_metrics" \
+        --argjson model_usage "$model_usage" \
+        --argjson tool_usage "$tool_usage" \
+        --argjson approval_types "$approval_types" \
+        --argjson model_success "$model_success" \
+        --argjson response_times "$response_times" \
+        --argjson error_codes "$error_codes" \
+        --argjson user_votes "$user_votes" \
+        --argjson total_tool_invocations "$total_approvals" \
+        --argjson auto_approved "$auto_approved" \
+        --argjson manual_approved "$manual_approved" \
+        '{
+            metadata: {
+                source: $source,
+                analysis_date: $date,
+                generator: $generator
+            },
+            session: $session,
+            model_usage: $model_usage,
+            tool_usage: $tool_usage,
+            automation: {
+                approval_types: $approval_types,
+                total_invocations: $total_tool_invocations,
+                auto_approved: $auto_approved,
+                manual_approved: $manual_approved,
+                automation_rate_pct: (if $total_tool_invocations > 0 then ($auto_approved * 100 / $total_tool_invocations | floor) else 0 end)
+            },
+            model_success: $model_success,
+            response_times: $response_times,
+            errors: $error_codes,
+            user_feedback: $user_votes
+        }'
+}
+
 # --- Main ---
 
-if [[ -n "$OUTPUT_FILE" ]]; then
-    generate_report > "$OUTPUT_FILE"
-    echo "Report written to: $OUTPUT_FILE"
+if [[ -n "$OUTPUT_BASE" ]]; then
+    OUTPUT_MD="${OUTPUT_BASE}.md"
+    OUTPUT_JSON="${OUTPUT_BASE}.json"
+    
+    generate_report > "$OUTPUT_MD"
+    generate_json > "$OUTPUT_JSON"
+    
+    echo "Report written to: $OUTPUT_MD"
+    echo "Raw data written to: $OUTPUT_JSON"
 else
     generate_report
 fi

@@ -16,6 +16,9 @@
 
 set -euo pipefail
 
+# Prevent interactive pagers from blocking automation
+export PAGER="${PAGER:-cat}"
+
 AZDO_ORG="${AZDO_ORG:-https://dev.azure.com/oocx}"
 AZDO_PROJECT="${AZDO_PROJECT:-test}"
 AZDO_REPO="${AZDO_REPO:-test}"

@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# Prevent interactive pagers from blocking automation
+export PAGER="${PAGER:-cat}"
+
 # Reuse log helpers defined in calling scripts; if they don't exist, provide no-op functions
 if ! declare -F log_info >/dev/null 2>&1; then
   log_info() { :; }

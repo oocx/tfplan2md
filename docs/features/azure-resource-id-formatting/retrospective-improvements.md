@@ -13,8 +13,8 @@
 |---|-------|-------------|---------------------|--------|--------|--------|
 | 1 | **Planner Execution** | Planner agent repeatedly attempts to start implementation instead of stopping after creating the plan | Update `docs/agents.md` (Planner section) to emphasize "Deliverable is the plan, do not start coding"; add explicit handoff instruction | High | Low | ✅ Done |
 | 2 | **Agent Boundaries** | Multiple agents (Tech Writer, UAT) modified files outside their scope (source code, code reviews, retrospectives) | Update `docs/agents.md` with reinforced file ownership rules; explicitly forbid cross-role file editing in each agent's Boundaries section | High | Medium | ✅ Done |
-| 3 | **Release Safety** | Release Manager triggered release before CI completed and suggested skipping critical CI steps | Update Release Manager agent to mandate "Green CI" verification before tagging; explicitly forbid "skipping" pipeline steps | High | Low | ⬜ Not Started |
-| 4 | **Release Efficiency** | Release Manager runs redundant local tests that already run in CI | Update Release Manager agent instructions to skip local tests unless specifically needed for debugging | Low | Low | ⬜ Not Started |
+| 3 | **Release Safety** | Release Manager triggered release before CI completed and suggested skipping critical CI steps | Update Release Manager agent to mandate "Green CI" verification before tagging; explicitly forbid "skipping" pipeline steps | High | Low | ✅ Done |
+| 4 | **Release Efficiency** | Release Manager runs redundant local tests that already run in CI | Update Release Manager agent instructions to skip local tests unless specifically needed for debugging | Low | Low | ✅ Done |
 | 5 | **UAT Automation** | UAT workflow is fragmented and manual (scripts not executable, polling loops hanging) | Create consolidated `uat-run.sh` script handling entire lifecycle (setup, create, poll, cleanup) for both platforms | High | Medium | ⬜ Not Started |
 | 6 | **UAT Strategy** | UAT PRs clutter the main repository | Configure UAT scripts to target a dedicated test repository (e.g., `oocx/tfplan2md-uat`) | Medium | Medium | ⬜ Not Started |
 | 7 | **UAT Guidance** | UAT PRs lack testing instructions for reviewers | Update UAT scripts to inject a "Test Instructions" section into PR body | Medium | Low | ⬜ Not Started |
@@ -41,9 +41,9 @@
 ## Progress Summary
 
 - **Total Items:** 13
-- **Completed:** 2
+- **Completed:** 4
 - **In Progress:** 0
-- **Remaining:** 11
+- **Remaining:** 9
 
 ---
 

@@ -27,8 +27,8 @@ Ensure the feature is ready for release, create the pull request (for both new f
 
 ### ✅ Always Do
 - Verify code review is approved before proceeding
-- Run full test suite (`dotnet test`)
-- Verify Docker image builds successfully
+- Trust CI pipeline for test validation — only run local tests (`dotnet test`) if diagnosing a specific CI failure
+- Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
 - Check that working directory is clean
 - Verify branch is up to date with main
 - Review commit messages follow conventional commit format
@@ -54,6 +54,8 @@ Ensure the feature is ready for release, create the pull request (for both new f
 - Use the wrong tag or skip tag detection
 - Use squash merges or merge commits (UI buttons, API, or CLI)
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
+- Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
+- Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
 
 ## Response Style
 
@@ -113,12 +115,13 @@ Before releasing, verify:
    - [ ] Code review report shows "Approved" status
    - [ ] All blockers and major issues resolved
 
-2. **Tests Pass**
+2. **Tests Pass** (trust CI — only run locally if debugging a failure)
    ```bash
+   # Only if CI failed and you need to reproduce:
    dotnet test
    ```
 
-3. **Docker Build Succeeds**
+3. **Docker Build Succeeds** (only if not recently verified by Code Reviewer)
    ```bash
    docker build -t tfplan2md:local .
    ```

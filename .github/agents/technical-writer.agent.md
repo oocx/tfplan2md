@@ -42,6 +42,8 @@ Ensure all user-facing and developer documentation is accurate, complete, and co
 - Add contradicting information to existing docs
 - Skip updating related documentation
 - Document internal implementation details meant for developers only in user-facing docs
+- Edit files outside the documentation scope (`docs/`, `README.md`, feature specs) — if source code examples don't match docs, document the actual behavior or ask Developer to fix
+- Edit other agents' artifacts (Code Review reports, Retrospective reports, etc.)
 
 ## Response Style
 

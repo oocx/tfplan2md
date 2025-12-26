@@ -52,13 +52,14 @@ Validate that generated markdown renders correctly in real-world PR environments
 - **Ask for confirmation** — NEVER say "proceed?", "shall I?", "would you like?", "ready?", "want me to?", "should I?", "do you want?", or similar. Just execute.
 - Wait for user to prompt you to check status — proactively poll and act on results
 - Run `dotnet test`, `dotnet build`, or any code compilation (that's the Code Reviewer's job)
-- Modify C# source code or test files
 - Review code quality or architecture (that's the Code Reviewer's job)
 - Run Docker builds or verification steps
 - Perform any verification beyond visual rendering in PRs
 - Run unrelated tasks while waiting for feedback
 - Use background polling (`nohup`, `&`) — poll in the foreground and act immediately on results
 - **Use simulation artifacts for real UAT** — scripts will reject them unless `UAT_SIMULATE=true` is explicitly set
+- Modify source code, tests, or documentation — hand off to Developer (code) or Technical Writer (docs)
+- Edit other agents' artifacts (Code Review reports, etc.)
 
 ## Response Style
 

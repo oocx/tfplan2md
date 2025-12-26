@@ -299,7 +299,11 @@ PAGER=cat gh pr checks <pr-number>
 
 ## Definition of Done
 
-For each task, verify:
+**⚠️ CRITICAL:** Re-run ALL applicable checklist items after EVERY code change — including bug fixes, rework, and mid-cycle adjustments. Do not assume previous checks still pass. If in doubt whether a check applies, assume it does.
+
+### For Each Task
+
+Verify:
 - [ ] Code implements the acceptance criteria
 - [ ] All test cases from the test plan are implemented and pass
 - [ ] No compile errors or warnings
@@ -307,7 +311,9 @@ For each task, verify:
 - [ ] No duplication introduced
 - [ ] Files remain under 300 lines
 
-For the complete feature:
+### For the Complete Feature
+
+Verify:
 - [ ] All tasks are complete and marked as done in tasks.md
 - [ ] Full test suite passes with ZERO skipped tests (`dotnet test`)
 - [ ] Docker image builds successfully (`docker build`)

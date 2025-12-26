@@ -6,7 +6,7 @@ model: Gemini 3 Pro (Preview)
 tools: ['readFile', 'listDirectory', 'fileSearch', 'edit', 'github/*', 'todo']
 handoffs:
   - label: Update Workflow
-    agent: Workflow Engineer
+    agent: "Workflow Engineer"
     prompt: I have identified some workflow improvements in the retrospective. Please help me implement them.
     send: false
 ---

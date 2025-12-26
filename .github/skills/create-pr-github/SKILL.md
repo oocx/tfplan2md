@@ -20,6 +20,7 @@ This skill prefers using the repo wrapper script `scripts/pr-github.sh` to minim
   - **Title**: the exact PR title you plan to use
   - **Description**: a meaningful, review-friendly body (why + what + testing notes)
   - **Diff summary**: 1–3 bullets confirming the change
+- Run the wrapper preview command and paste its output into chat *before* running the wrapper create command.
 - Use **Rebase and merge** for merging PRs to maintain a linear history (see `CONTRIBUTING.md`).
 
 ### Must Not
@@ -33,6 +34,8 @@ Before running any PR creation command, provide in chat:
 - **PR title** (exact)
 - **PR description** (why + what + testing notes)
 - **Diff summary** (1–3 bullets)
+
+Then run the wrapper preview command and paste its output back into chat. This ensures the Maintainer can review the *exact* title/description plus the wrapper-confirmed diff summary before allowing PR creation.
 
 Recommended way to generate the preview (best-effort confirmation, based on current branch diff):
 ```bash

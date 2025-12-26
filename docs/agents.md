@@ -28,8 +28,10 @@ When authoring skills, prefer designs that **minimize Maintainer approval interr
 
 Before an agent runs any command that creates (or creates-and-merges) a pull request, it must:
 
+0. Post the proposed **Title** and **Description** in chat (agent-authored; not derived from the wrapper).
 1. Run the appropriate repo wrapper preview command (`scripts/pr-github.sh preview ...` or `scripts/pr-azdo.sh preview ...`).
-2. Paste the preview output into the chat (title + description + diff summary) so the Maintainer can make an informed Allow/Deny decision.
+2. Paste the preview output into the chat (title + description + diff summary).
+3. Only after the Maintainer has reviewed that chat message, run the PR creation command.
 
 The agent is expected to author a meaningful PR description. The wrapper preview output is a confirmation against the branch diff, not a substitute for a proper description.
 

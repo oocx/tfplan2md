@@ -1,65 +1,68 @@
 ---
 name: generate-demo-artifacts
-description: Generate the comprehensive demo markdown artifact from the current codebase. Use before UAT to ensure the test artifact reflects the latest code.
+description: Generate the comprehensive demo markdown artifacts from the current codebase. Use before UAT to ensure test artifacts reflect the latest code.
 compatibility: Requires .NET SDK and access to the repository workspace.
 ---
 
 # Generate Demo Artifacts
 
 ## Purpose
-Regenerate the `artifacts/comprehensive-demo.md` file using the current code. This ensures UAT tests validate the actual behavior of the tool, not stale output.
+Regenerate all demo markdown artifacts using the current code. This ensures UAT tests validate the actual behavior of the tool, not stale output.
 
 ## Hard Rules
 ### Must
-- Run `dotnet build` before generating to ensure latest code is compiled.
-- Use the canonical input files: `examples/comprehensive-demo/plan.json` and `demo-principals.json`.
-- Overwrite the existing artifact file.
-- Verify the output is valid markdown (non-empty, starts with `#`).
+- Use the stable wrapper script: `scripts/generate-demo-artifacts.sh`
+- Script will handle building, generating artifacts, and verification automatically
+- **Always allow this script** — it only reads input files and writes artifacts, no dangerous operations
 
 ### Must Not
-- Use cached or stale build outputs.
-- Modify the input plan.json or demo-principals.json files.
+- Modify the input `plan.json` or `demo-principals.json` files
+- Run individual dotnet commands instead of the wrapper script
+- Skip verification of generated output
 
 ## Actions
 
-### 1. Build the Project
+### Generate All Demo Artifacts
 ```bash
-dotnet build src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release
+scripts/generate-demo-artifacts.sh
 ```
 
-### 2. Generate the Artifact
-```bash
-dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
-  --principal-mapping examples/comprehensive-demo/demo-principals.json \
-  --output artifacts/comprehensive-demo.md \
-  examples/comprehensive-demo/plan.json
+This single command:
+1. Builds the project in Release configuration
+2. Generates all artifacts in `/artifacts/` (used for UAT):
+   - `comprehensive-demo.md` (inline-diff format, for Azure DevOps UAT)
+   - `comprehensive-demo-standard-diff.md` (standard diff format, for GitHub UAT)
+   - `role.md` (role assignments with principal mapping)
+   - `role-default.md` (role assignments without principal mapping)
+3. Generates all documentation samples in `examples/comprehensive-demo/`:
+   - `report.md` (default template)
+   - `report-with-sensitive.md` (with `--show-sensitive`)
+   - `report-summary.md` (summary template)
+4. Verifies all outputs are valid markdown
+5. Reports success or failure with clear error messages
+
+## Expected Output
+```
+[INFO] Building project (Release configuration)...
+[INFO] Generating artifacts/comprehensive-demo.md (inline-diff, for Azure DevOps UAT)...
+[INFO] ✓ artifacts/comprehensive-demo.md generated successfully (inline-diff)
+[INFO] Generating artifacts/comprehensive-demo-standard-diff.md (for GitHub UAT)...
+[INFO] ✓ artifacts/comprehensive-demo-standard-diff.md generated successfully
+[INFO] Generating artifacts/role.md (role assignments with principal mapping)...
+[INFO] ✓ artifacts/role.md generated successfully
+[INFO] Generating artifacts/role-default.md (role assignments without principal mapping)...
+[INFO] ✓ artifacts/role-default.md generated successfully
+[INFO] Generating examples/comprehensive-demo/report.md (default template)...
+[INFO] ✓ examples/comprehensive-demo/report.md generated successfully
+[INFO] Generating examples/comprehensive-demo/report-with-sensitive.md (with --show-sensitive)...
+[INFO] ✓ examples/comprehensive-demo/report-with-sensitive.md generated successfully
+[INFO] Generating examples/comprehensive-demo/report-summary.md (summary template)...
+[INFO] ✓ examples/comprehensive-demo/report-summary.md generated successfully
+[INFO] All demo artifacts generated successfully
 ```
 
-### 3. Verify Output
-```bash
-# Check file exists and is non-empty
-if [[ ! -s artifacts/comprehensive-demo.md ]]; then
-  echo "ERROR: Generated artifact is empty or missing."
-  exit 1
-fi
-
-# Check it starts with a markdown heading
-if ! head -1 artifacts/comprehensive-demo.md | grep -q '^#'; then
-  echo "ERROR: Generated artifact does not appear to be valid markdown."
-  exit 1
-fi
-
-echo "SUCCESS: artifacts/comprehensive-demo.md generated."
-```
-
-## Golden Example
-```bash
-$ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
-    --input examples/comprehensive-demo/plan.json \
-    --principal-mapping examples/comprehensive-demo/demo-principals.json \
-    --output artifacts/comprehensive-demo.md
-$ head -3 artifacts/comprehensive-demo.md
-# Terraform Plan Report
-
-## Summary
-```
+## When to Use
+- Before running UAT (to ensure artifacts match current code)
+- After making changes to templates or rendering logic
+- After updating the comprehensive demo plan.json
+- When setting up a new development environment

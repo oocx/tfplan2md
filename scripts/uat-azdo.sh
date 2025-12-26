@@ -37,15 +37,9 @@ validate_artifact() {
     local simulate="${2:-false}"
     local force="${3:-false}"
     
-    # Default to comprehensive demo with inline-diff format for Azure DevOps
+    # Default to inline-diff variant for Azure DevOps (comprehensive-demo.md is inline-diff)
     if [[ -z "$artifact" ]]; then
-        # Azure DevOps requires inline-diff format for better rendering
-        if [[ -f "examples/comprehensive-demo/report-inline-diff.md" ]]; then
-            artifact="examples/comprehensive-demo/report-inline-diff.md"
-        else
-            # Fallback to standard format if inline-diff not available
-            artifact="examples/comprehensive-demo/report.md"
-        fi
+        artifact="artifacts/comprehensive-demo.md"
         log_info "No artifact specified, using Azure DevOps default: $artifact"
     fi
     

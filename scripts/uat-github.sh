@@ -27,9 +27,9 @@ validate_artifact() {
     local simulate="${2:-false}"
     local force="${3:-false}"
     
-    # Default to comprehensive demo if no artifact specified
+    # Default to standard-diff variant for GitHub
     if [[ -z "$artifact" ]]; then
-        artifact="examples/comprehensive-demo/report.md"
+        artifact="artifacts/comprehensive-demo-standard-diff.md"
         log_info "No artifact specified, using GitHub default: $artifact"
     fi
     

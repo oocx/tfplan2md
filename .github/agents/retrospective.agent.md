@@ -102,13 +102,21 @@ When the user invokes you after a release to conduct the retrospective:
     *   **Analyze Agent Performance**: For each agent involved, evaluate their effectiveness based on chat log evidence. Consider tool usage, model performance, and adherence to instructions.
     *   Ask the user for their input: "What went well?", "What didn't go well?", "What should we do differently?"
 4.  **Collect Metrics (REQUIRED)** (use `analyze-chat-export` skill):
-    *   **Start/End Timestamp**: Extract from chat log using jq queries.
-    *   **Duration**: Calculate elapsed time in hours and minutes (e.g., `4h 30m` or `1d 2h 15m`).
+    *   **Time Breakdown**:
+        *   Start/End timestamps
+        *   Session duration
+        *   User wait time (time spent waiting for user confirmation)
+        *   Agent work time (cumulative response generation time)
     *   **Request Counts by Agent**: How many requests each agent handled.
     *   **Model Usage by Agent**: Which models each agent used and how often.
     *   **Automation Effectiveness by Agent**: Auto vs manual approvals, automation rate percentage.
     *   **Tool Usage by Agent**: Which tools each agent used most.
     *   **Model Performance**: Average response time and success rate by model.
+    *   **Rejection Analysis**:
+        *   Rejections grouped by agent (cancelled, failed, tool rejections)
+        *   Rejections grouped by model
+        *   Common rejection reasons (error codes)
+        *   User vote-down reasons
     *   **Files Changed**: Count of files modified.
     *   **Tests**: Number of tests added/total tests passing.
 5.  **Analyze Automation Opportunities**:
@@ -128,12 +136,19 @@ When the user invokes you after a release to conduct the retrospective:
     *   **Use evidence from the chat log** to support findings — include specific examples, quotes, or patterns observed.
     *   The report should include:
         *   **Summary**: Brief overview of the process, highlighting notable interactions or events (focus on *how* it was built, not *what* was built).
-        *   **Timeline & Metrics** (REQUIRED): Start/end timestamps, duration, files changed, tests.
+        *   **Session Overview** (REQUIRED):
+            *   Time breakdown table (session duration, user wait time, agent work time with percentages)
+            *   Start/end timestamps, total requests, files changed, tests
         *   **Agent Analysis** (REQUIRED):
             *   Model usage by agent table
             *   Request counts by agent and model
             *   Automation effectiveness by agent (with automation rate %)
             *   Tool usage by agent
+        *   **Rejection Analysis** (REQUIRED):
+            *   Rejections by agent (cancelled, failed, tool rejections, rejection rate)
+            *   Rejections by model
+            *   Common rejection reasons with error codes
+            *   User vote-down reasons (if any)
         *   **Automation Opportunities**: Terminal command patterns and script recommendations.
         *   **Model Effectiveness Assessment**: Did agents use the right models? Include performance data.
         *   **Model Performance Statistics**: Response times and success rates by model.
@@ -159,10 +174,17 @@ A markdown file named `retrospective.md` in the feature or issue folder.
 ## Summary
 [Brief description of the process and notable events]
 
-## Timeline & Metrics
+## Session Overview
+
+### Time Breakdown
+| Metric | Duration | % of Session |
+|--------|----------|--------------|
+| **Session Duration** | Xh Ym | 100% |
+| User Wait Time | Xh Ym | X% |
+| Agent Work Time | Xh Ym | X% |
+
 - **Start:** YYYY-MM-DD HH:MM
 - **End:** YYYY-MM-DD HH:MM
-- **Duration:** Xh Ym (or Xd Yh Zm)
 - **Total Requests:** N
 - **Files Changed:** N
 - **Tests:** N added, N total passing
@@ -192,6 +214,32 @@ A markdown file named `retrospective.md` in the feature or issue folder.
 |-------|-----------|
 | developer | readFile (N), run_in_terminal (N), applyPatch (N) |
 | task-planner | readFile (N), edit (N) |
+
+## Rejection Analysis
+
+### Rejections by Agent
+| Agent | Total | Cancelled | Failed | Tool Rejections | Rejection Rate |
+|-------|-------|-----------|--------|-----------------|----------------|
+| developer | N | N | N | N | X% |
+| uat-tester | N | N | N | N | X% |
+
+### Rejections by Model
+| Model | Total | Cancelled | Failed | Tool Rejections | Rejection Rate |
+|-------|-------|-----------|--------|-----------------|----------------|
+| gpt-5.1-codex-max | N | N | N | N | X% |
+| gemini-3-pro | N | N | N | N | X% |
+
+### Common Rejection Reasons
+| Error Code | Count | Sample Message |
+|------------|-------|----------------|
+| rateLimited | N | Rate limit exceeded |
+| canceled | N | User cancelled request |
+
+### User Vote-Down Reasons
+| Reason | Count |
+|--------|-------|
+| incorrectCode | N |
+| didNotFollowInstructions | N |
 
 ## Automation Opportunities
 

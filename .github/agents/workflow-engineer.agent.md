@@ -74,7 +74,7 @@ Before making changes, familiarize yourself with:
 - [docs/agents.md](../../docs/agents.md) - The complete workflow documentation (your primary reference)
 - [docs/ai-model-reference.md](../../docs/ai-model-reference.md) - **Model performance benchmarks, availability, and pricing data**
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Project-wide Copilot instructions including tool naming conventions
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI usage for automated agents**
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI fallback guidance for automated agents**
 - All existing agents in `.github/agents/*.agent.md` - Current agent definitions
 - [docs/spec.md](../../docs/spec.md) - Project specification
 

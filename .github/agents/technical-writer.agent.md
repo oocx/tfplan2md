@@ -72,7 +72,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification
 - [docs/features.md](../../docs/features.md) - Feature descriptions
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - Existing documentation in `docs/`
 
 ## Documentation Standards

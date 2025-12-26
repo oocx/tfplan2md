@@ -91,13 +91,13 @@ This project uses:
 - Do NOT edit `CHANGELOG.md` manually - Versionize generates it automatically
 - Version bumping is handled by Versionize based on conventional commits
 - The CI pipeline builds and publishes the Docker image
-- **CRITICAL**: For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the [.github/gh-cli-instructions.md](../gh-cli-instructions.md) file. Always use `PAGER=cat` prefix or export `GH_PAGER=cat` to prevent interactive pagers from blocking execution
+- **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 
 ## Pre-Release Checklist
 
 Before releasing, verify:
 
-0. **Prevent gh CLI blocking** (run once per session):
+0. **If using gh: prevent CLI blocking** (run once per session):
    ```bash
    export GH_PAGER=cat
    export GH_FORCE_TTY=false
@@ -155,6 +155,11 @@ Before releasing, verify:
    - Provide the PR link to the maintainer
 
 4. **Wait for PR Validation** - Monitor PR checks and wait for completion:
+   Preferred in VS Code chat:
+   - Use GitHub chat tools to fetch PR status checks.
+   - Re-check until all required checks show success.
+
+   Fallback (terminal):
    ```bash
    PAGER=cat gh pr checks --watch
    ```

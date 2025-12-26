@@ -72,7 +72,7 @@ Before starting, familiarize yourself with:
 - The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Project testing conventions and infrastructure
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
-- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI usage if needed
+- [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - Existing tests in `tests/` to understand patterns and conventions
 
 ## Project Testing Conventions

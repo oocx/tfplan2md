@@ -25,15 +25,17 @@ Extract structured metrics from VS Code Copilot chat exports to support retrospe
 
 ## Export Structure Reference
 
-See [Chat Export Analysis Reference](reference/chat-export-structure.md) for complete documentation of the export format.
+See these reference documents:
+- [Chat Export Structure](reference/chat-export-structure.md) - Empirical analysis of exported data
+- [Chat Export Format Specification](reference/chat-export-format.md) - VS Code source-based type definitions
 
 ### Quick Reference: Top-Level Keys
 ```json
 {
-  "initialLocation": "...",
+  "initialLocation": "panel",
   "requests": [...],
-  "responderAvatarIconUri": "...",
-  "responderUsername": "..."
+  "responderAvatarIconUri": { "id": "copilot" },
+  "responderUsername": "Copilot"
 }
 ```
 
@@ -42,17 +44,31 @@ See [Chat Export Analysis Reference](reference/chat-export-structure.md) for com
 |-------|-------------|
 | `modelId` | Model used (e.g., `copilot/gpt-5.1-codex-max`) |
 | `timestamp` | Unix timestamp in milliseconds |
-| `timeSpentWaiting` | Agent processing time in milliseconds |
+| `timeSpentWaiting` | Time waiting for user confirmation (ms) |
 | `message.text` | User's input text |
 | `response[]` | Array of response elements (text, thinking, tool invocations) |
+| `result.timings.totalElapsed` | Total response time (ms) |
+| `result.timings.firstProgress` | Time to first content (ms) |
+| `modelState.value` | Response state (0=Pending, 1=Complete, 2=Cancelled, 3=Failed, 4=NeedsInput) |
+| `vote` | User feedback (0=down, 1=up) |
+| `editedFileEvents[]` | Files edited with accept/reject status |
 
-### Quick Reference: Confirmation Types
+### Quick Reference: Confirmation Types (isConfirmed.type)
 | Type | Meaning |
 |------|---------|
 | 0 | Pending or cancelled |
 | 1 | Auto-approved |
 | 3 | Profile-scoped auto-approve |
 | 4 | Manually approved |
+
+### Quick Reference: Response State (modelState.value)
+| Value | Meaning |
+|-------|---------|
+| 0 | Pending - still generating |
+| 1 | Complete - success |
+| 2 | Cancelled - user cancelled |
+| 3 | Failed - error occurred |
+| 4 | NeedsInput - waiting for confirmation |
 
 ## Actions
 
@@ -135,7 +151,49 @@ jq '
 ' "$CHAT_FILE" > "${CHAT_FILE%.json}-redacted.json"
 ```
 
-### 8. Generate Summary Report
+### 8. Extract Response Timings
+```bash
+# Average response time (totalElapsed) in seconds
+jq '[.requests[].result.timings.totalElapsed // 0] | add / length / 1000' "$CHAT_FILE"
+
+# Average time to first progress in milliseconds
+jq '[.requests[].result.timings.firstProgress // 0] | add / length' "$CHAT_FILE"
+
+# Response state distribution (1=Complete, 2=Cancelled, 3=Failed)
+jq '[.requests[].modelState.value] | group_by(.) | map({state: .[0], count: length})' "$CHAT_FILE"
+```
+
+### 9. Extract User Feedback
+```bash
+# Vote distribution (0=down, 1=up)
+jq '[.requests[] | select(.vote != null) | .vote] | group_by(.) | map({vote: (if .[0] == 1 then "up" else "down" end), count: length})' "$CHAT_FILE"
+
+# Vote down reasons
+jq '[.requests[] | select(.voteDownReason != null) | .voteDownReason] | group_by(.) | map({reason: .[0], count: length})' "$CHAT_FILE"
+```
+
+### 10. Extract File Edit Statistics
+```bash
+# Files edited with accept/reject status (1=Keep, 2=Undo, 3=UserModification)
+jq '[.requests[].editedFileEvents[]? | {uri: .uri.path, status: (if .eventKind == 1 then "kept" elif .eventKind == 2 then "undone" else "modified" end)}]' "$CHAT_FILE"
+
+# Count of edits by status
+jq '[.requests[].editedFileEvents[]?.eventKind] | group_by(.) | map({status: (if .[0] == 1 then "kept" elif .[0] == 2 then "undone" else "modified" end), count: length})' "$CHAT_FILE"
+```
+
+### 11. Detect Errors and Cancellations
+```bash
+# Failed requests (modelState.value == 3)
+jq '[.requests[] | select(.modelState.value == 3) | {id: .requestId, error: .result.errorDetails.message}]' "$CHAT_FILE"
+
+# Cancelled requests (modelState.value == 2)
+jq '[.requests[] | select(.modelState.value == 2)] | length' "$CHAT_FILE"
+
+# Error codes
+jq '[.requests[] | select(.result.errorDetails != null) | .result.errorDetails.code] | group_by(.) | map({code: .[0], count: length})' "$CHAT_FILE"
+```
+
+### 12. Generate Summary Report
 After running the extraction queries, compile results into a metrics section:
 
 ```markdown
@@ -145,9 +203,11 @@ After running the extraction queries, compile results into a metrics section:
 |--------|-------|
 | Total Requests | N |
 | Session Duration | Xh Ym |
-| Agent Work Time | Xh Ym |
+| Avg Response Time | X.Xs |
 | Tool Invocations | N |
 | Manual Approvals | N |
+| Cancelled/Failed | N |
+| User Upvotes | N |
 | Est. Premium Requests | N |
 
 ### Model Usage
@@ -159,6 +219,13 @@ After running the extraction queries, compile results into a metrics section:
 | Tool | Count |
 |------|-------|
 | ... | ... |
+
+### File Edits
+| Status | Count |
+|--------|-------|
+| Kept | N |
+| Undone | N |
+| Modified | N |
 ```
 
 ## Metrics Available
@@ -167,19 +234,23 @@ After running the extraction queries, compile results into a metrics section:
 - Total requests/turns
 - Models used (with counts)
 - Session start/end timestamps
-- Total agent processing time
+- Response timings (`totalElapsed`, `firstProgress`)
 - Tool usage breakdown
 - Manual vs auto-approval counts
 - Terminal command exit codes
+- Response states (complete, cancelled, failed)
+- User feedback votes and reasons
+- File edit acceptance/rejection status
 
 ### ⚠️ Partially Available
 - Custom agent names (must parse from message text for `@agent-name` patterns)
 - Extended thinking content (may be encrypted)
+- `timeSpentWaiting` - appears to be time waiting for user confirmation, not agent processing time
 
 ### ❌ Not Available
 - Token counts
 - Actual cost in dollars
-- User reaction/thinking time
+- User reaction/thinking time between responses
 - Agent handoff events as distinct records
 
 ## Output

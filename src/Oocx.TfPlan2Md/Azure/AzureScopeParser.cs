@@ -1,9 +1,22 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Oocx.TfPlan2Md.Azure;
 
 public static class AzureScopeParser
 {
+    /// <summary>
+    /// Determines whether the provided scope string is a valid Azure resource identifier.
+    /// Related feature: docs/features/azure-resource-id-formatting/specification.md
+    /// </summary>
+    /// <param name="scope">The scope string to evaluate.</param>
+    /// <returns>True when the scope parses to a known Azure scope level; otherwise false.</returns>
+    public static bool IsAzureResourceId(string? scope)
+    {
+        var parsed = Parse(scope);
+        return parsed.Level != ScopeLevel.Unknown;
+    }
+
     public static ScopeInfo Parse(string? scope)
     {
         if (string.IsNullOrWhiteSpace(scope))
@@ -52,7 +65,7 @@ public static class AzureScopeParser
         {
             var subscriptionId = parts[1];
             var resourceGroup = parts[3];
-            var resourceType = GetResourceType(parts);
+            var resourceType = GetResourceType(parts, providerIndex: 5);
             var resourceName = parts[^1];
             return new ScopeInfo(
                 resourceName,
@@ -64,6 +77,23 @@ public static class AzureScopeParser
                 $"{resourceType} ",
                 resourceName,
                 $"{resourceType} {resourceName} in resource group {resourceGroup} of subscription {subscriptionId}");
+        }
+
+        if (IsSubscriptionProviderScope(parts))
+        {
+            var subscriptionId = parts[1];
+            var resourceType = GetResourceType(parts, providerIndex: 3);
+            var resourceName = parts[^1];
+            return new ScopeInfo(
+                resourceName,
+                resourceType,
+                subscriptionId,
+                null,
+                ScopeLevel.Resource,
+                $"{resourceType} {resourceName}",
+                $"{resourceType} ",
+                resourceName,
+                $"{resourceType} {resourceName} in subscription {subscriptionId}");
         }
 
         if (IsResourceGroupScope(parts))
@@ -93,7 +123,8 @@ public static class AzureScopeParser
         {
             ScopeLevel.ManagementGroup => $"**{parsed.Name}** (Management Group)",
             ScopeLevel.Subscription => $"subscription **{parsed.SubscriptionId}**",
-            ScopeLevel.Resource => $"{parsed.Type} **{parsed.Name}** in resource group **{parsed.ResourceGroup}** of subscription **{parsed.SubscriptionId}**",
+            ScopeLevel.Resource when !string.IsNullOrWhiteSpace(parsed.ResourceGroup) => $"{parsed.Type} **{parsed.Name}** in resource group **{parsed.ResourceGroup}** of subscription **{parsed.SubscriptionId}**",
+            ScopeLevel.Resource => $"{parsed.Type} **{parsed.Name}** in subscription **{parsed.SubscriptionId}**",
             ScopeLevel.ResourceGroup => $"**{parsed.ResourceGroup}** in subscription **{parsed.SubscriptionId}**",
             _ => parsed.Details
         };
@@ -128,25 +159,34 @@ public static class AzureScopeParser
             && parts[4].Equals("providers", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string GetResourceType(string[] parts)
+    private static bool IsSubscriptionProviderScope(string[] parts)
     {
-        if (parts.Length < 7)
+        return parts.Length >= 5
+            && parts[0].Equals("subscriptions", StringComparison.OrdinalIgnoreCase)
+            && parts[2].Equals("providers", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetResourceType(string[] parts, int providerIndex)
+    {
+        if (parts.Length - providerIndex < 2)
         {
             return "resource";
         }
 
-        var provider = parts[5];
+        var provider = parts[providerIndex];
         var typeSegments = new List<string>();
+        var typeStartIndex = providerIndex + 1;
 
-        for (var i = 6; i < parts.Length - 1; i += 2)
+        for (var i = typeStartIndex; i < parts.Length - 1; i += 2)
         {
             typeSegments.Add(parts[i]);
         }
 
-        if (typeSegments.Count == 0)
+        if (typeSegments.Count == 0 && typeStartIndex < parts.Length - 1)
         {
-            typeSegments.Add(parts[6]);
+            typeSegments.Add(parts[typeStartIndex]);
         }
+
         var typePath = string.Join('/', typeSegments);
         var fullType = $"{provider}/{typePath}";
 
@@ -182,7 +222,7 @@ public static class AzureScopeParser
             "Microsoft.Insights/components" => "Application Insights",
             "Microsoft.Cache/Redis" => "Azure Cache for Redis",
             "Microsoft.AppConfiguration/configurationStores" => "App Configuration Store",
-            _ => ToDisplayName(typeSegments[^1])
+            _ => ToDisplayName(typeSegments.LastOrDefault() ?? provider)
         };
     }
 

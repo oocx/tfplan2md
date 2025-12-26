@@ -34,6 +34,33 @@ To improve readability and scannability, `tfplan2md` uses a consistent formattin
 
 This ensures that the most important information—the values changing in your infrastructure—always stands out.
 
+## Universal Azure Resource ID Formatting
+
+**Status:** ✅ Implemented
+
+Long Azure resource IDs from the `azurerm` provider are rendered as readable scopes instead of raw GUID paths and are kept inside attribute tables (not relegated to the “Large attributes” section).
+
+- **Automatic detection**: Pattern-based detection recognizes subscription, resource group, and resource IDs across all `azurerm` resources.
+- **Readable output**: IDs are formatted via `AzureScopeParser` (e.g., `Key Vault **kv-demo** in resource group **rg-demo** of subscription **0000...**`).
+- **Stays in tables**: Azure IDs are exempt from large-value classification, so even very long IDs remain in the main attribute table.
+- **Model-driven routing**: Large-value classification is computed in C#, and templates rely on `attr.is_large` without needing provider context.
+- **Summaries included**: Resource summaries use the same formatting, preventing raw IDs from appearing in the header lines.
+- **Non-Azure unaffected**: Other providers still render values as backticked inline code.
+
+**Before:**
+````markdown
+| Attribute | Value |
+|-----------|-------|
+| key_vault_id | `/subscriptions/.../resourceGroups/.../providers/Microsoft.KeyVault/vaults/kv-demo` |
+````
+
+**After:**
+````markdown
+| Attribute | Value |
+|-----------|-------|
+| key_vault_id | Key Vault **kv-demo** in resource group **rg-demo** of subscription **00000000-0000-0000-0000-000000000000** |
+````
+
 ## Input
 
 - **Stdin (default)**: Read Terraform plan JSON from standard input

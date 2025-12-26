@@ -6,6 +6,24 @@ namespace Oocx.TfPlan2Md.Tests.Azure;
 public class AzureScopeParserTests
 {
     [Fact]
+    public void IsAzureResourceId_ReturnsTrue_ForValidScopes()
+    {
+        AzureScopeParser.IsAzureResourceId("/subscriptions/12345678-1234-1234-1234-123456789012").Should().BeTrue();
+        AzureScopeParser.IsAzureResourceId("/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/my-rg").Should().BeTrue();
+        AzureScopeParser.IsAzureResourceId("/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv").Should().BeTrue();
+        AzureScopeParser.IsAzureResourceId("/providers/Microsoft.Management/managementGroups/my-mg").Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsAzureResourceId_ReturnsFalse_ForNonAzureScopes()
+    {
+        AzureScopeParser.IsAzureResourceId("not-an-id").Should().BeFalse();
+        AzureScopeParser.IsAzureResourceId("https://portal.azure.com").Should().BeFalse();
+        AzureScopeParser.IsAzureResourceId("/subscriptions/").Should().BeFalse();
+        AzureScopeParser.IsAzureResourceId("12345678-1234-1234-1234-123456789012").Should().BeFalse();
+    }
+
+    [Fact]
     public void ParseScope_ManagementGroupScope_ReturnsFormattedString()
     {
         // Arrange

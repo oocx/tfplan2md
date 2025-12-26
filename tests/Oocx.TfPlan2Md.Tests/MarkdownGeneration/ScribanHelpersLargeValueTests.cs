@@ -30,6 +30,15 @@ public class ScribanHelpersLargeValueTests
     }
 
     [Fact]
+    public void IsLargeValue_AzureResourceIdWithAzProvider_ReturnsFalse()
+    {
+        const string providerName = "registry.terraform.io/hashicorp/azurerm";
+        var longId = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-with-a-very-long-name-to-force-length-over-threshold/providers/Microsoft.KeyVault/vaults/kv";
+
+        ScribanHelpers.IsLargeValue(longId, providerName).Should().BeFalse();
+    }
+
+    [Fact]
     public void FormatLargeValue_Create_ShowsSingleCodeBlock()
     {
         var result = ScribanHelpers.FormatLargeValue(null, "value", "standard-diff");

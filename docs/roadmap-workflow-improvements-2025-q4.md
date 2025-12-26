@@ -25,6 +25,7 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
 - ✅ Hardened GitHub UAT polling to use structured JSON and filter agent comments: ([#92](https://github.com/oocx/tfplan2md/pull/92))
 - ✅ Added `scripts/uat-run.sh` end-to-end wrapper (GitHub + AzDO orchestration): ([#95](https://github.com/oocx/tfplan2md/pull/95))
 - ✅ Added initial guardrails against wrong artifacts in UAT scripts (canonical artifact enforcement still pending): ([#95](https://github.com/oocx/tfplan2md/pull/95))
+- ✅ Migrated to tools-first approach: GitHub chat tools preferred over gh CLI for PR inspection/management ([#108](https://github.com/oocx/tfplan2md/pull/108), [#109](https://github.com/oocx/tfplan2md/pull/109))
 
 ## 2. 🤝 Agent Communication & Role Clarity
 
@@ -38,7 +39,9 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
     *   Require explicit Developer status updates and `tasks.md` sync.
 
 **Progress**
-- ⏳ Not implemented yet (still planned)
+- ✅ Role boundaries enforced: Architect forbidden from creating/editing tasks.md, Task Planner owns tasks.md ([#114](https://github.com/oocx/tfplan2md/pull/114))
+- ✅ Handoff template added to Architect, Task Planner, Developer ([#114](https://github.com/oocx/tfplan2md/pull/114))
+- ✅ Developer status template added requiring explicit status + tasks.md sync ([#114](https://github.com/oocx/tfplan2md/pull/114))
 
 ## 3. 🛡️ Process Gates & Standards
 
@@ -56,9 +59,10 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
 - ✅ Added skill design guidance to minimize Maintainer approvals (prefer stable wrapper commands): ([#86](https://github.com/oocx/tfplan2md/pull/86))
 - ✅ PR creation skills require agents to post the exact PR title + description in chat (using the standard template) before creating PRs (supersedes earlier "preview" approach).
 - ✅ Wrapper scripts require explicit `--title` and `--body`/`--body-file` (no heuristics like `--fill`).
-- ⏳ Doc alignment gate in Code Review not implemented yet
-- ⏳ Report style guide wiring into agent instructions not implemented yet
-- ⏳ Release Manager merge-method enforcement not implemented yet
+- ✅ Doc alignment gate added to Code Reviewer ([#113](https://github.com/oocx/tfplan2md/pull/113))
+- ✅ Report style guide wired into Requirements Engineer, Developer, Code Reviewer, Technical Writer, UAT Tester ([#112](https://github.com/oocx/tfplan2md/pull/112))
+- ✅ Release Manager → Retrospective handoff added ([#111](https://github.com/oocx/tfplan2md/pull/111))
+- ⏳ Release Manager merge-method enforcement not explicitly added yet (rebase policy exists in Release Manager Always Do section)
 
 ## 4. 📊 Metrics & Retrospectives
 

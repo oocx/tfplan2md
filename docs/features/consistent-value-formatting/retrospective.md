@@ -87,23 +87,23 @@ Use this section (with the same fields) in all retrospectives so trends are trac
 | UAT branch naming collisions | Standardize a high-uniqueness naming scheme, e.g., `<original-branch>-uat-<UTC timestamp>` (and keep `-vN` as a fallback). | Update UAT scripts to generate unique branch names by default and print them in the output. |
 | Retrospectives miss consistent, reproducible metrics | Provide the Retrospective agent a short “metrics recipe” with examples: how to compute lead time from git reflog / tags and how to estimate review/UAT loops from chat history + docs. | Update the Retrospective agent instructions to include a metrics section and a recommended method per metric (including fallbacks when branch history is squashed/rebased). |
 
-## Progress Update (As of 2025-12-25)
+## Progress Update (As of 2025-12-26)
 
 This section tracks follow-up implementation progress from this retrospective.
 
 | Item | Status | PRs / Notes |
 |---|---|---|
-| Reduce manual approvals via stable wrappers | ✅ Partial | GitHub PR wrapper added ([#87](https://github.com/oocx/tfplan2md/pull/87)); Azure DevOps PR wrapper added ([#88](https://github.com/oocx/tfplan2md/pull/88)); AzDO abandon cleanup added ([#89](https://github.com/oocx/tfplan2md/pull/89)); end-to-end UAT wrapper added ([#95](https://github.com/oocx/tfplan2md/pull/95)). |
-| Make PR feedback polling less brittle | ✅ Partial | UAT PR watch scripts/skills added ([#90](https://github.com/oocx/tfplan2md/pull/90)); GitHub UAT poll hardened to use JSON queries and filter agent comments ([#92](https://github.com/oocx/tfplan2md/pull/92)). |
+| Reduce manual approvals via stable wrappers | ✅ Done | GitHub PR wrapper ([#87](https://github.com/oocx/tfplan2md/pull/87)); Azure DevOps PR wrapper ([#88](https://github.com/oocx/tfplan2md/pull/88)); AzDO abandon cleanup ([#89](https://github.com/oocx/tfplan2md/pull/89)); end-to-end UAT wrapper ([#95](https://github.com/oocx/tfplan2md/pull/95)); GitHub tools preferred over gh CLI ([#108](https://github.com/oocx/tfplan2md/pull/108), [#109](https://github.com/oocx/tfplan2md/pull/109)). |
+| Make PR feedback polling less brittle | ✅ Done | UAT PR watch scripts/skills added ([#90](https://github.com/oocx/tfplan2md/pull/90)); GitHub UAT poll hardened to use JSON queries and filter agent comments ([#92](https://github.com/oocx/tfplan2md/pull/92)); GitHub tools preferred for PR inspection ([#108](https://github.com/oocx/tfplan2md/pull/108), [#109](https://github.com/oocx/tfplan2md/pull/109)). |
 | Reduce Maintainer “Allow” uncertainty | ✅ Done | Workflow now requires agents to post the **exact PR title + description** in chat (using the standard template) before running PR creation commands. This supersedes the earlier wrapper-based `preview` approach (see [#93](https://github.com/oocx/tfplan2md/pull/93) and [#96](https://github.com/oocx/tfplan2md/pull/96) for history). |
 | Skill authoring guidance (approval minimization) | ✅ Done | Added explicit guidance to prefer stable wrapper commands to reduce approvals ([#86](https://github.com/oocx/tfplan2md/pull/86)). |
 | UAT run/simulate skills foundation | ✅ Done | Initial UAT-related skills and scripts registered in workflow docs ([#85](https://github.com/oocx/tfplan2md/pull/85)). |
 | Standard metrics section in retrospectives | ✅ Done | Added/standardized metrics guidance in workflow docs/retrospective artifacts ([#84](https://github.com/oocx/tfplan2md/pull/84)). |
 | Guardrails against wrong UAT artifact | ✅ Partial | Added guardrails in UAT scripts and updated UAT guidance to prefer the UAT wrapper ([#95](https://github.com/oocx/tfplan2md/pull/95)). Canonical artifact enforcement still pending. |
-| Doc alignment gate in Code Review | ⏳ Not started | Still needs an explicit checklist gate covering spec/tasks/test plan alignment. |
-| Role boundaries + handoff/status templates | ⏳ Not started | Still needs enforcement in agent definitions. |
-| Wire report style guide into agents | ⏳ Not started | Still needs agent-doc references/requirements. |
-| Release-to-retro handoff consistency | ⏳ Not started | Still needs explicit Release Manager handoff expectations encoded. |
+| Doc alignment gate in Code Review | ✅ Done | Added documentation alignment checklist gate to Code Reviewer ([#113](https://github.com/oocx/tfplan2md/pull/113)). |
+| Role boundaries + handoff/status templates | ✅ Done | Enforced role boundaries (Architect/Task Planner), added handoff template, added Developer status template ([#114](https://github.com/oocx/tfplan2md/pull/114)). |
+| Wire report style guide into agents | ✅ Done | Added report style guide references to Requirements Engineer, Developer, Code Reviewer, Technical Writer, UAT Tester ([#112](https://github.com/oocx/tfplan2md/pull/112)). |
+| Release-to-retro handoff consistency | ✅ Done | Added Release Manager → Retrospective handoff button ([#111](https://github.com/oocx/tfplan2md/pull/111)). |
 
 ## Draft Notes
 

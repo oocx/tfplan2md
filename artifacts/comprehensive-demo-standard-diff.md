@@ -273,14 +273,14 @@
 
 #### ➕ module.security.azurerm_key_vault_secret.db_password
 
-**Summary:** `db-password` | Key Vault **kv-tfplan2md** in resource group **rg-tfplan2md-demo** of subscription **12345678-1234-1234-1234-123456789012**
+**Summary:** `db-password` | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `12345678-1234-1234-1234-123456789012`
 
 <details>
 
 | Attribute | Value |
 | ----------- | ------- |
 | content_type | `password` |
-| key_vault_id | Key Vault **kv-tfplan2md** in resource group **rg-tfplan2md-demo** of subscription **12345678-1234-1234-1234-123456789012** |
+| key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `12345678-1234-1234-1234-123456789012` |
 | name | `db-password` |
 | value | `(sensitive)` |
 

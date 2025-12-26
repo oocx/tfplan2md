@@ -47,6 +47,9 @@ No changes.
 | ----------- | ------- |
 {{ for attr in small_attrs -}}
 {{ value = format_value(attr.after, change.provider_name) -}}
+{{ if value != "" && string.contains value "**" -}}
+{{ value = "`" + (string.replace value "**" "") + "`" -}}
+{{ end -}}
 {{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
 {{ end -}}
 {{ end -}}
@@ -56,6 +59,9 @@ No changes.
 | ----------- | ------- |
 {{ for attr in small_attrs -}}
 {{ value = format_value(attr.before, change.provider_name) -}}
+{{ if value != "" && string.contains value "**" -}}
+{{ value = "`" + (string.replace value "**" "") + "`" -}}
+{{ end -}}
 {{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
 {{ end -}}
 {{ end -}}
@@ -66,6 +72,12 @@ No changes.
 {{ for attr in small_attrs -}}
 {{ before_value = format_value(attr.before, change.provider_name) -}}
 {{ after_value = format_value(attr.after, change.provider_name) -}}
+{{ if before_value != "" && string.contains before_value "**" -}}
+{{ before_value = "`" + (string.replace before_value "**" "") + "`" -}}
+{{ end -}}
+{{ if after_value != "" && string.contains after_value "**" -}}
+{{ after_value = "`" + (string.replace after_value "**" "") + "`" -}}
+{{ end -}}
 | {{ attr.name | escape_markdown }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}

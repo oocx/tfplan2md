@@ -33,7 +33,8 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
-- Regenerate comprehensive demo and verify it passes markdownlint with 0 errors after ALL tasks complete
+- Use `generate-demo-artifacts` skill to regenerate all demo artifacts after ALL tasks complete
+- Use `update-test-snapshots` skill when markdown output logic changes (verify snapshots pass afterwards)
 - Follow C# coding conventions and use modern C# features
 - Keep files under 300 lines, refactor if larger
 - Check for existing code to reuse before creating new code
@@ -221,23 +222,29 @@ Follow the project's coding conventions strictly:
       - If tests are skipped, identify reason and ask Maintainer to resolve
    
    b. **Verify markdown quality (REQUIRED)**:
-      ```bash
-      # Regenerate comprehensive demo
-      dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
-      
-      # Verify with markdownlint
-      docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
-      ```
-      - Must show 0 errors
+      - Use `generate-demo-artifacts` skill to regenerate all demo artifacts
+      - Verify comprehensive-demo.md passes markdownlint with 0 errors:
+        ```bash
+        docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
+        ```
       - If feature changes markdown output, update `examples/comprehensive-demo/plan.json` to demonstrate it
    
-   c. **Check for errors**:
+   c. **Update test snapshots (if markdown output changed)**:
+      - Use `update-test-snapshots` skill to regenerate snapshot baselines
+      - Review generated snapshots with `git diff tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots`
+      - Commit snapshots if changes are expected:
+        ```bash
+        git add tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
+        git commit -m "test: update snapshots for <feature-name>"
+        ```
+   
+   d. **Check for errors**:
       - Use `problems` to verify no workspace errors after `dotnet build`
    
-   d. **Commit final changes** (if any):
+   e. **Commit demo artifacts** (if updated):
       ```bash
-      git add artifacts/comprehensive-demo.md examples/comprehensive-demo/plan.json
-      git commit -m "docs: update comprehensive demo for <feature-name>"
+      git add artifacts/ examples/comprehensive-demo/
+      git commit -m "docs: update demo artifacts for <feature-name>"
       ```
 
 6. **Ask one question at a time** - If clarification is needed, ask focused questions.
@@ -305,7 +312,9 @@ For the complete feature:
 - [ ] Full test suite passes with ZERO skipped tests (`dotnet test`)
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
-- [ ] Comprehensive demo regenerated and passes markdownlint with 0 errors (REQUIRED)
+- [ ] Demo artifacts regenerated using `generate-demo-artifacts` skill (REQUIRED)
+- [ ] Comprehensive demo passes markdownlint with 0 errors (REQUIRED)
+- [ ] Snapshots updated using `update-test-snapshots` skill if markdown output changed (REQUIRED)
 - [ ] Comprehensive demo plan.json updated if feature has visible markdown impact
 - [ ] The Maintainer has reviewed the implementation
 

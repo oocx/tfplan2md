@@ -11,6 +11,18 @@ Read pull request status/details from GitHub without triggering an interactive p
 
 Use this skill for **read-only PR inspection** (status, checks, reviewers, files, body). For creating/merging PRs, prefer the repo wrapper scripts (see the `create-pr-github` skill).
 
+## Prefer GitHub Chat Tools (When Available)
+
+If GitHub chat tools are available in the current session, prefer them for read-only inspection to reduce terminal approvals and avoid pager issues. Typical tool coverage:
+
+- PR details: `mcp_github_get_pull_request`
+- Changed files: `mcp_github_get_pull_request_files`
+- Inline review comments: `mcp_github_get_pull_request_comments`
+- Reviews: `mcp_github_get_pull_request_reviews`
+- Status checks: `mcp_github_get_pull_request_status`
+
+Use the `gh` CLI patterns below only when there is no matching chat tool (or you need `gh api` flexibility).
+
 ## Hard Rules
 ### Must
 - Use a **non-interactive pager** for every `gh` call:

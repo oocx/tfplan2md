@@ -84,6 +84,15 @@ Format:
 | `watch-uat-github-pr` | Watch a GitHub UAT PR for maintainer feedback or approval by polling comments until approved/passed. |
 | `watch-uat-azdo-pr` | Watch an Azure DevOps UAT PR for maintainer feedback or approval by polling threads and reviewer votes until approved/passed. |
 
+### Prefer GitHub Chat Tools For PR Inspection
+
+When working in VS Code chat, prefer **GitHub chat tools** for read-only PR inspection (details, files, reviews, status checks, comments). This has two benefits:
+
+- It avoids terminal pager/auth pitfalls.
+- It allows the Maintainer to **permanently allow** a small set of GitHub tools, reducing repeated approval prompts.
+
+Use terminal `gh` (with pager disabled) only when a matching GitHub chat tool is not available.
+
 ---
 
 ## Workflow Overview

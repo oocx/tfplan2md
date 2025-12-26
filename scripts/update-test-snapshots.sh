@@ -39,6 +39,13 @@ dotnet test tests/Oocx.TfPlan2Md.Tests/Oocx.TfPlan2Md.Tests.csproj \
   --filter "FullyQualifiedName~MarkdownSnapshotTests" \
   --verbosity minimal || true
 
+# Copy snapshots from bin/Debug output to source directory
+BIN_SNAPSHOTS="tests/Oocx.TfPlan2Md.Tests/bin/Debug/net10.0/TestData/Snapshots"
+if [[ -d "$BIN_SNAPSHOTS" ]]; then
+  log_info "Copying generated snapshots from build output to source..."
+  cp -f "$BIN_SNAPSHOTS"/*.md "$SNAPSHOTS_DIR/" 2>/dev/null || true
+fi
+
 # Count generated snapshots
 SNAPSHOT_COUNT=$(find "$SNAPSHOTS_DIR" -maxdepth 1 -type f -name '*.md' | wc -l)
 

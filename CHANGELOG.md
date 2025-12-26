@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.46.0"></a>
+## [0.46.0](https://github.com/oocx/tfplan2md/compare/v0.45.1...v0.46.0) (2025-12-26)
+
+### ✨ Features
+
+* **workflow:** add documentation alignment gate to Code Reviewer ([ac88d1a](https://github.com/oocx/tfplan2md/commit/ac88d1aaa40ab25dd7df20238fce6d807691bbf5))
+* **workflow:** add Release Manager → Retrospective handoff ([6869a63](https://github.com/oocx/tfplan2md/commit/6869a63c9685f0af221d18d05d8e33eb1578854a))
+* **workflow:** add role boundaries and handoff/status templates ([94e2b55](https://github.com/oocx/tfplan2md/commit/94e2b55f12209f6e3484c7412dea5ac50b40bbc2))
+* **workflow:** wire report style guide into agents ([8f50bc7](https://github.com/oocx/tfplan2md/commit/8f50bc7ee4a94e8a9b3f453ca2279b140da7f71d))
+
+### 🐛 Bug Fixes
+
+* **workflow:** add quotes to Retrospective agent handoff ([2e46ee0](https://github.com/oocx/tfplan2md/commit/2e46ee08d5b810879bf2a9731769db1048c82c4a))
+
+### 📚 Documentation
+
+* update retrospective tracking with completed PRs [#111](https://github.com/oocx/tfplan2md/issues/111)-114 ([d9e6c7c](https://github.com/oocx/tfplan2md/commit/d9e6c7c38c4707ab13ad8e1b6f090c69941e905a))
+* **agents:** add GitHub tools to Retrospective ([0647648](https://github.com/oocx/tfplan2md/commit/0647648a29617579d1aeef02b815ae17dfdb9511))
+* **agents:** prefer GitHub tools over gh ([efb0e07](https://github.com/oocx/tfplan2md/commit/efb0e0740b937bfe99cb27990453851301e06262))
+* **workflow:** prefer GitHub tools for PR inspection ([ba1f88f](https://github.com/oocx/tfplan2md/commit/ba1f88fe6e4e056195d7a2830313ac58c01e9d9c))
+* **workflow:** prefer GitHub tools over gh ([88f697f](https://github.com/oocx/tfplan2md/commit/88f697f94c4f3360bea5387e47b6ad7b6c11675b))
+
 <a name="0.45.1"></a>
 ## [0.45.1](https://github.com/oocx/tfplan2md/compare/v0.45.0...v0.45.1) (2025-12-26)
 

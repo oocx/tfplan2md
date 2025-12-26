@@ -13,6 +13,7 @@ Reviewed the implementation that makes long Azure Resource IDs from the `azurerm
   - Demo regenerated: `dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md`
   - markdownlint: `docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md` (0 errors)
 - Errors: None observed during verification
+ - Changelog: `CHANGELOG.md` not modified (as required; CI-generated)
 
 ## Review Decision
 
@@ -35,7 +36,8 @@ None.
 ### Suggestions
 
 - The user acceptance scenario checklist in the test plan is intentionally left unchecked (UAT not performed). After merge, hand off to UAT to validate rendering in GitHub and Azure DevOps.
-- Ensure `docs/features.md` and `README.md` messaging stay consistent with the final formatting style (Azure IDs are rendered as readable scopes with bold emphasis, not as inline code).
+- Ensure all docs that describe Azure scope formatting stay consistent: Azure IDs are rendered as readable scopes with values wrapped as inline code (backticks), not bold.
+- Consider updating older role-assignment feature docs that still mention bolding to avoid cross-feature documentation drift.
 
 ## Checklist Summary
 

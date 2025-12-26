@@ -47,7 +47,7 @@ public class MarkdownRendererTests
 
         // Assert
         markdown.Should().Contain("key_vault_id")
-            .And.Contain("Key Vault **kv-long-name** in resource group **rg-with-a-very-long-name-that-exceeds-one-hundred-characters-threshold** of subscription **12345678-1234-1234-1234-123456789012**");
+            .And.Contain("Key Vault `kv-long-name` in resource group `rg-with-a-very-long-name-that-exceeds-one-hundred-characters-threshold` of subscription `12345678-1234-1234-1234-123456789012`");
         markdown.Should().NotContain("Large attributes");
         markdown.Should().NotContain("/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-with-a-very-long-name-that-exceeds-one-hundred-characters-threshold/providers/Microsoft.KeyVault/vaults/kv-long-name");
     }

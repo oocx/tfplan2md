@@ -27,10 +27,10 @@ Extend the human-readable Azure resource ID formatting (currently used only in r
 **Formatting:**
 - Reuse existing `AzureScopeParser.Parse()` logic from role assignment feature
 - Format examples:
-  - Subscription: `subscription 12345678-1234-1234-1234-123456789012`
-  - Resource Group: `rg-tfplan2md-demo in subscription 12345678-1234-1234-1234-123456789012`
-  - Resource: `Key Vault **kv-tfplan2md** in resource group **rg-demo** of subscription **12345678-1234-1234-1234-123456789012**`
-  - Storage Account: `Storage Account **sttfplan2mdlogs** in resource group **rg-demo** of subscription **12345678-1234-1234-1234-123456789012**`
+  - Subscription: subscription `12345678-1234-1234-1234-123456789012`
+  - Resource Group: `rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012`
+  - Resource: Key Vault `kv-tfplan2md` in resource group `rg-demo` of subscription `12345678-1234-1234-1234-123456789012`
+  - Storage Account: Storage Account `sttfplan2mdlogs` in resource group `rg-demo` of subscription `12345678-1234-1234-1234-123456789012`
 - Preserves all information from the original ID in a more readable format
 
 **Display in Change Tables:**
@@ -69,7 +69,7 @@ Or if the ID exceeded 100 characters, it would be in a separate "Large attribute
 ```markdown
 | Attribute | Value |
 |-----------|-------|
-| key_vault_id | Key Vault **kv-tfplan2md** in resource group **rg-tfplan2md-demo** of subscription **12345678-1234-1234-1234-123456789012** |
+| key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `12345678-1234-1234-1234-123456789012` |
 ```
 
 ### Example Resource Types Affected

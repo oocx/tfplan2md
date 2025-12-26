@@ -8,7 +8,7 @@ Implemented (model-driven large attribute classification)
 
 The `azurerm` provider often outputs long Azure Resource IDs (e.g., `/subscriptions/...`). These IDs are currently treated as "large values" because they exceed the 100-character threshold, moving them out of the main change table into a collapsible section. This makes the report harder to scan.
 
-We already have logic in `AzureScopeParser` to format these IDs into readable strings (e.g., `Key Vault **kv** in ...`) for role assignments. We want to apply this formatting universally to all `azurerm` resource attributes that contain Azure Resource IDs, and force them to appear in the main change table.
+We already have logic in `AzureScopeParser` to format these IDs into readable strings (e.g., Key Vault `kv` in ...) for role assignments. We want to apply this formatting universally to all `azurerm` resource attributes that contain Azure Resource IDs, and force them to appear in the main change table.
 
 ## Options Considered
 

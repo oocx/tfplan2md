@@ -121,11 +121,11 @@ public static class AzureScopeParser
 
         return parsed.Level switch
         {
-            ScopeLevel.ManagementGroup => $"**{parsed.Name}** (Management Group)",
-            ScopeLevel.Subscription => $"subscription **{parsed.SubscriptionId}**",
-            ScopeLevel.Resource when !string.IsNullOrWhiteSpace(parsed.ResourceGroup) => $"{parsed.Type} **{parsed.Name}** in resource group **{parsed.ResourceGroup}** of subscription **{parsed.SubscriptionId}**",
-            ScopeLevel.Resource => $"{parsed.Type} **{parsed.Name}** in subscription **{parsed.SubscriptionId}**",
-            ScopeLevel.ResourceGroup => $"**{parsed.ResourceGroup}** in subscription **{parsed.SubscriptionId}**",
+            ScopeLevel.ManagementGroup => $"`{parsed.Name}` (Management Group)",
+            ScopeLevel.Subscription => $"subscription `{parsed.SubscriptionId}`",
+            ScopeLevel.Resource when !string.IsNullOrWhiteSpace(parsed.ResourceGroup) => $"{parsed.Type} `{parsed.Name}` in resource group `{parsed.ResourceGroup}` of subscription `{parsed.SubscriptionId}`",
+            ScopeLevel.Resource => $"{parsed.Type} `{parsed.Name}` in subscription `{parsed.SubscriptionId}`",
+            ScopeLevel.ResourceGroup => $"`{parsed.ResourceGroup}` in subscription `{parsed.SubscriptionId}`",
             _ => parsed.Details
         };
     }

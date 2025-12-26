@@ -15,7 +15,7 @@ Convert Terraform plan JSON files into human-readable Markdown reports.
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
 - 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines
 - 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
-- 🆔 **Readable Azure Resource IDs** - Long Azure IDs are automatically formatted as readable scopes (e.g., `Key Vault **kv** in **rg**`)
+- 🆔 **Readable Azure Resource IDs** - Long Azure IDs are automatically formatted as readable scopes with values in code (e.g., Key Vault `kv` in resource group `rg`)
 - 📝 **Resource summaries** - Each resource change shows a concise one-line summary for quick scanning
 - 🔄 **Replacement reasons** - Resources being replaced show which attributes forced the replacement
 

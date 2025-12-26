@@ -11,7 +11,7 @@
 
 | # | Issue | Description | Potential Solutions | Impact | Effort | Status |
 |---|-------|-------------|---------------------|--------|--------|--------|
-| 1 | **Planner Execution** | Planner agent repeatedly attempts to start implementation instead of stopping after creating the plan | Update `docs/agents.md` (Planner section) to emphasize "Deliverable is the plan, do not start coding"; add explicit handoff instruction | High | Low | ⬜ Not Started |
+| 1 | **Planner Execution** | Planner agent repeatedly attempts to start implementation instead of stopping after creating the plan | Update `docs/agents.md` (Planner section) to emphasize "Deliverable is the plan, do not start coding"; add explicit handoff instruction | High | Low | ✅ Done |
 | 2 | **Agent Boundaries** | Multiple agents (Tech Writer, UAT) modified files outside their scope (source code, code reviews, retrospectives) | Update `docs/agents.md` with reinforced file ownership rules; explicitly forbid cross-role file editing in each agent's Boundaries section | High | Medium | ✅ Done |
 | 3 | **Release Safety** | Release Manager triggered release before CI completed and suggested skipping critical CI steps | Update Release Manager agent to mandate "Green CI" verification before tagging; explicitly forbid "skipping" pipeline steps | High | Low | ⬜ Not Started |
 | 4 | **Release Efficiency** | Release Manager runs redundant local tests that already run in CI | Update Release Manager agent instructions to skip local tests unless specifically needed for debugging | Low | Low | ⬜ Not Started |
@@ -41,9 +41,9 @@
 ## Progress Summary
 
 - **Total Items:** 13
-- **Completed:** 1
+- **Completed:** 2
 - **In Progress:** 0
-- **Remaining:** 12
+- **Remaining:** 11
 
 ---
 

@@ -24,14 +24,24 @@ Agents are empowered by **Agent Skills**, which are specialized, reusable capabi
 
 When authoring skills, prefer designs that **minimize Maintainer approval interruptions** (terminal approvals): use a small number of stable wrapper commands, batch steps when practical, and reuse existing repo scripts.
 
-### PR Preview Guardrail
+### PR Title/Description Guardrail
 
-Before an agent runs any command that creates (or creates-and-merges) a pull request, it must:
+Before an agent runs any command that creates (or creates-and-merges) a pull request, it must post the **exact Title and Description** in chat.
 
-1. Run the appropriate repo wrapper preview command (`scripts/pr-github.sh preview ...` or `scripts/pr-azdo.sh preview ...`).
-2. Paste the preview output into the chat (title + description + diff summary) so the Maintainer can make an informed Allow/Deny decision.
+The agent must author the PR description using this standard template:
 
-The agent is expected to author a meaningful PR description. The wrapper preview output is a confirmation against the branch diff, not a substitute for a proper description.
+```markdown
+## Problem
+<why is this change needed?>
+
+## Change
+<what changed?>
+
+## Verification
+<how was it validated?>
+```
+
+Wrapper scripts require an explicit title + body/description; they do not guess or derive PR content.
 
 ### Response Style
 

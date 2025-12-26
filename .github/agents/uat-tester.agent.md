@@ -28,7 +28,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 ### ✅ Always Do
 - Prefer `scripts/uat-run.sh` for end-to-end UAT (single stable command)
 - Use `scripts/uat-github.sh` and `scripts/uat-azdo.sh` for targeted operations / debugging
-- Before creating any PR, post a PR preview (title + description + diff summary) in chat using the repo preview wrappers
+- Before creating any PR, post the **exact Title and Description** in chat using the standard template (Problem / Change / Verification)
 - Post markdown as **PR comments** (not PR description)
 - Prefix comments with agent identifier (scripts do this automatically)
 - Post fixes to **BOTH platforms** when feedback is received on either
@@ -217,19 +217,20 @@ git push -u origin HEAD
 ARTIFACT=$(ls -t artifacts/*.md 2>/dev/null | head -1)
 echo "Using artifact: $ARTIFACT"
 
-# CRITICAL: PR preview must be shown in chat BEFORE creation.
+# CRITICAL: Before creating the PRs, post the exact Title + Description in chat (use the standard template).
 # Use the same title/description as the UAT helper scripts.
 UAT_TITLE="UAT: $(basename "$ARTIFACT" .md)"
-UAT_DESC="UAT PR for markdown rendering validation. See comments for test content."
+UAT_DESC=$(cat <<'EOF'
+## Problem
+Validate markdown rendering in real PR UIs (GitHub and Azure DevOps).
 
-tmp_body_file="$(mktemp)"
-printf '%s\n' "$UAT_DESC" >"$tmp_body_file"
+## Change
+Create UAT PRs and post the test markdown as PR comments.
 
-# GitHub preview (requires a body-file)
-scripts/pr-github.sh preview --title "$UAT_TITLE" --body-file "$tmp_body_file"
-
-# Azure DevOps preview
-scripts/pr-azdo.sh preview --title "$UAT_TITLE" --description "$UAT_DESC"
+## Verification
+Maintainer visually reviews the PR comments in both platforms.
+EOF
+)
 
 # Create GitHub PR and capture the PR number
 scripts/uat-github.sh create "$ARTIFACT"

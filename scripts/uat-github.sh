@@ -40,6 +40,18 @@ cmd_create() {
     local branch
     branch=$(git branch --show-current)
     local title="UAT: $(basename "$file" .md)"
+    local body
+    body=$(cat <<'EOF'
+## Problem
+Validate markdown rendering in real PR UIs.
+
+## Change
+Create a UAT PR and post the test markdown as PR comments.
+
+## Verification
+Maintainer visually reviews the PR comment rendering in GitHub.
+EOF
+)
     
     log_info "Using artifact: $file"
     log_info "Pushing branch to GitHub..."
@@ -49,7 +61,7 @@ cmd_create() {
     local pr_url
     pr_url=$(PAGER=cat gh pr create \
         --title "$title" \
-        --body "UAT PR for markdown rendering validation. See comments for test content." \
+        --body "$body" \
         --base main \
         --head "$branch")
     

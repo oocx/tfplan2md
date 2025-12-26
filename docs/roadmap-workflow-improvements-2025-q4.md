@@ -54,8 +54,8 @@ This roadmap outlines a series of workflow improvements derived from the "Consis
 
 **Progress**
 - ✅ Added skill design guidance to minimize Maintainer approvals (prefer stable wrapper commands): ([#86](https://github.com/oocx/tfplan2md/pull/86))
-- ✅ PR creation skills now require a chat preview (title + summary) before creating PRs: ([#93](https://github.com/oocx/tfplan2md/pull/93))
-- ✅ Wrapper scripts add a `preview` helper command to generate the chat preview consistently: ([#96](https://github.com/oocx/tfplan2md/pull/96))
+- ✅ PR creation skills require agents to post the exact PR title + description in chat (using the standard template) before creating PRs (supersedes earlier "preview" approach).
+- ✅ Wrapper scripts require explicit `--title` and `--body`/`--body-file` (no heuristics like `--fill`).
 - ⏳ Doc alignment gate in Code Review not implemented yet
 - ⏳ Report style guide wiring into agent instructions not implemented yet
 - ⏳ Release Manager merge-method enforcement not implemented yet

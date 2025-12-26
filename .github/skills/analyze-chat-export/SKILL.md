@@ -23,6 +23,19 @@ Extract structured metrics from VS Code Copilot chat exports to support retrospe
 - `jq` command-line JSON processor installed.
 - Chat export file (`.json`) already saved via `workbench.action.chat.export` command.
 
+## Known Limitations
+
+**Custom agent names are NOT recorded in the export.**
+
+The chat export only contains the VS Code infrastructure agent (`github.copilot.editsAgent`), not the custom agent definition file (e.g., `developer.agent.md`, `@Developer`).
+
+**Impact:**
+- Cannot analyze metrics per custom agent
+- Cannot determine which agent definitions performed best
+- Cross-feature analysis loses agent context
+
+**Workaround:** Use file naming conventions to annotate which agent was used (e.g., save as `chat-developer.json`).
+
 ## Quick Start
 
 **Recommended: Use the extraction script**
@@ -258,35 +271,6 @@ jq '[.requests[] | select(.result.errorDetails != null) | .result.errorDetails.c
 Rejections include cancelled requests, failed requests, and cancelled/rejected tool invocations.
 
 ```bash
-# Rejections grouped by agent
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {
-    agent: extract_agent,
-    model: .modelId,
-    state: .modelState.value,
-    error_code: .result.errorDetails.code,
-    cancelled_tools: ([.response[] | select(.kind == "toolInvocationSerialized" and .isConfirmed.type == 0)] | length)
-  }]
-  | group_by(.agent)
-  | map({
-      agent: .[0].agent,
-      total_requests: length,
-      cancelled: ([.[] | select(.state == 2)] | length),
-      failed: ([.[] | select(.state == 3)] | length),
-      tool_rejections: ([.[].cancelled_tools] | add),
-      error_codes: ([.[] | select(.error_code != null) | .error_code] | group_by(.) | map({code: .[0], count: length}))
-    })
-  | map(. + {rejection_rate: (if .total_requests > 0 then (((.cancelled + .failed + .tool_rejections) / .total_requests) * 100 | floor) else 0 end)})
-' "$CHAT_FILE"
-
 # Rejections grouped by model
 jq '
   [.requests[] | {
@@ -328,170 +312,9 @@ jq '
 ' "$CHAT_FILE"
 ```
 
-### 12. Extract Agent from Message
-
-Custom agents are invoked with `@agent-name` in the message text. Extract agent names:
+### 12. Terminal Commands Analysis (Automation Opportunities)
 
 ```bash
-# Extract agent name from each request (looks for @agent-name pattern)
-# Falls back to "default" if no agent mention found
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {agent: extract_agent, model: .modelId}]
-' "$CHAT_FILE"
-```
-
-### 13. Model Usage by Agent
-
-```bash
-# Models used grouped by agent
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {agent: extract_agent, model: .modelId}]
-  | group_by(.agent)
-  | map({
-      agent: .[0].agent,
-      models: (group_by(.model) | map({model: .[0].model, count: length})),
-      total: length
-    })
-  | sort_by(-.total)
-' "$CHAT_FILE"
-```
-
-### 14. Request Count by Agent and Model
-
-```bash
-# Request count grouped by agent, then by model
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {agent: extract_agent, model: .modelId}]
-  | group_by(.agent)
-  | map({
-      agent: .[0].agent,
-      by_model: (group_by(.model) | map({model: .[0].model, count: length}) | sort_by(-.count)),
-      total_requests: length
-    })
-  | sort_by(-.total_requests)
-' "$CHAT_FILE"
-```
-
-### 15. Automation Effectiveness by Agent
-
-```bash
-# Manual approvals grouped by agent
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {
-    agent: extract_agent,
-    tools: [.response[] | select(.kind == "toolInvocationSerialized") | {
-      tool: .toolId,
-      approval_type: .isConfirmed.type
-    }]
-  }]
-  | map(select(.tools | length > 0))
-  | group_by(.agent)
-  | map({
-      agent: .[0].agent,
-      total_tools: ([.[].tools[]] | length),
-      auto_approved: ([.[].tools[] | select(.approval_type == 1 or .approval_type == 3)] | length),
-      manual_approved: ([.[].tools[] | select(.approval_type == 4)] | length),
-      pending_cancelled: ([.[].tools[] | select(.approval_type == 0)] | length),
-      automation_rate: (
-        ([.[].tools[] | select(.approval_type == 1 or .approval_type == 3)] | length) as $auto |
-        ([.[].tools[]] | length) as $total |
-        if $total > 0 then (($auto / $total) * 100 | floor) else 0 end
-      )
-    })
-  | sort_by(-.total_tools)
-' "$CHAT_FILE"
-```
-
-### 16. Tools Used by Agent
-
-```bash
-# Tool usage breakdown by agent
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {
-    agent: extract_agent,
-    tools: [.response[] | select(.kind == "toolInvocationSerialized") | .toolId]
-  }]
-  | group_by(.agent)
-  | map({
-      agent: .[0].agent,
-      tools: ([.[].tools[]] | group_by(.) | map({tool: .[0], count: length}) | sort_by(-.count))
-    })
-' "$CHAT_FILE"
-```
-
-### 17. Terminal Commands Analysis (Automation Opportunities)
-
-```bash
-# Extract terminal commands for automation analysis
-jq '
-  def extract_agent:
-    if .message.text then
-      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    elif .message | type == "string" then
-      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
-    else
-      "default"
-    end;
-  [.requests[] | {
-    agent: extract_agent,
-    terminal_cmds: [.response[]
-      | select(.kind == "toolInvocationSerialized" and .toolId == "run_in_terminal")
-      | {
-          approval: (if .isConfirmed.type == 4 then "manual" elif .isConfirmed.type == 0 then "cancelled" else "auto" end),
-          command: (.invocationMessage // .pastTenseMessage // "unknown" | tostring | gsub("^[^`]*`"; "") | gsub("`[^`]*$"; "") | split("\n")[0][0:100])
-        }
-    ]
-  }]
-  | map(select(.terminal_cmds | length > 0))
-  | group_by(.agent)
-  | map({
-      agent: .[0].agent,
-      commands: [.[].terminal_cmds[]],
-      manual_count: ([.[].terminal_cmds[] | select(.approval == "manual")] | length),
-      auto_count: ([.[].terminal_cmds[] | select(.approval == "auto")] | length)
-    })
-' "$CHAT_FILE"
-
 # Identify repeated command patterns (candidates for scripts)
 jq '
   [.requests[].response[]
@@ -505,7 +328,7 @@ jq '
 ' "$CHAT_FILE"
 ```
 
-### 18. Model Performance by Agent
+### 13. Model Performance
 
 ```bash
 # Response time statistics grouped by model
@@ -546,97 +369,6 @@ jq '
 ' "$CHAT_FILE"
 ```
 
-### 19. Generate Agent-Grouped Summary Report
-After running the extraction queries, compile results into comprehensive sections:
-
-```markdown
-## Session Overview
-
-### Time Breakdown
-| Metric | Duration | % of Session |
-|--------|----------|--------------|
-| **Session Duration** | Xh Ym | 100% |
-| User Wait Time | Xh Ym | X% |
-| Agent Work Time | Xh Ym | X% |
-
-- **Start:** YYYY-MM-DD HH:MM
-- **End:** YYYY-MM-DD HH:MM
-- **Total Requests:** N
-
-## Agent Analysis
-
-### Model Usage by Agent
-| Agent | Model | Requests | % of Agent |
-|-------|-------|----------|------------|
-| developer | copilot/gpt-5.1-codex-max | N | X% |
-| ... | ... | ... | ... |
-
-### Automation Effectiveness by Agent
-| Agent | Total Tools | Auto | Manual | Cancelled | Automation Rate |
-|-------|-------------|------|--------|-----------|-----------------|
-| developer | N | N | N | N | X% |
-| ... | ... | ... | ... | ... | ... |
-
-### Tool Usage by Agent
-| Agent | Top Tools |
-|-------|-----------|
-| developer | readFile (N), run_in_terminal (N), applyPatch (N) |
-| ... | ... |
-
-## Rejection Analysis
-
-### Rejections by Agent
-| Agent | Total | Cancelled | Failed | Tool Rejections | Rejection Rate |
-|-------|-------|-----------|--------|-----------------|----------------|
-| developer | N | N | N | N | X% |
-| ... | ... | ... | ... | ... | ... |
-
-### Rejections by Model
-| Model | Total | Cancelled | Failed | Tool Rejections | Rejection Rate |
-|-------|-------|-----------|--------|-----------------|----------------|
-| gpt-5.1-codex-max | N | N | N | N | X% |
-| ... | ... | ... | ... | ... | ... |
-
-### Common Rejection Reasons
-| Error Code | Count | Sample Message |
-|------------|-------|----------------|
-| rateLimited | N | ... |
-| canceled | N | User cancelled |
-| ... | ... | ... |
-
-### User Vote-Down Reasons
-| Reason | Count |
-|--------|-------|
-| incorrectCode | N |
-| didNotFollowInstructions | N |
-| ... | ... |
-
-## Automation Opportunities
-Based on terminal command analysis:
-
-| Pattern | Count | Current Approval | Recommendation |
-|---------|-------|------------------|----------------|
-| `dotnet test` | N | Auto | ✅ Already automated |
-| `git commit` | N | Manual | Consider: `scripts/commit.sh` wrapper |
-| `gh pr create` | N | Manual | Use: `scripts/pr-github.sh` |
-
-## Model Performance
-
-### Response Time by Model
-| Model | Requests | Avg Response (s) | Success Rate | Recommended For |
-|-------|----------|------------------|--------------|-----------------|
-| gpt-5.1-codex-max | N | X.Xs | X% | Coding tasks |
-| gemini-3-pro | N | X.Xs | X% | Planning, docs |
-| ... | ... | ... | ... | ... |
-
-### Model Effectiveness Assessment
-| Agent | Assigned Model | Actual Usage | Assessment |
-|-------|----------------|--------------|------------|
-| Developer | gpt-5.1-codex-max | 100% match | ✅ Correct |
-| Task Planner | gemini-3-pro | 80% match | ⚠️ Some model switching |
-| ... | ... | ... | ... |
-```
-
 ## Metrics Available
 
 ### ✅ Reliably Extractable
@@ -652,11 +384,11 @@ Based on terminal command analysis:
 - File edit acceptance/rejection status
 
 ### ⚠️ Partially Available
-- Custom agent names (must parse from message text for `@agent-name` patterns)
 - Extended thinking content (may be encrypted)
 - `timeSpentWaiting` - appears to be time waiting for user confirmation, not agent processing time
 
 ### ❌ Not Available
+- **Custom agent names** - export only shows `github.copilot.editsAgent`, not custom agent files (see Known Limitations)
 - Token counts
 - Actual cost in dollars
 - User reaction/thinking time between responses

@@ -28,6 +28,10 @@ Validate that generated markdown renders correctly in real-world PR environments
 ### ✅ Always Do
 - Prefer `scripts/uat-run.sh` for end-to-end UAT (single stable command)
 - Use `scripts/uat-github.sh` and `scripts/uat-azdo.sh` for targeted operations / debugging
+- **Platform-specific artifacts are automatically selected if not specified:**
+  - GitHub: `examples/comprehensive-demo/report.md` (standard diff format)
+  - Azure DevOps: `examples/comprehensive-demo/report-inline-diff.md` (inline diff format, if available)
+  - For simulations: use `artifacts/uat-simulation-*.md` (requires `UAT_SIMULATE=true`)
 - Before creating any PR, post the **exact Title and Description** in chat using the standard template (Problem / Change / Verification)
 - Post markdown as **PR comments** (not PR description)
 - Prefix comments with agent identifier (scripts do this automatically)
@@ -53,7 +57,7 @@ Validate that generated markdown renders correctly in real-world PR environments
 - Perform any verification beyond visual rendering in PRs
 - Run unrelated tasks while waiting for feedback
 - Use background polling (`nohup`, `&`) — poll in the foreground and act immediately on results
-- Bypass the UAT artifact guardrails (do not set `UAT_ALLOW_MINIMAL=1` for real UAT)
+- **Use simulation artifacts for real UAT** — scripts will reject them unless `UAT_SIMULATE=true` is explicitly set
 
 ## Response Style
 
@@ -136,7 +140,9 @@ Save this to `artifacts/uat-minimal.md` (or `artifacts/uat-simulation-YYYY-MM-DD
 ### Default Parameters
 
 When not specified by the user, use these defaults:
-- **Artifact**: Prefer `artifacts/uat-minimal.md` if present; otherwise use the most recently modified `.md` file in `artifacts/`
+- **Artifact (GitHub)**: `examples/comprehensive-demo/report.md` (automatically selected by `uat-github.sh`)
+- **Artifact (Azure DevOps)**: `examples/comprehensive-demo/report-inline-diff.md` (automatically selected by `uat-azdo.sh`)
+- **For simulations**: Use `artifacts/uat-simulation-*.md` and set `UAT_SIMULATE=true` environment variable
 - **UAT Branch Name**: `uat/simulation-YYYY-MM-DD` where YYYY-MM-DD is today's date
 - **If branch already exists**: Append `-v2`, `-v3`, etc. to make it unique
 

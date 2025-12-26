@@ -55,28 +55,18 @@ if [[ "$platform" != "both" && "$platform" != "github" && "$platform" != "azdo" 
   die_usage
 fi
 
-default_artifact="artifacts/comprehensive-demo.md"
-artifact_github="${UAT_ARTIFACT_GITHUB:-$default_artifact}"
-artifact_azdo="${UAT_ARTIFACT_AZDO:-$default_artifact}"
+# Smart defaults: Let individual scripts determine platform-specific defaults
+# unless explicitly overridden
+artifact_github="${UAT_ARTIFACT_GITHUB:-}"
+artifact_azdo="${UAT_ARTIFACT_AZDO:-}"
 
 if [[ -n "$artifact_arg" ]]; then
   artifact_github="$artifact_arg"
   artifact_azdo="$artifact_arg"
 fi
 
-if [[ "$platform" == "both" || "$platform" == "github" ]]; then
-  if [[ ! -f "$artifact_github" ]]; then
-    log_error "Artifact not found for GitHub: $artifact_github"
-    exit 1
-  fi
-fi
-
-if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
-  if [[ ! -f "$artifact_azdo" ]]; then
-    log_error "Artifact not found for AzDO: $artifact_azdo"
-    exit 1
-  fi
-fi
+# Note: Artifact existence checks moved to individual scripts
+# which will also apply smart defaults if artifact is empty
 
 original_branch="$(git branch --show-current)"
 if [[ "$original_branch" == "main" ]]; then
@@ -89,35 +79,8 @@ if [[ -n "$(git status --porcelain)" ]]; then
   exit 1
 fi
 
-# Artifact guardrails: prevent accidental posting of minimal/simulation artifacts.
-# Override by setting UAT_ALLOW_MINIMAL=1 (intended for simulate-uat).
-if [[ "${UAT_ALLOW_MINIMAL:-}" != "1" ]]; then
-  if [[ "$platform" == "both" || "$platform" == "github" ]]; then
-    if echo "$(basename "$artifact_github")" | grep -qiE '(minimal|simulation)'; then
-      log_error "Refusing to use a minimal/simulation artifact for real UAT: $artifact_github"
-      log_error "Use $default_artifact (default), or set UAT_ALLOW_MINIMAL=1 to override."
-      exit 1
-    fi
-  fi
-
-  if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
-    if echo "$(basename "$artifact_azdo")" | grep -qiE '(minimal|simulation)'; then
-      log_error "Refusing to use a minimal/simulation artifact for real UAT: $artifact_azdo"
-      log_error "Use $default_artifact (default), or set UAT_ALLOW_MINIMAL=1 to override."
-      exit 1
-    fi
-  fi
-fi
-
-if [[ "$platform" == "both" ]]; then
-  log_info "Using artifacts:"
-  log_info "  GitHub: $artifact_github"
-  log_info "  AzDO:   $artifact_azdo"
-elif [[ "$platform" == "github" ]]; then
-  log_info "Using artifact (GitHub): $artifact_github"
-else
-  log_info "Using artifact (AzDO): $artifact_azdo"
-fi
+# Artifact validation is now handled by individual scripts (uat-github.sh / uat-azdo.sh)
+# which will enforce simulation blocking and apply platform-specific smart defaults
 
 timestamp="$(date -u +%Y%m%d%H%M%S)"
 # Create a unique, safe UAT branch name.

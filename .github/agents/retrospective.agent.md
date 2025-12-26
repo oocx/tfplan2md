@@ -86,10 +86,13 @@ When the user invokes you after a release to conduct the retrospective:
     *   Commit the redacted chat log.
 2.  **Analyze Chat Log** (use `analyze-chat-export` skill):
     *   Run the jq extraction queries from the skill to gather:
-        *   Session metrics (duration, total requests, agent work time)
-        *   Model usage breakdown
-        *   Tool invocation counts
-        *   Manual approval count (workflow friction indicator)
+        *   Session metrics (duration, total requests)
+        *   **Model usage by agent** (which models each agent used)
+        *   **Request counts by agent and model**
+        *   **Automation effectiveness by agent** (manual vs auto approvals)
+        *   **Tool usage by agent**
+        *   **Terminal command patterns** (candidates for script automation)
+        *   **Model performance statistics** (response times, success rates)
     *   Identify patterns indicating workflow issues: repeated attempts, errors, confusion, tool failures, boundary violations.
     *   Extract specific quotes or examples that illustrate problems or successes.
 3.  **Gather Additional Context (Full Lifecycle)**:
@@ -101,25 +104,45 @@ When the user invokes you after a release to conduct the retrospective:
 4.  **Collect Metrics (REQUIRED)** (use `analyze-chat-export` skill):
     *   **Start/End Timestamp**: Extract from chat log using jq queries.
     *   **Duration**: Calculate elapsed time in hours and minutes (e.g., `4h 30m` or `1d 2h 15m`).
-    *   **Estimated Interactions**: Total request count from chat log.
-    *   **Agent Work Time**: Total processing time from `timeSpentWaiting` field.
-    *   **Model Usage**: Breakdown by model with counts and percentages.
-    *   **Tool Invocations**: Total count and breakdown by tool.
-    *   **Manual Approvals**: Count of type 0 and type 4 confirmations (workflow friction).
+    *   **Request Counts by Agent**: How many requests each agent handled.
+    *   **Model Usage by Agent**: Which models each agent used and how often.
+    *   **Automation Effectiveness by Agent**: Auto vs manual approvals, automation rate percentage.
+    *   **Tool Usage by Agent**: Which tools each agent used most.
+    *   **Model Performance**: Average response time and success rate by model.
     *   **Files Changed**: Count of files modified.
     *   **Tests**: Number of tests added/total tests passing.
-5.  **Generate Report**:
+5.  **Analyze Automation Opportunities**:
+    *   Review terminal command patterns from the chat log.
+    *   Identify repeated commands that could be consolidated into scripts.
+    *   Identify manual approvals that could be automated with wrapper scripts.
+    *   Compare actual script usage to available scripts in `scripts/`.
+6.  **Evaluate Model Effectiveness**:
+    *   Compare each agent's assigned model (from `.github/agents/*.agent.md`) to actual usage.
+    *   Assess if the model was appropriate for the task based on:
+        *   Response time vs task complexity
+        *   Success/failure rates
+        *   Task type (coding, planning, documentation)
+    *   Reference `docs/ai-model-reference.md` for model capabilities.
+7.  **Generate Report**:
     *   Create a comprehensive report in `retrospective.md` (replacing or archiving the draft notes).
     *   **Use evidence from the chat log** to support findings — include specific examples, quotes, or patterns observed.
     *   The report should include:
         *   **Summary**: Brief overview of the process, highlighting notable interactions or events (focus on *how* it was built, not *what* was built).
-        *   **Timeline & Metrics** (REQUIRED): Start/end timestamps, duration, interactions, files changed, tests.
+        *   **Timeline & Metrics** (REQUIRED): Start/end timestamps, duration, files changed, tests.
+        *   **Agent Analysis** (REQUIRED):
+            *   Model usage by agent table
+            *   Request counts by agent and model
+            *   Automation effectiveness by agent (with automation rate %)
+            *   Tool usage by agent
+        *   **Automation Opportunities**: Terminal command patterns and script recommendations.
+        *   **Model Effectiveness Assessment**: Did agents use the right models? Include performance data.
+        *   **Model Performance Statistics**: Response times and success rates by model.
         *   **Agent Performance**: A table rating each agent (1-5 stars) with comments on strengths and areas for improvement (tools, model, instructions). **Cite chat log evidence.**
         *   **Overall Workflow Rating**: A score (1-10) for the entire process with a brief justification.
         *   **What Went Well**: Successes to repeat — cite examples from chat log.
         *   **What Didn't Go Well**: Issues encountered — cite examples from chat log.
         *   **Improvement Opportunities**: Concrete, actionable recommendations derived from chat log analysis.
-6.  **Action Items**:
+8.  **Action Items**:
     *   For each improvement opportunity, suggest a specific action (e.g., "Update `docs/agents.md`", "Modify Developer agent prompt").
     *   Offer to handoff to the **Workflow Engineer** to implement these changes.
 
@@ -140,16 +163,65 @@ A markdown file named `retrospective.md` in the feature or issue folder.
 - **Start:** YYYY-MM-DD HH:MM
 - **End:** YYYY-MM-DD HH:MM
 - **Duration:** Xh Ym (or Xd Yh Zm)
-- **Est. Interactions:** ~N turns
-- **Agent Work Time:** Xh Ym
-- **Tool Invocations:** N (M manual approvals)
+- **Total Requests:** N
 - **Files Changed:** N
 - **Tests:** N added, N total passing
 
-### Model Usage
-| Model | Count | % |
-|-------|-------|---|
-| ... | ... | ... |
+## Agent Analysis
+
+### Model Usage by Agent
+| Agent | Model | Requests | % of Agent |
+|-------|-------|----------|------------|
+| developer | copilot/gpt-5.1-codex-max | N | X% |
+| task-planner | copilot/gemini-3-pro-preview | N | X% |
+
+### Request Counts by Agent
+| Agent | Total Requests | Primary Model |
+|-------|----------------|---------------|
+| developer | N | gpt-5.1-codex-max |
+| task-planner | N | gemini-3-pro |
+
+### Automation Effectiveness by Agent
+| Agent | Total Tools | Auto | Manual | Cancelled | Automation Rate |
+|-------|-------------|------|--------|-----------|-----------------|
+| developer | N | N | N | N | X% |
+| uat-tester | N | N | N | N | X% |
+
+### Tool Usage by Agent
+| Agent | Top Tools |
+|-------|-----------|
+| developer | readFile (N), run_in_terminal (N), applyPatch (N) |
+| task-planner | readFile (N), edit (N) |
+
+## Automation Opportunities
+
+### Terminal Command Patterns
+| Pattern | Count | Current | Recommendation |
+|---------|-------|---------|----------------|
+| `dotnet test` | N | Auto | ✅ Already automated |
+| `git commit` | N | Manual | Consider: wrapper script |
+| `gh pr create` | N | Manual | Use: `scripts/pr-github.sh` |
+
+### Script Usage Analysis
+- **Available scripts not used:** `scripts/foo.sh`
+- **Repeated manual commands:** Could be consolidated into new script
+
+## Model Effectiveness Assessment
+
+### Assigned vs Actual Model Usage
+| Agent | Assigned Model | Actual Usage | Assessment |
+|-------|----------------|--------------|------------|
+| Developer | gpt-5.1-codex-max | 100% match | ✅ Correct |
+| Task Planner | gemini-3-pro | 80% match | ⚠️ Some switching |
+
+### Model Performance Statistics
+| Model | Requests | Avg Response (s) | Success Rate |
+|-------|----------|------------------|--------------|
+| gpt-5.1-codex-max | N | X.Xs | X% |
+| gemini-3-pro | N | X.Xs | X% |
+
+### Recommendations
+- [Model recommendation based on performance data]
 
 ## Agent Performance
 

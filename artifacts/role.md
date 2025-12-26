@@ -24,11 +24,11 @@
 
 | Attribute | Value |
 | ----------- | ------- |
-| `scope` | rg-tfplan2md-demo in subscription sub-one |
-| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) |
-| `principal_id` | 11111111-1111-1111-1111-111111111111 (User) [11111111-1111-1111-1111-111111111111] |
-| `principal_type` | User |
-| `name` | ra-create |
+| scope | `rg-tfplan2md-demo` in subscription `sub-one` |
+| role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
+| principal_id | `11111111-1111-1111-1111-111111111111` (User) [`11111111-1111-1111-1111-111111111111`] |
+| principal_type | `User` |
+| name | `ra-create` |
 
 </details>
 
@@ -42,28 +42,12 @@ Allow DevOps team to read logs from the storage account
 
 | Attribute | Value |
 | ----------- | ------- |
-| `role_definition_id` | Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1) |
-| `principal_id` | 22222222-2222-2222-2222-222222222222 (Group) [22222222-2222-2222-2222-222222222222] |
-| `principal_type` | Group |
-| `description` | Allow DevOps team to read logs from the storage account |
-| `name` | ra-storage-reader |
-
-</details>
-
-<details>
-<summary>Large values: scope (2 lines, 2 changed)</summary>
-
-##### `scope`
-
-**Before:**
-```
-
-```
-
-**After:**
-```
-Storage Account sttfplan2mdlogs-with-extended-name-1234567890 in resource group rg-tfplan2md-demo of subscription sub-one
-```
+| scope | `rg-tfplan2md-demo` in subscription `sub-one` |
+| role_definition_id | `Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |
+| principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] |
+| principal_type | `Group` |
+| description | `Allow DevOps team to read logs from the storage account` |
+| name | `ra-storage-reader` |
 
 </details>
 
@@ -77,13 +61,13 @@ Upgraded permissions for security auditing
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `scope` | Storage Account sttfplan2mdlogs in resource group rg-tfplan2md-demo of subscription sub-one | Storage Account sttfplan2mddata in resource group rg-tfplan2md-demo of subscription sub-one |
-| `role_definition_id` | Storage Blob Data Reader (2a2b9908-6ea1-4ae2-8e65-a410df84e7d1) | Storage Blob Data Contributor (ba92f5b4-2d11-453d-a403-e96b0029c9fe) |
-| `principal_id` | 22222222-2222-2222-2222-222222222222 (Group) [22222222-2222-2222-2222-222222222222] | 33333333-3333-3333-3333-333333333333 (Group) [33333333-3333-3333-3333-333333333333] |
-| `principal_type` | Group | Group |
-| `description` | Allow team to read storage data | Upgraded permissions for security auditing |
-| `condition` |  | request.clientip != '10.0.0.0/24' |
-| `skip_service_principal_aad_check` | false | true |
+| scope | `rg-tfplan2md-demo` in subscription `sub-one` | `rg-tfplan2md-demo` in subscription `sub-one` |
+| role_definition_id | `Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) | `Storage Blob Data Contributor` (`ba92f5b4-2d11-453d-a403-e96b0029c9fe`) |
+| principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] | `33333333-3333-3333-3333-333333333333` (Group) [`33333333-3333-3333-3333-333333333333`] |
+| principal_type | `Group` | `Group` |
+| description | `Allow team to read storage data` | `Upgraded permissions for security auditing` |
+| condition | - | `request.clientip != '10.0.0.0/24'` |
+| skip_service_principal_aad_check | `false` | `true` |
 
 </details>
 
@@ -97,11 +81,11 @@ Updated role assignment with new permissions
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| `scope` | rg-production in subscription sub-two | rg-production in subscription sub-two |
-| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) | Custom Contributor Long Name 1234567890 |
-| `principal_id` | 22222222-2222-2222-2222-222222222222 (Group) [22222222-2222-2222-2222-222222222222] | 33333333-3333-3333-3333-333333333333 (Group) [33333333-3333-3333-3333-333333333333] |
-| `principal_type` | Group | Group |
-| `description` | Read-only access for DevOps | Updated role assignment with new permissions |
+| scope | `rg-production` in subscription `sub-two` | `rg-production` in subscription `sub-two` |
+| role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `Custom Contributor Long Name 1234567890` |
+| principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] | `33333333-3333-3333-3333-333333333333` (Group) [`33333333-3333-3333-3333-333333333333`] |
+| principal_type | `Group` | `Group` |
+| description | `Read-only access for DevOps` | `Updated role assignment with new permissions` |
 
 </details>
 
@@ -115,11 +99,11 @@ Legacy access
 
 | Attribute | Value |
 | ----------- | ------- |
-| `scope` | rg-legacy in subscription sub-three |
-| `role_definition_id` | Contributor (b24988ac-6180-42a0-ab88-20f7382dd24c) |
-| `principal_id` | 33333333-3333-3333-3333-333333333333 (User) [33333333-3333-3333-3333-333333333333] |
-| `principal_type` | User |
-| `description` | Legacy access |
+| scope | `rg-legacy` in subscription `sub-three` |
+| role_definition_id | `Contributor` (`b24988ac-6180-42a0-ab88-20f7382dd24c`) |
+| principal_id | `33333333-3333-3333-3333-333333333333` (User) [`33333333-3333-3333-3333-333333333333`] |
+| principal_type | `User` |
+| description | `Legacy access` |
 
 </details>
 
@@ -131,10 +115,9 @@ Legacy access
 
 | Attribute | Value |
 | ----------- | ------- |
-| `scope` | rg-long-names-example in subscription sub-four |
-| `principal_id` | 99999999-9999-9999-9999-999999999999 (ServicePrincipal) [99999999-9999-9999-9999-999999999999] |
-| `principal_type` | ServicePrincipal |
-| `name` | unmapped |
+| scope | `rg-long-names-example` in subscription `sub-four` |
+| principal_id | `99999999-9999-9999-9999-999999999999` (ServicePrincipal) [`99999999-9999-9999-9999-999999999999`] |
+| principal_type | `ServicePrincipal` |
+| name | `unmapped` |
 
 </details>
----

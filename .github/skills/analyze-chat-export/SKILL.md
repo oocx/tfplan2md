@@ -11,7 +11,7 @@ Extract structured metrics from VS Code Copilot chat exports to support retrospe
 
 ## Hard Rules
 ### Must
-- Use `jq` for all JSON extraction (the files are too large for direct loading).
+- Use the `extract-metrics.sh` script for analysis (consolidates all queries).
 - Redact sensitive information before committing chat logs.
 - Save analysis results alongside the chat export in the feature folder.
 
@@ -22,6 +22,16 @@ Extract structured metrics from VS Code Copilot chat exports to support retrospe
 ## Pre-requisites
 - `jq` command-line JSON processor installed.
 - Chat export file (`.json`) already saved via `workbench.action.chat.export` command.
+
+## Quick Start
+
+**Recommended: Use the extraction script**
+```bash
+# Generate a complete analysis report
+.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-analysis-results.md
+```
+
+This single command extracts all metrics and generates a markdown report.
 
 ## Export Structure Reference
 
@@ -78,7 +88,26 @@ Ask the Maintainer to:
 2. Run command: `workbench.action.chat.export`
 3. Save to: `docs/features/<feature-name>/chat.json`
 
-### 2. Extract Session Metrics
+### 2. Run Extraction Script (Recommended)
+```bash
+# Generate full analysis report
+.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-analysis-results.md
+```
+
+The script outputs a markdown report with:
+- Session overview (duration, requests, time breakdown)
+- Model usage statistics
+- Tool usage breakdown (top 15)
+- Automation effectiveness (auto vs manual approvals)
+- Model success rates
+- Response times by model
+- Error summary
+- User feedback votes
+
+### 3. Individual jq Queries (Advanced)
+For custom analysis or debugging, use individual jq queries.
+
+#### Session Metrics
 ```bash
 CHAT_FILE="docs/features/<feature-name>/chat.json"
 

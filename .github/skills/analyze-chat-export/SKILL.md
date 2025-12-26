@@ -88,11 +88,36 @@ jq '.requests | length' "$CHAT_FILE"
 # Session duration in minutes
 jq '((.requests | last.timestamp) - (.requests | first.timestamp)) / 1000 / 60 | floor' "$CHAT_FILE"
 
-# Total agent work time in minutes
-jq '[.requests[].timeSpentWaiting] | add / 1000 / 60 | floor' "$CHAT_FILE"
-
 # First and last timestamps (for start/end times)
 jq '.requests | first.timestamp, last.timestamp' "$CHAT_FILE"
+
+# Time breakdown (all in seconds)
+jq '
+{
+  session_duration_sec: (((.requests | last.timestamp) - (.requests | first.timestamp)) / 1000 | floor),
+  user_wait_time_sec: (([.requests[].timeSpentWaiting // 0] | add) / 1000 | floor),
+  agent_work_time_sec: (([.requests[].result.timings.totalElapsed // 0] | add) / 1000 | floor)
+}
+| . + {
+  user_wait_pct: (if .session_duration_sec > 0 then (.user_wait_time_sec / .session_duration_sec * 100 | floor) else 0 end),
+  agent_work_pct: (if .session_duration_sec > 0 then (.agent_work_time_sec / .session_duration_sec * 100 | floor) else 0 end)
+}
+' "$CHAT_FILE"
+
+# Format time breakdown as human-readable
+jq '
+  def format_time(s): "\(s / 3600 | floor)h \((s % 3600) / 60 | floor)m";
+  {
+    session: ((.requests | last.timestamp) - (.requests | first.timestamp)) / 1000,
+    user_wait: ([.requests[].timeSpentWaiting // 0] | add) / 1000,
+    agent_work: ([.requests[].result.timings.totalElapsed // 0] | add) / 1000
+  }
+  | {
+    session_duration: format_time(.session),
+    user_wait_time: format_time(.user_wait),
+    agent_work_time: format_time(.agent_work)
+  }
+' "$CHAT_FILE"
 ```
 
 ### 3. Extract Model Usage
@@ -191,6 +216,81 @@ jq '[.requests[] | select(.modelState.value == 2)] | length' "$CHAT_FILE"
 
 # Error codes
 jq '[.requests[] | select(.result.errorDetails != null) | .result.errorDetails.code] | group_by(.) | map({code: .[0], count: length})' "$CHAT_FILE"
+```
+
+### 11b. Rejection Analysis
+
+Rejections include cancelled requests, failed requests, and cancelled/rejected tool invocations.
+
+```bash
+# Rejections grouped by agent
+jq '
+  def extract_agent:
+    if .message.text then
+      (.message.text | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
+    elif .message | type == "string" then
+      (.message | capture("@(?<agent>[a-zA-Z-]+)") | .agent) // "default"
+    else
+      "default"
+    end;
+  [.requests[] | {
+    agent: extract_agent,
+    model: .modelId,
+    state: .modelState.value,
+    error_code: .result.errorDetails.code,
+    cancelled_tools: ([.response[] | select(.kind == "toolInvocationSerialized" and .isConfirmed.type == 0)] | length)
+  }]
+  | group_by(.agent)
+  | map({
+      agent: .[0].agent,
+      total_requests: length,
+      cancelled: ([.[] | select(.state == 2)] | length),
+      failed: ([.[] | select(.state == 3)] | length),
+      tool_rejections: ([.[].cancelled_tools] | add),
+      error_codes: ([.[] | select(.error_code != null) | .error_code] | group_by(.) | map({code: .[0], count: length}))
+    })
+  | map(. + {rejection_rate: (if .total_requests > 0 then (((.cancelled + .failed + .tool_rejections) / .total_requests) * 100 | floor) else 0 end)})
+' "$CHAT_FILE"
+
+# Rejections grouped by model
+jq '
+  [.requests[] | {
+    model: .modelId,
+    state: .modelState.value,
+    error_code: .result.errorDetails.code,
+    cancelled_tools: ([.response[] | select(.kind == "toolInvocationSerialized" and .isConfirmed.type == 0)] | length)
+  }]
+  | group_by(.model)
+  | map({
+      model: .[0].model,
+      total_requests: length,
+      cancelled: ([.[] | select(.state == 2)] | length),
+      failed: ([.[] | select(.state == 3)] | length),
+      tool_rejections: ([.[].cancelled_tools] | add),
+      error_codes: ([.[] | select(.error_code != null) | .error_code] | group_by(.) | map({code: .[0], count: length}))
+    })
+  | map(. + {rejection_rate: (if .total_requests > 0 then (((.cancelled + .failed + .tool_rejections) / .total_requests) * 100 | floor) else 0 end)})
+  | sort_by(-.total_requests)
+' "$CHAT_FILE"
+
+# Common rejection reasons (error codes across all requests)
+jq '
+  [.requests[] | select(.result.errorDetails != null) | {
+    code: .result.errorDetails.code,
+    message: .result.errorDetails.message
+  }]
+  | group_by(.code)
+  | map({code: .[0].code, count: length, sample_message: .[0].message})
+  | sort_by(-.count)
+' "$CHAT_FILE"
+
+# User vote-down reasons (explicit rejection feedback)
+jq '
+  [.requests[] | select(.voteDownReason != null) | .voteDownReason]
+  | group_by(.)
+  | map({reason: .[0], count: length})
+  | sort_by(-.count)
+' "$CHAT_FILE"
 ```
 
 ### 12. Extract Agent from Message
@@ -415,6 +515,19 @@ jq '
 After running the extraction queries, compile results into comprehensive sections:
 
 ```markdown
+## Session Overview
+
+### Time Breakdown
+| Metric | Duration | % of Session |
+|--------|----------|--------------|
+| **Session Duration** | Xh Ym | 100% |
+| User Wait Time | Xh Ym | X% |
+| Agent Work Time | Xh Ym | X% |
+
+- **Start:** YYYY-MM-DD HH:MM
+- **End:** YYYY-MM-DD HH:MM
+- **Total Requests:** N
+
 ## Agent Analysis
 
 ### Model Usage by Agent
@@ -435,7 +548,35 @@ After running the extraction queries, compile results into comprehensive section
 | developer | readFile (N), run_in_terminal (N), applyPatch (N) |
 | ... | ... |
 
-### Automation Opportunities
+## Rejection Analysis
+
+### Rejections by Agent
+| Agent | Total | Cancelled | Failed | Tool Rejections | Rejection Rate |
+|-------|-------|-----------|--------|-----------------|----------------|
+| developer | N | N | N | N | X% |
+| ... | ... | ... | ... | ... | ... |
+
+### Rejections by Model
+| Model | Total | Cancelled | Failed | Tool Rejections | Rejection Rate |
+|-------|-------|-----------|--------|-----------------|----------------|
+| gpt-5.1-codex-max | N | N | N | N | X% |
+| ... | ... | ... | ... | ... | ... |
+
+### Common Rejection Reasons
+| Error Code | Count | Sample Message |
+|------------|-------|----------------|
+| rateLimited | N | ... |
+| canceled | N | User cancelled |
+| ... | ... | ... |
+
+### User Vote-Down Reasons
+| Reason | Count |
+|--------|-------|
+| incorrectCode | N |
+| didNotFollowInstructions | N |
+| ... | ... |
+
+## Automation Opportunities
 Based on terminal command analysis:
 
 | Pattern | Count | Current Approval | Recommendation |
@@ -444,7 +585,9 @@ Based on terminal command analysis:
 | `git commit` | N | Manual | Consider: `scripts/commit.sh` wrapper |
 | `gh pr create` | N | Manual | Use: `scripts/pr-github.sh` |
 
-### Model Performance
+## Model Performance
+
+### Response Time by Model
 | Model | Requests | Avg Response (s) | Success Rate | Recommended For |
 |-------|----------|------------------|--------------|-----------------|
 | gpt-5.1-codex-max | N | X.Xs | X% | Coding tasks |

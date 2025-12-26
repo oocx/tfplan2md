@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.47.0"></a>
+## [0.47.0](https://github.com/oocx/tfplan2md/compare/v0.46.0...v0.47.0) (2025-12-26)
+
+### ✨ Features
+
+* **uat:** enforce simulation blocking and add smart platform-specific defaults ([4780e58](https://github.com/oocx/tfplan2md/commit/4780e580d3416f9c3d1febf77da96ea3d363f93c))
+
 <a name="0.46.0"></a>
 ## [0.46.0](https://github.com/oocx/tfplan2md/compare/v0.45.1...v0.46.0) (2025-12-26)
 

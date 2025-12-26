@@ -1,0 +1,35 @@
+name: UAT artifact validation
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'scripts/uat-helpers.sh'
+      - 'scripts/uat-github.sh'
+      - 'scripts/uat-azdo.sh'
+      - 'scripts/uat-run.sh'
+      - 'tests/shell/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/uat-helpers.sh'
+      - 'scripts/uat-github.sh'
+      - 'scripts/uat-azdo.sh'
+      - 'scripts/uat-run.sh'
+      - 'tests/shell/**'
+
+jobs:
+  uat-validate:
+    name: UAT artifact validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure tests are executable
+        run: chmod +x tests/shell/uat_validate_test.sh
+
+      - name: Run UAT validation tests
+        run: ./tests/shell/uat_validate_test.sh

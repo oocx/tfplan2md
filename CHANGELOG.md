@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="0.49.0"></a>
+## [0.49.0](https://github.com/oocx/tfplan2md/compare/v0.48.0...v0.49.0) (2025-12-26)
+
+### ✨ Features
+
+* implement backtick formatting for Azure resource ID values ([ee95011](https://github.com/oocx/tfplan2md/commit/ee9501196e00f1f8481fae5b9f229c26b9e0064f))
+* implement model-driven large value detection for Azure resource IDs ([2969f9b](https://github.com/oocx/tfplan2md/commit/2969f9bd5864fb2f6ea186a5b64149d7cfcb8d5b))
+
+### 🐛 Bug Fixes
+
+* **ci:** ensure workflows can push tags — persist-credentials and authenticated push; disable gh pager in release step ([03a8a5c](https://github.com/oocx/tfplan2md/commit/03a8a5c8db3616357804ab0183d667d915945e31))
+* **uat:** block minimal artifacts and add validation helper + tests ([50a5ae3](https://github.com/oocx/tfplan2md/commit/50a5ae31f21bd510291acf80151d651efe0605ee))
+* **uat:** keep validate_artifact stdout clean ([68d0c70](https://github.com/oocx/tfplan2md/commit/68d0c706b8b111bb3b3bef67e49644986381a684))
+
+### 📚 Documentation
+
+* add architecture for universal Azure resource ID formatting ([e214ab3](https://github.com/oocx/tfplan2md/commit/e214ab36692d5e393478ae0c6aae4ac9b2096c63))
+* add feature specification for universal Azure resource ID formatting ([8804f2e](https://github.com/oocx/tfplan2md/commit/8804f2ea8be80caedb6fa051a7c93a446aebe295))
+* add tasks for universal Azure resource ID formatting ([8a0d8f0](https://github.com/oocx/tfplan2md/commit/8a0d8f0ac127e831535ddd1a96b48904ae0380a4))
+* add test plan for universal Azure resource ID formatting ([1536620](https://github.com/oocx/tfplan2md/commit/15366208fc3cf40608ae2e988c420479a23288c7))
+* align Azure ID formatting examples and add review report ([b48e36f](https://github.com/oocx/tfplan2md/commit/b48e36f1bc0aec67423fb805a69f7d0a0c78bdb2))
+* enforce rebase-only release merges ([2295e7b](https://github.com/oocx/tfplan2md/commit/2295e7bc042015b7ad3ade8cbe2cd81fd6551857))
+* mark q4 workflow roadmap complete ([91c8eb3](https://github.com/oocx/tfplan2md/commit/91c8eb3ecfe5503519483797f93039425bfe5342))
+* **release:** prefer scripts/pr-github.sh for create+merge (rebase-and-merge) ([929f726](https://github.com/oocx/tfplan2md/commit/929f72690ca47bf6110d00cd2f7703cadfc6c98c))
+
 <a name="0.48.0"></a>
 ## [0.48.0](https://github.com/oocx/tfplan2md/compare/v0.47.0...v0.48.0) (2025-12-26)
 

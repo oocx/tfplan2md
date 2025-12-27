@@ -15,9 +15,9 @@
 | **3** | Fix Release Manager polling behavior | 🔲 Not Started | High | Medium | High |
 | **4** | Enforce project script usage | ✅ Complete | High | Low | High |
 | **5** | Fix Task Planner boundary violation | ✅ Complete | Critical | Medium | Critical |
-| **6** | Improve Retrospective Agent critical analysis | 🔲 Not Started | High | Medium | High |
-| **7** | Add interactive retrospective phase | 🔲 Not Started | High | Medium | High |
-| **8** | Ensure Retrospective terminal access | 🔲 Not Started | Medium | Low | Medium |
+| **6** | Improve Retrospective Agent critical analysis | ✅ Complete | High | Medium | High |
+| **7** | Add interactive retrospective phase | ✅ Complete | High | Medium | High |
+| **8** | Ensure Retrospective terminal access | ✅ Complete | Medium | Low | Medium |
 | **9** | Replace Gemini 3 Pro due to instability | 🔲 Not Started | Medium | High | Medium |
 | **10** | Create analyze-run.sh helper script | 🔲 Not Started | Medium | Medium | Medium |
 | **11** | Create cleanup-tags.sh helper script | 🔲 Not Started | Low | Low | Low |

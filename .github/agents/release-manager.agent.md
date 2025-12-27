@@ -33,6 +33,7 @@ Ensure the feature is ready for release, create the pull request (for both new f
 - Verify branch is up to date with main
 - Review commit messages follow conventional commit format
 - Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
+- **Use blocking waits (`gh run watch`) for CI/workflow monitoring** - do NOT poll with repeated status checks
 - **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`) or `gh pr merge --rebase --delete-branch`.
 - Wait for PR Validation workflow to complete successfully before merging PR
 - Wait for CI on main to complete before triggering release workflow
@@ -56,6 +57,8 @@ Ensure the feature is ready for release, create the pull request (for both new f
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
 - Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
+- **Poll CI status with repeated commands** - use `gh run watch` (blocking) instead, which waits until completion
+- **Flood chat with status check messages** - a single `gh run watch` call handles all waiting
 
 ## Response Style
 
@@ -168,8 +171,19 @@ Before releasing, verify:
     ```
     - **Preferred (create & merge):** Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them — this script is the authoritative, repo-standard tool for PR lifecycle operations.
     - **Fallback:** When the script does not support a required or advanced task (rare), use GitHub chat tools (`github/*`) in VS Code for creation/inspection and ad-hoc actions.
-    - Use GitHub chat tools to fetch PR status checks and to inspect checks; re-check until all required checks show success.
-   - **CRITICAL**: Do NOT merge until "PR Validation" shows ✅ success
+
+4. **Wait for PR Validation to Complete** - Use blocking wait, do NOT poll:
+   ```bash
+   # Get the run ID from the PR checks
+   export GH_PAGER=cat && export GH_FORCE_TTY=false
+   PAGER=cat gh pr checks <pr-number>
+   
+   # Extract run ID and use blocking watch (this waits until completion)
+   PAGER=cat gh run watch <run-id>
+   ```
+   - **CRITICAL**: Use `gh run watch` (blocking) - it waits until the run completes
+   - **DO NOT** poll with repeated `gh pr checks` commands - this floods the chat
+   - **DO NOT** use loops or repeated status checks - let `gh run watch` handle the waiting
    - All checks must pass: format, build, test, markdownlint, vulnerability scan
    - If checks fail, hand off to Developer agent to fix issues and return to step 1
 

@@ -12,20 +12,18 @@ AZDO_REMOTE_NAME="${AZDO_REMOTE_NAME:-azdo}"
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/pr-azdo.sh create --title <title> --description <text>
   scripts/pr-azdo.sh create --title <title> --description-from-stdin
   scripts/pr-azdo.sh abandon --id <pr-id>
 
 Options:
   --title <title>              PR title
-  --description <text>         PR description
-  --description-from-stdin     Read PR description from stdin (avoids temp files)
+  --description-from-stdin     Read PR description from stdin
   --id <pr-id>                 Pull request ID (for abandon)
 
 Notes:
-  - Required: provide an explicit title + description (agent-authored)
+  - Required: provide an explicit title + description via stdin (agent-authored)
   - This script intentionally does not guess title/description
-  - **Agent guidance: Prefer --description-from-stdin** to avoid temporary files
+  - **Agent guidance: Body must be piped via stdin**
   - Requires: git, Azure CLI (az) + azure-devops extension, jq
   - Merge policy: maintain linear history. In Azure DevOps UI, pick the most rebase/linear option available.
 
@@ -91,10 +89,6 @@ parse_args() {
         TITLE="$2"
         shift 2
         ;;
-      --description)
-        DESCRIPTION="$2"
-        shift 2
-        ;;
       --description-from-stdin)
         USE_STDIN=true
         shift
@@ -122,9 +116,18 @@ parse_args() {
 
   case "$cmd" in
     create)
-        if [[ -z "$TITLE" || -z "$DESCRIPTION" ]]; then
-          echo "Error: provide --title and one of --description or --description-from-stdin." >&2
+        if [[ -z "$TITLE" ]]; then
+          echo "Error: provide --title and --description-from-stdin." >&2
           usage
+          exit 2
+        fi
+        if [[ "$USE_STDIN" != "true" ]]; then
+          echo "Error: --description-from-stdin is required (pipe description via stdin)." >&2
+          usage
+          exit 2
+        fi
+        if [[ -z "$DESCRIPTION" ]]; then
+          echo "Error: description cannot be empty." >&2
           exit 2
         fi
       ;;

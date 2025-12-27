@@ -3,20 +3,8 @@ name: UAT artifact validation
 on:
   pull_request:
     branches: [ main ]
-    paths:
-      - 'scripts/uat-helpers.sh'
-      - 'scripts/uat-github.sh'
-      - 'scripts/uat-azdo.sh'
-      - 'scripts/uat-run.sh'
-      - 'tests/shell/**'
   push:
     branches: [ main ]
-    paths:
-      - 'scripts/uat-helpers.sh'
-      - 'scripts/uat-github.sh'
-      - 'scripts/uat-azdo.sh'
-      - 'scripts/uat-run.sh'
-      - 'tests/shell/**'
 
 jobs:
   uat-validate:
@@ -27,9 +15,40 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history to detect changed files
+
+      - name: Check if UAT files changed
+        id: filter
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            # For push events, compare with parent commit
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+          fi
+          
+          # Check if any UAT-related files changed
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E '^(scripts/uat-|tests/shell/)' || true)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No UAT-related files changed, skipping validation tests"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "UAT files changed, running validation tests"
+          fi
 
       - name: Ensure tests are executable
+        if: steps.filter.outputs.changed == 'true'
         run: chmod +x tests/shell/uat_validate_test.sh
 
       - name: Run UAT validation tests
+        if: steps.filter.outputs.changed == 'true'
         run: ./tests/shell/uat_validate_test.sh
+      
+      - name: Skip validation (no files changed)
+        if: steps.filter.outputs.changed == 'false'
+        run: echo "✅ No UAT files changed, validation skipped"

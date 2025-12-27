@@ -96,6 +96,36 @@ Do NOT pause to ask the Maintainer what to do next. The VS Code Allow/Deny UI is
 
 When the user asks you to "run a UAT simulation" or "start UAT", follow this exact process. This is the standard UAT simulation workflow — you don't need any additional details from the user unless specified below.
 
+### Writing Effective Test Descriptions
+
+Test descriptions MUST be detailed, specific, and actionable. They guide reviewers to validate the exact changes made by the feature.
+
+**Required Elements:**
+1. **Specific Resources/Sections**: Name 2-3 exact resources or sections affected (e.g., `module.security.azurerm_key_vault_secret.audit_policy`)
+2. **Exact Attributes**: State which attributes changed (e.g., `key_vault_id`, `value`)
+3. **Expected Outcome**: Describe what the reviewer should see now (e.g., "displays as 'Key Vault \`kv-name\`'")
+4. **Before/After Context**: Explain what it was before (e.g., "instead of full \`/subscriptions/.../\` path")
+
+**Bad Examples** (too generic):
+- ❌ "Verify Azure resource IDs display correctly"
+- ❌ "Check that tables render properly"
+- ❌ "Validate markdown formatting"
+
+**Good Examples** (specific, actionable):
+- ✅ "In the \`module.security.azurerm_key_vault_secret.audit_policy\` resource, verify the \`key_vault_id\` attribute displays as 'Key Vault \`kv-name\` in resource group \`rg-name\`' instead of the full \`/subscriptions/.../\` path. Check that all Azure resource ID attributes throughout the report use this readable format."
+
+- ✅ "In the \`module.network.azurerm_firewall_network_rule_collection.network_rules\` update summary, verify attribute values use code blocks (\`value\`) instead of bold (**value**). In the \`module.security.azurerm_key_vault_secret.audit_policy\` resource, verify the large values details block contains a \`value\` attribute with inline-diff style formatting."
+
+- ✅ "In the \`azurerm_role_assignment.contributor\` resource, verify the principal displays as 'John Doe (john.doe@example.com)' instead of GUID '12345678-1234-1234-1234-123456789012'. Check all role assignment resources show resolved names."
+
+**How to Construct Test Descriptions:**
+
+1. **Read the feature specification** to understand what changed
+2. **Examine the test artifact** to find affected resources
+3. **Identify 2-3 representative examples** showing the feature
+4. **Write specific validation steps** for each example
+5. **Add general validation** if the change applies broadly
+
 ### Prerequisites
 
 Before starting:
@@ -232,12 +262,24 @@ ARTIFACT=$(ls -t artifacts/*.md 2>/dev/null | head -1)
 echo "Using artifact: $ARTIFACT"
 
 # Define feature-specific test description
-# This should describe what to validate specific to the feature being tested
-# Examples:
-#   "Verify Azure resource IDs display in readable format (e.g., Key Vault \`kv-name\` in resource group \`rg-name\`)"
-#   "Verify firewall rules show before/after comparison in a clear table format"
-#   "Verify role assignments display with principal names instead of GUIDs"
-TEST_DESCRIPTION="[Replace with feature-specific validation instructions]"
+# CRITICAL: This must be DETAILED and point to SPECIFIC resources/sections in the artifact
+# 
+# BAD (too generic):
+#   "Verify Azure resource IDs display correctly"
+#   "Check that tables render properly"
+#
+# GOOD (specific, actionable):
+#   "In the \`module.security.azurerm_key_vault_secret.audit_policy\` resource, verify the \`key_vault_id\` attribute displays as 'Key Vault \`kv-name\` in resource group \`rg-name\`' instead of the full \`/subscriptions/.../\` path. Check all Azure resource ID attributes throughout the report."
+#   "In the \`module.network.azurerm_firewall_network_rule_collection.network_rules\` summary, verify attribute values use code blocks instead of bold formatting"
+#   "In the \`azurerm_role_assignment.contributor\` resource, verify the principal displays as 'John Doe (john.doe@example.com)' instead of a GUID"
+#
+# Template for writing test descriptions:
+# 1. Identify 2-3 specific resources/sections affected by the feature
+# 2. For each, state the exact attribute or content to check
+# 3. Describe the expected outcome vs what it was before
+# 4. Add any general validation needed across the report
+
+TEST_DESCRIPTION="[Replace with detailed, resource-specific validation instructions - see examples above]"
 
 # CRITICAL: Before creating the PRs, post the exact Title + Description in chat (use the standard template).
 # Use the same title/description as the UAT helper scripts.

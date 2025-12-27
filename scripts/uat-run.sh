@@ -4,12 +4,21 @@
 # Purpose: Reduce Maintainer approval fatigue by batching UAT into one stable command.
 #
 # Usage:
-#   scripts/uat-run.sh [artifact-path] [test-description] [--platform both|github|azdo]
+#   scripts/uat-run.sh [artifact-path] <test-description> [--platform both|github|azdo]
 #
 # Arguments:
 #   artifact-path      - (Optional) Path to markdown artifact to test
-#   test-description   - (Required) Feature-specific validation instructions
-#                        Example: "Verify Azure resource IDs display in readable format"
+#   test-description   - (Required) Detailed, resource-specific validation instructions
+#
+# Examples:
+#   # Using default artifact
+#   scripts/uat-run.sh "In module.security.azurerm_key_vault_secret.audit_policy, verify key_vault_id displays as 'Key Vault \`kv-name\` in resource group \`rg-name\`' instead of full /subscriptions/ path"
+#
+#   # Using custom artifact
+#   scripts/uat-run.sh artifacts/custom.md "In azurerm_role_assignment.contributor, verify principal displays as 'John Doe (john.doe@example.com)' instead of GUID"
+#
+#   # GitHub only
+#   scripts/uat-run.sh "Verify firewall rules show before/after in clear table format" --platform github
 #
 # Defaults:
 # - If artifact-path is omitted, defaults are selected per platform:
@@ -36,8 +45,9 @@ log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
 die_usage() {
   log_error "Usage: $0 [artifact-path] <test-description> [--platform both|github|azdo]"
-  log_error "Example: $0 'Verify Azure resource IDs display in readable format'"
-  log_error "Example: $0 artifacts/custom.md 'Verify firewall rules show before/after comparison'"
+  log_error "Test description must be detailed and resource-specific:"
+  log_error "Example: $0 'In module.security.azurerm_key_vault_secret.audit_policy, verify key_vault_id displays as \"Key Vault \\\`kv-name\\\` in resource group \\\`rg-name\\\`\" instead of full /subscriptions/ path'"
+  log_error "Example: $0 artifacts/custom.md 'In azurerm_firewall_network_rule_collection.rules, verify attribute values use code blocks instead of bold'"
   exit 2
 }
 

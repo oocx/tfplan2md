@@ -5,10 +5,14 @@
 # Actions:
 #   setup           - Configure Azure DevOps defaults and verify authentication
 #   create <file> <test-description>   - Create a UAT PR with initial comment from <file>
-#                                         test-description: Feature-specific validation instructions
+#                                         test-description: Detailed, resource-specific validation instructions
 #   comment <pr-id> <file> - Add a comment to PR from <file>
 #   poll <pr-id>    - Poll for new comments/threads and check for approval
 #   cleanup <pr-id> - Abandon the PR after UAT completion
+#
+# Example:
+#   scripts/uat-azdo.sh create artifacts/report.md \
+#     "In azurerm_firewall_network_rule_collection.rules summary, verify attribute values use code blocks instead of bold. In azurerm_key_vault_secret.audit_policy large values block, verify value attribute shows inline-diff style."
 #
 # Environment:
 #   AZDO_ORG        - Azure DevOps organization URL (default: https://dev.azure.com/oocx)
@@ -61,11 +65,20 @@ cmd_setup() {
 
 cmd_create() {
     local file="${1:-}"
+    local test_description="${2:-}"
     local simulate="${UAT_SIMULATE:-false}"
     local force="${UAT_FORCE:-false}"
     
     # Validate and potentially set default artifact (platform-aware)
     file="$(validate_artifact azdo "$file" "$simulate" "$force")"
+
+    if [[ -z "$test_description" ]]; then
+        log_error "Test description is required. Usage: $0 create <file> <test-description>"
+        log_error "Example: $0 create artifacts/report.md 'In azurerm_role_assignment.contributor, verify principal displays as \"John Doe (john.doe@example.com)\" instead of GUID. Check all role assignments show resolved names.'"
+        exit 1
+    fi
+
+    cmd_setup
 
     local branch
     branch=$(git branch --show-current)

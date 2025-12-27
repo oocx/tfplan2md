@@ -4,10 +4,14 @@
 #
 # Actions:
 #   create <file> <test-description>   - Create a UAT PR with initial comment from <file>
-#                                         test-description: Feature-specific validation instructions
+#                                         test-description: Detailed, resource-specific validation instructions
 #   comment <pr-number> <file> - Add a comment to PR from <file>
 #   poll <pr-number> - Poll for new comments and check for approval
 #   cleanup <pr-number> - Close the PR after UAT completion
+#
+# Example:
+#   scripts/uat-github.sh create artifacts/report.md \
+#     "In module.security.azurerm_key_vault_secret.audit_policy, verify key_vault_id displays as 'Key Vault \`kv-name\` in resource group \`rg-name\`' instead of full /subscriptions/ path"
 #
 # Environment:
 #   UAT_GITHUB_REPO - Target repository for UAT PRs (default: oocx/tfplan2md-uat)
@@ -49,7 +53,7 @@ cmd_create() {
     
     if [[ -z "$test_description" ]]; then
         log_error "Test description is required. Usage: $0 create <file> <test-description>"
-        log_error "Example: $0 create artifacts/report.md 'Verify Azure resource IDs display in readable format'"
+        log_error "Example: $0 create artifacts/report.md 'In module.security.azurerm_key_vault_secret.audit_policy, verify key_vault_id displays as \"Key Vault \\\`kv-name\\\` in resource group \\\`rg-name\\\`\" instead of full /subscriptions/ path'"
         exit 1
     fi
     

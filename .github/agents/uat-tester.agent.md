@@ -49,32 +49,43 @@ When the user asks to run UAT (simulation or real):
    - If found, read the validation steps
    - If not found, ask user for validation description
 
-2. **Run UAT Script (Background)**
+2. **Run UAT Script**
+   
+   The script runs in **blocking mode** and will output PR URLs early, then continue polling for approval.
    
    **For Simulations:**
    ```bash
-   # Run with isBackground: true to allow polling output while script runs
    UAT_SIMULATE=true scripts/uat-run.sh "[SIMULATION] <validation-description>"
    ```
    
    **For Real UAT:**
    ```bash
-   # Run with isBackground: true
    scripts/uat-run.sh "<validation-description>"
    ```
 
-3. **Monitor and Report Progress**
-   - Use `get_terminal_output` to poll the running script.
-   - **IMMEDIATELY** when PR URLs appear in the output, post them to the chat:
+3. **Extract and Post PR URLs**
+   - The script will output lines like:
+     ```
+     [INFO] GitHub PR: #5 (https://github.com/...)
+     [INFO] Azure DevOps PR: #17 (https://dev.azure.com/...)
+     ```
+   - **Parse these URLs from the output** and post them to chat immediately:
      > **UAT In Progress**
-     > **GitHub PR:** <url>
-     > **Azure DevOps PR:** <url>
-     >
-     > Please review and approve the PRs to complete the test.
-   - Continue polling until the script completes (look for "UAT run complete" or exit code).
+     > 
+     > **GitHub PR:** https://github.com/...
+     > **Azure DevOps PR:** https://dev.azure.com/...
+     > 
+     > The script is now polling for approval. Please review and approve both PRs.
 
-4. **Report Final Results**
-   - Report final status (Success/Failure/Timeout) based on script exit code and output.
+4. **Wait for Script Completion**
+   - The script will continue running, polling for approval every 15 seconds.
+   - When approved (or timed out), the script will output final status and exit.
+
+5. **Report Final Results**
+   - Report final status based on script exit code:
+     - Exit 0 = Success (approval detected, PRs cleaned up)
+     - Exit 1 = Timeout or failure
+     - Exit 130 = User cancelled (Ctrl+C)
 
 ## Context to Read
 

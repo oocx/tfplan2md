@@ -109,6 +109,13 @@ Based on Versionize’s documented behavior, `preReleasePrefix` (and the `--pre-
 
 Concretely: if the next computed version is `1.0.0` because a breaking change was detected, running Versionize with `--pre-release alpha` would produce `1.0.0-alpha.0` (still a `1.x` version, just pre-release).
 
+Additional observed behavior (Versionize `2.4.0`, dry-run in a temporary repo):
+
+- Starting at `1.0.0-alpha.0`, a new `BREAKING CHANGE:` commit and running `versionize --pre-release alpha` results in `1.0.0-alpha.1`.
+- Starting at `1.1.0-alpha.0`, a new `BREAKING CHANGE:` commit and running `versionize --pre-release alpha` results in `2.0.0-alpha.0`.
+
+Implication: if the project policy allows `1.0.0-alpha.x` as “still pre-release”, then staying on `1.0.0-alpha.x` effectively prevents further major bumps from changing the base version (it will continue incrementing `alpha.N`).
+
 ## Suggested Fix Approach (High-level)
 
 ### Prevent duplicate deployments
@@ -135,6 +142,57 @@ Versionize does not appear to provide a config option to “cap major at 0”. P
 - **Alternative (pre-release only):** Always run Versionize with `--pre-release alpha` while in pre-1.0 mode.
   - This ensures releases are marked as pre-release (e.g., `0.49.1-alpha.0`).
   - However, it does **not** prevent `1.0.0-alpha.0` if Versionize detects a breaking change.
+
+If the new strategy is “allow `1.0.0-alpha.x` but avoid stable `1.x`”, the pipeline must also treat prereleases as a separate channel.
+
+## Required Follow-up: Docker tagging for prereleases
+
+The current Release workflow publishes Docker tags that implicitly represent stable channels:
+
+- Full: `:<version>`
+- Minor: `:<minor>`
+- Major: `:<major>`
+- `:latest`
+
+See `.github/workflows/release.yml#L102-L106`.
+
+This becomes problematic for prereleases, because a prerelease like `1.0.0-alpha.1` would still publish the stable-looking tags `:1`, `:1.0`, and `:latest` unless the workflow is changed.
+
+**Requirement:** when releasing a prerelease version (contains `-`), Docker tags must include the prerelease suffix and must not publish stable tags without the suffix.
+
+Minimal safe behavior:
+
+- Always publish the exact version tag (e.g., `:1.0.0-alpha.1`).
+- If version is prerelease, do not publish `:<minor>`, `:<major>`, or `:latest`.
+
+## Required Follow-up: Cleanup of accidentally published 1.x artifacts
+
+### GitHub releases
+
+The following GitHub releases exist and are currently marked as **non-prerelease**:
+
+- `v1.0.0`
+- `v1.1.0`
+- `v1.2.0`
+
+Cleanup expectation: delete these releases (and likely the corresponding tags), then regenerate the intended prerelease tags/releases.
+
+### Docker Hub tags
+
+The following tags exist in Docker Hub repository `oocx/tfplan2md`:
+
+- `latest`
+- `1`
+- `1.0`
+- `1.0.0`
+- `1.1`
+- `1.1.0`
+- `1.2`
+- `1.2.0`
+
+Cleanup expectation: delete these tags so consumers cannot pull stable-looking `1.x` images.
+
+Note: tag deletion on Docker Hub is a destructive operation and requires appropriate Docker Hub credentials/permissions.
 
 - **Alternative (automation):** Wrap Versionize in CI logic:
   - Detect when Versionize would bump major from `0.*` to `1.*`.

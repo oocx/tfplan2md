@@ -16,7 +16,7 @@
 | 3 | **Release Safety** | Release Manager triggered release before CI completed and suggested skipping critical CI steps | Update Release Manager agent to mandate "Green CI" verification before tagging; explicitly forbid "skipping" pipeline steps | High | Low | ✅ Done |
 | 4 | **Release Efficiency** | Release Manager runs redundant local tests that already run in CI | Update Release Manager agent instructions to skip local tests unless specifically needed for debugging | Low | Low | ✅ Done |
 | 5 | **UAT Automation** | UAT workflow is fragmented and manual (scripts not executable, polling loops hanging) | Create consolidated `uat-run.sh` script handling entire lifecycle (setup, create, poll, cleanup) for both platforms | High | Medium | ⬜ Not Started |
-| 6 | **UAT Strategy** | UAT PRs clutter the main repository | Configure UAT scripts to target a dedicated test repository (e.g., `oocx/tfplan2md-uat`) | Medium | Medium | ⬜ Not Started |
+| 6 | **UAT Strategy** | UAT PRs clutter the main repository | Configure UAT scripts to target a dedicated test repository (e.g., `oocx/tfplan2md-uat`) | Medium | Medium | ✅ Done |
 | 7 | **UAT Guidance** | UAT PRs lack testing instructions for reviewers | Update UAT scripts to inject a "Test Instructions" section into PR body | Medium | Low | ⬜ Not Started |
 | 8 | **Developer Workflow** | Snapshots and artifacts not consistently regenerated after bug fixes | Add mandatory checklist to Developer agent for regenerating artifacts after code changes | High | Low | ✅ Done |
 | 9 | **Script Hygiene** | PR scripts require temporary files for PR bodies (awkward) | Update `pr-github.sh` and others to accept input via stdin or arguments | Low | Low | ✅ Done |
@@ -41,9 +41,9 @@
 ## Progress Summary
 
 - **Total Items:** 13
-- **Completed:** 10
+- **Completed:** 11
 - **In Progress:** 0
-- **Remaining:** 3
+- **Remaining:** 2
 
 ---
 

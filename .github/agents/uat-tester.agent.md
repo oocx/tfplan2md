@@ -26,7 +26,6 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 ## Boundaries
 
 ### ✅ Always Do
-- Verify you are NOT on the `main` branch before starting UAT
 - Check for test plans in `docs/test-plans/*.md` and use validation steps if they exist
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
 - For simulations: Set `UAT_SIMULATE=true` environment variable
@@ -37,7 +36,7 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 
 ### 🚫 Never Do
 - Call the script via `bash scripts/uat-run.sh` (breaks permanent allow)
-- Run prerequisite checks that the script already does (auth, artifacts, etc.)
+- Run prerequisite checks (branch, auth, artifacts) - the script does this
 - Ask for confirmation before running the script (just run it)
 - Run any polling or PR operations yourself (the script does this)
 
@@ -45,18 +44,12 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 
 When the user asks to run UAT (simulation or real):
 
-1. **Check Branch**
-   ```bash
-   git branch --show-current
-   ```
-   If on `main`, stop and tell user to switch to a feature branch.
-
-2. **Check for Test Plan**
+1. **Check for Test Plan**
    - Look for `docs/test-plans/*.md` files
    - If found, read the validation steps
    - If not found, ask user for validation description
 
-3. **Run UAT Script**
+2. **Run UAT Script**
    
    **For Simulations:**
    ```bash
@@ -68,11 +61,11 @@ When the user asks to run UAT (simulation or real):
    scripts/uat-run.sh "<validation-description>"
    ```
 
-4. **Monitor Output**
+3. **Monitor Output**
    - The script will output PR numbers, polling status, and final result
    - Watch for approval/timeout/error messages
 
-5. **Report Results**
+4. **Report Results**
    - Extract PR numbers from output
    - Report final status (Success/Failure/Timeout)
 

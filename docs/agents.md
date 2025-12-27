@@ -277,18 +277,10 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Definition of Done:** Code is reviewed and approved or sent back for rework.
 
 ### 9. UAT Tester
-- **Goal:** Validate user-facing features in real-world environments.
+- **Goal:** Validate user-facing features in real-world environments by running the `uat-run.sh` script.
 - **Deliverables:** User Acceptance PRs in GitHub and Azure DevOps with rendering verification.
 - **Definition of Done:** Maintainer approves rendering in both platforms, or aborts with documented issues. For Azure DevOps, approval is based on an approval comment or a reviewer vote (not thread resolution alone).
-- **Note:** Can hand off to **UAT Background** agent for fully autonomous execution without approval prompts (VS Code 1.107+ with experimental CLI agent feature enabled).
-
-### 9b. UAT Background (Autonomous)
-- **Goal:** Execute full UAT workflow autonomously without human intervention.
-- **Target:** CLI background mode (vs. interactive VS Code chat)
-- **Deliverables:** User Acceptance PRs created, monitored, and verified autonomously. Final status report posted in Chat view.
-- **Definition of Done:** Full UAT execution completes (success, failure, or timeout) and status is reported.
-- **Trigger:** Handoff from UAT Tester or direct @mention by Maintainer.
-- **Requirements:** VS Code 1.107+, experimental setting `github.copilot.chat.cli.customAgents.enabled` enabled.
+- **Implementation:** Executes `scripts/uat-run.sh` which handles PR creation, polling, and cleanup.
 
 ### 10. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
@@ -358,13 +350,12 @@ Each agent hands off to the next by producing a specific deliverable. The workfl
 | Developer               | Technical Writer        | Code & Tests                                         |
 | Technical Writer        | Code Reviewer           | Updated Documentation                                |
 | Code Reviewer           | UAT Tester (user-facing features) <br/> Release Manager (internal changes) <br/> Developer (rework needed) | Code Review Report |
-| UAT Tester              | **UAT Background** (autonomous execution) <br/> Release Manager (approved) <br/> Developer (rendering issues) | User Acceptance PRs verified or handoff for autonomous execution |
-| UAT Background          | Maintainer (via Chat view) | Final UAT status report (success, failure, or timeout) |
+| UAT Tester              | Release Manager (approved) <br/> Developer (rendering issues) | User Acceptance PRs verified |
 | Release Manager         | CI/CD Pipeline, GitHub  | Pull Request, Release Notes                          |
 | Release Manager         | Retrospective           | Deployment Complete                                  |
 | Retrospective           | Workflow Engineer       | Retrospective Report with Action Items               |
 
-**Exception:** Code Reviewer has three possible handoffs depending on approval status and feature type. UAT Tester can hand off to UAT Background for autonomous execution, or directly to Release Manager if UAT already complete. UAT Tester hands back to Developer if rendering issues are found. Release Manager may hand back to Developer if build/release fails.
+**Exception:** Code Reviewer has three possible handoffs depending on approval status and feature type. UAT Tester hands to Release Manager when approved, or back to Developer if rendering issues are found. Release Manager may hand back to Developer if build/release fails.
 
 Handoffs are triggered when the deliverable is complete and meets the "Definition of Done" for that agent. Automation (e.g., GitHub Actions) can be used to detect completion and notify the next agent(s).
 

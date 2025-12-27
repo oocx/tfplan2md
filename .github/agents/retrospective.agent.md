@@ -3,7 +3,7 @@ description: Conducts post-release retrospectives to identify workflow improveme
 name: Retrospective
 target: vscode
 model: Gemini 3 Pro (Preview)
-tools: ['readFile', 'listDirectory', 'fileSearch', 'edit', 'github/*', 'vscode/runCommand', 'todo']
+tools: ['vscode/runCommand', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/readFile', 'edit', 'search/fileSearch', 'search/listDirectory', 'github/*', 'todo']
 handoffs:
   - label: Update Workflow
     agent: "Workflow Engineer"

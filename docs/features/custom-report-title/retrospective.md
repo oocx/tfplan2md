@@ -230,6 +230,7 @@ This adaptive approach demonstrates the strength of unified agent mode with inte
 | **UAT stability & reporting** | Update UAT Tester instructions to: 1) Update report after *every* run, 2) Validate artifacts before running. Investigate GPT-5.2 performance issues. | Update UAT agent instructions |
 | **Retrospective tooling availability** | Ensure retrospective workflow always has terminal access enabled from the start for chat log analysis. Add this to retrospective prerequisites. | Update retrospective agent documentation |
 | **Retrospective critical analysis** | Update Retrospective agent instructions to adopt a more critical stance on ratings. Success (code delivered) does not equal perfection (process quality). Deduct points for boundary violations, instruction errors, and manual interventions. | Update retrospective agent instructions |
+| **Retrospective interactivity** | Update Retrospective agent instructions to include an interactive phase where the agent asks probing questions (Scrum Master style) to uncover hidden issues before generating the final report. | Update retrospective agent instructions |
 | **Pre-commit validation script** | Create `scripts/pre-commit-checks.sh` to run Docker build and markdown lint before commits to catch issues earlier. | Create script and document in CONTRIBUTING.md |
 
 ## Action Items
@@ -240,7 +241,7 @@ This adaptive approach demonstrates the strength of unified agent mode with inte
 4. **Workflow Engineer:** Update Code Reviewer instructions (remove PR creation suggestion).
 5. **Workflow Engineer:** Update Release Manager instructions (use blocking wait, remove manual trigger if redundant).
 6. **Workflow Engineer:** Update UAT Tester instructions (artifact validation, mandatory report update).
-7. **Workflow Engineer:** Update Retrospective agent instructions (require terminal access).
+7. **Workflow Engineer:** Update Retrospective agent instructions (require terminal access, critical analysis, interactive questioning).
 8. **Future Work:** Create `scripts/pre-commit-checks.sh`.
 
 ## Lessons Learned

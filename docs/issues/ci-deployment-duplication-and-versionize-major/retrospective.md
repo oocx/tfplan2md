@@ -94,6 +94,7 @@ This retrospective analyzes the resolution of duplicate deployment issues and un
 
 | Agent | Rating (1-5) | Strengths | Improvements Needed |
 |-------|--------------|-----------|---------------------|
+| Issue Analyst | ⭐⭐⭐⭐ | Good analysis of the problem. | Required user help to find possible fixes. |
 | Developer | ⭐⭐⭐ | Strong diagnosis and fix implementation. Good recovery from accidental release. | Failed to use `scripts/pr-github.sh` initially. First fix attempt failed to remove non-prerelease versions. |
 | Task Planner | ⭐⭐ | Successfully identified the fix eventually. | **Critical Boundary Violation:** Started implementation instead of creating a plan as requested. |
 | Retrospective Agent | ⭐ | None. | **Critical Failure:** Unable to provide critical analysis. Gave high rating despite problems. Failed to cover all agents. Missed Gemini 3 Pro internal failures. |

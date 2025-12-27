@@ -130,6 +130,19 @@ public class CliParserTests
     }
 
     [Fact]
+    public void Parse_ReportTitleWithoutValue_ThrowsCliParseException()
+    {
+        // Arrange
+        var args = new[] { "--report-title" };
+
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>().Which.Message.Should().Contain("requires a value");
+    }
+
+    [Fact]
     public void Parse_ShowSensitiveFlag_SetsShowSensitive()
     {
         // Arrange

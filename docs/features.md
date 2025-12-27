@@ -61,6 +61,23 @@ Long Azure resource IDs from the `azurerm` provider are rendered as readable sco
 | key_vault_id | Key Vault `kv-demo` in resource group `rg-demo` of subscription `00000000-0000-0000-0000-000000000000` |
 ````
 
+## Custom Report Title
+
+**Status:** ✅ Implemented
+
+Users can provide a custom title for generated reports via the `--report-title` CLI option. This allows for better context when sharing reports or distinguishing between different pipeline runs.
+
+- **Contextual Titles**: Add repository names, environment identifiers, or purpose (e.g., "Drift Detection") to the report title.
+- **Automatic Escaping**: Special characters in titles are automatically escaped to ensure valid markdown headings.
+- **Template Support**: The custom title is available to all templates (built-in and custom) via the `report_title` variable.
+- **Fallback**: If no title is provided, templates fall back to their default titles (e.g., "Terraform Plan Report").
+  Templates add the `#` heading marker; `report_title` only contains the escaped text.
+
+Example:
+```bash
+tfplan2md plan.json --report-title "Drift Detection Results"
+```
+
 ## Input
 
 - **Stdin (default)**: Read Terraform plan JSON from standard input

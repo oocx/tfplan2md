@@ -136,9 +136,9 @@ The background agent will execute everything and report when complete.
 When the user asks you to "run a UAT simulation" or "start UAT", **your primary goal is to prepare the environment and then hand off to the UAT Background agent.**
 
 **Workflow:**
-1. **Prepare:** Ensure you are on a feature branch and a markdown artifact exists.
-   - If no artifact exists, generate a simulated report (see below).
-2. **Hand Off:** Use the **"Execute UAT Autonomously"** handoff button to let the background agent handle the execution.
+1. **Prepare:** Ensure you are on a feature branch.
+2. **Artifacts:** Verify default artifacts exist (`artifacts/comprehensive-demo.md` and `artifacts/comprehensive-demo-standard-diff.md`).
+3. **Hand Off:** Use the **"Execute UAT Autonomously"** handoff button to let the background agent handle the execution.
 
 **Only proceed with manual execution (below) if:**
 - The user explicitly asks for interactive/manual mode
@@ -179,25 +179,9 @@ Test descriptions MUST be detailed, specific, and actionable. They guide reviewe
 
 Before starting:
 1. **You must be on a feature branch** (not `main`)
-2. **A markdown artifact must exist** (typically in `artifacts/`) — if not, **generate a simulated report** (see below)
+2. **Default artifacts must exist** (`artifacts/comprehensive-demo.md` and `artifacts/comprehensive-demo-standard-diff.md`)
 
 If authentication is missing (GitHub CLI or Azure CLI), ask the user to run `gh auth login` or `az login` and wait for them to confirm before proceeding.
-
-### Generating a Simulated Report
-
-If no artifact exists, or if the user asks for a "simulation", generate a test markdown file in `artifacts/`:
-
-```markdown
-# UAT Minimal Markdown
-
-This is a minimal artifact for validating PR comment rendering.
-
-## Table
-
-| Attribute | Value |
-| --- | --- |
-| `name` | `example-rg` |
-| `location` | `westeurope` |
 
 ## Code Block
 
@@ -214,16 +198,11 @@ resource "azurerm_resource_group" "example" {
 - Plain text item
 ```
 
-Save this to `artifacts/uat-minimal.md` (or `artifacts/uat-simulation-YYYY-MM-DD.md` if you need date-stamped runs).
-
-**When the user provides feedback** (e.g., "render values as code"), generate a **new fixed version** of the report with the requested changes applied, save it to the same file, commit, and post to both PRs.
-
 ### Default Parameters
 
 When not specified by the user, use these defaults:
 - **Artifact (GitHub)**: `artifacts/comprehensive-demo-standard-diff.md` (standard diff, automatically selected by `uat-github.sh`)
 - **Artifact (Azure DevOps)**: `artifacts/comprehensive-demo.md` (inline diff, automatically selected by `uat-azdo.sh`)
-- **For simulations**: Use `artifacts/uat-simulation-*.md` and set `UAT_SIMULATE=true` environment variable
 - **UAT Branch Name**: `uat/simulation-YYYY-MM-DD` where YYYY-MM-DD is today's date
 - **If branch already exists**: Append `-v2`, `-v3`, etc. to make it unique
 

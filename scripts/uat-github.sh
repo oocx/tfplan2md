@@ -123,7 +123,7 @@ EOF
     local pr_number
     pr_number=$(echo "$pr_url" | grep -oE '[0-9]+$')
     
-    log_info "PR created: #$pr_number"
+    log_info "PR created: #$pr_number ($pr_url)"
     
     # Add the markdown content as a comment
     log_info "Adding initial UAT content as comment..."

@@ -5,6 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0"></a>
+## [1.0.0](https://github.com/oocx/tfplan2md/compare/v0.48.0...v1.0.0) (2025-12-27)
+
+### ✨ Features
+
+* add test instructions to UAT PR bodies ([cf1507b](https://github.com/oocx/tfplan2md/commit/cf1507b47f56bc06fcaf875cea7a2de3e1af3662))
+* implement backtick formatting for Azure resource ID values ([ee95011](https://github.com/oocx/tfplan2md/commit/ee9501196e00f1f8481fae5b9f229c26b9e0064f))
+* implement model-driven large value detection for Azure resource IDs ([2969f9b](https://github.com/oocx/tfplan2md/commit/2969f9bd5864fb2f6ea186a5b64149d7cfcb8d5b))
+* **retrospective:** add agent-grouped analysis and automation insights ([fd203a0](https://github.com/oocx/tfplan2md/commit/fd203a014d84ccbd7c99703822ba40fa222c05fd))
+* **retrospective:** add rejection analysis and time breakdown ([8d33fc5](https://github.com/oocx/tfplan2md/commit/8d33fc58646e94c4fbce5547b8b463eb1d165d9a))
+* **scripts:** add stdin support to PR scripts to avoid temp files ([7677f99](https://github.com/oocx/tfplan2md/commit/7677f998d4744144ab7e5048a323de28773f6e46))
+* **skill:** add extract-metrics.sh script for chat export analysis ([b8c9559](https://github.com/oocx/tfplan2md/commit/b8c9559868278cbed0736bc30be2b11ce176e604))
+* **skill:** add JSON output to extract-metrics.sh for cross-feature analysis ([fe4e2a1](https://github.com/oocx/tfplan2md/commit/fe4e2a15dda6353420d066d27e9100c854cceb27))
+* **skills:** add analyze-chat-export skill for retrospective metrics ([00cfb41](https://github.com/oocx/tfplan2md/commit/00cfb4138790be09dd3540070acb167903fdd639))
+* **uat:** configure GitHub UAT to use dedicated tfplan2md-uat repository ([6e882cc](https://github.com/oocx/tfplan2md/commit/6e882cc894a01a0ed8fad3a0b0e6fab3a25f1c7c))
+
+### 🐛 Bug Fixes
+
+* **ci:** ensure workflows can push tags — persist-credentials and authenticated push; disable gh pager in release step ([03a8a5c](https://github.com/oocx/tfplan2md/commit/03a8a5c8db3616357804ab0183d667d915945e31))
+* **uat:** block minimal artifacts and add validation helper + tests ([50a5ae3](https://github.com/oocx/tfplan2md/commit/50a5ae31f21bd510291acf80151d651efe0605ee))
+* **uat:** keep validate_artifact stdout clean ([68d0c70](https://github.com/oocx/tfplan2md/commit/68d0c706b8b111bb3b3bef67e49644986381a684))
+
+### ♻️ Refactoring
+
+* require feature-specific test descriptions in UAT PRs ([a771882](https://github.com/oocx/tfplan2md/commit/a77188296885f994d835c00ab26b7709c2505f5d))
+* **scripts:** remove --body-file and --description options, enforce stdin-only ([4338625](https://github.com/oocx/tfplan2md/commit/4338625bf16197c1e8c34b58a7b354b7c6b170b9))
+
+### 📚 Documentation
+
+* add architecture for universal Azure resource ID formatting ([e214ab3](https://github.com/oocx/tfplan2md/commit/e214ab36692d5e393478ae0c6aae4ac9b2096c63))
+* add detailed examples for feature-specific test descriptions ([7154403](https://github.com/oocx/tfplan2md/commit/71544034bff0e8702f8896eb7fa2c71f618e2d2f))
+* add feature specification for universal Azure resource ID formatting ([8804f2e](https://github.com/oocx/tfplan2md/commit/8804f2ea8be80caedb6fa051a7c93a446aebe295))
+* add mandatory artifact regeneration checklist for bug fixes ([fd54ab8](https://github.com/oocx/tfplan2md/commit/fd54ab88052cb9f83af3706d8c0c459a6904a3dc))
+* add retrospective improvements tracker ([91ac9a5](https://github.com/oocx/tfplan2md/commit/91ac9a515f1d4af88573ff81b41533c42461cf27))
+* add tasks for universal Azure resource ID formatting ([8a0d8f0](https://github.com/oocx/tfplan2md/commit/8a0d8f0ac127e831535ddd1a96b48904ae0380a4))
+* add test plan for universal Azure resource ID formatting ([1536620](https://github.com/oocx/tfplan2md/commit/15366208fc3cf40608ae2e988c420479a23288c7))
+* align Azure ID formatting examples and add review report ([b48e36f](https://github.com/oocx/tfplan2md/commit/b48e36f1bc0aec67423fb805a69f7d0a0c78bdb2))
+* enforce artifact ownership boundaries across agents ([89a5e8b](https://github.com/oocx/tfplan2md/commit/89a5e8b002b5331ce5b4f94dfe9979dfd15f878b))
+* enforce rebase-only release merges ([2295e7b](https://github.com/oocx/tfplan2md/commit/2295e7bc042015b7ad3ade8cbe2cd81fd6551857))
+* improve Release Manager safety and efficiency ([142d939](https://github.com/oocx/tfplan2md/commit/142d9393721fa6112c7046de06c529ce168d3434))
+* mark issue [#6](https://github.com/oocx/tfplan2md/issues/6) as completed in retrospective tracker ([c4eeb1c](https://github.com/oocx/tfplan2md/commit/c4eeb1ce2d9f59b45922c1da7915aafa752873ae))
+* mark issue [#7](https://github.com/oocx/tfplan2md/issues/7) as done - 12/13 completed (92%) ([4846cae](https://github.com/oocx/tfplan2md/commit/4846cae87fd62dc691b538a85bf3686e0c3f67e4))
+* mark issues [#9](https://github.com/oocx/tfplan2md/issues/9) and [#10](https://github.com/oocx/tfplan2md/issues/10) as completed in retrospective tracker ([b23ce8c](https://github.com/oocx/tfplan2md/commit/b23ce8cb671dbf07a0b563463718a10aab9e22f8))
+* mark q4 workflow roadmap complete ([91c8eb3](https://github.com/oocx/tfplan2md/commit/91c8eb3ecfe5503519483797f93039425bfe5342))
+* prevent Task Planner from starting implementation ([388ce98](https://github.com/oocx/tfplan2md/commit/388ce985ac0631e384a86bbecae1bcf05657d82f))
+* require full lifecycle analysis and mandatory metrics in Retrospective ([1a44576](https://github.com/oocx/tfplan2md/commit/1a44576c837838fc4b49820c318f46382d1db6d2))
+* **release:** prefer scripts/pr-github.sh for create+merge (rebase-and-merge) ([929f726](https://github.com/oocx/tfplan2md/commit/929f72690ca47bf6110d00cd2f7703cadfc6c98c))
+* **retrospective:** add chat log ([41ea358](https://github.com/oocx/tfplan2md/commit/41ea358bbe9925b07036330bd6d6200c38326d48))
+* **skill:** remove agent-dependent metrics from chat analysis ([137d0c5](https://github.com/oocx/tfplan2md/commit/137d0c59cebefc2ff493e3dcc9f25687fd8b47db))
+* **skill:** remove misleading workaround for agent limitation ([c304731](https://github.com/oocx/tfplan2md/commit/c304731f3df8a65f9ddbdbd31ebefcaa11f6ab7a))
+* **skills:** add VS Code source-based chat export format specification ([88beaf2](https://github.com/oocx/tfplan2md/commit/88beaf29238e3853ddc4a2f1177e22886049d083))
+* **skills:** update create-pr-github skill to use stdin instead of --body-file ([2046e43](https://github.com/oocx/tfplan2md/commit/2046e43ff34f33921bf671a0622cc92ba8802869))
+
+### Breaking Changes
+
+* **scripts:** remove --body-file and --description options, enforce stdin-only ([4338625](https://github.com/oocx/tfplan2md/commit/4338625bf16197c1e8c34b58a7b354b7c6b170b9))
+
 <a name="0.48.0"></a>
 ## [0.48.0](https://github.com/oocx/tfplan2md/compare/v0.47.0...v0.48.0) (2025-12-26)
 

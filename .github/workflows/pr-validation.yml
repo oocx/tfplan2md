@@ -5,7 +5,13 @@ on:
     branches: [main]
     paths-ignore:
       - 'docs/**'
-      - '.github/**'
+      # Ignore agent workflow/instructions-only changes (the C# test suite doesn't validate these).
+      # Keep `.github/workflows/**` included so changes to CI/workflows are validated on PRs.
+      - '.github/agents/**'
+      - '.github/skills/**'
+      - '.github/copilot-instructions.md'
+      - '.github/gh-cli-instructions.md'
+      - '.github/pull_request_template.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

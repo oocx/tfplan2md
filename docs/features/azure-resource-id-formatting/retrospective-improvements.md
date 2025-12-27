@@ -19,8 +19,8 @@
 | 6 | **UAT Strategy** | UAT PRs clutter the main repository | Configure UAT scripts to target a dedicated test repository (e.g., `oocx/tfplan2md-uat`) | Medium | Medium | ⬜ Not Started |
 | 7 | **UAT Guidance** | UAT PRs lack testing instructions for reviewers | Update UAT scripts to inject a "Test Instructions" section into PR body | Medium | Low | ⬜ Not Started |
 | 8 | **Developer Workflow** | Snapshots and artifacts not consistently regenerated after bug fixes | Add mandatory checklist to Developer agent for regenerating artifacts after code changes | High | Low | ✅ Done |
-| 9 | **Script Hygiene** | PR scripts require temporary files for PR bodies (awkward) | Update `pr-github.sh` and others to accept input via stdin or arguments | Low | Low | ⬜ Not Started |
-| 10 | **Repo Maintenance** | Scripts lack executable permissions in git | Run `chmod +x` on all scripts in `scripts/` and commit | Low | Low | ⬜ Not Started |
+| 9 | **Script Hygiene** | PR scripts require temporary files for PR bodies (awkward) | Update `pr-github.sh` and others to accept input via stdin or arguments | Low | Low | ✅ Done |
+| 10 | **Repo Maintenance** | Scripts lack executable permissions in git | Run `chmod +x` on all scripts in `scripts/` and commit | Low | Low | ✅ Done |
 | 11 | **Retrospective Scope** | Retrospective agent initially only analyzed active session, not full lifecycle | Update Retrospective agent to require analysis of full feature lifecycle from issue through release | Medium | Low | ✅ Done |
 | 12 | **Retrospective Metrics** | Retrospective agent required prompting to include timeline/metrics | Update Retrospective agent with mandatory "Metrics Collection" step (duration, turns, files changed) | Medium | Low | ✅ Done |
 | 13 | **Retrospective Full-Lifecycle** | Agent must analyze complete process with chat logs and artifacts | Update Retrospective agent to mandate attaching/referencing chat logs and key artifacts; add checklist to verify each phase was evaluated | Medium | Low | ✅ Done |
@@ -41,9 +41,9 @@
 ## Progress Summary
 
 - **Total Items:** 13
-- **Completed:** 8
+- **Completed:** 10
 - **In Progress:** 0
-- **Remaining:** 5
+- **Remaining:** 3
 
 ---
 

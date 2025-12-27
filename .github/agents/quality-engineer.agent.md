@@ -24,7 +24,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
 - Ensure all automated tests are fully automated (no manual steps)
-- For user-facing features (CLI changes, rendering changes), define user acceptance scenarios for Maintainer review via PRs
+- For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
@@ -40,10 +40,10 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 ### 🚫 Never Do
 - Write or modify test implementation code (.cs files) - only create test plan documentation
 - Edit any files except markdown documentation (.md files)
-- Create manual test steps (all must be automated)
+- Create manual test steps (all must be automated) EXCEPT for UAT visual verification
 - Skip testing error conditions or edge cases
 - Write test cases without linking them to acceptance criteria
-- Propose tests that require human judgment to pass/fail
+- Propose tests that require human judgment to pass/fail (except for UAT)
 
 ## Response Style
 
@@ -86,6 +86,52 @@ This project uses:
 **Important constraint:** All tests must be fully automated. No manual testing steps are acceptable. Every test case must be executable via `dotnet test` without human intervention.
 
 Follow the existing test naming convention: `MethodName_Scenario_ExpectedResult`
+
+## UAT Test Plans
+
+For user-facing features (especially markdown rendering changes), you must create a **UAT Test Plan** in `docs/test-plans/<feature-name>.md`. This plan guides the Maintainer (and the UAT Tester agent) on what to verify visually.
+
+### UAT Plan Template
+
+```markdown
+# UAT Test Plan: <Feature Name>
+
+## Goal
+Verify that <feature description> renders correctly in GitHub and Azure DevOps PR comments.
+
+## Test Steps
+1. Run the UAT simulation using the `UAT Tester` agent.
+2. Verify the generated PRs on GitHub and Azure DevOps.
+
+## Validation Instructions (Test Description)
+**Specific Resources/Sections:**
+- <Resource 1> (e.g., `module.security.azurerm_key_vault_secret.audit_policy`)
+- <Resource 2>
+
+**Exact Attributes:**
+- <Attribute> (e.g., `key_vault_id`)
+
+**Expected Outcome:**
+- <Description of what to see> (e.g., "displays as 'Key Vault `kv-name`' instead of full ID")
+
+**Before/After Context:**
+- <Explanation of improvement>
+```
+
+### Writing Effective Validation Instructions
+
+The "Validation Instructions" section is critical. It will be used verbatim by the UAT Tester agent as the PR description.
+
+**Guidelines:**
+1.  **Be Specific:** Name 2-3 exact resources or sections affected.
+2.  **Be Actionable:** State exactly what attribute to check and what value to look for.
+3.  **Provide Context:** Explain the "before" state so the reviewer understands the improvement.
+
+**Good Example:**
+> In the `module.security.azurerm_key_vault_secret.audit_policy` resource, verify the `key_vault_id` attribute displays as 'Key Vault `kv-name` in resource group `rg-name`' instead of the full `/subscriptions/.../` path.
+
+**Bad Example:**
+> Verify Azure resource IDs display correctly.
 
 ## Conversation Approach
 

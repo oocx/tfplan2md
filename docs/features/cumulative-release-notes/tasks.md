@@ -40,7 +40,7 @@ Integrate the new extraction logic into the `.github/workflows/release.yml` file
 - [x] The `Extract changelog for version` step in `release.yml` is replaced with the new logic.
 - [x] The `release-notes.md` file generated contains the accumulated changes.
 - [x] The `softprops/action-gh-release` step uses the accumulated `release-notes.md`.
-- [x] The workflow correctly handles both `push: tags` and `workflow_dispatch` triggers.
+- [x] The workflow correctly handles the `push: tags` trigger.
 - [x] The `GITHUB_TOKEN` has sufficient permissions to run `gh release list`.
 
 **Dependencies:** Task 1

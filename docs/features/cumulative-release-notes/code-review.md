@@ -1,5 +1,43 @@
 # Code Review: Cumulative Release Notes
 
+## Addendum (2025-12-27): Tag-Only Release Trigger + Prerelease Safety
+
+This addendum reviews the follow-up workflow change that removes `workflow_dispatch` from the release pipeline, enforces prerelease tagging via Versionize, and adjusts Docker tagging so prereleases do not publish `latest`/major/minor tags.
+
+## Verification Results (Addendum)
+
+- Tests: Pass (317 passed)
+- Build: Success (via `dotnet run` demo generation)
+- Docker: Builds (`docker build -t tfplan2md:local .`)
+- Demo Markdownlint: Pass (0 errors for `artifacts/comprehensive-demo.md`)
+- Errors: None observed
+
+## Review Decision (Addendum)
+
+**Status:** Changes Requested
+
+## Issues Found (Addendum)
+
+### Blockers
+
+1. Documentation drift: feature docs referenced `workflow_dispatch`
+	- Impact: The cumulative release notes feature documentation required supporting `workflow_dispatch`, but the release workflow is now tag-triggered only.
+	- Required fix: Update the cumulative release notes documentation to remove `workflow_dispatch` references and success criteria.
+
+### Major Issues
+
+1. Uncommitted documentation updates
+	- Impact: The documentation updates required to reflect the new workflow behavior must be included in the change set.
+	- Required fix: Ensure all documentation updates are committed alongside the workflow changes.
+
+### Minor Issues
+
+None
+
+### Suggestions
+
+None
+
 ## Summary
 
 The implementation adds cumulative release notes functionality to the release workflow. GitHub releases now include all changes since the last release, ensuring Docker Hub users see complete change history even when intermediate versions are skipped.
@@ -58,7 +96,7 @@ None
 - Version prefix handling (with/without 'v') works consistently
 - Idempotent execution verified
 - Edge cases handled (version not found, last version not in file)
-- Workflow handles both tag push and workflow_dispatch triggers
+- Workflow handles tag push triggers
 
 ✅ **All test cases from test plan implemented and passing:**
 - TC-01: No Previous Release ✅
@@ -92,7 +130,7 @@ None
 - Extracts changelog sections via bash script
 - No additional state files or tracking mechanisms
 - Maintains backward compatibility
-- Works with both trigger types
+- Works with tag push triggers
 
 ✅ **Script is properly executable:**
 - Script has execute permissions (`chmod +x`)

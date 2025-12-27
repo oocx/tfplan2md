@@ -68,8 +68,15 @@ cd /home/mathias/git/tfplan2md && \
 
 ### Step 3: Execute UAT
 
-Run the UAT wrapper script to completion (blocking):
+Run the UAT wrapper script to completion (blocking).
 
+**For Simulations:**
+If this is a simulation run, append a clear simulation description:
+```bash
+cd /home/mathias/git/tfplan2md && bash scripts/uat-run.sh "SIMULATION: Validating UAT process only. Reported issues are not real."
+```
+
+**For Real UAT:**
 ```bash
 cd /home/mathias/git/tfplan2md && bash scripts/uat-run.sh
 ```
@@ -90,7 +97,10 @@ This script will:
 
 ### Step 4: Report Results
 
-After `uat-run.sh` completes, report final status:
+After `uat-run.sh` completes, report final status.
+
+**For Simulations:**
+Explicitly state that this was a simulation and the report is for process improvement only. Do NOT recommend committing or handing off for fixes.
 
 **Success format:**
 ```

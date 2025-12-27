@@ -147,9 +147,9 @@ EOF
     local pr_id
     pr_id=$(echo "$pr_result" | jq -r '.pullRequestId')
     local pr_url
-    pr_url=$(echo "$pr_result" | jq -r '.url // empty')
+    pr_url=$(echo "$pr_result" | jq -r '.repository.webUrl + "/pullrequest/" + (.pullRequestId|tostring)')
     
-    log_info "PR created: #$pr_id"
+    log_info "PR created: #$pr_id ($pr_url)"
     
     # Add the markdown content as a comment
     log_info "Adding initial UAT content as comment..."

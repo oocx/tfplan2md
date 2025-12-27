@@ -155,11 +155,12 @@ if [[ "$platform" == "both" || "$platform" == "github" ]]; then
   log_info "Creating GitHub UAT PR..."
   gh_out="$(scripts/uat-github.sh create "$artifact_github" "$test_description" | cat)"
   gh_pr="$(echo "$gh_out" | grep -oE 'PR created: #[0-9]+' | grep -oE '[0-9]+' | tail -n 1)"
+  gh_url="$(echo "$gh_out" | grep -oE 'PR created: #[0-9]+ \((.*)\)' | sed -E 's/.*PR created: #[0-9]+ \((.*)\)/\1/' | tail -n 1)"
   if [[ -z "$gh_pr" ]]; then
     log_error "Failed to parse GitHub PR number from output."
     exit 1
   fi
-  log_info "GitHub PR: #$gh_pr"
+  log_info "GitHub PR: #$gh_pr ($gh_url)"
 fi
 
 if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
@@ -169,11 +170,12 @@ if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
   log_info "Creating Azure DevOps UAT PR..."
   azdo_out="$(scripts/uat-azdo.sh create "$artifact_azdo" "$test_description" | cat)"
   azdo_pr="$(echo "$azdo_out" | grep -oE 'PR created: #[0-9]+' | grep -oE '[0-9]+' | tail -n 1)"
+  azdo_url="$(echo "$azdo_out" | grep -oE 'PR created: #[0-9]+ \((.*)\)' | sed -E 's/.*PR created: #[0-9]+ \((.*)\)/\1/' | tail -n 1)"
   if [[ -z "$azdo_pr" ]]; then
     log_error "Failed to parse Azure DevOps PR id from output."
     exit 1
   fi
-  log_info "Azure DevOps PR: #$azdo_pr"
+  log_info "Azure DevOps PR: #$azdo_pr ($azdo_url)"
 fi
 
 poll_interval_seconds=15

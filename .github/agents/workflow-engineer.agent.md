@@ -26,6 +26,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 - Use conventional commit messages (`feat:`, `refactor:`, `fix:`, `docs:`)
 - Ensure Mermaid diagram reflects all agents and artifacts
 - Test proposed changes incrementally
+- Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; run `dotnet test` when C# code changes
 
 ### ⚠️ Ask First
 - Before removing an existing agent
@@ -453,7 +454,7 @@ Help with development tasks
 Implement features and tests according to specifications, following C# coding conventions and test-first development.
 
 ## Boundaries
-✅ Always: Write tests before code, run `dotnet test` before committing
+✅ Always: Write tests before code; run `dotnet test` before committing when C# code changes
 ⚠️ Ask First: Database schema changes, adding NuGet packages
 🚫 Never: Edit CHANGELOG.md (auto-generated), commit to main
 ```
@@ -468,7 +469,7 @@ Run tests to verify your changes.
 ```markdown
 ## Commands
 - **Build:** `dotnet build` - Compiles solution, check for errors
-- **Test:** `dotnet test` - Runs all tests, must pass before commit  
+- **Test:** `dotnet test` - Runs all tests; required when C# code changes (not needed for agent/docs-only changes)
 - **Format:** `dotnet format` - Auto-formats code to match .editorconfig
 ```
 

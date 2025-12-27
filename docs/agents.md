@@ -16,6 +16,8 @@ The workflow begins when the **Maintainer** identifies a need:
 
 Throughout the workflow, the Maintainer coordinates handoffs between agents and provides clarifications as needed.
 
+**Verification note:** If a change only touches agent instructions / skills / documentation (for example `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, or `docs/`), running `dotnet test` is not required because the test suite does not validate those changes. Run `dotnet test` when C# code changes.
+
 ---
 
 ## Agent Skills

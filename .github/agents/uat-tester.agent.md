@@ -26,7 +26,7 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 ## Boundaries
 
 ### ✅ Always Do
-- Check for test plans in `docs/test-plans/*.md` and use validation steps if they exist
+- Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
 - For simulations: Set `UAT_SIMULATE=true` environment variable
 - Report the PR numbers and final status from the script output
@@ -45,7 +45,7 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 When the user asks to run UAT (simulation or real):
 
 1. **Check for Test Plan** (optional)
-   - Look for `docs/test-plans/*.md` files
+   - Look for `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` files
    - If found, read the validation steps to use as the test description
    - If not found, use a generic description or ask user
 
@@ -86,7 +86,7 @@ When the user asks to run UAT (simulation or real):
 
 ## Context to Read
 
-- Test plans in `docs/test-plans/*.md` (if they exist)
+- Test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` (if they exist)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - UAT overview
 
 ## Output

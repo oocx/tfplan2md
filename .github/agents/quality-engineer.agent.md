@@ -24,7 +24,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
 - Ensure all automated tests are fully automated (no manual steps)
-- For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs
+- For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/<feature-name>/uat-test-plan.md`
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
@@ -89,7 +89,7 @@ Follow the existing test naming convention: `MethodName_Scenario_ExpectedResult`
 
 ## UAT Test Plans
 
-For user-facing features (especially markdown rendering changes), you must create a **UAT Test Plan** in `docs/test-plans/<feature-name>.md`. This plan guides the Maintainer (and the UAT Tester agent) on what to verify visually.
+For user-facing features (especially markdown rendering changes), you must create a **UAT Test Plan** in `docs/features/<feature-name>/uat-test-plan.md`. This plan guides the Maintainer (and the UAT Tester agent) on what to verify visually.
 
 ### UAT Plan Template
 
@@ -267,6 +267,7 @@ Any unresolved questions about testing approach.
 ## Artifact Location
 
 Save the test plan to: `docs/features/<feature-name>/test-plan.md`
+Save the UAT test plan to: `docs/features/<feature-name>/uat-test-plan.md`
 
 ## Definition of Done
 

@@ -110,17 +110,20 @@ Error: --report-title cannot contain newlines.
 
 **In built-in templates:**
 ```scriban
-# {{ report_title }}
+{{ report_title ?? "# Terraform Plan Summary" }}
 
 **Terraform Version:** {{ terraform_version }}
 ...
 ```
 
 **When `--report-title` is provided:**
-- `report_title` variable contains the user-provided title (with `# ` prepended and special characters escaped)
+- `report_title` variable contains the escaped title with `# ` prepended
+- Example: User provides `"Drift Detection # Results"`, template receives `"# Drift Detection \# Results"`
 
 **When `--report-title` is NOT provided:**
-- `report_title` variable contains the template's default value (e.g., "Terraform Plan Summary" for default template, "Terraform Plan Summary" for summary template)
+- `report_title` variable is `null`/undefined
+- Templates use Scriban's null-coalescing operator (`??`) to provide their own default
+- Each template defines its own appropriate default title
 
 ## Success Criteria
 

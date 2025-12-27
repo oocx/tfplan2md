@@ -44,48 +44,37 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 
 When the user asks to run UAT (simulation or real):
 
-1. **Check for Test Plan**
+1. **Check for Test Plan** (optional)
    - Look for `docs/test-plans/*.md` files
-   - If found, read the validation steps
-   - If not found, ask user for validation description
+   - If found, read the validation steps to use as the test description
+   - If not found, use a generic description or ask user
 
 2. **Run UAT Script**
    
-   The script runs in **blocking mode** and will output PR URLs early, then continue polling for approval.
+   Run exactly ONE command. No compound commands, no pipes, no redirects.
    
    **For Simulations:**
    ```bash
-   UAT_SIMULATE=true scripts/uat-run.sh "[SIMULATION] <validation-description>"
+   UAT_SIMULATE=true scripts/uat-run.sh "<validation-description>"
    ```
    
    **For Real UAT:**
    ```bash
    scripts/uat-run.sh "<validation-description>"
    ```
+   
+   **CRITICAL:**
+   - Use `isBackground: false` — the script must run in foreground
+   - The user will see PR URLs directly in the terminal output
+   - The script polls for approval automatically — do NOT run any other commands
 
-3. **Extract and Post PR URLs**
-   - The script will output lines like:
-     ```
-     [INFO] GitHub PR: #5 (https://github.com/...)
-     [INFO] Azure DevOps PR: #17 (https://dev.azure.com/...)
-     ```
-   - **Parse these URLs from the output** and post them to chat immediately:
-     > **UAT In Progress**
-     > 
-     > **GitHub PR:** https://github.com/...
-     > **Azure DevOps PR:** https://dev.azure.com/...
-     > 
-     > The script is now polling for approval. Please review and approve both PRs.
+3. **Wait for Completion**
+   - The script runs until approval is detected or timeout
+   - Do NOT run any monitoring commands (no `ps`, no `get_terminal_output`, nothing)
+   - The user will approve the PRs in their browser while the script polls
 
-4. **Wait for Script Completion**
-   - The script will continue running, polling for approval every 15 seconds.
-   - When approved (or timed out), the script will output final status and exit.
-
-5. **Report Final Results**
-   - Report final status based on script exit code:
-     - Exit 0 = Success (approval detected, PRs cleaned up)
-     - Exit 1 = Timeout or failure
-     - Exit 130 = User cancelled (Ctrl+C)
+4. **Report Results**
+   - When the script exits, report the final status based on what you saw in the output
 
 ## Context to Read
 

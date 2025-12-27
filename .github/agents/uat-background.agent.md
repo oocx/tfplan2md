@@ -71,9 +71,14 @@ cd /home/mathias/git/tfplan2md && \
 Run the UAT wrapper script to completion (blocking).
 
 **For Simulations:**
-If this is a simulation run, append a clear simulation description:
+If instructed to run in **SIMULATION MODE**:
+1. Set `UAT_SIMULATE=true`
+2. Use a test description starting with `[SIMULATION]`
+
 ```bash
-cd /home/mathias/git/tfplan2md && bash scripts/uat-run.sh "SIMULATION: Validating UAT process only. Reported issues are not real."
+cd /home/mathias/git/tfplan2md && \
+  UAT_SIMULATE=true \
+  bash scripts/uat-run.sh "[SIMULATION] Validating UAT process only. Reported issues are not real."
 ```
 
 **For Real UAT:**

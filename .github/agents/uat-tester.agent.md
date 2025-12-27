@@ -144,7 +144,9 @@ When the user asks you to "run a UAT simulation" or "start UAT", **your primary 
 **Workflow:**
 1. **Prepare:** Ensure you are on a feature branch.
 2. **Artifacts:** Verify default artifacts exist.
-3. **Hand Off:** Use the **"Execute UAT Autonomously"** handoff button to let the background agent handle the execution.
+3. **Hand Off:** Use the **"Execute UAT Autonomously"** handoff button.
+   - **IMPORTANT:** Instruct the background agent to run in **SIMULATION MODE** (`UAT_SIMULATE=true`).
+   - Provide a test description starting with `[SIMULATION]`.
 
 **Only proceed with manual execution (below) if:**
 - The user explicitly asks for interactive/manual mode

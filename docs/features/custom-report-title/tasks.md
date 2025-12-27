@@ -104,7 +104,7 @@ Update the `default` and `summary` templates to use the `report_title` variable 
 Perform final validation of the generated markdown and update user-facing documentation.
 
 **Acceptance Criteria:**
-- [ ] Generated reports with custom titles pass markdown linting (TC-09). *(Pending: Docker not available locally; lint tests are skipped.)*
+- [x] Generated reports with custom titles pass markdown linting (TC-09).
 - [x] `README.md` is updated to include the `--report-title` option in the CLI options table.
 - [x] `docs/features.md` is updated to mention the custom title feature.
 

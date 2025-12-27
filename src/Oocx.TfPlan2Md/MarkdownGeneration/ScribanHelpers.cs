@@ -73,6 +73,14 @@ public static class ScribanHelpers
     /// </summary>
     /// <param name="input">The raw heading text.</param>
     /// <returns>Heading-safe text with special characters escaped.</returns>
+    /// <remarks>
+    /// Templates add the heading marker (#). This helper keeps the user-provided title literal so it renders as text instead of markdown syntax.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// EscapeMarkdownHeading("Drift # Results") // returns "Drift \# Results"
+    /// </code>
+    /// </example>
     public static string EscapeMarkdownHeading(string? input)
     {
         if (string.IsNullOrEmpty(input))

@@ -17,6 +17,9 @@ public class ReportModel
     /// Optional custom report title provided via the CLI.
     /// Related feature: docs/features/custom-report-title/specification.md
     /// </summary>
+    /// <value>
+    /// The escaped title text used by templates; null when no custom title is provided so templates can apply defaults.
+    /// </value>
     public string? ReportTitle { get; init; }
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
     public required IReadOnlyList<ModuleChangeGroup> ModuleChanges { get; init; }
@@ -131,14 +134,46 @@ public class AttributeChangeModel
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
+/// <param name="summaryBuilder">Factory for resource summaries; defaults to <see cref="ResourceSummaryBuilder"/>.</param>
+/// <param name="showSensitive">Whether to show sensitive values without masking.</param>
+/// <param name="showUnchangedValues">Whether unchanged attributes should be included in tables.</param>
+/// <param name="largeValueFormat">Rendering format for large values (inline-diff or standard-diff).</param>
+/// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
+/// <remarks>
+/// Related features: docs/features/custom-report-title/specification.md and docs/features/unchanged-values-cli-option/specification.md.
+/// </remarks>
 public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null)
 {
+    /// <summary>
+    /// Indicates whether sensitive values should be rendered without masking.
+    /// </summary>
     private readonly bool _showSensitive = showSensitive;
+
+    /// <summary>
+    /// Indicates whether unchanged attribute values should be included in output tables.
+    /// </summary>
     private readonly bool _showUnchangedValues = showUnchangedValues;
+
+    /// <summary>
+    /// Strategy for building resource summaries used in the report.
+    /// </summary>
     private readonly IResourceSummaryBuilder _summaryBuilder = summaryBuilder ?? new ResourceSummaryBuilder();
+
+    /// <summary>
+    /// Preferred rendering format for large attribute values.
+    /// </summary>
     private readonly LargeValueFormat _largeValueFormat = largeValueFormat;
+
+    /// <summary>
+    /// Optional custom report title provided by the user.
+    /// </summary>
     private readonly string? _reportTitle = reportTitle;
 
+    /// <summary>
+    /// Builds a fully-populated report model from a parsed Terraform plan.
+    /// </summary>
+    /// <param name="plan">Terraform plan to transform into a report model.</param>
+    /// <returns>A model containing change details, summaries, and optional custom title.</returns>
     public ReportModel Build(TerraformPlan plan)
     {
         // Build all resource change models first (for summary counting)

@@ -26,6 +26,9 @@ public record CliOptions
     /// Optional custom report title provided via the CLI.
     /// Related feature: docs/features/custom-report-title/specification.md
     /// </summary>
+    /// <value>
+    /// Custom level-1 heading text for the generated report. When null, templates fall back to their defaults.
+    /// </value>
     public string? ReportTitle { get; init; }
 
     /// <summary>

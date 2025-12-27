@@ -183,21 +183,6 @@ Before starting:
 
 If authentication is missing (GitHub CLI or Azure CLI), ask the user to run `gh auth login` or `az login` and wait for them to confirm before proceeding.
 
-## Code Block
-
-```hcl
-resource "azurerm_resource_group" "example" {
-  name     = "example-rg"
-  location = "westeurope"
-}
-```
-
-## List
-
-- `inline code` inside a list item
-- Plain text item
-```
-
 ### Default Parameters
 
 When not specified by the user, use these defaults:

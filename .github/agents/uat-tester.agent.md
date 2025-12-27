@@ -49,25 +49,32 @@ When the user asks to run UAT (simulation or real):
    - If found, read the validation steps
    - If not found, ask user for validation description
 
-2. **Run UAT Script**
+2. **Run UAT Script (Background)**
    
    **For Simulations:**
    ```bash
+   # Run with isBackground: true to allow polling output while script runs
    UAT_SIMULATE=true scripts/uat-run.sh "[SIMULATION] <validation-description>"
    ```
    
    **For Real UAT:**
    ```bash
+   # Run with isBackground: true
    scripts/uat-run.sh "<validation-description>"
    ```
 
-3. **Monitor Output**
-   - The script will output PR numbers, polling status, and final result
-   - Watch for approval/timeout/error messages
+3. **Monitor and Report Progress**
+   - Use `get_terminal_output` to poll the running script.
+   - **IMMEDIATELY** when PR URLs appear in the output, post them to the chat:
+     > **UAT In Progress**
+     > **GitHub PR:** <url>
+     > **Azure DevOps PR:** <url>
+     >
+     > Please review and approve the PRs to complete the test.
+   - Continue polling until the script completes (look for "UAT run complete" or exit code).
 
-4. **Report Results**
-   - Extract PR numbers from output
-   - Report final status (Success/Failure/Timeout)
+4. **Report Final Results**
+   - Report final status (Success/Failure/Timeout) based on script exit code and output.
 
 ## Context to Read
 

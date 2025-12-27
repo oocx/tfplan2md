@@ -30,6 +30,7 @@
 | **18** | Fix Versionize major release configuration | 🔲 Not Started | Critical | Medium | Critical |
 | **19** | Add rejection tracking to retrospective analysis | 🔲 Not Started | Low | High | Low |
 | **20** | Create workflow validation tool | 🔲 Not Started | High | High | High |
+| **21** | Fix "UAT artifact validation" GitHub status check | 🔲 Not Started | Critical | Low | Critical |
 
 ## Detailed Improvements
 
@@ -239,13 +240,30 @@
 **Value:** High
 
 ---
+# #21: Fix "UAT artifact validation" GitHub status check
+**Proposed Changes:** Investigate and fix the "UAT artifact validation" required status check that never runs. This check is expected by GitHub but doesn't execute, forcing manual policy override to merge PRs.
 
+**Rationale:** Required check blocks PR merges, requires bypassing rules manually
+
+**Complexity:** Low  
+**Value:** Critical
+
+**Implementation Details:**
+- Check if workflow exists but has wrong trigger conditions
+- Check if workflow file is missing or disabled
+- Verify branch protection rules reference correct check name
+- Either fix the workflow to run or remove from required checks
+
+---
+
+##
 ## Priority Groups
 
 ### Critical (Do First)
-- #5: Task Planner boundary violation
+- #5: Task Planner boundary violation ✅
 - #17: Release pipeline duplication
 - #18: Versionize configuration
+- #21: UAT artifact validation check (blocks PR merges)
 
 ### Quick Wins (High Value / Low Effort)
 - #1: Quality Engineer folder path

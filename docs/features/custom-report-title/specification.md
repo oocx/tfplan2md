@@ -16,10 +16,10 @@ Users can provide a custom title for generated reports via the `--report-title` 
 ### In Scope
 
 - Add `--report-title` CLI option that accepts a string value
-- Automatically prepend `# ` to make the title a level-1 markdown heading
 - Automatically escape markdown special characters that would interfere with heading rendering
-- Make the custom title available to all templates (built-in and custom)
-- When `--report-title` is not provided, each template uses its own default title
+- Make the custom title available to all templates (built-in and custom) via the `report_title` variable
+- Templates are responsible for adding the `#` heading markup
+- When `--report-title` is not provided, the variable is null/undefined and templates provide their own defaults
 - Validate that the title is not empty when the option is provided
 - Fail with error when title contains newlines
 
@@ -110,15 +110,16 @@ Error: --report-title cannot contain newlines.
 
 **In built-in templates:**
 ```scriban
-{{ report_title ?? "# Terraform Plan Summary" }}
+# {{ report_title ?? "Terraform Plan Summary" }}
 
 **Terraform Version:** {{ terraform_version }}
 ...
 ```
 
 **When `--report-title` is provided:**
-- `report_title` variable contains the escaped title with `# ` prepended
-- Example: User provides `"Drift Detection # Results"`, template receives `"# Drift Detection \# Results"`
+- `report_title` variable contains the escaped title text (without `#`)
+- Example: User provides `"Drift Detection # Results"`, template receives `"Drift Detection \# Results"`
+- Template adds the `#` for the heading
 
 **When `--report-title` is NOT provided:**
 - `report_title` variable is `null`/undefined
@@ -131,10 +132,10 @@ Error: --report-title cannot contain newlines.
 - [ ] User-provided title replaces the default heading in all built-in templates (default, summary)
 - [ ] Custom templates can access the title via the `report_title` variable
 - [ ] Markdown special characters are automatically escaped (e.g., `#`, `*`, `_`, `[`, `]`, `` ` ``)
-- [ ] Tool prepends `# ` to create a level-1 markdown heading automatically
+- [ ] The `report_title` variable contains only the text (templates add the `#`)
 - [ ] Empty string title shows error message and help output
 - [ ] Title with newlines fails with clear error message
-- [ ] When `--report-title` is not provided, templates use their default titles
+- [ ] When `--report-title` is not provided, `report_title` is null and templates use their default titles
 - [ ] Generated reports with custom titles pass markdown linting (markdownlint-cli2)
 - [ ] Documentation and help text include the new option
 - [ ] Tests cover:

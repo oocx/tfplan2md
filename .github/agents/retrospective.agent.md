@@ -2,7 +2,7 @@
 description: Conducts post-release retrospectives to identify workflow improvements
 name: Retrospective
 target: vscode
-model: Gemini 3 Pro (Preview)
+model: Gemini 3 Flash (Preview)
 tools: ['vscode/runCommand', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/readFile', 'edit', 'search/fileSearch', 'search/listDirectory', 'github/*', 'todo']
 handoffs:
   - label: Update Workflow

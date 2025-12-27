@@ -2,7 +2,7 @@
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester
 target: vscode
-model: GPT-5.2
+model: Gemini 3 Flash (Preview)
 tools: ['execute/runInTerminal', 'read/readFile', 'search/listDirectory', 'search/codebase']
 handoffs:
   - label: UAT Passed

@@ -83,9 +83,16 @@ cmd_create() {
     local branch
     branch=$(git branch --show-current)
     local title="UAT: $(basename "$file" .md)"
+    
+    local simulation_header=""
+    if [[ "$simulate" == "true" ]]; then
+        title="[SIMULATION] $title"
+        simulation_header="> ⚠️ **SIMULATION MODE**\n> This is a test of the UAT process using standard artifacts. Reported issues are likely expected or already known.\n\n"
+    fi
+
     local description
     description=$(cat <<EOF
-## Problem
+${simulation_header}## Problem
 Validate markdown rendering in real PR UIs.
 
 ## Change

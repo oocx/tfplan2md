@@ -19,10 +19,10 @@ Reference:
 Add the `ReportTitle` property to `CliOptions` and `ReportModel` to support passing the custom title through the application.
 
 **Acceptance Criteria:**
-- [ ] `CliOptions` has a `string? ReportTitle` property.
-- [ ] `ReportModel` has a `string? ReportTitle` property.
-- [ ] `ReportModelBuilder` constructor accepts an optional `reportTitle` parameter.
-- [ ] `ReportModelBuilder` stores the `reportTitle` for use during model building.
+- [x] `CliOptions` has a `string? ReportTitle` property.
+- [x] `ReportModel` has a `string? ReportTitle` property.
+- [x] `ReportModelBuilder` constructor accepts an optional `reportTitle` parameter.
+- [x] `ReportModelBuilder` stores the `reportTitle` for use during model building.
 
 **Dependencies:** None
 
@@ -36,11 +36,11 @@ Add the `ReportTitle` property to `CliOptions` and `ReportModel` to support pass
 Update `CliParser` to handle the `--report-title` option and implement validation rules.
 
 **Acceptance Criteria:**
-- [ ] `CliParser` recognizes `--report-title`.
-- [ ] `CliParser` throws `CliParseException` if `--report-title` is provided without a value.
-- [ ] `CliParser` throws `CliParseException` if the title is empty or only whitespace.
-- [ ] `CliParser` throws `CliParseException` if the title contains newlines.
-- [ ] Unit tests in `CliParserTests.cs` verify these behaviors (TC-01, TC-02, TC-03).
+- [x] `CliParser` recognizes `--report-title`.
+- [x] `CliParser` throws `CliParseException` if `--report-title` is provided without a value.
+- [x] `CliParser` throws `CliParseException` if the title is empty or only whitespace.
+- [x] `CliParser` throws `CliParseException` if the title contains newlines.
+- [x] Unit tests in `CliParserTests.cs` verify these behaviors (TC-01, TC-02, TC-03).
 
 **Dependencies:** Task 1
 
@@ -54,10 +54,10 @@ Update `CliParser` to handle the `--report-title` option and implement validatio
 Update `ReportModelBuilder` to escape markdown special characters in the report title before populating the `ReportModel`.
 
 **Acceptance Criteria:**
-- [ ] `ReportModelBuilder.Build` populates `ReportModel.ReportTitle`.
-- [ ] If a title is provided, it is escaped using `ScribanHelpers.EscapeMarkdown`.
-- [ ] If no title is provided, `ReportModel.ReportTitle` is `null`.
-- [ ] Unit tests in `ReportModelBuilderTests.cs` verify escaping and null handling (TC-04, TC-05).
+- [x] `ReportModelBuilder.Build` populates `ReportModel.ReportTitle`.
+- [x] If a title is provided, it is escaped using `ScribanHelpers.EscapeMarkdownHeading`.
+- [x] If no title is provided, `ReportModel.ReportTitle` is `null`.
+- [x] Unit tests in `ReportModelBuilderTests.cs` verify escaping and null handling (TC-04, TC-05).
 
 **Dependencies:** Task 1
 
@@ -71,9 +71,9 @@ Update `ReportModelBuilder` to escape markdown special characters in the report 
 Integrate the new option into the main application flow and update the help text.
 
 **Acceptance Criteria:**
-- [ ] `Program.cs` passes `options.ReportTitle` to the `ReportModelBuilder`.
-- [ ] `HelpTextProvider.cs` includes the `--report-title` option in the help output.
-- [ ] Unit tests in `HelpTextProviderTests.cs` verify the help text update (TC-10).
+- [x] `Program.cs` passes `options.ReportTitle` to the `ReportModelBuilder`.
+- [x] `HelpTextProvider.cs` includes the `--report-title` option in the help output.
+- [x] Unit tests in `HelpTextProviderTests.cs` verify the help text update (TC-10).
 
 **Dependencies:** Task 2, Task 3
 
@@ -87,10 +87,10 @@ Integrate the new option into the main application flow and update the help text
 Update the `default` and `summary` templates to use the `report_title` variable with a fallback to the default title.
 
 **Acceptance Criteria:**
-- [ ] `default.sbn` uses `# {{ report_title ?? "Terraform Plan Summary" }}`.
-- [ ] `summary.sbn` uses `# {{ report_title ?? "Terraform Plan Summary" }}`.
-- [ ] Integration tests in `MarkdownRendererTests.cs` and `MarkdownRendererSummaryTests.cs` verify the rendered output (TC-06, TC-07).
-- [ ] Integration test verifies custom template access (TC-08).
+- [x] `default.sbn` uses `# {{ report_title ?? "Terraform Plan Report" }}`.
+- [x] `summary.sbn` uses `# {{ report_title ?? "Terraform Plan Summary" }}`.
+- [x] Integration tests in `MarkdownRendererTests.cs` and `MarkdownRendererSummaryTests.cs` verify the rendered output (TC-06, TC-07).
+- [x] Integration test verifies custom template access (TC-08).
 
 **Dependencies:** Task 3
 
@@ -104,9 +104,9 @@ Update the `default` and `summary` templates to use the `report_title` variable 
 Perform final validation of the generated markdown and update user-facing documentation.
 
 **Acceptance Criteria:**
-- [ ] Generated reports with custom titles pass markdown linting (TC-09).
-- [ ] `README.md` is updated to include the `--report-title` option in the CLI options table.
-- [ ] `docs/features.md` is updated to mention the custom title feature.
+- [ ] Generated reports with custom titles pass markdown linting (TC-09). *(Pending: Docker not available locally; lint tests are skipped.)*
+- [x] `README.md` is updated to include the `--report-title` option in the CLI options table.
+- [x] `docs/features.md` is updated to mention the custom title feature.
 
 **Dependencies:** Task 4, Task 5
 

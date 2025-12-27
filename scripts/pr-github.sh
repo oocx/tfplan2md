@@ -4,24 +4,18 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/pr-github.sh create --title <title> --body-file <path>
-  scripts/pr-github.sh create --title <title> --body <text>
   scripts/pr-github.sh create --title <title> --body-from-stdin
 
-  scripts/pr-github.sh create-and-merge --title <title> --body-file <path>
-  scripts/pr-github.sh create-and-merge --title <title> --body <text>
   scripts/pr-github.sh create-and-merge --title <title> --body-from-stdin
 
 Options:
   --title <title>         PR title (use Conventional Commits style)
-  --body-file <path>      Path to a markdown/text file used as PR body
-  --body <text>           PR body text (alternative to --body-file)
-  --body-from-stdin       Read PR body from stdin (avoids temp files)
+  --body-from-stdin       Read PR body from stdin
 
 Notes:
-  - Required: provide an explicit title + body (agent-authored description)
+  - Required: provide an explicit title + body via stdin (agent-authored description)
   - This script intentionally does not guess title/body
-  - **Agent guidance:** This script is the **authoritative** repo tool for creating and merging PRs. Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them (rebase + delete branch). **Prefer --body-from-stdin** to avoid temporary files.
+  - **Agent guidance:** This script is the **authoritative** repo tool for creating and merging PRs. Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them (rebase + delete branch). Body must be piped via stdin.
   - **Fallback:** Use GitHub chat tools (`github/*`) only when the script does not support a necessary advanced operation or for quick inspection of checks.
   - Requires: git + GitHub CLI (gh) authenticated when used as a CLI fallback
   - Merge policy: uses rebase-and-merge for linear history (per CONTRIBUTING.md)
@@ -59,12 +53,10 @@ require_not_main() {
 
 parse_args() {
   local -n _title="$1"
-  local -n _body_file="$2"
 
-  shift 2
+  shift 1
 
   _title=""
-  _body_file=""
   BODY_TEXT=""
   USE_STDIN=false
 
@@ -72,14 +64,6 @@ parse_args() {
     case "$1" in
       --title)
         _title="$2"
-        shift 2
-        ;;
-      --body-file)
-        _body_file="$2"
-        shift 2
-        ;;
-      --body)
-        BODY_TEXT="$2"
         shift 2
         ;;
       --body-from-stdin)
@@ -99,44 +83,22 @@ parse_args() {
   done
 
   if [[ -z "$_title" ]]; then
-    echo "Error: provide --title plus one of: --body-file, --body, --body-from-stdin." >&2
+    echo "Error: provide --title and --body-from-stdin." >&2
     usage
     exit 2
   fi
 
-  # Count how many body sources are specified
-  local body_sources=0
-  [[ -n "$BODY_TEXT" ]] && ((body_sources++))
-  [[ -n "$_body_file" ]] && ((body_sources++))
-  [[ "$USE_STDIN" == "true" ]] && ((body_sources++))
-
-  if [[ $body_sources -eq 0 ]]; then
-    echo "Error: provide one of: --body, --body-file, --body-from-stdin." >&2
+  if [[ "$USE_STDIN" != "true" ]]; then
+    echo "Error: --body-from-stdin is required (pipe body via stdin)." >&2
     usage
     exit 2
   fi
 
-  if [[ $body_sources -gt 1 ]]; then
-    echo "Error: provide only one of --body, --body-file, or --body-from-stdin." >&2
-    exit 2
-  fi
-
-  if [[ -n "$_body_file" && ! -f "$_body_file" ]]; then
-    echo "Error: body file not found: $_body_file" >&2
-    exit 2
-  fi
-
-  # Read from stdin if requested
-  if [[ "$USE_STDIN" == "true" ]]; then
-    BODY_TEXT="$(cat)"
-  fi
+  # Read from stdin
+  BODY_TEXT="$(cat)"
 
   require_non_empty "$_title" "--title"
-  if [[ -n "$_body_file" ]]; then
-    require_non_empty "$(cat "$_body_file")" "PR body"
-  else
-    require_non_empty "$BODY_TEXT" "PR body"
-  fi
+  require_non_empty "$BODY_TEXT" "PR body"
 }
 
 ensure_pr_exists() {
@@ -149,12 +111,8 @@ ensure_pr_exists() {
 
   echo "No existing PR found for branch '$branch'; creating..." >&2
   require_non_empty "$TITLE" "PR title"
-  if [[ -n "${BODY_FILE:-}" ]]; then
-    gh_safe pr create --base main --head "$branch" --title "$TITLE" --body-file "$BODY_FILE"
-  else
-    require_non_empty "$BODY_TEXT" "PR body"
-    gh_safe pr create --base main --head "$branch" --title "$TITLE" --body "$BODY_TEXT"
-  fi
+  require_non_empty "$BODY_TEXT" "PR body"
+  echo "$BODY_TEXT" | gh_safe pr create --base main --head "$branch" --title "$TITLE" --body-file -
 }
 
 get_pr_number() {
@@ -184,8 +142,7 @@ main() {
   require_not_main
 
   TITLE=""
-  BODY_FILE=""
-  parse_args TITLE BODY_FILE "$@"
+  parse_args TITLE "$@"
 
   require_clean_worktree
 

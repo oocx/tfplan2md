@@ -331,7 +331,10 @@ git push -u origin HEAD
 # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
 
 # Create PR (repo wrapper)
-scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+scripts/pr-github.sh create --title "<type(scope): summary>" --body-from-stdin <<'EOF'
+## Summary
+...
+EOF
 ```
 
 ## Documentation Updates Checklist
@@ -401,7 +404,10 @@ When updating `docs/agents.md`, verify all of these:
    # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
 
    # Create PR (repo wrapper)
-   scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+   scripts/pr-github.sh create --title "<type(scope): summary>" --body-from-stdin <<'EOF'
+   ## Summary
+   ...
+   EOF
    ```
 
 5. **Return to feature work** - Switch back and restore:

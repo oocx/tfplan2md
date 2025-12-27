@@ -38,7 +38,7 @@ export GH_PAGER=cat
 export GH_FORCE_TTY=false
 ```
 
-**Editor suppression:** Some `gh` commands may try to launch an editor (e.g., when creating or editing issues/PRs). Prefer passing content via flags or `--body-file -` instead of relying on an editor; alternatively set `EDITOR` to a non-interactive command.
+**Editor suppression:** Some `gh` commands may try to launch an editor (e.g., when creating or editing issues/PRs). Pass content via stdin using `--body-file -` instead of relying on an editor; alternatively set `EDITOR` to a non-interactive command.
 
 ```bash
 # Safe non-interactive issue creation
@@ -88,10 +88,10 @@ Use `gh` only as a fallback when there is no matching GitHub chat tool (or for `
 #   ## Verification
 #   <how was it validated?>
 
-scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+echo "## Summary\n\nPR description" | scripts/pr-github.sh create --title "<type(scope): summary>" --body-from-stdin
 
 # Manual fallback (only if wrapper scripts are unavailable)
-GH_PAGER=cat GH_FORCE_TTY=false gh pr create --title "Title" --body "Description" --base main --head feature-branch
+echo "Description" | GH_PAGER=cat GH_FORCE_TTY=false gh pr create --title "Title" --body-file - --base main --head feature-branch
 
 # Check pull request status
 GH_PAGER=cat GH_FORCE_TTY=false gh pr status --json number,title,state

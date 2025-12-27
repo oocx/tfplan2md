@@ -23,6 +23,12 @@ public record CliOptions
     public string? TemplatePath { get; init; }
 
     /// <summary>
+    /// Optional custom report title provided via the CLI.
+    /// Related feature: docs/features/custom-report-title/specification.md
+    /// </summary>
+    public string? ReportTitle { get; init; }
+
+    /// <summary>
     /// Whether to show sensitive values unmasked.
     /// </summary>
     public bool ShowSensitive { get; init; }
@@ -66,6 +72,7 @@ public static class CliParser
         string? outputFile = null;
         string? templatePath = null;
         string? principalMappingFile = null;
+        string? reportTitle = null;
         var showSensitive = false;
         var showHelp = false;
         var showVersion = false;
@@ -105,6 +112,27 @@ public static class CliParser
                     else
                     {
                         throw new CliParseException("--template requires a file path argument.");
+                    }
+                    break;
+                case "--report-title":
+                    if (i + 1 < args.Length)
+                    {
+                        var titleCandidate = args[++i];
+                        if (string.IsNullOrWhiteSpace(titleCandidate))
+                        {
+                            throw new CliParseException("--report-title cannot be empty.");
+                        }
+
+                        if (titleCandidate.Contains('\n', StringComparison.Ordinal) || titleCandidate.Contains('\r', StringComparison.Ordinal))
+                        {
+                            throw new CliParseException("--report-title cannot contain newlines.");
+                        }
+
+                        reportTitle = titleCandidate;
+                    }
+                    else
+                    {
+                        throw new CliParseException("--report-title requires a value.");
                     }
                     break;
                 case "--principal-mapping" or "--principals" or "-p":
@@ -152,7 +180,8 @@ public static class CliParser
             ShowVersion = showVersion,
             PrincipalMappingFile = principalMappingFile,
             ShowUnchangedValues = showUnchangedValues,
-            LargeValueFormat = largeValueFormat
+            LargeValueFormat = largeValueFormat,
+            ReportTitle = reportTitle
         };
     }
 

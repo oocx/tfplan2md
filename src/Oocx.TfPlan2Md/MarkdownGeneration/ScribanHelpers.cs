@@ -68,6 +68,29 @@ public static class ScribanHelpers
     }
 
     /// <summary>
+    /// Escapes markdown characters specifically for headings so literal text renders correctly.
+    /// Related feature: docs/features/custom-report-title/specification.md
+    /// </summary>
+    /// <param name="input">The raw heading text.</param>
+    /// <returns>Heading-safe text with special characters escaped.</returns>
+    public static string EscapeMarkdownHeading(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
+        var value = EscapeMarkdown(input);
+        value = value.Replace("#", "\\#");
+        value = value.Replace("[", "\\[");
+        value = value.Replace("]", "\\]");
+        value = value.Replace("*", "\\*");
+        value = value.Replace("_", "\\_");
+
+        return value;
+    }
+
+    /// <summary>
     /// Determines whether a value should be treated as large based on newlines or length.
     /// Related features: docs/features/large-attribute-value-display/specification.md, docs/features/azure-resource-id-formatting/specification.md
     /// </summary>

@@ -72,6 +72,23 @@ public class MarkdownRendererTests
     }
 
     [Fact]
+    public void Render_WithReportTitle_UsesCustomTitleInDefaultTemplate()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder(reportTitle: "Custom Title");
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        var firstLine = markdown.Split('\n', 2)[0];
+        firstLine.Should().Be("# Custom Title");
+    }
+
+    [Fact]
     public void Render_WithDefaultTemplateName_UsesDefaultBuiltIn()
     {
         // Arrange
@@ -107,6 +124,33 @@ public class MarkdownRendererTests
 
             // Assert
             markdown.Should().Contain("Custom: 1.14.0");
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [Fact]
+    public void Render_WithCustomTemplate_CanAccessReportTitle()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder(reportTitle: "Custom Report Title");
+        var model = builder.Build(plan);
+
+        var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".sbn");
+        File.WriteAllText(tempFile, "# {{ report_title ?? \"Default Title\" }}");
+
+        try
+        {
+            // Act
+            var markdown = _renderer.Render(model, tempFile);
+
+            // Assert
+            var firstLine = markdown.Split('\n', 2)[0];
+            firstLine.Should().Be("# Custom Report Title");
         }
         finally
         {

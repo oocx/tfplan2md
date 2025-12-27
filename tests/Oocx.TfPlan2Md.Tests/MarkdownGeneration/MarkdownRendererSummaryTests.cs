@@ -22,4 +22,21 @@ public class MarkdownRendererSummaryTests
         markdown.Should().Contain("**Summary:**");
         markdown.Should().Contain("recreate `snet-db` (address_prefixes[0] changed: force replacement)");
     }
+
+    [Fact]
+    public void Render_WithReportTitle_UsesCustomTitleInSummaryTemplate()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = new TerraformPlanParser().Parse(json);
+        var model = new ReportModelBuilder(reportTitle: "Summary Title").Build(plan);
+        var renderer = new MarkdownRenderer();
+
+        // Act
+        var markdown = renderer.Render(model, "summary");
+
+        // Assert
+        var firstLine = markdown.Split('\n', 2)[0];
+        firstLine.Should().Be("# Summary Title");
+    }
 }

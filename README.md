@@ -75,6 +75,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 |--------|-------------|
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
+| `--report-title <text>` | Override the level-1 heading in the generated report |
 | `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `standard-diff` (cross-platform) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |

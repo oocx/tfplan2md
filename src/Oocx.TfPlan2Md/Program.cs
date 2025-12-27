@@ -85,7 +85,8 @@ static async Task<int> RunAsync(CliOptions options)
     var modelBuilder = new ReportModelBuilder(
         showSensitive: options.ShowSensitive,
         showUnchangedValues: options.ShowUnchangedValues,
-        largeValueFormat: options.LargeValueFormat);
+        largeValueFormat: options.LargeValueFormat,
+        reportTitle: options.ReportTitle);
     var model = modelBuilder.Build(plan);
 
     var principalMapper = new PrincipalMapper(options.PrincipalMappingFile);

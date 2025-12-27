@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.1.0"></a>
+## [1.1.0](https://github.com/oocx/tfplan2md/compare/v1.0.0...v1.1.0) (2025-12-27)
+
+### ✨ Features
+
+* add simulation mode constraints to UAT agents ([f4881f1](https://github.com/oocx/tfplan2md/commit/f4881f1301205ebc14bcb6641476e81d6c46eadd))
+* implement strict simulation mode for UAT workflow ([5779737](https://github.com/oocx/tfplan2md/commit/5779737cb20753ccd206b6a4a5e2e80e9b0a4c01))
+* implement subagent pattern for autonomous UAT execution ([5b38711](https://github.com/oocx/tfplan2md/commit/5b38711fe2d8a9361309194610e5701b050632f6))
+* **agent:** post PR overview links before running UAT script ([775f4a6](https://github.com/oocx/tfplan2md/commit/775f4a6e15d1ac1d4cfb2dda47d66a91c2033f3f))
+* **uat:** add background agent for autonomous UAT execution ([0176192](https://github.com/oocx/tfplan2md/commit/0176192bd586a407200323aab04415deead95b59))
+* **uat:** output PR URLs in UAT scripts ([8216229](https://github.com/oocx/tfplan2md/commit/82162299c65ffc725d0b9495225f235063b1f1ff))
+
+### 🐛 Bug Fixes
+
+* **agent:** simplify UAT Tester to run single command without monitoring ([892eb7e](https://github.com/oocx/tfplan2md/commit/892eb7efd910c5b3b57f7f2584d3808897ad9c60))
+* **agent:** UAT Tester should run script in blocking mode, not background ([231ee5e](https://github.com/oocx/tfplan2md/commit/231ee5ee1a601a1522f299a6f713bb4add03edbf))
+* **uat:** correct background agent tool definitions ([b94fe59](https://github.com/oocx/tfplan2md/commit/b94fe59800ef28cca6c76db1faf6b4ff56adca29))
+* **uat:** enable polling in simulation mode to allow approval testing ([3ccf23e](https://github.com/oocx/tfplan2md/commit/3ccf23eddb9e944a743a49bf0367ce43147af172))
+* **uat:** remove leftover simulation artifact template ([7982930](https://github.com/oocx/tfplan2md/commit/79829303ee039e87d5e4ae07616454406bcb4c94))
+
+### ♻️ Refactoring
+
+* simplify UAT to single agent calling uat-run.sh directly ([77bc2e3](https://github.com/oocx/tfplan2md/commit/77bc2e3f1535f9d97e9b492b65e1fc370dc04189))
+* **uat:** simplify simulation to use default artifacts ([50827df](https://github.com/oocx/tfplan2md/commit/50827dfec1c98c4d66cadfdd4b558d966b0656e0))
+
+### 📚 Documentation
+
+* move UAT test plan responsibility to Quality Engineer ([8900515](https://github.com/oocx/tfplan2md/commit/8900515a59bd3edff6fe6242ed5c8bfed6160d12))
+* remove UAT Background agent references from agents.md ([c95489e](https://github.com/oocx/tfplan2md/commit/c95489e663d92649fe391569c6c622e1ad051c80))
+* update UAT artifact instructions in QE and Tester agents ([8a2ecad](https://github.com/oocx/tfplan2md/commit/8a2ecad98fe2e462856ac740d9465b748ab598df))
+* **agent:** instruct UAT Tester to run script in background and report PR links immediately ([afdaf6f](https://github.com/oocx/tfplan2md/commit/afdaf6f87b30b76a846b6101071d981f3934a205))
+
 <a name="1.0.0"></a>
 ## [1.0.0](https://github.com/oocx/tfplan2md/compare/v0.48.0...v1.0.0) (2025-12-27)
 

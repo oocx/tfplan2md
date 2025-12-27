@@ -292,6 +292,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 ### 10. Retrospective
 - **Goal:** Identify improvement opportunities for the development workflow.
 - **Deliverables:** Retrospective report with summary, successes, failures, and improvement opportunities.
+- **Key Behavior:** Be evidence-based and critical; apply a scoring rubric and deduct points for boundary violations, retries/tool failures, missing artifacts, and maintainer interventions.
 - **Definition of Done:** Report is generated and action items are identified.
 
 ### 12. Workflow Engineer (Meta-Agent)

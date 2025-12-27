@@ -99,6 +99,14 @@ For user-facing features (especially markdown rendering changes), you must creat
 ## Goal
 Verify that <feature description> renders correctly in GitHub and Azure DevOps PR comments.
 
+## Artifacts
+**Artifact to use:** `<path/to/artifact.md>` (e.g., `artifacts/comprehensive-demo.md`)
+
+**Creation Instructions (if new artifact needed):**
+- **Source Plan:** `<path/to/plan.json>`
+- **Command:** `tfplan2md <arguments>`
+- **Rationale:** <Why this specific plan/configuration is needed>
+
 ## Test Steps
 1. Run the UAT simulation using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.

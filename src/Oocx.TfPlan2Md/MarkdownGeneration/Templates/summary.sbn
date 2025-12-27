@@ -1,4 +1,4 @@
-# Terraform Plan Summary
+# {{ report_title ?? "Terraform Plan Summary" }}
 
 {{ if terraform_version }}**Terraform Version:** {{ terraform_version | escape_markdown }}{{ end }}
 {{ if timestamp }}

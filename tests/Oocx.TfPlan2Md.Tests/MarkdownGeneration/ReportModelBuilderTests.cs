@@ -231,6 +231,36 @@ public class ReportModelBuilderTests
     }
 
     [Fact]
+    public void Build_WithReportTitle_EscapesMarkdownCharacters()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder(reportTitle: "My # Title [Draft]");
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.ReportTitle.Should().Be("My \\# Title \\[Draft\\]");
+    }
+
+    [Fact]
+    public void Build_WithoutReportTitle_SetsReportTitleToNull()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.ReportTitle.Should().BeNull();
+    }
+
+    [Fact]
     public void Build_SortsBreakdownAlphabetically()
     {
         // Arrange

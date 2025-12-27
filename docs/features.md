@@ -360,6 +360,7 @@ Simple single-command interface with flags:
 |------|-------------|
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
+| `--report-title <text>` | Override the report's level-1 heading |
 | `--large-value-format <format>` | Format for large/multi-line attributes: `inline-diff` (default, HTML with inline diff) or `standard-diff` (markdown diff fence) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |

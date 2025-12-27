@@ -1,4 +1,4 @@
-# Terraform Plan Report
+# {{ report_title ?? "Terraform Plan Report" }}
 
 **Terraform Version:** {{ terraform_version | escape_markdown }}
 

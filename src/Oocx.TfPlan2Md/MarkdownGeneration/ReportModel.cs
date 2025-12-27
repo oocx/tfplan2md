@@ -13,6 +13,11 @@ public class ReportModel
     public required string TerraformVersion { get; init; }
     public required string FormatVersion { get; init; }
     public string? Timestamp { get; init; }
+    /// <summary>
+    /// Optional custom report title provided via the CLI.
+    /// Related feature: docs/features/custom-report-title/specification.md
+    /// </summary>
+    public string? ReportTitle { get; init; }
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
     public required IReadOnlyList<ModuleChangeGroup> ModuleChanges { get; init; }
     public required SummaryModel Summary { get; init; }
@@ -126,12 +131,13 @@ public class AttributeChangeModel
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
-public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
+public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null)
 {
     private readonly bool _showSensitive = showSensitive;
     private readonly bool _showUnchangedValues = showUnchangedValues;
     private readonly IResourceSummaryBuilder _summaryBuilder = summaryBuilder ?? new ResourceSummaryBuilder();
     private readonly LargeValueFormat _largeValueFormat = largeValueFormat;
+    private readonly string? _reportTitle = reportTitle;
 
     public ReportModel Build(TerraformPlan plan)
     {
@@ -194,11 +200,14 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             })
             .ToList();
 
+        var escapedReportTitle = _reportTitle is null ? null : ScribanHelpers.EscapeMarkdownHeading(_reportTitle);
+
         return new ReportModel
         {
             TerraformVersion = plan.TerraformVersion,
             FormatVersion = plan.FormatVersion,
             Timestamp = plan.Timestamp,
+            ReportTitle = escapedReportTitle,
             Changes = displayChanges,
             ModuleChanges = moduleGroups,
             Summary = summary,

@@ -15,6 +15,15 @@ public class HelpTextProviderTests
     }
 
     [Fact]
+    public void GetHelpText_IncludesReportTitleOption()
+    {
+        var help = HelpTextProvider.GetHelpText();
+
+        help.Should().Contain("--report-title <title>")
+            .And.Contain("Override the report title");
+    }
+
+    [Fact]
     public void GetHelpText_AlignsOptionDescriptions()
     {
         var help = HelpTextProvider.GetHelpText();

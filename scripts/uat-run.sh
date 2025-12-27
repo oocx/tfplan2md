@@ -181,48 +181,42 @@ timeout_seconds=$((60 * 60))
 start_epoch="$(date +%s)"
 
 if [[ "$simulate" == "true" ]]; then
-  log_warn "SIMULATION MODE enabled (UAT_SIMULATE=true): skipping approval polling and proceeding to cleanup."
-
-  # Best-effort: run one poll attempt for visibility/debugging, but do not block.
-  if [[ -n "$gh_pr" ]]; then
-    scripts/uat-github.sh poll "$gh_pr" || true
-  fi
-  if [[ -n "$azdo_pr" ]]; then
-    scripts/uat-azdo.sh poll "$azdo_pr" || true
-  fi
-else
-  while true; do
-    now_epoch="$(date +%s)"
-    elapsed=$((now_epoch - start_epoch))
-    if [[ $elapsed -gt $timeout_seconds ]]; then
-      log_error "Timed out waiting for approval after $elapsed seconds."
-      log_error "Check the PR comments for feedback and re-run once resolved."
-      exit 1
-    fi
-
-    gh_ok=0
-    azdo_ok=0
-
-    if [[ -n "$gh_pr" ]]; then
-      scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || gh_ok=0
-    else
-      gh_ok=1
-    fi
-
-    if [[ -n "$azdo_pr" ]]; then
-      scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || azdo_ok=0
-    else
-      azdo_ok=1
-    fi
-
-    if [[ $gh_ok -eq 1 && $azdo_ok -eq 1 ]]; then
-      log_info "UAT approved on selected platform(s)."
-      break
-    fi
-
-    sleep "$poll_interval_seconds"
-  done
+  log_warn "SIMULATION MODE enabled (UAT_SIMULATE=true): PRs created with [SIMULATION] prefix."
+  log_warn "The script will now POLL for approval just like a real run."
+  log_warn "Approve the PRs to test the detection logic, or use Ctrl+C to abort."
 fi
+
+while true; do
+  now_epoch="$(date +%s)"
+  elapsed=$((now_epoch - start_epoch))
+  if [[ $elapsed -gt $timeout_seconds ]]; then
+    log_error "Timed out waiting for approval after $elapsed seconds."
+    log_error "Check the PR comments for feedback and re-run once resolved."
+    exit 1
+  fi
+
+  gh_ok=0
+  azdo_ok=0
+
+  if [[ -n "$gh_pr" ]]; then
+    scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || gh_ok=0
+  else
+    gh_ok=1
+  fi
+
+  if [[ -n "$azdo_pr" ]]; then
+    scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || azdo_ok=0
+  else
+    azdo_ok=1
+  fi
+
+  if [[ $gh_ok -eq 1 && $azdo_ok -eq 1 ]]; then
+    log_info "UAT approved on selected platform(s)."
+    break
+  fi
+
+  sleep "$poll_interval_seconds"
+done
 
 log_info "Cleaning up UAT PRs..."
 if [[ -n "$gh_pr" ]]; then

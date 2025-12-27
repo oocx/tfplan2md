@@ -5,6 +5,10 @@ target: vscode
 model: GPT-5.2
 tools: ['execute/runInTerminal', 'execute/getTerminalOutput', 'read/readFile', 'edit/createFile', 'edit/editFiles', 'search/listDirectory', 'read/terminalLastCommand', 'search/codebase', 'github/*', 'todo']
 handoffs:
+  - label: Execute UAT Autonomously
+    agent: "UAT Background"
+    prompt: Execute the complete UAT workflow autonomously (prerequisites, PRs, polling, cleanup). Report status when complete.
+    send: false
   - label: UAT Passed
     agent: "Release Manager"
     prompt: User Acceptance Testing passed on both GitHub and Azure DevOps. Proceed with the release.
@@ -92,9 +96,54 @@ Do NOT pause to ask the Maintainer what to do next. The VS Code Allow/Deny UI is
 
 ---
 
+## Autonomous Background Execution
+
+For hands-off UAT execution without monitoring, **hand off to the UAT Background agent** instead of running commands yourself.
+
+### When to Use Background Agent
+
+- Full UAT execution from start to finish
+- User wants zero-touch automation
+- No need for incremental progress updates
+- Blocking execution acceptable
+
+### How to Hand Off
+
+Use the **"Execute UAT Autonomously"** handoff button or tell the user:
+
+```
+I can hand this off to the UAT Background agent for fully autonomous execution. 
+The background agent will:
+1. Verify prerequisites
+2. Auto-commit any dirty tree
+3. Create and monitor UAT PRs
+4. Report final status
+
+This runs without approval prompts and you can continue other work.
+```
+
+Then hand off with this context:
+- Current branch
+- Available artifacts
+- Any known prerequisites issues
+
+The background agent will execute everything and report when complete.
+
+---
+
 ## Running a UAT Simulation
 
-When the user asks you to "run a UAT simulation" or "start UAT", follow this exact process. This is the standard UAT simulation workflow — you don't need any additional details from the user unless specified below.
+When the user asks you to "run a UAT simulation" or "start UAT", **your primary goal is to prepare the environment and then hand off to the UAT Background agent.**
+
+**Workflow:**
+1. **Prepare:** Ensure you are on a feature branch and a markdown artifact exists.
+   - If no artifact exists, generate a simulated report (see below).
+2. **Hand Off:** Use the **"Execute UAT Autonomously"** handoff button to let the background agent handle the execution.
+
+**Only proceed with manual execution (below) if:**
+- The user explicitly asks for interactive/manual mode
+- You need to debug a specific step
+- The background agent is unavailable
 
 ### Writing Effective Test Descriptions
 

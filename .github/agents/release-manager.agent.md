@@ -101,6 +101,17 @@ This project uses:
 - The CI pipeline builds and publishes the Docker image
 - **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 
+## Workflow Completion Checklist
+
+Before suggesting handoff to Retrospective, verify:
+- [ ] ✅ PR merged successfully
+- [ ] ✅ CI pipeline on main completed successfully
+- [ ] ✅ Release workflow completed successfully
+- [ ] ✅ Docker image published to Docker Hub
+- [ ] ✅ GitHub release created with changelog
+
+**Do NOT suggest retrospective handoff until ALL items above are complete.**
+
 ## Pre-Release Checklist
 
 Before releasing, verify:

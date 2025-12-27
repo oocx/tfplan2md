@@ -29,7 +29,8 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
 - Consider edge cases, error conditions, and boundary values
-- Create test plan markdown files in docs/features/<feature-name>/
+- Create test plan markdown file at `docs/features/<feature-name>/test-plan.md`
+- Create UAT test plan (if needed) at `docs/features/<feature-name>/uat-test-plan.md`
 - Commit test plan when approved
 
 ### ⚠️ Ask First

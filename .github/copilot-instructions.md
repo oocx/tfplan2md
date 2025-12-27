@@ -72,3 +72,7 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 
 ## Tooling specific instructions
 - For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the `.github/gh-cli-instructions.md` file in the repository
+- **Always use project scripts** instead of raw commands when available:
+  - PR creation/merge: Use `scripts/pr-github.sh` instead of `gh pr create` or `gh pr merge`
+  - UAT execution: Use `scripts/uat-run.sh` instead of manual commands
+  - The scripts handle repository-specific policies and conventions

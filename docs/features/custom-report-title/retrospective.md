@@ -36,6 +36,23 @@ The workflow demonstrated strong adherence to the documented agent boundaries an
 - **Tool Invocations:** 314 total
 - **Automation Rate:** 7% (22 auto-approved, 292 manual)
 
+## User Observations
+
+The following observations were provided by the user during the retrospective review:
+
+- **Code Reviewer:** Suggested creating a PR, violating the boundary that PR creation is the Release Manager's responsibility.
+- **UAT Artifact:** Confirmed that the initial UAT run used an unsuitable report (default demo) that didn't test the changes.
+- **Test Plan Location:** Initial test plans were created in the wrong folder because agent instructions pointed to the wrong location (agents followed incorrect instructions).
+- **Model Performance:** GPT-5.2 was subjectively slow.
+- **UAT Agent Stability:** The UAT agent stopped mid-task multiple times, requiring user prompts ("continue") to resume.
+- **UAT Reporting:** The UAT agent had to be reminded to update the UAT report after the second run.
+- **Release Manager Polling:** The RM flooded the chat with waiting messages while waiting for the PR to merge.
+- **Release Manager Handoff:** Confirmed the RM did not wait for CI/Deployment before suggesting handoff.
+- **Rejections/Failures:** User reported using rejections and seeing a "cryptic error" with a retry button (Gemini Pro), but these were not captured in the chat log analysis (logs showed 0 failures).
+- **Release Pipeline:** The switch to GitHub Pro caused duplicate release runs (tag trigger + manual trigger = 3 runs). Pipeline and instructions need updates.
+- **Versionize:** Created a major release (v1.2.0) despite previous attempts to configure it for pre-release mode.
+- **Retrospective Agent:** Confirmed missing terminal access.
+
 ## Agent Analysis
 
 ### Model Usage Overview
@@ -151,11 +168,15 @@ This adaptive approach demonstrates the strength of unified agent mode with inte
 ### Overall Rejection Metrics
 
 - **Total Requests:** 36
-- **Failed Requests:** 0
-- **Rejection Rate:** 0%
-- **Success Rate:** 100%
+- **Failed Requests (Logs):** 0
+- **Rejection Rate (Logs):** 0%
 
-All requests completed successfully without rejections or failures. This indicates stable model performance and appropriate task complexity for the selected models.
+**Discrepancy Note:** The user reported using rejections and encountering a UI-level error with a retry button (Gemini Pro). These events were not reflected in the `modelState` or `response` fields of the exported chat log. This suggests that certain UI-level failures or user rejections might not be persisted in the export format or require a different analysis query.
+
+### Known Issues
+
+- **UAT Tester (Attempt 1):** Used default artifacts instead of feature-specific artifact. This was a workflow error, not a tool rejection.
+- **Release Manager:** Prematurely ended turn before release completion. User corrected; agent completed the workflow.
 
 ## What Went Well
 
@@ -170,9 +191,19 @@ All requests completed successfully without rejections or failures. This indicat
 
 ## What Didn't Go Well
 
-- **UAT Artifact Selection (Minor):** The initial UAT run used default artifacts (`comprehensive-demo-standard-diff.md`, `comprehensive-demo.md`) which did not exercise the `--report-title` option. This required a second UAT run with a dedicated artifact (`uat-custom-report-title.md`).
-  - **Root Cause:** The workflow did not explicitly prompt for artifact validation before UAT execution.
-  - **Impact:** Low. Detected and corrected within the same session. Delay: ~10-15 minutes.
+- **Release Pipeline Configuration (Major):** The recent switch to GitHub Pro caused duplicate release runs (tag trigger + manual trigger). Additionally, Versionize created a major release (v1.2.0) instead of a minor/patch, indicating a configuration failure.
+  - **Root Cause:** `release.yml` triggers and Versionize config were not updated to reflect the new GitHub Pro environment and pre-release strategy.
+  - **Impact:** High. 3 redundant release runs and an unintended major version bump.
+
+- **Agent Instructions (Systemic):** Several agents followed incorrect or outdated instructions:
+  - **Quality Engineer:** Created test plans in the wrong folder (instructions pointed to wrong location).
+  - **Code Reviewer:** Suggested PR creation (violated RM boundary).
+  - **Release Manager:** Flooded chat with polling messages instead of using blocking waits.
+
+- **UAT Workflow Issues (Medium):**
+  - Agent stopped mid-task (GPT-5.2 latency/context issues).
+  - Agent needed reminders to update the report.
+  - Initial artifact selection was incorrect.
 
 - **Premature Retrospective Handoff (Minor):** The release phase ended with a retrospective suggestion before the release workflow had fully completed (CI and release workflows were still in progress).
   - **Root Cause:** Workflow completion criteria were not explicitly verified before suggesting the next step.
@@ -190,21 +221,24 @@ All requests completed successfully without rejections or failures. This indicat
 
 | Issue | Proposed Solution | Action Item |
 |-------|-------------------|-------------|
-| **UAT artifact validation** | Add explicit artifact validation step to UAT workflow: before running UAT, verify that the artifact exercises the feature being tested (e.g., new CLI options, new rendering behavior). | Update UAT documentation and consider adding a checklist prompt |
-| **Release completion verification** | Add explicit completion checklist to release workflow: ✅ PR merged, ✅ CI passed on main, ✅ Version tag created, ✅ Release workflow finished, ✅ Artifacts published. | Document in release process guidelines |
+| **Release pipeline duplication** | Update `release.yml` to handle tag triggers correctly (GitHub Pro behavior) and remove manual trigger instruction from Release Manager if tags are sufficient. | Update `release.yml` and RM instructions |
+| **Versionize major release** | Investigate and fix Versionize configuration or `Directory.Build.props` to enforce correct versioning strategy (prevent unintended major bumps). | Fix Versionize config |
+| **Agent instruction errors** | Fix folder paths in Quality Engineer instructions and clarify PR creation boundaries in Code Reviewer instructions. | Update QE and CR agent definitions |
+| **Release Manager polling** | Update Release Manager instructions to use `gh run watch` (blocking) instead of polling loops to prevent chat flooding. | Update RM instructions |
+| **UAT stability & reporting** | Update UAT Tester instructions to: 1) Update report after *every* run, 2) Validate artifacts before running. Investigate GPT-5.2 performance issues. | Update UAT agent instructions |
 | **Retrospective tooling availability** | Ensure retrospective workflow always has terminal access enabled from the start for chat log analysis. Add this to retrospective prerequisites. | Update retrospective agent documentation |
-| **Automation rate improvement** | Investigate opportunities to increase auto-approval rate for safe operations (e.g., read-only commands, test execution, linting). | Security/UX analysis needed |
 | **Pre-commit validation script** | Create `scripts/pre-commit-checks.sh` to run Docker build and markdown lint before commits to catch issues earlier. | Create script and document in CONTRIBUTING.md |
-| **UAT artifact generation guidance** | Add guidance to feature development workflow: when implementing features that change CLI behavior or output, generate a dedicated UAT artifact that demonstrates the change. | Update feature development documentation |
 
 ## Action Items
 
-1. **Documentation Update:** Add UAT artifact validation step to testing guidelines
-2. **Documentation Update:** Add release completion checklist to release process
-3. **Configuration:** Update retrospective prerequisites to require terminal access
-4. **Future Work:** Create `scripts/pre-commit-checks.sh` for Docker + lint validation
-5. **Future Work:** Analyze automation approval patterns to identify safe auto-approval opportunities
-6. **Documentation Update:** Add UAT artifact generation guidance to feature workflow
+1. **DevOps:** Fix `release.yml` triggers to prevent duplicate runs.
+2. **DevOps:** Fix Versionize configuration to prevent unintended major releases.
+3. **Workflow Engineer:** Update Quality Engineer instructions (fix test plan folder).
+4. **Workflow Engineer:** Update Code Reviewer instructions (remove PR creation suggestion).
+5. **Workflow Engineer:** Update Release Manager instructions (use blocking wait, remove manual trigger if redundant).
+6. **Workflow Engineer:** Update UAT Tester instructions (artifact validation, mandatory report update).
+7. **Workflow Engineer:** Update Retrospective agent instructions (require terminal access).
+8. **Future Work:** Create `scripts/pre-commit-checks.sh`.
 
 ## Lessons Learned
 

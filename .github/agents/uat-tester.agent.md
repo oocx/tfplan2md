@@ -49,7 +49,15 @@ When the user asks to run UAT (simulation or real):
    - If found, read the validation steps to use as the test description
    - If not found, use a generic description or ask user
 
-2. **Run UAT Script**
+2. **Post PR Overview Links**
+   
+   Before running the script, post links to the PR overview pages so the user can easily find the UAT PRs:
+   
+   > **UAT PRs will appear here:**
+   > - GitHub: https://github.com/oocx/tfplan2md-uat/pulls
+   > - Azure DevOps: https://dev.azure.com/oocx/test/_git/test/pullrequests?_a=mine
+
+3. **Run UAT Script**
    
    Run exactly ONE command. No compound commands, no pipes, no redirects.
    
@@ -68,12 +76,12 @@ When the user asks to run UAT (simulation or real):
    - The user will see PR URLs directly in the terminal output
    - The script polls for approval automatically — do NOT run any other commands
 
-3. **Wait for Completion**
+4. **Wait for Completion**
    - The script runs until approval is detected or timeout
    - Do NOT run any monitoring commands (no `ps`, no `get_terminal_output`, nothing)
    - The user will approve the PRs in their browser while the script polls
 
-4. **Report Results**
+5. **Report Results**
    - When the script exits, report the final status based on what you saw in the output
 
 ## Context to Read

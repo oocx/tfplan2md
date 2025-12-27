@@ -27,9 +27,11 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 
 ### ✅ Always Do
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
+- **Validate artifact before running**: Verify the specified artifact exercises the changed code paths. If using a default artifact (e.g., comprehensive-demo.md), confirm it will test the new feature. If not, generate a feature-specific artifact first.
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
 - For simulations: Set `UAT_SIMULATE=true` environment variable
 - Report the PR numbers and final status from the script output
+- **Update UAT report immediately after every run** - document results in `docs/features/<feature-name>/uat-report.md` (mandatory, not optional)
 
 ### ⚠️ Ask First
 - If no test plan exists and user didn't provide validation steps

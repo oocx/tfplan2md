@@ -10,10 +10,10 @@
 
 | # | Description | Status | Priority | Complexity | Value |
 |---|-------------|--------|----------|------------|-------|
-| **1** | Fix Quality Engineer test plan folder instructions | 🔲 Not Started | High | Low | High |
-| **2** | Enforce strict PR creation boundaries | 🔲 Not Started | High | Low | High |
+| **1** | Fix Quality Engineer test plan folder instructions | ✅ Complete | High | Low | High |
+| **2** | Enforce strict PR creation boundaries | ✅ Complete | High | Low | High |
 | **3** | Fix Release Manager polling behavior | 🔲 Not Started | High | Medium | High |
-| **4** | Enforce project script usage | 🔲 Not Started | High | Low | High |
+| **4** | Enforce project script usage | ✅ Complete | High | Low | High |
 | **5** | Fix Task Planner boundary violation | ✅ Complete | Critical | Medium | Critical |
 | **6** | Improve Retrospective Agent critical analysis | 🔲 Not Started | High | Medium | High |
 | **7** | Add interactive retrospective phase | 🔲 Not Started | High | Medium | High |
@@ -21,11 +21,11 @@
 | **9** | Replace Gemini 3 Pro due to instability | 🔲 Not Started | Medium | High | Medium |
 | **10** | Create analyze-run.sh helper script | 🔲 Not Started | Medium | Medium | Medium |
 | **11** | Create cleanup-tags.sh helper script | 🔲 Not Started | Low | Low | Low |
-| **12** | Enforce UAT artifact validation | 🔲 Not Started | High | Low | High |
-| **13** | Enforce UAT report updates | 🔲 Not Started | High | Low | High |
+| **12** | Enforce UAT artifact validation | ✅ Complete | High | Low | High |
+| **13** | Enforce UAT report updates | ✅ Complete | High | Low | High |
 | **14** | Investigate GPT-5.2 performance | 🔲 Not Started | Medium | High | Medium |
 | **15** | Add pre-commit validation script | 🔲 Not Started | Medium | Medium | Medium |
-| **16** | Add workflow completion checklist to Release Manager | 🔲 Not Started | High | Low | High |
+| **16** | Add workflow completion checklist to Release Manager | ✅ Complete | High | Low | High |
 | **17** | Fix release.yml duplicate trigger issue | 🔲 Not Started | Critical | Medium | Critical |
 | **18** | Fix Versionize major release configuration | 🔲 Not Started | Critical | Medium | Critical |
 | **19** | Add rejection tracking to retrospective analysis | 🔲 Not Started | Low | High | Low |

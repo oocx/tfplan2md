@@ -107,6 +107,8 @@ The attempted configuration change in `8d6d563` (“configure versionize to stay
 
 Based on Versionize’s documented behavior, `preReleasePrefix` (and the `--pre-release` flag) influences **suffixes** like `-alpha.0`, but does **not** change the “breaking change → major bump” rule.
 
+Concretely: if the next computed version is `1.0.0` because a breaking change was detected, running Versionize with `--pre-release alpha` would produce `1.0.0-alpha.0` (still a `1.x` version, just pre-release).
+
 ## Suggested Fix Approach (High-level)
 
 ### Prevent duplicate deployments
@@ -129,6 +131,10 @@ Versionize does not appear to provide a config option to “cap major at 0”. P
 
 - **Recommended (process):** While in pre-1.0 mode, do **not** use `BREAKING CHANGE:` markers in commit bodies.
   - Use alternate phrasing (e.g., “Breaking:” without the exact prefix) until ready for `1.0.0`.
+
+- **Alternative (pre-release only):** Always run Versionize with `--pre-release alpha` while in pre-1.0 mode.
+  - This ensures releases are marked as pre-release (e.g., `0.49.1-alpha.0`).
+  - However, it does **not** prevent `1.0.0-alpha.0` if Versionize detects a breaking change.
 
 - **Alternative (automation):** Wrap Versionize in CI logic:
   - Detect when Versionize would bump major from `0.*` to `1.*`.

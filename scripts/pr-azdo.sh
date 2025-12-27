@@ -13,16 +13,19 @@ usage() {
   cat <<'USAGE'
 Usage:
   scripts/pr-azdo.sh create --title <title> --description <text>
+  scripts/pr-azdo.sh create --title <title> --description-from-stdin
   scripts/pr-azdo.sh abandon --id <pr-id>
 
 Options:
-  --title <title>          PR title
-  --description <text>     PR description
-  --id <pr-id>             Pull request ID (for abandon)
+  --title <title>              PR title
+  --description <text>         PR description
+  --description-from-stdin     Read PR description from stdin (avoids temp files)
+  --id <pr-id>                 Pull request ID (for abandon)
 
 Notes:
   - Required: provide an explicit title + description (agent-authored)
   - This script intentionally does not guess title/description
+  - **Agent guidance: Prefer --description-from-stdin** to avoid temporary files
   - Requires: git, Azure CLI (az) + azure-devops extension, jq
   - Merge policy: maintain linear history. In Azure DevOps UI, pick the most rebase/linear option available.
 
@@ -80,6 +83,7 @@ parse_args() {
   TITLE=""
   DESCRIPTION=""
   PR_ID=""
+  USE_STDIN=false
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -90,6 +94,10 @@ parse_args() {
       --description)
         DESCRIPTION="$2"
         shift 2
+        ;;
+      --description-from-stdin)
+        USE_STDIN=true
+        shift
         ;;
       --id)
         PR_ID="$2"
@@ -107,10 +115,15 @@ parse_args() {
     esac
   done
 
+  # Read from stdin if requested
+  if [[ "$USE_STDIN" == "true" ]]; then
+    DESCRIPTION="$(cat)"
+  fi
+
   case "$cmd" in
     create)
         if [[ -z "$TITLE" || -z "$DESCRIPTION" ]]; then
-          echo "Error: provide both --title and --description." >&2
+          echo "Error: provide --title and one of --description or --description-from-stdin." >&2
           usage
           exit 2
         fi

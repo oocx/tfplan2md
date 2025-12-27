@@ -83,28 +83,12 @@ Todo lists:
 
 ### ⚠️ CRITICAL: Autonomous Execution
 
-**You MUST act immediately without asking.** When you detect:
-- **Feedback in poll results** → Immediately apply the fix and post to BOTH PRs
-- **Approval on both PRs** → Immediately run cleanup and generate the report
-- **Abort keyword** → Immediately run cleanup
-
-Do NOT pause to ask the Maintainer what to do next. The VS Code Allow/Deny UI is the only confirmation mechanism.
-
----
-
-## Autonomous Background Execution
-
-For hands-off UAT execution without monitoring, **hand off to the UAT Background agent** instead of running commands yourself.
-
-### When to Use Background Agent
-
-### ⚠️ CRITICAL: Autonomous Execution
-
 **Use the `runSubagent` tool to execute the UAT workflow autonomously.**
 
 When the user asks to run UAT (simulation or real):
 1.  **Prepare the Test Description:**
     *   If a test plan exists (e.g., from Quality Engineer), read it and extract the validation steps.
+    *   **Check for Artifact Instructions:** If the plan specifies a custom artifact or creation command, ensure that artifact exists. If not, create it using the instructions in the plan before launching the subagent.
     *   If no plan exists, ask the user for the validation steps or construct a specific one based on the feature.
     *   For simulations, ensure the description starts with `[SIMULATION]`.
 2.  **Read the Background Agent Definition:**

@@ -6,19 +6,22 @@ usage() {
 Usage:
   scripts/pr-github.sh create --title <title> --body-file <path>
   scripts/pr-github.sh create --title <title> --body <text>
+  scripts/pr-github.sh create --title <title> --body-from-stdin
 
   scripts/pr-github.sh create-and-merge --title <title> --body-file <path>
   scripts/pr-github.sh create-and-merge --title <title> --body <text>
+  scripts/pr-github.sh create-and-merge --title <title> --body-from-stdin
 
 Options:
   --title <title>         PR title (use Conventional Commits style)
   --body-file <path>      Path to a markdown/text file used as PR body
   --body <text>           PR body text (alternative to --body-file)
+  --body-from-stdin       Read PR body from stdin (avoids temp files)
 
 Notes:
   - Required: provide an explicit title + body (agent-authored description)
   - This script intentionally does not guess title/body
-  - **Agent guidance:** This script is the **authoritative** repo tool for creating and merging PRs. Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them (rebase + delete branch).
+  - **Agent guidance:** This script is the **authoritative** repo tool for creating and merging PRs. Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them (rebase + delete branch). **Prefer --body-from-stdin** to avoid temporary files.
   - **Fallback:** Use GitHub chat tools (`github/*`) only when the script does not support a necessary advanced operation or for quick inspection of checks.
   - Requires: git + GitHub CLI (gh) authenticated when used as a CLI fallback
   - Merge policy: uses rebase-and-merge for linear history (per CONTRIBUTING.md)
@@ -63,6 +66,7 @@ parse_args() {
   _title=""
   _body_file=""
   BODY_TEXT=""
+  USE_STDIN=false
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -78,6 +82,10 @@ parse_args() {
         BODY_TEXT="$2"
         shift 2
         ;;
+      --body-from-stdin)
+        USE_STDIN=true
+        shift
+        ;;
       -h|--help)
         usage
         exit 0
@@ -91,24 +99,36 @@ parse_args() {
   done
 
   if [[ -z "$_title" ]]; then
-    echo "Error: provide --title plus one of: --body-file, --body." >&2
+    echo "Error: provide --title plus one of: --body-file, --body, --body-from-stdin." >&2
     usage
     exit 2
   fi
 
-  if [[ -n "$BODY_TEXT" && -n "$_body_file" ]]; then
-    echo "Error: provide only one of --body or --body-file." >&2
+  # Count how many body sources are specified
+  local body_sources=0
+  [[ -n "$BODY_TEXT" ]] && ((body_sources++))
+  [[ -n "$_body_file" ]] && ((body_sources++))
+  [[ "$USE_STDIN" == "true" ]] && ((body_sources++))
+
+  if [[ $body_sources -eq 0 ]]; then
+    echo "Error: provide one of: --body, --body-file, --body-from-stdin." >&2
+    usage
     exit 2
   fi
 
-  if [[ -z "$BODY_TEXT" && -z "$_body_file" ]]; then
-    echo "Error: provide --body or --body-file." >&2
+  if [[ $body_sources -gt 1 ]]; then
+    echo "Error: provide only one of --body, --body-file, or --body-from-stdin." >&2
     exit 2
   fi
 
   if [[ -n "$_body_file" && ! -f "$_body_file" ]]; then
     echo "Error: body file not found: $_body_file" >&2
     exit 2
+  fi
+
+  # Read from stdin if requested
+  if [[ "$USE_STDIN" == "true" ]]; then
+    BODY_TEXT="$(cat)"
   fi
 
   require_non_empty "$_title" "--title"

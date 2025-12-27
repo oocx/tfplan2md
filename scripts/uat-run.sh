@@ -149,6 +149,8 @@ git switch -c "$uat_branch" >/dev/null
 gh_pr=""
 azdo_pr=""
 
+simulate="${UAT_SIMULATE:-false}"
+
 if [[ "$platform" == "both" || "$platform" == "github" ]]; then
   log_info "Creating GitHub UAT PR..."
   gh_out="$(scripts/uat-github.sh create "$artifact_github" "$test_description" | cat)"
@@ -178,37 +180,49 @@ poll_interval_seconds=15
 timeout_seconds=$((60 * 60))
 start_epoch="$(date +%s)"
 
-while true; do
-  now_epoch="$(date +%s)"
-  elapsed=$((now_epoch - start_epoch))
-  if [[ $elapsed -gt $timeout_seconds ]]; then
-    log_error "Timed out waiting for approval after $elapsed seconds."
-    log_error "Check the PR comments for feedback and re-run once resolved."
-    exit 1
-  fi
+if [[ "$simulate" == "true" ]]; then
+  log_warn "SIMULATION MODE enabled (UAT_SIMULATE=true): skipping approval polling and proceeding to cleanup."
 
-  gh_ok=0
-  azdo_ok=0
-
+  # Best-effort: run one poll attempt for visibility/debugging, but do not block.
   if [[ -n "$gh_pr" ]]; then
-    scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || gh_ok=0
-  else
-    gh_ok=1
+    scripts/uat-github.sh poll "$gh_pr" || true
   fi
-
   if [[ -n "$azdo_pr" ]]; then
-    scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || azdo_ok=0
-  else
-    azdo_ok=1
+    scripts/uat-azdo.sh poll "$azdo_pr" || true
   fi
+else
+  while true; do
+    now_epoch="$(date +%s)"
+    elapsed=$((now_epoch - start_epoch))
+    if [[ $elapsed -gt $timeout_seconds ]]; then
+      log_error "Timed out waiting for approval after $elapsed seconds."
+      log_error "Check the PR comments for feedback and re-run once resolved."
+      exit 1
+    fi
 
-  if [[ $gh_ok -eq 1 && $azdo_ok -eq 1 ]]; then
-    log_info "UAT approved on selected platform(s)."
-    break
-  fi
+    gh_ok=0
+    azdo_ok=0
 
-  sleep "$poll_interval_seconds"
-done
+    if [[ -n "$gh_pr" ]]; then
+      scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || gh_ok=0
+    else
+      gh_ok=1
+    fi
+
+    if [[ -n "$azdo_pr" ]]; then
+      scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || azdo_ok=0
+    else
+      azdo_ok=1
+    fi
+
+    if [[ $gh_ok -eq 1 && $azdo_ok -eq 1 ]]; then
+      log_info "UAT approved on selected platform(s)."
+      break
+    fi
+
+    sleep "$poll_interval_seconds"
+  done
+fi
 
 log_info "Cleaning up UAT PRs..."
 if [[ -n "$gh_pr" ]]; then
@@ -219,8 +233,13 @@ if [[ -n "$azdo_pr" ]]; then
   scripts/uat-azdo.sh cleanup "$azdo_pr"
 fi
 
-log_info "Deleting GitHub remote branch: $uat_branch"
-git push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete origin/$uat_branch (may already be deleted)."
+log_info "Deleting remote branch: $uat_branch"
+if git remote get-url uat-github >/dev/null 2>&1; then
+  git push uat-github --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete uat-github/$uat_branch (may already be deleted)."
+fi
+if git remote get-url origin >/dev/null 2>&1; then
+  git push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete origin/$uat_branch (may already be deleted)."
+fi
 
 log_info "Restoring original branch: $original_branch"
 git switch "$original_branch" >/dev/null

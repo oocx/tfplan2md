@@ -77,6 +77,23 @@ Validate markdown rendering in real PR UIs.
 ## Change
 Create a UAT PR and post the test markdown as PR comments.
 
+## Test Instructions
+
+**For Reviewers:**
+1. **Read the test artifact** posted as the first comment below
+2. **Verify markdown rendering**:
+   - Tables render correctly with proper alignment
+   - Code blocks display with syntax highlighting
+   - Links are clickable and formatted properly
+   - Nested lists and formatting work as expected
+3. **Check for rendering issues**:
+   - Escaped characters displaying incorrectly
+   - Missing or malformed table borders
+   - Broken links or incorrect formatting
+4. **Approve or provide feedback**:
+   - Comment "approved" or "lgtm" if rendering is correct
+   - Report specific issues if rendering problems are found
+
 ## Verification
 Maintainer visually reviews the PR comment rendering in Azure DevOps.
 EOF

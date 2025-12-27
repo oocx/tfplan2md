@@ -135,9 +135,15 @@ The background agent will execute everything and report when complete.
 
 When the user asks you to "run a UAT simulation" or "start UAT", **your primary goal is to prepare the environment and then hand off to the UAT Background agent.**
 
+**Simulation Requirements:**
+- **Test Description:** Must explicitly state "This is a simulation to validate the UAT process."
+- **Report:** The final UAT report must clearly state it is a simulation and that reported issues are not real.
+- **Artifacts:** Use default artifacts (`artifacts/comprehensive-demo.md` and `artifacts/comprehensive-demo-standard-diff.md`).
+- **Outcome:** The resulting report is for process improvement only; do NOT commit it or hand off to other agents for fixes.
+
 **Workflow:**
 1. **Prepare:** Ensure you are on a feature branch.
-2. **Artifacts:** Verify default artifacts exist (`artifacts/comprehensive-demo.md` and `artifacts/comprehensive-demo-standard-diff.md`).
+2. **Artifacts:** Verify default artifacts exist.
 3. **Hand Off:** Use the **"Execute UAT Autonomously"** handoff button to let the background agent handle the execution.
 
 **Only proceed with manual execution (below) if:**

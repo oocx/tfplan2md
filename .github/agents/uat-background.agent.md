@@ -2,7 +2,7 @@
 description: Autonomous UAT execution for markdown rendering validation in GitHub and Azure DevOps
 name: UAT Background
 target: cli
-tools: ['run_in_terminal', 'read_file', 'list_dir']
+tools: ['execute/runInTerminal', 'read/readFile', 'search/listDirectory']
 ---
 
 # UAT Background Agent

@@ -47,12 +47,12 @@ Before running any PR creation command, provide in chat:
 ### Recommended: One-Command Wrapper
 Create a PR:
 ```bash
-scripts/pr-github.sh create --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+echo "## Summary\n\nPR description" | scripts/pr-github.sh create --title "<type(scope): summary>" --body-from-stdin
 ```
 
 Create and merge (only when explicitly requested):
 ```bash
-scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body-file <path-to-pr-body.md>
+echo "## Summary\n\nPR description" | scripts/pr-github.sh create-and-merge --title "<type(scope): summary>" --body-from-stdin
 ```
 
 ### 1. Pre-flight Checks
@@ -76,11 +76,11 @@ Notes:
 
 #### Fallback: `gh` CLI
 ```bash
-PAGER=cat gh pr create \
+echo "## Summary\n\nPR description" | PAGER=cat gh pr create \
   --base main \
   --head "$(git branch --show-current)" \
   --title "<type(scope): summary>" \
-  --body-file <path-to-pr-body.md>
+  --body-file -
 ```
 
 ### 4. Merge (Only When Explicitly Requested)

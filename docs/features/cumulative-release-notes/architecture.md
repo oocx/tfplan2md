@@ -6,11 +6,9 @@ Implemented
 
 ## Context
 
-The release workflow currently extracts changelog content for only the version being released. Since not every version is deployed to Docker Hub (releases are triggered manually), users need to see all changes accumulated since the last Docker deployment.
+The release workflow currently extracts changelog content for only the version being released. Since not every version is deployed to Docker Hub, users need to see all changes accumulated since the last Docker deployment.
 
-The workflow creates both GitHub releases and Docker images in a single run, triggered either by:
-- Tag push events (`v*`)
-- Manual workflow dispatch with a tag input
+The workflow creates both GitHub releases and Docker images in a single run, triggered by tag push events (`v*`).
 
 Currently, the "Extract changelog for version" step in [.github/workflows/release.yml](.github/workflows/release.yml) uses awk to extract only the section for the current version from CHANGELOG.md.
 
@@ -50,7 +48,7 @@ Currently, the "Extract changelog for version" step in [.github/workflows/releas
 - Requires committing state files back to the repository
 - Adds complexity to the workflow (commit and push)
 - Out of sync if file is manually edited or gets stale
-- Doesn't work well with manual workflow_dispatch triggers
+- Introduces new state that can drift from GitHub releases
 - Violates principle of releases as source of truth
 
 ### Option 3: Use Git Tags with Prefix for Docker Deployments
@@ -85,7 +83,7 @@ Currently, the "Extract changelog for version" step in [.github/workflows/releas
 
 ### Positive
 - No additional state management or repository modifications needed
-- Works seamlessly with both automatic (tag push) and manual (workflow_dispatch) triggers
+- Works seamlessly with the tag-push trigger
 - Easy to test and validate
 - Maintains backward compatibility with existing workflow
 
@@ -137,7 +135,7 @@ The solution relies on the existing CHANGELOG.md structure:
   - One previous release with version gaps
   - Consecutive releases
 - Verify formatting is preserved across multiple version blocks
-- Test both automatic (tag push) and manual (workflow_dispatch) triggers
+- Test the tag-push trigger
 
 ### Tools and Dependencies
 

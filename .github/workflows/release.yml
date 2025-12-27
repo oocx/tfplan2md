@@ -95,9 +95,9 @@ jobs:
             TAGS="$TAGS\n${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:${{ needs.release.outputs.major }}"
             TAGS="$TAGS\n${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:latest"
           fi
-          echo "tags<<'EOF'" >> $GITHUB_OUTPUT
+          echo "tags<<EOF" >> $GITHUB_OUTPUT
           echo -e "$TAGS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo EOF >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

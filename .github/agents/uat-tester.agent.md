@@ -231,30 +231,27 @@ git push -u origin HEAD
 ARTIFACT=$(ls -t artifacts/*.md 2>/dev/null | head -1)
 echo "Using artifact: $ARTIFACT"
 
+# Define feature-specific test description
+# This should describe what to validate specific to the feature being tested
+# Examples:
+#   "Verify Azure resource IDs display in readable format (e.g., Key Vault \`kv-name\` in resource group \`rg-name\`)"
+#   "Verify firewall rules show before/after comparison in a clear table format"
+#   "Verify role assignments display with principal names instead of GUIDs"
+TEST_DESCRIPTION="[Replace with feature-specific validation instructions]"
+
 # CRITICAL: Before creating the PRs, post the exact Title + Description in chat (use the standard template).
 # Use the same title/description as the UAT helper scripts.
 UAT_TITLE="UAT: $(basename "$ARTIFACT" .md)"
-UAT_DESC=$(cat <<'EOF'
-## Problem
-Validate markdown rendering in real PR UIs (GitHub and Azure DevOps).
-
-## Change
-Create UAT PRs and post the test markdown as PR comments.
-
-## Verification
-Maintainer visually reviews the PR comments in both platforms.
-EOF
-)
 
 # Create GitHub PR and capture the PR number
-scripts/uat-github.sh create "$ARTIFACT"
+scripts/uat-github.sh create "$ARTIFACT" "$TEST_DESCRIPTION"
 # Parse output for: "PR created: #XX" and store GH_PR=XX
 
 # Setup Azure DevOps (only needed once per session)
 scripts/uat-azdo.sh setup
 
 # Create Azure DevOps PR and capture the PR number
-scripts/uat-azdo.sh create "$ARTIFACT"
+scripts/uat-azdo.sh create "$ARTIFACT" "$TEST_DESCRIPTION"
 # Parse output for: "PR created: #XX" and store AZDO_PR=XX
 ```
 

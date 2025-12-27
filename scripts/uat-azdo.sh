@@ -4,7 +4,8 @@
 #
 # Actions:
 #   setup           - Configure Azure DevOps defaults and verify authentication
-#   create <file>   - Create a UAT PR with initial comment from <file>
+#   create <file> <test-description>   - Create a UAT PR with initial comment from <file>
+#                                         test-description: Feature-specific validation instructions
 #   comment <pr-id> <file> - Add a comment to PR from <file>
 #   poll <pr-id>    - Poll for new comments/threads and check for approval
 #   cleanup <pr-id> - Abandon the PR after UAT completion
@@ -70,7 +71,7 @@ cmd_create() {
     branch=$(git branch --show-current)
     local title="UAT: $(basename "$file" .md)"
     local description
-    description=$(cat <<'EOF'
+    description=$(cat <<EOF
 ## Problem
 Validate markdown rendering in real PR UIs.
 
@@ -79,7 +80,10 @@ Create a UAT PR and post the test markdown as PR comments.
 
 ## Test Instructions
 
-**For Reviewers:**
+**Feature-Specific Validation:**
+${test_description}
+
+**General Verification:**
 1. **Read the test artifact** posted as the first comment below
 2. **Verify markdown rendering**:
    - Tables render correctly with proper alignment

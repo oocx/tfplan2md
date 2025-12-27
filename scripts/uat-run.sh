@@ -4,7 +4,12 @@
 # Purpose: Reduce Maintainer approval fatigue by batching UAT into one stable command.
 #
 # Usage:
-#   scripts/uat-run.sh [artifact-path] [--platform both|github|azdo]
+#   scripts/uat-run.sh [artifact-path] [test-description] [--platform both|github|azdo]
+#
+# Arguments:
+#   artifact-path      - (Optional) Path to markdown artifact to test
+#   test-description   - (Required) Feature-specific validation instructions
+#                        Example: "Verify Azure resource IDs display in readable format"
 #
 # Defaults:
 # - If artifact-path is omitted, defaults are selected per platform:
@@ -30,14 +35,28 @@ log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
 die_usage() {
-  log_error "Usage: $0 [artifact-path] [--platform both|github|azdo]"
+  log_error "Usage: $0 [artifact-path] <test-description> [--platform both|github|azdo]"
+  log_error "Example: $0 'Verify Azure resource IDs display in readable format'"
+  log_error "Example: $0 artifacts/custom.md 'Verify firewall rules show before/after comparison'"
   exit 2
 }
 
 artifact_arg=""
+test_description=""
+
+# Parse positional arguments
 if [[ "${1:-}" != "" && "${1:-}" != --* ]]; then
-  artifact_arg="$1"
-  shift || true
+  # Could be artifact or test description
+  if [[ "${2:-}" != "" && "${2:-}" != --* ]]; then
+    # Two positional args: artifact + description
+    artifact_arg="$1"
+    test_description="$2"
+    shift 2 || true
+  else
+    # One positional arg: treat as test description
+    test_description="$1"
+    shift || true
+  fi
 fi
 
 platform="both"
@@ -55,6 +74,12 @@ done
 
 if [[ "$platform" != "both" && "$platform" != "github" && "$platform" != "azdo" ]]; then
   log_error "Invalid --platform value: $platform"
+  die_usage
+fi
+
+# Validate required test description
+if [[ -z "$test_description" ]]; then
+  log_error "Test description is required"
   die_usage
 fi
 
@@ -116,7 +141,7 @@ azdo_pr=""
 
 if [[ "$platform" == "both" || "$platform" == "github" ]]; then
   log_info "Creating GitHub UAT PR..."
-  gh_out="$(scripts/uat-github.sh create "$artifact_github" | cat)"
+  gh_out="$(scripts/uat-github.sh create "$artifact_github" "$test_description" | cat)"
   gh_pr="$(echo "$gh_out" | grep -oE 'PR created: #[0-9]+' | grep -oE '[0-9]+' | tail -n 1)"
   if [[ -z "$gh_pr" ]]; then
     log_error "Failed to parse GitHub PR number from output."
@@ -130,7 +155,7 @@ if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
   scripts/uat-azdo.sh setup
 
   log_info "Creating Azure DevOps UAT PR..."
-  azdo_out="$(scripts/uat-azdo.sh create "$artifact_azdo" | cat)"
+  azdo_out="$(scripts/uat-azdo.sh create "$artifact_azdo" "$test_description" | cat)"
   azdo_pr="$(echo "$azdo_out" | grep -oE 'PR created: #[0-9]+' | grep -oE '[0-9]+' | tail -n 1)"
   if [[ -z "$azdo_pr" ]]; then
     log_error "Failed to parse Azure DevOps PR id from output."

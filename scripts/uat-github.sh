@@ -3,7 +3,8 @@
 # Usage: scripts/uat-github.sh <action> [args]
 #
 # Actions:
-#   create <file>   - Create a UAT PR with initial comment from <file>
+#   create <file> <test-description>   - Create a UAT PR with initial comment from <file>
+#                                         test-description: Feature-specific validation instructions
 #   comment <pr-number> <file> - Add a comment to PR from <file>
 #   poll <pr-number> - Poll for new comments and check for approval
 #   cleanup <pr-number> - Close the PR after UAT completion
@@ -39,17 +40,24 @@ source "$script_dir/uat-helpers.sh"
 
 cmd_create() {
     local file="${1:-}"
+    local test_description="${2:-}"
     local simulate="${UAT_SIMULATE:-false}"
     local force="${UAT_FORCE:-false}"
     
     # Validate and potentially set default artifact (platform-aware)
     file="$(validate_artifact github "$file" "$simulate" "$force")"
     
+    if [[ -z "$test_description" ]]; then
+        log_error "Test description is required. Usage: $0 create <file> <test-description>"
+        log_error "Example: $0 create artifacts/report.md 'Verify Azure resource IDs display in readable format'"
+        exit 1
+    fi
+    
     local branch
     branch=$(git branch --show-current)
     local title="UAT: $(basename "$file" .md)"
     local body
-    body=$(cat <<'EOF'
+    body=$(cat <<EOF
 ## Problem
 Validate markdown rendering in real PR UIs.
 
@@ -58,7 +66,10 @@ Create a UAT PR and post the test markdown as PR comments.
 
 ## Test Instructions
 
-**For Reviewers:**
+**Feature-Specific Validation:**
+${test_description}
+
+**General Verification:**
 1. **Read the test artifact** posted as the first comment below
 2. **Verify markdown rendering**:
    - Tables render correctly with proper alignment

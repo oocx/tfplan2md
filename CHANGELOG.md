@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.2.0"></a>
+## [1.2.0](https://github.com/oocx/tfplan2md/compare/v1.1.0...v1.2.0) (2025-12-27)
+
+### ✨ Features
+
+* allow custom report title ([275d884](https://github.com/oocx/tfplan2md/commit/275d88404889510c6f0d28b27d7a683f7b3cf3a8))
+
+### 🐛 Bug Fixes
+
+* address report-title review feedback ([21dd74c](https://github.com/oocx/tfplan2md/commit/21dd74c1b815477e6ed84a3994de441d5e095f7d))
+
+### 📚 Documentation
+
+* add architecture for custom report title ([83fa608](https://github.com/oocx/tfplan2md/commit/83fa608bc15f6211fd19f231a0e99f94a2bf9f46))
+* add feature specification for custom report title ([37cfabf](https://github.com/oocx/tfplan2md/commit/37cfabfccd57f265b317e89c36b6ab9d02aadd4a))
+* add implementation tasks for custom report title ([3a7eef4](https://github.com/oocx/tfplan2md/commit/3a7eef4876ce31c5bd355e1e689bf87ed5b8657e))
+* add test plan for custom report title ([ae2e922](https://github.com/oocx/tfplan2md/commit/ae2e9229092e7145e7efd72eb18a70a368f30f06))
+* clarify that templates add the # character, not the tool ([2a0f496](https://github.com/oocx/tfplan2md/commit/2a0f496e57c04301997cef452f31b099293cb5b9))
+* clarify that templates control their own default titles ([f444dd7](https://github.com/oocx/tfplan2md/commit/f444dd7e6498f56618e63fcef9a428843e99669c))
+* move UAT test plan to feature folder and update agent instructions ([924c26f](https://github.com/oocx/tfplan2md/commit/924c26fd10fea05159799f30dd3ef8b62f787f52))
+* update custom report title UAT report with results ([e3109ab](https://github.com/oocx/tfplan2md/commit/e3109abc682e7c7bbed8c432185fe5d296179cda))
+* update tasks for custom report title ([745b4b9](https://github.com/oocx/tfplan2md/commit/745b4b9e1d5ed3da92fed448e64bf7495c708b1b))
+* update test plan with UAT artifact instructions ([43dcada](https://github.com/oocx/tfplan2md/commit/43dcada5d51151329f9de364d1d838b539fdb580))
+
 <a name="1.1.0"></a>
 ## [1.1.0](https://github.com/oocx/tfplan2md/compare/v1.0.0...v1.1.0) (2025-12-27)
 

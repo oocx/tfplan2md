@@ -82,6 +82,17 @@ Option 2 is the smallest approach that:
 
 Keep Scriban templates **layout-focused** (loops + conditionals + printing prepared values). Put all non-trivial string composition and formatting logic into **C# helpers** and/or **precomputed model properties**.
 
+## Template Simplicity Checklist
+
+Use this as a guardrail during implementation and review.
+
+- Templates should **not** build complex strings by concatenating parts; prefer `SummaryHtml`, `ChangedAttributesSummary`, and similar precomputed fields.
+- Templates should **not** implement semantic formatting rules (✅/❌, ✅ Allow/⛔ Deny, protocol/direction icons, 🌐 CIDR/IP, 🌍 location); call helpers or print preformatted values.
+- Templates may use **simple branching** for layout only (e.g., create vs update vs delete table shape).
+- Templates should avoid parsing or transforming values (no regex-like logic, no attempts to rewrite backticks → `<code>`).
+- Any formatting that differs by context (table vs `<summary>`) must be handled in C# (context-aware helpers), not with duplicated template snippets.
+- Resource-specific templates should share the same outer “resource block unit” shape (anchors + `<details>/<summary>`), and only differ in their internal table content.
+
 ### 1) Introduce stable resource block anchors
 
 **Goal:** Allow `MarkdownRenderer` to replace a resource’s rendered block without relying on visible headings.

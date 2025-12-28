@@ -59,7 +59,7 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | account_replication_type | `LRS` | `GRS` |
-| tags.cost_center | - | `🌐 1234` |
+| tags.cost_center | - | `1234` |
 
 </details>
 <!-- tfplan2md:resource-end address=azurerm_storage_account.data -->
@@ -143,8 +143,8 @@
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-| `allow-http` | `🔗 TCP` | `🌐 10.1.1.0/24` | `✳️ *` | `🔌 80` | `Allow outbound HTTP` |
-| `allow-https` | `🔗 TCP` | `🌐 10.1.1.0/24` | `✳️ *` | `🔌 443` | `Allow outbound HTTPS` |
+| `allow-http` | `🔗 TCP` | `🌐 10.1.1.0/24` | `✳️` | `🔌 80` | `Allow outbound HTTP` |
+| `allow-https` | `🔗 TCP` | `🌐 10.1.1.0/24` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
 
 <!-- tfplan2md:resource-end address=module.network.azurerm_firewall_network_rule_collection.new_public -->
 
@@ -175,6 +175,7 @@
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 | ➕ | `allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 443` | `Secure web` |
 | ➕ | `allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🔌 8080` | `Log ingestion` |
+| ➕ | `allow-icmp-ping` | `📡 ICMP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `✳️` | `ICMP ping for network diagnostics` |
 | 🔄 | `allow-dns` | `📨 UDP` | - `10.1.1.0/24`<br>+ `10.1.1.0/24, 10.1.2.0/24` | `🌐 168.63.129.16` | `🔌 53` | <code>DNS to Azure</code> |
 | 🔄 | `allow-api` | `🔗 TCP` | `🌐 10.1.1.0/24` | - `10.1.2.0/24`<br>+ `10.2.2.0/24` | - `8443`<br>+ `8443, 9443` | <code>API tier</code> |
 | ❌ | `allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 80` | `Legacy HTTP` |
@@ -207,9 +208,10 @@
 
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-| ➥ | `allow-https` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️ *` | `✳️ *` | `✳️ *` | `🔌 443` | `-` |
-| ➥ | `deny-rdp` | `🌐 200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️ *` | `✳️ *` | `✳️ *` | `🔌 3389` | `Block RDP from internet` |
-| ❌ | `allow-http` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️ *` | `✳️ *` | `✳️ *` | `🔌 80` | `-` |
+| ➥ | `allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `-` |
+| ➥ | `deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
+| ➥ | `allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
+| ❌ | `allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | `-` |
 
 <!-- tfplan2md:resource-end address=module.network.azurerm_network_security_group.app -->
 
@@ -236,28 +238,32 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.rg_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.rg_reader</code></b> — <code>Jane Doe (User)</code> → <code>Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.rg_reader</code></b> — <code>Jane Doe (User)</code> (User) → <code>Reader</code> on <code>rg-tfplan2md-demo</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | scope | `rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
 | role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
-| principal_id | `Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
+| principal_id | `Jane Doe (User)` (User) [`00000000-0000-0000-0000-000000000001`] |
+| principal_type | `👤 User` |
+| role_definition_name | `🛡️ Reader` |
 
 </details>
 <!-- tfplan2md:resource-end address=module.security.azurerm_role_assignment.rg_reader -->
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.storage_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.storage_reader</code></b> — <code>DevOps Team (Group)</code> → <code>Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.storage_reader</code></b> — <code>DevOps Team (Group)</code> (Group) → <code>Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | scope | `rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
 | role_definition_id | `Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |
-| principal_id | `DevOps Team (Group)` [`00000000-0000-0000-0000-000000000002`] |
+| principal_id | `DevOps Team (Group)` (Group) [`00000000-0000-0000-0000-000000000002`] |
+| principal_type | `👥 Group` |
+| role_definition_name | `🛡️ Storage Blob Data Reader` |
 
 </details>
 <!-- tfplan2md:resource-end address=module.security.azurerm_role_assignment.storage_reader -->
@@ -292,7 +298,7 @@
 | location | `🌍 eastus` |
 | name | `law-security` |
 | resource_group_name | `rg-tfplan2md-demo` |
-| retention_in_days | `🌐 90` |
+| retention_in_days | `90` |
 | sku | `PerGB2018` |
 
 </details>
@@ -367,14 +373,16 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.obsolete -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.obsolete</code></b> — remove <code>Reader</code> on <code>rg-old</code> from <code>00000000-0000-0000-0000-000000000005</code></summary>
+<summary>❌ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.obsolete</code></b> — remove <code>Reader</code> on <code>rg-old</code> from ServicePrincipal <code>Legacy App (Service Principal)</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | scope | `rg-old` in subscription `12345678-1234-1234-1234-123456789012` |
 | role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
-| principal_id | `00000000-0000-0000-0000-000000000005` [`00000000-0000-0000-0000-000000000005`] |
+| principal_id | `Legacy App (Service Principal)` (ServicePrincipal) [`00000000-0000-0000-0000-000000000005`] |
+| principal_type | `💻 ServicePrincipal` |
+| role_definition_name | `🛡️ Reader` |
 
 </details>
 <!-- tfplan2md:resource-end address=module.security.azurerm_role_assignment.obsolete -->
@@ -393,7 +401,7 @@
 | location | `🌍 eastus` |
 | name | `law-core` |
 | resource_group_name | `rg-tfplan2md-demo` |
-| retention_in_days | `🌐 30` |
+| retention_in_days | `30` |
 | sku | `PerGB2018` |
 
 </details>

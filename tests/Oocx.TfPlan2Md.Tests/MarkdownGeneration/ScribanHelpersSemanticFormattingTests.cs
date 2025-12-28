@@ -42,7 +42,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueTable("protocol", "*", null);
 
-        result.Should().Be("`✳️ *`");
+        result.Should().Be("`✳️`");
     }
 
     [Fact]

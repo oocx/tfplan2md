@@ -112,7 +112,6 @@
 {{ large_attrs_unsorted = [] }}
 
 {{ for attr in attributes }}
-{{ if attr.name == "role_definition_name" }}{{ continue }}{{ end }}
 {{- before_value_raw = format_role_value(attr.name, before_state != null ? before_state[attr.name] : null, before_scope, before_role, before_principal, false) -}}
 {{- after_value_raw = format_role_value(attr.name, after_state != null ? after_state[attr.name] : null, after_scope, after_role, after_principal, false) -}}
 {{- before_value_table = format_role_value(attr.name, before_state != null ? before_state[attr.name] : null, before_scope, before_role, before_principal, true) -}}

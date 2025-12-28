@@ -78,6 +78,10 @@ Option 2 is the smallest approach that:
 
 ## Proposed Technical Design
 
+## Guiding Principle
+
+Keep Scriban templates **layout-focused** (loops + conditionals + printing prepared values). Put all non-trivial string composition and formatting logic into **C# helpers** and/or **precomputed model properties**.
+
 ### 1) Introduce stable resource block anchors
 
 **Goal:** Allow `MarkdownRenderer` to replace a resource’s rendered block without relying on visible headings.
@@ -113,6 +117,11 @@ We need two distinct formatting contexts:
 - `format_attribute_value_table(attr_name, value, provider)` → returns a markdown-safe value applying semantic icons
 - `format_attribute_value_summary(attr_name, value, provider)` → returns a summary-safe value applying semantic icons
 
+Additionally, add helpers intended to keep templates simple:
+- `format_summary_html(change)` → returns the full `<summary>...` inner content (already using `<code>` where needed)
+- `format_changed_attributes_summary(change)` → returns `2 🔧 attr1, attr2, +N more` (or empty when not applicable)
+- `format_tags_badges(tags)` → returns `**🏷️ Tags:** ...` (already correctly code-formatted)
+
 **Semantic mappings (per spec):**
 - Booleans: `true` → `✅ true`, `false` → `❌ false`
 - Access: `Allow` → `✅ Allow`, `Deny` → `⛔ Deny`
@@ -121,7 +130,7 @@ We need two distinct formatting contexts:
 - CIDR/IP detection: prefix inside code: `🌐 10.0.0.0/16`
 - Location formatting: icon inside code, typically wrapped in parentheses in summaries: `(<code>🌍 eastus</code>)`
 
-### 3) Build the `<summary>` line from structured parts
+### 3) Precompute summary-line strings in C# (preferred)
 
 The default template currently displays a visible heading `#### {action} {address}` and an optional `**Summary:** ...` paragraph.
 
@@ -131,23 +140,26 @@ New target structure:
 
 **Data sources:**
 - Use `change.Type` and `change.Name` directly (already on the model)
-- Use `change.Summary` only for the “human context” portion, but **convert inline backticks to `<code>`** in summary context
+- Prefer precomputed, summary-safe fields on the model (or helper output) rather than composing strings in templates
+
+**Proposed model additions (C#):**
+- `ResourceChangeModel.SummaryHtml` (string): the full human context portion, already `<summary>`-safe (uses `<code>`, not backticks)
+- `ResourceChangeModel.ChangedAttributesSummary` (string): `2 🔧 attr1, attr2, +N more` (empty when not update)
+- `ResourceChangeModel.TagsBadges` (string?): `**🏷️ Tags:** ...` for create/delete when tags are present
 
 **Changed-attributes summary format:** For `action == "update"`
-- Compute count = `change.AttributeChanges.size`
-- Compute list = first N attribute names (N=3 like current behavior), then add `, +X more` suffix
-- Render as: `| {count} 🔧 attr1, attr2, …`
+- Compute count + preview list in C# (same truncation rules as today)
+- Render as: `2 🔧 attr1, attr2, +N more`
 
-This avoids relying on `ResourceSummaryBuilder`’s current `"Changed:"` phrasing, and makes the summary formatting consistent with the feature decision.
+This avoids relying on `ResourceSummaryBuilder`’s current `"Changed:"` phrasing while also keeping templates simple.
 
 ### 4) Tags as inline badges (create/delete focus)
 
-The default template can identify tag rows via `attr.name` prefix `tags.`.
+Prefer extracting and formatting tags in C# and passing a prepared `TagsBadges` (or equivalent) into the template.
 
 Proposed behavior:
-- For `create`/`delete`, extract `tags.*` attributes from the small-attributes table rendering and emit:
-  - `**🏷️ Tags:** `key: value` `key: value``
-- For `update`, keep tag changes in the Before/After table (because badges cannot represent diffs cleanly without additional data)
+- For `create`/`delete`, extract `tags.*` values and format the inline badge string in C#.
+- For `update`, keep tag changes in the Before/After table (because badges cannot represent diffs cleanly without additional data).
 
 This stays within the data available to `default.sbn` without requiring full JSON traversal.
 
@@ -192,5 +204,5 @@ Location values are formatted as code with the icon inside the code span in summ
 - Update `default.sbn` to remove per-resource `####` headings and emit outer `<details>/<summary>`.
 - Update the embedded resource-specific templates (`azurerm/network_security_group.sbn`, `azurerm/firewall_network_rule_collection.sbn`, `azurerm/role_assignment.sbn`) to match the new block shape.
 - Update/extend tests and snapshots:
-  - `tests/.../ResourceSummaryBuilderTests.cs` may need updates only if the summary builder output changes; prefer keeping builder stable and computing changed-attribute display in templates.
+  - Prefer keeping `ResourceSummaryBuilder` stable; implement the new `2 🔧 ...` update-summary formatting via new model fields/helpers used by templates.
   - Demo artifacts/snapshots should be regenerated via existing scripts.

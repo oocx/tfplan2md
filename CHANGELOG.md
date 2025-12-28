@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.3"></a>
+## [1.0.0-alpha.3](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-12-28)
+
+### ✨ Features
+
+* **workflow:** add agent validation tool and update improvement statuses ([3a0d9f9](https://github.com/oocx/tfplan2md/commit/3a0d9f9811491542f3839ff96ff21e3028b8077b))
+* **workflow:** add validate-agent skill ([455eabb](https://github.com/oocx/tfplan2md/commit/455eabbbb7e875a5d70db33751ab2bdf4e02f7f0))
+
 <a name="1.0.0-alpha.2"></a>
 ## [1.0.0-alpha.2](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2025-12-28)
 

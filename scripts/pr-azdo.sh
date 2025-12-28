@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Prevent interactive pagers from blocking automation
+export AZURE_CORE_PAGER=cat
+export PAGER=cat
+
 # Azure DevOps PR helper.
 # Goal: reduce Maintainer approval interruptions by running PR creation as a single stable command.
 

@@ -79,6 +79,7 @@ Updated role assignment with new permissions
 | role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `Custom Contributor Long Name 1234567890` |
 | principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] | `33333333-3333-3333-3333-333333333333` (Group) [`33333333-3333-3333-3333-333333333333`] |
 | description | `Read-only access for DevOps` | `Updated role assignment with new permissions` |
+| role_definition_name | - | `🛡️ Custom Contributor Long Name 1234567890` |
 
 </details>
 <!-- tfplan2md:resource-end address=azurerm_role_assignment.replace_assignment -->
@@ -111,6 +112,7 @@ Legacy access
 | principal_id | `99999999-9999-9999-9999-999999999999` (ServicePrincipal) [`99999999-9999-9999-9999-999999999999`] |
 | principal_type | `💻 ServicePrincipal` |
 | name | `unmapped` |
+| role_definition_name | `🛡️ Extremely Verbose Custom Role Name For Long Output Validation 1234567890` |
 
 </details>
 <!-- tfplan2md:resource-end address=azurerm_role_assignment.unmapped_principal -->

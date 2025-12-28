@@ -77,7 +77,7 @@ public class MarkdownRendererResourceTemplateTests
         // Assert
         normalized.Should().Contain("| ➕ | allow-dns | 📨 UDP | 🌐 10.0.1.0/24, 🌐 10.0.2.0/24 | 🌐 168.63.129.16 | 🔌 53 | Allow DNS queries to Azure DNS |");
         normalized.Should().Contain("| ❌ | allow-ssh-old | 🔗 TCP | 🌐 10.0.0.0/8 | 🌐 10.0.2.0/24 | 🔌 22 | Legacy SSH access - to be removed |");
-        normalized.Should().Contain("| ⏺️ | allow-https | 🔗 TCP | 🌐 10.0.1.0/24 | ✳️ * | 🔌 443 | Allow HTTPS traffic to internet |");
+        normalized.Should().Contain("| ⏺️ | allow-https | 🔗 TCP | 🌐 10.0.1.0/24 | ✳️ | 🔌 443 | Allow HTTPS traffic to internet |");
         normalized.Should().NotContain("- allow-dns");
         normalized.Should().NotContain("+ allow-dns");
     }

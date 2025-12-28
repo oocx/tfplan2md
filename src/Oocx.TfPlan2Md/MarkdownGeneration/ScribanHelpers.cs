@@ -282,7 +282,7 @@ public static class ScribanHelpers
 
         if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
         {
-            return context == ValueFormatContext.Table ? FormatCodeTable("✳️ *") : "✳️ *";
+            return context == ValueFormatContext.Table ? FormatCodeTable("✳️") : "✳️";
         }
 
         if (IsIpAddressOrCidr(normalizedValue))
@@ -427,7 +427,7 @@ public static class ScribanHelpers
 
         if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("✳️ *") : "✳️ *";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("✳️") : "✳️";
             return true;
         }
 
@@ -574,6 +574,13 @@ public static class ScribanHelpers
     /// <returns>True when the value is an IP address or CIDR.</returns>
     private static bool IsIpAddressOrCidr(string value)
     {
+        // Reject pure integers (e.g., "100", "90") which IPAddress.TryParse accepts as "0.0.0.100"
+        // Only accept values that contain dots
+        if (!value.Contains('.', StringComparison.Ordinal))
+        {
+            return false;
+        }
+
         if (IPAddress.TryParse(value, out _))
         {
             return true;

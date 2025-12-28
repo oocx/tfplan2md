@@ -8,6 +8,35 @@ Convert Terraform plan JSON files into human-readable Markdown reports.
 
 **NOTE:** This project was developed 100% with GitHub Copilot to explore how far AI-assisted development can go. All code and specifications were generated with AI support.
 
+## Use Cases
+
+### Pull Request Reviews
+
+Terraform plans are notoriously difficult to review in pull requests:
+
+- **Wall of text output** - Raw `terraform plan` output is verbose and hard to scan
+- **No structure** - Changes aren't grouped logically, making it difficult to understand impact
+- **Cryptic JSON** - `terraform show -json` provides complete data but is unreadable for humans
+- **Index-based diffs** - Changes to lists show as confusing index modifications (e.g., `firewall_rule[2]` deleted, `firewall_rule[1]` modified)
+- **Lost context** - Hard to see the big picture: "What's actually changing and why?"
+
+**tfplan2md solves this** by generating clean, readable Markdown reports that:
+
+- ✅ **Structure changes logically** - Group by module, summarize by action type
+- ✅ **Show semantic diffs** - See which firewall rules or NSG rules were added/removed, not index changes
+- ✅ **Highlight key changes** - One-line summaries show what changed in each resource at a glance
+- ✅ **Format for readability** - Collapsible sections, tables, and syntax highlighting make review efficient
+- ✅ **Render natively** - GitHub and Azure DevOps display reports beautifully in PR comments
+
+**Result:** Reviewers can quickly understand infrastructure changes, catch potential issues, and approve confidently.
+
+### Other Use Cases
+
+- **Release documentation** - Attach plan reports to release notes for audit trails
+- **Compliance audits** - Generate human-readable change documentation for compliance reviews
+- **Team communication** - Share infrastructure changes with stakeholders who don't read Terraform code
+- **CI/CD integration** - Automatically post plan summaries to PRs, Slack, or Teams
+
 ## Features
 
 - 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output

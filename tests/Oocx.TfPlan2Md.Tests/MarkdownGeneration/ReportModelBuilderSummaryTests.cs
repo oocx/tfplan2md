@@ -61,7 +61,7 @@ public class ReportModelBuilderSummaryTests
 
         // Assert
         var update = model.Changes.Should().ContainSingle(c => c.Action == "update").Subject;
-        update.ChangedAttributesSummary.Should().Be("4 🔧 account_replication_type, https_only, kind, +1 more");
+        update.ChangedAttributesSummary.Should().Be("4🔧 account_replication_type, https_only, kind, +1 more");
     }
 
     [Fact]

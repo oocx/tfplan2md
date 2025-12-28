@@ -53,7 +53,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_storage_account.data -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>sttfplan2mddata</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | | 2 🔧 account_replication_type, tags.cost_center</summary>
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>sttfplan2mddata</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | 2🔧 account_replication_type, tags.cost_center</summary>
 <br>
 
 | Attribute | Before | After |
@@ -88,7 +88,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.hub -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>vnet-hub</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | <code>🌐 10.0.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>vnet-hub</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -103,7 +103,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.spoke -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>vnet-spoke</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | <code>🌐 10.1.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>vnet-spoke</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.1.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -143,8 +143,8 @@
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-| `allow-http` | `🔗 TCP` | `🌐 10.1.1.0/24` | `*` | `🌐 80` | `Allow outbound HTTP` |
-| `allow-https` | `🔗 TCP` | `🌐 10.1.1.0/24` | `*` | `🌐 443` | `Allow outbound HTTPS` |
+| `allow-http` | `🔗 TCP` | `🌐 10.1.1.0/24` | `✳️ *` | `🔌 80` | `Allow outbound HTTP` |
+| `allow-https` | `🔗 TCP` | `🌐 10.1.1.0/24` | `✳️ *` | `🔌 443` | `Allow outbound HTTPS` |
 
 <!-- tfplan2md:resource-end address=module.network.azurerm_firewall_network_rule_collection.new_public -->
 
@@ -152,7 +152,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.branch -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>vnet-branch</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | <code>🌐 10.2.0.0/16</code> | | 1 🔧 address_space[1]</summary>
+<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>vnet-branch</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.2.0.0/16</code> | 1🔧 address_space[1]</summary>
 <br>
 
 | Attribute | Before | After |
@@ -173,12 +173,12 @@
 
 | Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-| ➕ | `allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🌐 443` | `Secure web` |
-| ➕ | `allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🌐 8080` | `Log ingestion` |
-| 🔄 | `allow-dns` | `📨 UDP` | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.1.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.1.1.0/24<span style="background-color: #acf2bd; color: #24292e;">, 10.1.2.0/24</span></span></code> | `🌐 168.63.129.16` | `🌐 53` | <code>DNS to Azure</code> |
+| ➕ | `allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 443` | `Secure web` |
+| ➕ | `allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🔌 8080` | `Log ingestion` |
+| 🔄 | `allow-dns` | `📨 UDP` | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.1.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.1.1.0/24<span style="background-color: #acf2bd; color: #24292e;">, 10.1.2.0/24</span></span></code> | `🌐 168.63.129.16` | `🔌 53` | <code>DNS to Azure</code> |
 | 🔄 | `allow-api` | `🔗 TCP` | `🌐 10.1.1.0/24` | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.<span style="background-color: #ffc0c0; color: #24292e;">1</span>.2.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.<span style="background-color: #acf2bd; color: #24292e;">2</span>.2.0/24</span></code> | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 8443</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 8443<span style="background-color: #acf2bd; color: #24292e;">, 9443</span></span></code> | <code>API tier</code> |
-| ❌ | `allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🌐 80` | `Legacy HTTP` |
-| ⏺️ | `allow-monitoring` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `🌐 443` | `Monitoring` |
+| ❌ | `allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 80` | `Legacy HTTP` |
+| ⏺️ | `allow-monitoring` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `🔌 443` | `Monitoring` |
 
 <!-- tfplan2md:resource-end address=module.network.azurerm_firewall_network_rule_collection.network_rules -->
 
@@ -207,8 +207,9 @@
 
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-| ➥ | `allow-https` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `*` | `*` | `*` | `🌐 443` | `-` |
-| ❌ | `allow-http` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `*` | `*` | `*` | `🌐 80` | `-` |
+| ➥ | `allow-https` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️ *` | `✳️ *` | `✳️ *` | `🔌 443` | `-` |
+| ➥ | `deny-rdp` | `🌐 200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️ *` | `✳️ *` | `✳️ *` | `🔌 3389` | `Block RDP from internet` |
+| ❌ | `allow-http` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️ *` | `✳️ *` | `✳️ *` | `🔌 80` | `-` |
 
 <!-- tfplan2md:resource-end address=module.network.azurerm_network_security_group.app -->
 
@@ -216,7 +217,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.decom -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_virtual_network <b><code>decom</code></b> — <code>vnet-old</code> in <code>rg-old</code> <code>🌍 eastus</code> | <code>🌐 10.50.0.0/16</code></summary>
+<summary>❌ azurerm_virtual_network <b><code>decom</code></b> — <code>vnet-old</code> in <code>rg-old</code> <code>🌍 eastus</code> <code>🌐 10.50.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -314,7 +315,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_key_vault_secret.audit_policy -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_key_vault_secret <b><code>audit_policy</code></b> — <code>audit-policy</code> | | 1 🔧 value</summary>
+<summary>🔄 azurerm_key_vault_secret <b><code>audit_policy</code></b> — <code>audit-policy</code> | 1🔧 value</summary>
 <br>
 
 <br/>
@@ -336,7 +337,7 @@ line3: end
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_storage_account.analytics -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_storage_account <b><code>analytics</code></b> — <code>sttfplan2mdanalytics</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | | 3 🔧 account_replication_type, min_tls_version, tags.retention</summary>
+<summary>🔄 azurerm_storage_account <b><code>analytics</code></b> — <code>sttfplan2mdanalytics</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | 3🔧 account_replication_type, min_tls_version, tags.retention</summary>
 <br>
 
 | Attribute | Before | After |
@@ -350,7 +351,7 @@ line3: end
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_key_vault.audit -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_key_vault <b><code>audit</code></b> — <code>kv-audit</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | | 2 🔧 public_network_access_enabled, tags.tier</summary>
+<summary>🔄 azurerm_key_vault <b><code>audit</code></b> — <code>kv-audit</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | 2🔧 public_network_access_enabled, tags.tier</summary>
 <br>
 
 | Attribute | Before | After |

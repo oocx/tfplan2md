@@ -35,7 +35,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.vnet -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_virtual_network <b><code>vnet</code></b> — <code>vnet</code> | <code>🌐 10.0.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>vnet</code></b> — <code>vnet</code> <code>🌐 10.0.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -69,7 +69,7 @@
 
 <!-- tfplan2md:resource-start address=module.app.azurerm_app_service.app -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_app_service <b><code>app</code></b> — <code>example-app</code> | | 1 🔧 plan</summary>
+<summary>🔄 azurerm_app_service <b><code>app</code></b> — <code>example-app</code> | 1🔧 plan</summary>
 <br>
 
 | Attribute | Before | After |

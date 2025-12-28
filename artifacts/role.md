@@ -26,7 +26,7 @@
 | scope | `rg-tfplan2md-demo` in subscription `sub-one` |
 | role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
 | principal_id | `11111111-1111-1111-1111-111111111111` (User) [`11111111-1111-1111-1111-111111111111`] |
-| principal_type | `User` |
+| principal_type | `👤 User` |
 | name | `ra-create` |
 
 </details>
@@ -43,7 +43,7 @@ Allow DevOps team to read logs from the storage account
 | scope | `rg-tfplan2md-demo` in subscription `sub-one` |
 | role_definition_id | `Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |
 | principal_id | `22222222-2222-2222-2222-222222222222` (Group) [`22222222-2222-2222-2222-222222222222`] |
-| principal_type | `Group` |
+| principal_type | `👥 Group` |
 | name | `ra-storage-reader` |
 | description | `Allow DevOps team to read logs from the storage account` |
 
@@ -94,7 +94,7 @@ Legacy access
 | scope | `rg-legacy` in subscription `sub-three` |
 | role_definition_id | `Contributor` (`b24988ac-6180-42a0-ab88-20f7382dd24c`) |
 | principal_id | `33333333-3333-3333-3333-333333333333` (User) [`33333333-3333-3333-3333-333333333333`] |
-| principal_type | `User` |
+| principal_type | `👤 User` |
 | description | `Legacy access` |
 
 </details>
@@ -109,7 +109,7 @@ Legacy access
 | ----------- | ------- |
 | scope | `rg-long-names-example` in subscription `sub-four` |
 | principal_id | `99999999-9999-9999-9999-999999999999` (ServicePrincipal) [`99999999-9999-9999-9999-999999999999`] |
-| principal_type | `ServicePrincipal` |
+| principal_type | `💻 ServicePrincipal` |
 | name | `unmapped` |
 
 </details>

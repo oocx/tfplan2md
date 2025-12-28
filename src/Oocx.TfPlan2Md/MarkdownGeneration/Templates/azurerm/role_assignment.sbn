@@ -58,6 +58,14 @@
         {{ ret text }}
     {{ end }}
 
+    {{ if attr == "principal_type" && value != null }}
+        {{ ret format_attribute_value_table("principal_type", "" + value, null) }}
+    {{ end }}
+
+    {{ if attr == "role_definition_name" && value != null }}
+        {{ ret format_attribute_value_table("role_definition_name", "" + value, null) }}
+    {{ end }}
+
     {{ if value == null }}{{ ret "" }}{{ end }}
     {{ ret wrap_code("" + value) }}
 {{ end }}

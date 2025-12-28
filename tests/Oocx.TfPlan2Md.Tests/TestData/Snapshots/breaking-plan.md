@@ -46,7 +46,7 @@ This has a | pipe and a
 
 <!-- tfplan2md:resource-start address=azurerm_storage_account.multiline -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_storage_account <b><code>multiline</code></b> — | 1 🔧 tags.note</summary>
+<summary>🔄 azurerm_storage_account <b><code>multiline</code></b> — | 1🔧 tags.note</summary>
 <br>
 
 <br/>

@@ -29,9 +29,8 @@
 | **17** | Fix release.yml duplicate trigger issue | ✅ Complete | Critical | Medium | Critical |
 | **18** | Fix Versionize major release configuration | ✅ Complete | Critical | Medium | Critical |
 | **19** | Add rejection tracking to retrospective analysis | 🔲 Not Started | Low | High | Low |
-| **20** | Create workflow validation tool | 🔲 Not Started | High | High | High |
-| **21** | Fix "UAT artifact validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
-| **22** | Fix "PR Validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
+| **20** | Create workflow validation tool | ✅ Complete | High | High | High |
+| **21** | Fix "UAT artifact validation" GitHub status check | ✅ Complete | Critical | Low | Critical || **22** | Fix "PR Validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
 
 ## Detailed Improvements
 
@@ -255,6 +254,8 @@
 
 **Complexity:** High  
 **Value:** High
+
+✅ **Implemented:** `scripts/validate-agents.py` created to validate agent frontmatter (models, handoffs, tools) and content structure (required sections).
 
 ---
 # #21: Fix "UAT artifact validation" GitHub status check

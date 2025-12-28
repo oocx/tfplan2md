@@ -11,7 +11,7 @@
 {{- active_scope = action == "delete" ? before_scope : after_scope -}}
 {{- active_role = action == "delete" ? before_role : after_role -}}
 {{- active_principal = action == "delete" ? before_principal : after_principal -}}
-{{- summary_scope = active_scope.summary_label + "`" + (active_scope.summary_name | escape_markdown) + "`" -}}
+{{- summary_scope_html = active_scope.summary_label + format_code_summary(active_scope.summary_name) -}}
 {{- principal_type = active_principal.type }}
 
 {{ func normalize_for_table(value) }}
@@ -63,19 +63,14 @@
 {{ end }}
 
 <!-- tfplan2md:resource-start address={{ address }} -->
-#### {{ action_symbol }} {{ address | escape_markdown }}
-
-{{ if action == "replace" }}
-**Summary:** recreate as `{{ active_principal.name | escape_markdown }}`{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → `{{ active_role.name | escape_markdown }}` on {{ summary_scope }}
-{{ else if action == "delete" }}
-**Summary:** remove `{{ active_role.name | escape_markdown }}` on {{ summary_scope }} from {{ if principal_type != "" }}{{ principal_type | escape_markdown }} {{ end }}`{{ active_principal.name | escape_markdown }}`
-{{ else }}
-**Summary:** `{{ active_principal.name | escape_markdown }}`{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → `{{ active_role.name | escape_markdown }}` on {{ summary_scope }}
-{{ end }}
+<details style="margin-bottom:12px;">
+<summary>{{ action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(address) }}</b> — {{ if action == "replace" }}recreate as {{ format_code_summary(active_principal.name) }}{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → {{ format_code_summary(active_role.name) }} on {{ summary_scope_html }}{{ else if action == "delete" }}remove {{ format_code_summary(active_role.name) }} on {{ summary_scope_html }} from {{ if principal_type != "" }}{{ principal_type | escape_markdown }} {{ end }}{{ format_code_summary(active_principal.name) }}{{ else }}{{ format_code_summary(active_principal.name) }}{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → {{ format_code_summary(active_role.name) }} on {{ summary_scope_html }}{{ end }}</summary>
+<br>
 
 {{- description = action == "delete" ? (before_state != null ? before_state.description : null) : (after_state != null ? after_state.description : null) -}}
 {{ if description && description != "" }}
 {{ description | escape_markdown }}
+
 {{ end }}
 
 {{ attributes = attribute_changes }}
@@ -145,8 +140,6 @@
 {{ end }}
 
 {{ if small_attrs.size > 0 }}
-<details>
-
 {{ if action == "create" }}
 | Attribute | Value |
 | ----------- | ------- |
@@ -170,11 +163,10 @@
 | {{ attr.name | escape_markdown }} | {{ if attr.before_table != null && attr.before_table != "" }}{{ attr.before_table }}{{ else }}-{{ end }} | {{ if attr.after_table != null && attr.after_table != "" }}{{ attr.after_table }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
-
-</details>
 {{ end }}
 
 {{ if large_attrs.size > 0 }}
+<br/>
 <details>
 <summary>{{ large_attributes_summary(large_attrs) }}</summary>
 
@@ -188,4 +180,5 @@
 </details>
 {{ end }}
 
+</details>
 <!-- tfplan2md:resource-end address={{ address }} -->

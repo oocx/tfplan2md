@@ -19,8 +19,7 @@ public class MarkdownRendererSummaryTests
         var markdown = renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain("**Summary:**");
-        markdown.Should().Contain("recreate `snet-db` (address_prefixes[0] changed: force replacement)");
+        markdown.Should().Contain("♻️ azurerm_subnet <b><code>db</code></b>");
     }
 
     [Fact]

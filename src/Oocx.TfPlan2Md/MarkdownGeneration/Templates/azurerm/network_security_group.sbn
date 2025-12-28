@@ -1,6 +1,7 @@
 {{~## Template for azurerm_network_security_group
      Provides semantic diffing of NSG security rules instead of index-based changes.
 ~}}
+<div style="margin-bottom:12px;">
 <!-- tfplan2md:resource-start address={{ address }} -->
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
@@ -43,8 +44,18 @@
      {{ ret "-" }}
 {{ end }}
 
-{{ func code(value) }}
-     {{- ret "`" + ("" + value | escape_markdown) + "`" }}
+{{ func format_nsg_value(attr_name, value) }}
+     {{- if value == null || value == "" -}}{{ ret "" }}{{ end -}}
+     {{- ret format_attribute_value_table(attr_name, "" + value, null) }}
+{{ end }}
+
+{{ func format_nsg_list(attr_name, values) }}
+     {{- if values == null || values.size == 0 -}}{{ ret "" }}{{ end -}}
+     {{- formatted = [] -}}
+     {{- for v in values -}}
+         {{ formatted = formatted + [ format_attribute_value_table(attr_name, "" + v, null) ] }}
+     {{- end -}}
+     {{- ret array.join formatted ", " -}}
 {{ end }}
 
 {{~ if before_json && after_json && before_json.security_rule && after_json.security_rule ~}}
@@ -55,16 +66,16 @@
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
 {{ for rule in diff.added | array.sort "priority" }}
-| ➕ | {{ code(rule.name) }} | {{ code(rule.priority) }} | {{ code(rule.direction) }} | {{ code(rule.access) }} | {{ code(rule.protocol) }} | {{ code(source_addresses(rule)) }} | {{ code(source_ports(rule)) }} | {{ code(destination_addresses(rule)) }} | {{ code(destination_ports(rule)) }} | {{ code(description_or_dash(rule.description)) }} |
+| ➥ | {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
 {{ end }}
 {{ for item in diff.modified | array.sort "after.priority" }}
-| 🔄 | {{ code(item.after.name) }} | {{ format_diff item.before.priority item.after.priority }} | {{ format_diff (item.before.direction ?? "") (item.after.direction ?? "") }} | {{ format_diff (item.before.access ?? "") (item.after.access ?? "") }} | {{ format_diff (item.before.protocol ?? "") (item.after.protocol ?? "") }} | {{ format_diff (source_addresses(item.before)) (source_addresses(item.after)) }} | {{ format_diff (source_ports(item.before)) (source_ports(item.after)) }} | {{ format_diff (destination_addresses(item.before)) (destination_addresses(item.after)) }} | {{ format_diff (destination_ports(item.before)) (destination_ports(item.after)) }} | {{ format_diff (description_or_dash(item.before.description)) (description_or_dash(item.after.description)) }} |
+| 🔄 | {{ format_nsg_value("name", item.after.name) }} | {{ format_diff ("" + item.before.priority) ("" + item.after.priority) }} | {{ format_diff (item.before.direction) (item.after.direction) }} | {{ format_diff (item.before.access) (item.after.access) }} | {{ format_diff (item.before.protocol) (item.after.protocol) }} | {{ format_diff (source_addresses(item.before)) (source_addresses(item.after)) }} | {{ format_diff (source_ports(item.before)) (source_ports(item.after)) }} | {{ format_diff (destination_addresses(item.before)) (destination_addresses(item.after)) }} | {{ format_diff (destination_ports(item.before)) (destination_ports(item.after)) }} | {{ format_diff (description_or_dash(item.before.description)) (description_or_dash(item.after.description)) }} |
 {{ end }}
 {{ for rule in diff.removed | array.sort "priority" }}
-| ❌ | {{ code(rule.name) }} | {{ code(rule.priority) }} | {{ code(rule.direction) }} | {{ code(rule.access) }} | {{ code(rule.protocol) }} | {{ code(source_addresses(rule)) }} | {{ code(source_ports(rule)) }} | {{ code(destination_addresses(rule)) }} | {{ code(destination_ports(rule)) }} | {{ code(description_or_dash(rule.description)) }} |
+| ❌ | {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
 {{ end }}
 {{ for rule in diff.unchanged | array.sort "priority" }}
-| ⏺️ | {{ code(rule.name) }} | {{ code(rule.priority) }} | {{ code(rule.direction) }} | {{ code(rule.access) }} | {{ code(rule.protocol) }} | {{ code(source_addresses(rule)) }} | {{ code(source_ports(rule)) }} | {{ code(destination_addresses(rule)) }} | {{ code(destination_ports(rule)) }} | {{ code(description_or_dash(rule.description)) }} |
+| ⏺️ | {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
 {{ end }}
 
 
@@ -74,7 +85,7 @@
 | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
 {{ for rule in after_json.security_rule | array.sort "priority" }}
-| {{ code(rule.name) }} | {{ code(rule.priority) }} | {{ code(rule.direction) }} | {{ code(rule.access) }} | {{ code(rule.protocol) }} | {{ code(source_addresses(rule)) }} | {{ code(source_ports(rule)) }} | {{ code(destination_addresses(rule)) }} | {{ code(destination_ports(rule)) }} | {{ code(description_or_dash(rule.description)) }} |
+| {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
 {{ end }}
 
 {{~ else if action == "delete" && before_json && before_json.security_rule ~}}
@@ -83,7 +94,7 @@
 | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
 {{ for rule in before_json.security_rule | array.sort "priority" }}
-| {{ code(rule.name) }} | {{ code(rule.priority) }} | {{ code(rule.direction) }} | {{ code(rule.access) }} | {{ code(rule.protocol) }} | {{ code(source_addresses(rule)) }} | {{ code(source_ports(rule)) }} | {{ code(destination_addresses(rule)) }} | {{ code(destination_ports(rule)) }} | {{ code(description_or_dash(rule.description)) }} |
+| {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
 {{ end }}
 
 {{~ else ~}}
@@ -102,3 +113,5 @@
 {{~ end ~}}
 
 <!-- tfplan2md:resource-end address={{ address }} -->
+
+</div>

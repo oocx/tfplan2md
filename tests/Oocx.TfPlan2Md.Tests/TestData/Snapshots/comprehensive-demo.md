@@ -14,120 +14,126 @@
 
 ## Resource Changes
 
-### Module: root
+### 📦 Module: root
 
-#### ➕ azurerm_resource_group.core
-
-**Summary:** `rg-tfplan2md-demo` (`eastus`)
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_resource_group.core -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| location | `eastus` |
+| location | `🌍 eastus` |
 | name | `rg-tfplan2md-demo` |
-| tags.environment | `demo` |
-| tags.owner | `tfplan2md` |
+
+**🏷️ Tags:** `environment: demo` `owner: tfplan2md`
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_resource_group.core -->
 
-#### ➕ azurerm_storage_account.logs
-
-**Summary:** `sttfplan2mdlogs` in `rg-tfplan2md-demo` (`eastus`) | `Standard LRS`
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_storage_account.logs -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>sttfplan2mdlogs</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | account_replication_type | `LRS` |
 | account_tier | `Standard` |
-| allow_blob_public_access | `false` |
-| location | `eastus` |
+| allow_blob_public_access | `❌ false` |
+| location | `🌍 eastus` |
 | min_tls_version | `TLS1_2` |
 | name | `sttfplan2mdlogs` |
 | resource_group_name | `rg-tfplan2md-demo` |
-| tags.cost_center | `ops` |
-| tags.environment | `demo` |
+
+**🏷️ Tags:** `cost_center: ops` `environment: demo`
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_storage_account.logs -->
 
-#### 🔄 azurerm_storage_account.data
-
-**Summary:** `sttfplan2mddata` | Changed: account_replication_type, tags.cost_center
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_storage_account.data -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>sttfplan2mddata</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | | 2 🔧 account_replication_type, tags.cost_center</summary>
+<br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | account_replication_type | `LRS` | `GRS` |
-| tags.cost_center | - | `1234` |
+| tags.cost_center | - | `🌐 1234` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_storage_account.data -->
 
-#### ❌ azurerm_storage_account.legacy
-
-**Summary:** `sttfplan2mdlegacy`
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_storage_account.legacy -->
+<details style="margin-bottom:12px;">
+<summary>❌ azurerm_storage_account <b><code>legacy</code></b> — <code>sttfplan2mdlegacy</code> in <code>rg-old</code> (<code>🌍 eastus</code>)</summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | account_replication_type | `LRS` |
 | account_tier | `Standard` |
-| location | `eastus` |
+| location | `🌍 eastus` |
 | name | `sttfplan2mdlegacy` |
 | resource_group_name | `rg-old` |
-| tags.environment | `old` |
+
+**🏷️ Tags:** `environment: old`
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_storage_account.legacy -->
 
-### Module: `module.network`
+---
 
-#### ➕ module.network.azurerm_virtual_network.hub
+### 📦 Module: `module.network`
 
-**Summary:** `vnet-hub` in `rg-tfplan2md-demo` (`eastus`) | `10.0.0.0/16`
-
-<details>
+<!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.hub -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>vnet-hub</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | <code>🌐 10.0.0.0/16</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `10.0.0.0/16` |
-| location | `eastus` |
+| address_space[0] | `🌐 10.0.0.0/16` |
+| location | `🌍 eastus` |
 | name | `vnet-hub` |
 | resource_group_name | `rg-tfplan2md-demo` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.azurerm_virtual_network.hub -->
 
-#### ➕ module.network.azurerm_virtual_network.spoke
-
-**Summary:** `vnet-spoke` in `rg-tfplan2md-demo` (`eastus`) | `10.1.0.0/16`
-
-<details>
+<!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.spoke -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>vnet-spoke</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | <code>🌐 10.1.0.0/16</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `10.1.0.0/16` |
-| location | `eastus` |
+| address_space[0] | `🌐 10.1.0.0/16` |
+| location | `🌍 eastus` |
 | name | `vnet-spoke` |
 | resource_group_name | `rg-tfplan2md-demo` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.azurerm_virtual_network.spoke -->
 
-#### ➕ module.network.azurerm_subnet.app
-
-**Summary:** `snet-app` | `vnet-spoke` | `10.1.1.0/24`
-
-<details>
+<!-- tfplan2md:resource-start address=module.network.azurerm_subnet.app -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_subnet <b><code>app</code></b> — <code>snet-app</code> in <code>rg-tfplan2md-demo</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_prefixes[0] | `10.1.1.0/24` |
+| address_prefixes[0] | `🌐 10.1.1.0/24` |
 | name | `snet-app` |
 | resource_group_name | `rg-tfplan2md-demo` |
 | service_endpoints[0] | `Microsoft.Storage` |
 | virtual_network_name | `vnet-spoke` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.azurerm_subnet.app -->
+
+<div style="margin-bottom:12px;">
+<!-- tfplan2md:resource-start address=module.network.azurerm_firewall_network_rule_collection.new_public -->
 
 ### ➕ module.network.azurerm_firewall_network_rule_collection.new_public
 
@@ -137,20 +143,27 @@
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-| `allow-http` | `TCP` | `10.1.1.0/24` | `*` | `80` | `Allow outbound HTTP` |
-| `allow-https` | `TCP` | `10.1.1.0/24` | `*` | `443` | `Allow outbound HTTPS` |
+| `allow-http` | `🔗 TCP` | `🌐 10.1.1.0/24` | `*` | `🌐 80` | `Allow outbound HTTP` |
+| `allow-https` | `🔗 TCP` | `🌐 10.1.1.0/24` | `*` | `🌐 443` | `Allow outbound HTTPS` |
 
-#### 🔄 module.network.azurerm_virtual_network.branch
+<!-- tfplan2md:resource-end address=module.network.azurerm_firewall_network_rule_collection.new_public -->
 
-**Summary:** `vnet-branch` | Changed: address_space[1]
+</div>
 
-<details>
+<!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.branch -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>vnet-branch</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | <code>🌐 10.2.0.0/16</code> | | 1 🔧 address_space[1]</summary>
+<br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| address_space[1] | - | `10.3.0.0/16` |
+| address_space[1] | - | `🌐 10.3.0.0/16` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.azurerm_virtual_network.branch -->
+
+<div style="margin-bottom:12px;">
+<!-- tfplan2md:resource-start address=module.network.azurerm_firewall_network_rule_collection.network_rules -->
 
 ### 🔄 module.network.azurerm_firewall_network_rule_collection.network_rules
 
@@ -160,24 +173,31 @@
 
 | Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-| ➕ | `allow-web-secure` | `TCP` | `10.1.1.0/24` | `10.1.3.0/24` | `443` | `Secure web` |
-| ➕ | `allow-log-ingest` | `TCP` | `10.1.4.0/24` | `10.1.5.0/24` | `8080` | `Log ingestion` |
-| 🔄 | `allow-dns` | <code>UDP</code> | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.1.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.1.1.0/24<span style="background-color: #acf2bd; color: #24292e;">, 10.1.2.0/24</span></span></code> | <code>168.63.129.16</code> | <code>53</code> | <code>DNS to Azure</code> |
-| 🔄 | `allow-api` | <code>TCP</code> | <code>10.1.1.0/24</code> | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.<span style="background-color: #ffc0c0; color: #24292e;">1</span>.2.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.<span style="background-color: #acf2bd; color: #24292e;">2</span>.2.0/24</span></code> | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 8443</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 8443<span style="background-color: #acf2bd; color: #24292e;">, 9443</span></span></code> | <code>API tier</code> |
-| ❌ | `allow-web` | `TCP` | `10.1.1.0/24` | `10.1.3.0/24` | `80` | `Legacy HTTP` |
-| ⏺️ | `allow-monitoring` | `TCP` | `10.1.1.0/24` | `10.1.4.0/24` | `443` | `Monitoring` |
+| ➕ | `allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🌐 443` | `Secure web` |
+| ➕ | `allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🌐 8080` | `Log ingestion` |
+| 🔄 | `allow-dns` | `📨 UDP` | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.1.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.1.1.0/24<span style="background-color: #acf2bd; color: #24292e;">, 10.1.2.0/24</span></span></code> | `🌐 168.63.129.16` | `🌐 53` | <code>DNS to Azure</code> |
+| 🔄 | `allow-api` | `🔗 TCP` | `🌐 10.1.1.0/24` | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 10.<span style="background-color: #ffc0c0; color: #24292e;">1</span>.2.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 10.<span style="background-color: #acf2bd; color: #24292e;">2</span>.2.0/24</span></code> | <code><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">- 8443</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: -4px;">+ 8443<span style="background-color: #acf2bd; color: #24292e;">, 9443</span></span></code> | <code>API tier</code> |
+| ❌ | `allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🌐 80` | `Legacy HTTP` |
+| ⏺️ | `allow-monitoring` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `🌐 443` | `Monitoring` |
 
-#### ♻️ module.network.azurerm_subnet.db
+<!-- tfplan2md:resource-end address=module.network.azurerm_firewall_network_rule_collection.network_rules -->
 
-**Summary:** recreating `snet-db` (1 changed)
+</div>
 
-<details>
+<!-- tfplan2md:resource-start address=module.network.azurerm_subnet.db -->
+<details style="margin-bottom:12px;">
+<summary>♻️ azurerm_subnet <b><code>db</code></b> — <code>snet-db</code> in <code>rg-tfplan2md-demo</code></summary>
+<br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| address_prefixes[0] | `10.1.2.0/24` | `10.1.20.0/24` |
+| address_prefixes[0] | `🌐 10.1.2.0/24` | `🌐 10.1.20.0/24` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.azurerm_subnet.db -->
+
+<div style="margin-bottom:12px;">
+<!-- tfplan2md:resource-start address=module.network.azurerm_network_security_group.app -->
 
 ### ♻️ module.network.azurerm_network_security_group.app
 
@@ -187,31 +207,36 @@
 
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-| ➕ | `allow-https` | `100` | `Inbound` | `Allow` | `Tcp` | `*` | `*` | `*` | `443` | `-` |
-| ❌ | `allow-http` | `100` | `Inbound` | `Allow` | `Tcp` | `*` | `*` | `*` | `80` | `-` |
+| ➥ | `allow-https` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `*` | `*` | `*` | `🌐 443` | `-` |
+| ❌ | `allow-http` | `🌐 100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `*` | `*` | `*` | `🌐 80` | `-` |
 
-#### ❌ module.network.azurerm_virtual_network.decom
+<!-- tfplan2md:resource-end address=module.network.azurerm_network_security_group.app -->
 
-**Summary:** `vnet-old`
+</div>
 
-<details>
+<!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.decom -->
+<details style="margin-bottom:12px;">
+<summary>❌ azurerm_virtual_network <b><code>decom</code></b> — <code>vnet-old</code> in <code>rg-old</code> (<code>🌍 eastus</code>) | <code>🌐 10.50.0.0/16</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `10.50.0.0/16` |
-| location | `eastus` |
+| address_space[0] | `🌐 10.50.0.0/16` |
+| location | `🌍 eastus` |
 | name | `vnet-old` |
 | resource_group_name | `rg-old` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.azurerm_virtual_network.decom -->
 
-### Module: `module.security`
+---
 
-#### ➕ module.security.azurerm_role_assignment.rg_reader
+### 📦 Module: `module.security`
 
-**Summary:** `Jane Doe (User)` → `Reader` on `rg-tfplan2md-demo`
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.rg_reader -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.rg_reader</code></b> — <code>Jane Doe (User)</code> → <code>Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -220,12 +245,12 @@
 | principal_id | `Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_role_assignment.rg_reader -->
 
-#### ➕ module.security.azurerm_role_assignment.storage_reader
-
-**Summary:** `DevOps Team (Group)` → `Storage Blob Data Reader` on Storage Account `sttfplan2mdlogs`
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.storage_reader -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.storage_reader</code></b> — <code>DevOps Team (Group)</code> → <code>Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -234,48 +259,48 @@
 | principal_id | `DevOps Team (Group)` [`00000000-0000-0000-0000-000000000002`] |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_role_assignment.storage_reader -->
 
-#### ➕ module.security.azurerm_key_vault.main
-
-**Summary:** `kv-tfplan2md` in `rg-tfplan2md-demo` (`eastus`) | `standard`
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_key_vault.main -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_key_vault <b><code>main</code></b> — <code>kv-tfplan2md</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| enabled_for_deployment | `true` |
-| location | `eastus` |
+| enabled_for_deployment | `✅ true` |
+| location | `🌍 eastus` |
 | name | `kv-tfplan2md` |
-| public_network_access_enabled | `true` |
+| public_network_access_enabled | `✅ true` |
 | resource_group_name | `rg-tfplan2md-demo` |
 | sku_name | `standard` |
-| tags.environment | `demo` |
-| tags.owner | `security` |
 | tenant_id | `11111111-2222-3333-4444-555555555555` |
 
+**🏷️ Tags:** `environment: demo` `owner: security`
+
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_key_vault.main -->
 
-#### ➕ module.security.azurerm_log_analytics_workspace.security
-
-**Summary:** `law-security` in `rg-tfplan2md-demo` (`eastus`) | `PerGB2018`
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_log_analytics_workspace.security -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_log_analytics_workspace <b><code>security</code></b> — <code>law-security</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| location | `eastus` |
+| location | `🌍 eastus` |
 | name | `law-security` |
 | resource_group_name | `rg-tfplan2md-demo` |
-| retention_in_days | `90` |
+| retention_in_days | `🌐 90` |
 | sku | `PerGB2018` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_log_analytics_workspace.security -->
 
-#### ➕ module.security.azurerm_key_vault_secret.db_password
-
-**Summary:** `db-password` | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `12345678-1234-1234-1234-123456789012`
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_key_vault_secret.db_password -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_key_vault_secret <b><code>db_password</code></b> — <code>db-password</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -285,11 +310,14 @@
 | value | `(sensitive)` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_key_vault_secret.db_password -->
 
-#### 🔄 module.security.azurerm_key_vault_secret.audit_policy
+<!-- tfplan2md:resource-start address=module.security.azurerm_key_vault_secret.audit_policy -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_key_vault_secret <b><code>audit_policy</code></b> — <code>audit-policy</code> | | 1 🔧 value</summary>
+<br>
 
-**Summary:** `audit-policy` | Changed: value
-
+<br/>
 <details>
 <summary>Large values: value (4 lines, 2 changed)</summary>
 
@@ -303,11 +331,13 @@ line3: end
 
 </details>
 
-#### 🔄 module.security.azurerm_storage_account.analytics
+</details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_key_vault_secret.audit_policy -->
 
-**Summary:** `sttfplan2mdanalytics` | Changed: account_replication_type, min_tls_version, tags.retention
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_storage_account.analytics -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_storage_account <b><code>analytics</code></b> — <code>sttfplan2mdanalytics</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | | 3 🔧 account_replication_type, min_tls_version, tags.retention</summary>
+<br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
@@ -316,25 +346,25 @@ line3: end
 | tags.retention | - | `long` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_storage_account.analytics -->
 
-#### 🔄 module.security.azurerm_key_vault.audit
-
-**Summary:** `kv-audit` | Changed: public_network_access_enabled, tags.tier
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_key_vault.audit -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_key_vault <b><code>audit</code></b> — <code>kv-audit</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | | 2 🔧 public_network_access_enabled, tags.tier</summary>
+<br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| public_network_access_enabled | `true` | `false` |
+| public_network_access_enabled | `✅ true` | `❌ false` |
 | tags.tier | - | `gold` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_key_vault.audit -->
 
-#### ❌ module.security.azurerm_role_assignment.obsolete
-
-**Summary:** remove `Reader` on `rg-old` from `00000000-0000-0000-0000-000000000005`
-
-<details>
+<!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.obsolete -->
+<details style="margin-bottom:12px;">
+<summary>❌ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.obsolete</code></b> — remove <code>Reader</code> on <code>rg-old</code> from <code>00000000-0000-0000-0000-000000000005</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -343,21 +373,24 @@ line3: end
 | principal_id | `00000000-0000-0000-0000-000000000005` [`00000000-0000-0000-0000-000000000005`] |
 
 </details>
+<!-- tfplan2md:resource-end address=module.security.azurerm_role_assignment.obsolete -->
 
-### Module: `module.network.module.monitoring`
+---
 
-#### ➕ module.network.module.monitoring.azurerm_log_analytics_workspace.core
+### 📦 Module: `module.network.module.monitoring`
 
-**Summary:** `law-core` in `rg-tfplan2md-demo` (`eastus`) | `PerGB2018`
-
-<details>
+<!-- tfplan2md:resource-start address=module.network.module.monitoring.azurerm_log_analytics_workspace.core -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_log_analytics_workspace <b><code>core</code></b> — <code>law-core</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| location | `eastus` |
+| location | `🌍 eastus` |
 | name | `law-core` |
 | resource_group_name | `rg-tfplan2md-demo` |
-| retention_in_days | `30` |
+| retention_in_days | `🌐 30` |
 | sku | `PerGB2018` |
 
 </details>
+<!-- tfplan2md:resource-end address=module.network.module.monitoring.azurerm_log_analytics_workspace.core -->

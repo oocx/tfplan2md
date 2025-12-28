@@ -196,6 +196,7 @@ public static class ScribanHelpers
         var result = text.Replace("&", "&amp;", StringComparison.Ordinal);
         result = result.Replace("<", "&lt;", StringComparison.Ordinal);
         result = result.Replace(">", "&gt;", StringComparison.Ordinal);
+        result = result.Replace("|", "&#124;", StringComparison.Ordinal);
         return result;
     }
 

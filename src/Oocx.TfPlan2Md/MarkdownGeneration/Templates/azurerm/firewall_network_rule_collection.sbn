@@ -1,6 +1,32 @@
 {{~## Template for azurerm_firewall_network_rule_collection
-     Provides semantic diffing of firewall rules instead of index-based changes.
+      Provides semantic diffing of firewall rules instead of index-based changes.
 ~}}
+
+{{ func format_rule_value(attr_name, value) }}
+     {{- if value == null || value == "" -}}{{ ret "" }}{{ end -}}
+     {{- ret format_attribute_value_table(attr_name, "" + value, null) }}
+{{ end }}
+
+{{ func format_rule_list(attr_name, values) }}
+     {{- if values == null || values.size == 0 -}}{{ ret "" }}{{ end -}}
+     {{- formatted = [] -}}
+     {{- for v in values -}}
+          {{ formatted = formatted + [ format_attribute_value_table(attr_name, "" + v, null) ] }}
+     {{- end -}}
+     {{- ret array.join formatted ", " -}}
+{{ end }}
+
+{{ func format_rule_diff(attr_name, before_values, after_values) }}
+     {{- before_str = before_values | array.join ", " -}}
+     {{- after_str = after_values | array.join ", " -}}
+     {{- if before_str == after_str -}}
+          {{- ret format_rule_list attr_name after_values -}}
+     {{- else -}}
+          {{- ret format_diff before_str after_str -}}
+     {{- end -}}
+{{ end }}
+
+<div style="margin-bottom:12px;">
 <!-- tfplan2md:resource-start address={{ address }} -->
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
@@ -18,16 +44,16 @@
 | Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 {{~ for rule in diff.added ~}}
-| ➕ | `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
+| ➕ | `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{ end }}
 {{~ for item in diff.modified ~}}
-| 🔄 | `{{ item.after.name | escape_markdown }}` | {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }} | {{ format_diff (item.before.source_addresses | array.join ", ") (item.after.source_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_addresses | array.join ", ") (item.after.destination_addresses | array.join ", ") }} | {{ format_diff (item.before.destination_ports | array.join ", ") (item.after.destination_ports | array.join ", ") }} | {{ format_diff (item.before.description ?? "") (item.after.description ?? "") }} |
+| 🔄 | `{{ item.after.name | escape_markdown }}` | {{ format_rule_diff "protocol" item.before.protocols item.after.protocols }} | {{ format_rule_diff "source_addresses" item.before.source_addresses item.after.source_addresses }} | {{ format_rule_diff "destination_addresses" item.before.destination_addresses item.after.destination_addresses }} | {{ format_rule_diff "destination_ports" item.before.destination_ports item.after.destination_ports }} | {{ format_diff (item.before.description ?? "") (item.after.description ?? "") }} |
 {{ end }}
 {{~ for rule in diff.removed ~}}
-| ❌ | `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
+| ❌ | `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{ end }}
 {{~ for rule in diff.unchanged ~}}
-| ⏺️ | `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
+| ⏺️ | `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{~ end ~}}
 
 
@@ -37,7 +63,7 @@
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 {{~ for rule in after_json.rule ~}}
-| `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
+| `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{~ end ~}}
 
 {{~ else if action == "delete" && before_json && before_json.rule ~}}
@@ -46,7 +72,7 @@
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 {{~ for rule in before_json.rule ~}}
-| `{{ rule.name | escape_markdown }}` | `{{ rule.protocols | array.join ", " | escape_markdown }}` | `{{ rule.source_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_addresses | array.join ", " | escape_markdown }}` | `{{ rule.destination_ports | array.join ", " | escape_markdown }}` | `{{ (rule.description ?? "") | escape_markdown }}` |
+| `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
 {{~ end ~}}
 
 {{~ else ~}}
@@ -65,3 +91,5 @@
 {{~ end ~}}
 
 <!-- tfplan2md:resource-end address={{ address }} -->
+
+</div>

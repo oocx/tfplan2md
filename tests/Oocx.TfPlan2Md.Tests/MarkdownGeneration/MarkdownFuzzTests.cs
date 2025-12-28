@@ -56,8 +56,12 @@ public class MarkdownFuzzTests
         var plan = CreatePlanWithResourceName(name);
         var markdown = RenderPlan(plan);
 
-        markdown.Should().NotContain($"|{name.Replace("|", "")}|",
-            "because unescaped pipes in resource names break tables");
+        var tableLines = markdown
+            .Split('\n')
+            .Where(line => line.TrimStart().StartsWith('|'));
+
+        tableLines.Should().OnlyContain(line => !line.Contains($"|{name.Replace("|", "")}|"),
+            "because unescaped pipes in table cells break table structure");
         AssertValidTables(markdown);
     }
 

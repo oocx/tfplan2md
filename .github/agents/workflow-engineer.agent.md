@@ -239,7 +239,8 @@ What this agent produces
 
 Agent Skills are reusable capabilities (instructions + scripts) that agents can load on demand. Skills live in `.github/skills/<skill-name>/` and are listed in `docs/agents.md`.
 
-**To create a new skill**, use the `create-agent-skill` skill which provides templates and step-by-step guidance.
+- **To create a new skill**, use the `create-agent-skill` skill which provides templates and step-by-step guidance.
+- **To validate an agent**, use the `validate-agent` skill which uses the validation script and provides manual verification steps for tool existence.
 
 ## Tool Selection Guide
 

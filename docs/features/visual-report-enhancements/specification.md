@@ -30,8 +30,8 @@ Improve the visual appearance of generated Terraform plan reports to enhance rea
    - Clear visual separation between type and name
 
 4. **Location Display**
-   - Format locations as: `(🌍 location)` where location is the region name
-   - Use earth globe icon (🌍) to denote geographical regions
+   - Format locations as: `(<code>🌍 location</code>)` where location is the region name
+   - Use earth globe icon (🌍) inside the code-formatted value
 
 5. **IP Addresses and CIDR Blocks**
    - Add network globe icon (🌐) INSIDE code blocks
@@ -164,8 +164,8 @@ None - all visual enhancement decisions have been finalized through rendered exa
 
 ### Icon Placement Consistency
 The following pattern must be applied consistently:
-- Icons for **data values** (IP addresses, regions) go INSIDE code blocks: `` `🌐 10.0.0.0/16` ``
-- Icons for **labels/categories** (location prefix, tags prefix) go OUTSIDE code: `(🌍 eastus)` or `**🏷️ Tags:**`
+- Icons for **data values** (IP addresses, regions) go INSIDE code blocks: `` `🌐 10.0.0.0/16` `` and `` `🌍 eastus` ``
+- Icons for **labels/categories** (tags prefix) go OUTSIDE code: `**🏷️ Tags:**`
 - Icons for **actions/attributes** (booleans, protocols, rules) combine icon + text as the complete value
 
 ### HTML Tag Requirements

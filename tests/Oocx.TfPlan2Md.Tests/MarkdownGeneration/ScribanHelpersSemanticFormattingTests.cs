@@ -82,7 +82,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueSummary("location", "westeurope", null);
 
-        result.Should().Be("(<code>🌍 westeurope</code>)");
+        result.Should().Be("<code>🌍 westeurope</code>");
     }
 
     [Fact]

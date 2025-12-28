@@ -18,7 +18,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_resource_group.rg_root -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_resource_group <b><code>rg_root</code></b> — <code>rg-root</code> (<code>🌍 westeurope</code>)</summary>
+<summary>➕ azurerm_resource_group <b><code>rg_root</code></b> — <code>rg-root</code> <code>🌍 westeurope</code></summary>
 <br>
 
 | Attribute | Value |

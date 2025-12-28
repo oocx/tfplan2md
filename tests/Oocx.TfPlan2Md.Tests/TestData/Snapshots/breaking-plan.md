@@ -18,7 +18,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_resource_group.breaking_name -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_resource_group <b><code>breaking_name</code></b> — <code>rg-with-pipe&#124;and*asterisk</code> (<code>🌍 eastus</code>)</summary>
+<summary>➕ azurerm_resource_group <b><code>breaking_name</code></b> — <code>rg-with-pipe&#124;and*asterisk</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |

@@ -18,7 +18,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_resource_group.core -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
@@ -33,7 +33,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_storage_account.logs -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>sttfplan2mdlogs</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>sttfplan2mdlogs</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
@@ -53,7 +53,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_storage_account.data -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>sttfplan2mddata</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | | 2 🔧 account_replication_type, tags.cost_center</summary>
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>sttfplan2mddata</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | | 2 🔧 account_replication_type, tags.cost_center</summary>
 <br>
 
 | Attribute | Before | After |
@@ -66,7 +66,7 @@
 
 <!-- tfplan2md:resource-start address=azurerm_storage_account.legacy -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_storage_account <b><code>legacy</code></b> — <code>sttfplan2mdlegacy</code> in <code>rg-old</code> (<code>🌍 eastus</code>)</summary>
+<summary>❌ azurerm_storage_account <b><code>legacy</code></b> — <code>sttfplan2mdlegacy</code> in <code>rg-old</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
@@ -88,7 +88,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.hub -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>vnet-hub</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | <code>🌐 10.0.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>vnet-hub</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | <code>🌐 10.0.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -103,7 +103,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.spoke -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>vnet-spoke</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | <code>🌐 10.1.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>vnet-spoke</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | <code>🌐 10.1.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -152,7 +152,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.branch -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>vnet-branch</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | <code>🌐 10.2.0.0/16</code> | | 1 🔧 address_space[1]</summary>
+<summary>🔄 azurerm_virtual_network <b><code>branch</code></b> — <code>vnet-branch</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | <code>🌐 10.2.0.0/16</code> | | 1 🔧 address_space[1]</summary>
 <br>
 
 | Attribute | Before | After |
@@ -216,7 +216,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.decom -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_virtual_network <b><code>decom</code></b> — <code>vnet-old</code> in <code>rg-old</code> (<code>🌍 eastus</code>) | <code>🌐 10.50.0.0/16</code></summary>
+<summary>❌ azurerm_virtual_network <b><code>decom</code></b> — <code>vnet-old</code> in <code>rg-old</code> <code>🌍 eastus</code> | <code>🌐 10.50.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
@@ -263,7 +263,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_key_vault.main -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_key_vault <b><code>main</code></b> — <code>kv-tfplan2md</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<summary>➕ azurerm_key_vault <b><code>main</code></b> — <code>kv-tfplan2md</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
@@ -283,7 +283,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_log_analytics_workspace.security -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_log_analytics_workspace <b><code>security</code></b> — <code>law-security</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<summary>➕ azurerm_log_analytics_workspace <b><code>security</code></b> — <code>law-security</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
@@ -339,7 +339,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_storage_account.analytics -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_storage_account <b><code>analytics</code></b> — <code>sttfplan2mdanalytics</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | | 3 🔧 account_replication_type, min_tls_version, tags.retention</summary>
+<summary>🔄 azurerm_storage_account <b><code>analytics</code></b> — <code>sttfplan2mdanalytics</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | | 3 🔧 account_replication_type, min_tls_version, tags.retention</summary>
 <br>
 
 | Attribute | Before | After |
@@ -353,7 +353,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_key_vault.audit -->
 <details style="margin-bottom:12px;">
-<summary>🔄 azurerm_key_vault <b><code>audit</code></b> — <code>kv-audit</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>) | | 2 🔧 public_network_access_enabled, tags.tier</summary>
+<summary>🔄 azurerm_key_vault <b><code>audit</code></b> — <code>kv-audit</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | | 2 🔧 public_network_access_enabled, tags.tier</summary>
 <br>
 
 | Attribute | Before | After |
@@ -384,7 +384,7 @@
 
 <!-- tfplan2md:resource-start address=module.network.module.monitoring.azurerm_log_analytics_workspace.core -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_log_analytics_workspace <b><code>core</code></b> — <code>law-core</code> in <code>rg-tfplan2md-demo</code> (<code>🌍 eastus</code>)</summary>
+<summary>➕ azurerm_log_analytics_workspace <b><code>core</code></b> — <code>law-core</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |

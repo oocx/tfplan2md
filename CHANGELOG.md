@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.1"></a>
+## [1.0.0-alpha.1](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.0...v1.0.0-alpha.1) (2025-12-28)
+
+### ✨ Features
+
+* **retrospective:** add automation suggestions and DoD checklist ([b043372](https://github.com/oocx/tfplan2md/commit/b043372f3bac611e55309ce383b1bf66c3fda2e0))
+* **workflow:** enforce pager suppression in scripts and agent instructions ([adb32ec](https://github.com/oocx/tfplan2md/commit/adb32ec29b4932fbb059821825587b585e8adb1e))
+
+### 🐛 Bug Fixes
+
+* **agent:** enforce Task Planner boundary - no implementation without approval ([7efc708](https://github.com/oocx/tfplan2md/commit/7efc708b834631a8ea264fa50d34937f8b5e2a5a))
+* **agents:** implement 6 quick-win workflow improvements ([83c9294](https://github.com/oocx/tfplan2md/commit/83c9294c075876880fa7a71d931818ab162a808d))
+* **ci:** ensure PR validation runs for all PRs ([b5f17a3](https://github.com/oocx/tfplan2md/commit/b5f17a3cfae7308112b95bf7c0b4d8fe9962f74a))
+* **ci:** remove path filters from UAT validation workflow ([d7b19e4](https://github.com/oocx/tfplan2md/commit/d7b19e41b9f56945a33ad32ed7639143e440249d))
+* **ci:** run PR validation on workflow changes ([9252b83](https://github.com/oocx/tfplan2md/commit/9252b832c82e4ac17b108ef3ed7fb0adf41b314d))
+* **retrospective:** strengthen retrospective rubric ([2a5acce](https://github.com/oocx/tfplan2md/commit/2a5acced7db8beabad21329a6ef7866797d1c74e))
+* **workflow:** adjust agent models based on retrospectives ([45a4d77](https://github.com/oocx/tfplan2md/commit/45a4d77fa34b8a24eafc1c097ae7b98ac9a18ba6))
+
+### 📚 Documentation
+
+* add improvement [#21](https://github.com/oocx/tfplan2md/issues/21) - fix UAT artifact validation check ([475297c](https://github.com/oocx/tfplan2md/commit/475297ce1e5bc55f23f904461fc9eaeec3b68c26))
+* add Issue Analyst to retrospective agent performance ([fcf86b6](https://github.com/oocx/tfplan2md/commit/fcf86b6d02181cd09237f9b6ecf60824f4efa9f6))
+* update retrospective with critical user feedback ([5664e39](https://github.com/oocx/tfplan2md/commit/5664e394dd393ab767bcd5e4ba9fa8d6f218e3a7))
+* **workflow:** mark release/versionize improvements complete ([b2842fd](https://github.com/oocx/tfplan2md/commit/b2842fd62a766f22e7b6c71edfe0f02ccdff6d15))
+* **workflow:** note tests unnecessary for docs-only changes ([07a6f31](https://github.com/oocx/tfplan2md/commit/07a6f31e712601892f338e215b2c86f273c08a4c))
+* **workflow:** update improvement statuses ([df83a0e](https://github.com/oocx/tfplan2md/commit/df83a0ea0a10d278574898edefba556ed6054703))
+
 <a name="1.0.0-alpha.0"></a>
 ## [1.0.0-alpha.0](https://github.com/oocx/tfplan2md/compare/v0.49.0...v1.0.0-alpha.0) (2025-12-27)
 

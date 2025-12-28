@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & Discussions
+    url: https://github.com/oocx/tfplan2md/discussions
+    about: Ask questions, share ideas, or discuss usage
+  - name: 📖 Documentation
+    url: https://github.com/oocx/tfplan2md/blob/main/README.md
+    about: Read the project documentation and examples
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/oocx/tfplan2md/security/advisories/new
+    about: Report a security vulnerability privately

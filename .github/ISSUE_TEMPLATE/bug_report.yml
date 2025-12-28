@@ -1,0 +1,71 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in tfplan2md
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please provide enough detail so we can reproduce and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe what's wrong, what you expected, and what actually happened
+      placeholder: |
+        Example:
+        "The summary table total shows 42, but adding up the rows (12+5+2+3) equals 22.
+        
+        Expected: Total should be 22
+        Actual: Total shows 42"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce
+      description: What command did you run? Include the version and any relevant options.
+      placeholder: |
+        Version: v0.26.0
+        Command: docker run --rm oocx/tfplan2md:0.26.0 /examples/comprehensive-demo/plan.json
+        
+        Then: View the summary table at the top of the output
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-platform
+    attributes:
+      label: Where are you viewing the output?
+      description: Only needed if the issue is about how markdown renders (formatting, tables, etc.). Skip if not relevant.
+      options:
+        - Skip (not a rendering issue)
+        - GitHub
+        - Azure DevOps
+        - GitLab
+        - Local viewer (VS Code, etc.)
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: |
+        Paste the problematic output, error messages, or relevant excerpts.
+        For plan JSON, remove sensitive data first.
+      placeholder: Paste output, error messages, or relevant JSON/markdown excerpts here
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: |
+        Anything else that might help? Examples:
+        - Environment (OS, Docker version, .NET version, etc.)
+        - Screenshots
+        - Related issues
+        - How you're using tfplan2md (CI/CD, local dev, etc.)

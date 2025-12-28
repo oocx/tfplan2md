@@ -1,0 +1,47 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Shell scripts must have LF endings
+*.sh text eol=lf
+
+# C# files
+*.cs text eol=lf diff=csharp
+*.csproj text eol=lf
+*.slnx text eol=lf
+*.props text eol=lf
+
+# Documentation
+*.md text eol=lf
+*.txt text eol=lf
+
+# Configuration files
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.config text eol=lf
+.editorconfig text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Scriban templates
+*.sbn text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.otf binary
+*.dll binary
+*.exe binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.pdf binary

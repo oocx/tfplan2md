@@ -1,0 +1,52 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for tfplan2md
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! Help us understand what you need and why it matters.
+
+  - type: textarea
+    id: request
+    attributes:
+      label: What do you need?
+      description: Describe the feature and why you need it
+      placeholder: |
+        Example:
+        "I need to export reports as PDF for management review. Currently I have to 
+        manually convert markdown to PDF, which is time-consuming."
+        
+        Or:
+        "It would be helpful if tables could be sorted by resource name, because our
+        team reviews changes alphabetically."
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: How would it work?
+      description: Show an example of how you'd use this feature (command, output, etc.)
+      placeholder: |
+        Command: tfplan2md plan.json --export-pdf report.pdf
+        
+        Or show example output:
+        | Resource | Action |
+        |----------|--------|
+        | aaa_first | create |
+        | bbb_second | update |
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: |
+        Anything else that would help? Examples:
+        - Alternative approaches you've tried
+        - Why those alternatives don't work
+        - Willingness to contribute a PR
+        - Screenshots or mockups
+    validations:
+      required: false

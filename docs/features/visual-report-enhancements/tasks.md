@@ -109,9 +109,17 @@ Update existing tests and add new ones to verify the enhancements.
 **Acceptance Criteria:**
 - [ ] Existing tests in `MarkdownRendererTests.cs` and `ScribanHelpersTests.cs` are updated.
 - [ ] New tests from `test-plan.md` are implemented.
-- [ ] UAT passes on GitHub and Azure DevOps using `uat-test-plan.md`.
 
 **Dependencies:** Task 4, Task 5
+
+## Post-Implementation
+
+### User Acceptance Testing (UAT)
+
+**Note:** UAT is performed after code review and before final release.
+
+**Acceptance Criteria:**
+- [ ] UAT passes on GitHub and Azure DevOps using `uat-test-plan.md`.
 
 ## Implementation Order
 
@@ -120,7 +128,7 @@ Recommended sequence for implementation:
 2. **Task 3** - Model precomputation (depends on Task 2).
 3. **Task 4** - Main template overhaul (depends on Task 1 and Task 3).
 4. **Task 5** - Resource-specific template alignment.
-5. **Task 6** - Final verification.
+5. **Task 6** - Final verification (Unit and Integration tests).
 
 ## Open Questions
 

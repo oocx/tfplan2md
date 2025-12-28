@@ -19,12 +19,12 @@
 | **7** | Add interactive retrospective phase | ✅ Complete | High | Medium | High |
 | **8** | Ensure Retrospective terminal access | ✅ Complete | Medium | Low | Medium |
 | **9** | Replace Gemini 3 Pro due to instability | ✅ Complete | Medium | High | Medium |
-| **10** | Create analyze-run.sh helper script | 🔲 Not Started | Medium | Medium | Medium |
-| **11** | Create cleanup-tags.sh helper script | 🔲 Not Started | Low | Low | Low |
+| **10** | Create analyze-run.sh helper script | ✅ Complete | Medium | Medium | Medium |
+| **11** | Create cleanup-tags.sh helper script | ❌ Won't Fix | Low | Low | Low |
 | **12** | Enforce UAT artifact validation | ✅ Complete | High | Low | High |
 | **13** | Enforce UAT report updates | ✅ Complete | High | Low | High |
 | **14** | Investigate GPT-5.2 performance | ✅ Complete | Medium | High | Medium |
-| **15** | Add pre-commit validation script | 🔲 Not Started | Medium | Medium | Medium |
+| **15** | Add pre-commit validation script | ❌ Won't Fix | Medium | Medium | Medium |
 | **16** | Add workflow completion checklist to Release Manager | ✅ Complete | High | Low | High |
 | **17** | Fix release.yml duplicate trigger issue | ✅ Complete | Critical | Medium | Critical |
 | **18** | Fix Versionize major release configuration | ✅ Complete | Critical | Medium | Critical |
@@ -144,6 +144,8 @@
 **Complexity:** Medium  
 **Value:** Medium
 
+✅ **Implemented:** `scripts/analyze-run.sh` created to fetch and summarize logs, with support for filtering by job and failure status.
+
 ---
 
 ### #11: Create cleanup-tags.sh helper script
@@ -153,6 +155,8 @@
 
 **Complexity:** Low  
 **Value:** Low
+
+❌ **Won't Fix:** Decided not to implement as the value is low and manual cleanup is rare.
 
 ---
 
@@ -195,6 +199,8 @@
 
 **Complexity:** Medium  
 **Value:** Medium
+
+❌ **Won't Fix:** Decided not to implement as this is covered by PR validation and pre-commit hooks.
 
 ---
 

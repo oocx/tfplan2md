@@ -26,8 +26,8 @@
 | **14** | Investigate GPT-5.2 performance | ✅ Complete | Medium | High | Medium |
 | **15** | Add pre-commit validation script | 🔲 Not Started | Medium | Medium | Medium |
 | **16** | Add workflow completion checklist to Release Manager | ✅ Complete | High | Low | High |
-| **17** | Fix release.yml duplicate trigger issue | 🔲 Not Started | Critical | Medium | Critical |
-| **18** | Fix Versionize major release configuration | 🔲 Not Started | Critical | Medium | Critical |
+| **17** | Fix release.yml duplicate trigger issue | ✅ Complete | Critical | Medium | Critical |
+| **18** | Fix Versionize major release configuration | ✅ Complete | Critical | Medium | Critical |
 | **19** | Add rejection tracking to retrospective analysis | 🔲 Not Started | Low | High | Low |
 | **20** | Create workflow validation tool | 🔲 Not Started | High | High | High |
 | **21** | Fix "UAT artifact validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
@@ -216,6 +216,8 @@
 **Complexity:** Medium  
 **Value:** Critical
 
+✅ **Implemented:** Tag-only release triggering and prerelease handling was implemented in commit `40aed00`.
+
 ---
 
 ### #18: Fix Versionize major release configuration
@@ -225,6 +227,8 @@
 
 **Complexity:** Medium  
 **Value:** Critical
+
+✅ **Implemented:** CI now runs Versionize with `--pre-release alpha` (commit `40aed00`).
 
 ---
 
@@ -268,8 +272,8 @@
 
 ### Critical (Do First)
 - #5: Task Planner boundary violation ✅
-- #17: Release pipeline duplication
-- #18: Versionize configuration
+- #17: Release pipeline duplication ✅
+- #18: Versionize configuration ✅
 - #21: UAT artifact validation check (blocks PR merges)
 
 ### Quick Wins (High Value / Low Effort)

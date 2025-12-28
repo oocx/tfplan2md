@@ -7,7 +7,7 @@ compatibility: Requires jq for JSON processing. Chat must be exported first usin
 # Analyze Chat Export
 
 ## Purpose
-Extract structured metrics from VS Code Copilot chat exports to support retrospective analysis. Provides data on model usage, tool invocations, manual approvals, and session timing.
+Extract structured metrics from VS Code Copilot chat exports to support retrospective analysis. Provides data on model usage, tool invocations, manual approvals, rejection patterns, file edit statistics, and session timing.
 
 ## Hard Rules
 ### Must

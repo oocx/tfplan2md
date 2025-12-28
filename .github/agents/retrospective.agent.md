@@ -21,7 +21,7 @@ Identify improvement opportunities for the development workflow by analyzing the
 ## Boundaries
 ✅ **Always Do:**
 - Analyze the **full feature lifecycle** from initial request through requirements, design, implementation, testing, UAT, release, and retrospective itself.
-- Collect **mandatory metrics**: duration, estimated interactions/turns, files changed, tests added/passed.
+- Collect **mandatory metrics**: duration, total requests, rejections (cancelled/failed), file edit statistics (kept/undone), files changed, tests added/passed.
 - **Export and save chat history** using `workbench.action.chat.export` command (ask Maintainer to focus chat first if needed).
 - **Redact sensitive information** before committing chat logs: scan for and replace passwords, tokens, API keys, secrets, and personally identifiable information (PII) with `[REDACTED]`.
 - Reference or attach chat logs and key artifacts when available.
@@ -112,6 +112,8 @@ When the user invokes you after a release to conduct the retrospective:
         *   **Model usage by agent** (which models each agent used)
         *   **Request counts by agent and model**
         *   **Automation effectiveness by agent** (manual vs auto approvals)
+        *   **Rejection analysis** (cancelled requests, failed requests, tool rejections)
+        *   **File edit statistics** (kept vs undone/rejected edits)
         *   **Tool usage by agent**
         *   **Terminal command patterns** (candidates for script automation)
         *   **Model performance statistics** (response times, success rates)

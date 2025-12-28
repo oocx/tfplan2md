@@ -28,9 +28,10 @@
 | **16** | Add workflow completion checklist to Release Manager | ✅ Complete | High | Low | High |
 | **17** | Fix release.yml duplicate trigger issue | ✅ Complete | Critical | Medium | Critical |
 | **18** | Fix Versionize major release configuration | ✅ Complete | Critical | Medium | Critical |
-| **19** | Add rejection tracking to retrospective analysis | 🔲 Not Started | Low | High | Low |
+| **19** | Add rejection tracking to retrospective analysis | ✅ Complete | Low | High | Low |
 | **20** | Create workflow validation tool | ✅ Complete | High | High | High |
-| **21** | Fix "UAT artifact validation" GitHub status check | ✅ Complete | Critical | Low | Critical || **22** | Fix "PR Validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
+| **21** | Fix "UAT artifact validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
+| **22** | Fix "PR Validation" GitHub status check | ✅ Complete | Critical | Low | Critical |
 
 ## Detailed Improvements
 
@@ -247,6 +248,18 @@
 
 ---
 
+### #19: Add rejection tracking to retrospective analysis
+**Proposed Changes:** Update `extract-metrics.sh` to track user rejections (undone file edits), cancelled requests, and failed tool invocations. Update Retrospective agent to include these metrics in reports.
+
+**Rationale:** Rejections are a key indicator of model/agent performance issues or instruction ambiguity.
+
+**Complexity:** High  
+**Value:** Low
+
+✅ **Implemented:** `extract-metrics.sh` updated with `extract_rejection_metrics` and `extract_file_edit_stats`. Retrospective agent updated to include these in mandatory metrics and report template.
+
+---
+
 ### #20: Create workflow validation tool
 **Proposed Changes:** Create tool to validate agent definitions: check tool names exist, verify handoff targets exist, validate model availability, check boundary consistency
 
@@ -266,13 +279,19 @@
 **Complexity:** Low  
 **Value:** Critical
 
-**Implementation Details:**
-- Check if workflow exists but has wrong trigger conditions
-- Check if workflow file is missing or disabled
-- Verify branch protection rules reference correct check name
-- Either fix the workflow to run or remove from required checks
+✅ **Implemented:** Verified `uat-validate.yml` does not use `paths-ignore`, ensuring it always runs and reports status to GitHub, even if internal steps are skipped.
 
 ---
+
+### #22: Fix "PR Validation" GitHub status check
+**Proposed Changes:** Fix "PR Validation" check which was using `paths-ignore` for docs, causing it to never run on docs-only PRs and blocking merges.
+
+**Rationale:** Required status checks must always run to satisfy GitHub branch protection.
+
+**Complexity:** Low  
+**Value:** Critical
+
+✅ **Implemented:** Removed `paths-ignore` from `.github/workflows/pr-validation.yml` and implemented internal skipping logic using `git diff`.
 
 ##
 ## Priority Groups

@@ -238,7 +238,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.rg_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.rg_reader</code></b> — <code>Jane Doe (User)</code> (User) → <code>Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
 <br>
 
 | Attribute | Value |
@@ -254,7 +254,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.storage_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.storage_reader</code></b> — <code>DevOps Team (Group)</code> (Group) → <code>Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.storage_reader</code></b> — <code>👥 DevOps Team (Group)</code> → <code>🛡️ Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
 <br>
 
 | Attribute | Value |
@@ -373,7 +373,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.obsolete -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.obsolete</code></b> — remove <code>Reader</code> on <code>rg-old</code> from ServicePrincipal <code>Legacy App (Service Principal)</code></summary>
+<summary>❌ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.obsolete</code></b> — remove <code>🛡️ Reader</code> on <code>rg-old</code> from <code>💻 Legacy App (Service Principal)</code></summary>
 <br>
 
 | Attribute | Value |

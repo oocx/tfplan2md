@@ -14,6 +14,20 @@
 {{- summary_scope_html = active_scope.summary_label + format_code_summary(active_scope.summary_name) -}}
 {{- principal_type = active_principal.type }}
 
+{{ func format_role_summary(role_name) }}
+    {{- if role_name == null || role_name == "" }}{{ ret "" }}{{ end -}}
+    {{ ret "<code>🛡️ " + (escape_markdown(role_name)) + "</code>" }}
+{{ end }}
+
+{{ func format_principal_summary(principal_name, principal_type) }}
+    {{- if principal_name == null || principal_name == "" }}{{ ret "" }}{{ end -}}
+    {{- icon = "" -}}
+    {{- if principal_type == "User" }}{{ icon = "👤 " }}{{ end -}}
+    {{- if principal_type == "Group" }}{{ icon = "👥 " }}{{ end -}}
+    {{- if principal_type == "ServicePrincipal" }}{{ icon = "💻 " }}{{ end -}}
+    {{ ret "<code>" + icon + (escape_markdown(principal_name)) + "</code>" }}
+{{ end }}
+
 {{ func normalize_for_table(value) }}
     {{- text = "" + value -}}
     {{ ret string.replace(string.replace(text, "\r", ""), "\n", " ") }}
@@ -72,7 +86,7 @@
 
 <!-- tfplan2md:resource-start address={{ address }} -->
 <details style="margin-bottom:12px;">
-<summary>{{ action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(address) }}</b> — {{ if action == "replace" }}recreate as {{ format_code_summary(active_principal.name) }}{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → {{ format_code_summary(active_role.name) }} on {{ summary_scope_html }}{{ else if action == "delete" }}remove {{ format_code_summary(active_role.name) }} on {{ summary_scope_html }} from {{ if principal_type != "" }}{{ principal_type | escape_markdown }} {{ end }}{{ format_code_summary(active_principal.name) }}{{ else }}{{ format_code_summary(active_principal.name) }}{{ if principal_type != "" }} ({{ principal_type | escape_markdown }}){{ end }} → {{ format_code_summary(active_role.name) }} on {{ summary_scope_html }}{{ end }}</summary>
+<summary>{{ action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(address) }}</b> — {{ if action == "replace" }}recreate as {{ format_principal_summary(active_principal.name, principal_type) }} → {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }}{{ else if action == "delete" }}remove {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }} from {{ format_principal_summary(active_principal.name, principal_type) }}{{ else }}{{ format_principal_summary(active_principal.name, principal_type) }} → {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }}{{ end }}</summary>
 <br>
 
 {{- description = action == "delete" ? (before_state != null ? before_state.description : null) : (after_state != null ? after_state.description : null) -}}

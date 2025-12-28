@@ -272,7 +272,7 @@ public static class ScribanHelpers
 
         if (IsLocationAttribute(normalizedName))
         {
-            return FormatIconValue($"🌍 {normalizedValue}", context, true);
+            return FormatIconValue($"🌍 {normalizedValue}", context, false);
         }
 
         return context == ValueFormatContext.Table

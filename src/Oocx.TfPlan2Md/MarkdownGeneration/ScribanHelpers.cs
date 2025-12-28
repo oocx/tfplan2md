@@ -33,6 +33,7 @@ public static class ScribanHelpers
         scriptObject.Import("format_code_table", new Func<string?, string>(FormatCodeTable));
         scriptObject.Import("format_attribute_value_summary", new Func<string?, string?, string?, string>(FormatAttributeValueSummary));
         scriptObject.Import("format_attribute_value_table", new Func<string?, string?, string?, string>(FormatAttributeValueTable));
+        scriptObject.Import("format_attribute_value_plain", new Func<string?, string?, string?, string>(FormatAttributeValuePlain));
         scriptObject.Import("large_attributes_summary", new Func<object?, string>(LargeAttributesSummary));
         scriptObject.Import("is_large_value", new Func<string?, string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
@@ -42,6 +43,42 @@ public static class ScribanHelpers
         scriptObject.Import("azure_role_info", new Func<string?, string?, ScriptObject>(GetRoleInfo));
         scriptObject.Import("azure_principal_info", new Func<string?, string?, ScriptObject>((id, type) => GetPrincipalInfo(id, type, principalMapper)));
         scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
+    }
+
+    /// <summary>
+    /// HTML encodes a string while preserving emoji characters.
+    /// Manually escapes HTML special characters without encoding Unicode emoji.
+    /// </summary>
+    private static string HtmlEncode(string value)
+    {
+        var sb = new StringBuilder(value.Length + (value.Length / 10)); // Estimate extra space for encoding
+
+        foreach (var ch in value)
+        {
+            switch (ch)
+            {
+                case '<':
+                    sb.Append("&lt;");
+                    break;
+                case '>':
+                    sb.Append("&gt;");
+                    break;
+                case '&':
+                    sb.Append("&amp;");
+                    break;
+                case '"':
+                    sb.Append("&quot;");
+                    break;
+                case '\'':
+                    sb.Append("&#39;");
+                    break;
+                default:
+                    sb.Append(ch);
+                    break;
+            }
+        }
+
+        return sb.ToString();
     }
 
     /// <summary>
@@ -198,6 +235,93 @@ public static class ScribanHelpers
         result = result.Replace(">", "&gt;", StringComparison.Ordinal);
         result = result.Replace("|", "&#124;", StringComparison.Ordinal);
         return result;
+    }
+
+    /// <summary>
+    /// Applies semantic icons to attribute values without any code formatting wrappers.
+    /// Intended for use in contexts where external formatters will add their own wrapping
+    /// (e.g., inline HTML diffs).
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <returns>Plain text value with semantic icons, no markdown or HTML wrapping.</returns>
+    public static string FormatAttributeValuePlain(string? attributeName, string? value, string? providerName)
+    {
+        _ = providerName; // Reserved for future provider-specific formatting rules
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalizedValue = value.Trim();
+        var normalizedName = attributeName ?? string.Empty;
+
+        // Boolean formatting
+        if (TryFormatBoolean(normalizedValue, ValueFormatContext.Table, out var booleanFormatted))
+        {
+            // Extract just the icon and text without backticks
+            return booleanFormatted.Trim('`');
+        }
+
+        // Access formatting
+        if (TryFormatAccess(normalizedName, normalizedValue, ValueFormatContext.Table, out var accessFormatted))
+        {
+            return accessFormatted.Trim('`');
+        }
+
+        // Direction formatting
+        if (TryFormatDirection(normalizedName, normalizedValue, ValueFormatContext.Table, out var directionFormatted))
+        {
+            return directionFormatted.Trim('`');
+        }
+
+        // Protocol formatting
+        if (TryFormatProtocol(normalizedName, normalizedValue, ValueFormatContext.Table, out var protocolFormatted))
+        {
+            return protocolFormatted.Trim('`');
+        }
+
+        // Port formatting
+        if (TryFormatPort(normalizedName, normalizedValue, ValueFormatContext.Table, out var portFormatted))
+        {
+            return portFormatted.Trim('`');
+        }
+
+        // Principal type formatting
+        if (TryFormatPrincipalType(normalizedName, normalizedValue, ValueFormatContext.Table, out var principalTypeFormatted))
+        {
+            return principalTypeFormatted.Trim('`');
+        }
+
+        // Role definition formatting
+        if (TryFormatRoleDefinition(normalizedName, normalizedValue, ValueFormatContext.Table, out var roleFormatted))
+        {
+            return roleFormatted.Trim('`');
+        }
+
+        // Asterisk wildcard
+        if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
+        {
+            return "✳️";
+        }
+
+        // IP addresses and CIDR blocks
+        if (IsIpAddressOrCidr(normalizedValue))
+        {
+            return $"🌐 {normalizedValue}";
+        }
+
+        // Location attributes
+        if (IsLocationAttribute(normalizedName))
+        {
+            return $"🌍 {normalizedValue}";
+        }
+
+        // Return plain value
+        return normalizedValue;
     }
 
     /// <summary>
@@ -1089,11 +1213,6 @@ public static class ScribanHelpers
         }
 
         return mask;
-    }
-
-    private static string HtmlEncode(string value)
-    {
-        return HtmlEncoder.Default.Encode(value);
     }
 
     private readonly record struct DiffEntry(DiffKind Kind, string Text);

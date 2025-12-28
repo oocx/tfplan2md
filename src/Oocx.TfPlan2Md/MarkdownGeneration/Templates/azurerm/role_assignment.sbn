@@ -28,6 +28,13 @@
     {{ ret "<code>" + icon + (escape_markdown(principal_name)) + "</code>" }}
 {{ end }}
 
+{{ func extract_resource_name(full_address) }}
+    {{- if full_address == null || full_address == "" }}{{ ret full_address }}{{ end -}}
+    {{- parts = string.split full_address "." -}}
+    {{- if parts.size > 0 }}{{ ret parts[parts.size - 1] }}{{ end -}}
+    {{ ret full_address }}
+{{ end }}
+
 {{ func normalize_for_table(value) }}
     {{- text = "" + value -}}
     {{ ret string.replace(string.replace(text, "\r", ""), "\n", " ") }}
@@ -86,7 +93,7 @@
 
 <!-- tfplan2md:resource-start address={{ address }} -->
 <details style="margin-bottom:12px;">
-<summary>{{ action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(address) }}</b> — {{ if action == "replace" }}recreate as {{ format_principal_summary(active_principal.name, principal_type) }} → {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }}{{ else if action == "delete" }}remove {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }} from {{ format_principal_summary(active_principal.name, principal_type) }}{{ else }}{{ format_principal_summary(active_principal.name, principal_type) }} → {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }}{{ end }}</summary>
+<summary>{{ action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(extract_resource_name(address)) }}</b> — {{ if action == "replace" }}recreate as {{ format_principal_summary(active_principal.name, principal_type) }} → {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }}{{ else if action == "delete" }}remove {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }} from {{ format_principal_summary(active_principal.name, principal_type) }}{{ else }}{{ format_principal_summary(active_principal.name, principal_type) }} → {{ format_role_summary(active_role.name) }} on {{ summary_scope_html }}{{ end }}</summary>
 <br>
 
 {{- description = action == "delete" ? (before_state != null ? before_state.description : null) : (after_state != null ? after_state.description : null) -}}

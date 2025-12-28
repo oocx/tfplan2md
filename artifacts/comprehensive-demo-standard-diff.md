@@ -176,8 +176,8 @@
 | ➕ | `allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 443` | `Secure web` |
 | ➕ | `allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🔌 8080` | `Log ingestion` |
 | ➕ | `allow-icmp-ping` | `📡 ICMP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `✳️` | `ICMP ping for network diagnostics` |
-| 🔄 | `allow-dns` | `📨 UDP` | - `10.1.1.0/24`<br>+ `10.1.1.0/24, 10.1.2.0/24` | `🌐 168.63.129.16` | `🔌 53` | <code>DNS to Azure</code> |
-| 🔄 | `allow-api` | `🔗 TCP` | `🌐 10.1.1.0/24` | - `10.1.2.0/24`<br>+ `10.2.2.0/24` | - `8443`<br>+ `8443, 9443` | <code>API tier</code> |
+| 🔄 | `allow-dns` | 📨 UDP | - `🌐 10.1.1.0/24`<br>+ `🌐 10.1.1.0/24, 🌐 10.1.2.0/24` | 🌐 168.63.129.16 | 🔌 53 | <code>DNS to Azure</code> |
+| 🔄 | `allow-api` | 🔗 TCP | 🌐 10.1.1.0/24 | - `🌐 10.1.2.0/24`<br>+ `🌐 10.2.2.0/24` | - `🔌 8443`<br>+ `🔌 8443, 🔌 9443` | <code>API tier</code> |
 | ❌ | `allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 80` | `Legacy HTTP` |
 | ⏺️ | `allow-monitoring` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `🔌 443` | `Monitoring` |
 
@@ -238,7 +238,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.rg_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
 <br>
 
 | Attribute | Value |
@@ -254,7 +254,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.storage_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.storage_reader</code></b> — <code>👥 DevOps Team (Group)</code> → <code>🛡️ Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>storage_reader</code></b> — <code>👥 DevOps Team (Group)</code> → <code>🛡️ Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
 <br>
 
 | Attribute | Value |
@@ -373,7 +373,7 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.obsolete -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_role_assignment <b><code>module.security.azurerm_role_assignment.obsolete</code></b> — remove <code>🛡️ Reader</code> on <code>rg-old</code> from <code>💻 Legacy App (Service Principal)</code></summary>
+<summary>❌ azurerm_role_assignment <b><code>obsolete</code></b> — remove <code>🛡️ Reader</code> on <code>rg-old</code> from <code>💻 Legacy App (Service Principal)</code></summary>
 <br>
 
 | Attribute | Value |

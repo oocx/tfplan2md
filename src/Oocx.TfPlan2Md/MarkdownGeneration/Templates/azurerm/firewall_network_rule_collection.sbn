@@ -17,10 +17,19 @@
 {{ end }}
 
 {{ func format_rule_diff(attr_name, before_values, after_values) }}
-     {{- before_str = before_values | array.join ", " -}}
-     {{- after_str = after_values | array.join ", " -}}
+     {{- # Apply icons to each value before joining -}}
+     {{- before_formatted = [] -}}
+     {{- for v in before_values -}}
+          {{ before_formatted = before_formatted + [ format_attribute_value_plain(attr_name, "" + v, null) ] }}
+     {{- end -}}
+     {{- after_formatted = [] -}}
+     {{- for v in after_values -}}
+          {{ after_formatted = after_formatted + [ format_attribute_value_plain(attr_name, "" + v, null) ] }}
+     {{- end -}}
+     {{- before_str = before_formatted | array.join ", " -}}
+     {{- after_str = after_formatted | array.join ", " -}}
      {{- if before_str == after_str -}}
-          {{- ret format_rule_list attr_name after_values -}}
+          {{- ret after_str -}}
      {{- else -}}
           {{- ret format_diff before_str after_str -}}
      {{- end -}}

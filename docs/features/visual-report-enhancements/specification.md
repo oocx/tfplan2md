@@ -110,19 +110,25 @@ Each resource will appear as a collapsible section with a descriptive summary li
 Within the expanded details, users will see enhanced formatting for specific value types:
 
 **Security and Network Values:**
-- `access: ✅ Allow` or `access: ⛔ Deny`
-- `direction: ⬇️ Inbound` or `direction: ⬆️ Outbound`
-- `protocol: 🔗 TCP`, `protocol: 📨 UDP`, `protocol: 📡 ICMP`, `protocol: ✳️ *`
+| Attribute | Value |
+| ----------- | ------- |
+| access | `✅ Allow` |
+| direction | `⬇️ Inbound` |
+| protocol | `🔗 TCP` |
 
 **Boolean Values:**
-- `enabled: ✅ true`
-- `https_only: ❌ false`
+| Attribute | Value |
+| ----------- | ------- |
+| enabled | `✅ true` |
+| https_only | `❌ false` |
 
 **IP Addresses:**
-- `address_space[0]: `🌐 10.0.0.0/16``
-- `source_address_prefix: `🌐 10.1.0.0/16``
+| Attribute | Value |
+| ----------- | ------- |
+| address_space[0] | `🌐 10.0.0.0/16` |
+| source_address_prefix | `🌐 10.1.0.0/16` |
 
-**Tags:**
+**Tags (displayed below the main attributes table):**
 ```markdown
 **🏷️ Tags:** `environment: production` `owner: devops` `cost_center: 1234`
 ```

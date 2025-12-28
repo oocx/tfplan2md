@@ -121,7 +121,37 @@ extract_user_votes() {
     [.requests[] | select(.vote != null) | .vote]
     | group_by(.)
     | map({vote: (if .[0] == 1 then "up" elif .[0] == 0 then "down" else "unknown" end), count: length})
-    ' "$CHAT_FILE"
+    " "$CHAT_FILE"
+}
+
+extract_file_edit_stats() {
+    jq -r "
+    [.requests[].editedFileEvents[]?.eventKind] 
+    | group_by(.) 
+    | map({status: (if .[0] == 1 then \"kept\" elif .[0] == 2 then \"undone\" else \"modified\" end), count: length})
+    " "$CHAT_FILE"
+}
+
+extract_rejection_metrics() {
+    jq -r "
+    [.requests[] | {
+        model: .modelId,
+        state: .modelState.value,
+        error_code: .result.errorDetails.code,
+        cancelled_tools: ([.response[] | select(.kind == \"toolInvocationSerialized\" and .isConfirmed.type == 0)] | length)
+    }]
+    | group_by(.model)
+    | map({
+        model: (.[0].model // \"unknown\" | if type == \"string\" then sub(\"^copilot/\"; \"\") else \"unknown\" end),
+        total_requests: length,
+        cancelled: ([.[] | select(.state == 2)] | length),
+        failed: ([.[] | select(.state == 3)] | length),
+        tool_rejections: ([.[].cancelled_tools] | add),
+        error_codes: ([.[] | select(.error_code != null) | .error_code] | group_by(.) | map({code: .[0], count: length}))
+    })
+    | map(. + {rejection_rate: (if .total_requests > 0 then (((.cancelled + .failed + .tool_rejections) / .total_requests) * 100 | floor) else 0 end)})
+    | sort_by(-.total_requests)
+    " "$CHAT_FILE"
 }
 
 # --- Generate Markdown Report ---
@@ -129,6 +159,7 @@ extract_user_votes() {
 generate_report() {
     local session_metrics model_usage tool_usage approval_types
     local model_success response_times error_codes user_votes
+    local file_edits rejection_metrics
     
     # Extract all metrics
     session_metrics=$(extract_session_metrics)
@@ -139,6 +170,8 @@ generate_report() {
     response_times=$(extract_response_times)
     error_codes=$(extract_error_codes)
     user_votes=$(extract_user_votes)
+    file_edits=$(extract_file_edit_stats)
+    rejection_metrics=$(extract_rejection_metrics)
     
     # Parse session metrics
     local total_requests session_sec user_wait_sec agent_work_sec
@@ -232,6 +265,26 @@ $(echo "$model_success" | jq -r '.[] | "| \(.model) | \(.total) | \(.complete) |
 
 ---
 
+## Rejection Analysis
+
+| Model | Total | Cancelled | Failed | Tool Rej | Rej Rate |
+|-------|-------|-----------|--------|----------|----------|
+$(echo "$rejection_metrics" | jq -r '.[] | "| \(.model) | \(.total_requests) | \(.cancelled) | \(.failed) | \(.tool_rejections) | \(.rejection_rate)% |"')
+
+---
+
+## File Edits
+
+$(if [[ $(echo "$file_edits" | jq 'length') -eq 0 ]]; then
+    echo "No file edits recorded."
+else
+    echo "| Status | Count |"
+    echo "|--------|-------|"
+    echo "$file_edits" | jq -r '.[] | "| \(.status) | \(.count) |"'
+fi)
+
+---
+
 ## Response Times by Model
 
 | Model | Requests | Avg (s) | Total (s) |
@@ -269,6 +322,7 @@ EOF
 generate_json() {
     local session_metrics model_usage tool_usage approval_types
     local model_success response_times error_codes user_votes
+    local file_edits rejection_metrics
     
     # Extract all metrics
     session_metrics=$(extract_session_metrics)
@@ -279,6 +333,8 @@ generate_json() {
     response_times=$(extract_response_times)
     error_codes=$(extract_error_codes)
     user_votes=$(extract_user_votes)
+    file_edits=$(extract_file_edit_stats)
+    rejection_metrics=$(extract_rejection_metrics)
     
     # Calculate derived metrics
     local total_approvals auto_approved manual_approved
@@ -299,6 +355,8 @@ generate_json() {
         --argjson response_times "$response_times" \
         --argjson error_codes "$error_codes" \
         --argjson user_votes "$user_votes" \
+        --argjson file_edits "$file_edits" \
+        --argjson rejection_metrics "$rejection_metrics" \
         --argjson total_tool_invocations "$total_approvals" \
         --argjson auto_approved "$auto_approved" \
         --argjson manual_approved "$manual_approved" \
@@ -319,6 +377,8 @@ generate_json() {
                 automation_rate_pct: (if $total_tool_invocations > 0 then ($auto_approved * 100 / $total_tool_invocations | floor) else 0 end)
             },
             model_success: $model_success,
+            rejection_analysis: $rejection_metrics,
+            file_edits: $file_edits,
             response_times: $response_times,
             errors: $error_codes,
             user_feedback: $user_votes

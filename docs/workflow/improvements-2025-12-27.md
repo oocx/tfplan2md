@@ -12,18 +12,18 @@
 |---|-------------|--------|----------|------------|-------|
 | **1** | Fix Quality Engineer test plan folder instructions | ✅ Complete | High | Low | High |
 | **2** | Enforce strict PR creation boundaries | ✅ Complete | High | Low | High |
-| **3** | Fix Release Manager polling behavior | 🔲 Not Started | High | Medium | High |
+| **3** | Fix Release Manager polling behavior | ✅ Complete | High | Medium | High |
 | **4** | Enforce project script usage | ✅ Complete | High | Low | High |
 | **5** | Fix Task Planner boundary violation | ✅ Complete | Critical | Medium | Critical |
 | **6** | Improve Retrospective Agent critical analysis | ✅ Complete | High | Medium | High |
 | **7** | Add interactive retrospective phase | ✅ Complete | High | Medium | High |
 | **8** | Ensure Retrospective terminal access | ✅ Complete | Medium | Low | Medium |
-| **9** | Replace Gemini 3 Pro due to instability | 🔲 Not Started | Medium | High | Medium |
+| **9** | Replace Gemini 3 Pro due to instability | ✅ Complete | Medium | High | Medium |
 | **10** | Create analyze-run.sh helper script | 🔲 Not Started | Medium | Medium | Medium |
 | **11** | Create cleanup-tags.sh helper script | 🔲 Not Started | Low | Low | Low |
 | **12** | Enforce UAT artifact validation | ✅ Complete | High | Low | High |
 | **13** | Enforce UAT report updates | ✅ Complete | High | Low | High |
-| **14** | Investigate GPT-5.2 performance | 🔲 Not Started | Medium | High | Medium |
+| **14** | Investigate GPT-5.2 performance | ✅ Complete | Medium | High | Medium |
 | **15** | Add pre-commit validation script | 🔲 Not Started | Medium | Medium | Medium |
 | **16** | Add workflow completion checklist to Release Manager | ✅ Complete | High | Low | High |
 | **17** | Fix release.yml duplicate trigger issue | 🔲 Not Started | Critical | Medium | Critical |
@@ -62,6 +62,8 @@
 
 **Complexity:** Medium  
 **Value:** High
+
+✅ **Implemented:** Release Manager now uses blocking `gh run watch` guidance.
 
 ---
 
@@ -130,6 +132,8 @@
 **Complexity:** High  
 **Value:** Medium
 
+✅ **Implemented:** Agent model assignments were adjusted and model guidance updated in `docs/ai-model-reference.md`.
+
 ---
 
 ### #10: Create analyze-run.sh helper script
@@ -179,6 +183,8 @@
 
 **Complexity:** High  
 **Value:** Medium
+
+✅ **Implemented:** Performance/latency and comparative benchmark data was added to `docs/ai-model-reference.md` and agent model assignments were updated accordingly.
 
 ---
 
@@ -275,15 +281,15 @@
 - #16: Release Manager checklist
 
 ### Medium Priority
-- #3: Release Manager polling
+- #3: Release Manager polling ✅
 - #6: Retrospective critical analysis
 - #7: Interactive retrospective
 - #10: analyze-run.sh script
-- #14: GPT-5.2 performance
+- #14: GPT-5.2 performance ✅
 - #15: Pre-commit checks
 
 ### Research/Long-term
-- #9: Gemini 3 Pro replacement
+- #9: Gemini 3 Pro replacement ✅
 - #11: cleanup-tags.sh
 - #19: Rejection tracking
 - #20: Workflow validation tool

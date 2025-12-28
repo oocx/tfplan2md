@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Prevent interactive pagers from blocking automation
+export GH_PAGER=cat
+export GH_FORCE_TTY=false
+export PAGER=cat
+
 usage() {
   cat <<'USAGE'
 Usage:

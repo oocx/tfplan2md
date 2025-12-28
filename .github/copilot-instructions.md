@@ -67,6 +67,10 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
   - Bad: "I will run `git status`. Is that okay?" (waits for user reply)
   - Bad: "I will run `git status`." (waits for user reply)
   - Good: "I will run `git status` to check changes." [Tool Call]
+- **Pager Suppression**: Always prevent interactive pagers from blocking execution.
+  - For `gh`: Use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` or `export GH_PAGER=cat GH_FORCE_TTY=false`.
+  - For `az`: Use `AZURE_CORE_PAGER=cat az ...` or `export AZURE_CORE_PAGER=cat`.
+  - For general tools: Use `export PAGER=cat`.
 - Avoid running commands that are not necessary for the current task.
 - When a command fails, explain the error and propose a solution before retrying.
 

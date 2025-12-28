@@ -2,7 +2,15 @@
 # UAT Wrapper Script (GitHub + Azure DevOps)
 #
 # Purpose: Reduce Maintainer approval fatigue by batching UAT into one stable command.
-#
+
+set -euo pipefail
+
+# Prevent interactive pagers from blocking automation
+export GH_PAGER=cat
+export GH_FORCE_TTY=false
+export AZURE_CORE_PAGER=cat
+export PAGER=cat
+
 # Usage:
 #   scripts/uat-run.sh [artifact-path] <test-description> [--platform both|github|azdo]
 #

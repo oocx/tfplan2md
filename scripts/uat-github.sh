@@ -19,7 +19,9 @@
 set -euo pipefail
 
 # Prevent interactive pagers from blocking automation
-export PAGER="${PAGER:-cat}"
+export GH_PAGER=cat
+export GH_FORCE_TTY=false
+export PAGER=cat
 
 # UAT repository configuration
 UAT_GITHUB_REPO="${UAT_GITHUB_REPO:-oocx/tfplan2md-uat}"

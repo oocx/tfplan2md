@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.Azure;
 using Scriban.Runtime;
 
@@ -27,6 +29,10 @@ public static class ScribanHelpers
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
         scriptObject.Import("format_value", new Func<string?, string?, string>(FormatValue));
+        scriptObject.Import("format_code_summary", new Func<string?, string>(FormatCodeSummary));
+        scriptObject.Import("format_code_table", new Func<string?, string>(FormatCodeTable));
+        scriptObject.Import("format_attribute_value_summary", new Func<string?, string?, string?, string>(FormatAttributeValueSummary));
+        scriptObject.Import("format_attribute_value_table", new Func<string?, string?, string?, string>(FormatAttributeValueTable));
         scriptObject.Import("large_attributes_summary", new Func<object?, string>(LargeAttributesSummary));
         scriptObject.Import("is_large_value", new Func<string?, string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
@@ -145,6 +151,331 @@ public static class ScribanHelpers
         }
 
         return $"`{EscapeMarkdown(value)}`";
+    }
+
+    /// <summary>
+    /// Formats text as HTML code for usage inside summary tags where markdown backticks are unreliable.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="text">The raw text to wrap in a code span.</param>
+    /// <returns>HTML code-wrapped text, or an empty string when input is null or empty.</returns>
+    public static string FormatCodeSummary(string? text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return string.Empty;
+        }
+
+        return $"<code>{EscapeHtmlForCode(text)}</code>";
+    }
+
+    /// <summary>
+    /// Formats text as markdown inline code for table rendering.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="text">The raw text to wrap in inline code.</param>
+    /// <returns>Markdown inline code string, or an empty string when input is null or empty.</returns>
+    public static string FormatCodeTable(string? text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return string.Empty;
+        }
+
+        return $"`{EscapeMarkdown(text)}`";
+    }
+
+    /// <summary>
+    /// Escapes characters that break HTML code spans while preserving emoji glyphs.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="text">The raw text to escape.</param>
+    /// <returns>HTML-safe text with emoji preserved.</returns>
+    private static string EscapeHtmlForCode(string text)
+    {
+        var result = text.Replace("&", "&amp;", StringComparison.Ordinal);
+        result = result.Replace("<", "&lt;", StringComparison.Ordinal);
+        result = result.Replace(">", "&gt;", StringComparison.Ordinal);
+        return result;
+    }
+
+    /// <summary>
+    /// Formats attribute values for summary context using semantic icons and HTML code spans.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <returns>Formatted value suitable for use inside &lt;summary&gt; tags.</returns>
+    public static string FormatAttributeValueSummary(string? attributeName, string? value, string? providerName)
+    {
+        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Summary);
+    }
+
+    /// <summary>
+    /// Formats attribute values for table context using semantic icons and markdown code spans.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <returns>Formatted value suitable for markdown tables.</returns>
+    public static string FormatAttributeValueTable(string? attributeName, string? value, string? providerName)
+    {
+        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table);
+    }
+
+    /// <summary>
+    /// Formats attribute values with semantic icons for the requested rendering context.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="context">The rendering context (table or summary).</param>
+    /// <returns>Formatted value respecting semantic icon rules and context-specific code wrapping.</returns>
+    private static string FormatAttributeValue(string? attributeName, string? value, string? providerName, ValueFormatContext context)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalizedValue = value.Trim();
+        var normalizedName = attributeName ?? string.Empty;
+
+        if (TryFormatBoolean(normalizedValue, context, out var booleanFormatted))
+        {
+            return booleanFormatted;
+        }
+
+        if (TryFormatAccess(normalizedName, normalizedValue, context, out var accessFormatted))
+        {
+            return accessFormatted;
+        }
+
+        if (TryFormatDirection(normalizedName, normalizedValue, context, out var directionFormatted))
+        {
+            return directionFormatted;
+        }
+
+        if (TryFormatProtocol(normalizedName, normalizedValue, context, out var protocolFormatted))
+        {
+            return protocolFormatted;
+        }
+
+        if (IsIpAddressOrCidr(normalizedValue))
+        {
+            return FormatIconValue($"🌐 {normalizedValue}", context, false);
+        }
+
+        if (IsLocationAttribute(normalizedName))
+        {
+            return FormatIconValue($"🌍 {normalizedValue}", context, true);
+        }
+
+        return context == ValueFormatContext.Table
+            ? FormatValue(normalizedValue, providerName)
+            : FormatCodeSummary(normalizedValue);
+    }
+
+    /// <summary>
+    /// Determines whether a value represents a boolean and formats it with icons.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="value">The raw value to evaluate.</param>
+    /// <param name="context">The rendering context (table or summary).</param>
+    /// <param name="formatted">Formatted result when the value is boolean.</param>
+    /// <returns>True when the value was formatted as a boolean; otherwise false.</returns>
+    private static bool TryFormatBoolean(string value, ValueFormatContext context, out string formatted)
+    {
+        if (bool.TryParse(value, out var boolValue))
+        {
+            var icon = boolValue ? "✅" : "❌";
+            var text = boolValue ? "true" : "false";
+            formatted = context == ValueFormatContext.Table
+                ? FormatCodeTable($"{icon} {text}")
+                : $"{icon} {text}";
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Formats access rules (Allow/Deny) with semantic icons when applicable.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic application.</param>
+    /// <param name="value">The access value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when formatted; otherwise false.</returns>
+    private static bool TryFormatAccess(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("access", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        if (value.Equals("allow", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("✅ Allow") : "✅ Allow";
+            return true;
+        }
+
+        if (value.Equals("deny", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("⛔ Deny") : "⛔ Deny";
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Formats network direction values with semantic icons.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic application.</param>
+    /// <param name="value">The direction value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when formatted; otherwise false.</returns>
+    private static bool TryFormatDirection(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("direction", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        if (value.Equals("inbound", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("⬇️ Inbound") : "⬇️ Inbound";
+            return true;
+        }
+
+        if (value.Equals("outbound", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("⬆️ Outbound") : "⬆️ Outbound";
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Formats protocol values with semantic icons.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic application.</param>
+    /// <param name="value">The protocol value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when formatted; otherwise false.</returns>
+    private static bool TryFormatProtocol(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("protocol", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        if (value.Equals("tcp", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("🔗 TCP") : "🔗 TCP";
+            return true;
+        }
+
+        if (value.Equals("udp", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("📨 UDP") : "📨 UDP";
+            return true;
+        }
+
+        if (value.Equals("icmp", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("📡 ICMP") : "📡 ICMP";
+            return true;
+        }
+
+        if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("✳️ *") : "✳️ *";
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Formats icon-bearing values with context-aware code wrapping and optional parentheses.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="iconValue">The value including the icon prefix.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="wrapInParentheses">Whether the summary context should wrap the value in parentheses.</param>
+    /// <returns>Formatted value with appropriate code wrapping.</returns>
+    private static string FormatIconValue(string iconValue, ValueFormatContext context, bool wrapInParentheses)
+    {
+        var formatted = context == ValueFormatContext.Table ? FormatCodeTable(iconValue) : FormatCodeSummary(iconValue);
+        if (wrapInParentheses && context == ValueFormatContext.Summary)
+        {
+            return $"({formatted})";
+        }
+
+        return formatted;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute name represents a location value.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <returns>True when the attribute represents a location.</returns>
+    private static bool IsLocationAttribute(string attributeName)
+    {
+        return attributeName.Equals("location", StringComparison.OrdinalIgnoreCase)
+            || attributeName.Equals("region", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Determines whether a value resembles an IP address or CIDR block.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="value">The value to evaluate.</param>
+    /// <returns>True when the value is an IP address or CIDR.</returns>
+    private static bool IsIpAddressOrCidr(string value)
+    {
+        if (IPAddress.TryParse(value, out _))
+        {
+            return true;
+        }
+
+        return Regex.IsMatch(value, "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", RegexOptions.CultureInvariant);
+    }
+
+    /// <summary>
+    /// Rendering context for semantic formatting.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    private enum ValueFormatContext
+    {
+        /// <summary>
+        /// Table rendering where markdown backticks are required.
+        /// </summary>
+        Table,
+
+        /// <summary>
+        /// Summary rendering where HTML code spans are required.
+        /// </summary>
+        Summary
     }
 
     private static bool IsAzurermProvider(string? providerName)

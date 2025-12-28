@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.4"></a>
+## [1.0.0-alpha.4](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-12-28)
+
+### ✨ Features
+
+* add rejection tracking to retrospective analysis and update checklist ([e43b88c](https://github.com/oocx/tfplan2md/commit/e43b88cafc424f7ba088df9c3380e9c369b7b8db))
+
+### 📚 Documentation
+
+* add GitHub community standards and open source readiness ([5160a17](https://github.com/oocx/tfplan2md/commit/5160a17c40cb81bab26b17c4d8f7e0a472b286b4))
+* add retrospective for workflow improvement cycle ([b92db7b](https://github.com/oocx/tfplan2md/commit/b92db7b0fc90d7df4ac946f047a074a3e88749fa))
+
 <a name="1.0.0-alpha.3"></a>
 ## [1.0.0-alpha.3](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-12-28)
 

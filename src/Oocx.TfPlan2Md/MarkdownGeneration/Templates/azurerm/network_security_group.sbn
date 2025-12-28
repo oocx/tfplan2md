@@ -1,6 +1,7 @@
 {{~## Template for azurerm_network_security_group
      Provides semantic diffing of NSG security rules instead of index-based changes.
 ~}}
+<!-- tfplan2md:resource-start address={{ address }} -->
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
 {{~ if after_json ~}}
@@ -99,3 +100,5 @@
 </details>
 {{~ end ~}}
 {{~ end ~}}
+
+<!-- tfplan2md:resource-end address={{ address }} -->

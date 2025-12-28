@@ -70,11 +70,11 @@ public class MarkdownRenderer
                 continue;
             }
 
-            // Find the corresponding change section in the default-rendered document and replace it.
-            // Resource changes are at level 4 (####), so match until next level 1-4 heading or separator
-            var escapedHeading = $"{change.ActionSymbol} {ScribanHelpers.EscapeMarkdown(change.Address)}";
-            var pattern = $"(?ms)^[ \t]*####\\s+{Regex.Escape(escapedHeading)}.*?(?=^[ \t]*####\\s|^[ \t]*###\\s|^[ \t]*##\\s|^[ \t]*#\\s|^---$|\\z)";
-            rendered = Regex.Replace(rendered, pattern, specific);
+            // Replace the corresponding change section in the default-rendered document using invisible anchors
+            var startMarker = $"<!-- tfplan2md:resource-start address={change.Address} -->";
+            var endMarker = $"<!-- tfplan2md:resource-end address={change.Address} -->";
+            var pattern = $"{Regex.Escape(startMarker)}.*?{Regex.Escape(endMarker)}";
+            rendered = Regex.Replace(rendered, pattern, specific, RegexOptions.Singleline);
         }
 
         return NormalizeHeadingSpacing(rendered);

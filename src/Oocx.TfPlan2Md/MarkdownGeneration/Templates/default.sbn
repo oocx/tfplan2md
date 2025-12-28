@@ -21,6 +21,7 @@ No changes.
 ### Module: {{ if module.module_address && module.module_address != "" }}`{{ module.module_address | escape_markdown }}`{{ else }}root{{ end }}
 
 {{ for change in module.changes }}
+<!-- tfplan2md:resource-start address={{ change.address }} -->
 #### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{ if change.summary }}
@@ -87,7 +88,9 @@ No changes.
 </details>
 {{ end }}
 {{ end }}
-{{ end }}
 
+<!-- tfplan2md:resource-end address={{ change.address }} -->
+
+{{ end }}
 {{ end }}
 {{ end }}

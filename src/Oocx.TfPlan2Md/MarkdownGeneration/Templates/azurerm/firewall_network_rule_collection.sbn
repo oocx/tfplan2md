@@ -1,6 +1,7 @@
 {{~## Template for azurerm_firewall_network_rule_collection
      Provides semantic diffing of firewall rules instead of index-based changes.
 ~}}
+<!-- tfplan2md:resource-start address={{ address }} -->
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
 {{~ if after_json ~}}
@@ -62,3 +63,5 @@
 </details>
 {{~ end ~}}
 {{~ end ~}}
+
+<!-- tfplan2md:resource-end address={{ address }} -->

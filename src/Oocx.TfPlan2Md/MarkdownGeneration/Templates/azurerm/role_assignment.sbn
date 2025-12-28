@@ -62,6 +62,7 @@
     {{ ret wrap_code("" + value) }}
 {{ end }}
 
+<!-- tfplan2md:resource-start address={{ address }} -->
 #### {{ action_symbol }} {{ address | escape_markdown }}
 
 {{ if action == "replace" }}
@@ -186,3 +187,5 @@
 
 </details>
 {{ end }}
+
+<!-- tfplan2md:resource-end address={{ address }} -->

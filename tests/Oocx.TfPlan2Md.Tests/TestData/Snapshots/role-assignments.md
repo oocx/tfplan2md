@@ -14,13 +14,12 @@
 
 ## Resource Changes
 
-### Module: `module.security`
+### 📦 Module: `module.security`
 
-#### ➕ azurerm_role_assignment.create_no_description
-
-**Summary:** `11111111-1111-1111-1111-111111111111` (User) → `Reader` on `rg-tfplan2md-demo`
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_role_assignment.create_no_description -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_role_assignment <b><code>azurerm_role_assignment.create_no_description</code></b> — <code>11111111-1111-1111-1111-111111111111</code> (User) → <code>Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -31,14 +30,13 @@
 | name | `ra-create` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_role_assignment.create_no_description -->
 
-#### ➕ azurerm_role_assignment.create_with_description
-
-**Summary:** `22222222-2222-2222-2222-222222222222` (Group) → `Storage Blob Data Reader` on Storage Account `sttfplan2mdlogs-with-extended-name-1234567890`
-
+<!-- tfplan2md:resource-start address=azurerm_role_assignment.create_with_description -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_role_assignment <b><code>azurerm_role_assignment.create_with_description</code></b> — <code>22222222-2222-2222-2222-222222222222</code> (Group) → <code>Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs-with-extended-name-1234567890</code></summary>
+<br>
 Allow DevOps team to read logs from the storage account
-
-<details>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -50,14 +48,13 @@ Allow DevOps team to read logs from the storage account
 | description | `Allow DevOps team to read logs from the storage account` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_role_assignment.create_with_description -->
 
-#### 🔄 azurerm_role_assignment.update_assignment
-
-**Summary:** `33333333-3333-3333-3333-333333333333` (Group) → `Storage Blob Data Contributor` on Storage Account `sttfplan2mddata`
-
+<!-- tfplan2md:resource-start address=azurerm_role_assignment.update_assignment -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_role_assignment <b><code>azurerm_role_assignment.update_assignment</code></b> — <code>33333333-3333-3333-3333-333333333333</code> (Group) → <code>Storage Blob Data Contributor</code> on Storage Account <code>sttfplan2mddata</code></summary>
+<br>
 Upgraded permissions for security auditing
-
-<details>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
@@ -69,14 +66,13 @@ Upgraded permissions for security auditing
 | skip_service_principal_aad_check | `false` | `true` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_role_assignment.update_assignment -->
 
-#### ♻️ azurerm_role_assignment.replace_assignment
-
-**Summary:** recreate as `33333333-3333-3333-3333-333333333333` (Group) → `Custom Contributor Long Name 1234567890` on `rg-production`
-
+<!-- tfplan2md:resource-start address=azurerm_role_assignment.replace_assignment -->
+<details style="margin-bottom:12px;">
+<summary>♻️ azurerm_role_assignment <b><code>azurerm_role_assignment.replace_assignment</code></b> — recreate as <code>33333333-3333-3333-3333-333333333333</code> (Group) → <code>Custom Contributor Long Name 1234567890</code> on <code>rg-production</code></summary>
+<br>
 Updated role assignment with new permissions
-
-<details>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
@@ -85,14 +81,13 @@ Updated role assignment with new permissions
 | description | `Read-only access for DevOps` | `Updated role assignment with new permissions` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_role_assignment.replace_assignment -->
 
-#### ❌ azurerm_role_assignment.delete_assignment
-
-**Summary:** remove `Contributor` on `rg-legacy` from User `33333333-3333-3333-3333-333333333333`
-
+<!-- tfplan2md:resource-start address=azurerm_role_assignment.delete_assignment -->
+<details style="margin-bottom:12px;">
+<summary>❌ azurerm_role_assignment <b><code>azurerm_role_assignment.delete_assignment</code></b> — remove <code>Contributor</code> on <code>rg-legacy</code> from User <code>33333333-3333-3333-3333-333333333333</code></summary>
+<br>
 Legacy access
-
-<details>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -103,12 +98,12 @@ Legacy access
 | description | `Legacy access` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_role_assignment.delete_assignment -->
 
-#### ➕ azurerm_role_assignment.unmapped_principal
-
-**Summary:** `99999999-9999-9999-9999-999999999999` (ServicePrincipal) → `Extremely Verbose Custom Role Name For Long Output Validation 1234567890` on `rg-long-names-example`
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_role_assignment.unmapped_principal -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_role_assignment <b><code>azurerm_role_assignment.unmapped_principal</code></b> — <code>99999999-9999-9999-9999-999999999999</code> (ServicePrincipal) → <code>Extremely Verbose Custom Role Name For Long Output Validation 1234567890</code> on <code>rg-long-names-example</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -118,3 +113,4 @@ Legacy access
 | name | `unmapped` |
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_role_assignment.unmapped_principal -->

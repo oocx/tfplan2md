@@ -265,6 +265,26 @@ public static class ScribanHelpers
             return protocolFormatted;
         }
 
+        if (TryFormatPort(normalizedName, normalizedValue, context, out var portFormatted))
+        {
+            return portFormatted;
+        }
+
+        if (TryFormatPrincipalType(normalizedName, normalizedValue, context, out var principalTypeFormatted))
+        {
+            return principalTypeFormatted;
+        }
+
+        if (TryFormatRoleDefinition(normalizedName, normalizedValue, context, out var roleFormatted))
+        {
+            return roleFormatted;
+        }
+
+        if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
+        {
+            return context == ValueFormatContext.Table ? FormatCodeTable("✳️ *") : "✳️ *";
+        }
+
         if (IsIpAddressOrCidr(normalizedValue))
         {
             return FormatIconValue($"🌐 {normalizedValue}", context, false);
@@ -413,6 +433,106 @@ public static class ScribanHelpers
 
         formatted = string.Empty;
         return false;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a port and formats it with the port icon.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a port.</param>
+    /// <returns>True when the attribute was formatted as a port; otherwise false.</returns>
+    private static bool TryFormatPort(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        var isPortAttribute = attributeName.Contains("port", StringComparison.OrdinalIgnoreCase) ||
+                             attributeName.Contains("destination_port", StringComparison.OrdinalIgnoreCase) ||
+                             attributeName.Contains("source_port", StringComparison.OrdinalIgnoreCase);
+
+        if (!isPortAttribute)
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        // Don't apply port icon to wildcards or ranges with wildcards
+        if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        // Apply port icon to numeric ports and port ranges
+        if (int.TryParse(value, out _) || value.Contains('-', StringComparison.Ordinal))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable($"🔌 {value}") : $"🔌 {value}";
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a principal type and formats it with the appropriate icon.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a principal type.</param>
+    /// <returns>True when the attribute was formatted as a principal type; otherwise false.</returns>
+    private static bool TryFormatPrincipalType(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("principal_type", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        if (value.Equals("User", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("👤 User") : "👤 User";
+            return true;
+        }
+
+        if (value.Equals("Group", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("👥 Group") : "👥 Group";
+            return true;
+        }
+
+        if (value.Equals("ServicePrincipal", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable("💻 ServicePrincipal") : "💻 ServicePrincipal";
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a role definition and formats it with the role icon.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a role definition.</param>
+    /// <returns>True when the attribute was formatted as a role definition; otherwise false.</returns>
+    private static bool TryFormatRoleDefinition(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("role_definition_name", StringComparison.OrdinalIgnoreCase) &&
+            !attributeName.Equals("role", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = context == ValueFormatContext.Table ? FormatCodeTable($"🛡️ {value}") : $"🛡️ {value}";
+        return true;
     }
 
     /// <summary>

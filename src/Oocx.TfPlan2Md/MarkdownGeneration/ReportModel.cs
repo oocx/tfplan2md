@@ -364,7 +364,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
         return detailParts.Count == 0
             ? prefix
-            : $"{prefix} — {string.Join(" | ", detailParts)}";
+            : $"{prefix} — {string.Join(" ", detailParts)}";
     }
 
     /// <summary>
@@ -396,7 +396,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             nameList += $", +{remaining} more";
         }
 
-        return $"{names.Count} 🔧 {nameList}";
+        return $"{names.Count}🔧 {nameList}";
     }
 
     /// <summary>

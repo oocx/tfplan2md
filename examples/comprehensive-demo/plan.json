@@ -634,6 +634,18 @@
               "destination_port_range": "443",
               "source_address_prefix": "*",
               "destination_address_prefix": "*"
+            },
+            {
+              "name": "deny-rdp",
+              "priority": 200,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "3389",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*",
+              "description": "Block RDP from internet"
             }
           ]
         },

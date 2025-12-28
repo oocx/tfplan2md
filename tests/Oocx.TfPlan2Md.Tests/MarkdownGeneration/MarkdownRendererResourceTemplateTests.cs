@@ -64,7 +64,7 @@ public class MarkdownRendererResourceTemplateTests
         normalized.Should().Contain("| 🔄 | allow-http |");
         // After normalization, unchanged attributes like protocol, destination ports show icons
         normalized.Should().Contain("🔗 TCP");
-        normalized.Should().Contain("🌐 80");
+        normalized.Should().Contain("🔌 80");
     }
 
     [Fact]
@@ -75,9 +75,9 @@ public class MarkdownRendererResourceTemplateTests
         var normalized = Normalize(result);
 
         // Assert
-        normalized.Should().Contain("| ➕ | allow-dns | 📨 UDP | 🌐 10.0.1.0/24, 🌐 10.0.2.0/24 | 🌐 168.63.129.16 | 🌐 53 | Allow DNS queries to Azure DNS |");
-        normalized.Should().Contain("| ❌ | allow-ssh-old | 🔗 TCP | 🌐 10.0.0.0/8 | 🌐 10.0.2.0/24 | 🌐 22 | Legacy SSH access - to be removed |");
-        normalized.Should().Contain("| ⏺️ | allow-https | 🔗 TCP | 🌐 10.0.1.0/24 | * | 🌐 443 | Allow HTTPS traffic to internet |");
+        normalized.Should().Contain("| ➕ | allow-dns | 📨 UDP | 🌐 10.0.1.0/24, 🌐 10.0.2.0/24 | 🌐 168.63.129.16 | 🔌 53 | Allow DNS queries to Azure DNS |");
+        normalized.Should().Contain("| ❌ | allow-ssh-old | 🔗 TCP | 🌐 10.0.0.0/8 | 🌐 10.0.2.0/24 | 🔌 22 | Legacy SSH access - to be removed |");
+        normalized.Should().Contain("| ⏺️ | allow-https | 🔗 TCP | 🌐 10.0.1.0/24 | ✳️ * | 🔌 443 | Allow HTTPS traffic to internet |");
         normalized.Should().NotContain("- allow-dns");
         normalized.Should().NotContain("+ allow-dns");
     }

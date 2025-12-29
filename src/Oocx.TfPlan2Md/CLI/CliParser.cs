@@ -24,7 +24,7 @@ public record CliOptions
 
     /// <summary>
     /// Optional custom report title provided via the CLI.
-    /// Related feature: docs/features/custom-report-title/specification.md
+    /// Related feature: docs/features/020-custom-report-title/specification.md
     /// </summary>
     /// <value>
     /// Custom level-1 heading text for the generated report. When null, templates fall back to their defaults.
@@ -53,13 +53,13 @@ public record CliOptions
 
     /// <summary>
     /// Determines whether unchanged attribute values are included in the output.
-    /// Related feature: docs/features/unchanged-values-cli-option/specification.md
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
     /// </summary>
     public bool ShowUnchangedValues { get; init; }
 
     /// <summary>
     /// Controls the rendering format for large attribute values.
-    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
     public LargeValueFormat LargeValueFormat { get; init; }
 }

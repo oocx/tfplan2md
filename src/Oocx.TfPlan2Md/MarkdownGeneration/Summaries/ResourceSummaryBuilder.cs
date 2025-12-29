@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
 /// <summary>
 /// Default implementation for building concise resource change summaries.
-/// Related feature: docs/features/replacement-reasons-and-summaries/specification.md
+/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
 /// </summary>
 public class ResourceSummaryBuilder : IResourceSummaryBuilder
 {

@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
 /// <summary>
 /// Builds concise, human-readable summaries for resource changes.
-/// Related feature: docs/features/replacement-reasons-and-summaries/specification.md
+/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
 /// </summary>
 public interface IResourceSummaryBuilder
 {

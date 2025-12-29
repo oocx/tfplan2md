@@ -17,7 +17,7 @@ public class ReportModel
     public string? Timestamp { get; init; }
     /// <summary>
     /// Optional custom report title provided via the CLI.
-    /// Related feature: docs/features/custom-report-title/specification.md
+    /// Related feature: docs/features/020-custom-report-title/specification.md
     /// </summary>
     /// <value>
     /// The escaped title text used by templates; null when no custom title is provided so templates can apply defaults.
@@ -29,13 +29,13 @@ public class ReportModel
 
     /// <summary>
     /// Indicates whether unchanged attribute values are included in attribute change tables.
-    /// Related feature: docs/features/unchanged-values-cli-option/specification.md
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
     /// </summary>
     public required bool ShowUnchangedValues { get; init; }
 
     /// <summary>
     /// Rendering format to use for large attribute values.
-    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
     public required LargeValueFormat LargeValueFormat { get; init; }
 }
@@ -105,31 +105,31 @@ public class ResourceChangeModel
 
     /// <summary>
     /// Paths to attributes that triggered replacement (from Terraform plan replace_paths).
-    /// Related feature: docs/features/replacement-reasons-and-summaries/specification.md
+    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
     /// </summary>
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; set; }
 
     /// <summary>
     /// Human-readable summary of the resource change for quick scanning in templates.
-    /// Related feature: docs/features/replacement-reasons-and-summaries/specification.md
+    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
     /// </summary>
     public string? Summary { get; set; }
 
     /// <summary>
     /// Precomputed HTML summary line content for rich <summary> rendering (includes action, type, name, and context values with HTML code spans).
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     public string? SummaryHtml { get; set; }
 
     /// <summary>
     /// Precomputed changed-attributes summary for update operations (e.g., "2 🔧 attr1, attr2"). Empty for non-update actions.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     public string? ChangedAttributesSummary { get; set; }
 
     /// <summary>
     /// Precomputed tags badge string for create/delete actions (e.g., "**🏷️ Tags:** `env: prod` `owner: ops`"). Null when no tags or on updates.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     public string? TagsBadges { get; set; }
 }
@@ -146,7 +146,7 @@ public class AttributeChangeModel
 
     /// <summary>
     /// Indicates whether the attribute value should be rendered as a large value block (collapsible section).
-    /// Related feature: docs/features/azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
     /// </summary>
     public bool IsLarge { get; init; }
 }
@@ -160,7 +160,7 @@ public class AttributeChangeModel
 /// <param name="largeValueFormat">Rendering format for large values (inline-diff or standard-diff).</param>
 /// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
 /// <remarks>
-/// Related features: docs/features/custom-report-title/specification.md and docs/features/unchanged-values-cli-option/specification.md.
+/// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
 public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null)
 {
@@ -315,7 +315,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
     /// <summary>
     /// Builds a summary-safe HTML string for use inside <summary> elements, including action icon, type, name, location, address space, and changed attributes.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="model">Resource change model containing the source data.</param>
     /// <returns>HTML string safe for use inside a <summary> element.</returns>
@@ -369,7 +369,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
     /// <summary>
     /// Builds a concise changed-attributes summary for update operations (e.g., "2 🔧 attr1, attr2, +N more").
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeChanges">Attribute changes for the resource.</param>
     /// <param name="action">Terraform action derived from the plan.</param>
@@ -401,7 +401,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
     /// <summary>
     /// Builds inline tag badges for create/delete operations, keeping templates free from tag formatting logic.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="after">After-state JSON for the resource.</param>
     /// <param name="before">Before-state JSON for the resource.</param>
@@ -474,7 +474,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
-    /// Related feature: docs/features/unchanged-values-cli-option/specification.md
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
     /// </remarks>
     private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
     {

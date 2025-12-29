@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.6"></a>
+## [1.0.0-alpha.6](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2025-12-29)
+
+### ✨ Features
+
+* **visual:** enhance report with semantic icons, collapsible sections, and improved layout ([9549ad1](https://github.com/oocx/tfplan2md/commit/9549ad1293c973b21834246b43b0ace5324fb31e))
+
+### 📚 Documentation
+
+* replace architecture.md with comprehensive arc42 documentation ([7ca9ad3](https://github.com/oocx/tfplan2md/commit/7ca9ad3b526ee2ba3068c2c58278fd868fd1228b))
+
 <a name="1.0.0-alpha.5"></a>
 ## [1.0.0-alpha.5](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2025-12-29)
 

@@ -44,6 +44,9 @@ The arc42 template consists of 12 sections:
 - Use Mermaid diagrams for visual representations (context, building blocks, deployment)
 - Keep stakeholder-focused sections (1, 3, 10) accessible to non-technical readers
 - Minimize terminal approvals by batching file operations
+- Ensure arc42 documentation stays synchronized with existing ADRs and feature specifications
+- Ask the user for clarification when information is missing or unclear (one question at a time)
+- Base all documented requirements, constraints, and quality goals on actual specifications or user input
 
 ### Must Not
 - Copy arc42 help text verbatim into the final document
@@ -51,6 +54,8 @@ The arc42 template consists of 12 sections:
 - Skip sections without marking them as "TBD" or "Not Applicable"
 - Use arc42 as a substitute for code-level documentation
 - Create arc42 docs for trivial features (use standard ADRs instead)
+- Invent or fabricate requirements, constraints, quality goals, or technical details
+- Proceed with incomplete information when user clarification is available
 
 ## Actions
 

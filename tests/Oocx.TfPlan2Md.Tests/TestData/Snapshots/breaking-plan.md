@@ -14,22 +14,21 @@
 
 ## Resource Changes
 
-### Module: root
+### 📦 Module: root
 
-#### ➕ azurerm_resource_group.breaking_name
-
-**Summary:** `rg-with-pipe\|and*asterisk` (`eastus`)
-
-<details>
+<!-- tfplan2md:resource-start address=azurerm_resource_group.breaking_name -->
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_resource_group <b><code>breaking_name</code></b> — <code>rg-with-pipe&#124;and*asterisk</code> <code>🌍 eastus</code></summary>
+<br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| location | `eastus` |
+| location | `🌍 eastus` |
 | name | `rg-with-pipe\|and*asterisk` |
-| tags.owner | `[bracket] user` |
 
-</details>
+**🏷️ Tags:** `description: This has a \| pipe and a <br/> newline` `owner: [bracket] user`
 
+<br/>
 <details>
 <summary>Large values: tags.description (3 lines, 3 changed)</summary>
 
@@ -42,17 +41,21 @@ This has a | pipe and a
 
 </details>
 
-#### 🔄 azurerm_storage_account.multiline
+</details>
+<!-- tfplan2md:resource-end address=azurerm_resource_group.breaking_name -->
 
-**Summary:** `azurerm_storage_account.multiline` | Changed: tags.note
+<!-- tfplan2md:resource-start address=azurerm_storage_account.multiline -->
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_storage_account <b><code>multiline</code></b> — | 1🔧 tags.note</summary>
+<br>
 
-<details>
-<summary>Large values: tags.note (2 lines, 1 changed)</summary>
+Large values: tags.note (2 lines, 1 changed)
 
 ##### **tags.note:**
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>line1
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">+ line2</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+ line2</span>
 </code></pre>
 
 </details>
+<!-- tfplan2md:resource-end address=azurerm_storage_account.multiline -->

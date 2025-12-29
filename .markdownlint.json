@@ -1,7 +1,8 @@
 {
   "default": true,
+  "MD001": false,
   "MD013": false,
-  "MD033": { "allowed_elements": ["br", "details", "summary", "pre", "code", "span"] },
+  "MD033": { "allowed_elements": ["b", "br", "code", "details", "div", "pre", "span", "summary"] },
   "MD040": false,
   "MD041": false
 }

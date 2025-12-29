@@ -127,6 +127,9 @@ We need two distinct formatting contexts:
 - `format_code_summary(text)` → returns `<code>...</code>` (escaped)
 - `format_attribute_value_table(attr_name, value, provider)` → returns a markdown-safe value applying semantic icons
 - `format_attribute_value_summary(attr_name, value, provider)` → returns a summary-safe value applying semantic icons
+- `format_attribute_value_plain(attr_name, value, provider)` → returns value with semantic icons but without code formatting wrappers (for use in inline diffs)
+
+**Implementation note:** The `format_attribute_value_plain` helper applies semantic icon logic without adding markdown backticks or HTML code tags. This allows icons to be preserved when the value is passed to HTML diff formatters like `format_diff`, which adds its own formatting.
 
 Additionally, add helpers intended to keep templates simple:
 - `format_summary_html(change)` → returns the full `<summary>...` inner content (already using `<code>` where needed)
@@ -203,6 +206,13 @@ Location values are formatted as code with the icon inside the code span in summ
 - Stable replacement mechanism that does not leak visible anchors
 - Consistent semantic formatting across default and resource-specific templates
 - Explicit support for Azure DevOps `<summary>` code formatting
+- Custom HTML encoding preserves emoji characters in inline diffs while still escaping HTML special characters
+
+### Technical Implementation Details
+
+**HTML Encoding:** The default .NET `HtmlEncoder` was escaping emoji characters to HTML entities (e.g., `&#xFFFD;`). To preserve emojis in inline diffs while still properly escaping HTML special characters (`<`, `>`, `&`, `"`, `'`), a custom `HtmlEncode` method was implemented that manually handles character-by-character encoding. This ensures that semantic icons like 🌐, 📨, and 🔌 render correctly in HTML inline diffs.
+
+**Resource Name Extraction:** Role assignment templates include an `extract_resource_name` helper that splits the full Terraform address on `.` and returns the last segment, allowing summaries to show clean names like `rg_reader` instead of `module.security.azurerm_role_assignment.rg_reader`.
 
 ### Negative / Risks
 - Requires touching both templates and renderer logic (small but cross-cutting)

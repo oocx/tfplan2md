@@ -54,17 +54,33 @@ Improve the visual appearance of generated Terraform plan reports to enhance rea
    - TCP: `🔗 TCP` (link icon + text)
    - UDP: `📨 UDP` (envelope icon + text)
    - ICMP: `📡 ICMP` (satellite icon + text)
-   - Any/All: `✳️ *` (asterisk icon + asterisk)
+   - Any/All: `✳️` (asterisk icon only, no text)
 
-10. **Tags Display**
+10. **Port Numbers**
+   - Display with plug icon: `🔌 80`, `🔌 443`, `🔌 53`
+   - Applied consistently in summaries and table cells
+
+11. **Tags Display**
     - Display tags as inline badges below the main attributes table
     - Format: `**🏷️ Tags:** `key: value` `key: value` `key: value``
     - Each key-value pair in separate code backticks
 
-11. **Changed Attributes List**
+12. **Changed Attributes List**
     - Show count and icon: `2 🔧 attribute1, attribute2`
     - Format: number (space) wrench icon (space) comma-separated attribute names
     - No parentheses around count or icon
+
+13. **Role Assignment Enhancements**
+    - Principal types: `👤 User`, `👥 Group`, `💻 ServicePrincipal`
+    - Role definitions: `🛡️ Reader`, `🛡️ Contributor`, etc.
+    - Local resource names in summaries: Show `rg_reader` instead of `module.security.azurerm_role_assignment.rg_reader`
+
+14. **Inline Diffs**
+    - Semantic icons appear in HTML inline diffs for changed values
+    - Protocol diffs: `- 📨 UDP` → `+ 🔗 TCP`
+    - IP address diffs: `- 🌐 10.1.1.0/24` → `+ 🌐 10.1.1.0/24, 🌐 10.1.2.0/24`
+    - Port diffs: `- 🔌 8443` → `+ 🔌 8443, 🔌 9443`
+    - Icons are preserved through HTML encoding to ensure correct rendering
 
 ### Out of Scope
 
@@ -140,21 +156,25 @@ Within the expanded details, users will see enhanced formatting for specific val
 ## Success Criteria
 
 - [x] All visual enhancements have been reviewed with rendered examples in markdown viewers
-- [ ] Module separators (horizontal rules) are added between all modules
-- [ ] Module icons (📦) appear before all module paths
-- [ ] All resource entries are collapsed into `<details>` tags with proper spacing
-- [ ] Resource types display as plain text and resource names as **bold** `code`
-- [ ] Location icons (🌍) appear in format `(🌍 location)` for all geographical locations
-- [ ] IP address/CIDR icons (🌐) appear inside code blocks for all network addresses
-- [ ] Security rule actions display with appropriate icons (✅/⛔) and text
-- [ ] Boolean values display with checkmark/cross (✅/❌) and text
-- [ ] Network direction displays with arrows (⬇️/⬆️) and text
-- [ ] Protocol values display with appropriate icons (🔗/📨/📡/✳️) and text
-- [ ] Tags appear as inline badges with 🏷️ icon and separate code blocks per tag
-- [ ] Changed attributes display as `count 🔧 attributes` format
-- [ ] Reports render correctly in both GitHub and Azure DevOps markdown viewers
-- [ ] All enhancements follow the "Data is Code, Labels are Text" styling philosophy
-- [ ] Existing tests are updated to match new formatting
+- [x] Module separators (horizontal rules) are added between all modules
+- [x] Module icons (📦) appear before all module paths
+- [x] All resource entries are collapsed into `<details>` tags with proper spacing
+- [x] Resource types display as plain text and resource names as **bold** `code`
+- [x] Location icons (🌍) appear in format `(🌍 location)` for all geographical locations
+- [x] IP address/CIDR icons (🌐) appear inside code blocks for all network addresses
+- [x] Security rule actions display with appropriate icons (✅/⛔) and text
+- [x] Boolean values display with checkmark/cross (✅/❌) and text
+- [x] Network direction displays with arrows (⬇️/⬆️) and text
+- [x] Protocol values display with appropriate icons (🔗/📨/📡/✳️) and text
+- [x] Port numbers display with plug icon (🔌)
+- [x] Tags appear as inline badges with 🏷️ icon and separate code blocks per tag
+- [x] Changed attributes display as `count 🔧 attributes` format
+- [x] Role assignments show principal type icons (👤/👥/💻) and role icon (🛡️)
+- [x] Role assignment summaries show local resource names (e.g., `rg_reader` not full module path)
+- [x] Inline diffs preserve semantic icons (🌐, 📨, 🔌, etc.) in HTML formatted diffs
+- [x] Reports render correctly in both GitHub and Azure DevOps markdown viewers
+- [x] All enhancements follow the "Data is Code, Labels are Text" styling philosophy
+- [x] Existing tests are updated to match new formatting
 
 ## Open Questions
 

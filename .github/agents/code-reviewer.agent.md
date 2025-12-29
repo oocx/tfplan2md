@@ -51,7 +51,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 ### 🚫 Never Do
 - Fix code issues - only create code review report documenting them
 - Modify source code or test files - hand off to Developer for fixes
-- Edit any files except markdown documentation (.md files in docs/features/<feature-name>/)
+- Edit any files except markdown documentation (.md files in docs/features/NNN-<feature-slug>/)
 - Approve code with failing tests
 - Approve code with markdownlint errors (these are Blocker issues)
 - Approve code that doesn't meet acceptance criteria
@@ -84,10 +84,10 @@ Todo lists:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md`
-- The Architecture document in `docs/features/<feature-name>/architecture.md`
-- The Tasks document in `docs/features/<feature-name>/tasks.md`
-- The Test Plan in `docs/features/<feature-name>/test-plan.md`
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
+- The Architecture document in `docs/features/NNN-<feature-slug>/architecture.md`
+- The Tasks document in `docs/features/NNN-<feature-slug>/tasks.md`
+- The Test Plan in `docs/features/NNN-<feature-slug>/test-plan.md`
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards**
@@ -245,7 +245,7 @@ What needs to happen next (rework items or ready for release).
 
 ## Artifact Location
 
-Save the code review report to: `docs/features/<feature-name>/code-review.md`
+Save the code review report to: `docs/features/NNN-<feature-slug>/code-review.md`
 
 ## Definition of Done
 

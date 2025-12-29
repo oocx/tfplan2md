@@ -105,8 +105,8 @@ When handing off to another agent, include:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md`
-- The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
+- The Architecture document in `docs/features/NNN-<feature-slug>/architecture.md` (if exists)
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [docs/spec.md](../../docs/spec.md) - Project goals and constraints
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
@@ -188,7 +188,7 @@ Any unresolved questions that need maintainer input.
 
 ## Artifact Location
 
-Save the tasks document to: `docs/features/<feature-name>/tasks.md`
+Save the tasks document to: `docs/features/NNN-<feature-slug>/tasks.md`
 
 ## Definition of Done
 
@@ -204,7 +204,7 @@ Your work is complete when:
 **STOP HERE after presenting the plan.** Do not commit or implement anything until you receive explicit approval. After approval and commit, use the handoff button to transition to the Developer agent.
 
 **Example approval request:**
-> I've created a task plan with 5 tasks prioritized by dependencies. The plan is in `docs/features/custom-report-title/tasks.md`. 
+> I've created a task plan with 5 tasks prioritized by dependencies. The plan is in `docs/features/NNN-<feature-slug>/tasks.md`.
 >
 > Please review the task breakdown. Should I proceed to commit this plan?
 
@@ -214,7 +214,7 @@ Your work is complete when:
 
 1. **Commit locally**:
    ```bash
-   git add docs/features/<feature-name>/tasks.md
+   git add docs/features/NNN-<feature-slug>/tasks.md
    git commit -m "docs: add tasks for <feature-name>"
    ```
 

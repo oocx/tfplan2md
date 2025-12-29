@@ -40,7 +40,7 @@ Transform a Feature Specification into a clear technical design with documented 
 - **When non-functional requirements conflict or priorities are unclear, ask the maintainer** (e.g., performance vs. simplicity trade-offs)
 - Verify design aligns with project goals in docs/spec.md
 - Address security, reliability, and maintainability concerns
-- Create or update markdown documentation files in docs/ or docs/features/<feature-name>/
+- Create or update markdown documentation files in docs/ or docs/features/NNN-<feature-slug>/
 - Commit architecture documents when approved
 
 ### ⚠️ Ask First
@@ -94,7 +94,7 @@ When handing off to another agent, include:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md` (created by the Requirements Engineer)
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md` (created by the Requirements Engineer)
 - [docs/spec.md](../../docs/spec.md) - Project specification and technical constraints
 - [docs/architecture.md](../../docs/architecture.md) - Existing architecture overview
 - Existing ADRs in `docs/` (files matching `adr-*.md`) - Previous architecture decisions
@@ -194,7 +194,7 @@ High-level guidance for the Developer agent:
 
 ## Artifact Location
 
-For feature-specific decisions, save to: `docs/features/<feature-name>/architecture.md`
+For feature-specific decisions, save to: `docs/features/NNN-<feature-slug>/architecture.md`
 
 For decisions that affect the overall project architecture, save to: `docs/adr-<number>-<short-title>.md`
 - Use the next available ADR number (check existing `adr-*.md` files)
@@ -204,7 +204,7 @@ For decisions that affect the overall project architecture, save to: `docs/adr-<
 
 Sometimes a feature can be implemented using existing patterns and architecture without any new decisions. In this case:
 
-1. Create `docs/features/<feature-name>/architecture.md` with the following content:
+1. Create `docs/features/NNN-<feature-slug>/architecture.md` with the following content:
 
 ```markdown
 # Architecture: <Feature Name>
@@ -249,7 +249,7 @@ Your work is complete when:
 
 2. **Commit locally**:
    ```bash
-   git add docs/features/<feature-name>/architecture.md
+   git add docs/features/NNN-<feature-slug>/architecture.md
    git commit -m "docs: add architecture for <feature-name>"
    ```
 

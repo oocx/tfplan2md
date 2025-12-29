@@ -11,6 +11,8 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 - Organize files by feature (e.g., `Parsing`, `MarkdownGeneration`, `CLI`), not by type (e.g., `Models`, `Services`)
 - Place all documentation in the /docs folder, except for the README.md at the root
 - Key architecture decisions must be documented in separate files per decision. Place those files in /docs/adr-nnn-title.
+- Documentation subfolders under `/docs/features`, `/docs/issues`, and `/docs/workflow` use a global numeric prefix: `NNN-<topic-slug>`.
+  - **Parallel work rule:** If two branches chose the same next `NNN`, the first PR to merge keeps it; later PRs must renumber before merge.
 - The testing strategy is described in /docs/testing-strategy.md
 - Features of tfplan2md (from a user perspective) are described in /docs/features.md
 - Contribution guidelines are in /CONTRIBUTING.md

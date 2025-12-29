@@ -110,10 +110,10 @@ When handing off to another agent, include:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md`
-- The Architecture document in `docs/features/<feature-name>/architecture.md`
-- The Tasks document in `docs/features/<feature-name>/tasks.md`
-- The Test Plan in `docs/features/<feature-name>/test-plan.md`
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
+- The Architecture document in `docs/features/NNN-<feature-slug>/architecture.md`
+- The Tasks document in `docs/features/NNN-<feature-slug>/tasks.md`
+- The Test Plan in `docs/features/NNN-<feature-slug>/test-plan.md`
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - **Code documentation requirements**
 - [docs/report-style-guide.md](../../docs/report-style-guide.md) - **Report formatting and styling standards**
@@ -203,10 +203,10 @@ Follow the project's coding conventions strictly:
       - Include reference to task if applicable
    
    e. **Update task status**:
-      - Mark the task as completed in `docs/features/<feature-name>/tasks.md`
+         - Mark the task as completed in `docs/features/NNN-<feature-slug>/tasks.md`
       - Commit the status update:
         ```bash
-        git add docs/features/<feature-name>/tasks.md
+            git add docs/features/NNN-<feature-slug>/tasks.md
         git commit -m "docs: mark task <task-name> as complete"
         ```
    

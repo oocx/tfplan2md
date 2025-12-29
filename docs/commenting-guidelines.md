@@ -68,7 +68,7 @@ internal sealed class TerraformPlanParser
 /// <remarks>
 /// This method uses streaming deserialization to handle large plan files efficiently.
 /// Memory usage remains constant regardless of file size.
-/// Related feature: Comprehensive Demo (docs/features/comprehensive-demo/)
+/// Related feature: Comprehensive Demo (docs/features/007-comprehensive-demo/)
 /// </remarks>
 internal async Task<IReadOnlyList<ResourceChange>> ParseAsync(
     string planFilePath,
@@ -293,7 +293,7 @@ When a class or method implements a specific feature, reference it in comments:
 /// </summary>
 /// <remarks>
 /// Implements feature: Summary Resource Type Breakdown
-/// Specification: docs/features/summary-resource-type-breakdown/specification.md
+/// Specification: docs/features/004-summary-resource-type-breakdown/specification.md
 /// </remarks>
 internal sealed class ResourceTypeSummaryGenerator
 {

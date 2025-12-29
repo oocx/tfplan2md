@@ -1,8 +1,8 @@
 # Workflow Improvements - December 27, 2025
 
 **Source:** Retrospective analysis from:
-- `docs/issues/ci-deployment-duplication-and-versionize-major/retrospective.md`
-- `docs/features/custom-report-title/retrospective.md`
+- `docs/issues/020-ci-deployment-duplication-and-versionize-major/retrospective.md`
+- `docs/features/019-custom-report-title/retrospective.md`
 
 **Date:** 2025-12-27
 
@@ -36,7 +36,7 @@
 ## Detailed Improvements
 
 ### #1: Fix Quality Engineer test plan folder instructions
-**Proposed Changes:** Update `.github/agents/quality-engineer.agent.md` to reference the correct test plan folder path (`docs/features/<feature-name>/test-plan.md` instead of incorrect path)
+**Proposed Changes:** Update `.github/agents/quality-engineer.agent.md` to reference the correct test plan folder path (`docs/features/NNN-<feature-slug>/test-plan.md` instead of incorrect path)
 
 **Rationale:** Agent created test plans in wrong folder because instructions pointed to wrong location
 

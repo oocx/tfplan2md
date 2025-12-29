@@ -254,8 +254,8 @@ Tests that should pass after the fix:
 ### Related Issues
 
 This issue was introduced when the firewall before/after display feature was implemented. See:
-- [docs/features/firewall-rule-before-after-display/specification.md](../../features/firewall-rule-before-after-display/specification.md)
-- [docs/features/firewall-rule-before-after-display/architecture.md](../../features/firewall-rule-before-after-display/architecture.md)
+- [docs/features/001-firewall-rule-before-after-display/specification.md](../../features/001-firewall-rule-before-after-display/specification.md)
+- [docs/features/001-firewall-rule-before-after-display/architecture.md](../../features/001-firewall-rule-before-after-display/architecture.md)
 
 ### Verification Steps
 

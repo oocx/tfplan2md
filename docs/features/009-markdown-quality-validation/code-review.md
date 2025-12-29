@@ -34,7 +34,7 @@ None
 
 ### Minor Issues
 
-1. **Tasks not marked complete** - [docs/features/markdown-quality-validation/tasks.md](tasks.md) still has all checkboxes unchecked `[ ]` instead of `[x]` despite all tasks being completed.
+1. **Tasks not marked complete** - [docs/features/009-markdown-quality-validation/tasks.md](tasks.md) still has all checkboxes unchecked `[ ]` instead of `[x]` despite all tasks being completed.
    - Well-structured and tests appropriate edge cases
    - No issues, just noting for future maintainers
 

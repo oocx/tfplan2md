@@ -41,7 +41,7 @@ The chat export only contains the VS Code infrastructure agent (`github.copilot.
 **Recommended: Use the extraction script**
 ```bash
 # Generate analysis files (both markdown and JSON)
-.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-metrics
+.github/skills/analyze-chat-export/extract-metrics.sh docs/features/NNN-<feature-slug>/chat.json docs/features/NNN-<feature-slug>/chat-metrics
 ```
 
 This creates:
@@ -101,12 +101,12 @@ See these reference documents:
 Ask the Maintainer to:
 1. Focus the chat panel.
 2. Run command: `workbench.action.chat.export`
-3. Save to: `docs/features/<feature-name>/chat.json`
+3. Save to: `docs/features/NNN-<feature-slug>/chat.json`
 
 ### 2. Run Extraction Script (Recommended)
 ```bash
 # Generate analysis report (creates both .md and .json files)
-.github/skills/analyze-chat-export/extract-metrics.sh docs/features/<feature-name>/chat.json docs/features/<feature-name>/chat-metrics
+.github/skills/analyze-chat-export/extract-metrics.sh docs/features/NNN-<feature-slug>/chat.json docs/features/NNN-<feature-slug>/chat-metrics
 ```
 
 This creates two files:
@@ -128,7 +128,7 @@ For custom analysis or debugging, use individual jq queries.
 
 #### Session Metrics
 ```bash
-CHAT_FILE="docs/features/<feature-name>/chat.json"
+CHAT_FILE="docs/features/NNN-<feature-slug>/chat.json"
 
 # Total requests/turns
 jq '.requests | length' "$CHAT_FILE"

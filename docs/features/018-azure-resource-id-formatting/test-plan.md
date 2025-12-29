@@ -4,7 +4,7 @@
 
 This test plan covers the extension of human-readable Azure resource ID formatting to all `azurerm` resources. It ensures that Azure resource IDs are correctly detected, formatted, and displayed in the main change table instead of being treated as large values.
 
-Reference: [docs/features/azure-resource-id-formatting/specification.md](specification.md)
+Reference: [specification.md](specification.md)
 
 ## Test Coverage Matrix
 

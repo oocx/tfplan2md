@@ -8,7 +8,7 @@
 
 This test plan covers the "Built-in Templates" feature, which introduces a new "summary" template, enhances the `--template` option to support built-in template names, and adds support for parsing the plan timestamp.
 
-Reference: [docs/features/built-in-templates/specification.md](docs/features/built-in-templates/specification.md)
+Reference: [specification.md](specification.md)
 
 ## Test Coverage Matrix
 

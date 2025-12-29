@@ -68,8 +68,8 @@ Todo lists:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md`
-- The Tasks document in `docs/features/<feature-name>/tasks.md`
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
+- The Tasks document in `docs/features/NNN-<feature-slug>/tasks.md`
 - The implementation in `src/` (focus on public interfaces and user-facing behavior)
 - [README.md](../../README.md) - Main project documentation
 - [docs/spec.md](../../docs/spec.md) - Project specification
@@ -101,7 +101,7 @@ Based on the feature implementation, consider updating:
 
 3. **docs/spec.md** - If the feature changes project goals or scope
 
-4. **Feature-specific docs** - Create or update `docs/features/<feature-name>/` files
+4. **Feature-specific docs** - Create or update `docs/features/NNN-<feature-slug>/` files
 
 5. **Examples** - Update examples in `examples/` if relevant
 

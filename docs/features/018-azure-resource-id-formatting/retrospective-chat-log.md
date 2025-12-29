@@ -188,7 +188,7 @@ Ran terminal command: git add docs/features/azure-resource-id-formatting/archite
 
 **Handoff Summary:**
 - ✅ Completed: Designed the technical solution for Universal Azure Resource ID Formatting.
-- 📄 Artifacts: [docs/features/azure-resource-id-formatting/architecture.md](docs/features/azure-resource-id-formatting/architecture.md)
+- 📄 Artifacts: [docs/features/018-azure-resource-id-formatting/architecture.md](docs/features/018-azure-resource-id-formatting/architecture.md)
 - ⏭️ Next Step: Implement the changes in AzureScopeParser.cs, ScribanHelpers.cs, and default.sbn.
 - 🚦 Status: Ready.
 

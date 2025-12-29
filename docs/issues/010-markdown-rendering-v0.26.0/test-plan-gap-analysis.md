@@ -49,7 +49,7 @@ The Role Assignment template had a specific whitespace bug. Because it was one p
 ## Action Plan
 
 ### 1. Update Test Plan
-Update `docs/features/markdown-quality-validation/test-plan.md` to include:
+Update `docs/features/009-markdown-quality-validation/test-plan.md` to include:
 - **TC-08:** Validate exact table count matches expected resource count.
 - **TC-09:** Validate no multiple consecutive blank lines (Regex check).
 - **TC-10:** Validate no blank lines within table blocks (Regex check).

@@ -155,19 +155,19 @@ The comprehensive demo ([artifacts/comprehensive-demo.md](../../artifacts/compre
 All documentation files are up-to-date and consistent:
 
 ### Specification
-- [docs/features/nsg-security-rule-template/specification.md](specification.md)
+- [specification.md](specification.md)
 - All success criteria marked complete ✅
 - Implementation notes section added with template design details
 - Differences from firewall template documented
 
 ### Test Plan
-- [docs/features/nsg-security-rule-template/test-plan.md](test-plan.md)
+- [test-plan.md](test-plan.md)
 - Implementation status section added
 - Coverage matrix includes status checkmarks
 - Test data location documented
 
 ### Architecture
-- [docs/features/nsg-security-rule-template/architecture.md](architecture.md)
+- [architecture.md](architecture.md)
 - Status updated to "Implemented"
 - Components section expanded with new/modified files
 - Implementation details section added with helper function examples and key design decisions

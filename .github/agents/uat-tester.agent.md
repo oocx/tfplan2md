@@ -31,7 +31,7 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
 - For simulations: Set `UAT_SIMULATE=true` environment variable
 - Report the PR numbers and final status from the script output
-- **Update UAT report immediately after every run** - document results in `docs/features/<feature-name>/uat-report.md` (mandatory, not optional)
+- **Update UAT report immediately after every run** - document results in `docs/features/NNN-<feature-slug>/uat-report.md` (mandatory, not optional)
 
 ### ⚠️ Ask First
 - If no test plan exists and user didn't provide validation steps

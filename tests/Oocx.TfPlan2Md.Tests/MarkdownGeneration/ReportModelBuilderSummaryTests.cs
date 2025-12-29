@@ -93,7 +93,7 @@ public class ReportModelBuilderSummaryTests
 
         // Assert
         var vnetDelete = model.Changes.First(c => c.Type == "azurerm_virtual_network" && c.Action == "delete");
-        vnetDelete.SummaryHtml.Should().Contain("<code>🌍 westeurope</code>");
-        vnetDelete.SummaryHtml.Should().Contain("<code>🌐 10.0.0.0/16</code>");
+        vnetDelete.SummaryHtml.Should().Contain("<code>🌍 westeurope</code>");
+        vnetDelete.SummaryHtml.Should().Contain("<code>🌐 10.0.0.0/16</code>");
     }
 }

@@ -18,6 +18,12 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 public static class ScribanHelpers
 {
     /// <summary>
+    /// Non-breaking space used to keep semantic icons attached to their labels for reliable markdown rendering.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    private const string NonBreakingSpace = "\u00A0";
+
+    /// <summary>
     /// Registers all custom helper functions with the given ScriptObject.
     /// </summary>
     public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, LargeValueFormat largeValueFormat)
@@ -311,13 +317,13 @@ public static class ScribanHelpers
         // IP addresses and CIDR blocks
         if (IsIpAddressOrCidr(normalizedValue))
         {
-            return $"🌐 {normalizedValue}";
+            return $"🌐{NonBreakingSpace}{normalizedValue}";
         }
 
         // Location attributes
         if (IsLocationAttribute(normalizedName))
         {
-            return $"🌍 {normalizedValue}";
+            return $"🌍{NonBreakingSpace}{normalizedValue}";
         }
 
         // Return plain value
@@ -438,9 +444,10 @@ public static class ScribanHelpers
         {
             var icon = boolValue ? "✅" : "❌";
             var text = boolValue ? "true" : "false";
+            var iconText = $"{icon}{NonBreakingSpace}{text}";
             formatted = context == ValueFormatContext.Table
-                ? FormatCodeTable($"{icon} {text}")
-                : $"{icon} {text}";
+                ? FormatCodeTable(iconText)
+                : iconText;
             return true;
         }
 
@@ -459,7 +466,8 @@ public static class ScribanHelpers
     /// <returns>True when formatted; otherwise false.</returns>
     private static bool TryFormatAccess(string attributeName, string value, ValueFormatContext context, out string formatted)
     {
-        if (!attributeName.Equals("access", StringComparison.OrdinalIgnoreCase))
+        if (!attributeName.Equals("access", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("action", StringComparison.OrdinalIgnoreCase))
         {
             formatted = string.Empty;
             return false;
@@ -467,13 +475,15 @@ public static class ScribanHelpers
 
         if (value.Equals("allow", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("✅ Allow") : "✅ Allow";
+            const string allowText = "✅" + NonBreakingSpace + "Allow";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(allowText) : allowText;
             return true;
         }
 
         if (value.Equals("deny", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("⛔ Deny") : "⛔ Deny";
+            const string denyText = "⛔" + NonBreakingSpace + "Deny";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(denyText) : denyText;
             return true;
         }
 
@@ -500,13 +510,15 @@ public static class ScribanHelpers
 
         if (value.Equals("inbound", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("⬇️ Inbound") : "⬇️ Inbound";
+            const string inboundText = "⬇️" + NonBreakingSpace + "Inbound";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(inboundText) : inboundText;
             return true;
         }
 
         if (value.Equals("outbound", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("⬆️ Outbound") : "⬆️ Outbound";
+            const string outboundText = "⬆️" + NonBreakingSpace + "Outbound";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(outboundText) : outboundText;
             return true;
         }
 
@@ -533,19 +545,22 @@ public static class ScribanHelpers
 
         if (value.Equals("tcp", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("🔗 TCP") : "🔗 TCP";
+            const string tcpText = "🔗" + NonBreakingSpace + "TCP";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(tcpText) : tcpText;
             return true;
         }
 
         if (value.Equals("udp", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("📨 UDP") : "📨 UDP";
+            const string udpText = "📨" + NonBreakingSpace + "UDP";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(udpText) : udpText;
             return true;
         }
 
         if (value.Equals("icmp", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("📡 ICMP") : "📡 ICMP";
+            const string icmpText = "📡" + NonBreakingSpace + "ICMP";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(icmpText) : icmpText;
             return true;
         }
 
@@ -590,7 +605,8 @@ public static class ScribanHelpers
         // Apply port icon to numeric ports and port ranges
         if (int.TryParse(value, out _) || value.Contains('-', StringComparison.Ordinal))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable($"🔌 {value}") : $"🔌 {value}";
+            var portText = $"🔌{NonBreakingSpace}{value}";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(portText) : portText;
             return true;
         }
 
@@ -617,19 +633,22 @@ public static class ScribanHelpers
 
         if (value.Equals("User", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("👤 User") : "👤 User";
+            const string userText = "👤" + NonBreakingSpace + "User";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(userText) : userText;
             return true;
         }
 
         if (value.Equals("Group", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("👥 Group") : "👥 Group";
+            const string groupText = "👥" + NonBreakingSpace + "Group";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(groupText) : groupText;
             return true;
         }
 
         if (value.Equals("ServicePrincipal", StringComparison.OrdinalIgnoreCase))
         {
-            formatted = context == ValueFormatContext.Table ? FormatCodeTable("💻 ServicePrincipal") : "💻 ServicePrincipal";
+            const string spText = "💻" + NonBreakingSpace + "ServicePrincipal";
+            formatted = context == ValueFormatContext.Table ? FormatCodeTable(spText) : spText;
             return true;
         }
 
@@ -649,13 +668,15 @@ public static class ScribanHelpers
     private static bool TryFormatRoleDefinition(string attributeName, string value, ValueFormatContext context, out string formatted)
     {
         if (!attributeName.Equals("role_definition_name", StringComparison.OrdinalIgnoreCase) &&
+            !attributeName.Equals("role_definition_id", StringComparison.OrdinalIgnoreCase) &&
             !attributeName.Equals("role", StringComparison.OrdinalIgnoreCase))
         {
             formatted = string.Empty;
             return false;
         }
 
-        formatted = context == ValueFormatContext.Table ? FormatCodeTable($"🛡️ {value}") : $"🛡️ {value}";
+        var roleText = $"🛡️{NonBreakingSpace}{value}";
+        formatted = context == ValueFormatContext.Table ? FormatCodeTable(roleText) : roleText;
         return true;
     }
 
@@ -669,13 +690,31 @@ public static class ScribanHelpers
     /// <returns>Formatted value with appropriate code wrapping.</returns>
     private static string FormatIconValue(string iconValue, ValueFormatContext context, bool wrapInParentheses)
     {
-        var formatted = context == ValueFormatContext.Table ? FormatCodeTable(iconValue) : FormatCodeSummary(iconValue);
+        var formattedValue = EnsureNonBreakingIconSpacing(iconValue);
+        var formatted = context == ValueFormatContext.Table ? FormatCodeTable(formattedValue) : FormatCodeSummary(formattedValue);
         if (wrapInParentheses && context == ValueFormatContext.Summary)
         {
             return $"({formatted})";
         }
 
         return formatted;
+    }
+
+    /// <summary>
+    /// Replaces the first regular space after an icon with a non-breaking space to prevent icon-value separation in rendered markdown.
+    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// </summary>
+    /// <param name="iconValue">The icon-prefixed value to normalize.</param>
+    /// <returns>The icon value with a non-breaking space between the icon and text.</returns>
+    private static string EnsureNonBreakingIconSpacing(string iconValue)
+    {
+        var firstSpace = iconValue.IndexOf(' ');
+        if (firstSpace < 0)
+        {
+            return iconValue;
+        }
+
+        return iconValue[..firstSpace] + NonBreakingSpace + iconValue[(firstSpace + 1)..];
     }
 
     /// <summary>
@@ -959,8 +998,8 @@ public static class ScribanHelpers
     private static void AppendStyledLine(StringBuilder sb, string line, bool removed)
     {
         var lineStyle = removed
-            ? "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;"
-            : "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;";
+            ? "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;"
+            : "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;";
 
         sb.Append("<span style=\"");
         sb.Append(lineStyle);
@@ -977,8 +1016,8 @@ public static class ScribanHelpers
         var commonMask = BuildCommonMask(line.Length, pairs.Select(p => p.BeforeIndex));
         var highlightColor = removed ? "#ffc0c0" : "#acf2bd";
         var lineStyle = removed
-            ? "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;"
-            : "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;";
+            ? "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;"
+            : "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;";
 
         sb.Append("<span style=\"");
         sb.Append(lineStyle);

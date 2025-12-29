@@ -18,7 +18,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueTable("https_only", "true", null);
 
-        result.Should().Be("`✅ true`");
+        result.Should().Be("`✅\u00A0true`");
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueTable("access", "Deny", null);
 
-        result.Should().Be("`⛔ Deny`");
+        result.Should().Be("`⛔\u00A0Deny`");
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueTable("direction", "Inbound", null);
 
-        result.Should().Be("`⬇️ Inbound`");
+        result.Should().Be("`⬇️\u00A0Inbound`");
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueTable("source_address_prefix", "10.0.0.0/16", null);
 
-        result.Should().Be("`🌐 10.0.0.0/16`");
+        result.Should().Be("`🌐\u00A010.0.0.0/16`");
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueTable("location", "eastus", null);
 
-        result.Should().Be("`🌍 eastus`");
+        result.Should().Be("`🌍\u00A0eastus`");
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueSummary("enabled", "false", null);
 
-        result.Should().Be("❌ false");
+        result.Should().Be("❌\u00A0false");
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueSummary("source_address_prefix", "10.1.0.0/16", null);
 
-        result.Should().Be("<code>🌐 10.1.0.0/16</code>");
+        result.Should().Be("<code>🌐\u00A010.1.0.0/16</code>");
     }
 
     [Fact]
@@ -82,7 +82,15 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueSummary("location", "westeurope", null);
 
-        result.Should().Be("<code>🌍 westeurope</code>");
+        result.Should().Be("<code>🌍\u00A0westeurope</code>");
+    }
+
+    [Fact]
+    public void FormatAttributeValuePlain_IpValue_UsesNonBreakingSpace()
+    {
+        var result = ScribanHelpers.FormatAttributeValuePlain("source_address_prefix", "10.0.0.0/16", null);
+
+        result.Should().Be("🌐\u00A010.0.0.0/16");
     }
 
     [Fact]

@@ -40,9 +40,9 @@
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
 {{~ if after_json ~}}
-**Collection:** `{{ after_json.name | escape_markdown }}` | **Priority:** `{{ after_json.priority | escape_markdown }}` | **Action:** `{{ after_json.action | escape_markdown }}`
+**Collection:** `{{ after_json.name | escape_markdown }}` | **Priority:** `{{ after_json.priority | escape_markdown }}` | **Action:** {{ format_attribute_value_table("access", after_json.action, null) }}
 {{~ else if before_json ~}}
-**Collection:** `{{ before_json.name | escape_markdown }}` | **Priority:** `{{ before_json.priority | escape_markdown }}` | **Action:** `{{ before_json.action | escape_markdown }}`
+**Collection:** `{{ before_json.name | escape_markdown }}` | **Priority:** `{{ before_json.priority | escape_markdown }}` | **Action:** {{ format_attribute_value_table("access", before_json.action, null) }}
 {{~ end ~}}
 
 {{~ if before_json && after_json && before_json.rule && after_json.rule ~}}

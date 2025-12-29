@@ -18,12 +18,12 @@
 
 <!-- tfplan2md:resource-start address=azurerm_resource_group.breaking_name -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_resource_group <b><code>breaking_name</code></b> — <code>rg-with-pipe&#124;and*asterisk</code> <code>🌍 eastus</code></summary>
+<summary>➕ azurerm_resource_group <b><code>breaking_name</code></b> — <code>rg-with-pipe&#124;and*asterisk</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| location | `🌍 eastus` |
+| location | `🌍 eastus` |
 | name | `rg-with-pipe\|and*asterisk` |
 
 **🏷️ Tags:** `description: This has a \| pipe and a <br/> newline` `owner: [bracket] user`
@@ -56,7 +56,7 @@ This has a | pipe and a
 ##### **tags.note:**
 
 <pre style="font-family: monospace; line-height: 1.5;"><code>line1
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: -4px;">+ line2</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+ line2</span>
 </code></pre>
 
 </details>

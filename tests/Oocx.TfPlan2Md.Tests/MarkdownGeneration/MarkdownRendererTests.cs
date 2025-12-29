@@ -11,6 +11,7 @@ public class MarkdownRendererTests
 {
     private readonly TerraformPlanParser _parser = new();
     private readonly MarkdownRenderer _renderer = new();
+    private const string Nbsp = "\u00A0";
 
     private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
@@ -445,7 +446,7 @@ public class MarkdownRendererTests
         var rgSection = ResourceSection(markdown, "azurerm_resource_group.main");
         rgSection.Should().Contain("| Attribute | Value |")
             .And.Contain($"| {Escape("name")} | `{Escape("rg-new-project")}` |")
-            .And.Contain($"| {Escape("location")} | `{Escape("🌍 westeurope")}` |");
+            .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |");
 
         var stSection = ResourceSection(markdown, "azurerm_storage_account.main");
         stSection.Should().Contain("| Attribute | Value |")
@@ -487,12 +488,12 @@ public class MarkdownRendererTests
         stSection.Should().Contain("| Attribute | Value |")
             .And.Contain($"| {Escape("account_tier")} | `{Escape("Standard")}` |")
             .And.Contain($"| {Escape("name")} | `{Escape("stoldproject")}` |")
-            .And.Contain($"| {Escape("location")} | `{Escape("🌍 westeurope")}` |");
+            .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |");
 
         var rgSection = ResourceSection(markdown, "azurerm_resource_group.old");
         rgSection.Should().Contain("| Attribute | Value |")
             .And.Contain($"| {Escape("name")} | `{Escape("rg-old-project")}` |")
-            .And.Contain($"| {Escape("location")} | `{Escape("🌍 westeurope")}` |");
+            .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |");
     }
 
     [Fact]
@@ -663,7 +664,7 @@ public class MarkdownRendererTests
         // Assert - the null `name` and unknown `id` should not be shown; only `location` should appear
         var section = ResourceSection(markdown, "example_resource.partial");
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| {Escape("location")} | `{Escape("🌍 westeurope")}` |")
+            .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |")
             .And.NotContain($"`{Escape("name")}`")
             .And.NotContain($"`{Escape("id")}`");
     }
@@ -940,6 +941,23 @@ public class MarkdownRendererTests
         result.Should().Contain(Escape("web_tier")).And.Contain("Rule Changes");
     }
 
+    [Fact]
+    public void RenderResourceChange_FirewallRuleCollection_SummaryUsesActionIcons()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
+
+        // Act
+        var result = _renderer.RenderResourceChange(firewallChange);
+
+        // Assert
+        result.Should().Contain($"**Action:** `{Escape($"✅{Nbsp}Allow")}`");
+    }
+
 
     [Fact]
     public void RenderResourceChange_FirewallRuleCollection_ShowsAddedRules()
@@ -957,6 +975,23 @@ public class MarkdownRendererTests
         // Assert - allow-dns was added
         result.Should().NotBeNull();
         result.Should().Contain("allow-dns").And.Contain("➕");
+    }
+
+    [Fact]
+    public void RenderResourceChange_Nsg_UsesPlusIconForAddedRules()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/nsg-rule-changes.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+        var nsgChange = model.Changes.First(c => c.Address == "azurerm_network_security_group.app");
+
+        // Act
+        var result = _renderer.RenderResourceChange(nsgChange);
+
+        // Assert
+        result.Should().NotContain("➥").And.Contain("| ➕ |");
     }
 
     [Fact]

@@ -78,4 +78,12 @@ public class ScribanHelpersFormatDiffTests
             .And.Contain("+ ")
             .And.Contain("<span", "still styled for inline rendering");
     }
+
+    [Fact]
+    public void FormatDiff_InlineDiff_DoesNotUseNegativeMargins()
+    {
+        var result = ScribanHelpers.FormatDiff("🌐 10.1.2.0/24", "🌐 10.2.2.0/24", "inline-diff");
+
+        result.Should().NotContain("margin-left: -4px", "negative margins misalign inline diffs in AzDO tables");
+    }
 }

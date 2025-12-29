@@ -18,12 +18,12 @@
 
 <!-- tfplan2md:resource-start address=azurerm_resource_group.rg_root -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_resource_group <b><code>rg_root</code></b> — <code>rg-root</code> <code>🌍 westeurope</code></summary>
+<summary>➕ azurerm_resource_group <b><code>rg_root</code></b> — <code>rg-root</code> <code>🌍 westeurope</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| location | `🌍 westeurope` |
+| location | `🌍 westeurope` |
 | name | `rg-root` |
 
 </details>
@@ -35,12 +35,12 @@
 
 <!-- tfplan2md:resource-start address=module.network.azurerm_virtual_network.vnet -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_virtual_network <b><code>vnet</code></b> — <code>vnet</code> <code>🌐 10.0.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>vnet</code></b> — <code>vnet</code> <code>🌐 10.0.0.0/16</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_space[0] | `🌐 10.0.0.0/16` |
+| address_space[0] | `🌐 10.0.0.0/16` |
 | name | `vnet` |
 
 </details>
@@ -57,7 +57,7 @@
 
 | Attribute | Value |
 | ----------- | ------- |
-| address_prefix | `🌐 10.0.1.0/24` |
+| address_prefix | `🌐 10.0.1.0/24` |
 | name | `subnet1` |
 
 </details>

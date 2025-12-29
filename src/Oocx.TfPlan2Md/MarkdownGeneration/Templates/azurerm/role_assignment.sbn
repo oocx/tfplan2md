@@ -64,18 +64,29 @@
     {{ end }}
 
     {{ if attr == "role_definition_id" }}
-        {{ roleName = wrap_code(role.name) }}
-        {{ roleId = wrap_code(role.id) }}
+        {{ roleName = role.name != "" ? format_attribute_value_table("role_definition_name", role.name, null) : "" }}
+        {{ roleId = role.id != "" ? format_code_table(role.id) : "" }}
         {{ if roleName == "" && roleId == "" }}{{ ret "" }}{{ end }}
         {{ if roleId == "" }}{{ ret roleName }}{{ end }}
         {{ if roleName == "" }}{{ ret roleId }}{{ end }}
         {{ ret roleName + " (" + roleId + ")" }}
     {{ end }}
 
+    {{ func principal_icon(principal_type) }}
+        {{- if principal_type == "User" }}{{ ret "👤" }}{{ end -}}
+        {{- if principal_type == "Group" }}{{ ret "👥" }}{{ end -}}
+        {{- if principal_type == "ServicePrincipal" }}{{ ret "💻" }}{{ end -}}
+        {{ ret "" }}
+    {{ end }}
+
     {{ if attr == "principal_id" }}
-        {{ text = wrap_code(principal.name) }}
-        {{ if principal.type != "" }}{{ text = text + " (" + safe(principal.type) + ")" }}{{ end }}
-        {{ if principal.id != "" }}{{ text = text + " [" + wrap_code(principal.id) + "]" }}{{ end }}
+        {{ icon = principal_icon(principal.type) }}
+        {{ nameValue = principal.name != "" ? format_code_table(icon + " " + principal.name) : "" }}
+        {{ principalType = principal.type != "" ? format_attribute_value_table("principal_type", principal.type, null) : "" }}
+        {{ idValue = principal.id != "" ? "[" + format_code_table(principal.id) + "]" : "" }}
+        {{ text = nameValue }}
+        {{ if principalType != "" }}{{ text = text + " (" + principalType + ")" }}{{ end }}
+        {{ if idValue != "" }}{{ text = text + " " + idValue }}{{ end }}
         {{ ret text }}
     {{ end }}
 

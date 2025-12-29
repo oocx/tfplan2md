@@ -102,6 +102,17 @@ Before starting, familiarize yourself with:
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - Relevant source code in `src/` to understand current patterns
 
+## Available Skills
+
+### arc42 Architecture Documentation
+
+Use the `arc42-documentation` skill when you need to create comprehensive, structured architecture documentation following industry standards. This is ideal for:
+- New projects requiring complete architecture documentation
+- Existing systems that need standardized architecture descriptions
+- Documentation for stakeholders at different technical levels
+
+The arc42 template provides 12 standardized sections covering all aspects of software architecture, from requirements and constraints to quality goals and technical decisions.
+
 ## Conversation Approach
 
 1. **Review the specification** - Read the Feature Specification thoroughly before asking questions.

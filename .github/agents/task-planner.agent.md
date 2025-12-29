@@ -54,6 +54,7 @@ Break down the feature into clear, prioritized work items with well-defined acce
 - Create and own tasks.md (this is your exclusive deliverable)
 - **STOP after creating the plan and explicitly request approval**
 - Commit tasks document only after maintainer approval
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 - Use handoff button to transition to Developer after approval
 
 ### ⚠️ Ask First
@@ -70,6 +71,7 @@ Break down the feature into clear, prioritized work items with well-defined acce
 - **Write source code, tests, or make code changes** — your role is planning only
 - **Proceed past the planning phase** — hand off to Developer after the plan is approved
 - **Skip the approval step** — always wait for maintainer confirmation before committing
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

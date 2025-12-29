@@ -47,6 +47,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 - Create issue analysis document at docs/issues/NNN-<issue-slug>/analysis.md
 - Propose initial analysis, not final solutions
 - Commit analysis document before handing off to Developer
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
 - If the issue requires access to external systems or credentials
@@ -60,6 +61,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 - Make assumptions without verification
 - Skip diagnostic steps
 - Change code without proper branch and handoff
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

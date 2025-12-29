@@ -41,6 +41,7 @@ Transform an initial feature idea into a clear, unambiguous Feature Specificatio
 - Summarize understanding before writing specification
 - Define measurable success criteria from user perspective
 - Commit specification when approved by the Maintainer
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
 - If the request seems like a bug fix rather than a feature
@@ -56,6 +57,7 @@ Transform an initial feature idea into a clear, unambiguous Feature Specificatio
 - Write specification before understanding is confirmed
 - Add features or scope not requested by maintainer
 - Create feature specifications for bug fixes
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

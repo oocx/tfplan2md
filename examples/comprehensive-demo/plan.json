@@ -132,7 +132,9 @@
         "after": {
           "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo",
           "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
-          "principal_id": "00000000-0000-0000-0000-000000000001"
+          "role_definition_name": "Reader",
+          "principal_id": "00000000-0000-0000-0000-000000000001",
+          "principal_type": "User"
         },
         "after_unknown": { "id": true },
         "before_sensitive": {},
@@ -152,7 +154,9 @@
         "after": {
           "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.Storage/storageAccounts/sttfplan2mdlogs",
           "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1",
-          "principal_id": "00000000-0000-0000-0000-000000000002"
+          "role_definition_name": "Storage Blob Data Reader",
+          "principal_id": "00000000-0000-0000-0000-000000000002",
+          "principal_type": "Group"
         },
         "after_unknown": { "id": true },
         "before_sensitive": {},
@@ -516,6 +520,14 @@
               "destination_addresses": ["10.1.5.0/24"],
               "destination_ports": ["8080"],
               "description": "Log ingestion"
+            },
+            {
+              "name": "allow-icmp-ping",
+              "protocols": ["ICMP"],
+              "source_addresses": ["10.1.1.0/24"],
+              "destination_addresses": ["10.1.4.0/24"],
+              "destination_ports": ["*"],
+              "description": "ICMP ping for network diagnostics"
             }
           ]
         },
@@ -634,6 +646,30 @@
               "destination_port_range": "443",
               "source_address_prefix": "*",
               "destination_address_prefix": "*"
+            },
+            {
+              "name": "deny-rdp",
+              "priority": 200,
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "3389",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*",
+              "description": "Block RDP from internet"
+            },
+            {
+              "name": "allow-outbound-https",
+              "priority": 300,
+              "direction": "Outbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_port_range": "*",
+              "destination_port_range": "443",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*",
+              "description": "Allow outbound HTTPS"
             }
           ]
         },
@@ -678,7 +714,9 @@
         "before": {
           "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-old",
           "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
-          "principal_id": "00000000-0000-0000-0000-000000000005"
+          "role_definition_name": "Reader",
+          "principal_id": "00000000-0000-0000-0000-000000000005",
+          "principal_type": "ServicePrincipal"
         },
         "after": null,
         "after_unknown": {},

@@ -828,6 +828,20 @@ graph TB
    - Manual review of rendering in both environments
    - Validate compatibility with both platforms' markdown parsers
 
+**Platform-Specific Rendering Adjustments:**
+
+*Azure DevOps Inline Diff Alignment:*
+
+Azure DevOps markdown tables misalign inline code elements with default `display:inline-block` styling. To ensure proper vertical alignment of remove/add diff rows in table cells, inline diffs use block-level code elements:
+
+```html
+<code style="display:block; white-space:normal; padding:0; margin:0;">
+  <!-- diff content -->
+</code>
+```
+
+The `WrapInlineDiffCode` helper in `ScribanHelpers.cs` (L863-873) applies this specialized styling, distinct from the standard `WrapInlineCode` used for non-diff values. This ensures character-level highlighting and semantic icons remain visible while maintaining proper cell alignment in both GitHub and Azure DevOps. See `ScribanHelpersFormatDiffTests.cs` test case "FormatDiff_InlineDiff_UsesBlockCodeForAlignment" for verification.
+
 ### 8.4 Templating Architecture
 
 The templating system uses Scriban to generate markdown reports. Templates are loaded from embedded resources or custom directories, and resource-specific templates can override the default rendering for specific Terraform resource types.
@@ -991,6 +1005,25 @@ All C# property names are converted to snake_case for template access:
 | `azure_role_name` | `azure_role_name(role_id)` | Map Azure role definition ID to name |
 | `azure_scope` | `azure_scope(scope_id)` | Parse Azure resource scope to readable format |
 | `azure_principal_name` | `azure_principal_name(principal_id)` | Resolve Azure principal ID to name |
+
+**Template Rendering Patterns:**
+
+*Large-Only Resource Rendering:*
+
+Resources containing only large attributes (no small attributes or tags) render their content directly inline without an inner collapsible section. This design decision eliminates unnecessary click friction when all resource content is large-valued. The conditional wrapping logic applies:
+
+```scriban
+{{ if small_attrs.size > 0 || change.tags_badges }}
+  <br/><details>
+    <summary>Large values:</summary>
+    <!-- large attribute content -->
+  </details>
+{{ else }}
+  <!-- large attribute content rendered inline -->
+{{ end }}
+```
+
+This maintains the outer resource-level `<details>` wrapper while avoiding nested collapsible sections when they provide no value. See test cases TC-16 through TC-19 in `MarkdownRendererTemplateFormattingTests.cs` for verification.
 
 ### 8.5 Error Handling Strategy
 

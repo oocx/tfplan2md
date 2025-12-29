@@ -380,11 +380,11 @@ public class TemplateIsolationTests
     /// </summary>
     private static void AssertHtmlTagsBalanced(string markdown, string context)
     {
-        var detailsOpen = Regex.Matches(markdown, @"<details>").Count;
+        var detailsOpen = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>").Count;
         var detailsClose = Regex.Matches(markdown, @"</details>").Count;
         detailsOpen.Should().Be(detailsClose, $"{context}: unbalanced <details> tags");
 
-        var summaryOpen = Regex.Matches(markdown, @"<summary>").Count;
+        var summaryOpen = Regex.Matches(markdown, @"<summary(?:\s[^>]*)?>").Count;
         var summaryClose = Regex.Matches(markdown, @"</summary>").Count;
         summaryOpen.Should().Be(summaryClose, $"{context}: unbalanced <summary> tags");
     }

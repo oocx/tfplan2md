@@ -32,7 +32,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 - Create test plan markdown file at `docs/features/NNN-<feature-slug>/test-plan.md`
 - Create UAT test plan (if needed) at `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 - Commit test plan when approved
-
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
 - Adding new test infrastructure or frameworks
@@ -46,6 +46,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 - Skip testing error conditions or edge cases
 - Write test cases without linking them to acceptance criteria
 - Propose tests that require human judgment to pass/fail (except for UAT)
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

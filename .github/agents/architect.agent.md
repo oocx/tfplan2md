@@ -42,6 +42,7 @@ Transform a Feature Specification into a clear technical design with documented 
 - Address security, reliability, and maintainability concerns
 - Create or update markdown documentation files in docs/ or docs/features/NNN-<feature-slug>/
 - Commit architecture documents when approved
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
 - Proposing significant changes to existing architecture
@@ -59,6 +60,7 @@ Transform a Feature Specification into a clear technical design with documented 
 - Create ADRs without considering multiple options
 - Design without reviewing existing codebase patterns
 - Skip documenting the rationale for decisions
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

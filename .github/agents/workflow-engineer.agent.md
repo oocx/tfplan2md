@@ -27,6 +27,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 - Ensure Mermaid diagram reflects all agents and artifacts
 - Test proposed changes incrementally
 - Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; run `dotnet test` when C# code changes
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
 - Before removing an existing agent
@@ -41,6 +42,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 - Skip documentation updates
 - Change agent core responsibilities without approval
 - Add handoffs to non-existent agents
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

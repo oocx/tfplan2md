@@ -25,7 +25,7 @@ Identify improvement opportunities for the development workflow by analyzing the
 - **Export and save chat history** using `workbench.action.chat.export` command (ask Maintainer to focus chat first if needed).
 - **Redact sensitive information** before committing chat logs: scan for and replace passwords, tokens, API keys, secrets, and personally identifiable information (PII) with `[REDACTED]`.
 - Reference or attach chat logs and key artifacts when available.
-- Create or update the `retrospective.md` file in the corresponding feature or issue documentation folder (e.g., `docs/features/<name>/` or `docs/issues/<id>/`).
+- Create or update the `retrospective.md` file in the corresponding feature or issue documentation folder (e.g., `docs/features/NNN-<feature-slug>/` or `docs/issues/NNN-<issue-slug>/`).
 - Be **direct and critical** (Scrum Master stance). Shipped ≠ smooth.
 - Apply a **scoring rubric** and explicitly deduct points for: boundary violations, repeated retries/tool failures, missing required artifacts/sections, wrong-script usage, or manual maintainer interventions.
 - Ensure every score and rating is justified with evidence (chat excerpts, metrics, or concrete events). “Everything was great” must be defended.
@@ -84,7 +84,7 @@ When the user invokes you after a release to conduct the retrospective:
 1.  **Export Chat History**:
     *   Ask the Maintainer to focus the chat panel.
     *   Run the `workbench.action.chat.export` command to export the chat.
-    *   Ask the Maintainer to save the file to `docs/features/<feature-name>/chat.json`.
+    *   Ask the Maintainer to save the file to `docs/features/NNN-<feature-slug>/chat.json`.
     *   **Redact sensitive information**: Use the `analyze-chat-export` skill's redaction command to remove passwords, tokens, API keys, secrets, and PII.
     *   Commit the redacted chat log.
 2.  **Normalize Evidence (REQUIRED; no speculation)**:

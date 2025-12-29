@@ -80,8 +80,8 @@ Todo lists:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md`
-- The Code Review Report in `docs/features/<feature-name>/code-review.md`
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
+- The Code Review Report in `docs/features/NNN-<feature-slug>/code-review.md`
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - Code documentation requirements
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution and release guidelines

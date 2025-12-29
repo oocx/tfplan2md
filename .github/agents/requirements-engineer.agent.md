@@ -194,9 +194,9 @@ Any unresolved questions that need architect or maintainer input.
 
 ## Artifact Location
 
-Save the Feature Specification to: `docs/features/<feature-name>/specification.md`
+Save the Feature Specification to: `docs/features/NNN-<feature-slug>/specification.md`
 
-Use lowercase kebab-case for the feature name (e.g., `resource-grouping`, `custom-templates`).
+Use lowercase kebab-case for the feature slug (e.g., `resource-grouping`, `custom-templates`).
 
 ## Definition of Done
 
@@ -212,8 +212,8 @@ Your work is complete when:
 
 After the specification is approved:
 ```bash
-git add docs/features/<feature-name>/specification.md
-git commit -m "docs: add feature specification for <feature-name>"
+git add docs/features/NNN-<feature-slug>/specification.md
+git commit -m "docs: add feature specification for NNN-<feature-slug>"
 ```
 
 ## Handoff

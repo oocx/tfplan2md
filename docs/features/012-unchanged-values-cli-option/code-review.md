@@ -54,7 +54,7 @@ None
 /// Filtering uses raw values (before masking) to correctly handle sensitive attributes.
 /// This ensures that masked sensitive creates like "(sensitive)" -> "(sensitive)"
 /// are not incorrectly filtered out when the underlying values differ.
-/// Related feature: docs/features/unchanged-values-cli-option/specification.md
+/// Related feature: docs/features/012-unchanged-values-cli-option/specification.md
 /// </remarks>
 private List<AttributeChangeModel> BuildAttributeChanges(Change change)
 ```

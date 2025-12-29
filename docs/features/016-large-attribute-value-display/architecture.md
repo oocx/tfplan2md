@@ -8,7 +8,7 @@ Implemented
 
 The current table-based display for attribute values is unsuitable for large values (multi-line text, long strings), causing layout issues and poor readability. Users need a way to view these large values comfortably, with support for diffing in update/replace scenarios. The solution must support both Azure DevOps (which supports inline HTML styles) and GitHub (which requires standard markdown).
 
-Reference: `docs/features/large-attribute-value-display/specification.md`
+Reference: `specification.md`
 
 ## Options Considered
 

@@ -74,9 +74,9 @@ All tests passing (145 total):
 ### Documentation
 - `README.md` - Built-in templates, summary example, updated template variables
 - `docs/features.md` - Built-in templates section, template variables
-- `docs/features/built-in-templates/specification.md` - Marked as implemented
-- `docs/features/built-in-templates/tasks.md` - Marked all tasks completed
-- `docs/features/built-in-templates/test-plan.md` - Marked tests passing
+- `docs/features/006-built-in-templates/specification.md` - Marked as implemented
+- `docs/features/006-built-in-templates/tasks.md` - Marked all tasks completed
+- `docs/features/006-built-in-templates/test-plan.md` - Marked tests passing
 
 ## Usage Examples
 

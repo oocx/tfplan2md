@@ -2,7 +2,7 @@
 
 ## Problem Description
 
-Version 0.26.0 was released with the goal of implementing markdown quality validation and linting (feature: docs/features/markdown-quality-validation/specification.md), but it still produces markdown that fails validation and renders incorrectly.
+Version 0.26.0 was released with the goal of implementing markdown quality validation and linting (feature: docs/features/009-markdown-quality-validation/specification.md), but it still produces markdown that fails validation and renders incorrectly.
 
 **Two distinct issues identified:**
 1. Multiple consecutive blank lines (MD012 error at line 365)
@@ -306,7 +306,7 @@ Tests that should pass after the fix:
 ## Additional Context
 
 - **Release:** [v0.26.0](https://github.com/oocx/tfplan2md/releases/tag/v0.26.0)
-- **Feature Spec:** [docs/features/markdown-quality-validation/specification.md](../../features/markdown-quality-validation/specification.md)
+- **Feature Spec:** [docs/features/009-markdown-quality-validation/specification.md](../../features/009-markdown-quality-validation/specification.md)
 - **Markdownlint Config:** [.markdownlint.json](../../../.markdownlint.json)
 - **Related Commit:** [7cc7632](https://github.com/oocx/tfplan2md/commit/7cc7632d2f7e3b40385db6bb88e32c8c83035e7d) - feat: implement markdown quality validation and linting
 

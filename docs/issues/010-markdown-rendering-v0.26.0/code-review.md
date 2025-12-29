@@ -129,7 +129,7 @@ Reviewed the fix for markdown rendering issues in v0.26.0 that caused MD012 viol
    - **Impact:** Prevents regression of both identified bugs
    - **Quality:** ✅ Excellent - tests use proper algorithms and are comprehensive
 
-5. **docs/features/markdown-quality-validation/test-plan.md**
+5. **docs/features/009-markdown-quality-validation/test-plan.md**
    - **Changes:** Added TC-08, TC-09, TC-10
    - **Impact:** Documents new test coverage
    - **Quality:** ✅ Good - keeps test plan synchronized with implementation

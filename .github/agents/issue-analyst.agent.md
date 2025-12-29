@@ -44,7 +44,7 @@ Gather diagnostic information, perform initial analysis, and document the proble
 - Review recent changes that might have caused the issue
 - Search codebase for relevant code
 - Document findings clearly with file paths and line numbers
-- Create issue analysis document at docs/issues/<issue-description>/analysis.md
+- Create issue analysis document at docs/issues/NNN-<issue-slug>/analysis.md
 - Propose initial analysis, not final solutions
 - Commit analysis document before handing off to Developer
 
@@ -185,7 +185,7 @@ Create a clear issue analysis document with:
 
 Commit your analysis document:
 ```bash
-git add docs/issues/<issue-description>/analysis.md
+git add docs/issues/NNN-<issue-slug>/analysis.md
 git commit -m "docs: add issue analysis for <description>"
 ```
 
@@ -194,7 +194,7 @@ Use handoff button to transition to:
 
 ## Output: Issue Analysis Document
 
-Create a document at: `docs/issues/<issue-description>/analysis.md`
+Create a document at: `docs/issues/NNN-<issue-slug>/analysis.md`
 
 ```markdown
 # Issue: <Brief Description>
@@ -257,7 +257,7 @@ Your work is complete when:
 - [ ] Problem is clearly understood and documented
 - [ ] Root cause is identified
 - [ ] Diagnostic information is collected
-- [ ] Issue analysis document is **created and saved to disk** at `docs/issues/<issue-description>/analysis.md`
+- [ ] Issue analysis document is **created and saved to disk** at `docs/issues/NNN-<issue-slug>/analysis.md`
 - [ ] Analysis is committed to the branch
 - [ ] Ready to hand off to Developer
 

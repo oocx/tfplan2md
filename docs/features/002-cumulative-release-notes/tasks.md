@@ -73,7 +73,7 @@ Validate the implementation against various scenarios using a test script or man
 Ensure all documentation is up to date and the feature branch is ready for merge.
 
 **Acceptance Criteria:**
-- [x] `docs/features/cumulative-release-notes/tasks.md` is committed.
+- [x] `docs/features/002-cumulative-release-notes/tasks.md` is committed.
 - [x] Architecture and Specification documents are updated if any implementation details changed.
 - [x] Feature branch is clean and follows project conventions.
 

@@ -211,7 +211,7 @@ Examples:
 /// <returns>Collection of resource changes found in the plan.</returns>
 /// <remarks>
 /// Uses streaming deserialization for memory efficiency on large files.
-/// Related feature: docs/features/comprehensive-demo/
+/// Related feature: docs/features/007-comprehensive-demo/
 /// </remarks>
 internal async Task<IReadOnlyList<ResourceChange>> ParseAsync(string planFilePath)
 {

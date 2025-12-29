@@ -8,7 +8,7 @@
 
 Implement support for multiple built-in templates, starting with a new "summary" template. This includes updating the data models to support plan timestamps, implementing a template resolution strategy that prioritizes built-in templates, and updating the CLI to provide better feedback and documentation for these templates.
 
-Reference: [docs/features/built-in-templates/specification.md](docs/features/built-in-templates/specification.md) and [docs/features/built-in-templates/architecture.md](docs/features/built-in-templates/architecture.md).
+Reference: [specification.md](specification.md) and [architecture.md](architecture.md).
 
 ## Tasks
 

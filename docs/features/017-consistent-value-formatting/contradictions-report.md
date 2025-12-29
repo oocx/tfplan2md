@@ -110,7 +110,7 @@ Producing:
 - **NSG implementation**: Renders NSG name as plain text (inconsistent with firewall)
 - **Firewall implementation**: Follows the style guide (code-formats collection name, priority, action)
 
-This appears to be an intentional design choice per the original feature spec for NSG templates, which stated: "Headers use plain text for names" (see `docs/features/nsg-security-rule-template/specification.md`).
+This appears to be an intentional design choice per the original feature spec for NSG templates, which stated: "Headers use plain text for names" (see `docs/features/015-nsg-security-rule-template/specification.md`).
 
 ### Visual Comparison
 

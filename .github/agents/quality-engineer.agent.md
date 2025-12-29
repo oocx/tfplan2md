@@ -24,14 +24,15 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
 - Ensure all automated tests are fully automated (no manual steps)
-- For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/<feature-name>/uat-test-plan.md`
+- For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `dotnet test` without human intervention
 - Consider edge cases, error conditions, and boundary values
-- Create test plan markdown file at `docs/features/<feature-name>/test-plan.md`
-- Create UAT test plan (if needed) at `docs/features/<feature-name>/uat-test-plan.md`
+- Create test plan markdown file at `docs/features/NNN-<feature-slug>/test-plan.md`
+- Create UAT test plan (if needed) at `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 - Commit test plan when approved
+
 
 ### ⚠️ Ask First
 - Adding new test infrastructure or frameworks
@@ -69,8 +70,8 @@ Todo lists:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- The Feature Specification in `docs/features/<feature-name>/specification.md`
-- The Architecture document in `docs/features/<feature-name>/architecture.md` (if exists)
+- The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
+- The Architecture document in `docs/features/NNN-<feature-slug>/architecture.md` (if exists)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Project testing conventions and infrastructure
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
@@ -90,7 +91,7 @@ Follow the existing test naming convention: `MethodName_Scenario_ExpectedResult`
 
 ## UAT Test Plans
 
-For user-facing features (especially markdown rendering changes), you must create a **UAT Test Plan** in `docs/features/<feature-name>/uat-test-plan.md`. This plan guides the Maintainer (and the UAT Tester agent) on what to verify visually.
+For user-facing features (especially markdown rendering changes), you must create a **UAT Test Plan** in `docs/features/NNN-<feature-slug>/uat-test-plan.md`. This plan guides the Maintainer (and the UAT Tester agent) on what to verify visually.
 
 ### UAT Plan Template
 
@@ -267,8 +268,8 @@ Any unresolved questions about testing approach.
 
 ## Artifact Location
 
-Save the test plan to: `docs/features/<feature-name>/test-plan.md`
-Save the UAT test plan to: `docs/features/<feature-name>/uat-test-plan.md`
+Save the test plan to: `docs/features/NNN-<feature-slug>/test-plan.md`
+Save the UAT test plan to: `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 
 ## Definition of Done
 
@@ -285,8 +286,8 @@ Your work is complete when:
 
 1. **Commit locally**:
    ```bash
-   git add docs/features/<feature-name>/test-plan.md
-   git commit -m "docs: add test plan for <feature-name>"
+   git add docs/features/NNN-<feature-slug>/test-plan.md
+   git commit -m "docs: add test plan for NNN-<feature-slug>"
    ```
 
 2. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.

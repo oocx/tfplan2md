@@ -155,10 +155,10 @@ None
 ✅ **All documentation updated:**
 - [docs/features.md](docs/features.md) - Added "CI/CD Integration > Cumulative Release Notes" section
 - [docs/spec.md](docs/spec.md) - Updated workflow table and added release notes explanation
-- [docs/features/cumulative-release-notes/architecture.md](docs/features/cumulative-release-notes/architecture.md) - Status changed to "Implemented"
-- [docs/features/cumulative-release-notes/tasks.md](docs/features/cumulative-release-notes/tasks.md) - All tasks marked complete
-- [docs/features/cumulative-release-notes/specification.md](docs/features/cumulative-release-notes/specification.md) - Complete and accurate
-- [docs/features/cumulative-release-notes/test-plan.md](docs/features/cumulative-release-notes/test-plan.md) - Complete with all test cases
+- [architecture.md](architecture.md) - Status changed to "Implemented"
+- [tasks.md](tasks.md) - All tasks marked complete
+- [specification.md](specification.md) - Complete and accurate
+- [test-plan.md](test-plan.md) - Complete with all test cases
 
 ✅ **Documentation is consistent:**
 - No contradictions found

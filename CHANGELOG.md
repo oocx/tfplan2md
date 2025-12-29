@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.5"></a>
+## [1.0.0-alpha.5](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2025-12-29)
+
+### ✨ Features
+
+* add arc42 architecture documentation skill for Architect agent ([176e00b](https://github.com/oocx/tfplan2md/commit/176e00b6efc09699a83f9235c2c01bac546dad45))
+
+### ♻️ Refactoring
+
+* enforce tool preference and todo tracking in arc42 skill ([a847cfb](https://github.com/oocx/tfplan2md/commit/a847cfb3f0f7c6a5d60a2443986438e68bb3d3d2))
+* strengthen arc42 skill requirements for documentation integrity ([497b142](https://github.com/oocx/tfplan2md/commit/497b142c41f94b0ed1f94f426db30b69c6d84fba))
+
+### 📚 Documentation
+
+* add Use Cases section highlighting pull request review challenges ([06de975](https://github.com/oocx/tfplan2md/commit/06de9759baa83dd52bec1da3d543489b58460b61))
+
 <a name="1.0.0-alpha.4"></a>
 ## [1.0.0-alpha.4](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-12-28)
 

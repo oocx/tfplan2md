@@ -28,8 +28,10 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Work on ONE task at a time - do not move to next task until current task is complete
 - Verify acceptance criteria are satisfied before moving to next task
 - Commit after EACH task with descriptive conventional commit message
+- **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend --no-edit` (or with an updated message) instead of creating a new "fix" commit. This ensures a clean "1 topic per commit" history.
 - Update task status in tasks.md after each task completion
 - For user-facing features (CLI changes, rendering changes), ensure the output is easy to validate in User Acceptance PRs (handled by Code Reviewer)
+- **Detail Checklist (REQUIRED for UI/UX features):** For features with many small visual items (icons, spacing, alignment), maintain a checklist in the task description or a separate file to ensure no detail is missed during implementation.
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
@@ -59,6 +61,7 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - Skip tests or commit failing tests
 - Create code without verifying no duplication exists
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
+- Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style
 

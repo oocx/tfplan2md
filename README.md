@@ -46,6 +46,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines
 - 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
 - 🆔 **Readable Azure Resource IDs** - Long Azure IDs are automatically formatted as readable scopes with values in code (e.g., Key Vault `kv` in resource group `rg`)
+- 🎨 **Semantic icons** - Visual icons for values: 🌐 for IPs, 🔌 for ports, 📨/🔗 for protocols, ✅/❌ for booleans, 👤/👥/💻 for principals, 🛡️ for roles
 - 📝 **Resource summaries** - Each resource change shows a concise one-line summary for quick scanning
 - 🔄 **Replacement reasons** - Resources being replaced show which attributes forced the replacement
 

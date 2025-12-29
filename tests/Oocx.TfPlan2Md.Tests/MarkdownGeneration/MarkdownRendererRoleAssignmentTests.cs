@@ -22,7 +22,7 @@ public class MarkdownRendererRoleAssignmentTests
         // Assert
         result.Should().NotBeNull();
         result.Should().Contain("<summary>");
-        result.Should().Contain("azurerm_role_assignment <b><code>azurerm_role_assignment.example</code></b>");
+        result.Should().Contain("azurerm_role_assignment <b><code>example</code></b>");
         result.Should().Contain("John Doe");
         result.Should().Contain("Reader");
         result.Should().Contain("my-rg");

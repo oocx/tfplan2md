@@ -399,9 +399,11 @@ Simple single-command interface with flags:
 
 ## Enhanced Azure Role Assignment Display
 
-The `azurerm_role_assignment` resource uses a table-based format with human-readable summaries instead of cryptic GUIDs and technical paths.
+The `azurerm_role_assignment` resource uses a table-based format with human-readable summaries, semantic icons, and clean resource naming instead of cryptic GUIDs and technical paths.
 
 **Features:**
+- **Semantic icons**: Principal types show `👤 User`, `👥 Group`, or `💻 ServicePrincipal`; roles show `🛡️` shield icon
+- **Local resource names**: Summaries show clean names (e.g., `rg_reader`) instead of full module paths
 - **Comprehensive built-in role mapping**: All 473 Azure built-in role definition GUIDs are automatically mapped to friendly names (e.g., "Reader", "Contributor", "Storage Blob Data Reader")
 - **Hierarchical scope display**: Azure resource scopes are parsed and displayed with clear context:
   - Management Groups: `my-mg (Management Group)`
@@ -421,21 +423,25 @@ The `azurerm_role_assignment` resource uses a table-based format with human-read
 
 **Example output:**
 ```markdown
-#### ➕ azurerm_role_assignment.example
-
-**Summary:** `John Doe` (User) → `Reader` on `my-rg`
-
 <details>
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-demo</code></summary>
+<br>
 
 | Attribute | Value |
-|-----------|-------|
-| `scope` | my-rg in subscription 12345678-1234-1234-1234-123456789012 |
-| `role_definition_id` | Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7) |
-| `principal_id` | John Doe (User) [abcdef01-2345-6789-abcd-ef0123456789] |
-| `principal_type` | User |
+| ----------- | ------- |
+| scope | `rg-demo` in subscription `12345678-1234-1234-1234-123456789012` |
+| role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
+| principal_id | `Jane Doe (User)` (User) [`00000000-0000-0000-0000-000000000001`] |
+| principal_type | `👤 User` |
+| role_definition_name | `🛡️ Reader` |
 
 </details>
 ```
+
+Note how the summary shows:
+- Local resource name `rg_reader` instead of full module path
+- Principal with icon: `👤 Jane Doe (User)`
+- Role with icon: `🛡️ Reader`
 
 **Usage:**
 ```bash

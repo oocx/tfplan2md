@@ -34,8 +34,8 @@ public class MarkdownRendererFormatDiffConfigTests
         // Act
         var markdown = renderer.RenderResourceChange(change, LargeValueFormat.StandardDiff)!;
 
-        // Assert - standard diff uses -/+ prefix with <br> separator (plain text without icons for changed values, wrapped in backticks)
-        markdown.Should().Contain("- `10.0.1.0/24`<br>+ `10.0.1.0/24, 10.0.3.0/24`")
+        // Assert - standard diff uses -/+ prefix with <br> separator; semantic icons are preserved inside code formatting without inline diff styling
+        markdown.Should().Contain("- `🌐 10.0.1.0/24`<br>+ `🌐 10.0.1.0/24, 🌐 10.0.3.0/24`")
             .And.NotContain("background-color:");
     }
 

@@ -19,7 +19,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.create_no_description");
 
-        section.Should().Contain("<summary>➕ azurerm_role_assignment <b><code>azurerm_role_assignment.create_no_description</code></b> — ");
+        section.Should().Contain("<summary>➕ azurerm_role_assignment <b><code>create_no_description</code></b> — ");
         section.Should().Contain("Jane Doe");
         section.Should().Contain("| Attribute | Value |");
         section.Should().Contain("| scope | `rg-tfplan2md-demo` in subscription `sub-one` |");
@@ -33,7 +33,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.create_with_description");
 
-        section.Should().Contain("<summary>➕ azurerm_role_assignment <b><code>azurerm_role_assignment.create_with_description</code></b> — ");
+        section.Should().Contain("<summary>➕ azurerm_role_assignment <b><code>create_with_description</code></b> — ");
         section.Should().Contain("DevOps Team");
         section.Should().Contain("Allow DevOps team to read logs from the storage account");
         section.Should().Contain("| scope | `rg-tfplan2md-demo` in subscription `sub-one` |");
@@ -47,7 +47,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.update_assignment");
 
-        section.Should().Contain("<summary>🔄 azurerm_role_assignment <b><code>azurerm_role_assignment.update_assignment</code></b> — ");
+        section.Should().Contain("<summary>🔄 azurerm_role_assignment <b><code>update_assignment</code></b> — ");
         section.Should().Contain("Security Team");
         section.Should().Contain("| Attribute | Before | After |");
         section.Should().Contain("| scope | `rg-tfplan2md-demo` in subscription `sub-one` | `rg-tfplan2md-demo` in subscription `sub-one` |");
@@ -73,7 +73,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.replace_assignment");
 
-        section.Should().Contain("<summary>♻️ azurerm_role_assignment <b><code>azurerm_role_assignment.replace_assignment</code></b> — ");
+        section.Should().Contain("<summary>♻️ azurerm_role_assignment <b><code>replace_assignment</code></b> — ");
         section.Should().Contain("Custom Contributor Long Name 1234567890");
         section.Should().Contain("| Attribute | Before | After |");
         section.Should().Contain("| role_definition_id | `Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `Custom Contributor Long Name 1234567890` |");
@@ -85,7 +85,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.delete_assignment");
 
-        section.Should().Contain("<summary>❌ azurerm_role_assignment <b><code>azurerm_role_assignment.delete_assignment</code></b> — ");
+        section.Should().Contain("<summary>❌ azurerm_role_assignment <b><code>delete_assignment</code></b> — ");
         section.Should().Contain("Contributor");
         section.Should().Contain("| Attribute | Value |");
         section.Should().Contain("| principal_id | `John Doe` (User) [`33333333-3333-3333-3333-333333333333`] |");
@@ -97,7 +97,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render(new UnmappedPrincipalMapper());
         var section = ExtractSection(markdown, "azurerm_role_assignment.unmapped_principal");
 
-        section.Should().Contain("<summary>➕ azurerm_role_assignment <b><code>azurerm_role_assignment.unmapped_principal</code></b> — ");
+        section.Should().Contain("<summary>➕ azurerm_role_assignment <b><code>unmapped_principal</code></b> — ");
         section.Should().Contain("Extremely Verbose Custom Role Name For Long Output Validation 1234567890");
         section.Should().Contain("Extremely Verbose Custom Role Name For Long Output Validation 1234567890");
     }

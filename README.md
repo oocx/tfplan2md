@@ -254,7 +254,7 @@ Example output for a firewall rule update:
 | ⏺️ | allow-https | TCP | 10.0.1.0/24 | * | 443 |
 ```
 
-See [docs/features/resource-specific-templates.md](docs/features/resource-specific-templates.md) for creating custom resource templates.
+See [docs/features/001-resource-specific-templates/specification.md](docs/features/001-resource-specific-templates/specification.md) for creating custom resource templates.
 
 ### Template Variables
 

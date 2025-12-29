@@ -19,7 +19,7 @@ public static class ScribanHelpers
 {
     /// <summary>
     /// Non-breaking space used to keep semantic icons attached to their labels for reliable markdown rendering.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     private const string NonBreakingSpace = "\u00A0";
 
@@ -89,7 +89,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Escapes only markdown-breaking characters to keep generated tables and headings valid while preserving readability.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     /// <param name="input">The raw value to escape.</param>
     /// <returns>A markdown-safe string with newlines replaced by &lt;br/&gt;.</returns>
@@ -118,7 +118,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Escapes markdown characters specifically for headings so literal text renders correctly.
-    /// Related feature: docs/features/custom-report-title/specification.md
+    /// Related feature: docs/features/020-custom-report-title/specification.md
     /// </summary>
     /// <param name="input">The raw heading text.</param>
     /// <returns>Heading-safe text with special characters escaped.</returns>
@@ -149,7 +149,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether a value should be treated as large based on newlines or length.
-    /// Related features: docs/features/large-attribute-value-display/specification.md, docs/features/azure-resource-id-formatting/specification.md
+    /// Related features: docs/features/006-large-attribute-value-display/specification.md, docs/features/019-azure-resource-id-formatting/specification.md
     /// </summary>
     /// <param name="input">The raw value.</param>
     /// <param name="providerName">The Terraform provider name to allow azurerm-specific exemptions.</param>
@@ -176,7 +176,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values with provider-aware logic (Azure IDs are rendered readably; others as inline code).
-    /// Related feature: docs/features/azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
     /// </summary>
     /// <param name="value">The raw value.</param>
     /// <param name="providerName">The Terraform provider name.</param>
@@ -198,7 +198,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats text as HTML code for usage inside summary tags where markdown backticks are unreliable.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="text">The raw text to wrap in a code span.</param>
     /// <returns>HTML code-wrapped text, or an empty string when input is null or empty.</returns>
@@ -214,7 +214,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats text as markdown inline code for table rendering.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="text">The raw text to wrap in inline code.</param>
     /// <returns>Markdown inline code string, or an empty string when input is null or empty.</returns>
@@ -230,7 +230,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Escapes characters that break HTML code spans while preserving emoji glyphs.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="text">The raw text to escape.</param>
     /// <returns>HTML-safe text with emoji preserved.</returns>
@@ -247,7 +247,7 @@ public static class ScribanHelpers
     /// Applies semantic icons to attribute values without any code formatting wrappers.
     /// Intended for use in contexts where external formatters will add their own wrapping
     /// (e.g., inline HTML diffs).
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -332,7 +332,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values for summary context using semantic icons and HTML code spans.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -345,7 +345,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values for table context using semantic icons and markdown code spans.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -358,7 +358,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values with semantic icons for the requested rendering context.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -432,7 +432,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether a value represents a boolean and formats it with icons.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="value">The raw value to evaluate.</param>
     /// <param name="context">The rendering context (table or summary).</param>
@@ -457,7 +457,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats access rules (Allow/Deny) with semantic icons when applicable.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic application.</param>
     /// <param name="value">The access value.</param>
@@ -493,7 +493,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats network direction values with semantic icons.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic application.</param>
     /// <param name="value">The direction value.</param>
@@ -528,7 +528,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats protocol values with semantic icons.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic application.</param>
     /// <param name="value">The protocol value.</param>
@@ -576,7 +576,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a port and formats it with the port icon.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -616,7 +616,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a principal type and formats it with the appropriate icon.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -658,7 +658,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a role definition and formats it with the role icon.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -682,7 +682,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats icon-bearing values with context-aware code wrapping and optional parentheses.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="iconValue">The value including the icon prefix.</param>
     /// <param name="context">The rendering context.</param>
@@ -702,7 +702,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Replaces the first regular space after an icon with a non-breaking space to prevent icon-value separation in rendered markdown.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="iconValue">The icon-prefixed value to normalize.</param>
     /// <returns>The icon value with a non-breaking space between the icon and text.</returns>
@@ -719,7 +719,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute name represents a location value.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <returns>True when the attribute represents a location.</returns>
@@ -731,7 +731,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Determines whether a value resembles an IP address or CIDR block.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     /// <param name="value">The value to evaluate.</param>
     /// <returns>True when the value is an IP address or CIDR.</returns>
@@ -754,7 +754,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Rendering context for semantic formatting.
-    /// Related feature: docs/features/visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     private enum ValueFormatContext
     {
@@ -777,7 +777,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Formats large attribute values according to the requested rendering format.
-    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
     /// <param name="before">The previous value; null indicates creation.</param>
     /// <param name="after">The new value; null indicates deletion.</param>
@@ -815,7 +815,7 @@ public static class ScribanHelpers
 
     /// <summary>
     /// Builds the summary string for a set of large attributes.
-    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
     /// <param name="attributes">Collection of attribute change objects (ScriptArray) with name/before/after.</param>
     /// <returns>Summary string like "Large values: policy (3 lines, 2 changed)" or empty when none.</returns>
@@ -1353,7 +1353,7 @@ public static class ScribanHelpers
     /// Code-formatted output containing either styled HTML (inline) or +/- markers (standard). Returns empty when both values are null or empty.
     /// </returns>
     /// <remarks>
-    /// Related features: docs/features/firewall-rule-before-after-display/specification.md, docs/features/consistent-value-formatting/specification.md
+    /// Related features: docs/features/005-firewall-rule-before-after-display/specification.md, docs/features/003-consistent-value-formatting/specification.md
     /// </remarks>
     public static string FormatDiff(string? before, string? after, string format)
     {

@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Validates markdown output structure and escaping rules.
-/// Related feature: docs/features/markdown-quality-validation/specification.md
+/// Related feature: docs/features/007-markdown-quality-validation/specification.md
 /// </summary>
 public class MarkdownValidationTests
 {
@@ -23,7 +23,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Verifies that pipes and asterisks in resource names are escaped to avoid breaking tables.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_BreakingPlan_EscapesPipesAndAsterisks()
@@ -41,7 +41,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Verifies that values with newlines are moved to large attributes section.
-    /// Related feature: docs/features/large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
     [Fact]
     public void Render_BreakingPlan_ReplacesNewlinesInTableCells()
@@ -59,7 +59,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Ensures tables remain structurally valid when rendered with problematic input.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_BreakingPlan_ParsesTablesWithMarkdig()
@@ -81,7 +81,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Ensures headings are parsed, indicating correct spacing around heading blocks.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_DefaultPlan_HeadingsAreParsed()
@@ -106,7 +106,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Renders the comprehensive demo to HTML and verifies that markdown constructs are fully parsed.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_ComprehensiveDemo_RendersToHtmlWithoutRawMarkdown()
@@ -128,7 +128,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Verifies that the output does not contain multiple consecutive blank lines (MD012).
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_ComprehensiveDemo_NoMultipleBlankLines()
@@ -163,7 +163,7 @@ public class MarkdownValidationTests
 
     /// <summary>
     /// Verifies that no blank lines exist between table rows, which would break table rendering.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_ComprehensiveDemo_NoBlankLinesInTables()
@@ -185,7 +185,7 @@ public class MarkdownValidationTests
     /// <summary>
     /// Verifies that the number of tables parsed matches the expected number of resources.
     /// This ensures no tables are broken into text blocks.
-    /// Related feature: docs/features/markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
     /// </summary>
     [Fact]
     public void Render_ComprehensiveDemo_TableCountMatchesResources()

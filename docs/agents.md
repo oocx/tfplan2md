@@ -314,7 +314,7 @@ This section describes the purpose and format of each artifact produced and cons
 To make feature/issue/workflow documentation easier to scan in chronological development order, subfolders under `docs/features/`, `docs/issues/`, and `docs/workflow/` use a **global, monotonically increasing** numeric prefix.
 
 - **Format:** `NNN-<topic-slug>/` (3 digits, zero-padded)
-- **Examples:** `docs/features/012-custom-report-title/`, `docs/issues/034-totals-count-mismatch-in-summary-table/`, `docs/workflow/007-improvements-2025-12-27/`
+- **Examples:** `docs/features/019-custom-report-title/`, `docs/issues/014-totals-count-mismatch-in-summary-table/`, `docs/workflow/022-retrospective-2025-12-28/`
 
 #### Parallel Work Rule ("First Merge Wins")
 

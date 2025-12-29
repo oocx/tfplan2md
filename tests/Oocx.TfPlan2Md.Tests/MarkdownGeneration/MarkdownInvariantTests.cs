@@ -326,7 +326,7 @@ public class MarkdownInvariantTests
         {
             var markdown = RenderPlan(planPath);
 
-            var openTags = Regex.Matches(markdown, @"<details>").Count;
+            var openTags = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>").Count;
             var closeTags = Regex.Matches(markdown, @"</details>").Count;
 
             if (openTags != closeTags)

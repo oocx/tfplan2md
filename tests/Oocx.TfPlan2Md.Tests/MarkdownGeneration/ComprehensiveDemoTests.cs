@@ -80,11 +80,10 @@ public class ComprehensiveDemoTests
 
         var markdown = _renderer.Render(model);
 
-        // Verify that headings following </details> have at least one blank line between them.
-        // This ensures proper Markdown rendering (content not running into heading).
-        // The regex checks for </details> followed by at least 2 newlines before a heading.
-        var heading = $"### ➕ {Escape("module.network.azurerm_firewall_network_rule_collection.new_public")}";
-        var pattern = $"</details>\\n\\n+{Regex.Escape(heading)}";
+        // Verify that resource sections are separated by a blank line so content does not run together.
+        var resourceEnd = "<!-- tfplan2md:resource-end address=module.network.azurerm_subnet.app -->";
+        var nextResource = "<!-- tfplan2md:resource-start address=module.network.azurerm_firewall_network_rule_collection.new_public -->";
+        var pattern = $"{Regex.Escape(resourceEnd)}\\s+(?:<div[^>]*>\\s+)?{Regex.Escape(nextResource)}";
 
         markdown.Should().MatchRegex(pattern);
     }

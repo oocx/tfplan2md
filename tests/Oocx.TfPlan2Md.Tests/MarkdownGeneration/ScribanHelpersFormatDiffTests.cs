@@ -78,4 +78,22 @@ public class ScribanHelpersFormatDiffTests
             .And.Contain("+ ")
             .And.Contain("<span", "still styled for inline rendering");
     }
+
+    [Fact]
+    public void FormatDiff_InlineDiff_DoesNotUseNegativeMargins()
+    {
+        var result = ScribanHelpers.FormatDiff("🌐 10.1.2.0/24", "🌐 10.2.2.0/24", "inline-diff");
+
+        result.Should().NotContain("margin-left: -4px", "negative margins misalign inline diffs in AzDO tables");
+    }
+
+    [Fact]
+    public void FormatDiff_InlineDiff_UsesBlockCodeForAlignment()
+    {
+        var result = ScribanHelpers.FormatDiff("old", "new", "inline-diff");
+
+        result.Should().Contain("display:block", "block-level code keeps inline diffs aligned inside tables")
+            .And.Contain("white-space:normal", "inline diffs should not preserve extraneous whitespace in table cells")
+            .And.Contain("padding:0", "reset code padding to avoid column drift");
+    }
 }

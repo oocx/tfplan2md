@@ -367,168 +367,6 @@ flowchart TD
     class Builder,Renderer processNode
 ```
 
-#### 5.2.3.1 Report Model Structure
-
-The `ReportModel` is the central data structure passed to templates. It contains all the data needed to render a complete Terraform plan report, organized hierarchically.
-
-**Model Class Diagram:**
-
-```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-classDiagram
-    class ReportModel {
-        +string TerraformVersion
-        +string FormatVersion
-        +string? Timestamp
-        +string? ReportTitle
-        +IReadOnlyList~ResourceChangeModel~ Changes
-        +IReadOnlyList~ModuleChangeGroup~ ModuleChanges
-        +SummaryModel Summary
-        +bool ShowUnchangedValues
-        +LargeValueFormat LargeValueFormat
-    }
-    
-    class ModuleChangeGroup {
-        +string ModuleAddress
-        +IReadOnlyList~ResourceChangeModel~ Changes
-    }
-    
-    class SummaryModel {
-        +ActionSummary ToAdd
-        +ActionSummary ToChange
-        +ActionSummary ToDestroy
-        +ActionSummary ToReplace
-        +ActionSummary NoOp
-        +int Total
-    }
-    
-    class ActionSummary {
-        +int Count
-        +IReadOnlyList~ResourceTypeBreakdown~ Breakdown
-    }
-    
-    class ResourceTypeBreakdown {
-        +string Type
-        +int Count
-    }
-    
-    class ResourceChangeModel {
-        +string Address
-        +string? ModuleAddress
-        +string Type
-        +string Name
-        +string ProviderName
-        +string Action
-        +string ActionSymbol
-        +IReadOnlyList~AttributeChangeModel~ AttributeChanges
-        +object? BeforeJson
-        +object? AfterJson
-        +IReadOnlyList~IReadOnlyList~object~~? ReplacePaths
-        +string? Summary
-        +string? SummaryHtml
-        +string? ChangedAttributesSummary
-        +string? TagsBadges
-    }
-    
-    class AttributeChangeModel {
-        +string Name
-        +string? Before
-        +string? After
-        +bool IsSensitive
-        +bool IsLarge
-    }
-    
-    class LargeValueFormat {
-        <<enumeration>>
-        InlineDiff
-        StandardDiff
-    }
-    
-    ReportModel "1" *-- "0..*" ResourceChangeModel : changes
-    ReportModel "1" *-- "1..*" ModuleChangeGroup : module_changes
-    ReportModel "1" *-- "1" SummaryModel : summary
-    ModuleChangeGroup "1" *-- "0..*" ResourceChangeModel : changes
-    SummaryModel "1" *-- "5" ActionSummary : action summaries
-    ActionSummary "1" *-- "0..*" ResourceTypeBreakdown : breakdown
-    ResourceChangeModel "1" *-- "0..*" AttributeChangeModel : attribute_changes
-    
-    style ReportModel fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
-    style ResourceChangeModel fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
-    style AttributeChangeModel fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
-    style SummaryModel fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
-    style ActionSummary fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
-    style ModuleChangeGroup fill:#f59e0b,stroke:#fbbf24,stroke-width:2px,color:#ffffff
-```
-
-**Model Components:**
-
-| Model Class | Purpose | Template Access |
-|-------------|---------|-----------------|
-| `ReportModel` | Root container for all report data | Direct properties: `terraform_version`, `summary`, `module_changes`, etc. |
-| `ModuleChangeGroup` | Groups resources by Terraform module | Iterate via `module_changes`, access `module_address` and `changes` |
-| `SummaryModel` | Aggregated statistics for the summary table | Access via `summary.to_add.count`, `summary.total`, etc. |
-| `ActionSummary` | Per-action statistics with type breakdown | `count` for total, `breakdown` for per-type counts |
-| `ResourceTypeBreakdown` | Count of resources per type for an action | `type` (resource type name), `count` (number) |
-| `ResourceChangeModel` | Single resource with all change details | Full resource data including `before_json`/`after_json` for raw state |
-| `AttributeChangeModel` | Single attribute's before/after values | `name`, `before`, `after`, `is_sensitive`, `is_large` |
-
-**Precomputed Properties:**
-
-To keep templates simple, several properties are precomputed by `ReportModelBuilder`:
-
-| Property | Computed From | Purpose |
-|----------|---------------|---------|
-| `ActionSymbol` | `Action` | Emoji symbol (➕, 🔄, ❌, ♻️) for the action |
-| `Summary` | Resource state | One-line human-readable summary (e.g., "`example-rg` in `westeurope`") |
-| `SummaryHtml` | Multiple fields | Rich HTML for `<summary>` elements with formatted values |
-| `ChangedAttributesSummary` | `AttributeChanges` | Compact list of changed attributes (e.g., "2🔧 tags, location") |
-| `TagsBadges` | Resource tags | Formatted tag badges for create/delete actions |
-
-**Data Flow from Terraform Plan to Model:**
-
-```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-flowchart LR
-    classDef inputNode fill:#ef4444,stroke:#f87171,stroke-width:2px,color:#ffffff
-    classDef processNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
-    classDef outputNode fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
-    
-    subgraph Input["Terraform Plan JSON"]
-        RC[resource_changes]
-        TV[terraform_version]
-        FV[format_version]
-    end
-    
-    subgraph Processing["ReportModelBuilder"]
-        DA[Determine Actions]
-        BA[Build Attributes]
-        MS[Mask Sensitive]
-        GS[Generate Summaries]
-        GM[Group by Module]
-        CS[Compute Statistics]
-    end
-    
-    subgraph Output["ReportModel"]
-        Changes[Changes]
-        ModuleChanges[ModuleChanges]
-        Summary[Summary]
-    end
-    
-    RC --> DA
-    DA --> BA
-    BA --> MS
-    MS --> GS
-    GS --> Changes
-    RC --> GM
-    GM --> ModuleChanges
-    DA --> CS
-    CS --> Summary
-    
-    class RC,TV,FV inputNode
-    class DA,BA,MS,GS,GM,CS processNode
-    class Changes,ModuleChanges,Summary outputNode
-```
-
 #### 5.2.4 Azure Component
 
 **Purpose:** Azure-specific utilities (principal mapping, resource ID formatting).
@@ -828,106 +666,21 @@ graph TB
    - Manual review of rendering in both environments
    - Validate compatibility with both platforms' markdown parsers
 
-### 8.4 Templating Architecture
+**Platform-Specific Rendering Adjustments:**
 
-The templating system uses Scriban to generate markdown reports. Templates are loaded from embedded resources or custom directories, and resource-specific templates can override the default rendering for specific Terraform resource types.
+*Azure DevOps Inline Diff Alignment:*
 
-#### Template Loading
-
-Templates are loaded from two sources in priority order:
-
-1. **Built-in Templates** - Embedded as assembly resources in `Oocx.TfPlan2Md.MarkdownGeneration.Templates.*`
-2. **Custom Templates** - Loaded from filesystem when `--template` flag or custom directory is provided
-
-**Built-in Template Resolution:**
-
-```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-flowchart TD
-    classDef processNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
-    classDef dataNode fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
-    classDef decisionNode fill:#f59e0b,stroke:#fbbf24,stroke-width:3px,color:#ffffff
-    
-    Input[Template name or path]
-    CheckBuiltIn{Is built-in name?<br/>default, summary}
-    LoadEmbedded[Load from embedded<br/>assembly resources]
-    CheckFile{File exists<br/>on filesystem?}
-    LoadFile[Load from filesystem]
-    Error[Throw MarkdownRenderException]
-    Return[Return template text]
-    
-    Input --> CheckBuiltIn
-    CheckBuiltIn -->|Yes| LoadEmbedded
-    CheckBuiltIn -->|No| CheckFile
-    LoadEmbedded --> Return
-    CheckFile -->|Yes| LoadFile
-    CheckFile -->|No| Error
-    LoadFile --> Return
-    
-    class Input,Return dataNode
-    class CheckBuiltIn,CheckFile decisionNode
-    class LoadEmbedded,LoadFile,Error processNode
-```
-
-#### Template Processing Pipeline
-
-When `Render(model)` is called, the system:
-
-1. **Render with default template** - Apply `default.sbn` to the full `ReportModel`
-2. **Check for resource-specific overrides** - For each resource change in the model:
-   - Parse resource type to extract provider and resource name
-   - Attempt to resolve a resource-specific template
-   - If found, render that resource separately with the specific template
-3. **Replace sections** - Use invisible HTML anchor comments to replace default-rendered sections with resource-specific output
-4. **Normalize output** - Fix heading spacing, collapse multiple blank lines
-
-```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-sequenceDiagram
-    participant Caller
-    participant Renderer as MarkdownRenderer
-    participant Default as default.sbn
-    participant Specific as Resource Template
-    
-    Caller->>Renderer: Render(model)
-    Renderer->>Default: Render full report
-    Default-->>Renderer: Markdown with anchors
-    
-    loop For each resource change
-        Renderer->>Renderer: ParseResourceType(type)
-        Renderer->>Renderer: ResolveResourceTemplate(type)
-        alt Template found
-            Renderer->>Specific: Render resource
-            Specific-->>Renderer: Resource markdown
-            Renderer->>Renderer: Replace anchored section
-        end
-    end
-    
-    Renderer->>Renderer: NormalizeHeadingSpacing()
-    Renderer-->>Caller: Final markdown
-```
-
-#### Resource-Specific Template Resolution
-
-Resource types are parsed to extract provider and resource name:
-- `azurerm_firewall_network_rule_collection` → provider: `azurerm`, resource: `firewall_network_rule_collection`
-
-Resolution order:
-1. **Custom directory**: `{customDir}/{provider}/{resource}.sbn`
-2. **Embedded resource**: `Templates/{provider}/{resource}.sbn`
-3. **Fallback**: Use default template rendering (no replacement)
-
-#### Anchor-Based Section Replacement
-
-The default template wraps each resource in invisible HTML comments:
+Azure DevOps markdown tables misalign inline code elements with default `display:inline-block` styling. To ensure proper vertical alignment of remove/add diff rows in table cells, inline diffs use block-level code elements:
 
 ```html
-<!-- tfplan2md:resource-start address=azurerm_resource_group.main -->
-... default rendering ...
-<!-- tfplan2md:resource-end address=azurerm_resource_group.main -->
+<code style="display:block; white-space:normal; padding:0; margin:0;">
+  <!-- diff content -->
+</code>
 ```
 
-When a resource-specific template renders content, the entire anchored section is replaced using regex pattern matching.
+The `WrapInlineDiffCode` helper in `ScribanHelpers.cs` (L863-873) applies this specialized styling, distinct from the standard `WrapInlineCode` used for non-diff values. This ensures character-level highlighting and semantic icons remain visible while maintaining proper cell alignment in both GitHub and Azure DevOps. See `ScribanHelpersFormatDiffTests.cs` test case "FormatDiff_InlineDiff_UsesBlockCodeForAlignment" for verification.
+
+### 8.4 Templating Architecture
 
 **Template Hierarchy:**
 
@@ -943,9 +696,9 @@ Resource-Specific Templates:
       └── role_assignment.sbn
 ```
 
-#### Template Context
+**Template Context Model:**
 
-**Global templates** receive a `ReportModel` with:
+All templates receive a `ReportModel` with:
 - `terraform_version` - Terraform version string
 - `format_version` - Plan format version
 - `timestamp` - Plan generation timestamp
@@ -956,41 +709,35 @@ Resource-Specific Templates:
 - `show_unchanged_values` - Boolean flag
 - `large_value_format` - Display mode enum
 
-**Resource-specific templates** receive a `ResourceChangeModel` with:
-- `address` - Full resource address
-- `type` - Resource type (e.g., `azurerm_firewall_network_rule_collection`)
-- `name` - Resource name
-- `action` - Action (create, update, delete, replace)
-- `action_symbol` - Emoji symbol for the action
-- `attribute_changes` - List of attribute changes
-- `before_json` - Raw JSON state before change (converted to ScriptObject for navigation)
-- `after_json` - Raw JSON state after change (converted to ScriptObject for navigation)
-- `replace_paths` - Paths that triggered replacement
-- `summary` - Precomputed one-line summary
-
-#### Property Name Conversion
-
-All C# property names are converted to snake_case for template access:
-- `TerraformVersion` → `terraform_version`
-- `ModuleChanges` → `module_changes`
-- `BeforeJson` → `before_json`
-
 **Custom Scriban Functions:**
 
 | Function | Signature | Purpose |
 |----------|-----------|---------|
 | `diff_array` | `diff_array(before, after, key)` | Semantic diff of arrays by key property |
 | `format_diff` | `format_diff(before, after)` | Format before/after values with `-`/`+` markers |
-| `escape_markdown` | `escape_markdown(value)` | Escape special characters for markdown |
+| `escape_table` | `escape_table(value)` | Escape special characters for table cells |
 | `format_code_table` | `format_code_table(value)` | Format value as inline code in tables |
 | `format_code_summary` | `format_code_summary(value)` | Format value for summary HTML |
 | `format_attribute_value_summary` | `format_attribute_value_summary(name, value, provider)` | Format attribute with semantic icons |
-| `format_attribute_value_table` | `format_attribute_value_table(name, value, provider)` | Format attribute for table cells |
-| `format_large_value` | `format_large_value(before, after, format)` | Render large values with diff highlighting |
-| `is_large_value` | `is_large_value(value, provider)` | Check if value exceeds size threshold |
-| `azure_role_name` | `azure_role_name(role_id)` | Map Azure role definition ID to name |
-| `azure_scope` | `azure_scope(scope_id)` | Parse Azure resource scope to readable format |
-| `azure_principal_name` | `azure_principal_name(principal_id)` | Resolve Azure principal ID to name |
+
+**Template Rendering Patterns:**
+
+*Large-Only Resource Rendering:*
+
+Resources containing only large attributes (no small attributes or tags) render their content directly inline without an inner collapsible section. This design decision eliminates unnecessary click friction when all resource content is large-valued. The conditional wrapping logic applies:
+
+```scriban
+{{ if small_attrs.size > 0 || change.tags_badges }}
+  <br/><details>
+    <summary>Large values:</summary>
+    <!-- large attribute content -->
+  </details>
+{{ else }}
+  <!-- large attribute content rendered inline -->
+{{ end }}
+```
+
+This maintains the outer resource-level `<details>` wrapper while avoiding nested collapsible sections when they provide no value. See test cases TC-16 through TC-19 in `MarkdownRendererTemplateFormattingTests.cs` for verification.
 
 ### 8.5 Error Handling Strategy
 
@@ -1116,7 +863,7 @@ All significant architecture decisions are documented as ADRs:
 | **Custom templates** | Users can provide their own Scriban templates via `--template` flag |
 | **Resource-specific templates** | Template resolution supports provider-specific overrides (e.g., `azurerm/firewall_network_rule_collection.sbn`) |
 | **Simple template logic** | Complex logic implemented in C# (model builders, helpers) to keep templates accessible to non-developers |
-| **Future extensibility** | Architecture supports future additions such as custom icon configuration |
+| **Future extensibility** | Architecture supports future additions: custom icon configuration, pluggable summary builders, custom formatters |
 
 ---
 

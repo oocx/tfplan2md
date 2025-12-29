@@ -21,13 +21,15 @@ public class MarkdownRendererRoleAssignmentTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().Contain("**Summary:** `John Doe` (User) → `Reader` on `my-rg`");
-        // Table is now wrapped in <details> for collapsible display
-        result.Should().Contain("<details>");
+        result.Should().Contain("<summary>");
+        result.Should().Contain("azurerm_role_assignment <b><code>example</code></b>");
+        result.Should().Contain("John Doe");
+        result.Should().Contain("Reader");
+        result.Should().Contain("my-rg");
         result.Should().Contain("| Attribute | Value |");
-        result.Should().Contain("`Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`)");
+        result.Should().Contain("`🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`)");
         result.Should().Contain("`my-rg` in subscription `sub-id`");
-        result.Should().Contain("`John Doe` (User) [`principal-id`]");
+        result.Should().Contain("`👤 John Doe` (`👤 User`) [`principal-id`]");
     }
 
     [Fact]

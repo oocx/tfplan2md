@@ -83,4 +83,86 @@ public class MarkdownRendererTemplateFormattingTests
         markdown.Should().Contain("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", "because inline-diff uses styled HTML pre blocks");
         markdown.Should().Contain("##### **custom_data:**", "because large attribute headings should be level 5 with bold labels");
     }
+
+    [Fact]
+    public void Render_LargeAttributesWithoutSmallAttributes_DoesNotAddExtraBreakBeforeDetails()
+    {
+        // Arrange
+        var afterJson = JsonDocument.Parse("{\"custom_data\":\"line1\\nline2\"}").RootElement;
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.0",
+            TerraformVersion: "1.6.0",
+            ResourceChanges: new List<ResourceChange>
+            {
+                new(
+                    Address: "azurerm_example.large_only",
+                    ModuleAddress: null,
+                    Mode: "managed",
+                    Type: "azurerm_example",
+                    Name: "large_only",
+                    ProviderName: "provider.azurerm",
+                    Change: new Change(
+                        Actions: new List<string>{"create"},
+                        Before: null,
+                        After: afterJson,
+                        AfterUnknown: null,
+                        BeforeSensitive: null,
+                        AfterSensitive: null
+                    )
+                )
+            }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        markdown.Should().Contain("Large values: custom_data", "because the large attribute summary should still be displayed");
+        markdown.Should().NotContain("<br/>\n<details>\n<summary>Large values", "because extra breaks introduce empty spacing when no main attributes table exists");
+    }
+
+    [Fact]
+    public void Render_LargeAttributesWithoutSmallAttributes_RendersInlineInsteadOfCollapsible()
+    {
+        // Arrange
+        var afterJson = JsonDocument.Parse("{\"custom_data\":\"line1\\nline2\"}").RootElement;
+
+        var plan = new TerraformPlan(
+            FormatVersion: "1.0",
+            TerraformVersion: "1.6.0",
+            ResourceChanges: new List<ResourceChange>
+            {
+                new(
+                    Address: "azurerm_example.large_only_inline",
+                    ModuleAddress: null,
+                    Mode: "managed",
+                    Type: "azurerm_example",
+                    Name: "large_only_inline",
+                    ProviderName: "provider.azurerm",
+                    Change: new Change(
+                        Actions: new List<string>{"create"},
+                        Before: null,
+                        After: afterJson,
+                        AfterUnknown: null,
+                        BeforeSensitive: null,
+                        AfterSensitive: null
+                    )
+                )
+            }
+        );
+
+        var builder = new ReportModelBuilder();
+        var model = builder.Build(plan);
+
+        // Act
+        var markdown = _renderer.Render(model);
+
+        // Assert
+        markdown.Should().Contain("Large values: custom_data (3 lines, 3 changed)", "because large attribute summaries should still show counts");
+        markdown.Should().NotContain("<details>\n<summary>Large values", "because large-only resources should not be collapsible");
+    }
 }

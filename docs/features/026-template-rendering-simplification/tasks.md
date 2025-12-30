@@ -154,10 +154,10 @@ Update `MarkdownRenderer.cs` to use the new single-pass rendering logic. Remove 
 Add unit tests that scan the `Templates/` directory to enforce architectural constraints (line counts, no `func` definitions, no anchors).
 
 **Acceptance Criteria:**
-- [ ] Test fails if any template contains `func`.
-- [ ] Test fails if any template contains anchor comments.
-- [ ] Test fails if any template exceeds 100 lines.
-- [ ] Tests run as part of the standard test suite.
+- [x] Test fails if any template contains `func`.
+- [x] Test fails if any template contains anchor comments.
+- [x] Test fails if any template exceeds 100 lines.
+- [x] Tests run as part of the standard test suite.
 
 **Dependencies:** All migration tasks
 

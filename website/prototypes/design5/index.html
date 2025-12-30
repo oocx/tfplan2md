@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 5: Terminal Theme - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <div class="window-controls">
+                <span class="control-btn close"></span>
+                <span class="control-btn minimize"></span>
+                <span class="control-btn maximize"></span>
+            </div>
+            <div class="window-title">tfplan2md — Terraform Plan to Markdown Converter</div>
+        </div>
+        
+        <div class="terminal-body">
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="command">cat README.md</span>
+            </div>
+
+            <div class="output-block">
+                <pre class="ascii-art">
+ _____ _____ ____  _               ____            _ 
+|_   _|  ___|  _ \| |             |___ \          | |
+  | | | |_  | |_) | | __ _ _ __    __) |_ __ ___  | |
+  | | |  _| |  __/| |/ _` | '_ \  |__ <| '_ ` _ \ | |
+  | | | |   | |   | | (_| | | | | ___) | | | | | ||_|
+  \_/ \_|   |_|   |_|\__,_|_| |_||____/|_| |_| |_|(_)
+                </pre>
+            </div>
+
+            <div class="output-block">
+                <p class="output-text">
+                    Convert Terraform plan JSON files into human-readable Markdown reports.<br>
+                    Optimized for GitHub and Azure DevOps pull request comments.
+                </p>
+            </div>
+
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="command">tfplan2md --help</span>
+            </div>
+
+            <div class="output-block">
+                <div class="help-section">
+                    <div class="help-header">USAGE</div>
+                    <div class="help-content">
+                        <code>terraform show -json plan.tfplan | tfplan2md [OPTIONS]</code>
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <div class="help-header">INSTALLATION</div>
+                    <div class="help-content">
+                        <code>docker pull oocx/tfplan2md:latest</code>
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <div class="help-header">OPTIONS</div>
+                    <div class="help-content">
+                        <div class="option-row">
+                            <span class="option-flag">--output FILE</span>
+                            <span class="option-desc">Write to file instead of stdout</span>
+                        </div>
+                        <div class="option-row">
+                            <span class="option-flag">--template NAME</span>
+                            <span class="option-desc">Use template: default|summary|minimal</span>
+                        </div>
+                        <div class="option-row">
+                            <span class="option-flag">--show-sensitive</span>
+                            <span class="option-desc">Show sensitive values (default: masked)</span>
+                        </div>
+                        <div class="option-row">
+                            <span class="option-flag">--report-title TEXT</span>
+                            <span class="option-desc">Custom report title</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="command">tfplan2md --version</span>
+            </div>
+
+            <div class="output-block">
+                <table class="info-table">
+                    <tr>
+                        <td class="info-key">Version</td>
+                        <td class="info-value">0.26.0+</td>
+                    </tr>
+                    <tr>
+                        <td class="info-key">Runtime</td>
+                        <td class="info-value">.NET 10</td>
+                    </tr>
+                    <tr>
+                        <td class="info-key">License</td>
+                        <td class="info-value">MIT</td>
+                    </tr>
+                    <tr>
+                        <td class="info-key">Built with</td>
+                        <td class="info-value">GitHub Copilot (100%)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="command">cat FEATURES.txt</span>
+            </div>
+
+            <div class="output-block">
+                <div class="feature-grid">
+                    <div class="feature-box">
+                        <div class="feature-icon">[🔍]</div>
+                        <div class="feature-title">Semantic Diffs</div>
+                        <div class="feature-desc">Show actual changes, not index modifications</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[📁]</div>
+                        <div class="feature-title">Module Grouping</div>
+                        <div class="feature-desc">Organize by module hierarchy</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[🆔]</div>
+                        <div class="feature-title">Azure Optimized</div>
+                        <div class="feature-desc">Readable Azure resource IDs</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[🎨]</div>
+                        <div class="feature-title">Visual Icons</div>
+                        <div class="feature-desc">Icons for IPs, ports, protocols</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[📝]</div>
+                        <div class="feature-title">Summaries</div>
+                        <div class="feature-desc">One-line resource summaries</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[🔒]</div>
+                        <div class="feature-title">Security</div>
+                        <div class="feature-desc">Sensitive values masked</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[🎯]</div>
+                        <div class="feature-title">Templates</div>
+                        <div class="feature-desc">Scriban custom templates</div>
+                    </div>
+                    <div class="feature-box">
+                        <div class="feature-icon">[✓]</div>
+                        <div class="feature-title">Validated</div>
+                        <div class="feature-desc">markdownlint tested</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="command">cat examples/github-actions.yml</span>
+            </div>
+
+            <div class="output-block">
+                <div class="code-display">
+                    <div class="code-line"><span class="code-keyword">name:</span> Terraform Plan</div>
+                    <div class="code-line"><span class="code-keyword">on:</span> [pull_request]</div>
+                    <div class="code-line"></div>
+                    <div class="code-line"><span class="code-keyword">jobs:</span></div>
+                    <div class="code-line">  <span class="code-keyword">plan:</span></div>
+                    <div class="code-line">    <span class="code-keyword">runs-on:</span> ubuntu-latest</div>
+                    <div class="code-line">    <span class="code-keyword">steps:</span></div>
+                    <div class="code-line">      - <span class="code-keyword">name:</span> Generate report</div>
+                    <div class="code-line">        <span class="code-keyword">run:</span> |</div>
+                    <div class="code-line">          terraform show -json plan.tfplan | \</div>
+                    <div class="code-line">            docker run -i oocx/tfplan2md > plan.md</div>
+                    <div class="code-line"></div>
+                    <div class="code-line">      - <span class="code-keyword">name:</span> Comment PR</div>
+                    <div class="code-line">        <span class="code-keyword">uses:</span> actions/github-script@v6</div>
+                    <div class="code-line">        <span class="code-keyword">with:</span></div>
+                    <div class="code-line">          <span class="code-keyword">script:</span> |</div>
+                    <div class="code-line">            const fs = require('fs');</div>
+                    <div class="code-line">            const body = fs.readFileSync('plan.md', 'utf8');</div>
+                    <div class="code-line">            github.rest.issues.createComment({...body});</div>
+                </div>
+            </div>
+
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="command">echo "Learn more:"</span>
+            </div>
+
+            <div class="output-block">
+                <div class="link-list">
+                    <a href="https://github.com/oocx/tfplan2md" class="terminal-link">
+                        [→] GitHub Repository
+                    </a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="terminal-link">
+                        [→] Docker Hub
+                    </a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/README.md" class="terminal-link">
+                        [→] Documentation
+                    </a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/CONTRIBUTING.md" class="terminal-link">
+                        [→] Contributing
+                    </a>
+                </div>
+            </div>
+
+            <div class="prompt-line">
+                <span class="prompt">$</span>
+                <span class="cursor">_</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-info">
+        <div class="info-badge">💡 Built 100% with GitHub Copilot</div>
+    </div>
+</body>
+</html>

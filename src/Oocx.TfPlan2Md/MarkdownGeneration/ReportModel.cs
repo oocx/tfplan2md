@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
 
@@ -132,6 +133,24 @@ public class ResourceChangeModel
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
     public string? TagsBadges { get; set; }
+
+    /// <summary>
+    /// Gets or sets the precomputed view model for azurerm_network_security_group resources.
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// </summary>
+    public NetworkSecurityGroupViewModel? NetworkSecurityGroup { get; set; }
+
+    /// <summary>
+    /// Gets or sets the precomputed view model for azurerm_firewall_network_rule_collection resources.
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// </summary>
+    public FirewallNetworkRuleCollectionViewModel? FirewallNetworkRuleCollection { get; set; }
+
+    /// <summary>
+    /// Gets or sets the precomputed view model for azurerm_role_assignment resources.
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// </summary>
+    public RoleAssignmentViewModel? RoleAssignment { get; set; }
 }
 
 /// <summary>
@@ -159,10 +178,11 @@ public class AttributeChangeModel
 /// <param name="showUnchangedValues">Whether unchanged attributes should be included in tables.</param>
 /// <param name="largeValueFormat">Rendering format for large values (inline-diff or standard-diff).</param>
 /// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
+/// <param name="principalMapper">Optional mapper for resolving principal names in role assignments.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null)
+public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null, Azure.IPrincipalMapper? principalMapper = null)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -188,6 +208,11 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     /// Optional custom report title provided by the user.
     /// </summary>
     private readonly string? _reportTitle = reportTitle;
+
+    /// <summary>
+    /// Mapper for resolving principal names in role assignments.
+    /// </summary>
+    private readonly Azure.IPrincipalMapper _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
 
     /// <summary>
     /// Builds a fully-populated report model from a parsed Terraform plan.
@@ -304,6 +329,19 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             AfterJson = rc.Change.After,
             ReplacePaths = rc.Change.ReplacePaths
         };
+
+        if (string.Equals(rc.Type, "azurerm_network_security_group", StringComparison.OrdinalIgnoreCase))
+        {
+            model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+        }
+        else if (string.Equals(rc.Type, "azurerm_firewall_network_rule_collection", StringComparison.OrdinalIgnoreCase))
+        {
+            model.FirewallNetworkRuleCollection = FirewallNetworkRuleCollectionViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+        }
+        else if (string.Equals(rc.Type, "azurerm_role_assignment", StringComparison.OrdinalIgnoreCase))
+        {
+            model.RoleAssignment = RoleAssignmentViewModelFactory.Build(rc, action, attributeChanges, _principalMapper);
+        }
 
         model.Summary = _summaryBuilder.BuildSummary(model);
         model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);

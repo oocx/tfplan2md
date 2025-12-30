@@ -1,52 +1,52 @@
 {{~## Template for azurerm_firewall_network_rule_collection
       Provides semantic diffing of firewall rules instead of index-based changes.
+      Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
-
 <div style="margin-bottom:12px;">
-<!-- tfplan2md:resource-start address={{ address }} -->
-### {{ action_symbol }} {{ address | escape_markdown }}
+<!-- tfplan2md:resource-start address={{ change.address }} -->
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
-{{~ if firewall_network_rule_collection && firewall_network_rule_collection.name ~}}
-**Collection:** `{{ firewall_network_rule_collection.name | escape_markdown }}` | **Priority:** `{{ firewall_network_rule_collection.priority | escape_markdown }}` | **Action:** {{ firewall_network_rule_collection.action }}
+{{~ if change.firewall_network_rule_collection && change.firewall_network_rule_collection.name ~}}
+**Collection:** `{{ change.firewall_network_rule_collection.name | escape_markdown }}` | **Priority:** `{{ change.firewall_network_rule_collection.priority | escape_markdown }}` | **Action:** {{ change.firewall_network_rule_collection.action }}
 {{~ end ~}}
 
-{{~ if before_json && after_json && firewall_network_rule_collection && firewall_network_rule_collection.rule_changes.size > 0 ~}}
+{{~ if change.before_json && change.after_json && change.firewall_network_rule_collection && change.firewall_network_rule_collection.rule_changes.size > 0 ~}}
 
 #### Rule Changes{{ "\n" }}
 
 | Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-{{~ for row in firewall_network_rule_collection.rule_changes ~}}
+{{~ for row in change.firewall_network_rule_collection.rule_changes ~}}
 | {{ row.change }} | {{ row.name }} | {{ row.protocols }} | {{ row.source_addresses }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{ end }}
 
 
-{{~ else if action == "create" && firewall_network_rule_collection && firewall_network_rule_collection.after_rules.size > 0 ~}}
+{{~ else if change.action == "create" && change.firewall_network_rule_collection && change.firewall_network_rule_collection.after_rules.size > 0 ~}}
 #### Rules{{ "\n" }}
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-{{~ for row in firewall_network_rule_collection.after_rules ~}}
+{{~ for row in change.firewall_network_rule_collection.after_rules ~}}
 | {{ row.name }} | {{ row.protocols }} | {{ row.source_addresses }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{~ end ~}}
 
-{{~ else if action == "delete" && firewall_network_rule_collection && firewall_network_rule_collection.before_rules.size > 0 ~}}
+{{~ else if change.action == "delete" && change.firewall_network_rule_collection && change.firewall_network_rule_collection.before_rules.size > 0 ~}}
 #### Rules (being deleted)
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-{{~ for row in firewall_network_rule_collection.before_rules ~}}
+{{~ for row in change.firewall_network_rule_collection.before_rules ~}}
 | {{ row.name }} | {{ row.protocols }} | {{ row.source_addresses }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{~ end ~}}
 
 {{~ else ~}}
-{{~ if attribute_changes && attribute_changes.size > 0 ~}}
+{{~ if change.attribute_changes && change.attribute_changes.size > 0 ~}}
 <details>
 <summary>Attribute Changes</summary>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-{{~ for attr in attribute_changes ~}}
+{{~ for attr in change.attribute_changes ~}}
 | {{ attr.name | escape_markdown }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
 {{~ end ~}}
 
@@ -54,6 +54,6 @@
 {{~ end ~}}
 {{~ end ~}}
 
-<!-- tfplan2md:resource-end address={{ address }} -->
+<!-- tfplan2md:resource-end address={{ change.address }} -->
 
 </div>

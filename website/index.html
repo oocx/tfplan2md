@@ -10,8 +10,8 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                    <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink: 0;">
+                <a href="index.html" class="brand-link">
+                    <svg width="32" height="32" viewBox="0 0 32 32" class="brand-logo">
                         <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
                         <path d="M8 10h16M8 16h16M8 22h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
                         <defs>
@@ -21,9 +21,12 @@
                             </linearGradient>
                         </defs>
                     </svg>
-                    <span class="brand-name" style="font-size: 20px; font-weight: 700;">tfplan2md</span>
+                    <span class="brand-name">tfplan2md</span>
                 </a>
             </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
             <div class="nav-menu">
                 <a href="features/index.html" class="nav-item">Features</a>
                 <a href="getting-started.html" class="nav-item">Install</a>
@@ -43,15 +46,15 @@
     <header class="hero hero-primary">
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-badges" style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">
+                <div class="hero-badges">
                     <a href="getting-started.html" class="hero-badge">🐳 Docker Ready</a>
                     <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="hero-badge">📄 Open Source / MIT License</a>
                     <a href="contributing.html#ai-workflow" class="hero-badge">✨ Built 100% with GitHub Copilot</a>
                 </div>
-                <h1 class="hero-title" style="font-size: 48px; margin-bottom: 16px;">
+                <h1 class="hero-title">
                     Transform Terraform Plans Into <span class="hero-gradient">Readable Reports</span>
                 </h1>
-                <p class="hero-subtitle" style="font-size: 18px; margin-bottom: 20px;">
+                <p class="hero-subtitle">
                     Stop drowning in verbose plan output. Generate structured Markdown reports that render perfectly in PR comments.
                 </p>
             </div>
@@ -59,11 +62,11 @@
     </header>
 
     <!-- Problem Section -->
-    <section class="problem-section" style="padding: 32px 0; background: var(--problem-bg);">
+    <section class="problem-section">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title" style="font-size: 36px; margin-bottom: 16px;">The Pull Request Review Problem</h2>
-                <p class="section-description" style="font-size: 18px;">
+                <h2 class="section-title">The Pull Request Review Problem</h2>
+                <p class="section-description">
                     Reviewing Terraform changes in PRs is painful with raw plan output
                 </p>
             </div>
@@ -134,10 +137,10 @@
     </section>
 
     <!-- Solution Section -->
-    <section class="solution-section hero-secondary" style="padding: 32px 0 60px 0;">
+    <section class="solution-section hero-secondary">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title" style="font-size: 36px; margin-bottom: 16px;">tfplan2md Solves This</h2>
+                <h2 class="section-title">tfplan2md Solves This</h2>
             </div>
             <div class="problem-solution-layout">
                 <div class="list-side">
@@ -210,21 +213,18 @@
             <div class="install-card">
                 <div class="install-content">
                     <h2 class="install-title">Get Started in Seconds</h2>
-                    <p class="install-description" style="margin-bottom: 24px;">Run one command to convert your Terraform plan</p>
-                    <div class="install-actions" style="display: flex; gap: 16px; margin-bottom: 32px;">
-                        <a href="getting-started.html" class="btn btn-lg" style="background: white; color: var(--color-primary);">Get Started</a>
-                        <a href="examples.html" class="btn btn-lg" style="border: 1px solid white; color: white; background: transparent;">View Examples</a>
-                    </div>
-                </div>
-                <div class="install-steps">
-                    <div class="install-step">
+                    <p class="install-description">Run one command to convert your Terraform plan</p>
+                    
+                    <div class="install-row">
+                        <div class="install-actions">
+                            <a href="getting-started.html" class="btn btn-lg btn-white">Get Started</a>
+                            <a href="examples.html" class="btn btn-lg btn-outline-white">View Examples</a>
+                        </div>
+                        
                         <div class="command-box">
                             <code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code>
                             <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>
                         </div>
-                        <p style="text-align: center; color: var(--color-text-secondary); font-size: 14px; margin-top: 12px;">
-                            Docker run automatically pulls the image
-                        </p>
                     </div>
                 </div>
             </div>
@@ -408,6 +408,23 @@
     </footer>
 
     <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            }
+        });
+
         // Theme toggle functionality
         const themeToggle = document.querySelector('.theme-toggle');
         const html = document.documentElement;

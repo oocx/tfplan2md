@@ -230,6 +230,14 @@ body {
     text-align: center;
 }
 
+.hero-badges {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
 .hero-badge {
     display: inline-block;
     padding: 6px 16px;
@@ -376,6 +384,7 @@ body {
 /* Problem Section */
 .problem-section {
     background: var(--problem-bg);
+    padding: 32px 0;
     transition: background-color 0.3s ease;
 }
 
@@ -2426,5 +2435,196 @@ body {
     
     .cta-actions .btn {
         width: 100%;
+    }
+}
+
+/* Mobile Menu Styles */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 101;
+}
+
+.hamburger-icon {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text);
+    position: relative;
+    transition: all 0.3s;
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text);
+    transition: all 0.3s;
+}
+
+.hamburger-icon::before {
+    top: -8px;
+}
+
+.hamburger-icon::after {
+    top: 8px;
+}
+
+.mobile-menu-btn.active .hamburger-icon {
+    background: transparent;
+}
+
+.mobile-menu-btn.active .hamburger-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+}
+
+.mobile-menu-btn.active .hamburger-icon::after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+
+/* Button Styles */
+.btn-white {
+    background: white;
+    color: var(--color-primary);
+}
+
+.btn-white:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline-white {
+    border: 1px solid white;
+    color: white;
+    background: transparent;
+}
+
+.btn-outline-white:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Install Section Styles */
+.install-content {
+    text-align: center;
+}
+
+.install-description {
+    margin-bottom: 32px;
+}
+
+.install-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.install-actions {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 0;
+}
+
+.command-box {
+    margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--color-bg);
+        flex-direction: column;
+        padding: 24px;
+        border-bottom: 1px solid var(--color-border);
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-lg);
+        align-items: stretch;
+    }
+
+    .nav-menu.active {
+        transform: translateY(0);
+    }
+
+    .nav-item {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--color-border);
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .nav-cta {
+        margin-top: 16px;
+        text-align: center;
+    }
+
+    .theme-toggle {
+        margin: 16px auto 0;
+    }
+
+    .hero-title {
+        font-size: 32px;
+        white-space: normal;
+        line-height: 1.2;
+    }
+
+    .hero-badges {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .problem-solution-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .screenshot-content {
+        max-height: 300px;
+    }
+
+    .install-row {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .install-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .command-box {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .command-box code {
+        margin-bottom: 8px;
+        word-break: break-all;
     }
 }

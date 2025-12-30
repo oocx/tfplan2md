@@ -34,11 +34,11 @@ Implement a custom Scriban `ITemplateLoader` that can load templates from the bu
 Split the 1700+ line `ScribanHelpers.cs` into focused classes (e.g., `SemanticIcons`, `MarkdownEscaping`, `AzureFormatting`). Create a registry to add these to the Scriban context.
 
 **Acceptance Criteria:**
-- [ ] `ScribanHelpers.cs` is deleted.
-- [ ] New helper classes created in `MarkdownGeneration/Helpers/`.
-- [ ] All existing helper functionality is preserved.
-- [ ] `ScribanHelperRegistry` (or similar) handles registration.
-- [ ] No helper file exceeds 250 lines.
+- [x] `ScribanHelpers.cs` is deleted.
+- [x] New helper classes created in `MarkdownGeneration/Helpers/`.
+- [x] All existing helper functionality is preserved.
+- [x] `ScribanHelperRegistry` (or similar) handles registration.
+- [x] No helper file exceeds 250 lines.
 
 **Dependencies:** None
 

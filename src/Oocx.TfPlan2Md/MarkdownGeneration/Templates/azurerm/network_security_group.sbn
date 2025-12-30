@@ -58,24 +58,14 @@
      {{- ret array.join formatted ", " -}}
 {{ end }}
 
-{{~ if before_json && after_json && before_json.security_rule && after_json.security_rule ~}}
-{{ diff = diff_array before_json.security_rule after_json.security_rule "name" }}
+{{~ if before_json && after_json && network_security_group && network_security_group.rule_changes.size > 0 ~}}
 
 #### Security Rules{{ "\n" }}
 
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{ for rule in diff.added | array.sort "priority" }}
-| ➕ | {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
-{{ end }}
-{{ for item in diff.modified | array.sort "after.priority" }}
-| 🔄 | {{ format_nsg_value("name", item.after.name) }} | {{ format_diff ("" + item.before.priority) ("" + item.after.priority) }} | {{ format_diff (item.before.direction) (item.after.direction) }} | {{ format_diff (item.before.access) (item.after.access) }} | {{ format_diff (item.before.protocol) (item.after.protocol) }} | {{ format_diff (source_addresses(item.before)) (source_addresses(item.after)) }} | {{ format_diff (source_ports(item.before)) (source_ports(item.after)) }} | {{ format_diff (destination_addresses(item.before)) (destination_addresses(item.after)) }} | {{ format_diff (destination_ports(item.before)) (destination_ports(item.after)) }} | {{ format_diff (description_or_dash(item.before.description)) (description_or_dash(item.after.description)) }} |
-{{ end }}
-{{ for rule in diff.removed | array.sort "priority" }}
-| ❌ | {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
-{{ end }}
-{{ for rule in diff.unchanged | array.sort "priority" }}
-| ⏺️ | {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
+{{ for row in network_security_group.rule_changes }}
+| {{ row.change }} | {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{ end }}
 
 

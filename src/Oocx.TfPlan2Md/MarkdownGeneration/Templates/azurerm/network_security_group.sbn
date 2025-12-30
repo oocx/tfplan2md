@@ -5,58 +5,9 @@
 <!-- tfplan2md:resource-start address={{ address }} -->
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
-{{~ if after_json ~}}
-**Network Security Group:** `{{ after_json.name | escape_markdown }}`
-{{~ else if before_json ~}}
-**Network Security Group:** `{{ before_json.name | escape_markdown }}`
+{{~ if network_security_group && network_security_group.name ~}}
+**Network Security Group:** `{{ network_security_group.name | escape_markdown }}`
 {{~ end ~}}
-
-{{ func source_addresses(rule) }}
-     {{- # Precedence: plural prefixes, then singular prefix, then wildcard -}}
-     {{- if rule.source_address_prefixes && rule.source_address_prefixes.size > 0 -}}{{ ret rule.source_address_prefixes | array.join ", " }}{{- end -}}
-     {{- if rule.source_address_prefix && rule.source_address_prefix != "" -}}{{ ret rule.source_address_prefix }}{{- end -}}
-     {{ ret "*" }}
-{{ end }}
-
-{{ func destination_addresses(rule) }}
-     {{- # Precedence: plural prefixes, then singular prefix, then wildcard -}}
-     {{- if rule.destination_address_prefixes && rule.destination_address_prefixes.size > 0 -}}{{ ret rule.destination_address_prefixes | array.join ", " }}{{- end -}}
-     {{- if rule.destination_address_prefix && rule.destination_address_prefix != "" -}}{{ ret rule.destination_address_prefix }}{{- end -}}
-     {{ ret "*" }}
-{{ end }}
-
-{{ func source_ports(rule) }}
-     {{- # Precedence: plural ranges, then singular range, then wildcard -}}
-     {{- if rule.source_port_ranges && rule.source_port_ranges.size > 0 -}}{{ ret rule.source_port_ranges | array.join ", " }}{{- end -}}
-     {{- if rule.source_port_range && rule.source_port_range != "" -}}{{ ret rule.source_port_range }}{{- end -}}
-     {{ ret "*" }}
-{{ end }}
-
-{{ func destination_ports(rule) }}
-     {{- # Precedence: plural ranges, then singular range, then wildcard -}}
-     {{- if rule.destination_port_ranges && rule.destination_port_ranges.size > 0 -}}{{ ret rule.destination_port_ranges | array.join ", " }}{{- end -}}
-     {{- if rule.destination_port_range && rule.destination_port_range != "" -}}{{ ret rule.destination_port_range }}{{- end -}}
-     {{ ret "*" }}
-{{ end }}
-
-{{ func description_or_dash(value) }}
-     {{- if value && value != "" -}}{{ ret value }}{{- end -}}
-     {{ ret "-" }}
-{{ end }}
-
-{{ func format_nsg_value(attr_name, value) }}
-     {{- if value == null || value == "" -}}{{ ret "" }}{{ end -}}
-     {{- ret format_attribute_value_table(attr_name, "" + value, null) }}
-{{ end }}
-
-{{ func format_nsg_list(attr_name, values) }}
-     {{- if values == null || values.size == 0 -}}{{ ret "" }}{{ end -}}
-     {{- formatted = [] -}}
-     {{- for v in values -}}
-         {{ formatted = formatted + [ format_attribute_value_table(attr_name, "" + v, null) ] }}
-     {{- end -}}
-     {{- ret array.join formatted ", " -}}
-{{ end }}
 
 {{~ if before_json && after_json && network_security_group && network_security_group.rule_changes.size > 0 ~}}
 
@@ -69,22 +20,22 @@
 {{ end }}
 
 
-{{~ else if action == "create" && after_json && after_json.security_rule ~}}
+{{~ else if action == "create" && network_security_group && network_security_group.after_rules.size > 0 ~}}
 #### Security Rules{{ "\n" }}
 
 | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{ for rule in after_json.security_rule | array.sort "priority" }}
-| {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
+{{ for row in network_security_group.after_rules }}
+| {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{ end }}
 
-{{~ else if action == "delete" && before_json && before_json.security_rule ~}}
+{{~ else if action == "delete" && network_security_group && network_security_group.before_rules.size > 0 ~}}
 #### Security Rules (being deleted)
 
 | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{ for rule in before_json.security_rule | array.sort "priority" }}
-| {{ format_nsg_value("name", rule.name) }} | {{ format_nsg_value("priority", rule.priority) }} | {{ format_nsg_value("direction", rule.direction) }} | {{ format_nsg_value("access", rule.access) }} | {{ format_nsg_value("protocol", rule.protocol) }} | {{ format_nsg_value("source_addresses", source_addresses(rule)) }} | {{ format_nsg_value("source_ports", source_ports(rule)) }} | {{ format_nsg_value("destination_addresses", destination_addresses(rule)) }} | {{ format_nsg_value("destination_ports", destination_ports(rule)) }} | {{ format_nsg_value("description", description_or_dash(rule.description)) }} |
+{{ for row in network_security_group.before_rules }}
+| {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{ end }}
 
 {{~ else ~}}

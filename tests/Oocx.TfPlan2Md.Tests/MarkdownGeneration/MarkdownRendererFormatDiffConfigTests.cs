@@ -26,13 +26,13 @@ public class MarkdownRendererFormatDiffConfigTests
     {
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/firewall-rule-changes.json"));
-        var builder = new ReportModelBuilder(largeValueFormat: LargeValueFormat.StandardDiff);
+        var builder = new ReportModelBuilder(largeValueFormat: LargeValueFormat.SimpleDiff);
         var model = builder.Build(plan);
         var change = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
         var renderer = new MarkdownRenderer();
 
         // Act
-        var markdown = renderer.RenderResourceChange(change, LargeValueFormat.StandardDiff)!;
+        var markdown = renderer.RenderResourceChange(change, LargeValueFormat.SimpleDiff)!;
 
         // Assert - standard diff uses -/+ prefix with <br> separator; semantic icons are preserved inside code formatting without inline diff styling
         markdown.Should().Contain("- `🌐 10.0.1.0/24`<br>+ `🌐 10.0.1.0/24, 🌐 10.0.3.0/24`")

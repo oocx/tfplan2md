@@ -159,7 +159,7 @@ public static class CliParser
                     }
                     else
                     {
-                        throw new CliParseException("--large-value-format requires a format argument (inline-diff or standard-diff).");
+                        throw new CliParseException("--large-value-format requires a format argument (inline-diff or simple-diff).");
                     }
                     break;
                 default:
@@ -195,8 +195,8 @@ public static class CliParser
         return normalized switch
         {
             "inline-diff" => LargeValueFormat.InlineDiff,
-            "standard-diff" => LargeValueFormat.StandardDiff,
-            _ => throw new CliParseException("--large-value-format must be 'inline-diff' or 'standard-diff'.")
+            "simple-diff" => LargeValueFormat.SimpleDiff,
+            _ => throw new CliParseException("--large-value-format must be 'inline-diff' or 'simple-diff'.")
         };
     }
 }

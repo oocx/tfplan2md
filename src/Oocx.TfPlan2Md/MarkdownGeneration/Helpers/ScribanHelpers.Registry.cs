@@ -18,7 +18,7 @@ public static partial class ScribanHelpers
     /// <param name="largeValueFormat">Preferred formatting for large values.</param>
     public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, LargeValueFormat largeValueFormat)
     {
-        var formatString = largeValueFormat == LargeValueFormat.StandardDiff ? "standard-diff" : "inline-diff";
+        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
 
         scriptObject.Import("format_diff", new Func<string?, string?, string>((before, after) => FormatDiff(before, after, formatString)));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));

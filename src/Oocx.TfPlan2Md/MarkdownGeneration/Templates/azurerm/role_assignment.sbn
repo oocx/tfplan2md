@@ -46,7 +46,7 @@
 {{ for attr in change.role_assignment.large_attributes }}
 ##### **{{ attr.name | escape_markdown }}:**
 
-{{ format_large_value(attr.before, attr.after, change.large_value_format) }}
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
 
 {{ end }}
 

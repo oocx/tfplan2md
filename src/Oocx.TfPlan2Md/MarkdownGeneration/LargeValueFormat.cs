@@ -12,7 +12,7 @@ public enum LargeValueFormat
     InlineDiff,
 
     /// <summary>
-    /// Cross-platform standard diff fenced code block.
+    /// Simple diff fenced code block for GitHub and other platforms.
     /// </summary>
-    StandardDiff
+    SimpleDiff
 }

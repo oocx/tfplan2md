@@ -326,13 +326,13 @@ public class CliParserTests
     public void Parse_LargeValueFormatStandardDiff_SetsOption()
     {
         // Arrange
-        var args = new[] { "plan.json", "--large-value-format", "standard-diff" };
+        var args = new[] { "plan.json", "--large-value-format", "simple-diff" };
 
         // Act
         var options = CliParser.Parse(args);
 
         // Assert
-        options.LargeValueFormat.Should().Be(LargeValueFormat.StandardDiff);
+        options.LargeValueFormat.Should().Be(LargeValueFormat.SimpleDiff);
     }
 
     [Fact]

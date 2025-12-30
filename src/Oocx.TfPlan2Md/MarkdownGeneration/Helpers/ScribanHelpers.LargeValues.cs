@@ -34,7 +34,7 @@ public static partial class ScribanHelpers
 
         return parsedFormat switch
         {
-            LargeValueFormat.StandardDiff => BuildStandardDiff(normalizedBefore, normalizedAfter),
+            LargeValueFormat.SimpleDiff => BuildSimpleDiff(normalizedBefore, normalizedAfter),
             _ => BuildInlineDiff(normalizedBefore, normalizedAfter)
         };
     }
@@ -56,8 +56,8 @@ public static partial class ScribanHelpers
         {
             "" => LargeValueFormat.InlineDiff,
             "inlinediff" => LargeValueFormat.InlineDiff,
-            "standarddiff" => LargeValueFormat.StandardDiff,
-            _ => throw new ScribanHelperException("Unsupported large value format. Use 'inline-diff' or 'standard-diff'.")
+            "simplediff" => LargeValueFormat.SimpleDiff,
+            _ => throw new ScribanHelperException("Unsupported large value format. Use 'inline-diff' or 'simple-diff'.")
         };
     }
 
@@ -79,12 +79,12 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Builds a standard diff fenced block showing removed and added lines.
+    /// Builds a simple diff fenced block showing removed and added lines.
     /// </summary>
     /// <param name="before">Original value.</param>
     /// <param name="after">Updated value.</param>
     /// <returns>Diff-formatted code fence.</returns>
-    private static string BuildStandardDiff(string before, string after)
+    private static string BuildSimpleDiff(string before, string after)
     {
         var sb = new StringBuilder();
         sb.AppendLine("```diff");

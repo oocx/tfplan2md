@@ -64,7 +64,7 @@
 {{ for attr in large_attrs }}
 ##### **{{ attr.name | escape_markdown }}:**
 
-{{ format_large_value(attr.before, attr.after, change.large_value_format) }}
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
 
 {{ end }}
 
@@ -75,7 +75,7 @@
 {{ for attr in large_attrs }}
 ##### **{{ attr.name | escape_markdown }}:**
 
-{{ format_large_value(attr.before, attr.after, change.large_value_format) }}
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
 
 {{ end }}
 {{ end }}

@@ -71,89 +71,139 @@
                     Reviewing Terraform changes in PRs is painful with raw plan output
                 </p>
             </div>
-            <div class="problem-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px;">
-                <div class="problem-card">
-                    <div class="problem-icon">😵</div>
-                    <h3>Wall of Text</h3>
-                    <p>Raw plan output is overwhelming and difficult to scan</p>
+            <div class="problem-solution-layout">
+                <div class="screenshot-side">
+                    <div class="screenshot-container">
+                        <div class="screenshot-header">Raw Terraform Plan</div>
+                        <div class="screenshot-content code-block">
+<pre><code># azurerm_network_security_rule.security_rule[2] will be created
++ resource "azurerm_network_security_rule" "rule" {
+  + access                     = "Allow"
+  + destination_address_prefix = "10.0.0.0/8"
+  + destination_port_range     = "22"
+  + direction                  = "Inbound"
+  + name                       = "ssh_from_corporate"
+  + priority                   = 100
+  + protocol                   = "Tcp"
+  + source_address_prefix      = "10.0.0.0/8"
+  + source_port_range          = "*"
+  + resource_group_name        = "rg-network"
+  + network_security_group_name = "nsg-prod"
+  }
+
+# azurerm_network_security_rule.security_rule[3] will be created
++ resource "azurerm_network_security_rule" "rule" {
+  + access                     = "Deny"
+  + destination_address_prefix = "*"
+  + destination_port_range     = "3389"
+...</code></pre>
+                        </div>
+                    </div>
                 </div>
-                <div class="problem-card">
-                    <div class="problem-icon">🔍</div>
-                    <h3>Lost Context</h3>
-                    <p>Hard to understand what's actually changing and why</p>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-icon">📊</div>
-                    <h3>No Structure</h3>
-                    <p>Changes aren't grouped logically by module or resource type</p>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-icon">🤯</div>
-                    <h3>Cryptic Diffs</h3>
-                    <p>Index changes instead of semantic "what actually changed"</p>
+                
+                <div class="list-side">
+                    <ul class="problem-list">
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Wall of Text</strong>
+                                <p>Raw plan output is overwhelming and difficult to scan</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Lost Context</strong>
+                                <p>Hard to understand what's actually changing and why</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>No Structure</strong>
+                                <p>Changes aren't grouped logically by module or resource type</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Cryptic Diffs</strong>
+                                <p>Index changes instead of semantic "what actually changed"</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Solution Section -->
-    <section class="solution-section hero-secondary" style="padding: 48px 0 60px 0;">
+    <section class="solution-section hero-secondary" style="padding: 32px 0 60px 0;">
         <div class="section-container">
-            <div class="solution-grid">
-                <div class="solution-content">
-                    <h2 class="solution-title" style="margin-bottom: 32px; font-size: 36px;">tfplan2md Solves This</h2>
-
-                    <div class="solution-visual">
-                        <div class="code-preview">
-                            <div class="code-header">
-                                <span class="code-title">terraform plan output</span>
-                            </div>
-                            <div class="code-body">
-                                <pre># azurerm_network_security_rule.rule[2] will be created
-+ resource "azurerm_network_security_rule" "rule" {
-    + access                      = "Allow"
-    + destination_address_prefix  = "*"
-    + destination_port_range      = "22"
-    ...</pre>
-                            </div>
-                        </div>
-                        <div class="arrow">→</div>
-                        <div class="code-preview">
-                            <div class="code-header">
-                                <span class="code-title">tfplan2md report</span>
-                            </div>
-                            <div class="code-body">
-                                <pre>## 🔒 Network Security Rules
-### ✨ Creating `AllowSSH`
-- 🌐 Source: `10.0.0.0/8`
-- 🔌 Port: `22` (TCP)
-- Action: ✅ Allow</pre>
-                            </div>
-                        </div>
-                    </div>
-
+            <div class="section-header">
+                <h2 class="section-title" style="font-size: 36px; margin-bottom: 16px;">tfplan2md Solves This</h2>
+            </div>
+            <div class="problem-solution-layout">
+                <div class="list-side">
                     <ul class="solution-list">
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Semantic diffs</strong> show actual rule changes, not index modifications
+                            <div>
+                                <strong>Clean, Structured, Readable</strong>
+                                <p>Markdown format that's easy to scan and understand</p>
+                            </div>
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Module grouping</strong> provides better context and organization
+                            <div>
+                                <strong>Semantic Diff Interpretation</strong>
+                                <p>Shows what actually changed, not cryptic indices</p>
+                            </div>
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Visual icons</strong> for IPs, ports, protocols make scanning faster
+                            <div>
+                                <strong>Organized by Module</strong>
+                                <p>Groups related changes together logically</p>
+                            </div>
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>One-line summaries</strong> for quick understanding at a glance
-                        </li>
-                        <li>
-                            <span class="check-icon">✓</span>
-                            <strong>Sensitive masking</strong> keeps secrets safe in public PRs
+                            <div>
+                                <strong>Perfect for PR Comments</strong>
+                                <p>Copy/paste ready for GitHub, Azure DevOps, GitLab</p>
+                            </div>
                         </li>
                     </ul>
+                </div>
+                
+                <div class="screenshot-side">
+                    <div class="screenshot-container">
+                        <div class="screenshot-header">tfplan2md Report</div>
+                        <div class="screenshot-content code-block">
+<pre><code>## 📊 Network Security Rules
+
+### ✅ Creating AllowSSH
+**Action:** 🆕 Allow  
+**Priority:** 100
+
+**Traffic Flow:**
+- **Source:** 10.0.0.0/8
+- **Destination:** 10.0.0.0/8  
+- **Port:** 22 (TCP)
+
+---
+
+### ✅ Creating DenyRDP
+**Action:** 🆕 Deny
+**Priority:** 200
+
+**Traffic Flow:**
+- **Source:** *
+- **Destination:** *
+- **Port:** 3389 (TCP)</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,7 +218,6 @@
                 </div>
                 <div class="install-steps">
                     <div class="install-step">
-                        <div class="step-label">Run One Command</div>
                         <div class="command-box">
                             <code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code>
                             <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>

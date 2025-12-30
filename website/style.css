@@ -225,7 +225,7 @@ body {
 }
 
 .hero-content {
-    max-width: 800px;
+    width: 100%;
     margin: 0 auto;
     text-align: center;
 }
@@ -256,6 +256,10 @@ body {
     letter-spacing: -0.02em;
     color: var(--color-text);
     white-space: nowrap;
+    max-width: none;
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero-gradient {
@@ -375,6 +379,118 @@ body {
     transition: background-color 0.3s ease;
 }
 
+/* Problem/Solution Layout */
+.problem-solution-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+    margin-top: 2rem;
+}
+
+.screenshot-side {
+    display: flex;
+    flex-direction: column;
+}
+
+.screenshot-container {
+    background: var(--color-bg);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.screenshot-header {
+    background: var(--problem-bg);
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.screenshot-content {
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--code-bg);
+}
+
+.screenshot-content pre {
+    margin: 0;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.screenshot-content code {
+    color: var(--code-text);
+}
+
+.list-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.problem-list,
+.solution-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.problem-list li,
+.solution-list li {
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+}
+
+.x-icon {
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.check-icon {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.problem-list li > div,
+.solution-list li > div {
+    flex: 1;
+}
+
+.problem-list strong,
+.solution-list strong {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--color-text);
+}
+
+.problem-list p,
+.solution-list p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Keep old styles for potential backwards compatibility */
 .problem-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -384,6 +500,15 @@ body {
 @media (max-width: 1024px) {
     .problem-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .problem-solution-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .screenshot-content {
+        max-height: 300px;
     }
 }
 

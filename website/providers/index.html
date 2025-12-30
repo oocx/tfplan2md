@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Templates - tfplan2md</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="../assets/images/tfplan2md-logo.svg" alt="tfplan2md logo" class="nav-logo">
+                <span class="nav-title">tfplan2md</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="theme-icon"></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../getting-started.html">Getting Started</a></li>
+                <li><a href="../features/index.html">Features</a></li>
+                <li><a href="index.html" class="active">Providers</a></li>
+                <li><a href="../examples.html">Examples</a></li>
+                <li><a href="../docs.html">Documentation</a></li>
+                <li><a href="../architecture.html">Architecture</a></li>
+                <li><a href="../contributing.html">Contributing</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            <h1>Provider Templates</h1>
+            <p class="lead">tfplan2md includes specialized templates for popular Terraform providers, optimizing output for provider-specific resource types.</p>
+
+            <!-- Overview -->
+            <section class="card">
+                <h2>How Provider Templates Work</h2>
+                <p>tfplan2md automatically detects resource types and applies specialized templates when available. This provides:</p>
+                <ul>
+                    <li><strong>Semantic Diffs</strong> — Show meaningful changes instead of index-based modifications</li>
+                    <li><strong>Formatted Values</strong> — Display complex values in readable formats</li>
+                    <li><strong>Resource-Specific Intelligence</strong> — Understand and present changes in context</li>
+                    <li><strong>Automatic Application</strong> — No configuration needed; works out of the box</li>
+                </ul>
+
+                <h3>Template Resolution</h3>
+                <p>When rendering a resource change, tfplan2md follows this resolution order:</p>
+                <ol>
+                    <li><strong>Provider-specific template</strong> (e.g., <code>azurerm/firewall_network_rule_collection.sbn</code>)</li>
+                    <li><strong>Default template</strong> (generic rendering for all resource types)</li>
+                </ol>
+                <p>This means specialized templates are used when available, with graceful fallback to generic rendering.</p>
+            </section>
+
+            <!-- Supported Providers -->
+            <section class="card">
+                <h2>Supported Providers</h2>
+                <p>The following providers have specialized template support:</p>
+
+                <div class="provider-grid">
+                    <!-- Azure Provider -->
+                    <div class="provider-card">
+                        <div class="provider-header">
+                            <h3>Azure (azurerm)</h3>
+                            <span class="provider-status production">Production</span>
+                        </div>
+                        <p>Comprehensive support for Azure resources with semantic diffing, resource ID formatting, and role assignment enhancements.</p>
+                        <h4>Specialized Resources</h4>
+                        <ul>
+                            <li><strong>Firewall Network Rule Collections</strong> — Semantic diff of rules (added/removed/unchanged)</li>
+                            <li><strong>Network Security Groups</strong> — Rule-level diffing with priority awareness</li>
+                            <li><strong>Role Assignments</strong> — Principal name mapping and readable scope display</li>
+                        </ul>
+                        <h4>Global Enhancements</h4>
+                        <ul>
+                            <li><strong>Resource ID Formatting</strong> — Long Azure IDs broken into readable scopes</li>
+                            <li><strong>Semantic Icons</strong> — Visual indicators for IPs (🌐), ports (🔌), protocols (📨/🔗), principals (👤/👥/💻)</li>
+                            <li><strong>Boolean Formatting</strong> — ✅/❌ for true/false values</li>
+                        </ul>
+                        <div class="provider-links">
+                            <a href="#" class="button-secondary">View Documentation</a>
+                            <a href="../examples.html#firewall-rules" class="button-secondary">See Examples</a>
+                        </div>
+                    </div>
+
+                    <!-- Azure DevOps Provider -->
+                    <div class="provider-card">
+                        <div class="provider-header">
+                            <h3>Azure DevOps (azuredevops)</h3>
+                            <span class="provider-status planned">Planned</span>
+                        </div>
+                        <p>Planned support for Azure DevOps resources including projects, pipelines, and variable groups.</p>
+                        <h4>Planned Resources</h4>
+                        <ul>
+                            <li>Projects and project settings</li>
+                            <li>Build and release pipelines</li>
+                            <li>Variable groups</li>
+                            <li>Service connections</li>
+                        </ul>
+                        <p class="note"><strong>Status:</strong> In planning phase. Contributions welcome!</p>
+                    </div>
+
+                    <!-- Azure AD Provider -->
+                    <div class="provider-card">
+                        <div class="provider-header">
+                            <h3>Azure AD (azuread)</h3>
+                            <span class="provider-status planned">Planned</span>
+                        </div>
+                        <p>Planned support for Azure Active Directory resources with emphasis on group memberships and application configurations.</p>
+                        <h4>Planned Resources</h4>
+                        <ul>
+                            <li>Groups and group memberships</li>
+                            <li>Applications and service principals</li>
+                            <li>Conditional access policies</li>
+                            <li>Directory roles</li>
+                        </ul>
+                        <p class="note"><strong>Status:</strong> In planning phase. Contributions welcome!</p>
+                    </div>
+
+                    <!-- MS Graph Provider -->
+                    <div class="provider-card">
+                        <div class="provider-header">
+                            <h3>Microsoft Graph (msgraph)</h3>
+                            <span class="provider-status planned">Planned</span>
+                        </div>
+                        <p>Planned support for Microsoft Graph resources including users, groups, and policies.</p>
+                        <h4>Planned Resources</h4>
+                        <ul>
+                            <li>Users and user settings</li>
+                            <li>Groups and group settings</li>
+                            <li>Policies and policy assignments</li>
+                        </ul>
+                        <p class="note"><strong>Status:</strong> In planning phase. Contributions welcome!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Custom Templates -->
+            <section class="card">
+                <h2>Custom Templates</h2>
+                <p>You can create your own provider-specific templates using Scriban syntax:</p>
+
+                <h3>Template Structure</h3>
+                <pre><code>Templates/
+├── default.sbn           # Default template for all resources
+├── summary.sbn           # Summary-only template
+└── azurerm/              # Provider-specific templates
+    ├── firewall_network_rule_collection.sbn
+    ├── network_security_group.sbn
+    └── role_assignment.sbn</code></pre>
+
+                <h3>Creating a Custom Template</h3>
+                <ol>
+                    <li>Create a directory structure: <code>Templates/&lt;provider&gt;/</code></li>
+                    <li>Add a <code>.sbn</code> file named after the resource type (e.g., <code>storage_account.sbn</code>)</li>
+                    <li>Write Scriban template using available properties from the resource change</li>
+                    <li>Test with <code>--template</code> flag: <code>docker run -v $(pwd)/Templates:/templates oocx/tfplan2md --template /templates/default.sbn</code></li>
+                </ol>
+
+                <h3>Example: Custom Firewall Rule Template</h3>
+                <pre><code>{{~ # Firewall Network Rule Collection Template ~}}
+{{~ if change.action == "create" || change.action == "update" ~}}
+### {{ change.address }}
+
+{{~ if after.rule ~}}
+**Rules:**
+{{~ for rule in after.rule ~}}
+- **{{ rule.name }}**: {{ rule.source_addresses | array.join ", " }} → {{ rule.destination_addresses | array.join ", " }} ({{ rule.protocols | array.join ", " }})
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}</code></pre>
+
+                <p>For complete template documentation, see <a href="../docs.html#templates">Template Customization Guide</a>.</p>
+            </section>
+
+            <!-- Contributing Templates -->
+            <section class="card">
+                <h2>Contributing Provider Templates</h2>
+                <p>We welcome contributions of new provider templates! Here's how to contribute:</p>
+
+                <h3>Contribution Process</h3>
+                <ol>
+                    <li><strong>Identify the resource type</strong> — Find a Terraform resource that could benefit from specialized rendering</li>
+                    <li><strong>Design the template</strong> — Create a Scriban template that improves readability</li>
+                    <li><strong>Test thoroughly</strong> — Ensure the template works with create, update, replace, and delete actions</li>
+                    <li><strong>Document the enhancement</strong> — Explain what improvements the template provides</li>
+                    <li><strong>Submit a pull request</strong> — Follow the <a href="../contributing.html">contribution guidelines</a></li>
+                </ol>
+
+                <h3>Good Candidates for Custom Templates</h3>
+                <ul>
+                    <li>Resources with complex nested structures (rules, policies, configurations)</li>
+                    <li>Resources where index-based diffs are confusing</li>
+                    <li>Resources with long IDs or references that need formatting</li>
+                    <li>Resources where semantic comparison adds value (e.g., firewall rules)</li>
+                </ul>
+
+                <h3>Template Design Guidelines</h3>
+                <ul>
+                    <li>Focus on showing <strong>what changed</strong>, not just the new state</li>
+                    <li>Use semantic diffing when appropriate (added/removed/unchanged)</li>
+                    <li>Format complex values for readability (tables, lists, collapsible sections)</li>
+                    <li>Add visual icons for common value types (IPs, ports, protocols)</li>
+                    <li>Keep output concise; use collapsible sections for details</li>
+                    <li>Test with real-world Terraform plans</li>
+                </ul>
+
+                <div class="cta">
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="button">Request Provider Support</a>
+                    <a href="../contributing.html" class="button-secondary">Contributing Guide</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 tfplan2md contributors. Licensed under MIT License.</p>
+            <div class="footer-links">
+                <a href="https://github.com/oocx/tfplan2md">GitHub</a>
+                <a href="https://hub.docker.com/r/oocx/tfplan2md">Docker Hub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../theme.js"></script>
+</body>
+</html>

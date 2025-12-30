@@ -10,13 +10,28 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <img src="assets/images/tfplan2md-logo.svg" alt="tfplan2md logo" width="36" height="36">
-                <span class="brand-name">tfplan2md</span>
+                <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <svg width="32" height="32" viewBox="0 0 32 32" style="flex-shrink: 0;">
+                        <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
+                        <path d="M8 10h16M8 16h16M8 22h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#646cff"/>
+                                <stop offset="100%" style="stop-color:#747bff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-name" style="font-size: 20px; font-weight: 700;">tfplan2md</span>
+                </a>
             </div>
             <div class="nav-menu">
                 <a href="features/index.html" class="nav-item">Features</a>
                 <a href="getting-started.html" class="nav-item">Install</a>
                 <a href="docs.html" class="nav-item">Docs</a>
+                <a href="examples.html" class="nav-item">Examples</a>
+                <a href="providers/index.html" class="nav-item">Providers</a>
+                <a href="architecture.html" class="nav-item">Architecture</a>
+                <a href="contributing.html" class="nav-item">Contributing</a>
                 <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
                     <span class="theme-icon"></span>
                 </button>
@@ -25,49 +40,38 @@
         </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero hero-primary">
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-badge">✨ Built 100% with GitHub Copilot</div>
-                <h1 class="hero-title">
-                    Transform Terraform Plans<br>
-                    <span class="hero-gradient">Into Readable Reports</span>
+                <div class="hero-badges" style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px;">
+                    <a href="getting-started.html" class="hero-badge">🐳 Docker Ready</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="hero-badge">📄 Open Source / MIT License</a>
+                    <a href="contributing.html#ai-workflow" class="hero-badge">✨ Built 100% with GitHub Copilot</a>
+                </div>
+                <h1 class="hero-title" style="font-size: 48px; margin-bottom: 16px;">
+                    Transform Terraform Plans Into <span class="hero-gradient">Readable Reports</span>
                 </h1>
-                <p class="hero-subtitle">
-                    Stop drowning in verbose plan output. Generate beautiful, structured Markdown 
-                    reports that your team will actually read—and render perfectly in PR comments.
+                <p class="hero-subtitle" style="font-size: 18px; margin-bottom: 20px;">
+                    Stop drowning in verbose plan output. Generate structured Markdown reports that render perfectly in PR comments.
                 </p>
                 <div class="hero-actions">
                     <a href="getting-started.html" class="btn btn-primary btn-lg">Get Started</a>
                     <a href="examples.html" class="btn btn-secondary btn-lg">View Examples</a>
                 </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-value">Docker Ready</div>
-                        <div class="stat-label">Easy Integration</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">Open Source</div>
-                        <div class="stat-label">MIT License</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">.NET 10</div>
-                        <div class="stat-label">Modern Stack</div>
-                    </div>
-                </div>
             </div>
         </div>
     </header>
 
-    <section class="problem-section">
+    <!-- Problem Section -->
+    <section class="problem-section" style="padding: 32px 0; background: var(--problem-bg);">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title">The Pull Request Review Problem</h2>
-                <p class="section-description">
+                <h2 class="section-title" style="font-size: 36px; margin-bottom: 16px;">The Pull Request Review Problem</h2>
+                <p class="section-description" style="font-size: 18px;">
                     Reviewing Terraform changes in PRs is painful with raw plan output
                 </p>
             </div>
-            <div class="problem-grid">
+            <div class="problem-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px;">
                 <div class="problem-card">
                     <div class="problem-icon">😵</div>
                     <h3>Wall of Text</h3>
@@ -92,59 +96,62 @@
         </div>
     </section>
 
-    <section class="solution-section">
+    <!-- Solution Section -->
+    <section class="solution-section hero-secondary" style="padding: 48px 0 60px 0;">
         <div class="section-container">
             <div class="solution-grid">
-                <div class="solution-visual">
-                    <div class="code-preview">
-                        <div class="code-header">
-                            <span class="code-title">terraform plan output</span>
-                        </div>
-                        <div class="code-body">
-                            <pre># azurerm_network_security_rule.rule[2] will be created
+                <div class="solution-content">
+                    <h2 class="solution-title" style="margin-bottom: 32px; font-size: 36px;">tfplan2md Solves This</h2>
+
+                    <div class="solution-visual">
+                        <div class="code-preview">
+                            <div class="code-header">
+                                <span class="code-title">terraform plan output</span>
+                            </div>
+                            <div class="code-body">
+                                <pre># azurerm_network_security_rule.rule[2] will be created
 + resource "azurerm_network_security_rule" "rule" {
     + access                      = "Allow"
     + destination_address_prefix  = "*"
     + destination_port_range      = "22"
     ...</pre>
+                            </div>
                         </div>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="code-preview">
-                        <div class="code-header">
-                            <span class="code-title">tfplan2md report</span>
-                        </div>
-                        <div class="code-body">
-                            <pre>## 🔒 Network Security Rules
+                        <div class="arrow">→</div>
+                        <div class="code-preview">
+                            <div class="code-header">
+                                <span class="code-title">tfplan2md report</span>
+                            </div>
+                            <div class="code-body">
+                                <pre>## 🔒 Network Security Rules
 ### ✨ Creating `AllowSSH`
 - 🌐 Source: `10.0.0.0/8`
 - 🔌 Port: `22` (TCP)
 - Action: ✅ Allow</pre>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="solution-content">
-                    <h2 class="solution-title">Clean, Structured, Readable</h2>
+
                     <ul class="solution-list">
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Semantic diffs</strong> show actual rule changes
+                            <strong>Semantic diffs</strong> show actual rule changes, not index modifications
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Module grouping</strong> provides better context
+                            <strong>Module grouping</strong> provides better context and organization
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Visual icons</strong> for IPs, ports, protocols
+                            <strong>Visual icons</strong> for IPs, ports, protocols make scanning faster
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>One-line summaries</strong> for quick scanning
+                            <strong>One-line summaries</strong> for quick understanding at a glance
                         </li>
                         <li>
                             <span class="check-icon">✓</span>
-                            <strong>Sensitive masking</strong> keeps secrets safe
+                            <strong>Sensitive masking</strong> keeps secrets safe in public PRs
                         </li>
                     </ul>
                 </div>
@@ -157,22 +164,18 @@
             <div class="install-card">
                 <div class="install-content">
                     <h2 class="install-title">Get Started in Seconds</h2>
-                    <p class="install-description">Pull the Docker image and start converting plans</p>
+                    <p class="install-description">Run one command to convert your Terraform plan</p>
                 </div>
                 <div class="install-steps">
                     <div class="install-step">
-                        <div class="step-label">Step 1</div>
-                        <div class="command-box">
-                            <code>docker pull oocx/tfplan2md:latest</code>
-                            <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>
-                        </div>
-                    </div>
-                    <div class="install-step">
-                        <div class="step-label">Step 2</div>
+                        <div class="step-label">Run One Command</div>
                         <div class="command-box">
                             <code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code>
                             <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>
                         </div>
+                        <p style="text-align: center; color: var(--color-text-secondary); font-size: 14px; margin-top: 12px;">
+                            Docker run automatically pulls the image
+                        </p>
                     </div>
                 </div>
             </div>
@@ -185,68 +188,101 @@
                 <h2 class="section-title">Powerful Features</h2>
                 <p class="section-description">Everything you need for better Terraform PR reviews</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card elevated">
-                    <div class="feature-header">
-                        <div class="feature-icon-lg">🔍</div>
+            <div class="features-carousel">
+                <button class="carousel-btn carousel-prev" aria-label="Previous features">‹</button>
+                <div class="features-carousel-track">
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🔍</div>
+                        </div>
+                        <h3 class="feature-title">Semantic Diffing</h3>
+                        <p class="feature-description">
+                            See which firewall rules or NSG rules were added/removed, 
+                            not confusing index modifications.
+                        </p>
+                        <a href="features/index.html#firewall-rules" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <h3 class="feature-title">Semantic Diffs</h3>
-                    <p class="feature-description">
-                        See which firewall rules or NSG rules were added/removed, 
-                        not confusing index modifications.
-                    </p>
-                </div>
-                <div class="feature-card elevated">
-                    <div class="feature-header">
-                        <div class="feature-icon-lg">📁</div>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">📁</div>
+                        </div>
+                        <h3 class="feature-title">Module Grouping</h3>
+                        <p class="feature-description">
+                            Resources organized by module for better context 
+                            and easier navigation.
+                        </p>
+                        <a href="features/index.html#module-grouping" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <h3 class="feature-title">Module Grouping</h3>
-                    <p class="feature-description">
-                        Resource changes organized by module for better context 
-                        and easier navigation.
-                    </p>
-                </div>
-                <div class="feature-card elevated">
-                    <div class="feature-header">
-                        <div class="feature-icon-lg">🆔</div>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">☁️</div>
+                        </div>
+                        <h3 class="feature-title">Azure Optimizations</h3>
+                        <p class="feature-description">
+                            Long Azure resource IDs formatted as readable scopes. 
+                            Principal mapping for role assignments.
+                        </p>
+                        <a href="features/index.html#azure-resource-ids" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <h3 class="feature-title">Azure Optimized</h3>
-                    <p class="feature-description">
-                        Long Azure resource IDs formatted as readable scopes. 
-                        Principal mapping for role assignments.
-                    </p>
-                </div>
-                <div class="feature-card elevated">
-                    <div class="feature-header">
-                        <div class="feature-icon-lg">🎨</div>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🎨</div>
+                        </div>
+                        <h3 class="feature-title">Visual Enhancements</h3>
+                        <p class="feature-description">
+                            Semantic icons for IPs, ports, protocols, booleans, 
+                            and principals improve scannability.
+                        </p>
+                        <a href="features/index.html#visual-icons" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <h3 class="feature-title">Visual Icons</h3>
-                    <p class="feature-description">
-                        Intuitive icons for IPs, ports, protocols, booleans, 
-                        and principals improve scannability.
-                    </p>
-                </div>
-                <div class="feature-card elevated">
-                    <div class="feature-header">
-                        <div class="feature-icon-lg">📝</div>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">📝</div>
+                        </div>
+                        <h3 class="feature-title">Resource Summaries</h3>
+                        <p class="feature-description">
+                            One-line summaries for quick understanding of 
+                            each resource change.
+                        </p>
+                        <a href="features/index.html#resource-summaries" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <h3 class="feature-title">Resource Summaries</h3>
-                    <p class="feature-description">
-                        Each resource change shows a concise one-line summary 
-                        for quick understanding.
-                    </p>
-                </div>
-                <div class="feature-card elevated">
-                    <div class="feature-header">
-                        <div class="feature-icon-lg">🔒</div>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🔒</div>
+                        </div>
+                        <h3 class="feature-title">Security & Privacy</h3>
+                        <p class="feature-description">
+                            Sensitive values masked by default. Distroless 
+                            Docker image for minimal attack surface.
+                        </p>
+                        <a href="features/index.html#sensitive-masking" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <h3 class="feature-title">Security First</h3>
-                    <p class="feature-description">
-                        Sensitive values are masked by default. Distroless 
-                        Docker image for minimal attack surface.
-                    </p>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">📄</div>
+                        </div>
+                        <h3 class="feature-title">Large Value Handling</h3>
+                        <p class="feature-description">
+                            Multi-line values formatted with line-by-line diffs 
+                            in collapsible sections.
+                        </p>
+                        <a href="features/index.html#large-values" class="feature-link-btn">Learn more →</a>
+                    </div>
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🛠️</div>
+                        </div>
+                        <h3 class="feature-title">Customization</h3>
+                        <p class="feature-description">
+                            Use built-in templates or create your own with 
+                            Scriban for custom formatting.
+                        </p>
+                        <a href="features/index.html#custom-templates" class="feature-link-btn">Learn more →</a>
+                    </div>
                 </div>
+                <button class="carousel-btn carousel-next" aria-label="Next features">›</button>
             </div>
+            <div class="carousel-dots"></div>
         </div>
     </section>
 
@@ -354,6 +390,88 @@
                     setTimeout(() => button.textContent = '📋', 2000);
                 });
             });
+        });
+
+        // Carousel functionality
+        const track = document.querySelector('.features-carousel-track');
+        const slides = Array.from(track.children);
+        const nextButton = document.querySelector('.carousel-next');
+        const prevButton = document.querySelector('.carousel-prev');
+        const dotsContainer = document.querySelector('.carousel-dots');
+        
+        let currentIndex = 0;
+        let slidesPerView = 3;
+        let slideGroups = Math.ceil(slides.length / slidesPerView);
+        
+        function calculateSlidesPerView() {
+            if (window.innerWidth <= 768) {
+                slidesPerView = 1;
+            } else if (window.innerWidth <= 1024) {
+                slidesPerView = 2;
+            } else {
+                slidesPerView = 3;
+            }
+            slideGroups = Math.ceil(slides.length / slidesPerView);
+        }
+        
+        function createDots() {
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < slideGroups; i++) {
+                const dot = document.createElement('button');
+                dot.classList.add('carousel-dot');
+                dot.setAttribute('aria-label', `Go to slide group ${i + 1}`);
+                if (i === currentIndex) dot.classList.add('active');
+                dotsContainer.appendChild(dot);
+            }
+            
+            Array.from(dotsContainer.children).forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCarousel();
+                });
+            });
+        }
+        
+        function updateCarousel() {
+            const slideWidth = slides[0].offsetWidth + 24;
+            const offset = currentIndex * slideWidth * slidesPerView;
+            track.style.transform = `translateX(-${offset}px)`;
+            
+            Array.from(dotsContainer.children).forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+            
+            prevButton.disabled = currentIndex === 0;
+            nextButton.disabled = currentIndex === slideGroups - 1;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            if (currentIndex < slideGroups - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        });
+        
+        prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+        
+        // Initialize and handle resize
+        calculateSlidesPerView();
+        createDots();
+        updateCarousel();
+        
+        window.addEventListener('resize', () => {
+            const oldSlidesPerView = slidesPerView;
+            calculateSlidesPerView();
+            if (oldSlidesPerView !== slidesPerView) {
+                currentIndex = 0;
+                createDots();
+            }
+            updateCarousel();
         });
     </script>
 </body>

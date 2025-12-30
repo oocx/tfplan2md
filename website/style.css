@@ -35,12 +35,12 @@
     --color-accent: #a371f7;
     --color-success: #3fb950;
     --hero-bg: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
-    --problem-bg: #0d1117;
+    --problem-bg: #1c2128;
     --solution-bg: #0d1117;
     --install-bg: linear-gradient(135deg, #58a6ff 0%, #a371f7 100%);
-    --features-bg: #0d1117;
+    --features-bg: #161b22;
     --cicd-bg: #0d1117;
-    --footer-bg: #161b22;
+    --footer-bg: #1c2128;
     --code-bg: #1a202c;
     --code-header-bg: #2d3748;
     --code-text: #e2e8f0;
@@ -105,16 +105,18 @@ body {
 
 .nav-menu {
     display: flex;
-    gap: 24px;
+    gap: 16px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .nav-item {
     color: var(--color-text-secondary);
     text-decoration: none;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     transition: color 0.2s;
+    white-space: nowrap;
 }
 
 .nav-item:hover {
@@ -202,9 +204,18 @@ body {
 
 /* Hero */
 .hero {
-    padding: 80px 0 100px;
+    padding: 50px 0 35px;
     background: var(--hero-bg);
     transition: background 0.3s ease;
+}
+
+.hero-primary {
+    background: var(--hero-bg);
+}
+
+.hero-secondary {
+    background: var(--problem-bg);
+    padding: 40px 0;
 }
 
 .hero-container {
@@ -228,15 +239,24 @@ body {
     font-size: 13px;
     font-weight: 500;
     margin-bottom: 24px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.hero-badge:hover {
+    background: var(--color-primary-hover);
+    transform: scale(1.05);
 }
 
 .hero-title {
-    font-size: 56px;
+    font-size: 48px;
     font-weight: 700;
     line-height: 1.1;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     letter-spacing: -0.02em;
     color: var(--color-text);
+    white-space: nowrap;
+    text-align: center;
 }
 
 .hero-gradient {
@@ -244,17 +264,18 @@ body {
 }
 
 .hero-subtitle {
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.6;
-    margin-bottom: 40px;
+    margin-bottom: 22px;
     color: var(--color-text-secondary);
+    white-space: nowrap;
 }
 
 .hero-actions {
     display: flex;
     gap: 16px;
     justify-content: center;
-    margin-bottom: 64px;
+    margin-bottom: 32px;
 }
 
 .btn {
@@ -323,7 +344,7 @@ body {
 .section-container {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 80px 24px;
+    padding: 40px 24px;
 }
 
 .section-header {
@@ -357,8 +378,20 @@ body {
 
 .problem-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .problem-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .problem-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .problem-card {
@@ -400,7 +433,7 @@ body {
 
 .solution-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 64px;
     align-items: center;
 }
@@ -409,6 +442,8 @@ body {
     display: flex;
     align-items: center;
     gap: 24px;
+    justify-content: center;
+    margin-bottom: 48px;
 }
 
 .code-preview {
@@ -453,15 +488,23 @@ body {
     flex-shrink: 0;
 }
 
+.solution-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 .solution-title {
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 24px;
     color: var(--color-text);
+    text-align: center;
 }
 
 .solution-list {
     list-style: none;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .solution-list li {
@@ -565,12 +608,92 @@ body {
     gap: 32px;
 }
 
+/* Features Carousel */
+.features-carousel {
+    position: relative;
+    overflow: hidden;
+    padding: 0 60px;
+}
+
+.features-carousel-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.5s ease;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-btn:hover:not(:disabled) {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.carousel-prev {
+    left: 0;
+}
+
+.carousel-next {
+    right: 0;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-border);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.carousel-dot.active {
+    background: var(--color-primary);
+    width: 24px;
+    border-radius: 5px;
+}
+
+.carousel-dot:hover {
+    background: var(--color-primary);
+}
+
 .feature-card {
     background: var(--color-surface);
     padding: 40px 32px;
     border-radius: 12px;
     border: 1px solid var(--color-border);
     transition: all 0.3s;
+    flex: 0 0 calc(33.333% - 16px);
+    min-width: 300px;
 }
 
 .feature-card.elevated {
@@ -602,6 +725,20 @@ body {
     color: var(--color-text-secondary);
     font-size: 15px;
     line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.feature-link-btn {
+    display: inline-block;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.feature-link-btn:hover {
+    color: var(--color-primary-hover);
 }
 
 /* CI/CD Section */
@@ -2038,11 +2175,11 @@ body {
 
 @media (max-width: 768px) {
     .nav-menu {
-        gap: 16px;
+        gap: 12px;
     }
     
     .nav-item:not(.nav-cta):not(.theme-toggle) {
-        display: none;
+        font-size: 13px;
     }
     
     .hero-title {
@@ -2069,6 +2206,22 @@ body {
     .problem-grid,
     .features-grid {
         grid-template-columns: 1fr;
+    }
+    
+    /* Carousel mobile adjustments */
+    .features-carousel {
+        padding: 0 40px;
+    }
+    
+    .feature-card {
+        flex: 0 0 100%;
+        min-width: 280px;
+    }
+    
+    .carousel-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
     }
     
     .footer-grid {

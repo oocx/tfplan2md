@@ -49,17 +49,17 @@
                 <div class="method-card">
                     <h3 class="method-title">🐳 Docker (Recommended)</h3>
                     <p class="method-description">
-                        The easiest way to get started. No dependencies required except Docker.
+                        The easiest way to get started. Docker automatically pulls the image when you run it.
                     </p>
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-title">Pull the Docker image</span>
-                            <button class="copy-btn" data-copy="docker pull oocx/tfplan2md:latest" aria-label="Copy command">📋</button>
+                            <span class="code-title">Run directly</span>
+                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command">📋</button>
                         </div>
-                        <pre><code>docker pull oocx/tfplan2md:latest</code></pre>
+                        <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
                     </div>
                     <p class="method-note">
-                        <strong>✅ Benefits:</strong> Includes comprehensive demo, no runtime dependencies, works everywhere Docker runs
+                        <strong>✅ Benefits:</strong> One command to run, no setup required, works everywhere Docker runs
                     </p>
                 </div>
 

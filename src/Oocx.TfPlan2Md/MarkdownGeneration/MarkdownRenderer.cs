@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -15,15 +14,16 @@ public class MarkdownRenderer
 {
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
 
-    private static readonly IReadOnlyDictionary<string, string> BuiltInTemplates =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> BuiltInTemplates =
+        new(StringComparer.OrdinalIgnoreCase)
         {
-            ["default"] = $"{TemplateResourcePrefix}default.sbn",
-            ["summary"] = $"{TemplateResourcePrefix}summary.sbn"
+            "default",
+            "summary"
         };
 
-    private readonly string? _customTemplateDirectory;
     private readonly Azure.IPrincipalMapper _principalMapper;
+    private readonly ScribanTemplateLoader _templateLoader;
+    private readonly TemplateResolver _templateResolver;
 
     /// <summary>
     /// Creates a new MarkdownRenderer using embedded templates.
@@ -31,6 +31,8 @@ public class MarkdownRenderer
     public MarkdownRenderer(Azure.IPrincipalMapper? principalMapper = null)
     {
         _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
+        _templateLoader = new ScribanTemplateLoader(templateResourcePrefix: TemplateResourcePrefix);
+        _templateResolver = new TemplateResolver(_templateLoader);
     }
 
     /// <summary>
@@ -39,8 +41,9 @@ public class MarkdownRenderer
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
     public MarkdownRenderer(string customTemplateDirectory, Azure.IPrincipalMapper? principalMapper = null)
     {
-        _customTemplateDirectory = customTemplateDirectory;
         _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
+        _templateLoader = new ScribanTemplateLoader(customTemplateDirectory, templateResourcePrefix: TemplateResourcePrefix);
+        _templateResolver = new TemplateResolver(_templateLoader);
     }
 
     /// <summary>
@@ -50,8 +53,8 @@ public class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model)
     {
-        var defaultTemplate = GetBuiltInTemplate("default");
-        var rendered = RenderWithTemplate(model, defaultTemplate);
+        var defaultTemplate = LoadTemplate("default");
+        var rendered = RenderWithTemplate(model, defaultTemplate, "default");
 
         // For each change, if a resource-specific template exists, render that resource separately
         // and replace the corresponding section in the default-rendered output.
@@ -90,7 +93,7 @@ public class MarkdownRenderer
     public string Render(ReportModel model, string templateNameOrPath)
     {
         var templateText = ResolveTemplateText(templateNameOrPath);
-        return RenderWithTemplate(model, templateText);
+        return RenderWithTemplate(model, templateText, templateNameOrPath);
     }
 
     /// <summary>
@@ -103,12 +106,12 @@ public class MarkdownRenderer
     public async Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
     {
         var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
-        return RenderWithTemplate(model, templateText);
+        return RenderWithTemplate(model, templateText, templatePath);
     }
 
     private string ResolveTemplateText(string templateNameOrPath)
     {
-        if (TryGetBuiltInTemplate(templateNameOrPath, out var builtInTemplate))
+        if (_templateLoader.TryGetTemplate(templateNameOrPath, out var builtInTemplate))
         {
             return builtInTemplate;
         }
@@ -118,12 +121,12 @@ public class MarkdownRenderer
             return File.ReadAllText(templateNameOrPath);
         }
 
-        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates.Keys)}");
+        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
     }
 
     private async Task<string> ResolveTemplateTextAsync(string templateNameOrPath, CancellationToken cancellationToken)
     {
-        if (TryGetBuiltInTemplate(templateNameOrPath, out var builtInTemplate))
+        if (_templateLoader.TryGetTemplate(templateNameOrPath, out var builtInTemplate))
         {
             return builtInTemplate;
         }
@@ -133,35 +136,7 @@ public class MarkdownRenderer
             return await File.ReadAllTextAsync(templateNameOrPath, cancellationToken);
         }
 
-        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates.Keys)}");
-    }
-
-    private bool TryGetBuiltInTemplate(string templateName, out string templateText)
-    {
-        if (BuiltInTemplates.TryGetValue(templateName, out var resourceName))
-        {
-            var loaded = LoadEmbeddedTemplate(resourceName);
-            if (loaded is null)
-            {
-                throw new MarkdownRenderException($"Built-in template not found: {resourceName}");
-            }
-
-            templateText = loaded;
-            return true;
-        }
-
-        templateText = string.Empty;
-        return false;
-    }
-
-    private string GetBuiltInTemplate(string templateName)
-    {
-        if (TryGetBuiltInTemplate(templateName, out var templateText))
-        {
-            return templateText;
-        }
-
-        throw new MarkdownRenderException($"Built-in template '{templateName}' not found.");
+        throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
     }
 
     /// <summary>
@@ -172,15 +147,15 @@ public class MarkdownRenderer
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
     public string? RenderResourceChange(ResourceChangeModel change, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
     {
-        var templateText = ResolveResourceTemplate(change.Type);
-        if (templateText is null)
+        var templateSource = ResolveResourceTemplate(change.Type);
+        if (templateSource is null)
         {
             return null; // Use default template handling
         }
 
         try
         {
-            return RenderResourceWithTemplate(change, templateText, largeValueFormat);
+            return RenderResourceWithTemplate(change, templateSource.Value, largeValueFormat);
         }
         catch (ScribanHelperException ex)
         {
@@ -196,28 +171,21 @@ public class MarkdownRenderer
     /// </summary>
     /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
     /// <returns>The template text if a resource-specific template exists, null otherwise.</returns>
-    private string? ResolveResourceTemplate(string resourceType)
+    private TemplateSource? ResolveResourceTemplate(string resourceType)
     {
-        var (provider, resource) = ParseResourceType(resourceType);
+        var (provider, resource) = ResourceTypeParser.Parse(resourceType);
         if (provider is null || resource is null)
         {
             return null;
         }
 
-        // Try custom template directory first
-        if (_customTemplateDirectory is not null)
+        var path = $"{provider}/{resource}";
+        if (_templateLoader.TryGetTemplate(path, out var template))
         {
-            var customPath = Path.Combine(_customTemplateDirectory, provider, $"{resource}.sbn");
-            if (File.Exists(customPath))
-            {
-                return File.ReadAllText(customPath);
-            }
+            return new TemplateSource(path, template);
         }
 
-        // Try embedded resource-specific template
-        var embeddedResourceName = $"{TemplateResourcePrefix}{provider}.{resource}.sbn";
-        var templateText = LoadEmbeddedTemplate(embeddedResourceName);
-        return templateText;
+        return null;
     }
 
     /// <summary>
@@ -225,41 +193,9 @@ public class MarkdownRenderer
     /// </summary>
     /// <param name="resourceType">The resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
     /// <returns>Tuple of (provider, resource) or (null, null) if parsing fails.</returns>
-    private static (string? Provider, string? Resource) ParseResourceType(string resourceType)
+    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, LargeValueFormat largeValueFormat)
     {
-        if (string.IsNullOrEmpty(resourceType))
-        {
-            return (null, null);
-        }
-
-        var underscoreIndex = resourceType.IndexOf('_');
-        if (underscoreIndex <= 0 || underscoreIndex >= resourceType.Length - 1)
-        {
-            return (null, null);
-        }
-
-        var provider = resourceType[..underscoreIndex];
-        var resource = resourceType[(underscoreIndex + 1)..];
-        return (provider, resource);
-    }
-
-    private static string? LoadEmbeddedTemplate(string resourceName)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-
-        if (stream is null)
-        {
-            return null;
-        }
-
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
-    }
-
-    private string RenderResourceWithTemplate(ResourceChangeModel change, string templateText, LargeValueFormat largeValueFormat)
-    {
-        var template = Template.Parse(templateText);
+        var template = Template.Parse(templateSource.Content, templateSource.Path);
         if (template.HasErrors)
         {
             var errors = string.Join(Environment.NewLine, template.Messages);
@@ -281,10 +217,9 @@ public class MarkdownRenderer
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, largeValueFormat);
+        RegisterRendererHelpers(scriptObject);
 
-        var context = new TemplateContext();
-        context.PushGlobal(scriptObject);
-        context.MemberRenamer = member => ToSnakeCase(member.Name);
+        var context = CreateTemplateContext(scriptObject);
 
         try
         {
@@ -302,9 +237,9 @@ public class MarkdownRenderer
         }
     }
 
-    private string RenderWithTemplate(ReportModel model, string templateText)
+    private string RenderWithTemplate(ReportModel model, string templateText, string templatePath)
     {
-        var template = Template.Parse(templateText);
+        var template = Template.Parse(templateText, templatePath);
         if (template.HasErrors)
         {
             var errors = string.Join(Environment.NewLine, template.Messages);
@@ -317,10 +252,9 @@ public class MarkdownRenderer
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);
+        RegisterRendererHelpers(scriptObject);
 
-        var context = new TemplateContext();
-        context.PushGlobal(scriptObject);
-        context.MemberRenamer = member => ToSnakeCase(member.Name);
+        var context = CreateTemplateContext(scriptObject);
 
         try
         {
@@ -383,4 +317,38 @@ public class MarkdownRenderer
         markdown = markdown.TrimEnd();
         return $"{markdown}\n";
     }
+
+    private TemplateContext CreateTemplateContext(ScriptObject scriptObject)
+    {
+        var context = new TemplateContext
+        {
+            TemplateLoader = _templateLoader,
+            MemberRenamer = member => ToSnakeCase(member.Name)
+        };
+
+        context.PushGlobal(scriptObject);
+        return context;
+    }
+
+    private void RegisterRendererHelpers(ScriptObject scriptObject)
+    {
+        _templateResolver.Register(scriptObject);
+    }
+
+    private string LoadTemplate(string templateName)
+    {
+        if (_templateLoader.TryGetTemplate(templateName, out var template))
+        {
+            return template;
+        }
+
+        if (BuiltInTemplates.Contains(templateName))
+        {
+            throw new MarkdownRenderException($"Built-in template '{templateName}' not found.");
+        }
+
+        throw new MarkdownRenderException($"Template '{templateName}' not found.");
+    }
+
+    private readonly record struct TemplateSource(string Path, string Content);
 }

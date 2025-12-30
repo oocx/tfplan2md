@@ -756,6 +756,248 @@ body {
     }
 }
 
+/* Getting Started Page Styles */
+.section {
+    padding: 80px 0;
+}
+
+.install-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 32px;
+    margin-bottom: 48px;
+}
+
+.method-card {
+    background: var(--color-surface);
+    padding: 40px;
+    border-radius: 16px;
+    border: 2px solid var(--color-border);
+    transition: all 0.3s;
+}
+
+.method-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+}
+
+.method-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--color-text);
+}
+
+.method-description {
+    color: var(--color-text-secondary);
+    margin-bottom: 24px;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.method-note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--color-bg);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+.code-block {
+    background: var(--code-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.code-block .code-header {
+    background: var(--code-header-bg);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.code-block pre {
+    padding: 20px;
+    margin: 0;
+    overflow-x: auto;
+}
+
+.code-block code {
+    color: var(--code-text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.quickstart-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 64px;
+}
+
+.step-card {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.step-number {
+    width: 48px;
+    height: 48px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--color-text);
+}
+
+.usage-examples {
+    margin-top: 48px;
+}
+
+.example-card {
+    margin-bottom: 32px;
+}
+
+.example-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--color-text);
+}
+
+.cicd-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.cicd-tab {
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cicd-tab:hover {
+    color: var(--color-primary);
+}
+
+.cicd-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+.cicd-content-wrapper {
+    position: relative;
+}
+
+.cicd-tab-content {
+    display: none;
+}
+
+.cicd-tab-content.active {
+    display: block;
+}
+
+.cicd-section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--color-text);
+}
+
+.cicd-description {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.7;
+}
+
+.cicd-note {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+.cicd-note code {
+    background: var(--color-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+.next-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+}
+
+.next-step-card {
+    background: var(--color-bg);
+    padding: 32px;
+    border-radius: 16px;
+    border: 2px solid var(--color-border);
+    text-decoration: none;
+    transition: all 0.3s;
+    display: block;
+}
+
+.next-step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+}
+
+.next-step-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.next-step-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--color-text);
+}
+
+.next-step-description {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+}
+
 @media (max-width: 768px) {
     .nav-menu {
         gap: 16px;
@@ -794,5 +1036,18 @@ body {
     .footer-grid {
         grid-template-columns: 1fr;
         gap: 32px;
+    }
+    
+    .install-methods {
+        grid-template-columns: 1fr;
+    }
+    
+    .cicd-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .next-steps-grid {
+        grid-template-columns: 1fr;
     }
 }

@@ -1,29 +1,30 @@
 {{~## Template for azurerm_role_assignment
      Uses RoleAssignmentViewModel for pre-computed formatting.
+     Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
-<!-- tfplan2md:resource-start address={{ address }} -->
+<!-- tfplan2md:resource-start address={{ change.address }} -->
 <details style="margin-bottom:12px;">
-<summary>{{ action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(role_assignment.resource_name) }}</b> — {{ role_assignment.summary_text }}</summary>
+<summary>{{ change.action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(change.role_assignment.resource_name) }}</b> — {{ change.role_assignment.summary_text }}</summary>
 <br>
 
-{{ if role_assignment.description && role_assignment.description != "" }}
-{{ role_assignment.description | escape_markdown }}
+{{ if change.role_assignment.description && change.role_assignment.description != "" }}
+{{ change.role_assignment.description | escape_markdown }}
 
 {{ end }}
 
-{{ if role_assignment.small_attributes.size > 0 }}
-{{ if action == "create" }}
+{{ if change.role_assignment.small_attributes.size > 0 }}
+{{ if change.action == "create" }}
 | Attribute | Value |
 | ----------- | ------- |
-{{ for attr in role_assignment.small_attributes -}}
+{{ for attr in change.role_assignment.small_attributes -}}
 {{ if attr.after }}| {{ attr.name | escape_markdown }} | {{ attr.after }} |
 {{ end -}}
 {{ end -}}
 
-{{ else if action == "delete" }}
+{{ else if change.action == "delete" }}
 | Attribute | Value |
 | ----------- | ------- |
-{{ for attr in role_assignment.small_attributes -}}
+{{ for attr in change.role_assignment.small_attributes -}}
 {{ if attr.before }}| {{ attr.name | escape_markdown }} | {{ attr.before }} |
 {{ end -}}
 {{ end -}}
@@ -31,21 +32,21 @@
 {{ else }}
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-{{ for attr in role_assignment.small_attributes -}}
+{{ for attr in change.role_assignment.small_attributes -}}
 | {{ attr.name | escape_markdown }} | {{ if attr.before != null && attr.before != "" }}{{ attr.before }}{{ else }}-{{ end }} | {{ if attr.after != null && attr.after != "" }}{{ attr.after }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
 {{ end }}
 
-{{ if role_assignment.large_attributes.size > 0 }}
+{{ if change.role_assignment.large_attributes.size > 0 }}
 <br/>
 <details>
-<summary>{{ large_attributes_summary(role_assignment.large_attributes) }}</summary>
+<summary>{{ large_attributes_summary(change.role_assignment.large_attributes) }}</summary>
 
-{{ for attr in role_assignment.large_attributes }}
+{{ for attr in change.role_assignment.large_attributes }}
 ##### **{{ attr.name | escape_markdown }}:**
 
-{{ format_large_value(attr.before, attr.after, large_value_format) }}
+{{ format_large_value(attr.before, attr.after, change.large_value_format) }}
 
 {{ end }}
 
@@ -53,4 +54,4 @@
 {{ end }}
 
 </details>
-<!-- tfplan2md:resource-end address={{ address }} -->
+<!-- tfplan2md:resource-end address={{ change.address }} -->

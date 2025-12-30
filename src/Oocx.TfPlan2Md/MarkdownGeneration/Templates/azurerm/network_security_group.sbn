@@ -1,51 +1,52 @@
 {{~## Template for azurerm_network_security_group
      Provides semantic diffing of NSG security rules instead of index-based changes.
+     Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
 <div style="margin-bottom:12px;">
-<!-- tfplan2md:resource-start address={{ address }} -->
-### {{ action_symbol }} {{ address | escape_markdown }}
+<!-- tfplan2md:resource-start address={{ change.address }} -->
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
-{{~ if network_security_group && network_security_group.name ~}}
-**Network Security Group:** `{{ network_security_group.name | escape_markdown }}`
+{{~ if change.network_security_group && change.network_security_group.name ~}}
+**Network Security Group:** `{{ change.network_security_group.name | escape_markdown }}`
 {{~ end ~}}
 
-{{~ if before_json && after_json && network_security_group && network_security_group.rule_changes.size > 0 ~}}
+{{~ if change.before_json && change.after_json && change.network_security_group && change.network_security_group.rule_changes.size > 0 ~}}
 
 #### Security Rules{{ "\n" }}
 
 | Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{ for row in network_security_group.rule_changes }}
+{{~ for row in change.network_security_group.rule_changes ~}}
 | {{ row.change }} | {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{ end }}
 
 
-{{~ else if action == "create" && network_security_group && network_security_group.after_rules.size > 0 ~}}
+{{~ else if change.action == "create" && change.network_security_group && change.network_security_group.after_rules.size > 0 ~}}
 #### Security Rules{{ "\n" }}
 
 | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{ for row in network_security_group.after_rules }}
+{{~ for row in change.network_security_group.after_rules ~}}
 | {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
-{{ end }}
+{{~ end ~}}
 
-{{~ else if action == "delete" && network_security_group && network_security_group.before_rules.size > 0 ~}}
+{{~ else if change.action == "delete" && change.network_security_group && change.network_security_group.before_rules.size > 0 ~}}
 #### Security Rules (being deleted)
 
 | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
 | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{ for row in network_security_group.before_rules }}
+{{~ for row in change.network_security_group.before_rules ~}}
 | {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
-{{ end }}
+{{~ end ~}}
 
 {{~ else ~}}
-{{~ if attribute_changes && attribute_changes.size > 0 ~}}
+{{~ if change.attribute_changes && change.attribute_changes.size > 0 ~}}
 <details>
 <summary>Attribute Changes</summary>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-{{~ for attr in attribute_changes ~}}
+{{~ for attr in change.attribute_changes ~}}
 | {{ attr.name | escape_markdown }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
 {{~ end ~}}
 
@@ -53,6 +54,6 @@
 {{~ end ~}}
 {{~ end ~}}
 
-<!-- tfplan2md:resource-end address={{ address }} -->
+<!-- tfplan2md:resource-end address={{ change.address }} -->
 
 </div>

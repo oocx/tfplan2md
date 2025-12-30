@@ -49,38 +49,17 @@ public class MarkdownRenderer
     /// <summary>
     /// Renders a report model to Markdown using the default embedded template.
     /// </summary>
+    /// <remarks>
+    /// Uses single-pass rendering via Scriban's include mechanism.
+    /// Resource-specific templates are dispatched directly through the
+    /// <c>resolve_template</c> helper function registered with the template context.
+    /// </remarks>
     /// <param name="model">The report model to render.</param>
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model)
     {
         var defaultTemplate = LoadTemplate("default");
-        var rendered = RenderWithTemplate(model, defaultTemplate, "default");
-
-        // For each change, if a resource-specific template exists, render that resource separately
-        // and replace the corresponding section in the default-rendered output.
-        foreach (var change in model.Changes)
-        {
-            var resourceTemplate = ResolveResourceTemplate(change.Type);
-            if (resourceTemplate is null)
-            {
-                continue;
-            }
-
-            // Render using the resource-specific template (may return an error message if rendering fails)
-            var specific = RenderResourceChange(change, model.LargeValueFormat);
-            if (specific is null)
-            {
-                continue;
-            }
-
-            // Replace the corresponding change section in the default-rendered document using invisible anchors
-            var startMarker = $"<!-- tfplan2md:resource-start address={change.Address} -->";
-            var endMarker = $"<!-- tfplan2md:resource-end address={change.Address} -->";
-            var pattern = $"{Regex.Escape(startMarker)}.*?{Regex.Escape(endMarker)}";
-            rendered = Regex.Replace(rendered, pattern, specific, RegexOptions.Singleline);
-        }
-
-        return NormalizeHeadingSpacing(rendered);
+        return RenderWithTemplate(model, defaultTemplate, "default");
     }
 
     /// <summary>
@@ -203,17 +182,23 @@ public class MarkdownRenderer
         }
 
         var scriptObject = new ScriptObject();
-        scriptObject.Import(change, renamer: member => ToSnakeCase(member.Name));
+
+        // Create a nested ScriptObject for the change to mirror include path behavior
+        // Templates access properties via change.* for consistency with default.sbn include
+        var changeObject = new ScriptObject();
+        changeObject.Import(change, renamer: member => ToSnakeCase(member.Name));
 
         // Convert JsonElement properties to ScriptObjects for proper Scriban navigation
         if (change.BeforeJson is JsonElement beforeElement)
         {
-            scriptObject["before_json"] = ScribanHelpers.ConvertToScriptObject(beforeElement);
+            changeObject["before_json"] = ScribanHelpers.ConvertToScriptObject(beforeElement);
         }
         if (change.AfterJson is JsonElement afterElement)
         {
-            scriptObject["after_json"] = ScribanHelpers.ConvertToScriptObject(afterElement);
+            changeObject["after_json"] = ScribanHelpers.ConvertToScriptObject(afterElement);
         }
+
+        scriptObject["change"] = changeObject;
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, largeValueFormat);

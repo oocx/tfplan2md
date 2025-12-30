@@ -25,86 +25,8 @@ No changes.
 ### 📦 Module: {{ if module.module_address && module.module_address != "" }}{{ format_code_table(module.module_address) }}{{ else }}root{{ end }}
 
 {{ for change in module.changes }}
-<!-- tfplan2md:resource-start address={{ change.address }} -->
-<details style="margin-bottom:12px;">
-<summary>{{ change.summary_html }}</summary>
-<br>
-
-{{ small_attrs = [] }}
-{{ large_attrs = [] }}
-{{ for attr in change.attribute_changes }}
-{{ if attr.is_large }}
-{{ large_attrs = large_attrs + [attr] }}
-{{ else }}
-{{ small_attrs = small_attrs + [attr] }}
-{{ end }}
-{{ end }}
-
-{{ if small_attrs.size > 0 }}
-{{ if change.action == "create" }}
-| Attribute | Value |
-| ----------- | ------- |
-{{ for attr in small_attrs -}}
-{{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
-{{ value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
-{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
-{{ end -}}
-{{ end -}}
-{{ end -}}
-
-{{ else if change.action == "delete" }}
-| Attribute | Value |
-| ----------- | ------- |
-{{ for attr in small_attrs -}}
-{{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
-{{ value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
-{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
-{{ end -}}
-{{ end -}}
-{{ end -}}
-
-{{ else }}
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-{{ for attr in small_attrs -}}
-{{ before_value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
-{{ after_value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
-| {{ attr.name | escape_markdown }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
-{{ end -}}
-{{ end }}
-{{ end }}
-
-{{ if change.tags_badges }}
-{{ change.tags_badges }}
-{{ end }}
-
-{{ if large_attrs.size > 0 }}
-{{ if small_attrs.size > 0 || change.tags_badges }}<br/>
-<details>
-<summary>{{ large_attributes_summary(large_attrs) }}</summary>
-
-{{ for attr in large_attrs }}
-##### **{{ attr.name | escape_markdown }}:**
-
-{{ format_large_value(attr.before, attr.after, large_value_format) }}
-
-{{ end }}
-
-</details>
-{{ else }}
-{{ large_attributes_summary(large_attrs) }}
-
-{{ for attr in large_attrs }}
-##### **{{ attr.name | escape_markdown }}:**
-
-{{ format_large_value(attr.before, attr.after, large_value_format) }}
-
-{{ end }}
-{{ end }}
-{{ end }}
-
-</details>
-<!-- tfplan2md:resource-end address={{ change.address }} -->
+{{~ # Include the appropriate template - the 'change' variable is accessible in the included template ~}}
+{{ include (resolve_template change.type) }}
 
 {{ end }}
 {{ end }}

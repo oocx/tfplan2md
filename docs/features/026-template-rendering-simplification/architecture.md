@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Implemented
 
 ## Context
 
@@ -161,8 +161,7 @@ Option B was considered but rejected because it mixes presentation concerns (tem
 
 - Requires implementing custom Scriban template loader
 - Partial templates have different context shape than current resource templates
-- Migration requires updating all existing templates
-
+- Migration requires updating all existi
 ## Regex Hacks to Eliminate
 
 The current `MarkdownRenderer` contains several Regex.Replace calls that are workarounds for template output issues:

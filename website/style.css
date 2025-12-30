@@ -2587,9 +2587,16 @@ body {
     }
 
     .hero-badges {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .hero-badge {
+        margin-bottom: 0;
+        font-size: 12px;
+        padding: 4px 12px;
     }
 
     .problem-solution-layout {
@@ -2607,13 +2614,21 @@ body {
     }
 
     .install-actions {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         width: 100%;
     }
 
     .btn {
         width: 100%;
         text-align: center;
+    }
+
+    .install-actions .btn {
+        width: auto;
+        flex: 1;
+        min-width: 140px;
     }
 
     .command-box {

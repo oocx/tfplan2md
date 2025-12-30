@@ -359,11 +359,10 @@ internal static class RoleAssignmentViewModelFactory
             ? nameProp.GetString() ?? string.Empty
             : string.Empty;
 
-        var roleName = !string.IsNullOrEmpty(roleDefName)
-            ? AzureRoleDefinitionMapper.GetRoleName(roleDefName)
-            : AzureRoleDefinitionMapper.GetRoleName(roleDefId);
+        // Use the same logic as the template helper to get consistent output
+        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(roleDefId, roleDefName);
 
-        return new RoleInfo(roleName, roleDefId);
+        return new RoleInfo(roleInfo.Name, roleInfo.Id);
     }
 
     /// <summary>
@@ -385,7 +384,7 @@ internal static class RoleAssignmentViewModelFactory
             : string.Empty;
 
         var principalName = !string.IsNullOrEmpty(principalId)
-            ? principalMapper.GetPrincipalName(principalId)
+            ? principalMapper.GetName(principalId, principalType) ?? string.Empty
             : string.Empty;
 
         return new PrincipalInfo(principalName, principalId, principalType);

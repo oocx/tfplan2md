@@ -1,84 +1,104 @@
-using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Tests.TestData;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
+/// <summary>
+/// Tests for role assignment rendering through MarkdownRenderer.
+/// These tests use the full pipeline (parser -> builder -> renderer) to verify behavior.
+/// </summary>
 public class MarkdownRendererRoleAssignmentTests
 {
-    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
+    private const string Nbsp = "\u00A0";
+    private readonly TerraformPlanParser _parser = new();
 
     [Fact]
     public void Render_RoleAssignment_UsesEnhancedTemplate()
     {
         // Arrange
-        var change = CreateRoleAssignmentChange("principal-id", "User");
-        var renderer = new MarkdownRenderer(principalMapper: new StubPrincipalMapper("principal-id", "John Doe"));
+        var principalMapper = new StubPrincipalMapper();
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.RoleAssignmentsPlanPath));
+        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(principalMapper: principalMapper);
 
         // Act
-        var result = renderer.RenderResourceChange(change);
+        var result = renderer.Render(model);
 
-        // Assert
-        result.Should().NotBeNull();
+        // Assert - verify the create_no_description assignment
         result.Should().Contain("<summary>");
-        result.Should().Contain("azurerm_role_assignment <b><code>example</code></b>");
-        result.Should().Contain("John Doe");
+        result.Should().Contain("azurerm_role_assignment <b><code>create_no_description</code></b>");
+        result.Should().Contain("Jane Doe");
         result.Should().Contain("Reader");
-        result.Should().Contain("my-rg");
+        result.Should().Contain("rg-tfplan2md-demo");
         result.Should().Contain("| Attribute | Value |");
-        result.Should().Contain("`🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`)");
-        result.Should().Contain("`my-rg` in subscription `sub-id`");
-        result.Should().Contain("`👤 John Doe` (`👤 User`) [`principal-id`]");
+        result.Should().Contain($"`🛡️{Nbsp}Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`)");
+        result.Should().Contain("`rg-tfplan2md-demo` in subscription `sub-one`");
+        result.Should().Contain($"`👤 Jane Doe` (`👤{Nbsp}User`) [`11111111-1111-1111-1111-111111111111`]");
     }
 
     [Fact]
     public void Render_RoleAssignment_WithoutPrincipalMapping_FallsBackToGuid()
     {
-        // Arrange
-        var change = CreateRoleAssignmentChange("missing-principal", "Group");
-        var renderer = new MarkdownRenderer(principalMapper: new StubPrincipalMapper("principal-id", "John Doe"));
+        // Arrange - use a mapper that doesn't resolve any principals
+        var principalMapper = new NullPrincipalMapper();
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.RoleAssignmentsPlanPath));
+        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(principalMapper: principalMapper);
 
         // Act
-        var result = renderer.RenderResourceChange(change);
+        var result = renderer.Render(model);
 
-        // Assert
-        result.Should().NotBeNull();
-        result!.Should().Contain("`missing-principal`");
+        // Assert - verify the principal ID is shown as-is when not mapped
+        result.Should().Contain("`11111111-1111-1111-1111-111111111111`");
     }
 
-    private static ResourceChangeModel CreateRoleAssignmentChange(string principalId, string principalType)
+    private sealed class StubPrincipalMapper : IPrincipalMapper
     {
-        var json = $"{{\n  \"scope\": \"/subscriptions/sub-id/resourceGroups/my-rg\",\n  \"role_definition_id\": \"/subscriptions/sub-id/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7\",\n  \"principal_id\": \"{principalId}\",\n  \"principal_type\": \"{principalType}\"\n}}";
-        var afterJson = JsonDocument.Parse(json).RootElement;
-
-        return new ResourceChangeModel
+        private static readonly Dictionary<(string Id, string? Type), string> TypedNames = new()
         {
-            Address = "azurerm_role_assignment.example",
-            ModuleAddress = string.Empty,
-            Type = "azurerm_role_assignment",
-            Name = "example",
-            ProviderName = "registry.terraform.io/hashicorp/azurerm",
-            Action = "create",
-            ActionSymbol = "➕",
-            AttributeChanges = Array.Empty<AttributeChangeModel>(),
-            BeforeJson = null,
-            AfterJson = afterJson
+            [("11111111-1111-1111-1111-111111111111", "User")] = "Jane Doe",
+            [("22222222-2222-2222-2222-222222222222", "Group")] = "DevOps Team",
+            [("33333333-3333-3333-3333-333333333333", "Group")] = "Security Team",
+            [("33333333-3333-3333-3333-333333333333", "User")] = "John Doe"
         };
-    }
 
-    private sealed class StubPrincipalMapper(string id, string name) : IPrincipalMapper
-    {
+        private static readonly Dictionary<string, string> Names = new()
+        {
+            ["11111111-1111-1111-1111-111111111111"] = "Jane Doe",
+            ["22222222-2222-2222-2222-222222222222"] = "DevOps Team",
+            ["33333333-3333-3333-3333-333333333333"] = "Security Team"
+        };
+
         public string GetPrincipalName(string principalId)
         {
-            return principalId == id
-                ? $"{name} [{principalId}]"
-                : principalId;
+            var name = GetName(principalId);
+            return name is null ? principalId : $"{name} [{principalId}]";
+        }
+
+        public string GetPrincipalName(string principalId, string? principalType)
+        {
+            var name = GetName(principalId, principalType);
+            return name is null ? principalId : $"{name} [{principalId}]";
         }
 
         public string? GetName(string principalId)
         {
-            return principalId == id ? name : null;
+            return Names.TryGetValue(principalId, out var name) ? name : null;
+        }
+
+        public string? GetName(string principalId, string? principalType)
+        {
+            if (principalType != null && TypedNames.TryGetValue((principalId, principalType), out var typedName))
+            {
+                return typedName;
+            }
+
+            return GetName(principalId);
         }
     }
 }

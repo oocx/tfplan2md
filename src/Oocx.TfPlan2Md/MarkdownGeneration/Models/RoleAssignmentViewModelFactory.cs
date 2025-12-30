@@ -287,7 +287,7 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Builds default attributes when no attribute changes exist.
     /// </summary>
-    private static IReadOnlyList<AttributeChangeModel> BuildDefaultAttributes()
+    private static AttributeChangeModel[] BuildDefaultAttributes()
     {
         return new[]
         {
@@ -303,7 +303,7 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Orders attributes by the desired order, with unspecified attributes at the end.
     /// </summary>
-    private static IReadOnlyList<RoleAssignmentAttributeViewModel> OrderAttributes(List<RoleAssignmentAttributeViewModel> attributes)
+    private static List<RoleAssignmentAttributeViewModel> OrderAttributes(List<RoleAssignmentAttributeViewModel> attributes)
     {
         var ordered = new List<RoleAssignmentAttributeViewModel>();
         var remaining = new HashSet<RoleAssignmentAttributeViewModel>(attributes);

@@ -119,7 +119,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     /// <summary>
     /// Builds change rows for rules that only exist in the after state.
     /// </summary>
-    private static IReadOnlyList<FirewallRuleChangeRowViewModel> BuildAdded(
+    private static List<FirewallRuleChangeRowViewModel> BuildAdded(
         IReadOnlyList<FirewallRuleValues> afterRules,
         IReadOnlyList<FirewallRuleValues> beforeRules,
         string providerName)
@@ -134,7 +134,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     /// <summary>
     /// Builds change rows for rules that only exist in the before state.
     /// </summary>
-    private static IReadOnlyList<FirewallRuleChangeRowViewModel> BuildRemoved(
+    private static List<FirewallRuleChangeRowViewModel> BuildRemoved(
         IReadOnlyList<FirewallRuleValues> beforeRules,
         IReadOnlyList<FirewallRuleValues> afterRules,
         string providerName)
@@ -149,7 +149,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     /// <summary>
     /// Builds change rows for rules that exist in both states but differ.
     /// </summary>
-    private static IReadOnlyList<FirewallRuleChangeRowViewModel> BuildModified(
+    private static List<FirewallRuleChangeRowViewModel> BuildModified(
         IReadOnlyList<FirewallRuleValues> beforeRules,
         IReadOnlyList<FirewallRuleValues> afterRules,
         string providerName,
@@ -166,7 +166,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     /// <summary>
     /// Builds change rows for rules that remain unchanged between states.
     /// </summary>
-    private static IReadOnlyList<FirewallRuleChangeRowViewModel> BuildUnchanged(
+    private static List<FirewallRuleChangeRowViewModel> BuildUnchanged(
         IReadOnlyList<FirewallRuleValues> beforeRules,
         IReadOnlyList<FirewallRuleValues> afterRules,
         string providerName)
@@ -182,7 +182,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     /// <summary>
     /// Formats rule values for create/delete tables.
     /// </summary>
-    private static IReadOnlyList<FirewallRuleRowViewModel> FormatRuleRows(
+    private static List<FirewallRuleRowViewModel> FormatRuleRows(
         IReadOnlyList<FirewallRuleValues> rules,
         string providerName)
     {

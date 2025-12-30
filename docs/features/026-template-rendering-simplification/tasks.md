@@ -52,10 +52,10 @@ Split the 1700+ line `ScribanHelpers.cs` into focused classes (e.g., `SemanticIc
 Create generic record types to wrap raw values with their pre-computed formatted strings. This allows templates to access both `.raw` and `.formatted` properties.
 
 **Acceptance Criteria:**
-- [ ] `FormattedValue<T>` record implemented.
-- [ ] `FormattedList<T>` record implemented.
-- [ ] Records are serializable/accessible by Scriban.
-- [ ] Unit tests verify accessibility in templates.
+- [x] `FormattedValue<T>` record implemented.
+- [x] `FormattedList<T>` record implemented.
+- [x] Records are serializable/accessible by Scriban.
+- [x] Unit tests verify accessibility in templates.
 
 **Dependencies:** None
 

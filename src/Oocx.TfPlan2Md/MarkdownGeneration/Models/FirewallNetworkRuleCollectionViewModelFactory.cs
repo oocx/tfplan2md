@@ -58,6 +58,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
 
     /// <summary>
     /// Extracts a string property from the state object.
+    /// Handles both string and number values.
     /// </summary>
     private static string? ExtractString(object? state, string propertyName)
     {
@@ -66,12 +67,17 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
             return null;
         }
 
-        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind != JsonValueKind.String)
+        if (!element.TryGetProperty(propertyName, out var property))
         {
             return null;
         }
 
-        return property.GetString();
+        return property.ValueKind switch
+        {
+            JsonValueKind.String => property.GetString(),
+            JsonValueKind.Number => property.GetRawText(),
+            _ => null
+        };
     }
 
     /// <summary>

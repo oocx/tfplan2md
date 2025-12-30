@@ -2,86 +2,41 @@
       Provides semantic diffing of firewall rules instead of index-based changes.
 ~}}
 
-{{ func format_rule_value(attr_name, value) }}
-     {{- if value == null || value == "" -}}{{ ret "" }}{{ end -}}
-     {{- ret format_attribute_value_table(attr_name, "" + value, null) }}
-{{ end }}
-
-{{ func format_rule_list(attr_name, values) }}
-     {{- if values == null || values.size == 0 -}}{{ ret "" }}{{ end -}}
-     {{- formatted = [] -}}
-     {{- for v in values -}}
-          {{ formatted = formatted + [ format_attribute_value_table(attr_name, "" + v, null) ] }}
-     {{- end -}}
-     {{- ret array.join formatted ", " -}}
-{{ end }}
-
-{{ func format_rule_diff(attr_name, before_values, after_values) }}
-     {{- # Apply icons to each value before joining -}}
-     {{- before_formatted = [] -}}
-     {{- for v in before_values -}}
-          {{ before_formatted = before_formatted + [ format_attribute_value_plain(attr_name, "" + v, null) ] }}
-     {{- end -}}
-     {{- after_formatted = [] -}}
-     {{- for v in after_values -}}
-          {{ after_formatted = after_formatted + [ format_attribute_value_plain(attr_name, "" + v, null) ] }}
-     {{- end -}}
-     {{- before_str = before_formatted | array.join ", " -}}
-     {{- after_str = after_formatted | array.join ", " -}}
-     {{- if before_str == after_str -}}
-          {{- ret after_str -}}
-     {{- else -}}
-          {{- ret format_diff before_str after_str -}}
-     {{- end -}}
-{{ end }}
-
 <div style="margin-bottom:12px;">
 <!-- tfplan2md:resource-start address={{ address }} -->
 ### {{ action_symbol }} {{ address | escape_markdown }}
 
-{{~ if after_json ~}}
-**Collection:** `{{ after_json.name | escape_markdown }}` | **Priority:** `{{ after_json.priority | escape_markdown }}` | **Action:** {{ format_attribute_value_table("access", after_json.action, null) }}
-{{~ else if before_json ~}}
-**Collection:** `{{ before_json.name | escape_markdown }}` | **Priority:** `{{ before_json.priority | escape_markdown }}` | **Action:** {{ format_attribute_value_table("access", before_json.action, null) }}
+{{~ if firewall_network_rule_collection && firewall_network_rule_collection.name ~}}
+**Collection:** `{{ firewall_network_rule_collection.name | escape_markdown }}` | **Priority:** `{{ firewall_network_rule_collection.priority | escape_markdown }}` | **Action:** {{ firewall_network_rule_collection.action }}
 {{~ end ~}}
 
-{{~ if before_json && after_json && before_json.rule && after_json.rule ~}}
-{{~ diff = diff_array before_json.rule after_json.rule "name" ~}}
+{{~ if before_json && after_json && firewall_network_rule_collection && firewall_network_rule_collection.rule_changes.size > 0 ~}}
 
 #### Rule Changes{{ "\n" }}
 
 | Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-{{~ for rule in diff.added ~}}
-| ➕ | `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
+{{~ for row in firewall_network_rule_collection.rule_changes ~}}
+| {{ row.change }} | {{ row.name }} | {{ row.protocols }} | {{ row.source_addresses }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{ end }}
-{{~ for item in diff.modified ~}}
-| 🔄 | `{{ item.after.name | escape_markdown }}` | {{ format_rule_diff "protocol" item.before.protocols item.after.protocols }} | {{ format_rule_diff "source_addresses" item.before.source_addresses item.after.source_addresses }} | {{ format_rule_diff "destination_addresses" item.before.destination_addresses item.after.destination_addresses }} | {{ format_rule_diff "destination_ports" item.before.destination_ports item.after.destination_ports }} | {{ format_diff (item.before.description ?? "") (item.after.description ?? "") }} |
-{{ end }}
-{{~ for rule in diff.removed ~}}
-| ❌ | `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
-{{ end }}
-{{~ for rule in diff.unchanged ~}}
-| ⏺️ | `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
-{{~ end ~}}
 
 
-{{~ else if action == "create" && after_json && after_json.rule ~}}
+{{~ else if action == "create" && firewall_network_rule_collection && firewall_network_rule_collection.after_rules.size > 0 ~}}
 #### Rules{{ "\n" }}
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-{{~ for rule in after_json.rule ~}}
-| `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
+{{~ for row in firewall_network_rule_collection.after_rules ~}}
+| {{ row.name }} | {{ row.protocols }} | {{ row.source_addresses }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{~ end ~}}
 
-{{~ else if action == "delete" && before_json && before_json.rule ~}}
+{{~ else if action == "delete" && firewall_network_rule_collection && firewall_network_rule_collection.before_rules.size > 0 ~}}
 #### Rules (being deleted)
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
-{{~ for rule in before_json.rule ~}}
-| `{{ rule.name | escape_markdown }}` | {{ format_rule_list "protocol" rule.protocols }} | {{ format_rule_list "source_addresses" rule.source_addresses }} | {{ format_rule_list "destination_addresses" rule.destination_addresses }} | {{ format_rule_list "destination_ports" rule.destination_ports }} | `{{ (rule.description ?? "") | escape_markdown }}` |
+{{~ for row in firewall_network_rule_collection.before_rules ~}}
+| {{ row.name }} | {{ row.protocols }} | {{ row.source_addresses }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
 {{~ end ~}}
 
 {{~ else ~}}

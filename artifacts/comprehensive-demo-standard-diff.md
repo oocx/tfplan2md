@@ -328,11 +328,14 @@ Large values: value (4 lines, 2 changed)
 
 ##### **value:**
 
-<pre style="font-family: monospace; line-height: 1.5;"><code>line1: allow
-<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">- line2: log <span style="background-color: #ffc0c0; color: #24292e;">o</span>l<span style="background-color: #ffc0c0; color: #24292e;">d</span> activity</span>
-<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+ line2: log <span style="background-color: #acf2bd; color: #24292e;">critica</span>l activity</span>
-line3: end
-</code></pre>
+```diff
+- line1: allow
+- line2: log old activity
+- line3: end
++ line1: allow
++ line2: log critical activity
++ line3: end
+```
 
 </details>
 <!-- tfplan2md:resource-end address=module.security.azurerm_key_vault_secret.audit_policy -->

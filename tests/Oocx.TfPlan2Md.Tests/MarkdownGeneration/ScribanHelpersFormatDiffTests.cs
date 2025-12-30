@@ -8,53 +8,53 @@ public class ScribanHelpersFormatDiffTests
     [Fact]
     public void FormatDiff_EqualStrings_ReturnsCodeFormattedValue()
     {
-        ScribanHelpers.FormatDiff("TCP", "TCP", "standard-diff").Should().Be("<code>TCP</code>");
-        ScribanHelpers.FormatDiff("10.0.1.0/24", "10.0.1.0/24", "standard-diff")
+        ScribanHelpers.FormatDiff("TCP", "TCP", "simple-diff").Should().Be("<code>TCP</code>");
+        ScribanHelpers.FormatDiff("10.0.1.0/24", "10.0.1.0/24", "simple-diff")
             .Should().Be("<code>10.0.1.0/24</code>");
     }
 
     [Fact]
     public void FormatDiff_DifferentStrings_ReturnsBacktickWrappedStandardDiff()
     {
-        ScribanHelpers.FormatDiff("TCP", "UDP", "standard-diff")
+        ScribanHelpers.FormatDiff("TCP", "UDP", "simple-diff")
             .Should().Be("- `TCP`<br>+ `UDP`");
 
-        ScribanHelpers.FormatDiff("10.0.1.0/24", "10.0.1.0/24, 10.0.3.0/24", "standard-diff")
+        ScribanHelpers.FormatDiff("10.0.1.0/24", "10.0.1.0/24, 10.0.3.0/24", "simple-diff")
             .Should().Be("- `10.0.1.0/24`<br>+ `10.0.1.0/24, 10.0.3.0/24`");
     }
 
     [Fact]
     public void FormatDiff_NullBefore_ReturnsBacktickWrappedStandardDiff()
     {
-        ScribanHelpers.FormatDiff(null, "value", "standard-diff")
+        ScribanHelpers.FormatDiff(null, "value", "simple-diff")
             .Should().Be("- ``<br>+ `value`");
     }
 
     [Fact]
     public void FormatDiff_NullAfter_ReturnsBacktickWrappedStandardDiff()
     {
-        ScribanHelpers.FormatDiff("value", null, "standard-diff")
+        ScribanHelpers.FormatDiff("value", null, "simple-diff")
             .Should().Be("- `value`<br>+ ``");
     }
 
     [Fact]
     public void FormatDiff_BothNull_ReturnsEmptyString()
     {
-        ScribanHelpers.FormatDiff(null, null, "standard-diff").Should().Be(string.Empty);
+        ScribanHelpers.FormatDiff(null, null, "simple-diff").Should().Be(string.Empty);
     }
 
     [Fact]
     public void FormatDiff_EmptyStrings_HandledCorrectly()
     {
-        ScribanHelpers.FormatDiff(string.Empty, string.Empty, "standard-diff").Should().Be(string.Empty);
-        ScribanHelpers.FormatDiff("", "value", "standard-diff").Should().Be("- ``<br>+ `value`");
-        ScribanHelpers.FormatDiff("value", "", "standard-diff").Should().Be("- `value`<br>+ ``");
+        ScribanHelpers.FormatDiff(string.Empty, string.Empty, "simple-diff").Should().Be(string.Empty);
+        ScribanHelpers.FormatDiff("", "value", "simple-diff").Should().Be("- ``<br>+ `value`");
+        ScribanHelpers.FormatDiff("value", "", "simple-diff").Should().Be("- `value`<br>+ ``");
     }
 
     [Fact]
     public void FormatDiff_EscapesValuesAndPreservesLineBreakTags()
     {
-        ScribanHelpers.FormatDiff("<before>", "<after>", "standard-diff")
+        ScribanHelpers.FormatDiff("<before>", "<after>", "simple-diff")
             .Should().Be("- `\\<before\\>`<br>+ `\\<after\\>`");
     }
 

@@ -41,7 +41,7 @@ public class ScribanHelpersLargeValueTests
     [Fact]
     public void FormatLargeValue_Create_ShowsSingleCodeBlock()
     {
-        var result = ScribanHelpers.FormatLargeValue(null, "value", "standard-diff");
+        var result = ScribanHelpers.FormatLargeValue(null, "value", "simple-diff");
 
         result.Should().StartWith("```\n");
         result.Should().Contain("value");
@@ -53,7 +53,7 @@ public class ScribanHelpersLargeValueTests
     [Fact]
     public void FormatLargeValue_Delete_ShowsSingleCodeBlock()
     {
-        var result = ScribanHelpers.FormatLargeValue("value", null, "standard-diff");
+        var result = ScribanHelpers.FormatLargeValue("value", null, "simple-diff");
 
         result.Should().StartWith("```\n");
         result.Should().Contain("value");
@@ -65,7 +65,7 @@ public class ScribanHelpersLargeValueTests
     [Fact]
     public void FormatLargeValue_Update_UsesDiffFence()
     {
-        var result = ScribanHelpers.FormatLargeValue("old", "new", "standard-diff");
+        var result = ScribanHelpers.FormatLargeValue("old", "new", "simple-diff");
 
         result.Should().StartWith("```diff\n");
         result.Should().Contain("- old");

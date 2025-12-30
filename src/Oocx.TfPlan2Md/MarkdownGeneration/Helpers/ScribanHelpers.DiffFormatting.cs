@@ -32,7 +32,7 @@ public static partial class ScribanHelpers
 
         return parsedFormat switch
         {
-            LargeValueFormat.StandardDiff => BuildStandardDiffTable(EscapeMarkdown(beforeValue), EscapeMarkdown(afterValue)),
+            LargeValueFormat.SimpleDiff => BuildSimpleDiffTable(EscapeMarkdown(beforeValue), EscapeMarkdown(afterValue)),
             _ => WrapInlineDiffCode(BuildInlineDiffTable(beforeValue, afterValue))
         };
     }
@@ -65,7 +65,7 @@ public static partial class ScribanHelpers
     /// <param name="escapedBefore">Escaped original value.</param>
     /// <param name="escapedAfter">Escaped updated value.</param>
     /// <returns>Formatted diff suitable for markdown tables.</returns>
-    private static string BuildStandardDiffTable(string escapedBefore, string escapedAfter)
+    private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
     {
         return $"- `{escapedBefore}`<br>+ `{escapedAfter}`";
     }

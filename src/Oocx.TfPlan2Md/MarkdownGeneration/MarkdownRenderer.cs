@@ -188,6 +188,10 @@ public class MarkdownRenderer
         var changeObject = new ScriptObject();
         changeObject.Import(change, renamer: member => ToSnakeCase(member.Name));
 
+        // Add large_value_format to change context for template access
+        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        changeObject["large_value_format"] = formatString;
+
         // Convert JsonElement properties to ScriptObjects for proper Scriban navigation
         if (change.BeforeJson is JsonElement beforeElement)
         {
@@ -234,6 +238,10 @@ public class MarkdownRenderer
         // Create a script object that properly exposes all properties including nested collections
         var scriptObject = new ScriptObject();
         scriptObject.Import(model, renamer: member => ToSnakeCase(member.Name));
+
+        // Add large_value_format at top level for template access
+        var formatString = model.LargeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        scriptObject["large_value_format"] = formatString;
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);

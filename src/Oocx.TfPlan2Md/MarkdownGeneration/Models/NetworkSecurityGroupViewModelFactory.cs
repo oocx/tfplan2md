@@ -168,7 +168,7 @@ internal static class NetworkSecurityGroupViewModelFactory
     /// <param name="providerName">Provider name for formatting.</param>
     /// <param name="largeValueFormat">Preferred diff format.</param>
     /// <returns>Ordered modified rule rows.</returns>
-    private static IReadOnlyList<SecurityRuleChangeRowViewModel> BuildModified(
+    private static List<SecurityRuleChangeRowViewModel> BuildModified(
         IReadOnlyList<SecurityRuleValues> beforeRules,
         IReadOnlyList<SecurityRuleValues> afterRules,
         string providerName,
@@ -212,7 +212,7 @@ internal static class NetworkSecurityGroupViewModelFactory
     /// <param name="rules">Raw rule values.</param>
     /// <param name="providerName">Provider name for semantic formatting.</param>
     /// <returns>Formatted rule rows.</returns>
-    private static IReadOnlyList<SecurityRuleRowViewModel> FormatRuleRows(
+    private static List<SecurityRuleRowViewModel> FormatRuleRows(
         IReadOnlyList<SecurityRuleValues> rules,
         string providerName)
     {

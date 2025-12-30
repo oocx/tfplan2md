@@ -11,19 +11,21 @@ public class ComprehensiveDemoTests
 {
     private readonly TerraformPlanParser _parser = new();
     private readonly MarkdownRenderer _renderer;
+    private readonly IPrincipalMapper _principalMapper;
 
     private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
     public ComprehensiveDemoTests()
     {
-        _renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        _principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
+        _renderer = new MarkdownRenderer(_principalMapper);
     }
 
     [Fact]
     public void DefaultTemplate_RendersAllKeyFeatures()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var model = new ReportModelBuilder().Build(plan);
+        var model = new ReportModelBuilder(principalMapper: _principalMapper).Build(plan);
 
         var markdown = _renderer.Render(model);
 
@@ -47,7 +49,7 @@ public class ComprehensiveDemoTests
     public void Render_WithShowSensitive_RevealsSecretValues()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var builder = new ReportModelBuilder(showSensitive: true);
+        var builder = new ReportModelBuilder(showSensitive: true, principalMapper: _principalMapper);
         var model = builder.Build(plan);
 
         var markdown = _renderer.Render(model);

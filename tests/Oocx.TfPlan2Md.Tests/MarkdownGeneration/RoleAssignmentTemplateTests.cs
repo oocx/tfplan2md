@@ -9,8 +9,8 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class RoleAssignmentTemplateTests
 {
+    private const string Nbsp = "\u00A0";
     private readonly TerraformPlanParser _parser = new();
-    private readonly ReportModelBuilder _builder = new();
     private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
     [Fact]
@@ -23,8 +23,8 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain("Jane Doe");
         section.Should().Contain("| Attribute | Value |");
         section.Should().Contain("| scope | `rg-tfplan2md-demo` in subscription `sub-one` |");
-        section.Should().Contain("| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |");
-        section.Should().Contain("| principal_id | `👤 Jane Doe` (`👤 User`) [`11111111-1111-1111-1111-111111111111`] |");
+        section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |");
+        section.Should().Contain($"| principal_id | `👤 Jane Doe` (`👤{Nbsp}User`) [`11111111-1111-1111-1111-111111111111`] |");
     }
 
     [Fact]
@@ -37,8 +37,8 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain("DevOps Team");
         section.Should().Contain("Allow DevOps team to read logs from the storage account");
         section.Should().Contain("| scope | `rg-tfplan2md-demo` in subscription `sub-one` |");
-        section.Should().Contain("| role_definition_id | `🛡️ Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |");
-        section.Should().Contain("| principal_id | `👥 DevOps Team` (`👥 Group`) [`22222222-2222-2222-2222-222222222222`] |");
+        section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |");
+        section.Should().Contain($"| principal_id | `👥 DevOps Team` (`👥{Nbsp}Group`) [`22222222-2222-2222-2222-222222222222`] |");
     }
 
     [Fact]
@@ -51,8 +51,8 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain("Security Team");
         section.Should().Contain("| Attribute | Before | After |");
         section.Should().Contain("| scope | `rg-tfplan2md-demo` in subscription `sub-one` | `rg-tfplan2md-demo` in subscription `sub-one` |");
-        section.Should().Contain("| role_definition_id | `🛡️ Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) | `🛡️ Storage Blob Data Contributor` (`ba92f5b4-2d11-453d-a403-e96b0029c9fe`) |");
-        section.Should().Contain("| principal_id | `👥 DevOps Team` (`👥 Group`) [`22222222-2222-2222-2222-222222222222`] | `👥 Security Team` (`👥 Group`) [`33333333-3333-3333-3333-333333333333`] |");
+        section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) | `🛡️{Nbsp}Storage Blob Data Contributor` (`ba92f5b4-2d11-453d-a403-e96b0029c9fe`) |");
+        section.Should().Contain($"| principal_id | `👥 DevOps Team` (`👥{Nbsp}Group`) [`22222222-2222-2222-2222-222222222222`] | `👥 Security Team` (`👥{Nbsp}Group`) [`33333333-3333-3333-3333-333333333333`] |");
         section.Should().Contain("| description | `Allow team to read storage data` | `Upgraded permissions for security auditing` |");
     }
 
@@ -63,7 +63,7 @@ public class RoleAssignmentTemplateTests
         var section = ExtractSection(markdown, "azurerm_role_assignment.update_assignment");
 
         section.Should().Contain($"| {Escape("condition")} | - | `{Escape("request.clientip != '10.0.0.0/24'")}` |");
-        section.Should().Contain($"| {Escape("skip_service_principal_aad_check")} | `{Escape("false")}` | `{Escape("true")}` |");
+        section.Should().Contain($"| {Escape("skip_service_principal_aad_check")} | `{Escape("False")}` | `{Escape("True")}` |");
         section.Should().NotContain(Escape("delegated_managed_identity_resource_id"));
     }
 
@@ -76,7 +76,7 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain("<summary>♻️ azurerm_role_assignment <b><code>replace_assignment</code></b> — ");
         section.Should().Contain("Custom Contributor Long Name 1234567890");
         section.Should().Contain("| Attribute | Before | After |");
-        section.Should().Contain("| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `🛡️ Custom Contributor Long Name 1234567890` |");
+        section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `🛡️{Nbsp}Custom Contributor Long Name 1234567890` |");
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain("<summary>❌ azurerm_role_assignment <b><code>delete_assignment</code></b> — ");
         section.Should().Contain("Contributor");
         section.Should().Contain("| Attribute | Value |");
-        section.Should().Contain("| principal_id | `👤 John Doe` (`👤 User`) [`33333333-3333-3333-3333-333333333333`] |");
+        section.Should().Contain($"| principal_id | `👤 John Doe` (`👤{Nbsp}User`) [`33333333-3333-3333-3333-333333333333`] |");
     }
 
     [Fact]
@@ -104,9 +104,11 @@ public class RoleAssignmentTemplateTests
 
     private string Render(IPrincipalMapper? mapper = null)
     {
+        var principalMapper = mapper ?? new StubPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.RoleAssignmentsPlanPath));
-        var model = _builder.Build(plan);
-        var renderer = new MarkdownRenderer(mapper ?? new StubPrincipalMapper());
+        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(principalMapper);
         return renderer.Render(model);
     }
 

@@ -15,15 +15,15 @@
 - [x] Final design approved (design6-final with light/dark mode)
 - [x] Move final design from prototypes to root website structure
 - [x] Set up shared CSS variables and base styles (extracted from design6-final)
-- [ ] Create shared navigation component (reusable across pages)
+- [x] Create shared navigation component (reusable across pages)
 
 ---
 
 ## 2. Core Pages (8 main pages)
 
 - [x] Homepage (index.html) - moved from design6-final with updated navigation
-- [ ] Getting Started (getting-started.html)
-- [ ] Features index (features/index.html)
+- [x] Getting Started (getting-started.html) - Docker + CI/CD integration complete
+- [x] Features index (features/index.html) - 8 feature categories + detailed sections
 - [ ] Provider templates index (providers/index.html)
 - [ ] Examples (examples.html)
 - [ ] Documentation (docs.html)
@@ -34,14 +34,18 @@
 
 ## 3. Feature Pages (features/)
 
-- [ ] Firewall rule semantic diffing
-- [ ] Network security group diffing
-- [ ] Azure role assignments
-- [ ] Module grouping
-- [ ] Custom templates
-- [ ] Sensitive value masking
-- [ ] Large value formatting
-- [ ] Miscellaneous features
+Note: Feature index page created with inline detailed sections. Individual feature pages may be added later if needed.
+
+- [x] Feature index with detailed sections for:
+  - [x] Firewall rule semantic diffing
+  - [x] Network security group diffing
+  - [x] Module grouping
+  - [x] Azure resource ID formatting
+  - [x] Role assignment display
+  - [x] Principal name mapping
+  - [x] Semantic value icons
+  - [x] Consistent value formatting
+- [ ] Additional feature pages (Resource summaries, Sensitive masking, Large values, Custom templates) - to be added if needed
 
 ---
 
@@ -56,13 +60,13 @@
 
 ## 5. Content Integration
 
-- [ ] Extract content from README.md
-- [ ] Extract content from docs/features.md
-- [ ] Extract content from docs/architecture.md
-- [ ] Extract content from CONTRIBUTING.md
-- [ ] Extract content from docs/agents.md
-- [ ] Add code examples from examples/
-- [ ] Adapt content for web (scannable, conversion-focused)
+- [x] Extract content from README.md (homepage hero, features overview)
+- [x] Extract content from docs/features.md (features page, getting started examples)
+- [ ] Extract content from docs/architecture.md (for architecture page)
+- [ ] Extract content from CONTRIBUTING.md (for contributing page)
+- [ ] Extract content from docs/agents.md (for contributing page)
+- [x] Add code examples from examples/ (CI/CD snippets, installation commands)
+- [x] Adapt content for web (scannable, conversion-focused)
 
 ---
 
@@ -78,10 +82,12 @@
 
 ## 7. Navigation & Interactivity
 
-- [ ] Create shared navigation component
-- [ ] Implement breadcrumb navigation
+- [x] Create shared navigation component (navbar with theme toggle)
+- [x] Implement theme toggle (light/dark mode with localStorage)
+- [x] Implement copy-to-clipboard for code blocks (getting-started page)
+- [x] Implement tab switching (CI/CD platforms on getting-started page)
 - [ ] Add "back to top" functionality where appropriate
-- [ ] Ensure all internal links work correctly
+- [x] Ensure all internal links work correctly (verified working)
 - [ ] Test external links (GitHub, Docker Hub, etc.)
 
 ---
@@ -153,9 +159,9 @@ website/
 
 ## Progress Tracking
 
-**Completed Steps:** 4/9 sections (Setup & Structure complete, Homepage done)  
-**Next Step:** Create Getting Started page with Docker installation and CI/CD examples  
-**Estimated Remaining Work:** ~5-7 hours for full implementation
+**Completed Steps:** 5/9 sections (Setup complete, 3 core pages done, navigation working)  
+**Next Step:** Continue with remaining core pages (Examples, Documentation, Architecture, Contributing) or Provider templates  
+**Estimated Remaining Work:** ~3-5 hours for remaining pages
 
 ---
 
@@ -165,4 +171,4 @@ None currently.
 
 ---
 
-**Last Updated:** 2025-12-30T17:58:00Z
+**Last Updated:** 2025-12-30T18:54:00Z

@@ -63,7 +63,8 @@ public class RoleAssignmentTemplateTests
         var section = ExtractSection(markdown, "azurerm_role_assignment.update_assignment");
 
         section.Should().Contain($"| {Escape("condition")} | - | `{Escape("request.clientip != '10.0.0.0/24'")}` |");
-        section.Should().Contain($"| {Escape("skip_service_principal_aad_check")} | `{Escape("False")}` | `{Escape("True")}` |");
+        // Booleans should be lowercase with semantic icons (Terraform convention)
+        section.Should().Contain($"| {Escape("skip_service_principal_aad_check")} | `❌{Nbsp}false` | `✅{Nbsp}true` |");
         section.Should().NotContain(Escape("delegated_managed_identity_resource_id"));
     }
 

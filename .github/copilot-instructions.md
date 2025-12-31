@@ -74,6 +74,9 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - **Test hangs**: When running the full test suite, use the timeout wrapper instead of calling `dotnet test` directly.
   - Example: `scripts/test-with-timeout.sh -- dotnet test --no-build --configuration Release --verbosity normal`
   - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test ...`
+- **Repo scripts**: Prefer running repository scripts directly (e.g., `scripts/uat-run.sh`, `scripts/pr-github.sh`) instead of `bash scripts/<script>.sh`.
+  - This enables per-script permanent allow rules in VS Code approvals.
+  - Exception: use `bash -x scripts/<script>.sh` only for debugging (or if execute bit/shebang is missing).
 - **Workspace-local temp files**: Do not create or reference temporary files outside the repository (for example `/tmp` or `~/`). If a scratch file is needed, write it under `.tmp/` (create it with `scripts/setup-tmp.sh` if needed).
 - Avoid running commands that are not necessary for the current task.
 - When a command fails, explain the error and propose a solution before retrying.

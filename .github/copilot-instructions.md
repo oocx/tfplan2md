@@ -77,6 +77,9 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - **Snapshot updates**: Snapshot diffs (files under `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
   - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
   - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.
+- **Option selection**: If you present the user with an option list and the user replies with a number (e.g., `1`), that number always refers to the **most recent** option list you presented.
+  - Never apply a numeric answer to an older option list.
+  - If there is any ambiguity (e.g., multiple option lists were presented, the numbering changed, or the user response doesn’t map cleanly), ask for confirmation instead of guessing.
 - **Directly-invokable scripts**: Always run repository scripts directly (e.g., `scripts/uat-run.sh`, `scripts/pr-github.sh`, `scripts/validate-agents.py`) instead of via an interpreter/runner (e.g., `bash scripts/<script>.sh`, `python3 scripts/<script>.py`, `dotnet <runner> scripts/<script>`).
   - This enables per-script permanent allow rules in VS Code approvals.
   - If a script is not directly invokable, fix it instead of working around it (add a proper shebang and make it executable).

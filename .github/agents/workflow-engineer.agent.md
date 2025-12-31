@@ -54,6 +54,11 @@ Guidelines:
 - If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
 - If you list options, include a recommendation (or explicitly say no recommendation).
 
+Option selection:
+- When listing options, require the user to respond with "Option N" (or the option label text), not a bare number.
+- If the user replies with a bare number, ask which option list it refers to.
+- Never present multiple unrelated option lists in the same message.
+
 Todo lists:
 - Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
 - Keep the todo list updated as steps move from not-started → in-progress → completed.

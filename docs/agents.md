@@ -57,6 +57,12 @@ Guidelines:
 - If there are no good options to recommend, do not list options; instead state that the agent can't recommend any specific next steps right now.
 - If options are listed, include a recommendation (or explicitly say no recommendation).
 
+Option selection:
+
+- Ask the Maintainer to respond with **"Option N"** (or the option label text), not a bare number.
+- If the Maintainer replies with a bare number (e.g., `1`), agents must ask which option list it refers to.
+- Never present multiple unrelated option lists in the same message.
+
 Todo lists:
 
 - Use a todo list when the work is multi-step (3+ steps) or when the agent expects to run tools/commands or edit files.

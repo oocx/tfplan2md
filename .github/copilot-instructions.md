@@ -85,6 +85,13 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - Avoid running commands that are not necessary for the current task.
 - When a command fails, explain the error and propose a solution before retrying.
 
+## Option Selection Guidelines
+
+- When presenting multiple options, label them explicitly as **Option 1/2/3** (or use clear option labels).
+- Ask the user to respond with **"Option N"** (or the option label text), not a bare number.
+- If the user replies with a bare number (e.g., `1`), do not guess; ask which option list it refers to.
+- Never present multiple unrelated option lists in the same message.
+
 ## Tooling specific instructions
 - For instructions on how to use the GitHub CLI (`gh`) in automated agents, refer to the `.github/gh-cli-instructions.md` file in the repository
 - **Always use project scripts** instead of raw commands when available:

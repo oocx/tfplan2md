@@ -37,7 +37,7 @@ public class MarkdownRendererRoleAssignmentTests
         result.Should().Contain("| Attribute | Value |");
         result.Should().Contain($"`🛡️{Nbsp}Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`)");
         result.Should().Contain("`rg-tfplan2md-demo` in subscription `sub-one`");
-        result.Should().Contain($"`👤 Jane Doe` (`👤{Nbsp}User`) [`11111111-1111-1111-1111-111111111111`]");
+        result.Should().Contain("`👤 Jane Doe (User)` [`11111111-1111-1111-1111-111111111111`]");
     }
 
     [Fact]

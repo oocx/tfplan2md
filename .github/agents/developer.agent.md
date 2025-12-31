@@ -33,10 +33,12 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 - For user-facing features (CLI changes, rendering changes), ensure the output is easy to validate in User Acceptance PRs (handled by Code Reviewer)
 - **Detail Checklist (REQUIRED for UI/UX features):** For features with many small visual items (icons, spacing, alignment), maintain a checklist in the task description or a separate file to ensure no detail is missed during implementation.
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
+- Before reporting **Status: Done** (or suggesting merge/release readiness), run applicable tests (scoped for the change, or full suite for feature completion) and report the results
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
 - Use `generate-demo-artifacts` skill to regenerate all demo artifacts after ALL tasks complete
 - Use `update-test-snapshots` skill when markdown output logic changes (verify snapshots pass afterwards)
+- Never update snapshots to "make tests pass" without first diagnosing what behavior changed and why the new output is correct
 - Follow C# coding conventions and use modern C# features
 - Keep files under 300 lines, refactor if larger
 - Check for existing code to reuse before creating new code
@@ -238,7 +240,7 @@ Follow the project's coding conventions strictly:
       - Commit snapshots if changes are expected:
         ```bash
         git add tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
-        git commit -m "test: update snapshots for <feature-name>"
+            git commit -m "test: update snapshots for <feature-name>\n\nSNAPSHOT_UPDATE_OK"
         ```
    
    d. **Check for errors**:

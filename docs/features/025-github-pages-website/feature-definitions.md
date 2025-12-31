@@ -1,49 +1,81 @@
 # Feature Definitions for tfplan2md Website
 
-This document contains the agreed-upon feature categorization for the website content.
+This document defines the agreed-upon features, their categorization, and priority for display on the website.
 
-## Feature Categories
+## Category Headlines
 
-- **What Sets Us Apart** - High impact/high value features (shown in carousel, get dedicated pages)
-- **Built-In Capabilities** - Medium value features (get dedicated pages)
-- **Also Included** - Low value features (shown on a single page together)
+| Category | Website Headline | Contains |
+|----------|------------------|----------|
+| High Impact | What Sets Us Apart | High-value, differentiating features |
+| Standard Features | Built-In Capabilities | Medium-value, expected features |
+| Additional | Also Included | Low-value, nice-to-have features |
 
-## Complete Feature Table
+## Complete Feature List
 
-| Feature | Description | Group | Value |
-|---------|-------------|-------|-------|
+| Feature | Description | Category | Value |
+|---------|-------------|----------|-------|
 | Semantic Diffs | Shows "Before" and "After" values side-by-side for changed attributes, highlighting exactly what changed. | What Sets Us Apart | High |
+| Large Value Formatting with Inline Diffs | Handles large text blocks (like JSON policies or scripts) by showing a computed diff with inline highlighting instead of the full text. | What Sets Us Apart | High |
 | Firewall Rule Interpretation | Renders complex Azure Firewall rule collections as readable tables with protocols, ports, and actions. | What Sets Us Apart | High |
 | NSG Rule Interpretation | Renders Network Security Group rules as readable tables, making security changes easy to audit. | What Sets Us Apart | High |
-| Role Assignment Mapping | Resolves cryptic Principal IDs, Scopes, and Role Names (GUIDs) to human-readable names (e.g., "Jane Doe", "DevOps Team", "Reader on rg-prod"). | What Sets Us Apart | High |
-| Large Value Formatting | Handles large text blocks (like JSON policies or scripts) by showing a computed diff instead of the full text. Works with inline diffs for maximum clarity. | What Sets Us Apart | High |
+| Role Assignment Mapping | Resolves cryptic Principal IDs (GUIDs) to human-readable names (e.g., "Jane Doe", "DevOps Team"). Also maps scope resource IDs and role definition IDs to friendly names. | What Sets Us Apart | High |
 | CI/CD Integration | Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI. | What Sets Us Apart | High |
 | PR Platform Compatibility | Designed and tested for rendering in markdown pull requests on Azure DevOps Services and GitHub. | What Sets Us Apart | High |
 | Friendly Resource Names | Displays friendly names for resources instead of complex resource ID strings. | What Sets Us Apart | High |
+| Provider Agnostic Core | Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering. | Built-In Capabilities | Medium |
 | Plan Summary | High-level overview table showing counts of adds, changes, and destroys by resource type. | Built-In Capabilities | Medium |
 | Module Grouping | Groups resources logically by their Terraform module hierarchy (e.g., module.network). | Built-In Capabilities | Medium |
-| Collapsible Details | Hides verbose resource details inside \<details\> tags to keep the PR comment readable. | Built-In Capabilities | Medium |
+| Collapsible Details | Hides verbose resource details inside `<details>` tags to keep the PR comment readable. | Built-In Capabilities | Medium |
+| Local Resource Names | In modules, renders just the local name part instead of the full qualified name that includes the module path. | Built-In Capabilities | Medium |
 | Tag Visualization | Renders resource tags with specific icons and formatting for easy scanning. | Built-In Capabilities | Medium |
 | Smart Iconography | Adds context-aware icons for common attributes like Locations (🌍), IPs (🌐), and Ports (🔌). | Built-In Capabilities | Medium |
 | Custom Templates | Allows users to completely customize the markdown output using Go templates. | Built-In Capabilities | Medium |
-| Provider Agnostic Core | Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering. | Built-In Capabilities | Medium |
-| Local Resource Names | In modules, renders the local name part instead of the full name that includes the module path. | Built-In Capabilities | Medium |
 | Docker Support | Distributed as a lightweight Docker container for easy usage in any environment. | Also Included | Low |
 | Sensitive Value Masking | Automatically detects and masks sensitive values (marked as sensitive in Terraform) to prevent leaks. | Also Included | Low |
-| Minimal Container Image | Uses mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled as base for minimal attack surface. | Also Included | Low |
+| Minimal Container Image | Uses a minimal base image (mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled) for reduced attack surface and faster pulls. | Also Included | Low |
 
-## Website Implementation Notes
+## Feature Groups for Website Display
 
-### Carousel (Homepage)
-Shows high-value features from "What Sets Us Apart" category with rotating visual examples.
+### What Sets Us Apart (High Impact)
+Features that differentiate tfplan2md from other solutions:
+- Semantic Diffs
+- Large Value Formatting with Inline Diffs
+- Firewall Rule Interpretation
+- NSG Rule Interpretation
+- Role Assignment Mapping
+- CI/CD Integration
+- PR Platform Compatibility
+- Friendly Resource Names
 
-### Feature Pages
-- Each feature in "What Sets Us Apart" gets its own dedicated page with screenshots and examples
-- Each feature in "Built-In Capabilities" gets its own dedicated page
-- All features in "Also Included" are displayed together on a single page
+### Built-In Capabilities (Standard Features)
+Expected functionality that provides value:
+- Provider Agnostic Core
+- Plan Summary
+- Module Grouping
+- Collapsible Details
+- Local Resource Names
+- Tag Visualization
+- Smart Iconography
+- Custom Templates
 
-### Feature Index Page
-Groups features by category with the agreed-upon headlines:
-- What Sets Us Apart
-- Built-In Capabilities
-- Also Included
+### Also Included (Additional Features)
+Nice-to-have features mentioned together:
+- Docker Support
+- Sensitive Value Masking
+- Minimal Container Image
+
+## Carousel Features (Homepage)
+
+The homepage carousel should showcase the High Impact features, rotating through:
+1. Semantic Diffs (before/after visualization)
+2. Large Value Formatting with Inline Diffs
+3. Firewall Rule Interpretation
+4. NSG Rule Interpretation
+5. Role Assignment Mapping
+6. PR Platform Compatibility
+
+## Feature Page Structure
+
+- **High Impact features**: Each gets its own dedicated feature page with examples
+- **Standard Features**: Each gets its own dedicated feature page
+- **Additional Features**: All combined on a single "Also Included" page

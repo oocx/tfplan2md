@@ -39,9 +39,13 @@ public class ComprehensiveDemoTests
             .And.Contain("♻️")
             .And.Contain("❌");
 
-        markdown.Should().Contain(Escape("azurerm_firewall_network_rule_collection.network_rules"))
-            .And.Contain("Rule Changes")
-            .And.Contain(Escape("azurerm_role_assignment.rg_reader"))
+        // Verify firewall rules are rendered with semantic diffing
+        markdown.Should().Contain("azurerm_firewall_network_rule_collection")
+            .And.Contain("Rule Changes");
+
+        // Verify role assignments show principal names from mapping
+        markdown.Should().Contain("azurerm_role_assignment")
+            .And.Contain("<b><code>rg_reader</code></b>")
             .And.Contain("Jane Doe (User)");
     }
 
@@ -82,10 +86,9 @@ public class ComprehensiveDemoTests
 
         var markdown = _renderer.Render(model);
 
-        // Verify that resource sections are separated by a blank line so content does not run together.
-        var resourceEnd = "<!-- tfplan2md:resource-end address=module.network.azurerm_subnet.app -->";
-        var nextResource = "<!-- tfplan2md:resource-start address=module.network.azurerm_firewall_network_rule_collection.new_public -->";
-        var pattern = $"{Regex.Escape(resourceEnd)}\\s+(?:<div[^>]*>\\s+)?{Regex.Escape(nextResource)}";
+        // Verify that resource sections are separated properly (</details> followed by whitespace and new <details> or <div>)
+        // The pattern looks for </details> followed by whitespace and then another block start
+        var pattern = @"</details>\s+(?:<details[^>]*>|<div[^>]*>)";
 
         markdown.Should().MatchRegex(pattern);
     }

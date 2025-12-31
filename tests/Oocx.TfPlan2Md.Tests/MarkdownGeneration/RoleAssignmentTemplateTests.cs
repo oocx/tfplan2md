@@ -113,10 +113,23 @@ public class RoleAssignmentTemplateTests
         return renderer.Render(model);
     }
 
+    /// <summary>
+    /// Extracts a resource section from markdown based on the resource address.
+    /// </summary>
+    /// <param name="markdown">The full markdown document.</param>
+    /// <param name="address">The terraform resource address (e.g., "azurerm_role_assignment.create_no_description").</param>
+    /// <returns>The content of the resource section.</returns>
     private static string ExtractSection(string markdown, string address)
     {
-        var pattern = $@"(?s)<!-- tfplan2md:resource-start address={Regex.Escape(address)} -->(.*?)<!-- tfplan2md:resource-end address={Regex.Escape(address)} -->";
-        var match = Regex.Match(markdown, pattern);
+        // Parse address to get resource type and name
+        var parts = address.Split('.');
+        var resourceType = parts[0];
+        var resourceName = parts.Length > 1 ? parts[1] : parts[0];
+
+        // Look for a <details> block containing the resource name in <b><code>{name}</code></b>
+        var pattern = $@"(?s)<details[^>]*>\s*<summary>[^<]*{Regex.Escape(resourceType)}\s+<b><code>{Regex.Escape(resourceName)}</code></b>(.*?)</details>";
+
+        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline);
         return match.Success ? match.Value : string.Empty;
     }
 

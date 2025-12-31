@@ -2,7 +2,6 @@
      Uses RoleAssignmentViewModel for pre-computed formatting.
      Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
-<!-- tfplan2md:resource-start address={{ change.address }} -->
 <details style="margin-bottom:12px;">
 <summary>{{ change.action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(change.role_assignment.resource_name) }}</b> — {{ change.role_assignment.summary_text }}</summary>
 <br>
@@ -54,4 +53,3 @@
 {{ end }}
 
 </details>
-<!-- tfplan2md:resource-end address={{ change.address }} -->

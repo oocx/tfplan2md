@@ -58,7 +58,7 @@ public class HelpTextProviderTests
     {
         var help = HelpTextProvider.GetHelpText();
 
-        help.Should().Contain("--large-value-format <inline-diff|standard-diff>")
+        help.Should().Contain("--large-value-format <inline-diff|simple-diff>")
             .And.Contain("Controls rendering of large attribute values");
     }
 }

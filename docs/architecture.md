@@ -205,8 +205,9 @@ tfplan2md/
 │   ├── LargeValueFormat.cs # Enum for value display modes
 │   ├── Summaries/          # Resource summary builders
 │   └── Templates/          # Embedded Scriban templates
-│       ├── default.sbn     # Main template
+│       ├── default.sbn     # Global report template
 │       ├── summary.sbn     # Summary-only template
+│       ├── _resource.sbn   # Default per-resource template
 │       └── azurerm/        # Resource-specific templates
 │
 ├── Azure/                  # Azure-specific utilities
@@ -318,7 +319,7 @@ flowchart LR
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Apply templates to generate markdown; validate output is compatible with GitHub and Azure DevOps |
 | `ScribanHelpers` | Custom Scriban functions (`diff_array`, `format_diff`, etc.); provides complex logic that templates should not implement |
-| `LargeValueFormat` (enum) | Display mode for large values (inline-diff, standard-diff) |
+| `LargeValueFormat` (enum) | Display mode for large values (inline-diff, simple-diff) |
 | `IResourceSummaryBuilder` / `ResourceSummaryBuilder` | Generate one-line summaries for resources |
 
 **Design Principle: Logic in Code, Not Templates**
@@ -335,12 +336,12 @@ This ensures templates are maintainable and extensible by users without C# knowl
 | Directory | Purpose |
 |-----------|---------|
 | `Summaries/` | Resource summary generation logic |
-| `Templates/` | Embedded Scriban templates (default.sbn, summary.sbn, azurerm/*) |
+| `Templates/` | Embedded Scriban templates (default.sbn for report structure, _resource.sbn for default resource rendering, summary.sbn, azurerm/* for resource-specific overrides) |
 
 **Template Resolution Flow:**
 1. If custom template directory provided: `{customDir}/{provider}/{resource}.sbn`
 2. Else, embedded resource-specific: `Templates/{provider}/{resource}.sbn`
-3. Else, global default: `Templates/default.sbn`
+3. Else, default resource template: `Templates/_resource.sbn`
 
 **Data Flow:**
 
@@ -441,7 +442,7 @@ classDiagram
     class LargeValueFormat {
         <<enumeration>>
         InlineDiff
-        StandardDiff
+        SimpleDiff
     }
     
     ReportModel "1" *-- "0..*" ResourceChangeModel : changes
@@ -590,7 +591,7 @@ flowchart TD
     FoundCustom{Found?}
     FoundEmbedded{Found?}
     ApplySpecific[✅ Apply resource-specific template]
-    ApplyDefault[📄 Fallback to default.sbn template]
+    ApplyDefault[📄 Fallback to _resource.sbn template]
     
     Start --> Extract
     Extract --> CheckCustom
@@ -887,34 +888,27 @@ flowchart TD
 
 When `Render(model)` is called, the system:
 
-1. **Render with default template** - Apply `default.sbn` to the full `ReportModel`
-2. **Check for resource-specific overrides** - For each resource change in the model:
+1. **Select appropriate template** - For each resource change:
    - Parse resource type to extract provider and resource name
-   - Attempt to resolve a resource-specific template
-   - If found, render that resource separately with the specific template
-3. **Replace sections** - Use invisible HTML anchor comments to replace default-rendered sections with resource-specific output
-4. **Normalize output** - Fix heading spacing, collapse multiple blank lines
+   - Resolve which template to use (resource-specific or default)
+2. **Render directly** - Invoke the selected template to generate markdown for that resource
+3. **Normalize output** - Fix heading spacing, collapse multiple blank lines
 
 ```mermaid
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
 sequenceDiagram
     participant Caller
     participant Renderer as MarkdownRenderer
-    participant Default as default.sbn
-    participant Specific as Resource Template
+    participant Template as Template (default or specific)
     
     Caller->>Renderer: Render(model)
-    Renderer->>Default: Render full report
-    Default-->>Renderer: Markdown with anchors
     
     loop For each resource change
         Renderer->>Renderer: ParseResourceType(type)
-        Renderer->>Renderer: ResolveResourceTemplate(type)
-        alt Template found
-            Renderer->>Specific: Render resource
-            Specific-->>Renderer: Resource markdown
-            Renderer->>Renderer: Replace anchored section
-        end
+        Renderer->>Renderer: ResolveTemplate(type)
+        Renderer->>Template: RenderResourceChange(change)
+        Template-->>Renderer: Resource markdown
+        Renderer->>Renderer: Append to output
     end
     
     Renderer->>Renderer: NormalizeHeadingSpacing()
@@ -929,29 +923,20 @@ Resource types are parsed to extract provider and resource name:
 Resolution order:
 1. **Custom directory**: `{customDir}/{provider}/{resource}.sbn`
 2. **Embedded resource**: `Templates/{provider}/{resource}.sbn`
-3. **Fallback**: Use default template rendering (no replacement)
+3. **Fallback**: Use default template (`_resource.sbn`)
 
-#### Anchor-Based Section Replacement
-
-The default template wraps each resource in invisible HTML comments:
-
-```html
-<!-- tfplan2md:resource-start address=azurerm_resource_group.main -->
-... default rendering ...
-<!-- tfplan2md:resource-end address=azurerm_resource_group.main -->
-```
-
-When a resource-specific template renders content, the entire anchored section is replaced using regex pattern matching.
+Each template is invoked directly with the resource change, eliminating the need for post-processing or section replacement.
 
 **Template Hierarchy:**
 
 ```
-Global Templates:
-  ├── default.sbn       (Full report with resource changes)
+Global Report Templates:
+  ├── default.sbn       (Full report structure - header, summary, footer)
   └── summary.sbn       (Compact summary only)
 
-Resource-Specific Templates:
-  └── azurerm/
+Per-Resource Templates:
+  ├── _resource.sbn     (Default fallback for all resources)
+  └── azurerm/          (Provider-specific overrides)
       ├── firewall_network_rule_collection.sbn
       ├── network_security_group.sbn
       └── role_assignment.sbn

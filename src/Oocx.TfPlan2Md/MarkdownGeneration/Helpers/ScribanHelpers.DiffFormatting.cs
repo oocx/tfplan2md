@@ -11,8 +11,8 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="before">The original value.</param>
     /// <param name="after">The updated value.</param>
-    /// <param name="format">Diff format: "inline-diff" or "standard-diff".</param>
-    /// <returns>Code-formatted output containing either styled HTML (inline) or +/- markers (standard). Returns empty when both values are null or empty.</returns>
+    /// <param name="format">Diff format: "inline-diff" or "simple-diff".</param>
+    /// <returns>Code-formatted output containing either styled HTML (inline) or +/- markers (simple). Returns empty when both values are null or empty.</returns>
     public static string FormatDiff(string? before, string? after, string format)
     {
         var beforeValue = before ?? string.Empty;

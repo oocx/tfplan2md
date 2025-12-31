@@ -6,7 +6,7 @@ cd "$REPO_ROOT"
 
 # Ensure artifacts dir exists and defaults are present
 mkdir -p artifacts
-echo "# default github" > artifacts/comprehensive-demo-standard-diff.md
+echo "# default github" > artifacts/comprehensive-demo-simple-diff.md
 echo "# default azdo" > artifacts/comprehensive-demo.md
 
 # Source helper

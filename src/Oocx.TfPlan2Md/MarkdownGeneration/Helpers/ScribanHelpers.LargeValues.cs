@@ -3,7 +3,7 @@ using System.Text;
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
-/// Helpers for large value rendering and inline/standard diffs.
+/// Helpers for large value rendering and inline/simple diffs.
 /// </summary>
 public static partial class ScribanHelpers
 {

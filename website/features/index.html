@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - tfplan2md</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html" class="brand-link">
+                    <svg width="32" height="32" viewBox="0 0 32 32" class="brand-logo">
+                        <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
+                        <path d="M8 10h16M8 16h16M8 22h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#646cff"/>
+                                <stop offset="100%" style="stop-color:#747bff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="../features/index.html" class="nav-item">Features</a>
+                <a href="../getting-started.html" class="nav-item">Install</a>
+                <a href="../docs.html" class="nav-item">Docs</a>
+                <a href="../examples.html" class="nav-item">Examples</a>
+                <a href="../providers/index.html" class="nav-item">Providers</a>
+                <a href="../architecture.html" class="nav-item">Architecture</a>
+                <a href="../contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="padding: 60px 0;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 48px;">Features</h1>
+                <p class="hero-subtitle">
+                    Powerful features that make Terraform plan reviews faster, easier, and more effective.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- What Sets Us Apart -->
+    <section class="section" id="high-impact">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">What Sets Us Apart</h2>
+                <p class="section-description">The features that make the biggest difference in your Terraform reviews</p>
+            </div>
+            <div class="features-grid">
+                <!-- Semantic Diffs -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-category-title">Semantic Diffs</h3>
+                    <p class="feature-category-description">
+                        Shows "Before" and "After" values side-by-side for changed attributes, highlighting exactly what changed with inline character-level diffs.
+                    </p>
+                    <div class="feature-list">
+                        <a href="firewall-rules.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>See it in action</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Firewall Rule Interpretation -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">🔥</div>
+                    <h3 class="feature-category-title">Firewall Rule Interpretation</h3>
+                    <p class="feature-category-description">
+                        Renders complex Azure Firewall rule collections as readable tables with protocols, ports, and actions clearly displayed.
+                    </p>
+                    <div class="feature-list">
+                        <a href="firewall-rules.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View examples</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- NSG Rule Interpretation -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-category-title">NSG Rule Interpretation</h3>
+                    <p class="feature-category-description">
+                        Renders Network Security Group rules as readable tables, making security changes easy to audit at a glance.
+                    </p>
+                    <div class="feature-list">
+                        <a href="nsg-rules.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View examples</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Role Assignment Mapping -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-category-title">Role Assignment Mapping</h3>
+                    <p class="feature-category-description">
+                        Resolves cryptic GUIDs to human-readable names: Principal IDs become "Jane Doe", Role Definition IDs become "Reader", and Scope IDs become "rg-myresourcegroup".
+                    </p>
+                    <div class="feature-list">
+                        <a href="azure-optimizations.html#principal-mapping" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View examples</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Large Value Formatting -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">📄</div>
+                    <h3 class="feature-category-title">Large Value Formatting</h3>
+                    <p class="feature-category-description">
+                        Handles large text blocks (like JSON policies or scripts) by showing computed diffs with inline highlighting instead of raw text walls.
+                    </p>
+                    <div class="feature-list">
+                        <a href="large-values.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View examples</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CI/CD Integration -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-category-title">CI/CD Integration</h3>
+                    <p class="feature-category-description">
+                        Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI. Just pipe terraform output to the Docker container.
+                    </p>
+                    <div class="feature-list">
+                        <a href="../getting-started.html#cicd" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View integration guides</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PR Rendering Optimization -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">📋</div>
+                    <h3 class="feature-category-title">PR Rendering Optimization</h3>
+                    <p class="feature-category-description">
+                        Designed and tested for rendering in pull request comments on Azure DevOps Services and GitHub. Reports look great where they matter most.
+                    </p>
+                    <div class="feature-list">
+                        <a href="../examples.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View examples</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Friendly Resource Names -->
+                <div class="feature-category-card featured">
+                    <div class="feature-icon">🏷️</div>
+                    <h3 class="feature-category-title">Friendly Resource Names</h3>
+                    <p class="feature-category-description">
+                        Displays friendly names for resources instead of complex resource ID strings. See "kv-tfplan2md" instead of a 200-character Azure resource ID.
+                    </p>
+                    <div class="feature-list">
+                        <a href="misc.html#friendly-names" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Built-In Capabilities -->
+    <section class="section section-alt" id="built-in">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Built-In Capabilities</h2>
+                <p class="section-description">Solid capabilities that improve readability and usability</p>
+            </div>
+            <div class="features-grid">
+                <!-- Plan Summary -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-category-title">Plan Summary</h3>
+                    <p class="feature-category-description">
+                        High-level overview table showing counts of adds, changes, replaces, and destroys by resource type.
+                    </p>
+                    <div class="feature-list">
+                        <a href="misc.html#plan-summary" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Module Grouping -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📁</div>
+                    <h3 class="feature-category-title">Module Grouping</h3>
+                    <p class="feature-category-description">
+                        Groups resources logically by their Terraform module hierarchy (e.g., module.network.module.monitoring).
+                    </p>
+                    <div class="feature-list">
+                        <a href="module-grouping.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Collapsible Details -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📂</div>
+                    <h3 class="feature-category-title">Collapsible Details</h3>
+                    <p class="feature-category-description">
+                        Hides verbose resource details inside expandable sections to keep PR comments readable and scannable.
+                    </p>
+                    <div class="feature-list">
+                        <a href="misc.html#collapsible-details" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tag Visualization -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3 class="feature-category-title">Tag Visualization</h3>
+                    <p class="feature-category-description">
+                        Renders resource tags with specific icons and formatting for easy scanning of metadata.
+                    </p>
+                    <div class="feature-list">
+                        <a href="semantic-icons.html#tags" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Smart Iconography -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-category-title">Smart Iconography</h3>
+                    <p class="feature-category-description">
+                        Adds context-aware icons for common attributes like Locations (🌍), IPs (🌐), Ports (🔌), and booleans.
+                    </p>
+                    <div class="feature-list">
+                        <a href="semantic-icons.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Custom Templates -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3 class="feature-category-title">Custom Templates</h3>
+                    <p class="feature-category-description">
+                        Allows users to completely customize the markdown output using Scriban templates.
+                    </p>
+                    <div class="feature-list">
+                        <a href="custom-templates.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Provider Agnostic Core -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-category-title">Provider Agnostic Core</h3>
+                    <p class="feature-category-description">
+                        Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering. Azure gets specialized renderers.
+                    </p>
+                    <div class="feature-list">
+                        <a href="../providers/index.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>View providers</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Local Resource Names -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-category-title">Local Resource Names</h3>
+                    <p class="feature-category-description">
+                        In modules, displays just the local resource name (e.g., "hub") instead of the full module path for cleaner summaries.
+                    </p>
+                    <div class="feature-list">
+                        <a href="misc.html#local-names" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Also Included -->
+    <section class="section" id="also-included">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Also Included</h2>
+                <p class="section-description">Security and quality-of-life improvements</p>
+            </div>
+            <div class="features-grid features-grid-compact">
+                <!-- Sensitive Value Masking -->
+                <div class="feature-category-card compact">
+                    <div class="feature-icon-sm">🔒</div>
+                    <div class="feature-compact-content">
+                        <h3 class="feature-category-title-sm">Sensitive Value Masking</h3>
+                        <p class="feature-category-description-sm">
+                            Automatically masks values marked as sensitive in Terraform to prevent accidental exposure.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Minimal Docker Image -->
+                <div class="feature-category-card compact">
+                    <div class="feature-icon-sm">📦</div>
+                    <div class="feature-compact-content">
+                        <h3 class="feature-category-title-sm">Minimal Docker Image</h3>
+                        <p class="feature-category-description-sm">
+                            Based on mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled for minimal attack surface.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Docker Support -->
+                <div class="feature-category-card compact">
+                    <div class="feature-icon-sm">🐳</div>
+                    <div class="feature-compact-content">
+                        <h3 class="feature-category-title-sm">Docker Support</h3>
+                        <p class="feature-category-description-sm">
+                            Distributed as a lightweight Docker container for easy usage in any environment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="../features/index.html" class="footer-link">Features</a>
+                    <a href="../getting-started.html" class="footer-link">Get Started</a>
+                    <a href="../docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="../examples.html" class="footer-link">Examples</a>
+                    <a href="../architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="../contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

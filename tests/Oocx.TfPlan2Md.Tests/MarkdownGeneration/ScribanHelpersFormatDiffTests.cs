@@ -14,7 +14,7 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Fact]
-    public void FormatDiff_DifferentStrings_ReturnsBacktickWrappedStandardDiff()
+    public void FormatDiff_DifferentStrings_ReturnsBacktickWrappedSimpleDiff()
     {
         ScribanHelpers.FormatDiff("TCP", "UDP", "simple-diff")
             .Should().Be("- `TCP`<br>+ `UDP`");
@@ -24,14 +24,14 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Fact]
-    public void FormatDiff_NullBefore_ReturnsBacktickWrappedStandardDiff()
+    public void FormatDiff_NullBefore_ReturnsBacktickWrappedSimpleDiff()
     {
         ScribanHelpers.FormatDiff(null, "value", "simple-diff")
             .Should().Be("- ``<br>+ `value`");
     }
 
     [Fact]
-    public void FormatDiff_NullAfter_ReturnsBacktickWrappedStandardDiff()
+    public void FormatDiff_NullAfter_ReturnsBacktickWrappedSimpleDiff()
     {
         ScribanHelpers.FormatDiff("value", null, "simple-diff")
             .Should().Be("- `value`<br>+ ``");

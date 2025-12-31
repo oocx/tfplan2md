@@ -45,19 +45,19 @@ fi
 
 log_info "✓ artifacts/comprehensive-demo.md generated successfully (inline-diff)"
 
-log_info "Generating artifacts/comprehensive-demo-standard-diff.md (for GitHub UAT)..."
+log_info "Generating artifacts/comprehensive-demo-simple-diff.md (for GitHub UAT)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
   --large-value-format simple-diff \
-  --output artifacts/comprehensive-demo-standard-diff.md \
+  --output artifacts/comprehensive-demo-simple-diff.md \
   examples/comprehensive-demo/plan.json
 
-if [[ ! -s artifacts/comprehensive-demo-standard-diff.md ]]; then
-  log_error "Generated artifact is empty or missing: artifacts/comprehensive-demo-standard-diff.md"
+if [[ ! -s artifacts/comprehensive-demo-simple-diff.md ]]; then
+  log_error "Generated artifact is empty or missing: artifacts/comprehensive-demo-simple-diff.md"
   exit 1
 fi
 
-log_info "✓ artifacts/comprehensive-demo-standard-diff.md generated successfully"
+log_info "✓ artifacts/comprehensive-demo-simple-diff.md generated successfully"
 
 log_info "Generating artifacts/role.md (role assignments with principal mapping)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \

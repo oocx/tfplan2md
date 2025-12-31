@@ -30,7 +30,7 @@ To improve readability and scannability, `tfplan2md` uses a consistent formattin
 - **Data Values**: All actual data values (resource names, IP addresses, configuration settings) are formatted as `inline code` (backticks). This makes them visually distinct from labels and descriptions.
 - **Labels & Keys**: Attribute names, table headers, and descriptive text are rendered as plain text.
 - **Summaries**: Resource summaries use code formatting for all identifiers and configuration values (e.g., `name`, `resource_group`, `location`).
-- **Diffs**: Large value diffs support both styled HTML (inline-diff) and standard text (standard-diff) formats, configurable via CLI.
+- **Diffs**: Large value diffs support both styled HTML (inline-diff) and simple text (simple-diff) formats, configurable via CLI.
 
 This ensures that the most important information—the values changing in your infrastructure—always stands out.
 
@@ -167,7 +167,7 @@ Large attribute values (multi-line text or strings > 100 characters) are automat
 - **Summary Line**: The summary shows the number of lines and changed lines for each large attribute.
 - **Formatting Options**:
   - `inline-diff` (default): Azure DevOps-optimized HTML with character-level diff highlighting.
-  - `standard-diff`: GitHub-compatible markdown diff blocks.
+  - `simple-diff`: GitHub-compatible markdown diff blocks.
 - **Complete Replacement**: If a value is completely replaced (no common lines), it shows separate "Before" and "After" blocks.
 
 **Usage:**
@@ -175,8 +175,8 @@ Large attribute values (multi-line text or strings > 100 characters) are automat
 # Default (inline-diff)
 tfplan2md plan.json
 
-# Standard diff (better for GitHub)
-tfplan2md plan.json --large-value-format standard-diff
+# Simple diff (better for GitHub)
+tfplan2md plan.json --large-value-format simple-diff
 ```
 
 - **UPDATE**: Shows resource name and list of changed attributes (up to 3, then "+ N more")
@@ -239,12 +239,12 @@ To improve readability, large attribute values (multi-line or >100 characters) a
 - **Summary line**: Shows the count of large attributes and total lines (e.g., "Large attributes (2 attributes, 147 lines)").
 - **Display formats**:
   - **`inline-diff`** (default): Azure DevOps-optimized HTML with line-by-line and character-level diff highlighting. Note that GitHub strips these HTML styles (content remains readable), so this format is best for Azure DevOps.
-  - **`standard-diff`**: Cross-platform markdown code blocks with `diff` syntax highlighting. This format is fully portable and works on both GitHub and Azure DevOps.
+  - **`simple-diff`**: Cross-platform markdown code blocks with `diff` syntax highlighting. This format is fully portable and works on both GitHub and Azure DevOps.
 
 **Usage:**
 Control the display format using the `--large-value-format` CLI option:
 ```bash
-tfplan2md plan.json --large-value-format standard-diff
+tfplan2md plan.json --large-value-format simple-diff
 ```
 
 ### Module Grouping (NEW)
@@ -378,7 +378,7 @@ Simple single-command interface with flags:
 | `--output <file>` | Write output to a file instead of stdout |
 | `--template <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--report-title <text>` | Override the report's level-1 heading |
-| `--large-value-format <format>` | Format for large/multi-line attributes: `inline-diff` (default, HTML with inline diff) or `standard-diff` (markdown diff fence) |
+| `--large-value-format <format>` | Format for large/multi-line attributes: `inline-diff` (default, HTML with inline diff) or `simple-diff` (markdown diff fence) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
@@ -591,6 +591,38 @@ tfplan2md ensures high-quality markdown output that renders correctly in all mar
 - **Consistent structure**: Proper document hierarchy with module sections (H3) and resource entries (H4)
 
 These improvements are applied automatically during rendering and require no configuration.
+
+## Template Rendering Simplification
+
+**Status:** ✅ Implemented
+
+The template system has been simplified to enable faster, more reliable feature development by both humans and AI agents. This architectural improvement eliminates complexity without changing user-facing output.
+
+**Key Changes:**
+
+- **Direct rendering**: Templates now generate output directly in a single pass. The old render-then-replace mechanism with HTML anchor comments has been eliminated.
+- **Logic in C#, not templates**: Value transformation and formatting logic has been moved from Scriban `func` definitions into C# code (model properties and helper functions). Templates now focus purely on layout.
+- **Cleaner templates**: All built-in templates are under 100 lines with no `func` definitions, making them easier to understand and maintain.
+- **Clear patterns**: When adding formatting features (like new icons), developers now have a clear, single location for implementation instead of scattered changes across templates.
+
+**Benefits:**
+
+- **Faster development**: New formatting features can be added in a single file rather than across multiple templates
+- **Better testing**: Compile-time and test-time detection of incomplete implementations
+- **Easier maintenance**: Templates are pure layout with discoverable helper functions
+- **AI-friendly**: Simpler architecture enables AI agents to implement features without trial-and-error
+
+**For Template Authors:**
+
+Custom templates no longer need to emit HTML anchor comments. Simply focus on layout and use the available helper functions for value formatting. All formatting capabilities are discoverable through the model object and Scriban helper functions.
+
+**Metrics Achieved:**
+- Zero HTML anchor comments in templates (eliminated render-then-replace)
+- Zero `func` definitions in templates (logic moved to C#)
+- All templates under 100 lines (57-83 lines)
+- Single-file changes for formatting features
+
+See [docs/features/026-template-rendering-simplification/](features/026-template-rendering-simplification/) for technical details.
 
 ## Future Considerations
 

@@ -120,7 +120,7 @@
                             <span class="x-icon">✗</span>
                             <div>
                                 <strong>Mental Mapping</strong>
-                                <p>Hard to verify security changes in raw JSON/text</p>
+                                <p>Constantly mapping resource IDs to names in your head</p>
                             </div>
                         </li>
                         <li>
@@ -163,7 +163,7 @@
                             <span class="check-icon">✓</span>
                             <div>
                                 <strong>Inline Diffs for Large Values</strong>
-                                <p>Handles large text blocks (like JSON policies or scripts) by showing a computed diff instead of the full text</p>
+                                <p>Shows computed diffs for large values like JSON policies or scripts</p>
                             </div>
                         </li>
                         <li>
@@ -177,9 +177,41 @@
                 </div>
                 
                 <div class="screenshot-side">
-                    <div class="screenshot-container">
-                        <div class="screenshot-header">tfplan2md Report</div>
-                        <div class="screenshot-content code-block">
+                    <div class="screenshot-container interactive-example">
+                        <div class="screenshot-header">
+                            <span>tfplan2md Report</span>
+                            <div class="example-controls">
+                                <div class="view-toggle">
+                                    <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                    <button class="toggle-btn" data-view="source">Source</button>
+                                </div>
+                                <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                            </div>
+                        </div>
+                        <div class="example-content">
+                            <div class="view-pane rendered-view active">
+                                <h2>📊 Network Security Rules</h2>
+                                <h3>✅ Creating AllowSSH</h3>
+                                <p><strong>Action:</strong> 🆕 Allow<br>
+                                <strong>Priority:</strong> 100</p>
+                                <p><strong>Traffic Flow:</strong></p>
+                                <ul>
+                                    <li><strong>Source:</strong> 10.0.0.0/8</li>
+                                    <li><strong>Destination:</strong> 10.0.0.0/8</li>
+                                    <li><strong>Port:</strong> 22 (TCP)</li>
+                                </ul>
+                                <hr>
+                                <h3>✅ Creating DenyRDP</h3>
+                                <p><strong>Action:</strong> 🆕 Deny<br>
+                                <strong>Priority:</strong> 200</p>
+                                <p><strong>Traffic Flow:</strong></p>
+                                <ul>
+                                    <li><strong>Source:</strong> *</li>
+                                    <li><strong>Destination:</strong> *</li>
+                                    <li><strong>Port:</strong> 3389 (TCP)</li>
+                                </ul>
+                            </div>
+                            <div class="view-pane source-view">
 <pre><code>## 📊 Network Security Rules
 
 ### ✅ Creating AllowSSH
@@ -201,6 +233,7 @@
 - **Source:** *
 - **Destination:** *
 - **Port:** 3389 (TCP)</code></pre>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -534,6 +567,66 @@
             }
             updateCarousel();
         });
+
+        // Interactive Examples
+        document.querySelectorAll('.interactive-example').forEach(example => {
+            const toggles = example.querySelectorAll('.toggle-btn');
+            const panes = example.querySelectorAll('.view-pane');
+            const fullscreenBtn = example.querySelector('.fullscreen-btn');
+
+            toggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    
+                    // Update buttons
+                    toggles.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update panes
+                    panes.forEach(p => {
+                        p.classList.remove('active');
+                        if (p.classList.contains(view + '-view')) {
+                            p.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                example.classList.toggle('fullscreen');
+                fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
+                document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
+            });
+        });
+
+        // Simple Markdown Syntax Highlighter
+        function highlightMarkdown() {
+            document.querySelectorAll('.source-view code').forEach(block => {
+                let html = block.innerHTML;
+                
+                // Comments
+                html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
+                
+                // Headings
+                html = html.replace(/^(#+ .+$)/gm, '<span class="md-heading">$1</span>');
+                
+                // Bold
+                html = html.replace(/(\*\*.*?\*\*)/g, '<span class="md-bold">$1</span>');
+                
+                // Inline Code
+                html = html.replace(/(`[^`]+`)/g, '<span class="md-code">$1</span>');
+                
+                // Links
+                html = html.replace(/(\[.*?\]\(.*?\))/g, '<span class="md-link">$1</span>');
+                
+                // Lists
+                html = html.replace(/^(\s*[-*+] )/gm, '<span class="md-list">$1</span>');
+                
+                block.innerHTML = html;
+            });
+        }
+
+        highlightMarkdown();
     </script>
 </body>
 </html>

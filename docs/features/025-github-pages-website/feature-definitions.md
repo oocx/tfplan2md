@@ -8,7 +8,7 @@
 | **Firewall Rule Interpretation** | Renders complex Azure Firewall rule collections as readable tables with protocols, ports, and actions. |
 | **NSG Rule Interpretation** | Renders Network Security Group rules as readable tables, making security changes easy to audit. |
 | **Role Assignment Mapping** | Resolves cryptic Principal IDs (GUIDs) to human-readable names (e.g., "Jane Doe", "DevOps Team"), including mapping of scopes and role names. |
-| **Large Value Formatting** | Handles large text blocks (like JSON policies or scripts) by showing a computed diff instead of the full text. |
+| **Large Value Formatting** | Shows computed diffs for large values like JSON policies or scripts. |
 | **Optimized for PR Comments** | Designed and tested for rendering in markdown pull requests on Azure DevOps Services and Github. |
 | **Friendly Names** | Friendly names for resources instead of complex resource id strings. |
 

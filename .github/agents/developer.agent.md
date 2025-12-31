@@ -194,7 +194,7 @@ Follow the project's coding conventions strictly:
    
    c. **Verify acceptance criteria** for the current task:
       - All acceptance criteria for THIS task must be satisfied
-      - Run relevant tests: `dotnet test --filter "<TestClass>"`
+      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test --filter "<TestClass>"`
       - Check for errors: Use `problems` to verify no workspace errors
    
    d. **Commit the task**:
@@ -219,7 +219,7 @@ Follow the project's coding conventions strictly:
    
    a. **Run full test suite**:
       ```bash
-      dotnet test
+   scripts/test-with-timeout.sh -- dotnet test
       ```
       - All tests must pass with ZERO skipped tests
       - If tests are skipped, identify reason and ask Maintainer to resolve
@@ -261,12 +261,17 @@ dotnet build
 
 Run all tests:
 ```bash
-dotnet test
+scripts/test-with-timeout.sh -- dotnet test
+```
+
+Override timeout (if needed):
+```bash
+scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test
 ```
 
 Run specific test file:
 ```bash
-dotnet test --filter "FullyQualifiedName~ClassName"
+scripts/test-with-timeout.sh -- dotnet test --filter "FullyQualifiedName~ClassName"
 ```
 
 Build the Docker image:
@@ -318,7 +323,7 @@ Verify:
 
 Verify:
 - [ ] All tasks are complete and marked as done in tasks.md
-- [ ] Full test suite passes with ZERO skipped tests (`dotnet test`)
+- [ ] Full test suite passes with ZERO skipped tests (`scripts/test-with-timeout.sh -- dotnet test`)
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
 - [ ] Demo artifacts regenerated using `generate-demo-artifacts` skill (REQUIRED)

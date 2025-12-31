@@ -31,7 +31,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 
 ### ✅ Always Do
 - Check Docker availability before running Docker build (ask maintainer to start if needed)
-- Run `dotnet test` and `docker build` to verify functionality
+- Run `scripts/test-with-timeout.sh -- dotnet test` and `docker build` to verify functionality
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
@@ -102,7 +102,7 @@ Before starting, familiarize yourself with:
 ### Correctness
 - [ ] Code implements all acceptance criteria from the tasks
 - [ ] All test cases from the test plan are implemented
-- [ ] Tests pass (`dotnet test`)
+- [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test`)
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 
@@ -166,7 +166,7 @@ Before starting, familiarize yourself with:
 
 2. **Run verification** - Execute tests and check for errors:
    ```bash
-   dotnet test
+  scripts/test-with-timeout.sh -- dotnet test
    docker build -t tfplan2md:local .
    ```
 

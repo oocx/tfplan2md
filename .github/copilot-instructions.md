@@ -71,6 +71,9 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
   - For `gh`: Use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` or `export GH_PAGER=cat GH_FORCE_TTY=false`.
   - For `az`: Use `AZURE_CORE_PAGER=cat az ...` or `export AZURE_CORE_PAGER=cat`.
   - For general tools: Use `export PAGER=cat`.
+- **Test hangs**: When running the full test suite, use the timeout wrapper instead of calling `dotnet test` directly.
+  - Example: `scripts/test-with-timeout.sh -- dotnet test --no-build --configuration Release --verbosity normal`
+  - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test ...`
 - **Workspace-local temp files**: Do not create or reference temporary files outside the repository (for example `/tmp` or `~/`). If a scratch file is needed, write it under `.tmp/` (create it with `scripts/setup-tmp.sh` if needed).
 - Avoid running commands that are not necessary for the current task.
 - When a command fails, explain the error and propose a solution before retrying.

@@ -27,7 +27,7 @@ Ensure the feature is ready for release, create the pull request (for both new f
 
 ### ✅ Always Do
 - Verify code review is approved before proceeding
-- Trust CI pipeline for test validation — only run local tests (`dotnet test`) if diagnosing a specific CI failure
+- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test`) if diagnosing a specific CI failure
 - Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
 - Check that working directory is clean
 - Verify branch is up to date with main
@@ -130,7 +130,7 @@ Before releasing, verify:
 2. **Tests Pass** (trust CI — only run locally if debugging a failure)
    ```bash
    # Only if CI failed and you need to reproduce:
-   dotnet test
+   scripts/test-with-timeout.sh -- dotnet test
    ```
 
 3. **Docker Build Succeeds** (only if not recently verified by Code Reviewer)

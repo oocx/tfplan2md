@@ -27,7 +27,7 @@ Create a test plan that maps test cases to acceptance criteria, ensuring the fea
 - For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
-- Verify tests can run via `dotnet test` without human intervention
+- Verify tests can run via `scripts/test-with-timeout.sh -- dotnet test` without human intervention
 - Consider edge cases, error conditions, and boundary values
 - Create test plan markdown file at `docs/features/NNN-<feature-slug>/test-plan.md`
 - Create UAT test plan (if needed) at `docs/features/NNN-<feature-slug>/uat-test-plan.md`
@@ -86,7 +86,7 @@ This project uses:
 - **Test Data**: JSON files in `tests/Oocx.TfPlan2Md.Tests/TestData/`
 - **Docker Integration Tests**: For end-to-end CLI testing
 
-**Important constraint:** All tests must be fully automated. No manual testing steps are acceptable. Every test case must be executable via `dotnet test` without human intervention.
+**Important constraint:** All tests must be fully automated. No manual testing steps are acceptable. Every test case must be executable via `dotnet test` without human intervention (typically executed via `scripts/test-with-timeout.sh -- dotnet test` to prevent hangs). If a custom timeout is required, add `--timeout-seconds <seconds>`.
 
 Follow the existing test naming convention: `MethodName_Scenario_ExpectedResult`
 

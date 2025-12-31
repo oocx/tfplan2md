@@ -1,0 +1,26 @@
+{
+  "initialLocation": "panel",
+  "responderUsername": "Copilot",
+  "requests": [
+    {
+      "requestId": "1",
+      "timestamp": 1700000000000,
+      "timeSpentWaiting": 0,
+      "modelId": "copilot/gpt-5.1-codex-max",
+      "message": {"text": "note for retro: wrong user time / agent time"},
+      "response": [],
+      "modelState": {"value": 1},
+      "result": {"timings": {"totalElapsed": 1000}}
+    },
+    {
+      "requestId": "2",
+      "timestamp": 1700000005000,
+      "timeSpentWaiting": 2000,
+      "modelId": "copilot/gemini-3-flash-preview",
+      "message": {"text": "retrospective: missed user feedback"},
+      "response": [],
+      "modelState": {"value": 2},
+      "result": {"timings": {"totalElapsed": 500}}
+    }
+  ]
+}

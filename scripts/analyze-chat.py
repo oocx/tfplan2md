@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
+
 import json
 import re
 import sys
-from datetime import datetime
 
 # Retrospective Analysis Tool
 # Suggested Improvements for Workflow Engineer:
@@ -11,13 +12,35 @@ from datetime import datetime
 # 4. Add "Context Bloat" detection: Monitor the size of attachments/context over time.
 # 5. Export results to Markdown: Generate the "Session Overview" and "Agent Analysis" tables directly.
 
-def analyze_chat(file_path):
+def _get_message_text(req: dict) -> str:
+    message_obj = req.get('message', {})
+    if isinstance(message_obj, dict):
+        value = message_obj.get('text', '')
+        return value if isinstance(value, str) else ''
+    if isinstance(message_obj, str):
+        return message_obj
+    return ''
+
+
+def _extract_user_request(message_text: str) -> str:
+    user_request_match = re.search(r'<userRequest>\n(.*?)\n</userRequest>', message_text, re.DOTALL)
+    if user_request_match:
+        return user_request_match.group(1).strip()
+    return message_text.strip()
+
+def _is_retro_feedback(user_request: str) -> bool:
+    # Captures feedback provided during retrospectives and any chat message that explicitly
+    # references the retrospective (e.g. "note for retro: ...").
+    return re.search(r'\b(retro|retrospective)\b', user_request, re.IGNORECASE) is not None
+
+
+def analyze_chat(file_path: str) -> int:
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
     except Exception as e:
         print(f"Error reading {file_path}: {e}")
-        return
+        return 2
 
     requests = data.get('requests', [])
     
@@ -26,41 +49,28 @@ def analyze_chat(file_path):
         'agents': {},
         'models': {},
         'tools': {},
+        'file_edits': {'kept': 0, 'undone': 0, 'modified': 0},
+        'votes': {'up': 0, 'down': 0},
+        'vote_down_reasons': {},
+        'retro_feedback': [],
+        'warnings': [],
         'rejections': {
             'cancelled': 0,
             'failed': 0,
             'tool_rejections': 0
         },
         'agent_work_time': 0,
+        'user_wait_time': 0,
         'start_timestamp': requests[0].get('timestamp', 0) if requests else 0,
         'end_timestamp': requests[-1].get('timestamp', 0) if requests else 0
     }
 
-    current_agent = "Requirements Engineer" # Default starting agent
-    
-    # Handoff prompt mapping
-    handoff_prompts = {
-        "Architect": "Review the feature specification created above and design the technical solution",
-        "Quality Engineer": "Review the architecture decisions above and define the test plan",
-        "Task Planner": "Review the test plan above and create actionable user stories",
-        "Developer": [
-            "Review the user stories above and begin implementation",
-            "Review the issue analysis above and implement the fix",
-            "Address the issues identified in the code review above",
-            "The PR build validation or release pipeline failed",
-            "User Acceptance Testing revealed rendering issues"
-        ],
-        "Code Reviewer": "Review the implementation and documentation updates for quality and completeness",
-        "UAT Tester": "The code review is approved. Run UAT to validate markdown rendering",
-        "Release Manager": [
-            "The code review is approved and this change does not require UAT",
-            "User Acceptance Testing passed on both GitHub and Azure DevOps",
-            "The website changes are complete. Please create a PR"
-        ],
-        "Retrospective": "The release is complete. Please conduct a retrospective",
-        "Workflow Engineer": "I have identified some workflow improvements in the retrospective",
-        "Issue Analyst": "I have an issue with the project"
-    }
+    missing_timestamp_count = 0
+    missing_elapsed_count = 0
+    missing_wait_count = 0
+    missing_model_count = 0
+    missing_message_count = 0
+    missing_response_count = 0
 
     for i, req in enumerate(requests):
         # Timestamps and Work Time
@@ -69,16 +79,35 @@ def analyze_chat(file_path):
         if result:
             timings = result.get('timings', {})
             elapsed = timings.get('totalElapsed', 0)
-            metrics['agent_work_time'] += elapsed
+            if elapsed:
+                metrics['agent_work_time'] += elapsed
+            else:
+                missing_elapsed_count += 1
+        else:
+            missing_elapsed_count += 1
+
+        wait = req.get('timeSpentWaiting')
+        if isinstance(wait, int):
+            metrics['user_wait_time'] += wait
+        else:
+            missing_wait_count += 1
         
-        # Model and Agent
-        model_id = req.get('modelId', 'Unknown')
+        # Model
+        model_id = req.get('modelId')
+        if not isinstance(model_id, str) or not model_id:
+            model_id = 'Unknown'
+            missing_model_count += 1
         metrics['models'][model_id] = metrics['models'].get(model_id, 0) + 1
         
-        # Extract all text from response to identify agent role
+        # Extract all text from response for reporting/plausibility only (no agent attribution).
         thinking_text = ""
         response_text = ""
-        for resp in req.get('response', []):
+        response_items = req.get('response')
+        if not isinstance(response_items, list):
+            response_items = []
+            missing_response_count += 1
+
+        for resp in response_items:
             kind = resp.get('kind')
             val = resp.get('value', '')
             text = resp.get('text', '')
@@ -100,84 +129,24 @@ def analyze_chat(file_path):
             else:
                 response_text += content
         
-        # Look for common agent roles
-        roles = ['Requirements Engineer', 'Architect', 'Task Planner', 'Developer', 'Quality Engineer', 'UAT Tester', 'Release Manager', 'Code Reviewer', 'Workflow Engineer', 'Retrospective', 'Issue Analyst']
-        found_role = False
-        
-        # Check message for handoff prompts (User Request)
-        message_obj = req.get('message', {})
-        message_text = ""
-        if isinstance(message_obj, dict):
-            message_text = message_obj.get('text', '')
-        elif isinstance(message_obj, str):
-            message_text = message_obj
-        
-        # Extract userRequest from message_text if it's a complex prompt
-        user_request_match = re.search(r'<userRequest>\n(.*?)\n</userRequest>', message_text, re.DOTALL)
-        if user_request_match:
-            user_request = user_request_match.group(1).strip()
-        else:
-            user_request = message_text.strip()
+        message_text = _get_message_text(req)
+        if not message_text:
+            missing_message_count += 1
+        user_request = _extract_user_request(message_text)
 
-        for agent, prompts in handoff_prompts.items():
-            if isinstance(prompts, str):
-                prompts = [prompts]
-            for prompt in prompts:
-                # Simple similarity: check if prompt is a substring or if most words match
-                if prompt.lower() in user_request.lower():
-                    current_agent = agent
-                    found_role = True
-                    break
-                
-                # Word-based similarity for modified prompts
-                prompt_words = set(re.findall(r'\w+', prompt.lower()))
-                request_words = set(re.findall(r'\w+', user_request.lower()))
-                if len(prompt_words) >= 8: # Only for long enough prompts
-                    intersection = prompt_words.intersection(request_words)
-                    if len(intersection) / len(prompt_words) >= 0.8:
-                        current_agent = agent
-                        found_role = True
-                        break
-            if found_role: break
+        # NOTE: VS Code chat exports do not reliably include which custom agent was selected.
+        # Do not guess. All per-agent metrics must be treated as unavailable.
+        current_agent = 'Unattributed'
 
-        if not found_role:
-            # Check for @ mentions in message
-            for role in roles:
-                role_slug = role.lower().replace(' ', '-')
-                if f"@{role_slug}" in message_text.lower():
-                    current_agent = role
-                    found_role = True
-                    break
-        
-        if not found_role:
-            # Check thinking block for mode mentions
-            combined_text = thinking_text + response_text
-            for role in roles:
-                patterns = [
-                    f"I'm in \"{role}\" mode",
-                    f"I am in \"{role}\" mode",
-                    f"I'm in {role} mode",
-                    f"I am in {role} mode",
-                    f"switch to {role} mode",
-                    f"switching to {role} mode",
-                    f"as the {role} agent",
-                    f"acting as the {role}"
-                ]
-                for pattern in patterns:
-                    if pattern.lower() in combined_text.lower():
-                        current_agent = role
-                        found_role = True
-                        break
-                if found_role: break
-        
-        # Fallback: Use model ID as a hint if we are still "Unknown" or if the model strongly suggests a role
-        if not found_role:
-            if model_id == 'copilot/gpt-5.1-codex-max' and current_agent not in ['Developer', 'Task Planner']:
-                current_agent = 'Developer'
-            # Removed Claude Opus fallback as it's used by both Architect and Code Reviewer
-            elif model_id == 'copilot/gemini-3-flash-preview' and current_agent not in ['UAT Tester', 'Retrospective', 'Quality Engineer', 'Task Planner', 'Release Manager']:
-                # Gemini is used by many agents, so only fallback if we are really lost
-                pass
+        if not isinstance(req.get('timestamp'), int):
+            missing_timestamp_count += 1
+
+        if _is_retro_feedback(user_request):
+            metrics['retro_feedback'].append({
+                'index': i,
+                'timestamp': req.get('timestamp'),
+                'text': user_request,
+            })
 
         if current_agent not in metrics['agents']:
             metrics['agents'][current_agent] = {
@@ -185,25 +154,60 @@ def analyze_chat(file_path):
                 'models': {},
                 'tools': {},
                 'rejections': {'cancelled': 0, 'failed': 0},
-                'work_time': 0
+                'work_time': 0,
+                'wait_time': 0,
             }
         
         metrics['agents'][current_agent]['requests'] += 1
         metrics['agents'][current_agent]['models'][model_id] = metrics['agents'][current_agent]['models'].get(model_id, 0) + 1
         metrics['agents'][current_agent]['work_time'] += elapsed
+        if isinstance(wait, int):
+            metrics['agents'][current_agent]['wait_time'] += wait
         
         # Tools
-        for resp in req.get('response', []):
+        for resp in response_items:
             kind = resp.get('kind')
             if kind == 'toolInvocationSerialized':
-                metrics['tools']['tool'] = metrics['tools'].get('tool', 0) + 1
-                metrics['agents'][current_agent]['tools']['tool'] = metrics['agents'][current_agent]['tools'].get('tool', 0) + 1
+                tool_id = resp.get('toolId', 'unknown-tool')
+                metrics['tools'][tool_id] = metrics['tools'].get(tool_id, 0) + 1
+                metrics['agents'][current_agent]['tools'][tool_id] = metrics['agents'][current_agent]['tools'].get(tool_id, 0) + 1
             elif kind == 'textEditGroup':
                 metrics['tools']['edit'] = metrics['tools'].get('edit', 0) + 1
                 metrics['agents'][current_agent]['tools']['edit'] = metrics['agents'][current_agent]['tools'].get('edit', 0) + 1
 
+        # File edit events
+        for evt in req.get('editedFileEvents', []) or []:
+            event_kind = evt.get('eventKind')
+            if event_kind == 1:
+                metrics['file_edits']['kept'] += 1
+            elif event_kind == 2:
+                metrics['file_edits']['undone'] += 1
+            elif event_kind == 3:
+                metrics['file_edits']['modified'] += 1
+
+        # Votes / Feedback
+        vote = req.get('vote')
+        if vote == 1:
+            metrics['votes']['up'] += 1
+        elif vote == 0:
+            metrics['votes']['down'] += 1
+            reason = req.get('voteDownReason')
+            if isinstance(reason, str) and reason:
+                metrics['vote_down_reasons'][reason] = metrics['vote_down_reasons'].get(reason, 0) + 1
+
         # Rejections
-        if result:
+        model_state = None
+        model_state_obj = req.get('modelState')
+        if isinstance(model_state_obj, dict):
+            model_state = model_state_obj.get('value')
+
+        if model_state == 3:
+            metrics['rejections']['failed'] += 1
+            metrics['agents'][current_agent]['rejections']['failed'] += 1
+        elif model_state == 2:
+            metrics['rejections']['cancelled'] += 1
+            metrics['agents'][current_agent]['rejections']['cancelled'] += 1
+        elif result:
             error_details = result.get('errorDetails')
             if error_details:
                 code = error_details.get('code', 'unknown')
@@ -214,28 +218,102 @@ def analyze_chat(file_path):
                     metrics['rejections']['cancelled'] += 1
                     metrics['agents'][current_agent]['rejections']['cancelled'] += 1
 
+    # Plausibility checks
+    if metrics['total_requests'] != sum(a['requests'] for a in metrics['agents'].values()):
+        metrics['warnings'].append('Request count mismatch: sum(agents.requests) != total_requests')
+
+    if metrics['total_requests'] != sum(metrics['models'].values()):
+        metrics['warnings'].append('Request count mismatch: sum(models) != total_requests')
+
+    if metrics['start_timestamp'] and metrics['end_timestamp'] and metrics['end_timestamp'] < metrics['start_timestamp']:
+        metrics['warnings'].append('Timestamps invalid: end_timestamp < start_timestamp')
+
+    session_duration_ms = metrics['end_timestamp'] - metrics['start_timestamp']
+    if session_duration_ms < 0:
+        session_duration_ms = 0
+
+    if missing_timestamp_count:
+        metrics['warnings'].append(f"{missing_timestamp_count} request(s) missing a valid timestamp")
+    if missing_elapsed_count:
+        metrics['warnings'].append(f"{missing_elapsed_count} request(s) missing totalElapsed timing")
+    if missing_wait_count:
+        metrics['warnings'].append(f"{missing_wait_count} request(s) missing timeSpentWaiting")
+    if missing_model_count:
+        metrics['warnings'].append(f"{missing_model_count} request(s) missing modelId")
+    if missing_message_count:
+        metrics['warnings'].append(f"{missing_message_count} request(s) missing message.text")
+    if missing_response_count:
+        metrics['warnings'].append(f"{missing_response_count} request(s) missing response[]")
+
+    agent_work_time_ms = metrics['agent_work_time']
+    user_wait_time_ms = metrics['user_wait_time']
+    if session_duration_ms > 0:
+        if agent_work_time_ms > session_duration_ms * 1.2:
+            metrics['warnings'].append('Agent work time is unexpectedly larger than session duration')
+        if user_wait_time_ms > session_duration_ms * 1.2:
+            metrics['warnings'].append('User wait time is unexpectedly larger than session duration')
+        other_time_ms = session_duration_ms - agent_work_time_ms - user_wait_time_ms
+        if other_time_ms < -int(session_duration_ms * 0.05):
+            metrics['warnings'].append('Time breakdown exceeds session duration (agent + user wait > session)')
+
     # Output summary
     print(f"Total Requests: {metrics['total_requests']}")
-    
-    session_duration_ms = metrics['end_timestamp'] - metrics['start_timestamp']
+
     session_duration_s = session_duration_ms / 1000
     agent_work_time_s = metrics['agent_work_time'] / 1000
-    user_wait_time_s = max(0, session_duration_s - agent_work_time_s)
+    user_wait_time_s = metrics['user_wait_time'] / 1000
+    other_time_s = max(0.0, session_duration_s - agent_work_time_s - user_wait_time_s)
     
     print(f"Session Duration: {session_duration_s:.2f}s ({session_duration_s/3600:.2f}h)")
     print(f"Agent Work Time: {agent_work_time_s:.2f}s ({agent_work_time_s/3600:.2f}h)")
     print(f"User Wait Time: {user_wait_time_s:.2f}s ({user_wait_time_s/3600:.2f}h)")
+    print(f"Other Time (unattributed): {other_time_s:.2f}s ({other_time_s/3600:.2f}h)")
+
+    print(f"\nFile Edits: {metrics['file_edits']}")
+    print(f"Votes: {metrics['votes']}")
+    if metrics['vote_down_reasons']:
+        print(f"Vote-Down Reasons: {metrics['vote_down_reasons']}")
+
+    print("\nAgent Attribution:")
+    print("  Custom agent/role attribution is not available in VS Code chat exports; per-agent metrics are not reported.")
     
     print("\nAgents:")
     for agent, data in metrics['agents'].items():
         print(f"  {agent}: {data['requests']} requests")
         print(f"    Work Time: {data['work_time'] / 1000:.2f}s")
+        print(f"    Wait Time: {data['wait_time'] / 1000:.2f}s")
         print(f"    Models: {data['models']}")
         print(f"    Tools: {data['tools']}")
         print(f"    Rejections: {data['rejections']}")
 
+    print("\nRetrospective Feedback (verbatim):")
+    if metrics['retro_feedback']:
+        for item in metrics['retro_feedback']:
+            ts = item.get('timestamp')
+            ts_display = str(ts) if ts is not None else 'unknown-ts'
+            print(f"  - [{item['index']}; {ts_display}] {item['text']}")
+    else:
+        print("  (none detected)")
+
+    print("\nImprovement Opportunities (derived from feedback):")
+    if metrics['retro_feedback']:
+        for i, item in enumerate(metrics['retro_feedback'], start=1):
+            print(f"  - Feedback #{i}: Investigate and address: {item['text']}")
+    else:
+        print("  (none)")
+
+    print("\nPlausibility Warnings:")
+    if metrics['warnings']:
+        for warning in metrics['warnings']:
+            print(f"  - {warning}")
+    else:
+        print("  (none)")
+
+    return 0
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python3 analyze-chat.py <path_to_chat.json>")
+        print("Usage: scripts/analyze-chat.py <path_to_chat.json>")
+        sys.exit(2)
     else:
-        analyze_chat(sys.argv[1])
+        sys.exit(analyze_chat(sys.argv[1]))

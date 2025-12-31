@@ -152,7 +152,8 @@ scripts/uat-github.sh poll <pr-number>
 # 3. Continue polling or proceed to cleanup
 
 # Example simulated fix response file
-cat > /tmp/uat-simulated-fix.md <<'EOF'
+mkdir -p .tmp
+cat > .tmp/uat-simulated-fix.md <<'EOF'
 # [SIMULATED FIX] Response to Feedback
 
 ## Original Feedback
@@ -172,7 +173,7 @@ For this simulation, consider the feedback "addressed" and proceed with cleanup.
 EOF
 
 # Post the simulated response
-scripts/uat-github.sh comment <pr-number> /tmp/uat-simulated-fix.md
+scripts/uat-github.sh comment <pr-number> .tmp/uat-simulated-fix.md
 
 # Cleanup
 scripts/uat-github.sh cleanup <pr-number>
@@ -184,7 +185,7 @@ scripts/uat-azdo.sh setup
 UAT_ALLOW_MINIMAL=1 scripts/uat-azdo.sh create artifacts/uat-simulation.md
 scripts/uat-azdo.sh poll <pr-id>
 # Handle feedback with simulated response file
-scripts/uat-azdo.sh comment <pr-id> /tmp/uat-simulated-fix.md
+scripts/uat-azdo.sh comment <pr-id> .tmp/uat-simulated-fix.md
 scripts/uat-azdo.sh cleanup <pr-id>
 ```
 
@@ -208,7 +209,8 @@ $ scripts/uat-github.sh poll 99
   "The table header looks off - can you check alignment?"
 
 # Respond with simulated fix (do NOT actually fix)
-$ cat > /tmp/uat-simulated-fix.md <<'EOF'
+$ mkdir -p .tmp
+$ cat > .tmp/uat-simulated-fix.md <<'EOF'
 # [SIMULATED FIX] Response to Feedback
 
 ## Original Feedback
@@ -221,7 +223,7 @@ This is a **simulated fix response**. In a real UAT, Developer would fix the tab
 *Simulation complete. No actual changes were made.*
 EOF
 
-$ scripts/uat-github.sh comment 99 /tmp/uat-simulated-fix.md
+$ scripts/uat-github.sh comment 99 .tmp/uat-simulated-fix.md
 
 $ scripts/uat-github.sh cleanup 99
 [INFO] Closing PR #99...

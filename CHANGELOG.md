@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.7"></a>
+## [1.0.0-alpha.7](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2025-12-31)
+
+### ✨ Features
+
+* add formatted value wrappers ([7585207](https://github.com/oocx/tfplan2md/commit/758520756edc6e13d18c56dbd1dba0e5b249e27e))
+* add template loader and resolver ([8f8ef92](https://github.com/oocx/tfplan2md/commit/8f8ef92ac128d1026485dd8ba7001f8e15131a50))
+* add view models and factories for NSG, firewall, and role assignment ([1fcdfe8](https://github.com/oocx/tfplan2md/commit/1fcdfe88c061b68dbadff0f98ced31d894c9b26b))
+* add Web Designer agent for website development and maintenance ([c538de8](https://github.com/oocx/tfplan2md/commit/c538de86f8411f08520e816b8a7a6d7306fdbcaf))
+* implement template rendering simplification and fix naming inconsistencies ([926cbd0](https://github.com/oocx/tfplan2md/commit/926cbd0ea2bcc0ccc6e800d6ad7a0bb08f0575bb))
+* split scriban helpers ([690fb81](https://github.com/oocx/tfplan2md/commit/690fb818a711bc56fd3e68c27671301f6b6e6c09))
+* **workflow:** add improvements from feature 024 retrospective ([a82c96c](https://github.com/oocx/tfplan2md/commit/a82c96c5ade28a3725ba56dc75f77fab21c0cf03))
+
+### 🐛 Bug Fixes
+
+* resolve CA1859 warnings in view model factories ([a1f007f](https://github.com/oocx/tfplan2md/commit/a1f007fdd989513f5b36eda6ed448de252079cb4))
+* restore principal name display and boolean lowercase formatting ([4d5e9ff](https://github.com/oocx/tfplan2md/commit/4d5e9ffd610b48ae5ed2f7acede109f5b195017b))
+* restore simple-diff markdown output and rename from standard-diff ([5ed981b](https://github.com/oocx/tfplan2md/commit/5ed981bb879075325e94ef5049f5bb98a4adc497))
+* **rendering:** deduplicate principal type and icon in role assignments ([c0fc85c](https://github.com/oocx/tfplan2md/commit/c0fc85c4a1c2bce5f8a6a7694db14930b51abe27))
+
+### ♻️ Refactoring
+
+* migrate role assignment template to view model pattern ([cfe9f19](https://github.com/oocx/tfplan2md/commit/cfe9f19aaa5f795a22ee05e32c005abdae179e34))
+* remove HTML anchor comments from templates ([cadf930](https://github.com/oocx/tfplan2md/commit/cadf930c71ba5b6ee8c0a542663a1f6d5ef1dd02))
+* **firewall:** complete view model migration for firewall template ([0bfa22c](https://github.com/oocx/tfplan2md/commit/0bfa22c9a781ce1135499ad5568555df4ed85945))
+* **nsg:** complete view model migration for NSG template ([486795c](https://github.com/oocx/tfplan2md/commit/486795ca6b301793a9875b447971e8d5d1e5d837))
+* **nsg:** use view model for update scenario rules table ([160a556](https://github.com/oocx/tfplan2md/commit/160a556216c0b546e9f32a045c15c974916f6151))
+* **rendering:** implement single-pass template dispatch ([5fdc4f2](https://github.com/oocx/tfplan2md/commit/5fdc4f29ab2a9b93effebc86346e2c04db840c02))
+
+### 📚 Documentation
+
+* add architecture for 026-template-rendering-simplification ([7f1e487](https://github.com/oocx/tfplan2md/commit/7f1e487783cf4cebb550d331f274cac96bc1cbba))
+* add feature specification for 026-template-rendering-simplification ([ef68478](https://github.com/oocx/tfplan2md/commit/ef68478d0640d21d3153c4a6982ba9e0add98d00))
+* add retrospective for visual report enhancements and analysis script ([47cab26](https://github.com/oocx/tfplan2md/commit/47cab264c674ff81eb286306329efcf66932f9b5))
+* add tasks for template rendering simplification ([7b99331](https://github.com/oocx/tfplan2md/commit/7b993311e6b0fe205a6d618878bf82f188feee6a))
+* add test plan for 026-template-rendering-simplification ([c2dd6f1](https://github.com/oocx/tfplan2md/commit/c2dd6f1c32e3caf6151f01570a76a09da9d720d2))
+* add UAT report for template rendering simplification (failed) ([8b4543b](https://github.com/oocx/tfplan2md/commit/8b4543b69b82c168e0da55e5fb8f0251b2f1b5dd))
+* adopt numbered feature and issue folders ([9c52f29](https://github.com/oocx/tfplan2md/commit/9c52f29330b25311d3846ec423befcdb8079e694))
+* align workflow numbering with chronology ([706c9f0](https://github.com/oocx/tfplan2md/commit/706c9f08634ac8e3be0b0af088c34cfbaa66de0d))
+* implement global chronological numbering for features, issues, and workflow ([d3573c5](https://github.com/oocx/tfplan2md/commit/d3573c59c2bc82b49fa59688cbe790842cc18221))
+* number workflow docs folders ([0d493ee](https://github.com/oocx/tfplan2md/commit/0d493eef1e2cb0bff45a41b6077659a129333827))
+* update demo artifacts for single-pass rendering ([2ddcaca](https://github.com/oocx/tfplan2md/commit/2ddcaca2dc9cf534ce019573ae2b22ebf5e79d1c))
+* **workflow:** add visual feedback analysis and reprioritize ([73219cd](https://github.com/oocx/tfplan2md/commit/73219cd80859a530c3735f9eca1952689101aa15))
+
 <a name="1.0.0-alpha.6"></a>
 ## [1.0.0-alpha.6](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2025-12-29)
 

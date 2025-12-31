@@ -17,7 +17,6 @@
 ### 📦 Module: root
 
 <div style="margin-bottom:12px;">
-<!-- tfplan2md:resource-start address=azurerm_firewall_network_rule_collection.web_tier -->
 
 ### 🔄 azurerm_firewall_network_rule_collection.web_tier
 
@@ -32,12 +31,9 @@
 | ❌ | `allow-ssh-old` | `🔗 TCP` | `🌐 10.0.0.0/8` | `🌐 10.0.2.0/24` | `🔌 22` | `Legacy SSH access - to be removed` |
 | ⏺️ | `allow-https` | `🔗 TCP` | `🌐 10.0.1.0/24` | `✳️` | `🔌 443` | `Allow HTTPS traffic to internet` |
 
-<!-- tfplan2md:resource-end address=azurerm_firewall_network_rule_collection.web_tier -->
-
 </div>
 
 <div style="margin-bottom:12px;">
-<!-- tfplan2md:resource-start address=azurerm_firewall_network_rule_collection.database_tier -->
 
 ### ➕ azurerm_firewall_network_rule_collection.database_tier
 
@@ -50,12 +46,9 @@
 | `allow-sql` | `🔗 TCP` | `🌐 10.0.1.0/24` | `🌐 10.0.3.0/24` | `🔌 1433` | `Allow SQL Server connections from web tier` |
 | `allow-mysql` | `🔗 TCP` | `🌐 10.0.1.0/24` | `🌐 10.0.3.0/24` | `🔌 3306` | `Allow MySQL connections from web tier` |
 
-<!-- tfplan2md:resource-end address=azurerm_firewall_network_rule_collection.database_tier -->
-
 </div>
 
 <div style="margin-bottom:12px;">
-<!-- tfplan2md:resource-start address=azurerm_firewall_network_rule_collection.legacy -->
 
 ### ❌ azurerm_firewall_network_rule_collection.legacy
 
@@ -66,7 +59,5 @@
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
 | `allow-ftp` | `🔗 TCP` | `✳️` | `🌐 10.0.5.0/24` | `🔌 21` | `Deprecated FTP access - security risk` |
-
-<!-- tfplan2md:resource-end address=azurerm_firewall_network_rule_collection.legacy -->
 
 </div>

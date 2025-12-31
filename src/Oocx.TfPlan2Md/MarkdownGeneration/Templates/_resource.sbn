@@ -3,7 +3,6 @@
      - Include path from default.sbn (change is loop variable)
      - Direct render path via RenderResourceChange (change is set by renderer)
 ~}}
-<!-- tfplan2md:resource-start address={{ change.address }} -->
 <details style="margin-bottom:12px;">
 <summary>{{ change.summary_html }}</summary>
 <br>
@@ -82,4 +81,3 @@
 {{ end }}
 
 </details>
-<!-- tfplan2md:resource-end address={{ change.address }} -->

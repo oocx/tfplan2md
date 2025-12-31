@@ -16,7 +16,6 @@
 
 ### 📦 Module: root
 
-<!-- tfplan2md:resource-start address=azurerm_resource_group.breaking_name -->
 <details style="margin-bottom:12px;">
 <summary>➕ azurerm_resource_group <b><code>breaking_name</code></b> — <code>rg-with-pipe&#124;and*asterisk</code> <code>🌍 eastus</code></summary>
 <br>
@@ -42,9 +41,7 @@ This has a | pipe and a
 </details>
 
 </details>
-<!-- tfplan2md:resource-end address=azurerm_resource_group.breaking_name -->
 
-<!-- tfplan2md:resource-start address=azurerm_storage_account.multiline -->
 <details style="margin-bottom:12px;">
 <summary>🔄 azurerm_storage_account <b><code>multiline</code></b> — | 1🔧 tags.note</summary>
 <br>
@@ -58,4 +55,3 @@ Large values: tags.note (2 lines, 1 changed)
 </code></pre>
 
 </details>
-<!-- tfplan2md:resource-end address=azurerm_storage_account.multiline -->

@@ -32,7 +32,7 @@ public class DockerIntegrationTests
         exitCode.Should().Be(0);
         stderr.Should().BeEmpty();
         stdout.Should().Contain("# Terraform Plan");
-        stdout.Should().Contain(Escape("azurerm_resource_group.main"));
+        stdout.Should().Contain("azurerm_resource_group <b><code>main</code></b>");
     }
 
     [SkippableFact]
@@ -46,7 +46,7 @@ public class DockerIntegrationTests
         exitCode.Should().Be(0);
         stderr.Should().BeEmpty();
         stdout.Should().Contain("# Terraform Plan");
-        stdout.Should().Contain(Escape("azurerm_resource_group.main"));
+        stdout.Should().Contain("azurerm_resource_group <b><code>main</code></b>");
     }
 
     [SkippableFact]
@@ -94,12 +94,12 @@ public class DockerIntegrationTests
 
         exitCode.Should().Be(0);
         stderr.Should().BeEmpty();
-        // Verify expected resources from the test data are in the output
-        stdout.Should().Contain(Escape("azurerm_resource_group.main"))
-            .And.Contain(Escape("azurerm_key_vault.main"))
-            .And.Contain(Escape("azurerm_virtual_network.old"))
-            .And.Contain(Escape("azuredevops_project.main"))
-            .And.Contain(Escape("azuredevops_git_repository.main"));
+        // Verify expected resources from the test data are in the output (type <b><code>name</code></b> format)
+        stdout.Should().Contain("azurerm_resource_group <b><code>main</code></b>")
+            .And.Contain("azurerm_key_vault <b><code>main</code></b>")
+            .And.Contain("azurerm_virtual_network <b><code>old</code></b>")
+            .And.Contain("azuredevops_project <b><code>main</code></b>")
+            .And.Contain("azuredevops_git_repository <b><code>main</code></b>");
     }
 
     [SkippableFact]

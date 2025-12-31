@@ -3,7 +3,7 @@
       Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
 <div style="margin-bottom:12px;">
-<!-- tfplan2md:resource-start address={{ change.address }} -->
+
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.firewall_network_rule_collection && change.firewall_network_rule_collection.name ~}}
@@ -53,7 +53,5 @@
 </details>
 {{~ end ~}}
 {{~ end ~}}
-
-<!-- tfplan2md:resource-end address={{ change.address }} -->
 
 </div>

@@ -15,10 +15,6 @@ public class MarkdownRendererTests
 
     private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
-    private static string ResourceStart(string address) => $"<!-- tfplan2md:resource-start address={address} -->";
-
-    private static string ResourceEnd(string address) => $"<!-- tfplan2md:resource-end address={address} -->";
-
     private static string Normalize(string markdown)
     {
         ArgumentNullException.ThrowIfNull(markdown);
@@ -28,19 +24,27 @@ public class MarkdownRendererTests
         return Regex.Replace(withoutBackticks, "\\s+", " ", RegexOptions.Singleline).Trim();
     }
 
+    /// <summary>
+    /// Extracts a resource section from markdown based on the resource name.
+    /// </summary>
+    /// <param name="markdown">The full markdown document.</param>
+    /// <param name="address">The terraform resource address (e.g., "azurerm_resource_group.main").</param>
+    /// <returns>The content of the resource section.</returns>
     private static string ResourceSection(string markdown, string address)
     {
-        var startMarker = ResourceStart(address);
-        var endMarker = ResourceEnd(address);
+        // Parse address to get resource type and name
+        var parts = address.Split('.');
+        var resourceType = parts[0];
+        var resourceName = parts.Length > 1 ? parts[1] : parts[0];
 
-        var startIndex = markdown.IndexOf(startMarker, StringComparison.Ordinal);
-        startIndex.Should().BeGreaterThanOrEqualTo(0, $"Resource start marker not found for {address}");
-        startIndex += startMarker.Length;
+        // Look for a <details> or <div> block containing the resource name in <b><code>{name}</code></b>
+        // Pattern: look for <details...> or <div...> that contains resourceType and resourceName
+        var pattern = $@"(?s)(<details[^>]*>|<div[^>]*>)\s*(?:<summary>)?[^<]*{Regex.Escape(resourceType)}\s+<b><code>{Regex.Escape(resourceName)}</code></b>(.*?)(</details>|</div>)";
 
-        var endIndex = markdown.IndexOf(endMarker, startIndex, StringComparison.Ordinal);
-        endIndex.Should().BeGreaterThanOrEqualTo(0, $"Resource end marker not found for {address}");
+        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline);
+        match.Success.Should().BeTrue($"Resource section not found for {address}");
 
-        return markdown[startIndex..endIndex];
+        return match.Value;
     }
 
     [Fact]
@@ -220,12 +224,13 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - Module headers should be present and resources grouped under them
+        // Resources are identified by type and name in <b><code>name</code></b> format
         markdown.Should().Contain("Module: root")
             .And.Contain("Module:")
-            .And.Contain(Escape("azurerm_resource_group.main"))
-            .And.Contain(Escape("azurerm_storage_account.main"))
-            .And.Contain(Escape("azurerm_key_vault.main"))
-            .And.Contain(Escape("azuredevops_project.main"));
+            .And.Contain("azurerm_resource_group <b><code>main</code></b>")
+            .And.Contain("azurerm_storage_account <b><code>main</code></b>")
+            .And.Contain("azurerm_key_vault <b><code>main</code></b>")
+            .And.Contain("azuredevops_project <b><code>main</code></b>");
     }
 
     [Fact]
@@ -406,9 +411,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert - ensure resource shows within a module section
-        markdown.Should().Contain(ResourceStart("null_resource.test"))
-            .And.Contain("➕ null_resource <b><code>test</code></b>")
-            .And.Contain(ResourceEnd("null_resource.test"));
+        markdown.Should().Contain("➕ null_resource <b><code>test</code></b>")
+            .And.Contain("<details");
     }
 
     [Fact]
@@ -873,12 +877,12 @@ public class MarkdownRendererTests
             observed[i].Should().BeGreaterThan(observed[i - 1]);
         }
 
-        // Also assert resources are within their modules
-        markdown.Should().Contain(Escape("azurerm_resource_group.rg_root"))
-            .And.Contain(Escape("azurerm_virtual_network.vnet"))
-            .And.Contain(Escape("azurerm_subnet.subnet1"))
-            .And.Contain(Escape("azurerm_app_service.app"))
-            .And.Contain(Escape("azurerm_postgresql_server.db"));
+        // Also assert resources are within their modules (using type <b><code>name</code></b> format)
+        markdown.Should().Contain("azurerm_resource_group <b><code>rg_root</code></b>")
+            .And.Contain("azurerm_virtual_network <b><code>vnet</code></b>")
+            .And.Contain("azurerm_subnet <b><code>subnet1</code></b>")
+            .And.Contain("azurerm_app_service <b><code>app</code></b>")
+            .And.Contain("azurerm_postgresql_server <b><code>db</code></b>");
     }
 
     [Fact]
@@ -893,7 +897,7 @@ public class MarkdownRendererTests
         // Act
         var markdown = _renderer.Render(model);
 
-        // Assert - module headers are H3 and resource headings are H4 and resources live under their module
+        // Assert - module headers are H3 and resources live under their module
         var moduleHeaders = new[]
         {
             "### 📦 Module: root",
@@ -903,13 +907,14 @@ public class MarkdownRendererTests
             "### 📦 Module: `module.app.module.database`"
         };
 
-        var resourceStartMarkers = new[]
+        // Resource patterns to find (type <b><code>name</code></b>)
+        var resourcePatterns = new[]
         {
-            ResourceStart("azurerm_resource_group.rg_root"),
-            ResourceStart("module.network.azurerm_virtual_network.vnet"),
-            ResourceStart("module.network.module.subnet.azurerm_subnet.subnet1"),
-            ResourceStart("module.app.azurerm_app_service.app"),
-            ResourceStart("module.app.module.database.azurerm_postgresql_server.db")
+            "azurerm_resource_group <b><code>rg_root</code></b>",
+            "azurerm_virtual_network <b><code>vnet</code></b>",
+            "azurerm_subnet <b><code>subnet1</code></b>",
+            "azurerm_app_service <b><code>app</code></b>",
+            "azurerm_postgresql_server <b><code>db</code></b>"
         };
 
         for (var i = 0; i < moduleHeaders.Length; i++)
@@ -917,9 +922,9 @@ public class MarkdownRendererTests
             var headerIndex = markdown.IndexOf(moduleHeaders[i], StringComparison.Ordinal);
             headerIndex.Should().BeGreaterThanOrEqualTo(0, $"Module header not found: {moduleHeaders[i]}");
             var nextHeaderIndex = i + 1 < moduleHeaders.Length ? markdown.IndexOf(moduleHeaders[i + 1], StringComparison.Ordinal) : int.MaxValue;
-            var resourceIndex = markdown.IndexOf(resourceStartMarkers[i], StringComparison.Ordinal);
-            resourceIndex.Should().BeGreaterThan(headerIndex, $"Resource {resourceStartMarkers[i]} should appear after its module header");
-            resourceIndex.Should().BeLessThan(nextHeaderIndex, $"Resource {resourceStartMarkers[i]} should appear before the next module header");
+            var resourceIndex = markdown.IndexOf(resourcePatterns[i], StringComparison.Ordinal);
+            resourceIndex.Should().BeGreaterThan(headerIndex, $"Resource {resourcePatterns[i]} should appear after its module header");
+            resourceIndex.Should().BeLessThan(nextHeaderIndex, $"Resource {resourcePatterns[i]} should appear before the next module header");
         }
     }
 

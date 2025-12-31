@@ -381,6 +381,13 @@ body {
     margin: 0 auto;
 }
 
+.section-subtitle {
+    font-size: 18px;
+    color: var(--color-text-secondary);
+    margin-bottom: 32px;
+    text-align: center;
+}
+
 /* Problem Section */
 .problem-section {
     background: var(--problem-bg);
@@ -1286,7 +1293,12 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 32px;
-    margin-bottom: 64px;
+    margin-bottom: 32px;
+}
+
+.features-grid-small {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
 }
 
 .feature-category-card {
@@ -1297,6 +1309,27 @@ body {
     transition: all 0.3s;
     display: flex;
     flex-direction: column;
+}
+
+.feature-card-small {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.feature-card-small .feature-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.feature-card-small .feature-category-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.feature-card-small .feature-category-description {
+    font-size: 13px;
+    margin-bottom: 0;
+    line-height: 1.5;
 }
 
 .feature-category-card:hover {

@@ -48,6 +48,7 @@ Features that differentiate tfplan2md from other solutions:
 
 ### Built-In Capabilities (Standard Features)
 Expected functionality that provides value:
+- CI/CD Integration
 - Provider Agnostic Core
 - Plan Summary
 - Module Grouping
@@ -56,7 +57,6 @@ Expected functionality that provides value:
 - Tag Visualization
 - Smart Iconography
 - Custom Templates
-- CI/CD Integration
 
 ### Also Included (Additional Features)
 Nice-to-have features mentioned together:

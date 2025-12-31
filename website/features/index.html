@@ -27,7 +27,7 @@
         </div>
     </nav>
 
-    <header class="hero" style="padding: 60px 0;">
+    <header class="hero" style="padding: 32px 0 8px 0;">
         <div class="hero-container">
             <div class="hero-content">
                 <h1 class="hero-title" style="font-size: 48px;">Features</h1>
@@ -38,147 +38,241 @@
         </div>
     </header>
 
-    <section class="section">
+    <!-- What Sets Us Apart (High Impact Features) -->
+    <section class="section" style="padding-top: 8px; padding-bottom: 24px;">
         <div class="section-container">
+            <h2 class="section-title">What Sets Us Apart</h2>
+            <p class="section-subtitle">High-value features that differentiate tfplan2md from raw plan output</p>
             <div class="features-grid">
-                <!-- Semantic Diffing -->
+                <!-- Semantic Diffs -->
                 <div class="feature-category-card">
                     <div class="feature-icon">🔍</div>
-                    <h2 class="feature-category-title">Semantic Diffing</h2>
+                    <h3 class="feature-category-title">Semantic Diffs</h3>
                     <p class="feature-category-description">
-                        See what actually changed, not just index modifications. Compare firewall rules and network security groups semantically.
+                        Side-by-side "Before" and "After" values with inline highlighting show exactly what changed.
                     </p>
                     <div class="feature-list">
-                        <a href="firewall-rules.html" class="feature-link">
+                        <a href="semantic-diffs.html" class="feature-link">
                             <span class="feature-link-icon">→</span>
-                            <span>Firewall Rule Diffing</span>
-                        </a>
-                        <a href="nsg-rules.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>NSG Security Rules</span>
+                            <span>Learn more</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- Module Organization -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">📁</div>
-                    <h2 class="feature-category-title">Module Grouping</h2>
-                    <p class="feature-category-description">
-                        Resources are automatically grouped by Terraform module, making complex multi-module plans easy to review.
-                    </p>
-                    <div class="feature-list">
-                        <a href="module-grouping.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Automatic Module Organization</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Azure Optimizations -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">☁️</div>
-                    <h2 class="feature-category-title">Azure Optimizations</h2>
-                    <p class="feature-category-description">
-                        Purpose-built features for Azure that format resource IDs, map principal names, and show role assignments clearly.
-                    </p>
-                    <div class="feature-list">
-                        <a href="azure-optimizations.html#azure-resource-ids" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Readable Resource IDs</span>
-                        </a>
-                        <a href="azure-optimizations.html#role-assignments" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Role Assignment Display</span>
-                        </a>
-                        <a href="azure-optimizations.html#principal-mapping" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Principal Name Mapping</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Visual Enhancements -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">🎨</div>
-                    <h2 class="feature-category-title">Visual Enhancements</h2>
-                    <p class="feature-category-description">
-                        Semantic icons and consistent formatting make important values stand out at a glance.
-                    </p>
-                    <div class="feature-list">
-                        <a href="semantic-icons.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Semantic Value Icons</span>
-                        </a>
-                        <a href="value-formatting.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Consistent Value Formatting</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Resource Summaries -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">📝</div>
-                    <h2 class="feature-category-title">Resource Summaries</h2>
-                    <p class="feature-category-description">
-                        One-line summaries for every resource change show whats important without expanding details.
-                    </p>
-                    <div class="feature-list">
-                        <a href="misc.html#resource-summaries" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Intelligent Summaries</span>
-                        </a>
-                        <a href="misc.html#replacement-reasons" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Replacement Reasons</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Security & Privacy -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">🔒</div>
-                    <h2 class="feature-category-title">Security & Privacy</h2>
-                    <p class="feature-category-description">
-                        Sensitive values are automatically masked to prevent accidental exposure in pull requests.
-                    </p>
-                    <div class="feature-list">
-                        <a href="sensitive-masking.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Automatic Value Masking</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Large Values -->
+                <!-- Large Value Formatting -->
                 <div class="feature-category-card">
                     <div class="feature-icon">📄</div>
-                    <h2 class="feature-category-title">Large Value Handling</h2>
+                    <h3 class="feature-category-title">Large Value Formatting</h3>
                     <p class="feature-category-description">
-                        Multi-line and long values are formatted clearly with line-by-line diffs in collapsible sections.
+                        Multi-line values like JSON policies show computed diffs with inline highlighting instead of full text.
                     </p>
                     <div class="feature-list">
                         <a href="large-values.html" class="feature-link">
                             <span class="feature-link-icon">→</span>
-                            <span>Smart Large Value Display</span>
+                            <span>Learn more</span>
                         </a>
                     </div>
+                </div>
+
+                <!-- Firewall Rule Interpretation -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🔥</div>
+                    <h3 class="feature-category-title">Firewall Rule Interpretation</h3>
+                    <p class="feature-category-description">
+                        Azure Firewall rule collections rendered as readable tables with protocols, ports, and actions.
+                    </p>
+                    <div class="feature-list">
+                        <a href="firewall-rules.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- NSG Rule Interpretation -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-category-title">NSG Rule Interpretation</h3>
+                    <p class="feature-category-description">
+                        Network Security Group rules as readable tables, making security changes easy to audit.
+                    </p>
+                    <div class="feature-list">
+                        <a href="nsg-rules.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Role Assignment Mapping -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">👤</div>
+                    <h3 class="feature-category-title">Role Assignment Mapping</h3>
+                    <p class="feature-category-description">
+                        Resolves Principal IDs, scope resource IDs, and role definition IDs to human-readable names.
+                    </p>
+                    <div class="feature-list">
+                        <a href="role-assignments.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PR Platform Compatibility -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">✅</div>
+                    <h3 class="feature-category-title">PR Platform Compatibility</h3>
+                    <p class="feature-category-description">
+                        Designed and tested for rendering in markdown pull requests on Azure DevOps Services and GitHub.
+                    </p>
+                    <div class="feature-list">
+                        <a href="pr-compatibility.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Friendly Resource Names -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📛</div>
+                    <h3 class="feature-category-title">Friendly Resource Names</h3>
+                    <p class="feature-category-description">
+                        Displays friendly names for resources instead of complex resource ID strings.
+                    </p>
+                    <div class="feature-list">
+                        <a href="friendly-names.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Built-In Capabilities (Standard Features) -->
+    <section class="section-alt" style="padding: 24px 0;">
+        <div class="section-container" style="padding-top: 0; padding-bottom: 0;">
+            <h2 class="section-title">Built-In Capabilities</h2>
+            <p class="section-subtitle">Expected functionality that provides real value out of the box</p>
+            <div class="features-grid">
+                <!-- Provider Agnostic Core -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-category-title">Provider Agnostic Core</h3>
+                    <p class="feature-category-description">
+                        Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering.
+                    </p>
+                </div>
+
+                <!-- CI/CD Integration -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-category-title">CI/CD Integration</h3>
+                    <p class="feature-category-description">
+                        Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI.
+                    </p>
+                </div>
+
+                <!-- Plan Summary -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-category-title">Plan Summary</h3>
+                    <p class="feature-category-description">
+                        High-level overview table showing counts of adds, changes, and destroys by resource type.
+                    </p>
+                </div>
+
+                <!-- Module Grouping -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📁</div>
+                    <h3 class="feature-category-title">Module Grouping</h3>
+                    <p class="feature-category-description">
+                        Groups resources logically by their Terraform module hierarchy.
+                    </p>
+                </div>
+
+                <!-- Collapsible Details -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📂</div>
+                    <h3 class="feature-category-title">Collapsible Details</h3>
+                    <p class="feature-category-description">
+                        Hides verbose resource details inside expandable sections to keep PR comments readable.
+                    </p>
+                </div>
+
+                <!-- Local Resource Names -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3 class="feature-category-title">Local Resource Names</h3>
+                    <p class="feature-category-description">
+                        In modules, renders just the local name instead of the full qualified module path.
+                    </p>
+                </div>
+
+                <!-- Tag Visualization -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3 class="feature-category-title">Tag Visualization</h3>
+                    <p class="feature-category-description">
+                        Renders resource tags with specific icons and formatting for easy scanning.
+                    </p>
+                </div>
+
+                <!-- Smart Iconography -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-category-title">Smart Iconography</h3>
+                    <p class="feature-category-description">
+                        Context-aware icons for common attributes like Locations (🌍), IPs (🌐), and Ports (🔌).
+                    </p>
                 </div>
 
                 <!-- Custom Templates -->
                 <div class="feature-category-card">
                     <div class="feature-icon">🛠️</div>
-                    <h2 class="feature-category-title">Customization</h2>
+                    <h3 class="feature-category-title">Custom Templates</h3>
                     <p class="feature-category-description">
-                        Use built-in templates or create your own with Scriban to format reports exactly how you need them.
+                        Completely customize markdown output using Go templates.
                     </p>
-                    <div class="feature-list">
-                        <a href="custom-templates.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Custom Templates</span>
-                        </a>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Also Included (Additional Features) -->
+    <section class="section" style="padding: 24px 0;">
+        <div class="section-container" style="padding-top: 0; padding-bottom: 0;">
+            <h2 class="section-title">Also Included</h2>
+            <p class="section-subtitle">Nice-to-have features that round out the package</p>
+            <div class="features-grid features-grid-small" style="max-width: 900px; margin: 0 auto;">
+                <!-- Docker Support -->
+                <div class="feature-category-card feature-card-small">
+                    <div class="feature-icon">🐳</div>
+                    <h3 class="feature-category-title">Docker Support</h3>
+                    <p class="feature-category-description">
+                        Distributed as a lightweight Docker container for easy usage in any environment.
+                    </p>
+                </div>
+
+                <!-- Sensitive Value Masking -->
+                <div class="feature-category-card feature-card-small">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-category-title">Sensitive Value Masking</h3>
+                    <p class="feature-category-description">
+                        Automatically detects and masks sensitive values marked as sensitive in Terraform. Optionally, sensitive values can be included in the report.
+                    </p>
+                </div>
+
+                <!-- Minimal Container Image -->
+                <div class="feature-category-card feature-card-small">
+                    <div class="feature-icon">📦</div>
+                    <h3 class="feature-category-title">Minimal Container Image</h3>
+                    <p class="feature-category-description">
+                        Uses mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled for reduced attack surface and faster pulls.
+                    </p>
                 </div>
             </div>
         </div>

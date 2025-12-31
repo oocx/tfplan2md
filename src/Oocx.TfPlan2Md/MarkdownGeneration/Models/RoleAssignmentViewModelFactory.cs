@@ -228,25 +228,47 @@ internal static class RoleAssignmentViewModelFactory
                     "ServicePrincipal" => "💻",
                     _ => string.Empty
                 };
-                var nameValue = !string.IsNullOrEmpty(principal.Name)
-                    ? ScribanHelpers.FormatCodeTable(principalIcon + " " + principal.Name)
+                var typeLabel = principal.Type switch
+                {
+                    "User" => "User",
+                    "Group" => "Group",
+                    "ServicePrincipal" => "Service Principal",
+                    _ => principal.Type
+                };
+
+                var namePart = principal.Name;
+                var hasTypeAlready = !string.IsNullOrEmpty(namePart)
+                    && !string.IsNullOrEmpty(typeLabel)
+                    && namePart.TrimEnd().EndsWith($"({typeLabel})", StringComparison.Ordinal);
+
+                var decoratedName = !string.IsNullOrEmpty(namePart) && !string.IsNullOrEmpty(typeLabel) && !hasTypeAlready
+                    ? $"{namePart} ({typeLabel})"
+                    : namePart;
+
+                var needsIconPrefix = !string.IsNullOrEmpty(principalIcon)
+                    && !string.IsNullOrEmpty(decoratedName)
+                    && !decoratedName.StartsWith(principalIcon, StringComparison.Ordinal);
+
+                var nameAndType = !string.IsNullOrEmpty(decoratedName)
+                    ? needsIconPrefix
+                        ? $"{principalIcon} {decoratedName}"
+                        : decoratedName
                     : string.Empty;
-                var principalType = !string.IsNullOrEmpty(principal.Type)
-                    ? ScribanHelpers.FormatAttributeValueTable("principal_type", principal.Type, null)
+
+                var nameValue = !string.IsNullOrEmpty(nameAndType)
+                    ? ScribanHelpers.FormatCodeTable(nameAndType)
                     : string.Empty;
+
                 var idValue = !string.IsNullOrEmpty(principal.Id)
                     ? $"[{ScribanHelpers.FormatCodeTable(principal.Id)}]"
                     : string.Empty;
 
                 var text = nameValue;
-                if (!string.IsNullOrEmpty(principalType))
-                {
-                    text = text + " (" + principalType + ")";
-                }
                 if (!string.IsNullOrEmpty(idValue))
                 {
-                    text = text + " " + idValue;
+                    text = string.IsNullOrEmpty(text) ? idValue : $"{text} {idValue}";
                 }
+
                 return !string.IsNullOrEmpty(text) ? text : null;
 
             case "principal_type":

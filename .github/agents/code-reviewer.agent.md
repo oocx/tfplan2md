@@ -212,6 +212,12 @@ Brief summary of what was reviewed and the overall assessment.
 
 **Status:** Approved | Changes Requested
 
+## Snapshot Changes (if any)
+
+- Snapshot files changed: Yes / No
+- Commit message token `SNAPSHOT_UPDATE_OK` present: Yes / No / N/A
+- Why the snapshot diff is correct (what changed, and why it matches the expected behavior): <explanation>
+
 ## Issues Found
 
 ### Blockers
@@ -255,6 +261,7 @@ Your work is complete when:
 - [ ] All checklist items have been verified
 - [ ] Issues are documented with clear descriptions
 - [ ] The review decision is made (Approved or Changes Requested)
+- [ ] If snapshots changed, the review report includes a clear justification for the diff and confirms `SNAPSHOT_UPDATE_OK` is present
 - [ ] The maintainer has acknowledged the review
 
 ## Handoff

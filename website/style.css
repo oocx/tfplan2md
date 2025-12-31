@@ -2697,3 +2697,192 @@ body {
         word-break: break-all;
     }
 }
+
+/* Interactive Examples */
+.interactive-example .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+}
+
+.example-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.view-toggle {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.toggle-btn {
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.toggle-btn.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+.toggle-btn:hover:not(.active) {
+    color: white;
+}
+
+.fullscreen-btn {
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-btn:hover {
+    color: white;
+}
+
+.example-content {
+    position: relative;
+    background: var(--code-bg);
+    min-height: 200px;
+}
+
+.view-pane {
+    display: none;
+    width: 100%;
+}
+
+.view-pane.active {
+    display: block;
+}
+
+.source-view pre {
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+/* Rendered View (Azure DevOps Style) */
+.rendered-view {
+    background: white;
+    color: #24292f;
+    padding: 24px;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+[data-theme="dark"] .rendered-view {
+    background: #0d1117;
+    color: #c9d1d9;
+}
+
+.rendered-view h1, .rendered-view h2, .rendered-view h3 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.rendered-view h1 { font-size: 2em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
+.rendered-view h2 { font-size: 1.5em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
+.rendered-view h3 { font-size: 1.25em; }
+
+.rendered-view table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.rendered-view th, .rendered-view td {
+    padding: 6px 13px;
+    border: 1px solid var(--color-border);
+}
+
+.rendered-view th {
+    font-weight: 600;
+    background-color: var(--color-surface);
+}
+
+.rendered-view code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
+
+.rendered-view details {
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.rendered-view summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Markdown Syntax Highlighting */
+.md-comment { color: #6a737d; }
+.md-heading { color: #0550ae; font-weight: bold; }
+.md-bold { font-weight: bold; color: #24292f; }
+.md-code { color: #0a3069; background-color: rgba(175, 184, 193, 0.2); border-radius: 3px; }
+.md-link { color: #0969da; }
+.md-list { color: #d73a49; }
+.md-quote { color: #57606a; border-left: 4px solid #d0d7de; padding-left: 8px; }
+
+[data-theme="dark"] .md-heading { color: #79c0ff; }
+[data-theme="dark"] .md-bold { color: #e6edf3; }
+[data-theme="dark"] .md-code { color: #a5d6ff; background-color: rgba(110, 118, 129, 0.4); }
+[data-theme="dark"] .md-link { color: #58a6ff; }
+
+/* Fullscreen Mode */
+.code-block.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.code-block.fullscreen .example-content {
+    flex: 1;
+    overflow: auto;
+}
+
+.code-block.fullscreen .view-pane {
+    height: 100%;
+    overflow: auto;
+}
+
+.code-block.fullscreen .rendered-view {
+    border-radius: 0;
+    min-height: 100%;
+}

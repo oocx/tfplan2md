@@ -167,13 +167,76 @@
                 <p class="example-description">
                     Array index changes are replaced with a semantic diff showing which rules were added, modified, or removed.
                 </p>
-                <div class="code-block">
+                <div class="code-block interactive-example">
                     <div class="code-header">
                         <span class="code-title">Firewall Network Rule Collection Update</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
                     </div>
-                    <pre><code><details style="margin-bottom:12px;">
-<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150</summary>
-<br>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details style="margin-bottom:12px;" open>
+                                <summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150</summary>
+                                <br>
+                                <p><strong>Summary:</strong> Rule collection <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150 | 3 rules changed</p>
+                                <h5>Network Rules</h5>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Protocols</th>
+                                            <th>Source Addresses</th>
+                                            <th>Destination Addresses</th>
+                                            <th>Destination Ports</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>➕</td>
+                                            <td><code>allow-dns</code></td>
+                                            <td>📨 TCP<br>🔗 UDP</td>
+                                            <td>🌐 10.1.0.0/24</td>
+                                            <td>🌐 168.63.129.16</td>
+                                            <td>🔌 53</td>
+                                        </tr>
+                                        <tr>
+                                            <td>🔄</td>
+                                            <td><code>allow-http</code></td>
+                                            <td>📨 TCP</td>
+                                            <td>🌐 10.1.0.0/24 → 🌐 10.0.0.0/8</td>
+                                            <td>🌐 0.0.0.0/0 → 🌐 *</td>
+                                            <td>🔌 80</td>
+                                        </tr>
+                                        <tr>
+                                            <td>❌</td>
+                                            <td><code>allow-ssh-old</code></td>
+                                            <td>📨 TCP</td>
+                                            <td>🌐 10.0.0.0/16</td>
+                                            <td>🌐 10.1.0.0/24</td>
+                                            <td>🔌 22</td>
+                                        </tr>
+                                        <tr>
+                                            <td>⏺️</td>
+                                            <td><code>allow-https</code></td>
+                                            <td>📨 TCP</td>
+                                            <td>🌐 10.1.0.0/24</td>
+                                            <td>🌐 0.0.0.0/0</td>
+                                            <td>🔌 443</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details style="margin-bottom:12px;"&gt;
+&lt;summary&gt;🔄 azurerm_firewall_network_rule_collection &lt;b&gt;&lt;code&gt;network_rules&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-network-rules&lt;/code&gt; for Firewall &lt;code&gt;demo-firewall&lt;/code&gt; | Priority: 100 → 150&lt;/summary&gt;
+&lt;br&gt;
 
 **Summary:** Rule collection `demo-network-rules` for Firewall `demo-firewall` | Priority: 100 → 150 | 3 rules changed
 
@@ -181,12 +244,14 @@
 
 |   | Name | Protocols | Source Addresses | Destination Addresses | Destination Ports |
 |---|------|-----------|------------------|-----------------------|-------------------|
-| ➕ | `allow-dns` | 📨 TCP<br/>🔗 UDP | 🌐 10.1.0.0/24 | 🌐 168.63.129.16 | 🔌 53 |
+| ➕ | `allow-dns` | 📨 TCP&lt;br/&gt;🔗 UDP | 🌐 10.1.0.0/24 | 🌐 168.63.129.16 | 🔌 53 |
 | 🔄 | `allow-http` | 📨 TCP | 🌐 10.1.0.0/24 → 🌐 10.0.0.0/8 | 🌐 0.0.0.0/0 → 🌐 * | 🔌 80 |
 | ❌ | `allow-ssh-old` | 📨 TCP | 🌐 10.0.0.0/16 | 🌐 10.1.0.0/24 | 🔌 22 |
 | ⏺️ | `allow-https` | 📨 TCP | 🌐 10.1.0.0/24 | 🌐 0.0.0.0/0 | 🔌 443 |
 
-</details></code></pre>
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -199,34 +264,59 @@
                 <p class="example-description">
                     Resources are automatically organized by Terraform module for better readability in multi-module configurations.
                 </p>
-                <div class="code-block">
+                <div class="code-block interactive-example">
                     <div class="code-header">
                         <span class="code-title">Multi-Module Report Structure</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
                     </div>
-                    <pre><code>## Resource Changes
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <h2>Resource Changes</h2>
+                            <h3>📦 Module: root</h3>
+                            <p><em>&lt;!-- 3 resources in root module --&gt;</em></p>
+                            <hr>
+                            <h3>📦 Module: <code>module.network</code></h3>
+                            <p><em>&lt;!-- 4 resources in network module --&gt;</em></p>
+                            <hr>
+                            <h3>📦 Module: <code>module.security</code></h3>
+                            <p><em>&lt;!-- 2 resources in security module --&gt;</em></p>
+                            <hr>
+                            <h3>📦 Module: <code>module.monitoring</code></h3>
+                            <p><em>&lt;!-- 2 resources in monitoring module --&gt;</em></p>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>## Resource Changes
 
 ### 📦 Module: root
 
-<!-- 3 resources in root module -->
+&lt;!-- 3 resources in root module --&gt;
 
 ---
 
 ### 📦 Module: `module.network`
 
-<!-- 4 resources in network module -->
+&lt;!-- 4 resources in network module --&gt;
 
 ---
 
 ### 📦 Module: `module.security`
 
-<!-- 2 resources in security module -->
+&lt;!-- 2 resources in security module --&gt;
 
 ---
 
 ### 📦 Module: `module.monitoring`
 
-<!-- 2 resources in monitoring module -->
+&lt;!-- 2 resources in monitoring module --&gt;
 </code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -239,13 +329,39 @@
                 <p class="example-description">
                     Role assignments show human-readable names with principal mapping instead of cryptic GUIDs.
                 </p>
-                <div class="code-block">
+                <div class="code-block interactive-example">
                     <div class="code-header">
                         <span class="code-title">Role Assignment Creation</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
                     </div>
-                    <pre><code><details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>contributor</code></b> — 🛡️ Contributor on Resource Group <code>rg-tfplan2md-demo</code> for 👤 <code>jane.doe@contoso.com</code></summary>
-<br>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details style="margin-bottom:12px;" open>
+                                <summary>➕ azurerm_role_assignment <b><code>contributor</code></b> — 🛡️ Contributor on Resource Group <code>rg-tfplan2md-demo</code> for 👤 <code>jane.doe@contoso.com</code></summary>
+                                <br>
+                                <table>
+                                    <thead>
+                                        <tr><th>Attribute</th><th>Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>role</td><td>🛡️ Contributor</td></tr>
+                                        <tr><td>scope</td><td>Resource Group <code>rg-tfplan2md-demo</code></td></tr>
+                                        <tr><td>principal</td><td>👤 User: <code>jane.doe@contoso.com</code></td></tr>
+                                        <tr><td>principal_type</td><td><code>User</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details style="margin-bottom:12px;"&gt;
+&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;contributor&lt;/code&gt;&lt;/b&gt; — 🛡️ Contributor on Resource Group &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt; for 👤 &lt;code&gt;jane.doe@contoso.com&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
 
 | Attribute | Value |
 |-----------|-------|
@@ -254,7 +370,9 @@
 | principal | 👤 User: `jane.doe@contoso.com` |
 | principal_type | `User` |
 
-</details></code></pre>
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
                 </div>
                 <div class="code-block">
                     <div class="code-header">
@@ -284,13 +402,38 @@
                 <p class="example-description">
                     Sensitive values are automatically masked by default to prevent accidental exposure in PRs.
                 </p>
-                <div class="code-block">
+                <div class="code-block interactive-example">
                     <div class="code-header">
                         <span class="code-title">Default (Masked)</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
                     </div>
-                    <pre><code><details>
-<summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
-<br>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details open>
+                                <summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
+                                <br>
+                                <table>
+                                    <thead>
+                                        <tr><th>Attribute</th><th>Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>name</td><td><code>demo-api-key</code></td></tr>
+                                        <tr><td>value</td><td>🔒 (sensitive value)</td></tr>
+                                        <tr><td>key_vault_id</td><td>Key Vault <code>kv-demo</code> in resource group <code>rg-tfplan2md-demo</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details&gt;
+&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-api-key&lt;/code&gt; in Key Vault &lt;code&gt;kv-demo&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
 
 | Attribute | Value |
 |-----------|-------|
@@ -298,15 +441,42 @@
 | value | 🔒 (sensitive value) |
 | key_vault_id | Key Vault `kv-demo` in resource group `rg-tfplan2md-demo` |
 
-</details></code></pre>
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
                 </div>
-                <div class="code-block">
+                <div class="code-block interactive-example">
                     <div class="code-header">
                         <span class="code-title">With --show-sensitive</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
                     </div>
-                    <pre><code><details>
-<summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
-<br>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details open>
+                                <summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
+                                <br>
+                                <table>
+                                    <thead>
+                                        <tr><th>Attribute</th><th>Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>name</td><td><code>demo-api-key</code></td></tr>
+                                        <tr><td>value</td><td><code>super-secret-api-key-12345</code></td></tr>
+                                        <tr><td>key_vault_id</td><td>Key Vault <code>kv-demo</code> in resource group <code>rg-tfplan2md-demo</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details&gt;
+&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-api-key&lt;/code&gt; in Key Vault &lt;code&gt;kv-demo&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
 
 | Attribute | Value |
 |-----------|-------|
@@ -314,7 +484,9 @@
 | value | `super-secret-api-key-12345` |
 | key_vault_id | Key Vault `kv-demo` in resource group `rg-tfplan2md-demo` |
 
-</details></code></pre>
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -488,6 +660,66 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
         }
+
+        // Interactive Examples
+        document.querySelectorAll('.interactive-example').forEach(example => {
+            const toggles = example.querySelectorAll('.toggle-btn');
+            const panes = example.querySelectorAll('.view-pane');
+            const fullscreenBtn = example.querySelector('.fullscreen-btn');
+
+            toggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    
+                    // Update buttons
+                    toggles.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update panes
+                    panes.forEach(p => {
+                        p.classList.remove('active');
+                        if (p.classList.contains(view + '-view')) {
+                            p.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                example.classList.toggle('fullscreen');
+                fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
+                document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
+            });
+        });
+
+        // Simple Markdown Syntax Highlighter
+        function highlightMarkdown() {
+            document.querySelectorAll('.source-view code').forEach(block => {
+                let html = block.innerHTML;
+                
+                // Comments
+                html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
+                
+                // Headings
+                html = html.replace(/^(#+ .+$)/gm, '<span class="md-heading">$1</span>');
+                
+                // Bold
+                html = html.replace(/(\*\*.*?\*\*)/g, '<span class="md-bold">$1</span>');
+                
+                // Inline Code
+                html = html.replace(/(`[^`]+`)/g, '<span class="md-code">$1</span>');
+                
+                // Links
+                html = html.replace(/(\[.*?\]\(.*?\))/g, '<span class="md-link">$1</span>');
+                
+                // Lists
+                html = html.replace(/^(\s*[-*+] )/gm, '<span class="md-list">$1</span>');
+                
+                block.innerHTML = html;
+            });
+        }
+
+        highlightMarkdown();
     </script>
 </body>
 </html>

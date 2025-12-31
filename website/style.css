@@ -397,6 +397,10 @@ body {
     margin-top: 2rem;
 }
 
+.problem-solution-layout > * {
+    min-width: 0;
+}
+
 .screenshot-side {
     display: flex;
     flex-direction: column;
@@ -408,6 +412,7 @@ body {
     border: 1px solid var(--color-border);
     overflow: hidden;
     box-shadow: var(--shadow-md);
+    max-width: 100%;
 }
 
 .screenshot-header {
@@ -424,6 +429,7 @@ body {
     padding: 1.5rem;
     max-height: 400px;
     overflow-y: auto;
+    overflow-x: auto;
     background: var(--code-bg);
 }
 
@@ -605,6 +611,7 @@ body {
 .code-body {
     background: var(--code-bg);
     padding: 20px;
+    overflow-x: auto;
 }
 
 .code-body pre {
@@ -887,6 +894,10 @@ body {
     align-items: center;
 }
 
+.cicd-content > * {
+    min-width: 0;
+}
+
 .cicd-title {
     font-size: 36px;
     font-weight: 700;
@@ -906,6 +917,7 @@ body {
     overflow: hidden;
     box-shadow: var(--shadow-xl);
     border: 1px solid var(--color-border);
+    max-width: 100%;
 }
 
 .code-tabs {
@@ -935,6 +947,7 @@ body {
 .code-content {
     background: var(--code-bg);
     padding: 24px;
+    overflow-x: auto;
 }
 
 .code-content pre {
@@ -2584,6 +2597,12 @@ body {
         font-size: 32px;
         white-space: normal;
         line-height: 1.2;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .hero-subtitle {
+        white-space: normal;
     }
 
     .hero-badges {
@@ -2623,6 +2642,8 @@ body {
     .btn {
         width: 100%;
         text-align: center;
+        white-space: normal;
+        box-sizing: border-box;
     }
 
     .install-actions .btn {

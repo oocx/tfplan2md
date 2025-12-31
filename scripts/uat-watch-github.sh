@@ -73,8 +73,14 @@ main() {
   local deadline=$((start + timeout_seconds))
 
   while true; do
-    if scripts/uat-github.sh poll "$pr_number"; then
+    scripts/uat-github.sh poll "$pr_number"
+    rc=$?
+    if [[ $rc -eq 0 ]]; then
       exit 0
+    fi
+    if [[ $rc -eq 2 ]]; then
+      echo "Polling failed with a fatal error (PR #$pr_number)." >&2
+      exit 2
     fi
 
     local now

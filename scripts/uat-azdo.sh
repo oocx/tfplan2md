@@ -234,6 +234,12 @@ cmd_poll() {
         return 0
     fi
 
+    if [[ "$pr_status" == "abandoned" ]]; then
+        echo -e "${RED}✗ PR ABANDONED${NC}" >&2
+        echo "PR has been abandoned by Maintainer. Stopping polling." >&2
+        return 2
+    fi
+
     # Azure DevOps reviewer votes: 10=approved, 5=approved with suggestions
     local approved_vote_count
     approved_vote_count=$(echo "$pr_json" | jq '[.reviewers[]? | select((.vote // 0) >= 5)] | length')

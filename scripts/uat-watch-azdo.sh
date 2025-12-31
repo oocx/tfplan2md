@@ -73,8 +73,14 @@ main() {
   local deadline=$((start + timeout_seconds))
 
   while true; do
-    if scripts/uat-azdo.sh poll "$pr_id"; then
+    scripts/uat-azdo.sh poll "$pr_id"
+    rc=$?
+    if [[ $rc -eq 0 ]]; then
       exit 0
+    fi
+    if [[ $rc -eq 2 ]]; then
+      echo "Polling failed with a fatal error (PR #$pr_id)." >&2
+      exit 2
     fi
 
     local now

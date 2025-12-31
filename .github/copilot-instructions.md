@@ -74,6 +74,9 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - **Test hangs**: When running the full test suite, use the timeout wrapper instead of calling `dotnet test` directly.
   - Example: `scripts/test-with-timeout.sh -- dotnet test --no-build --configuration Release --verbosity normal`
   - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test ...`
+- **Snapshot updates**: Snapshot diffs (files under `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
+  - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
+  - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.
 - **Directly-invokable scripts**: Always run repository scripts directly (e.g., `scripts/uat-run.sh`, `scripts/pr-github.sh`, `scripts/validate-agents.py`) instead of via an interpreter/runner (e.g., `bash scripts/<script>.sh`, `python3 scripts/<script>.py`, `dotnet <runner> scripts/<script>`).
   - This enables per-script permanent allow rules in VS Code approvals.
   - If a script is not directly invokable, fix it instead of working around it (add a proper shebang and make it executable).

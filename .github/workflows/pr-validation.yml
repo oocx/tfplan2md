@@ -45,9 +45,13 @@ jobs:
             echo "Non-ignored files changed; running validation"
           fi
 
+      - name: Snapshot integrity guardrail
+        if: steps.filter.outputs.changed == 'true'
+        run: scripts/validate-snapshot-changes.sh --base-ref "${{ github.event.pull_request.base.sha }}" --head-ref "${{ github.event.pull_request.head.sha }}"
+
       - name: Shell test (timeout wrapper)
         if: steps.filter.outputs.changed == 'true'
-        run: bash tests/shell/test_with_timeout_test.sh
+        run: tests/shell/test_with_timeout_test.sh
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'
@@ -69,9 +73,7 @@ jobs:
 
       - name: Test
         if: steps.filter.outputs.changed == 'true'
-        run: |
-          chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 3600 -- dotnet test --no-build --configuration Release --verbosity normal
+        run: scripts/test-with-timeout.sh -- dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

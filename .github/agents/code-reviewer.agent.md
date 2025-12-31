@@ -38,6 +38,7 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 - Ensure tests follow naming convention and are meaningful
 - Confirm documentation is updated
 - Check that CHANGELOG.md was NOT modified
+- Treat snapshot changes (`tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`) as high-risk and require explicit justification
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
 - When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
 - For user-facing features affecting markdown rendering, hand off to UAT Tester after code approval
@@ -105,6 +106,7 @@ Before starting, familiarize yourself with:
 - [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test`)
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
+- [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
 
 ### Code Quality
 - [ ] Follows C# coding conventions

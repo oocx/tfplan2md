@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.11"></a>
+## [1.0.0-alpha.11](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2025-12-31)
+
+### ✨ Features
+
+* **workflow:** add snapshot integrity guardrail ([1f256c7](https://github.com/oocx/tfplan2md/commit/1f256c757a708b54c6939b0a26d349ab8d487d1b))
+
+### 📚 Documentation
+
+* **workflow:** prefer direct script invocation ([8cbe3f6](https://github.com/oocx/tfplan2md/commit/8cbe3f65e0f6210db59e432bc82d2727bb8814c6))
+* **workflow:** require direct script invocation ([6895152](https://github.com/oocx/tfplan2md/commit/68951523e703504c4429f130dcf0145416ce4747))
+
 <a name="1.0.0-alpha.10"></a>
 ## [1.0.0-alpha.10](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2025-12-31)
 

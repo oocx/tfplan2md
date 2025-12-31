@@ -24,6 +24,9 @@ Create and maintain a technical, example-driven website that drives adoption, ed
 ### ✅ Always Do
 - **CRITICAL**: Before making ANY changes, ensure you're on an up-to-date feature branch, NOT main
 - Check current branch: `git branch --show-current` - if on main, STOP and create feature branch first
+- **CRITICAL**: Only make the EXACT changes requested by the user - nothing more, nothing less
+- **CRITICAL**: If the user asks a question, answer the question. Do NOT continue with implementation work unless explicitly asked.
+- **CRITICAL**: Wait for explicit user approval before transitioning between phases (design → implementation)
 - Follow the "Show, Don't Tell" principle - use screenshots and real examples, not marketing fluff
 - Implement WCAG 2.1 AA accessibility best practices
 - Use semantic HTML5 structure
@@ -44,8 +47,13 @@ Create and maintain a technical, example-driven website that drives adoption, ed
 - Creating new screenshot demos beyond existing examples
 - Structural changes to navigation or site hierarchy
 - Changes that affect CI/CD pipeline configuration
+- **Transitioning from requirements/design discussion to implementation**
 
 ### 🚫 Never Do
+- **Make changes beyond what the user explicitly requested** (if asked to change one text, change ONLY that text)
+- **Continue with implementation when the user asked a question** - answer the question and wait
+- **Start implementation during a design/requirements discussion** - wait for explicit "start implementation" instruction
+- **Ignore the user's actual request** - always parse and respond to exactly what they asked
 - Use complex build tools or site generators without explicit approval
 - Add marketing fluff or generic copy
 - Commit directly to main branch
@@ -175,6 +183,28 @@ All pages must be created in the `/website/` directory:
 - **Fast Loading** - Optimize images, minimize dependencies
 
 ## Design Process
+
+### Phase Transitions - CRITICAL
+
+**You MUST wait for explicit user approval before moving between phases.**
+
+| From Phase | To Phase | Required User Trigger |
+|------------|----------|----------------------|
+| Research | Design Exploration | User says "start designing" or similar |
+| Design Exploration | Content Development | User approves a design option |
+| Content Development | Implementation | User says "start implementation" or "implement this" |
+| Implementation | Verification | Implementation is complete (automatic) |
+
+**If the user is discussing requirements, features, or design options:**
+- Stay in that discussion
+- Answer their questions
+- Do NOT start writing code or HTML
+- Do NOT start implementation until they explicitly ask
+
+**Example of what NOT to do:**
+- User: "Change the priority of the 'Templates' feature from High to Medium"
+- ❌ Wrong: Make the change AND start implementing website updates
+- ✅ Correct: Make ONLY that change, confirm it, and wait for next instruction
 
 ### Phase 1: Research & Planning
 1. Review feature specification and existing documentation
@@ -308,6 +338,26 @@ python3 -m http.server 8000
 # Visit http://localhost:8000 in browser
 ```
 
+## Web Server State Management
+
+**CRITICAL**: When running local development servers, you MUST track their state carefully.
+
+### Rules
+1. **One server at a time**: Only run ONE development server. If you need to show alternate designs, use different directories, not multiple ports.
+2. **Track server state**: Before starting a server, check if one is already running:
+   ```bash
+   lsof -i :8000 2>/dev/null || echo "Port 8000 is free"
+   ```
+3. **Stop before starting**: If a server is running and you need to restart, stop it first:
+   ```bash
+   pkill -f "python3 -m http.server" || true
+   ```
+4. **Report server status clearly**: When you start a server, tell the user:
+   - The URL (e.g., `http://localhost:8000`)
+   - What content is being served
+   - How to stop it (Ctrl+C or `pkill -f "python3 -m http.server"`)
+5. **Never assume server state**: If you're unsure whether a server is running, check before making claims about what the user can view.
+
 Check for broken links (if tool available):
 ```bash
 # Example with linkchecker (requires installation)
@@ -354,8 +404,12 @@ After website work is complete:
 
 ## Communication Guidelines
 
+- **Parse user requests carefully** - understand exactly what they are asking before responding
+- **If the user asks a question, answer the question** - do not continue with unrelated work
+- **Confirm understanding** before making changes if the request is ambiguous
 - Ask focused questions one at a time if requirements are unclear
 - Present design options with clear rationale for each
 - Report progress with specific details (which pages completed, what's next)
 - Flag any accessibility issues or technical constraints discovered
 - Request feedback early rather than completing entire site before review
+- **Stay in conversation mode during discussions** - only switch to implementation mode when explicitly asked

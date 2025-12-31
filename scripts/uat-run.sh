@@ -209,13 +209,27 @@ while true; do
   azdo_ok=0
 
   if [[ -n "$gh_pr" ]]; then
-    scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || gh_ok=0
+    scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || {
+      rc=$?
+      if [[ $rc -eq 2 ]]; then
+        log_error "GitHub polling failed with a fatal error (exit code 2)."
+        exit 1
+      fi
+      gh_ok=0
+    }
   else
     gh_ok=1
   fi
 
   if [[ -n "$azdo_pr" ]]; then
-    scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || azdo_ok=0
+    scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || {
+      rc=$?
+      if [[ $rc -eq 2 ]]; then
+        log_error "Azure DevOps polling failed with a fatal error (exit code 2)."
+        exit 1
+      fi
+      azdo_ok=0
+    }
   else
     azdo_ok=1
   fi

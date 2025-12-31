@@ -219,7 +219,7 @@ For multi-line strings or long values (>100 chars):
 - **Summary**: `<summary>Large values: <attribute_name> (<stats>)</summary>`
 - **Content**:
     - **Inline Diff**: HTML `<pre>` block with styled `<span>` elements for character-level highlighting.
-    - **Standard Diff**: Code block with `diff` language identifier.
+    - **Simple Diff**: Code block with `diff` language identifier.
 
 ## Icons & Symbols
 

@@ -31,7 +31,7 @@ This single command:
 1. Builds the project in Release configuration
 2. Generates all artifacts in `/artifacts/` (used for UAT):
    - `comprehensive-demo.md` (inline-diff format, for Azure DevOps UAT)
-   - `comprehensive-demo-standard-diff.md` (standard diff format, for GitHub UAT)
+   - `comprehensive-demo-simple-diff.md` (simple diff format, for GitHub UAT)
    - `role.md` (role assignments with principal mapping)
    - `role-default.md` (role assignments without principal mapping)
 3. Generates all documentation samples in `examples/comprehensive-demo/`:
@@ -46,8 +46,8 @@ This single command:
 [INFO] Building project (Release configuration)...
 [INFO] Generating artifacts/comprehensive-demo.md (inline-diff, for Azure DevOps UAT)...
 [INFO] ✓ artifacts/comprehensive-demo.md generated successfully (inline-diff)
-[INFO] Generating artifacts/comprehensive-demo-standard-diff.md (for GitHub UAT)...
-[INFO] ✓ artifacts/comprehensive-demo-standard-diff.md generated successfully
+[INFO] Generating artifacts/comprehensive-demo-simple-diff.md (for GitHub UAT)...
+[INFO] ✓ artifacts/comprehensive-demo-simple-diff.md generated successfully
 [INFO] Generating artifacts/role.md (role assignments with principal mapping)...
 [INFO] ✓ artifacts/role.md generated successfully
 [INFO] Generating artifacts/role-default.md (role assignments without principal mapping)...

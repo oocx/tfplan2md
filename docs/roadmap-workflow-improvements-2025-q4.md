@@ -24,7 +24,7 @@ This roadmap outlines a series of workflow improvements derived from retrospecti
 - ✅ Added UAT watch scripts/skills for polling: ([#90](https://github.com/oocx/tfplan2md/pull/90))
 - ✅ Hardened GitHub UAT polling to use structured JSON and filter agent comments: ([#92](https://github.com/oocx/tfplan2md/pull/92))
 - ✅ Added `scripts/uat-run.sh` end-to-end wrapper (GitHub + AzDO orchestration): ([#95](https://github.com/oocx/tfplan2md/pull/95))
-- ✅ Platform-specific artifact validation with smart defaults (inline-diff for AzDO, standard-diff for GitHub): ([#116](https://github.com/oocx/tfplan2md/pull/116))
+- ✅ Platform-specific artifact validation with smart defaults (inline-diff for AzDO, simple-diff for GitHub): ([#116](https://github.com/oocx/tfplan2md/pull/116))
 - ✅ Stable demo generation + snapshot update scripts reduce approval prompts from ~7-10 to 1-2: ([#117](https://github.com/oocx/tfplan2md/pull/117))
 - ✅ Migrated to tools-first approach: GitHub chat tools preferred over gh CLI for PR inspection/management ([#108](https://github.com/oocx/tfplan2md/pull/108), [#109](https://github.com/oocx/tfplan2md/pull/109))
 

@@ -107,7 +107,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
-| `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `standard-diff` (cross-platform) |
+| `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `simple-diff` (cross-platform) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
@@ -119,11 +119,11 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
 
 - **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps (GitHub strips styles but content remains readable).
-- **`standard-diff`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
+- **`simple-diff`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
 
 Example:
 ```bash
-terraform show -json plan.tfplan | tfplan2md --large-value-format standard-diff
+terraform show -json plan.tfplan | tfplan2md --large-value-format simple-diff
 ```
 
 ## Example Output
@@ -217,7 +217,7 @@ See [examples/comprehensive-demo/README.md](examples/comprehensive-demo/README.m
 
 ## Custom Templates
 
-Create custom Scriban templates for your own report format:
+Create custom Scriban templates for your own report format. Templates focus on layout and presentation, with all value formatting handled by C# helpers for consistency.
 
 ```bash
 docker run -i -v $(pwd):/data oocx/tfplan2md --template /data/my-template.sbn < plan.json
@@ -227,7 +227,7 @@ Built-in templates:
 - `default` (implicit when not specified): Full report with resource changes
 - `summary`: Compact summary with Terraform version, plan timestamp, and action counts only
 
-See [Scriban documentation](https://github.com/scriban/scriban) for template syntax.
+See [Scriban documentation](https://github.com/scriban/scriban) for template syntax and [docs/features.md](docs/features.md) for available helper functions.
 
 ### Resource-Specific Templates
 

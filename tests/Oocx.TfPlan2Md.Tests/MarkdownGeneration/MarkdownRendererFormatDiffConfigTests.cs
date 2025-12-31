@@ -22,7 +22,7 @@ public class MarkdownRendererFormatDiffConfigTests
     /// Related feature: docs/features/003-consistent-value-formatting/specification.md
     /// </summary>
     [Fact]
-    public void Render_UsesStandardDiff_WhenModelConfigIsStandard()
+    public void Render_UsesSimpleDiff_WhenModelConfigIsSimple()
     {
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/firewall-rule-changes.json"));
@@ -34,7 +34,7 @@ public class MarkdownRendererFormatDiffConfigTests
         // Act
         var markdown = renderer.RenderResourceChange(change, LargeValueFormat.SimpleDiff)!;
 
-        // Assert - standard diff uses -/+ prefix with <br> separator; semantic icons are preserved inside code formatting without inline diff styling
+        // Assert - simple diff uses -/+ prefix with <br> separator; semantic icons are preserved inside code formatting without inline diff styling
         markdown.Should().Contain("- `🌐 10.0.1.0/24`<br>+ `🌐 10.0.1.0/24, 🌐 10.0.3.0/24`")
             .And.NotContain("background-color:");
     }

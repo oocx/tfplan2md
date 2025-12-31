@@ -14,7 +14,7 @@ public static class HelpTextProvider
             ("-t, --template <name|file>", "Use a built-in template by name or a custom Scriban template file."),
             ("--report-title <title>", "Override the report title (level-1 heading) with a custom value."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
-            ("--large-value-format <inline-diff|standard-diff>", "Controls rendering of large attribute values."),
+            ("--large-value-format <inline-diff|simple-diff>", "Controls rendering of large attribute values."),
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
             ("--show-sensitive", "Show sensitive values unmasked."),
             ("-h, --help", "Display this help message."),
@@ -36,7 +36,7 @@ public static class HelpTextProvider
             "tfplan2md plan.json --report-title \"Drift Detection - repo\"",
             string.Empty,
             "# GitHub-friendly large value diff",
-            "tfplan2md plan.json --large-value-format standard-diff",
+            "tfplan2md plan.json --large-value-format simple-diff",
             string.Empty,
             "# With output file and custom template",
             "tfplan2md plan.json --output plan.md --template my-template.sbn"

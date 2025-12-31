@@ -36,7 +36,7 @@ validate_artifact() {
     case "$platform" in
         github)
             if [[ -z "$artifact" ]]; then
-                artifact="artifacts/comprehensive-demo-standard-diff.md"
+                artifact="artifacts/comprehensive-demo-simple-diff.md"
                 log_info "No artifact specified, using GitHub default: $artifact" >&2
             fi
             ;;

@@ -113,7 +113,7 @@ fi
 
 # Apply user-facing defaults for visibility, and summarize chosen artifacts before creating PRs
 if [[ -z "$artifact_github" ]]; then
-  artifact_github="artifacts/comprehensive-demo-standard-diff.md"
+  artifact_github="artifacts/comprehensive-demo-simple-diff.md"
 fi
 if [[ -z "$artifact_azdo" ]]; then
   artifact_azdo="artifacts/comprehensive-demo.md"

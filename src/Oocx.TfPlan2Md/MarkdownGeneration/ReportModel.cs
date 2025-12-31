@@ -176,7 +176,7 @@ public class AttributeChangeModel
 /// <param name="summaryBuilder">Factory for resource summaries; defaults to <see cref="ResourceSummaryBuilder"/>.</param>
 /// <param name="showSensitive">Whether to show sensitive values without masking.</param>
 /// <param name="showUnchangedValues">Whether unchanged attributes should be included in tables.</param>
-/// <param name="largeValueFormat">Rendering format for large values (inline-diff or standard-diff).</param>
+/// <param name="largeValueFormat">Rendering format for large values (inline-diff or simple-diff).</param>
 /// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
 /// <param name="principalMapper">Optional mapper for resolving principal names in role assignments.</param>
 /// <remarks>

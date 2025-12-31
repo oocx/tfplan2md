@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.10"></a>
+## [1.0.0-alpha.10](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2025-12-31)
+
+### ✨ Features
+
+* **workflow:** add dotnet test timeout wrapper ([f1b13dd](https://github.com/oocx/tfplan2md/commit/f1b13dd69e18891a6d8e7a7c8807a8636fc9cd2a))
+
 <a name="1.0.0-alpha.9"></a>
 ## [1.0.0-alpha.9](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) (2025-12-31)
 

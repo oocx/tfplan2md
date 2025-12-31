@@ -31,11 +31,37 @@ def analyze_chat(file_path):
             'failed': 0,
             'tool_rejections': 0
         },
-        'agent_work_time': 0
+        'agent_work_time': 0,
+        'start_timestamp': requests[0].get('timestamp', 0) if requests else 0,
+        'end_timestamp': requests[-1].get('timestamp', 0) if requests else 0
     }
 
-    current_agent = "Unknown"
+    current_agent = "Requirements Engineer" # Default starting agent
     
+    # Handoff prompt mapping
+    handoff_prompts = {
+        "Architect": "Review the feature specification created above and design the technical solution",
+        "Quality Engineer": "Review the architecture decisions above and define the test plan",
+        "Task Planner": "Review the test plan above and create actionable user stories",
+        "Developer": [
+            "Review the user stories above and begin implementation",
+            "Review the issue analysis above and implement the fix",
+            "Address the issues identified in the code review above",
+            "The PR build validation or release pipeline failed",
+            "User Acceptance Testing revealed rendering issues"
+        ],
+        "Code Reviewer": "Review the implementation and documentation updates for quality and completeness",
+        "UAT Tester": "The code review is approved. Run UAT to validate markdown rendering",
+        "Release Manager": [
+            "The code review is approved and this change does not require UAT",
+            "User Acceptance Testing passed on both GitHub and Azure DevOps",
+            "The website changes are complete. Please create a PR"
+        ],
+        "Retrospective": "The release is complete. Please conduct a retrospective",
+        "Workflow Engineer": "I have identified some workflow improvements in the retrospective",
+        "Issue Analyst": "I have an issue with the project"
+    }
+
     for i, req in enumerate(requests):
         # Timestamps and Work Time
         result = req.get('result', {})
@@ -75,10 +101,10 @@ def analyze_chat(file_path):
                 response_text += content
         
         # Look for common agent roles
-        roles = ['Requirements Engineer', 'Architect', 'Task Planner', 'Developer', 'Quality Engineer', 'UAT Tester', 'Release Manager', 'Code Reviewer', 'Workflow Engineer', 'Retrospective']
+        roles = ['Requirements Engineer', 'Architect', 'Task Planner', 'Developer', 'Quality Engineer', 'UAT Tester', 'Release Manager', 'Code Reviewer', 'Workflow Engineer', 'Retrospective', 'Issue Analyst']
         found_role = False
         
-        # Check message for @ mentions
+        # Check message for handoff prompts (User Request)
         message_obj = req.get('message', {})
         message_text = ""
         if isinstance(message_obj, dict):
@@ -86,37 +112,73 @@ def analyze_chat(file_path):
         elif isinstance(message_obj, str):
             message_text = message_obj
         
-        for role in roles:
-            role_slug = role.lower().replace(' ', '-')
-            if f"@{role_slug}" in message_text.lower():
-                current_agent = role
-                found_role = True
-                break
+        # Extract userRequest from message_text if it's a complex prompt
+        user_request_match = re.search(r'<userRequest>\n(.*?)\n</userRequest>', message_text, re.DOTALL)
+        if user_request_match:
+            user_request = user_request_match.group(1).strip()
+        else:
+            user_request = message_text.strip()
+
+        for agent, prompts in handoff_prompts.items():
+            if isinstance(prompts, str):
+                prompts = [prompts]
+            for prompt in prompts:
+                # Simple similarity: check if prompt is a substring or if most words match
+                if prompt.lower() in user_request.lower():
+                    current_agent = agent
+                    found_role = True
+                    break
+                
+                # Word-based similarity for modified prompts
+                prompt_words = set(re.findall(r'\w+', prompt.lower()))
+                request_words = set(re.findall(r'\w+', user_request.lower()))
+                if len(prompt_words) >= 8: # Only for long enough prompts
+                    intersection = prompt_words.intersection(request_words)
+                    if len(intersection) / len(prompt_words) >= 0.8:
+                        current_agent = agent
+                        found_role = True
+                        break
+            if found_role: break
+
+        if not found_role:
+            # Check for @ mentions in message
+            for role in roles:
+                role_slug = role.lower().replace(' ', '-')
+                if f"@{role_slug}" in message_text.lower():
+                    current_agent = role
+                    found_role = True
+                    break
         
         if not found_role:
+            # Check thinking block for mode mentions
             combined_text = thinking_text + response_text
             for role in roles:
                 patterns = [
-                    f"**{role}** agent",
-                    f"I'm the **{role}**",
-                    f"I am the **{role}**",
-                    f"role: **{role}**",
-                    f"as the **{role}**",
-                    f"switch to the **{role}**",
-                    f"hand off to **{role}**",
-                    f"hand off to the **{role}**",
-                    f"handoff to **{role}**",
-                    f"you can now switch to the **{role}**",
-                    f"switch to the **{role}** agent"
+                    f"I'm in \"{role}\" mode",
+                    f"I am in \"{role}\" mode",
+                    f"I'm in {role} mode",
+                    f"I am in {role} mode",
+                    f"switch to {role} mode",
+                    f"switching to {role} mode",
+                    f"as the {role} agent",
+                    f"acting as the {role}"
                 ]
                 for pattern in patterns:
                     if pattern.lower() in combined_text.lower():
                         current_agent = role
                         found_role = True
                         break
-                if found_role:
-                    break
+                if found_role: break
         
+        # Fallback: Use model ID as a hint if we are still "Unknown" or if the model strongly suggests a role
+        if not found_role:
+            if model_id == 'copilot/gpt-5.1-codex-max' and current_agent not in ['Developer', 'Task Planner']:
+                current_agent = 'Developer'
+            # Removed Claude Opus fallback as it's used by both Architect and Code Reviewer
+            elif model_id == 'copilot/gemini-3-flash-preview' and current_agent not in ['UAT Tester', 'Retrospective', 'Quality Engineer', 'Task Planner', 'Release Manager']:
+                # Gemini is used by many agents, so only fallback if we are really lost
+                pass
+
         if current_agent not in metrics['agents']:
             metrics['agents'][current_agent] = {
                 'requests': 0,
@@ -154,7 +216,16 @@ def analyze_chat(file_path):
 
     # Output summary
     print(f"Total Requests: {metrics['total_requests']}")
-    print(f"Total Agent Work Time: {metrics['agent_work_time'] / 1000:.2f}s")
+    
+    session_duration_ms = metrics['end_timestamp'] - metrics['start_timestamp']
+    session_duration_s = session_duration_ms / 1000
+    agent_work_time_s = metrics['agent_work_time'] / 1000
+    user_wait_time_s = max(0, session_duration_s - agent_work_time_s)
+    
+    print(f"Session Duration: {session_duration_s:.2f}s ({session_duration_s/3600:.2f}h)")
+    print(f"Agent Work Time: {agent_work_time_s:.2f}s ({agent_work_time_s/3600:.2f}h)")
+    print(f"User Wait Time: {user_wait_time_s:.2f}s ({user_wait_time_s/3600:.2f}h)")
+    
     print("\nAgents:")
     for agent, data in metrics['agents'].items():
         print(f"  {agent}: {data['requests']} requests")

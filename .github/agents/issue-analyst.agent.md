@@ -156,7 +156,7 @@ git log --oneline --since="1 week ago" -- <relevant-path>
 dotnet build --no-restore
 
 # Run tests
-dotnet test --verbosity normal
+scripts/test-with-timeout.sh -- dotnet test --verbosity normal
 
 # Check for problems in workspace
 # Use the 'problems' tool to see diagnostics

@@ -26,6 +26,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Shell test (timeout wrapper)
+        run: bash tests/shell/test_with_timeout_test.sh
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
@@ -38,7 +41,9 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: |
+          chmod +x scripts/test-with-timeout.sh
+          scripts/test-with-timeout.sh --timeout-seconds 3600 -- dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Setup Node
         uses: actions/setup-node@v6

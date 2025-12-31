@@ -45,6 +45,10 @@ jobs:
             echo "Non-ignored files changed; running validation"
           fi
 
+      - name: Shell test (timeout wrapper)
+        if: steps.filter.outputs.changed == 'true'
+        run: bash tests/shell/test_with_timeout_test.sh
+
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-dotnet@v5
@@ -65,7 +69,9 @@ jobs:
 
       - name: Test
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: |
+          chmod +x scripts/test-with-timeout.sh
+          scripts/test-with-timeout.sh --timeout-seconds 3600 -- dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

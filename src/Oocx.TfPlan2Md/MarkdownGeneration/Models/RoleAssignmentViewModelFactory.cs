@@ -274,10 +274,17 @@ internal static class RoleAssignmentViewModelFactory
             default:
                 if (element.TryGetProperty(attrName, out var prop))
                 {
-                    var value = prop.ValueKind == JsonValueKind.String ? prop.GetString() : prop.ToString();
+                    // Convert JsonElement to string with proper casing (lowercase for booleans)
+                    var value = prop.ValueKind switch
+                    {
+                        JsonValueKind.String => prop.GetString(),
+                        JsonValueKind.True => "true",
+                        JsonValueKind.False => "false",
+                        _ => prop.ToString()
+                    };
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return $"`{ScribanHelpers.EscapeMarkdown(value)}`";
+                        return ScribanHelpers.FormatAttributeValueTable(attrName, value, null);
                     }
                 }
                 return null;
@@ -384,7 +391,7 @@ internal static class RoleAssignmentViewModelFactory
             : string.Empty;
 
         var principalName = !string.IsNullOrEmpty(principalId)
-            ? principalMapper.GetName(principalId, principalType) ?? string.Empty
+            ? principalMapper.GetName(principalId, principalType) ?? principalId
             : string.Empty;
 
         return new PrincipalInfo(principalName, principalId, principalType);

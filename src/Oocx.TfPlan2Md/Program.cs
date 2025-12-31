@@ -81,15 +81,17 @@ static async Task<int> RunAsync(CliOptions options)
     var parser = new TerraformPlanParser();
     var plan = parser.Parse(json);
 
+    // Create principal mapper for resolving principal names in role assignments
+    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile);
+
     // Build the report model
     var modelBuilder = new ReportModelBuilder(
         showSensitive: options.ShowSensitive,
         showUnchangedValues: options.ShowUnchangedValues,
         largeValueFormat: options.LargeValueFormat,
-        reportTitle: options.ReportTitle);
+        reportTitle: options.ReportTitle,
+        principalMapper: principalMapper);
     var model = modelBuilder.Build(plan);
-
-    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile);
 
     // Render to Markdown
     var renderer = new MarkdownRenderer(principalMapper);

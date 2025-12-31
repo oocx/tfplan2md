@@ -238,14 +238,14 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.rg_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 </code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | scope | `rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
 | role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
-| principal_id |  (`👤 User`) [`00000000-0000-0000-0000-000000000001`] |
+| principal_id | `👤 Jane Doe (User)` (`👤 User`) [`00000000-0000-0000-0000-000000000001`] |
 | principal_type | `👤 User` |
 | role_definition_name | `🛡️ Reader` |
 
@@ -254,14 +254,14 @@
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.storage_reader -->
 <details style="margin-bottom:12px;">
-<summary>➕ azurerm_role_assignment <b><code>storage_reader</code></b> — <code>👥 </code> → <code>🛡️ Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>storage_reader</code></b> — <code>👥 DevOps Team (Group)</code> → <code>🛡️ Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | scope | `rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
 | role_definition_id | `🛡️ Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |
-| principal_id |  (`👥 Group`) [`00000000-0000-0000-0000-000000000002`] |
+| principal_id | `👥 DevOps Team (Group)` (`👥 Group`) [`00000000-0000-0000-0000-000000000002`] |
 | principal_type | `👥 Group` |
 | role_definition_name | `🛡️ Storage Blob Data Reader` |
 
@@ -366,14 +366,14 @@ line3: end
 
 <!-- tfplan2md:resource-start address=module.security.azurerm_role_assignment.obsolete -->
 <details style="margin-bottom:12px;">
-<summary>❌ azurerm_role_assignment <b><code>obsolete</code></b> — remove <code>🛡️ Reader</code> on <code>rg-old</code> from <code>💻 </code></summary>
+<summary>❌ azurerm_role_assignment <b><code>obsolete</code></b> — remove <code>🛡️ Reader</code> on <code>rg-old</code> from <code>💻 Legacy App (Service Principal)</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
 | scope | `rg-old` in subscription `12345678-1234-1234-1234-123456789012` |
 | role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
-| principal_id |  (`💻 ServicePrincipal`) [`00000000-0000-0000-0000-000000000005`] |
+| principal_id | `💻 Legacy App (Service Principal)` (`💻 ServicePrincipal`) [`00000000-0000-0000-0000-000000000005`] |
 | principal_type | `💻 ServicePrincipal` |
 | role_definition_name | `🛡️ Reader` |
 

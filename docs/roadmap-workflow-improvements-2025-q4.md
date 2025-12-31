@@ -95,3 +95,4 @@ This roadmap outlines a series of workflow improvements derived from retrospecti
 
 **Progress**
 - ⏳ Proposed in [Workflow Improvements: 2025-12-29](workflow/025-improvements-2025-12-29/workflow-improvements.md)
+- ⏳ Follow-up tasks consolidated in [Workflow Improvements: 2025-12-31](workflow/026-improvements-2025-12-31/workflow-improvements.md)

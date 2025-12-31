@@ -40,6 +40,10 @@ Thumbs.db
 # Publish output
 publish/
 
+# Workspace temp files (agents must not write outside repo)
+.tmp/*
+!.tmp/.gitkeep
+
 plan.tfplan
 # VS Code Copilot chat exports (large, may contain sensitive data)
 **/chat.json

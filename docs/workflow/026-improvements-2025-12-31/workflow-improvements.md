@@ -11,7 +11,7 @@ This improvement set is based on:
 | 1 | **Snapshot integrity guardrail**: add a snapshot-change policy and automation | Feature 026 | High | Medium | **Critical** | Open | Snapshot updates are rejected unless explicitly justified (e.g., commit message token) and Code Reviewer checklist requires justification for snapshot diffs. |
 | 2 | **Code Reviewer DoD for snapshots**: require justification + regression reasoning | Feature 026 | High | Low | **Critical** | Open | `.github/agents/code-reviewer.agent.md` explicitly calls out snapshot changes as a high-risk area and requires a review note explaining why they changed and why that’s correct. |
 | 3 | **Developer correctness guardrail**: always run tests before “next steps” | Feature 026 | Medium | Low | High | Open | `.github/agents/developer.agent.md` requires running tests (or scoped tests) before declaring work complete, and forbids updating snapshots to “make tests pass” without diagnosing the mismatch. |
-| 4 | **Test hang detection**: timeout wrapper for `dotnet test` | Feature 026 | High | Medium | **Critical** | Open | `scripts/test-with-timeout.sh` exists, returns non-zero on timeout, and is used by recommended workflow commands (docs/agents and/or CI guidance). |
+| 4 | **Test hang detection**: timeout wrapper for `dotnet test` | Feature 026 | High | Medium | **Critical** | Done | `scripts/test-with-timeout.sh` exists, returns non-zero on timeout, and is used by recommended workflow commands (docs/agents and/or CI guidance). |
 | 5 | **Fix UAT polling hang**: detect closed/abandoned PRs in UAT scripts | Feature 026 | High | Low | **Critical** | Done | `scripts/uat-helpers.sh` (or `scripts/uat-run.sh`) exits cleanly with an error when PR is `CLOSED`/`ABANDONED` instead of polling indefinitely. |
 | 6 | **Temp file policy**: standardize `.tmp/` workspace folder usage | Feature 026 | Medium | Low | Medium | Open | Workflow documentation forbids creating files outside the workspace; agents use `.tmp/` for scratch output; no scripts write to `/tmp` or `~/` by default. |
 | 7 | **Option-selection robustness**: avoid numeric “option confusion” in multi-list chats | Feature 026 | Medium | Low | Medium | Open | Agent prompts require explicit “Option 1/2/3” (or the option label text) rather than numeric-only answers; prompts avoid presenting multiple option lists at once. |
@@ -24,3 +24,4 @@ This improvement set is based on:
 ## Notes
 
 - Feature 026 already recorded one workflow improvement as completed: handoff-prompt detection improvements in `scripts/analyze-chat.py`. This list focuses on items that remain actionable or require follow-up hardening.
+- Improvement #4 completed in https://github.com/oocx/tfplan2md/pull/171.

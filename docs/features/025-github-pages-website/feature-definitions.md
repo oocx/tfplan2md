@@ -19,7 +19,7 @@ This document defines the agreed-upon features, their categorization, and priori
 | Firewall Rule Interpretation | Renders complex Azure Firewall rule collections as readable tables with protocols, ports, and actions. | What Sets Us Apart | High |
 | NSG Rule Interpretation | Renders Network Security Group rules as readable tables, making security changes easy to audit. | What Sets Us Apart | High |
 | Role Assignment Mapping | Resolves cryptic Principal IDs (GUIDs) to human-readable names (e.g., "Jane Doe", "DevOps Team"). Also maps scope resource IDs and role definition IDs to friendly names. | What Sets Us Apart | High |
-| CI/CD Integration | Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI. | What Sets Us Apart | High |
+| CI/CD Integration | Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI. | Built-In Capabilities | Medium |
 | PR Platform Compatibility | Designed and tested for rendering in markdown pull requests on Azure DevOps Services and GitHub. | What Sets Us Apart | High |
 | Friendly Resource Names | Displays friendly names for resources instead of complex resource ID strings. | What Sets Us Apart | High |
 | Provider Agnostic Core | Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering. | Built-In Capabilities | Medium |
@@ -43,7 +43,6 @@ Features that differentiate tfplan2md from other solutions:
 - Firewall Rule Interpretation
 - NSG Rule Interpretation
 - Role Assignment Mapping
-- CI/CD Integration
 - PR Platform Compatibility
 - Friendly Resource Names
 
@@ -57,6 +56,7 @@ Expected functionality that provides value:
 - Tag Visualization
 - Smart Iconography
 - Custom Templates
+- CI/CD Integration
 
 ### Also Included (Additional Features)
 Nice-to-have features mentioned together:

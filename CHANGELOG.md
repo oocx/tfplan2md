@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.8"></a>
+## [1.0.0-alpha.8](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2025-12-31)
+
+### ✨ Features
+
+* **workflow:** add workspace-local temp file policy ([a43a52b](https://github.com/oocx/tfplan2md/commit/a43a52b89c783635bb5b8cc4c70c2b3c330c6b48))
+
+### 🐛 Bug Fixes
+
+* **agent:** prevent web-designer from making unrelated changes and starting implementation without approval ([01dd0d7](https://github.com/oocx/tfplan2md/commit/01dd0d7f78d2fe376754c67e42a073ad881520d5))
+
+### 📚 Documentation
+
+* finalize retrospective for feature 026 and improve analyze-chat.py ([01eef99](https://github.com/oocx/tfplan2md/commit/01eef9981fab48097d92274100d4b5ac8ccff0ff))
+
 <a name="1.0.0-alpha.7"></a>
 ## [1.0.0-alpha.7](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2025-12-31)
 

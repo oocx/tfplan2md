@@ -240,93 +240,88 @@
             <div class="features-carousel">
                 <button class="carousel-btn carousel-prev" aria-label="Previous features">‹</button>
                 <div class="features-carousel-track">
+                    <!-- Semantic Diffs -->
                     <div class="feature-card elevated">
                         <div class="feature-header">
                             <div class="feature-icon-lg">🔍</div>
                         </div>
-                        <h3 class="feature-title">Semantic Diffing</h3>
+                        <h3 class="feature-title">Semantic Diffs</h3>
                         <p class="feature-description">
-                            See which firewall rules or NSG rules were added/removed, 
-                            not confusing index modifications.
+                            Side-by-side "Before" and "After" values with inline highlighting show exactly what changed.
+                        </p>
+                        <a href="features/index.html#semantic-diffs" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Firewall Rule Interpretation -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🔥</div>
+                        </div>
+                        <h3 class="feature-title">Firewall Rules</h3>
+                        <p class="feature-description">
+                            Azure Firewall rule collections rendered as readable tables with protocols, ports, and actions.
                         </p>
                         <a href="features/index.html#firewall-rules" class="feature-link-btn">Learn more →</a>
                     </div>
+
+                    <!-- NSG Rule Interpretation -->
                     <div class="feature-card elevated">
                         <div class="feature-header">
-                            <div class="feature-icon-lg">📁</div>
+                            <div class="feature-icon-lg">🛡️</div>
                         </div>
-                        <h3 class="feature-title">Module Grouping</h3>
+                        <h3 class="feature-title">NSG Rules</h3>
                         <p class="feature-description">
-                            Resources organized by module for better context 
-                            and easier navigation.
+                            Network Security Group rules as readable tables, making security changes easy to audit.
                         </p>
-                        <a href="features/index.html#module-grouping" class="feature-link-btn">Learn more →</a>
+                        <a href="features/index.html#nsg-rules" class="feature-link-btn">Learn more →</a>
                     </div>
+
+                    <!-- Role Assignment Mapping -->
                     <div class="feature-card elevated">
                         <div class="feature-header">
-                            <div class="feature-icon-lg">☁️</div>
+                            <div class="feature-icon-lg">👤</div>
                         </div>
-                        <h3 class="feature-title">Azure Optimizations</h3>
+                        <h3 class="feature-title">Role Assignments</h3>
                         <p class="feature-description">
-                            Long Azure resource IDs formatted as readable scopes. 
-                            Principal mapping for role assignments.
+                            Resolves cryptic Principal IDs, role names, and scopes to human-readable names.
                         </p>
-                        <a href="features/index.html#azure-resource-ids" class="feature-link-btn">Learn more →</a>
+                        <a href="features/index.html#role-assignments" class="feature-link-btn">Learn more →</a>
                     </div>
-                    <div class="feature-card elevated">
-                        <div class="feature-header">
-                            <div class="feature-icon-lg">🎨</div>
-                        </div>
-                        <h3 class="feature-title">Visual Enhancements</h3>
-                        <p class="feature-description">
-                            Semantic icons for IPs, ports, protocols, booleans, 
-                            and principals improve scannability.
-                        </p>
-                        <a href="features/index.html#visual-icons" class="feature-link-btn">Learn more →</a>
-                    </div>
-                    <div class="feature-card elevated">
-                        <div class="feature-header">
-                            <div class="feature-icon-lg">📝</div>
-                        </div>
-                        <h3 class="feature-title">Resource Summaries</h3>
-                        <p class="feature-description">
-                            One-line summaries for quick understanding of 
-                            each resource change.
-                        </p>
-                        <a href="features/index.html#resource-summaries" class="feature-link-btn">Learn more →</a>
-                    </div>
-                    <div class="feature-card elevated">
-                        <div class="feature-header">
-                            <div class="feature-icon-lg">🔒</div>
-                        </div>
-                        <h3 class="feature-title">Security & Privacy</h3>
-                        <p class="feature-description">
-                            Sensitive values masked by default. Distroless 
-                            Docker image for minimal attack surface.
-                        </p>
-                        <a href="features/index.html#sensitive-masking" class="feature-link-btn">Learn more →</a>
-                    </div>
+
+                    <!-- Large Value Formatting -->
                     <div class="feature-card elevated">
                         <div class="feature-header">
                             <div class="feature-icon-lg">📄</div>
                         </div>
-                        <h3 class="feature-title">Large Value Handling</h3>
+                        <h3 class="feature-title">Large Values</h3>
                         <p class="feature-description">
-                            Multi-line values formatted with line-by-line diffs 
-                            in collapsible sections.
+                            Multi-line values like JSON policies show computed diffs with inline highlighting.
                         </p>
                         <a href="features/index.html#large-values" class="feature-link-btn">Learn more →</a>
                     </div>
+
+                    <!-- Optimized for PR Comments -->
                     <div class="feature-card elevated">
                         <div class="feature-header">
-                            <div class="feature-icon-lg">🛠️</div>
+                            <div class="feature-icon-lg">✅</div>
                         </div>
-                        <h3 class="feature-title">Customization</h3>
+                        <h3 class="feature-title">PR Optimized</h3>
                         <p class="feature-description">
-                            Use built-in templates or create your own with 
-                            Scriban for custom formatting.
+                            Designed and tested for rendering in markdown pull requests on Azure DevOps & GitHub.
                         </p>
-                        <a href="features/index.html#custom-templates" class="feature-link-btn">Learn more →</a>
+                        <a href="features/index.html#pr-compatibility" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Friendly Resource Names -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">📛</div>
+                        </div>
+                        <h3 class="feature-title">Friendly Names</h3>
+                        <p class="feature-description">
+                            Displays friendly names for resources instead of complex resource ID strings.
+                        </p>
+                        <a href="features/index.html#friendly-names" class="feature-link-btn">Learn more →</a>
                     </div>
                 </div>
                 <button class="carousel-btn carousel-next" aria-label="Next features">›</button>

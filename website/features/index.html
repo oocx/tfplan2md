@@ -59,27 +59,12 @@
                     </div>
                 </div>
 
-                <!-- Large Value Formatting -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">📄</div>
-                    <h3 class="feature-category-title">Large Value Formatting</h3>
-                    <p class="feature-category-description">
-                        Multi-line values like JSON policies show computed diffs with inline highlighting instead of full text.
-                    </p>
-                    <div class="feature-list">
-                        <a href="large-values.html" class="feature-link">
-                            <span class="feature-link-icon">→</span>
-                            <span>Learn more</span>
-                        </a>
-                    </div>
-                </div>
-
                 <!-- Firewall Rule Interpretation -->
                 <div class="feature-category-card">
                     <div class="feature-icon">🔥</div>
                     <h3 class="feature-category-title">Firewall Rule Interpretation</h3>
                     <p class="feature-category-description">
-                        Azure Firewall rule collections rendered as readable tables with protocols, ports, and actions.
+                        Renders complex Azure Firewall rule collections as readable tables with protocols, ports, and actions.
                     </p>
                     <div class="feature-list">
                         <a href="firewall-rules.html" class="feature-link">
@@ -91,10 +76,10 @@
 
                 <!-- NSG Rule Interpretation -->
                 <div class="feature-category-card">
-                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-icon">��️</div>
                     <h3 class="feature-category-title">NSG Rule Interpretation</h3>
                     <p class="feature-category-description">
-                        Network Security Group rules as readable tables, making security changes easy to audit.
+                        Renders Network Security Group rules as readable tables, making security changes easy to audit.
                     </p>
                     <div class="feature-list">
                         <a href="nsg-rules.html" class="feature-link">
@@ -119,12 +104,27 @@
                     </div>
                 </div>
 
+                <!-- Large Value Formatting -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">📄</div>
+                    <h3 class="feature-category-title">Large Value Formatting</h3>
+                    <p class="feature-category-description">
+                        Handles large text blocks (like JSON policies or scripts) by showing a computed diff instead of the full text.
+                    </p>
+                    <div class="feature-list">
+                        <a href="large-values.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more</span>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Optimized for PR Comments -->
                 <div class="feature-category-card">
                     <div class="feature-icon">✅</div>
                     <h3 class="feature-category-title">Optimized for PR Comments</h3>
                     <p class="feature-category-description">
-                        Designed and tested for rendering in markdown pull requests on Azure DevOps Services and GitHub.
+                        Designed and tested for rendering in markdown pull requests on Azure DevOps Services and Github.
                     </p>
                     <div class="feature-list">
                         <a href="pr-compatibility.html" class="feature-link">
@@ -152,30 +152,12 @@
         </div>
     </section>
 
-    <!-- Built-In Capabilities (Standard Features) -->
+    <!-- Built-In Capabilities (Medium Value Features) -->
     <section class="section-alt" style="padding: 12px 0;">
         <div class="section-container" style="padding-top: 0; padding-bottom: 0;">
             <h2 class="section-title">Built-In Capabilities</h2>
             <p class="section-subtitle">Expected functionality that provides real value out of the box</p>
             <div class="features-grid">
-                <!-- Standard Features -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3 class="feature-category-title">Standard Features</h3>
-                    <p class="feature-category-description">
-                        Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering.
-                    </p>
-                </div>
-
-                <!-- CI/CD Integration -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">🔄</div>
-                    <h3 class="feature-category-title">CI/CD Integration</h3>
-                    <p class="feature-category-description">
-                        Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI.
-                    </p>
-                </div>
-
                 <!-- Plan Summary -->
                 <div class="feature-category-card">
                     <div class="feature-icon">📊</div>
@@ -190,7 +172,7 @@
                     <div class="feature-icon">📁</div>
                     <h3 class="feature-category-title">Module Grouping</h3>
                     <p class="feature-category-description">
-                        Groups resources logically by their Terraform module hierarchy.
+                        Groups resources logically by their Terraform module hierarchy (e.g., module.network).
                     </p>
                 </div>
 
@@ -199,16 +181,7 @@
                     <div class="feature-icon">📂</div>
                     <h3 class="feature-category-title">Collapsible Details</h3>
                     <p class="feature-category-description">
-                        Hides verbose resource details inside expandable sections to keep PR comments readable.
-                    </p>
-                </div>
-
-                <!-- Local Resource Names -->
-                <div class="feature-category-card">
-                    <div class="feature-icon">🏷️</div>
-                    <h3 class="feature-category-title">Local Resource Names</h3>
-                    <p class="feature-category-description">
-                        In modules, renders just the local name instead of the full qualified module path.
+                        Hides verbose resource details inside &lt;details&gt; tags to keep the PR comment readable.
                     </p>
                 </div>
 
@@ -226,7 +199,7 @@
                     <div class="feature-icon">🎨</div>
                     <h3 class="feature-category-title">Smart Iconography</h3>
                     <p class="feature-category-description">
-                        Context-aware icons for common attributes like Locations (🌍), IPs (🌐), and Ports (🔌).
+                        Adds context-aware icons for common attributes like Locations (🌍), IPs (🌐), and Ports (🔌).
                     </p>
                 </div>
 
@@ -235,19 +208,55 @@
                     <div class="feature-icon">🛠️</div>
                     <h3 class="feature-category-title">Custom Templates</h3>
                     <p class="feature-category-description">
-                        Completely customize markdown output using Go templates.
+                        Allows users to completely customize the markdown output using Go templates.
+                    </p>
+                </div>
+
+                <!-- Standard Features -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-category-title">Standard Features</h3>
+                    <p class="feature-category-description">
+                        Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering.
+                    </p>
+                </div>
+
+                <!-- Local Resource Names -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">��️</div>
+                    <h3 class="feature-category-title">Local Resource Names</h3>
+                    <p class="feature-category-description">
+                        In modules, just render the local name part instead of the full name that includes the module.
+                    </p>
+                </div>
+
+                <!-- CI/CD Integration -->
+                <div class="feature-category-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-category-title">CI/CD Integration</h3>
+                    <p class="feature-category-description">
+                        Native support and examples for GitHub Actions, Azure DevOps, and GitLab CI.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Also Included (Additional Features) -->
+    <!-- Also Included (Low Value Features) -->
     <section class="section" style="padding: 12px 0;">
         <div class="section-container" style="padding-top: 0; padding-bottom: 0;">
             <h2 class="section-title">Also Included</h2>
             <p class="section-subtitle">Nice-to-have features that round out the package</p>
             <div class="features-grid features-grid-small" style="max-width: 900px; margin: 0 auto;">
+                <!-- Sensitive Value Masking -->
+                <div class="feature-category-card feature-card-small">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-category-title">Sensitive Value Masking</h3>
+                    <p class="feature-category-description">
+                        Automatically detects and masks sensitive values. Optionally, sensitive values can be included in the report.
+                    </p>
+                </div>
+
                 <!-- Docker Support -->
                 <div class="feature-category-card feature-card-small">
                     <div class="feature-icon">🐳</div>
@@ -257,21 +266,21 @@
                     </p>
                 </div>
 
-                <!-- Sensitive Value Masking -->
+                <!-- Minimal Base Image -->
                 <div class="feature-category-card feature-card-small">
-                    <div class="feature-icon">🔒</div>
-                    <h3 class="feature-category-title">Sensitive Value Masking</h3>
+                    <div class="feature-icon">📦</div>
+                    <h3 class="feature-category-title">Minimal Base Image</h3>
                     <p class="feature-category-description">
-                        Automatically detects and masks sensitive values (marked as sensitive in Terraform) to prevent leaks. Optionally, sensitive values can be included in the report.
+                        Built on the secure and minimal mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled image.
                     </p>
                 </div>
 
-                <!-- Minimal Container Image -->
+                <!-- Dark/Light Mode -->
                 <div class="feature-category-card feature-card-small">
-                    <div class="feature-icon">📦</div>
-                    <h3 class="feature-category-title">Minimal Container Image</h3>
+                    <div class="feature-icon">🌓</div>
+                    <h3 class="feature-category-title">Dark/Light Mode</h3>
                     <p class="feature-category-description">
-                        Uses mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled for reduced attack surface and faster pulls.
+                        Fully supports both dark and light appearance modes.
                     </p>
                 </div>
             </div>

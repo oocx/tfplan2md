@@ -58,7 +58,7 @@ echo "## Summary\n\nPR description" | scripts/pr-github.sh create-and-merge --ti
 ### 1. Pre-flight Checks
 ```bash
 git branch --show-current
-git status --short
+scripts/git-status.sh --short
 ```
 
 ### 2. Push the Branch

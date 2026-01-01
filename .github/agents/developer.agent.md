@@ -183,7 +183,7 @@ Follow the project's coding conventions strictly:
 
 1. **Sync with latest main** - ALWAYS do this first, whether starting new work or rework:
    ```bash
-   git status  # Confirm you're on feature/<name> branch
+   scripts/git-status.sh  # Confirm you're on feature/<name> branch
    git fetch origin && git rebase origin/main  # Get latest changes from main
    ```
    - This prevents merge conflicts later

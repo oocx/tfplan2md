@@ -29,7 +29,7 @@ Sometimes, intent is genuinely contradictory and cannot be resolved automaticall
 - Resolve conflicts by editing the conflicted file(s) (not by blindly choosing one side).
 - After resolution:
   - Verify that no conflict markers remain (`<<<<<<<`, `=======`, `>>>>>>>`).
-  - Verify that `git status` shows no unmerged paths.
+  - Verify that `scripts/git-status.sh` shows no unmerged paths.
   - Validate that the resolved content preserves the intent of both changes (or reflects an explicit user decision when intent conflicts).
 
 ### Must Not
@@ -81,13 +81,13 @@ If you are in doubt about the intent of a change, ask questions until you unders
 ### 0. Confirm you are actually in a conflict
 Use git to confirm the conflict state and list conflicted files:
 ```bash
-git status
+scripts/git-status.sh
 git diff --name-only --diff-filter=U
 ```
 
 ### 1. Identify conflicted files
 ```bash
-git status
+scripts/git-status.sh
 # or (machine-friendly)
 git diff --name-only --diff-filter=U
 ```
@@ -127,7 +127,7 @@ While inspecting, explicitly determine intent:
 git diff
 
 # Ensure git sees conflicts as resolved
-git status
+scripts/git-status.sh
 ```
 
 Also do a repo-wide check that no conflict markers remain. Prefer tooling that searches files directly (no scripts required), for example:

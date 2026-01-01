@@ -9,6 +9,7 @@
 | 5 | Add merge command to `scripts/pr-github.sh` (avoid gh fallback) | 2025-12-28 workflow retrospective | ⬜ Not started | Prevents merge friction and out-of-date branch errors when using `gh` directly. | Med | Med | Med | Keep scope tight: merge existing PRs; optionally auto `gh pr update-branch`. |
 | 6 | Always present 3 options in chat before selection | Workflow Engineer meta-agent gap | ✅ Done | I asked for an ID without repeating the 3 recommended options in chat, forcing the Maintainer to open `tasks.md`. | Med | Low | Low | Fixed via commit `698c677` (updates WE agent + `/we` prompt + docs). |
 | 7 | Standardize blocked/waiting responses | Maintainer feedback | ✅ Done | Agents sometimes stop without an explicit recap, leaving progress/next steps unclear. | High | Low | Low | Implemented via repo-wide instructions + docs update. |
+| 8 | Standardize `git status` via script | Maintainer feedback | ✅ Done | Many slight variations of `git status` cause repeated terminal approvals; standardize on a single wrapper script. | High | Low | Low | Implemented `scripts/git-status.sh` and updated agent/skill guidance to use it. |
 
 ## Recommendations
 
@@ -22,5 +23,9 @@ Completed: **6** (2026-01-01)
 Selected: **2** (2026-01-01)
 
 Completed: **7** (2026-01-01)
+
+Selected: **8** (2026-01-01)
+
+Completed: **8** (2026-01-01)
 
 Which item should I implement next? (Reply with the Option number, or reply with "work on task <task id>")

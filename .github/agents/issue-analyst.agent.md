@@ -146,7 +146,7 @@ Collect relevant data:
 - Workflow run output (if CI/CD failure)
 - Environment details (OS, .NET version, Docker version)
 - Recent changes: `git log --oneline --since="1 week ago"`
-- Current branch status: `git status`
+- Current branch status: `scripts/git-status.sh`
 
 **Commands to use:**
 ```bash

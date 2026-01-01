@@ -27,6 +27,8 @@ Agents are empowered by **Agent Skills**, which are specialized, reusable capabi
 
 When authoring skills, prefer designs that **minimize Maintainer approval interruptions** (terminal approvals): use a small number of stable wrapper commands, batch steps when practical, and reuse existing repo scripts.
 
+For git working-tree checks, prefer the stable wrapper `scripts/git-status.sh` over raw `git status` so it can be permanently allowed once and reused with any needed flags.
+
 ### PR Title/Description Guardrail
 
 Before an agent runs any command that creates (or creates-and-merges) a pull request, it must post the **exact Title and Description** in chat.

@@ -238,6 +238,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 **Meta-Agent:**
 - **Workflow Engineer** improves and maintains the agent workflow itself (operates outside the normal feature flow).
+- When requesting a Maintainer decision on a `tasks.md` item, the Workflow Engineer presents the 3 recommended options (Option 1/2/3) in chat immediately before asking for the selected ID.
 
 ## Agent Roles & Responsibilities
 

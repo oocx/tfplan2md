@@ -121,7 +121,7 @@ extract_user_votes() {
     [.requests[] | select(.vote != null) | .vote]
     | group_by(.)
     | map({vote: (if .[0] == 1 then "up" elif .[0] == 0 then "down" else "unknown" end), count: length})
-    " "$CHAT_FILE"
+    ' "$CHAT_FILE"
 }
 
 extract_file_edit_stats() {

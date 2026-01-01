@@ -47,7 +47,7 @@ This single command:
 [INFO] ✅ All snapshot tests pass!
 
 Snapshots updated successfully. Review changes with:
-  git diff tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
+  scripts/git-diff.sh tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
 ```
 
 ## When to Use
@@ -69,7 +69,7 @@ Snapshot files in `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`:
 ## After Running
 Always review the changes:
 ```bash
-git diff tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
+scripts/git-diff.sh tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
 ```
 
 Verify the changes match your expectations, then stage and commit:

@@ -29,6 +29,10 @@ When authoring skills, prefer designs that **minimize Maintainer approval interr
 
 For git working-tree checks, prefer the stable wrapper `scripts/git-status.sh` over raw `git status` so it can be permanently allowed once and reused with any needed flags.
 
+For git history checks, prefer the stable wrapper `scripts/git-log.sh` over raw `git log` so agents can use arbitrary log flags/ranges without triggering approval churn.
+
+For git diffs, prefer the stable wrapper `scripts/git-diff.sh` over raw `git diff` so agents can compare changes with arbitrary args/paths without triggering approval churn.
+
 ### PR Title/Description Guardrail
 
 Before an agent runs any command that creates (or creates-and-merges) a pull request, it must post the **exact Title and Description** in chat.

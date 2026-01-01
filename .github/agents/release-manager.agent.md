@@ -156,7 +156,7 @@ Before releasing, verify:
 
 5. **Branch is Up to Date**
    ```bash
-   git log HEAD..origin/main --oneline
+   scripts/git-log.sh HEAD..origin/main --oneline
    ```
    - [ ] No missing commits from main
 
@@ -168,7 +168,7 @@ Before releasing, verify:
 
 2. **Review commit history** - Ensure commits follow conventional commit format:
    ```bash
-   PAGER=cat git log --oneline origin/main..HEAD
+   scripts/git-log.sh --oneline origin/main..HEAD
    ```
 
 3. **Create or Update Pull Request**:

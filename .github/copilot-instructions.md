@@ -89,6 +89,8 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
   - Bad: "I will run `git status`." (waits for user reply)
   - Good: "I will run `scripts/git-status.sh` to check changes." [Tool Call]
 - **Git status wrapper**: Prefer `scripts/git-status.sh` over raw `git status` to reduce terminal approval friction. Pass any `git status` flags as script args (e.g., `scripts/git-status.sh --porcelain=v1`).
+- **Git log wrapper**: Prefer `scripts/git-log.sh` over raw `git log` to reduce terminal approval friction and avoid pager issues. Pass any `git log` flags/ranges as script args (e.g., `scripts/git-log.sh --oneline -20 origin/main..HEAD`).
+- **Git diff wrapper**: Prefer `scripts/git-diff.sh` over raw `git diff` to reduce terminal approval friction and avoid pager issues. Pass any `git diff` flags/paths as script args (e.g., `scripts/git-diff.sh --stat origin/main...HEAD`).
 - **Pager Suppression**: Always prevent interactive pagers from blocking execution.
   - For `gh`: Use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` or `export GH_PAGER=cat GH_FORCE_TTY=false`.
   - For `az`: Use `AZURE_CORE_PAGER=cat az ...` or `export AZURE_CORE_PAGER=cat`.

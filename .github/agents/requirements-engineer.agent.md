@@ -7,7 +7,7 @@ tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codeb
 handoffs:
   - label: Start Architecture Design
     agent: "Architect"
-      prompt: Review `specification.md` and design the technical solution.
+      prompt: Review `specification.md` and produce `architecture.md` with clear decisions, trade-offs, and a recommended approach. If key requirements are ambiguous, ask the Maintainer one question at a time before finalizing.
     send: false
 ---
 

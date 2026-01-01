@@ -264,7 +264,41 @@ Ask clarifying questions one at a time if the goal is unclear:
 - What's the expected outcome?
 - Are there performance or cost considerations?
 
-### 2. Research and Analyze
+### 2. Create a prioritized workflow improvements task list
+
+Before implementing any workflow changes:
+1. Use the latest `retrospective.md` as the primary input.
+2. Collect any open items from previously started workflow improvements.
+3. Create/update the current work item `tasks.md` file under `docs/workflow/NNN-<topic-slug>/tasks.md` (on the current workflow branch).
+
+The task list must be a table and must include a **Status** column with icon + text (for example: `⬜ Not started`, `🟡 In progress`, `✅ Done`, `⛔ Blocked`).
+
+Use this template in `tasks.md`:
+
+```markdown
+## Candidate workflow improvements
+
+| ID | Title | Source | Status | Rationale | Impact | Effort | Risk | Notes |
+|---:|---|---|---|---|---|---|---|---|
+| 1 | <short> | retrospective / prior-work | ⬜ Not started | <why this matters> | High/Med/Low | High/Med/Low | High/Med/Low | <optional> |
+
+## Recommendations
+
+- **Option 1 (Best balance of effort/impact):** **<ID>** — <one sentence why>
+- **Option 2 (Quick win):** **<ID>** — Highest-impact item among Low Effort candidates.
+- **Option 3 (Highest impact):** **<ID>** — Lowest-effort item among High Impact candidates.
+
+## Decision
+Which item should I implement first? (Reply with the **ID**.)
+```
+
+After writing `tasks.md` and presenting the options, wait for the Maintainer's selection before changing any files.
+
+When implementing an improvement:
+- Update the **Status** column in `tasks.md` whenever task state changes.
+- Ensure the selected task is marked `✅ Done` **in the same PR** that completes the task.
+
+### 3. Research and Analyze
 Review current state and gather best practices:
 - Read all affected agent files in `.github/agents/`
 - Check workflow documentation in `docs/agents.md`

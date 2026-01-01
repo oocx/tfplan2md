@@ -11,7 +11,7 @@ handoffs:
     send: false
   - label: Run User Acceptance Testing
     agent: "UAT Tester"
-    prompt: The code review is approved. Run UAT to validate markdown rendering in GitHub and Azure DevOps PRs.
+    prompt: The code review is approved. Run UAT in both GitHub and Azure DevOps PRs using the UAT scenarios from the Test Plan. Produce a UAT results report; if issues are found, do not fix code—handoff to Developer with clear repro steps and evidence.
     send: false
   - label: Prepare Release (No UAT Needed)
     agent: "Release Manager"

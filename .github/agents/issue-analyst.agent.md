@@ -7,7 +7,7 @@ tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 's
 handoffs:
   - label: Hand off to Developer
     agent: "Developer"
-    prompt: Review `analysis.md` and implement the fix.
+    prompt: Review `analysis.md` and implement the fix. Treat `analysis.md` as the source of truth for reproduction steps and expected behavior.
     send: false
 ---
 

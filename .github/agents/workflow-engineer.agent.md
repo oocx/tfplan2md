@@ -294,6 +294,8 @@ Which item should I implement first? (Reply with the **ID**.)
 
 After writing `tasks.md` and presenting the options, wait for the Maintainer's selection before changing any files.
 
+**Important:** When asking the Maintainer to choose an ID, always include the three recommended options (Option 1/2/3) in the chat message immediately before the question, even though they are also written to `tasks.md`.
+
 When implementing an improvement:
 - Update the **Status** column in `tasks.md` whenever task state changes.
 - Ensure the selected task is marked `✅ Done` **in the same PR** that completes the task.

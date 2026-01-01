@@ -97,4 +97,4 @@ This document lists candidate improvement opportunities to discuss and implement
 
 Record decisions here as we agree on them.
 
-- TBD
+- 2026-01-01: For improvement (1) “Reduce manual handoff friction”, use **VS Code prompt files** in `.github/prompts/` (short names like `/re`, `/dev`) so the Maintainer can start new chat sessions without copying prompt text from previous sessions.

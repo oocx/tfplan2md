@@ -77,7 +77,7 @@ jobs:
 
       - name: Test
         if: steps.filter.outputs.changed == 'true'
-        run: scripts/test-with-timeout.sh -- dotnet test --no-build --configuration Release --verbosity normal
+        run: scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

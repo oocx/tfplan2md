@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.12"></a>
+## [1.0.0-alpha.12](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2026-01-01)
+
+### 🐛 Bug Fixes
+
+* stop guessing agent attribution in retros ([bd1b8f9](https://github.com/oocx/tfplan2md/commit/bd1b8f9c3f039709004e5904f4e7aa2619a5958e))
+
+### 📚 Documentation
+
+* **workflow:** clarify numeric option selection ([0962b07](https://github.com/oocx/tfplan2md/commit/0962b07d1019b88436862160567690d684e188cf))
+* **workflow:** require snapshot justification in reviews ([c41d0ff](https://github.com/oocx/tfplan2md/commit/c41d0ffd5aad4dae6f8c4571ead182d0a5beff82))
+* **workflow:** require tests before marking done ([329e866](https://github.com/oocx/tfplan2md/commit/329e866161ea5a40ea8edd245cad123fdcf4ebbb))
+* **workflow:** update improvement tracker statuses ([7d55a5a](https://github.com/oocx/tfplan2md/commit/7d55a5a12481257aae5c5c4ba2bef9ea3cf43ea6))
+
 <a name="1.0.0-alpha.11"></a>
 ## [1.0.0-alpha.11](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2025-12-31)
 

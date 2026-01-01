@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.HtmlRenderer;
 using Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
@@ -29,10 +30,30 @@ public sealed class MarkdownToHtmlRendererTests
         var renderer = CreateRenderer();
         var html = renderer.RenderFragment(markdown, HtmlFlavor.GitHub);
 
-        Assert.Contains("<table>", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<table", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("<details>", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("<summary>More</summary>", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("<th", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Ensures GitHub flavor wraps tables with the platform accessibility element and role attribute.
+    /// Related acceptance: Feature 027 GitHub fidelity.
+    /// </summary>
+    [Fact]
+    public void RenderFragment_GitHub_WrapsTablesForAccessibility()
+    {
+        const string markdown = """
+| A | B |
+| - | - |
+| 1 | 2 |
+""";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.GitHub);
+
+        Assert.Contains("<markdown-accessiblity-table", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("role=\"table\"", html, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -70,6 +91,7 @@ public sealed class MarkdownToHtmlRendererTests
 
         Assert.DoesNotContain("style=", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("<span", html, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("<span >", html, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -85,6 +107,57 @@ public sealed class MarkdownToHtmlRendererTests
         var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
 
         Assert.Contains("style=\"color:red\"", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Ensures Azure DevOps flavor applies block and inline-block styling to inline diff code/spans for fidelity.
+    /// Related acceptance: Feature 027 Azure DevOps cosmetics.
+    /// </summary>
+    [Fact]
+    public void RenderFragment_AzDo_AddsDiffDisplayStyles()
+    {
+        const string markdown = "<code style=\"color:red\"><span style=\"background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; padding-left: 8px; margin-left: 0\">- old</span></code>";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        Assert.Contains("display:block", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("display:inline-block", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Ensures display directives are not duplicated when already present with whitespace.
+    /// Related acceptance: Feature 027 Azure DevOps cosmetics.
+    /// </summary>
+    [Fact]
+    public void RenderFragment_AzDo_DoesNotDuplicateDisplayDirectives()
+    {
+        const string markdown = "<code style=\"display: block; padding:0\"><span style=\"display: inline-block; color:red\">value</span></code>";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        var match = Regex.Match(html, "<span[^>]*style=\\\"([^\\\"]*)\\\"", RegexOptions.IgnoreCase);
+        Assert.True(match.Success);
+        var occurrences = Regex.Matches(match.Groups[1].Value, "display:\\s*inline-block", RegexOptions.IgnoreCase).Count;
+        Assert.Equal(1, occurrences);
+    }
+
+    /// <summary>
+    /// Ensures trailing semicolons in style attributes are trimmed during normalization.
+    /// Related acceptance: Feature 027 Azure DevOps cosmetics.
+    /// </summary>
+    [Fact]
+    public void RenderFragment_AzDo_TrimsTrailingSemicolons()
+    {
+        const string markdown = "<code style=\"padding:0; margin:0; \" aria-label=\"removed\">value</code>";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        var match = Regex.Match(html, "style=\"([^\"]*)\"", RegexOptions.IgnoreCase);
+        Assert.True(match.Success);
+        Assert.False(match.Groups[1].Value.Trim().EndsWith(';'));
     }
 
     /// <summary>
@@ -125,6 +198,21 @@ Line 4
 
         Assert.Contains("<br/>", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Value", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Ensures emoji and backtick content in headings produce percent-encoded slugs matching platform patterns.
+    /// Related acceptance: Feature 027 heading id fidelity.
+    /// </summary>
+    [Fact]
+    public void RenderFragment_AzDo_EmojiHeadingSlugMatchesPattern()
+    {
+        const string markdown = "### 📦 Module: `module.network`";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        Assert.Contains("id=\"user-content-%F0%9F%93%A6-module%3A-%60module.network%60\"", html, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

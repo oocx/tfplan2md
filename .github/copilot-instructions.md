@@ -31,6 +31,16 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - Create feature branches for all changes that follow the convention described in the documentation
 - After implementing changes, ensure that the documentation is updated accordingly
 
+## When Waiting For Input (Avoid Silent Stops)
+
+When you cannot proceed because you need Maintainer input (for example, ambiguous requirements, a missing decision, or a required approval), you must:
+
+- State that you are **blocked** and why (1 sentence)
+- Summarize what you completed so far (2–5 bullets)
+- State what work remains (1–3 bullets)
+- Provide **Next** options (1–3 options) so the Maintainer knows how to unblock you
+- Ask **at most one** clarifying question at a time
+
 ## Agent Skills (Required)
 
 - Agent Skills are the source of truth for how to perform recurring workflow tasks correctly.

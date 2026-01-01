@@ -95,9 +95,31 @@ internal sealed class HtmlRendererApp
         var derivedOutputPath = DetermineOutputPath(options.InputPath, options.Flavor.Value, options.OutputPath);
         await EnsureOutputDirectoryExistsAsync(derivedOutputPath).ConfigureAwait(false);
 
-        var pipelineFactory = new Rendering.MarkdigPipelineFactory();
-        var renderer = new Rendering.MarkdownToHtmlRenderer(pipelineFactory);
+        var pipelineFactory = new MarkdigPipelineFactory();
+        var renderer = new MarkdownToHtmlRenderer(pipelineFactory);
         var html = renderer.RenderFragment(markdown, options.Flavor.Value);
+
+        if (!string.IsNullOrWhiteSpace(options.TemplatePath))
+        {
+            if (!File.Exists(options.TemplatePath))
+            {
+                await _error.WriteLineAsync($"Error: Template file not found: {options.TemplatePath}").ConfigureAwait(false);
+                return 1;
+            }
+
+            var template = await File.ReadAllTextAsync(options.TemplatePath!).ConfigureAwait(false);
+            var applier = new WrapperTemplateApplier();
+
+            try
+            {
+                html = applier.Apply(template, html);
+            }
+            catch (InvalidOperationException ex)
+            {
+                await _error.WriteLineAsync($"Error: {ex.Message}").ConfigureAwait(false);
+                return 1;
+            }
+        }
 
         await File.WriteAllTextAsync(derivedOutputPath, html).ConfigureAwait(false);
 

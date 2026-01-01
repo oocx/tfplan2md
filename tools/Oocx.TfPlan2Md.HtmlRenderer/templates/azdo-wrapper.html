@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Azure DevOps-style Rendering</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css">
+    <style>
+        body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; line-height: 1.5; color: #242424; background: #ffffff; padding: 24px; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #c8c8c8; padding: 6px 12px; }
+        code { background: #f3f2f1; padding: 0.2em 0.4em; border-radius: 4px; font-size: 90%; }
+        pre { background: #f3f2f1; padding: 12px; border-radius: 4px; overflow: auto; }
+        details { margin-bottom: 12px; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+    <div class="markdown-body">
+        {{content}}
+    </div>
+</body>
+</html>

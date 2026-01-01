@@ -416,6 +416,8 @@ All agent coordination is managed by the **Maintainer**:
 3. **Handoff buttons** - Agents provide handoff buttons that pre-fill prompts for the next agent in the workflow.
 4. **Feedback relay** - If an agent needs clarification from a previous step, it asks the Maintainer, who either answers directly or relays the question to the appropriate agent.
 
+**When an agent is blocked and needs more input:** It must explicitly say it is blocked, summarize progress so far, and provide clear **Next** options to unblock it (plus at most one clarifying question at a time).
+
 ### Prompt Files (Recommended for New Chat Sessions)
 
 When the Maintainer prefers to start a **new** chat session (instead of continuing in the same chat via handoff buttons), use workspace prompt files in `.github/prompts/`.

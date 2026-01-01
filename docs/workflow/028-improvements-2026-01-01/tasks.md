@@ -2,7 +2,7 @@
 
 | ID | Title | Source | Status | Rationale | Impact | Effort | Risk | Notes |
 |---:|---|---|---|---|---|---|---|---|
-| 1 | Reduce manual handoff friction (prompt generator / prompt templates) | Feature 027 retrospective | ⬜ Not started | Per-agent chat workflow adds manual prompt assembly overhead. | High | Med | Low | Prefer simplest approach first (e.g., prompt templates) before adding scripts/skills. |
+| 1 | Reduce manual handoff friction (prompt generator / prompt templates) | Feature 027 retrospective | ✅ Done | Per-agent chat workflow adds manual prompt assembly overhead. | High | Med | Low | Implemented by PR #187. |
 | 2 | Improve developer progress visibility | Feature 027 retrospective | ✅ Done | Maintainer feedback: progress and next steps were unclear during long dev sessions. | High | Low | Low | Fixed via commit `bd25d72` (Developer agent requires periodic progress updates and stronger `todo` cadence). |
 | 3 | Formalize per-agent chat workflow docs | Feature 027 retrospective | ⬜ Not started | The “how” of per-agent chats (naming, storage, handoffs) isn’t explicit. | Med | Low | Low | Likely update `docs/agents.md` with a short, explicit section. |
 | 4 | Add markdown syntax validator for tables/headings | Workflow 025/026 carry-over | ⬜ Not started | Still open item from prior workflow improvements. | Med | Low | Med | Would be `scripts/validate-markdown.sh` and used by UAT or pre-UAT checks. |
@@ -37,5 +37,7 @@ Completed: **9** (2026-01-01)
 Selected: **10** (2026-01-01)
 
 Completed: **10** (2026-01-01)
+
+Completed: **1** (PR #187)
 
 Which item should I implement next? (Reply with the Option number, or reply with "work on task <task id>")

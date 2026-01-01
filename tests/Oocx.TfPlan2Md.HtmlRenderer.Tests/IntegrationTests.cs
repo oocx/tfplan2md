@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.HtmlRenderer;
 using Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
@@ -75,11 +77,71 @@ public sealed class IntegrationTests
     }
 
     /// <summary>
+    /// Compares GitHub flavor rendering text output against the recorded GitHub rendering.
+    /// Related acceptance: TC-17.
+    /// </summary>
+    [Fact]
+    public void Render_SimpleDiff_GitHub_MatchesActualRenderingText()
+    {
+        var repoRoot = GetRepoRoot();
+        var markdownPath = Path.Combine(repoRoot, "artifacts", "comprehensive-demo-simple-diff.md");
+        var expectedPath = Path.Combine(repoRoot, "docs", "features", "027-markdown-html-rendering", "comprehensive-demo-simple-diff.actual-gh-rendering.html");
+        var markdown = File.ReadAllText(markdownPath);
+        var expectedHtml = File.ReadAllText(expectedPath);
+        var renderer = new MarkdownToHtmlRenderer(new MarkdigPipelineFactory());
+
+        var actualHtml = renderer.RenderFragment(markdown, HtmlFlavor.GitHub);
+
+        var expectedText = NormalizeHtmlText(expectedHtml);
+        var actualText = NormalizeHtmlText(actualHtml);
+
+        Assert.Equal(expectedText, actualText);
+    }
+
+    /// <summary>
+    /// Compares Azure DevOps flavor rendering text output against the recorded ADO rendering.
+    /// Related acceptance: TC-18.
+    /// </summary>
+    [Fact]
+    public void Render_ComprehensiveDemo_Azdo_MatchesActualRenderingText()
+    {
+        var repoRoot = GetRepoRoot();
+        var markdownPath = Path.Combine(repoRoot, "artifacts", "comprehensive-demo.md");
+        var expectedPath = Path.Combine(repoRoot, "docs", "features", "027-markdown-html-rendering", "comprehensive-demo.actual-azdo-rendering.html");
+        var markdown = File.ReadAllText(markdownPath);
+        var expectedHtml = File.ReadAllText(expectedPath);
+        var renderer = new MarkdownToHtmlRenderer(new MarkdigPipelineFactory());
+
+        var actualHtml = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        var expectedText = NormalizeHtmlText(expectedHtml);
+        var actualText = NormalizeHtmlText(actualHtml);
+
+        Assert.Equal(expectedText, actualText);
+    }
+
+    /// <summary>
     /// Computes the repository root from the test execution directory.
     /// </summary>
     /// <returns>Absolute path to the repository root.</returns>
     private static string GetRepoRoot()
     {
         return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
+    }
+
+    /// <summary>
+    /// Normalizes HTML into whitespace-collapsed text for comparison against recorded renderings.
+    /// Related feature: docs/features/027-markdown-html-rendering/specification.md
+    /// </summary>
+    /// <param name="html">HTML content to normalize.</param>
+    /// <returns>Normalized plain-text representation.</returns>
+    private static string NormalizeHtmlText(string html)
+    {
+        var withoutAccessibilityWrapper = Regex.Replace(html, @"</?markdown-accessiblity-table[^>]*>", string.Empty, RegexOptions.IgnoreCase);
+        var withLineBreaks = Regex.Replace(withoutAccessibilityWrapper, @"<br\s*/?>", "\n", RegexOptions.IgnoreCase);
+        var withoutTags = Regex.Replace(withLineBreaks, "<[^>]+>", " ");
+        var decoded = WebUtility.HtmlDecode(withoutTags);
+        var collapsed = Regex.Replace(decoded ?? string.Empty, @"\s+", " ", RegexOptions.Multiline).Trim();
+        return collapsed;
     }
 }

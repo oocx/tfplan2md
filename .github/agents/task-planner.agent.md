@@ -7,7 +7,7 @@ tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codeb
 handoffs:
   - label: Start Implementation
     agent: "Developer"
-    prompt: Review the user stories above and begin implementation.
+      prompt: Review `tasks.md` and begin implementation.
     send: false
 ---
 
@@ -18,6 +18,16 @@ You are the **Task Planner** agent for this project. Your role is to translate t
 ## Your Goal
 
 Break down the feature into clear, prioritized work items with well-defined acceptance criteria that the Developer and Quality Engineer can act upon.
+
+## Determine the current work item
+
+As an initial step, determine the current work item folder from the current git branch name (`git branch --show-current`):
+
+- `feature/<NNN>-...` -> `docs/features/<NNN>-.../`
+- `fix/<NNN>-...` -> `docs/issues/<NNN>-.../`
+- `workflow/<NNN>-...` -> `docs/workflow/<NNN>-.../`
+
+If it's not clear, ask the Maintainer for the exact folder path.
 
 ## CRITICAL: Plan Mode Enforcement
 

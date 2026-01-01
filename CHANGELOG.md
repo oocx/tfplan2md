@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.14"></a>
+## [1.0.0-alpha.14](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2026-01-01)
+
+### ✨ Features
+
+* improve workflow prompts and handoffs ([a608196](https://github.com/oocx/tfplan2md/commit/a6081962d3db68a3ad8c2e04c030ed262c12359a))
+* **workflow:** add per-agent starter prompts ([5ace647](https://github.com/oocx/tfplan2md/commit/5ace6471cf2e0e91a62e468a37342a692071c826))
+
+### 🐛 Bug Fixes
+
+* **workflow:** avoid option vs task id ambiguity ([6d770db](https://github.com/oocx/tfplan2md/commit/6d770dbc8e0a209277ebc763cb1cbb04e9ecc76d))
+* **workflow:** improve developer progress visibility ([e71cfe5](https://github.com/oocx/tfplan2md/commit/e71cfe50717cd99c2f462ea63267b93ce2524766))
+* **workflow:** show 3 options before selection ([16e9923](https://github.com/oocx/tfplan2md/commit/16e99239e66ed2fc973b5ac8e28e1f91162bfbad))
+
+### ♻️ Refactoring
+
+* **workflow:** sync prompt files with handoffs ([945a7ea](https://github.com/oocx/tfplan2md/commit/945a7ea8e4a76210acd48c233a3ff9555b7e0470))
+
+### 📚 Documentation
+
+* add redacted chat logs for feature 027 ([4f9b8db](https://github.com/oocx/tfplan2md/commit/4f9b8db151f117bc0a09cf14ca7c598085df8710))
+* add retrospective for feature 027 and fix extract-metrics.sh ([5f410ca](https://github.com/oocx/tfplan2md/commit/5f410caf47673a42ef74f03387be3fbb59303d34))
+* **workflow:** add 028 improvement opportunities ([21b4531](https://github.com/oocx/tfplan2md/commit/21b4531a0ae9a26240b274d16dff800fc4292ab0))
+* **workflow:** mark task 1 done (PR [#187](https://github.com/oocx/tfplan2md/issues/187)) ([558e7ea](https://github.com/oocx/tfplan2md/commit/558e7ea6ab1e200c6585feda0756cf339d6c23aa))
+* **workflow:** mark task 2 done ([6422b6a](https://github.com/oocx/tfplan2md/commit/6422b6ac89df94ee26aca746cf565acfa5443eef))
+* **workflow:** require global unique NNN across change types ([5b5fe16](https://github.com/oocx/tfplan2md/commit/5b5fe168410da7ecdbb23bc25fd7803d72c20cfc))
+* **workflow:** require recap and next steps when blocked ([243247d](https://github.com/oocx/tfplan2md/commit/243247d10099a4a13ca291042e98823132eb44d0))
+* **workflow:** standardize branch naming for prompt inference ([281c61f](https://github.com/oocx/tfplan2md/commit/281c61fd9b1fa9bd35843d247b980ca79cda9d25))
+
 <a name="1.0.0-alpha.13"></a>
 ## [1.0.0-alpha.13](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2026-01-01)
 

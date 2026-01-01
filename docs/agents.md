@@ -357,11 +357,17 @@ When multiple branches are created in parallel, they may independently pick the 
 
 Different types of work use different branch prefixes to maintain clarity:
 
+To support prompt-file automation (inferring the current work item from the git branch name), branches for features, fixes, and workflow improvements must include the numeric work item prefix (`NNN`) that matches the corresponding folder under `docs/`.
+
+- `feature/<NNN>-<slug>`  `docs/features/<NNN>-<feature-slug>/`
+- `fix/<NNN>-<slug>`  `docs/issues/<NNN>-<issue-slug>/`
+- `workflow/<NNN>-<slug>`  `docs/workflow/<NNN>-<workflow-slug>/`
+
 | Work Type | Branch Prefix | Example | Used By Agent |
 |-----------|---------------|---------|---------------|
 | Feature Development | `feature/` | `feature/123-firewall-diff-display` | Requirements Engineer, Developer |
-| Bug Fixes / Incidents | `fix/` | `fix/docker-hub-secret-in-release-workflow` | Issue Analyst, Developer |
-| Workflow Improvements | `workflow/` | `workflow/add-security-agent` | Workflow Engineer |
+| Bug Fixes / Incidents | `fix/` | `fix/004-release-pipeline-failure-awk` | Issue Analyst, Developer |
+| Workflow Improvements | `workflow/` | `workflow/028-improvement-opportunities` | Workflow Engineer |
 | Website Changes | `feature/website-` | `feature/website-homepage-redesign` | Web Designer |
 
 **Note:** The Requirements Engineer creates the feature branch at the start of the feature workflow. The Issue Analyst creates the fix branch at the start of the bug fix workflow. All subsequent agents work on the same branch until Release Manager creates the pull request.
@@ -428,6 +434,8 @@ This repository provides short prompt names aligned with the agent roles:
 - `/wd` Web Designer
 
 These prompts are designed to infer the current work item from the git branch name when possible, and ask for clarification when they cannot.
+
+For consistent inference, use the `feature/<NNN>-...`, `fix/<NNN>-...`, or `workflow/<NNN>-...` branch formats described in the Branch Naming Conventions section.
 
 This approach keeps the workflow simple and gives the Maintainer full visibility and control over all agent interactions.
 

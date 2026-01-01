@@ -31,6 +31,17 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - Create feature branches for all changes that follow the convention described in the documentation
 - After implementing changes, ensure that the documentation is updated accordingly
 
+## Agent Skills (Required)
+
+- Agent Skills are the source of truth for how to perform recurring workflow tasks correctly.
+- Skills live under `.github/skills/<skill-name>/SKILL.md`.
+- Before performing any non-trivial workflow task (for example: PR creation/merge, rebase, resolving merge conflicts, UAT, release steps, demo artifact generation, architecture documentation updates), you must:
+  1. Search for a relevant skill under `.github/skills/`.
+  2. If a relevant skill exists, follow it instead of improvising.
+  3. If you are unsure which skill applies or the intent is unclear, ask the user questions until it is clear.
+
+Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authoritative list of skills.
+
 ## Plan Mode Instructions
 - Continue to ask for more details until you have a clear understanding of the requirements
 - Only ask one question at a time

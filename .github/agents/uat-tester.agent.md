@@ -7,7 +7,7 @@ tools: ['execute/runInTerminal', 'read/readFile', 'search/listDirectory', 'searc
 handoffs:
   - label: UAT Passed
     agent: "Release Manager"
-      prompt: User Acceptance Testing passed on both GitHub and Azure DevOps. Proceed with the release.
+      prompt: User Acceptance Testing passed on both GitHub and Azure DevOps. Review the Feature Specification, Architecture, Test Plan, and UAT results report and proceed with the release; if you find missing artifacts or unresolved issues, stop and hand off back with a clear list of blockers.
     send: false
   - label: UAT Failed - Rework Needed
     agent: "Developer"

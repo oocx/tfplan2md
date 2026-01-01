@@ -6,13 +6,13 @@ Based on the retrospective from [Visual Report Enhancements](../../features/024-
 
 | # | Improvement | Description | Value | Effort | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | **Safe Merge Script** | Create `scripts/safe-merge.sh` to verify file integrity (size/content) post-merge, preventing the documentation loss seen in feature 024. | **High** | Medium | **Critical** | Open |
+| 1 | **Safe Merge Script** | Create `scripts/safe-merge.sh` to verify file integrity (size/content) post-merge, preventing the documentation loss seen in feature 024. | **High** | Medium | **Critical** | ✅ Done (PR #181) |
 | 2 | **Markdown Syntax Validator** | Create `scripts/validate-markdown.sh` to detect broken tables/headings before UAT. | **Medium** | Low | Medium | Open |
-| 3 | **UAT Signal Detection** | Enhance `scripts/uat-run.sh` or create a skill to explicitly flag "reject/fail" signals in test output, preventing UAT Tester oversight. | **Medium** | Medium | Medium | Open |
+| 3 | **UAT Signal Detection** | Enhance `scripts/uat-run.sh` or create a skill to explicitly flag "reject/fail" signals in test output, preventing UAT Tester oversight. | **Medium** | Medium | Medium | ✅ Done (PR #170) |
 | 4 | **Detail Checklist Gate** | Update the **Developer** agent prompt to require a "Detail Checklist" for features with many small UI/UX items to prevent quality slips. | **Medium** | Low | Medium | ✅ Done |
 | 5 | **Merge Conflict Guardrail** | Update **Release Manager** instructions to require a manual "Conflict Check" step before finalizing merges, even if the CLI reports success. | **Medium** | Low | High | ✅ Done |
 | 6 | **Commit Amend Guideline** | Update **Developer** instructions to amend the previous commit when fixing issues in the commit just created (e.g., based on feedback), ensuring a clean "1 topic per commit" history. | **Medium** | Low | Medium | ✅ Done |
-| 7 | **Model Outage Protocol** | Define a fallback protocol for agents when primary models (like `gpt-5.1-codex-max`) are unavailable to ensure consistent quality. | **Low** | Low | Low | Open |
+| 7 | **Model Outage Protocol** | Define a fallback protocol for agents when primary models (like `gpt-5.1-codex-max`) are unavailable to ensure consistent quality. | **Low** | Low | Low | Won't fix (ad-hoc) |
 
 ## Recommendations
 
@@ -47,6 +47,6 @@ Even with a script, the Release Manager should have a manual verification step t
 To maintain a clean history, agents should avoid "fixup" commits for work they just did. If feedback requires changes to the most recent commit, agents should use `git commit --amend` instead of creating a new commit.
 
 ## Next Steps
-1. Implement `scripts/safe-merge.sh` (Critical).
+1. ✅ Implement `scripts/safe-merge.sh` (Critical). (Done in PR #181)
 2. ~~Research markdown-to-image rendering tools for the Visual Feedback Skill.~~ (Deprioritized - see analysis above)
 3. Implement `scripts/validate-markdown.sh` for broken table/heading detection (Medium priority).

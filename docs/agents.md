@@ -405,6 +405,30 @@ All agent coordination is managed by the **Maintainer**:
 3. **Handoff buttons** - Agents provide handoff buttons that pre-fill prompts for the next agent in the workflow.
 4. **Feedback relay** - If an agent needs clarification from a previous step, it asks the Maintainer, who either answers directly or relays the question to the appropriate agent.
 
+### Prompt Files (Recommended for New Chat Sessions)
+
+When the Maintainer prefers to start a **new** chat session (instead of continuing in the same chat via handoff buttons), use workspace prompt files in `.github/prompts/`.
+
+Prompt files can be run by typing `/` in chat and selecting the prompt, or by running **Chat: Run Prompt** from the Command Palette.
+
+This repository provides short prompt names aligned with the agent roles:
+
+- `/re` Requirements Engineer
+- `/ia` Issue Analyst
+- `/ar` Architect
+- `/qe` Quality Engineer
+- `/tp` Task Planner
+- `/dev` Developer
+- `/tw` Technical Writer
+- `/cr` Code Reviewer
+- `/uat` UAT Tester
+- `/rm` Release Manager
+- `/retro` Retrospective
+- `/we` Workflow Engineer
+- `/wd` Web Designer
+
+These prompts are designed to infer the current work item from the git branch name when possible, and ask for clarification when they cannot.
+
 This approach keeps the workflow simple and gives the Maintainer full visibility and control over all agent interactions.
 
 ---

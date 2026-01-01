@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Oocx.TfPlan2Md.HtmlRenderer;
 
@@ -31,5 +32,60 @@ public sealed class HtmlRendererAppTests
         Assert.Equal(0, exitCode);
         Assert.Contains("Usage", output.ToString(), StringComparison.OrdinalIgnoreCase);
         Assert.True(string.IsNullOrEmpty(error.ToString()), "Help mode should not produce errors.");
+    }
+
+    /// <summary>
+    /// Ensures the application applies a wrapper template when provided and writes combined output.
+    /// Related acceptance: TC-10.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task RunAsync_WithTemplate_WritesWrappedHtml()
+    {
+        var root = Path.Combine(AppContext.BaseDirectory, "app-template-tests", Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
+        Directory.CreateDirectory(root);
+        var inputPath = Path.Combine(root, "plan.md");
+        var templatePath = Path.Combine(root, "wrapper.html");
+        await File.WriteAllTextAsync(inputPath, "# Title");
+        await File.WriteAllTextAsync(templatePath, "<html><body>{{content}}</body></html>");
+
+        var app = new HtmlRendererApp(new StringWriter(new StringBuilder()), new StringWriter(new StringBuilder()));
+        var outputPath = Path.Combine(root, "out.html");
+
+        var exitCode = await app.RunAsync(new[] { "--input", inputPath, "--flavor", "github", "--template", templatePath, "--output", outputPath });
+
+        var rendered = await File.ReadAllTextAsync(outputPath);
+        Assert.Equal(0, exitCode);
+        Assert.Contains("<html>", rendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<body>", rendered, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Title", rendered, StringComparison.OrdinalIgnoreCase);
+
+        Directory.Delete(root, true);
+    }
+
+    /// <summary>
+    /// Ensures the application fails when the provided template does not contain the required placeholder.
+    /// Related acceptance: TC-11.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous test execution.</returns>
+    [Fact]
+    public async Task RunAsync_TemplateMissingPlaceholder_ReturnsError()
+    {
+        var root = Path.Combine(AppContext.BaseDirectory, "app-template-tests", Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
+        Directory.CreateDirectory(root);
+        var inputPath = Path.Combine(root, "plan.md");
+        var templatePath = Path.Combine(root, "wrapper.html");
+        await File.WriteAllTextAsync(inputPath, "Content");
+        await File.WriteAllTextAsync(templatePath, "<html><body>No slot</body></html>");
+
+        var errorWriter = new StringWriter(new StringBuilder());
+        var app = new HtmlRendererApp(new StringWriter(new StringBuilder()), errorWriter);
+
+        var exitCode = await app.RunAsync(new[] { "--input", inputPath, "--flavor", "github", "--template", templatePath });
+
+        Assert.Equal(1, exitCode);
+        Assert.Contains("placeholder", errorWriter.ToString(), StringComparison.OrdinalIgnoreCase);
+
+        Directory.Delete(root, true);
     }
 }

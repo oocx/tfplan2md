@@ -59,7 +59,7 @@ scripts/pr-azdo.sh abandon --id <pr-id>
 ### 1. Pre-flight Checks
 ```bash
 git branch --show-current
-git status --short
+scripts/git-status.sh --short
 ```
 
 ### 2. Push the Branch

@@ -30,7 +30,7 @@ if [[ "$current_branch" == "main" ]]; then
 fi
 
 # Ensure working directory is clean
-if [[ -n "$(git status --porcelain)" ]]; then
+if [[ -n "$(scripts/git-status.sh --porcelain)" ]]; then
   echo "ERROR: Working directory has uncommitted changes. Commit or stash them first."
   exit 1
 fi

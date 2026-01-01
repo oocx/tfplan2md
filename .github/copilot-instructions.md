@@ -87,7 +87,8 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 - **Do NOT ask for permission in chat**: Immediately follow your explanation with the tool call in the same response. The user will use the VS Code UI buttons to Allow or Deny the command.
   - Bad: "I will run `git status`. Is that okay?" (waits for user reply)
   - Bad: "I will run `git status`." (waits for user reply)
-  - Good: "I will run `git status` to check changes." [Tool Call]
+  - Good: "I will run `scripts/git-status.sh` to check changes." [Tool Call]
+- **Git status wrapper**: Prefer `scripts/git-status.sh` over raw `git status` to reduce terminal approval friction. Pass any `git status` flags as script args (e.g., `scripts/git-status.sh --porcelain=v1`).
 - **Pager Suppression**: Always prevent interactive pagers from blocking execution.
   - For `gh`: Use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` or `export GH_PAGER=cat GH_FORCE_TTY=false`.
   - For `az`: Use `AZURE_CORE_PAGER=cat az ...` or `export AZURE_CORE_PAGER=cat`.

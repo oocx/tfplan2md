@@ -150,7 +150,7 @@ Before releasing, verify:
 
 4. **No Pending Changes**
    ```bash
-   git status
+   scripts/git-status.sh
    ```
    - [ ] Working directory is clean or only has expected changes
 

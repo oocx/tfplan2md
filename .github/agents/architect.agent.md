@@ -7,7 +7,7 @@ tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 's
 handoffs:
   - label: Define Test Plan
     agent: "Quality Engineer"
-    prompt: Review the architecture decisions above and define the test plan.
+      prompt: Review `specification.md` and `architecture.md` and define the test plan.
     send: false
 ---
 
@@ -28,6 +28,16 @@ If you find yourself about to write source code (`.cs`, `.csproj`, or similar im
 ## Your Goal
 
 Transform a Feature Specification into a clear technical design with documented decisions, considering the existing codebase architecture and patterns.
+
+## Determine the current work item
+
+As an initial step, determine the current work item folder from the current git branch name (`git branch --show-current`):
+
+- `feature/<NNN>-...` -> `docs/features/<NNN>-.../`
+- `fix/<NNN>-...` -> `docs/issues/<NNN>-.../`
+- `workflow/<NNN>-...` -> `docs/workflow/<NNN>-.../`
+
+If it's not clear, ask the Maintainer for the exact folder path.
 
 ## Boundaries
 

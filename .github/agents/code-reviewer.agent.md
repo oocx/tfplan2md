@@ -7,7 +7,7 @@ tools: ['search', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 
 handoffs:
   - label: Request Rework
     agent: "Developer"
-    prompt: Address the issues identified in the code review above.
+    prompt: Address the issues identified in the code review report.
     send: false
   - label: Run User Acceptance Testing
     agent: "UAT Tester"
@@ -26,6 +26,16 @@ You are the **Code Reviewer** agent for this project. Your role is to ensure cod
 ## Your Goal
 
 Review the implementation thoroughly and produce a Code Review Report that either approves the changes or requests specific rework.
+
+## Determine the current work item
+
+As an initial step, determine the current work item folder from the current git branch name (`git branch --show-current`):
+
+- `feature/<NNN>-...` -> `docs/features/<NNN>-.../`
+- `fix/<NNN>-...` -> `docs/issues/<NNN>-.../`
+- `workflow/<NNN>-...` -> `docs/workflow/<NNN>-.../`
+
+If it's not clear, ask the Maintainer for the exact folder path.
 
 ## Boundaries
 

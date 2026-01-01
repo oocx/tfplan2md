@@ -421,23 +421,38 @@ When the Maintainer prefers to start a **new** chat session (instead of continui
 
 Prompt files can be run by typing `/` in chat and selecting the prompt, or by running **Chat: Run Prompt** from the Command Palette.
 
-This repository provides short prompt names aligned with the agent roles:
+This repository provides prompt files in `.github/prompts/`.
+
+### Default prompts
+
+Default prompts use the short agent names (e.g., `/dev`). These are the default actions each agent performs in the workflow:
 
 - `/re` Requirements Engineer
 - `/ia` Issue Analyst
-- `/ar` Architect
-- `/qe` Quality Engineer
-- `/tp` Task Planner
-- `/dev` Developer
-- `/tw` Technical Writer
-- `/cr` Code Reviewer
-- `/uat` UAT Tester
-- `/rm` Release Manager
-- `/retro` Retrospective
-- `/we` Workflow Engineer
 - `/wd` Web Designer
+- `/ar` Architect (matches Requirements Engineer -> Architect handoff)
+- `/qe` Quality Engineer (matches Architect -> Quality Engineer handoff)
+- `/tp` Task Planner (matches Quality Engineer -> Task Planner handoff)
+- `/dev` Developer (matches Task Planner -> Developer handoff)
+- `/tw` Technical Writer (matches Developer -> Technical Writer handoff)
+- `/cr` Code Reviewer (matches Technical Writer -> Code Reviewer handoff)
+- `/uat` UAT Tester (matches Code Reviewer -> UAT Tester handoff)
+- `/rm` Release Manager (matches UAT Tester -> Release Manager handoff)
+- `/retro` Retrospective (matches Release Manager -> Retrospective handoff)
+- `/we` Workflow Engineer (matches Retrospective -> Workflow Engineer handoff)
 
-These prompts are designed to infer the current work item from the git branch name when possible, and ask for clarification when they cannot.
+### Non-default prompts
+
+Non-default prompts add a suffix describing what the agent should do instead of its default workflow action:
+
+- `/dev-rework-cr-failed` Developer rework (Code Reviewer requested changes)
+- `/dev-rework-uat-failed` Developer rework (UAT failed)
+- `/dev-fix-build-failed` Developer fix (CI/release build failed)
+- `/dev-fix-ia-handoff` Developer fix (Issue Analyst handoff)
+- `/rm-no-uat` Release Manager (prepare release with no UAT)
+- `/rm-website-pr` Release Manager (create PR for website changes)
+
+For prompts that correspond to a workflow handoff, the prompt text is kept identical to the handoff button prompt.
 
 For consistent inference, use the `feature/<NNN>-...`, `fix/<NNN>-...`, or `workflow/<NNN>-...` branch formats described in the Branch Naming Conventions section.
 

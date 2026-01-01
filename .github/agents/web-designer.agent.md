@@ -7,7 +7,7 @@ tools: ['execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'sear
 handoffs:
   - label: Create Pull Request
     agent: "Release Manager"
-    prompt: The website changes are complete. Please create a PR with title and description provided in chat.
+      prompt: The website changes are complete. Please create a PR with title and description provided by the Maintainer.
     send: false
 ---
 

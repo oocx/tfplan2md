@@ -15,12 +15,17 @@ This improvement set is based on:
 | 5 | **Fix UAT polling hang**: detect closed/abandoned PRs in UAT scripts | Feature 026 | High | Low | **Critical** | Done | `scripts/uat-helpers.sh` (or `scripts/uat-run.sh`) exits cleanly with an error when PR is `CLOSED`/`ABANDONED` instead of polling indefinitely. |
 | 6 | **Temp file policy**: standardize `.tmp/` workspace folder usage | Feature 026 | Medium | Low | Medium | Done | Workflow documentation forbids creating files outside the workspace; agents use `.tmp/` for scratch output; no scripts write to `/tmp` or `~/` by default. |
 | 7 | **Option-selection robustness**: avoid numeric “option confusion” in multi-list chats | Feature 026 | Medium | Low | Medium | Done | Numeric replies always refer to the most recent option list; never apply numeric answers to older lists; if ambiguous, ask for confirmation instead of guessing. |
-| 8 | **Metrics plausibility checks**: flag anomalous session metrics to avoid hallucinations | Feature 026 | Medium | Medium | Medium | Open | `scripts/analyze-chat.py` flags suspicious mismatches (e.g., very low request count for long sessions) and emits a warning in its report output. |
-| 9 | **Safe merge script**: verify file integrity post-merge | Workflow 025 (Open) | High | Medium | **Critical** | Open | `scripts/safe-merge.sh` exists and verifies a set of critical files (presence + size/hash) after merge; documented usage in release workflow instructions. |
+| 8 | **Metrics plausibility checks**: flag anomalous session metrics to avoid hallucinations | Feature 026 | Medium | Medium | Medium | Done | Implemented in PR #180. `scripts/analyze-chat.py` flags suspicious mismatches (e.g., very low request count for long sessions) and emits a warning in its report output. |
+| 9 | **Safe merge script**: verify file integrity post-merge | Workflow 025 (Open) | High | Medium | **Critical** | Done | Implemented in PR #181. `scripts/safe-merge.sh` exists and verifies a set of critical files (presence + size/hash) after merge; documented usage in release workflow instructions. |
 | 10 | **Markdown syntax validator**: detect broken tables/headings before UAT | Workflow 025 (Open) | Medium | Low | Medium | Open | `scripts/validate-markdown.sh` exists and fails on common markdown structural errors (e.g., table column mismatch, malformed headings) for generated artifacts. |
-| 11 | **UAT signal detection**: explicitly fail on reject/fail signals in UAT output | Workflow 025 (Open) | Medium | Medium | Medium | Open | `scripts/uat-run.sh` (or a wrapper) treats explicit “reject/fail” signals as a failing outcome with a clear exit code and summary. |
-| 12 | **Model outage protocol**: define fallback behavior for missing primary models | Workflow 025 (Open) | Low | Low | Low | Open | Workflow docs include a short “primary model unavailable” fallback rule per critical agent (Developer, Code Reviewer), including how to proceed and what to note in the report. |
+| 11 | **UAT signal detection**: explicitly fail on reject/fail signals in UAT output | Workflow 025 (Open) | Medium | Medium | Medium | Done | Implemented in PR #170. `scripts/uat-run.sh` (or a wrapper) treats explicit “reject/fail” signals as a failing outcome with a clear exit code and summary. |
+| 12 | **Model outage protocol**: define fallback behavior for missing primary models | Workflow 025 (Open) | Low | Low | Low | Won't fix | Closed as Won't fix: the user can decide ad-hoc which model to use instead; no need to automate or document alternatives. |
+| 13 | **Merge conflict resolution skill**: safe, repeatable conflict handling for agents | Workflow | Medium | Low | Medium | Done | `.github/skills/merge-conflict-resolution/SKILL.md` exists and is listed in `docs/agents.md` as an available skill. |
 
 ## Notes
 
 - Feature 026 already recorded one workflow improvement as completed: handoff-prompt detection improvements in `scripts/analyze-chat.py`. This list focuses on items that remain actionable or require follow-up hardening.
+
+## Next Steps
+
+1. Implement `scripts/validate-markdown.sh` for broken table/heading detection (Task #10).

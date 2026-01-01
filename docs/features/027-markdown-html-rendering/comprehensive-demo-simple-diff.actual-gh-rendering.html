@@ -13,22 +13,22 @@
 <tr>
 <td>➕ Add</td>
 <td>12</td>
-<td>1 azurerm_firewall_network_rule_collection<br>1 azurerm_key_vault<br>1 azurerm_key_vault_secret<br>2 azurerm_log_analytics_workspace<br>1 azurerm_resource_group<br>2 azurerm_role_assignment<br>1 azurerm_storage_account<br>1 azurerm_subnet<br>2 azurerm_virtual_network</td>
+<td>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_log_analytics_workspace<br/>1 azurerm_resource_group<br/>2 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_subnet<br/>2 azurerm_virtual_network</td>
 </tr>
 <tr>
 <td>🔄 Change</td>
 <td>6</td>
-<td>1 azurerm_firewall_network_rule_collection<br>1 azurerm_key_vault<br>1 azurerm_key_vault_secret<br>2 azurerm_storage_account<br>1 azurerm_virtual_network</td>
+<td>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
 </tr>
 <tr>
 <td>♻️ Replace</td>
 <td>2</td>
-<td>1 azurerm_network_security_group<br>1 azurerm_subnet</td>
+<td>1 azurerm_network_security_group<br/>1 azurerm_subnet</td>
 </tr>
 <tr>
 <td>❌ Destroy</td>
 <td>3</td>
-<td>1 azurerm_role_assignment<br>1 azurerm_storage_account<br>1 azurerm_virtual_network</td>
+<td>1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
 </tr>
 <tr>
 <td><strong>Total</strong></td>
@@ -41,7 +41,7 @@
 <h3 dir="auto">📦 Module: root</h3>
 <details>
 <summary>➕ azurerm_resource_group <b><code class="notranslate">core</code></b> — <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -64,7 +64,7 @@
 </details>
 <details>
 <summary>➕ azurerm_storage_account <b><code class="notranslate">logs</code></b> — <code class="notranslate">sttfplan2mdlogs</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -107,7 +107,7 @@
 </details>
 <details>
 <summary>🔄 azurerm_storage_account <b><code class="notranslate">data</code></b> — <code class="notranslate">sttfplan2mddata</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> | 2🔧 account_replication_type, tags.cost_center</summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -132,7 +132,7 @@
 </details>
 <details>
 <summary>❌ azurerm_storage_account <b><code class="notranslate">legacy</code></b> — <code class="notranslate">sttfplan2mdlegacy</code> in <code class="notranslate">rg-old</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -169,7 +169,7 @@
 <h3 dir="auto">📦 Module: <code class="notranslate">module.network</code></h3>
 <details>
 <summary>➕ azurerm_virtual_network <b><code class="notranslate">hub</code></b> — <code class="notranslate">vnet-hub</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.0.0.0/16</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -199,7 +199,7 @@
 </details>
 <details>
 <summary>➕ azurerm_virtual_network <b><code class="notranslate">spoke</code></b> — <code class="notranslate">vnet-spoke</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.1.0.0/16</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -229,7 +229,7 @@
 </details>
 <details>
 <summary>➕ azurerm_subnet <b><code class="notranslate">app</code></b> — <code class="notranslate">snet-app</code> in <code class="notranslate">rg-tfplan2md-demo</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -298,7 +298,7 @@
 </div>
 <details>
 <summary>🔄 azurerm_virtual_network <b><code class="notranslate">branch</code></b> — <code class="notranslate">vnet-branch</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.2.0.0/16</code> | 1🔧 address_space[1]</summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -364,7 +364,7 @@
 <td>🔄</td>
 <td><code class="notranslate">allow-dns</code></td>
 <td>📨&nbsp;UDP</td>
-<td>- <code class="notranslate">🌐&nbsp;10.1.1.0/24</code><br>+ <code class="notranslate">🌐&nbsp;10.1.1.0/24, 🌐&nbsp;10.1.2.0/24</code></td>
+<td>- <code class="notranslate">🌐&nbsp;10.1.1.0/24</code><br/>+ <code class="notranslate">🌐&nbsp;10.1.1.0/24, 🌐&nbsp;10.1.2.0/24</code></td>
 <td>🌐&nbsp;168.63.129.16</td>
 <td>🔌&nbsp;53</td>
 <td><code class="notranslate">DNS to Azure</code></td>
@@ -374,8 +374,8 @@
 <td><code class="notranslate">allow-api</code></td>
 <td>🔗&nbsp;TCP</td>
 <td>🌐&nbsp;10.1.1.0/24</td>
-<td>- <code class="notranslate">🌐&nbsp;10.1.2.0/24</code><br>+ <code class="notranslate">🌐&nbsp;10.2.2.0/24</code></td>
-<td>- <code class="notranslate">🔌&nbsp;8443</code><br>+ <code class="notranslate">🔌&nbsp;8443, 🔌&nbsp;9443</code></td>
+<td>- <code class="notranslate">🌐&nbsp;10.1.2.0/24</code><br/>+ <code class="notranslate">🌐&nbsp;10.2.2.0/24</code></td>
+<td>- <code class="notranslate">🔌&nbsp;8443</code><br/>+ <code class="notranslate">🔌&nbsp;8443, 🔌&nbsp;9443</code></td>
 <td><code class="notranslate">API tier</code></td>
 </tr>
 <tr>
@@ -401,7 +401,7 @@
 </div>
 <details>
 <summary>♻️ azurerm_subnet <b><code class="notranslate">db</code></b> — <code class="notranslate">snet-db</code> in <code class="notranslate">rg-tfplan2md-demo</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -497,7 +497,7 @@
 </div>
 <details>
 <summary>❌ azurerm_virtual_network <b><code class="notranslate">decom</code></b> — <code class="notranslate">vnet-old</code> in <code class="notranslate">rg-old</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.50.0.0/16</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -529,7 +529,7 @@
 <h3 dir="auto">📦 Module: <code class="notranslate">module.security</code></h3>
 <details>
 <summary>➕ azurerm_role_assignment <b><code class="notranslate">rg_reader</code></b> — <code class="notranslate">👤 Jane Doe (User)</code> → <code class="notranslate">🛡️ Reader</code> on <code class="notranslate">rg-tfplan2md-demo</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -563,7 +563,7 @@
 </details>
 <details>
 <summary>➕ azurerm_role_assignment <b><code class="notranslate">storage_reader</code></b> — <code class="notranslate">👥 DevOps Team (Group)</code> → <code class="notranslate">🛡️ Storage Blob Data Reader</code> on Storage Account <code class="notranslate">sttfplan2mdlogs</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -597,7 +597,7 @@
 </details>
 <details>
 <summary>➕ azurerm_key_vault <b><code class="notranslate">main</code></b> — <code class="notranslate">kv-tfplan2md</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -640,7 +640,7 @@
 </details>
 <details>
 <summary>➕ azurerm_log_analytics_workspace <b><code class="notranslate">security</code></b> — <code class="notranslate">law-security</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -674,7 +674,7 @@
 </details>
 <details>
 <summary>➕ azurerm_key_vault_secret <b><code class="notranslate">db_password</code></b> — <code class="notranslate">db-password</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -704,7 +704,7 @@
 </details>
 <details>
 <summary>🔄 azurerm_key_vault_secret <b><code class="notranslate">audit_policy</code></b> — <code class="notranslate">audit-policy</code> | 1🔧 value</summary>
-<br>
+<br/>
 <p dir="auto">Large values: value (4 lines, 2 changed)</p>
 <h5 dir="auto"><strong>value:</strong></h5>
 <div class="highlight highlight-source-diff notranslate position-relative overflow-auto" dir="auto"><pre class="notranslate"><span class="pl-md"><span class="pl-md">-</span> line1: allow</span>
@@ -730,7 +730,7 @@
 </details>
 <details>
 <summary>🔄 azurerm_storage_account <b><code class="notranslate">analytics</code></b> — <code class="notranslate">sttfplan2mdanalytics</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> | 3🔧 account_replication_type, min_tls_version, tags.retention</summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -760,7 +760,7 @@
 </details>
 <details>
 <summary>🔄 azurerm_key_vault <b><code class="notranslate">audit</code></b> — <code class="notranslate">kv-audit</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> | 2🔧 public_network_access_enabled, tags.tier</summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -785,7 +785,7 @@
 </details>
 <details>
 <summary>❌ azurerm_role_assignment <b><code class="notranslate">obsolete</code></b> — remove <code class="notranslate">🛡️ Reader</code> on <code class="notranslate">rg-old</code> from <code class="notranslate">💻 Legacy App (Service Principal)</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>
@@ -821,7 +821,7 @@
 <h3 dir="auto">📦 Module: <code class="notranslate">module.network.module.monitoring</code></h3>
 <details>
 <summary>➕ azurerm_log_analytics_workspace <b><code class="notranslate">core</code></b> — <code class="notranslate">law-core</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
-<br>
+<br/>
 <markdown-accessiblity-table data-catalyst=""><table role="table">
 <thead>
 <tr>

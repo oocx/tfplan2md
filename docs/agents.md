@@ -247,8 +247,8 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Definition of Done:** Issue is clearly documented and ready for Developer to implement fix.
 
 ### 2. Requirements Engineer
-- **Goal:** Gather, clarify, and document user needs for new features.
-- **Deliverables:** High level feature specification from an end-user perspective
+- **Goal:** Gather, clarify, and document needs for new features (including non-functional improvements).
+- **Deliverables:** High level feature specification describing user outcomes and success criteria
 - **Definition of Done:** Requirements are clear, unambiguous, and approved.
 
 ### 3. Architect

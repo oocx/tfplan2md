@@ -6,6 +6,12 @@ This document describes the features of `tfplan2md` from a user perspective.
 
 `tfplan2md` is a CLI tool that converts Terraform plan JSON files into human-readable markdown reports. It is designed primarily for use in CI/CD pipelines and is distributed as a Docker image.
 
+## Markdown to HTML Renderer (Dev Tool)
+
+**Status:** ✅ Implemented
+
+A standalone helper located at [tools/Oocx.TfPlan2Md.HtmlRenderer](tools/Oocx.TfPlan2Md.HtmlRenderer) converts tfplan2md markdown into HTML fragments or full documents. It approximates GitHub and Azure DevOps rendering, supports optional wrapper templates, and is used for automated validation of demo artifacts.
+
 ## Markdown Quality Validation
 
 **Status:** ✅ Implemented (v0.26.0+)

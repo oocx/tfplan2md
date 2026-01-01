@@ -359,6 +359,10 @@ Different types of work use different branch prefixes to maintain clarity:
 
 To support prompt-file automation (inferring the current work item from the git branch name), branches for features, fixes, and workflow improvements must include the numeric work item prefix (`NNN`) that matches the corresponding folder under `docs/`.
 
+The work item prefix (`NNN`) is **global and unique across change types** (features, issues, and workflow improvements). Do not reuse a number for a different change type.
+
+Example: If the most recent feature is `025-...` and a workflow item `026-...` already exists, the next new feature must be `027-...` (not `026-...`).
+
 - `feature/<NNN>-<slug>`  `docs/features/<NNN>-<feature-slug>/`
 - `fix/<NNN>-<slug>`  `docs/issues/<NNN>-<issue-slug>/`
 - `workflow/<NNN>-<slug>`  `docs/workflow/<NNN>-<workflow-slug>/`

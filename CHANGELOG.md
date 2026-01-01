@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.13"></a>
+## [1.0.0-alpha.13](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.12...v1.0.0-alpha.13) (2026-01-01)
+
+### ✨ Features
+
+* add html renderer tool and tests ([382ab00](https://github.com/oocx/tfplan2md/commit/382ab008872dc09debd8cf7c01af5f2c91d17926))
+* add merge conflict resolution skill ([d4ee8fa](https://github.com/oocx/tfplan2md/commit/d4ee8fa561d6ca8cabf117d4f0557173f296440b))
+* add wrapper templates and applier ([7d7bf38](https://github.com/oocx/tfplan2md/commit/7d7bf387d365fee5c911995878410b8c2322a6a1))
+
+### 🐛 Bug Fixes
+
+* align renderer markup with gold outputs ([eeb3fc5](https://github.com/oocx/tfplan2md/commit/eeb3fc5e5a5bf53c7a0ad3b76809fb085ef3f904))
+* **agents:** remove notebook tool references ([08fb150](https://github.com/oocx/tfplan2md/commit/08fb1502fb8b27e6f7cb4216272cf190b2c759c3))
+
+### ♻️ Refactoring
+
+* split html post-processing ([e867476](https://github.com/oocx/tfplan2md/commit/e867476f2d9b8c379bdfe738aef26bffd50ea877))
+
+### 📚 Documentation
+
+* add architecture for markdown html rendering ([8cd93af](https://github.com/oocx/tfplan2md/commit/8cd93affecc94fe8e85d4a351bda959582b0dccb))
+* add code review report for feature 027 ([d6ed5bd](https://github.com/oocx/tfplan2md/commit/d6ed5bd044a73151747da8b49b1f1939e3545686))
+* add feature specification for markdown HTML rendering tool ([161e666](https://github.com/oocx/tfplan2md/commit/161e66623d3a5339e1be253e2adac41f2194c4b7))
+* add html renderer usage ([15462d8](https://github.com/oocx/tfplan2md/commit/15462d83286ed8bcb8c014f2c3a5bc1b4869f100))
+* add tasks for markdown-html-rendering ([47a0123](https://github.com/oocx/tfplan2md/commit/47a01232920a3617030636a282ea6350baa2e7ca))
+* add test plan and UAT test plan for 027-markdown-html-rendering ([9dc9a0e](https://github.com/oocx/tfplan2md/commit/9dc9a0ebc050905872053ada72ba78bb16a708e8))
+* expand HTML renderer documentation in features.md ([35d43b5](https://github.com/oocx/tfplan2md/commit/35d43b50eec744befca4e568842aca59e59dd860))
+* mark markdown html rendering tasks complete ([0a4e627](https://github.com/oocx/tfplan2md/commit/0a4e6279009212e993dbc5a0d0bea388ff20541b))
+* **agents:** treat non-functional improvements as features ([ca81754](https://github.com/oocx/tfplan2md/commit/ca81754c2e816478ef6ee37cdab771d20e2e58b6))
+* **workflow:** update 025/026 task statuses ([4660b98](https://github.com/oocx/tfplan2md/commit/4660b98bbf7b9038f0d79fcd1210aaad5d43e1c1))
+
 <a name="1.0.0-alpha.12"></a>
 ## [1.0.0-alpha.12](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2026-01-01)
 

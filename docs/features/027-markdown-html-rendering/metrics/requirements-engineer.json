@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "source": "requirements engineer.chat.json",
+    "analysis_date": "2026-01-01",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 26,
+    "start_timestamp": 1767264172751,
+    "end_timestamp": 1767266817174,
+    "session_duration_sec": 2644.423,
+    "user_wait_time_sec": 0,
+    "agent_work_time_sec": 779.03
+  },
+  "model_usage": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 25
+    },
+    {
+      "model": "gpt-5.2",
+      "count": 1
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "replaceString",
+      "count": 13
+    },
+    {
+      "tool": "readFile",
+      "count": 10
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 7
+    },
+    {
+      "tool": "fetchWebPage",
+      "count": 6
+    },
+    {
+      "tool": "vscode_fetchWebPage_internal",
+      "count": 6
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 4
+    },
+    {
+      "tool": "createDirectory",
+      "count": 1
+    },
+    {
+      "tool": "createFile",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 48
+      }
+    ],
+    "total_invocations": 48,
+    "auto_approved": 48,
+    "manual_approved": 0,
+    "automation_rate_pct": 100
+  },
+  "model_success": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total": 25,
+      "complete": 25,
+      "failed": 0
+    },
+    {
+      "model": "gpt-5.2",
+      "total": 1,
+      "complete": 0,
+      "failed": 1
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total_requests": 25,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    },
+    {
+      "model": "gpt-5.2",
+      "total_requests": 1,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [
+        {
+          "code": "canceled",
+          "count": 1
+        }
+      ],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 1
+    }
+  ],
+  "response_times": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 25,
+      "avg_sec": 30,
+      "total_sec": 763
+    },
+    {
+      "model": "gpt-5.2",
+      "count": 1,
+      "avg_sec": 15,
+      "total_sec": 15
+    }
+  ],
+  "errors": [
+    {
+      "message": "Canceled",
+      "count": 1
+    }
+  ],
+  "user_feedback": []
+}

@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "source": "code reviewer.chat.json",
+    "analysis_date": "2026-01-01",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 1,
+    "start_timestamp": 1767280876486,
+    "end_timestamp": 1767280876486,
+    "session_duration_sec": 0,
+    "user_wait_time_sec": 246.33,
+    "agent_work_time_sec": 252.639
+  },
+  "model_usage": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 1
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "readFile",
+      "count": 15
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 11
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 8
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 8
+    },
+    {
+      "tool": "listDirectory",
+      "count": 3
+    },
+    {
+      "tool": "findFiles",
+      "count": 2
+    },
+    {
+      "tool": "createFile",
+      "count": 1
+    },
+    {
+      "tool": "getChangedFiles",
+      "count": 1
+    },
+    {
+      "tool": "getErrors",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 49
+      },
+      {
+        "type": 4,
+        "count": 1
+      }
+    ],
+    "total_invocations": 50,
+    "auto_approved": 49,
+    "manual_approved": 1,
+    "automation_rate_pct": 98
+  },
+  "model_success": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total": 1,
+      "complete": 1,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total_requests": 1,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 1,
+      "avg_sec": 252,
+      "total_sec": 252
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

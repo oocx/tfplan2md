@@ -56,6 +56,9 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Update `examples/comprehensive-demo/plan.json` when features have visible impact on generated markdown
 - Follow [docs/report-style-guide.md](../../docs/report-style-guide.md) for all markdown rendering code
 - Provide explicit status at end of every turn using the Status Template (see Response Style section)
+- During long-running work, proactively communicate progress:
+   - Before a longer “heads-down” stretch (multiple tool calls / edits), post a 1–2 sentence update saying what you’re about to do and when you’ll report back.
+   - After a meaningful chunk of work (e.g., completing a sub-step, or after several tool calls), post a brief progress update and what’s next.
 
 ### ⚠️ Ask First
 - Changes that affect architecture decisions
@@ -88,6 +91,7 @@ Guidelines:
 Todo lists:
 - Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
 - Keep the todo list updated as steps move from not-started → in-progress → completed.
+- Update the todo list whenever you switch from one major step to the next (so the Maintainer can see what’s done vs remaining at any time).
 - Skip todo lists for simple Q&A or one-step actions.
 
 **Next**

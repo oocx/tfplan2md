@@ -16,11 +16,11 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Create the new console application project and its corresponding unit test project.
 
 **Acceptance Criteria:**
-- [ ] New project `Oocx.TfPlan2Md.HtmlRenderer` created in `tools/` directory.
-- [ ] New test project `Oocx.TfPlan2Md.HtmlRenderer.Tests` created in `tests/` directory.
-- [ ] Both projects added to the solution `tfplan2md.slnx`.
-- [ ] `Markdig` NuGet package added to the renderer project.
-- [ ] Basic "Hello World" console app runs and tests pass.
+- [x] New project `Oocx.TfPlan2Md.HtmlRenderer` created in `tools/` directory.
+- [x] New test project `Oocx.TfPlan2Md.HtmlRenderer.Tests` created in `tests/` directory.
+- [x] Both projects added to the solution `tfplan2md.slnx`.
+- [x] `Markdig` NuGet package added to the renderer project.
+- [x] Basic "Hello World" console app runs and tests pass.
 
 **Dependencies:** None
 
@@ -34,13 +34,13 @@ Create the new console application project and its corresponding unit test proje
 Implement the command-line interface with the specified options and validation logic.
 
 **Acceptance Criteria:**
-- [ ] CLI supports `--input` (required), `--output` (optional), `--flavor` (required), and `--template` (optional).
-- [ ] Input file existence is validated.
-- [ ] Flavor is validated to be either `github` or `azdo`.
-- [ ] Output filename is correctly derived if `--output` is omitted (e.g., `report.md` -> `report.github.html`).
-- [ ] Output directory is created if it doesn't exist.
-- [ ] Tool exits with code 1 and clear error message on validation failure.
-- [ ] Tool exits with code 0 and warning on empty input file.
+- [x] CLI supports `--input` (required), `--output` (optional), `--flavor` (required), and `--template` (optional).
+- [x] Input file existence is validated.
+- [x] Flavor is validated to be either `github` or `azdo`.
+- [x] Output filename is correctly derived if `--output` is omitted (e.g., `report.md` -> `report.github.html`).
+- [x] Output directory is created if it doesn't exist.
+- [x] Tool exits with code 1 and clear error message on validation failure.
+- [x] Tool exits with code 0 and warning on empty input file.
 
 **Dependencies:** Task 1
 
@@ -54,11 +54,11 @@ Implement the command-line interface with the specified options and validation l
 Implement the core rendering logic using Markdig to convert Markdown to an HTML fragment.
 
 **Acceptance Criteria:**
-- [ ] `MarkdownToHtmlRenderer` class implemented.
-- [ ] Supports standard Markdown features: tables, headings, lists, bold/italic, links.
-- [ ] Supports `tfplan2md` specific features: `<details>`, `<summary>`, `<br/>`.
-- [ ] Fenced code blocks include `class="language-*"` for syntax highlighting compatibility.
-- [ ] `simple-diff` format (code blocks with `diff` language) renders correctly.
+- [x] `MarkdownToHtmlRenderer` class implemented.
+- [x] Supports standard Markdown features: tables, headings, lists, bold/italic, links.
+- [x] Supports `tfplan2md` specific features: `<details>`, `<summary>`, `<br/>`.
+- [x] Fenced code blocks include `class="language-*"` for syntax highlighting compatibility.
+- [x] `simple-diff` format (code blocks with `diff` language) renders correctly.
 
 **Dependencies:** Task 1
 
@@ -72,13 +72,13 @@ Implement the core rendering logic using Markdig to convert Markdown to an HTML 
 Implement the platform-specific rendering rules for GitHub and Azure DevOps flavors.
 
 **Acceptance Criteria:**
-- [ ] **GitHub Flavor**:
-    - [ ] Strips all `style` attributes from raw HTML nodes (e.g., `<span>` in `inline-diff`).
-    - [ ] Uses GFM-like extensions (tables, strikethrough, autolinks).
-- [ ] **Azure DevOps Flavor**:
-    - [ ] Preserves all `style` attributes in raw HTML nodes.
-    - [ ] Handles line breaks correctly (soft breaks do NOT become `<br/>` unless two trailing spaces are present).
-- [ ] Unit tests verify these differences using `inline-diff` and line break samples.
+- [x] **GitHub Flavor**:
+    - [x] Strips all `style` attributes from raw HTML nodes (e.g., `<span>` in `inline-diff`).
+    - [x] Uses GFM-like extensions (tables, strikethrough, autolinks).
+- [x] **Azure DevOps Flavor**:
+    - [x] Preserves all `style` attributes in raw HTML nodes.
+    - [x] Handles line breaks correctly (soft breaks do NOT become `<br/>` unless two trailing spaces are present).
+- [x] Unit tests verify these differences using `inline-diff` and line break samples.
 
 **Dependencies:** Task 3
 
@@ -92,10 +92,10 @@ Implement the platform-specific rendering rules for GitHub and Azure DevOps flav
 Implement the logic to wrap the rendered HTML fragment in a complete HTML document using a template.
 
 **Acceptance Criteria:**
-- [ ] `WrapperTemplateApplier` class implemented.
-- [ ] Replaces `{{content}}` placeholder with the HTML fragment.
-- [ ] Validates that the placeholder exists in the template; fails with exit code 1 if missing.
-- [ ] Supports reading template from a file path.
+- [x] `WrapperTemplateApplier` class implemented.
+- [x] Replaces `{{content}}` placeholder with the HTML fragment.
+- [x] Validates that the placeholder exists in the template; fails with exit code 1 if missing.
+- [x] Supports reading template from a file path.
 
 **Dependencies:** Task 3
 
@@ -109,11 +109,11 @@ Implement the logic to wrap the rendered HTML fragment in a complete HTML docume
 Create default wrapper templates for GitHub and Azure DevOps with approximating CSS and syntax highlighting.
 
 **Acceptance Criteria:**
-- [ ] `github-wrapper.html` created in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
-- [ ] `azdo-wrapper.html` created in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
-- [ ] Templates include basic HTML5 structure.
-- [ ] Templates include CSS that approximates the look and feel of the respective platforms.
-- [ ] Templates include Highlight.js (via CDN) for syntax highlighting in code blocks.
+- [x] `github-wrapper.html` created in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
+- [x] `azdo-wrapper.html` created in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
+- [x] Templates include basic HTML5 structure.
+- [x] Templates include CSS that approximates the look and feel of the respective platforms.
+- [x] Templates include Highlight.js (via CDN) for syntax highlighting in code blocks.
 
 **Dependencies:** Task 5
 
@@ -127,9 +127,9 @@ Create default wrapper templates for GitHub and Azure DevOps with approximating 
 Verify the tool against all existing demo artifacts and "Gold Standard" renderings.
 
 **Acceptance Criteria:**
-- [ ] Integration tests process all `.md` files in `artifacts/` for both flavors.
-- [ ] Generated HTML for `comprehensive-demo-simple-diff.md` (GitHub flavor) matches `comprehensive-demo-simple-diff.actual-gh-rendering.html` (core structure).
-- [ ] Generated HTML for `comprehensive-demo.md` (Azure DevOps flavor) matches `comprehensive-demo.actual-azdo-rendering.html` (core structure).
+- [x] Integration tests process all `.md` files in `artifacts/` for both flavors.
+- [x] Generated HTML for `comprehensive-demo-simple-diff.md` (GitHub flavor) matches `comprehensive-demo-simple-diff.actual-gh-rendering.html` (core structure).
+- [x] Generated HTML for `comprehensive-demo.md` (Azure DevOps flavor) matches `comprehensive-demo.actual-azdo-rendering.html` (core structure).
 
 **Dependencies:** Task 4, Task 6
 
@@ -143,9 +143,9 @@ Verify the tool against all existing demo artifacts and "Gold Standard" renderin
 Update project documentation to include the new tool and its usage.
 
 **Acceptance Criteria:**
-- [ ] `README.md` updated with instructions on how to run the HTML renderer.
-- [ ] `docs/features.md` (if applicable) updated to list the tool.
-- [ ] Code follows project style guidelines (C# conventions, immutable structures where appropriate).
+- [x] `README.md` updated with instructions on how to run the HTML renderer.
+- [x] `docs/features.md` (if applicable) updated to list the tool.
+- [x] Code follows project style guidelines (C# conventions, immutable structures where appropriate).
 
 **Dependencies:** Task 7
 

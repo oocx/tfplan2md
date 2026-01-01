@@ -10,6 +10,8 @@
 | 6 | Always present 3 options in chat before selection | Workflow Engineer meta-agent gap | ✅ Done | I asked for an ID without repeating the 3 recommended options in chat, forcing the Maintainer to open `tasks.md`. | Med | Low | Low | Fixed via commit `698c677` (updates WE agent + `/we` prompt + docs). |
 | 7 | Standardize blocked/waiting responses | Maintainer feedback | ✅ Done | Agents sometimes stop without an explicit recap, leaving progress/next steps unclear. | High | Low | Low | Implemented via repo-wide instructions + docs update. |
 | 8 | Standardize `git status` via script | Maintainer feedback | ✅ Done | Many slight variations of `git status` cause repeated terminal approvals; standardize on a single wrapper script. | High | Low | Low | Implemented `scripts/git-status.sh` and updated agent/skill guidance to use it. |
+| 9 | Standardize `git log` via script | Maintainer feedback | ✅ Done | Variations of `git log` (pagers, flags, ranges) cause repeated terminal approvals; standardize on one wrapper script. | Med | Low | Low | Implemented `scripts/git-log.sh` and updated agent guidance to use it. |
+| 10 | Standardize `git diff` via script | Maintainer feedback | ✅ Done | Variations of `git diff` (pagers, flags, ranges) cause repeated terminal approvals; standardize on one wrapper script. | Med | Low | Low | Implemented `scripts/git-diff.sh` and updated agent/skill guidance to use it. |
 
 ## Recommendations
 
@@ -27,5 +29,13 @@ Completed: **7** (2026-01-01)
 Selected: **8** (2026-01-01)
 
 Completed: **8** (2026-01-01)
+
+Selected: **9** (2026-01-01)
+
+Completed: **9** (2026-01-01)
+
+Selected: **10** (2026-01-01)
+
+Completed: **10** (2026-01-01)
 
 Which item should I implement next? (Reply with the Option number, or reply with "work on task <task id>")

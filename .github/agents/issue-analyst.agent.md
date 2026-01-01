@@ -100,6 +100,7 @@ Before investigating, review relevant context:
 - [docs/architecture.md](../../docs/architecture.md) - Architecture overview
 - [README.md](../../README.md) - Project overview and usage
 - Recent commits: `git log --oneline -10`
+- Recent commits: `scripts/git-log.sh --oneline -10`
 - CI/CD workflow files in `.github/workflows/`
 
 ## Investigation Approach
@@ -146,6 +147,7 @@ Collect relevant data:
 - Workflow run output (if CI/CD failure)
 - Environment details (OS, .NET version, Docker version)
 - Recent changes: `git log --oneline --since="1 week ago"`
+- Recent changes: `scripts/git-log.sh --oneline --since="1 week ago"`
 - Current branch status: `scripts/git-status.sh`
 
 **Commands to use:**
@@ -160,7 +162,7 @@ PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
 PAGER=cat gh run view <run-id> --log-failed
 
 # Check git history
-git log --oneline --since="1 week ago" -- <relevant-path>
+scripts/git-log.sh --oneline --since="1 week ago" -- <relevant-path>
 
 # Check for build errors
 dotnet build --no-restore

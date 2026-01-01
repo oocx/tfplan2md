@@ -124,7 +124,7 @@ While inspecting, explicitly determine intent:
 ### 5. Verify resolution quality
 ```bash
 # Review what you’re about to commit
-git diff
+scripts/git-diff.sh
 
 # Ensure git sees conflicts as resolved
 scripts/git-status.sh

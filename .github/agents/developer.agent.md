@@ -250,7 +250,7 @@ Follow the project's coding conventions strictly:
    
    c. **Update test snapshots (if markdown output changed)**:
       - Use `update-test-snapshots` skill to regenerate snapshot baselines
-      - Review generated snapshots with `git diff tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots`
+         - Review generated snapshots with `scripts/git-diff.sh tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots`
       - Commit snapshots if changes are expected:
         ```bash
         git add tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/

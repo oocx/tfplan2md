@@ -126,6 +126,22 @@ Example:
 terraform show -json plan.tfplan | tfplan2md --large-value-format simple-diff
 ```
 
+### HTML renderer (development tool)
+
+Render existing tfplan2md reports to HTML with GitHub- or Azure-DevOps-like output using the standalone tool in [tools/Oocx.TfPlan2Md.HtmlRenderer](tools/Oocx.TfPlan2Md.HtmlRenderer):
+
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+  --input artifacts/comprehensive-demo.md \
+  --flavor github
+
+dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+  --input artifacts/comprehensive-demo.md \
+  --flavor azdo \
+  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+  --output artifacts/comprehensive-demo.azdo.html
+```
+
 ## Example Output
 
 All generated markdown is automatically validated and linted for correct formatting. Special characters in resource names and attribute values are properly escaped to ensure tables and headings render correctly on GitHub and Azure DevOps.

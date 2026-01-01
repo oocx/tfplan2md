@@ -289,7 +289,7 @@ Use this template in `tasks.md`:
 - **Option 3 (Highest impact):** **<ID>** — Lowest-effort item among High Impact candidates.
 
 ## Decision
-Which item should I implement first? (Reply with the **ID**.)
+Which item should I implement first? (Reply with the Option number, or reply with "work on task <task id>")
 ```
 
 After writing `tasks.md` and presenting the options, wait for the Maintainer's selection before changing any files.

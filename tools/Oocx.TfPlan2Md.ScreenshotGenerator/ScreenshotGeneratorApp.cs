@@ -1,5 +1,5 @@
-using Oocx.TfPlan2Md.ScreenshotGenerator.CLI;
 using Oocx.TfPlan2Md.ScreenshotGenerator.Capturing;
+using Oocx.TfPlan2Md.ScreenshotGenerator.CLI;
 
 namespace Oocx.TfPlan2Md.ScreenshotGenerator;
 

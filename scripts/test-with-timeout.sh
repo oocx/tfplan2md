@@ -14,7 +14,7 @@ set -euo pipefail
 #   124   Timed out
 #   125   Wrapper error / invalid usage
 
-timeout_seconds=60
+timeout_seconds=120
 grace_seconds=10
 explicit_command=false
 

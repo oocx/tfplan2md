@@ -31,9 +31,9 @@ A standalone .NET tool that generates screenshots from HTML files using the Chro
 - Fixed viewport size screenshots (default: 1920x1080)
 - Customizable viewport dimensions via CLI arguments
 - Full-page capture mode (captures entire scrollable content, variable height)
-- Multiple output formats: PNG, JPEG, WebP
+- Multiple output formats: PNG, JPEG (WebP deferred per maintainer request)
 - Format detection from output filename extension
-- Quality settings for lossy formats (JPEG/WebP) with sensible defaults
+- Quality setting for JPEG with a sensible default
 
 **Platform Support:**
 - Local development machines (Windows, Linux, macOS)
@@ -97,12 +97,6 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot.jpg
 
-# WebP output with custom quality
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
-  --input artifacts/comprehensive-demo.github.html \
-  --output artifacts/screenshot.webp \
-  --quality 90
-
 # Explicit format parameter (overrides extension)
 dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
@@ -117,8 +111,8 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 - `--width` or `-w`: Viewport width in pixels (optional, default: 1920)
 - `--height` or `-h`: Viewport height in pixels (optional, default: 1080; ignored if `--full-page` is set)
 - `--full-page` or `-f`: Capture full scrollable page height (optional flag, default: false)
-- `--format`: Image format (`png`, `jpeg`, `webp`) (optional, detected from output filename extension)
-- `--quality` or `-q`: Image quality for lossy formats (0-100) (optional, default: 90 for JPEG, 85 for WebP)
+- `--format`: Image format (`png`, `jpeg`) (optional, detected from output filename extension; WebP deferred)
+- `--quality` or `-q`: Image quality for JPEG (0-100) (optional, default: 90)
 - `--help`: Display help information
 - `--version`: Display version information
 
@@ -137,7 +131,7 @@ When `--output` is not specified:
 
 Format is determined in this priority order:
 1. Explicit `--format` parameter (highest priority)
-2. Output filename extension (`.png`, `.jpg`, `.jpeg`, `.webp`)
+2. Output filename extension (`.png`, `.jpg`, `.jpeg`)
 3. Default to PNG if neither specified
 
 ### Error Handling
@@ -150,7 +144,7 @@ Format is determined in this priority order:
 **Invalid Parameters:**
 - If `--width` or `--height` is not a positive integer: Display error, exit with code 1
 - If `--quality` is not between 0-100: Display error, exit with code 1
-- If `--format` is not one of `png`, `jpeg`, `webp`: Display error listing valid options, exit with code 1
+- If `--format` is not one of `png`, `jpeg`: Display error listing valid options, exit with code 1
 
 **Output Issues:**
 - If output directory doesn't exist: Create directory automatically
@@ -172,11 +166,10 @@ Format is determined in this priority order:
 - [ ] Full-page capture mode generates screenshots of entire scrollable content
 - [ ] PNG output format works correctly (default and explicit)
 - [ ] JPEG output format works correctly with quality settings
-- [ ] WebP output format works correctly with quality settings
 - [ ] Image format detection from filename extension works correctly
 - [ ] Explicit `--format` parameter overrides filename extension
 - [ ] Output filename is correctly derived when `--output` is not specified
-- [ ] Quality parameter affects JPEG and WebP output appropriately
+- [ ] Quality parameter affects JPEG output appropriately
 - [ ] Tool works on local development machines (Windows, Linux, macOS)
 - [ ] Tool works in GitHub Actions pipelines with Playwright setup
 - [ ] Error messages are clear and actionable
@@ -214,11 +207,11 @@ Format is determined in this priority order:
 - No quality degradation for visual regression testing
 - Standard format for documentation screenshots
 
-Users can explicitly choose JPEG or WebP for smaller file sizes if needed.
+Users can explicitly choose JPEG for smaller file sizes if needed. WebP is deferred for this release at the maintainer's request.
 
 ### Default Quality Settings
 
-**Decision:** Use quality 90 for JPEG, 85 for WebP.
+**Decision:** Use quality 90 for JPEG.
 
 **Rationale:**
 - High quality while providing reasonable file size reduction

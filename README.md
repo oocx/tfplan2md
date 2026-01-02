@@ -142,6 +142,41 @@ dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --output artifacts/comprehensive-demo.azdo.html
 ```
 
+### Screenshot generator (development tool)
+
+Generate PNG or JPEG screenshots from HTML using Playwright in [tools/Oocx.TfPlan2Md.ScreenshotGenerator](tools/Oocx.TfPlan2Md.ScreenshotGenerator). Install the browser once after build:
+
+```bash
+pwsh tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
+```
+
+Usage examples (formats: png default, jpeg; WebP deferred):
+
+```bash
+# Default viewport (1920x1080), output derived from input name
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html
+
+# Custom viewport
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/screenshot-1280x720.png \
+  --width 1280 \
+  --height 720
+
+# Full-page capture
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/full-report.png \
+  --full-page
+
+# JPEG with quality
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/screenshot.jpg \
+  --quality 85
+```
+
 ## Example Output
 
 All generated markdown is automatically validated and linted for correct formatting. Special characters in resource names and attribute values are properly escaped to ensure tables and headings render correctly on GitHub and Azure DevOps.

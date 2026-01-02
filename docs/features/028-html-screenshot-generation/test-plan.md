@@ -11,7 +11,7 @@ Reference: [specification.md](specification.md)
 | Acceptance Criterion | Test Case(s) | Test Type |
 |---------------------|--------------|-----------|
 | Standalone .NET 10 console application | TC-01 | Integration |
-| Playwright for .NET integrated | TC-11, TC-12, TC-13, TC-14, TC-15 | Integration |
+| Playwright for .NET integrated | TC-11, TC-12, TC-13, TC-14 | Integration |
 | Unit test project created | TC-01 to TC-10 | Unit |
 | CLI accepts all specified options | TC-01 to TC-06 | Unit |
 | CLI validates inputs correctly | TC-07 to TC-10 | Unit |
@@ -20,12 +20,12 @@ Reference: [specification.md](specification.md)
 | Full-page capture mode | TC-13 | Integration |
 | PNG output format (default and explicit) | TC-11, TC-05 | Integration |
 | JPEG output format with quality | TC-14 | Integration |
-| WebP output format with quality | TC-15 | Integration |
+| WebP output format (deferred) | TC-15 | Deferred |
 | Image format detection from extension | TC-05 | Unit |
 | Explicit --format overrides extension | TC-05 | Unit |
 | Output filename derivation | TC-02 | Unit |
-| Quality parameter affects output | TC-14, TC-15 | Integration |
-| Tool works on local machines | TC-11 to TC-15 | Integration |
+| Quality parameter affects output | TC-14 | Integration |
+| Tool works on local machines | TC-11 to TC-14 | Integration |
 | Tool works in GitHub Actions | TC-19 | Non-Functional |
 | Error messages are clear and actionable | TC-07 to TC-10, TC-17 | Unit/Integration |
 | Process HTML from feature 027 | TC-18 | Integration |
@@ -144,12 +144,12 @@ Verify format detection from extension and override via `--format`.
 
 **Test Steps:**
 1. `--output file.jpg`
-2. `--output file.webp`
+2. `--output file.png`
 3. `--output file.png --format jpeg`
 
 **Expected Result:**
 1. Format is JPEG.
-2. Format is WebP.
+2. Format is PNG.
 3. Format is JPEG (override).
 
 ---
@@ -229,7 +229,7 @@ Verify error for unsupported format.
 1. `--format gif`
 
 **Expected Result:**
-Tool exits with code 1 and lists supported formats (png, jpeg, webp).
+Tool exits with code 1 and lists supported formats (png, jpeg).
 
 ---
 
@@ -302,18 +302,12 @@ Verify JPEG generation and quality effect.
 
 ---
 
-### TC-15: Screenshot Generation - WebP format with quality
+### TC-15: Screenshot Generation - WebP format (deferred)
 
-**Type:** Integration (Skippable if no browser)
+**Type:** Deferred (out of scope)
 
 **Description:**
-Verify WebP generation.
-
-**Test Steps:**
-1. Run tool: `--input test.html --output test.webp`.
-
-**Expected Result:**
-- `test.webp` exists and is a valid WebP file.
+WebP generation is deferred for this release per maintainer request. No test is implemented.
 
 ---
 
@@ -383,7 +377,7 @@ Verify the tool runs in a GitHub Actions environment.
 List any new test data files needed:
 - [test.html](test.html) - Minimal HTML for basic tests.
 - [tall.html](tall.html) - HTML with large height to test full-page capture.
-- [artifacts/comprehensive-demo.github.html](artifacts/comprehensive-demo.github.html) - Real-world test case from feature 027.
+- [artifacts/comprehensive-demo.github.html](artifacts/comprehensive-demo.github.html) - Real-world test case from feature 027 (generate via HtmlRenderer when available).
 
 ## Edge Cases
 

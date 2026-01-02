@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.15"></a>
+## [1.0.0-alpha.15](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2026-01-02)
+
+### ✨ Features
+
+* add HTML screenshot generator tool ([51ba5b2](https://github.com/oocx/tfplan2md/commit/51ba5b2477cfc6982d4e39ffc94ce914e68d7268))
+
+### 📚 Documentation
+
+* add architecture for 028 html screenshot generation ([6de3100](https://github.com/oocx/tfplan2md/commit/6de31003f5e92a78af9995eecab54bdbd8659daf))
+* add feature specification for 028-html-screenshot-generation ([221f146](https://github.com/oocx/tfplan2md/commit/221f146e72fc8d8ee29937d296464fe8aca7a147))
+* add tasks for 028-html-screenshot-generation ([f65ab17](https://github.com/oocx/tfplan2md/commit/f65ab17a3adb0b42b83d9163568c1b2a77812ac0))
+* add test plans for 028-html-screenshot-generation ([ab38f8e](https://github.com/oocx/tfplan2md/commit/ab38f8ef8445fac4839bc2780094a2d3d4c3fdd8))
+* mark feature 028 as implemented and approved ([df1e73b](https://github.com/oocx/tfplan2md/commit/df1e73b493f5e34d0e0e9643869240dbb885759b))
+
 <a name="1.0.0-alpha.14"></a>
 ## [1.0.0-alpha.14](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.13...v1.0.0-alpha.14) (2026-01-01)
 

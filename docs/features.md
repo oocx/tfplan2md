@@ -72,23 +72,76 @@ Both templates include:
 
 ## HTML Screenshot Generator (Dev Tool)
 
-**Status:** 🚧 In progress (PNG/JPEG shipped; WebP deferred)
+**Status:** ✅ Implemented
 
-Standalone tool in [tools/Oocx.TfPlan2Md.ScreenshotGenerator](../tools/Oocx.TfPlan2Md.ScreenshotGenerator) that turns HTML reports (e.g., from the HtmlRenderer) into screenshots using Playwright/Chromium.
+A standalone .NET tool located at [tools/Oocx.TfPlan2Md.ScreenshotGenerator](../tools/Oocx.TfPlan2Md.ScreenshotGenerator) that generates screenshots from HTML files using Playwright and Chromium. This tool enables visual regression testing, documentation screenshot generation, and automated testing workflows by converting HTML reports into image files.
 
-- Supports PNG (default) and JPEG with quality, plus full-page capture or custom viewport sizes
-- Derives output name from input when `--output` is omitted (e.g., `report.html` → `report.png`)
-- Requires a one-time browser install: `pwsh tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps`
-- WebP support is deferred at maintainer request
+### Features
 
-Example:
+- **Multiple image formats**: PNG (default) and JPEG with configurable quality (WebP deferred per maintainer request)
+- **Flexible viewport control**: Default 1920x1080 viewport with customizable dimensions via `--width` and `--height`
+- **Full-page capture**: Captures entire scrollable content with variable height using `--full-page` flag
+- **Automatic output naming**: Derives output filename from input if not specified (e.g., `report.html` → `report.png`)
+- **Format detection**: Determines image format from output filename extension or explicit `--format` parameter
+- **Browser automation**: Uses Playwright for reliable, cross-platform Chromium automation
 
+### CLI Options
+
+| Option | Description |
+|--------|-------------|
+| `--input`, `-i <file>` | Path to input HTML file (required) |
+| `--output`, `-o <file>` | Output image file path (auto-derived if omitted) |
+| `--width`, `-w <pixels>` | Viewport width in pixels (default: 1920) |
+| `--height`, `-h <pixels>` | Viewport height in pixels (default: 1080; ignored if `--full-page` is set) |
+| `--full-page`, `-f` | Capture full scrollable page height (default: false) |
+| `--format <png\|jpeg>` | Image format (auto-detected from output filename if omitted) |
+| `--quality`, `-q <0-100>` | JPEG quality setting (default: 90) |
+| `--help`, `-h` | Display help information |
+| `--version`, `-v` | Display version information |
+
+### Usage Examples
+
+**Default viewport screenshot:**
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html
+# Output: artifacts/comprehensive-demo.github.png (1920x1080)
+```
+
+**Custom viewport dimensions:**
 ```bash
 dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
-  --output artifacts/comprehensive-demo.github.png \
+  --output artifacts/screenshot-1280x720.png \
+  --width 1280 \
+  --height 720
+```
+
+**Full-page capture:**
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/full-report.png \
   --full-page
 ```
+
+**JPEG with custom quality:**
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/screenshot.jpg \
+  --quality 85
+```
+
+### Prerequisites
+
+Before using the screenshot generator, install Chromium browser binaries once after building:
+
+```bash
+pwsh tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
+```
+
+For CI/CD environments, use the `--with-deps` flag to install system dependencies required by Chromium.
 
 ### Diff Format Handling
 

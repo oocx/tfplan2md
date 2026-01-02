@@ -22,8 +22,8 @@ project.lock.json
 .idea/
 *.sln.iml
 
-# VS Code (uncomment if you want to ignore)
-# .vscode/
+# VS Code project settings
+.vscode/
 
 # Test results and coverage
 TestResults/
@@ -47,3 +47,4 @@ publish/
 plan.tfplan
 # VS Code Copilot chat exports (large, may contain sensitive data)
 **/chat.json
+*.chat.json

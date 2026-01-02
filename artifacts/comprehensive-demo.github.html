@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="dark" data-dark-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md GitHub-style Rendering</title>
+    <!-- GitHub dark theme markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-dark.min.css">
+    <!-- highlight.js dark theme for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <style>
+        /* GitHub dark theme colors extracted from actual GitHub PR pages */
+        :root {
+            color-scheme: dark;
+            --bgColor-default: #0d1117;
+            --bgColor-muted: #151b23;
+            --bgColor-emphasis: #3d444d;
+            --borderColor-default: #3d444d;
+            --borderColor-muted: #30363d;
+            --fgColor-default: #e6edf3;
+            --fgColor-muted: #9198a1;
+            --fgColor-accent: #4493f8;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px 16px 56px;
+            background: var(--bgColor-default);
+            color: var(--fgColor-default);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .page-container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        /* Simulates a GitHub PR comment card without extra outline */
+        .comment-surface {
+            background: var(--bgColor-muted);
+            border: 0;
+            border-radius: 6px;
+            padding: 24px 28px;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            background: transparent !important;
+        }
+
+        /* Heading styles */
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--fgColor-default);
+            border-bottom-color: var(--borderColor-muted);
+        }
+
+        /* Links */
+        .markdown-body a {
+            color: var(--fgColor-accent);
+        }
+
+        .markdown-body table { width: 100%; }
+
+        /* Tables: keep subtle cell borders like GitHub tables */
+        .markdown-body table th,
+        .markdown-body table td {
+            border: 1px solid var(--borderColor-muted);
+        }
+
+        /* Details/Summary collapsible sections */
+        .markdown-body details {
+            border: 0;
+            border-radius: 6px;
+            padding: 0;
+            background: transparent;
+        }
+
+        .markdown-body details summary {
+            cursor: pointer;
+            font-weight: 600;
+            list-style: none;
+            color: var(--fgColor-default);
+        }
+
+        .markdown-body details summary::-webkit-details-marker { display: none; }
+
+        .markdown-body details summary::before {
+            content: "▸";
+            display: inline-block;
+            margin-right: 8px;
+            color: var(--fgColor-muted);
+            transform: translateY(-1px);
+        }
+
+        .markdown-body details[open] summary::before { content: "▾"; }
+
+        /* Code blocks */
+        .markdown-body code,
+        .markdown-body pre code {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+
+        .markdown-body pre {
+            border: 1px solid var(--borderColor-muted);
+            border-radius: 6px;
+            padding: 16px;
+            background: var(--bgColor-default) !important;
+        }
+
+        .markdown-body code {
+            background: rgba(110, 118, 129, 0.4);
+            border-radius: 6px;
+            padding: 0.2em 0.4em;
+        }
+
+        /* Inline code within pre should not have extra styling */
+        .markdown-body pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Horizontal rule */
+        .markdown-body hr {
+            border-color: var(--borderColor-muted);
+        }
+
+        /* Blockquote */
+        .markdown-body blockquote {
+            border-left-color: var(--borderColor-default);
+            color: var(--fgColor-muted);
+        }
+
+        @media (max-width: 900px) {
+            body { padding: 16px 12px 40px; }
+            .page-container { max-width: 100%; }
+            .comment-surface { padding: 20px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+    <div class="page-container">
+        <article class="markdown-body comment-surface">
+            <h1 dir="auto">Terraform Plan Report</h1>
+<p dir="auto"><strong>Terraform Version:</strong> 1.14.0</p>
+<h2 dir="auto">Summary</h2>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Action</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕ Add</td>
+<td>12</td>
+<td>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_log_analytics_workspace<br/>1 azurerm_resource_group<br/>2 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_subnet<br/>2 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>🔄 Change</td>
+<td>6</td>
+<td>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>♻️ Replace</td>
+<td>2</td>
+<td>1 azurerm_network_security_group<br/>1 azurerm_subnet</td>
+</tr>
+<tr>
+<td>❌ Destroy</td>
+<td>3</td>
+<td>1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>23</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h2 dir="auto">Resource Changes</h2>
+<h3 dir="auto">📦 Module: root</h3>
+<details>
+<summary>➕ azurerm_resource_group <b><code class="notranslate">core</code></b> — <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p dir="auto"><strong>🏷️ Tags:</strong> <code class="notranslate">environment: demo</code> <code class="notranslate">owner: tfplan2md</code></p>
+</details>
+<details>
+<summary>➕ azurerm_storage_account <b><code class="notranslate">logs</code></b> — <code class="notranslate">sttfplan2mdlogs</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code class="notranslate">LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code class="notranslate">Standard</code></td>
+</tr>
+<tr>
+<td>allow_blob_public_access</td>
+<td><code class="notranslate">❌&nbsp;false</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>min_tls_version</td>
+<td><code class="notranslate">TLS1_2</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">sttfplan2mdlogs</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p dir="auto"><strong>🏷️ Tags:</strong> <code class="notranslate">cost_center: ops</code> <code class="notranslate">environment: demo</code></p>
+</details>
+<details>
+<summary>🔄 azurerm_storage_account <b><code class="notranslate">data</code></b> — <code class="notranslate">sttfplan2mddata</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> | 2🔧 account_replication_type, tags.cost_center</summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code class="notranslate">LRS</code></td>
+<td><code class="notranslate">GRS</code></td>
+</tr>
+<tr>
+<td>tags.cost_center</td>
+<td>-</td>
+<td><code class="notranslate">1234</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>❌ azurerm_storage_account <b><code class="notranslate">legacy</code></b> — <code class="notranslate">sttfplan2mdlegacy</code> in <code class="notranslate">rg-old</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code class="notranslate">LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code class="notranslate">Standard</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">sttfplan2mdlegacy</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-old</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p dir="auto"><strong>🏷️ Tags:</strong> <code class="notranslate">environment: old</code></p>
+</details>
+<hr/>
+<h3 dir="auto">📦 Module: <code class="notranslate">module.network</code></h3>
+<details>
+<summary>➕ azurerm_virtual_network <b><code class="notranslate">hub</code></b> — <code class="notranslate">vnet-hub</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.0.0.0/16</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code class="notranslate">🌐&nbsp;10.0.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">vnet-hub</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>➕ azurerm_virtual_network <b><code class="notranslate">spoke</code></b> — <code class="notranslate">vnet-spoke</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.1.0.0/16</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code class="notranslate">🌐&nbsp;10.1.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">vnet-spoke</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>➕ azurerm_subnet <b><code class="notranslate">app</code></b> — <code class="notranslate">snet-app</code> in <code class="notranslate">rg-tfplan2md-demo</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_prefixes[0]</td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">snet-app</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>service_endpoints[0]</td>
+<td><code class="notranslate">Microsoft.Storage</code></td>
+</tr>
+<tr>
+<td>virtual_network_name</td>
+<td><code class="notranslate">vnet-spoke</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<div>
+<h3 dir="auto">➕ module.network.azurerm_firewall_network_rule_collection.new_public</h3>
+<p dir="auto"><strong>Collection:</strong> <code class="notranslate">public-egress</code> | <strong>Priority:</strong> <code class="notranslate">110</code> | <strong>Action:</strong> <code class="notranslate">✅&nbsp;Allow</code></p>
+<h4 dir="auto">Rules</h4>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">allow-http</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">🔌&nbsp;80</code></td>
+<td><code class="notranslate">Allow outbound HTTP</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">allow-https</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">🔌&nbsp;443</code></td>
+<td><code class="notranslate">Allow outbound HTTPS</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</div>
+<details>
+<summary>🔄 azurerm_virtual_network <b><code class="notranslate">branch</code></b> — <code class="notranslate">vnet-branch</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.2.0.0/16</code> | 1🔧 address_space[1]</summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[1]</td>
+<td>-</td>
+<td><code class="notranslate">🌐&nbsp;10.3.0.0/16</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<div>
+<h3 dir="auto">🔄 module.network.azurerm_firewall_network_rule_collection.network_rules</h3>
+<p dir="auto"><strong>Collection:</strong> <code class="notranslate">network-rules</code> | <strong>Priority:</strong> <code class="notranslate">120</code> | <strong>Action:</strong> <code class="notranslate">✅&nbsp;Allow</code></p>
+<h4 dir="auto">Rule Changes</h4>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Change</th>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code class="notranslate">allow-web-secure</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.3.0/24</code></td>
+<td><code class="notranslate">🔌&nbsp;443</code></td>
+<td><code class="notranslate">Secure web</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code class="notranslate">allow-log-ingest</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.4.0/24</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.5.0/24</code></td>
+<td><code class="notranslate">🔌&nbsp;8080</code></td>
+<td><code class="notranslate">Log ingestion</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code class="notranslate">allow-icmp-ping</code></td>
+<td><code class="notranslate">📡&nbsp;ICMP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.4.0/24</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">ICMP ping for network diagnostics</code></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code class="notranslate">allow-dns</code></td>
+<td>📨&nbsp;UDP</td>
+<td><code class="notranslate" ><span>- 🌐&nbsp;10.1.1.0/24</span><br/><span>+ 🌐&nbsp;10.1.1.0/24<span>, 🌐&nbsp;10.1.2.0/24</span></span></code></td>
+<td>🌐&nbsp;168.63.129.16</td>
+<td>🔌&nbsp;53</td>
+<td><code class="notranslate">DNS to Azure</code></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code class="notranslate">allow-api</code></td>
+<td>🔗&nbsp;TCP</td>
+<td>🌐&nbsp;10.1.1.0/24</td>
+<td><code class="notranslate" ><span>- 🌐&nbsp;10.<span>1</span>.2.0/24</span><br/><span>+ 🌐&nbsp;10.<span>2</span>.2.0/24</span></code></td>
+<td><code class="notranslate" ><span>- 🔌&nbsp;8443</span><br/><span>+ 🔌&nbsp;8443<span>, 🔌&nbsp;9443</span></span></code></td>
+<td><code class="notranslate">API tier</code></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code class="notranslate">allow-web</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.3.0/24</code></td>
+<td><code class="notranslate">🔌&nbsp;80</code></td>
+<td><code class="notranslate">Legacy HTTP</code></td>
+</tr>
+<tr>
+<td>⏺️</td>
+<td><code class="notranslate">allow-monitoring</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.1.0/24</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.4.0/24</code></td>
+<td><code class="notranslate">🔌&nbsp;443</code></td>
+<td><code class="notranslate">Monitoring</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</div>
+<details>
+<summary>♻️ azurerm_subnet <b><code class="notranslate">db</code></b> — <code class="notranslate">snet-db</code> in <code class="notranslate">rg-tfplan2md-demo</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_prefixes[0]</td>
+<td><code class="notranslate">🌐&nbsp;10.1.2.0/24</code></td>
+<td><code class="notranslate">🌐&nbsp;10.1.20.0/24</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<div>
+<h3 dir="auto">♻️ module.network.azurerm_network_security_group.app</h3>
+<p dir="auto"><strong>Network Security Group:</strong> <code class="notranslate">nsg-app</code></p>
+<h4 dir="auto">Security Rules</h4>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Change</th>
+<th>Name</th>
+<th>Priority</th>
+<th>Direction</th>
+<th>Access</th>
+<th>Protocol</th>
+<th>Source Addresses</th>
+<th>Source Ports</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code class="notranslate">allow-https</code></td>
+<td><code class="notranslate">100</code></td>
+<td><code class="notranslate">⬇️&nbsp;Inbound</code></td>
+<td><code class="notranslate">✅&nbsp;Allow</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">🔌&nbsp;443</code></td>
+<td><code class="notranslate">-</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code class="notranslate">deny-rdp</code></td>
+<td><code class="notranslate">200</code></td>
+<td><code class="notranslate">⬇️&nbsp;Inbound</code></td>
+<td><code class="notranslate">⛔&nbsp;Deny</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">🔌&nbsp;3389</code></td>
+<td><code class="notranslate">Block RDP from internet</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code class="notranslate">allow-outbound-https</code></td>
+<td><code class="notranslate">300</code></td>
+<td><code class="notranslate">⬆️&nbsp;Outbound</code></td>
+<td><code class="notranslate">✅&nbsp;Allow</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">🔌&nbsp;443</code></td>
+<td><code class="notranslate">Allow outbound HTTPS</code></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code class="notranslate">allow-http</code></td>
+<td><code class="notranslate">100</code></td>
+<td><code class="notranslate">⬇️&nbsp;Inbound</code></td>
+<td><code class="notranslate">✅&nbsp;Allow</code></td>
+<td><code class="notranslate">🔗&nbsp;TCP</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">✳️</code></td>
+<td><code class="notranslate">🔌&nbsp;80</code></td>
+<td><code class="notranslate">-</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</div>
+<details>
+<summary>❌ azurerm_virtual_network <b><code class="notranslate">decom</code></b> — <code class="notranslate">vnet-old</code> in <code class="notranslate">rg-old</code> <code class="notranslate">🌍&nbsp;eastus</code> <code class="notranslate">🌐&nbsp;10.50.0.0/16</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code class="notranslate">🌐&nbsp;10.50.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">vnet-old</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-old</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<hr/>
+<h3 dir="auto">📦 Module: <code class="notranslate">module.security</code></h3>
+<details>
+<summary>➕ azurerm_role_assignment <b><code class="notranslate">rg_reader</code></b> — <code class="notranslate">👤 Jane Doe (User)</code> → <code class="notranslate">🛡️ Reader</code> on <code class="notranslate">rg-tfplan2md-demo</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code> in subscription <code class="notranslate">12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code class="notranslate">🛡️&nbsp;Reader</code> (<code class="notranslate">acdd72a7-3385-48ef-bd42-f606fba81ae7</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code class="notranslate">👤 Jane Doe (User)</code> [<code class="notranslate">00000000-0000-0000-0000-000000000001</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code class="notranslate">👤&nbsp;User</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code class="notranslate">🛡️&nbsp;Reader</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>➕ azurerm_role_assignment <b><code class="notranslate">storage_reader</code></b> — <code class="notranslate">👥 DevOps Team (Group)</code> → <code class="notranslate">🛡️ Storage Blob Data Reader</code> on Storage Account <code class="notranslate">sttfplan2mdlogs</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code> in subscription <code class="notranslate">12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code class="notranslate">🛡️&nbsp;Storage Blob Data Reader</code> (<code class="notranslate">2a2b9908-6ea1-4ae2-8e65-a410df84e7d1</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code class="notranslate">👥 DevOps Team (Group)</code> [<code class="notranslate">00000000-0000-0000-0000-000000000002</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code class="notranslate">👥&nbsp;Group</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code class="notranslate">🛡️&nbsp;Storage Blob Data Reader</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>➕ azurerm_key_vault <b><code class="notranslate">main</code></b> — <code class="notranslate">kv-tfplan2md</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>enabled_for_deployment</td>
+<td><code class="notranslate">✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">kv-tfplan2md</code></td>
+</tr>
+<tr>
+<td>public_network_access_enabled</td>
+<td><code class="notranslate">✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>sku_name</td>
+<td><code class="notranslate">standard</code></td>
+</tr>
+<tr>
+<td>tenant_id</td>
+<td><code class="notranslate">11111111-2222-3333-4444-555555555555</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p dir="auto"><strong>🏷️ Tags:</strong> <code class="notranslate">environment: demo</code> <code class="notranslate">owner: security</code></p>
+</details>
+<details>
+<summary>➕ azurerm_log_analytics_workspace <b><code class="notranslate">security</code></b> — <code class="notranslate">law-security</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">law-security</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>retention_in_days</td>
+<td><code class="notranslate">90</code></td>
+</tr>
+<tr>
+<td>sku</td>
+<td><code class="notranslate">PerGB2018</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>➕ azurerm_key_vault_secret <b><code class="notranslate">db_password</code></b> — <code class="notranslate">db-password</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>content_type</td>
+<td><code class="notranslate">password</code></td>
+</tr>
+<tr>
+<td>key_vault_id</td>
+<td>Key Vault <code class="notranslate">kv-tfplan2md</code> in resource group <code class="notranslate">rg-tfplan2md-demo</code> of subscription <code class="notranslate">12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">db-password</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code class="notranslate">(sensitive)</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>🔄 azurerm_key_vault_secret <b><code class="notranslate">audit_policy</code></b> — <code class="notranslate">audit-policy</code> | 1🔧 value</summary>
+<br/>
+<p dir="auto">Large values: value (4 lines, 2 changed)</p>
+<h5 dir="auto"><strong>value:</strong></h5>
+<pre><code class="notranslate">line1: allow
+<span>- line2: log <span>o</span>l<span>d</span> activity</span>
+<span>+ line2: log <span>critica</span>l activity</span>
+line3: end
+</code></pre>
+</details>
+<details>
+<summary>🔄 azurerm_storage_account <b><code class="notranslate">analytics</code></b> — <code class="notranslate">sttfplan2mdanalytics</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> | 3🔧 account_replication_type, min_tls_version, tags.retention</summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code class="notranslate">LRS</code></td>
+<td><code class="notranslate">ZRS</code></td>
+</tr>
+<tr>
+<td>min_tls_version</td>
+<td>-</td>
+<td><code class="notranslate">TLS1_2</code></td>
+</tr>
+<tr>
+<td>tags.retention</td>
+<td>-</td>
+<td><code class="notranslate">long</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>🔄 azurerm_key_vault <b><code class="notranslate">audit</code></b> — <code class="notranslate">kv-audit</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code> | 2🔧 public_network_access_enabled, tags.tier</summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public_network_access_enabled</td>
+<td><code class="notranslate">✅&nbsp;true</code></td>
+<td><code class="notranslate">❌&nbsp;false</code></td>
+</tr>
+<tr>
+<td>tags.tier</td>
+<td>-</td>
+<td><code class="notranslate">gold</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<details>
+<summary>❌ azurerm_role_assignment <b><code class="notranslate">obsolete</code></b> — remove <code class="notranslate">🛡️ Reader</code> on <code class="notranslate">rg-old</code> from <code class="notranslate">💻 Legacy App (Service Principal)</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code class="notranslate">rg-old</code> in subscription <code class="notranslate">12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code class="notranslate">🛡️&nbsp;Reader</code> (<code class="notranslate">acdd72a7-3385-48ef-bd42-f606fba81ae7</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code class="notranslate">💻 Legacy App (Service Principal)</code> [<code class="notranslate">00000000-0000-0000-0000-000000000005</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code class="notranslate">💻&nbsp;ServicePrincipal</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code class="notranslate">🛡️&nbsp;Reader</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+<hr/>
+<h3 dir="auto">📦 Module: <code class="notranslate">module.network.module.monitoring</code></h3>
+<details>
+<summary>➕ azurerm_log_analytics_workspace <b><code class="notranslate">core</code></b> — <code class="notranslate">law-core</code> in <code class="notranslate">rg-tfplan2md-demo</code> <code class="notranslate">🌍&nbsp;eastus</code></summary>
+<br/>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code class="notranslate">law-core</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code class="notranslate">rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>retention_in_days</td>
+<td><code class="notranslate">30</code></td>
+</tr>
+<tr>
+<td>sku</td>
+<td><code class="notranslate">PerGB2018</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+
+        </article>
+    </div>
+</body>
+</html>

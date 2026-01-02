@@ -8,7 +8,7 @@ Proposed
 
 Feature spec: [specification.md](specification.md)
 
-Feature 028 introduces a standalone .NET tool that generates screenshots (PNG/JPEG/WebP) from HTML reports, primarily those produced by feature 027’s HTML renderer.
+Feature 028 introduces a standalone .NET tool that generates screenshots (PNG/JPEG; WebP deferred) from HTML reports, primarily those produced by feature 027’s HTML renderer.
 
 Key constraints from the spec:
 
@@ -152,9 +152,8 @@ Wait strategy (recommendation):
   1. `--format`
   2. output extension
   3. default `png`
-- Quality applies only to lossy formats:
-  - default `90` for JPEG
-  - default `85` for WebP
+- Quality applies only to JPEG:
+  - default `90`
 
 Background handling:
 - Ensure screenshots are captured with background included (do not request transparent backgrounds), matching the spec’s “no transparent background” constraint.

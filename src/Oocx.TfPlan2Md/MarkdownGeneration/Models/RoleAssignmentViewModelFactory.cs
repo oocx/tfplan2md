@@ -184,19 +184,7 @@ internal static class RoleAssignmentViewModelFactory
         switch (attrName)
         {
             case "scope":
-                if (!string.IsNullOrEmpty(scope.ResourceGroup) && !string.IsNullOrEmpty(scope.SubscriptionId))
-                {
-                    return $"`{ScribanHelpers.EscapeMarkdown(scope.ResourceGroup)}` in subscription `{ScribanHelpers.EscapeMarkdown(scope.SubscriptionId)}`";
-                }
-                if (!string.IsNullOrEmpty(scope.SummaryName))
-                {
-                    return scope.SummaryLabel + " " + $"`{ScribanHelpers.EscapeMarkdown(scope.SummaryName)}`";
-                }
-                if (!string.IsNullOrEmpty(scope.Details))
-                {
-                    return ScribanHelpers.EscapeMarkdown(scope.Details);
-                }
-                return null;
+                return ScribanHelpers.FormatAzureScopeForTable(scope);
 
             case "role_definition_id":
                 var roleName = !string.IsNullOrEmpty(role.Name)

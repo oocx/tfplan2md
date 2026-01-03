@@ -101,4 +101,42 @@ public static partial class ScribanHelpers
         var idPart = string.IsNullOrWhiteSpace(principalId) ? string.Empty : $" [{principalId}]";
         return $"{name}{typePart}{idPart}".Trim();
     }
+
+    /// <summary>
+    /// Formats an Azure scope for table display with semantic icons for resource and resource group names.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    /// <param name="scope">Parsed scope information.</param>
+    /// <returns>Formatted scope string with semantic icons.</returns>
+    internal static string FormatAzureScopeForTable(ScopeInfo scope)
+    {
+        switch (scope.Level)
+        {
+            case ScopeLevel.ResourceGroup:
+                var rgName = FormatAttributeValueTable("resource_group_name", scope.ResourceGroup, null);
+                var subId = FormatCodeTable(scope.SubscriptionId ?? string.Empty);
+                return $"{rgName} in subscription {subId}";
+
+            case ScopeLevel.Resource when !string.IsNullOrEmpty(scope.ResourceGroup):
+                var resourceName = FormatAttributeValueTable("name", scope.Name, null);
+                var resourceRgName = FormatAttributeValueTable("resource_group_name", scope.ResourceGroup, null);
+                var resourceSubId = FormatCodeTable(scope.SubscriptionId ?? string.Empty);
+                return $"{scope.Type} {resourceName} in resource group {resourceRgName} of subscription {resourceSubId}";
+
+            case ScopeLevel.Resource:
+                var resourceNameOnly = FormatAttributeValueTable("name", scope.Name, null);
+                var subscriptionIdOnly = FormatCodeTable(scope.SubscriptionId ?? string.Empty);
+                return $"{scope.Type} {resourceNameOnly} in subscription {subscriptionIdOnly}";
+
+            case ScopeLevel.Subscription:
+                return $"subscription {FormatCodeTable(scope.SubscriptionId ?? string.Empty)}";
+
+            case ScopeLevel.ManagementGroup:
+                return $"{FormatCodeTable(scope.Name)} (Management Group)";
+
+            default:
+                return !string.IsNullOrEmpty(scope.Details) ? EscapeMarkdown(scope.Details) : string.Empty;
+        }
+    }
 }
+

@@ -32,8 +32,8 @@ The screenshot renderer tool must support capturing specific portions of rendere
 
 - **New Argument**: Add option to specify target for partial capture
 - **Target Selection Methods**:
-  - By resource address: `azurerm_firewall.example`
-  - By CSS selector: `.resource-firewall`, `#specific-element`
+  - By Terraform resource id/address: `azurerm_firewall.example` (via `--target-terraform-resource-id`)
+  - By selector: a **Playwright selector** string (via `--target-selector`, not limited to pure CSS)
 - **Use Case**: Generate screenshots of specific resource types for website feature documentation
 - **Behavior**: When partial capture is specified, render only the matched element(s) instead of full page
 
@@ -94,10 +94,10 @@ When viewing in GitHub:
 dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png
 
 # Capture specific resource by address
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target "azurerm_firewall.example"
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-terraform-resource-id "azurerm_firewall.example"
 
-# Capture by CSS selector
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-selector ".firewall-resource"
+# Capture by selector (Playwright selector syntax)
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-selector "details:has(summary:has-text(\"azurerm_firewall\"))"
 ```
 
 Expected behavior:
@@ -139,7 +139,7 @@ In resource attribute tables:
 - [ ] Azure DevOps HTML output shows #f0f0f0 borders on all resources
 - [ ] HtmlRendererApp GitHub flavor strips inline styles from details blocks
 - [ ] Resources previously without details blocks use `<details open>` and remain expanded
-- [ ] Screenshot tool accepts `--target` argument for resource address selection
+- [ ] Screenshot tool accepts `--target-terraform-resource-id` argument for resource address selection
 - [ ] Screenshot tool accepts `--target-selector` argument for CSS selector matching
 - [ ] Partial screenshots capture only the specified element(s)
 - [ ] Screenshot tool errors gracefully when target not found

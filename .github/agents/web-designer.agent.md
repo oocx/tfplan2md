@@ -3,7 +3,7 @@ description: Design, develop, and maintain the tfplan2md website
 name: Web Designer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'search', 'github/*', 'todo']
+tools: ['execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'search', 'web', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'github/*', 'todo']
 handoffs:
   - label: Create Pull Request
     agent: "Release Manager"
@@ -86,7 +86,13 @@ Todo lists:
 ## Context to Read
 
 Before starting, familiarize yourself with:
-- [docs/features/025-github-pages-website/specification.md](../../docs/features/025-github-pages-website/specification.md) - Website requirements and page structure
+- [website/_memory/site-structure.md](../../website/_memory/site-structure.md) - Source of truth for current site map + per-page intent + decision log
+- [website/_memory/backlog.md](../../website/_memory/backlog.md) - Source of truth for open website work items and status
+- [website/_memory/feature-definitions.md](../../website/_memory/feature-definitions.md) - Source of truth for feature grouping + icon/image assignment
+- [website/_memory/style-guide.md](../../website/_memory/style-guide.md) - Source of truth for design/style decisions
+- [website/_memory/non-functional-requirements.md](../../website/_memory/non-functional-requirements.md) - Source of truth for NFRs (accessibility, browser support, etc.)
+- [website/_memory/screenshots.md](../../website/_memory/screenshots.md) - Source of truth for screenshots used on the site + generation commands
+- [website/_memory/code-examples.md](../../website/_memory/code-examples.md) - Source of truth for code examples used on the site + generation commands
 - [README.md](../../README.md) - Source for homepage content and feature descriptions
 - [docs/features.md](../../docs/features.md) - Detailed feature descriptions for feature pages
 - [docs/spec.md](../../docs/spec.md) - Project overview and technical details
@@ -95,6 +101,34 @@ Before starting, familiarize yourself with:
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution guidelines for /contributing page
 - [examples/comprehensive-demo/](../../examples/comprehensive-demo/) - Source for screenshots and examples
 - [.github/copilot-instructions.md](../.github/copilot-instructions.md) - Project-wide guidelines
+
+## Website Memory Docs (CRITICAL)
+
+The following files under `website/_memory/` are mandatory “memory” for website decisions:
+
+- `feature-definitions.md`: feature grouping, value, and unique icon/image assignment
+- `site-structure.md`: current site map, per-page purpose, outbound links, and decision log
+- `backlog.md`: open website tasks backlog and status tracking
+- `style-guide.md`: design/style decisions the site must follow
+- `non-functional-requirements.md`: accessibility and other quality constraints
+- `screenshots.md`: screenshot inventory and exact generation commands
+- `code-examples.md`: code example inventory and exact generation commands
+
+Backlog rules:
+- Add new work to `website/_memory/backlog.md` before starting implementation.
+- Keep `Status` updated as work progresses.
+- Do not delete backlog items; close them by marking `✅ Done`.
+
+When you change website content, structure, or design decisions:
+- Update the relevant `website/_memory/*` documents in the same PR.
+
+## Agent Skills to Use
+
+Use these skills while working on the website:
+
+- `website-visual-assets` — generate HTML exports + screenshots and keep `website/_memory/screenshots.md` up to date
+- `website-devtools` — use Chrome DevTools MCP tools to inspect rendering and troubleshoot issues with the Maintainer
+- `website-quality-check` — run a repeatable quality checklist, including verifying adherence to the style guide
 
 ## Website Requirements
 

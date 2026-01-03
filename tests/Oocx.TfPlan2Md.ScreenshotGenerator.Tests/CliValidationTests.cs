@@ -16,7 +16,7 @@ public sealed class CliValidationTests
     [Fact]
     public void Validate_MissingInputFile_Throws()
     {
-        var options = new CliOptions("/path/to/missing.html", null, 1920, 1080, false, ScreenshotFormat.Png, null, false, false);
+        var options = new CliOptions("/path/to/missing.html", 1920, 1080, fullPage: false, format: ScreenshotFormat.Png);
 
         var exception = Assert.Throws<CliValidationException>(() => CliValidator.Validate(options));
 
@@ -33,7 +33,7 @@ public sealed class CliValidationTests
     public void Validate_InvalidDimensions_Throws(int width, int height)
     {
         using var context = CreateTempInput();
-        var options = new CliOptions(context.InputPath, null, width, height, false, ScreenshotFormat.Png, null, false, false);
+        var options = new CliOptions(context.InputPath, width, height, fullPage: false, format: ScreenshotFormat.Png);
 
         var exception = Assert.Throws<CliValidationException>(() => CliValidator.Validate(options));
 
@@ -51,7 +51,7 @@ public sealed class CliValidationTests
     public void Validate_QualityOutOfRange_Throws(int quality)
     {
         using var context = CreateTempInput();
-        var options = new CliOptions(context.InputPath, null, 1920, 1080, false, ScreenshotFormat.Jpeg, quality, false, false);
+        var options = new CliOptions(context.InputPath, 1920, 1080, fullPage: false, format: ScreenshotFormat.Jpeg, quality: quality);
 
         var exception = Assert.Throws<CliValidationException>(() => CliValidator.Validate(options));
 
@@ -66,9 +66,24 @@ public sealed class CliValidationTests
     public void Validate_WithValidOptions_Succeeds()
     {
         using var context = CreateTempInput();
-        var options = new CliOptions(context.InputPath, null, 1280, 720, true, ScreenshotFormat.Png, null, false, false);
+        var options = new CliOptions(context.InputPath, 1280, 720, fullPage: true, format: ScreenshotFormat.Png);
 
         CliValidator.Validate(options);
+    }
+
+    /// <summary>
+    /// Ensures mutually exclusive target options are enforced.
+    /// Related acceptance: TC-05.
+    /// </summary>
+    [Fact]
+    public void Validate_WithBothTargetOptions_Throws()
+    {
+        using var context = CreateTempInput();
+        var options = new CliOptions(context.InputPath, 1280, 720, fullPage: true, format: ScreenshotFormat.Png, targetTerraformResourceId: "azurerm_firewall.example", targetSelector: "details");
+
+        var exception = Assert.Throws<CliValidationException>(() => CliValidator.Validate(options));
+
+        Assert.Contains("Specify only one", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

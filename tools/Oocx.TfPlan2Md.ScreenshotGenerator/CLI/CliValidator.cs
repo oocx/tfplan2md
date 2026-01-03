@@ -44,5 +44,10 @@ internal static class CliValidator
         {
             throw new CliValidationException("Quality must be between 0 and 100.");
         }
+
+        if (!string.IsNullOrWhiteSpace(options.TargetTerraformResourceId) && !string.IsNullOrWhiteSpace(options.TargetSelector))
+        {
+            throw new CliValidationException("Specify only one of --target-terraform-resource-id or --target-selector.");
+        }
     }
 }

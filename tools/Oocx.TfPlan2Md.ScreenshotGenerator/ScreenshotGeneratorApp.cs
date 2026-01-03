@@ -73,13 +73,15 @@ internal sealed class ScreenshotGeneratorApp
         var quality = CaptureOptionsResolver.ResolveQuality(format, options.Quality);
 
         var settings = new CaptureSettings(
-            options.InputPath!,
-            outputPath,
-            options.Width,
-            options.Height,
-            options.FullPage,
-            format,
-            quality);
+            inputPath: options.InputPath!,
+            outputPath: outputPath,
+            width: options.Width,
+            height: options.Height,
+            fullPage: options.FullPage,
+            format: format,
+            quality: quality,
+            targetTerraformResourceId: options.TargetTerraformResourceId,
+            targetSelector: options.TargetSelector);
 
         try
         {

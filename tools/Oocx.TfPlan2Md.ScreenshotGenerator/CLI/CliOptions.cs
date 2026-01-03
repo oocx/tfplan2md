@@ -16,9 +16,11 @@ internal sealed class CliOptions
     /// <param name="fullPage">Value indicating whether to capture the full page.</param>
     /// <param name="format">Optional image format selection.</param>
     /// <param name="quality">Optional quality setting for lossy formats.</param>
+    /// <param name="targetTerraformResourceId">Optional Terraform resource address for partial capture.</param>
+    /// <param name="targetSelector">Optional selector for partial capture.</param>
     /// <param name="showHelp">Indicates whether help text should be displayed.</param>
     /// <param name="showVersion">Indicates whether version information should be displayed.</param>
-    public CliOptions(string? inputPath, string? outputPath, int width, int height, bool fullPage, ScreenshotFormat? format, int? quality, bool showHelp, bool showVersion)
+    public CliOptions(string? inputPath, string? outputPath, int width, int height, bool fullPage, ScreenshotFormat? format = null, int? quality = null, string? targetTerraformResourceId = null, string? targetSelector = null, bool showHelp = false, bool showVersion = false)
     {
         InputPath = inputPath;
         OutputPath = outputPath;
@@ -27,8 +29,29 @@ internal sealed class CliOptions
         FullPage = fullPage;
         Format = format;
         Quality = quality;
+        TargetTerraformResourceId = targetTerraformResourceId;
+        TargetSelector = targetSelector;
         ShowHelp = showHelp;
         ShowVersion = showVersion;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliOptions"/> class without an explicit output path.
+    /// Related feature: docs/features/028-html-screenshot-generation/specification.md.
+    /// </summary>
+    /// <param name="inputPath">Input HTML file path.</param>
+    /// <param name="width">Viewport width in pixels.</param>
+    /// <param name="height">Viewport height in pixels.</param>
+    /// <param name="fullPage">Value indicating whether to capture the full page.</param>
+    /// <param name="format">Optional image format selection.</param>
+    /// <param name="quality">Optional quality setting for lossy formats.</param>
+    /// <param name="targetTerraformResourceId">Optional Terraform resource address for partial capture.</param>
+    /// <param name="targetSelector">Optional selector for partial capture.</param>
+    /// <param name="showHelp">Indicates whether help text should be displayed.</param>
+    /// <param name="showVersion">Indicates whether version information should be displayed.</param>
+    public CliOptions(string? inputPath, int width, int height, bool fullPage, ScreenshotFormat? format = null, int? quality = null, string? targetTerraformResourceId = null, string? targetSelector = null, bool showHelp = false, bool showVersion = false)
+        : this(inputPath, null, width, height, fullPage, format, quality, targetTerraformResourceId, targetSelector, showHelp, showVersion)
+    {
     }
 
     /// <summary>
@@ -65,6 +88,16 @@ internal sealed class CliOptions
     /// Gets the quality value when specified for lossy formats.
     /// </summary>
     public int? Quality { get; }
+
+    /// <summary>
+    /// Gets the Terraform resource address used for partial capture when specified.
+    /// </summary>
+    public string? TargetTerraformResourceId { get; }
+
+    /// <summary>
+    /// Gets the selector used for partial capture when specified.
+    /// </summary>
+    public string? TargetSelector { get; }
 
     /// <summary>
     /// Gets a value indicating whether help text should be shown instead of executing.

@@ -46,7 +46,7 @@ public class ReportModelBuilderNoOpTests
                     "type_a",
                     "create",
                     "provider",
-                    new Change(["create"], null, null, null, null, null)),
+                    new Change(["create"])),
                 new(
                     "type_a.noop",
                     null,
@@ -54,7 +54,7 @@ public class ReportModelBuilderNoOpTests
                     "type_a",
                     "noop",
                     "provider",
-                    new Change(["no-op"], null, null, null, null, null))
+                    new Change(["no-op"]))
             });
 
         var builder = new ReportModelBuilder();

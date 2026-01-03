@@ -129,4 +129,30 @@ public sealed class CliParserTests
 
         Assert.Contains("height", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
+
+    /// <summary>
+    /// Ensures Terraform resource targeting is parsed.
+    /// Related acceptance: TC-05.
+    /// </summary>
+    [Fact]
+    public void Parse_WithTargetTerraformResourceId_ParsesValue()
+    {
+        var options = CliParser.Parse(new List<string> { "--input", "input.html", "--target-terraform-resource-id", "azurerm_firewall.example" });
+
+        Assert.Equal("azurerm_firewall.example", options.TargetTerraformResourceId);
+        Assert.Null(options.TargetSelector);
+    }
+
+    /// <summary>
+    /// Ensures selector targeting is parsed.
+    /// Related acceptance: TC-06.
+    /// </summary>
+    [Fact]
+    public void Parse_WithTargetSelector_ParsesValue()
+    {
+        var options = CliParser.Parse(new List<string> { "--input", "input.html", "--target-selector", "summary:has-text('firewall')" });
+
+        Assert.Equal("summary:has-text('firewall')", options.TargetSelector);
+        Assert.Null(options.TargetTerraformResourceId);
+    }
 }

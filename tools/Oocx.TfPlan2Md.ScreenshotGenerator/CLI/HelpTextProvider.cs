@@ -24,6 +24,10 @@ internal static class HelpTextProvider
             -w, --width <px>         Viewport width (default: 1920)
             -h, --height <px>        Viewport height (default: 1080)
             -f, --full-page          Capture full scrollable page (default: false)
+            --target-terraform-resource-id <address>
+                                     Capture only the resource block matching the Terraform address
+            --target-selector <selector>
+                                     Capture only elements matching a selector (Playwright syntax)
             --format <png|jpeg>      Image format (default: png)
             -q, --quality <0-100>    Quality for JPEG (default: 90)
             --help                   Show help information
@@ -34,6 +38,8 @@ internal static class HelpTextProvider
             tfplan2md-screenshot --input report.html --output report.png --full-page
             tfplan2md-screenshot --input report.html --output mobile.png --width 375 --height 667
             tfplan2md-screenshot --input report.html --output report.jpg --format jpeg --quality 80
+            tfplan2md-screenshot --input report.html --target-terraform-resource-id "azurerm_firewall.example"
+            tfplan2md-screenshot --input report.html --target-selector "summary:has-text('azurerm_firewall')"
         """;
     }
 }

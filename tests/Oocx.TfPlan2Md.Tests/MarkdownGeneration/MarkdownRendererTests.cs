@@ -567,12 +567,12 @@ public class MarkdownRendererTests
         var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
         var change = new Change(
-            Actions: ["create", "delete"],
-            Before: beforeElement,
-            After: afterElement,
-            AfterUnknown: emptyElement,
-            BeforeSensitive: emptyElement,
-            AfterSensitive: emptyElement
+            actions: ["create", "delete"],
+            before: beforeElement,
+            after: afterElement,
+            afterUnknown: emptyElement,
+            beforeSensitive: emptyElement,
+            afterSensitive: emptyElement
         );
 
         var resourceChange = new ResourceChange(
@@ -624,12 +624,12 @@ public class MarkdownRendererTests
         var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
         var change = new Change(
-            Actions: ["create"],
-            Before: null,
-            After: afterElement,
-            AfterUnknown: emptyElement,
-            BeforeSensitive: emptyElement,
-            AfterSensitive: afterSensitiveElement
+            actions: ["create"],
+            before: null,
+            after: afterElement,
+            afterUnknown: emptyElement,
+            beforeSensitive: emptyElement,
+            afterSensitive: afterSensitiveElement
         );
 
         var resourceChange = new ResourceChange(
@@ -681,12 +681,12 @@ public class MarkdownRendererTests
         var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
         var change = new Change(
-            Actions: ["create"],
-            Before: null,
-            After: afterElement,
-            AfterUnknown: afterUnknownElement,
-            BeforeSensitive: emptyElement,
-            AfterSensitive: emptyElement
+            actions: ["create"],
+            before: null,
+            after: afterElement,
+            afterUnknown: afterUnknownElement,
+            beforeSensitive: emptyElement,
+            afterSensitive: emptyElement
         );
 
         var resourceChange = new ResourceChange(
@@ -733,12 +733,12 @@ public class MarkdownRendererTests
         var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
         var change = new Change(
-            Actions: ["delete"],
-            Before: beforeElement,
-            After: null,
-            AfterUnknown: emptyElement,
-            BeforeSensitive: emptyElement,
-            AfterSensitive: emptyElement
+            actions: ["delete"],
+            before: beforeElement,
+            after: null,
+            afterUnknown: emptyElement,
+            beforeSensitive: emptyElement,
+            afterSensitive: emptyElement
         );
 
         var resourceChange = new ResourceChange(
@@ -869,12 +869,12 @@ public class MarkdownRendererTests
             var emptyElement = System.Text.Json.JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
             var change = new Change(
-                Actions: ["no-op"],
-                Before: attributesElement,
-                After: attributesElement,
-                AfterUnknown: emptyElement,
-                BeforeSensitive: emptyElement,
-                AfterSensitive: emptyElement
+                actions: ["no-op"],
+                before: attributesElement,
+                after: attributesElement,
+                afterUnknown: emptyElement,
+                beforeSensitive: emptyElement,
+                afterSensitive: emptyElement
             );
 
             resourceChanges.Add(new ResourceChange(

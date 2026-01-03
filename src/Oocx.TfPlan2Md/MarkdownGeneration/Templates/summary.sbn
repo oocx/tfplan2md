@@ -1,9 +1,5 @@
-# {{ report_title ?? "Terraform Plan Summary" }}
-
-{{ if terraform_version }}**Terraform Version:** {{ terraform_version | escape_markdown }}{{ end }}
-{{ if timestamp }}
-**Generated:** {{ timestamp | escape_markdown }}
-{{ end }}
+{{ default_report_title = "Terraform Plan Summary" }}
+{{ include "_header.sbn" }}
 
 ## Summary
 

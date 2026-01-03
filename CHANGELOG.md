@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.17"></a>
+## [1.0.0-alpha.17](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2026-01-03)
+
+### ✨ Features
+
+* **workflow:** add website memory backlog ([ee2073b](https://github.com/oocx/tfplan2md/commit/ee2073bfde2f85dbc827aa8b7f0778d921b2c56f))
+
+### 📚 Documentation
+
+* **workflow:** add retrospective and metrics for feature 029 ([836a258](https://github.com/oocx/tfplan2md/commit/836a2584dd78726b799363b69bf98c7595c4c871))
+
 <a name="1.0.0-alpha.16"></a>
 ## [1.0.0-alpha.16](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2026-01-03)
 

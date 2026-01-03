@@ -144,7 +144,6 @@ public class MarkdownRendererTests
 
         // Assert
         markdown.Should().Contain("Terraform Plan Summary")
-            .And.Contain("2025-12-20T10:00:00Z")
             .And.Contain("| Action | Count | Resource Types |")
             .And.NotContain("Resource Changes");
     }

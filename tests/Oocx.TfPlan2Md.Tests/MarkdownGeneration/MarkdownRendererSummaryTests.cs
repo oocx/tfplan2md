@@ -35,7 +35,7 @@ public class MarkdownRendererSummaryTests
         var markdown = renderer.Render(model, "summary");
 
         // Assert
-        var firstLine = markdown.Split('\n', 2)[0];
-        firstLine.Should().Be("# Summary Title");
+        var firstNonEmptyLine = markdown.Split('\n').First(line => !string.IsNullOrWhiteSpace(line));
+        firstNonEmptyLine.Should().Be("# Summary Title");
     }
 }

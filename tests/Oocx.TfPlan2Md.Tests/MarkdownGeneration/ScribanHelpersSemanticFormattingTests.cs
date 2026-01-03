@@ -98,6 +98,6 @@ public class ScribanHelpersSemanticFormattingTests
     {
         var result = ScribanHelpers.FormatAttributeValueSummary("name", "hub", null);
 
-        result.Should().Be("<code>hub</code>");
+        result.Should().Be("<code>🆔\u00A0hub</code>");
     }
 }

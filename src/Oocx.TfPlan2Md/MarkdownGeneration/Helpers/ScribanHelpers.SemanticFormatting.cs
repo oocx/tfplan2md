@@ -109,6 +109,11 @@ public static partial class ScribanHelpers
             return roleFormatted.Trim('`');
         }
 
+        if (TryFormatNameAttributePlain(normalizedName, normalizedValue, out var nameFormatted))
+        {
+            return nameFormatted;
+        }
+
         if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
         {
             return "✳️";
@@ -179,6 +184,11 @@ public static partial class ScribanHelpers
         if (TryFormatRoleDefinition(normalizedName, normalizedValue, context, out var roleFormatted))
         {
             return roleFormatted;
+        }
+
+        if (TryFormatNameAttribute(normalizedName, normalizedValue, context, out var nameFormatted))
+        {
+            return nameFormatted;
         }
 
         if (value.Equals("*", StringComparison.OrdinalIgnoreCase))

@@ -67,11 +67,11 @@ Update existing snapshot tests to use the deterministic metadata provider so tha
 Update semantic formatting helpers to add icons for `name` and `resource_group_name` attributes.
 
 **Acceptance Criteria:**
-- [ ] `resource_group_name` attribute displays with 📁 icon.
-- [ ] `name` attribute (all providers) displays with 🆔 icon.
-- [ ] Icons use non-breaking space (`&nbsp;`) between icon and value.
-- [ ] Formatting is consistent in both table cells and `<summary>` blocks.
-- [ ] `ScribanHelpers.FormatAttributeValue*` (or equivalent) are updated.
+- [x] `resource_group_name` attribute displays with 📁 icon.
+- [x] `name` attribute (all providers) displays with 🆔 icon.
+- [x] Icons use non-breaking space (`&nbsp;`) between icon and value.
+- [x] Formatting is consistent in both table cells and `<summary>` blocks.
+- [x] `ScribanHelpers.FormatAttributeValue*` (or equivalent) are updated.
 
 **Dependencies:** None
 
@@ -85,8 +85,8 @@ Update semantic formatting helpers to add icons for `name` and `resource_group_n
 Ensure that the resource summary line (the `<summary>` tag) also uses the new semantic icons for consistency.
 
 **Acceptance Criteria:**
-- [ ] `ResourceChangeModel.SummaryHtml` (or equivalent) uses the semantic formatting helpers for `name` and `resource_group_name`.
-- [ ] Icons appear in the expandable resource header in the report.
+- [x] `ResourceChangeModel.SummaryHtml` (or equivalent) uses the semantic formatting helpers for `name` and `resource_group_name`.
+- [x] Icons appear in the expandable resource header in the report.
 
 **Dependencies:** Task 4
 

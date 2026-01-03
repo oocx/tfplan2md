@@ -4,10 +4,10 @@ This document is the **source of truth** for the current website structure and f
 
 ## Current site map (derived from `website/`)
 
-- `/features/index.html`
+### Implemented Pages
+- `/features/index.html` ✅
 
-## Planned additions (not yet present in `website/`)
-
+### Planned Pages (not yet created)
 - `/index.html`
 - `/getting-started.html`
 - `/docs.html`
@@ -15,6 +15,29 @@ This document is the **source of truth** for the current website structure and f
 - `/providers/index.html`
 - `/architecture.html`
 - `/contributing.html`
+- `/features/firewall-rules.html`
+- `/features/nsg-rules.html`
+- `/features/azure-optimizations.html`
+- `/features/large-values.html`
+- `/features/misc.html`
+- `/features/module-grouping.html`
+- `/features/semantic-icons.html`
+- `/features/custom-templates.html`
+
+## Navigation Structure
+
+The navbar (present in `/features/index.html`) links to:
+
+| Nav Item | Target | Status |
+|----------|--------|--------|
+| Features | `../features/index.html` | ✅ Exists |
+| Install | `../getting-started.html` | ❌ Missing |
+| Docs | `../docs.html` | ❌ Missing |
+| Examples | `../examples.html` | ❌ Missing |
+| Providers | `../providers/index.html` | ❌ Missing |
+| Architecture | `../architecture.html` | ❌ Missing |
+| Contributing | `../contributing.html` | ❌ Missing |
+| GitHub (CTA) | `https://github.com/oocx/tfplan2md` | ✅ External |
 
 ## Page specifications
 
@@ -22,25 +45,96 @@ This document is the **source of truth** for the current website structure and f
 
 - **Title:** Features - tfplan2md
 - **Purpose:** Present the feature overview and link to deeper feature pages.
-- **Content summary:** Feature categories (“What Sets Us Apart”, “Built-In Capabilities”, “Also Included”) with brief descriptions and links.
+- **Content summary:** Feature categories ("What Sets Us Apart", "Built-In Capabilities", "Also Included") with brief descriptions and links.
 - **Target audience:** Evaluators, Users
-- **Links to:**
-  - `../index.html` (planned)
-  - `../getting-started.html` (planned)
-  - `../docs.html` (planned)
-  - `../examples.html` (planned)
-  - `../providers/index.html` (planned)
-  - `../architecture.html` (planned)
-  - `../contributing.html` (planned)
+- **Sections:**
+  1. Hero with title and subtitle
+  2. "What Sets Us Apart" - 8 featured cards (Semantic Diffs, Firewall Rules, NSG Rules, Role Assignment, Large Values, CI/CD, PR Rendering, Friendly Names)
+  3. "Built-In Capabilities" - 8 cards (Plan Summary, Module Grouping, Collapsible Details, Tag Visualization, Smart Iconography, Custom Templates, Provider Agnostic, Local Names)
+  4. "Also Included" - 3 compact cards (Sensitive Masking, Minimal Docker, Docker Support)
+  5. Footer with Product/Resources/Community links
+- **Feature links (internal, all missing):**
+  - `firewall-rules.html`
+  - `nsg-rules.html`
+  - `azure-optimizations.html#principal-mapping`
+  - `large-values.html`
+  - `misc.html#friendly-names`
+  - `misc.html#plan-summary`
+  - `module-grouping.html`
+  - `misc.html#collapsible-details`
+  - `semantic-icons.html#tags`
+  - `semantic-icons.html`
+  - `custom-templates.html`
+  - `misc.html#local-names`
+- **External links:**
   - `https://github.com/oocx/tfplan2md`
-  - `firewall-rules.html` (planned)
-  - `nsg-rules.html` (planned)
-  - `azure-optimizations.html#principal-mapping` (planned)
-  - `large-values.html` (planned)
-  - `misc.html#friendly-names` (planned)
-  - `misc.html#plan-summary` (planned)
-  - `module-grouping.html` (planned)
-  - `misc.html#collapsible-details` (planned)
-  - `semantic-icons.html#tags` (planned)
+  - `https://hub.docker.com/r/oocx/tfplan2md`
+  - `https://github.com/oocx/tfplan2md/issues`
+  - `https://github.com/oocx/tfplan2md/blob/main/LICENSE`
+- **Accessibility features:**
+  - Theme toggle with aria-label
+  - Mobile menu button with aria-label
+  - Semantic heading hierarchy (h1 → h2 → h3)
 - **Decision log:**
   - 2026-01-03: Seeded from currently present HTML pages in `website/`.
+  - 2026-01-03: Documented all internal/external links and navigation structure.
+
+### /index.html (Planned)
+
+- **Title:** tfplan2md - Human-readable Terraform plan reports
+- **Purpose:** Homepage with hero, problem/solution, and CTAs
+- **Target audience:** All visitors
+- **Content sources:** README.md
+
+### /getting-started.html (Planned)
+
+- **Title:** Get Started - tfplan2md
+- **Purpose:** Installation and first usage guide
+- **Target audience:** Users
+- **Content sources:** README.md (Quick Start section)
+
+### /docs.html (Planned)
+
+- **Title:** Documentation - tfplan2md
+- **Purpose:** CLI reference and template customization
+- **Target audience:** Users, Power Users
+- **Content sources:** docs/spec.md, docs/features.md
+
+### /examples.html (Planned)
+
+- **Title:** Examples - tfplan2md
+- **Purpose:** Interactive examples and before/after visuals
+- **Target audience:** Evaluators, Users
+- **Content sources:** examples/comprehensive-demo/, artifacts/
+- **Requirements (from chat):**
+  - Show examples in both **rendered** and **source code (markdown)** views
+  - Ability to **switch between views**
+  - **Markdown syntax highlighting** in source view
+  - Rendered view must use style that **approximates Azure DevOps Services PR** rendering
+  - **Full screen button** for both views
+  - **Must use real tfplan2md reports, not mockups**
+
+### /providers/index.html (Planned)
+
+- **Title:** Providers - tfplan2md
+- **Purpose:** Provider-specific template documentation
+- **Target audience:** Power Users
+- **Content sources:** docs/features.md (provider sections)
+
+### /architecture.html (Planned)
+
+- **Title:** Architecture - tfplan2md
+- **Purpose:** High-level system overview (arc42)
+- **Target audience:** Contributors
+- **Content sources:** docs/architecture.md
+
+### /contributing.html (Planned)
+
+- **Title:** Contributing - tfplan2md
+- **Purpose:** How to contribute, AI workflow
+- **Target audience:** Contributors
+- **Content sources:** CONTRIBUTING.md, docs/agents.md
+- **Requirements (from chat):**
+  - Include information about how this project uses AI
+  - Describe the multi-agent workflow (from agents.md)
+  - "Built 100% with GitHub Copilot" badge should link here

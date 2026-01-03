@@ -93,6 +93,9 @@ Before starting, familiarize yourself with:
 - [website/_memory/non-functional-requirements.md](../../website/_memory/non-functional-requirements.md) - Source of truth for NFRs (accessibility, browser support, etc.)
 - [website/_memory/screenshots.md](../../website/_memory/screenshots.md) - Source of truth for screenshots used on the site + generation commands
 - [website/_memory/code-examples.md](../../website/_memory/code-examples.md) - Source of truth for code examples used on the site + generation commands
+- [website/_memory/chat-summary.md](../../website/_memory/chat-summary.md) - Consolidated instructions from design sessions with Maintainer
+- [website/_memory/content-strategy.md](../../website/_memory/content-strategy.md) - Audience definitions and content principles
+- [website/_memory/design-decisions.md](../../website/_memory/design-decisions.md) - Layout and visual decisions
 - [README.md](../../README.md) - Source for homepage content and feature descriptions
 - [docs/features.md](../../docs/features.md) - Detailed feature descriptions for feature pages
 - [docs/spec.md](../../docs/spec.md) - Project overview and technical details
@@ -113,6 +116,9 @@ The following files under `website/_memory/` are mandatory “memory” for webs
 - `non-functional-requirements.md`: accessibility and other quality constraints
 - `screenshots.md`: screenshot inventory and exact generation commands
 - `code-examples.md`: code example inventory and exact generation commands
+- `chat-summary.md`: consolidated instructions from design sessions — reference when clarifying Maintainer intent
+- `content-strategy.md`: audience definitions and content principles ("show don't tell", "never make up information")
+- `design-decisions.md`: specific layout and visual decisions (hero layout, section separation, theme config)
 
 Backlog rules:
 - Add new work to `website/_memory/backlog.md` before starting implementation.

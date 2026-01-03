@@ -167,9 +167,9 @@ Implement the logic to capture only the targeted element(s) using Playwright.
 Update project documentation and verify the feature with UAT.
 
 **Acceptance Criteria:**
-- [ ] `README.md` or other relevant docs updated with new CLI options (`--hide-metadata`, screenshot targets).
-- [ ] UAT artifacts generated and verified in GitHub and Azure DevOps.
-- [ ] All UAT scenarios from `uat-test-plan.md` pass.
+- [x] `README.md` or other relevant docs updated with new CLI options (`--hide-metadata`, screenshot targets).
+- [x] UAT artifacts generated and verified in GitHub and Azure DevOps.
+- [x] All UAT scenarios from `uat-test-plan.md` pass.
 
 **Dependencies:** All previous tasks
 

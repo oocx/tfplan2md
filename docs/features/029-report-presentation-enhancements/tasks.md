@@ -16,10 +16,10 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Create a mechanism to provide tfplan2md version, commit hash, and generation timestamp to the report model. Ensure it can be mocked/overridden for deterministic snapshot tests.
 
 **Acceptance Criteria:**
-- [ ] `ReportModel` includes fields for `TfPlan2MdVersion`, `CommitHash`, `GeneratedAtUtc`, and `HideMetadata`.
-- [ ] Metadata is sourced from assembly attributes (version, commit).
-- [ ] A `IMetadataProvider` (or similar) interface is introduced to allow injecting fixed values during tests.
-- [ ] Default implementation uses real assembly data and `DateTimeOffset.UtcNow`.
+- [x] `ReportModel` includes fields for `TfPlan2MdVersion`, `CommitHash`, `GeneratedAtUtc`, and `HideMetadata`.
+- [x] Metadata is sourced from assembly attributes (version, commit).
+- [x] A `IMetadataProvider` (or similar) interface is introduced to allow injecting fixed values during tests.
+- [x] Default implementation uses real assembly data and `DateTimeOffset.UtcNow`.
 
 **Dependencies:** None
 

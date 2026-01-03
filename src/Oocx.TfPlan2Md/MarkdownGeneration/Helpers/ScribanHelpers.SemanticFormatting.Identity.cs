@@ -95,6 +95,70 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Formats name-related attributes with semantic icons for the requested context.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate (e.g., name or resource_group_name).</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatNameAttribute(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (attributeName.Equals("resource_group_name", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValue($"📁 {value}", context, false);
+            return true;
+        }
+
+        if (attributeName.Equals("name", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValue($"🆔 {value}", context, false);
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Formats name-related attributes with semantic icons without applying code wrapping.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatNameAttributePlain(string attributeName, string value, out string formatted)
+    {
+        if (attributeName.Equals("resource_group_name", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValuePlain($"📁 {value}");
+            return true;
+        }
+
+        if (attributeName.Equals("name", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValuePlain($"🆔 {value}");
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Applies non-breaking spacing to icon-prefixed values without adding code fences.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    /// <param name="iconValue">Icon-prefixed value.</param>
+    /// <returns>Value with non-breaking spacing preserved.</returns>
+    private static string FormatIconValuePlain(string iconValue)
+    {
+        return EnsureNonBreakingIconSpacing(iconValue);
+    }
+
+    /// <summary>
     /// Replaces the first regular space after an icon with a non-breaking space to prevent icon-value separation in rendered markdown.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>

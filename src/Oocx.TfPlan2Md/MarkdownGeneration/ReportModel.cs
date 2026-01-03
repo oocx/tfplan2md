@@ -408,12 +408,12 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
         var detailParts = new List<string>();
 
-        var primaryContext = !string.IsNullOrWhiteSpace(nameValue) ? ScribanHelpers.FormatCodeSummary(nameValue!) : null;
+        var primaryContext = !string.IsNullOrWhiteSpace(nameValue) ? ScribanHelpers.FormatAttributeValueSummary("name", nameValue!, null) : null;
 
         if (!string.IsNullOrWhiteSpace(resourceGroup))
         {
-            var groupText = $"in {ScribanHelpers.FormatCodeSummary(resourceGroup!)}";
-            primaryContext = primaryContext != null ? $"{primaryContext} {groupText}" : groupText;
+            var groupText = ScribanHelpers.FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
+            primaryContext = primaryContext != null ? $"{primaryContext} in {groupText}" : groupText;
         }
 
         if (!string.IsNullOrWhiteSpace(location))

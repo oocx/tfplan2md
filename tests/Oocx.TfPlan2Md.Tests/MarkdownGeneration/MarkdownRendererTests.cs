@@ -495,7 +495,7 @@ public class MarkdownRendererTests
         // Assert - For creates we should show a 2-column table (Attribute | Value) and the expected values
         var rgSection = ResourceSection(markdown, "azurerm_resource_group.main");
         rgSection.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| {Escape("name")} | `{Escape("rg-new-project")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape($"🆔{Nbsp}rg-new-project")}` |")
             .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |");
 
         var stSection = ResourceSection(markdown, "azurerm_storage_account.main");
@@ -537,12 +537,12 @@ public class MarkdownRendererTests
         var stSection = ResourceSection(markdown, "azurerm_storage_account.old");
         stSection.Should().Contain("| Attribute | Value |")
             .And.Contain($"| {Escape("account_tier")} | `{Escape("Standard")}` |")
-            .And.Contain($"| {Escape("name")} | `{Escape("stoldproject")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape($"🆔{Nbsp}stoldproject")}` |")
             .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |");
 
         var rgSection = ResourceSection(markdown, "azurerm_resource_group.old");
         rgSection.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| {Escape("name")} | `{Escape("rg-old-project")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape($"🆔{Nbsp}rg-old-project")}` |")
             .And.Contain($"| {Escape("location")} | `{Escape($"🌍{Nbsp}westeurope")}` |");
     }
 
@@ -600,7 +600,7 @@ public class MarkdownRendererTests
         // Assert - replace should use the Before/After table
         var section = ResourceSection(markdown, "example_resource.replace_me");
         section.Should().Contain("| Attribute | Before | After |")
-            .And.Contain($"| {Escape("name")} | `{Escape("old")}` | `{Escape("new")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape($"🆔{Nbsp}old")}` | `{Escape($"🆔{Nbsp}new")}` |")
             .And.Contain($"| {Escape("size")} | `{Escape("small")}` | `{Escape("large")}` |");
     }
 
@@ -658,7 +658,7 @@ public class MarkdownRendererTests
         var section = ResourceSection(markdown, "example_resource.sensitive");
         section.Should().Contain("| Attribute | Value |")
             .And.Contain($"| {Escape("api_key")} | `{Escape("(sensitive)")}` |")
-            .And.Contain($"| {Escape("name")} | `{Escape("sensitive_resource")}` |");
+            .And.Contain($"| {Escape("name")} | `{Escape($"🆔{Nbsp}sensitive_resource")}` |");
     }
 
     [Fact]
@@ -766,7 +766,7 @@ public class MarkdownRendererTests
         // Assert - the null `location` should not be shown; only `name` should appear
         var section = ResourceSection(markdown, "example_resource.partial_delete");
         section.Should().Contain("| Attribute | Value |")
-            .And.Contain($"| {Escape("name")} | `{Escape("rg-old-project")}` |")
+            .And.Contain($"| {Escape("name")} | `{Escape($"🆔{Nbsp}rg-old-project")}` |")
             .And.NotContain($"`{Escape("location")}`");
     }
 

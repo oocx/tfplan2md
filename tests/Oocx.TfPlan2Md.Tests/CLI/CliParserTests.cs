@@ -23,6 +23,7 @@ public class CliParserTests
         options.ShowUnchangedValues.Should().BeFalse();
         options.ShowHelp.Should().BeFalse();
         options.ShowVersion.Should().BeFalse();
+        options.HideMetadata.Should().BeFalse();
     }
 
     [Fact]
@@ -166,6 +167,19 @@ public class CliParserTests
 
         // Assert
         options.ShowUnchangedValues.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Parse_HideMetadataFlag_SetsHideMetadata()
+    {
+        // Arrange
+        var args = new[] { "--hide-metadata" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.HideMetadata.Should().BeTrue();
     }
 
     [Fact]

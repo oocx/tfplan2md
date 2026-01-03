@@ -58,6 +58,12 @@ public record CliOptions
     public bool ShowUnchangedValues { get; init; }
 
     /// <summary>
+    /// Indicates whether tfplan2md metadata should be hidden from the report header.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    public bool HideMetadata { get; init; }
+
+    /// <summary>
     /// Controls the rendering format for large attribute values.
     /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
@@ -80,6 +86,7 @@ public static class CliParser
         var showHelp = false;
         var showVersion = false;
         var showUnchangedValues = false;
+        var hideMetadata = false;
         var largeValueFormat = LargeValueFormat.InlineDiff;
 
         for (var i = 0; i < args.Length; i++)
@@ -151,6 +158,9 @@ public static class CliParser
                 case "--show-unchanged-values":
                     showUnchangedValues = true;
                     break;
+                case "--hide-metadata":
+                    hideMetadata = true;
+                    break;
                 case "--large-value-format":
                     if (i + 1 < args.Length)
                     {
@@ -183,6 +193,7 @@ public static class CliParser
             ShowVersion = showVersion,
             PrincipalMappingFile = principalMappingFile,
             ShowUnchangedValues = showUnchangedValues,
+            HideMetadata = hideMetadata,
             LargeValueFormat = largeValueFormat,
             ReportTitle = reportTitle
         };

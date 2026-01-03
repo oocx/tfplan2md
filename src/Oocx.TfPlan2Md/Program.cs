@@ -90,7 +90,8 @@ static async Task<int> RunAsync(CliOptions options)
         showUnchangedValues: options.ShowUnchangedValues,
         largeValueFormat: options.LargeValueFormat,
         reportTitle: options.ReportTitle,
-        principalMapper: principalMapper);
+        principalMapper: principalMapper,
+        hideMetadata: options.HideMetadata);
     var model = modelBuilder.Build(plan);
 
     // Render to Markdown

@@ -16,6 +16,7 @@ public static class HelpTextProvider
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
             ("--large-value-format <inline-diff|simple-diff>", "Controls rendering of large attribute values."),
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
+            ("--hide-metadata", "Hide tfplan2md version/commit/timestamp metadata in the header."),
             ("--show-sensitive", "Show sensitive values unmasked."),
             ("-h, --help", "Display this help message."),
             ("-v, --version", "Display version information."),

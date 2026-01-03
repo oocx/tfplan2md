@@ -11,6 +11,19 @@
     <AssemblyName>tfplan2md</AssemblyName>
   </PropertyGroup>
 
+  <Target Name="SetSourceRevisionId" BeforeTargets="GenerateAssemblyInfo" Condition="'$(SourceRevisionId)'==''">
+    <Exec Command="git rev-parse --short HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceRevisionIdFromGit" />
+    </Exec>
+    <PropertyGroup>
+      <SourceRevisionId Condition="'$(SourceRevisionId)'=='' and '$(SourceRevisionIdFromGit)'!=''">$([System.String]::Copy('$(SourceRevisionIdFromGit)').Trim())</SourceRevisionId>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <AssemblyMetadata Include="CommitHash" Value="$(SourceRevisionId)" Condition="'$(SourceRevisionId)'!=''" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Scriban" Version="6.5.2" />
   </ItemGroup>

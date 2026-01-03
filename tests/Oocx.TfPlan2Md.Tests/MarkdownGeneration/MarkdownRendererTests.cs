@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using AwesomeAssertions;
@@ -732,6 +733,10 @@ public class MarkdownRendererTests
         {
             TerraformVersion = "1.0.0",
             FormatVersion = "1.0",
+            TfPlan2MdVersion = "1.0.0",
+            CommitHash = "unknown",
+            GeneratedAtUtc = DateTimeOffset.Parse("2026-01-01T00:00:00Z", CultureInfo.InvariantCulture),
+            HideMetadata = false,
             Changes = [],
             ModuleChanges = [],
             Summary = new SummaryModel

@@ -216,6 +216,62 @@ Line 4
     }
 
     /// <summary>
+    /// Ensures Azure DevOps flavor preserves style attributes on details elements for resource borders.
+    /// Related acceptance: TC-03 (Feature 029).
+    /// </summary>
+    [Fact]
+    public void RenderFragment_AzDo_PreservesDetailsStyleAttributes()
+    {
+        const string markdown = "<details style=\"margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;\"><summary>Resource</summary>Content</details>";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        Assert.Contains("<details", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("style=\"", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("border:1px solid #f0f0f0", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("margin-bottom:12px", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("padding:12px", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Ensures GitHub flavor strips style attributes from details elements matching platform sanitization.
+    /// Related acceptance: TC-04 (Feature 029).
+    /// </summary>
+    [Fact]
+    public void RenderFragment_GitHub_StripsDetailsStyleAttributes()
+    {
+        const string markdown = "<details style=\"margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;\"><summary>Resource</summary>Content</details>";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.GitHub);
+
+        Assert.Contains("<details", html, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("style=", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<summary>Resource</summary>", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Ensures Azure DevOps flavor normalizes details tags with style attributes (trims trailing semicolons).
+    /// Related acceptance: TC-03 (Feature 029).
+    /// </summary>
+    [Fact]
+    public void RenderFragment_AzDo_NormalizesDetailsStyleAttributes()
+    {
+        const string markdown = "<details style=\"border:1px solid #f0f0f0; padding:12px; \"><summary>Resource</summary>Content</details>";
+
+        var renderer = CreateRenderer();
+        var html = renderer.RenderFragment(markdown, HtmlFlavor.AzureDevOps);
+
+        var match = Regex.Match(html, "<details[^>]*style=\"([^\"]*)\"", RegexOptions.IgnoreCase);
+        Assert.True(match.Success, "Expected style attribute on details tag");
+        var styleValue = match.Groups[1].Value.Trim();
+        Assert.False(styleValue.EndsWith(';'), "Trailing semicolon should be trimmed from style attribute");
+        Assert.Contains("border:1px solid #f0f0f0", styleValue, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("padding:12px", styleValue, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
     /// Creates the renderer with a default pipeline factory for tests.
     /// </summary>
     /// <returns>An initialized <see cref="MarkdownToHtmlRenderer"/> instance.</returns>

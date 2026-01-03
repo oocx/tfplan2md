@@ -103,7 +103,7 @@ Apply consistent border styling to all resource blocks in the Markdown output.
 - [x] Default resource template (`_resource.sbn`) uses `<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">`.
 - [x] Resource-specific templates that don't use `<details>` (e.g., Firewall, NSG) are wrapped in `<details open style="...">`.
 - [x] Nested `<details>` blocks (for large attributes) do NOT get the border styling (only the outermost resource block).
-- [ ] Added a stable way to identify resource blocks for the screenshot tool (e.g., a specific text pattern or structure as per architecture).
+- [x] Added a stable way to identify resource blocks for the screenshot tool (text-based matching of module heading + resource type/name in summary, per architecture section 2.1).
 
 **Dependencies:** None
 
@@ -117,9 +117,9 @@ Apply consistent border styling to all resource blocks in the Markdown output.
 Ensure the `HtmlRendererApp` correctly handles the new inline styles for different platforms.
 
 **Acceptance Criteria:**
-- [ ] Azure DevOps flavor preserves/normalizes the `style` attribute on `<details>`.
-- [ ] GitHub flavor strips the `style` attribute from `<details>`.
-- [ ] Unit tests in `Oocx.TfPlan2Md.HtmlRenderer.Tests` verify this behavior.
+- [x] Azure DevOps flavor preserves/normalizes the `style` attribute on `<details>`.
+- [x] GitHub flavor strips the `style` attribute from `<details>`.
+- [x] Unit tests in `Oocx.TfPlan2Md.HtmlRenderer.Tests` verify this behavior.
 
 **Dependencies:** Task 6
 
@@ -133,9 +133,9 @@ Ensure the `HtmlRendererApp` correctly handles the new inline styles for differe
 Extend the `ScreenshotGenerator` tool with options to target specific elements.
 
 **Acceptance Criteria:**
-- [ ] `ScreenshotGenerator` accepts `--target-terraform-resource-id <address>`.
-- [ ] `ScreenshotGenerator` accepts `--target-selector <selector>`.
-- [ ] CLI parser correctly populates the options object.
+- [x] `ScreenshotGenerator` accepts `--target-terraform-resource-id <address>`.
+- [x] `ScreenshotGenerator` accepts `--target-selector <selector>`.
+- [x] CLI parser correctly populates the options object.
 
 **Dependencies:** None
 
@@ -149,11 +149,11 @@ Extend the `ScreenshotGenerator` tool with options to target specific elements.
 Implement the logic to capture only the targeted element(s) using Playwright.
 
 **Acceptance Criteria:**
-- [ ] If `--target-terraform-resource-id` is used, the tool locates the resource block by matching the module heading and summary text (as per architecture).
-- [ ] If `--target-selector` is used, the tool uses the Playwright selector.
-- [ ] If multiple elements match, the union bounding box is captured.
-- [ ] The tool fails with a non-zero exit code and clear error message if no target is found.
-- [ ] The output image is cropped to the target element(s).
+- [x] If `--target-terraform-resource-id` is used, the tool locates the resource block by matching the module heading and summary text (as per architecture).
+- [x] If `--target-selector` is used, the tool uses the Playwright selector.
+- [x] If multiple elements match, the union bounding box is captured.
+- [x] The tool fails with a non-zero exit code and clear error message if no target is found.
+- [x] The output image is cropped to the target element(s).
 
 **Dependencies:** Task 8, Task 6 (for stable targeting)
 

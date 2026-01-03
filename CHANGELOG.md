@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.16"></a>
+## [1.0.0-alpha.16](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2026-01-03)
+
+### ✨ Features
+
+* add deterministic metadata provider ([fe9ed1e](https://github.com/oocx/tfplan2md/commit/fe9ed1ec20c8ea844b9b867dc8c649c8ce6ac48e))
+* add header metadata flag and rendering ([c119a8c](https://github.com/oocx/tfplan2md/commit/c119a8c30876a62e44f35c91b508f636dd27b532))
+* add semantic icons for names ([cb003e5](https://github.com/oocx/tfplan2md/commit/cb003e5205299c21c8453b45686b5d813c871763))
+* style resource details with borders\n\nSNAPSHOT_UPDATE_OK ([c419ccb](https://github.com/oocx/tfplan2md/commit/c419ccb10ea3d9f1c81c2a0f07229ebef6a0bada))
+
+### 🐛 Bug Fixes
+
+* add semantic icons to Azure scope formatting ([144ccda](https://github.com/oocx/tfplan2md/commit/144ccda28cd6a6ea3b7bc066ab532b8ebf1de383))
+* improve change constructors and named args ([f341649](https://github.com/oocx/tfplan2md/commit/f341649049ed189464ac090e4d7945bc31cb6f9f))
+* remove duplicate Generated timestamp from report header ([fc079c8](https://github.com/oocx/tfplan2md/commit/fc079c87c07576887f0ab36593505689668c5286))
+
+### 📚 Documentation
+
+* add architecture for report presentation enhancements ([1f39c8a](https://github.com/oocx/tfplan2md/commit/1f39c8abc555e6278cf183467bad11e7360e86b6))
+* add feature specification for 025-report-presentation-enhancements ([80fe64f](https://github.com/oocx/tfplan2md/commit/80fe64f952b7be86a9ec914fb21f87ad42b7f576))
+* add tasks for report-presentation-enhancements ([69dcb10](https://github.com/oocx/tfplan2md/commit/69dcb10185e62f85b363df4574c75db3c09b320a))
+* add test plan and UAT test plan for 029-report-presentation-enhancements ([ed37465](https://github.com/oocx/tfplan2md/commit/ed37465cbca0ba1663350e0530c08fa23c04b785))
+* mark task 1 complete ([a78aff7](https://github.com/oocx/tfplan2md/commit/a78aff7420bbcc9ae43a19bdbb7a84df0c833e78))
+* mark task 2 complete ([4bc2ebf](https://github.com/oocx/tfplan2md/commit/4bc2ebfaf78681235f43d1a5c02a6f06bc3402bc))
+* regenerate demo artifacts with UAT fixes ([5a94766](https://github.com/oocx/tfplan2md/commit/5a94766a5b87098ccd805db4ca2607df933c9fcf))
+* regenerate HTML artifacts with updated header format ([3ae23d4](https://github.com/oocx/tfplan2md/commit/3ae23d40fc57d200394e323f8d6aa43b9e34aad0))
+* update rendering snapshots for report presentation enhancements ([2bc1900](https://github.com/oocx/tfplan2md/commit/2bc19001d9180f6b8c671e97e48e0e563db36f48))
+* update task 6 checklist ([4b16b15](https://github.com/oocx/tfplan2md/commit/4b16b154e80eafafeea9077fe6fa9d618c6b76da))
+* update UAT results for report presentation enhancements ([ef7f2f8](https://github.com/oocx/tfplan2md/commit/ef7f2f8577498358971178a0a5dbe9d1fc9947cd))
+* **feature-029:** add code review report ([9049245](https://github.com/oocx/tfplan2md/commit/9049245e32475915f25232526f1137cdadfd607d))
+* **feature-029:** document report presentation enhancements ([4fd8553](https://github.com/oocx/tfplan2md/commit/4fd8553035e5c580f66cdc4ab748ce1d29548501))
+* **feature-029:** update comprehensive demo artifact with latest enhancements ([2cc7cec](https://github.com/oocx/tfplan2md/commit/2cc7cec49b2e3ac82afe05c91ccf632483264214))
+* **workflow:** add retrospective for feature 028 ([221ccfc](https://github.com/oocx/tfplan2md/commit/221ccfcc4c078761da0f6426c7124ca67bf1fa53))
+
 <a name="1.0.0-alpha.15"></a>
 ## [1.0.0-alpha.15](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2026-01-02)
 

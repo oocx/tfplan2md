@@ -2,7 +2,9 @@
      Provides semantic diffing of NSG security rules instead of index-based changes.
      Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
-<div style="margin-bottom:12px;">
+<details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">
+<summary>{{ change.summary_html }}</summary>
+<br>
 
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
@@ -54,4 +56,4 @@
 {{~ end ~}}
 {{~ end ~}}
 
-</div>
+</details>

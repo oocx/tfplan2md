@@ -51,9 +51,9 @@ Update the CLI to support `--hide-metadata` and update the report templates to d
 Update existing snapshot tests to use the deterministic metadata provider so that snapshots remain stable across runs.
 
 **Acceptance Criteria:**
-- [ ] All snapshot tests use fixed values for version, commit, and timestamp.
-- [ ] Existing snapshots are updated once to include the new metadata line (with fixed values).
-- [ ] Subsequent test runs do not produce diffs due to timestamp/version changes.
+- [x] All snapshot tests use fixed values for version, commit, and timestamp.
+- [x] Existing snapshots are updated once to include the new metadata line (with fixed values).
+- [x] Subsequent test runs do not produce diffs due to timestamp/version changes.
 
 **Dependencies:** Task 2
 

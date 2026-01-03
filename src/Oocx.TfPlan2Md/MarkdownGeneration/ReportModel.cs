@@ -15,6 +15,26 @@ public class ReportModel
 {
     public required string TerraformVersion { get; init; }
     public required string FormatVersion { get; init; }
+    /// <summary>
+    /// tfplan2md semantic version used to generate the report.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    public required string TfPlan2MdVersion { get; init; }
+    /// <summary>
+    /// Short git commit hash (7 characters) of the tfplan2md build used for rendering.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    public required string CommitHash { get; init; }
+    /// <summary>
+    /// UTC timestamp captured when the report was generated.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    public required DateTimeOffset GeneratedAtUtc { get; init; }
+    /// <summary>
+    /// Indicates whether the metadata line should be hidden in the rendered report.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// </summary>
+    public required bool HideMetadata { get; init; }
     public string? Timestamp { get; init; }
     /// <summary>
     /// Optional custom report title provided via the CLI.
@@ -179,10 +199,12 @@ public class AttributeChangeModel
 /// <param name="largeValueFormat">Rendering format for large values (inline-diff or simple-diff).</param>
 /// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
 /// <param name="principalMapper">Optional mapper for resolving principal names in role assignments.</param>
+/// <param name="metadataProvider">Provider for tfplan2md version, commit, and generation timestamp metadata.</param>
+/// <param name="hideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null, Azure.IPrincipalMapper? principalMapper = null)
+public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null, Azure.IPrincipalMapper? principalMapper = null, IMetadataProvider? metadataProvider = null, bool hideMetadata = false)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -213,6 +235,16 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     /// Mapper for resolving principal names in role assignments.
     /// </summary>
     private readonly Azure.IPrincipalMapper _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
+
+    /// <summary>
+    /// Provider for tfplan2md build metadata used in the report header.
+    /// </summary>
+    private readonly IMetadataProvider _metadataProvider = metadataProvider ?? new AssemblyMetadataProvider();
+
+    /// <summary>
+    /// Indicates whether metadata should be hidden from the rendered report.
+    /// </summary>
+    private readonly bool _hideMetadata = hideMetadata;
 
     /// <summary>
     /// Builds a fully-populated report model from a parsed Terraform plan.
@@ -281,11 +313,16 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             .ToList();
 
         var escapedReportTitle = _reportTitle is null ? null : ScribanHelpers.EscapeMarkdownHeading(_reportTitle);
+        var metadata = _metadataProvider.GetMetadata();
 
         return new ReportModel
         {
             TerraformVersion = plan.TerraformVersion,
             FormatVersion = plan.FormatVersion,
+            TfPlan2MdVersion = metadata.Version,
+            CommitHash = metadata.CommitHash,
+            GeneratedAtUtc = metadata.GeneratedAtUtc,
+            HideMetadata = _hideMetadata,
             Timestamp = plan.Timestamp,
             ReportTitle = escapedReportTitle,
             Changes = displayChanges,

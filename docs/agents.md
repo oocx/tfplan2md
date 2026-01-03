@@ -95,6 +95,9 @@ Format:
 | `watch-uat-github-pr` | Watch a GitHub UAT PR for maintainer feedback or approval by polling comments until approved/passed. |
 | `watch-uat-azdo-pr` | Watch an Azure DevOps UAT PR for maintainer feedback or approval by polling threads and reviewer votes until approved/passed. |
 | `analyze-chat-export` | Extract metrics from VS Code Copilot chat exports for retrospective analysis (model usage, tool invocations, approvals, timing). |
+| `website-devtools` | Use Chrome DevTools MCP tools to inspect rendering and troubleshoot website issues with the Maintainer. |
+| `website-quality-check` | Run a lightweight, repeatable website quality checklist (including style guide adherence). |
+| `website-visual-assets` | Generate website HTML exports and screenshots using HtmlRenderer/ScreenshotGenerator; keep inventories in sync. |
 | `validate-agent` | Validate agent definitions for consistency, model availability, handoff integrity, and tool existence. |
 
 ### Prefer GitHub Chat Tools For PR Inspection

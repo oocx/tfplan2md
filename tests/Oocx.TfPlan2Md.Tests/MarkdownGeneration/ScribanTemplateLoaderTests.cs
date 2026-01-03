@@ -16,7 +16,7 @@ public class ScribanTemplateLoaderTests
         var result = loader.TryGetTemplate("default", out var template);
 
         result.Should().BeTrue();
-        template.Should().Contain("Terraform Plan");
+        template.Should().Contain("include \"_header.sbn\"");
     }
 
     [Fact]

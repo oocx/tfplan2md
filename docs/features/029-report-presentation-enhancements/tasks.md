@@ -100,9 +100,9 @@ Ensure that the resource summary line (the `<summary>` tag) also uses the new se
 Apply consistent border styling to all resource blocks in the Markdown output.
 
 **Acceptance Criteria:**
-- [ ] Default resource template (`_resource.sbn`) uses `<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">`.
-- [ ] Resource-specific templates that don't use `<details>` (e.g., Firewall, NSG) are wrapped in `<details open style="...">`.
-- [ ] Nested `<details>` blocks (for large attributes) do NOT get the border styling (only the outermost resource block).
+- [x] Default resource template (`_resource.sbn`) uses `<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">`.
+- [x] Resource-specific templates that don't use `<details>` (e.g., Firewall, NSG) are wrapped in `<details open style="...">`.
+- [x] Nested `<details>` blocks (for large attributes) do NOT get the border styling (only the outermost resource block).
 - [ ] Added a stable way to identify resource blocks for the screenshot tool (e.g., a specific text pattern or structure as per architecture).
 
 **Dependencies:** None

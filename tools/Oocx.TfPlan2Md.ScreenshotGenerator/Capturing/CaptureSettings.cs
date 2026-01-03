@@ -18,7 +18,9 @@ internal sealed class CaptureSettings
     /// <param name="fullPage">Whether to capture the full scrollable page.</param>
     /// <param name="format">The requested output format.</param>
     /// <param name="quality">Optional quality value for lossy formats.</param>
-    public CaptureSettings(string inputPath, string outputPath, int width, int height, bool fullPage, ScreenshotFormat format, int? quality)
+    /// <param name="targetTerraformResourceId">Optional Terraform address for partial capture.</param>
+    /// <param name="targetSelector">Optional selector for partial capture.</param>
+    public CaptureSettings(string inputPath, string outputPath, int width, int height, bool fullPage, ScreenshotFormat format, int? quality = null, string? targetTerraformResourceId = null, string? targetSelector = null)
     {
         InputPath = inputPath;
         OutputPath = outputPath;
@@ -27,6 +29,8 @@ internal sealed class CaptureSettings
         FullPage = fullPage;
         Format = format;
         Quality = quality;
+        TargetTerraformResourceId = targetTerraformResourceId;
+        TargetSelector = targetSelector;
     }
 
     /// <summary>
@@ -63,4 +67,14 @@ internal sealed class CaptureSettings
     /// Gets the optional quality value for lossy formats.
     /// </summary>
     public int? Quality { get; }
+
+    /// <summary>
+    /// Gets the Terraform resource address used for partial capture when specified.
+    /// </summary>
+    public string? TargetTerraformResourceId { get; }
+
+    /// <summary>
+    /// Gets the selector used for partial capture when specified.
+    /// </summary>
+    public string? TargetSelector { get; }
 }

@@ -69,6 +69,9 @@ dotnet_style_prefer_conditional_expression_over_return = true:silent
 dotnet_style_prefer_simplified_interpolation = true:suggestion
 dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
 
+# Named arguments preferences
+csharp_style_prefer_named_arguments = true:suggestion
+
 # var preferences
 csharp_style_var_for_built_in_types = true:warning
 csharp_style_var_when_type_is_apparent = true:warning

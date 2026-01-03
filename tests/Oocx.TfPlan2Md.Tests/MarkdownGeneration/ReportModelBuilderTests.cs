@@ -213,9 +213,9 @@ public class ReportModelBuilderTests
             "1.0",
             new List<ResourceChange>
             {
-                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"], null, null, null, null, null)),
-                new("type_a.two", null, "managed", "type_a", "two", "provider", new Change(["create"], null, null, null, null, null)),
-                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["create"], null, null, null, null, null))
+                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"])),
+                new("type_a.two", null, "managed", "type_a", "two", "provider", new Change(["create"])),
+                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["create"]))
             });
 
         var builder = new ReportModelBuilder();
@@ -269,9 +269,9 @@ public class ReportModelBuilderTests
             "1.0",
             new List<ResourceChange>
             {
-                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["update"], null, null, null, null, null)),
-                new("type_c.one", null, "managed", "type_c", "one", "provider", new Change(["update"], null, null, null, null, null)),
-                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["update"], null, null, null, null, null))
+                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["update"])),
+                new("type_c.one", null, "managed", "type_c", "one", "provider", new Change(["update"])),
+                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["update"]))
             });
 
         var builder = new ReportModelBuilder();
@@ -292,7 +292,7 @@ public class ReportModelBuilderTests
             "1.0",
             new List<ResourceChange>
             {
-                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"], null, null, null, null, null))
+                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"]))
             });
 
         var builder = new ReportModelBuilder();

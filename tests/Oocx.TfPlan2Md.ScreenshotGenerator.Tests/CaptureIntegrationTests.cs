@@ -22,7 +22,7 @@ public sealed class CaptureIntegrationTests
         await using var context = await CreateTempHtmlAsync("<html><body><h1>Hello</h1></body></html>");
         await EnsureBrowserAvailableAsync();
         var capturer = new HtmlScreenshotCapturer();
-        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 1920, 1080, false, ScreenshotFormat.Png, null);
+        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 1920, 1080, fullPage: false, format: ScreenshotFormat.Png);
 
         try
         {
@@ -49,7 +49,7 @@ public sealed class CaptureIntegrationTests
         await using var context = await CreateTempHtmlAsync("<html><body><p>Viewport test</p></body></html>");
         await EnsureBrowserAvailableAsync();
         var capturer = new HtmlScreenshotCapturer();
-        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 800, 600, false, ScreenshotFormat.Png, null);
+        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 800, 600, fullPage: false, format: ScreenshotFormat.Png);
 
         try
         {
@@ -76,7 +76,7 @@ public sealed class CaptureIntegrationTests
         await using var context = await CreateTempHtmlAsync($"<html><body>{tallBody}</body></html>");
         await EnsureBrowserAvailableAsync();
         var capturer = new HtmlScreenshotCapturer();
-        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 1920, 1080, true, ScreenshotFormat.Png, null);
+        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 1920, 1080, fullPage: true, format: ScreenshotFormat.Png);
 
         try
         {
@@ -89,6 +89,41 @@ public sealed class CaptureIntegrationTests
 
         var (_, height) = ReadPngDimensions(context.OutputPath);
         Assert.True(height > 1500, "Expected full-page height to exceed default viewport.");
+    }
+
+    /// <summary>
+    /// Verifies selector-based targeting crops to the matching element's bounding box.
+    /// Related acceptance: TC-16.
+    /// </summary>
+    [SkippableFact]
+    public async Task CaptureAsync_TargetSelector_CropsToElement()
+    {
+        const string html = """
+<html>
+  <body style="margin:0">
+    <div style="width:400px;height:120px;background:#e0e0e0;"></div>
+    <div id="target" style="width:200px;height:150px;background:#ffaaaa;margin-top:10px;"></div>
+  </body>
+</html>
+""";
+
+        await using var context = await CreateTempHtmlAsync(html);
+        await EnsureBrowserAvailableAsync();
+        var capturer = new HtmlScreenshotCapturer();
+        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 800, 600, fullPage: false, format: ScreenshotFormat.Png, targetSelector: "#target");
+
+        try
+        {
+            await capturer.CaptureAsync(settings, CancellationToken.None);
+        }
+        catch (ScreenshotCaptureException ex) when (ex.InnerException is PlaywrightException)
+        {
+            throw new Xunit.SkipException($"Skipping Playwright tests: {ex.Message}");
+        }
+
+        var (width, height) = ReadPngDimensions(context.OutputPath);
+        Assert.InRange(width, 195, 205);
+        Assert.InRange(height, 145, 155);
     }
 
     /// <summary>
@@ -105,8 +140,8 @@ public sealed class CaptureIntegrationTests
 
         try
         {
-            await capturer.CaptureAsync(new CaptureSettings(contextLow.InputPath, contextLow.OutputPath, 800, 600, false, ScreenshotFormat.Jpeg, 10), CancellationToken.None);
-            await capturer.CaptureAsync(new CaptureSettings(contextHigh.InputPath, contextHigh.OutputPath, 800, 600, false, ScreenshotFormat.Jpeg, 100), CancellationToken.None);
+            await capturer.CaptureAsync(new CaptureSettings(contextLow.InputPath, contextLow.OutputPath, 800, 600, fullPage: false, format: ScreenshotFormat.Jpeg, quality: 10), CancellationToken.None);
+            await capturer.CaptureAsync(new CaptureSettings(contextHigh.InputPath, contextHigh.OutputPath, 800, 600, fullPage: false, format: ScreenshotFormat.Jpeg, quality: 100), CancellationToken.None);
         }
         catch (ScreenshotCaptureException ex) when (ex.InnerException is PlaywrightException)
         {
@@ -116,6 +151,44 @@ public sealed class CaptureIntegrationTests
         var lowSize = new FileInfo(contextLow.OutputPath).Length;
         var highSize = new FileInfo(contextHigh.OutputPath).Length;
         Assert.True(lowSize < highSize, "Lower quality should yield smaller file size.");
+    }
+
+    /// <summary>
+    /// Verifies Terraform resource targeting matches visible summary text and crops accordingly.
+    /// Related acceptance: TC-17.
+    /// </summary>
+    [SkippableFact]
+    public async Task CaptureAsync_TerraformAddress_CropsToMatchedResource()
+    {
+        const string html = """
+<html>
+  <body style="margin:0">
+    <h3>Module: root</h3>
+    <details open style="display:block;width:360px;height:180px;margin:0;padding:0;border:0;background:#f5f5f5;">
+      <summary>azurerm_storage_account.example (changed)</summary>
+      <div style="height:140px;">content</div>
+    </details>
+  </body>
+</html>
+""";
+
+        await using var context = await CreateTempHtmlAsync(html);
+        await EnsureBrowserAvailableAsync();
+        var capturer = new HtmlScreenshotCapturer();
+        var settings = new CaptureSettings(context.InputPath, context.OutputPath, 1024, 768, fullPage: false, format: ScreenshotFormat.Png, targetTerraformResourceId: "azurerm_storage_account.example");
+
+        try
+        {
+            await capturer.CaptureAsync(settings, CancellationToken.None);
+        }
+        catch (ScreenshotCaptureException ex) when (ex.InnerException is PlaywrightException)
+        {
+            throw new Xunit.SkipException($"Skipping Playwright tests: {ex.Message}");
+        }
+
+        var (width, height) = ReadPngDimensions(context.OutputPath);
+        Assert.InRange(width, 350, 370);
+        Assert.InRange(height, 170, 190);
     }
 
     /// <summary>
@@ -134,7 +207,7 @@ public sealed class CaptureIntegrationTests
 
         try
         {
-            await capturer.CaptureAsync(new CaptureSettings(fixturePath, outputPath, 1920, 1080, true, ScreenshotFormat.Png, null), CancellationToken.None);
+            await capturer.CaptureAsync(new CaptureSettings(fixturePath, outputPath, 1920, 1080, fullPage: true, format: ScreenshotFormat.Png), CancellationToken.None);
         }
         catch (ScreenshotCaptureException ex) when (ex.InnerException is PlaywrightException)
         {

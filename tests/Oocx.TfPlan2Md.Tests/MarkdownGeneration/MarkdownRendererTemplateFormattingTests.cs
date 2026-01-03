@@ -59,12 +59,12 @@ public class MarkdownRendererTemplateFormattingTests
                     Name: "large",
                     ProviderName: "provider.azurerm",
                     Change: new Change(
-                        Actions: new List<string>{"update"},
-                        Before: beforeJson,
-                        After: afterJson,
-                        AfterUnknown: null,
-                        BeforeSensitive: null,
-                        AfterSensitive: null
+                        actions: new List<string>{"update"},
+                        before: beforeJson,
+                        after: afterJson,
+                        afterUnknown: null,
+                        beforeSensitive: null,
+                        afterSensitive: null
                     )
                 )
             }
@@ -103,12 +103,12 @@ public class MarkdownRendererTemplateFormattingTests
                     Name: "large_only",
                     ProviderName: "provider.azurerm",
                     Change: new Change(
-                        Actions: new List<string>{"create"},
-                        Before: null,
-                        After: afterJson,
-                        AfterUnknown: null,
-                        BeforeSensitive: null,
-                        AfterSensitive: null
+                        actions: new List<string>{"create"},
+                        before: null,
+                        after: afterJson,
+                        afterUnknown: null,
+                        beforeSensitive: null,
+                        afterSensitive: null
                     )
                 )
             }
@@ -144,12 +144,12 @@ public class MarkdownRendererTemplateFormattingTests
                     Name: "large_only_inline",
                     ProviderName: "provider.azurerm",
                     Change: new Change(
-                        Actions: new List<string>{"create"},
-                        Before: null,
-                        After: afterJson,
-                        AfterUnknown: null,
-                        BeforeSensitive: null,
-                        AfterSensitive: null
+                        actions: new List<string>{"create"},
+                        before: null,
+                        after: afterJson,
+                        afterUnknown: null,
+                        beforeSensitive: null,
+                        afterSensitive: null
                     )
                 )
             }

@@ -29,6 +29,8 @@ internal static class CliParser
         var fullPage = false;
         ScreenshotFormat? format = null;
         int? quality = null;
+        string? targetTerraformResourceId = null;
+        string? targetSelector = null;
         var showHelp = false;
         var showVersion = false;
 
@@ -58,6 +60,12 @@ internal static class CliParser
                     break;
                 case "--full-page" or "-f":
                     fullPage = true;
+                    break;
+                case "--target-terraform-resource-id":
+                    targetTerraformResourceId = ReadNextValue(args, ref index, "--target-terraform-resource-id");
+                    break;
+                case "--target-selector":
+                    targetSelector = ReadNextValue(args, ref index, "--target-selector");
                     break;
                 case "--format":
                     format = ParseFormat(ReadNextValue(args, ref index, "--format"));
@@ -90,7 +98,18 @@ internal static class CliParser
         height ??= DefaultHeight;
         quality ??= ResolveDefaultQuality(format);
 
-        return new CliOptions(inputPath, outputPath, width.Value, height.Value, fullPage, format, quality, showHelp, showVersion);
+        return new CliOptions(
+            inputPath: inputPath,
+            outputPath: outputPath,
+            width: width.Value,
+            height: height.Value,
+            fullPage: fullPage,
+            format: format,
+            quality: quality,
+            targetTerraformResourceId: targetTerraformResourceId,
+            targetSelector: targetSelector,
+            showHelp: showHelp,
+            showVersion: showVersion);
     }
 
     /// <summary>

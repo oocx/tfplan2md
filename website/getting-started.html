@@ -69,7 +69,14 @@
                     </p>
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-title">Run directly</span>
+                            <span class="code-title">Create Terraform plan</span>
+                            <button class="copy-btn" data-copy="terraform plan -out=plan.tfplan" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>terraform plan -out=plan.tfplan</code></pre>
+                    </div>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Generate report</span>
                             <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command">📋</button>
                         </div>
                         <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>

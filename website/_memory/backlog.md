@@ -11,6 +11,47 @@ This file is the source of truth for all open website tasks.
 
 ## Open tasks
 
+### #22 — Replace hand-crafted examples with real output on all pages
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/index.html`, `/features/*.html` |
+| Effort | High |
+| Value | High |
+| Status | 🔲 Not Started |
+| Depends On | — |
+
+**Description:** Task #18 replaced examples only on `/examples.html`. Other pages still have hand-crafted examples that should be replaced with real tfplan2md generated output for authenticity.
+
+**Pages with examples to replace:**
+1. **index.html (homepage)** - Hero section has simplified Network Security Rules example - should use real comprehensive-demo output
+2. **features/firewall-rules.html** - "With tfplan2md" comparison example shows hand-crafted firewall table
+3. **features/nsg-rules.html** - Has code-block example
+4. **features/module-grouping.html** - Has example structure code-block
+5. **features/sensitive-masking.html** - Has before/after comparison code-blocks
+6. **features/azure-optimizations.html** - Has role assignment examples
+7. **features/value-formatting.html** - Has formatting examples
+8. **features/large-values.html** - Has large value example
+9. **features/custom-templates.html** - Has template example
+10. **features/misc.html** - Has various feature examples
+
+**Approach:**
+1. Extract relevant sections from `artifacts/comprehensive-demo.md` or generate new demo artifacts if needed
+2. For homepage: use a compelling real example (firewall or NSG with clear before/after)
+3. For feature pages: ensure examples accurately demonstrate the specific feature
+4. Use HtmlRenderer tool with azdo flavor where rendered view is needed
+5. Update code-examples.md with all extraction commands
+
+**Definition of Done:**
+- [ ] Homepage hero example replaced with real output
+- [ ] All 9 feature detail pages reviewed and examples replaced where appropriate
+- [ ] Examples accurately demonstrate their respective features
+- [ ] All use authentic tfplan2md formatting from real artifacts
+- [ ] code-examples.md updated with new extraction commands
+- [ ] Visual consistency across all pages (Azure DevOps styling already applied via CSS)
+
+---
+
 ### #21 — Update branch naming rules for website work
 
 | Field | Value |

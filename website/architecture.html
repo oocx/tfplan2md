@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                    <img src="assets/images/tfplan2md-logo.svg" alt="tfplan2md logo" width="36" height="36">
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="features/index.html" class="nav-item">Features</a>
+                <a href="getting-started.html" class="nav-item">Install</a>
+                <a href="docs.html" class="nav-item">Docs</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="padding: 60px 0;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 48px;">Architecture</h1>
+                <p class="hero-subtitle">
+                    Technical architecture based on arc42 documentation standard. Clean separation, extensible design, security-first.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- System Overview -->
+    <section class="section" style="padding-top: 0;">
+        <div class="section-container">
+            <h2 class="section-title">System Overview</h2>
+            <p class="section-description">
+                tfplan2md converts Terraform plan JSON into Markdown reports optimized for pull request reviews.
+            </p>
+
+            <div class="arch-diagram">
+                <div class="arch-flow">
+                    <div class="arch-step">
+                        <div class="arch-step-icon">��</div>
+                        <h3 class="arch-step-title">Input</h3>
+                        <p class="arch-step-desc">Terraform Plan JSON</p>
+                        <code class="arch-step-cmd">terraform show -json</code>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-step">
+                        <div class="arch-step-icon">⚙️</div>
+                        <h3 class="arch-step-title">tfplan2md</h3>
+                        <p class="arch-step-desc">Parse · Transform · Render</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-step">
+                        <div class="arch-step-icon">📝</div>
+                        <h3 class="arch-step-title">Output</h3>
+                        <p class="arch-step-desc">Markdown Report</p>
+                        <code class="arch-step-cmd">GitHub / Azure DevOps PR</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quality Goals -->
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Quality Goals</h2>
+            <div class="quality-grid">
+                <div class="quality-card quality-1">
+                    <div class="quality-priority">Priority 1</div>
+                    <h3 class="quality-title">Security</h3>
+                    <p class="quality-desc">Mask sensitive values by default · Distroless Docker images · Minimal dependencies · No external network calls</p>
+                </div>
+                <div class="quality-card quality-2">
+                    <div class="quality-priority">Priority 2</div>
+                    <h3 class="quality-title">Reliability</h3>
+                    <p class="quality-desc">Handle malformed JSON gracefully · Validate all markdown output · Comprehensive test coverage</p>
+                </div>
+                <div class="quality-card quality-3">
+                    <div class="quality-priority">Priority 3</div>
+                    <h3 class="quality-title">Usability</h3>
+                    <p class="quality-desc">Simple CLI · Sensible defaults · Clear error messages · Zero configuration needed</p>
+                </div>
+                <div class="quality-card quality-4">
+                    <div class="quality-priority">Priority 4</div>
+                    <h3 class="quality-title">Maintainability</h3>
+                    <p class="quality-desc">Clean architecture · Immutable models · Pure functions · Modern C# patterns</p>
+                </div>
+                <div class="quality-card quality-5">
+                    <div class="quality-priority">Priority 5</div>
+                    <h3 class="quality-title">Extensibility</h3>
+                    <p class="quality-desc">Custom templates · Resource-specific renderers · Provider-specific handling</p>
+                </div>
+                <div class="quality-card quality-6">
+                    <div class="quality-priority">Priority 6</div>
+                    <h3 class="quality-title">Performance</h3>
+                    <p class="quality-desc">Fast startup for CI/CD · Handle large plans efficiently · ~50MB Docker image</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Components -->
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Core Components</h2>
+            <p class="section-description">
+                Clean separation of concerns with immutable data models and pure transformation functions.
+            </p>
+
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="component-icon">🎯</div>
+                    <h3 class="component-title">CLI</h3>
+                    <p class="component-desc">Command-line parsing and orchestration. Handles user input, loads configuration, coordinates workflow.</p>
+                    <div class="component-files">
+                        <code>CliParser.cs</code>
+                        <code>HelpTextProvider.cs</code>
+                    </div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-icon">📦</div>
+                    <h3 class="component-title">Parsing</h3>
+                    <p class="component-desc">Terraform plan JSON parsing into immutable domain models using System.Text.Json.</p>
+                    <div class="component-files">
+                        <code>TerraformPlan.cs</code>
+                        <code>TerraformPlanParser.cs</code>
+                    </div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-icon">🔄</div>
+                    <h3 class="component-title">Model Building</h3>
+                    <p class="component-desc">Transform domain models into report models. Build resource summaries, group by module, apply semantic diffing.</p>
+                    <div class="component-files">
+                        <code>ReportModel.cs</code>
+                        <code>Summaries/*.cs</code>
+                    </div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-icon">✍️</div>
+                    <h3 class="component-title">Rendering</h3>
+                    <p class="component-desc">Apply Scriban templates to generate markdown. Supports default templates, summary template, and custom user templates.</p>
+                    <div class="component-files">
+                        <code>MarkdownRenderer.cs</code>
+                        <code>ScribanHelpers.cs</code>
+                        <code>Templates/*.sbn</code>
+                    </div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-icon">☁️</div>
+                    <h3 class="component-title">Azure Utilities</h3>
+                    <p class="component-desc">Azure-specific functionality: principal ID mapping, resource ID parsing, role assignment formatting.</p>
+                    <div class="component-files">
+                        <code>PrincipalMapper.cs</code>
+                        <code>azurerm/* templates</code>
+                    </div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-icon">🔒</div>
+                    <h3 class="component-title">Security</h3>
+                    <p class="component-desc">Sensitive value detection and masking. Runs in distroless Docker containers with no shell access.</p>
+                    <div class="component-files">
+                        <code>--show-sensitive flag</code>
+                        <code>Chiseled Docker image</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Technology Stack</h2>
+
+            <div class="tech-table">
+                <div class="tech-row">
+                    <div class="tech-component">Runtime</div>
+                    <div class="tech-name">.NET 10 Runtime</div>
+                    <div class="tech-purpose">Execute compiled application with latest LTS features</div>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-component">Language</div>
+                    <div class="tech-name">C# 13</div>
+                    <div class="tech-purpose">Modern language features: records, pattern matching, file-scoped namespaces</div>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-component">JSON Parser</div>
+                    <div class="tech-name">System.Text.Json</div>
+                    <div class="tech-purpose">Parse Terraform plan JSON with built-in .NET library</div>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-component">Template Engine</div>
+                    <div class="tech-name">Scriban 6.5.2</div>
+                    <div class="tech-purpose">Render markdown from customizable templates</div>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-component">Container Base</div>
+                    <div class="tech-name">dotnet/runtime:10.0-noble-chiseled</div>
+                    <div class="tech-purpose">Distroless runtime image (~50MB) with minimal attack surface</div>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-component">Test Framework</div>
+                    <div class="tech-name">xUnit 2.9.3</div>
+                    <div class="tech-purpose">Unit and integration tests with comprehensive coverage</div>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-component">Markdown Linter</div>
+                    <div class="tech-name">markdownlint-cli2 0.20.0</div>
+                    <div class="tech-purpose">Validate markdown output for GitHub/Azure DevOps compatibility</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Patterns -->
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Architectural Patterns</h2>
+
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h3 class="pattern-title">Immutability</h3>
+                    <p class="pattern-desc">All data models are immutable records. No mutable shared state. Pure functions for transformations.</p>
+                    <div class="pattern-benefit">✅ Thread-safe, predictable, easier to reason about</div>
+                </div>
+
+                <div class="pattern-card">
+                    <h3 class="pattern-title">Template-Driven</h3>
+                    <p class="pattern-desc">Default templates embedded as resources. Custom templates from filesystem. Resource-specific overrides.</p>
+                    <div class="pattern-benefit">✅ Flexible, customizable, user-controlled formatting</div>
+                </div>
+
+                <div class="pattern-card">
+                    <h3 class="pattern-title">Separation of Concerns</h3>
+                    <p class="pattern-desc">Clear boundaries: Parsing → Model Building → Rendering. Each component has single responsibility.</p>
+                    <div class="pattern-benefit">✅ Testable, maintainable, modular</div>
+                </div>
+
+                <div class="pattern-card">
+                    <h3 class="pattern-title">Security by Default</h3>
+                    <p class="pattern-desc">Sensitive values masked unless explicitly shown. Distroless images. No external dependencies.</p>
+                    <div class="pattern-benefit">✅ Safe for CI/CD, minimal attack surface</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Decisions -->
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Architecture Decision Records</h2>
+            <p class="section-description">
+                Key technical decisions documented for transparency and maintainability.
+            </p>
+
+            <div class="adr-list">
+                <a href="https://github.com/oocx/tfplan2md/blob/main/docs/adr-001-scriban-templating.md" class="adr-card">
+                    <div class="adr-number">ADR-001</div>
+                    <h3 class="adr-title">Scriban for Templating</h3>
+                    <p class="adr-desc">Lightweight, text-focused, familiar syntax, embeddable. Better fit than Razor or Liquid for markdown generation.</p>
+                </a>
+
+                <a href="https://github.com/oocx/tfplan2md/blob/main/docs/adr-002-chiseled-docker-image.md" class="adr-card">
+                    <div class="adr-number">ADR-002</div>
+                    <h3 class="adr-title">Chiseled Docker Images</h3>
+                    <p class="adr-desc">Minimal attack surface (~50MB), no shell, security-first. Distroless base reduces vulnerabilities and image size.</p>
+                </a>
+
+                <a href="https://github.com/oocx/tfplan2md/blob/main/docs/adr-003-modern-csharp-patterns.md" class="adr-card">
+                    <div class="adr-number">ADR-003</div>
+                    <h3 class="adr-title">Modern C# 13 Patterns</h3>
+                    <p class="adr-desc">Records for immutability, file-scoped namespaces, nullable reference types, pattern matching for cleaner code.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Documentation Link -->
+    <section class="section">
+        <div class="section-container">
+            <div class="cta-box">
+                <h2 class="cta-title">Complete Architecture Documentation</h2>
+                <p class="cta-description">
+                    This page provides a high-level overview. For complete details including building block views, runtime scenarios, deployment architecture, and design decisions, see the full arc42 documentation.
+                </p>
+                <div class="cta-actions">
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/docs/architecture.md" class="btn btn-primary">View Full Architecture (arc42)</a>
+                    <a href="https://github.com/oocx/tfplan2md/tree/main/docs" class="btn btn-secondary">Browse All Documentation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="features/index.html" class="footer-link">Features</a>
+                    <a href="getting-started.html" class="footer-link">Get Started</a>
+                    <a href="docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="examples.html" class="footer-link">Examples</a>
+                    <a href="architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+    </script>
+</body>
+</html>

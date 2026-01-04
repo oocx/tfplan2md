@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="brand-link">
+                    <svg width="32" height="32" viewBox="0 0 32 32" class="brand-logo">
+                        <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
+                        <path d="M8 10h16M8 16h16M8 22h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#646cff"/>
+                                <stop offset="100%" style="stop-color:#747bff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="features/index.html" class="nav-item">Features</a>
+                <a href="getting-started.html" class="nav-item">Install</a>
+                <a href="docs.html" class="nav-item nav-active">Docs</a>
+                <a href="examples.html" class="nav-item">Examples</a>
+                <a href="providers/index.html" class="nav-item">Providers</a>
+                <a href="architecture.html" class="nav-item">Architecture</a>
+                <a href="contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="padding: 60px 0;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 48px;">Documentation</h1>
+                <p class="hero-subtitle">
+                    Complete reference for using tfplan2md in your Terraform workflow.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile TOC Toggle -->
+    <div class="mobile-toc-toggle">
+        <button class="toc-toggle-btn" aria-label="Toggle table of contents" aria-expanded="false">
+            <span class="toc-icon">📑</span>
+            <span class="toc-label">Table of Contents</span>
+        </button>
+    </div>
+
+    <!-- Documentation Layout with Sidebar -->
+    <div class="docs-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar" id="docs-sidebar">
+            <nav class="docs-nav" aria-label="Documentation sections">
+                <h2 class="docs-nav-title">Contents</h2>
+                <ul class="docs-nav-list">
+                    <li>
+                        <a href="#cli-reference" class="docs-nav-link active">CLI Reference</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#basic-usage" class="docs-nav-sublink">Basic Usage</a></li>
+                            <li><a href="#options" class="docs-nav-sublink">Options</a></li>
+                            <li><a href="#usage-examples" class="docs-nav-sublink">Usage Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#template-customization" class="docs-nav-link">Template Customization</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#built-in-templates" class="docs-nav-sublink">Built-in Templates</a></li>
+                            <li><a href="#custom-templates" class="docs-nav-sublink">Custom Templates</a></li>
+                            <li><a href="#principal-mapping" class="docs-nav-sublink">Principal Mapping</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#large-value-formatting" class="docs-nav-link">Large Value Formatting</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#inline-diff" class="docs-nav-sublink">inline-diff</a></li>
+                            <li><a href="#standard-diff" class="docs-nav-sublink">standard-diff</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#troubleshooting" class="docs-nav-link">Troubleshooting</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#no-valid-json" class="docs-nav-sublink">No valid JSON error</a></li>
+                            <li><a href="#template-not-found" class="docs-nav-sublink">Template not found</a></li>
+                            <li><a href="#sensitive-values" class="docs-nav-sublink">Sensitive values visible</a></li>
+                            <li><a href="#tables-not-rendering" class="docs-nav-sublink">Tables not rendering</a></li>
+                            <li><a href="#docker-permission" class="docs-nav-sublink">Docker permission denied</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="docs-content">
+            <!-- CLI Reference -->
+            <section class="section" id="cli-reference" style="padding-top: 0;">
+                <div class="section-container">
+            <h2 class="section-title">CLI Reference</h2>
+            
+            <div class="doc-section" id="basic-usage">
+                <h3 class="doc-subtitle">Basic Usage</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Syntax</span>
+                    </div>
+                    <pre><code>tfplan2md [options] [input-file]
+terraform show -json plan.tfplan | tfplan2md</code></pre>
+                </div>
+                <p class="doc-text">
+                    <strong>Arguments:</strong>
+                </p>
+                <ul class="doc-list">
+                    <li><code>input-file</code> — Path to the Terraform plan JSON file. If omitted, reads from stdin.</li>
+                </ul>
+            </div>
+
+            <div class="doc-section" id="options">
+                <h3 class="doc-subtitle">Options</h3>
+                <div class="options-table">
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>-o, --output &lt;file&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Write output to a file instead of stdout.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>-t, --template &lt;name|file&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Use a built-in template by name (<code>default</code>, <code>summary</code>) or a custom Scriban template file path.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--report-title &lt;title&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Override the report title (level-1 heading) with a custom value.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>-p, --principal-mapping &lt;file&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Map Azure principal IDs (GUIDs) to human-readable names using a JSON file. Applies to azurerm_role_assignment resources.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--large-value-format &lt;format&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Controls rendering of large attribute values:<br>
+                            • <code>inline-diff</code> (default) — Styled HTML with line-by-line highlighting<br>
+                            • <code>standard-diff</code> — Traditional diff format with +/- markers
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--show-unchanged-values</code>
+                        </div>
+                        <div class="option-desc">
+                            Include unchanged attribute values in tables. By default, only changed attributes are shown.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--show-sensitive</code>
+                        </div>
+                        <div class="option-desc">
+                            Show sensitive values unmasked. By default, sensitive values are masked as <code>🔒 (sensitive value)</code>.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>-h, --help</code>
+                        </div>
+                        <div class="option-desc">
+                            Display help message.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>-v, --version</code>
+                        </div>
+                        <div class="option-desc">
+                            Display version information.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section" id="usage-examples">
+                <h3 class="doc-subtitle">Usage Examples</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">From stdin</span>
+                    </div>
+                    <pre><code>terraform show -json plan.tfplan | tfplan2md</code></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">From file</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json</code></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">With principal mapping</span>
+                    </div>
+                    <pre><code>tfplan2md --principal-mapping principals.json plan.json</code></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">With custom report title</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --report-title "Drift Detection - Production"</code></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">GitHub-friendly large value diff</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --large-value-format standard-diff</code></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">With output file and custom template</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --output plan.md --template my-template.sbn</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Template Customization -->
+    <section class="section" id="template-customization" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Template Customization</h2>
+            <p class="section-description">
+                tfplan2md uses <a href="https://github.com/scriban/scriban" class="inline-link">Scriban</a> templates to generate Markdown reports. You can create custom templates to match your team's reporting needs.
+            </p>
+
+            <div class="doc-section" id="built-in-templates">
+                <h3 class="doc-subtitle">Built-in Templates</h3>
+                <div class="template-grid">
+                    <div class="template-item">
+                        <h4 class="template-item-title">default</h4>
+                        <p class="template-item-desc">Full report with summary, resource changes grouped by module, and attribute details. Shows exactly what will change.</p>
+                        <code class="template-usage">--template default</code>
+                    </div>
+                    <div class="template-item">
+                        <h4 class="template-item-title">summary</h4>
+                        <p class="template-item-desc">Compact overview showing only action counts and resource type breakdown. Perfect for PR titles or large plans.</p>
+                        <code class="template-usage">--template summary</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section" id="custom-templates">
+                <h3 class="doc-subtitle">Custom Templates</h3>
+                <p class="doc-text">
+                    Create a custom Scriban template (<code>.sbn</code> file) and pass it with the <code>--template</code> option:
+                </p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Usage</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --template path/to/custom-template.sbn</code></pre>
+                </div>
+                <p class="doc-text">
+                    <strong>Template Data Model:</strong> Your template receives a <code>plan</code> object with the following structure:
+                </p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Template Variables</span>
+                    </div>
+                    <pre><code>{{ plan.terraform_version }}        # Terraform version (string)
+{{ plan.format_version }}          # Plan format version (string)
+{{ plan.resource_changes }}        # Array of resource change objects
+{{ plan.output_changes }}          # Array of output change objects
+
+# Resource change object properties
+{{ change.address }}               # Full resource address (string)
+{{ change.module_address }}        # Module path (string or null)
+{{ change.type }}                  # Resource type (string)
+{{ change.name }}                  # Resource name (string)
+{{ change.action }}                # "create", "update", "delete", "replace"
+{{ change.before }}                # Before values (object or null)
+{{ change.after }}                 # After values (object or null)
+{{ change.after_unknown }}         # Unknown attributes (object)
+{{ change.before_sensitive }}      # Sensitive markers (object)
+{{ change.after_sensitive }}       # Sensitive markers (object)</code></pre>
+                </div>
+                <p class="doc-text">
+                    Reference the built-in templates in the <a href="https://github.com/oocx/tfplan2md/tree/main/src/Oocx.TfPlan2Md/Templates" class="inline-link">repository</a> for examples.
+                </p>
+            </div>
+
+            <div class="doc-section" id="principal-mapping">
+                <h3 class="doc-subtitle">Principal Mapping File</h3>
+                <p class="doc-text">
+                    Map Azure principal IDs to human-readable names for better role assignment reports. Create a JSON file with this structure:
+                </p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">principals.json</span>
+                    </div>
+                    <pre><code>{
+  "users": {
+    "12345678-1234-1234-1234-123456789012": "jane.doe@contoso.com",
+    "87654321-4321-4321-4321-210987654321": "john.smith@contoso.com"
+  },
+  "groups": {
+    "abcdef12-3456-7890-abcd-ef1234567890": "Platform Team",
+    "fedcba98-7654-3210-fedc-ba9876543210": "Security Team"
+  },
+  "servicePrincipals": {
+    "11111111-2222-3333-4444-555555555555": "terraform-spn",
+    "66666666-7777-8888-9999-000000000000": "github-actions-spn"
+  }
+}</code></pre>
+                </div>
+                <p class="doc-text">
+                    Use with the <code>--principal-mapping</code> option to replace GUIDs with names in role assignment reports.
+                </p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Usage</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --principal-mapping principals.json</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Large Value Formatting -->
+    <section class="section" id="large-value-formatting">
+        <div class="section-container">
+            <h2 class="section-title">Large Value Formatting</h2>
+            <p class="section-description">
+                Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.
+            </p>
+
+            <div class="format-comparison">
+                <div class="format-card" id="inline-diff">
+                    <h3 class="format-title">inline-diff (default)</h3>
+                    <p class="format-desc">
+                        Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps. GitHub strips styles but content remains readable.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Output Example</span>
+                        </div>
+                        <pre><code>&lt;pre style="font-family: monospace; line-height: 1.5;"&gt;&lt;code&gt;#!/bin/bash
+&lt;span style="background-color: #fff5f5; color: #24292e;"&gt;echo "v1.0"&lt;/span&gt;
+&lt;span style="background-color: #f0fff4; color: #24292e;"&gt;echo "v2.0"&lt;/span&gt;
+apt-get update
+&lt;/code&gt;&lt;/pre&gt;</code></pre>
+                    </div>
+                    <div class="format-usage">
+                        <code>--large-value-format inline-diff</code>
+                    </div>
+                </div>
+
+                <div class="format-card" id="standard-diff">
+                    <h3 class="format-title">standard-diff</h3>
+                    <p class="format-desc">
+                        Traditional diff format with +/- markers. Fully portable and works on both GitHub and Azure DevOps without style stripping.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Output Example</span>
+                        </div>
+                        <pre><code>```diff
+  #!/bin/bash
+- echo "v1.0"
++ echo "v2.0"
+  apt-get update
+```</code></pre>
+                    </div>
+                    <div class="format-usage">
+                        <code>--large-value-format standard-diff</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="section" id="troubleshooting" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Troubleshooting</h2>
+
+            <div class="trouble-section" id="no-valid-json">
+                <h3 class="trouble-title">❌ "No valid JSON detected in input"</h3>
+                <p class="trouble-desc">
+                    This error occurs when tfplan2md receives input that is not valid Terraform JSON.
+                </p>
+                <p class="trouble-solution"><strong>Solution:</strong></p>
+                <ul class="doc-list">
+                    <li>Ensure you're using <code>terraform show -json plan.tfplan</code>, not <code>terraform plan</code></li>
+                    <li>Verify the plan file exists and is a valid Terraform plan</li>
+                    <li>Check that stdin is not empty when piping from terraform</li>
+                </ul>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Correct usage</span>
+                    </div>
+                    <pre><code># Generate plan file
+terraform plan -out=plan.tfplan
+
+# Convert to JSON and pipe to tfplan2md
+terraform show -json plan.tfplan | tfplan2md</code></pre>
+                </div>
+            </div>
+
+            <div class="trouble-section" id="template-not-found">
+                <h3 class="trouble-title">❌ "Template file not found"</h3>
+                <p class="trouble-desc">
+                    This error occurs when using <code>--template</code> with a custom template file that doesn't exist.
+                </p>
+                <p class="trouble-solution"><strong>Solution:</strong></p>
+                <ul class="doc-list">
+                    <li>Verify the template file path is correct (relative or absolute)</li>
+                    <li>Check file permissions</li>
+                    <li>For built-in templates, use <code>default</code> or <code>summary</code> (no file extension)</li>
+                </ul>
+            </div>
+
+            <div class="trouble-section" id="sensitive-values">
+                <h3 class="trouble-title">⚠️ Sensitive values still visible</h3>
+                <p class="trouble-desc">
+                    Sensitive values are masked by default unless <code>--show-sensitive</code> is used.
+                </p>
+                <p class="trouble-solution"><strong>Solution:</strong></p>
+                <ul class="doc-list">
+                    <li>Remove <code>--show-sensitive</code> flag from your command</li>
+                    <li>Mark attributes as <code>sensitive = true</code> in Terraform to enable masking</li>
+                    <li>Review your CI/CD configuration to ensure sensitive flags aren't accidentally enabled</li>
+                </ul>
+            </div>
+
+            <div class="trouble-section" id="tables-not-rendering">
+                <h3 class="trouble-title">⚠️ Tables not rendering correctly in GitHub</h3>
+                <p class="trouble-desc">
+                    Markdown tables require specific formatting to render properly.
+                </p>
+                <p class="trouble-solution"><strong>Solution:</strong></p>
+                <ul class="doc-list">
+                    <li>tfplan2md automatically escapes special characters in table cells</li>
+                    <li>If you're manually editing output, ensure pipes (<code>|</code>) in values are escaped</li>
+                    <li>GitHub requires blank lines before and after tables</li>
+                </ul>
+            </div>
+
+            <div class="trouble-section" id="docker-permission">
+                <h3 class="trouble-title">⚠️ Docker permission denied</h3>
+                <p class="trouble-desc">
+                    Docker commands fail with permission errors.
+                </p>
+                <p class="trouble-solution"><strong>Solution:</strong></p>
+                <ul class="doc-list">
+                    <li>Add your user to the docker group: <code>sudo usermod -aG docker $USER</code></li>
+                    <li>Log out and back in for group changes to take effect</li>
+                    <li>Or run with <code>sudo</code> (not recommended for CI/CD)</li>
+                </ul>
+            </div>
+
+            <div class="trouble-section">
+                <h3 class="trouble-title">💡 Need more help?</h3>
+                <ul class="doc-list">
+                    <li><a href="https://github.com/oocx/tfplan2md/issues" class="inline-link">Open an issue on GitHub</a> with your error message and command</li>
+                    <li>Check <a href="https://github.com/oocx/tfplan2md/discussions" class="inline-link">GitHub Discussions</a> for community help</li>
+                    <li>Review <a href="examples.html" class="inline-link">examples</a> for working configurations</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+        </main>
+    </div>
+
+    <!-- Quick Links -->
+    <section class="section">
+        <div class="section-container">
+            <div class="quicklinks-grid">
+                <a href="getting-started.html" class="quicklink-card">
+                    <div class="quicklink-icon">🚀</div>
+                    <h3 class="quicklink-title">Getting Started</h3>
+                    <p class="quicklink-desc">Installation and CI/CD integration guides</p>
+                </a>
+                <a href="examples.html" class="quicklink-card">
+                    <div class="quicklink-icon">📋</div>
+                    <h3 class="quicklink-title">Examples</h3>
+                    <p class="quicklink-desc">Real tfplan2md output and usage scenarios</p>
+                </a>
+                <a href="features/index.html" class="quicklink-card">
+                    <div class="quicklink-icon">✨</div>
+                    <h3 class="quicklink-title">Features</h3>
+                    <p class="quicklink-desc">Semantic diffing, role assignments, and more</p>
+                </a>
+                <a href="https://github.com/oocx/tfplan2md" class="quicklink-card">
+                    <div class="quicklink-icon">💻</div>
+                    <h3 class="quicklink-title">GitHub Repository</h3>
+                    <p class="quicklink-desc">Source code, issues, and contributions</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="features/index.html" class="footer-link">Features</a>
+                    <a href="getting-started.html" class="footer-link">Get Started</a>
+                    <a href="docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="examples.html" class="footer-link">Examples</a>
+                    <a href="architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+
+        // Sidebar navigation
+        const navLinks = document.querySelectorAll('.docs-nav-link');
+        const navSublinks = document.querySelectorAll('.docs-nav-sublink');
+        const allNavLinks = [...navLinks, ...navSublinks];
+        const sections = document.querySelectorAll('.docs-content .section[id]');
+        const subsections = document.querySelectorAll('.docs-content [id]');
+        
+        // Smooth scroll for sidebar links
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    // Close mobile TOC on selection
+                    if (window.innerWidth <= 1024) {
+                        sidebar.classList.remove('mobile-open');
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                    
+                    // Scroll with offset for fixed header
+                    const headerOffset = 80;
+                    const elementPosition = targetSection.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Highlight active section on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '-100px 0px -66%',
+            threshold: 0
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    
+                    // Remove all active classes
+                    allNavLinks.forEach(link => link.classList.remove('active'));
+                    
+                    // Find and activate the matching link
+                    const activeLink = document.querySelector(`.docs-nav-link[href="#${id}"], .docs-nav-sublink[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                        
+                        // If it's a sublink, also activate parent main link
+                        if (activeLink.classList.contains('docs-nav-sublink')) {
+                            const parentLi = activeLink.closest('li').parentElement.closest('li');
+                            if (parentLi) {
+                                const parentLink = parentLi.querySelector('.docs-nav-link');
+                                if (parentLink) {
+                                    parentLink.classList.add('active');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        subsections.forEach(section => {
+            if (section.id) {
+                observer.observe(section);
+            }
+        });
+        
+        // Mobile TOC toggle
+        const sidebar = document.getElementById('docs-sidebar');
+        const toggleBtn = document.querySelector('.toc-toggle-btn');
+        
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                const isOpen = sidebar.classList.toggle('mobile-open');
+                toggleBtn.setAttribute('aria-expanded', isOpen);
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1024 && 
+                    !sidebar.contains(e.target) && 
+                    !toggleBtn.contains(e.target) &&
+                    sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

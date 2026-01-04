@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 2: Azure Docs Style - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="top-banner">
+        <div class="container">
+            <div class="banner-content">
+                <div class="brand">
+                    <img src="../../assets/images/tfplan2md-logo.svg" alt="tfplan2md" width="28" height="28">
+                    <span>tfplan2md</span>
+                </div>
+                <nav class="primary-nav">
+                    <a href="#overview">Overview</a>
+                    <a href="#quickstart">Quickstart</a>
+                    <a href="#features">Features</a>
+                    <a href="#reference">Reference</a>
+                </nav>
+                <a href="https://github.com/oocx/tfplan2md" class="github-link">
+                    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar">
+            <nav class="side-nav">
+                <div class="nav-section">
+                    <h3>Get Started</h3>
+                    <ul>
+                        <li><a href="#overview" class="active">Overview</a></li>
+                        <li><a href="#install">Installation</a></li>
+                        <li><a href="#quickstart">Quickstart</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>Features</h3>
+                    <ul>
+                        <li><a href="#semantic-diffs">Semantic diffs</a></li>
+                        <li><a href="#module-grouping">Module grouping</a></li>
+                        <li><a href="#azure-optimization">Azure optimization</a></li>
+                        <li><a href="#custom-templates">Custom templates</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#examples">Examples</a></li>
+                        <li><a href="#reference">CLI Reference</a></li>
+                        <li><a href="#contributing">Contributing</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="breadcrumb">
+                <a href="#">Home</a> / <span>Overview</span>
+            </div>
+
+            <article>
+                <h1>tfplan2md</h1>
+                <p class="lead">
+                    Convert Terraform plan JSON files into human-readable Markdown reports optimized 
+                    for GitHub and Azure DevOps pull request comments.
+                </p>
+
+                <div class="alert alert-info">
+                    <strong>Note:</strong> This project was developed 100% with GitHub Copilot to 
+                    explore AI-assisted development capabilities.
+                </div>
+
+                <section id="overview" class="content-section">
+                    <h2>Overview</h2>
+                    <p>
+                        Terraform plans are notoriously difficult to review in pull requests. 
+                        Raw <code>terraform plan</code> output is verbose and cryptic. 
+                        <code>terraform show -json</code> provides complete data but is unreadable for humans.
+                    </p>
+                    
+                    <h3>The Problem</h3>
+                    <ul class="feature-list">
+                        <li><strong>Wall of text output</strong> — Raw plan output is verbose and hard to scan</li>
+                        <li><strong>No structure</strong> — Changes aren't grouped logically</li>
+                        <li><strong>Index-based diffs</strong> — List changes show as confusing modifications</li>
+                        <li><strong>Lost context</strong> — Hard to see what's actually changing</li>
+                    </ul>
+
+                    <h3>The Solution</h3>
+                    <p>
+                        tfplan2md generates clean, readable Markdown reports that structure changes logically, 
+                        show semantic diffs, and render beautifully in PR comments.
+                    </p>
+                </section>
+
+                <section id="quickstart" class="content-section">
+                    <h2>Quickstart</h2>
+                    
+                    <div class="step-box">
+                        <h3>Prerequisites</h3>
+                        <ul>
+                            <li>Docker installed</li>
+                            <li>Terraform plan file (JSON format)</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-box">
+                        <h3>Step 1: Pull the image</h3>
+                        <div class="code-container">
+                            <button class="copy-button" aria-label="Copy code">Copy</button>
+                            <pre><code class="language-bash">docker pull oocx/tfplan2md:latest</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-box">
+                        <h3>Step 2: Run with your plan</h3>
+                        <div class="code-container">
+                            <button class="copy-button" aria-label="Copy code">Copy</button>
+                            <pre><code class="language-bash">terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-box">
+                        <h3>Step 3: Integrate with CI/CD</h3>
+                        <div class="tabs">
+                            <button class="tab-button active">GitHub Actions</button>
+                            <button class="tab-button">Azure Pipelines</button>
+                        </div>
+                        <div class="code-container">
+                            <button class="copy-button" aria-label="Copy code">Copy</button>
+                            <pre><code class="language-yaml">- name: Generate plan report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md > plan.md
+    
+- name: Comment on PR
+  uses: actions/github-script@v6
+  with:
+    script: |
+      const fs = require('fs');
+      const report = fs.readFileSync('plan.md', 'utf8');
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: report
+      });</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="features" class="content-section">
+                    <h2>Key Features</h2>
+                    
+                    <div class="card-grid">
+                        <div class="feature-card">
+                            <div class="card-icon">🔍</div>
+                            <h3>Semantic Diffs</h3>
+                            <p>See which firewall rules or NSG rules were added/removed, not index changes.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon">📁</div>
+                            <h3>Module Grouping</h3>
+                            <p>Resource changes grouped by module with proper hierarchy.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon">🆔</div>
+                            <h3>Readable Azure IDs</h3>
+                            <p>Long Azure IDs formatted as readable scopes with inline values.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon">🎨</div>
+                            <h3>Semantic Icons</h3>
+                            <p>Visual icons for IPs, ports, protocols, booleans, and principals.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon">📝</div>
+                            <h3>Resource Summaries</h3>
+                            <p>One-line summaries show key changes for quick scanning.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="card-icon">🔒</div>
+                            <h3>Sensitive Masking</h3>
+                            <p>Sensitive values masked by default for security.</p>
+                        </div>
+                    </div>
+                </section>
+            </article>
+
+            <div class="page-actions">
+                <a href="#quickstart" class="action-link">Next: Quickstart →</a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="page-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://github.com/oocx/tfplan2md">GitHub</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE">License</a>
+                    <a href="#contributing">Contributing</a>
+                </div>
+                <p class="copyright">© 2025 tfplan2md • Built with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

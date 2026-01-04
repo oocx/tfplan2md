@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 1: GitHub Docs Style - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="../../assets/images/tfplan2md-logo.svg" alt="tfplan2md logo" width="32" height="32">
+                    <span class="logo-text">tfplan2md</span>
+                </div>
+                <nav class="main-nav">
+                    <a href="#getting-started">Getting Started</a>
+                    <a href="#features">Features</a>
+                    <a href="#examples">Examples</a>
+                    <a href="#docs">Docs</a>
+                    <a href="https://github.com/oocx/tfplan2md">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Convert Terraform plans into readable PR comments</h1>
+                    <p class="hero-description">
+                        Stop reviewing wall-of-text plan output. Generate clean, structured Markdown 
+                        reports that show what's actually changing—and why it matters.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#getting-started" class="btn btn-primary">Get Started</a>
+                        <a href="#examples" class="btn btn-secondary">View Examples</a>
+                    </div>
+                    <div class="badges">
+                        <img src="https://img.shields.io/github/workflow/status/oocx/tfplan2md/CI" alt="CI Status">
+                        <img src="https://img.shields.io/docker/pulls/oocx/tfplan2md" alt="Docker Pulls">
+                        <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="comparison">
+            <div class="container">
+                <h2>Before & After</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <h3>❌ Before: Raw terraform plan</h3>
+                        <div class="code-block">
+                            <pre><code># azurerm_network_security_rule.allow_ssh will be created
++ resource "azurerm_network_security_rule" "allow_ssh" {
+    + access                      = "Allow"
+    + destination_address_prefix  = "*"
+    + destination_port_range      = "22"
+    + direction                   = "Inbound"
+    + name                        = "AllowSSH"
+    + priority                    = 100
+    + protocol                    = "Tcp"
+    + source_address_prefix       = "10.0.0.0/8"
+    + source_port_range           = "*"
+    ...80 more lines...</code></pre>
+                        </div>
+                    </div>
+                    <div class="comparison-item">
+                        <h3>✅ After: tfplan2md report</h3>
+                        <div class="code-block">
+                            <pre><code>## 📋 Summary
+**3 to add**, 2 to change, 1 to destroy
+
+## 🔒 Network Security Rules
+### ✨ Creating `AllowSSH`
+- 🌐 Source: `10.0.0.0/8` → 🌐 Destination: `*`
+- 🔌 Port: `22` (🔗 TCP)
+- Priority: `100`
+- Action: ✅ Allow</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2>Key Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Semantic Diffs</h3>
+                        <p>See which firewall rules or NSG rules changed—not index modifications</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📁</div>
+                        <h3>Module Grouping</h3>
+                        <p>Changes organized by module for better context</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Sensitive Masking</h3>
+                        <p>Secrets automatically masked for security</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Custom Templates</h3>
+                        <p>Use Scriban templates for custom report formats</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🐳</div>
+                        <h3>Docker Ready</h3>
+                        <p>Minimal image for seamless CI/CD integration</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Azure Optimized</h3>
+                        <p>Readable Azure resource IDs and role assignments</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quickstart">
+            <div class="container">
+                <h2>Quick Start</h2>
+                <div class="quickstart-content">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Pull the Docker image</h3>
+                            <div class="code-block">
+                                <pre><code>docker pull oocx/tfplan2md:latest</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Pipe your Terraform plan</h3>
+                            <div class="code-block">
+                                <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Add to your CI/CD pipeline</h3>
+                            <div class="code-block">
+                                <pre><code>- name: Generate PR comment
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md > plan.md</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>© 2025 tfplan2md | <a href="https://github.com/oocx/tfplan2md">GitHub</a> | <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE">MIT License</a></p>
+            <p class="footer-note">Built 100% with GitHub Copilot</p>
+        </div>
+    </footer>
+</body>
+</html>

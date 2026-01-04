@@ -32,7 +32,7 @@ The website uses inline emoji icons on the Features page. Each feature must have
 | 🛠️ | Custom Templates | ✅ Unique |
 | 🌐 | Provider Agnostic Core | ✅ Unique |
 | 📝 | Local Resource Names | ✅ Unique |
-| 🐳 | Docker Support | ✅ Unique |
+| � | Container Support | ✅ Unique |
 | 🔒 | Sensitive Value Masking | ✅ Unique |
 | 📦 | Minimal Container Image | ✅ Unique |
 | 🌓 | Dark/Light Mode | ✅ Unique |
@@ -57,7 +57,7 @@ The website uses inline emoji icons on the Features page. Each feature must have
 | Custom Templates | Allows users to completely customize the markdown output using Scriban templates. | Built-In Capabilities | Medium | 🛠️ |
 | Provider Agnostic Core | Works with any Terraform provider (AWS, GCP, etc.) using standard resource rendering. | Built-In Capabilities | Medium | 🌐 |
 | Local Resource Names | In modules, renders the local name part instead of the full name that includes the module path. | Built-In Capabilities | Medium | 📝 |
-| Docker Support | Distributed as a lightweight Docker container for easy usage in any environment. | Also Included | Low | 🐳 |
+| Container Support | Distributed as a lightweight container image for easy usage in any environment. | Also Included | Low | 📦 |
 | Sensitive Value Masking | Automatically detects and masks sensitive values (marked as sensitive in Terraform) to prevent leaks. Optionally, sensitive values can be included in the report. | Also Included | Low | 🔒 |
 | Minimal Container Image | Uses mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled as base for minimal attack surface. | Also Included | Low | 📦 |
 | Dark/Light Mode | Website supports dark and light theme toggle. | Also Included | Low | 🌓 |
@@ -76,3 +76,5 @@ The website uses inline emoji icons on the Features page. Each feature must have
 - 2026-01-03: Tag Visualization keeps 🏷️ icon (matches how tags are visualized in product).
 - 2026-01-03: Friendly Resource Names changed to 🆔 icon to resolve duplicate.
 - 2026-01-03: Dark/Light Mode added as Low (Also Included).
+- 2026-01-04: Custom Templates icon finalized (Grid Layout).
+- 2026-01-04: Firewall Rules icon finalized (Cards Below / v6). Brick wall with 3 rows and separate allow/deny cards below.

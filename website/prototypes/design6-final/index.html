@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md - Transform Terraform Plans Into Readable Reports</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="../../assets/images/tfplan2md-logo.svg" alt="tfplan2md" width="36" height="36">
+                <span class="brand-name">tfplan2md</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#features" class="nav-item">Features</a>
+                <a href="#install" class="nav-item">Install</a>
+                <a href="#docs" class="nav-item">Docs</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">✨ Built 100% with GitHub Copilot</div>
+                <h1 class="hero-title">
+                    Transform Terraform Plans<br>
+                    <span class="hero-gradient">Into Readable Reports</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Stop drowning in verbose plan output. Generate beautiful, structured Markdown 
+                    reports that your team will actually read—and render perfectly in PR comments.
+                </p>
+                <div class="hero-actions">
+                    <a href="#install" class="btn btn-primary btn-lg">Get Started</a>
+                    <a href="#demo" class="btn btn-secondary btn-lg">View Demo</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-value">Docker Ready</div>
+                        <div class="stat-label">Easy Integration</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">Open Source</div>
+                        <div class="stat-label">MIT License</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">.NET 10</div>
+                        <div class="stat-label">Modern Stack</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="problem-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">The Pull Request Review Problem</h2>
+                <p class="section-description">
+                    Reviewing Terraform changes in PRs is painful with raw plan output
+                </p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">😵</div>
+                    <h3>Wall of Text</h3>
+                    <p>Raw plan output is overwhelming and difficult to scan</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🔍</div>
+                    <h3>Lost Context</h3>
+                    <p>Hard to understand what's actually changing and why</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">📊</div>
+                    <h3>No Structure</h3>
+                    <p>Changes aren't grouped logically by module or resource type</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🤯</div>
+                    <h3>Cryptic Diffs</h3>
+                    <p>Index changes instead of semantic "what actually changed"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solution-section">
+        <div class="section-container">
+            <div class="solution-grid">
+                <div class="solution-visual">
+                    <div class="code-preview">
+                        <div class="code-header">
+                            <span class="code-title">terraform plan output</span>
+                        </div>
+                        <div class="code-body">
+                            <pre># azurerm_network_security_rule.rule[2] will be created
++ resource "azurerm_network_security_rule" "rule" {
+    + access                      = "Allow"
+    + destination_address_prefix  = "*"
+    + destination_port_range      = "22"
+    ...</pre>
+                        </div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="code-preview">
+                        <div class="code-header">
+                            <span class="code-title">tfplan2md report</span>
+                        </div>
+                        <div class="code-body">
+                            <pre>## 🔒 Network Security Rules
+### ✨ Creating `AllowSSH`
+- 🌐 Source: `10.0.0.0/8`
+- 🔌 Port: `22` (TCP)
+- Action: ✅ Allow</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="solution-content">
+                    <h2 class="solution-title">Clean, Structured, Readable</h2>
+                    <ul class="solution-list">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <strong>Semantic diffs</strong> show actual rule changes
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <strong>Module grouping</strong> provides better context
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <strong>Visual icons</strong> for IPs, ports, protocols
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <strong>One-line summaries</strong> for quick scanning
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <strong>Sensitive masking</strong> keeps secrets safe
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" class="install-section">
+        <div class="section-container">
+            <div class="install-card">
+                <div class="install-content">
+                    <h2 class="install-title">Get Started in Seconds</h2>
+                    <p class="install-description">Pull the Docker image and start converting plans</p>
+                </div>
+                <div class="install-steps">
+                    <div class="install-step">
+                        <div class="step-label">Step 1</div>
+                        <div class="command-box">
+                            <code>docker pull oocx/tfplan2md:latest</code>
+                            <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>
+                        </div>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-label">Step 2</div>
+                        <div class="command-box">
+                            <code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code>
+                            <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div class="section-container">
+            <div class="section-header centered">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-description">Everything you need for better Terraform PR reviews</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card elevated">
+                    <div class="feature-header">
+                        <div class="feature-icon-lg">🔍</div>
+                    </div>
+                    <h3 class="feature-title">Semantic Diffs</h3>
+                    <p class="feature-description">
+                        See which firewall rules or NSG rules were added/removed, 
+                        not confusing index modifications.
+                    </p>
+                </div>
+                <div class="feature-card elevated">
+                    <div class="feature-header">
+                        <div class="feature-icon-lg">📁</div>
+                    </div>
+                    <h3 class="feature-title">Module Grouping</h3>
+                    <p class="feature-description">
+                        Resource changes organized by module for better context 
+                        and easier navigation.
+                    </p>
+                </div>
+                <div class="feature-card elevated">
+                    <div class="feature-header">
+                        <div class="feature-icon-lg">🆔</div>
+                    </div>
+                    <h3 class="feature-title">Azure Optimized</h3>
+                    <p class="feature-description">
+                        Long Azure resource IDs formatted as readable scopes. 
+                        Principal mapping for role assignments.
+                    </p>
+                </div>
+                <div class="feature-card elevated">
+                    <div class="feature-header">
+                        <div class="feature-icon-lg">🎨</div>
+                    </div>
+                    <h3 class="feature-title">Visual Icons</h3>
+                    <p class="feature-description">
+                        Intuitive icons for IPs, ports, protocols, booleans, 
+                        and principals improve scannability.
+                    </p>
+                </div>
+                <div class="feature-card elevated">
+                    <div class="feature-header">
+                        <div class="feature-icon-lg">📝</div>
+                    </div>
+                    <h3 class="feature-title">Resource Summaries</h3>
+                    <p class="feature-description">
+                        Each resource change shows a concise one-line summary 
+                        for quick understanding.
+                    </p>
+                </div>
+                <div class="feature-card elevated">
+                    <div class="feature-header">
+                        <div class="feature-icon-lg">🔒</div>
+                    </div>
+                    <h3 class="feature-title">Security First</h3>
+                    <p class="feature-description">
+                        Sensitive values are masked by default. Distroless 
+                        Docker image for minimal attack surface.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cicd-section">
+        <div class="section-container">
+            <div class="cicd-content">
+                <div class="cicd-text">
+                    <h2 class="cicd-title">Perfect for CI/CD</h2>
+                    <p class="cicd-description">
+                        Integrate tfplan2md into your GitHub Actions, Azure Pipelines, 
+                        or GitLab CI workflow. Automatically post plan reports as PR comments.
+                    </p>
+                    <a href="#docs" class="btn btn-primary">View Integration Guides</a>
+                </div>
+                <div class="cicd-example">
+                    <div class="code-window">
+                        <div class="code-tabs">
+                            <button class="code-tab active">GitHub Actions</button>
+                            <button class="code-tab">Azure Pipelines</button>
+                        </div>
+                        <div class="code-content">
+<pre>- name: Generate markdown report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md > plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v6
+  with:
+    script: |
+      const fs = require('fs');
+      const body = fs.readFileSync('plan.md', 'utf8');
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body
+      });</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="#features" class="footer-link">Features</a>
+                    <a href="#install" class="footer-link">Get Started</a>
+                    <a href="#docs" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="#examples" class="footer-link">Examples</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/CONTRIBUTING.md" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+        
+        // Copy button functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const code = button.previousElementSibling.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = '✅';
+                    setTimeout(() => button.textContent = '📋', 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

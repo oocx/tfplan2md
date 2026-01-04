@@ -375,6 +375,34 @@ This file is the source of truth for all open website tasks.
 
 ---
 
+### #19 — Replace emoji icons with SVG icons on features page
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/features/index.html` |
+| Effort | Medium |
+| Value | Medium |
+| Status | ⬜ Not started |
+| Depends On | #10 |
+
+**Description:** Replace all emoji icons on the features index page with the corresponding SVG icons from `/assets/icons/`. The SVG icons were created in task #10 but are not yet being used on the features page. This will provide a more professional appearance and consistent styling.
+
+**Approach:**
+1. Review feature-definitions.md to map each feature to its SVG icon file
+2. Replace `<div class="feature-icon">🔍</div>` style markup with `<img src="../assets/icons/semantic-diff.svg" alt="Semantic Diffs" class="feature-icon">`
+3. Update CSS if needed to ensure SVG icons display correctly at the right size
+4. Verify icons work in both light and dark modes (SVGs use "White Halo" technique)
+
+**Definition of Done:**
+- [ ] All emoji icons replaced with SVG icons from `/assets/icons/`
+- [ ] Icon-to-feature mapping follows feature-definitions.md
+- [ ] Icons display correctly at intended size
+- [ ] Icons work in both light and dark mode
+- [ ] No visual regressions (spacing, alignment maintained)
+- [ ] All icon files referenced actually exist
+
+---
+
 ### #18 — Replace hand-crafted examples with real generated output
 
 | Field | Value |

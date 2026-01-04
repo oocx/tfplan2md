@@ -17,14 +17,14 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/features/index.html` |
 | Effort | Low |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Change the Friendly Resource Names feature icon from 🏷️ to 🆔. Tag Visualization uses 🏷️ (which matches how tags are visualized in the product), so Friendly Resource Names needs a different icon to avoid conflict.
 
 **Definition of Done:**
-- [ ] Icon changed from 🏷️ to 🆔 in `/features/index.html`
-- [ ] No duplicate icons exist on the features page
+- [x] Icon changed from 🏷️ to 🆔 in `/features/index.html`
+- [x] No duplicate icons exist on the features page
 
 ---
 
@@ -231,17 +231,17 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/assets/icons/` |
 | Effort | Medium |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create SVG icons for features as referenced in feature-definitions.md. Icons should work at small sizes and be consistent in style.
 
 **Definition of Done:**
-- [ ] Icons created for all features that need them (per feature-definitions.md)
-- [ ] Icons placed in `/assets/icons/` directory
-- [ ] Icons work at navbar scale (small sizes)
-- [ ] Consistent visual style across all icons
-- [ ] Icons referenced correctly in feature pages
+- [x] Icons created for all features that need them (per feature-definitions.md)
+- [x] Icons placed in `/assets/icons/` directory
+- [x] Icons work at navbar scale (small sizes)
+- [x] Consistent visual style across all icons
+- [x] Icons referenced correctly in feature pages
 
 ---
 

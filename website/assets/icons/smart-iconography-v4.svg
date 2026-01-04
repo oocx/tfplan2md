@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon swatch grid (simple, recognizable at small sizes) -->
+  <rect x="8" y="12" width="32" height="24" rx="2" fill="#646cff" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+
+  <!-- Swatches (reduced count to avoid noise) -->
+  <circle cx="16" cy="18" r="2" fill="#646cff"/>
+  <rect x="22" y="16" width="4" height="4" rx="1" fill="#646cff"/>
+  <path d="M14 26L16 28L14 30" stroke="#646cff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  <circle cx="24" cy="28" r="2" fill="#646cff" opacity="0.55"/>
+
+  <!-- Selected swatch indicator -->
+  <rect x="20" y="14" width="8" height="8" rx="1" fill="none" stroke="#646cff" stroke-width="2"/>
+
+  <!-- Subtle "smart" hint (single sparkle) -->
+  <path d="M40 14L40.7 16.2L43 17L40.7 17.8L40 20L39.3 17.8L37 17L39.3 16.2Z" fill="#646cff" fill-opacity="0.28"/>
+</svg>

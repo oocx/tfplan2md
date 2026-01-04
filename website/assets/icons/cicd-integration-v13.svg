@@ -1,0 +1,27 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fork arrows from start (drawn first, behind everything) -->
+  <path d="M14 20 L19 9" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M14 28 L19 39" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Branch progression arrows -->
+  <path d="M29 9 H34" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M29 39 H34" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Starting step - green (completed) -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  
+  <!-- Top branch: red (failed), black (not executed) -->
+  <rect x="19" y="4" width="10" height="10" rx="2" fill="#e53935" fill-opacity="0.15" stroke="#e53935" stroke-width="2"/>
+  <rect x="34" y="4" width="10" height="10" rx="2" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+  
+  <!-- Bottom branch: black, black (not executed) -->
+  <rect x="19" y="34" width="10" height="10" rx="2" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+  <rect x="34" y="34" width="10" height="10" rx="2" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+  
+  <!-- Icons -->
+  <path d="M7 24L8.5 25.5L11 23" stroke="#43a047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22 7L26 11M26 7L22 11" stroke="#e53935" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="39" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="24" cy="39" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="39" cy="39" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rocket/deploy style -->
+  <!-- Rocket body -->
+  <path d="M32 16L36 12L40 16L36 20L32 16Z" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M28 20L32 16L36 20L32 24L28 20Z" fill="#646cff" fill-opacity="0.3" stroke="#646cff" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Trail/path -->
+  <path d="M28 20L12 36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 2"/>
+  <!-- Origin point (code) -->
+  <rect x="6" y="32" width="10" height="10" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <line x1="9" y1="35" x2="13" y2="35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="9" y1="38" x2="11" y2="38" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

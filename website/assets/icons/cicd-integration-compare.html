@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Integration Icon Comparison - tfplan2md</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark { background: #1a1a2e; color: #e0e0e0; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        h1 { color: #333; }
+        body.dark h1 { color: #fff; }
+        .subtitle { color: #666; margin-top: 5px; }
+        body.dark .subtitle { color: #aaa; }
+        .theme-toggle {
+            padding: 10px 20px;
+            background: #646cff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .theme-toggle:hover { background: #535bf2; }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .option-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        body.dark .option-card {
+            background: #252540;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(100, 108, 255, 0.2);
+        }
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .option-title { font-size: 18px; font-weight: 600; color: #646cff; }
+        .option-badge {
+            background: #646cff;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .option-badge.current { background: #43a047; }
+        .option-badge.azure { background: #0078d4; }
+        .icon-preview {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        body.dark .icon-preview { background: #1a1a2e; }
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .size-label { font-size: 11px; color: #999; }
+        .description { font-size: 14px; color: #666; line-height: 1.5; }
+        body.dark .description { color: #aaa; }
+        .pros-cons { margin-top: 12px; font-size: 13px; }
+        .pro { color: #43a047; }
+        .con { color: #e53935; }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #646cff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>CI/CD Integration Icon Options</h1>
+            <p class="subtitle">Choose the best icon for the "CI/CD Pipeline Integration" feature</p>
+        </div>
+        <button class="theme-toggle" onclick="document.body.classList.toggle('dark')">Toggle Dark Mode</button>
+    </div>
+
+    <div class="comparison-grid">
+        <!-- Option 1: Current (Infinity loop) -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 1 (Current)</span>
+                <span class="option-badge current">Current</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Infinity loop with stages.</strong> Continuous loop representing CI/CD cycle with stage dots.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Classic CI/CD infinity symbol</p>
+                <p class="pro">✓ Shows continuous nature</p>
+            </div>
+        </div>
+
+        <!-- Option 2: Pipeline stages -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 2</span>
+                <span class="option-badge azure">Azure DevOps</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v2.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v2.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v2.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v2.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v2.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Linear pipeline with stages.</strong> Three connected stages: code, build, deploy (with green checkmark).
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Clear pipeline visualization</p>
+                <p class="pro">✓ Shows progression to success</p>
+            </div>
+        </div>
+
+        <!-- Option 3: Circular workflow -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 3</span>
+                <span class="option-badge">GitHub Actions</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v3.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v3.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v3.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v3.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v3.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Circular workflow with gear.</strong> Continuous arrows around central automation gear.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Emphasizes automation</p>
+                <p class="pro">✓ Clean circular design</p>
+            </div>
+        </div>
+
+        <!-- Option 4: Rocket deploy -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 4</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v4.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v4.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v4.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v4.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v4.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Rocket deployment.</strong> Code transforms to rocket - deployment metaphor.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Exciting, dynamic feel</p>
+                <p class="con">✗ May feel too playful</p>
+            </div>
+        </div>
+
+        <!-- Option 5: Git branch merge -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 5</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v5.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v5.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v5.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v5.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v5.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Git branch merge flow.</strong> Feature branch merging back with green success indicator.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Git-centric design</p>
+                <p class="pro">✓ Shows merge workflow</p>
+            </div>
+        </div>
+
+        <!-- Option 6: Pipeline boxes -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 6</span>
+                <span class="option-badge azure">Azure DevOps</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v6.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v6.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v6.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v6.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v6.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Pipeline stage boxes.</strong> Connected boxes with arrows: code → build → deploy.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Very clear stage progression</p>
+                <p class="pro">✓ Matches Azure DevOps UI</p>
+            </div>
+        </div>
+
+        <!-- Option 7: Simple branch -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 7</span>
+                <span class="option-badge">Simple Branch</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v7.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v7.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v7.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v7.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v7.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Main pipeline with parallel branch.</strong> One branch forking from the middle step for parallel execution.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Simple parallel execution pattern</p>
+                <p class="pro">✓ Easy to understand at small sizes</p>
+                <p class="con">✗ Only shows single branch scenario</p>
+            </div>
+        </div>
+
+        <!-- Option 8: Multiple parallel branches -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 8</span>
+                <span class="option-badge">Matrix Jobs</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v8.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v8.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v8.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v8.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v8.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Multiple parallel branches.</strong> Three parallel jobs (test, deploy, validate) forking from a single step.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Shows multiple parallel execution clearly</p>
+                <p class="pro">✓ True to GitHub Actions matrix pattern</p>
+                <p class="con">✗ May be busy at small sizes</p>
+            </div>
+        </div>
+
+        <!-- Option 9: Branch and merge -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 9</span>
+                <span class="option-badge">Branch & Merge</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v9.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v9.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v9.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v9.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v9.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Parallel branches with merge.</strong> Branches fork out, then merge back into final success step.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Complete parallel workflow pattern</p>
+                <p class="pro">✓ Shows fork and merge clearly</p>
+                <p class="con">✗ Most complex, may be harder to read at 16px</p>
+            </div>
+        </div>
+
+        <!-- Option 10: Symmetric 2-step branches -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 10</span>
+                <span class="option-badge">Symmetric 2-Step</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v10.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v10.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v10.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v10.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v10.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Two parallel 2-step branches.</strong> Starting step forks into two branches, each with 2 steps (e.g., test+deploy, build+verify).
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Balanced and symmetric design</p>
+                <p class="pro">✓ Clear parallel execution with equal weight</p>
+                <p class="pro">✓ Good readability at all sizes</p>
+            </div>
+        </div>
+
+        <!-- Option 11: Asymmetric branches -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 11</span>
+                <span class="option-badge">Asymmetric</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v11.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v11.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v11.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v11.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v11.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Unequal branch complexity.</strong> Top branch has 2 steps, bottom has 3 steps (different workload per branch).
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Shows realistic workload variation</p>
+                <p class="pro">✓ More compact top branch</p>
+                <p class="con">✗ Asymmetry may feel unbalanced</p>
+            </div>
+        </div>
+
+        <!-- Option 12: Symmetric 3-step branches -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 12</span>
+                <span class="option-badge">Symmetric 3-Step</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v12.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v12.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v12.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v12.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v12.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Two parallel 3-step branches.</strong> Maximum parallelism - both branches have full 3-step workflows.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Shows complex parallel execution</p>
+                <p class="pro">✓ Balanced and comprehensive</p>
+                <p class="con">✗ Most detailed, may be busy at 16px</p>
+            </div>
+        </div>
+
+        <!-- Option 13: Failed pipeline with statuses -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 13</span>
+                <span class="option-badge">Failed Pipeline</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="cicd-integration-v13.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="cicd-integration-v13.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="cicd-integration-v13.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="cicd-integration-v13.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="cicd-integration-v13.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Status-aware pipeline.</strong> Start (green) → Top: failed (red) + skipped (black) | Bottom: 2× skipped (black).
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Shows real pipeline failure states</p>
+                <p class="pro">✓ Color-coded: green=success, red=failed, black=skipped</p>
+                <p class="pro">✓ Consistent with other icon color schemes</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="gallery.html" class="back-link">← Back to Gallery</a>
+</body>
+</html>

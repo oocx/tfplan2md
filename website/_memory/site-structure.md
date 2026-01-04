@@ -51,7 +51,7 @@ The navbar (present in `/features/index.html`) links to:
   1. Hero with title and subtitle
   2. "What Sets Us Apart" - 8 featured cards (Semantic Diffs, Firewall Rules, NSG Rules, Role Assignment, Large Values, CI/CD, PR Rendering, Friendly Names)
   3. "Built-In Capabilities" - 8 cards (Plan Summary, Module Grouping, Collapsible Details, Tag Visualization, Smart Iconography, Custom Templates, Provider Agnostic, Local Names)
-  4. "Also Included" - 3 compact cards (Sensitive Masking, Minimal Docker, Docker Support)
+  4. "Also Included" - 3 compact cards (Sensitive Masking, Minimal Container, Container Support)
   5. Footer with Product/Resources/Community links
 - **Feature links (internal, all missing):**
   - `firewall-rules.html`

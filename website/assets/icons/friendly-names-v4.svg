@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Label with readable name - compact sparkle -->
+  <rect x="6" y="16" width="36" height="16" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <!-- ABC letters with padding -->
+  <text x="17" y="27" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#646cff" text-anchor="middle">ABC</text>
+  <!-- Compact sparkle top right with spacing -->
+  <path d="M34 20L34.5 22L36.5 22.5L34.5 23L34 25L33.5 23L31.5 22.5L33.5 22Z" fill="#646cff" stroke="#646cff" stroke-width="0.5" stroke-linejoin="round"/>
+  <circle cx="29" cy="27" r="1" fill="#646cff" opacity="0.6"/>
+</svg>

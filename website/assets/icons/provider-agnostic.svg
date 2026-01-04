@@ -1,0 +1,33 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexagon Network -->
+  
+  <defs>
+    <path id="hex-center" d="M24 18L29 21V27L24 30L19 27V21L24 18Z"/>
+    <path id="hex-top" d="M24 4L29 7V13L24 16L19 13V7L24 4Z"/>
+    <path id="hex-bl" d="M12 25L17 28V34L12 37L7 34V28L12 25Z"/>
+    <path id="hex-br" d="M36 25L41 28V34L36 37L31 34V28L36 25Z"/>
+    <g id="hex-connectors">
+      <line x1="24" y1="16" x2="24" y2="18"/>
+      <line x1="17" y1="28" x2="19" y2="27"/>
+      <line x1="31" y1="28" x2="29" y2="27"/>
+    </g>
+  </defs>
+
+  <!-- Fill -->
+  <use href="#hex-center" fill="#646cff" fill-opacity="0.3" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#hex-center" stroke="white" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-top" stroke="white" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-bl" stroke="white" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-br" stroke="white" stroke-width="3.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-connectors" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#hex-center" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-top" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-bl" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-br" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+  <use href="#hex-connectors" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+
+</svg>

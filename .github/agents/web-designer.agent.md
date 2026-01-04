@@ -371,37 +371,10 @@ Validate HTML (if validator installed):
 html5validator website/
 ```
 
-Test locally with Python server:
-```bash
-cd website
-python3 -m http.server 8000
-# Visit http://localhost:8000 in browser
-```
-
-## Web Server State Management
-
-**CRITICAL**: When running local development servers, you MUST track their state carefully.
-
-### Rules
-1. **One server at a time**: Only run ONE development server. If you need to show alternate designs, use different directories, not multiple ports.
-2. **Track server state**: Before starting a server, check if one is already running:
-   ```bash
-   lsof -i :8000 2>/dev/null || echo "Port 8000 is free"
-   ```
-3. **Stop before starting**: If a server is running and you need to restart, stop it first:
-   ```bash
-   pkill -f "python3 -m http.server" || true
-   ```
-4. **Report server status clearly**: When you start a server, tell the user:
-   - The URL (e.g., `http://localhost:8000`)
-   - What content is being served
-   - How to stop it (Ctrl+C or `pkill -f "python3 -m http.server"`)
-5. **Never assume server state**: If you're unsure whether a server is running, check before making claims about what the user can view.
-
 Check for broken links (if tool available):
 ```bash
 # Example with linkchecker (requires installation)
-linkchecker http://localhost:8000
+linkchecker website/
 ```
 
 ## Definition of Done

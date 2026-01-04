@@ -26,6 +26,13 @@ This document captures specific design decisions made during the website develop
 - Section container padding: 40px (reduced from 80px)
 - Hero headlines should render without line breaks
 
+### Iconography
+- **Style**: Duotone SVG with `#646cff` (Brand Blue) and `currentColor` (Black/Text).
+- **Dark Mode Compatibility**: All icons use a "White Halo" technique (white stroke behind black lines) to ensure visibility on dark backgrounds while remaining invisible on light backgrounds.
+- **Stroke Width**: 
+  - Structural lines: 2px (Black) / 4px (White Halo)
+  - Detail lines: 1.5px (Black) / 3.5px (White Halo)
+
 ## Homepage Layout
 
 ### Badge Row (Top)

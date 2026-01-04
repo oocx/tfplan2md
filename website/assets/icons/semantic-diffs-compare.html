@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Diffs Icon Comparison - tfplan2md</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        body.dark h1 {
+            color: #fff;
+        }
+        .subtitle {
+            color: #666;
+            margin-top: 5px;
+        }
+        body.dark .subtitle {
+            color: #aaa;
+        }
+        .theme-toggle {
+            padding: 10px 20px;
+            background: #646cff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .theme-toggle:hover {
+            background: #535bf2;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .option-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        body.dark .option-card {
+            background: #252540;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(100, 108, 255, 0.2);
+        }
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .option-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #646cff;
+        }
+        .option-badge {
+            background: #646cff;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .option-badge.current {
+            background: #43a047;
+        }
+        .icon-preview {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        body.dark .icon-preview {
+            background: #1a1a2e;
+        }
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .size-label {
+            font-size: 11px;
+            color: #999;
+        }
+        .description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        body.dark .description {
+            color: #aaa;
+        }
+        .pros-cons {
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .pro {
+            color: #43a047;
+        }
+        .con {
+            color: #e53935;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #646cff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>Semantic Diffs Icon Options</h1>
+            <p class="subtitle">Choose the best icon for the "Semantic Diffs" feature</p>
+        </div>
+        <button class="theme-toggle" onclick="document.body.classList.toggle('dark')">Toggle Dark Mode</button>
+    </div>
+
+    <div class="comparison-grid">
+        <!-- Option 1: Current -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 1 (Current)</span>
+                <span class="option-badge current">Current</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item">
+                    <img src="semantic-diffs.svg" width="64" height="64">
+                    <span class="size-label">64px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs.svg" width="48" height="48">
+                    <span class="size-label">48px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs.svg" width="32" height="32">
+                    <span class="size-label">32px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs.svg" width="24" height="24">
+                    <span class="size-label">24px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs.svg" width="16" height="16">
+                    <span class="size-label">16px</span>
+                </div>
+            </div>
+            <p class="description">
+                <strong>Two side-by-side panels</strong> with an arrow between them. Represents "before" and "after" comparison.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Clear side-by-side metaphor</p>
+                <p class="pro">✓ Works well at all sizes</p>
+                <p class="con">✗ No color indication of changes</p>
+            </div>
+        </div>
+
+        <!-- Option 2: Split panel with red/green -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 2</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item">
+                    <img src="semantic-diffs-v2.svg" width="64" height="64">
+                    <span class="size-label">64px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v2.svg" width="48" height="48">
+                    <span class="size-label">48px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v2.svg" width="32" height="32">
+                    <span class="size-label">32px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v2.svg" width="24" height="24">
+                    <span class="size-label">24px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v2.svg" width="16" height="16">
+                    <span class="size-label">16px</span>
+                </div>
+            </div>
+            <p class="description">
+                <strong>Split panel with red/green diff lines.</strong> Left side shows removed (red), right side shows added (green).
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Red/green instantly recognizable as diff</p>
+                <p class="pro">✓ Clear left/right comparison</p>
+                <p class="con">✗ Colors may be hard to see at 16px</p>
+            </div>
+        </div>
+
+        <!-- Option 3: Overlapping documents -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 3</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item">
+                    <img src="semantic-diffs-v3.svg" width="64" height="64">
+                    <span class="size-label">64px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v3.svg" width="48" height="48">
+                    <span class="size-label">48px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v3.svg" width="32" height="32">
+                    <span class="size-label">32px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v3.svg" width="24" height="24">
+                    <span class="size-label">24px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v3.svg" width="16" height="16">
+                    <span class="size-label">16px</span>
+                </div>
+            </div>
+            <p class="description">
+                <strong>Stacked documents</strong> with highlighted diff sections (red for removed, green for added).
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Document-centric view</p>
+                <p class="pro">✓ Shows inline highlighting</p>
+                <p class="con">✗ Slightly more complex shape</p>
+            </div>
+        </div>
+
+        <!-- Option 4: Plus/minus circles -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 4</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item">
+                    <img src="semantic-diffs-v4.svg" width="64" height="64">
+                    <span class="size-label">64px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v4.svg" width="48" height="48">
+                    <span class="size-label">48px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v4.svg" width="32" height="32">
+                    <span class="size-label">32px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v4.svg" width="24" height="24">
+                    <span class="size-label">24px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v4.svg" width="16" height="16">
+                    <span class="size-label">16px</span>
+                </div>
+            </div>
+            <p class="description">
+                <strong>Minus and plus circles</strong> connected with an arrow, showing transformation from old to new.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Universal +/- diff symbolism</p>
+                <p class="pro">✓ Very recognizable at all sizes</p>
+                <p class="con">✗ May look like git status, not semantic diff</p>
+            </div>
+        </div>
+
+        <!-- Option 5: Magnifying glass -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 5</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item">
+                    <img src="semantic-diffs-v5.svg" width="64" height="64">
+                    <span class="size-label">64px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v5.svg" width="48" height="48">
+                    <span class="size-label">48px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v5.svg" width="32" height="32">
+                    <span class="size-label">32px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v5.svg" width="24" height="24">
+                    <span class="size-label">24px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v5.svg" width="16" height="16">
+                    <span class="size-label">16px</span>
+                </div>
+            </div>
+            <p class="description">
+                <strong>Magnifying glass</strong> over diff lines. Emphasizes "looking closely at changes."
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Conveys inspection/analysis</p>
+                <p class="pro">✓ Distinct shape</p>
+                <p class="con">✗ May suggest "search" rather than "diff"</p>
+            </div>
+        </div>
+
+        <!-- Option 6: Inline character diff -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 6</span>
+                <span class="option-badge">New</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item">
+                    <img src="semantic-diffs-v6.svg" width="64" height="64">
+                    <span class="size-label">64px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v6.svg" width="48" height="48">
+                    <span class="size-label">48px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v6.svg" width="32" height="32">
+                    <span class="size-label">32px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v6.svg" width="24" height="24">
+                    <span class="size-label">24px</span>
+                </div>
+                <div class="size-item">
+                    <img src="semantic-diffs-v6.svg" width="16" height="16">
+                    <span class="size-label">16px</span>
+                </div>
+            </div>
+            <p class="description">
+                <strong>Code block with inline diff highlighting.</strong> Shows character-level changes with red/green backgrounds.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Most accurate to feature (character-level diff)</p>
+                <p class="pro">✓ Looks like actual code diff view</p>
+                <p class="con">✗ Detail may get lost at small sizes</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="gallery.html" class="back-link">← Back to Gallery</a>
+</body>
+</html>

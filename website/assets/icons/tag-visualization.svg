@@ -1,0 +1,24 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tag with hole in top left corner -->
+  
+  <defs>
+    <path id="tag-shape" d="M8 10L8 26L24 42L40 26L24 10L8 10Z"/>
+    <g id="tag-lines">
+      <line x1="22" y1="17" x2="32" y2="27"/>
+      <line x1="22" y1="23" x2="28" y2="29"/>
+    </g>
+  </defs>
+
+  <!-- Fill -->
+  <use href="#tag-shape" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+  <circle cx="15" cy="17" r="2.5" fill="#646cff" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#tag-shape" stroke="white" stroke-width="4" stroke-linejoin="round" fill="none"/>
+  <use href="#tag-lines" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#tag-shape" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+  <use href="#tag-lines" stroke="#646cff" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+</svg>

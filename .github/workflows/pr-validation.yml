@@ -35,11 +35,11 @@ jobs:
             exit 0
           fi
 
-          NON_IGNORED=$(echo "$CHANGED_FILES" | grep -Ev '^(docs/|\.github/agents/|\.github/skills/|\.github/copilot-instructions\.md$|\.github/gh-cli-instructions\.md$|\.github/pull_request_template\.md$)' || true)
+          NON_IGNORED=$(echo "$CHANGED_FILES" | grep -Ev '^(docs/|website/|\.github/agents/|\.github/skills/|\.github/copilot-instructions\.md$|\.github/gh-cli-instructions\.md$|\.github/pull_request_template\.md$)' || true)
 
           if [ -z "$NON_IGNORED" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Only docs/agent-instructions changed; skipping validation"
+            echo "Only docs/website/agent-instructions changed; skipping validation"
           else
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Non-ignored files changed; running validation"
@@ -106,4 +106,4 @@ jobs:
 
       - name: Skip validation (no relevant files changed)
         if: steps.filter.outputs.changed == 'false'
-        run: echo "✅ PR validation skipped (docs/agent-only changes)"
+        run: echo "✅ PR validation skipped (docs/website/agent-only changes)"

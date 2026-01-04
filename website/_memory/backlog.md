@@ -10,6 +10,32 @@ This file is the source of truth for all open website tasks.
 
 ## Open tasks
 
+### #20 — Skip PR validation for website-only changes
+
+| Field | Value |
+|-------|-------|
+| Page(s) | N/A |
+| Effort | Low |
+| Value | High |
+| Status | ✅ Done |
+| Depends On | — |
+
+**Description:** Update PR validation workflow to skip expensive validation steps (build, test, formatting) when only website content has changed. This will speed up PRs for website changes and reduce CI/CD load.
+
+**Approach:**
+1. Update the filter step in `.github/workflows/pr-validation.yml`
+2. Add `website/` to the list of ignored paths (similar to `docs/` and `.github/agents/`)
+3. Ensure the filter correctly skips validation when only website files change
+
+**Definition of Done:**
+- [x] `website/` added to ignored paths in pr-validation.yml filter step
+- [x] PRs with only website changes skip build/test/formatting steps
+- [x] PRs with mixed changes (website + code) still run full validation
+- [x] Filter logic correctly handles edge cases (no files changed, etc.)
+- [x] Skip message updated to mention website changes
+
+---
+
 ### #1 — Update Friendly Resource Names icon
 
 | Field | Value |

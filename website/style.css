@@ -1103,6 +1103,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 16px;
+    max-width: 100%;
 }
 
 .code-block .code-header {
@@ -1995,7 +1996,7 @@ body {
 
 .format-comparison {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
     gap: 32px;
     margin: 32px 0;
 }

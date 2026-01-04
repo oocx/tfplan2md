@@ -78,14 +78,18 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code>| | Rule Name | Protocols | Source | Dest | Ports |
-|---|-----------|-----------|--------|------|-------|
-| ➕ | allow-dns | UDP | 10.0.1.0/24 | 168.63.129.16 | 53 |
-| 🔄 | allow-http | TCP | 10.0.1.0/24 | * | 80 |
-| ❌ | allow-ssh-old | TCP | 10.0.0.0/8 | 10.0.2.0/24 | 22 |
-| ⏺️ | allow-https | TCP | 10.0.1.0/24 | * | 443 |</code></pre>
+                            <pre><code>#### Rule Changes
+
+| Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
+| -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | `allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 443` | `Secure web` |
+| ➕ | `allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🔌 8080` | `Log ingestion` |
+| 🔄 | `allow-dns` | 📨 UDP | 🌐 10.1.1.0/24, 🌐 10.1.2.0/24 | 🌐 168.63.129.16 | 🔌 53 | `DNS to Azure` |
+| 🔄 | `allow-api` | 🔗 TCP | 🌐 10.1.1.0/24 | 🌐 10.2.2.0/24 | 🔌 8443, 🔌 9443 | `API tier` |
+| ❌ | `allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 80` | `Legacy HTTP` |
+| ⏺️ | `allow-monitoring` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `🔌 443` | `Monitoring` |</code></pre>
                         </div>
-                        <p class="comparison-note">Crystal clear: one rule added, one changed, one removed.</p>
+                        <p class="comparison-note">Crystal clear: 2 added, 2 changed, 1 removed, 1 unchanged.</p>
                     </div>
                 </div>
 

@@ -58,24 +58,22 @@
                 <div class="feature-example">
                     <h3 class="example-title">Example Output</h3>
                     <div class="code-block">
-                        <pre><code>#### 🔄 azurerm_linux_virtual_machine.vm
+                        <pre><code>### 🔄 azurerm_key_vault_secret.audit_policy
 
-| Attribute | Value |
-|-----------|-------|
-| name | `vm-app-01` |
-| custom_data | *(see below)* |
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+| value | *(see below)* | *(see below)* |
 
-<details>
-<summary>📄 custom_data (diff)</summary>
+Large values: value (4 lines, 2 changed)
+
+##### **value:**
 
 ```diff
-  #!/bin/bash
-  apt-get update
-- apt-get install -y nginx
-+ apt-get install -y apache2
-  systemctl enable apache2
-```
-</details></code></pre>
+line1: allow
+- line2: log old activity
++ line2: log critical activity
+line3: end
+```</code></pre>
                     </div>
                 </div>
 

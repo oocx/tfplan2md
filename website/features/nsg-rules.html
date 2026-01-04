@@ -58,17 +58,18 @@
                 <div class="feature-example">
                     <h3 class="example-title">Example Output</h3>
                     <div class="code-block">
-                        <pre><code>#### 🔄 azurerm_network_security_group.app
+                        <pre><code>### ♻️ module.network.azurerm_network_security_group.app
 
-**Summary:** `nsg-app` | 3 rules changed
+**Network Security Group:** `nsg-app`
 
-##### Security Rule Changes
+#### Security Rules
 
-|  | Name | Priority | Direction | Access | Protocol | Source | Destination |
-|--|------|----------|-----------|--------|----------|--------|-------------|
-| ➕ | allow-https | 110 | Inbound | Allow | TCP | Internet | VirtualNetwork:443 |
-| 🔄 | allow-http | 100 | Inbound | Allow | TCP | 🌐 0.0.0.0/0 → Any | 🔌 80 → * |
-| ❌ | allow-ssh | 120 | Inbound | Allow | TCP | 10.0.0.0/16 | VirtualNetwork:22 |</code></pre>
+| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
+| -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | `🆔 allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `-` |
+| ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
+| ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
+| ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | `-` |</code></pre>
                     </div>
                 </div>
 

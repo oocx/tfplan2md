@@ -190,49 +190,104 @@
                         </div>
                         <div class="example-content">
                             <div class="view-pane rendered-view active">
-                                <h2>📊 Network Security Rules</h2>
-                                <h3>✅ Creating AllowSSH</h3>
-                                <p><strong>Action:</strong> 🆕 Allow<br>
-                                <strong>Priority:</strong> 100</p>
-                                <p><strong>Traffic Flow:</strong></p>
-                                <ul>
-                                    <li><strong>Source:</strong> 10.0.0.0/8</li>
-                                    <li><strong>Destination:</strong> 10.0.0.0/8</li>
-                                    <li><strong>Port:</strong> 22 (TCP)</li>
-                                </ul>
-                                <hr>
-                                <h3>✅ Creating DenyRDP</h3>
-                                <p><strong>Action:</strong> 🆕 Deny<br>
-                                <strong>Priority:</strong> 200</p>
-                                <p><strong>Traffic Flow:</strong></p>
-                                <ul>
-                                    <li><strong>Source:</strong> *</li>
-                                    <li><strong>Destination:</strong> *</li>
-                                    <li><strong>Port:</strong> 3389 (TCP)</li>
-                                </ul>
+<details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>♻️ azurerm_network_security_group <b><code>app</code></b> — <code>🆔&nbsp;nsg-app</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<h3 id="user-content-%E2%99%BB%EF%B8%8F-module.network.azurerm_network_security_group.app">♻️ module.network.azurerm_network_security_group.app</h3>
+<p><strong>Network Security Group:</strong> <code>nsg-app</code></p>
+<h4 id="user-content-security-rules">Security Rules</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Name</th>
+<th>Priority</th>
+<th>Direction</th>
+<th>Access</th>
+<th>Protocol</th>
+<th>Source Addresses</th>
+<th>Source Ports</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-https</code></td>
+<td><code>100</code></td>
+<td><code>⬇️&nbsp;Inbound</code></td>
+<td><code>✅&nbsp;Allow</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td><code>-</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;deny-rdp</code></td>
+<td><code>200</code></td>
+<td><code>⬇️&nbsp;Inbound</code></td>
+<td><code>⛔&nbsp;Deny</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;3389</code></td>
+<td><code>Block RDP from internet</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-outbound-https</code></td>
+<td><code>300</code></td>
+<td><code>⬆️&nbsp;Outbound</code></td>
+<td><code>✅&nbsp;Allow</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td><code>Allow outbound HTTPS</code></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>🆔&nbsp;allow-http</code></td>
+<td><code>100</code></td>
+<td><code>⬇️&nbsp;Inbound</code></td>
+<td><code>✅&nbsp;Allow</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;80</code></td>
+<td><code>-</code></td>
+</tr>
+</tbody>
+</table>
+</details>
                             </div>
                             <div class="view-pane source-view">
-<pre><code>## 📊 Network Security Rules
+<pre><code>&lt;details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;♻️ azurerm_network_security_group &lt;b&gt;&lt;code&gt;app&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 nsg-app&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
 
-### ✅ Creating AllowSSH
-**Action:** 🆕 Allow  
-**Priority:** 100
+### ♻️ module.network.azurerm_network_security_group.app
 
-**Traffic Flow:**
-- **Source:** 10.0.0.0/8
-- **Destination:** 10.0.0.0/8  
-- **Port:** 22 (TCP)
+**Network Security Group:** `nsg-app`
 
----
+#### Security Rules
 
-### ✅ Creating DenyRDP
-**Action:** 🆕 Deny
-**Priority:** 200
+| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
+| -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | `🆔 allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `-` |
+| ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
+| ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
+| ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | `-` |
 
-**Traffic Flow:**
-- **Source:** *
-- **Destination:** *
-- **Port:** 3389 (TCP)</code></pre>
+&lt;/details&gt;</code></pre>
                             </div>
                         </div>
                     </div>

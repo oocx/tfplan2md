@@ -18,7 +18,7 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/index.html`, `/features/*.html` |
 | Effort | High |
 | Value | High |
-| Status | 🔲 Not Started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Task #18 replaced examples only on `/examples.html`. Other pages still have hand-crafted examples that should be replaced with real tfplan2md generated output for authenticity.

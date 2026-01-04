@@ -118,8 +118,38 @@ This document captures **design and style decisions** for the tfplan2md website.
 
 - Feature representation must follow `website/_memory/feature-definitions.md`
 - Do not reuse the same icon/image for different features
-- Icons use emoji for simplicity (no external icon library)
-- SVG icons planned for `website/assets/icons/` but not yet created
+- SVG icons are stored in `website/assets/icons/`
+- All icons use the **White Halo** technique (white stroke behind black stroke for visibility on any background)
+
+### Dark Mode for Icons (IMPORTANT)
+
+Icons must work correctly in both light and dark modes. Because the site uses `data-theme="dark"` on the `<html>` element (rather than `prefers-color-scheme`), SVGs loaded via `<img>` tags cannot access the parent document's theme state.
+
+**Solution**: Apply a CSS filter to invert icon colors in dark mode:
+
+```css
+[data-theme="dark"] .feature-icon,
+[data-theme="dark"] .feature-icon-lg,
+[data-theme="dark"] .feature-icon-sm {
+    filter: invert(1) hue-rotate(180deg);
+}
+```
+
+**Requirements for icons to work in dark mode:**
+
+1. All `<img>` elements displaying icons MUST use one of these classes:
+   - `.feature-icon` (64×64px, for features page)
+   - `.feature-icon-lg` (48px font-size equivalent, for homepage)
+   - `.feature-icon-sm` (32×32px, for compact cards)
+
+2. If you add a new icon class, you MUST add it to the dark mode filter rule in `style.css`
+
+3. Do NOT rely on `@media (prefers-color-scheme: dark)` inside SVG files — it won't work because the site uses `data-theme` attribute-based theming
+
+**Why this approach:**
+- SVGs loaded via `<img>` are sandboxed and cannot access parent document CSS variables or attributes
+- The `invert(1) hue-rotate(180deg)` filter inverts colors while preserving hue relationships
+- This keeps icons looking correct (black becomes white, white becomes black)
 
 ## Accessibility
 

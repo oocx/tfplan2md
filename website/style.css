@@ -1388,6 +1388,7 @@ body {
 }
 
 [data-theme="dark"] .feature-icon,
+[data-theme="dark"] .feature-icon-lg,
 [data-theme="dark"] .feature-icon-sm {
     filter: invert(1) hue-rotate(180deg);
 }

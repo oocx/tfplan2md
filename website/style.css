@@ -1387,6 +1387,11 @@ body {
     display: block;
 }
 
+[data-theme="dark"] .feature-icon,
+[data-theme="dark"] .feature-icon-sm {
+    filter: invert(1) hue-rotate(180deg);
+}
+
 .feature-icon-sm {
     width: 32px;
     height: 32px;

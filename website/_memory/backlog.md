@@ -375,6 +375,34 @@ This file is the source of truth for all open website tasks.
 
 ---
 
+### #18 — Replace hand-crafted examples with real generated output
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/examples.html` |
+| Effort | High |
+| Value | High |
+| Status | ⬜ Not started |
+| Depends On | — |
+
+**Description:** Replace remaining hand-crafted examples on examples page with real tfplan2md output generated from actual artifacts. The firewall rules example was already replaced (task completed outside backlog). Remaining examples to replace: Module Grouping, Role Assignment Display, Sensitive Value Masking.
+
+**Approach:**
+1. Extract relevant sections from `artifacts/comprehensive-demo.md`
+2. Generate HTML using HtmlRenderer tool (azdo flavor)
+3. Replace hand-crafted HTML/markdown in examples.html
+4. Update code-examples.md with source artifacts and extraction commands
+
+**Definition of Done:**
+- [ ] Module Grouping example replaced with real comprehensive-demo output
+- [ ] Role Assignment Display example replaced with real comprehensive-demo output
+- [ ] Sensitive Value Masking example replaced with real comprehensive-demo output
+- [ ] All examples use authentic tfplan2md formatting (not simplified versions)
+- [ ] code-examples.md updated with extraction commands for each example
+- [ ] screenshots.md updated to reflect all examples now use real output
+
+---
+
 ### #17 — Preserve design variations
 
 | Field | Value |

@@ -2889,13 +2889,12 @@ body {
 }
 
 [data-theme="dark"] .rendered-view {
-    background: #0d1117;
-    color: #c9d1d9;
+    background: rgb(32, 31, 30);
+    color: rgba(255, 255, 255, 0.95);
 }
 
-.rendered-view h1, .rendered-view h2, .rendered-view h3 {
-    margin-top: 24px;
-    margin-bottom: 8px;
+.rendered-view h1, .rendered-view h2, .rendered-view h3, .rendered-view h4 {
+    margin: 24px 0 8px 0;
     font-weight: 600;
     line-height: 1.25;
     color: rgba(0, 0, 0, 0.9);
@@ -2903,28 +2902,52 @@ body {
 
 [data-theme="dark"] .rendered-view h1,
 [data-theme="dark"] .rendered-view h2,
-[data-theme="dark"] .rendered-view h3 {
-    color: #c9d1d9;
+[data-theme="dark"] .rendered-view h3,
+[data-theme="dark"] .rendered-view h4 {
+    color: rgba(255, 255, 255, 0.95);
 }
 
 .rendered-view h1 { font-size: 2em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
 .rendered-view h2 { font-size: 1.5em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
 .rendered-view h3 { font-size: 0.9375rem; }
+.rendered-view h4 { font-size: 0.875rem; }
+
+.rendered-view p {
+    margin: 0 0 16px 0;
+}
 
 .rendered-view table {
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 16px;
-}
-
-.rendered-view th, .rendered-view td {
-    padding: 6px 13px;
-    border: 1px solid var(--color-border);
+    display: block;
+    overflow-x: auto;
 }
 
 .rendered-view th {
+    padding: 13px 11px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 0.9375rem;
     font-weight: 600;
-    background-color: var(--color-surface);
+    text-align: left;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.rendered-view td {
+    padding: 10px 13px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    text-align: left;
+    min-width: 50px;
+    max-width: 1000px;
+}
+
+[data-theme="dark"] .rendered-view th {
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.80);
+}
+
+[data-theme="dark"] .rendered-view td {
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .rendered-view code {
@@ -2938,8 +2961,8 @@ body {
 }
 
 [data-theme="dark"] .rendered-view code {
-    background-color: rgba(110, 118, 129, 0.4);
-    color: #a5d6ff;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
 }
 
 .rendered-view details {
@@ -2950,7 +2973,7 @@ body {
 }
 
 [data-theme="dark"] .rendered-view details {
-    border-color: #30363d;
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .rendered-view summary {
@@ -2963,7 +2986,7 @@ body {
 }
 
 [data-theme="dark"] .rendered-view summary {
-    color: #c9d1d9;
+    color: rgba(255, 255, 255, 0.95);
 }
 
 /* Markdown Syntax Highlighting */

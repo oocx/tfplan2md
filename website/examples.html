@@ -285,43 +285,273 @@
                     </div>
                     <div class="example-content">
                         <div class="view-pane rendered-view active">
-                            <h2>Resource Changes</h2>
-                            <h3>📦 Module: root</h3>
-                            <p><em>&lt;!-- 3 resources in root module --&gt;</em></p>
-                            <hr>
-                            <h3>📦 Module: <code>module.network</code></h3>
-                            <p><em>&lt;!-- 4 resources in network module --&gt;</em></p>
-                            <hr>
-                            <h3>📦 Module: <code>module.security</code></h3>
-                            <p><em>&lt;!-- 2 resources in security module --&gt;</em></p>
-                            <hr>
-                            <h3>📦 Module: <code>module.monitoring</code></h3>
-                            <p><em>&lt;!-- 2 resources in monitoring module --&gt;</em></p>
+<h2 id="user-content-resource-changes">Resource Changes</h2>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-root">📦 Module: root</h3>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️ Tags:</strong> <code>environment: demo</code> <code>owner: tfplan2md</code></p>
+</details>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>🆔 sttfplan2mdlogs</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code>Standard</code></td>
+</tr>
+<tr>
+<td>allow_blob_public_access</td>
+<td><code>❌ false</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>min_tls_version</td>
+<td><code>TLS1_2</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 sttfplan2mdlogs</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️ Tags:</strong> <code>cost_center: ops</code> <code>environment: demo</code></p>
+</details>
+<hr/>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.network%60">📦 Module: <code>module.network</code></h3>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>🆔 vnet-hub</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code>🌐 10.0.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 vnet-hub</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️ Tags:</strong> <code>environment: demo</code></p>
+</details>
+<hr/>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.security%60">📦 Module: <code>module.security</code></h3>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code>📁 rg-tfplan2md-demo</code> in subscription <code>12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code>🛡️ Reader</code> (<code>acdd72a7-3385-48ef-bd42-f606fba81ae7</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code>👤 Jane Doe (User)</code> [<code>00000000-0000-0000-0000-000000000001</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code>👤 User</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code>🛡️ Reader</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<hr/>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.network.module.monitoring%60">📦 Module: <code>module.network.module.monitoring</code></h3>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>➕ azurerm_log_analytics_workspace <b><code>network</code></b> — <code>🆔 law-network-monitoring</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 law-network-monitoring</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁 rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>retention_in_days</td>
+<td><code>30</code></td>
+</tr>
+<tr>
+<td>sku</td>
+<td><code>PerGB2018</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️ Tags:</strong> <code>environment: demo</code> <code>module: monitoring</code></p>
+</details>
                         </div>
                         <div class="view-pane source-view">
                             <pre><code>## Resource Changes
 
 ### 📦 Module: root
 
-&lt;!-- 3 resources in root module --&gt;
+&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_resource_group &lt;b&gt;&lt;code&gt;core&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| location | `🌍 eastus` |
+| name | `🆔 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: demo` `owner: tfplan2md`
+
+&lt;/details&gt;
+
+&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_storage_account &lt;b&gt;&lt;code&gt;logs&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 sttfplan2mdlogs&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| account_replication_type | `LRS` |
+| account_tier | `Standard` |
+| allow_blob_public_access | `❌ false` |
+| location | `🌍 eastus` |
+| min_tls_version | `TLS1_2` |
+| name | `🆔 sttfplan2mdlogs` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `cost_center: ops` `environment: demo`
+
+&lt;/details&gt;
 
 ---
 
 ### 📦 Module: `module.network`
 
-&lt;!-- 4 resources in network module --&gt;
+&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_virtual_network &lt;b&gt;&lt;code&gt;hub&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 vnet-hub&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt; &lt;code&gt;🌐 10.0.0.0/16&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| address_space[0] | `🌐 10.0.0.0/16` |
+| location | `🌍 eastus` |
+| name | `🆔 vnet-hub` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: demo`
+
+&lt;/details&gt;
 
 ---
 
 ### 📦 Module: `module.security`
 
-&lt;!-- 2 resources in security module --&gt;
+&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;rg_reader&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;👤 Jane Doe (User)&lt;/code&gt; → &lt;code&gt;🛡️ Reader&lt;/code&gt; on &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| scope | `📁 rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
+| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
+| principal_id | `👤 Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
+| principal_type | `👤 User` |
+| role_definition_name | `🛡️ Reader` |
+
+&lt;/details&gt;
 
 ---
 
-### 📦 Module: `module.monitoring`
+### 📦 Module: `module.network.module.monitoring`
 
-&lt;!-- 2 resources in monitoring module --&gt;
+&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_log_analytics_workspace &lt;b&gt;&lt;code&gt;network&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 law-network-monitoring&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+| ----------- | ------- |
+| location | `🌍 eastus` |
+| name | `🆔 law-network-monitoring` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+| retention_in_days | `30` |
+| sku | `PerGB2018` |
+
+**🏷️ Tags:** `environment: demo` `module: monitoring`
+
+&lt;/details&gt;
 </code></pre>
                         </div>
                     </div>
@@ -350,33 +580,53 @@
                     </div>
                     <div class="example-content">
                         <div class="view-pane rendered-view active">
-                            <details style="margin-bottom:12px;" open>
-                                <summary>➕ azurerm_role_assignment <b><code>contributor</code></b> — 🛡️ Contributor on Resource Group <code>rg-tfplan2md-demo</code> for 👤 <code>jane.doe@contoso.com</code></summary>
-                                <br>
-                                <table>
-                                    <thead>
-                                        <tr><th>Attribute</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>role</td><td>🛡️ Contributor</td></tr>
-                                        <tr><td>scope</td><td>Resource Group <code>rg-tfplan2md-demo</code></td></tr>
-                                        <tr><td>principal</td><td>👤 User: <code>jane.doe@contoso.com</code></td></tr>
-                                        <tr><td>principal_type</td><td><code>User</code></td></tr>
-                                    </tbody>
-                                </table>
-                            </details>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px" open>
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code>📁 rg-tfplan2md-demo</code> in subscription <code>12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code>🛡️ Reader</code> (<code>acdd72a7-3385-48ef-bd42-f606fba81ae7</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code>👤 Jane Doe (User)</code> [<code>00000000-0000-0000-0000-000000000001</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code>👤 User</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code>🛡️ Reader</code></td>
+</tr>
+</tbody>
+</table>
+</details>
                         </div>
                         <div class="view-pane source-view">
-                            <pre><code>&lt;details style="margin-bottom:12px;"&gt;
-&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;contributor&lt;/code&gt;&lt;/b&gt; — 🛡️ Contributor on Resource Group &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt; for 👤 &lt;code&gt;jane.doe@contoso.com&lt;/code&gt;&lt;/summary&gt;
+                            <pre><code>&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;rg_reader&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;👤 Jane Doe (User)&lt;/code&gt; → &lt;code&gt;🛡️ Reader&lt;/code&gt; on &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt;&lt;/summary&gt;
 &lt;br&gt;
 
 | Attribute | Value |
-|-----------|-------|
-| role | 🛡️ Contributor |
-| scope | Resource Group `rg-tfplan2md-demo` |
-| principal | 👤 User: `jane.doe@contoso.com` |
-| principal_type | `User` |
+| ----------- | ------- |
+| scope | `📁 rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
+| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
+| principal_id | `👤 Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
+| principal_type | `👤 User` |
+| role_definition_name | `🛡️ Reader` |
 
 &lt;/details&gt;</code></pre>
                         </div>
@@ -423,31 +673,48 @@
                     </div>
                     <div class="example-content">
                         <div class="view-pane rendered-view active">
-                            <details open>
-                                <summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
-                                <br>
-                                <table>
-                                    <thead>
-                                        <tr><th>Attribute</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>name</td><td><code>demo-api-key</code></td></tr>
-                                        <tr><td>value</td><td>🔒 (sensitive value)</td></tr>
-                                        <tr><td>key_vault_id</td><td>Key Vault <code>kv-demo</code> in resource group <code>rg-tfplan2md-demo</code></td></tr>
-                                    </tbody>
-                                </table>
-                            </details>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px" open>
+<summary>➕ azurerm_key_vault_secret <b><code>db_password</code></b> — <code>🆔 db-password</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>content_type</td>
+<td><code>password</code></td>
+</tr>
+<tr>
+<td>key_vault_id</td>
+<td>Key Vault <code>kv-tfplan2md</code> in resource group <code>rg-tfplan2md-demo</code> of subscription <code>12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 db-password</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>(sensitive)</code></td>
+</tr>
+</tbody>
+</table>
+</details>
                         </div>
                         <div class="view-pane source-view">
-                            <pre><code>&lt;details&gt;
-&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-api-key&lt;/code&gt; in Key Vault &lt;code&gt;kv-demo&lt;/code&gt;&lt;/summary&gt;
+                            <pre><code>&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;db_password&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 db-password&lt;/code&gt;&lt;/summary&gt;
 &lt;br&gt;
 
 | Attribute | Value |
-|-----------|-------|
-| name | `demo-api-key` |
-| value | 🔒 (sensitive value) |
-| key_vault_id | Key Vault `kv-demo` in resource group `rg-tfplan2md-demo` |
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `12345678-1234-1234-1234-123456789012` |
+| name | `🆔 db-password` |
+| value | `(sensitive)` |
 
 &lt;/details&gt;</code></pre>
                         </div>
@@ -466,31 +733,48 @@
                     </div>
                     <div class="example-content">
                         <div class="view-pane rendered-view active">
-                            <details open>
-                                <summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
-                                <br>
-                                <table>
-                                    <thead>
-                                        <tr><th>Attribute</th><th>Value</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>name</td><td><code>demo-api-key</code></td></tr>
-                                        <tr><td>value</td><td><code>super-secret-api-key-12345</code></td></tr>
-                                        <tr><td>key_vault_id</td><td>Key Vault <code>kv-demo</code> in resource group <code>rg-tfplan2md-demo</code></td></tr>
-                                    </tbody>
-                                </table>
-                            </details>
+<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px" open>
+<summary>➕ azurerm_key_vault_secret <b><code>db_password</code></b> — <code>🆔 db-password</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>content_type</td>
+<td><code>password</code></td>
+</tr>
+<tr>
+<td>key_vault_id</td>
+<td>Key Vault <code>kv-tfplan2md</code> in resource group <code>rg-tfplan2md-demo</code> of subscription <code>12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 db-password</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>super-secret-value</code></td>
+</tr>
+</tbody>
+</table>
+</details>
                         </div>
                         <div class="view-pane source-view">
-                            <pre><code>&lt;details&gt;
-&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-api-key&lt;/code&gt; in Key Vault &lt;code&gt;kv-demo&lt;/code&gt;&lt;/summary&gt;
+                            <pre><code>&lt;details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;db_password&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 db-password&lt;/code&gt;&lt;/summary&gt;
 &lt;br&gt;
 
 | Attribute | Value |
-|-----------|-------|
-| name | `demo-api-key` |
-| value | `super-secret-api-key-12345` |
-| key_vault_id | Key Vault `kv-demo` in resource group `rg-tfplan2md-demo` |
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `12345678-1234-1234-1234-123456789012` |
+| name | `🆔 db-password` |
+| value | `super-secret-value` |
 
 &lt;/details&gt;</code></pre>
                         </div>

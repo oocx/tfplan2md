@@ -1,0 +1,31 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Starting step -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  
+  <!-- Top branch: 2 steps -->
+  <rect x="19" y="4" width="9" height="9" rx="2" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="32" y="4" width="9" height="9" rx="2" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  
+  <!-- Bottom branch: 3 steps -->
+  <rect x="19" y="29" width="8" height="8" rx="1.5" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="30" y="29" width="8" height="8" rx="1.5" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="41" y="29" width="3" height="8" rx="1" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  
+  <!-- Fork arrows from start -->
+  <path d="M14 21 L19 8.5" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M14 27 L19 33" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Branch progression arrows -->
+  <path d="M28 8.5 H32" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M27 33 H30" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M38 33 H41" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Icons -->
+  <line x1="7" y1="22" x2="11" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="7" y1="26" x2="9" y2="26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="23.5" cy="8.5" r="1.5" stroke="#646cff" stroke-width="1.5"/>
+  <path d="M35 7.5L36 8.5L38 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="21.5" y="31.5" width="3" height="3" rx="0.5" fill="#646cff" fill-opacity="0.5"/>
+  <circle cx="34" cy="33" r="1.5" stroke="#646cff" stroke-width="1.5"/>
+  <path d="M41.5 32L42 32.5L43 31.5" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

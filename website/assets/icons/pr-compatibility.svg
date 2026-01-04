@@ -1,0 +1,36 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Git merge/PR icon -->
+  
+  <defs>
+    <g id="pr-circles">
+      <circle cx="12" cy="10" r="4"/>
+      <circle cx="12" cy="38" r="4"/>
+    </g>
+    <g id="pr-lines">
+      <line x1="12" y1="14" x2="12" y2="34"/>
+    </g>
+    <g id="pr-branches">
+      <path d="M12 16C18 16 28 16 32 20"/>
+      <path d="M12 32C18 32 28 32 32 28"/>
+    </g>
+    <circle id="pr-merged" cx="36" cy="24" r="4"/>
+  </defs>
+
+  <!-- Fills -->
+  <circle cx="12" cy="10" r="4" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+  <circle cx="12" cy="38" r="4" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+  <circle cx="36" cy="24" r="4" fill="#646cff" fill-opacity="0.3" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#pr-circles" stroke="white" stroke-width="4" fill="none"/>
+  <use href="#pr-lines" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <use href="#pr-branches" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <use href="#pr-merged" stroke="white" stroke-width="4" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#pr-circles" stroke="currentColor" stroke-width="2" fill="none"/>
+  <use href="#pr-lines" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <use href="#pr-branches" stroke="#646cff" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <use href="#pr-merged" stroke="#646cff" stroke-width="2" fill="none"/>
+
+</svg>

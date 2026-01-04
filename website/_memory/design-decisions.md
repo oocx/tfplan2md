@@ -26,6 +26,44 @@ This document captures specific design decisions made during the website develop
 - Section container padding: 40px (reduced from 80px)
 - Hero headlines should render without line breaks
 
+## Style Isolation (ADR-004)
+
+### Problem
+Website CSS was interfering with rendered examples (e.g., `border-radius: 6px` on `details` elements made examples look different from actual Azure DevOps rendering).
+
+### Decision
+Use **CSS Layers (`@layer`)** to isolate example styles from website styles.
+
+### Alternatives Considered
+1. **iframe Isolation** - Complete separation but more complex (requires JavaScript for height management, separate HTML files)
+2. **Shadow DOM** - Native encapsulation but requires JavaScript and has quirks
+3. **CSS Layers** ✅ - Chosen for agent-maintainability, declarative CSS, modern best practice
+4. **CSS Reset (all: revert)** - Too aggressive with unpredictable side effects
+5. **Strict BEM/Namespacing** - Doesn't provide true isolation (tag selectors still interfere)
+6. **Separate Stylesheet + containment** - `contain: style` is too limited (only counters/quotes)
+
+### Implementation
+```css
+@layer base, website, examples;
+
+@layer website {
+  /* All website styles */
+}
+
+@layer examples {
+  .rendered-view { /* Example styles */ }
+}
+```
+
+See [ADR-004](../../docs/adr-004-css-layers-for-example-isolation.md) for full rationale.
+
+### Iconography
+- **Style**: Duotone SVG with `#646cff` (Brand Blue) and `currentColor` (Black/Text).
+- **Dark Mode Compatibility**: All icons use a "White Halo" technique (white stroke behind black lines) to ensure visibility on dark backgrounds while remaining invisible on light backgrounds.
+- **Stroke Width**: 
+  - Structural lines: 2px (Black) / 4px (White Halo)
+  - Detail lines: 1.5px (Black) / 3.5px (White Halo)
+
 ## Homepage Layout
 
 ### Badge Row (Top)

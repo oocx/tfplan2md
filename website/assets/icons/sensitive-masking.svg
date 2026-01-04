@@ -1,0 +1,25 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Eye with slash (hidden/masked) -->
+  
+  <defs>
+    <path id="eye-shape" d="M4 24C4 24 12 12 24 12C36 12 44 24 44 24C44 24 36 36 24 36C12 36 4 24 4 24Z"/>
+    <line id="slash" x1="8" y1="40" x2="40" y2="8"/>
+    <circle id="pupil" cx="24" cy="24" r="2"/>
+  </defs>
+
+  <!-- Fill -->
+  <use href="#eye-shape" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+  <circle cx="24" cy="24" r="6" fill="#646cff" fill-opacity="0.3" stroke="none"/>
+  <use href="#pupil" fill="currentColor" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#eye-shape" stroke="white" stroke-width="4" fill="none"/>
+  <circle cx="24" cy="24" r="6" stroke="white" stroke-width="4" fill="none"/>
+  <use href="#slash" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#eye-shape" stroke="currentColor" stroke-width="2" fill="none"/>
+  <circle cx="24" cy="24" r="6" stroke="#646cff" stroke-width="2" fill="none"/>
+  <use href="#slash" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+</svg>

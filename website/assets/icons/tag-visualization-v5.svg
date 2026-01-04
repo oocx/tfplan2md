@@ -1,0 +1,8 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Larger, more prominent tag -->
+  <path d="M4 8L4 28L24 44L44 28L24 8L4 8Z" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="12" cy="18" r="2.5" fill="#646cff"/>
+  <!-- Text lines at 45 degrees -->
+  <line x1="20" y1="16" x2="34" y2="30" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="20" y1="24" x2="30" y2="34" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+</svg>

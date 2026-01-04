@@ -10,7 +10,13 @@ This document lists the screenshots used on the website and how to generate them
 
 ## Current State
 
-**Status:** No screenshots exist yet.
+**Status:** Examples page uses real generated HTML from tfplan2md artifacts.
+
+The `/examples.html` page includes:
+- **Firewall Rule Semantic Diffing**: Real output from `examples/firewall-rules-demo/` (generated via HtmlRenderer)
+- **Module Grouping**: Hand-crafted example (needs to be replaced with real artifact)
+- **Role Assignment Display**: Hand-crafted example (needs to be replaced with real artifact)
+- **Sensitive Value Masking**: Hand-crafted example (needs to be replaced with real artifact)
 
 The `website/assets/screenshots/` directory is currently empty. Screenshots need to be generated from the comprehensive-demo artifacts before they can be used on the website.
 

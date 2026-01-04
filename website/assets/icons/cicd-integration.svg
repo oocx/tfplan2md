@@ -1,0 +1,57 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fork arrows from start (drawn first, behind everything) -->
+  
+  <defs>
+    <g id="cicd-arrows">
+      <path d="M14 20 L19 9"/>
+      <path d="M14 28 L19 39"/>
+      <path d="M29 9 H34"/>
+      <path d="M29 39 H34"/>
+    </g>
+    <g id="cicd-rects-black">
+      <rect x="34" y="4" width="10" height="10" rx="2"/>
+      <rect x="19" y="34" width="10" height="10" rx="2"/>
+      <rect x="34" y="34" width="10" height="10" rx="2"/>
+    </g>
+    <g id="cicd-rects-colored">
+      <rect x="4" y="18" width="10" height="12" rx="2"/>
+      <rect x="19" y="4" width="10" height="10" rx="2"/>
+    </g>
+    <g id="cicd-icons">
+      <path d="M7 24L8.5 25.5L11 23"/>
+      <path d="M22 7L26 11M26 7L22 11"/>
+      <circle cx="39" cy="9" r="1.5"/>
+      <circle cx="24" cy="39" r="1.5"/>
+      <circle cx="39" cy="39" r="1.5"/>
+    </g>
+  </defs>
+
+  <!-- Fills -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#43a047" fill-opacity="0.2" stroke="none"/>
+  <rect x="19" y="4" width="10" height="10" rx="2" fill="#e53935" fill-opacity="0.15" stroke="none"/>
+  <rect x="34" y="4" width="10" height="10" rx="2" fill="currentColor" fill-opacity="0.1" stroke="none"/>
+  <rect x="19" y="34" width="10" height="10" rx="2" fill="currentColor" fill-opacity="0.1" stroke="none"/>
+  <rect x="34" y="34" width="10" height="10" rx="2" fill="currentColor" fill-opacity="0.1" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#cicd-arrows" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <use href="#cicd-rects-black" stroke="white" stroke-width="4" fill="none"/>
+  <use href="#cicd-rects-colored" stroke="white" stroke-width="4" fill="none"/>
+  <use href="#cicd-icons" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#cicd-arrows" stroke="#646cff" stroke-width="2" stroke-linecap="round" fill="none"/>
+  
+  <rect x="4" y="18" width="10" height="12" rx="2" stroke="#43a047" stroke-width="2" fill="none"/>
+  <rect x="19" y="4" width="10" height="10" rx="2" stroke="#e53935" stroke-width="2" fill="none"/>
+  
+  <use href="#cicd-rects-black" stroke="currentColor" stroke-width="2" fill="none"/>
+  
+  <path d="M7 24L8.5 25.5L11 23" stroke="#43a047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22 7L26 11M26 7L22 11" stroke="#e53935" stroke-width="2" stroke-linecap="round"/>
+  
+  <circle cx="39" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  <circle cx="24" cy="39" r="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  <circle cx="39" cy="39" r="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+
+</svg>

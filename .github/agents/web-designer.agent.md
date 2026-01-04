@@ -290,7 +290,7 @@ All pages must be created in the `/website/` directory:
 
 2. **Create feature branch**:
    ```bash
-   git switch -c feature/website-<description>
+   git switch -c website/<description>
    ```
 
 3. **Review handoff from Architect**:

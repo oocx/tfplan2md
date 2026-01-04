@@ -382,7 +382,7 @@ Example: If the most recent feature is `025-...` and a workflow item `026-...` a
 | Feature Development | `feature/` | `feature/123-firewall-diff-display` | Requirements Engineer, Developer |
 | Bug Fixes / Incidents | `fix/` | `fix/004-release-pipeline-failure-awk` | Issue Analyst, Developer |
 | Workflow Improvements | `workflow/` | `workflow/028-improvement-opportunities` | Workflow Engineer |
-| Website Changes | `feature/website-` | `feature/website-homepage-redesign` | Web Designer |
+| Website Changes | `website/` | `website/homepage-redesign` | Web Designer |
 
 **Note:** The Requirements Engineer creates the feature branch at the start of the feature workflow. The Issue Analyst creates the fix branch at the start of the bug fix workflow. All subsequent agents work on the same branch until Release Manager creates the pull request.
 

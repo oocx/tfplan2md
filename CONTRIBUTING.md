@@ -24,6 +24,7 @@ Use these branch prefixes:
 - `refactor/` — Code refactoring
 - `chore/` — Maintenance tasks
 - `workflow/` — Agent/workflow changes (`.github/agents/`, workflow documentation)
+- `website/` — Website changes (`website/` directory)
 
 ## Testing Requirements
 

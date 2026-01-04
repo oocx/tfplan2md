@@ -54,12 +54,66 @@
         </div>
     </header>
 
-    <!-- CLI Reference -->
-    <section class="section" style="padding-top: 0;">
-        <div class="section-container">
+    <!-- Mobile TOC Toggle -->
+    <div class="mobile-toc-toggle">
+        <button class="toc-toggle-btn" aria-label="Toggle table of contents" aria-expanded="false">
+            <span class="toc-icon">📑</span>
+            <span class="toc-label">Table of Contents</span>
+        </button>
+    </div>
+
+    <!-- Documentation Layout with Sidebar -->
+    <div class="docs-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar" id="docs-sidebar">
+            <nav class="docs-nav" aria-label="Documentation sections">
+                <h2 class="docs-nav-title">Contents</h2>
+                <ul class="docs-nav-list">
+                    <li>
+                        <a href="#cli-reference" class="docs-nav-link active">CLI Reference</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#basic-usage" class="docs-nav-sublink">Basic Usage</a></li>
+                            <li><a href="#options" class="docs-nav-sublink">Options</a></li>
+                            <li><a href="#usage-examples" class="docs-nav-sublink">Usage Examples</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#template-customization" class="docs-nav-link">Template Customization</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#built-in-templates" class="docs-nav-sublink">Built-in Templates</a></li>
+                            <li><a href="#custom-templates" class="docs-nav-sublink">Custom Templates</a></li>
+                            <li><a href="#principal-mapping" class="docs-nav-sublink">Principal Mapping</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#large-value-formatting" class="docs-nav-link">Large Value Formatting</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#inline-diff" class="docs-nav-sublink">inline-diff</a></li>
+                            <li><a href="#standard-diff" class="docs-nav-sublink">standard-diff</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#troubleshooting" class="docs-nav-link">Troubleshooting</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#no-valid-json" class="docs-nav-sublink">No valid JSON error</a></li>
+                            <li><a href="#template-not-found" class="docs-nav-sublink">Template not found</a></li>
+                            <li><a href="#sensitive-values" class="docs-nav-sublink">Sensitive values visible</a></li>
+                            <li><a href="#tables-not-rendering" class="docs-nav-sublink">Tables not rendering</a></li>
+                            <li><a href="#docker-permission" class="docs-nav-sublink">Docker permission denied</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="docs-content">
+            <!-- CLI Reference -->
+            <section class="section" id="cli-reference" style="padding-top: 0;">
+                <div class="section-container">
             <h2 class="section-title">CLI Reference</h2>
             
-            <div class="doc-section">
+            <div class="doc-section" id="basic-usage">
                 <h3 class="doc-subtitle">Basic Usage</h3>
                 <div class="code-block">
                     <div class="code-header">
@@ -76,7 +130,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </ul>
             </div>
 
-            <div class="doc-section">
+            <div class="doc-section" id="options">
                 <h3 class="doc-subtitle">Options</h3>
                 <div class="options-table">
                     <div class="option-row">
@@ -156,7 +210,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </div>
             </div>
 
-            <div class="doc-section">
+            <div class="doc-section" id="usage-examples">
                 <h3 class="doc-subtitle">Usage Examples</h3>
                 <div class="code-block">
                     <div class="code-header">
@@ -199,14 +253,14 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
     </section>
 
     <!-- Template Customization -->
-    <section class="section" style="background: var(--color-surface);">
+    <section class="section" id="template-customization" style="background: var(--color-surface);">
         <div class="section-container">
             <h2 class="section-title">Template Customization</h2>
             <p class="section-description">
                 tfplan2md uses <a href="https://github.com/scriban/scriban" class="inline-link">Scriban</a> templates to generate Markdown reports. You can create custom templates to match your team's reporting needs.
             </p>
 
-            <div class="doc-section">
+            <div class="doc-section" id="built-in-templates">
                 <h3 class="doc-subtitle">Built-in Templates</h3>
                 <div class="template-grid">
                     <div class="template-item">
@@ -222,7 +276,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </div>
             </div>
 
-            <div class="doc-section">
+            <div class="doc-section" id="custom-templates">
                 <h3 class="doc-subtitle">Custom Templates</h3>
                 <p class="doc-text">
                     Create a custom Scriban template (<code>.sbn</code> file) and pass it with the <code>--template</code> option:
@@ -262,7 +316,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </p>
             </div>
 
-            <div class="doc-section">
+            <div class="doc-section" id="principal-mapping">
                 <h3 class="doc-subtitle">Principal Mapping File</h3>
                 <p class="doc-text">
                     Map Azure principal IDs to human-readable names for better role assignment reports. Create a JSON file with this structure:
@@ -300,7 +354,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
     </section>
 
     <!-- Large Value Formatting -->
-    <section class="section">
+    <section class="section" id="large-value-formatting">
         <div class="section-container">
             <h2 class="section-title">Large Value Formatting</h2>
             <p class="section-description">
@@ -308,7 +362,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
             </p>
 
             <div class="format-comparison">
-                <div class="format-card">
+                <div class="format-card" id="inline-diff">
                     <h3 class="format-title">inline-diff (default)</h3>
                     <p class="format-desc">
                         Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps. GitHub strips styles but content remains readable.
@@ -328,7 +382,7 @@ apt-get update
                     </div>
                 </div>
 
-                <div class="format-card">
+                <div class="format-card" id="standard-diff">
                     <h3 class="format-title">standard-diff</h3>
                     <p class="format-desc">
                         Traditional diff format with +/- markers. Fully portable and works on both GitHub and Azure DevOps without style stripping.
@@ -353,11 +407,11 @@ apt-get update
     </section>
 
     <!-- Troubleshooting -->
-    <section class="section" style="background: var(--color-surface);">
+    <section class="section" id="troubleshooting" style="background: var(--color-surface);">
         <div class="section-container">
             <h2 class="section-title">Troubleshooting</h2>
 
-            <div class="trouble-section">
+            <div class="trouble-section" id="no-valid-json">
                 <h3 class="trouble-title">❌ "No valid JSON detected in input"</h3>
                 <p class="trouble-desc">
                     This error occurs when tfplan2md receives input that is not valid Terraform JSON.
@@ -380,7 +434,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </div>
             </div>
 
-            <div class="trouble-section">
+            <div class="trouble-section" id="template-not-found">
                 <h3 class="trouble-title">❌ "Template file not found"</h3>
                 <p class="trouble-desc">
                     This error occurs when using <code>--template</code> with a custom template file that doesn't exist.
@@ -393,7 +447,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </ul>
             </div>
 
-            <div class="trouble-section">
+            <div class="trouble-section" id="sensitive-values">
                 <h3 class="trouble-title">⚠️ Sensitive values still visible</h3>
                 <p class="trouble-desc">
                     Sensitive values are masked by default unless <code>--show-sensitive</code> is used.
@@ -406,7 +460,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </ul>
             </div>
 
-            <div class="trouble-section">
+            <div class="trouble-section" id="tables-not-rendering">
                 <h3 class="trouble-title">⚠️ Tables not rendering correctly in GitHub</h3>
                 <p class="trouble-desc">
                     Markdown tables require specific formatting to render properly.
@@ -419,7 +473,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </ul>
             </div>
 
-            <div class="trouble-section">
+            <div class="trouble-section" id="docker-permission">
                 <h3 class="trouble-title">⚠️ Docker permission denied</h3>
                 <p class="trouble-desc">
                     Docker commands fail with permission errors.
@@ -442,6 +496,8 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
             </div>
         </div>
     </section>
+        </main>
+    </div>
 
     <!-- Quick Links -->
     <section class="section">
@@ -502,6 +558,7 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
     </footer>
 
     <script>
+        // Theme toggle
         const themeToggle = document.querySelector('.theme-toggle');
         const html = document.documentElement;
         
@@ -520,6 +577,103 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
             const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
+        }
+
+        // Sidebar navigation
+        const navLinks = document.querySelectorAll('.docs-nav-link');
+        const navSublinks = document.querySelectorAll('.docs-nav-sublink');
+        const allNavLinks = [...navLinks, ...navSublinks];
+        const sections = document.querySelectorAll('.docs-content .section[id]');
+        const subsections = document.querySelectorAll('.docs-content [id]');
+        
+        // Smooth scroll for sidebar links
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    // Close mobile TOC on selection
+                    if (window.innerWidth <= 1024) {
+                        sidebar.classList.remove('mobile-open');
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                    
+                    // Scroll with offset for fixed header
+                    const headerOffset = 80;
+                    const elementPosition = targetSection.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Highlight active section on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '-100px 0px -66%',
+            threshold: 0
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    
+                    // Remove all active classes
+                    allNavLinks.forEach(link => link.classList.remove('active'));
+                    
+                    // Find and activate the matching link
+                    const activeLink = document.querySelector(`.docs-nav-link[href="#${id}"], .docs-nav-sublink[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                        
+                        // If it's a sublink, also activate parent main link
+                        if (activeLink.classList.contains('docs-nav-sublink')) {
+                            const parentLi = activeLink.closest('li').parentElement.closest('li');
+                            if (parentLi) {
+                                const parentLink = parentLi.querySelector('.docs-nav-link');
+                                if (parentLink) {
+                                    parentLink.classList.add('active');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        subsections.forEach(section => {
+            if (section.id) {
+                observer.observe(section);
+            }
+        });
+        
+        // Mobile TOC toggle
+        const sidebar = document.getElementById('docs-sidebar');
+        const toggleBtn = document.querySelector('.toc-toggle-btn');
+        
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                const isOpen = sidebar.classList.toggle('mobile-open');
+                toggleBtn.setAttribute('aria-expanded', isOpen);
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1024 && 
+                    !sidebar.contains(e.target) && 
+                    !toggleBtn.contains(e.target) &&
+                    sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
         }
     </script>
 </body>

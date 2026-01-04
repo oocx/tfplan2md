@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="brand-link">
+                    <svg width="32" height="32" viewBox="0 0 32 32" class="brand-logo">
+                        <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
+                        <path d="M8 10h16M8 16h16M8 22h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#646cff"/>
+                                <stop offset="100%" style="stop-color:#747bff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="features/index.html" class="nav-item">Features</a>
+                <a href="getting-started.html" class="nav-item">Install</a>
+                <a href="docs.html" class="nav-item">Docs</a>
+                <a href="examples.html" class="nav-item">Examples</a>
+                <a href="providers/index.html" class="nav-item">Providers</a>
+                <a href="architecture.html" class="nav-item">Architecture</a>
+                <a href="contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="padding: 60px 0;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 48px;">Getting Started</h1>
+                <p class="hero-subtitle">
+                    Get tfplan2md running in minutes with Docker, or integrate it into your CI/CD pipeline.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Installation</h2>
+                <p class="section-description">Choose your preferred installation method</p>
+            </div>
+
+            <div class="install-methods">
+                <div class="method-card">
+                    <h3 class="method-title">🐳 Docker (Recommended)</h3>
+                    <p class="method-description">
+                        The easiest way to get started. Docker automatically pulls the image when you run it.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Run directly</span>
+                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
+                    </div>
+                    <p class="method-note">
+                        <strong>✅ Benefits:</strong> One command to run, no setup required, works everywhere Docker runs
+                    </p>
+                </div>
+
+                <div class="method-card">
+                    <h3 class="method-title">⚙️ From Source</h3>
+                    <p class="method-description">
+                        Build from source if you need the latest development version or want to contribute.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Clone and build</span>
+                            <button class="copy-btn" data-copy="git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+dotnet build" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+dotnet build</code></pre>
+                    </div>
+                    <p class="method-note">
+                        <strong>📝 Requirements:</strong> .NET 10 SDK
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface); padding-top: 40px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Quick Start</h2>
+                <p class="section-description">Generate your first Markdown report in seconds</p>
+            </div>
+
+            <div class="quickstart-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Create a Terraform Plan</h3>
+                        <div class="code-block">
+                            <pre><code>terraform plan -out=plan.tfplan</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Convert to JSON</h3>
+                        <div class="code-block">
+                            <pre><code>terraform show -json plan.tfplan > plan.json</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Generate Markdown Report</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <button class="copy-btn" data-copy="cat plan.json | docker run -i oocx/tfplan2md > plan.md" aria-label="Copy command">📋</button>
+                            </div>
+                            <pre><code>cat plan.json | docker run -i oocx/tfplan2md > plan.md</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usage-examples">
+                <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 24px; color: var(--color-text);">Common Usage Patterns</h3>
+                
+                <div class="example-card">
+                    <h4 class="example-title">Pipe directly from Terraform</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4 class="example-title">Read from file with mounted volume</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <button class="copy-btn" data-copy="docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json</code></pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4 class="example-title">Write output to file</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>terraform show -json plan.tfplan | \
+  docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md</code></pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4 class="example-title">Generate summary-only report</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summary" aria-label="Copy command">📋</button>
+                        </div>
+                        <pre><code>terraform show -json plan.tfplan | \
+  docker run -i oocx/tfplan2md --template summary</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cicd" class="section">
+        <div class="section-container">
+            <div class="section-header centered">
+                <h2 class="section-title">CI/CD Integration</h2>
+                <p class="section-description">Automatically post Terraform plan reports to your pull requests</p>
+            </div>
+
+            <div class="cicd-tabs">
+                <button class="cicd-tab active" data-tab="github-actions">GitHub Actions</button>
+                <button class="cicd-tab" data-tab="azure-pipelines">Azure Pipelines</button>
+                <button class="cicd-tab" data-tab="gitlab-ci">GitLab CI</button>
+            </div>
+
+            <div class="cicd-content-wrapper">
+                <div class="cicd-tab-content active" id="github-actions">
+                    <h3 class="cicd-section-title">GitHub Actions Workflow</h3>
+                    <p class="cicd-description">
+                        Add this job to your workflow to automatically comment on PRs with Terraform plans.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">.github/workflows/terraform.yml</span>
+                            <button class="copy-btn" data-copy="name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+      
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+      
+      - name: Terraform Plan
+        run: terraform plan -out=plan.tfplan
+        working-directory: ./terraform
+      
+      - name: Convert plan to JSON
+        run: terraform show -json plan.tfplan > plan.json
+        working-directory: ./terraform
+      
+      - name: Generate markdown report
+        run: |
+          docker run -v $(pwd):/data oocx/tfplan2md \
+            /data/plan.json --output /data/plan.md
+        working-directory: ./terraform
+      
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('terraform/plan.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: plan
+            });" aria-label="Copy workflow">📋</button>
+                        </div>
+                        <pre><code>name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+      
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+      
+      - name: Terraform Plan
+        run: terraform plan -out=plan.tfplan
+        working-directory: ./terraform
+      
+      - name: Convert plan to JSON
+        run: terraform show -json plan.tfplan > plan.json
+        working-directory: ./terraform
+      
+      - name: Generate markdown report
+        run: |
+          docker run -v $(pwd):/data oocx/tfplan2md \
+            /data/plan.json --output /data/plan.md
+        working-directory: ./terraform
+      
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('terraform/plan.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: plan
+            });</code></pre>
+                    </div>
+                </div>
+
+                <div class="cicd-tab-content" id="azure-pipelines">
+                    <h3 class="cicd-section-title">Azure Pipelines Configuration</h3>
+                    <p class="cicd-description">
+                        Use this pipeline template to post Terraform plans to Azure DevOps pull requests.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">azure-pipelines.yml</span>
+                            <button class="copy-btn" data-copy="trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - terraform/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: '1.9.0'
+  
+  - script: terraform init
+    displayName: 'Terraform Init'
+    workingDirectory: terraform
+  
+  - script: terraform plan -out=plan.tfplan
+    displayName: 'Terraform Plan'
+    workingDirectory: terraform
+  
+  - script: terraform show -json plan.tfplan > plan.json
+    displayName: 'Convert to JSON'
+    workingDirectory: terraform
+  
+  - script: |
+      docker run -v $(pwd):/data oocx/tfplan2md \
+        /data/plan.json --output /data/plan.md
+    displayName: 'Generate markdown report'
+    workingDirectory: terraform
+  
+  - task: PowerShell@2
+    displayName: 'Post PR comment'
+    inputs:
+      targetType: 'inline'
+      script: |
+        $markdown = Get-Content terraform/plan.md -Raw
+        $url = \"$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0\"
+        
+        $body = @{
+          comments = @(
+            @{
+              content = $markdown
+              commentType = 1
+            }
+          )
+          status = 1
+        } | ConvertTo-Json -Depth 10
+        
+        Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType \"application/json\" -Headers @{
+          Authorization = \"Bearer $(System.AccessToken)\"
+        }" aria-label="Copy pipeline">📋</button>
+                        </div>
+                        <pre><code>trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - terraform/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: '1.9.0'
+  
+  - script: terraform init
+    displayName: 'Terraform Init'
+    workingDirectory: terraform
+  
+  - script: terraform plan -out=plan.tfplan
+    displayName: 'Terraform Plan'
+    workingDirectory: terraform
+  
+  - script: terraform show -json plan.tfplan > plan.json
+    displayName: 'Convert to JSON'
+    workingDirectory: terraform
+  
+  - script: |
+      docker run -v $(pwd):/data oocx/tfplan2md \
+        /data/plan.json --output /data/plan.md
+    displayName: 'Generate markdown report'
+    workingDirectory: terraform
+  
+  - task: PowerShell@2
+    displayName: 'Post PR comment'
+    inputs:
+      targetType: 'inline'
+      script: |
+        $markdown = Get-Content terraform/plan.md -Raw
+        $url = "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0"
+        
+        $body = @{
+          comments = @(
+            @{
+              content = $markdown
+              commentType = 1
+            }
+          )
+          status = 1
+        } | ConvertTo-Json -Depth 10
+        
+        Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json" -Headers @{
+          Authorization = "Bearer $(System.AccessToken)"
+        }</code></pre>
+                    </div>
+                </div>
+
+                <div class="cicd-tab-content" id="gitlab-ci">
+                    <h3 class="cicd-section-title">GitLab CI Configuration</h3>
+                    <p class="cicd-description">
+                        Configure GitLab CI to post Terraform plans as merge request comments.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">.gitlab-ci.yml</span>
+                            <button class="copy-btn" data-copy="terraform-plan:
+  stage: plan
+  image: hashicorp/terraform:1.9
+  only:
+    - merge_requests
+  script:
+    - cd terraform
+    - terraform init
+    - terraform plan -out=plan.tfplan
+    - terraform show -json plan.tfplan > plan.json
+    
+    - |
+      docker run -v $(pwd):/data oocx/tfplan2md \
+        /data/plan.json --output /data/plan.md
+    
+    - |
+      MARKDOWN=$(cat plan.md)
+      curl --request POST \
+        --header \"PRIVATE-TOKEN: $GITLAB_TOKEN\" \
+        --header \"Content-Type: application/json\" \
+        --data \"{\\\"body\\\": \\\"$MARKDOWN\\\"}\" \
+        \"$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes\"" aria-label="Copy GitLab CI config">📋</button>
+                        </div>
+                        <pre><code>terraform-plan:
+  stage: plan
+  image: hashicorp/terraform:1.9
+  only:
+    - merge_requests
+  script:
+    - cd terraform
+    - terraform init
+    - terraform plan -out=plan.tfplan
+    - terraform show -json plan.tfplan > plan.json
+    
+    - |
+      docker run -v $(pwd):/data oocx/tfplan2md \
+        /data/plan.json --output /data/plan.md
+    
+    - |
+      MARKDOWN=$(cat plan.md)
+      curl --request POST \
+        --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+        --header "Content-Type: application/json" \
+        --data "{\"body\": \"$MARKDOWN\"}" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes"</code></pre>
+                    </div>
+                    <p class="cicd-note">
+                        <strong>Note:</strong> Create a GitLab access token with <code>api</code> scope and add it as <code>GITLAB_TOKEN</code> in CI/CD variables.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Next Steps</h2>
+            </div>
+
+            <div class="next-steps-grid">
+                <a href="features/index.html" class="next-step-card">
+                    <div class="next-step-icon">🔍</div>
+                    <h3 class="next-step-title">Explore Features</h3>
+                    <p class="next-step-description">
+                        Learn about semantic diffs, module grouping, Azure optimizations, and more.
+                    </p>
+                </a>
+
+                <a href="examples.html" class="next-step-card">
+                    <div class="next-step-icon">📊</div>
+                    <h3 class="next-step-title">View Examples</h3>
+                    <p class="next-step-description">
+                        See real-world examples of generated Markdown reports with screenshots.
+                    </p>
+                </a>
+
+                <a href="docs.html" class="next-step-card">
+                    <div class="next-step-icon">📖</div>
+                    <h3 class="next-step-title">Read Documentation</h3>
+                    <p class="next-step-description">
+                        Dive into CLI options, custom templates, and advanced configuration.
+                    </p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="features/index.html" class="footer-link">Features</a>
+                    <a href="getting-started.html" class="footer-link">Get Started</a>
+                    <a href="docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="examples.html" class="footer-link">Examples</a>
+                    <a href="architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+        
+        // Copy button functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const code = button.getAttribute('data-copy') || button.closest('.code-block').querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = '✅';
+                    setTimeout(() => button.textContent = '📋', 2000);
+                });
+            });
+        });
+
+        // CI/CD tabs functionality
+        document.querySelectorAll('.cicd-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Update tab states
+                document.querySelectorAll('.cicd-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update content states
+                document.querySelectorAll('.cicd-tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

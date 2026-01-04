@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure AD Provider - tfplan2md</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                    <img src="../assets/images/tfplan2md-logo.svg" alt="tfplan2md logo" width="36" height="36">
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="../features/index.html" class="nav-item">Features</a>
+                <a href="../getting-started.html" class="nav-item">Install</a>
+                <a href="../docs.html" class="nav-item">Docs</a>
+                <a href="../examples.html" class="nav-item">Examples</a>
+                <a href="../providers/index.html" class="nav-item active">Providers</a>
+                <a href="../architecture.html" class="nav-item">Architecture</a>
+                <a href="../contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Azure AD Provider</h1>
+                <p class="hero-subtitle">
+                    Planned support for Azure Active Directory resources including users, groups, and applications.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge" style="background: #6e7681;">Planned</span>
+                </div>
+                <p class="feature-detail-description">
+                    Managing identity resources with Terraform is common, but diffs can be opaque. We plan to add specialized templates for Azure AD resources to make identity changes transparent.
+                </p>
+                
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Planned Resources</h3>
+                    <ul class="highlights-list">
+                        <li><strong>Users & Groups:</strong> Clear display of membership changes</li>
+                        <li><strong>App Registrations:</strong> Readable manifest changes and permission grants</li>
+                        <li><strong>Service Principals:</strong> Simplified view of credentials and assignments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="../features/index.html" class="footer-link">Features</a>
+                    <a href="../getting-started.html" class="footer-link">Get Started</a>
+                    <a href="../docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="../examples.html" class="footer-link">Examples</a>
+                    <a href="../architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="../contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                }
+            });
+        }
+
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+    </script>
+</body>
+</html>

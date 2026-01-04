@@ -69,14 +69,7 @@
                     </p>
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-title">Create Terraform plan</span>
-                            <button class="copy-btn" data-copy="terraform plan -out=plan.tfplan" aria-label="Copy command">📋</button>
-                        </div>
-                        <pre><code>terraform plan -out=plan.tfplan</code></pre>
-                    </div>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-title">Generate report</span>
+                            <span class="code-title">Run directly</span>
                             <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command">📋</button>
                         </div>
                         <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
@@ -101,13 +94,6 @@ dotnet build" aria-label="Copy command">📋</button>
                         <pre><code>git clone https://github.com/oocx/tfplan2md.git
 cd tfplan2md
 dotnet build</code></pre>
-                    </div>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-title">Run the tool</span>
-                            <button class="copy-btn" data-copy="dotnet run --project src/Oocx.TfPlan2Md -- plan.json" aria-label="Copy command">📋</button>
-                        </div>
-                        <pre><code>dotnet run --project src/Oocx.TfPlan2Md -- plan.json</code></pre>
                     </div>
                     <p class="method-note">
                         <strong>📝 Requirements:</strong> .NET 10 SDK

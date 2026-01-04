@@ -80,6 +80,7 @@ internal sealed class ScreenshotGeneratorApp
             fullPage: options.FullPage,
             format: format,
             quality: quality,
+            deviceScaleFactor: options.DeviceScaleFactor,
             targetTerraformResourceId: options.TargetTerraformResourceId,
             targetSelector: options.TargetSelector);
 

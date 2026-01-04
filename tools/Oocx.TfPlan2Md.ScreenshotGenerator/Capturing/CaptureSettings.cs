@@ -18,9 +18,10 @@ internal sealed class CaptureSettings
     /// <param name="fullPage">Whether to capture the full scrollable page.</param>
     /// <param name="format">The requested output format.</param>
     /// <param name="quality">Optional quality value for lossy formats.</param>
+    /// <param name="deviceScaleFactor">Device scale factor for high-DPI rendering (default: 1.0).</param>
     /// <param name="targetTerraformResourceId">Optional Terraform address for partial capture.</param>
     /// <param name="targetSelector">Optional selector for partial capture.</param>
-    public CaptureSettings(string inputPath, string outputPath, int width, int height, bool fullPage, ScreenshotFormat format, int? quality = null, string? targetTerraformResourceId = null, string? targetSelector = null)
+    public CaptureSettings(string inputPath, string outputPath, int width, int height, bool fullPage, ScreenshotFormat format, int? quality = null, double deviceScaleFactor = 1.0, string? targetTerraformResourceId = null, string? targetSelector = null)
     {
         InputPath = inputPath;
         OutputPath = outputPath;
@@ -29,6 +30,7 @@ internal sealed class CaptureSettings
         FullPage = fullPage;
         Format = format;
         Quality = quality;
+        DeviceScaleFactor = deviceScaleFactor;
         TargetTerraformResourceId = targetTerraformResourceId;
         TargetSelector = targetSelector;
     }
@@ -67,6 +69,11 @@ internal sealed class CaptureSettings
     /// Gets the optional quality value for lossy formats.
     /// </summary>
     public int? Quality { get; }
+
+    /// <summary>
+    /// Gets the device scale factor for high-DPI rendering (e.g., 2.0 for Retina displays).
+    /// </summary>
+    public double DeviceScaleFactor { get; }
 
     /// <summary>
     /// Gets the Terraform resource address used for partial capture when specified.

@@ -78,38 +78,26 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/index.html` |
 | Effort | Medium |
 | Value | Medium |
-| Status | 🔲 Not Started |
+| Status | ✅ Done |
 | Depends On | — |
 
-**Description:** Replace the interactive example on the homepage with a static screenshot showing an NSG example from comprehensive-demo. The current interactive viewer is too complex for the two-column hero layout and unnecessary detail for homepage.
+**Description:** Replace the interactive example on the homepage with a static screenshot showing comprehensive-demo output.
 
-**Requirements:**
-- Screenshot cropped to approximately 580×400px
-- Shows NSG example from comprehensive-demo rendered in Azure DevOps style
-- Clicking the screenshot opens a modal/lightbox showing full 1920×1080 comprehensive-demo screenshot
-- Screenshot must be optimized for web (compressed, appropriate format)
-
-**Approach:**
-1. Generate full 1920×1080 screenshot of comprehensive-demo rendered output
-2. Crop a compelling NSG section to 580×400px for homepage display
-3. Implement click-to-enlarge functionality (lightbox/modal)
-4. Replace interactive-example component with image + modal
-5. Update screenshots.md with generation commands
-
-**Definition of Done:**
-- [ ] 580×400px cropped screenshot created and optimized
-- [ ] 1920×1080px full screenshot created
-- [ ] Homepage uses cropped screenshot instead of interactive example
-- [ ] Click opens full-size screenshot in modal/lightbox
-- [ ] Modal has close button and ESC key support
-- [ ] Screenshots documented in screenshots.md with generation commands
-- [ ] Both images stored in website/assets/ directory
+**Completed:** 2026-01-04
+- Generated full-page comprehensive-demo screenshot (1920×3896px)
+- Cropped 580×400px firewall rules section for homepage display
+- Cropped 1200×800px firewall rules section for lightbox
+- Firewall section shows semantic diffs with inline before/after changes
+- Crops trim left whitespace (start at x=200) to show actual report content
+- Replaced interactive example with firewall screenshot
+- Implemented lightbox modal showing larger firewall view on click
+- Lightbox supports ESC key, click outside, and close button
+- Updated screenshots.md with generation and crop commands
+- Removed complex interactive example JavaScript code
+- Added lightbox CSS styles to style.css
 
 ---
 
-### #22 — Replace hand-crafted examples with real output on all pages
-
-| Field | Value |
 |-------|-------|
 | Page(s) | `/index.html`, `/features/*.html` |
 | Effort | High |

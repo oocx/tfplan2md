@@ -38,6 +38,7 @@ internal sealed class HtmlScreenshotCapturer
             await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
             {
                 ViewportSize = new ViewportSize { Width = settings.Width, Height = settings.Height },
+                DeviceScaleFactor = (float)settings.DeviceScaleFactor,
             }).ConfigureAwait(false);
 
             var page = await context.NewPageAsync().ConfigureAwait(false);

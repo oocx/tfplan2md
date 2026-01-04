@@ -694,26 +694,33 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
 
         // Simple Markdown Syntax Highlighter
         function highlightMarkdown() {
-            document.querySelectorAll('.source-view code').forEach(block => {
+            // Apply to source-view code blocks and template example code blocks
+            document.querySelectorAll('.source-view code, .template-card code, .template-comparison code').forEach(block => {
                 let html = block.innerHTML;
+                
+                // HTML tags (already escaped)
+                html = html.replace(/(&lt;[^&]+&gt;)/g, '<span class="md-tag">$1</span>');
                 
                 // Comments
                 html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
                 
                 // Headings
-                html = html.replace(/^(#+ .+$)/gm, '<span class="md-heading">$1</span>');
+                html = html.replace(/^(#{1,6} .+$)/gm, '<span class="md-heading">$1</span>');
                 
                 // Bold
-                html = html.replace(/(\*\*.*?\*\*)/g, '<span class="md-bold">$1</span>');
+                html = html.replace(/(\*\*[^*]+\*\*)/g, '<span class="md-bold">$1</span>');
                 
-                // Inline Code
+                // Inline Code (backticks)
                 html = html.replace(/(`[^`]+`)/g, '<span class="md-code">$1</span>');
                 
                 // Links
-                html = html.replace(/(\[.*?\]\(.*?\))/g, '<span class="md-link">$1</span>');
+                html = html.replace(/(\[[^\]]+\]\([^)]+\))/g, '<span class="md-link">$1</span>');
                 
                 // Lists
                 html = html.replace(/^(\s*[-*+] )/gm, '<span class="md-list">$1</span>');
+                
+                // Tables (pipe separators)
+                html = html.replace(/(\|)/g, '<span class="md-table-sep">$1</span>');
                 
                 block.innerHTML = html;
             });

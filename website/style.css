@@ -2876,15 +2876,21 @@ body {
 .md-comment { color: #6a737d; }
 .md-heading { color: #0550ae; font-weight: bold; }
 .md-bold { font-weight: bold; color: #24292f; }
-.md-code { color: #0a3069; background-color: rgba(175, 184, 193, 0.2); border-radius: 3px; }
+.md-code { color: #0a3069; background-color: rgba(175, 184, 193, 0.2); border-radius: 3px; padding: 2px 4px; }
 .md-link { color: #0969da; }
-.md-list { color: #d73a49; }
+.md-list { color: #d73a49; font-weight: bold; }
 .md-quote { color: #57606a; border-left: 4px solid #d0d7de; padding-left: 8px; }
+.md-tag { color: #116329; }
+.md-table-sep { color: #6a737d; }
 
+[data-theme="dark"] .md-comment { color: #8b949e; }
 [data-theme="dark"] .md-heading { color: #79c0ff; }
 [data-theme="dark"] .md-bold { color: #e6edf3; }
 [data-theme="dark"] .md-code { color: #a5d6ff; background-color: rgba(110, 118, 129, 0.4); }
 [data-theme="dark"] .md-link { color: #58a6ff; }
+[data-theme="dark"] .md-list { color: #ff7b72; }
+[data-theme="dark"] .md-tag { color: #7ee787; }
+[data-theme="dark"] .md-table-sep { color: #8b949e; }
 
 /* Fullscreen Mode */
 .code-block.fullscreen {

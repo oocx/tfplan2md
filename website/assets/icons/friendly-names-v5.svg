@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Label with readable name - dual sparkles -->
+  <rect x="6" y="16" width="36" height="16" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <!-- ABC letters with padding -->
+  <text x="17" y="27" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#646cff" text-anchor="middle">ABC</text>
+  <!-- Two sparkles with proper spacing -->
+  <path d="M30 21L30.5 23L32.5 23.5L30.5 24L30 26L29.5 24L27.5 23.5L29.5 23Z" fill="#646cff" stroke="#646cff" stroke-width="0.5" stroke-linejoin="round"/>
+  <path d="M36 22L36.3 23.5L37.8 23.8L36.3 24.1L36 25.6L35.7 24.1L34.2 23.8L35.7 23.5L36 22Z" fill="#646cff" stroke="#646cff" stroke-width="0.5" stroke-linejoin="round" opacity="0.7"/>
+</svg>

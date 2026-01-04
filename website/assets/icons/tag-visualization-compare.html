@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Visualization Icon Options</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .option-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .option-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .option-badge {
+            background: #646cff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .icon-preview {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .size-label {
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
+        }
+        .description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .pros-cons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pro, .con {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .pro {
+            color: #28a745;
+        }
+        .con {
+            color: #666;
+        }
+        .back-link {
+            display: inline-block;
+            color: #646cff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tag Visualization Icon Options</h1>
+    <p class="subtitle">Single tag design variations - choose your favorite</p>
+
+    <div class="options-grid">
+        <!-- Option 1: Simple clean -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 1</span>
+                <span class="option-badge">Clean</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="tag-visualization-v1.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="tag-visualization-v1.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="tag-visualization-v1.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="tag-visualization-v1.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="tag-visualization-v1.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Simple single tag.</strong> Clean tag shape with hole - current design, minimalist approach.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Very clean and simple</p>
+                <p class="pro">✓ Instantly recognizable as tag</p>
+                <p class="pro">✓ Scales well to all sizes</p>
+            </div>
+        </div>
+
+        <!-- Option 2: Tag with text lines -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 2</span>
+                <span class="option-badge">Content</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="tag-visualization-v2.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="tag-visualization-v2.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="tag-visualization-v2.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="tag-visualization-v2.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="tag-visualization-v2.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Tag with content lines.</strong> Shows text/label content inside the tag.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Suggests labeled content</p>
+                <p class="pro">✓ More informative</p>
+                <p class="con">✗ May be busy at small sizes</p>
+            </div>
+        </div>
+
+        <!-- Option 3: Hole positioned top left -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 3</span>
+                <span class="option-badge">Top Left Hole</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="tag-visualization-v3.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="tag-visualization-v3.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="tag-visualization-v3.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="tag-visualization-v3.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="tag-visualization-v3.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Tag hole in top left corner.</strong> Same as option 2 but with hole positioned more towards the top left.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ More traditional tag appearance</p>
+                <p class="pro">✓ Hole placement variation</p>
+            </div>
+        </div>
+
+        <!-- Option 4: Taller tag -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 4</span>
+                <span class="option-badge">Taller</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="tag-visualization-v4.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="tag-visualization-v4.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="tag-visualization-v4.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="tag-visualization-v4.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="tag-visualization-v4.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Taller, narrower tag proportions.</strong> Same as option 2 but with more vertical emphasis.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ More compact horizontal footprint</p>
+                <p class="pro">✓ Different visual emphasis</p>
+                <p class="con">✗ Less space for longer text</p>
+            </div>
+        </div>
+
+        <!-- Option 5: Larger tag -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 5</span>
+                <span class="option-badge">Larger</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="tag-visualization-v5.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="tag-visualization-v5.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="tag-visualization-v5.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="tag-visualization-v5.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="tag-visualization-v5.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Larger, more prominent tag.</strong> Same as option 2 but scaled up to fill more of the icon space.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ More prominent and bold</p>
+                <p class="pro">✓ Better visibility at small sizes</p>
+                <p class="con">✗ May feel too large in context</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="gallery.html" class="back-link">← Back to Gallery</a>
+</body>
+</html>

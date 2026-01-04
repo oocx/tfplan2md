@@ -1,0 +1,8 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Same tag as option 2, hole moved to top left -->
+  <path d="M8 10L8 26L24 42L40 26L24 10L8 10Z" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="15" cy="17" r="2.5" fill="#646cff"/>
+  <!-- Text lines at 45 degrees -->
+  <line x1="22" y1="17" x2="32" y2="27" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="22" y1="23" x2="28" y2="29" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+</svg>

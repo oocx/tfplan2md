@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Gallery - tfplan2md</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        body.dark h1 {
+            color: #fff;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .subtitle {
+            color: #666;
+        }
+        body.dark .subtitle {
+            color: #aaa;
+        }
+        .theme-toggle {
+            padding: 10px 20px;
+            background: #646cff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .theme-toggle:hover {
+            background: #535bf2;
+        }
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        body.dark .section {
+            background: #252540;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #646cff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        body.dark .section-title {
+            border-bottom-color: #3a3a5a;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .icon-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+        body.dark .icon-card {
+            background: #1a1a2e;
+            border-color: #3a3a5a;
+        }
+        .icon-card:hover {
+            background: #fff;
+            border-color: #646cff;
+            box-shadow: 0 4px 12px rgba(100, 108, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        body.dark .icon-card:hover {
+            background: #2a2a4a;
+        }
+        .icon-display {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+        body.dark .icon-display {
+            color: #e0e0e0;
+        }
+        .icon-display img {
+            width: 100%;
+            height: 100%;
+        }
+        .icon-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        body.dark .icon-name {
+            color: #e0e0e0;
+        }
+        .icon-file {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+        .size-preview {
+            display: flex;
+            gap: 30px;
+            align-items: flex-end;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        body.dark .size-preview {
+            background: #1a1a2e;
+        }
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .size-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+        body.dark .size-label {
+            color: #aaa;
+        }
+        .all-sizes-row {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .size-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .size-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        body.dark .size-group-title {
+            color: #e0e0e0;
+        }
+        .size-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .size-row img {
+            color: currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>tfplan2md Icon Gallery</h1>
+            <p class="subtitle">Complete set of 20 feature icons with duotone style</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Size Test (semantic-diffs.svg)</div>
+        <div class="size-preview">
+            <div class="size-item">
+                <img src="semantic-diffs.svg" width="64" height="64" alt="Semantic Diffs">
+                <span class="size-label">64px (default)</span>
+            </div>
+            <div class="size-item">
+                <img src="semantic-diffs.svg" width="48" height="48" alt="Semantic Diffs">
+                <span class="size-label">48px</span>
+            </div>
+            <div class="size-item">
+                <img src="semantic-diffs.svg" width="32" height="32" alt="Semantic Diffs">
+                <span class="size-label">32px</span>
+            </div>
+            <div class="size-item">
+                <img src="semantic-diffs.svg" width="24" height="24" alt="Semantic Diffs">
+                <span class="size-label">24px</span>
+            </div>
+            <div class="size-item">
+                <img src="semantic-diffs.svg" width="16" height="16" alt="Semantic Diffs">
+                <span class="size-label">16px (navbar)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Theme Test (semantic-diffs.svg)</div>
+        <div class="color-demo">
+            <div class="color-box light">
+                <img src="semantic-diffs.svg" width="48" height="48" alt="Semantic Diffs">
+            </div>
+            <div class="color-box dark">
+                <img src="semantic-diffs.svg" width="48" height="48" alt="Semantic Diffs">
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">What Sets Us Apart (High Value)</div>
+        <div class="icon-grid">
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="semantic-diffs.svg" alt="Semantic Diffs">
+                </div>
+                <div class="icon-name">Semantic Diffs</div>
+                <div class="icon-file">semantic-diffs.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="firewall-rules.svg" alt="Firewall Rules">
+                </div>
+                <div class="icon-name">Firewall Rule Interpretation</div>
+                <div class="icon-file">firewall-rules.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="nsg-rules.svg" alt="NSG Rules">
+                </div>
+                <div class="icon-name">NSG Rule Interpretation</div>
+                <div class="icon-file">nsg-rules.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="role-assignment.svg" alt="Role Assignment">
+                </div>
+                <div class="icon-name">Role Assignment Mapping</div>
+                <div class="icon-file">role-assignment.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="large-values.svg" alt="Large Values">
+                </div>
+                <div class="icon-name">Large Value Formatting</div>
+                <div class="icon-file">large-values.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="pr-compatibility.svg" alt="PR Compatibility">
+                </div>
+                <div class="icon-name">PR Platform Compatibility</div>
+                <div class="icon-file">pr-compatibility.svg</div>
+            </div>
+            <a href="friendly-names-compare.html" style="text-decoration: none; color: inherit;">
+                <div class="icon-card">
+                    <div class="icon-display">
+                        <img src="friendly-names.svg" alt="Friendly Names">
+                    </div>
+                    <div class="icon-name">Friendly Resource Names</div>
+                    <div class="icon-file">friendly-names.svg</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Built-In Capabilities (Medium Value)</div>
+        <div class="icon-grid">
+            <a href="cicd-integration-compare.html" style="text-decoration: none; color: inherit;">
+                <div class="icon-card">
+                    <div class="icon-display">
+                        <img src="cicd-integration.svg" alt="CI/CD Integration">
+                    </div>
+                    <div class="icon-name">CI/CD Integration</div>
+                    <div class="icon-file">cicd-integration.svg</div>
+                </div>
+            </a>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="plan-summary.svg" alt="Plan Summary">
+                </div>
+                <div class="icon-name">Plan Summary</div>
+                <div class="icon-file">plan-summary.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="module-grouping.svg" alt="Module Grouping">
+                </div>
+                <div class="icon-name">Module Grouping</div>
+                <div class="icon-file">module-grouping.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="collapsible-details.svg" alt="Collapsible Details">
+                </div>
+                <div class="icon-name">Collapsible Details</div>
+                <div class="icon-file">collapsible-details.svg</div>
+            </div>
+            <a href="tag-visualization-compare.html" style="text-decoration: none; color: inherit;">
+                <div class="icon-card">
+                    <div class="icon-display">
+                        <img src="tag-visualization.svg" alt="Tag Visualization">
+                    </div>
+                    <div class="icon-name">Tag Visualization</div>
+                    <div class="icon-file">tag-visualization.svg</div>
+                </div>
+            </a>
+            <a href="smart-iconography-compare.html" style="text-decoration: none; color: inherit;">
+                <div class="icon-card">
+                    <div class="icon-display">
+                        <img src="smart-iconography.svg" alt="Smart Iconography">
+                    </div>
+                    <div class="icon-name">Smart Iconography</div>
+                    <div class="icon-file">smart-iconography.svg</div>
+                </div>
+            </a>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="custom-templates.svg" alt="Custom Templates">
+                </div>
+                <div class="icon-name">Custom Templates</div>
+                <div class="icon-file">custom-templates.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="provider-agnostic.svg" alt="Provider Agnostic">
+                </div>
+                <div class="icon-name">Provider Agnostic Core</div>
+                <div class="icon-file">provider-agnostic.svg</div>
+            </div>
+            <a href="local-names-compare.html" style="text-decoration: none; color: inherit;">
+                <div class="icon-card">
+                    <div class="icon-display">
+                        <img src="local-names.svg" alt="Local Names">
+                    </div>
+                    <div class="icon-name">Local Resource Names</div>
+                    <div class="icon-file">local-names.svg</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Also Included (Low Value)</div>
+        <div class="icon-grid">
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="sensitive-masking.svg" alt="Sensitive Masking">
+                </div>
+                <div class="icon-name">Sensitive Value Masking</div>
+                <div class="icon-file">sensitive-masking.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="minimal-container.svg" alt="Minimal Container">
+                </div>
+                <div class="icon-name">Minimal Container Image</div>
+                <div class="icon-file">minimal-container.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="container-support.svg" alt="Container Support">
+                </div>
+                <div class="icon-name">Container Support</div>
+                <div class="icon-file">container-support.svg</div>
+            </div>
+            <div class="icon-card">
+                <div class="icon-display">
+                    <img src="dark-light-mode.svg" alt="Dark/Light Mode">
+                </div>
+                <div class="icon-name">Dark/Light Mode</div>
+                <div class="icon-file">dark-light-mode.svg</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">All Icons at Multiple Sizes</div>
+        <p style="margin-bottom: 20px; color: #666;">Testing icon clarity at different sizes (64px, 48px, 32px, 24px, 16px)</p>
+        <div class="size-preview">
+            <div class="all-sizes-row">
+                <div class="size-group">
+                    <div class="size-group-title">High Value</div>
+                    <div class="size-row">
+                        <img src="semantic-diffs.svg" width="64" height="64">
+                        <img src="semantic-diffs.svg" width="48" height="48">
+                        <img src="semantic-diffs.svg" width="32" height="32">
+                        <img src="semantic-diffs.svg" width="24" height="24">
+                        <img src="semantic-diffs.svg" width="16" height="16">
+                        <span class="size-label">Semantic Diffs</span>
+                    </div>
+                    <div class="size-row">
+                        <img src="firewall-rules.svg" width="64" height="64">
+                        <img src="firewall-rules.svg" width="48" height="48">
+                        <img src="firewall-rules.svg" width="32" height="32">
+                        <img src="firewall-rules.svg" width="24" height="24">
+                        <img src="firewall-rules.svg" width="16" height="16">
+                        <span class="size-label">Firewall Rules</span>
+                    </div>
+                    <div class="size-row">
+                        <img src="nsg-rules.svg" width="64" height="64">
+                        <img src="nsg-rules.svg" width="48" height="48">
+                        <img src="nsg-rules.svg" width="32" height="32">
+                        <img src="nsg-rules.svg" width="24" height="24">
+                        <img src="nsg-rules.svg" width="16" height="16">
+                        <span class="size-label">NSG Rules</span>
+                    </div>
+                    <div class="size-row">
+                        <img src="role-assignment.svg" width="64" height="64">
+                        <img src="role-assignment.svg" width="48" height="48">
+                        <img src="role-assignment.svg" width="32" height="32">
+                        <img src="role-assignment.svg" width="24" height="24">
+                        <img src="role-assignment.svg" width="16" height="16">
+                        <span class="size-label">Role Assignment</span>
+                    </div>
+                    <div class="size-row">
+                        <img src="large-values.svg" width="64" height="64">
+                        <img src="large-values.svg" width="48" height="48">
+                        <img src="large-values.svg" width="32" height="32">
+                        <img src="large-values.svg" width="24" height="24">
+                        <img src="large-values.svg" width="16" height="16">
+                        <span class="size-label">Large Values</span>
+                    </div>
+                    <div class="size-row">
+                        <img src="pr-compatibility.svg" width="64" height="64">
+                        <img src="pr-compatibility.svg" width="48" height="48">
+                        <img src="pr-compatibility.svg" width="32" height="32">
+                        <img src="pr-compatibility.svg" width="24" height="24">
+                        <img src="pr-compatibility.svg" width="16" height="16">
+                        <span class="size-label">PR Compatibility</span>
+                    </div>
+                    <div class="size-row">
+                        <img src="friendly-names.svg" width="64" height="64">
+                        <img src="friendly-names.svg" width="48" height="48">
+                        <img src="friendly-names.svg" width="32" height="32">
+                        <img src="friendly-names.svg" width="24" height="24">
+                        <img src="friendly-names.svg" width="16" height="16">
+                        <span class="size-label">Friendly Names</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main pipeline -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <rect x="19" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  
+  <!-- Arrow from first to second -->
+  <path d="M14 24H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M16 22L18 24L16 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Three parallel branches from second step -->
+  <rect x="34" y="6" width="10" height="10" rx="2" fill="#646cff" fill-opacity="0.15" stroke="#646cff" stroke-width="2"/>
+  <rect x="34" y="19" width="10" height="10" rx="2" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  <rect x="34" y="32" width="10" height="10" rx="2" fill="#646cff" fill-opacity="0.15" stroke="#646cff" stroke-width="2"/>
+  
+  <!-- Branch arrows -->
+  <path d="M29 21 L34 11" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M29 24 H34" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M29 27 L34 37" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Icons -->
+  <line x1="7" y1="22" x2="11" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="7" y1="26" x2="9" y2="26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="2" stroke="#646cff" stroke-width="1.5"/>
+  <rect x="37" y="9" width="4" height="4" rx="1" fill="#646cff" fill-opacity="0.5"/>
+  <path d="M37 23.5L38 24.5L40.5 22" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="39" cy="37" r="2" stroke="#646cff" stroke-width="1.5"/>
+</svg>

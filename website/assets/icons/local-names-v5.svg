@@ -1,0 +1,10 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Container box -->
+  <rect x="8" y="12" width="32" height="24" rx="2" fill="#646cff" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+  <!-- "Local" corner label -->
+  <path d="M8 12L8 20L16 20L16 12L8 12Z" fill="#646cff" stroke="#646cff" stroke-width="1.5" stroke-linejoin="round"/>
+  <circle cx="12" cy="16" r="1.5" fill="white" opacity="0.9"/>
+  <!-- Name content -->
+  <line x1="12" y1="26" x2="32" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <line x1="12" y1="30" x2="28" y2="30" stroke="#646cff" stroke-width="2" stroke-linecap="round"/>
+</svg>

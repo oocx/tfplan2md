@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendly Resource Names Icon Options</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .option-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .option-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .option-badge {
+            background: #646cff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .icon-preview {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            margin: 15px 0;
+        }
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .size-label {
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
+        }
+        .description {
+            color: #555;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .pros-cons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pro {
+            color: #43a047;
+            font-size: 14px;
+            margin: 2px 0;
+        }
+        .con {
+            color: #e53935;
+            font-size: 14px;
+            margin: 2px 0;
+        }
+        .theme-toggle {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #646cff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #535ac8;
+        }
+        body.dark-theme {
+            background: #1a1a1a;
+        }
+        body.dark-theme .option-card {
+            background: #2d2d2d;
+        }
+        body.dark-theme h1,
+        body.dark-theme .option-title {
+            color: #fff;
+        }
+        body.dark-theme .description {
+            color: #ccc;
+        }
+        body.dark-theme .size-label {
+            color: #999;
+        }
+        body.dark-theme .icon-preview {
+            border-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Friendly Resource Names Icon Options</h1>
+    
+    <div class="theme-toggle">
+        <button onclick="document.body.classList.toggle('dark-theme')">Toggle Dark Theme</button>
+    </div>
+
+    <div class="options-grid">
+        <!-- Original -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Current</span>
+                <span class="option-badge">Original</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="friendly-names.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="friendly-names.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="friendly-names.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="friendly-names.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="friendly-names.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>ID badge with avatar and text lines.</strong> Current design shows identification concept with personal element.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Clear ID badge metaphor</p>
+                <p class="pro">✓ Avatar adds human touch</p>
+            </div>
+        </div>
+
+        <!-- Option 1: More padding with checkmark -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 1</span>
+                <span class="option-badge">More Space</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="friendly-names-v1.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="friendly-names-v1.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="friendly-names-v1.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="friendly-names-v1.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="friendly-names-v1.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>ABC label with checkmark - more padding.</strong> Based on option 3 with more space after ABC text, checkmark positioned with breathing room.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Better spacing</p>
+                <p class="pro">✓ Checkmark clearly visible</p>
+                <p class="pro">✓ Balanced layout</p>
+            </div>
+        </div>
+
+        <!-- Option 2: Larger checkmark -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 2</span>
+                <span class="option-badge">Larger ✓</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="friendly-names-v2.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="friendly-names-v2.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="friendly-names-v2.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="friendly-names-v2.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="friendly-names-v2.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Larger checkmark with maximum spacing.</strong> ABC moved left, checkmark scaled up and positioned far right for maximum emphasis.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Very prominent checkmark</p>
+                <p class="pro">✓ Clear validation indicator</p>
+                <p class="con">✗ May dominate at smaller sizes</p>
+            </div>
+        </div>
+
+        <!-- Option 3: Sparkle indicator -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 3</span>
+                <span class="option-badge">Sparkle ✨</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="friendly-names-v3.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="friendly-names-v3.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="friendly-names-v3.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="friendly-names-v3.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="friendly-names-v3.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Sparkle instead of checkmark.</strong> Clean, polished indicator suggesting friendly/readable naming quality.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Softer, friendly vibe</p>
+                <p class="pro">✓ Suggests clean/polished</p>
+                <p class="con">✗ Less direct than checkmark</p>
+            </div>
+        </div>
+
+        <!-- Option 4: Compact sparkle -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 4</span>
+                <span class="option-badge">Subtle ✨</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="friendly-names-v4.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="friendly-names-v4.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="friendly-names-v4.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="friendly-names-v4.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="friendly-names-v4.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Compact sparkle top right with accent dot.</strong> More subtle polish indicator that doesn't compete with text.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Subtle, refined</p>
+                <p class="pro">✓ Doesn't overpower</p>
+                <p class="con">✗ May be too subtle at small sizes</p>
+            </div>
+        </div>
+
+        <!-- Option 5: Dual sparkles -->
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Option 5</span>
+                <span class="option-badge">Extra Polish ✨✨</span>
+            </div>
+            <div class="icon-preview">
+                <div class="size-item"><img src="friendly-names-v5.svg" width="64" height="64"><span class="size-label">64px</span></div>
+                <div class="size-item"><img src="friendly-names-v5.svg" width="48" height="48"><span class="size-label">48px</span></div>
+                <div class="size-item"><img src="friendly-names-v5.svg" width="32" height="32"><span class="size-label">32px</span></div>
+                <div class="size-item"><img src="friendly-names-v5.svg" width="24" height="24"><span class="size-label">24px</span></div>
+                <div class="size-item"><img src="friendly-names-v5.svg" width="16" height="16"><span class="size-label">16px</span></div>
+            </div>
+            <p class="description">
+                <strong>Two sparkles for extra polish effect.</strong> Multiple sparkles emphasize the clean, friendly quality of names.
+            </p>
+            <div class="pros-cons">
+                <p class="pro">✓ Strong polish metaphor</p>
+                <p class="pro">✓ Playful and friendly</p>
+                <p class="con">✗ May be too busy</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Azure NSG style - hexagonal network with shield -->
+  
+  <defs>
+    <path id="hexagon" d="M24 6L40 15V33L24 42L8 33V15L24 6Z"/>
+    <g id="shield-group">
+      <path d="M24 14L32 18V26C32 31 24 35 24 35C24 35 16 31 16 26V18L24 14Z"/>
+      <path d="M20 24L23 27L28 21"/>
+    </g>
+  </defs>
+
+  <!-- Hexagon Fill -->
+  <use href="#hexagon" fill="#646cff" fill-opacity="0.1" stroke="none"/>
+
+  <!-- Hexagon Halo -->
+  <use href="#hexagon" stroke="white" stroke-width="4" stroke-linejoin="round" fill="none"/>
+  <!-- Hexagon Line -->
+  <use href="#hexagon" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+
+  <!-- Shield Halo -->
+  <use href="#shield-group" stroke="white" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+
+  <!-- Shield Color -->
+  <path d="M24 14L32 18V26C32 31 24 35 24 35C24 35 16 31 16 26V18L24 14Z" fill="#646cff" fill-opacity="0.25" stroke="#646cff" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M20 24L23 27L28 21" stroke="#646cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>

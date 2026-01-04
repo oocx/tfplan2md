@@ -1,0 +1,42 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- User group with permissions - enhanced red/green colors -->
+  
+  <defs>
+    <g id="person">
+      <circle cx="24" cy="10" r="5"/>
+      <path d="M16 26C16 20 19 16 24 16C29 16 32 20 32 26"/>
+    </g>
+  </defs>
+
+  <!-- Person Fill -->
+  <circle cx="24" cy="10" r="5" fill="#646cff" fill-opacity="0.2" stroke="none"/>
+  <path d="M16 26C16 20 19 16 24 16C29 16 32 20 32 26" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+
+  <!-- Person Halo -->
+  <use href="#person" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Person Line -->
+  <use href="#person" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Deny card (red) - Halo -->
+  <g stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="32" width="12" height="10" rx="2" fill="none"/>
+    <path d="M12 35L16 39"/>
+    <path d="M16 35L12 39"/>
+  </g>
+
+  <!-- Deny card (red) - Color -->
+  <rect x="8" y="32" width="12" height="10" rx="2" fill="#e53935" fill-opacity="0.2" stroke="#e53935" stroke-width="1.5"/>
+  <path d="M12 35L16 39" stroke="#e53935" stroke-width="2" stroke-linecap="round"/>
+  <path d="M16 35L12 39" stroke="#e53935" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Allow card (green) - Halo -->
+  <g stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="28" y="32" width="12" height="10" rx="2" fill="none"/>
+    <path d="M32 37L34 39L38 35"/>
+  </g>
+
+  <!-- Allow card (green) - Color -->
+  <rect x="28" y="32" width="12" height="10" rx="2" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="1.5"/>
+  <path d="M32 37L34 39L38 35" stroke="#43a047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>

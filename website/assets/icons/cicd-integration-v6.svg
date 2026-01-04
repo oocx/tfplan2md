@@ -1,0 +1,17 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pipeline flow with arrows -->
+  <!-- Stage boxes -->
+  <rect x="4" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>
+  <rect x="19" y="18" width="10" height="12" rx="2" fill="#646cff" fill-opacity="0.2" stroke="#646cff" stroke-width="2"/>
+  <rect x="34" y="18" width="10" height="12" rx="2" fill="#43a047" fill-opacity="0.2" stroke="#43a047" stroke-width="2"/>
+  <!-- Arrows between stages -->
+  <path d="M14 24H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M16 22L18 24L16 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M29 24H34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <path d="M31 22L33 24L31 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Icons in boxes -->
+  <line x1="7" y1="22" x2="11" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="7" y1="26" x2="9" y2="26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="24" cy="24" r="2" stroke="#646cff" stroke-width="1.5"/>
+  <path d="M37 24L38.5 25.5L41 23" stroke="#43a047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

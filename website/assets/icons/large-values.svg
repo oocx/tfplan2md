@@ -1,0 +1,36 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Document with content -->
+  
+  <defs>
+    <g id="doc-outline">
+      <path d="M12 6L30 6L36 12L36 42L12 42Z"/>
+      <path d="M30 6L30 12L36 12"/>
+    </g>
+    <g id="doc-lines">
+      <line x1="16" y1="18" x2="32" y2="18"/>
+      <line x1="16" y1="23" x2="32" y2="23"/>
+      <line x1="16" y1="37" x2="26" y2="37"/>
+    </g>
+    <g id="doc-dashed">
+      <line x1="16" y1="28" x2="32" y2="28"/>
+      <line x1="16" y1="32" x2="32" y2="32"/>
+    </g>
+  </defs>
+
+  <!-- Fill -->
+  <path d="M12 6L30 6L36 12L36 42L12 42Z" fill="#646cff" fill-opacity="0.15" stroke="none"/>
+
+  <!-- Halo -->
+  <use href="#doc-outline" stroke="white" stroke-width="4" stroke-linejoin="round" fill="none"/>
+  <use href="#doc-lines" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <use href="#doc-dashed" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- Lines -->
+  <use href="#doc-outline" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+  <use href="#doc-lines" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+  
+  <!-- Dashed Lines (Colored) -->
+  <line x1="16" y1="28" x2="32" y2="28" stroke="#646cff" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#646cff" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2"/>
+
+</svg>

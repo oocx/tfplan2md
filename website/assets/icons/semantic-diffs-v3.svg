@@ -1,0 +1,13 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Two overlapping documents with diff highlights -->
+  <!-- Back document -->
+  <rect x="12" y="4" width="24" height="32" rx="2" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+  <!-- Front document with changes -->
+  <rect x="12" y="12" width="24" height="32" rx="2" fill="white" stroke="currentColor" stroke-width="2"/>
+  <line x1="16" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+  <!-- Red removed line -->
+  <rect x="16" y="25" width="16" height="4" rx="1" fill="#e53935" fill-opacity="0.3" stroke="#e53935" stroke-width="1"/>
+  <!-- Green added line -->
+  <rect x="16" y="32" width="12" height="4" rx="1" fill="#43a047" fill-opacity="0.3" stroke="#43a047" stroke-width="1"/>
+  <line x1="16" y1="40" x2="28" y2="40" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+</svg>

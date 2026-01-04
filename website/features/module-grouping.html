@@ -58,27 +58,44 @@
                 <div class="feature-example">
                     <h3 class="example-title">Example Structure</h3>
                     <div class="code-block">
-                        <pre><code>### Module: root
+                        <pre><code>### 📦 Module: root
 
-#### ➕ azurerm_resource_group.main
-**Summary:** `rg-demo` (eastus)
-
----
-
-### Module: `module.network`
-
-#### ➕ azurerm_virtual_network.vnet
-**Summary:** `vnet-demo` in `rg-demo` (10.0.0.0/16)
-
-#### ➕ azurerm_subnet.subnet
-**Summary:** `snet-app` in VNet `vnet-demo` (10.0.1.0/24)
+<details>
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+...
+</details>
 
 ---
 
-### Module: `module.security.module.nsg`
+### 📦 Module: `module.network`
 
-#### 🔄 azurerm_network_security_group.app
-**Summary:** `nsg-app` | 2 rules changed</code></pre>
+<details>
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>🆔 vnet-hub</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code></summary>
+...
+</details>
+
+<details>
+<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔 network-rules</code> in <code>📁 rg-tfplan2md-demo</code> | 22🔧 changes</summary>
+...
+</details>
+
+---
+
+### 📦 Module: `module.security`
+
+<details>
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+...
+</details>
+
+---
+
+### 📦 Module: `module.network.module.monitoring`
+
+<details>
+<summary>➕ azurerm_log_analytics_workspace <b><code>core</code></b> — <code>🆔 law-core</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+...
+</details></code></pre>
                     </div>
                 </div>
 

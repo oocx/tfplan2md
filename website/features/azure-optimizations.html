@@ -103,14 +103,17 @@
                 <div class="feature-example">
                     <h3 class="example-title">Example Output</h3>
                     <div class="code-block">
-                        <pre><code>#### ➕ azurerm_role_assignment.contributor
-**Summary:** `Contributor` on `rg-demo` for `john.doe@contoso.com`
+                        <pre><code>### ➕ azurerm_role_assignment.rg_reader
+
+<summary>👤 Jane Doe (User) → 🛡️ Reader on rg-tfplan2md-demo</summary>
 
 | Attribute | Value |
-|-----------|-------|
-| role_definition_name | `Contributor` |
-| scope | Resource Group `rg-demo` |
-| principal_id | 👤 `john.doe@contoso.com` (User) |</code></pre>
+| ----------- | ------- |
+| scope | `📁 rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
+| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
+| principal_id | `👤 Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
+| principal_type | `👤 User` |
+| role_definition_name | `🛡️ Reader` |</code></pre>
                     </div>
                 </div>
             </div>

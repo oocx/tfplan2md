@@ -57,24 +57,30 @@
                 
                 <div class="feature-comparison">
                     <div class="comparison-column">
-                        <h3 class="comparison-title">❌ Unsafe Output</h3>
+                        <h3 class="comparison-title">Default Behavior</h3>
                         <div class="code-block">
-                            <pre><code>resource "azurerm_key_vault_secret" "secret" {
-  name  = "db-password"
-  value = "super-secret-password-123"
-}</code></pre>
+                            <pre><code>### ➕ azurerm_key_vault_secret.db_password
+
+| Attribute | Value |
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` ... |
+| name | `🆔 db-password` |
+| value | `(sensitive)` |</code></pre>
                         </div>
                     </div>
                     
                     <div class="comparison-column">
-                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <h3 class="comparison-title">With --show-sensitive</h3>
                         <div class="code-block">
-                            <pre><code>#### ➕ azurerm_key_vault_secret.secret
+                            <pre><code>### ➕ azurerm_key_vault_secret.db_password
 
 | Attribute | Value |
-|-----------|-------|
-| name | `db-password` |
-| value | `(sensitive value)` |</code></pre>
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` ... |
+| name | `🆔 db-password` |
+| value | `super-secret-value` |</code></pre>
                         </div>
                     </div>
                 </div>

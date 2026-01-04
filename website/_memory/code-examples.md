@@ -10,15 +10,36 @@ This document lists the code examples shown on the website and how to (re)genera
 
 ## Current State
 
-**Status:** Examples page displays real tfplan2md output from comprehensive demo artifacts.
+**Status:** All pages now display real tfplan2md output from comprehensive demo artifacts.
 
-The `/examples.html` page shows:
-- **Template Comparison**: Summary vs Default template examples (hand-crafted markdown snippets)
-- **Feature Examples**: Interactive examples with rendered HTML (generated from comprehensive-demo artifacts)
-  - Firewall Rule Semantic Diffing (real comprehensive-demo output)
-  - Module Grouping (real comprehensive-demo output)
-  - Azure Role Assignment Display (real comprehensive-demo output)
-  - Sensitive Value Masking (real comprehensive-demo output)
+### Pages Updated with Real Examples
+
+1. **index.html (Homepage)** - NSG replacement example (real output)
+2. **examples.html** - Three interactive examples (real output) 
+3. **features/firewall-rules.html** - Firewall rule changes table (real output)
+4. **features/nsg-rules.html** - NSG security rules table (real output)
+5. **features/module-grouping.html** - Module hierarchy structure (real output)
+6. **features/sensitive-masking.html** - Key vault secret masking (real output)
+7. **features/azure-optimizations.html** - Role assignment display (real output)
+8. **features/large-values.html** - Large value diff example (real output)
+9. **features/value-formatting.html** - Formatting rules (conceptual, no changes needed)
+10. **features/custom-templates.html** - Template syntax (conceptual, no changes needed)
+11. **features/misc.html** - Simple summaries (conceptual, no changes needed)
+
+### Extraction Commands
+
+#### Homepage NSG Example
+
+```bash
+# Extract NSG replacement section
+cd /home/mathias/git/tfplan2md
+sed -n '180,195p' artifacts/comprehensive-demo.md > .tmp/homepage-nsg-example.md
+
+# Generate Azure DevOps HTML
+dotnet run --no-build --project tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj \
+  --input .tmp/homepage-nsg-example.md \
+  --flavor azdo > .tmp/homepage-nsg-example.azdo.html
+```
 
 ### Generated HTML Examples
 

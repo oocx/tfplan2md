@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 3: VS Code Docs Style - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <header class="app-header">
+            <div class="header-inner">
+                <div class="logo-section">
+                    <img src="../../assets/images/tfplan2md-logo.svg" alt="tfplan2md" width="24" height="24">
+                    <span class="logo-text">tfplan2md</span>
+                </div>
+                <nav class="top-nav">
+                    <a href="#docs">Docs</a>
+                    <a href="#features">Features</a>
+                    <a href="#api">API</a>
+                    <a href="#examples">Examples</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="theme-toggle" aria-label="Toggle theme">🌙</button>
+                    <a href="https://github.com/oocx/tfplan2md" class="header-button">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="#download" class="header-button primary">Download</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-content">
+            <aside class="sidebar-nav">
+                <div class="nav-group">
+                    <div class="nav-group-title">GET STARTED</div>
+                    <a href="#overview" class="nav-link active">Overview</a>
+                    <a href="#installation" class="nav-link">Installation</a>
+                    <a href="#quickstart" class="nav-link">Quickstart</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">USER GUIDE</div>
+                    <a href="#basic-usage" class="nav-link">Basic Usage</a>
+                    <a href="#ci-cd" class="nav-link">CI/CD Integration</a>
+                    <a href="#templates" class="nav-link">Custom Templates</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">FEATURES</div>
+                    <a href="#semantic-diffs" class="nav-link">Semantic Diffs</a>
+                    <a href="#module-grouping" class="nav-link">Module Grouping</a>
+                    <a href="#azure-ids" class="nav-link">Azure IDs</a>
+                    <a href="#sensitive-masking" class="nav-link">Sensitive Masking</a>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">REFERENCE</div>
+                    <a href="#cli-reference" class="nav-link">CLI Reference</a>
+                    <a href="#template-api" class="nav-link">Template API</a>
+                    <a href="#examples" class="nav-link">Examples</a>
+                </div>
+            </aside>
+
+            <main class="main-area">
+                <div class="content-container">
+                    <article class="doc-content">
+                        <header class="doc-header">
+                            <h1>Convert Terraform Plans to Readable Markdown</h1>
+                            <p class="doc-description">
+                                Generate clean, structured reports from Terraform plan JSON that render 
+                                beautifully in GitHub and Azure DevOps PR comments. No more walls of text.
+                            </p>
+                            <div class="doc-badges">
+                                <span class="badge badge-success">Stable</span>
+                                <span class="badge badge-info">Docker</span>
+                                <span class="badge badge-neutral">.NET 10</span>
+                            </div>
+                        </header>
+
+                        <div class="callout callout-tip">
+                            <div class="callout-title">💡 Built with AI</div>
+                            <p>This project was developed 100% with GitHub Copilot using a multi-agent workflow.</p>
+                        </div>
+
+                        <section class="doc-section">
+                            <h2>The Problem</h2>
+                            <p>
+                                Terraform plans in pull requests are painful to review:
+                            </p>
+                            <ul class="problem-list">
+                                <li>
+                                    <span class="problem-icon">❌</span>
+                                    <strong>Verbose output</strong> — Raw plan output is overwhelming
+                                </li>
+                                <li>
+                                    <span class="problem-icon">❌</span>
+                                    <strong>No structure</strong> — Changes aren't logically grouped
+                                </li>
+                                <li>
+                                    <span class="problem-icon">❌</span>
+                                    <strong>Cryptic diffs</strong> — Index changes instead of semantic diffs
+                                </li>
+                                <li>
+                                    <span class="problem-icon">❌</span>
+                                    <strong>Lost context</strong> — Can't see the big picture
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section class="doc-section">
+                            <h2>Quick Start</h2>
+                            
+                            <div class="step-card">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Pull the Docker image</h3>
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span class="code-lang">bash</span>
+                                            <button class="copy-btn">Copy</button>
+                                        </div>
+                                        <pre><code>docker pull oocx/tfplan2md:latest</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-card">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Pipe your Terraform plan</h3>
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span class="code-lang">bash</span>
+                                            <button class="copy-btn">Copy</button>
+                                        </div>
+                                        <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
+                                    </div>
+                                    <p class="step-note">
+                                        The report is written to stdout. Redirect to a file or pipe to your PR comment tool.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="step-card">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Integrate with CI/CD</h3>
+                                    <div class="tab-group">
+                                        <button class="tab active">GitHub Actions</button>
+                                        <button class="tab">Azure Pipelines</button>
+                                        <button class="tab">GitLab CI</button>
+                                    </div>
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span class="code-lang">yaml</span>
+                                            <button class="copy-btn">Copy</button>
+                                        </div>
+                                        <pre><code>- name: Generate markdown report
+  run: terraform show -json plan.tfplan | docker run -i oocx/tfplan2md > plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v6
+  with:
+    script: |
+      const fs = require('fs');
+      const body = fs.readFileSync('plan.md', 'utf8');
+      await github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body
+      });</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="doc-section">
+                            <h2>Key Features</h2>
+                            <div class="feature-grid">
+                                <div class="feature-item">
+                                    <div class="feature-icon">🔍</div>
+                                    <h4>Semantic Diffs</h4>
+                                    <p>Show actual rule changes, not array index modifications</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon">📁</div>
+                                    <h4>Module Grouping</h4>
+                                    <p>Organize changes by module for better context</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon">🆔</div>
+                                    <h4>Azure Optimized</h4>
+                                    <p>Readable Azure resource IDs and principal mapping</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon">🎨</div>
+                                    <h4>Visual Icons</h4>
+                                    <p>IPs, ports, protocols with intuitive icons</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon">🔒</div>
+                                    <h4>Security First</h4>
+                                    <p>Sensitive values masked by default</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon">⚡</div>
+                                    <h4>Fast & Minimal</h4>
+                                    <p>Distroless Docker image, sub-second startup</p>
+                                </div>
+                            </div>
+                        </section>
+                    </article>
+
+                    <aside class="toc">
+                        <div class="toc-title">ON THIS PAGE</div>
+                        <nav class="toc-nav">
+                            <a href="#problem">The Problem</a>
+                            <a href="#quickstart">Quick Start</a>
+                            <a href="#features">Key Features</a>
+                        </nav>
+                    </aside>
+                </div>
+            </main>
+        </div>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <a href="#docs">Documentation</a>
+                    <a href="#examples">Examples</a>
+                    <a href="#api">API Reference</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md">GitHub</a>
+                    <a href="https://github.com/oocx/tfplan2md/issues">Issues</a>
+                    <a href="#contributing">Contributing</a>
+                </div>
+                <div class="footer-section">
+                    <h4>More</h4>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE">License (MIT)</a>
+                    <a href="#changelog">Changelog</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 tfplan2md • Developed 100% with GitHub Copilot</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

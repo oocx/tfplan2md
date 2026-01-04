@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                    <img src="assets/images/tfplan2md-logo.svg" alt="tfplan2md logo" width="36" height="36">
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="features/index.html" class="nav-item">Features</a>
+                <a href="getting-started.html" class="nav-item">Install</a>
+                <a href="docs.html" class="nav-item">Docs</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="padding: 60px 0;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 48px;">Examples</h1>
+                <p class="hero-subtitle">
+                    Real tfplan2md output from actual Terraform plans. See what your reports will look like.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Template Comparison -->
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Report Templates</h2>
+            <p class="section-description">
+                tfplan2md includes built-in templates for different use cases. Choose the right level of detail for your workflow.
+            </p>
+
+            <div class="template-comparison">
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3 class="template-name">Summary Template</h3>
+                        <span class="template-badge">--template summary</span>
+                    </div>
+                    <p class="template-description">
+                        Compact overview showing only action counts and resource type breakdown. Perfect for PR titles or quick reviews.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Output</span>
+                        </div>
+                        <pre><code># Terraform Plan Summary
+
+**Terraform Version:** 1.14.0
+
+**Generated:** 2025-12-20T14:30:00Z
+
+## Summary
+
+| Action | Count | Resource Types |
+|--------|-------|----------------|
+| ➕ Add | 12 | 1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_log_analytics_workspace<br/>1 azurerm_resource_group<br/>2 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_subnet<br/>2 azurerm_virtual_network |
+| 🔄 Change | 6 | 1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network |
+| ♻️ Replace | 2 | 1 azurerm_network_security_group<br/>1 azurerm_subnet |
+| ❌ Destroy | 3 | 1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network |
+| **Total** | **23** | |</code></pre>
+                    </div>
+                    <div class="template-usecases">
+                        <strong>Best For:</strong>
+                        <ul>
+                            <li>Large plans (&gt;50 resources)</li>
+                            <li>Initial PR review</li>
+                            <li>Management reporting</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-header">
+                        <h3 class="template-name">Default Template</h3>
+                        <span class="template-badge">default</span>
+                    </div>
+                    <p class="template-description">
+                        Full report with summary, resource changes, and attribute details. Shows exactly what will change.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Output (excerpt)</span>
+                        </div>
+                        <pre><code># Terraform Plan Report
+
+**Terraform Version:** 1.14.0
+
+## Summary
+
+| Action | Count | Resource Types |
+|--------|-------|----------------|
+| ➕ Add | 12 | ... |
+| 🔄 Change | 6 | ... |
+| **Total** | **23** | |
+
+## Resource Changes
+
+### 📦 Module: root
+
+<details style="margin-bottom:12px;">
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br>
+
+| Attribute | Value |
+|-----------|-------|
+| location | `🌍 eastus` |
+| name | `rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: demo` `owner: tfplan2md`
+
+</details>
+
+<details style="margin-bottom:12px;">
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>sttfplan2mddata</code> in <code>rg-tfplan2md-demo</code> <code>🌍 eastus</code> | 2🔧 account_replication_type, tags.cost_center</summary>
+<br>
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+| account_replication_type | `LRS` | `GRS` |
+| tags.cost_center | - | `1234` |
+
+</details></code></pre>
+                    </div>
+                    <div class="template-usecases">
+                        <strong>Best For:</strong>
+                        <ul>
+                            <li>Standard PR reviews</li>
+                            <li>Security audits</li>
+                            <li>Change verification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Examples -->
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Feature Examples</h2>
+            <p class="section-description">
+                See how tfplan2md transforms complex Terraform changes into readable reports.
+            </p>
+
+            <!-- Firewall Rules Example -->
+            <div class="example-section">
+                <div class="example-header">
+                    <h3 class="example-title">Firewall Rule Semantic Diffing</h3>
+                    <a href="features/index.html#firewall-rules" class="example-link">Learn more →</a>
+                </div>
+                <p class="example-description">
+                    Array index changes are replaced with a semantic diff showing which rules were added, modified, or removed.
+                </p>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Firewall Network Rule Collection Update</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details style="margin-bottom:12px;" open>
+                                <summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150</summary>
+                                <br>
+                                <p><strong>Summary:</strong> Rule collection <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150 | 3 rules changed</p>
+                                <h5>Network Rules</h5>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Protocols</th>
+                                            <th>Source Addresses</th>
+                                            <th>Destination Addresses</th>
+                                            <th>Destination Ports</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>➕</td>
+                                            <td><code>allow-dns</code></td>
+                                            <td>📨 TCP<br>🔗 UDP</td>
+                                            <td>🌐 10.1.0.0/24</td>
+                                            <td>🌐 168.63.129.16</td>
+                                            <td>🔌 53</td>
+                                        </tr>
+                                        <tr>
+                                            <td>🔄</td>
+                                            <td><code>allow-http</code></td>
+                                            <td>📨 TCP</td>
+                                            <td>🌐 10.1.0.0/24 → 🌐 10.0.0.0/8</td>
+                                            <td>🌐 0.0.0.0/0 → 🌐 *</td>
+                                            <td>🔌 80</td>
+                                        </tr>
+                                        <tr>
+                                            <td>❌</td>
+                                            <td><code>allow-ssh-old</code></td>
+                                            <td>📨 TCP</td>
+                                            <td>🌐 10.0.0.0/16</td>
+                                            <td>🌐 10.1.0.0/24</td>
+                                            <td>🔌 22</td>
+                                        </tr>
+                                        <tr>
+                                            <td>⏺️</td>
+                                            <td><code>allow-https</code></td>
+                                            <td>📨 TCP</td>
+                                            <td>🌐 10.1.0.0/24</td>
+                                            <td>🌐 0.0.0.0/0</td>
+                                            <td>🔌 443</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details style="margin-bottom:12px;"&gt;
+&lt;summary&gt;🔄 azurerm_firewall_network_rule_collection &lt;b&gt;&lt;code&gt;network_rules&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-network-rules&lt;/code&gt; for Firewall &lt;code&gt;demo-firewall&lt;/code&gt; | Priority: 100 → 150&lt;/summary&gt;
+&lt;br&gt;
+
+**Summary:** Rule collection `demo-network-rules` for Firewall `demo-firewall` | Priority: 100 → 150 | 3 rules changed
+
+##### Network Rules
+
+|   | Name | Protocols | Source Addresses | Destination Addresses | Destination Ports |
+|---|------|-----------|------------------|-----------------------|-------------------|
+| ➕ | `allow-dns` | 📨 TCP&lt;br/&gt;🔗 UDP | 🌐 10.1.0.0/24 | 🌐 168.63.129.16 | 🔌 53 |
+| 🔄 | `allow-http` | 📨 TCP | 🌐 10.1.0.0/24 → 🌐 10.0.0.0/8 | 🌐 0.0.0.0/0 → 🌐 * | 🔌 80 |
+| ❌ | `allow-ssh-old` | 📨 TCP | 🌐 10.0.0.0/16 | 🌐 10.1.0.0/24 | 🔌 22 |
+| ⏺️ | `allow-https` | 📨 TCP | 🌐 10.1.0.0/24 | 🌐 0.0.0.0/0 | 🔌 443 |
+
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module Grouping Example -->
+            <div class="example-section">
+                <div class="example-header">
+                    <h3 class="example-title">Module Grouping</h3>
+                    <a href="features/index.html#module-grouping" class="example-link">Learn more →</a>
+                </div>
+                <p class="example-description">
+                    Resources are automatically organized by Terraform module for better readability in multi-module configurations.
+                </p>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Multi-Module Report Structure</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <h2>Resource Changes</h2>
+                            <h3>📦 Module: root</h3>
+                            <p><em>&lt;!-- 3 resources in root module --&gt;</em></p>
+                            <hr>
+                            <h3>📦 Module: <code>module.network</code></h3>
+                            <p><em>&lt;!-- 4 resources in network module --&gt;</em></p>
+                            <hr>
+                            <h3>📦 Module: <code>module.security</code></h3>
+                            <p><em>&lt;!-- 2 resources in security module --&gt;</em></p>
+                            <hr>
+                            <h3>📦 Module: <code>module.monitoring</code></h3>
+                            <p><em>&lt;!-- 2 resources in monitoring module --&gt;</em></p>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>## Resource Changes
+
+### 📦 Module: root
+
+&lt;!-- 3 resources in root module --&gt;
+
+---
+
+### 📦 Module: `module.network`
+
+&lt;!-- 4 resources in network module --&gt;
+
+---
+
+### 📦 Module: `module.security`
+
+&lt;!-- 2 resources in security module --&gt;
+
+---
+
+### 📦 Module: `module.monitoring`
+
+&lt;!-- 2 resources in monitoring module --&gt;
+</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Assignment Example -->
+            <div class="example-section">
+                <div class="example-header">
+                    <h3 class="example-title">Azure Role Assignment Display</h3>
+                    <a href="features/index.html#role-assignments" class="example-link">Learn more →</a>
+                </div>
+                <p class="example-description">
+                    Role assignments show human-readable names with principal mapping instead of cryptic GUIDs.
+                </p>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Role Assignment Creation</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details style="margin-bottom:12px;" open>
+                                <summary>➕ azurerm_role_assignment <b><code>contributor</code></b> — 🛡️ Contributor on Resource Group <code>rg-tfplan2md-demo</code> for 👤 <code>jane.doe@contoso.com</code></summary>
+                                <br>
+                                <table>
+                                    <thead>
+                                        <tr><th>Attribute</th><th>Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>role</td><td>🛡️ Contributor</td></tr>
+                                        <tr><td>scope</td><td>Resource Group <code>rg-tfplan2md-demo</code></td></tr>
+                                        <tr><td>principal</td><td>👤 User: <code>jane.doe@contoso.com</code></td></tr>
+                                        <tr><td>principal_type</td><td><code>User</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details style="margin-bottom:12px;"&gt;
+&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;contributor&lt;/code&gt;&lt;/b&gt; — 🛡️ Contributor on Resource Group &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt; for 👤 &lt;code&gt;jane.doe@contoso.com&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+|-----------|-------|
+| role | 🛡️ Contributor |
+| scope | Resource Group `rg-tfplan2md-demo` |
+| principal | 👤 User: `jane.doe@contoso.com` |
+| principal_type | `User` |
+
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Principal Mapping File</span>
+                    </div>
+                    <pre><code>{
+  "users": {
+    "12345678-1234-1234-1234-123456789012": "jane.doe@contoso.com",
+    "87654321-4321-4321-4321-210987654321": "john.smith@contoso.com"
+  },
+  "groups": {
+    "abcdef12-3456-7890-abcd-ef1234567890": "Platform Team"
+  },
+  "servicePrincipals": {
+    "fedcba98-7654-3210-fedc-ba9876543210": "terraform-spn"
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Sensitive Values Example -->
+            <div class="example-section">
+                <div class="example-header">
+                    <h3 class="example-title">Sensitive Value Masking</h3>
+                    <a href="features/index.html#sensitive-masking" class="example-link">Learn more →</a>
+                </div>
+                <p class="example-description">
+                    Sensitive values are automatically masked by default to prevent accidental exposure in PRs.
+                </p>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Default (Masked)</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details open>
+                                <summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
+                                <br>
+                                <table>
+                                    <thead>
+                                        <tr><th>Attribute</th><th>Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>name</td><td><code>demo-api-key</code></td></tr>
+                                        <tr><td>value</td><td>🔒 (sensitive value)</td></tr>
+                                        <tr><td>key_vault_id</td><td>Key Vault <code>kv-demo</code> in resource group <code>rg-tfplan2md-demo</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details&gt;
+&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-api-key&lt;/code&gt; in Key Vault &lt;code&gt;kv-demo&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+|-----------|-------|
+| name | `demo-api-key` |
+| value | 🔒 (sensitive value) |
+| key_vault_id | Key Vault `kv-demo` in resource group `rg-tfplan2md-demo` |
+
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">With --show-sensitive</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <details open>
+                                <summary>➕ azurerm_key_vault_secret <b><code>api_key</code></b> — <code>demo-api-key</code> in Key Vault <code>kv-demo</code></summary>
+                                <br>
+                                <table>
+                                    <thead>
+                                        <tr><th>Attribute</th><th>Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>name</td><td><code>demo-api-key</code></td></tr>
+                                        <tr><td>value</td><td><code>super-secret-api-key-12345</code></td></tr>
+                                        <tr><td>key_vault_id</td><td>Key Vault <code>kv-demo</code> in resource group <code>rg-tfplan2md-demo</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>&lt;details&gt;
+&lt;summary&gt;➕ azurerm_key_vault_secret &lt;b&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-api-key&lt;/code&gt; in Key Vault &lt;code&gt;kv-demo&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+| Attribute | Value |
+|-----------|-------|
+| name | `demo-api-key` |
+| value | `super-secret-api-key-12345` |
+| key_vault_id | Key Vault `kv-demo` in resource group `rg-tfplan2md-demo` |
+
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-World Examples -->
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Real-World Examples</h2>
+            <p class="section-description">
+                Complete example projects showing tfplan2md in action.
+            </p>
+
+            <div class="realworld-grid">
+                <div class="realworld-card">
+                    <div class="realworld-icon">📋</div>
+                    <h3 class="realworld-title">Comprehensive Demo</h3>
+                    <p class="realworld-description">
+                        A handcrafted Terraform plan demonstrating all tfplan2md features: firewall rules, NSG rules, role assignments, module grouping, and more.
+                    </p>
+                    <div class="realworld-stats">
+                        <span class="stat">23 resources</span>
+                        <span class="stat">4 modules</span>
+                        <span class="stat">8 resource types</span>
+                    </div>
+                    <div class="realworld-features">
+                        <span class="feature-tag">Module grouping</span>
+                        <span class="feature-tag">Firewall rules</span>
+                        <span class="feature-tag">Role assignments</span>
+                        <span class="feature-tag">Sensitive values</span>
+                    </div>
+                    <div class="realworld-links">
+                        <a href="https://github.com/oocx/tfplan2md/tree/main/examples/comprehensive-demo" class="realworld-link">
+                            View on GitHub →
+                        </a>
+                        <a href="https://github.com/oocx/tfplan2md/blob/main/examples/comprehensive-demo/report.md" class="realworld-link">
+                            See Report →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="realworld-card">
+                    <div class="realworld-icon">🔧</div>
+                    <h3 class="realworld-title">Azure DevOps Example</h3>
+                    <p class="realworld-description">
+                        Real Terraform configuration creating Azure DevOps projects, repositories, variable groups, and pipelines. Generate your own plans and test tfplan2md.
+                    </p>
+                    <div class="realworld-stats">
+                        <span class="stat">4 resources</span>
+                        <span class="stat">azuredevops provider</span>
+                    </div>
+                    <div class="realworld-features">
+                        <span class="feature-tag">Project creation</span>
+                        <span class="feature-tag">Git repository</span>
+                        <span class="feature-tag">Variable groups</span>
+                        <span class="feature-tag">Pipelines</span>
+                    </div>
+                    <div class="realworld-links">
+                        <a href="https://github.com/oocx/tfplan2md/tree/main/examples/azuredevops" class="realworld-link">
+                            View on GitHub →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Try It Yourself -->
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="cta-box">
+                <h2 class="cta-title">Try It Yourself</h2>
+                <p class="cta-description">
+                    Run the comprehensive demo using Docker or build from source.
+                </p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Using Docker</span>
+                    </div>
+                    <pre><code># Default report with principal mapping
+docker run --rm oocx/tfplan2md \
+  /examples/comprehensive-demo/plan.json \
+  --principals /examples/comprehensive-demo/demo-principals.json
+
+# Summary report
+docker run --rm oocx/tfplan2md \
+  /examples/comprehensive-demo/plan.json \
+  --template summary
+
+# Show sensitive values
+docker run --rm oocx/tfplan2md \
+  /examples/comprehensive-demo/plan.json \
+  --principals /examples/comprehensive-demo/demo-principals.json \
+  --show-sensitive</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">From Source</span>
+                    </div>
+                    <pre><code>git clone https://github.com/oocx/tfplan2md.git
+cd tfplan2md
+
+# Default report
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+  examples/comprehensive-demo/plan.json \
+  --principals examples/comprehensive-demo/demo-principals.json
+
+# Summary report
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+  examples/comprehensive-demo/plan.json \
+  --template summary</code></pre>
+                </div>
+
+                <div class="cta-actions">
+                    <a href="getting-started.html" class="btn btn-primary">Get Started</a>
+                    <a href="https://github.com/oocx/tfplan2md/tree/main/examples" class="btn btn-secondary">Browse Examples on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="features/index.html" class="footer-link">Features</a>
+                    <a href="getting-started.html" class="footer-link">Get Started</a>
+                    <a href="docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="examples.html" class="footer-link">Examples</a>
+                    <a href="architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+
+        // Interactive Examples
+        document.querySelectorAll('.interactive-example').forEach(example => {
+            const toggles = example.querySelectorAll('.toggle-btn');
+            const panes = example.querySelectorAll('.view-pane');
+            const fullscreenBtn = example.querySelector('.fullscreen-btn');
+
+            toggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    
+                    // Update buttons
+                    toggles.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update panes
+                    panes.forEach(p => {
+                        p.classList.remove('active');
+                        if (p.classList.contains(view + '-view')) {
+                            p.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                example.classList.toggle('fullscreen');
+                fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
+                document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
+            });
+        });
+
+        // Simple Markdown Syntax Highlighter
+        function highlightMarkdown() {
+            document.querySelectorAll('.source-view code').forEach(block => {
+                let html = block.innerHTML;
+                
+                // Comments
+                html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
+                
+                // Headings
+                html = html.replace(/^(#+ .+$)/gm, '<span class="md-heading">$1</span>');
+                
+                // Bold
+                html = html.replace(/(\*\*.*?\*\*)/g, '<span class="md-bold">$1</span>');
+                
+                // Inline Code
+                html = html.replace(/(`[^`]+`)/g, '<span class="md-code">$1</span>');
+                
+                // Links
+                html = html.replace(/(\[.*?\]\(.*?\))/g, '<span class="md-link">$1</span>');
+                
+                // Lists
+                html = html.replace(/^(\s*[-*+] )/gm, '<span class="md-list">$1</span>');
+                
+                block.innerHTML = html;
+            });
+        }
+
+        highlightMarkdown();
+    </script>
+</body>
+</html>

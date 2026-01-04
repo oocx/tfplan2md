@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 4: Minimalist Single-Page - tfplan2md</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="site-header">
+            <div class="header-grid">
+                <div class="header-left">
+                    <h1 class="site-title">tfplan2md</h1>
+                    <p class="tagline">Terraform → Markdown</p>
+                </div>
+                <nav class="header-nav">
+                    <a href="https://github.com/oocx/tfplan2md" class="nav-link">GitHub</a>
+                    <a href="#install" class="nav-link">Install</a>
+                    <a href="#use" class="nav-link">Use</a>
+                    <a href="#features" class="nav-link">Features</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="content">
+            <section class="hero-section">
+                <div class="hero-text">
+                    <p class="hero-statement">
+                        Convert Terraform plan JSON into human-readable Markdown reports. 
+                        Designed for pull request comments in GitHub and Azure DevOps.
+                    </p>
+                </div>
+                
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-label">Format</span>
+                        <span class="stat-value">JSON → MD</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Distribution</span>
+                        <span class="stat-value">Docker</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">License</span>
+                        <span class="stat-value">MIT</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Built with</span>
+                        <span class="stat-value">AI (100%)</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="problem" class="content-section">
+                <h2 class="section-title">The Problem</h2>
+                <div class="two-column">
+                    <div class="column">
+                        <h3 class="column-title">Before</h3>
+                        <ul class="plain-list">
+                            <li>Wall of text output</li>
+                            <li>No logical grouping</li>
+                            <li>Cryptic JSON structure</li>
+                            <li>Index-based diffs</li>
+                            <li>Lost context</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3 class="column-title">After</h3>
+                        <ul class="plain-list">
+                            <li>Structured sections</li>
+                            <li>Module grouping</li>
+                            <li>Readable markdown</li>
+                            <li>Semantic diffs</li>
+                            <li>Clear summaries</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="install" class="content-section">
+                <h2 class="section-title">Install</h2>
+                <div class="code-box">
+                    <pre>$ docker pull oocx/tfplan2md:latest</pre>
+                </div>
+            </section>
+
+            <section id="use" class="content-section">
+                <h2 class="section-title">Use</h2>
+                <div class="code-box">
+                    <pre>$ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</pre>
+                </div>
+                <p class="code-note">
+                    Output goes to stdout. Redirect to file or pipe to PR comment tool.
+                </p>
+            </section>
+
+            <section id="cicd" class="content-section">
+                <h2 class="section-title">CI/CD</h2>
+                <div class="code-box">
+                    <div class="code-label">GitHub Actions</div>
+                    <pre>- name: Generate report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md > plan.md
+
+- name: Comment PR
+  uses: actions/github-script@v6
+  with:
+    script: |
+      const fs = require('fs');
+      const body = fs.readFileSync('plan.md', 'utf8');
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body
+      });</pre>
+                </div>
+            </section>
+
+            <section id="features" class="content-section">
+                <h2 class="section-title">Features</h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-marker">01</span>
+                        <div class="feature-content">
+                            <h3>Semantic Diffs</h3>
+                            <p>See which firewall rules or NSG rules changed—not index modifications</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">02</span>
+                        <div class="feature-content">
+                            <h3>Module Grouping</h3>
+                            <p>Changes organized by module for better context</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">03</span>
+                        <div class="feature-content">
+                            <h3>Azure Optimized</h3>
+                            <p>Readable Azure resource IDs and principal mapping</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">04</span>
+                        <div class="feature-content">
+                            <h3>Visual Icons</h3>
+                            <p>Intuitive icons for IPs, ports, protocols, and booleans</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">05</span>
+                        <div class="feature-content">
+                            <h3>Resource Summaries</h3>
+                            <p>One-line summaries for quick scanning</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">06</span>
+                        <div class="feature-content">
+                            <h3>Sensitive Masking</h3>
+                            <p>Secrets automatically masked for security</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">07</span>
+                        <div class="feature-content">
+                            <h3>Custom Templates</h3>
+                            <p>Scriban templates for custom report formats</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-marker">08</span>
+                        <div class="feature-content">
+                            <h3>Validated Output</h3>
+                            <p>Comprehensive testing ensures GitHub/Azure DevOps compatibility</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="specs" class="content-section">
+                <h2 class="section-title">Specifications</h2>
+                <div class="specs-grid">
+                    <div class="spec-row">
+                        <span class="spec-key">Runtime</span>
+                        <span class="spec-value">.NET 10</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-key">Language</span>
+                        <span class="spec-value">C# 13</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-key">Image</span>
+                        <span class="spec-value">Distroless</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-key">Template Engine</span>
+                        <span class="spec-value">Scriban</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-key">Test Coverage</span>
+                        <span class="spec-value">Property-based + Snapshots + Fuzz</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-key">Markdown Quality</span>
+                        <span class="spec-value">Validated with markdownlint</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <div class="cta-box">
+                    <h2 class="cta-title">Get Started</h2>
+                    <div class="cta-command">
+                        <code>docker pull oocx/tfplan2md:latest</code>
+                    </div>
+                    <div class="cta-links">
+                        <a href="https://github.com/oocx/tfplan2md" class="cta-link">View on GitHub →</a>
+                        <a href="https://hub.docker.com/r/oocx/tfplan2md" class="cta-link">Docker Hub →</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    tfplan2md © 2025 — MIT License — Built 100% with GitHub Copilot
+                </p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

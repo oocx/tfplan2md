@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md - Transform Terraform Plans Into Readable Reports</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="brand-link">
+                    <svg width="32" height="32" viewBox="0 0 32 32" class="brand-logo">
+                        <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
+                        <path d="M8 10h16M8 16h16M8 22h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#646cff"/>
+                                <stop offset="100%" style="stop-color:#747bff"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="brand-name">tfplan2md</span>
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="features/index.html" class="nav-item">Features</a>
+                <a href="getting-started.html" class="nav-item">Install</a>
+                <a href="docs.html" class="nav-item">Docs</a>
+                <a href="examples.html" class="nav-item">Examples</a>
+                <a href="providers/index.html" class="nav-item">Providers</a>
+                <a href="architecture.html" class="nav-item">Architecture</a>
+                <a href="contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero hero-primary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badges">
+                    <a href="getting-started.html" class="hero-badge">🐳 Docker Ready</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="hero-badge">📄 Free & Open Source</a>
+                    <a href="contributing.html#ai-workflow" class="hero-badge">✨ Built 100% with GitHub Copilot</a>
+                </div>
+                <h1 class="hero-title">
+                    Transform Terraform Plans Into <span class="hero-gradient">Readable Reports</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Stop drowning in verbose plan output. Generate structured Markdown reports that render perfectly in PR comments.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">The Pull Request Review Problem</h2>
+                <p class="section-description">
+                    Reviewing Terraform changes in PRs is painful with raw plan output
+                </p>
+            </div>
+            <div class="problem-solution-layout">
+                <div class="screenshot-side">
+                    <div class="screenshot-container">
+                        <div class="screenshot-header">Raw Terraform Plan</div>
+                        <div class="screenshot-content code-block">
+<pre><code># azurerm_network_security_rule.security_rule[2] will be created
++ resource "azurerm_network_security_rule" "rule" {
+  + access                     = "Allow"
+  + destination_address_prefix = "10.0.0.0/8"
+  + destination_port_range     = "22"
+  + direction                  = "Inbound"
+  + name                       = "ssh_from_corporate"
+  + priority                   = 100
+  + protocol                   = "Tcp"
+  + source_address_prefix      = "10.0.0.0/8"
+  + source_port_range          = "*"
+  + resource_group_name        = "rg-network"
+  + network_security_group_name = "nsg-prod"
+  }
+
+# azurerm_network_security_rule.security_rule[3] will be created
++ resource "azurerm_network_security_rule" "rule" {
+  + access                     = "Deny"
+  + destination_address_prefix = "*"
+  + destination_port_range     = "3389"
+...</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="list-side">
+                    <ul class="problem-list">
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Wall of Text</strong>
+                                <p>Raw plan output is overwhelming and difficult to scan</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Lost Context</strong>
+                                <p>Hard to understand what's actually changing and why</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Mental Mapping</strong>
+                                <p>Constantly mapping resource IDs to names in your head</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="x-icon">✗</span>
+                            <div>
+                                <strong>Cryptic Diffs</strong>
+                                <p>Index changes instead of semantic "what actually changed"</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section hero-secondary">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">tfplan2md Solves This</h2>
+            </div>
+            <div class="problem-solution-layout">
+                <div class="list-side">
+                    <ul class="solution-list">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Security Changes as Readable Tables</strong>
+                                <p>Firewall and NSG rules rendered with protocols, ports, and actions</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Friendly Names, Not GUIDs</strong>
+                                <p>Principal IDs, role names, and scopes resolved to readable text</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Inline Diffs for Large Values</strong>
+                                <p>Shows computed diffs for large values like JSON policies or scripts</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Optimized for PR Comments</strong>
+                                <p>Designed and tested for GitHub and Azure DevOps rendering</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="screenshot-side">
+                    <div class="screenshot-container interactive-example">
+                        <div class="screenshot-header">
+                            <span>tfplan2md Report</span>
+                            <div class="example-controls">
+                                <div class="view-toggle">
+                                    <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                    <button class="toggle-btn" data-view="source">Source</button>
+                                </div>
+                                <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                            </div>
+                        </div>
+                        <div class="example-content">
+                            <div class="view-pane rendered-view active">
+                                <h2>📊 Network Security Rules</h2>
+                                <h3>✅ Creating AllowSSH</h3>
+                                <p><strong>Action:</strong> 🆕 Allow<br>
+                                <strong>Priority:</strong> 100</p>
+                                <p><strong>Traffic Flow:</strong></p>
+                                <ul>
+                                    <li><strong>Source:</strong> 10.0.0.0/8</li>
+                                    <li><strong>Destination:</strong> 10.0.0.0/8</li>
+                                    <li><strong>Port:</strong> 22 (TCP)</li>
+                                </ul>
+                                <hr>
+                                <h3>✅ Creating DenyRDP</h3>
+                                <p><strong>Action:</strong> 🆕 Deny<br>
+                                <strong>Priority:</strong> 200</p>
+                                <p><strong>Traffic Flow:</strong></p>
+                                <ul>
+                                    <li><strong>Source:</strong> *</li>
+                                    <li><strong>Destination:</strong> *</li>
+                                    <li><strong>Port:</strong> 3389 (TCP)</li>
+                                </ul>
+                            </div>
+                            <div class="view-pane source-view">
+<pre><code>## 📊 Network Security Rules
+
+### ✅ Creating AllowSSH
+**Action:** 🆕 Allow  
+**Priority:** 100
+
+**Traffic Flow:**
+- **Source:** 10.0.0.0/8
+- **Destination:** 10.0.0.0/8  
+- **Port:** 22 (TCP)
+
+---
+
+### ✅ Creating DenyRDP
+**Action:** 🆕 Deny
+**Priority:** 200
+
+**Traffic Flow:**
+- **Source:** *
+- **Destination:** *
+- **Port:** 3389 (TCP)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" class="install-section">
+        <div class="section-container">
+            <div class="install-card">
+                <div class="install-content">
+                    <h2 class="install-title">Get Started in Seconds</h2>
+                    <p class="install-description">Run one command to convert your Terraform plan</p>
+                    
+                    <div class="install-row">
+                        <div class="install-actions">
+                            <a href="getting-started.html" class="btn btn-lg btn-white">Get Started</a>
+                            <a href="examples.html" class="btn btn-lg btn-outline-white">View Examples</a>
+                        </div>
+                        
+                        <div class="command-box">
+                            <code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code>
+                            <button class="copy-btn" aria-label="Copy command to clipboard">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div class="section-container">
+            <div class="section-header centered">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-description">Everything you need for better Terraform PR reviews</p>
+            </div>
+            <div class="features-carousel">
+                <button class="carousel-btn carousel-prev" aria-label="Previous features">‹</button>
+                <div class="features-carousel-track">
+                    <!-- Semantic Diffs -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🔍</div>
+                        </div>
+                        <h3 class="feature-title">Semantic Diffs</h3>
+                        <p class="feature-description">
+                            Side-by-side "Before" and "After" values with inline highlighting show exactly what changed.
+                        </p>
+                        <a href="features/index.html#semantic-diffs" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Firewall Rule Interpretation -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🔥</div>
+                        </div>
+                        <h3 class="feature-title">Firewall Rules</h3>
+                        <p class="feature-description">
+                            Azure Firewall rule collections rendered as readable tables with protocols, ports, and actions.
+                        </p>
+                        <a href="features/index.html#firewall-rules" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- NSG Rule Interpretation -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">🛡️</div>
+                        </div>
+                        <h3 class="feature-title">NSG Rules</h3>
+                        <p class="feature-description">
+                            Network Security Group rules as readable tables, making security changes easy to audit.
+                        </p>
+                        <a href="features/index.html#nsg-rules" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Role Assignment Mapping -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">👤</div>
+                        </div>
+                        <h3 class="feature-title">Role Assignments</h3>
+                        <p class="feature-description">
+                            Resolves cryptic Principal IDs, role names, and scopes to human-readable names.
+                        </p>
+                        <a href="features/index.html#role-assignments" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Large Value Formatting -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">📄</div>
+                        </div>
+                        <h3 class="feature-title">Large Values</h3>
+                        <p class="feature-description">
+                            Multi-line values like JSON policies show computed diffs with inline highlighting.
+                        </p>
+                        <a href="features/index.html#large-values" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Optimized for PR Comments -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">✅</div>
+                        </div>
+                        <h3 class="feature-title">PR Optimized</h3>
+                        <p class="feature-description">
+                            Designed and tested for rendering in markdown pull requests on Azure DevOps & GitHub.
+                        </p>
+                        <a href="features/index.html#pr-compatibility" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Friendly Resource Names -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <div class="feature-icon-lg">📛</div>
+                        </div>
+                        <h3 class="feature-title">Friendly Names</h3>
+                        <p class="feature-description">
+                            Displays friendly names for resources instead of complex resource ID strings.
+                        </p>
+                        <a href="features/index.html#friendly-names" class="feature-link-btn">Learn more →</a>
+                    </div>
+                </div>
+                <button class="carousel-btn carousel-next" aria-label="Next features">›</button>
+            </div>
+            <div class="carousel-dots"></div>
+        </div>
+    </section>
+
+    <section class="cicd-section">
+        <div class="section-container">
+            <div class="cicd-content">
+                <div class="cicd-text">
+                    <h2 class="cicd-title">Perfect for CI/CD</h2>
+                    <p class="cicd-description">
+                        Integrate tfplan2md into your GitHub Actions, Azure Pipelines, 
+                        or GitLab CI workflow. Automatically post plan reports as PR comments.
+                    </p>
+                    <a href="getting-started.html#cicd" class="btn btn-primary">View Integration Guides</a>
+                </div>
+                <div class="cicd-example">
+                    <div class="code-window">
+                        <div class="code-tabs">
+                            <button class="code-tab active">GitHub Actions</button>
+                            <button class="code-tab">Azure Pipelines</button>
+                        </div>
+                        <div class="code-content">
+<pre>- name: Generate markdown report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i oocx/tfplan2md > plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v6
+  with:
+    script: |
+      const fs = require('fs');
+      const body = fs.readFileSync('plan.md', 'utf8');
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body
+      });</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="features/index.html" class="footer-link">Features</a>
+                    <a href="getting-started.html" class="footer-link">Get Started</a>
+                    <a href="docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="examples.html" class="footer-link">Examples</a>
+                    <a href="architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            }
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+        
+        // Copy button functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const code = button.previousElementSibling.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = '✅';
+                    setTimeout(() => button.textContent = '📋', 2000);
+                });
+            });
+        });
+
+        // Carousel functionality
+        const track = document.querySelector('.features-carousel-track');
+        const slides = Array.from(track.children);
+        const nextButton = document.querySelector('.carousel-next');
+        const prevButton = document.querySelector('.carousel-prev');
+        const dotsContainer = document.querySelector('.carousel-dots');
+        
+        let currentIndex = 0;
+        let slidesPerView = 3;
+        let slideGroups = Math.ceil(slides.length / slidesPerView);
+        
+        function calculateSlidesPerView() {
+            if (window.innerWidth <= 768) {
+                slidesPerView = 1;
+            } else if (window.innerWidth <= 1024) {
+                slidesPerView = 2;
+            } else {
+                slidesPerView = 3;
+            }
+            slideGroups = Math.ceil(slides.length / slidesPerView);
+        }
+        
+        function createDots() {
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < slideGroups; i++) {
+                const dot = document.createElement('button');
+                dot.classList.add('carousel-dot');
+                dot.setAttribute('aria-label', `Go to slide group ${i + 1}`);
+                if (i === currentIndex) dot.classList.add('active');
+                dotsContainer.appendChild(dot);
+            }
+            
+            Array.from(dotsContainer.children).forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCarousel();
+                });
+            });
+        }
+        
+        function updateCarousel() {
+            const slideWidth = slides[0].offsetWidth + 24;
+            const offset = currentIndex * slideWidth * slidesPerView;
+            track.style.transform = `translateX(-${offset}px)`;
+            
+            Array.from(dotsContainer.children).forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+            
+            prevButton.disabled = currentIndex === 0;
+            nextButton.disabled = currentIndex === slideGroups - 1;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            if (currentIndex < slideGroups - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        });
+        
+        prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+        
+        // Initialize and handle resize
+        calculateSlidesPerView();
+        createDots();
+        updateCarousel();
+        
+        window.addEventListener('resize', () => {
+            const oldSlidesPerView = slidesPerView;
+            calculateSlidesPerView();
+            if (oldSlidesPerView !== slidesPerView) {
+                currentIndex = 0;
+                createDots();
+            }
+            updateCarousel();
+        });
+
+        // Interactive Examples
+        document.querySelectorAll('.interactive-example').forEach(example => {
+            const toggles = example.querySelectorAll('.toggle-btn');
+            const panes = example.querySelectorAll('.view-pane');
+            const fullscreenBtn = example.querySelector('.fullscreen-btn');
+
+            toggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.view;
+                    
+                    // Update buttons
+                    toggles.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update panes
+                    panes.forEach(p => {
+                        p.classList.remove('active');
+                        if (p.classList.contains(view + '-view')) {
+                            p.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                example.classList.toggle('fullscreen');
+                fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
+                document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
+            });
+        });
+
+        // Simple Markdown Syntax Highlighter
+        function highlightMarkdown() {
+            document.querySelectorAll('.source-view code').forEach(block => {
+                let html = block.innerHTML;
+                
+                // Comments
+                html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
+                
+                // Headings
+                html = html.replace(/^(#+ .+$)/gm, '<span class="md-heading">$1</span>');
+                
+                // Bold
+                html = html.replace(/(\*\*.*?\*\*)/g, '<span class="md-bold">$1</span>');
+                
+                // Inline Code
+                html = html.replace(/(`[^`]+`)/g, '<span class="md-code">$1</span>');
+                
+                // Links
+                html = html.replace(/(\[.*?\]\(.*?\))/g, '<span class="md-link">$1</span>');
+                
+                // Lists
+                html = html.replace(/^(\s*[-*+] )/gm, '<span class="md-list">$1</span>');
+                
+                block.innerHTML = html;
+            });
+        }
+
+        highlightMarkdown();
+    </script>
+</body>
+</html>

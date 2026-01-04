@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.18"></a>
+## [1.0.0-alpha.18](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.17...v1.0.0-alpha.18) (2026-01-04)
+
+### ✨ Features
+
+* complete website foundation with SVG icons, dark mode, and style isolation ([1710911](https://github.com/oocx/tfplan2md/commit/17109117a761dad5a7c4efec674f37333db4d7fe))
+
+### 📚 Documentation
+
+* populate website _memory files with initial content ([fae55c1](https://github.com/oocx/tfplan2md/commit/fae55c102713198a4965072272f2d576776315ff))
+
 <a name="1.0.0-alpha.17"></a>
 ## [1.0.0-alpha.17](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2026-01-03)
 

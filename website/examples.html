@@ -180,74 +180,82 @@
                     </div>
                     <div class="example-content">
                         <div class="view-pane rendered-view active">
-                            <details style="margin-bottom:12px;" open>
-                                <summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150</summary>
-                                <br>
-                                <p><strong>Summary:</strong> Rule collection <code>demo-network-rules</code> for Firewall <code>demo-firewall</code> | Priority: 100 → 150 | 3 rules changed</p>
-                                <h5>Network Rules</h5>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Name</th>
-                                            <th>Protocols</th>
-                                            <th>Source Addresses</th>
-                                            <th>Destination Addresses</th>
-                                            <th>Destination Ports</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>➕</td>
-                                            <td><code>allow-dns</code></td>
-                                            <td>📨 TCP<br>🔗 UDP</td>
-                                            <td>🌐 10.1.0.0/24</td>
-                                            <td>🌐 168.63.129.16</td>
-                                            <td>🔌 53</td>
-                                        </tr>
-                                        <tr>
-                                            <td>🔄</td>
-                                            <td><code>allow-http</code></td>
-                                            <td>📨 TCP</td>
-                                            <td>🌐 10.1.0.0/24 → 🌐 10.0.0.0/8</td>
-                                            <td>🌐 0.0.0.0/0 → 🌐 *</td>
-                                            <td>🔌 80</td>
-                                        </tr>
-                                        <tr>
-                                            <td>❌</td>
-                                            <td><code>allow-ssh-old</code></td>
-                                            <td>📨 TCP</td>
-                                            <td>🌐 10.0.0.0/16</td>
-                                            <td>🌐 10.1.0.0/24</td>
-                                            <td>🔌 22</td>
-                                        </tr>
-                                        <tr>
-                                            <td>⏺️</td>
-                                            <td><code>allow-https</code></td>
-                                            <td>📨 TCP</td>
-                                            <td>🌐 10.1.0.0/24</td>
-                                            <td>🌐 0.0.0.0/0</td>
-                                            <td>🔌 443</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </details>
+                            <details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔&nbsp;demo-network-rules</code> in <code>📁&nbsp;rg-firewall-demo</code> | 9🔧 priority, rule[0].destination_addresses[0], rule[0].destination_ports[0], +6 more</summary>
+<br/>
+<h3>🔄 azurerm_firewall_network_rule_collection.network_rules</h3>
+<p><strong>Collection:</strong> <code>demo-network-rules</code> | <strong>Priority:</strong> <code>150</code> | <strong>Action:</strong> <code>✅&nbsp;Allow</code></p>
+<h4>Rule Changes</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>allow-dns</code></td>
+<td><code>🔗&nbsp;TCP</code>, <code>📨&nbsp;UDP</code></td>
+<td><code>🌐&nbsp;10.1.0.0/24</code></td>
+<td><code>🌐&nbsp;168.63.129.16</code></td>
+<td><code>🔌&nbsp;53</code></td>
+<td></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>allow-http</code></td>
+<td>🔗&nbsp;TCP</td>
+<td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- 🌐&nbsp;10.<span style="background-color: #ffc0c0; color: #24292e; display:inline-block">1</span>.0.0/<span style="background-color: #ffc0c0; color: #24292e; display:inline-block">24</span></span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ 🌐&nbsp;10.<span style="background-color: #acf2bd; color: #24292e; display:inline-block">0</span>.0.0/<span style="background-color: #acf2bd; color: #24292e; display:inline-block">8</span></span></code></td>
+<td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- <span style="background-color: #ffc0c0; color: #24292e; display:inline-block">🌐&nbsp;0.0.0.0/0</span></span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ <span style="background-color: #acf2bd; color: #24292e; display:inline-block">✳️</span></span></code></td>
+<td>🔌&nbsp;80</td>
+<td></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>allow-ssh-old</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.0.0.0/16</code></td>
+<td><code>🌐&nbsp;10.1.0.0/24</code></td>
+<td><code>🔌&nbsp;22</code></td>
+<td></td>
+</tr>
+<tr>
+<td>⏺️</td>
+<td><code>allow-https</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.0.0/24</code></td>
+<td><code>🌐&nbsp;0.0.0.0/0</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</details>
                         </div>
                         <div class="view-pane source-view">
-                            <pre><code>&lt;details style="margin-bottom:12px;"&gt;
-&lt;summary&gt;🔄 azurerm_firewall_network_rule_collection &lt;b&gt;&lt;code&gt;network_rules&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;demo-network-rules&lt;/code&gt; for Firewall &lt;code&gt;demo-firewall&lt;/code&gt; | Priority: 100 → 150&lt;/summary&gt;
+                            <pre><code>&lt;details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
+&lt;summary&gt;🔄 azurerm_firewall_network_rule_collection &lt;b&gt;&lt;code&gt;network_rules&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 demo-network-rules&lt;/code&gt; in &lt;code&gt;📁 rg-firewall-demo&lt;/code&gt; | 9🔧 priority, rule[0].destination_addresses[0], rule[0].destination_ports[0], +6 more&lt;/summary&gt;
 &lt;br&gt;
 
-**Summary:** Rule collection `demo-network-rules` for Firewall `demo-firewall` | Priority: 100 → 150 | 3 rules changed
+### 🔄 azurerm_firewall_network_rule_collection.network_rules
 
-##### Network Rules
+**Collection:** `demo-network-rules` | **Priority:** `150` | **Action:** `✅ Allow`
 
-|   | Name | Protocols | Source Addresses | Destination Addresses | Destination Ports |
-|---|------|-----------|------------------|-----------------------|-------------------|
-| ➕ | `allow-dns` | 📨 TCP&lt;br/&gt;🔗 UDP | 🌐 10.1.0.0/24 | 🌐 168.63.129.16 | 🔌 53 |
-| 🔄 | `allow-http` | 📨 TCP | 🌐 10.1.0.0/24 → 🌐 10.0.0.0/8 | 🌐 0.0.0.0/0 → 🌐 * | 🔌 80 |
-| ❌ | `allow-ssh-old` | 📨 TCP | 🌐 10.0.0.0/16 | 🌐 10.1.0.0/24 | 🔌 22 |
-| ⏺️ | `allow-https` | 📨 TCP | 🌐 10.1.0.0/24 | 🌐 0.0.0.0/0 | 🔌 443 |
+#### Rule Changes
+
+| Change | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
+| -------- | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |
+| ➕ | `allow-dns` | `🔗 TCP`, `📨 UDP` | `🌐 10.1.0.0/24` | `🌐 168.63.129.16` | `🔌 53` | `` |
+| 🔄 | `allow-http` | 🔗 TCP | &lt;code style="display:block; white-space:normal; padding:0; margin:0;"&gt;&lt;span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;- 🌐 10.&lt;span style="background-color: #ffc0c0; color: #24292e;"&gt;1&lt;/span&gt;.0.0/&lt;span style="background-color: #ffc0c0; color: #24292e;"&gt;24&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;+ 🌐 10.&lt;span style="background-color: #acf2bd; color: #24292e;"&gt;0&lt;/span&gt;.0.0/&lt;span style="background-color: #acf2bd; color: #24292e;"&gt;8&lt;/span&gt;&lt;/span&gt;&lt;/code&gt; | &lt;code style="display:block; white-space:normal; padding:0; margin:0;"&gt;&lt;span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;- &lt;span style="background-color: #ffc0c0; color: #24292e;"&gt;🌐 0.0.0.0/0&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;+ &lt;span style="background-color: #acf2bd; color: #24292e;"&gt;✳️&lt;/span&gt;&lt;/span&gt;&lt;/code&gt; | 🔌 80 |  |
+| ❌ | `allow-ssh-old` | `🔗 TCP` | `🌐 10.0.0.0/16` | `🌐 10.1.0.0/24` | `🔌 22` | `` |
+| ⏺️ | `allow-https` | `🔗 TCP` | `🌐 10.1.0.0/24` | `🌐 0.0.0.0/0` | `🔌 443` | `` |
 
 &lt;/details&gt;</code></pre>
                         </div>

@@ -25,23 +25,38 @@ The `/examples.html` page shows:
 The rendered HTML examples use the HtmlRenderer tool to convert markdown artifacts:
 
 ```bash
-# Generate Azure DevOps flavor HTML
+# Generate Azure DevOps flavor HTML from comprehensive-demo
 dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
   --output artifacts/comprehensive-demo.azdo.html
 
-# Generate GitHub flavor HTML  
+# Generate GitHub flavor HTML from comprehensive-demo
 dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github \
   --output artifacts/comprehensive-demo.github.html
+
+# Generate firewall rules demo HTML
+dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+  --input examples/firewall-rules-demo/firewall-rules.md \
+  --flavor azdo \
+  --output examples/firewall-rules-demo/firewall-rules.azdo.html
 ```
 
 **Source artifacts:**
 - `artifacts/comprehensive-demo.md` - Full comprehensive demo markdown
 - `artifacts/comprehensive-demo.azdo.html` - Azure DevOps rendered HTML
 - `artifacts/comprehensive-demo.github.html` - GitHub rendered HTML
+- `examples/firewall-rules-demo/firewall-rules.md` - Firewall rules demo markdown (generated from plan.json)
+- `examples/firewall-rules-demo/firewall-rules.azdo.html` - Firewall rules demo HTML
+
+**How firewall-rules demo was created:**
+1. Created minimal Terraform configuration in `examples/firewall-rules-demo/main.tf`
+2. Hand-crafted realistic `plan.json` showing firewall rule changes (priority change, rule add/modify/remove)
+3. Generated markdown: `dotnet run --project src/Oocx.TfPlan2Md -- examples/firewall-rules-demo/plan.json --output examples/firewall-rules-demo/firewall-rules.md`
+4. Generated HTML using HtmlRenderer (command above)
+5. Extracted firewall rule `<details>` section for use in website examples
 
 The `/features/index.html` page shows feature descriptions but no code snippets. Code examples will be needed for:
 - Getting Started page (installation, first usage)

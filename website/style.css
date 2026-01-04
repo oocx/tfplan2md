@@ -2878,9 +2878,9 @@ body {
 /* Rendered View (Azure DevOps Style) */
 .rendered-view {
     background: white;
-    color: #24292f;
+    color: rgba(0, 0, 0, 0.9);
     padding: 24px;
-    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Ubuntu, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.6;
     overflow-x: auto;
@@ -2895,14 +2895,21 @@ body {
 
 .rendered-view h1, .rendered-view h2, .rendered-view h3 {
     margin-top: 24px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     font-weight: 600;
     line-height: 1.25;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme="dark"] .rendered-view h1,
+[data-theme="dark"] .rendered-view h2,
+[data-theme="dark"] .rendered-view h3 {
+    color: #c9d1d9;
 }
 
 .rendered-view h1 { font-size: 2em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
 .rendered-view h2 { font-size: 1.5em; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
-.rendered-view h3 { font-size: 1.25em; }
+.rendered-view h3 { font-size: 0.9375rem; }
 
 .rendered-view table {
     border-collapse: collapse;
@@ -2921,26 +2928,42 @@ body {
 }
 
 .rendered-view code {
-    padding: 0.2em 0.4em;
+    padding: 2px 4px;
     margin: 0;
-    font-size: 85%;
-    background-color: rgba(175, 184, 193, 0.2);
-    border-radius: 3px;
-    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    font-size: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.06);
+    color: rgba(0, 0, 0, 0.9);
+    border-radius: 2px;
+    font-family: Menlo, Consolas, "Courier New", monospace;
+}
+
+[data-theme="dark"] .rendered-view code {
+    background-color: rgba(110, 118, 129, 0.4);
+    color: #a5d6ff;
 }
 
 .rendered-view details {
     margin-bottom: 12px;
-    border: 1px solid var(--color-border);
+    border: 1px solid #f0f0f0;
     border-radius: 0;
     padding: 12px;
 }
 
+[data-theme="dark"] .rendered-view details {
+    border-color: #30363d;
+}
+
 .rendered-view summary {
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.9);
     margin: -12px;
     padding: 12px;
+}
+
+[data-theme="dark"] .rendered-view summary {
+    color: #c9d1d9;
 }
 
 /* Markdown Syntax Highlighting */

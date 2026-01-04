@@ -541,6 +541,19 @@ body {
     .problem-grid {
         grid-template-columns: 1fr;
     }
+    
+    .section-container {
+        padding: 40px 16px;
+    }
+    
+    .format-card {
+        padding: 16px;
+    }
+    
+    .code-block pre {
+        padding: 16px;
+        font-size: 13px;
+    }
 }
 
 .problem-card {
@@ -1118,6 +1131,7 @@ body {
     padding: 20px;
     margin: 0;
     overflow-x: auto;
+    max-width: 100%;
 }
 
 .code-block code {
@@ -2457,6 +2471,10 @@ body {
     
     .format-comparison {
         grid-template-columns: 1fr;
+    }
+    
+    .format-card {
+        padding: 20px;
     }
     
     .quicklinks-grid {

@@ -366,6 +366,10 @@ body {
     text-align: center;
 }
 
+.section-header.centered .section-description {
+    margin: 0 auto;
+}
+
 .section-title {
     font-size: 40px;
     font-weight: 700;
@@ -377,8 +381,7 @@ body {
 .section-description {
     font-size: 18px;
     color: var(--color-text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 800px;
 }
 
 .section-subtitle {

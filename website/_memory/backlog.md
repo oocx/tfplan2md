@@ -84,19 +84,19 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/docs.html` |
 | Effort | Medium |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create the documentation page with CLI reference and template customization guide. This is a reference page for users who need detailed usage information.
 
 **Definition of Done:**
-- [ ] Page created at `/docs.html`
-- [ ] CLI reference section with all options documented
-- [ ] Template customization guide section
-- [ ] Troubleshooting section (if applicable)
-- [ ] Navigation working correctly
-- [ ] Responsive design
-- [ ] Content derived from docs/spec.md and docs/features.md
+- [x] Page created at `/docs.html`
+- [x] CLI reference section with all options documented
+- [x] Template customization guide section
+- [x] Troubleshooting section (if applicable)
+- [x] Navigation working correctly
+- [x] Responsive design
+- [x] Content derived from docs/spec.md and docs/features.md
 
 ---
 

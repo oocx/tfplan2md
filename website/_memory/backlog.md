@@ -310,26 +310,30 @@ This file is the source of truth for all open website tasks.
 
 ---
 
-### #14 — Implement example viewer
+### #14 — Implement example viewer + Style Isolation (CSS Layers)
 
 | Field | Value |
 |-------|-------|
 | Page(s) | `/examples.html` |
 | Effort | High |
 | Value | High |
-| Status | ⬜ Not started |
+| Status | 🔄 In Progress |
 | Depends On | #5, #13 |
 
-**Description:** Implement an interactive example viewer component that shows examples in both rendered and source code views. Users can toggle between views. Source view has markdown syntax highlighting. Rendered view approximates Azure DevOps Services PR style. Both views have a full screen button.
+**Description:** Implement an interactive example viewer component that shows examples in both rendered and source code views. Users can toggle between views. Source view has markdown syntax highlighting. Rendered view approximates Azure DevOps Services PR style. Both views have a full screen button. **Critical:** Implement CSS Layers for style isolation to prevent website styles from interfering with rendered examples (see ADR-004).
 
 **Definition of Done:**
-- [ ] Toggle to switch between "Rendered" and "Source" views
-- [ ] Rendered view styled to approximate Azure DevOps PR rendering
-- [ ] Source view shows raw markdown with syntax highlighting
-- [ ] Full screen button for rendered view
-- [ ] Full screen button for source view
-- [ ] Works on mobile, tablet, desktop
-- [ ] Keyboard accessible (toggle, full screen buttons)
+- [x] Toggle to switch between "Rendered" and "Source" views
+- [x] Rendered view styled to approximate Azure DevOps PR rendering
+- [x] Source view shows raw markdown with syntax highlighting
+- [x] Full screen button for rendered view
+- [x] Full screen button for source view
+- [x] Works on mobile, tablet, desktop
+- [x] Keyboard accessible (toggle, full screen buttons)
+- [ ] CSS Layers implemented for style isolation (see ADR-004)
+- [ ] Website styles wrapped in `@layer website { ... }`
+- [ ] Example styles in separate `@layer examples { ... }`
+- [ ] No interference between website and example styles verified
 
 ---
 

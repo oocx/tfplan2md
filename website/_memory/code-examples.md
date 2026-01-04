@@ -10,7 +10,38 @@ This document lists the code examples shown on the website and how to (re)genera
 
 ## Current State
 
-**Status:** No code examples are currently displayed on the website.
+**Status:** Examples page displays real tfplan2md output from comprehensive demo artifacts.
+
+The `/examples.html` page shows:
+- **Template Comparison**: Summary vs Default template examples (hand-crafted markdown snippets)
+- **Feature Examples**: Interactive examples with rendered HTML (generated from artifacts)
+  - Firewall Rule Semantic Diffing
+  - Module Grouping
+  - Azure Role Assignment Display
+  - Sensitive Value Masking
+
+### Generated HTML Examples
+
+The rendered HTML examples use the HtmlRenderer tool to convert markdown artifacts:
+
+```bash
+# Generate Azure DevOps flavor HTML
+dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+  --input artifacts/comprehensive-demo.md \
+  --flavor azdo \
+  --output artifacts/comprehensive-demo.azdo.html
+
+# Generate GitHub flavor HTML  
+dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+  --input artifacts/comprehensive-demo.md \
+  --flavor github \
+  --output artifacts/comprehensive-demo.github.html
+```
+
+**Source artifacts:**
+- `artifacts/comprehensive-demo.md` - Full comprehensive demo markdown
+- `artifacts/comprehensive-demo.azdo.html` - Azure DevOps rendered HTML
+- `artifacts/comprehensive-demo.github.html` - GitHub rendered HTML
 
 The `/features/index.html` page shows feature descriptions but no code snippets. Code examples will be needed for:
 - Getting Started page (installation, first usage)

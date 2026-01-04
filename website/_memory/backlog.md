@@ -296,16 +296,17 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/examples.html` |
 | Effort | Medium |
 | Value | High |
-| Status | 🔄 In progress |
+| Status | ✅ Done |
 | Depends On | #5, #11 |
 
 **Description:** Ensure examples page uses real tfplan2md reports from the comprehensive-demo, not mockups. Examples should show actual output the tool produces.
 
 **Definition of Done:**
-- [ ] All examples on page are real tfplan2md output (not mockups)
-- [ ] Examples sourced from `examples/comprehensive-demo/` or `artifacts/`
-- [ ] Examples cover different feature demonstrations
-- [ ] Source markdown files available for example viewer (#14)
+- [x] All examples on page are real tfplan2md output (not mockups)
+- [x] Examples sourced from `examples/comprehensive-demo/` or `artifacts/`
+- [x] Examples cover different feature demonstrations
+- [x] Source markdown files available for example viewer (#14)
+- [x] Generation commands documented in `website/_memory/code-examples.md`
 
 ---
 

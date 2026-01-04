@@ -1117,6 +1117,7 @@ body {
     overflow: hidden;
     margin-bottom: 16px;
     max-width: 100%;
+    min-width: 0;
 }
 
 .code-block .code-header {
@@ -1132,6 +1133,7 @@ body {
     margin: 0;
     overflow-x: auto;
     max-width: 100%;
+    border-radius: 0 0 12px 12px;
 }
 
 .code-block code {
@@ -2023,6 +2025,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-width: 0;
 }
 
 .format-title {

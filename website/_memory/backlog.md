@@ -35,20 +35,20 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/index.html` |
 | Effort | High |
 | Value | High |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | #10 |
 
 **Description:** Create the main homepage for tfplan2md. The page should include: badges at top ("Built 100% with GitHub Copilot", "Docker Ready", "Free & Open Source"), hero section with problem statement (raw terraform plan output in build log vs. PR comment with rendered tfplan2md output), feature showcase with screenshots, and clear "Get Started" CTA. Initially use placeholder images; actual screenshots will be generated after page content is defined.
 
 **Definition of Done:**
-- [ ] Page created at `/index.html`
-- [ ] Hero section with before/after visual comparison
-- [ ] Feature showcase section with screenshots
-- [ ] "Get Started" CTA linking to `/getting-started.html`
-- [ ] Badges linking to relevant pages (Copilot badge → contributing, Docker → Docker Hub)
-- [ ] Navigation working correctly
-- [ ] Responsive on mobile, tablet, desktop
-- [ ] Content derived from README.md (no marketing fluff)
+- [x] Page created at `/index.html`
+- [x] Hero section with before/after visual comparison
+- [x] Feature showcase section with screenshots
+- [x] "Get Started" CTA linking to `/getting-started.html`
+- [x] Badges linking to relevant pages (Copilot badge → contributing, Docker → Docker Hub)
+- [x] Navigation working correctly
+- [x] Responsive on mobile, tablet, desktop
+- [x] Content derived from README.md (no marketing fluff)
 
 ---
 

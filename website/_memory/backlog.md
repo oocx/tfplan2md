@@ -296,7 +296,7 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/examples.html` |
 | Effort | Medium |
 | Value | High |
-| Status | ⬜ Not started |
+| Status | 🔄 In progress |
 | Depends On | #5, #11 |
 
 **Description:** Ensure examples page uses real tfplan2md reports from the comprehensive-demo, not mockups. Examples should show actual output the tool produces.

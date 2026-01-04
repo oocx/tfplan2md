@@ -11,6 +11,102 @@ This file is the source of truth for all open website tasks.
 
 ## Open tasks
 
+### #25 — Create tool to approximate "terraform show" output from JSON plans
+
+| Field | Value |
+|-------|-------|
+| Page(s) | N/A (tooling) |
+| Effort | High |
+| Value | High |
+| Status | 🔲 Not Started |
+| Depends On | — |
+
+**Description:** Create a tool that produces a close approximation of "terraform show" output based on our JSON plan files. This is needed because feature pages require "without tfplan2md" sections showing raw Terraform output, but we only have JSON format plans (not binary plans that `terraform show` requires).
+
+**Requirements:**
+- Analyze how `terraform show` displays plans
+- Create tool that reads JSON plan format and produces similar text output
+- Output should match Terraform's formatting conventions (indentation, symbols, colors if applicable)
+- Support for all resource types used in comprehensive-demo
+
+**Definition of Done:**
+- [ ] Tool created that converts JSON plans to Terraform show-style output
+- [ ] Output format closely matches real `terraform show` output
+- [ ] Tool documented in code-examples.md with usage instructions
+- [ ] Tool tested with comprehensive-demo plan
+
+---
+
+### #24 — Add "without tfplan2md" sections to all feature detail pages
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/features/*.html` |
+| Effort | High |
+| Value | High |
+| Status | 🔲 Blocked |
+| Depends On | #25 |
+
+**Description:** All feature detail pages must have a "without tfplan2md" section showing the output of "terraform show" for the same Terraform plan. This provides clear before/after comparison and demonstrates the value of tfplan2md.
+
+**Pages to update:**
+1. features/firewall-rules.html
+2. features/nsg-rules.html
+3. features/module-grouping.html
+4. features/sensitive-masking.html
+5. features/azure-optimizations.html
+6. features/large-values.html
+
+**Approach:**
+1. Wait for #25 (tool to generate terraform show output from JSON)
+2. Generate "terraform show" output for relevant sections from comprehensive-demo
+3. Add comparison sections to each feature page showing raw Terraform output vs tfplan2md output
+4. Use two-column layout or before/after format for clarity
+
+**Definition of Done:**
+- [ ] All 6 feature pages have "without tfplan2md" sections
+- [ ] Raw Terraform output generated using tool from #25
+- [ ] Visual comparison clearly demonstrates value of tfplan2md
+- [ ] Examples use same source data (comprehensive-demo) for authenticity
+
+---
+
+### #23 — Replace homepage example with screenshot
+
+| Field | Value |
+|-------|-------|
+| Page(s) | `/index.html` |
+| Effort | Medium |
+| Value | Medium |
+| Status | 🔲 Not Started |
+| Depends On | — |
+
+**Description:** Replace the interactive example on the homepage with a static screenshot showing an NSG example from comprehensive-demo. The current interactive viewer is too complex for the two-column hero layout and unnecessary detail for homepage.
+
+**Requirements:**
+- Screenshot cropped to approximately 580×400px
+- Shows NSG example from comprehensive-demo rendered in Azure DevOps style
+- Clicking the screenshot opens a modal/lightbox showing full 1920×1080 comprehensive-demo screenshot
+- Screenshot must be optimized for web (compressed, appropriate format)
+
+**Approach:**
+1. Generate full 1920×1080 screenshot of comprehensive-demo rendered output
+2. Crop a compelling NSG section to 580×400px for homepage display
+3. Implement click-to-enlarge functionality (lightbox/modal)
+4. Replace interactive-example component with image + modal
+5. Update screenshots.md with generation commands
+
+**Definition of Done:**
+- [ ] 580×400px cropped screenshot created and optimized
+- [ ] 1920×1080px full screenshot created
+- [ ] Homepage uses cropped screenshot instead of interactive example
+- [ ] Click opens full-size screenshot in modal/lightbox
+- [ ] Modal has close button and ESC key support
+- [ ] Screenshots documented in screenshots.md with generation commands
+- [ ] Both images stored in website/assets/ directory
+
+---
+
 ### #22 — Replace hand-crafted examples with real output on all pages
 
 | Field | Value |

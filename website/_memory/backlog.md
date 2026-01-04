@@ -59,21 +59,21 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/getting-started.html` |
 | Effort | Medium |
 | Value | High |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create the installation and first usage guide. Content should include Docker installation, first usage example, and CI/CD integration snippets for GitHub Actions and Azure Pipelines. Code snippets must be copy/paste ready.
 
 **Definition of Done:**
-- [ ] Page created at `/getting-started.html`
-- [ ] Docker installation instructions with copy/paste command
-- [ ] First usage example with sample command
-- [ ] GitHub Actions integration snippet
-- [ ] Azure Pipelines integration snippet
-- [ ] All code snippets are copy/paste ready
-- [ ] Navigation working correctly
-- [ ] Responsive design
-- [ ] Content derived from README.md Quick Start section
+- [x] Page created at `/getting-started.html`
+- [x] Docker installation instructions with copy/paste command
+- [x] First usage example with sample command
+- [x] GitHub Actions integration snippet
+- [x] Azure Pipelines integration snippet
+- [x] All code snippets are copy/paste ready
+- [x] Navigation working correctly
+- [x] Responsive design
+- [x] Content derived from README.md Quick Start section
 
 ---
 

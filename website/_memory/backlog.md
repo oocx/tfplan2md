@@ -107,17 +107,17 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/examples.html` |
 | Effort | Medium |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create the examples page structure with placeholder examples. This page will host interactive examples showing tfplan2md output. Initially use mockup content to define what examples are needed; real examples will replace placeholders later (#13). The example viewer functionality is a separate task (#14).
 
 **Definition of Done:**
-- [ ] Page created at `/examples.html`
-- [ ] Page structure ready to host example viewer component
-- [ ] Navigation working correctly
-- [ ] Responsive design
-- [ ] Links to example sources in repo (examples/comprehensive-demo/)
+- [x] Page created at `/examples.html`
+- [x] Page structure ready to host example viewer component
+- [x] Navigation working correctly
+- [x] Responsive design
+- [x] Links to example sources in repo (examples/comprehensive-demo/)
 
 ---
 
@@ -128,18 +128,18 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/providers/index.html` |
 | Effort | Medium |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create the providers index page listing provider-specific template documentation. Should cover azurerm, azuredevops, azuread, and msgraph providers with links to detailed pages (if created) or inline documentation.
 
 **Definition of Done:**
-- [ ] Page created at `/providers/index.html`
-- [ ] Lists all supported providers: azurerm, azuredevops, azuread, msgraph
-- [ ] Brief description of provider-specific features for each
-- [ ] Navigation working correctly
-- [ ] Responsive design
-- [ ] Content derived from docs/features.md provider sections
+- [x] Page created at `/providers/index.html`
+- [x] Lists all supported providers: azurerm, azuredevops, azuread, msgraph
+- [x] Brief description of provider-specific features for each
+- [x] Navigation working correctly
+- [x] Responsive design
+- [x] Content derived from docs/features.md provider sections
 
 ---
 
@@ -150,18 +150,18 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/architecture.html` |
 | Effort | Medium |
 | Value | Low |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create the architecture page with high-level system overview based on arc42 documentation. Target audience is contributors who want to understand the codebase.
 
 **Definition of Done:**
-- [ ] Page created at `/architecture.html`
-- [ ] High-level system overview diagram or description
-- [ ] Key architectural decisions explained
-- [ ] Navigation working correctly
-- [ ] Responsive design
-- [ ] Content derived from docs/architecture.md
+- [x] Page created at `/architecture.html`
+- [x] High-level system overview diagram or description
+- [x] Key architectural decisions explained
+- [x] Navigation working correctly
+- [x] Responsive design
+- [x] Content derived from docs/architecture.md
 
 ---
 
@@ -172,20 +172,20 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/contributing.html` |
 | Effort | Low |
 | Value | Low |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Create the contributing page explaining how to contribute, development setup, and the AI workflow. The "Built 100% with GitHub Copilot" badge on homepage should link here.
 
 **Definition of Done:**
-- [ ] Page created at `/contributing.html`
-- [ ] How to contribute section
-- [ ] Development setup instructions
-- [ ] AI workflow explanation (multi-agent approach from agents.md)
-- [ ] Link to GitHub repository
-- [ ] Navigation working correctly
-- [ ] Responsive design
-- [ ] Content derived from CONTRIBUTING.md and docs/agents.md
+- [x] Page created at `/contributing.html`
+- [x] How to contribute section
+- [x] Development setup instructions
+- [x] AI workflow explanation (multi-agent approach from agents.md)
+- [x] Link to GitHub repository
+- [x] Navigation working correctly
+- [x] Responsive design
+- [x] Content derived from CONTRIBUTING.md and docs/agents.md
 
 ---
 

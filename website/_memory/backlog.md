@@ -363,15 +363,15 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/features/index.html` |
 | Effort | Low |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | — |
 
 **Description:** Move CI/CD Integration feature from "What Sets Us Apart" (High priority section) to "Built-In Capabilities" (Medium priority section). Per feature-definitions.md, CI/CD Integration is Medium value.
 
 **Definition of Done:**
-- [ ] CI/CD Integration card removed from "What Sets Us Apart" section
-- [ ] CI/CD Integration card added to "Built-In Capabilities" section
-- [ ] Card content and icon preserved
+- [x] CI/CD Integration card removed from "What Sets Us Apart" section
+- [x] CI/CD Integration card added to "Built-In Capabilities" section
+- [x] Card content and icon preserved
 
 ---
 

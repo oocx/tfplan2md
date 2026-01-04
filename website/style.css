@@ -1381,8 +1381,45 @@ body {
 }
 
 .feature-icon {
-    font-size: 48px;
+    width: 64px;
+    height: 64px;
     margin-bottom: 20px;
+    display: block;
+}
+
+.feature-icon-sm {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.feature-category-card.compact {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+}
+
+.feature-compact-content {
+    flex: 1;
+}
+
+.feature-category-title-sm {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--color-text);
+}
+
+.feature-category-description-sm {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.features-grid-compact {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 .feature-category-title {

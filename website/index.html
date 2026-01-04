@@ -177,118 +177,23 @@
                 </div>
                 
                 <div class="screenshot-side">
-                    <div class="screenshot-container interactive-example">
-                        <div class="screenshot-header">
-                            <span>tfplan2md Report</span>
-                            <div class="example-controls">
-                                <div class="view-toggle">
-                                    <button class="toggle-btn active" data-view="rendered">Rendered</button>
-                                    <button class="toggle-btn" data-view="source">Source</button>
-                                </div>
-                                <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
-                            </div>
-                        </div>
-                        <div class="example-content">
-                            <div class="view-pane rendered-view active">
-<details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
-<summary>♻️ azurerm_network_security_group <b><code>app</code></b> — <code>🆔&nbsp;nsg-app</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
-<br/>
-<h3 id="user-content-%E2%99%BB%EF%B8%8F-module.network.azurerm_network_security_group.app">♻️ module.network.azurerm_network_security_group.app</h3>
-<p><strong>Network Security Group:</strong> <code>nsg-app</code></p>
-<h4 id="user-content-security-rules">Security Rules</h4>
-<table>
-<thead>
-<tr>
-<th>Change</th>
-<th>Name</th>
-<th>Priority</th>
-<th>Direction</th>
-<th>Access</th>
-<th>Protocol</th>
-<th>Source Addresses</th>
-<th>Source Ports</th>
-<th>Destination Addresses</th>
-<th>Destination Ports</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>➕</td>
-<td><code>🆔&nbsp;allow-https</code></td>
-<td><code>100</code></td>
-<td><code>⬇️&nbsp;Inbound</code></td>
-<td><code>✅&nbsp;Allow</code></td>
-<td><code>🔗&nbsp;TCP</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>🔌&nbsp;443</code></td>
-<td><code>-</code></td>
-</tr>
-<tr>
-<td>➕</td>
-<td><code>🆔&nbsp;deny-rdp</code></td>
-<td><code>200</code></td>
-<td><code>⬇️&nbsp;Inbound</code></td>
-<td><code>⛔&nbsp;Deny</code></td>
-<td><code>🔗&nbsp;TCP</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>🔌&nbsp;3389</code></td>
-<td><code>Block RDP from internet</code></td>
-</tr>
-<tr>
-<td>➕</td>
-<td><code>🆔&nbsp;allow-outbound-https</code></td>
-<td><code>300</code></td>
-<td><code>⬆️&nbsp;Outbound</code></td>
-<td><code>✅&nbsp;Allow</code></td>
-<td><code>🔗&nbsp;TCP</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>🔌&nbsp;443</code></td>
-<td><code>Allow outbound HTTPS</code></td>
-</tr>
-<tr>
-<td>❌</td>
-<td><code>🆔&nbsp;allow-http</code></td>
-<td><code>100</code></td>
-<td><code>⬇️&nbsp;Inbound</code></td>
-<td><code>✅&nbsp;Allow</code></td>
-<td><code>🔗&nbsp;TCP</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>✳️</code></td>
-<td><code>🔌&nbsp;80</code></td>
-<td><code>-</code></td>
-</tr>
-</tbody>
-</table>
-</details>
-                            </div>
-                            <div class="view-pane source-view">
-<pre><code>&lt;details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;"&gt;
-&lt;summary&gt;♻️ azurerm_network_security_group &lt;b&gt;&lt;code&gt;app&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 nsg-app&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
-&lt;br&gt;
-
-### ♻️ module.network.azurerm_network_security_group.app
-
-**Network Security Group:** `nsg-app`
-
-#### Security Rules
-
-| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
-| -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-| ➕ | `🆔 allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `-` |
-| ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
-| ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
-| ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | `-` |
-
-&lt;/details&gt;</code></pre>
-                            </div>
+                    <div class="screenshot-container">
+                        <div class="screenshot-header">tfplan2md Report</div>
+                        <div class="screenshot-content">
+                            <img id="homepage-screenshot"
+                                 src="assets/screenshots/firewall-example-crop.png" 
+                                 srcset="assets/screenshots/firewall-example-crop.png 1x, assets/screenshots/firewall-example-crop@2x.png 2x"
+                                 data-light1x="assets/screenshots/firewall-example-crop.png"
+                                 data-light2x="assets/screenshots/firewall-example-crop@2x.png"
+                                 data-dark1x="assets/screenshots/firewall-example-crop-dark.png"
+                                 data-dark2x="assets/screenshots/firewall-example-crop-dark@2x.png"
+                                 alt="tfplan2md firewall rules with semantic diffs showing rule changes" 
+                                 class="screenshot-clickable"
+                                 onclick="openLightbox()"
+                                 style="width: 100%; height: auto; display: block; border-radius: 4px;">
+                            <p style="text-align: center; font-size: 14px; color: var(--color-text-secondary); margin-top: 8px;">
+                                Click to enlarge
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -490,6 +395,16 @@
         </div>
     </footer>
 
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close lightbox">&times;</button>
+        <img id="lightbox-img" class="lightbox-content" alt="Enlarged screenshot"
+             data-light1x="assets/screenshots/firewall-example-lightbox.png"
+             data-light2x="assets/screenshots/firewall-example-lightbox@2x.png"
+             data-dark1x="assets/screenshots/firewall-example-lightbox-dark.png"
+             data-dark2x="assets/screenshots/firewall-example-lightbox-dark@2x.png">
+    </div>
+
     <script>
         // Mobile menu functionality
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -516,18 +431,30 @@
         const currentTheme = localStorage.getItem('theme') || 'light';
         html.setAttribute('data-theme', currentTheme);
         updateThemeButton(currentTheme);
+        updateScreenshots(currentTheme);
         
         themeToggle.addEventListener('click', () => {
             const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeButton(newTheme);
+            updateScreenshots(newTheme);
         });
         
         function updateThemeButton(theme) {
             const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
+        }
+
+        function updateScreenshots(theme) {
+            // Update all images with theme-aware srcsets
+            document.querySelectorAll('img[data-light1x]').forEach(img => {
+                const src1x = theme === 'dark' ? img.dataset.dark1x : img.dataset.light1x;
+                const src2x = theme === 'dark' ? img.dataset.dark2x : img.dataset.light2x;
+                img.src = src1x;
+                img.srcset = `${src1x} 1x, ${src2x} 2x`;
+            });
         }
         
         // Copy button functionality
@@ -623,35 +550,31 @@
             updateCarousel();
         });
 
-        // Interactive Examples
-        document.querySelectorAll('.interactive-example').forEach(example => {
-            const toggles = example.querySelectorAll('.toggle-btn');
-            const panes = example.querySelectorAll('.view-pane');
-            const fullscreenBtn = example.querySelector('.fullscreen-btn');
+        // Lightbox functionality
+        function openLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const theme = html.getAttribute('data-theme');
+            const src1x = theme === 'dark' ? lightboxImg.dataset.dark1x : lightboxImg.dataset.light1x;
+            const src2x = theme === 'dark' ? lightboxImg.dataset.dark2x : lightboxImg.dataset.light2x;
+            
+            lightbox.classList.add('active');
+            lightboxImg.src = src1x;
+            lightboxImg.srcset = `${src1x} 1x, ${src2x} 2x`;
+            document.body.style.overflow = 'hidden';
+        }
 
-            toggles.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const view = btn.dataset.view;
-                    
-                    // Update buttons
-                    toggles.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    // Update panes
-                    panes.forEach(p => {
-                        p.classList.remove('active');
-                        if (p.classList.contains(view + '-view')) {
-                            p.classList.add('active');
-                        }
-                    });
-                });
-            });
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
-            fullscreenBtn.addEventListener('click', () => {
-                example.classList.toggle('fullscreen');
-                fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
-                document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
-            });
+        // Close lightbox on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
         });
 
         // Simple Markdown Syntax Highlighter

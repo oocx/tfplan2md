@@ -29,6 +29,7 @@ internal static class CliParser
         var fullPage = false;
         ScreenshotFormat? format = null;
         int? quality = null;
+        double? deviceScaleFactor = null;
         string? targetTerraformResourceId = null;
         string? targetSelector = null;
         var showHelp = false;
@@ -73,6 +74,13 @@ internal static class CliParser
                 case "--quality" or "-q":
                     quality = ParseIntegerOption(ReadNextValue(args, ref index, "--quality"), "quality");
                     break;
+                case "--device-scale-factor":
+                    deviceScaleFactor = ParseDoubleOption(ReadNextValue(args, ref index, "--device-scale-factor"), "device-scale-factor");
+                    if (deviceScaleFactor is < 0.1 or > 4.0)
+                    {
+                        throw new CliParseException("The device-scale-factor must be between 0.1 and 4.0.");
+                    }
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -97,6 +105,7 @@ internal static class CliParser
         width ??= DefaultWidth;
         height ??= DefaultHeight;
         quality ??= ResolveDefaultQuality(format);
+        deviceScaleFactor ??= 1.0;
 
         return new CliOptions(
             inputPath: inputPath,
@@ -106,6 +115,7 @@ internal static class CliParser
             fullPage: fullPage,
             format: format,
             quality: quality,
+            deviceScaleFactor: deviceScaleFactor.Value,
             targetTerraformResourceId: targetTerraformResourceId,
             targetSelector: targetSelector,
             showHelp: showHelp,
@@ -143,6 +153,23 @@ internal static class CliParser
         if (!int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
         {
             throw new CliParseException(FormattableString.Invariant($"The {optionName} option requires an integer value."));
+        }
+
+        return parsed;
+    }
+
+    /// <summary>
+    /// Parses a double option value using invariant culture.
+    /// </summary>
+    /// <param name="value">The string to parse.</param>
+    /// <param name="optionName">Option name used for error messaging.</param>
+    /// <returns>The parsed double.</returns>
+    /// <exception cref="CliParseException">Thrown when parsing fails.</exception>
+    private static double ParseDoubleOption(string value, string optionName)
+    {
+        if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
+        {
+            throw new CliParseException(FormattableString.Invariant($"The {optionName} option requires a numeric value."));
         }
 
         return parsed;

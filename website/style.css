@@ -458,10 +458,8 @@ body {
 }
 
 .screenshot-content {
-    padding: 1.5rem;
-    max-height: 400px;
-    overflow-y: auto;
-    overflow-x: auto;
+    padding: 0;
+    overflow: visible;
     background: var(--code-bg);
 }
 
@@ -3297,4 +3295,62 @@ body {
         font-size: 15px;
     }
 }
+
+/* ========================================
+   Lightbox Modal
+   ======================================== */
+
+.lightbox-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+}
+
+.lightbox-modal.active {
+    display: flex;
+}
+
+.lightbox-content {
+    max-width: 95%;
+    max-height: 95%;
+    object-fit: contain;
+    cursor: default;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.lightbox-close:hover {
+    color: #ccc;
+}
+
+.screenshot-clickable {
+    cursor: zoom-in;
+    transition: opacity 0.3s ease;
+}
+
+.screenshot-clickable:hover {
+    opacity: 0.9;
+}
+
 } /* End @layer website */

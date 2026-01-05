@@ -582,7 +582,373 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 
 ---
 
-## 10. Testing and Validation Plan
+## 10. Advanced Features: Multi-Agent Handoffs and Label-Based Routing
+
+### 10.1 Overview
+
+Cloud agents support two advanced features that enable sophisticated automation workflows:
+1. **Agent Handoffs:** Sequential workflows where one agent passes context to another
+2. **Label-Based Routing:** Automatic agent selection based on GitHub issue labels
+
+Both features enable more complex, multi-step automation while maintaining clarity and human oversight.
+
+---
+
+### 10.2 Agent Handoffs Configuration
+
+#### 10.2.1 What Are Handoffs?
+
+Agent handoffs allow one agent to transfer execution to another agent, maintaining context and optionally pre-filling prompts. This enables multi-step workflows like:
+- Requirements Engineer → Architect → Quality Engineer → Developer
+- Issue Analyst → Developer → Code Reviewer
+- Workflow Engineer → Developer → Release Manager
+
+#### 10.2.2 Handoff Configuration Syntax
+
+Handoffs are defined in the agent's YAML frontmatter using the `handoffs` property:
+
+```yaml
+---
+name: Requirements Engineer
+description: Gather and document feature requirements
+target: vscode  # VS Code only (GitHub ignores handoffs property)
+tools: ['search', 'edit', 'web']
+handoffs:
+  - label: "Design Architecture"
+    agent: "Architect"
+    prompt: "Review the feature specification and design the architecture."
+    send: false
+  - label: "Skip to Development"
+    agent: "Developer"
+    prompt: "Implement the feature based on the specification."
+    send: false
+---
+```
+
+**Property Definitions:**
+- `label`: Button text shown in VS Code (e.g., "Design Architecture")
+- `agent`: Target agent name (must match another agent's `name` property)
+- `prompt`: Pre-filled message for the target agent
+- `send`: If `true`, auto-submits prompt; if `false`, user reviews first
+
+#### 10.2.3 How Handoffs Work
+
+**In VS Code (Local):**
+1. Agent completes its task (e.g., Requirements Engineer writes specification)
+2. Handoff buttons appear in chat interface
+3. Maintainer clicks button (e.g., "Design Architecture")
+4. VS Code opens chat with Architect agent
+5. Prompt is pre-filled with context
+6. Maintainer reviews and sends (or edits first if `send: false`)
+
+**In GitHub Cloud (Current Limitations):**
+- **Important:** The `handoffs` property is currently **ignored by GitHub cloud agents**
+- Cloud agents do not support interactive handoff buttons
+- Multi-agent workflows in cloud require different orchestration:
+  - Option 1: Agent creates sub-issues for next steps (manually assigned)
+  - Option 2: Agent mentions next agent in PR comment (requires manual delegation)
+  - Option 3: Use GitHub Actions workflows to chain agents (advanced)
+
+#### 10.2.4 Cloud Agent Multi-Step Workflow (Alternative Pattern)
+
+Since cloud agents don't support the `handoffs` property, use this pattern instead:
+
+**Pattern: Issue-Driven Sequential Workflow**
+
+```markdown
+## Workflow Engineer Instructions (Cloud Context)
+
+When completing a workflow improvement:
+
+1. **Complete Primary Task:** Make the requested changes
+2. **Create Sub-Issues for Next Steps:** If follow-up work is needed:
+   ```
+   Title: [Implementation] Implement workflow changes from #<parent-issue>
+   Body:
+     - Parent Issue: #<parent-issue>
+     - Task: Implement the workflow changes documented in <folder>
+     - Assignee: @copilot (or specific agent if configured)
+   ```
+3. **Document in PR:** List any sub-issues created in the PR description
+4. **Request Review:** Assign PR to Maintainer with clear next steps
+
+This enables chaining without relying on the `handoffs` property.
+```
+
+#### 10.2.5 Example: Complete Handoff Chain (VS Code Only)
+
+```yaml
+# .github/agents/requirements-engineer.agent.md
+---
+name: Requirements Engineer
+handoffs:
+  - label: "Design Architecture"
+    agent: "Architect"
+    prompt: "Review the specification and design the solution."
+    send: false
+---
+```
+
+```yaml
+# .github/agents/architect.agent.md
+---
+name: Architect
+handoffs:
+  - label: "Define Tests"
+    agent: "Quality Engineer"
+    prompt: "Create test plan based on the architecture."
+    send: false
+---
+```
+
+```yaml
+# .github/agents/quality-engineer.agent.md
+---
+name: Quality Engineer
+handoffs:
+  - label: "Start Development"
+    agent: "Developer"
+    prompt: "Implement features according to architecture and test plan."
+    send: false
+---
+```
+
+**Result:** Maintainer can progress through the entire workflow with guided transitions, each agent receiving appropriate context.
+
+---
+
+### 10.3 Label-Based Agent Selection
+
+#### 10.3.1 Overview
+
+Label-based routing enables automatic agent selection when issues are assigned to `@copilot`. Issues labeled "workflow" trigger the Workflow Engineer, "bug" triggers Issue Analyst, etc.
+
+#### 10.3.2 Configuration Approach
+
+**Method 1: Agent Instructions (Recommended)**
+
+Configure each agent to self-select based on issue labels:
+
+```markdown
+## Requirements Engineer Agent Instructions
+
+### Context Detection
+
+When invoked as a cloud agent (GitHub issue):
+
+1. **Check Issue Labels:**
+   - If issue has label `feature` or `enhancement`: Proceed
+   - If issue has label `bug`: Respond "This issue should be handled by the Issue Analyst agent. Please reassign."
+   - If issue has label `workflow`: Respond "This issue should be handled by the Workflow Engineer agent. Please reassign."
+
+2. **Validate Scope:** Ensure task is requirements gathering...
+```
+
+**Method 2: Organization-Level Routing (Advanced)**
+
+Use GitHub API or Actions workflow to route based on labels:
+
+```yaml
+# .github/workflows/agent-router.yml
+name: Agent Router
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  route:
+    if: github.event.assignee.login == 'copilot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Route by Label
+        run: |
+          LABELS="${{ join(github.event.issue.labels.*.name, ',') }}"
+          
+          if [[ "$LABELS" == *"workflow"* ]]; then
+            # Add instruction comment for Workflow Engineer
+            gh issue comment ${{ github.event.issue.number }} --body "@copilot Use the Workflow Engineer agent."
+          elif [[ "$LABELS" == *"bug"* ]]; then
+            gh issue comment ${{ github.event.issue.number }} --body "@copilot Use the Issue Analyst agent."
+          elif [[ "$LABELS" == *"feature"* ]]; then
+            gh issue comment ${{ github.event.issue.number }} --body "@copilot Use the Requirements Engineer agent."
+          fi
+```
+
+#### 10.3.3 Example Label-to-Agent Mapping
+
+| Issue Label | Target Agent | Use Case |
+|-------------|--------------|----------|
+| `workflow` | Workflow Engineer | Agent workflow improvements |
+| `feature` | Requirements Engineer | New feature requests |
+| `bug` | Issue Analyst | Bug investigation and analysis |
+| `website` | Web Designer | Website content/design changes |
+| `docs` | Technical Writer | Documentation updates |
+| `security` | Code Reviewer | Security vulnerability fixes |
+| `refactor` | Developer | Code refactoring tasks |
+
+#### 10.3.4 Issue Template with Label Guidance
+
+```markdown
+---
+name: Workflow Improvement
+about: Suggest improvements to the agent workflow
+labels: workflow
+assignees: copilot
+---
+
+## Workflow Improvement Request
+
+**Current Behavior:**
+Describe the current workflow process that needs improvement.
+
+**Proposed Improvement:**
+Describe the desired improvement.
+
+**Expected Outcome:**
+What should change after this improvement?
+
+---
+
+**Note:** This issue will be handled by the Workflow Engineer agent.
+```
+
+#### 10.3.5 Agent Decision Logic
+
+Agents can detect their appropriate scope through instructions:
+
+```markdown
+## Issue Analyst Agent
+
+### Cloud Workflow
+
+When processing a GitHub issue:
+
+1. **Validate Label:** Check if issue has `bug`, `incident`, or `issue` label
+2. **If Label Missing:** 
+   - Comment: "This issue is missing a 'bug' label. Is this a bug report?"
+   - Wait for Maintainer confirmation
+3. **If Wrong Label:**
+   - Comment: "This issue has label 'feature' which should be handled by Requirements Engineer."
+   - Suggest reassignment
+4. **If Correct Label:**
+   - Proceed with analysis...
+```
+
+---
+
+### 10.4 Combining Handoffs and Labels
+
+#### 10.4.1 Hybrid Workflow
+
+**Scenario:** Feature development with automatic routing
+
+1. **Issue Created:** Labeled `feature`, assigned to `@copilot`
+2. **Requirements Engineer (Cloud):** Analyzes requirements, creates specification
+3. **Requirements Engineer (Cloud Action):** Creates follow-up issues:
+   - Issue: "[Architecture] Design solution for feature X" (label: `architecture`)
+   - Issue: "[Implementation] Implement feature X" (label: `implementation`)
+4. **Architect (Cloud):** Picks up architecture issue via label routing
+5. **Developer (Cloud):** Picks up implementation issue via label routing
+
+**Benefits:**
+- Automated routing reduces manual assignment
+- Clear separation of concerns via labels
+- Each agent works independently
+- Maintainer approves PRs from each phase
+
+#### 10.4.2 Local to Cloud Transition
+
+**Pattern:** Start locally, finish in cloud
+
+1. **Local (VS Code):** Requirements Engineer works with Maintainer interactively
+2. **Local:** Architect designs solution with Maintainer feedback
+3. **Handoff to Cloud:** Create GitHub issue for implementation, assign to `@copilot`
+4. **Cloud:** Developer implements autonomously, creates PR
+5. **Local:** Code Reviewer reviews PR via VS Code
+
+**Best of Both Worlds:**
+- Complex decisions made locally with guidance
+- Routine implementation automated in cloud
+- Human oversight at key decision points
+
+---
+
+### 10.5 Implementation Recommendations
+
+#### 10.5.1 Start Simple
+
+**Phase 1: VS Code Handoffs Only**
+- Implement handoffs in local agents first
+- Test workflow transitions in VS Code
+- Validate context preservation
+- **Outcome:** Proven handoff patterns
+
+**Phase 2: Label-Based Routing**
+- Add label detection to agent instructions
+- Create issue templates with default labels
+- Test with simple workflow improvements
+- **Outcome:** Automatic agent selection working
+
+**Phase 3: Cloud Multi-Step Workflows**
+- Implement sub-issue creation pattern
+- Test end-to-end cloud workflow
+- Monitor for issues with context loss
+- **Outcome:** Automated sequential workflows
+
+#### 10.5.2 Best Practices
+
+**Handoffs:**
+- ✅ Always use `send: false` for review opportunities
+- ✅ Keep prompts concise and specific
+- ✅ Test handoff chains before deploying
+- ✅ Document handoff paths in `docs/agents.md`
+- ⚠️ Limit chains to 3-4 agents (avoid complexity)
+- ⚠️ Provide "skip ahead" handoffs for flexibility
+- ❌ Don't rely on `handoffs` property for cloud agents (not supported)
+
+**Label-Based Routing:**
+- ✅ Use consistent label names across repository
+- ✅ Document label-to-agent mappings
+- ✅ Provide clear error messages for wrong labels
+- ✅ Create issue templates with pre-set labels
+- ⚠️ Handle unlabeled issues gracefully
+- ⚠️ Allow manual override of routing
+- ❌ Don't assume labels are always correct (validate in agent)
+
+---
+
+### 10.6 Limitations and Workarounds
+
+#### 10.6.1 Current Limitations
+
+**Cloud Agent Handoffs:**
+- ❌ `handoffs` property ignored by GitHub cloud agents
+- ❌ No interactive handoff buttons in cloud context
+- ❌ Cannot pass context via handoff mechanism
+- **Workaround:** Use sub-issues and PR comments
+
+**Label-Based Routing:**
+- ⚠️ Requires manual label addition or issue templates
+- ⚠️ No built-in GitHub routing (requires custom logic)
+- ⚠️ Ambiguous when multiple labels present
+- **Workaround:** Agent validates labels and requests clarification
+
+**Session Timeouts:**
+- ⚠️ 59-minute timeout per cloud agent session
+- ⚠️ Long workflows may timeout mid-execution
+- **Workaround:** Break into smaller sub-tasks with separate issues
+
+#### 10.6.2 Future Improvements
+
+As GitHub Copilot evolves, these features may improve:
+- Native cloud agent handoff support
+- Built-in label-based routing
+- Extended session timeouts
+- Better context preservation across agents
+
+---
+
+## 11. Testing and Validation Plan
 
 ### 10.1 Phase 1: Local Agent Regression Testing
 
@@ -637,7 +1003,7 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 
 ---
 
-## 11. Migration Path and Rollout Strategy
+## 12. Migration Path and Rollout Strategy
 
 ### 11.1 Immediate (This PR)
 
@@ -677,9 +1043,9 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 
 ---
 
-## 12. Risks and Mitigations
+## 13. Risks and Mitigations
 
-### 12.1 Risk: Cloud Agent Misinterprets Instructions
+### 13.1 Risk: Cloud Agent Misinterprets Instructions
 
 **Impact:** Cloud agent makes incorrect changes, creates confusing PR.
 
@@ -689,7 +1055,7 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 - Always require Maintainer PR review before merge
 - Document expectations clearly in issue descriptions
 
-### 12.2 Risk: Tool Incompatibility Breaks Agent
+### 13.2 Risk: Tool Incompatibility Breaks Agent
 
 **Impact:** Agent fails due to using VS Code-only tools in cloud context.
 
@@ -698,7 +1064,7 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 - Add context detection and tool adaptation logic in agent instructions
 - Test in cloud environment during Phase 2
 
-### 12.3 Risk: Local Workflow Regression
+### 13.3 Risk: Local Workflow Regression
 
 **Impact:** Changes to support cloud agents break existing VS Code behavior.
 
@@ -707,7 +1073,7 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 - Keep `model` and `handoffs` properties (ignored by cloud, used by local)
 - Document local vs cloud behavior clearly in agent instructions
 
-### 12.4 Risk: Increased Complexity
+### 13.4 Risk: Increased Complexity
 
 **Impact:** Dual-mode agents become hard to understand and maintain.
 
@@ -716,7 +1082,7 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 - Provide examples of each execution mode
 - Consider separate agents if complexity becomes unmanageable (fall back to Option B)
 
-### 12.5 Risk: GitHub Actions Quota Exhaustion
+### 13.5 Risk: GitHub Actions Quota Exhaustion
 
 **Impact:** Cloud agents consume all free GitHub Actions minutes.
 
@@ -727,23 +1093,23 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 
 ---
 
-## 13. Success Metrics
+## 14. Success Metrics
 
-### 13.1 Adoption Metrics (After Phase 3)
+### 14.1 Adoption Metrics (After Phase 3)
 
 📊 **Track:**
 - Number of workflow improvements executed via cloud agents (target: 25% of routine tasks)
 - Time saved by Maintainer (estimate: 2-3 hours/week)
 - Number of cloud agent PRs requiring rework (target: <20%)
 
-### 13.2 Quality Metrics
+### 14.2 Quality Metrics
 
 📊 **Track:**
 - Cloud agent PR approval rate (target: >80%)
 - Issues closed per cloud agent PR (target: 1:1 ratio)
 - Rework cycles per cloud agent task (target: <2 on average)
 
-### 13.3 Workflow Health Metrics
+### 14.3 Workflow Health Metrics
 
 📊 **Track:**
 - Local agent usage (should remain stable or increase)
@@ -752,7 +1118,7 @@ See [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analy
 
 ---
 
-## 14. Conclusion
+## 15. Conclusion
 
 Cloud agents offer a powerful complement to the existing local agent workflow in tfplan2md. By enhancing the Workflow Engineer agent to support both local (VS Code) and cloud (GitHub) execution, we can:
 

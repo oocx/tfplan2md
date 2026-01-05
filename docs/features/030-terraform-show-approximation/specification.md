@@ -31,7 +31,7 @@ Create a standalone development tool that generates output approximating `terraf
   - `no-op` - Resources with no changes
 
 **Output Sections**:
-- Header with Terraform version information
+- Legend section (provider/action symbols)
 - Plan summary (X to add, Y to change, Z to destroy)
 - Detailed resource-by-resource breakdown showing attribute changes
 - Footer with operation summary and instructions
@@ -152,7 +152,7 @@ The feature is complete when:
 - [ ] Output approximates `terraform show` format with high fidelity (pixel-perfect or close-enough based on implementation feasibility)
 - [ ] ANSI color codes match Terraform's terminal output conventions
 - [ ] All plan operations supported: create, update, delete, replace, read, no-op
-- [ ] Output includes header, summary, detailed breakdown, and footer sections
+- [ ] Output includes legend, summary, detailed breakdown, and footer sections
 - [ ] Works with comprehensive-demo plan.json file
 - [ ] Clear error messages for invalid input or file errors
 - [ ] Help text documents all CLI options

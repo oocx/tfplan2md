@@ -948,9 +948,426 @@ As GitHub Copilot evolves, these features may improve:
 
 ---
 
+### 10.7 Cloud Orchestrator Pattern
+
+#### 10.7.1 Overview
+
+The **Orchestrator Pattern** (also called "Copilot Orchestra") enables a conductor agent to coordinate multiple specialized subagents in cloud execution. This pattern is particularly powerful for complex, multi-phase workflows that require specialized expertise at each stage.
+
+**Key Concept:** A single orchestrator agent receives a task, decomposes it into phases, and coordinates subagents to execute each phase autonomously in the cloud.
+
+#### 10.7.2 Cloud Orchestrator Architecture
+
+**Components:**
+
+```
+┌─────────────────────────────────────────────────────┐
+│         GitHub Issue assigned to @copilot           │
+│                                                     │
+│  Title: [Feature] Implement user authentication    │
+│  Labels: feature, orchestrated                     │
+└─────────────────────────────────────────────────────┘
+                        ↓
+        ┌───────────────────────────────┐
+        │  Orchestrator Agent (Cloud)   │
+        │  - Analyzes task complexity   │
+        │  - Decomposes into phases     │
+        │  - Coordinates subagents      │
+        └───────────────────────────────┘
+                        ↓
+        ┌───────────────────────────────┐
+        │   Phase Decomposition         │
+        │  1. Requirements Analysis     │
+        │  2. Architecture Design       │
+        │  3. Implementation Plan       │
+        │  4. Code Implementation       │
+        │  5. Testing Strategy          │
+        └───────────────────────────────┘
+                        ↓
+    ┌─────────┬─────────┬─────────┬─────────┐
+    │ Phase 1 │ Phase 2 │ Phase 3 │ Phase 4 │
+    │ Subagent│ Subagent│ Subagent│ Subagent│
+    └─────────┴─────────┴─────────┴─────────┘
+                        ↓
+        ┌───────────────────────────────┐
+        │  Orchestrator Aggregates      │
+        │  - Collects phase outputs     │
+        │  - Validates completeness     │
+        │  - Creates comprehensive PR   │
+        └───────────────────────────────┘
+```
+
+#### 10.7.3 Cloud Orchestration Implementation
+
+**Method 1: Sub-Issue Orchestration (Recommended for Cloud)**
+
+The orchestrator creates and monitors sub-issues for each phase:
+
+```markdown
+## Cloud Orchestrator Agent Instructions
+
+When assigned a complex task in cloud context:
+
+### Phase 1: Task Analysis and Decomposition
+
+1. **Analyze Complexity:** Determine if task requires orchestration
+   - Simple tasks (< 2 phases): Execute directly
+   - Complex tasks (≥ 2 phases): Use orchestration
+
+2. **Decompose Task:** Break into sequential phases
+   - Requirements Analysis
+   - Architecture/Design
+   - Implementation
+   - Testing/Validation
+   - Documentation
+
+3. **Create Phase Issues:** For each phase, create a sub-issue:
+   ```
+   Title: [Phase N/M] <Phase Name> for #<parent-issue>
+   Body:
+     - Parent Issue: #<parent-issue>
+     - Phase: N of M
+     - Dependencies: Phase N-1 must be complete
+     - Task: <specific phase instructions>
+     - Context: <relevant info from previous phases>
+     - Expected Output: <artifacts this phase produces>
+   Labels: orchestrated-phase, <agent-label>
+   Assignee: @copilot
+   ```
+
+4. **Sequential Execution:** Wait for each phase to complete before creating next
+   - Phase 1 completes → create Phase 2 issue
+   - Phase 2 completes → create Phase 3 issue
+   - Continue until all phases complete
+
+5. **Aggregate Results:** Collect outputs from all phase PRs
+   - Review each phase PR
+   - Extract key artifacts (specifications, code, tests)
+   - Identify any conflicts or gaps
+
+6. **Create Master PR:** Consolidate all phase work
+   - Merge or cherry-pick from phase branches
+   - Create comprehensive PR description
+   - Link all phase issues and PRs
+   - Request final Maintainer review
+
+### Phase Monitoring
+
+Check phase progress by:
+- Monitoring phase issue status (open/closed)
+- Reviewing phase PR status (draft/ready/merged)
+- Reading phase PR comments for blockers
+
+### Error Handling
+
+If a phase fails:
+- Comment on phase issue with analysis
+- Suggest fix or request Maintainer intervention
+- Pause orchestration until resolved
+```
+
+**Method 2: GitHub Actions Orchestration**
+
+Use GitHub Actions to coordinate subagents:
+
+```yaml
+# .github/workflows/cloud-orchestrator.yml
+name: Cloud Agent Orchestrator
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  orchestrate:
+    if: |
+      github.event.assignee.login == 'copilot[bot]' &&
+      contains(github.event.issue.labels.*.name, 'orchestrated')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Phase 1 - Requirements
+        run: |
+          gh issue create \
+            --title "[Phase 1/4] Requirements Analysis for #${{ github.event.issue.number }}" \
+            --body "Parent: #${{ github.event.issue.number }}..." \
+            --label "phase-1,requirements" \
+            --assignee "copilot[bot]"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Wait for Phase 1
+        run: |
+          # Poll phase 1 issue until closed
+          # Then proceed to phase 2
+      
+      - name: Phase 2 - Architecture
+        run: |
+          # Create phase 2 issue after phase 1 completes
+      
+      # Continue for remaining phases...
+```
+
+#### 10.7.4 Cloud Orchestrator vs Local Manual Orchestration
+
+| Aspect | Cloud Orchestrator (Automated) | Local Manual (Maintainer-Driven) |
+|--------|-------------------------------|----------------------------------|
+| **Control** | Orchestrator decides phases | Maintainer decides transitions |
+| **Speed** | Automatic phase progression | Manual handoffs between agents |
+| **Visibility** | Phase issues track progress | Chat history tracks progress |
+| **Intervention** | Maintainer reviews phase PRs | Maintainer guides each step |
+| **Complexity** | Handles multi-phase workflows | Better for exploratory work |
+| **Best For** | Routine, well-defined tasks | Novel or ambiguous requirements |
+
+#### 10.7.5 Example: Feature Development Orchestration
+
+**Scenario:** Implement user authentication (complex, multi-phase task)
+
+**Orchestrator Workflow:**
+
+```markdown
+## Parent Issue (#100)
+Title: [Feature] Implement user authentication
+Labels: feature, orchestrated
+Assigned: @copilot
+
+The orchestrator creates:
+
+### Phase 1 Issue (#101)
+Title: [Phase 1/5] Requirements Analysis for #100
+Labels: phase-1, requirements-engineer
+Assigned: @copilot
+
+**Phase 1 completes** → PR #50 created with specification.md
+
+### Phase 2 Issue (#102)
+Title: [Phase 2/5] Architecture Design for #100
+Labels: phase-2, architect
+Context: Links to PR #50 (specification)
+Assigned: @copilot
+
+**Phase 2 completes** → PR #51 created with architecture.md, ADRs
+
+### Phase 3 Issue (#103)
+Title: [Phase 3/5] Test Plan for #100
+Labels: phase-3, quality-engineer
+Context: Links to PRs #50, #51
+Assigned: @copilot
+
+**Phase 3 completes** → PR #52 created with test-plan.md
+
+### Phase 4 Issue (#104)
+Title: [Phase 4/5] Implementation for #100
+Labels: phase-4, developer
+Context: Links to PRs #50, #51, #52
+Assigned: @copilot
+
+**Phase 4 completes** → PR #53 created with code, tests
+
+### Phase 5 Issue (#105)
+Title: [Phase 5/5] Documentation for #100
+Labels: phase-5, technical-writer
+Context: Links to all previous PRs
+Assigned: @copilot
+
+**Phase 5 completes** → PR #54 created with updated docs
+
+### Final Orchestrator Action
+- Review all phase PRs (#50-54)
+- Create master PR #55 consolidating all work
+- Link parent issue #100
+- Request Maintainer final approval
+```
+
+#### 10.7.6 Orchestrator Agent Definition Example
+
+```yaml
+---
+name: Cloud Orchestrator
+description: Coordinate multi-phase workflows across specialized subagents
+target: github-copilot  # Cloud only
+tools: ['github/*', 'search', 'web']
+---
+
+# Cloud Orchestrator Agent
+
+You are the **Cloud Orchestrator** agent. You coordinate complex, multi-phase tasks by decomposing them and delegating to specialized subagents.
+
+## Your Role
+
+Analyze incoming tasks and determine if orchestration is needed. For complex tasks, create a phased execution plan and manage subagents through sub-issues.
+
+## When to Orchestrate
+
+Use orchestration when:
+- Task requires ≥3 distinct phases
+- Multiple specialized agents needed
+- Clear phase dependencies exist
+- Each phase produces artifacts used by next phase
+
+Execute directly when:
+- Task is simple (1-2 phases)
+- Single agent can complete entire task
+- Immediate execution is more efficient
+
+## Orchestration Workflow
+
+1. **Analyze Task:** Review issue description, labels, complexity
+2. **Decompose:** Break into logical phases (requirements → architecture → implementation → testing → documentation)
+3. **Create Phase Issues:** One issue per phase with clear dependencies
+4. **Monitor Progress:** Track phase completion via issue/PR status
+5. **Handle Blockers:** Intervene if phase fails or needs clarification
+6. **Aggregate Results:** Collect all phase outputs
+7. **Create Master PR:** Consolidate work with comprehensive description
+8. **Final Review:** Request Maintainer approval
+
+## Phase Issue Template
+
+```
+Title: [Phase N/M] <Phase Name> for #<parent>
+Body:
+  **Parent Issue:** #<parent>
+  **Phase:** N of M
+  **Dependencies:** <list previous phases>
+  **Task:** <specific instructions>
+  **Context:** <links to previous phase artifacts>
+  **Expected Output:** <what this phase produces>
+Labels: orchestrated-phase, <agent-label>
+Assignee: @copilot
+```
+
+## Error Handling
+
+If a phase fails:
+1. Comment on phase issue with diagnosis
+2. Determine if fix is simple (create fix issue) or complex (escalate to Maintainer)
+3. Do not proceed to next phase until resolved
+4. Update parent issue with status
+
+## Context Preservation
+
+Each phase issue must include:
+- Links to parent issue
+- Links to all previous phase PRs
+- Summary of previous phase outcomes
+- Specific artifacts needed from previous phases
+
+## Quality Gates
+
+Before creating next phase issue:
+- ✅ Previous phase PR created
+- ✅ Previous phase PR passes CI
+- ✅ Previous phase PR reviewed (if needed)
+- ✅ Previous phase artifacts are accessible
+
+## Timeout Management
+
+With 59-minute cloud session timeout:
+- Create phase issues quickly (< 10 minutes)
+- Don't wait for phase completion in same session
+- Orchestrator can be re-invoked to check progress
+- Design phases to complete in < 45 minutes each
+```
+
+#### 10.7.7 Advantages of Cloud Orchestration
+
+**1. Autonomous Execution**
+- Orchestrator runs without manual intervention
+- Phases execute automatically as dependencies complete
+- Maintainer reviews only final output
+
+**2. Parallel Potential**
+- Independent phases can run simultaneously
+- Example: Documentation and testing can run in parallel after implementation
+
+**3. Specialization**
+- Each subagent focuses on its domain expertise
+- Context isolation prevents knowledge bleed
+
+**4. Scalability**
+- Can handle arbitrarily complex workflows
+- Add phases without changing orchestrator logic
+
+**5. Audit Trail**
+- Each phase documented in separate issue/PR
+- Clear progression from requirements to implementation
+- Easy to identify where issues occurred
+
+#### 10.7.8 Limitations and Considerations
+
+**Session Timeout (59 minutes)**
+- Orchestrator creates phase issues but doesn't wait for completion
+- Re-invoke orchestrator to check progress and create next phase
+- Alternative: Use GitHub Actions for continuous orchestration
+
+**Context Loss Between Phases**
+- Each subagent starts fresh (no shared memory)
+- Must pass context via issue descriptions and PR links
+- Important: Link all previous artifacts explicitly
+
+**Complexity Overhead**
+- Simple tasks don't benefit from orchestration
+- Sub-issue creation adds process overhead
+- Best for tasks requiring ≥3 distinct phases
+
+**Manual Intervention Points**
+- Maintainer must still review phase PRs
+- Some phases may require clarification/approval
+- Not fully autonomous (by design for quality)
+
+#### 10.7.9 When to Use Cloud Orchestration vs Manual Local
+
+**Use Cloud Orchestrator When:**
+- ✅ Task is well-defined and routine
+- ✅ Phases are clear and sequential
+- ✅ Each phase can work autonomously
+- ✅ Multiple agents needed with distinct expertise
+- ✅ Want parallel execution of independent phases
+- ✅ Need audit trail of phase-by-phase progress
+
+**Use Manual Local Orchestration When:**
+- ✅ Task is novel or exploratory
+- ✅ Requirements are ambiguous
+- ✅ Frequent Maintainer input needed
+- ✅ Rapid iteration and course correction required
+- ✅ Learning or experimenting with new patterns
+- ✅ Prefer interactive guidance over automation
+
+#### 10.7.10 Best Practices for Cloud Orchestration
+
+**1. Clear Phase Boundaries**
+- Each phase should have well-defined inputs and outputs
+- Avoid overlapping responsibilities between phases
+- Make dependencies explicit
+
+**2. Comprehensive Context Passing**
+- Link all previous phase issues and PRs
+- Summarize key decisions from previous phases
+- Include relevant code snippets or specifications
+
+**3. Fail Fast**
+- Validate phase completeness before proceeding
+- Stop orchestration if critical phase fails
+- Provide clear error messages to Maintainer
+
+**4. Monitor Progress**
+- Check phase issue status regularly
+- Review phase PR comments for blockers
+- Be prepared to intervene if stuck
+
+**5. Keep Phases Focused**
+- Each phase should complete in < 45 minutes
+- Break large phases into smaller sub-phases if needed
+- Ensure timeout buffer for CI/testing
+
+**6. Document Orchestration Plan**
+- Include phase plan in parent issue
+- Update as phases complete
+- Mark completion status clearly
+
+---
+
 ## 11. Testing and Validation Plan
 
-### 10.1 Phase 1: Local Agent Regression Testing
+### 11.1 Phase 1: Local Agent Regression Testing
 
 **Objective:** Ensure modified Workflow Engineer agent still works in VS Code.
 
@@ -966,7 +1383,7 @@ As GitHub Copilot evolves, these features may improve:
 - Agent recognizes VS Code context
 - Handoffs and tools work as before
 
-### 10.2 Phase 2: Cloud Agent Validation
+### 11.2 Phase 2: Cloud Agent Validation
 
 **Objective:** Validate Workflow Engineer agent can execute in cloud context.
 
@@ -993,7 +1410,7 @@ As GitHub Copilot evolves, these features may improve:
 - PR is created with correct structure
 - Changes address issue requirements
 
-### 10.3 Phase 3: Edge Case Testing
+### 11.3 Phase 3: Edge Case Testing
 
 **Test Cases:**
 1. **Ambiguous issue specification** → Agent should request clarification (via PR comment)

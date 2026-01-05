@@ -64,6 +64,25 @@ internal sealed partial class DiffRenderer
         writer.WriteLine(",");
     }
 
+    /// <summary>
+    /// Writes an added array scalar item with comma suffix.
+    /// Terraform uses commas for array items in creation/addition.
+    /// </summary>
+    /// <param name="writer">Target writer for output.</param>
+    /// <param name="indent">Indentation for the current depth.</param>
+    /// <param name="marker">Change marker to prefix the line.</param>
+    /// <param name="style">ANSI style associated with the marker.</param>
+    /// <param name="value">Scalar value to render.</param>
+    private void WriteAddedArrayScalar(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, JsonElement value)
+    {
+        writer.Write(indent);
+        writer.WriteStyled(marker, style);
+        writer.WriteReset();
+        writer.Write(" ");
+        writer.Write(_valueRenderer.Render(value));
+        writer.WriteLine(",");
+    }
+
     /// <summary>Writes arrow update lines to mirror Terraform change notation.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
@@ -224,7 +243,7 @@ internal sealed partial class DiffRenderer
         writer.Write(" ");
         writer.Write(name);
         writer.WriteLine(" {");
-        WriteSensitivePlaceholder(writer, indent + Indent, null);
+        WriteSensitivePlaceholder(writer, indent + Indent + Indent, null);
         WriteClosingBrace(writer, indent + Indent);
     }
 

@@ -36,7 +36,7 @@ internal sealed partial class DiffRenderer
                 var index = 0;
                 foreach (var _ in value.EnumerateArray())
                 {
-                    WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+                    WriteSensitiveBlock(writer, indent, marker, style, name);
                     index++;
                 }
 
@@ -45,7 +45,7 @@ internal sealed partial class DiffRenderer
 
             if (value.ValueKind == JsonValueKind.Object)
             {
-                WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+                WriteSensitiveBlock(writer, indent, marker, style, name);
                 return;
             }
 
@@ -152,7 +152,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in value.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath);
+                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath, nameWidth);
                 index++;
             }
 
@@ -162,7 +162,7 @@ internal sealed partial class DiffRenderer
         switch (value.ValueKind)
         {
             case JsonValueKind.Object:
-                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{");
+                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{", nameWidth: nameWidth);
                 foreach (var property in value.EnumerateObject())
                 {
                     var childPath = new List<string>(path) { property.Name };
@@ -172,7 +172,7 @@ internal sealed partial class DiffRenderer
                 WriteClosingBrace(writer, indent + Indent);
                 break;
             case JsonValueKind.Array:
-                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "[");
+                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "[", nameWidth: nameWidth);
                 var index = 0;
                 foreach (var element in value.EnumerateArray())
                 {
@@ -181,10 +181,10 @@ internal sealed partial class DiffRenderer
                     index++;
                 }
 
-                WriteClosingBracket(writer, indent + Indent);
+                WriteClosingBracket(writer, indent + Indent, appendNull: true);
                 break;
             default:
-                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, name, _valueRenderer.Render(value), true);
+                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, name, _valueRenderer.Render(value), true, nameWidth: nameWidth);
                 break;
         }
     }
@@ -277,7 +277,7 @@ internal sealed partial class DiffRenderer
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath);
+                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath, 0);
             }
 
             if (unchanged > 0)

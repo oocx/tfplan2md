@@ -10,21 +10,6 @@ body:
         
         **Tip:** Provide enough detail so agents can implement the improvement autonomously, ideally without additional questions.
 
-  - type: dropdown
-    id: improvement-type
-    attributes:
-      label: Improvement Type
-      description: What kind of workflow improvement is this?
-      options:
-        - Agent modification (update instructions, tools, or model)
-        - New agent creation
-        - Documentation update
-        - Process improvement
-        - Script/automation enhancement
-        - Other
-    validations:
-      required: true
-
   - type: textarea
     id: current-problem
     attributes:
@@ -56,22 +41,6 @@ body:
         - All handoff agent names exist
         - All tool IDs are valid VS Code tool names
         - Model names match available models in docs/ai-model-reference.md"
-    validations:
-      required: true
-
-  - type: textarea
-    id: scope
-    attributes:
-      label: Scope
-      description: Which files or agents will be modified? Be specific.
-      placeholder: |
-        Files to modify:
-        - `.github/agents/quality-engineer.agent.md` (line 45, update path)
-        - `docs/agents.md` (Quality Engineer section, document correct path)
-        
-        Or:
-        - Create new file: `scripts/validate-agents.py`
-        - Update `.github/agents/workflow-engineer.agent.md` (add validation step)
     validations:
       required: true
 
@@ -141,18 +110,5 @@ body:
         - High (important, should be done soon)
         - Medium (would be nice to have)
         - Low (minor improvement)
-    validations:
-      required: false
-
-  - type: dropdown
-    id: complexity
-    attributes:
-      label: Estimated Complexity (Optional)
-      description: How difficult do you think this will be?
-      options:
-        - Not sure
-        - Low (< 1 hour, simple change)
-        - Medium (1-3 hours, moderate effort)
-        - High (> 3 hours, complex or uncertain)
     validations:
       required: false

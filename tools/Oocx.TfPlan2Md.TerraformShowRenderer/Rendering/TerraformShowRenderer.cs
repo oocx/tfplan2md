@@ -348,8 +348,8 @@ internal sealed class TerraformShowRenderer
     /// <param name="action">Mapped action kind.</param>
     private static void WriteResourceHeader(AnsiTextWriter writer, ResourceChange change, ResourceAction action)
     {
-        writer.Write(Indent);
-        writer.WriteStyled("# " + change.Address, AnsiStyle.Bold);
+        // ANSI escape comes before indent in Terraform output
+        writer.WriteStyled(Indent + "# " + change.Address, AnsiStyle.Bold);
         writer.Write(" ");
 
         switch (action)
@@ -392,8 +392,13 @@ internal sealed class TerraformShowRenderer
     /// <param name="action">Mapped action kind.</param>
     private void WriteResourceBlock(AnsiTextWriter writer, ResourceChange change, ResourceAction action)
     {
-        writer.Write(Indent);
+        // Reset before indent, then write marker and block line
+        writer.WriteReset();
+        // Read operations use single space, others use Indent (2 spaces)
+        var indent = action == ResourceAction.Read ? " " : Indent;
+        writer.Write(indent);
         WriteMarker(writer, action);
+        writer.WriteReset(); // Extra reset after marker to match Terraform output
         writer.Write(" ");
 
         var blockKeyword = string.Equals(change.Mode, "data", StringComparison.OrdinalIgnoreCase) ? "data" : "resource";
@@ -406,6 +411,8 @@ internal sealed class TerraformShowRenderer
 
         _diffRenderer.RenderAttributes(writer, change, action, Indent);
 
+        // Closing brace aligns with attributes (Indent + Indent)
+        writer.Write(Indent);
         writer.Write(Indent);
         writer.WriteLine("}");
     }

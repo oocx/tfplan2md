@@ -65,7 +65,8 @@ internal sealed partial class DiffRenderer
         }
 
         var properties = EnumerateProperties(after.Value, unknown).ToList();
-        var sorted = properties.OrderBy(p => IsUnknownPath(unknown, [p.Name]) ? 0 : 1).ToList();
+        // Sort properties alphabetically by name to match Terraform output
+        var sorted = properties.OrderBy(p => p.Name, StringComparer.Ordinal).ToList();
         var width = ComputeNameWidth(sorted);
 
         foreach (var property in sorted)
@@ -86,9 +87,12 @@ internal sealed partial class DiffRenderer
             return;
         }
 
-        foreach (var property in before.Value.EnumerateObject())
+        var properties = before.Value.EnumerateObject().ToList();
+        var width = ComputeNameWidth(properties.Select(p => (p.Name, p.Value)).ToList());
+
+        foreach (var property in properties)
         {
-            RenderRemovedValue(writer, property.Value, property.Name, indent, sensitive, new List<string> { property.Name });
+            RenderRemovedValue(writer, property.Value, property.Name, indent, sensitive, new List<string> { property.Name }, width);
         }
     }
 

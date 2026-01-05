@@ -111,8 +111,9 @@ internal sealed partial class DiffRenderer
     /// <param name="name">Attribute name being rendered.</param>
     /// <param name="indent">Indentation for current depth.</param>
     /// <param name="path">Current attribute path for lookups.</param>
+    /// <param name="nameWidth">Width for name padding to align equals signs.</param>
     /// <returns>Nothing.</returns>
-    private void RenderRemovedValue(AnsiTextWriter writer, JsonElement value, string name, string indent, JsonElement? sensitive, List<string> path)
+    private void RenderRemovedValue(AnsiTextWriter writer, JsonElement value, string name, string indent, JsonElement? sensitive, List<string> path, int nameWidth = 0)
     {
         var isSensitive = IsSensitivePath(sensitive, path);
 

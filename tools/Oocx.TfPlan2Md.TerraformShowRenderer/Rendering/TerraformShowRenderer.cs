@@ -362,11 +362,11 @@ internal sealed class TerraformShowRenderer
                 break;
             case ResourceAction.Delete:
                 writer.Write("will be ");
-                writer.WriteLineStyled("destroyed", AnsiStyle.Red, AnsiStyle.Bold);
+                writer.WriteLineStyled("destroyed", AnsiStyle.Bold, AnsiStyle.Red);
                 break;
             case ResourceAction.Replace:
                 writer.Write("must be ");
-                writer.WriteLineStyled("replaced", AnsiStyle.Red, AnsiStyle.Bold);
+                writer.WriteLineStyled("replaced", AnsiStyle.Bold, AnsiStyle.Red);
                 break;
             case ResourceAction.Read:
                 writer.WriteLine("will be read during apply");

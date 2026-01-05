@@ -249,6 +249,67 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 - **Workflow Engineer** improves and maintains the agent workflow itself (operates outside the normal feature flow).
 - When requesting a Maintainer decision on a `tasks.md` item, the Workflow Engineer presents the 3 recommended options (Option 1/2/3) in chat immediately before asking for the selected ID.
 
+---
+
+## Cloud Agents vs Local Agents
+
+The tfplan2md workflow supports both **local agents** (running in VS Code) and **cloud agents** (running on GitHub infrastructure).
+
+### Local Agents (Interactive)
+
+- **Invocation:** `@agent-name` in VS Code Copilot Chat
+- **Use Case:** Interactive development, design decisions, debugging
+- **Output:** Chat responses, local file edits
+- **Best For:** Tasks requiring Maintainer guidance and iteration
+- **Environment:** Developer's VS Code instance with full tool access
+
+### Cloud Agents (Automated)
+
+- **Invocation:** Assign GitHub issue to `@copilot`
+- **Use Case:** Well-scoped automation, batch updates, routine tasks
+- **Output:** Pull requests with code changes
+- **Best For:** Tasks with clear specifications that can run autonomously
+- **Environment:** GitHub Actions infrastructure (remote, isolated)
+
+### Dual-Mode Agents
+
+Most agents can support both execution modes by detecting their context. The agent adapts its behavior based on whether it's running in VS Code or processing a GitHub issue.
+
+**Example: Workflow Engineer**
+- **Local:** Interactive workflow analysis, design discussions, complex decisions
+- **Cloud:** Automated workflow improvements from GitHub issues (e.g., batch agent updates)
+
+### Context Detection
+
+Agents determine their execution environment by analyzing:
+- **VS Code:** Interactive chat session with Maintainer, real-time feedback
+- **GitHub:** Issue body with task specification, autonomous execution expected
+
+### Tool Availability
+
+| Tool Category | Local (VS Code) | Cloud (GitHub) |
+|--------------|-----------------|----------------|
+| `search`, `web`, `github/*` | ✅ Available | ✅ Available |
+| `edit`, `execute`, `vscode`, `todo` | ✅ Available | ❌ Not Available |
+| GitHub Actions workflows | ⚠️ Manual | ✅ Automated |
+
+### When to Use Cloud Agents
+
+**Good Fit for Cloud:**
+- ✅ Routine refactoring tasks with clear scope
+- ✅ Batch documentation updates
+- ✅ Agent model assignments based on benchmarks
+- ✅ Automated workflow improvements
+- ✅ Tasks that don't require real-time guidance
+
+**Better as Local:**
+- ❌ Tasks requiring local tool access (VS Code extensions, terminals)
+- ❌ Interactive debugging with Maintainer
+- ❌ Complex decisions requiring iterative refinement
+- ❌ Exploratory work with unclear requirements
+
+For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analysis/).
+
 ## Agent Roles & Responsibilities
 
 ### 1. Issue Analyst
@@ -311,9 +372,12 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 ### 12. Workflow Engineer (Meta-Agent)
 - **Goal:** Analyze, improve, and maintain the agent-based workflow.
+- **Execution Modes:**
+  - **Local (VS Code):** Interactive workflow analysis with Maintainer guidance
+  - **Cloud (GitHub):** Automated execution of well-defined workflow improvements via issue assignment
 - **Deliverables:** A prioritized workflow-improvement `tasks.md` (with status), updated agent definitions, workflow documentation updates, PRs with workflow changes.
 - **Definition of Done:** Workflow changes are documented, committed, and PR is created.
-- **Note:** This agent operates outside the normal feature development flow. Use it when you want to improve the development process itself.
+- **Note:** Can operate in both local (chat) and cloud (issue) contexts. This agent operates outside the normal feature development flow.
 
 ### 13. Web Designer (Specialized Agent)
 - **Goal:** Design, develop, and maintain the tfplan2md website hosted on GitHub Pages.

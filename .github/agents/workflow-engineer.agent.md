@@ -437,9 +437,19 @@ Before making modifications:
 # Check what branch you're on
 git branch --show-current
 
-# If you're on main, STOP and create feature branch first:
+# If you're on main, STOP and create workflow branch first:
+# 1. Determine the next available issue number
+NEXT_NUMBER=$(scripts/next-issue-number.sh)
+echo "Next issue number: $NEXT_NUMBER"
+
+# 2. Sync with main
 git fetch origin && git switch main && git pull --ff-only origin main
-git switch -c workflow/<description>
+
+# 3. Create workflow branch with determined number
+git switch -c workflow/${NEXT_NUMBER}-<description>
+
+# 4. IMMEDIATELY push to reserve the issue number
+git push -u origin HEAD
 
 # Only proceed after confirming you're on a feature branch
 ```
@@ -461,8 +471,15 @@ After implementation:
 # Ensure main is current
 git fetch origin && git switch main && git pull --ff-only origin main
 
-# Create feature branch
-git switch -c workflow/<description>
+# Determine next issue number
+NEXT_NUMBER=$(scripts/next-issue-number.sh)
+echo "Next issue number: $NEXT_NUMBER"
+
+# Create workflow branch with determined number
+git switch -c workflow/${NEXT_NUMBER}-<description>
+
+# IMMEDIATELY push to reserve the issue number
+git push -u origin HEAD
 
 # Stage changes
 git add .github/agents/ docs/agents.md
@@ -532,7 +549,10 @@ When updating `docs/agents.md`, verify all of these:
 2. **Create workflow branch** - Switch to a clean workflow branch:
    ```bash
    git switch main && git pull --ff-only origin main
-   git switch -c workflow/<issue-description>
+   NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   echo "Next issue number: $NEXT_NUMBER"
+   git switch -c workflow/${NEXT_NUMBER}-<issue-description>
+   git push -u origin HEAD
    ```
 
 3. **Make workflow fixes** - Update only workflow-related files:

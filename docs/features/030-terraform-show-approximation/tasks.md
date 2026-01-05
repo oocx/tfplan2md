@@ -16,14 +16,14 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Create the new tool project and implement the command-line interface following the project's established patterns.
 
 **Acceptance Criteria:**
-- [ ] New project created at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`.
-- [ ] Project added to `tfplan2md.slnx`.
-- [ ] `CLI/CliOptions.cs` defines `--input`, `--output`, `--no-color`, `--help`, and `--version`.
-- [ ] `CLI/CliParser.cs` correctly parses arguments and handles errors.
-- [ ] `CLI/HelpTextProvider.cs` provides clear usage instructions.
-- [ ] `Program.cs` and `TerraformShowRendererApp.cs` implemented with basic flow and exit codes (0-4).
-- [ ] `VersionProvider.cs` implemented to show the tool version.
-- [ ] Tool can be run with `--help` and `--version`.
+- [x] New project created at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`.
+- [x] Project added to `tfplan2md.slnx`.
+- [x] `CLI/CliOptions.cs` defines `--input`, `--output`, `--no-color`, `--help`, and `--version`.
+- [x] `CLI/CliParser.cs` correctly parses arguments and handles errors.
+- [x] `CLI/HelpTextProvider.cs` provides clear usage instructions.
+- [x] `Program.cs` and `TerraformShowRendererApp.cs` implemented with basic flow and exit codes (0-4).
+- [x] `VersionProvider.cs` implemented to show the tool version.
+- [x] Tool can be run with `--help` and `--version`.
 
 **Dependencies:** None
 
@@ -37,11 +37,11 @@ Create the new tool project and implement the command-line interface following t
 Implement the core rendering infrastructure, including ANSI color support and the high-level rendering sequence.
 
 **Acceptance Criteria:**
-- [ ] `Rendering/AnsiTextWriter.cs` implemented to support `Bold`, `Green`, `Yellow`, `Red`, `Cyan`, `Dim`, and `Reset`.
-- [ ] `AnsiTextWriter` respects the `--no-color` flag (strips all escape sequences).
-- [ ] `Rendering/TerraformShowRenderer.cs` implemented with the main rendering loop.
-- [ ] Static Legend section implemented matching real Terraform output.
-- [ ] "Terraform will perform the following actions:" header implemented.
+- [x] `Rendering/AnsiTextWriter.cs` implemented to support `Bold`, `Green`, `Yellow`, `Red`, `Cyan`, `Dim`, and `Reset`.
+- [x] `AnsiTextWriter` respects the `--no-color` flag (strips all escape sequences).
+- [x] `Rendering/TerraformShowRenderer.cs` implemented with the main rendering loop.
+- [x] Static Legend section implemented matching real Terraform output.
+- [x] "Terraform will perform the following actions:" header implemented.
 
 **Dependencies:** Task 1
 
@@ -55,11 +55,11 @@ Implement the core rendering infrastructure, including ANSI color support and th
 Implement the logic to map Terraform plan actions to human-readable headers and markers.
 
 **Acceptance Criteria:**
-- [ ] Correct mapping of `change.actions` to: create (`+`), update (`~`), delete (`-`), replace (`-/+`), and read (`<=`).
-- [ ] Resource header comment lines implemented: `  # <address> will be <action phrase>`.
-- [ ] Action phrases match baseline: `will be created`, `will be updated in-place`, `will be destroyed`, `will be read during apply`, `must be replaced`.
-- [ ] Bold and color styling applied to action phrases (e.g., red+bold for `destroyed` and `replaced`).
-- [ ] `action_reason` from JSON is rendered in parentheses if present.
+- [x] Correct mapping of `change.actions` to: create (`+`), update (`~`), delete (`-`), replace (`-/+`), and read (`<=`).
+- [x] Resource header comment lines implemented: `  # <address> will be <action phrase>`.
+- [x] Action phrases match baseline: `will be created`, `will be updated in-place`, `will be destroyed`, `will be read during apply`, `must be replaced`.
+- [x] Bold and color styling applied to action phrases (e.g., red+bold for `destroyed` and `replaced`).
+- [x] `action_reason` from JSON is rendered in parentheses if present.
 
 **Dependencies:** Task 2
 

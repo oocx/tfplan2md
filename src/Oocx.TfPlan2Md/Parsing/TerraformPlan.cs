@@ -22,7 +22,8 @@ public record ResourceChange(
     [property: JsonPropertyName("type")] string Type,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("provider_name")] string ProviderName,
-    [property: JsonPropertyName("change")] Change Change
+    [property: JsonPropertyName("change")] Change Change,
+    [property: JsonPropertyName("action_reason")] string? ActionReason = null
 );
 
 /// <summary>

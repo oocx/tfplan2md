@@ -22,6 +22,7 @@ internal sealed partial class DiffRenderer
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
         var paddedName = string.IsNullOrWhiteSpace(name) ? string.Empty : (nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
         if (!string.IsNullOrWhiteSpace(paddedName))
@@ -88,6 +89,7 @@ internal sealed partial class DiffRenderer
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
         var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
         writer.Write(paddedName);
@@ -135,6 +137,7 @@ internal sealed partial class DiffRenderer
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
         var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
         writer.Write(paddedName);

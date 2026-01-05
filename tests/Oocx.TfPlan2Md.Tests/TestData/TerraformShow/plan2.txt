@@ -1,0 +1,176 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+  [33m~[0m update in-place[0m
+  [31m-[0m destroy[0m
+[31m-[0m/[32m+[0m destroy and then create replacement[0m
+ [36m<=[0m read (data resources)[0m
+
+Terraform will perform the following actions:
+
+[1m  # data.azuredevops_project.example[0m will be read during apply
+  # (depends on a resource or a module with changes pending)
+[0m [36m<=[0m[0m data "azuredevops_project" "example" {
+      [32m+[0m[0m description         = (known after apply)
+      [32m+[0m[0m features            = (known after apply)
+      [32m+[0m[0m id                  = (known after apply)
+      [32m+[0m[0m process_template_id = (known after apply)
+      [32m+[0m[0m project_id          = "0f0b93a6-f450-49b2-ad52-fe3303c2f9aa"
+      [32m+[0m[0m version_control     = (known after apply)
+      [32m+[0m[0m visibility          = (known after apply)
+      [32m+[0m[0m work_item_template  = (known after apply)
+    }
+
+[1m  # azuredevops_build_definition.example[0m will be [1m[31mdestroyed[0m
+  # (because azuredevops_build_definition.example is not in configuration)
+[0m  [31m-[0m[0m resource "azuredevops_build_definition" "example" {
+      [31m-[0m[0m agent_pool_name         = "Azure Pipelines" [90m-> null[0m[0m
+      [31m-[0m[0m id                      = "6" [90m-> null[0m[0m
+      [31m-[0m[0m job_authorization_scope = "projectCollection" [90m-> null[0m[0m
+      [31m-[0m[0m name                    = "example-pipeline" [90m-> null[0m[0m
+      [31m-[0m[0m path                    = "\\Pipelines" [90m-> null[0m[0m
+      [31m-[0m[0m project_id              = "0f0b93a6-f450-49b2-ad52-fe3303c2f9aa" [90m-> null[0m[0m
+      [31m-[0m[0m queue_status            = "enabled" [90m-> null[0m[0m
+      [31m-[0m[0m revision                = 1 [90m-> null[0m[0m
+      [31m-[0m[0m variable_groups         = [
+          [31m-[0m[0m 1,
+        ] [90m-> null[0m[0m
+
+      [31m-[0m[0m ci_trigger {
+          [31m-[0m[0m use_yaml = true [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m repository {
+          [31m-[0m[0m branch_name           = "refs/heads/master" [90m-> null[0m[0m
+          [31m-[0m[0m repo_id               = "80128bc2-17ff-45f8-ad59-d7609a605c75" [90m-> null[0m[0m
+          [31m-[0m[0m repo_type             = "TfsGit" [90m-> null[0m[0m
+          [31m-[0m[0m report_build_status   = true [90m-> null[0m[0m
+          [31m-[0m[0m url                   = "https://dev.azure.com/oocx/example-project/_git/example-repo" [90m-> null[0m[0m
+          [31m-[0m[0m yml_path              = "azure-pipelines.yml" [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+
+      [31m-[0m[0m variable {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+      [31m-[0m[0m variable {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+    }
+
+[1m  # azuredevops_build_definition.example2[0m will be created
+[0m  [32m+[0m[0m resource "azuredevops_build_definition" "example2" {
+      [32m+[0m[0m agent_pool_name         = "Azure Pipelines"
+      [32m+[0m[0m id                      = (known after apply)
+      [32m+[0m[0m job_authorization_scope = "projectCollection"
+      [32m+[0m[0m name                    = "example-pipeline"
+      [32m+[0m[0m path                    = "\\Pipelines"
+      [32m+[0m[0m project_id              = "0f0b93a6-f450-49b2-ad52-fe3303c2f9aa"
+      [32m+[0m[0m queue_status            = "enabled"
+      [32m+[0m[0m revision                = (known after apply)
+      [32m+[0m[0m variable_groups         = (known after apply)
+
+      [32m+[0m[0m ci_trigger {
+          [32m+[0m[0m use_yaml = true
+        }
+
+      [32m+[0m[0m repository {
+          [32m+[0m[0m branch_name         = "refs/heads/master"
+          [32m+[0m[0m repo_id             = "80128bc2-17ff-45f8-ad59-d7609a605c75"
+          [32m+[0m[0m repo_type           = "TfsGit"
+          [32m+[0m[0m report_build_status = true
+          [32m+[0m[0m url                 = (known after apply)
+          [32m+[0m[0m yml_path            = "azure-pipelines.yml"
+        }
+
+      [32m+[0m[0m variable {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+      [32m+[0m[0m variable {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+    }
+
+[1m  # azuredevops_project.example[0m will be updated in-place
+[0m  [33m~[0m[0m resource "azuredevops_project" "example" {
+      [33m~[0m[0m features            = {
+          [33m~[0m[0m "boards"       = "enabled" [33m->[0m[0m "disabled"
+            [90m# (4 unchanged elements hidden)[0m[0m
+        }
+        id                  = "0f0b93a6-f450-49b2-ad52-fe3303c2f9aa"
+        name                = "example-project"
+        [90m# (5 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # azuredevops_project.example2[0m will be created
+[0m  [32m+[0m[0m resource "azuredevops_project" "example2" {
+      [32m+[0m[0m description         = "An example project created by Terraform for testing tfplan2md"
+      [32m+[0m[0m features            = {
+          [32m+[0m[0m "artifacts"    = "disabled"
+          [32m+[0m[0m "boards"       = "disabled"
+          [32m+[0m[0m "pipelines"    = "enabled"
+          [32m+[0m[0m "repositories" = "enabled"
+          [32m+[0m[0m "testplans"    = "disabled"
+        }
+      [32m+[0m[0m id                  = (known after apply)
+      [32m+[0m[0m name                = "example-project"
+      [32m+[0m[0m process_template_id = (known after apply)
+      [32m+[0m[0m version_control     = "Git"
+      [32m+[0m[0m visibility          = "private"
+      [32m+[0m[0m work_item_template  = "Agile"
+    }
+
+[1m  # azuredevops_variable_group.example[0m must be [1m[31mreplaced[0m
+[0m[31m-[0m/[32m+[0m[0m resource "azuredevops_variable_group" "example" {
+      [33m~[0m[0m id           = "1" -> (known after apply)
+        name         = "example-variables"
+      [33m~[0m[0m project_id   = "0f0b93a6-f450-49b2-ad52-fe3303c2f9aa" -> (known after apply) [31m# forces replacement[0m[0m
+        [90m# (2 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m secret_variable {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+      [32m+[0m[0m secret_variable {
+          # At least one attribute in this block is (or was) sensitive,
+          # so its contents will not be displayed.
+        }
+
+      [31m-[0m[0m variable {
+          [31m-[0m[0m enabled      = false [90m-> null[0m[0m
+          [31m-[0m[0m name         = "APP_VERSION" [90m-> null[0m[0m
+          [31m-[0m[0m value        = "1.0.0" [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+      [31m-[0m[0m variable {
+          [31m-[0m[0m enabled      = false [90m-> null[0m[0m
+          [31m-[0m[0m name         = "ENVIRONMENT" [90m-> null[0m[0m
+          [31m-[0m[0m value        = "development" [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+      [32m+[0m[0m variable {
+          [32m+[0m[0m content_type = (known after apply)
+          [32m+[0m[0m enabled      = (known after apply)
+          [32m+[0m[0m expires      = (known after apply)
+          [32m+[0m[0m name         = "APP_VERSION"
+          [32m+[0m[0m value        = "1.0.0"
+        }
+      [32m+[0m[0m variable {
+          [32m+[0m[0m content_type = (known after apply)
+          [32m+[0m[0m enabled      = (known after apply)
+          [32m+[0m[0m expires      = (known after apply)
+          [32m+[0m[0m name         = "ENV"
+          [32m+[0m[0m value        = "Production"
+        }
+    }
+
+[1mPlan:[0m [0m3 to add, 1 to change, 2 to destroy.
+
+Changes to Outputs:
+  [33m~[0m[0m pipeline_id       = "6" -> (known after apply)
+  [33m~[0m[0m variable_group_id = "1" -> (known after apply)

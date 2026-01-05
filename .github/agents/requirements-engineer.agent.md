@@ -121,21 +121,34 @@ Before proceeding, check if this is actually a new feature request:
 
 Only if this is a confirmed feature request, **IMMEDIATELY execute these commands** using the `runInTerminal` tool:
 
-1. First, update and switch to main:
+1. First, determine the next available issue number using the `next-issue-number` skill:
+   ```bash
+   NEXT_NUMBER=$(scripts/next-issue-number.sh)
+   echo "Next issue number: $NEXT_NUMBER"
+   ```
+
+2. Update and switch to main:
    ```bash
    git fetch origin && git switch main && git pull --ff-only origin main
    ```
 
-2. Then create and switch to feature branch:
+3. Create and switch to feature branch with the determined number:
    ```bash
-   git switch -c feature/<short-description>
+   git switch -c feature/${NEXT_NUMBER}-<short-description>
    ```
    
-   Use a descriptive branch name that references the issue or feature (e.g., `feature/123-firewall-diff-display`)
+   Use a descriptive short-description (e.g., `feature/033-firewall-diff-display`)
+
+4. **IMMEDIATELY push the branch** to reserve the issue number:
+   ```bash
+   git push -u origin HEAD
+   ```
 
 **CRITICAL**: 
 - Do NOT just show these commands in a code block - you MUST execute them with `runInTerminal`
 - Do NOT use GitHub API tools (`github/create_branch`) - they create remote branches without switching your local working directory
+- Do NOT skip determining the next issue number - always use the script
+- Do NOT delay pushing - push immediately after creating the branch to reserve the number
 - Verify the branch was created successfully by checking the terminal output
 - If branch creation fails, stop and ask for help
 

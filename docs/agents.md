@@ -88,6 +88,7 @@ Format:
 | `create-pr-azdo` | Create an Azure DevOps pull request using az devops tooling; include the repo’s linear-history merge preference and ask the Maintainer if merge options differ. |
 | `git-rebase-main` | Safely rebase the current feature branch on top of the latest origin/main. |
 | `merge-conflict-resolution` | Resolve git merge/rebase conflicts safely without losing intended changes; verify by reviewing diffs and searching for conflict markers. |
+| `next-issue-number` | Determine the next available issue number across all change types (feature, fix, workflow) by checking both local docs and remote branches, then reserve it by pushing an empty branch. |
 | `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
 | `run-uat` | Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. |
 | `simulate-uat` | Simulate the UAT workflow (create PR, comment, poll) on GitHub or Azure DevOps using a minimal test artifact and simulated fixes. |

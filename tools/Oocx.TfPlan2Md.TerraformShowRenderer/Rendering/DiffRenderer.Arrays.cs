@@ -22,13 +22,15 @@ internal sealed partial class DiffRenderer
     {
         if (IsSensitivePath(sensitive, path))
         {
-            WriteSensitivePlaceholder(writer, indent, null);
+            // Scalar items need extra Indent to match Terraform output formatting
+            WriteSensitivePlaceholder(writer, indent + Indent, null);
             return;
         }
 
         if (IsUnknownPath(unknown, path))
         {
-            WriteScalarLine(writer, indent, marker, style, string.Empty, "(known after apply)");
+            // Scalar items need extra Indent to match Terraform output formatting
+            WriteScalarLine(writer, indent + Indent, marker, style, string.Empty, "(known after apply)");
             return;
         }
 
@@ -61,7 +63,8 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                WriteScalarLine(writer, indent, marker, style, string.Empty, _valueRenderer.Render(element));
+                // Scalar items need extra Indent to match Terraform output formatting
+                WriteScalarLine(writer, indent + Indent, marker, style, string.Empty, _valueRenderer.Render(element));
                 break;
         }
     }
@@ -83,7 +86,7 @@ internal sealed partial class DiffRenderer
                 foreach (var property in element.EnumerateObject())
                 {
                     var childPath = new List<string>(path) { property.Name };
-                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent, sensitive, childPath);
+                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent, sensitive, childPath, 0);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);
@@ -103,7 +106,9 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, string.Empty, _valueRenderer.Render(element), true);
+                // Array items use comma suffix instead of -> null
+                // Scalar items need extra Indent to match Terraform output formatting
+                WriteRemovedArrayScalar(writer, indent + Indent, element);
                 break;
         }
     }
@@ -159,7 +164,7 @@ internal sealed partial class DiffRenderer
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath);
+                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath, 0);
             }
 
             WriteClosingBrace(writer, indent + Indent);
@@ -205,14 +210,15 @@ internal sealed partial class DiffRenderer
     /// <param name="name">Block name.</param>
     /// <param name="indent">Current indentation.</param>
     /// <param name="path">Path for lookups.</param>
-    private void RenderRemovedObjectBlock(AnsiTextWriter writer, JsonElement element, string name, string indent, JsonElement? sensitive, List<string> path)
+    /// <param name="nameWidth">Width for name padding to align block names.</param>
+    private void RenderRemovedObjectBlock(AnsiTextWriter writer, JsonElement element, string name, string indent, JsonElement? sensitive, List<string> path, int nameWidth = 0)
     {
         if (!ShouldRenderValue(element, isUnknown: false, isSensitive: false))
         {
             return;
         }
 
-        WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name);
+        WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name, nameWidth);
         foreach (var property in element.EnumerateObject())
         {
             var childPath = new List<string>(path) { property.Name };
@@ -240,7 +246,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in before.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath);
+                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath, 0);
                 index++;
             }
         }

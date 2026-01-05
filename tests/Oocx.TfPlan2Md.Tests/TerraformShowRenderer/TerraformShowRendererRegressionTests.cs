@@ -42,6 +42,38 @@ public sealed class TerraformShowRendererRegressionTests
     }
 
     /// <summary>
+    /// Ensures plan1 rendering (no color) matches the recorded terraform show output.
+    /// This test focuses on structure without ANSI escape sequences.
+    /// </summary>
+    [Fact]
+    public async Task Render_Plan1_NoColor_MatchesBaselineAsync()
+    {
+        var (plan, outputChanges) = await ParsePlanAsync("plan1.json");
+        var renderer = new Renderer();
+
+        var output = renderer.Render(plan, suppressColor: true, outputChanges);
+        var expected = await File.ReadAllTextAsync(Path.Combine("TestData", "TerraformShow", "plan1.nocolor.txt"));
+
+        Assert.Equal(expected, output);
+    }
+
+    /// <summary>
+    /// Ensures plan2 rendering (no color) matches the recorded terraform show output.
+    /// This test focuses on structure without ANSI escape sequences.
+    /// </summary>
+    [Fact]
+    public async Task Render_Plan2_NoColor_MatchesBaselineAsync()
+    {
+        var (plan, outputChanges) = await ParsePlanAsync("plan2.json");
+        var renderer = new Renderer();
+
+        var output = renderer.Render(plan, suppressColor: true, outputChanges);
+        var expected = await File.ReadAllTextAsync(Path.Combine("TestData", "TerraformShow", "plan2.nocolor.txt"));
+
+        Assert.Equal(expected, output);
+    }
+
+    /// <summary>
     /// Parses a Terraform plan JSON from the Terraform show regression folder.
     /// </summary>
     /// <param name="fileName">Plan file name to parse.</param>

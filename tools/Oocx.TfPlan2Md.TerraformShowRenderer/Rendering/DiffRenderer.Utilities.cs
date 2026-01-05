@@ -18,14 +18,15 @@ internal sealed partial class DiffRenderer
     /// <param name="appendNull">Whether to append the Terraform <c>-> null</c> suffix.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
     /// <returns>Nothing.</returns>
-    private static void WriteScalarLine(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string value, bool appendNull = false, bool appendReplacement = false)
+    private static void WriteScalarLine(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string value, bool appendNull = false, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
         writer.Write(" ");
-        if (!string.IsNullOrWhiteSpace(name))
+        var paddedName = string.IsNullOrWhiteSpace(name) ? string.Empty : (nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+        if (!string.IsNullOrWhiteSpace(paddedName))
         {
-            writer.Write(name);
+            writer.Write(paddedName);
             writer.Write(" = ");
         }
 
@@ -83,12 +84,13 @@ internal sealed partial class DiffRenderer
     /// <param name="symbol">Container symbol, such as <c>{</c> or <c>[</c>.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
     /// <returns>Nothing.</returns>
-    private static void WriteContainerOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string symbol, bool appendReplacement = false)
+    private static void WriteContainerOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string symbol, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
         writer.Write(" ");
-        writer.Write(name);
+        var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
+        writer.Write(paddedName);
         writer.Write(" = ");
         writer.Write(symbol);
         if (appendReplacement)
@@ -129,12 +131,13 @@ internal sealed partial class DiffRenderer
     /// <param name="style">ANSI style associated with the marker.</param>
     /// <param name="name">Block name.</param>
     /// <returns>Nothing.</returns>
-    private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
+    private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, int nameWidth = 0)
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
         writer.Write(" ");
-        writer.Write(name);
+        var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
+        writer.Write(paddedName);
         writer.WriteLine(" {");
     }
 
@@ -176,6 +179,26 @@ internal sealed partial class DiffRenderer
     }
 
     /// <summary>
+    /// Renders a Terraform-style sensitive block with a marker and placeholder comment.
+    /// </summary>
+    /// <param name="writer">Destination writer.</param>
+    /// <param name="indent">Indentation for the block.</param>
+    /// <param name="marker">Marker to display (<c>+</c>, <c>-</c>, or <c>~</c>).</param>
+    /// <param name="style">ANSI style for the marker.</param>
+    /// <param name="name">Block name.</param>
+    /// <returns>Nothing.</returns>
+    private static void WriteSensitiveBlock(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
+    {
+        writer.Write(indent);
+        writer.WriteStyled(marker, style);
+        writer.Write(" ");
+        writer.Write(name);
+        writer.WriteLine(" {");
+        WriteSensitivePlaceholder(writer, indent + Indent, null);
+        WriteClosingBrace(writer, indent + Indent);
+    }
+
+    /// <summary>
     /// Determines whether an array contains only object elements.
     /// </summary>
     /// <param name="element">Array element to inspect.</param>
@@ -201,6 +224,7 @@ internal sealed partial class DiffRenderer
 
         return value.ValueKind switch
         {
+            JsonValueKind.String when string.IsNullOrEmpty(value.GetString()) => false,
             JsonValueKind.Null => false,
             JsonValueKind.Object => value.EnumerateObject().Any(),
             JsonValueKind.Array => value.EnumerateArray().Any(),
@@ -293,4 +317,23 @@ internal sealed partial class DiffRenderer
         }
     }
 
+
+    /// <summary>
+    /// Computes the maximum property name width for alignment.
+    /// </summary>
+    /// <param name="properties">Properties to inspect.</param>
+    /// <returns>Maximum name length or zero when no properties exist.</returns>
+    private static int ComputeNameWidth(IEnumerable<(string Name, JsonElement Value)> properties)
+    {
+        var max = 0;
+        foreach (var property in properties)
+        {
+            if (property.Name.Length > max)
+            {
+                max = property.Name.Length;
+            }
+        }
+
+        return max;
+    }
 }

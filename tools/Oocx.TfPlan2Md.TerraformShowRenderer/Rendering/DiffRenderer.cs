@@ -23,25 +23,27 @@ internal sealed partial class DiffRenderer
     /// <returns>Nothing.</returns>
     public void RenderAttributes(AnsiTextWriter writer, ResourceChange change, ResourceAction action, string baseIndent)
     {
-        var indent = baseIndent + baseIndent;
+        var indent = baseIndent + Indent + Indent;
         var before = ToElement(change.Change.Before);
         var after = ToElement(change.Change.After);
         var afterUnknown = ToElement(change.Change.AfterUnknown);
         var afterSensitive = ToElement(change.Change.AfterSensitive);
+        var beforeSensitive = ToElement(change.Change.BeforeSensitive);
         var replacePaths = CollectReplacePaths(change.Change.ReplacePaths);
 
         switch (action)
         {
             case ResourceAction.Create:
             case ResourceAction.Read:
-                RenderAdd(writer, after, afterUnknown, afterSensitive, indent, action == ResourceAction.Read ? "<=" : "+", action == ResourceAction.Read ? AnsiStyle.Cyan : AnsiStyle.Green);
+                RenderAdd(writer, after, afterUnknown, afterSensitive, indent, action == ResourceAction.Read ? "+" : "+", AnsiStyle.Green);
                 break;
             case ResourceAction.Delete:
-                RenderRemove(writer, before, indent);
+                RenderRemove(writer, before, indent, beforeSensitive);
                 break;
             case ResourceAction.Update:
             case ResourceAction.Replace:
-                RenderUpdate(writer, before, after, afterUnknown, afterSensitive, indent, replacePaths);
+                var effectiveSensitive = afterSensitive ?? beforeSensitive;
+                RenderUpdate(writer, before, after, afterUnknown, effectiveSensitive, indent, replacePaths);
                 break;
         }
     }
@@ -62,9 +64,13 @@ internal sealed partial class DiffRenderer
             return;
         }
 
-        foreach (var property in EnumerateProperties(after.Value, unknown))
+        var properties = EnumerateProperties(after.Value, unknown).ToList();
+        var sorted = properties.OrderBy(p => IsUnknownPath(unknown, [p.Name]) ? 0 : 1).ToList();
+        var width = ComputeNameWidth(sorted);
+
+        foreach (var property in sorted)
         {
-            RenderAddedValue(writer, property.Value, property.Name, indent, marker, style, unknown, sensitive, new List<string> { property.Name });
+            RenderAddedValue(writer, property.Value, property.Name, indent, marker, style, unknown, sensitive, new List<string> { property.Name }, width);
         }
     }
 
@@ -73,7 +79,7 @@ internal sealed partial class DiffRenderer
     /// <param name="before">State before the change.</param>
     /// <param name="indent">Indentation to use for nested attributes.</param>
     /// <returns>Nothing.</returns>
-    private void RenderRemove(AnsiTextWriter writer, JsonElement? before, string indent)
+    private void RenderRemove(AnsiTextWriter writer, JsonElement? before, string indent, JsonElement? sensitive)
     {
         if (before is not { ValueKind: JsonValueKind.Object })
         {
@@ -82,7 +88,7 @@ internal sealed partial class DiffRenderer
 
         foreach (var property in before.Value.EnumerateObject())
         {
-            RenderRemovedValue(writer, property.Value, property.Name, indent, new List<string> { property.Name });
+            RenderRemovedValue(writer, property.Value, property.Name, indent, sensitive, new List<string> { property.Name });
         }
     }
 
@@ -124,13 +130,13 @@ internal sealed partial class DiffRenderer
             }
             else
             {
-                RenderAddedValue(writer, prop.Value, prop.Name, indent, "+", AnsiStyle.Green, unknown, sensitive, path);
+                RenderAddedValue(writer, prop.Value, prop.Name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, 0);
             }
         }
 
         foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
         {
-            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, new List<string> { removedName });
+            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, sensitive, new List<string> { removedName });
         }
 
         if (unchanged > 0)

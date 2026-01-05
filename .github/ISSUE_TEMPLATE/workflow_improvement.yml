@@ -1,0 +1,158 @@
+name: Workflow Improvement
+description: Propose improvements to the agent-based development workflow
+title: "[Workflow]: "
+labels: ["workflow"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose improvements to the agent workflow, agent definitions, or development process.
+        
+        **Tip:** Provide enough detail so agents can implement the improvement autonomously, ideally without additional questions.
+
+  - type: dropdown
+    id: improvement-type
+    attributes:
+      label: Improvement Type
+      description: What kind of workflow improvement is this?
+      options:
+        - Agent modification (update instructions, tools, or model)
+        - New agent creation
+        - Documentation update
+        - Process improvement
+        - Script/automation enhancement
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-problem
+    attributes:
+      label: Current Situation
+      description: What problem or limitation exists in the current workflow?
+      placeholder: |
+        Example:
+        "The Quality Engineer agent creates test plans in the wrong folder because 
+        instructions reference an incorrect path pattern."
+        
+        Or:
+        "We lack a way to validate agent definitions before committing, leading to 
+        broken handoffs and invalid tool references."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the specific change you're proposing
+      placeholder: |
+        Example:
+        "Update `.github/agents/quality-engineer.agent.md` to reference the correct 
+        path: `docs/features/NNN-<feature-slug>/test-plan.md`"
+        
+        Or:
+        "Create a validation script that checks:
+        - All handoff agent names exist
+        - All tool IDs are valid VS Code tool names
+        - Model names match available models in docs/ai-model-reference.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Which files or agents will be modified? Be specific.
+      placeholder: |
+        Files to modify:
+        - `.github/agents/quality-engineer.agent.md` (line 45, update path)
+        - `docs/agents.md` (Quality Engineer section, document correct path)
+        
+        Or:
+        - Create new file: `scripts/validate-agents.py`
+        - Update `.github/agents/workflow-engineer.agent.md` (add validation step)
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why This Matters
+      description: What is the benefit or impact of this improvement?
+      placeholder: |
+        Example:
+        "Prevents wasted time recreating test plans in the correct location. Improves 
+        agent reliability and reduces manual corrections."
+        
+        Or:
+        "Catches configuration errors at commit time rather than runtime, preventing 
+        broken workflows and failed handoffs."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this improvement is complete and correct?
+      placeholder: |
+        - [ ] Quality Engineer agent uses correct path in instructions
+        - [ ] Test plan artifact location documented in docs/agents.md
+        - [ ] Existing test plans remain in current locations (no migration needed)
+        - [ ] PR includes conventional commit format
+        
+        Or:
+        - [ ] validate-agents.py script exists and is executable
+        - [ ] Script checks handoffs, tools, and models
+        - [ ] Documentation updated with validation instructions
+        - [ ] All current agents pass validation
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of Scope (Optional)
+      description: What should NOT be changed as part of this improvement?
+      placeholder: |
+        - Do NOT modify other agents' test plan paths
+        - Do NOT migrate existing test plans to new locations
+        - Do NOT change test plan format or structure
+
+  - type: textarea
+    id: related-work
+    attributes:
+      label: Related Issues or Context (Optional)
+      description: Links to related issues, retrospectives, or analysis documents
+      placeholder: |
+        - Retrospective: docs/workflow/023-retrospective-2025-12-28/retrospective-2025-12-28.md
+        - Related issue: #42
+        - Analysis: docs/workflow/031-cloud-agents-analysis/cloud-agents-analysis.md
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (Optional)
+      description: How urgent is this improvement?
+      options:
+        - Not specified
+        - Critical (blocks work)
+        - High (important, should be done soon)
+        - Medium (would be nice to have)
+        - Low (minor improvement)
+    validations:
+      required: false
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity (Optional)
+      description: How difficult do you think this will be?
+      options:
+        - Not sure
+        - Low (< 1 hour, simple change)
+        - Medium (1-3 hours, moderate effort)
+        - High (> 3 hours, complex or uncertain)
+    validations:
+      required: false

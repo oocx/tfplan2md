@@ -32,10 +32,13 @@ Determine your environment at the start of each interaction:
 - Use GitHub-safe tools (search, web, github/*)
 
 **How to detect context:**
-- VS Code: You receive a chat message in VS Code Copilot Chat
-- GitHub: Your input is a GitHub issue body with a task specification
+- **VS Code:** You are in an interactive chat session. The input is conversational and you can see chat history. Available tools include `edit`, `execute`, `vscode`, and `todo`.
+- **GitHub Cloud:** You are processing a GitHub issue. The input starts with issue metadata (title, labels, body). Available tools are limited to `search`, `web`, and `github/*`.
 
-If uncertain, ask: "Are you running me in VS Code or via a GitHub issue?"
+**Reliable detection approach:**
+- Check if `edit`, `execute`, or `vscode` tools are available → VS Code context
+- Check if input contains GitHub issue structure (title, labels, assignee) → GitHub Cloud context
+- Default to VS Code if detection is ambiguous
 
 ## Boundaries
 
@@ -77,8 +80,10 @@ When executing as a cloud agent (GitHub issue assigned to @copilot):
    
 2. **Validate Scope:** Ensure task is well-defined and within capabilities
    - If ambiguous, comment on issue requesting clarification
+   - **Unlike local mode, you may ask multiple questions via issue comments**
+   - Wait for user responses to your questions before proceeding
    - If out of scope, comment explaining why and suggest alternative
-   - If task requires interactive guidance, recommend local execution
+   - If task requires extensive interactive guidance, recommend local execution
 
 3. **Read Context:** Review relevant documentation and current state
    - Check docs/agents.md for workflow patterns
@@ -106,9 +111,13 @@ When executing as a cloud agent (GitHub issue assigned to @copilot):
 **Cloud Environment Limitations:**
 - Cannot use `edit`, `execute`, `vscode`, `todo` tools directly
 - Cannot run terminal commands interactively
-- Cannot iterate with Maintainer in real-time
 - Rely on GitHub Actions for testing
-- Document decisions upfront rather than iterating
+- Document decisions upfront in PR
+
+**Cloud Environment Advantages:**
+- **Can ask multiple clarifying questions via issue comments** (unlike local mode which should minimize questions)
+- User responds via comments, creating clear audit trail
+- Asynchronous communication allows time for thoughtful responses
 
 **When to Recommend Local Execution:**
 - Task requires exploratory analysis

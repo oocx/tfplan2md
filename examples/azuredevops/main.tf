@@ -28,7 +28,23 @@ resource "azuredevops_project" "example" {
   work_item_template = "Agile"
 
   features = {
-    "boards"       = "enabled"
+    "boards"       = "disabled"
+    "repositories" = "enabled"
+    "pipelines"    = "enabled"
+    "testplans"    = "disabled"
+    "artifacts"    = "disabled"
+  }
+}
+
+resource "azuredevops_project" "example2" {
+  name               = var.project_name
+  description        = var.project_description
+  visibility         = "private"
+  version_control    = "Git"
+  work_item_template = "Agile"
+
+  features = {
+    "boards"       = "disabled"
     "repositories" = "enabled"
     "pipelines"    = "enabled"
     "testplans"    = "disabled"
@@ -48,15 +64,10 @@ resource "azuredevops_git_repository" "example" {
 
 # Variable Group
 resource "azuredevops_variable_group" "example" {
-  project_id   = azuredevops_project.example.id
+  project_id   = azuredevops_project.example2.id
   name         = var.variable_group_name
   description  = "Variable group for example pipeline"
   allow_access = true
-
-  variable {
-    name  = "ENVIRONMENT"
-    value = "development"
-  }
 
   variable {
     name  = "APP_VERSION"
@@ -67,10 +78,15 @@ resource "azuredevops_variable_group" "example" {
     name  = "SECRET_KEY"
     value = "supersecret"
   }
+
+  variable {
+    name  = "ENV"
+    value = "Production"
+  }
 }
 
 # Build Definition (Pipeline)
-resource "azuredevops_build_definition" "example" {
+resource "azuredevops_build_definition" "example2" {
   project_id = azuredevops_project.example.id
   name       = var.pipeline_name
   path       = "\\Pipelines"
@@ -99,4 +115,8 @@ resource "azuredevops_build_definition" "example" {
     name  = "BUILD_PLATFORM"
     value = "Any CPU"
   }
+}
+
+data "azuredevops_project" "example" {
+  project_id = azuredevops_project.example.id
 }

@@ -65,13 +65,24 @@ internal sealed partial class DiffRenderer
         }
 
         var properties = EnumerateProperties(after.Value, unknown).ToList();
-        // Sort properties alphabetically by name to match Terraform output
-        var sorted = properties.OrderBy(p => p.Name, StringComparer.Ordinal).ToList();
+        // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
+        var sorted = SortPropertiesForOutput(properties);
         var width = ComputeNameWidth(sorted);
 
+        var previousWasBlock = false;
+        var previousWasScalar = false;
         foreach (var property in sorted)
         {
+            var isBlock = IsBlock(property.Value);
+            // Add blank line before blocks (when transitioning from scalars to blocks, or between blocks)
+            if (isBlock && (previousWasScalar || previousWasBlock))
+            {
+                writer.WriteLine();
+            }
+
             RenderAddedValue(writer, property.Value, property.Name, indent, marker, style, unknown, sensitive, new List<string> { property.Name }, width);
+            previousWasScalar = !isBlock;
+            previousWasBlock = isBlock;
         }
     }
 
@@ -87,12 +98,25 @@ internal sealed partial class DiffRenderer
             return;
         }
 
-        var properties = before.Value.EnumerateObject().ToList();
-        var width = ComputeNameWidth(properties.Select(p => (p.Name, p.Value)).ToList());
+        var properties = before.Value.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
+        // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
+        var sorted = SortPropertiesForOutput(properties);
+        var width = ComputeNameWidth(sorted);
 
-        foreach (var property in properties)
+        var previousWasBlock = false;
+        var previousWasScalar = false;
+        foreach (var property in sorted)
         {
+            var isBlock = IsBlock(property.Value);
+            // Add blank line before blocks (when transitioning from scalars to blocks, or between blocks)
+            if (isBlock && (previousWasScalar || previousWasBlock))
+            {
+                writer.WriteLine();
+            }
+
             RenderRemovedValue(writer, property.Value, property.Name, indent, sensitive, new List<string> { property.Name }, width);
+            previousWasScalar = !isBlock;
+            previousWasBlock = isBlock;
         }
     }
 
@@ -140,7 +164,7 @@ internal sealed partial class DiffRenderer
 
         foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
         {
-            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, sensitive, new List<string> { removedName });
+            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, sensitive, new List<string> { removedName }, 0);
         }
 
         if (unchanged > 0)

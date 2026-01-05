@@ -63,8 +63,8 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                // Scalar items need extra Indent to match Terraform output formatting
-                WriteScalarLine(writer, indent + Indent, marker, style, string.Empty, _valueRenderer.Render(element));
+                // Scalar items need extra Indent to match Terraform output formatting and trailing comma
+                WriteAddedArrayScalar(writer, indent + Indent, marker, style, element);
                 break;
         }
     }
@@ -218,11 +218,34 @@ internal sealed partial class DiffRenderer
             return;
         }
 
+        var properties = element.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
+        var childWidth = ComputeNameWidth(properties);
         WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name, nameWidth);
+        var renderedCount = 0;
+        var hiddenButCountedCount = 0;
         foreach (var property in element.EnumerateObject())
         {
             var childPath = new List<string>(path) { property.Name };
-            RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath);
+            var isSensitive = IsSensitivePath(sensitive, childPath);
+            // Render if sensitive or if the value should be rendered
+            if (isSensitive || ShouldRenderValue(property.Value, false, false))
+            {
+                RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath, childWidth);
+                renderedCount++;
+            }
+            else
+            {
+                // Count hidden attributes, but only if they are not empty arrays (empty arrays are completely ignored)
+                if (property.Value.ValueKind != JsonValueKind.Array || property.Value.GetArrayLength() > 0)
+                {
+                    hiddenButCountedCount++;
+                }
+            }
+        }
+
+        if (hiddenButCountedCount > 0)
+        {
+            WriteUnchangedComment(writer, indent + Indent + Indent, hiddenButCountedCount);
         }
 
         WriteClosingBrace(writer, indent + Indent);

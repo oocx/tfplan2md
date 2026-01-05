@@ -162,11 +162,13 @@ internal sealed partial class DiffRenderer
         switch (value.ValueKind)
         {
             case JsonValueKind.Object:
+                var properties = value.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
+                var childWidth = ComputeNameWidth(properties);
                 WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{", nameWidth: nameWidth);
                 foreach (var property in value.EnumerateObject())
                 {
                     var childPath = new List<string>(path) { property.Name };
-                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath);
+                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath, childWidth);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);

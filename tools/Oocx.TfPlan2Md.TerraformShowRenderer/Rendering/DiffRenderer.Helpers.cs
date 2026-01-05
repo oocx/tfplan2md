@@ -19,7 +19,7 @@ internal sealed partial class DiffRenderer
     /// <param name="sensitive">Sensitive value map from <c>after_sensitive</c>.</param>
     /// <param name="path">Current attribute path for lookups.</param>
     /// <returns>Nothing.</returns>
-    private void RenderAddedValue(AnsiTextWriter writer, JsonElement value, string name, string indent, string marker, AnsiStyle style, JsonElement? unknown, JsonElement? sensitive, List<string> path)
+    private void RenderAddedValue(AnsiTextWriter writer, JsonElement value, string name, string indent, string marker, AnsiStyle style, JsonElement? unknown, JsonElement? sensitive, List<string> path, int nameWidth)
     {
         var isUnknown = IsUnknownPath(unknown, path);
         var isSensitive = IsSensitivePath(sensitive, path);
@@ -31,13 +31,31 @@ internal sealed partial class DiffRenderer
 
         if (isSensitive)
         {
+            if (value.ValueKind == JsonValueKind.Array && ContainsOnlyObjects(value))
+            {
+                var index = 0;
+                foreach (var _ in value.EnumerateArray())
+                {
+                    WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+                    index++;
+                }
+
+                return;
+            }
+
+            if (value.ValueKind == JsonValueKind.Object)
+            {
+                WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+                return;
+            }
+
             WriteSensitivePlaceholder(writer, indent, name);
             return;
         }
 
         if (isUnknown)
         {
-            WriteScalarLine(writer, indent, marker, style, name, "(known after apply)");
+            WriteScalarLine(writer, indent, marker, style, name, "(known after apply)", nameWidth: nameWidth);
             return;
         }
 
@@ -47,7 +65,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in value.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderAddedObjectBlock(writer, element, name, indent, marker, style, unknown, sensitive, childPath);
+                RenderAddedObjectBlock(writer, element, name, indent, marker, style, unknown, sensitive, childPath, nameWidth);
                 index++;
             }
 
@@ -58,17 +76,19 @@ internal sealed partial class DiffRenderer
         {
             case JsonValueKind.Object:
                 var childUnknown = GetChildElement(unknown, path);
-                WriteContainerOpening(writer, indent, marker, style, name, "{");
-                foreach (var property in EnumerateProperties(value, childUnknown))
+                var childProperties = EnumerateProperties(value, childUnknown).ToList();
+                var childWidth = ComputeNameWidth(childProperties);
+                WriteContainerOpening(writer, indent, marker, style, name, "{", false, nameWidth);
+                foreach (var property in childProperties)
                 {
                     var childPath = new List<string>(path) { property.Name };
-                    RenderAddedValue(writer, property.Value, property.Name, indent + Indent, marker, style, unknown, sensitive, childPath);
+                    RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);
                 break;
             case JsonValueKind.Array:
-                WriteContainerOpening(writer, indent, marker, style, name, "[");
+                WriteContainerOpening(writer, indent, marker, style, name, "[", false, nameWidth);
                 var index = 0;
                 foreach (var element in value.EnumerateArray())
                 {
@@ -80,7 +100,7 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                WriteScalarLine(writer, indent, marker, style, name, _valueRenderer.Render(value));
+                WriteScalarLine(writer, indent, marker, style, name, _valueRenderer.Render(value), nameWidth: nameWidth);
                 break;
         }
     }
@@ -92,8 +112,34 @@ internal sealed partial class DiffRenderer
     /// <param name="indent">Indentation for current depth.</param>
     /// <param name="path">Current attribute path for lookups.</param>
     /// <returns>Nothing.</returns>
-    private void RenderRemovedValue(AnsiTextWriter writer, JsonElement value, string name, string indent, List<string> path)
+    private void RenderRemovedValue(AnsiTextWriter writer, JsonElement value, string name, string indent, JsonElement? sensitive, List<string> path)
     {
+        var isSensitive = IsSensitivePath(sensitive, path);
+
+        if (isSensitive)
+        {
+            if (value.ValueKind == JsonValueKind.Array && ContainsOnlyObjects(value))
+            {
+                var index = 0;
+                foreach (var _ in value.EnumerateArray())
+                {
+                    WriteSensitiveBlock(writer, indent, "-", AnsiStyle.Red, name);
+                    index++;
+                }
+
+                return;
+            }
+
+            if (value.ValueKind == JsonValueKind.Object)
+            {
+                WriteSensitiveBlock(writer, indent, "-", AnsiStyle.Red, name);
+                return;
+            }
+
+            WriteSensitivePlaceholder(writer, indent, name);
+            return;
+        }
+
         if (!ShouldRenderValue(value, isUnknown: false, isSensitive: false))
         {
             return;
@@ -105,7 +151,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in value.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderRemovedObjectBlock(writer, element, name, indent, childPath);
+                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath);
                 index++;
             }
 
@@ -119,7 +165,7 @@ internal sealed partial class DiffRenderer
                 foreach (var property in value.EnumerateObject())
                 {
                     var childPath = new List<string>(path) { property.Name };
-                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent, childPath);
+                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);
@@ -130,7 +176,7 @@ internal sealed partial class DiffRenderer
                 foreach (var element in value.EnumerateArray())
                 {
                     var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                    RenderRemovedArrayItem(writer, element, indent + Indent, childPath);
+                    RenderRemovedArrayItem(writer, element, indent + Indent, sensitive, childPath);
                     index++;
                 }
 
@@ -166,6 +212,24 @@ internal sealed partial class DiffRenderer
 
         if (isSensitive)
         {
+            if (after.ValueKind == JsonValueKind.Array && ContainsOnlyObjects(after))
+            {
+                var index = 0;
+                foreach (var _ in after.EnumerateArray())
+                {
+                    WriteSensitiveBlock(writer, indent, "~", AnsiStyle.Yellow, name);
+                    index++;
+                }
+
+                return;
+            }
+
+            if (after.ValueKind == JsonValueKind.Object)
+            {
+                WriteSensitiveBlock(writer, indent, "~", AnsiStyle.Yellow, name);
+                return;
+            }
+
             WriteSensitivePlaceholder(writer, indent, name);
             return;
         }
@@ -200,24 +264,19 @@ internal sealed partial class DiffRenderer
                     }
                     else
                     {
-                        RenderUpdatedValue(writer, beforeChild, prop.Value, prop.Name, indent + Indent, childPath, unknown, sensitive, replacePaths);
+                        RenderUpdatedValue(writer, beforeChild, prop.Value, prop.Name, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
                     }
                 }
                 else
                 {
-                    RenderAddedValue(writer, prop.Value, prop.Name, indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath);
+                    RenderAddedValue(writer, prop.Value, prop.Name, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
                 }
             }
 
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                if (!ShouldRenderValue(beforeDict[removedName], isUnknown: false, isSensitive: false))
-                {
-                    continue;
-                }
-
-                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent, childPath);
+                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath);
             }
 
             if (unchanged > 0)
@@ -251,7 +310,7 @@ internal sealed partial class DiffRenderer
                 }
                 else
                 {
-                    RenderRemovedArrayItem(writer, beforeItems[i], indent + Indent, childPath);
+                    RenderRemovedArrayItem(writer, beforeItems[i], indent + Indent, sensitive, childPath);
                 }
             }
 

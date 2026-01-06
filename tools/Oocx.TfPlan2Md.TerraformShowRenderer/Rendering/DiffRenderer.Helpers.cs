@@ -284,7 +284,8 @@ internal sealed partial class DiffRenderer
 
             if (unchanged > 0)
             {
-                WriteUnchangedComment(writer, indent + Indent, unchanged);
+                // Align comment with property names (add 2 spaces for "~ " marker)
+                WriteUnchangedComment(writer, indent + Indent + Indent + "  ", unchanged);
             }
 
             WriteClosingBrace(writer, indent + Indent);

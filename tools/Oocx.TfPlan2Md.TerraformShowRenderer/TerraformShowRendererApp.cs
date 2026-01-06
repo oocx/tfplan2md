@@ -88,41 +88,54 @@ internal sealed class TerraformShowRendererApp
         {
             var json = await File.ReadAllTextAsync(options.InputPath).ConfigureAwait(false);
             await using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            using var document = JsonDocument.Parse(json);
 
-            var parser = new TerraformPlanParser();
-            var plan = await parser.ParseAsync(inputStream).ConfigureAwait(false);
-
-            if (!IsSupportedFormat(plan.FormatVersion))
+            JsonDocument document;
+            try
             {
-                await _error.WriteLineAsync(FormattableString.Invariant($"Error: Unsupported plan format version: {plan.FormatVersion}. Expected 1.2 or later.")).ConfigureAwait(false);
-                return 4;
+                document = JsonDocument.Parse(json);
+            }
+            catch (JsonException ex)
+            {
+                await _error.WriteLineAsync(FormattableString.Invariant($"Error: Failed to parse JSON plan file: {ex.Message}")).ConfigureAwait(false);
+                return 3;
             }
 
-            document.RootElement.TryGetProperty("output_changes", out var outputChanges);
-
-            var renderer = new Rendering.TerraformShowRenderer();
-            var content = renderer.Render(plan, options.NoColor, outputChanges);
-
-            if (string.IsNullOrWhiteSpace(options.OutputPath))
+            using (document)
             {
-                await _output.WriteAsync(content).ConfigureAwait(false);
-            }
-            else
-            {
-                EnsureOutputDirectoryExists(options.OutputPath);
-                try
+                var parser = new TerraformPlanParser();
+                var plan = await parser.ParseAsync(inputStream).ConfigureAwait(false);
+
+                if (!IsSupportedFormat(plan.FormatVersion))
                 {
-                    await File.WriteAllTextAsync(options.OutputPath, content).ConfigureAwait(false);
+                    await _error.WriteLineAsync(FormattableString.Invariant($"Error: Unsupported plan format version: {plan.FormatVersion}. Expected 1.2 or later.")).ConfigureAwait(false);
+                    return 4;
                 }
-                catch (IOException ex)
-                {
-                    await _error.WriteLineAsync(FormattableString.Invariant($"Error: Failed to write output file: {ex.Message}")).ConfigureAwait(false);
-                    return 2;
-                }
-            }
 
-            return 0;
+                document.RootElement.TryGetProperty("output_changes", out var outputChanges);
+
+                var renderer = new Rendering.TerraformShowRenderer();
+                var content = renderer.Render(plan, options.NoColor, outputChanges);
+
+                if (string.IsNullOrWhiteSpace(options.OutputPath))
+                {
+                    await _output.WriteAsync(content).ConfigureAwait(false);
+                }
+                else
+                {
+                    EnsureOutputDirectoryExists(options.OutputPath);
+                    try
+                    {
+                        await File.WriteAllTextAsync(options.OutputPath, content).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        await _error.WriteLineAsync(FormattableString.Invariant($"Error: Failed to write output file: {ex.Message}")).ConfigureAwait(false);
+                        return 2;
+                    }
+                }
+
+                return 0;
+            }
         }
         catch (TerraformPlanParseException ex)
         {

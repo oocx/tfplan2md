@@ -47,42 +47,6 @@ internal sealed partial class DiffRenderer
         writer.WriteLine();
     }
 
-    /// <summary>
-    /// Writes a removed array scalar item with comma suffix (no -> null).
-    /// Terraform uses commas for array items, not -> null annotation.
-    /// </summary>
-    /// <param name="writer">Target writer for output.</param>
-    /// <param name="indent">Indentation for the current depth.</param>
-    /// <param name="value">Scalar value to render.</param>
-    private void WriteRemovedArrayScalar(AnsiTextWriter writer, string indent, JsonElement value)
-    {
-        writer.Write(indent);
-        writer.WriteStyled("-", AnsiStyle.Red);
-        writer.WriteReset();
-        writer.Write(" ");
-        writer.Write(_valueRenderer.Render(value));
-        writer.WriteLine(",");
-    }
-
-    /// <summary>
-    /// Writes an added array scalar item with comma suffix.
-    /// Terraform uses commas for array items in creation/addition.
-    /// </summary>
-    /// <param name="writer">Target writer for output.</param>
-    /// <param name="indent">Indentation for the current depth.</param>
-    /// <param name="marker">Change marker to prefix the line.</param>
-    /// <param name="style">ANSI style associated with the marker.</param>
-    /// <param name="value">Scalar value to render.</param>
-    private void WriteAddedArrayScalar(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, JsonElement value)
-    {
-        writer.Write(indent);
-        writer.WriteStyled(marker, style);
-        writer.WriteReset();
-        writer.Write(" ");
-        writer.Write(_valueRenderer.Render(value));
-        writer.WriteLine(",");
-    }
-
     /// <summary>Writes arrow update lines to mirror Terraform change notation.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
@@ -91,13 +55,12 @@ internal sealed partial class DiffRenderer
     /// <param name="after">Value after the change.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
     /// <returns>Nothing.</returns>
-    private void WriteArrowLine(AnsiTextWriter writer, string indent, string name, JsonElement before, JsonElement after, bool appendReplacement, int nameWidth = 0)
+    private void WriteArrowLine(AnsiTextWriter writer, string indent, string name, JsonElement before, JsonElement after, bool appendReplacement)
     {
         writer.Write(indent);
         writer.WriteStyled("~", AnsiStyle.Yellow);
         writer.Write(" ");
-        var paddedName = nameWidth > 0 ? name.PadRight(nameWidth) : name;
-        writer.Write(paddedName);
+        writer.Write(name);
         writer.Write(" = ");
         writer.Write(InlineValue(before));
         writer.Write(" ");
@@ -154,58 +117,45 @@ internal sealed partial class DiffRenderer
     /// <summary>Writes closing brackets for array containers.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
-    /// <param name="appendNull">Whether to append -> null annotation.</param>
     /// <returns>Nothing.</returns>
-    private static void WriteClosingBracket(AnsiTextWriter writer, string indent, bool appendNull = false)
+    private static void WriteClosingBracket(AnsiTextWriter writer, string indent)
     {
         writer.Write(indent);
-        writer.Write("]");
-        if (appendNull)
-        {
-            writer.Write(" ");
-            writer.WriteStyled("-> null", AnsiStyle.Dim);
-        }
-
-        writer.WriteLine();
+        writer.WriteLine("]");
     }
 
     /// <summary>
     /// Writes the opening of a block-style collection entry (e.g., Terraform's nested blocks).
-    /// Block names are never padded - they use a single space before the opening brace.
     /// </summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
     /// <param name="marker">Change marker to prefix the line.</param>
     /// <param name="style">ANSI style associated with the marker.</param>
     /// <param name="name">Block name.</param>
-    /// <param name="nameWidth">Unused - blocks don't align names.</param>
     /// <returns>Nothing.</returns>
     private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, int nameWidth = 0)
     {
-        _ = nameWidth; // Unused - blocks don't align names
         writer.Write(indent);
         writer.WriteStyled(marker, style);
         writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
-        writer.Write(name);
+        var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
+        writer.Write(paddedName);
         writer.WriteLine(" {");
     }
 
     /// <summary>Writes Terraform's hidden unchanged attribute comment.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
-    /// <param name="count">Number of unchanged items hidden.</param>
-    /// <param name="itemType">Type of items ("attributes", "elements", or "blocks").</param>
+    /// <param name="count">Number of unchanged attributes hidden.</param>
     /// <returns>Nothing.</returns>
-    private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count, string itemType = "attributes")
+    private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count)
     {
         writer.Write(indent);
         writer.WriteStyled("#", AnsiStyle.Dim);
         writer.Write(" (");
         writer.Write(count.ToString(CultureInfo.InvariantCulture));
-        writer.Write(" unchanged ");
-        writer.Write(itemType);
-        writer.Write(" hidden)");
+        writer.Write(" unchanged attributes hidden)");
         writer.WriteLine();
     }
 
@@ -247,7 +197,7 @@ internal sealed partial class DiffRenderer
         writer.Write(" ");
         writer.Write(name);
         writer.WriteLine(" {");
-        WriteSensitivePlaceholder(writer, indent + Indent + Indent, null);
+        WriteSensitivePlaceholder(writer, indent + Indent, null);
         WriteClosingBrace(writer, indent + Indent);
     }
 
@@ -259,30 +209,6 @@ internal sealed partial class DiffRenderer
     private static bool ContainsOnlyObjects(JsonElement element)
     {
         return element.ValueKind == JsonValueKind.Array && element.EnumerateArray().All(item => item.ValueKind == JsonValueKind.Object);
-    }
-
-    /// <summary>
-    /// Determines whether a property represents a block (object or array of objects).
-    /// Blocks are rendered after scalar attributes in Terraform output.
-    /// </summary>
-    /// <param name="value">JSON value to evaluate.</param>
-    /// <returns><see langword="true"/> when the value is an object or array of objects.</returns>
-    private static bool IsBlock(JsonElement value)
-    {
-        return value.ValueKind == JsonValueKind.Object || ContainsOnlyObjects(value);
-    }
-
-    /// <summary>
-    /// Sorts properties for Terraform output: scalars first (alphabetically), then blocks (alphabetically).
-    /// </summary>
-    /// <param name="properties">Properties to sort.</param>
-    /// <returns>Sorted properties with scalars before blocks.</returns>
-    private static List<(string Name, JsonElement Value)> SortPropertiesForOutput(IEnumerable<(string Name, JsonElement Value)> properties)
-    {
-        return properties
-            .OrderBy(p => IsBlock(p.Value) ? 1 : 0) // Scalars first (0), then blocks (1)
-            .ThenBy(p => p.Name, StringComparer.Ordinal) // Alphabetically within each group
-            .ToList();
     }
 
     /// <summary>
@@ -405,8 +331,7 @@ internal sealed partial class DiffRenderer
         var max = 0;
         foreach (var property in properties)
         {
-            // Only count scalar properties for alignment, not blocks
-            if (!IsBlock(property.Value) && property.Name.Length > max)
+            if (property.Name.Length > max)
             {
                 max = property.Name.Length;
             }

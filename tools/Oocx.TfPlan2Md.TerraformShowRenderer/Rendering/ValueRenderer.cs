@@ -17,30 +17,12 @@ internal sealed class ValueRenderer
     {
         return value.ValueKind switch
         {
-            JsonValueKind.String => FormatString(value.GetString()),
+            JsonValueKind.String => FormattableString.Invariant($"\"{value.GetString()}\""),
             JsonValueKind.Number => value.GetRawText(),
             JsonValueKind.True => "true",
             JsonValueKind.False => "false",
             JsonValueKind.Null => "null",
             _ => value.GetRawText()
         };
-    }
-
-    /// <summary>
-    /// Formats a string value with proper escaping for Terraform output.
-    /// Backslashes are escaped as \\ to match terraform show output.
-    /// </summary>
-    /// <param name="value">String value to format.</param>
-    /// <returns>Quoted and escaped string.</returns>
-    private static string FormatString(string? value)
-    {
-        if (value is null)
-        {
-            return "null";
-        }
-
-        // Escape backslashes to match Terraform output format
-        var escaped = value.Replace("\\", "\\\\");
-        return FormattableString.Invariant($"\"{escaped}\"");
     }
 }

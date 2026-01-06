@@ -36,7 +36,7 @@ internal sealed partial class DiffRenderer
                 var index = 0;
                 foreach (var _ in value.EnumerateArray())
                 {
-                    WriteSensitiveBlock(writer, indent, marker, style, name);
+                    WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
                     index++;
                 }
 
@@ -45,7 +45,7 @@ internal sealed partial class DiffRenderer
 
             if (value.ValueKind == JsonValueKind.Object)
             {
-                WriteSensitiveBlock(writer, indent, marker, style, name);
+                WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
                 return;
             }
 
@@ -77,9 +77,11 @@ internal sealed partial class DiffRenderer
             case JsonValueKind.Object:
                 var childUnknown = GetChildElement(unknown, path);
                 var childProperties = EnumerateProperties(value, childUnknown).ToList();
-                var childWidth = ComputeNameWidth(childProperties);
+                // Sort nested object properties by type (scalars, arrays, objects), then alphabetically
+                var sortedChildProperties = SortPropertiesByType(childProperties);
+                var childWidth = ComputeNameWidth(sortedChildProperties);
                 WriteContainerOpening(writer, indent, marker, style, name, "{", false, nameWidth);
-                foreach (var property in childProperties)
+                foreach (var property in sortedChildProperties)
                 {
                     var childPath = new List<string>(path) { property.Name };
                     RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
@@ -152,7 +154,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in value.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath, nameWidth);
+                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath);
                 index++;
             }
 
@@ -162,31 +164,53 @@ internal sealed partial class DiffRenderer
         switch (value.ValueKind)
         {
             case JsonValueKind.Object:
-                var properties = value.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
-                var childWidth = ComputeNameWidth(properties);
-                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{", nameWidth: nameWidth);
-                foreach (var property in value.EnumerateObject())
+                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{");
+                var removedProperties = value.EnumerateObject().Select(p => (p.Name, Value: p.Value)).ToList();
+                var sortedRemovedProperties = SortPropertiesByType(removedProperties);
+                foreach (var (propName, propValue) in sortedRemovedProperties)
                 {
-                    var childPath = new List<string>(path) { property.Name };
-                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath, childWidth);
+                    var childPath = new List<string>(path) { propName };
+                    RenderRemovedValue(writer, propValue, propName, indent + Indent + Indent, sensitive, childPath);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);
                 break;
             case JsonValueKind.Array:
-                WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "[", nameWidth: nameWidth);
-                var index = 0;
-                foreach (var element in value.EnumerateArray())
+                // For arrays of primitives, use multi-line format with " -> null" suffix at closing bracket
+                if (!ContainsOnlyObjects(value))
                 {
-                    var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                    RenderRemovedArrayItem(writer, element, indent + Indent, sensitive, childPath);
-                    index++;
-                }
+                    WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "[", false, nameWidth);
+                    foreach (var element in value.EnumerateArray())
+                    {
+                        writer.Write(indent + Indent + Indent);
+                        writer.WriteStyled("-", AnsiStyle.Red);
+                        writer.Write(" ");
+                        writer.Write(_valueRenderer.Render(element));
+                        writer.WriteLine(",");
+                    }
 
-                WriteClosingBracket(writer, indent + Indent, appendNull: true);
+                    writer.Write(indent + Indent);
+                    writer.Write("] ");
+                    writer.WriteStyled("->", AnsiStyle.Red);
+                    writer.Write(" ");
+                    writer.WriteLine("null");
+                }
+                else
+                {
+                    WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "[");
+                    var index = 0;
+                    foreach (var element in value.EnumerateArray())
+                    {
+                        var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
+                        RenderRemovedArrayItem(writer, element, indent + Indent, sensitive, childPath);
+                        index++;
+                    }
+
+                    WriteClosingBracket(writer, indent + Indent);
+                }
                 break;
             default:
-                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, name, _valueRenderer.Render(value), true, nameWidth: nameWidth);
+                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, name, _valueRenderer.Render(value), appendNull: true, nameWidth: nameWidth);
                 break;
         }
     }
@@ -202,7 +226,7 @@ internal sealed partial class DiffRenderer
     /// <param name="sensitive">Sensitive value map from <c>after_sensitive</c>.</param>
     /// <param name="replacePaths">Paths that force replacement.</param>
     /// <returns>Nothing.</returns>
-    private void RenderUpdatedValue(AnsiTextWriter writer, JsonElement before, JsonElement after, string name, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths, int nameWidth = 0)
+    private void RenderUpdatedValue(AnsiTextWriter writer, JsonElement before, JsonElement after, string name, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths)
     {
         var replacement = replacePaths.Contains(FormatPath(path));
         var isSensitive = IsSensitivePath(sensitive, path);
@@ -239,7 +263,7 @@ internal sealed partial class DiffRenderer
 
         if (isUnknown)
         {
-            WriteScalarLine(writer, indent, "~", AnsiStyle.Yellow, name, "(known after apply)", false, replacement, nameWidth);
+            WriteScalarLine(writer, indent, "~", AnsiStyle.Yellow, name, "(known after apply)", false, replacement);
             return;
         }
 
@@ -251,20 +275,15 @@ internal sealed partial class DiffRenderer
 
         if (before.ValueKind == JsonValueKind.Object && after.ValueKind == JsonValueKind.Object)
         {
-            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement, nameWidth);
+            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement);
             var childUnknown = GetChildElement(unknown, path);
             var beforeDict = before.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
             var afterProps = EnumerateProperties(after, childUnknown).ToList();
-
-            // Detect if this is a map (all values are scalars) vs a block (structured object)
-            var isMap = afterProps.All(p => !IsBlock(p.Value));
-
+            var sortedAfterProps = SortPropertiesByType(afterProps);
             var unchanged = 0;
-            foreach (var prop in afterProps)
+            foreach (var prop in sortedAfterProps)
             {
                 var childPath = new List<string>(path) { prop.Name };
-                var propName = isMap ? JsonSerializer.Serialize(prop.Name) : prop.Name; // Quote map keys
-
                 if (beforeDict.TryGetValue(prop.Name, out var beforeChild))
                 {
                     if (AreEqual(beforeChild, prop.Value))
@@ -273,27 +292,24 @@ internal sealed partial class DiffRenderer
                     }
                     else
                     {
-                        RenderUpdatedValue(writer, beforeChild, prop.Value, propName, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
+                        RenderUpdatedValue(writer, beforeChild, prop.Value, prop.Name, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
                     }
                 }
                 else
                 {
-                    RenderAddedValue(writer, prop.Value, propName, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
+                    RenderAddedValue(writer, prop.Value, prop.Name, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
                 }
             }
 
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                var propName = isMap ? JsonSerializer.Serialize(removedName) : removedName; // Quote map keys
-                RenderRemovedValue(writer, beforeDict[removedName], propName, indent + Indent + Indent, sensitive, childPath, 0);
+                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath);
             }
 
             if (unchanged > 0)
             {
-                // Align comment with property names (add 2 spaces for "~ " marker)
-                var itemType = isMap ? "elements" : "attributes";
-                WriteUnchangedComment(writer, indent + Indent + Indent + "  ", unchanged, itemType);
+                WriteUnchangedComment(writer, indent + Indent, unchanged);
             }
 
             WriteClosingBrace(writer, indent + Indent);
@@ -302,7 +318,7 @@ internal sealed partial class DiffRenderer
 
         if (before.ValueKind == JsonValueKind.Array && after.ValueKind == JsonValueKind.Array)
         {
-            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "[", replacement, nameWidth);
+            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "[", replacement);
             var beforeItems = before.EnumerateArray().ToList();
             var afterItems = after.EnumerateArray().ToList();
             var max = Math.Max(beforeItems.Count, afterItems.Count);
@@ -330,48 +346,6 @@ internal sealed partial class DiffRenderer
             return;
         }
 
-        WriteArrowLine(writer, indent, name, before, after, replacement, nameWidth);
-    }
-
-    /// <summary>Renders a scalar value without change markers (for unchanged properties in updates).</summary>
-    /// <param name="writer">Target writer.</param>
-    /// <param name="value">Scalar value to render.</param>
-    /// <param name="isUnknown">Whether the value is unknown.</param>
-    /// <param name="isSensitive">Whether the value is sensitive.</param>
-    private void RenderScalarValue(AnsiTextWriter writer, JsonElement value, bool isUnknown, bool isSensitive)
-    {
-        if (isSensitive)
-        {
-            writer.WriteStyled("(sensitive value)", AnsiStyle.Dim);
-            return;
-        }
-
-        if (isUnknown)
-        {
-            writer.WriteStyled("(known after apply)", AnsiStyle.Dim);
-            return;
-        }
-
-        switch (value.ValueKind)
-        {
-            case JsonValueKind.String:
-                writer.Write(JsonSerializer.Serialize(value.GetString()));
-                break;
-            case JsonValueKind.Number:
-                writer.Write(value.GetRawText());
-                break;
-            case JsonValueKind.True:
-                writer.Write("true");
-                break;
-            case JsonValueKind.False:
-                writer.Write("false");
-                break;
-            case JsonValueKind.Null:
-                writer.Write("null");
-                break;
-            default:
-                writer.Write(value.GetRawText());
-                break;
-        }
+        WriteArrowLine(writer, indent, name, before, after, replacement);
     }
 }

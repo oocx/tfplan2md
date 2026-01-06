@@ -402,8 +402,7 @@ internal sealed partial class DiffRenderer
         foreach (var property in properties)
         {
             // Only count scalar properties for alignment, not blocks
-            // Skip null values (Terraform doesn't include them in width calculation)
-            if (!IsBlock(property.Value) && property.Value.ValueKind != JsonValueKind.Null && property.Name.Length > max)
+            if (!IsBlock(property.Value) && property.Name.Length > max)
             {
                 max = property.Name.Length;
             }

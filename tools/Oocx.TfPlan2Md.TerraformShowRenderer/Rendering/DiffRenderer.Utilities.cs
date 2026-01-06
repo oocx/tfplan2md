@@ -269,8 +269,7 @@ internal sealed partial class DiffRenderer
     }
 
     /// <summary>
-    /// Sorts properties for Terraform output: scalars first (in order), then blocks (in order).
-    /// Preserves the original property order within each group (scalars vs blocks).
+    /// Sorts properties for Terraform output: scalars first (alphabetically), then blocks (alphabetically).
     /// </summary>
     /// <param name="properties">Properties to sort.</param>
     /// <returns>Sorted properties with scalars before blocks.</returns>
@@ -278,6 +277,7 @@ internal sealed partial class DiffRenderer
     {
         return properties
             .OrderBy(p => IsBlock(p.Value) ? 1 : 0) // Scalars first (0), then blocks (1)
+            .ThenBy(p => p.Name, StringComparer.Ordinal) // Alphabetically within each group
             .ToList();
     }
 

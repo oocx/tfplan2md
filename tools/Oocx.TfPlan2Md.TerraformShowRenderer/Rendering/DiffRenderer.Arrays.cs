@@ -22,15 +22,13 @@ internal sealed partial class DiffRenderer
     {
         if (IsSensitivePath(sensitive, path))
         {
-            // Scalar items need extra Indent to match Terraform output formatting
-            WriteSensitivePlaceholder(writer, indent + Indent, null);
+            WriteSensitivePlaceholder(writer, indent, null);
             return;
         }
 
         if (IsUnknownPath(unknown, path))
         {
-            // Scalar items need extra Indent to match Terraform output formatting
-            WriteScalarLine(writer, indent + Indent, marker, style, string.Empty, "(known after apply)");
+            WriteScalarLine(writer, indent, marker, style, string.Empty, "(known after apply)");
             return;
         }
 
@@ -63,8 +61,7 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                // Scalar items need extra Indent to match Terraform output formatting and trailing comma
-                WriteAddedArrayScalar(writer, indent + Indent, marker, style, element);
+                WriteScalarLine(writer, indent, marker, style, string.Empty, _valueRenderer.Render(element));
                 break;
         }
     }
@@ -86,7 +83,7 @@ internal sealed partial class DiffRenderer
                 foreach (var property in element.EnumerateObject())
                 {
                     var childPath = new List<string>(path) { property.Name };
-                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent, sensitive, childPath, 0);
+                    RenderRemovedValue(writer, property.Value, property.Name, indent + Indent, sensitive, childPath);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);
@@ -106,9 +103,7 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                // Array items use comma suffix instead of -> null
-                // Scalar items need extra Indent to match Terraform output formatting
-                WriteRemovedArrayScalar(writer, indent + Indent, element);
+                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, string.Empty, _valueRenderer.Render(element), true);
                 break;
         }
     }
@@ -164,7 +159,7 @@ internal sealed partial class DiffRenderer
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath, 0);
+                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath);
             }
 
             WriteClosingBrace(writer, indent + Indent);
@@ -192,29 +187,10 @@ internal sealed partial class DiffRenderer
         }
 
         var childUnknown = GetChildElement(unknown, path);
-        var allChildProperties = EnumerateProperties(element, childUnknown).ToList();
-
-        // Filter properties that will actually be rendered (for nested blocks, only renderable properties affect width)
-        var renderableProperties = new List<(string Name, JsonElement Value)>();
-        foreach (var property in allChildProperties)
-        {
-            var childPath = new List<string>(path) { property.Name };
-            var isUnknown = IsUnknownPath(unknown, childPath);
-            var isSensitive = IsSensitivePath(sensitive, childPath);
-            if (ShouldRenderValue(property.Value, isUnknown, isSensitive))
-            {
-                renderableProperties.Add(property);
-            }
-        }
-
-        // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
-        var sortedProperties = SortPropertiesForOutput(renderableProperties);
-
-        // Compute width from renderable properties only
-        var childWidth = ComputeNameWidth(sortedProperties);
-
+        var childProperties = EnumerateProperties(element, childUnknown).ToList();
+        var childWidth = ComputeNameWidth(childProperties);
         WriteBlockOpening(writer, indent, marker, style, name, nameWidth);
-        foreach (var property in sortedProperties)
+        foreach (var property in childProperties)
         {
             var childPath = new List<string>(path) { property.Name };
             RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
@@ -229,49 +205,18 @@ internal sealed partial class DiffRenderer
     /// <param name="name">Block name.</param>
     /// <param name="indent">Current indentation.</param>
     /// <param name="path">Path for lookups.</param>
-    /// <param name="nameWidth">Width for name padding to align block names.</param>
-    private void RenderRemovedObjectBlock(AnsiTextWriter writer, JsonElement element, string name, string indent, JsonElement? sensitive, List<string> path, int nameWidth = 0)
+    private void RenderRemovedObjectBlock(AnsiTextWriter writer, JsonElement element, string name, string indent, JsonElement? sensitive, List<string> path)
     {
         if (!ShouldRenderValue(element, isUnknown: false, isSensitive: false))
         {
             return;
         }
 
-        var properties = element.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
-
-        // Compute width from ALL properties (Terraform includes hidden properties in width calculation)
-        var childWidth = ComputeNameWidth(properties);
-
-        // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
-        var sortedProperties = SortPropertiesForOutput(properties);
-
-        WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name, nameWidth);
-        var renderedCount = 0;
-        var hiddenButCountedCount = 0;
-        foreach (var property in sortedProperties)
+        WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name);
+        foreach (var property in element.EnumerateObject())
         {
             var childPath = new List<string>(path) { property.Name };
-            var isSensitive = IsSensitivePath(sensitive, childPath);
-            // Render if sensitive or if the value should be rendered
-            if (isSensitive || ShouldRenderValue(property.Value, false, false))
-            {
-                RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath, childWidth);
-                renderedCount++;
-            }
-            else
-            {
-                // Count hidden attributes, but only if they are not empty arrays (empty arrays are completely ignored)
-                if (property.Value.ValueKind != JsonValueKind.Array || property.Value.GetArrayLength() > 0)
-                {
-                    hiddenButCountedCount++;
-                }
-            }
-        }
-
-        if (hiddenButCountedCount > 0)
-        {
-            // Align comment with property names (add 2 spaces for "- " marker)
-            WriteUnchangedComment(writer, indent + Indent + Indent + "  ", hiddenButCountedCount);
+            RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath);
         }
 
         WriteClosingBrace(writer, indent + Indent);
@@ -295,7 +240,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in before.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath, 0);
+                RenderRemovedObjectBlock(writer, element, name, indent, sensitive, childPath);
                 index++;
             }
         }

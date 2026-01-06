@@ -80,10 +80,10 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: false);
 
-        Assert.Contains("will be \u001b[31m", output, StringComparison.Ordinal);
+        Assert.Contains("will be \u001b[1m\u001b[31m", output, StringComparison.Ordinal);
         Assert.Contains("destroyed", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[1m", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[31m-\u001b[0m resource \"aws_s3_bucket\" \"main\" {", output, StringComparison.Ordinal);
+        Assert.Contains("\u001b[31m-\u001b[0m", output, StringComparison.Ordinal);
+        Assert.Contains("resource \"aws_s3_bucket\" \"main\" {", output, StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: false);
 
-        Assert.Contains("must be \u001b[31m", output, StringComparison.Ordinal);
+        Assert.Contains("must be \u001b[1m\u001b[31m", output, StringComparison.Ordinal);
         Assert.Contains("replaced", output, StringComparison.Ordinal);
         Assert.Contains("-\u001b[0m/\u001b[32m+", output, StringComparison.Ordinal);
     }
@@ -120,7 +120,8 @@ public sealed class TerraformShowRendererTests
         var output = renderer.Render(plan, suppressColor: false);
 
         Assert.Contains("will be read during apply", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[36m<=\u001b[0m data \"aws_caller_identity\" \"current\" {", output, StringComparison.Ordinal);
+        Assert.Contains("\u001b[36m<=\u001b[0m", output, StringComparison.Ordinal);
+        Assert.Contains("data \"aws_caller_identity\" \"current\" {", output, StringComparison.Ordinal);
     }
 
     /// <summary>

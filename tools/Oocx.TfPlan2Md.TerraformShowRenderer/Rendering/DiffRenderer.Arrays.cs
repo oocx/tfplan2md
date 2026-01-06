@@ -194,10 +194,7 @@ internal sealed partial class DiffRenderer
         var childUnknown = GetChildElement(unknown, path);
         var allChildProperties = EnumerateProperties(element, childUnknown).ToList();
 
-        // Compute width from ALL properties (Terraform includes hidden properties in width calculation)
-        var childWidth = ComputeNameWidth(allChildProperties);
-
-        // Filter properties that will actually be rendered
+        // Filter properties that will actually be rendered (for nested blocks, only renderable properties affect width)
         var renderableProperties = new List<(string Name, JsonElement Value)>();
         foreach (var property in allChildProperties)
         {
@@ -209,6 +206,9 @@ internal sealed partial class DiffRenderer
                 renderableProperties.Add(property);
             }
         }
+
+        // Compute width from renderable properties only
+        var childWidth = ComputeNameWidth(renderableProperties);
 
         WriteBlockOpening(writer, indent, marker, style, name, nameWidth);
         foreach (var property in renderableProperties)

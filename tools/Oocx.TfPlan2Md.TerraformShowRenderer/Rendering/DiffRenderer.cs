@@ -69,7 +69,10 @@ internal sealed partial class DiffRenderer
         // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
         var sorted = SortPropertiesForOutput(properties);
 
-        // Filter to only renderable properties before computing width
+        // Compute width from ALL properties (ComputeNameWidth will skip nulls internally)
+        var width = ComputeNameWidth(sorted);
+
+        // Filter to only renderable properties
         var renderable = new List<(string Name, JsonElement Value)>();
         foreach (var property in sorted)
         {
@@ -81,8 +84,6 @@ internal sealed partial class DiffRenderer
                 renderable.Add(property);
             }
         }
-
-        var width = ComputeNameWidth(renderable);
 
         var previousWasScalar = false;
         var previousBlockName = (string?)null;
@@ -119,7 +120,10 @@ internal sealed partial class DiffRenderer
         // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
         var sorted = SortPropertiesForOutput(properties);
 
-        // Filter to only renderable properties before computing width
+        // Compute width from ALL properties (ComputeNameWidth will skip nulls internally)
+        var width = ComputeNameWidth(sorted);
+
+        // Filter to only renderable properties
         var renderable = new List<(string Name, JsonElement Value)>();
         foreach (var property in sorted)
         {
@@ -130,8 +134,6 @@ internal sealed partial class DiffRenderer
                 renderable.Add(property);
             }
         }
-
-        var width = ComputeNameWidth(renderable);
 
         var previousWasScalar = false;
         var previousBlockName = (string?)null;

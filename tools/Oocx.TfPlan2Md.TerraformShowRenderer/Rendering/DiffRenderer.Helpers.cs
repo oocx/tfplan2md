@@ -202,7 +202,7 @@ internal sealed partial class DiffRenderer
     /// <param name="sensitive">Sensitive value map from <c>after_sensitive</c>.</param>
     /// <param name="replacePaths">Paths that force replacement.</param>
     /// <returns>Nothing.</returns>
-    private void RenderUpdatedValue(AnsiTextWriter writer, JsonElement before, JsonElement after, string name, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths)
+    private void RenderUpdatedValue(AnsiTextWriter writer, JsonElement before, JsonElement after, string name, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths, int nameWidth = 0)
     {
         var replacement = replacePaths.Contains(FormatPath(path));
         var isSensitive = IsSensitivePath(sensitive, path);
@@ -239,7 +239,7 @@ internal sealed partial class DiffRenderer
 
         if (isUnknown)
         {
-            WriteScalarLine(writer, indent, "~", AnsiStyle.Yellow, name, "(known after apply)", false, replacement);
+            WriteScalarLine(writer, indent, "~", AnsiStyle.Yellow, name, "(known after apply)", false, replacement, nameWidth);
             return;
         }
 
@@ -251,14 +251,20 @@ internal sealed partial class DiffRenderer
 
         if (before.ValueKind == JsonValueKind.Object && after.ValueKind == JsonValueKind.Object)
         {
-            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement);
+            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement, nameWidth);
             var childUnknown = GetChildElement(unknown, path);
             var beforeDict = before.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
             var afterProps = EnumerateProperties(after, childUnknown).ToList();
+
+            // Detect if this is a map (all values are scalars) vs a block (structured object)
+            var isMap = afterProps.All(p => !IsBlock(p.Value));
+
             var unchanged = 0;
             foreach (var prop in afterProps)
             {
                 var childPath = new List<string>(path) { prop.Name };
+                var propName = isMap ? JsonSerializer.Serialize(prop.Name) : prop.Name; // Quote map keys
+
                 if (beforeDict.TryGetValue(prop.Name, out var beforeChild))
                 {
                     if (AreEqual(beforeChild, prop.Value))
@@ -267,25 +273,27 @@ internal sealed partial class DiffRenderer
                     }
                     else
                     {
-                        RenderUpdatedValue(writer, beforeChild, prop.Value, prop.Name, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
+                        RenderUpdatedValue(writer, beforeChild, prop.Value, propName, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
                     }
                 }
                 else
                 {
-                    RenderAddedValue(writer, prop.Value, prop.Name, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
+                    RenderAddedValue(writer, prop.Value, propName, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
                 }
             }
 
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath, 0);
+                var propName = isMap ? JsonSerializer.Serialize(removedName) : removedName; // Quote map keys
+                RenderRemovedValue(writer, beforeDict[removedName], propName, indent + Indent + Indent, sensitive, childPath, 0);
             }
 
             if (unchanged > 0)
             {
                 // Align comment with property names (add 2 spaces for "~ " marker)
-                WriteUnchangedComment(writer, indent + Indent + Indent + "  ", unchanged);
+                var itemType = isMap ? "elements" : "attributes";
+                WriteUnchangedComment(writer, indent + Indent + Indent + "  ", unchanged, itemType);
             }
 
             WriteClosingBrace(writer, indent + Indent);
@@ -294,7 +302,7 @@ internal sealed partial class DiffRenderer
 
         if (before.ValueKind == JsonValueKind.Array && after.ValueKind == JsonValueKind.Array)
         {
-            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "[", replacement);
+            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "[", replacement, nameWidth);
             var beforeItems = before.EnumerateArray().ToList();
             var afterItems = after.EnumerateArray().ToList();
             var max = Math.Max(beforeItems.Count, afterItems.Count);
@@ -322,7 +330,7 @@ internal sealed partial class DiffRenderer
             return;
         }
 
-        WriteArrowLine(writer, indent, name, before, after, replacement);
+        WriteArrowLine(writer, indent, name, before, after, replacement, nameWidth);
     }
 
     /// <summary>Renders a scalar value without change markers (for unchanged properties in updates).</summary>

@@ -207,11 +207,14 @@ internal sealed partial class DiffRenderer
             }
         }
 
+        // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
+        var sortedProperties = SortPropertiesForOutput(renderableProperties);
+
         // Compute width from renderable properties only
-        var childWidth = ComputeNameWidth(renderableProperties);
+        var childWidth = ComputeNameWidth(sortedProperties);
 
         WriteBlockOpening(writer, indent, marker, style, name, nameWidth);
-        foreach (var property in renderableProperties)
+        foreach (var property in sortedProperties)
         {
             var childPath = new List<string>(path) { property.Name };
             RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
@@ -239,22 +242,13 @@ internal sealed partial class DiffRenderer
         // Compute width from ALL properties (Terraform includes hidden properties in width calculation)
         var childWidth = ComputeNameWidth(properties);
 
-        // Filter properties that will actually be rendered
-        var renderableProperties = new List<(string Name, JsonElement Value)>();
-        foreach (var property in properties)
-        {
-            var childPath = new List<string>(path) { property.Name };
-            var isSensitive = IsSensitivePath(sensitive, childPath);
-            if (isSensitive || ShouldRenderValue(property.Value, false, false))
-            {
-                renderableProperties.Add(property);
-            }
-        }
+        // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
+        var sortedProperties = SortPropertiesForOutput(properties);
 
         WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name, nameWidth);
         var renderedCount = 0;
         var hiddenButCountedCount = 0;
-        foreach (var property in element.EnumerateObject())
+        foreach (var property in sortedProperties)
         {
             var childPath = new List<string>(path) { property.Name };
             var isSensitive = IsSensitivePath(sensitive, childPath);

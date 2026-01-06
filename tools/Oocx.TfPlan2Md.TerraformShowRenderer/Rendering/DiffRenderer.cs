@@ -181,14 +181,20 @@ internal sealed partial class DiffRenderer
         // Compute width for alignment (include all properties)
         var width = ComputeNameWidth(sortedProps);
 
-        // Track what gets rendered
-        var unchangedScalarCount = 0;
-        var unchangedBlockCount = 0;
-        var unchangedRendered = new List<(string Name, JsonElement Value)>();
+        // Collect items for rendering
+        var unchangedIdentifierScalars = new List<(string Name, JsonElement Value)>();
+        var unchangedOtherScalars = 0;
+        var unchangedBlocks = 0;
+        var changedItems = new List<Action>();
+        var removedItems = new List<Action>();
 
         // Identifier properties that should always be shown when unchanged
         var identifierProperties = new HashSet<string>(StringComparer.Ordinal) { "id", "name" };
 
+        // Track if we have any block array changes
+        var hasBlockArrayChanges = false;
+
+        // First pass: collect unchanged and changed items
         foreach (var (name, value) in sortedProps)
         {
             var path = new List<string> { name };
@@ -196,57 +202,142 @@ internal sealed partial class DiffRenderer
             {
                 if (AreEqual(beforeValue, value))
                 {
-                    // Property unchanged
-                    var isBlock = IsBlock(value);
-                    if (isBlock)
+                    // Property unchanged - only count if it would be rendered
+                    if (ShouldRenderValue(value, false, false))
                     {
-                        unchangedBlockCount++;
-                    }
-                    else
-                    {
-                        unchangedScalarCount++;
-                        // Show identifier properties
-                        if (identifierProperties.Contains(name))
+                        var isBlock = IsBlock(value);
+                        if (isBlock)
                         {
-                            unchangedRendered.Add((name, value));
+                            unchangedBlocks++;
+                        }
+                        else
+                        {
+                            // Scalar unchanged
+                            if (identifierProperties.Contains(name))
+                            {
+                                unchangedIdentifierScalars.Add((name, value));
+                            }
+                            else
+                            {
+                                unchangedOtherScalars++;
+                            }
                         }
                     }
                 }
                 else
                 {
-                    // Property changed
-                    RenderUpdatedValue(writer, beforeValue, value, name, indent, path, unknown, sensitive, replacePaths);
+                    // Property changed - check if it's a block array
+                    if (value.ValueKind == JsonValueKind.Array && ContainsOnlyObjects(value))
+                    {
+                        hasBlockArrayChanges = true;
+                    }
+                    changedItems.Add(() => RenderUpdatedValue(writer, beforeValue, value, name, indent, path, unknown, sensitive, replacePaths, width));
                 }
             }
             else
             {
-                // Property added
-                RenderAddedValue(writer, value, name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, width);
+                // Property added - check if it's a block array
+                if (value.ValueKind == JsonValueKind.Array && ContainsOnlyObjects(value))
+                {
+                    hasBlockArrayChanges = true;
+                }
+                changedItems.Add(() => RenderAddedValue(writer, value, name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, width));
             }
         }
 
-        // Render unchanged identifier scalars (without markers)
-        foreach (var (name, value) in unchangedRendered)
+        // Collect removed properties
+        foreach (var removedName in beforeDict.Keys.Except(sortedProps.Select(p => p.Name)))
         {
-            writer.Write(indent);
-            writer.Write("  "); // Two spaces instead of marker
-            writer.Write(name.PadRight(width));
-            writer.Write(" = ");
-            RenderScalarValue(writer, value, false, false);
+            var path = new List<string> { removedName };
+            var removedValue = beforeDict[removedName];
+            // Check if removed item is a block array
+            if (removedValue.ValueKind == JsonValueKind.Array && ContainsOnlyObjects(removedValue))
+            {
+                hasBlockArrayChanges = true;
+            }
+            removedItems.Add(() => RenderRemovedValue(writer, removedValue, removedName, indent, sensitive, path, width));
+        }
+
+        // Render in correct order:
+        // If we have block array changes, show id/name first; otherwise show changes first
+        if (hasBlockArrayChanges)
+        {
+            // 1. Unchanged identifier scalars (id, name)
+            foreach (var (name, value) in unchangedIdentifierScalars)
+            {
+                writer.Write(indent);
+                writer.Write("  "); // Two spaces instead of marker
+                writer.Write(name.PadRight(width));
+                writer.Write(" = ");
+                RenderScalarValue(writer, value, false, false);
+                writer.WriteLine();
+            }
+
+            // 2. Comment for other unchanged scalars
+            if (unchangedOtherScalars > 0)
+            {
+                WriteUnchangedComment(writer, indent, unchangedOtherScalars, "attributes");
+            }
+
+            // 3. Blank line before block changes
+            if ((unchangedIdentifierScalars.Count > 0 || unchangedOtherScalars > 0) && (changedItems.Count > 0 || removedItems.Count > 0))
+            {
+                writer.WriteLine();
+            }
+
+            // 4. Changed and removed items
+            foreach (var action in changedItems)
+            {
+                action();
+            }
+
+            foreach (var action in removedItems)
+            {
+                action();
+            }
+        }
+        else
+        {
+            // 1. Changed and removed items
+            foreach (var action in changedItems)
+            {
+                action();
+            }
+
+            foreach (var action in removedItems)
+            {
+                action();
+            }
+
+            // 2. Unchanged identifier scalars (id, name)
+            foreach (var (name, value) in unchangedIdentifierScalars)
+            {
+                writer.Write(indent);
+                writer.Write("  "); // Two spaces instead of marker
+                writer.Write(name.PadRight(width));
+                writer.Write(" = ");
+                RenderScalarValue(writer, value, false, false);
+                writer.WriteLine();
+            }
+
+            // 3. Comment for other unchanged scalars
+            if (unchangedOtherScalars > 0)
+            {
+                WriteUnchangedComment(writer, indent, unchangedOtherScalars, "attributes");
+            }
+        }
+
+        // 5. Blank line before unchanged blocks comment (if we have unchanged blocks)
+        if (unchangedBlocks > 0 && (changedItems.Count > 0 || removedItems.Count > 0 || unchangedIdentifierScalars.Count > 0 || unchangedOtherScalars > 0))
+        {
             writer.WriteLine();
         }
 
-        // Render removed properties
-        foreach (var removedName in beforeDict.Keys.Except(sortedProps.Select(p => p.Name)))
+        // 6. Comment for unchanged blocks
+        if (unchangedBlocks > 0)
         {
-            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, sensitive, new List<string> { removedName }, width);
-        }
-
-        // Show comment for remaining unchanged attributes
-        var hiddenCount = unchangedScalarCount - unchangedRendered.Count + unchangedBlockCount;
-        if (hiddenCount > 0)
-        {
-            WriteUnchangedComment(writer, indent, hiddenCount);
+            var itemType = unchangedBlocks == 1 ? "block" : "blocks";
+            WriteUnchangedComment(writer, indent, unchangedBlocks, itemType);
         }
     }
 }

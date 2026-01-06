@@ -192,10 +192,24 @@ internal sealed partial class DiffRenderer
         }
 
         var childUnknown = GetChildElement(unknown, path);
-        var childProperties = EnumerateProperties(element, childUnknown).ToList();
-        var childWidth = ComputeNameWidth(childProperties);
+        var allChildProperties = EnumerateProperties(element, childUnknown).ToList();
+
+        // Filter properties that will actually be rendered for width calculation
+        var renderableProperties = new List<(string Name, JsonElement Value)>();
+        foreach (var property in allChildProperties)
+        {
+            var childPath = new List<string>(path) { property.Name };
+            var isUnknown = IsUnknownPath(unknown, childPath);
+            var isSensitive = IsSensitivePath(sensitive, childPath);
+            if (ShouldRenderValue(property.Value, isUnknown, isSensitive))
+            {
+                renderableProperties.Add(property);
+            }
+        }
+
+        var childWidth = ComputeNameWidth(renderableProperties);
         WriteBlockOpening(writer, indent, marker, style, name, nameWidth);
-        foreach (var property in childProperties)
+        foreach (var property in renderableProperties)
         {
             var childPath = new List<string>(path) { property.Name };
             RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
@@ -219,7 +233,20 @@ internal sealed partial class DiffRenderer
         }
 
         var properties = element.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
-        var childWidth = ComputeNameWidth(properties);
+
+        // Filter properties that will actually be rendered for width calculation
+        var renderableProperties = new List<(string Name, JsonElement Value)>();
+        foreach (var property in properties)
+        {
+            var childPath = new List<string>(path) { property.Name };
+            var isSensitive = IsSensitivePath(sensitive, childPath);
+            if (isSensitive || ShouldRenderValue(property.Value, false, false))
+            {
+                renderableProperties.Add(property);
+            }
+        }
+
+        var childWidth = ComputeNameWidth(renderableProperties);
         WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name, nameWidth);
         var renderedCount = 0;
         var hiddenButCountedCount = 0;

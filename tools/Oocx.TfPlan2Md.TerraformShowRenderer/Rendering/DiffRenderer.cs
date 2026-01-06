@@ -74,13 +74,23 @@ internal sealed partial class DiffRenderer
         foreach (var property in sorted)
         {
             var isBlock = IsBlock(property.Value);
+            var path = new List<string> { property.Name };
+            var isUnknown = IsUnknownPath(unknown, path);
+            var isSensitive = IsSensitivePath(sensitive, path);
+
+            // Skip properties that won't be rendered (e.g., empty arrays)
+            if (!ShouldRenderValue(property.Value, isUnknown, isSensitive))
+            {
+                continue;
+            }
+
             // Add blank line when transitioning from scalars to blocks, or between different block types
             if (isBlock && (previousWasScalar || (previousBlockName != null && previousBlockName != property.Name)))
             {
                 writer.WriteLine();
             }
 
-            RenderAddedValue(writer, property.Value, property.Name, indent, marker, style, unknown, sensitive, new List<string> { property.Name }, width);
+            RenderAddedValue(writer, property.Value, property.Name, indent, marker, style, unknown, sensitive, path, width);
             previousWasScalar = !isBlock;
             previousBlockName = isBlock ? property.Name : null;
         }
@@ -108,13 +118,22 @@ internal sealed partial class DiffRenderer
         foreach (var property in sorted)
         {
             var isBlock = IsBlock(property.Value);
+            var path = new List<string> { property.Name };
+            var isSensitive = IsSensitivePath(sensitive, path);
+
+            // Skip properties that won't be rendered (e.g., empty arrays)
+            if (!ShouldRenderValue(property.Value, false, isSensitive))
+            {
+                continue;
+            }
+
             // Add blank line when transitioning from scalars to blocks, or between different block types
             if (isBlock && (previousWasScalar || (previousBlockName != null && previousBlockName != property.Name)))
             {
                 writer.WriteLine();
             }
 
-            RenderRemovedValue(writer, property.Value, property.Name, indent, sensitive, new List<string> { property.Name }, width);
+            RenderRemovedValue(writer, property.Value, property.Name, indent, sensitive, path, width);
             previousWasScalar = !isBlock;
             previousBlockName = isBlock ? property.Name : null;
         }

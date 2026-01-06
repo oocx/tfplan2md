@@ -67,22 +67,28 @@ internal sealed partial class DiffRenderer
         var properties = EnumerateProperties(after.Value, unknown).ToList();
         // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
         var sorted = SortPropertiesForOutput(properties);
-        var width = ComputeNameWidth(sorted);
 
-        var previousWasScalar = false;
-        var previousBlockName = (string?)null;
+        // Filter to only renderable properties before computing width
+        var renderable = new List<(string Name, JsonElement Value)>();
         foreach (var property in sorted)
         {
-            var isBlock = IsBlock(property.Value);
             var path = new List<string> { property.Name };
             var isUnknown = IsUnknownPath(unknown, path);
             var isSensitive = IsSensitivePath(sensitive, path);
-
-            // Skip properties that won't be rendered (e.g., empty arrays)
-            if (!ShouldRenderValue(property.Value, isUnknown, isSensitive))
+            if (ShouldRenderValue(property.Value, isUnknown, isSensitive))
             {
-                continue;
+                renderable.Add(property);
             }
+        }
+
+        var width = ComputeNameWidth(renderable);
+
+        var previousWasScalar = false;
+        var previousBlockName = (string?)null;
+        foreach (var property in renderable)
+        {
+            var isBlock = IsBlock(property.Value);
+            var path = new List<string> { property.Name };
 
             // Add blank line when transitioning from scalars to blocks, or between different block types
             if (isBlock && (previousWasScalar || (previousBlockName != null && previousBlockName != property.Name)))
@@ -111,21 +117,27 @@ internal sealed partial class DiffRenderer
         var properties = before.Value.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
         // Sort properties: scalars first (alphabetically), then blocks (alphabetically)
         var sorted = SortPropertiesForOutput(properties);
-        var width = ComputeNameWidth(sorted);
+
+        // Filter to only renderable properties before computing width
+        var renderable = new List<(string Name, JsonElement Value)>();
+        foreach (var property in sorted)
+        {
+            var path = new List<string> { property.Name };
+            var isSensitive = IsSensitivePath(sensitive, path);
+            if (ShouldRenderValue(property.Value, false, isSensitive))
+            {
+                renderable.Add(property);
+            }
+        }
+
+        var width = ComputeNameWidth(renderable);
 
         var previousWasScalar = false;
         var previousBlockName = (string?)null;
-        foreach (var property in sorted)
+        foreach (var property in renderable)
         {
             var isBlock = IsBlock(property.Value);
             var path = new List<string> { property.Name };
-            var isSensitive = IsSensitivePath(sensitive, path);
-
-            // Skip properties that won't be rendered (e.g., empty arrays)
-            if (!ShouldRenderValue(property.Value, false, isSensitive))
-            {
-                continue;
-            }
 
             // Add blank line when transitioning from scalars to blocks, or between different block types
             if (isBlock && (previousWasScalar || (previousBlockName != null && previousBlockName != property.Name)))

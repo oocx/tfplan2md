@@ -324,4 +324,46 @@ internal sealed partial class DiffRenderer
 
         WriteArrowLine(writer, indent, name, before, after, replacement);
     }
+
+    /// <summary>Renders a scalar value without change markers (for unchanged properties in updates).</summary>
+    /// <param name="writer">Target writer.</param>
+    /// <param name="value">Scalar value to render.</param>
+    /// <param name="isUnknown">Whether the value is unknown.</param>
+    /// <param name="isSensitive">Whether the value is sensitive.</param>
+    private void RenderScalarValue(AnsiTextWriter writer, JsonElement value, bool isUnknown, bool isSensitive)
+    {
+        if (isSensitive)
+        {
+            writer.WriteStyled("(sensitive value)", AnsiStyle.Dim);
+            return;
+        }
+
+        if (isUnknown)
+        {
+            writer.WriteStyled("(known after apply)", AnsiStyle.Dim);
+            return;
+        }
+
+        switch (value.ValueKind)
+        {
+            case JsonValueKind.String:
+                writer.Write(JsonSerializer.Serialize(value.GetString()));
+                break;
+            case JsonValueKind.Number:
+                writer.Write(value.GetRawText());
+                break;
+            case JsonValueKind.True:
+                writer.Write("true");
+                break;
+            case JsonValueKind.False:
+                writer.Write("false");
+                break;
+            case JsonValueKind.Null:
+                writer.Write("null");
+                break;
+            default:
+                writer.Write(value.GetRawText());
+                break;
+        }
+    }
 }

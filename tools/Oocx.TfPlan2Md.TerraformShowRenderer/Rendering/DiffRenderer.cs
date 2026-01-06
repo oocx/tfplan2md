@@ -173,37 +173,80 @@ internal sealed partial class DiffRenderer
         }
 
         var beforeDict = beforeObj?.EnumerateObject().ToDictionary(p => p.Name, p => p.Value) ?? new Dictionary<string, JsonElement>();
-        var afterProps = afterObj?.EnumerateObject().ToList() ?? new List<JsonProperty>();
-        var unchanged = 0;
+        var afterProps = afterObj?.EnumerateObject().Select(p => (p.Name, p.Value)).ToList() ?? new List<(string, JsonElement)>();
 
-        foreach (var prop in afterProps)
+        // Sort properties for consistent output
+        var sortedProps = SortPropertiesForOutput(afterProps);
+
+        // Compute width for alignment (include all properties)
+        var width = ComputeNameWidth(sortedProps);
+
+        // Track what gets rendered
+        var unchangedScalarCount = 0;
+        var unchangedBlockCount = 0;
+        var unchangedRendered = new List<(string Name, JsonElement Value)>();
+
+        // Identifier properties that should always be shown when unchanged
+        var identifierProperties = new HashSet<string>(StringComparer.Ordinal) { "id", "name" };
+
+        foreach (var (name, value) in sortedProps)
         {
-            var path = new List<string> { prop.Name };
-            if (beforeDict.TryGetValue(prop.Name, out var beforeValue))
+            var path = new List<string> { name };
+            if (beforeDict.TryGetValue(name, out var beforeValue))
             {
-                if (AreEqual(beforeValue, prop.Value))
+                if (AreEqual(beforeValue, value))
                 {
-                    unchanged++;
+                    // Property unchanged
+                    var isBlock = IsBlock(value);
+                    if (isBlock)
+                    {
+                        unchangedBlockCount++;
+                    }
+                    else
+                    {
+                        unchangedScalarCount++;
+                        // Show identifier properties
+                        if (identifierProperties.Contains(name))
+                        {
+                            unchangedRendered.Add((name, value));
+                        }
+                    }
                 }
                 else
                 {
-                    RenderUpdatedValue(writer, beforeValue, prop.Value, prop.Name, indent, path, unknown, sensitive, replacePaths);
+                    // Property changed
+                    RenderUpdatedValue(writer, beforeValue, value, name, indent, path, unknown, sensitive, replacePaths);
                 }
             }
             else
             {
-                RenderAddedValue(writer, prop.Value, prop.Name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, 0);
+                // Property added
+                RenderAddedValue(writer, value, name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, width);
             }
         }
 
-        foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
+        // Render unchanged identifier scalars (without markers)
+        foreach (var (name, value) in unchangedRendered)
         {
-            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, sensitive, new List<string> { removedName }, 0);
+            writer.Write(indent);
+            writer.Write("  "); // Two spaces instead of marker
+            writer.Write(name.PadRight(width));
+            writer.Write(" = ");
+            RenderScalarValue(writer, value, false, false);
+            writer.WriteLine();
         }
 
-        if (unchanged > 0)
+        // Render removed properties
+        foreach (var removedName in beforeDict.Keys.Except(sortedProps.Select(p => p.Name)))
         {
-            WriteUnchangedComment(writer, indent, unchanged);
+            RenderRemovedValue(writer, beforeDict[removedName], removedName, indent, sensitive, new List<string> { removedName }, width);
+        }
+
+        // Show comment for remaining unchanged attributes
+        var hiddenCount = unchangedScalarCount - unchangedRendered.Count + unchangedBlockCount;
+        if (hiddenCount > 0)
+        {
+            WriteUnchangedComment(writer, indent, hiddenCount);
         }
     }
 }

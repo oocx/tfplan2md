@@ -350,6 +350,8 @@ internal sealed partial class DiffRenderer
 
     /// <summary>
     /// Computes the maximum property name width for alignment.
+    /// Only considers scalar properties and primitive arrays that render inline,
+    /// excludes nested blocks and object arrays.
     /// </summary>
     /// <param name="properties">Properties to inspect.</param>
     /// <returns>Maximum name length or zero when no properties exist.</returns>
@@ -358,7 +360,16 @@ internal sealed partial class DiffRenderer
         var max = 0;
         foreach (var property in properties)
         {
-            if (property.Name.Length > max)
+            // Only include scalars and primitive arrays in width calculation
+            // Nested blocks and object arrays don't contribute to alignment
+            var isInlineProperty = property.Value.ValueKind switch
+            {
+                JsonValueKind.Array => ContainsOnlyPrimitives(property.Value),
+                JsonValueKind.Object => false, // Nested objects render as blocks, not inline
+                _ => true // Scalars render inline
+            };
+
+            if (isInlineProperty && property.Name.Length > max)
             {
                 max = property.Name.Length;
             }

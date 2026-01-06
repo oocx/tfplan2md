@@ -201,9 +201,10 @@ internal sealed partial class DiffRenderer
 
     /// <summary>
     /// Checks if an array contains only primitive values (not objects or nested arrays).
+    /// Empty arrays are treated as non-primitive since their intended type is unknown.
     /// </summary>
     /// <param name="array">Array to check.</param>
-    /// <returns>True if array contains only scalars, false if it contains objects/arrays.</returns>
+    /// <returns>True if array contains only scalars, false if it contains objects/arrays or is empty.</returns>
     private static bool ContainsOnlyPrimitives(JsonElement array)
     {
         if (array.ValueKind != JsonValueKind.Array)
@@ -211,14 +212,17 @@ internal sealed partial class DiffRenderer
             return false;
         }
 
+        var hasAnyElement = false;
         foreach (var item in array.EnumerateArray())
         {
+            hasAnyElement = true;
             if (item.ValueKind == JsonValueKind.Object || item.ValueKind == JsonValueKind.Array)
             {
                 return false;
             }
         }
 
-        return true;
+        // Empty arrays are treated as non-primitive (likely object arrays in schema)
+        return hasAnyElement;
     }
 }

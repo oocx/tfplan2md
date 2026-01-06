@@ -275,6 +275,7 @@ internal sealed partial class DiffRenderer
 
         if (before.ValueKind == JsonValueKind.Object && after.ValueKind == JsonValueKind.Object)
         {
+            var isMap = IsMap(after);
             WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement);
             var childUnknown = GetChildElement(unknown, path);
             var beforeDict = before.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
@@ -292,24 +293,28 @@ internal sealed partial class DiffRenderer
                     }
                     else
                     {
-                        RenderUpdatedValue(writer, beforeChild, prop.Value, prop.Name, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
+                        var propName = isMap ? $"\"{prop.Name}\"" : prop.Name;
+                        RenderUpdatedValue(writer, beforeChild, prop.Value, propName, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
                     }
                 }
                 else
                 {
-                    RenderAddedValue(writer, prop.Value, prop.Name, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
+                    var propName = isMap ? $"\"{prop.Name}\"" : prop.Name;
+                    RenderAddedValue(writer, prop.Value, propName, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
                 }
             }
 
             foreach (var removedName in beforeDict.Keys.Except(afterProps.Select(p => p.Name)))
             {
                 var childPath = new List<string>(path) { removedName };
-                RenderRemovedValue(writer, beforeDict[removedName], removedName, indent + Indent + Indent, sensitive, childPath);
+                var propName = isMap ? $"\"{removedName}\"" : removedName;
+                RenderRemovedValue(writer, beforeDict[removedName], propName, indent + Indent + Indent, sensitive, childPath);
             }
 
             if (unchanged > 0)
             {
-                WriteUnchangedComment(writer, indent + Indent, unchanged);
+                var itemType = isMap ? "elements" : "attributes";
+                WriteUnchangedComment(writer, indent + Indent, unchanged, itemType);
             }
 
             WriteClosingBrace(writer, indent + Indent);

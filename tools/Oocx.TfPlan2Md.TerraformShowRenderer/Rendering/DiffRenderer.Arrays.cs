@@ -245,7 +245,8 @@ internal sealed partial class DiffRenderer
 
         if (hiddenButCountedCount > 0)
         {
-            WriteUnchangedComment(writer, indent + Indent + Indent, hiddenButCountedCount);
+            // Align comment with property names (add 2 spaces for "- " marker)
+            WriteUnchangedComment(writer, indent + Indent + Indent + "  ", hiddenButCountedCount);
         }
 
         WriteClosingBrace(writer, indent + Indent);

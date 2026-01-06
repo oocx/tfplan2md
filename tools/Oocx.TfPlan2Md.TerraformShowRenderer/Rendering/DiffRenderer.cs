@@ -35,7 +35,8 @@ internal sealed partial class DiffRenderer
         {
             case ResourceAction.Create:
             case ResourceAction.Read:
-                RenderAdd(writer, after, afterUnknown, afterSensitive, indent, action == ResourceAction.Read ? "<=" : "+", action == ResourceAction.Read ? AnsiStyle.Cyan : AnsiStyle.Green);
+                // For Read actions, resource header uses <=, but properties use + (green)
+                RenderAdd(writer, after, afterUnknown, afterSensitive, indent, "+", AnsiStyle.Green);
                 break;
             case ResourceAction.Delete:
                 RenderRemove(writer, before, indent, beforeSensitive);

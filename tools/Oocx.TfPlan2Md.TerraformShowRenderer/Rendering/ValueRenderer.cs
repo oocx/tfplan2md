@@ -17,12 +17,24 @@ internal sealed class ValueRenderer
     {
         return value.ValueKind switch
         {
-            JsonValueKind.String => FormattableString.Invariant($"\"{value.GetString()}\""),
+            JsonValueKind.String => RenderString(value.GetString()!),
             JsonValueKind.Number => value.GetRawText(),
             JsonValueKind.True => "true",
             JsonValueKind.False => "false",
             JsonValueKind.Null => "null",
             _ => value.GetRawText()
         };
+    }
+
+    /// <summary>
+    /// Renders a string value with proper escaping for backslashes and quotes.
+    /// </summary>
+    /// <param name="str">String to render.</param>
+    /// <returns>Escaped and quoted string.</returns>
+    private static string RenderString(string str)
+    {
+        // Escape backslashes and quotes
+        var escaped = str.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        return FormattableString.Invariant($"\"{escaped}\"");
     }
 }

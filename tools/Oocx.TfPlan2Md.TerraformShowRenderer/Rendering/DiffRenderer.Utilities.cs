@@ -8,6 +8,32 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 /// <summary>Utility helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md</summary>
 internal sealed partial class DiffRenderer
 {
+    /// <summary>
+    /// Determines if a JSON object is a map (all scalar values) vs a block (nested structures).
+    /// Maps in Terraform render with quoted keys, blocks with unquoted keys.
+    /// </summary>
+    /// <param name="obj">Object to check.</param>
+    /// <returns>True if object is a map (all values are scalars), false if it's a block.</returns>
+    private static bool IsMap(JsonElement obj)
+    {
+        if (obj.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        // A map has all scalar values (string, number, bool, null)
+        // A block has nested objects, arrays, or mixed types
+        foreach (var prop in obj.EnumerateObject())
+        {
+            if (prop.Value.ValueKind == JsonValueKind.Object || prop.Value.ValueKind == JsonValueKind.Array)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /// <summary>Writes scalar lines matching Terraform marker and value formatting.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
@@ -148,14 +174,15 @@ internal sealed partial class DiffRenderer
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
     /// <param name="count">Number of unchanged attributes hidden.</param>
+    /// <param name="itemType">Type of items ("attributes", "elements", or "blocks").</param>
     /// <returns>Nothing.</returns>
-    private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count)
+    private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count, string itemType = "attributes")
     {
         writer.Write(indent);
         writer.WriteStyled("#", AnsiStyle.Dim);
         writer.Write(" (");
         writer.Write(count.ToString(CultureInfo.InvariantCulture));
-        writer.Write(" unchanged attributes hidden)");
+        writer.Write($" unchanged {itemType} hidden)");
         writer.WriteLine();
     }
 

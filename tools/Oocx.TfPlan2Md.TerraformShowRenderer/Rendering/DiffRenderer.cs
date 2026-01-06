@@ -120,7 +120,8 @@ internal sealed partial class DiffRenderer
         var afterProps = afterObj?.EnumerateObject().Select(p => (p.Name, Value: p.Value)).ToList() ?? new List<(string Name, JsonElement Value)>();
         // Sort properties by type (scalars first, then nested blocks), then alphabetically
         var sortedAfterProps = SortPropertiesByType(afterProps);
-        var unchanged = 0;
+        var unchangedAttributes = 0;
+        var unchangedBlocks = 0;
 
         foreach (var (name, value) in sortedAfterProps)
         {
@@ -129,7 +130,15 @@ internal sealed partial class DiffRenderer
             {
                 if (AreEqual(beforeValue, value))
                 {
-                    unchanged++;
+                    // Count blocks (arrays/objects) vs attributes (scalars)
+                    if (value.ValueKind == JsonValueKind.Array || value.ValueKind == JsonValueKind.Object)
+                    {
+                        unchangedBlocks++;
+                    }
+                    else
+                    {
+                        unchangedAttributes++;
+                    }
                 }
                 else
                 {
@@ -153,9 +162,15 @@ internal sealed partial class DiffRenderer
             RenderRemovedValue(writer, value, name, indent, sensitive, new List<string> { name });
         }
 
-        if (unchanged > 0)
+        if (unchangedAttributes > 0)
         {
-            WriteUnchangedComment(writer, indent, unchanged);
+            WriteUnchangedComment(writer, indent, unchangedAttributes, "attributes");
+        }
+
+        if (unchangedBlocks > 0)
+        {
+            var blockWord = unchangedBlocks == 1 ? "block" : "blocks";
+            WriteUnchangedComment(writer, indent, unchangedBlocks, blockWord);
         }
     }
 
@@ -170,17 +185,40 @@ internal sealed partial class DiffRenderer
         return properties
             .OrderBy(p =>
             {
-                // Group 0: Scalars (string, number, bool, null)
-                // Group 1: Arrays
+                // Group 0: Scalars (string, number, bool, null) and primitive arrays
+                // Group 1: Object arrays (nested blocks represented as arrays)
                 // Group 2: Objects (nested blocks)
                 return p.Value.ValueKind switch
                 {
-                    JsonValueKind.Array => 1,
+                    JsonValueKind.Array => ContainsOnlyPrimitives(p.Value) ? 0 : 1,
                     JsonValueKind.Object => 2,
                     _ => 0
                 };
             })
             .ThenBy(p => p.Name, StringComparer.Ordinal)
             .ToList();
+    }
+
+    /// <summary>
+    /// Checks if an array contains only primitive values (not objects or nested arrays).
+    /// </summary>
+    /// <param name="array">Array to check.</param>
+    /// <returns>True if array contains only scalars, false if it contains objects/arrays.</returns>
+    private static bool ContainsOnlyPrimitives(JsonElement array)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        foreach (var item in array.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.Object || item.ValueKind == JsonValueKind.Array)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

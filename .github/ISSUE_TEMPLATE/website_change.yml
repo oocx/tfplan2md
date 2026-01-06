@@ -22,6 +22,8 @@ body:
         - New Page or Section
         - Bug Fix (broken links, rendering issues)
         - Accessibility Improvement
+        - Deployment
+        - Other
     validations:
       required: true
 
@@ -36,7 +38,7 @@ body:
         - Getting Started page (getting-started.html)
         - Features index (features/index.html)
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: current-state

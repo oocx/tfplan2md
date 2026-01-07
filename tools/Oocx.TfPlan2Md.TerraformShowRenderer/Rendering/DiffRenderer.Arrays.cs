@@ -200,9 +200,10 @@ internal sealed partial class DiffRenderer
 
         var childUnknown = GetChildElement(unknown, path);
         var childProperties = EnumerateProperties(element, childUnknown).ToList();
-        var childWidth = ComputeNameWidth(childProperties);
+        var sortedChildProperties = SortPropertiesByType(childProperties);
+        var childWidth = ComputeNameWidth(sortedChildProperties);
         WriteBlockOpening(writer, indent, marker, style, name);
-        foreach (var property in childProperties)
+        foreach (var property in sortedChildProperties)
         {
             var childPath = new List<string>(path) { property.Name };
             RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
@@ -226,11 +227,33 @@ internal sealed partial class DiffRenderer
 
         WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name);
         var childProperties = element.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
-        var childWidth = ComputeNameWidth(childProperties);
-        foreach (var property in childProperties)
+        var sortedChildProperties = SortPropertiesByType(childProperties);
+        var childWidth = ComputeNameWidth(sortedChildProperties);
+        var hiddenCount = 0;
+
+        foreach (var property in sortedChildProperties)
         {
             var childPath = new List<string>(path) { property.Name };
+            var isSensitive = IsSensitivePath(sensitive, childPath);
+
+            if (!ShouldRenderValue(property.Value, isUnknown: false, isSensitive: isSensitive))
+            {
+                // Only count non-empty strings and non-null scalars as hidden unchanged attributes
+                // Empty arrays and empty objects are not counted
+                if (property.Value.ValueKind == JsonValueKind.String && string.IsNullOrEmpty(property.Value.GetString()))
+                {
+                    hiddenCount++;
+                }
+
+                continue;
+            }
+
             RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath, childWidth);
+        }
+
+        if (hiddenCount > 0)
+        {
+            WriteUnchangedComment(writer, indent + Indent + Indent + Indent, hiddenCount, "attributes");
         }
 
         WriteClosingBrace(writer, indent + Indent);

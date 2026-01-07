@@ -229,7 +229,7 @@ internal sealed partial class DiffRenderer
         writer.Write(" ");
         writer.Write(name);
         writer.WriteLine(" {");
-        WriteSensitivePlaceholder(writer, indent + Indent, null);
+        WriteSensitivePlaceholder(writer, indent + Indent + Indent, null);
         WriteClosingBrace(writer, indent + Indent);
     }
 

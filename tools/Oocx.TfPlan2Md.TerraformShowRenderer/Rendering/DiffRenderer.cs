@@ -251,9 +251,11 @@ internal sealed partial class DiffRenderer
         }
 
         // Render unchanged id/name and write unchanged comment BEFORE block arrays
+        var unchangedWidth = unchangedIdName.Count > 0 ? unchangedIdName.Max(item => item.Name.Length) : 0;
         foreach (var (name, value, path) in unchangedIdName)
         {
-            RenderAddedValue(writer, value, name, indent, marker: string.Empty, style: AnsiStyle.Reset, unknown, sensitive, path, nameWidth: 0);
+            // Unchanged attributes are indented an extra level to compensate for no marker
+            RenderAddedValue(writer, value, name, indent + Indent, marker: string.Empty, style: AnsiStyle.Reset, unknown, sensitive, path, nameWidth: unchangedWidth);
         }
 
         if (unchangedAttributes > 0)

@@ -36,7 +36,7 @@ internal sealed partial class DiffRenderer
                 var index = 0;
                 foreach (var _ in value.EnumerateArray())
                 {
-                    WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+                    WriteSensitiveBlock(writer, indent, marker, style, name);
                     index++;
                 }
 
@@ -45,7 +45,7 @@ internal sealed partial class DiffRenderer
 
             if (value.ValueKind == JsonValueKind.Object)
             {
-                WriteSensitiveBlock(writer, indent, marker, style, nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+                WriteSensitiveBlock(writer, indent, marker, style, name);
                 return;
             }
 
@@ -95,7 +95,7 @@ internal sealed partial class DiffRenderer
                 foreach (var element in value.EnumerateArray())
                 {
                     var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                    RenderAddedArrayItem(writer, element, indent + Indent, marker, style, unknown, sensitive, childPath);
+                    RenderAddedArrayItem(writer, element, indent + Indent + Indent, marker, style, unknown, sensitive, childPath);
                     index++;
                 }
 
@@ -335,16 +335,16 @@ internal sealed partial class DiffRenderer
                 {
                     if (!AreEqual(beforeItems[i], afterItems[i]))
                     {
-                        RenderUpdatedArrayItem(writer, beforeItems[i], afterItems[i], indent + Indent, childPath, unknown, sensitive, replacePaths);
+                        RenderUpdatedArrayItem(writer, beforeItems[i], afterItems[i], indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
                     }
                 }
                 else if (i < afterItems.Count)
                 {
-                    RenderAddedArrayItem(writer, afterItems[i], indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath);
+                    RenderAddedArrayItem(writer, afterItems[i], indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath);
                 }
                 else
                 {
-                    RenderRemovedArrayItem(writer, beforeItems[i], indent + Indent, sensitive, childPath);
+                    RenderRemovedArrayItem(writer, beforeItems[i], indent + Indent + Indent, sensitive, childPath);
                 }
             }
 

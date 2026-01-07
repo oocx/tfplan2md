@@ -201,7 +201,7 @@ internal sealed partial class DiffRenderer
         var childUnknown = GetChildElement(unknown, path);
         var childProperties = EnumerateProperties(element, childUnknown).ToList();
         var sortedChildProperties = SortPropertiesByType(childProperties);
-        var childWidth = ComputeNameWidth(sortedChildProperties);
+        var childWidth = ComputeNameWidth(sortedChildProperties, childUnknown);
         WriteBlockOpening(writer, indent, marker, style, name);
         foreach (var property in sortedChildProperties)
         {
@@ -228,7 +228,7 @@ internal sealed partial class DiffRenderer
         WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name);
         var childProperties = element.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
         var sortedChildProperties = SortPropertiesByType(childProperties);
-        var childWidth = ComputeNameWidth(sortedChildProperties);
+        var childWidth = ComputeNameWidth(sortedChildProperties, unknown: null);
         var hiddenCount = 0;
 
         foreach (var property in sortedChildProperties)

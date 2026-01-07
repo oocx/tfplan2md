@@ -79,7 +79,7 @@ internal sealed partial class DiffRenderer
                 var childProperties = EnumerateProperties(value, childUnknown).ToList();
                 // Sort nested object properties by type (scalars, arrays, objects), then alphabetically
                 var sortedChildProperties = SortPropertiesByType(childProperties);
-                var childWidth = ComputeNameWidth(sortedChildProperties);
+                var childWidth = ComputeNameWidth(sortedChildProperties, childUnknown);
                 WriteContainerOpening(writer, indent, marker, style, name, "{", false, nameWidth);
                 foreach (var property in sortedChildProperties)
                 {
@@ -167,7 +167,7 @@ internal sealed partial class DiffRenderer
                 WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{");
                 var removedProperties = value.EnumerateObject().Select(p => (p.Name, Value: p.Value)).ToList();
                 var sortedRemovedProperties = SortPropertiesByType(removedProperties);
-                var removedWidth = ComputeNameWidth(sortedRemovedProperties);
+                var removedWidth = ComputeNameWidth(sortedRemovedProperties, unknown: null);
                 foreach (var (propName, propValue) in sortedRemovedProperties)
                 {
                     var childPath = new List<string>(path) { propName };

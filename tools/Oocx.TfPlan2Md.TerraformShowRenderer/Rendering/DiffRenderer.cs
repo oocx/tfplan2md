@@ -67,7 +67,7 @@ internal sealed partial class DiffRenderer
         var properties = EnumerateProperties(after.Value, unknown).ToList();
         // Sort properties by type (scalars first, then nested blocks), then alphabetically
         var sorted = SortPropertiesByType(properties);
-        var width = ComputeNameWidth(sorted);
+        var width = ComputeNameWidth(sorted, unknown);
 
         var previousWasNestedBlock = false;
         string? previousNestedBlockName = null;
@@ -112,7 +112,7 @@ internal sealed partial class DiffRenderer
         var properties = before.Value.EnumerateObject().Select(p => (p.Name, Value: p.Value)).ToList();
         // Sort properties by type (scalars first, then arrays, then nested blocks), then alphabetically
         var sorted = SortPropertiesByType(properties);
-        var width = ComputeNameWidth(sorted);
+        var width = ComputeNameWidth(sorted, unknown: null);
 
         var previousWasNestedBlock = false;
         string? previousNestedBlockName = null;
@@ -251,7 +251,9 @@ internal sealed partial class DiffRenderer
         }
 
         // Render unchanged id/name and write unchanged comment BEFORE block arrays
-        var unchangedWidth = unchangedIdName.Count > 0 ? unchangedIdName.Max(item => item.Name.Length) : 0;
+        // Compute width based on ALL properties in the update block for consistent alignment
+        var allProperties = afterProps.Select(p => (p.Name, p.Value)).ToList();
+        var unchangedWidth = ComputeNameWidth(allProperties, unknown);
         foreach (var (name, value, path) in unchangedIdName)
         {
             // Unchanged attributes are indented an extra level to compensate for no marker

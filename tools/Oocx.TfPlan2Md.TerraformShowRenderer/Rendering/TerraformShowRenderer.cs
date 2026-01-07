@@ -60,7 +60,11 @@ internal sealed class TerraformShowRenderer
         if (parsedOutputChanges.Count > 0)
         {
             ansiWriter.WriteLine();
-            WriteOutputChanges(ansiWriter, parsedOutputChanges);
+            // Compute width from ALL outputs (not just changed ones) for consistent alignment
+            var allOutputWidth = outputChanges is { ValueKind: JsonValueKind.Object }
+                ? outputChanges.Value.EnumerateObject().Max(p => p.Name.Length)
+                : 0;
+            WriteOutputChanges(ansiWriter, parsedOutputChanges, allOutputWidth);
         }
 
         return builder.ToString();
@@ -242,7 +246,8 @@ internal sealed class TerraformShowRenderer
     /// </summary>
     /// <param name="writer">Destination writer.</param>
     /// <param name="outputs">Parsed output change entries.</param>
-    private void WriteOutputChanges(AnsiTextWriter writer, IReadOnlyList<OutputChange> outputs)
+    /// <param name="width">Width for aligning output names (computed from all outputs).</param>
+    private void WriteOutputChanges(AnsiTextWriter writer, IReadOnlyList<OutputChange> outputs, int width)
     {
         if (outputs.Count == 0)
         {
@@ -251,7 +256,6 @@ internal sealed class TerraformShowRenderer
 
         writer.WriteLine("Changes to Outputs:");
 
-        var width = outputs.Max(o => o.Name.Length);
         foreach (var output in outputs)
         {
             WriteOutputChange(writer, output, width);

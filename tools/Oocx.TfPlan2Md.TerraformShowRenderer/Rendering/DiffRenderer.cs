@@ -74,8 +74,8 @@ internal sealed partial class DiffRenderer
 
         foreach (var (name, value) in sorted)
         {
-            var isNestedBlock = value.ValueKind == JsonValueKind.Object ||
-                               (value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value));
+            // Only arrays of objects are nested blocks; inline objects/maps are NOT nested blocks
+            var isNestedBlock = value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value);
 
             if (ShouldInsertBlankLineBeforeNestedBlock(isNestedBlock, previousWasNestedBlock, previousNestedBlockName, name))
             {
@@ -119,8 +119,8 @@ internal sealed partial class DiffRenderer
 
         foreach (var (name, value) in sorted)
         {
-            var isNestedBlock = value.ValueKind == JsonValueKind.Object ||
-                               (value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value));
+            // Only arrays of objects are nested blocks; inline objects/maps are NOT nested blocks
+            var isNestedBlock = value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value);
 
             if (ShouldInsertBlankLineBeforeNestedBlock(isNestedBlock, previousWasNestedBlock, previousNestedBlockName, name))
             {
@@ -383,7 +383,7 @@ internal sealed partial class DiffRenderer
     }
 
     /// <summary>
-    /// Sorts properties to match Terraform's grouping: scalars, then arrays, then objects (nested blocks).
+    /// Sorts properties to match Terraform's grouping: scalars (including inline objects/maps), then block arrays.
     /// Within each group, properties are sorted alphabetically.
     /// </summary>
     /// <param name="properties">Properties to sort.</param>
@@ -393,13 +393,12 @@ internal sealed partial class DiffRenderer
         return properties
             .OrderBy(p =>
             {
-                // Group 0: Scalars (string, number, bool, null) and primitive arrays
+                // Group 0: Scalars (string, number, bool, null), inline objects/maps, and primitive arrays
                 // Group 1: Object arrays (nested blocks represented as arrays)
-                // Group 2: Objects (nested blocks)
                 return p.Value.ValueKind switch
                 {
                     JsonValueKind.Array => ContainsOnlyPrimitives(p.Value) ? 0 : 1,
-                    JsonValueKind.Object => 2,
+                    JsonValueKind.Object => 0, // Inline objects/maps are sorted with scalars
                     _ => 0
                 };
             })

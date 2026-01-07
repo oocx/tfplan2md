@@ -80,11 +80,17 @@ internal sealed partial class DiffRenderer
                 // Sort nested object properties by type (scalars, arrays, objects), then alphabetically
                 var sortedChildProperties = SortPropertiesByType(childProperties);
                 var childWidth = ComputeNameWidth(sortedChildProperties, childUnknown);
+                var isMap = IsMap(value);
+                if (isMap && childWidth > 0)
+                {
+                    childWidth += 2; // Add 2 for quotes around map keys
+                }
                 WriteContainerOpening(writer, indent, marker, style, name, "{", false, nameWidth);
                 foreach (var property in sortedChildProperties)
                 {
                     var childPath = new List<string>(path) { property.Name };
-                    RenderAddedValue(writer, property.Value, property.Name, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
+                    var propName = isMap ? $"\"{property.Name}\"" : property.Name;
+                    RenderAddedValue(writer, property.Value, propName, indent + Indent + Indent, marker, style, unknown, sensitive, childPath, childWidth);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);

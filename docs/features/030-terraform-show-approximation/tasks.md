@@ -73,17 +73,17 @@ Implement the logic to map Terraform plan actions to human-readable headers and 
 Implement the complex logic for rendering attribute changes, including diffs, unknown values, and sensitive data.
 
 **Acceptance Criteria:**
-- [ ] `Rendering/ValueRenderer.cs` implemented for formatting JSON values (strings, numbers, booleans, nulls).
-- [ ] `Rendering/DiffRenderer.cs` implemented to handle different action types:
+- [x] `Rendering/ValueRenderer.cs` implemented for formatting JSON values (strings, numbers, booleans, nulls).
+- [x] `Rendering/DiffRenderer.cs` implemented to handle different action types:
     - **Create**: All attributes prefixed with `+`.
     - **Delete**: All attributes prefixed with `-`.
     - **Update**: Changed attributes show `~` and `old -> new`.
     - **Replace**: Shows `-/+` and attribute changes.
     - **Read**: Attributes prefixed with `<=`.
-- [ ] `(known after apply)` rendered for `after_unknown` values.
-- [ ] `(sensitive value)` rendered for sensitive attributes.
-- [ ] "unchanged attributes hidden" comment lines rendered where appropriate.
-- [ ] Property ordering from JSON is preserved.
+- [x] `(known after apply)` rendered for `after_unknown` values.
+- [x] `(sensitive value)` rendered for sensitive attributes.
+- [x] "unchanged attributes hidden" comment lines rendered where appropriate.
+- [x] Property ordering from JSON is preserved.
 
 **Dependencies:** Task 3
 
@@ -97,9 +97,9 @@ Implement the complex logic for rendering attribute changes, including diffs, un
 Implement the final sections of the output: the plan summary and output changes.
 
 **Acceptance Criteria:**
-- [ ] `Plan: X to add, Y to change, Z to destroy.` summary line implemented with correct counts.
-- [ ] `Changes to Outputs:` section implemented for non-no-op output changes.
-- [ ] Output changes follow similar diff formatting as resources.
+- [x] `Plan: X to add, Y to change, Z to destroy.` summary line implemented with correct counts.
+- [x] `Changes to Outputs:` section implemented for non-no-op output changes.
+- [x] Output changes follow similar diff formatting as resources.
 
 **Dependencies:** Task 4
 
@@ -113,12 +113,12 @@ Implement the final sections of the output: the plan summary and output changes.
 Add automated tests to ensure the tool's output matches the established baselines.
 
 **Acceptance Criteria:**
-- [ ] Integration tests added in `tests/Oocx.TfPlan2Md.Tests/TerraformShowRendererTests.cs`.
-- [ ] `TC-06`: Output for `plan1.json` matches `plan1.txt`.
-- [ ] `TC-07`: Output for `plan2.json` matches `plan2.txt`.
-- [ ] `TC-08`: Custom plan with all operations (create, update, delete, replace, read, no-op) verified.
-- [ ] `TC-13`: `--no-color` flag verified to produce plain text.
-- [ ] `TC-04`, `TC-05`, `TC-10`, `TC-11`, `TC-12`: Error cases and exit codes verified.
+- [x] Integration tests added in `tests/Oocx.TfPlan2Md.Tests/TerraformShowRendererTests.cs`.
+- [x] `TC-06`: Output for `plan1.json` matches `plan1.txt`.
+- [x] `TC-07`: Output for `plan2.json` matches `plan2.txt`.
+- [x] `TC-08`: Custom plan with all operations (create, update, delete, replace, read, no-op) verified.
+- [x] `TC-13`: `--no-color` flag verified to produce plain text.
+- [x] `TC-04`, `TC-05`, `TC-10`, `TC-11`, `TC-12`: Error cases and exit codes verified.
 
 **Dependencies:** Task 5
 
@@ -132,9 +132,9 @@ Add automated tests to ensure the tool's output matches the established baseline
 Finalize the feature with documentation and manual verification.
 
 **Acceptance Criteria:**
-- [ ] Tool usage documented in `README.md` or relevant documentation file.
-- [ ] UAT performed as per `docs/features/030-terraform-show-approximation/uat-test-plan.md`.
-- [ ] UAT artifact `artifacts/uat-terraform-show-approximation.txt` generated and verified.
+- [x] Tool usage documented in `README.md` or relevant documentation file.
+- [x] UAT performed as per `docs/features/030-terraform-show-approximation/uat-test-plan.md`.
+- [x] UAT artifact `artifacts/uat-terraform-show-approximation.txt` generated and verified.
 
 **Dependencies:** Task 6
 

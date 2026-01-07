@@ -4,6 +4,156 @@ This document provides generic guidelines for AI agents.
 
 For project-specific instructions, refer to the `docs/spec.md` file in the repository.
 
+## Project Overview
+
+**tfplan2md** is a .NET CLI tool that converts Terraform plan JSON files into human-readable Markdown reports. It helps DevOps and infrastructure teams review Terraform infrastructure changes by generating clean, structured reports from `terraform show -json` output. The tool supports custom templates, sensitive value masking, module grouping, and semantic diffing for complex resources like firewall rules.
+
+**Key capabilities:**
+- Convert Terraform JSON plans to Markdown
+- Customizable report templates using Scriban
+- Resource-specific templates for semantic diffs (firewall rules, role assignments)
+- Distributed as a minimal Docker image for CI/CD pipelines
+- Comprehensive testing with snapshot validation
+
+## Tech Stack
+
+- **.NET 10** with **C# 13** - Modern language features (collection expressions, primary constructors, pattern matching)
+- **Scriban** - Template engine for customizable report generation
+- **xUnit** - Unit testing framework
+- **AwesomeAssertions** - Fluent assertion library for readable tests
+- **Markdig** - Markdown parsing and rendering
+- **System.Text.Json** - JSON parsing for Terraform plans
+- **Docker** - Minimal chiseled Ubuntu container for deployment
+- **Husky.Net** - Git hooks for code quality enforcement
+- **Versionize** - Automated semantic versioning based on Conventional Commits
+
+## Repository Structure
+
+```
+/src/Oocx.TfPlan2Md/           # Main CLI application
+  ├── CLI/                      # Command-line interface and argument parsing
+  ├── Parsing/                  # Terraform JSON plan parsing
+  ├── MarkdownGeneration/       # Report generation and formatting
+  │   ├── Templates/            # Built-in Scriban templates (default, summary, resource-specific)
+  │   ├── Formatting/           # Value formatters and helpers
+  │   └── Rendering/            # Report rendering logic
+  └── Program.cs                # Application entry point
+
+/tests/Oocx.TfPlan2Md.Tests/   # Unit and integration tests
+  └── TestData/                 # Test fixtures and JSON plans
+      └── Snapshots/            # Snapshot test baselines for markdown output
+
+/tools/                         # Development and testing utilities
+  ├── Oocx.TfPlan2Md.HtmlRenderer/      # Renders markdown as GitHub/Azure DevOps HTML
+  └── Oocx.TfPlan2Md.ScreenshotGenerator/ # Generates screenshots from HTML
+
+/examples/                      # Example Terraform plans and demos
+  └── comprehensive-demo/       # Full-feature demo with all capabilities
+
+/docs/                          # Project documentation
+  ├── spec.md                   # Project specification and standards
+  ├── architecture.md           # System architecture
+  ├── features.md               # User-facing feature documentation
+  ├── testing-strategy.md       # Testing approach and guidelines
+  ├── adr-*.md                  # Architecture decision records
+  ├── features/NNN-*/           # Feature specifications
+  ├── issues/NNN-*/             # Issue investigation reports
+  └── workflow/NNN-*/           # Workflow improvement documentation
+
+/.github/                       # GitHub configuration
+  ├── agents/                   # VS Code Copilot agent definitions
+  ├── skills/                   # Reusable agent skills (workflows)
+  ├── workflows/                # CI/CD pipelines
+  └── copilot-instructions.md   # This file
+
+/scripts/                       # Build and workflow scripts
+```
+
+## Key Resources
+
+- **`docs/spec.md`** - Project specification, coding standards, access modifier guidelines
+- **`docs/architecture.md`** - System architecture and design patterns
+- **`docs/testing-strategy.md`** - Testing approach, snapshot tests, integration tests
+- **`docs/commenting-guidelines.md`** - XML documentation standards
+- **`src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/`** - Scriban templates for report generation
+- **`src/Oocx.TfPlan2Md/MarkdownGeneration/Formatting/ValueFormatters.cs`** - Core formatting logic for values
+- **`examples/comprehensive-demo/`** - Full-feature demo showcasing all capabilities
+- **`.editorconfig`** - Code style rules enforced by dotnet format
+- **`CONTRIBUTING.md`** - Contribution guidelines and branch naming conventions
+
+## Common Commands
+
+### Build and Test
+```bash
+# Build the solution
+dotnet build
+
+# Run all tests (unit + integration; Docker tests skipped if Docker unavailable)
+scripts/test-with-timeout.sh -- dotnet test
+
+# Run tests with custom timeout
+scripts/test-with-timeout.sh --timeout-seconds 180 -- dotnet test
+
+# Format code (enforced by pre-commit hook)
+dotnet format
+
+# Run the CLI tool manually
+dotnet run --project src/Oocx.TfPlan2Md -- <path-to-json>
+```
+
+### Testing and Validation
+```bash
+# Regenerate snapshot test baselines (when template changes are intentional)
+scripts/update-test-snapshots.sh
+
+# Generate comprehensive demo report
+dotnet run --project src/Oocx.TfPlan2Md -- \
+  examples/comprehensive-demo/plan.json \
+  --principals examples/comprehensive-demo/demo-principals.json
+
+# Validate markdown output (runs in CI)
+markdownlint-cli2 artifacts/*.md
+```
+
+### Docker
+```bash
+# Build Docker image
+docker build -t tfplan2md .
+
+# Run from Docker (stdin)
+terraform show -json plan.tfplan | docker run -i tfplan2md
+
+# Run from Docker (file)
+docker run -v $(pwd):/data tfplan2md /data/plan.json
+```
+
+### Git Workflow
+```bash
+# Check working tree status (prefer this over raw git status)
+scripts/git-status.sh
+
+# View git log (prefer this over raw git log)
+scripts/git-log.sh --oneline -10
+
+# View git diff (prefer this over raw git diff)
+scripts/git-diff.sh
+
+# Create pull request
+scripts/pr-github.sh create --title "<type>: <summary>" --body "<description>"
+```
+
+### Agent Skills
+```bash
+# Validate agent definitions
+scripts/validate-agents.py
+
+# Generate demo artifacts
+# (invoke the generate-demo-artifacts skill)
+
+# Run UAT
+# (invoke the run-uat skill)
+```
+
 ## Coding Pattern Preferences
 
 - Always prefer simple solutions

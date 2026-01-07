@@ -1,0 +1,27 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Layered stack showing structured output -->
+  <defs>
+    <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="18" cy="18" r="17" fill="url(#grad4)"/>
+  
+  <!-- Three stacked layers -->
+  <rect x="8" y="10" width="20" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="8" y="16" width="20" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="8" y="22" width="20" height="4" rx="1" fill="white" opacity="0.9"/>
+  
+  <!-- Small indicators on layers -->
+  <circle cx="11" cy="12" r="1" fill="#646cff"/>
+  <line x1="14" y1="12" x2="25" y2="12" stroke="#646cff" stroke-width="1" stroke-linecap="round"/>
+  
+  <circle cx="11" cy="18" r="1" fill="#646cff"/>
+  <line x1="14" y1="18" x2="22" y2="18" stroke="#646cff" stroke-width="1" stroke-linecap="round"/>
+  
+  <circle cx="11" cy="24" r="1" fill="#646cff"/>
+  <line x1="14" y1="24" x2="20" y2="24" stroke="#646cff" stroke-width="1" stroke-linecap="round"/>
+</svg>

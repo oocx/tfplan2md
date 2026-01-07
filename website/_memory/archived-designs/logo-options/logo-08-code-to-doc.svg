@@ -1,0 +1,29 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Code brackets to document -->
+  <defs>
+    <linearGradient id="grad8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle background -->
+  <circle cx="18" cy="18" r="17" fill="url(#grad8)"/>
+  
+  <!-- Left: Code brackets {} -->
+  <path d="M 10,12 Q 8,12 8,14 L 8,22 Q 8,24 10,24" 
+        stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 14,12 Q 16,12 16,14 L 16,22 Q 16,24 14,24" 
+        stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <!-- Arrow -->
+  <path d="M 17,18 L 20,18 M 19,16 L 21,18 L 19,20" 
+        stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Right: Document with lines -->
+  <rect x="22" y="11" width="8" height="14" rx="1" fill="white"/>
+  <line x1="24" y1="14" x2="28" y2="14" stroke="#646cff" stroke-width="1"/>
+  <line x1="24" y1="17" x2="28" y2="17" stroke="#646cff" stroke-width="1"/>
+  <line x1="24" y1="20" x2="27" y2="20" stroke="#646cff" stroke-width="1"/>
+  <line x1="24" y1="23" x2="28" y2="23" stroke="#646cff" stroke-width="1"/>
+</svg>

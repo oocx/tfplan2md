@@ -1,0 +1,26 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Blueprint/plan icon with markdown -->
+  <defs>
+    <linearGradient id="grad7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="36" height="36" rx="8" fill="url(#grad7)"/>
+  
+  <!-- Blueprint/document with folded corner -->
+  <path d="M 8,8 L 8,28 L 28,28 L 28,14 L 22,8 Z" fill="white" stroke="none"/>
+  <path d="M 22,8 L 22,14 L 28,14" fill="#646cff" stroke="none" opacity="0.3"/>
+  
+  <!-- Grid/plan lines -->
+  <line x1="11" y1="16" x2="19" y2="16" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="11" y1="19" x2="25" y2="19" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="11" y1="22" x2="22" y2="22" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="11" y1="25" x2="17" y2="25" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  
+  <!-- Checkmark -->
+  <path d="M 12,12 L 14,14 L 18,10" stroke="#646cff" stroke-width="1.5" fill="none" 
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

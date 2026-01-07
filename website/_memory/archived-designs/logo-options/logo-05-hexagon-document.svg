@@ -1,0 +1,24 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Terraform hexagon transforming into document -->
+  <defs>
+    <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Large hexagon background -->
+  <polygon points="18,4 30,11 30,25 18,32 6,25 6,11" fill="url(#grad5)"/>
+  
+  <!-- Document shape overlay (right side) -->
+  <rect x="16" y="12" width="12" height="12" rx="1.5" fill="white" opacity="0.95"/>
+  
+  <!-- Markdown lines on document -->
+  <line x1="18" y1="15" x2="26" y2="15" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="18" y1="18" x2="24" y2="18" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="18" y1="21" x2="26" y2="21" stroke="#646cff" stroke-width="1.2" stroke-linecap="round"/>
+  
+  <!-- TF text (left side) -->
+  <text x="11" y="20" font-family="monospace" font-size="8" font-weight="bold" 
+        fill="white" text-anchor="middle">tf</text>
+</svg>

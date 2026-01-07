@@ -1,0 +1,25 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Document split showing structure -->
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect width="36" height="36" rx="8" fill="url(#grad2)"/>
+  
+  <!-- Document with lines -->
+  <rect x="8" y="8" width="20" height="20" rx="2" fill="none" stroke="white" stroke-width="2"/>
+  
+  <!-- Markdown lines (left-aligned) -->
+  <line x1="11" y1="13" x2="20" y2="13" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="11" y1="18" x2="25" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="11" y1="23" x2="22" y2="23" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Small TF badge in corner -->
+  <circle cx="25" cy="11" r="4" fill="#646cff" stroke="white" stroke-width="1.5"/>
+  <text x="25" y="12.5" font-family="monospace" font-size="4" font-weight="bold" 
+        fill="white" text-anchor="middle">tf</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Report/chart showing structured data -->
+  <defs>
+    <linearGradient id="grad10" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="36" height="36" rx="8" fill="url(#grad10)"/>
+  
+  <!-- Document frame -->
+  <rect x="7" y="7" width="22" height="22" rx="2" fill="white"/>
+  
+  <!-- Title bar -->
+  <rect x="7" y="7" width="22" height="5" rx="2" fill="#646cff"/>
+  
+  <!-- Chart/data bars -->
+  <rect x="10" y="15" width="6" height="3" rx="0.5" fill="#646cff" opacity="0.7"/>
+  <rect x="10" y="19" width="12" height="3" rx="0.5" fill="#646cff" opacity="0.7"/>
+  <rect x="10" y="23" width="9" height="3" rx="0.5" fill="#646cff" opacity="0.7"/>
+  
+  <!-- Icons next to bars -->
+  <circle cx="20" cy="16.5" r="1" fill="#646cff"/>
+  <circle cx="24" cy="20.5" r="1" fill="#646cff"/>
+  <circle cx="22" cy="24.5" r="1" fill="#646cff"/>
+</svg>

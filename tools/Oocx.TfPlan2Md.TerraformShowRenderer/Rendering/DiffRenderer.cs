@@ -266,6 +266,16 @@ internal sealed partial class DiffRenderer
             WriteUnchangedComment(writer, indent + Indent, unchangedAttributes, "attributes");
         }
 
+        // Check if there are any block arrays to process in second pass
+        var hasBlockArrays = sortedAfterProps.Any(p => p.Value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(p.Value));
+
+        // Insert blank line before block arrays if there were scalar attributes AND there are block arrays to show
+        var hasScalarContent = unchangedIdName.Count > 0 || unchangedAttributes > 0;
+        if (hasScalarContent && hasBlockArrays)
+        {
+            writer.WriteLine();
+        }
+
         // Second pass: Process block arrays and removed items
         foreach (var (name, value) in sortedAfterProps)
         {

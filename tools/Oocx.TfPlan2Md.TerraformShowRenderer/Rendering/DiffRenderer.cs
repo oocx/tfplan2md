@@ -197,6 +197,10 @@ internal sealed partial class DiffRenderer
         var unchangedBlocks = 0;
         var unchangedIdName = new List<(string Name, JsonElement Value, List<string> Path)>();
 
+        // Compute width based on ALL properties in the update block for consistent alignment
+        var allProperties = afterProps.Select(p => (p.Name, p.Value)).ToList();
+        var width = ComputeNameWidth(allProperties, unknown);
+
         // First pass: Process scalars and single objects (not block arrays)
         foreach (var (name, value) in sortedAfterProps)
         {
@@ -241,7 +245,7 @@ internal sealed partial class DiffRenderer
                 }
                 else
                 {
-                    RenderUpdatedValue(writer, beforeValue, value, name, indent, path, unknown, sensitive, replacePaths);
+                    RenderUpdatedValue(writer, beforeValue, value, name, indent, path, unknown, sensitive, replacePaths, width);
                 }
             }
             else
@@ -251,18 +255,15 @@ internal sealed partial class DiffRenderer
         }
 
         // Render unchanged id/name and write unchanged comment BEFORE block arrays
-        // Compute width based on ALL properties in the update block for consistent alignment
-        var allProperties = afterProps.Select(p => (p.Name, p.Value)).ToList();
-        var unchangedWidth = ComputeNameWidth(allProperties, unknown);
         foreach (var (name, value, path) in unchangedIdName)
         {
             // Unchanged attributes are indented an extra level to compensate for no marker
-            RenderAddedValue(writer, value, name, indent + Indent, marker: string.Empty, style: AnsiStyle.Reset, unknown, sensitive, path, nameWidth: unchangedWidth);
+            RenderAddedValue(writer, value, name, indent + Indent, marker: string.Empty, style: AnsiStyle.Reset, unknown, sensitive, path, nameWidth: width);
         }
 
         if (unchangedAttributes > 0)
         {
-            WriteUnchangedComment(writer, indent, unchangedAttributes, "attributes");
+            WriteUnchangedComment(writer, indent + Indent, unchangedAttributes, "attributes");
         }
 
         // Second pass: Process block arrays and removed items
@@ -312,7 +313,7 @@ internal sealed partial class DiffRenderer
         if (unchangedBlocks > 0)
         {
             var blockWord = unchangedBlocks == 1 ? "block" : "blocks";
-            WriteUnchangedComment(writer, indent, unchangedBlocks, blockWord);
+            WriteUnchangedComment(writer, indent + Indent, unchangedBlocks, blockWord);
         }
     }
 

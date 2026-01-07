@@ -226,8 +226,9 @@ internal sealed partial class DiffRenderer
     /// <param name="unknown">Unknown value map from <c>after_unknown</c>.</param>
     /// <param name="sensitive">Sensitive value map from <c>after_sensitive</c>.</param>
     /// <param name="replacePaths">Paths that force replacement.</param>
+    /// <param name="nameWidth">Width for aligning attribute names.</param>
     /// <returns>Nothing.</returns>
-    private void RenderUpdatedValue(AnsiTextWriter writer, JsonElement before, JsonElement after, string name, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths)
+    private void RenderUpdatedValue(AnsiTextWriter writer, JsonElement before, JsonElement after, string name, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths, int nameWidth = 0)
     {
         var replacement = replacePaths.Contains(FormatPath(path));
         var isSensitive = IsSensitivePath(sensitive, path);
@@ -277,7 +278,7 @@ internal sealed partial class DiffRenderer
         if (before.ValueKind == JsonValueKind.Object && after.ValueKind == JsonValueKind.Object)
         {
             var isMap = IsMap(after);
-            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement);
+            WriteContainerOpening(writer, indent, "~", AnsiStyle.Yellow, name, "{", replacement, nameWidth);
             var childUnknown = GetChildElement(unknown, path);
             var beforeDict = before.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
             var afterProps = EnumerateProperties(after, childUnknown).ToList();

@@ -283,6 +283,15 @@ internal sealed partial class DiffRenderer
             var beforeDict = before.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
             var afterProps = EnumerateProperties(after, childUnknown).ToList();
             var sortedAfterProps = SortPropertiesByType(afterProps);
+
+            // Compute width for child properties
+            var childWidth = ComputeNameWidth(sortedAfterProps, childUnknown);
+            if (isMap && childWidth > 0)
+            {
+                // For maps: ComputeNameWidth returns max+implicit_space, add 2 for quotes
+                childWidth += 2;
+            }
+
             var unchanged = 0;
             foreach (var prop in sortedAfterProps)
             {
@@ -296,13 +305,13 @@ internal sealed partial class DiffRenderer
                     else
                     {
                         var propName = isMap ? $"\"{prop.Name}\"" : prop.Name;
-                        RenderUpdatedValue(writer, beforeChild, prop.Value, propName, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths);
+                        RenderUpdatedValue(writer, beforeChild, prop.Value, propName, indent + Indent + Indent, childPath, unknown, sensitive, replacePaths, childWidth);
                     }
                 }
                 else
                 {
                     var propName = isMap ? $"\"{prop.Name}\"" : prop.Name;
-                    RenderAddedValue(writer, prop.Value, propName, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, 0);
+                    RenderAddedValue(writer, prop.Value, propName, indent + Indent + Indent, "+", AnsiStyle.Green, unknown, sensitive, childPath, childWidth);
                 }
             }
 
@@ -310,13 +319,14 @@ internal sealed partial class DiffRenderer
             {
                 var childPath = new List<string>(path) { removedName };
                 var propName = isMap ? $"\"{removedName}\"" : removedName;
-                RenderRemovedValue(writer, beforeDict[removedName], propName, indent + Indent + Indent, sensitive, childPath);
+                RenderRemovedValue(writer, beforeDict[removedName], propName, indent + Indent + Indent, sensitive, childPath, childWidth);
             }
 
             if (unchanged > 0)
             {
                 var itemType = isMap ? "elements" : "attributes";
-                WriteUnchangedComment(writer, indent + Indent, unchanged, itemType);
+                // Comment should be at content level (indent + Indent + Indent) plus marker offset (+ Indent)
+                WriteUnchangedComment(writer, indent + Indent + Indent + Indent, unchanged, itemType);
             }
 
             WriteClosingBrace(writer, indent + Indent);
@@ -353,6 +363,6 @@ internal sealed partial class DiffRenderer
             return;
         }
 
-        WriteArrowLine(writer, indent, name, before, after, replacement);
+        WriteArrowLine(writer, indent, name, before, after, replacement, nameWidth);
     }
 }

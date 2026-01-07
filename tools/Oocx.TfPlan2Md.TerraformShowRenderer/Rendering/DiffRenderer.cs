@@ -322,6 +322,11 @@ internal sealed partial class DiffRenderer
 
         if (unchangedBlocks > 0)
         {
+            // Add blank line before unchanged blocks comment if there were block arrays or removed properties
+            if (hasBlockArrays || sortedRemovedProps.Count > 0)
+            {
+                writer.WriteLine();
+            }
             var blockWord = unchangedBlocks == 1 ? "block" : "blocks";
             WriteUnchangedComment(writer, indent + Indent, unchangedBlocks, blockWord);
         }

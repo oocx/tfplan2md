@@ -84,12 +84,13 @@ internal sealed partial class DiffRenderer
     /// <param name="after">Value after the change.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
     /// <returns>Nothing.</returns>
-    private void WriteArrowLine(AnsiTextWriter writer, string indent, string name, JsonElement before, JsonElement after, bool appendReplacement)
+    private void WriteArrowLine(AnsiTextWriter writer, string indent, string name, JsonElement before, JsonElement after, bool appendReplacement, int nameWidth = 0)
     {
         writer.Write(indent);
         writer.WriteStyled("~", AnsiStyle.Yellow);
         writer.Write(" ");
-        writer.Write(name);
+        var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
+        writer.Write(paddedName);
         writer.Write(" = ");
         writer.Write(InlineValue(before));
         writer.Write(" ");

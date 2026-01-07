@@ -65,12 +65,14 @@ internal sealed partial class DiffRenderer
         {
             writer.Write(" ");
             writer.WriteStyled("-> null", AnsiStyle.Dim);
+            writer.WriteReset(); // Extra reset after styled content at line end
         }
 
         if (appendReplacement)
         {
             writer.Write(" ");
             writer.WriteStyled("# forces replacement", AnsiStyle.Red);
+            writer.WriteReset(); // Extra reset after styled content at line end
         }
 
         writer.WriteLine();
@@ -88,6 +90,7 @@ internal sealed partial class DiffRenderer
     {
         writer.Write(indent);
         writer.WriteStyled("~", AnsiStyle.Yellow);
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
         var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
         writer.Write(paddedName);
@@ -185,10 +188,9 @@ internal sealed partial class DiffRenderer
     private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count, string itemType = "attributes")
     {
         writer.Write(indent);
-        writer.WriteStyled("#", AnsiStyle.Dim);
-        writer.Write(" (");
-        writer.Write(count.ToString(CultureInfo.InvariantCulture));
-        writer.Write($" unchanged {itemType} hidden)");
+        var comment = $"# ({count} unchanged {itemType} hidden)";
+        writer.WriteStyled(comment, AnsiStyle.Dim);
+        writer.WriteReset(); // Extra reset after styled content at line end
         writer.WriteLine();
     }
 
@@ -203,6 +205,7 @@ internal sealed partial class DiffRenderer
         {
             writer.Write(indent);
             writer.WriteStyled("~", AnsiStyle.Yellow);
+            writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
             writer.Write(" ");
             writer.Write(name);
             writer.WriteLine(" = (sensitive value)");
@@ -227,6 +230,7 @@ internal sealed partial class DiffRenderer
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
         writer.Write(name);
         writer.WriteLine(" {");

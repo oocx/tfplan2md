@@ -191,6 +191,7 @@ internal sealed partial class DiffRenderer
                     {
                         writer.Write(indent + Indent + Indent);
                         writer.WriteStyled("-", AnsiStyle.Red);
+                        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                         writer.Write(" ");
                         writer.Write(_valueRenderer.Render(element));
                         writer.WriteLine(",");
@@ -198,9 +199,9 @@ internal sealed partial class DiffRenderer
 
                     writer.Write(indent + Indent);
                     writer.Write("] ");
-                    writer.WriteStyled("->", AnsiStyle.Red);
-                    writer.Write(" ");
-                    writer.WriteLine("null");
+                    writer.WriteStyled("-> null", AnsiStyle.Dim);
+                    writer.WriteReset(); // Extra reset after styled content at line end
+                    writer.WriteLine();
                 }
                 else
                 {

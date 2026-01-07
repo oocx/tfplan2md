@@ -469,6 +469,7 @@ internal sealed class TerraformShowRenderer
         {
             "read_because_dependency_pending" => "# (depends on a resource or a module with changes pending)",
             "delete_because_no_resource_config" => FormattableString.Invariant($"# (because {change.Address} is not in configuration)"),
+            "replace_because_cannot_update" => null, // Redundant with "must be replaced" message
             _ => FormattableString.Invariant($"# ({change.ActionReason})")
         };
     }

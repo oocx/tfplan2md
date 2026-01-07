@@ -201,6 +201,33 @@ internal sealed partial class DiffRenderer
         var allProperties = afterProps.Select(p => (p.Name, p.Value)).ToList();
         var width = ComputeNameWidth(allProperties, unknown);
 
+        // Identify removed properties that are actually unknown (for replace operations)
+        var removedProps = beforeDict.Keys.Except(sortedAfterProps.Select(p => p.Name))
+            .Select(name => (Name: name, Value: beforeDict[name]))
+            .ToList();
+        var sortedRemovedProps = SortPropertiesByType(removedProps);
+
+        var unknownObj = unknown is { ValueKind: JsonValueKind.Object } ? unknown : null;
+        var removedButUnknown = new List<(string Name, JsonElement Value)>();
+        var truelyRemoved = new List<(string Name, JsonElement Value)>();
+
+        foreach (var (name, value) in sortedRemovedProps)
+        {
+            // Check if this property is in after_unknown (indicates it will exist but value is unknown)
+            var isInAfterUnknown = unknownObj?.TryGetProperty(name, out _) == true;
+
+            // If it's a scalar and in after_unknown, it's actually an update to (known after apply)
+            var isScalar = value.ValueKind != JsonValueKind.Array && value.ValueKind != JsonValueKind.Object;
+            if (isScalar && isInAfterUnknown)
+            {
+                removedButUnknown.Add((name, value));
+            }
+            else
+            {
+                truelyRemoved.Add((name, value));
+            }
+        }
+
         // First pass: Process scalars and single objects (not block arrays)
         foreach (var (name, value) in sortedAfterProps)
         {
@@ -252,6 +279,34 @@ internal sealed partial class DiffRenderer
             {
                 RenderAddedValue(writer, value, name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, 0);
             }
+        }
+
+        // Render updates for removed-but-unknown properties (shown as ~ attr = val -> (known after apply))
+        // These appear after regular updates but before unchanged id/name
+        foreach (var (name, value) in removedButUnknown)
+        {
+            var path = new List<string> { name };
+            var replacement = replacePaths.Contains(FormatPath(path));
+            // For replace operations with unknown after values, show: ~ attr = "before_value" -> (known after apply)
+            writer.Write(indent);
+            writer.WriteStyled("~", AnsiStyle.Yellow);
+            writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
+            writer.Write(" ");
+            var paddedName = width > 0 ? name.PadRight(width, ' ') : name;
+            writer.Write(paddedName);
+            writer.Write(" = ");
+            writer.Write(InlineValue(value));
+            writer.Write(" ");
+            writer.WriteStyled("->", AnsiStyle.Yellow);
+            writer.Write(" ");
+            writer.Write("(known after apply)");
+            if (replacement)
+            {
+                writer.Write(" ");
+                writer.WriteStyled("# forces replacement", AnsiStyle.Red);
+            }
+
+            writer.WriteLine();
         }
 
         // Render unchanged id/name and write unchanged comment BEFORE block arrays
@@ -309,13 +364,8 @@ internal sealed partial class DiffRenderer
             }
         }
 
-        // Handle removed properties (sorted)
-        var removedProps = beforeDict.Keys.Except(sortedAfterProps.Select(p => p.Name))
-            .Select(name => (Name: name, Value: beforeDict[name]))
-            .ToList();
-        var sortedRemovedProps = SortPropertiesByType(removedProps);
-
-        foreach (var (name, value) in sortedRemovedProps)
+        // Render truly removed properties (block arrays that don't exist in after)
+        foreach (var (name, value) in truelyRemoved)
         {
             RenderRemovedValue(writer, value, name, indent, sensitive, new List<string> { name });
         }
@@ -323,7 +373,7 @@ internal sealed partial class DiffRenderer
         if (unchangedBlocks > 0)
         {
             // Add blank line before unchanged blocks comment if there were block arrays or removed properties
-            if (hasBlockArrays || sortedRemovedProps.Count > 0)
+            if (hasBlockArrays || truelyRemoved.Count > 0)
             {
                 writer.WriteLine();
             }

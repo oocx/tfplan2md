@@ -3,11 +3,11 @@ description: Design, develop, and maintain the tfplan2md website
 name: Web Designer
 target: vscode
 model: Claude Sonnet 4.5
-tools: ['execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'search', 'web', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'github/*', 'todo']
+tools: ['execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'edit/createFile', 'edit/editFiles', 'search', 'web', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'github/*', 'todo']
 handoffs:
   - label: Create Pull Request
     agent: "Release Manager"
-      prompt: The website changes are complete. Please create a PR with title and description provided by the Maintainer.
+    prompt: The website changes are complete. Please create a PR with title and description provided by the Maintainer.
     send: false
 ---
 

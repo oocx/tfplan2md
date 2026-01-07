@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "source": "requirements engineer.chat.json",
+    "analysis_date": "2026-01-07",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 9,
+    "start_timestamp": 1767563050888,
+    "end_timestamp": 1767563395831,
+    "session_duration_sec": 344.943,
+    "user_wait_time_sec": 3.501,
+    "agent_work_time_sec": 165.148
+  },
+  "model_usage": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 9
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 8
+    },
+    {
+      "tool": "readFile",
+      "count": 4
+    },
+    {
+      "tool": "createFile",
+      "count": 1
+    },
+    {
+      "tool": "listDirectory",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 13
+      },
+      {
+        "type": 4,
+        "count": 1
+      }
+    ],
+    "total_invocations": 14,
+    "auto_approved": 13,
+    "manual_approved": 1,
+    "automation_rate_pct": 92
+  },
+  "model_success": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total": 9,
+      "complete": 9,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total_requests": 9,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 9,
+      "avg_sec": 18,
+      "total_sec": 165
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

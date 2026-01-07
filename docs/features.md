@@ -242,6 +242,106 @@ This mirrors how these formats behave when posted as comments on actual GitHub P
 - **Platform approximation**: Post-processes HTML to match platform-specific behaviors (e.g., style attribute stripping for GitHub)
 - **Testing**: Integration tests validate rendering of all demo artifacts against both flavors
 
+## Terraform Show Approximation Renderer (Dev Tool)
+
+**Status:** ✅ Implemented
+
+A standalone .NET tool located at [tools/Oocx.TfPlan2Md.TerraformShowRenderer](../tools/Oocx.TfPlan2Md.TerraformShowRenderer) that generates output approximating `terraform show` from Terraform plan JSON files. This tool is used to create authentic "before tfplan2md" examples for website feature comparison pages.
+
+### Purpose
+
+Website feature pages require side-by-side comparisons showing what Terraform plans look like WITHOUT tfplan2md (raw `terraform show` output) versus WITH tfplan2md (formatted markdown reports). However, the project only has JSON format plan files, not the binary `.tfplan` files that `terraform show` requires.
+
+This tool solves the problem by reading Terraform plan JSON files and producing text output that matches the format, structure, and appearance of real `terraform show` output, including ANSI color codes for authentic terminal rendering.
+
+### Features
+
+- **Authentic output format**: Matches `terraform show` structure and appearance
+- **ANSI color support**: Includes terminal color codes (green for additions, yellow for updates, red for deletions)
+- **Plain text mode**: `--no-color` flag strips ANSI codes for non-terminal contexts
+- **All plan operations**: Supports create, update, delete, replace, read, and no-op actions
+- **Complete sections**: Generates legend, resource details with attribute diffs, and plan summary
+- **Terraform-style formatting**: Proper action symbols (`+`, `~`, `-`, `-/+`, `<=`), indentation, and diff markers
+- **Known-after-apply indicators**: Shows `(known after apply)` for computed values
+- **Sensitive value handling**: Renders `(sensitive value)` for sensitive attributes
+- **Action reasons**: Includes replacement reasons in parentheses when present
+
+### CLI Options
+
+| Option | Description |
+|--------|-------------|
+| `--input`, `-i <file>` | Path to Terraform plan JSON file (required) |
+| `--output`, `-o <file>` | Output text file path (writes to stdout if omitted) |
+| `--no-color` | Suppress ANSI color codes (plain text output) |
+| `--help`, `-h` | Display help information |
+| `--version`, `-v` | Display version information |
+
+### Usage Examples
+
+**Generate colored terminal output:**
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input examples/comprehensive-demo/plan.json \
+  --output examples/comprehensive-demo/terraform-show.txt
+```
+
+**Plain text without ANSI codes:**
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+  --no-color \
+  --output artifacts/terraform-show-plan1.txt
+```
+
+**Output to stdout (for piping):**
+```bash
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input plan.json
+```
+
+### Example Output
+
+```
+Terraform will perform the following actions:
+
+  # azurerm_storage_account.example will be created
+  + resource "azurerm_storage_account" "example" {
+      + account_replication_type = "LRS"
+      + account_tier             = "Standard"
+      + id                       = (known after apply)
+      + location                 = "westeurope"
+      + name                     = "stexample123"
+      + resource_group_name      = "example-rg"
+    }
+
+  # azurerm_key_vault.example will be updated in-place
+  ~ resource "azurerm_key_vault" "example" {
+        id                      = "/subscriptions/.../resourceGroups/rg/providers/Microsoft.KeyVault/vaults/kv"
+        name                    = "kv"
+      ~ sku_name                = "standard" -> "premium"
+        # (10 unchanged attributes hidden)
+    }
+
+Plan: 1 to add, 1 to change, 0 to destroy.
+```
+
+### Target Audience
+
+This tool is intended for:
+
+- **Website maintainers** generating authentic-looking Terraform output examples
+- **Contributors** creating "before" examples when demonstrating new tfplan2md features
+- **Documentation writers** showing realistic Terraform output without requiring actual Terraform binary plan files
+
+### Limitations
+
+This is a development tool only, explicitly **not** for production use:
+
+- Does not process actual Terraform binary plan files (`.tfplan`)
+- Does not execute Terraform commands or require Terraform installation
+- Not distributed in Docker images (source-only tool)
+- Not intended for CI/CD pipeline integration
+
 ## Markdown Quality Validation
 
 **Status:** ✅ Implemented (v0.26.0+)

@@ -193,7 +193,7 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Contains("name = \"old\" -> \"new\"", output, StringComparison.Ordinal);
+        Assert.Matches("name\\s*=\\s*\"old\"\\s*->\\s*\"new\"", output);
         Assert.Contains("# (1 unchanged attributes hidden)", output, StringComparison.Ordinal);
     }
 

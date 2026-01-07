@@ -15,7 +15,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan1 rendering matches the recorded terraform show output.
     /// </summary>
-    [Fact(Skip = "Exact whitespace matching is too strict - use content-based tests instead")]
+    [Fact]
     public async Task Render_Plan1_MatchesBaselineAsync()
     {
         var (plan, outputChanges) = await ParsePlanAsync("plan1.json");
@@ -30,7 +30,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan2 rendering matches the recorded terraform show output including replacement markers.
     /// </summary>
-    [Fact(Skip = "Exact whitespace matching is too strict - use content-based tests instead")]
+    [Fact]
     public async Task Render_Plan2_MatchesBaselineAsync()
     {
         var (plan, outputChanges) = await ParsePlanAsync("plan2.json");
@@ -64,7 +64,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan1 rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
-    [Fact(Skip = "Focus on no-color output first; color output still diverges")]
+    [Fact]
     public async Task Render_Plan1_MatchesBaselineContent()
     {
         var (plan, outputChanges) = await ParsePlanAsync("plan1.json");
@@ -79,7 +79,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan2 rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
-    [Fact(Skip = "Focus on no-color output first; color output still diverges")]
+    [Fact]
     public async Task Render_Plan2_MatchesBaselineContent()
     {
         var (plan, outputChanges) = await ParsePlanAsync("plan2.json");
@@ -94,7 +94,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan1 no-color rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
-    [Fact(Skip = "Other formatting differences exist; focusing on blank-line regression")]
+    [Fact]
     public async Task Render_Plan1_NoColor_MatchesBaselineContent()
     {
         var (plan, outputChanges) = await ParsePlanAsync("plan1.json");
@@ -131,7 +131,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan2 no-color rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
-    [Fact(Skip = "Other formatting differences exist; focusing on blank-line regression")]
+    [Fact]
     public async Task Render_Plan2_NoColor_MatchesBaselineContent()
     {
         var (plan, outputChanges) = await ParsePlanAsync("plan2.json");

@@ -1,0 +1,193 @@
+name: Website Change
+description: Request changes to the tfplan2md website (content, design, or functionality)
+title: "[Website]: "
+labels: ["website"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to request changes to the tfplan2md website hosted on GitHub Pages.
+        
+        **Tip:** The more specific you are about what needs to change and why, the faster the Web Designer agent can implement it.
+
+  - type: dropdown
+    id: change-type
+    attributes:
+      label: Change Type
+      description: What kind of change are you requesting?
+      options:
+        - Content Update (text, links, examples)
+        - Design/Style Change (layout, colors, typography)
+        - Functionality Change (navigation, interactions)
+        - New Page or Section
+        - Bug Fix (broken links, rendering issues)
+        - Accessibility Improvement
+        - Deployment
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: pages-affected
+    attributes:
+      label: Page(s) Affected
+      description: Which page(s) need to be changed?
+      placeholder: |
+        Example:
+        - Homepage (index.html)
+        - Getting Started page (getting-started.html)
+        - Features index (features/index.html)
+    validations:
+      required: false
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Current State
+      description: What does the website currently show or do?
+      placeholder: |
+        Example:
+        "The homepage hero section shows 'Transform Terraform plans into readable markdown' 
+        with a screenshot of a PR comment."
+        
+        Or:
+        "The navigation menu is horizontal and always visible at the top of the page."
+    validations:
+      required: true
+
+  - type: textarea
+    id: requested-change
+    attributes:
+      label: Requested Change
+      description: What specifically should change?
+      placeholder: |
+        Example:
+        "Update the hero tagline to 'Turn infrastructure changes into clear PR comments' 
+        because it better emphasizes the PR review use case."
+        
+        Or:
+        "Make the navigation menu sticky so it remains visible when scrolling down the page."
+        
+        Or:
+        "Add a new 'Installation' section to the Getting Started page with Docker 
+        installation instructions."
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why This Change?
+      description: What problem does this solve or what value does it add?
+      placeholder: |
+        Example:
+        "The current tagline focuses on markdown output, but most users care about PR 
+        review workflow. This makes the value proposition clearer."
+        
+        Or:
+        "Users lose context when scrolling through long pages and have to scroll back up 
+        to navigate."
+    validations:
+      required: true
+
+  - type: textarea
+    id: content-source
+    attributes:
+      label: Content Source (if applicable)
+      description: Where should the new/updated content come from?
+      placeholder: |
+        Example:
+        "Use the Docker installation instructions from README.md section 'Getting Started'"
+        
+        Or:
+        "Derive feature descriptions from docs/features.md"
+        
+        Or:
+        "Use the code example from examples/comprehensive-demo/azurerm-azuredevops-plan.json"
+        
+        Note: If you want specific custom content, provide it here. Otherwise, the agent 
+        will derive content from existing documentation.
+
+  - type: textarea
+    id: design-constraints
+    attributes:
+      label: Design Constraints (Optional)
+      description: Any specific requirements for styling, layout, or behavior?
+      placeholder: |
+        Example:
+        "Maintain current color scheme and typography"
+        
+        Or:
+        "Must work on mobile devices (responsive)"
+        
+        Or:
+        "Follow existing card-based layout pattern from features page"
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this change is complete and correct?
+      placeholder: |
+        Example:
+        - [ ] Hero tagline updated to new text
+        - [ ] No other changes to homepage
+        - [ ] Text is visible and readable on all screen sizes
+        - [ ] Change follows style guide in website/_memory/style-guide.md
+        
+        Or:
+        - [ ] Navigation menu stays at top when scrolling
+        - [ ] Menu works on mobile, tablet, and desktop
+        - [ ] Accessibility maintained (keyboard navigation works)
+        - [ ] No regressions to other pages
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of Scope (Optional)
+      description: What should NOT be changed as part of this request?
+      placeholder: |
+        Example:
+        "Do NOT change the footer or other pages"
+        "Do NOT modify the color scheme"
+        "Do NOT add new dependencies or frameworks"
+
+  - type: dropdown
+    id: visual-assets
+    attributes:
+      label: Visual Assets Needed?
+      description: Does this change require screenshots or other visual assets?
+      options:
+        - No visual assets needed
+        - Use existing screenshots
+        - New screenshots needed (requires local execution)
+        - Custom images/icons needed (provide separately)
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context (Optional)
+      description: Any other relevant information
+      placeholder: |
+        - Links to related issues
+        - Screenshots showing the problem
+        - Examples from other websites
+        - User feedback that motivated this change
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (Optional)
+      description: How urgent is this change?
+      options:
+        - Not specified
+        - Critical (broken functionality)
+        - High (important for user experience)
+        - Medium (nice to have)
+        - Low (minor improvement)
+    validations:
+      required: false

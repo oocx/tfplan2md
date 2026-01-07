@@ -6,6 +6,7 @@ This document is the **source of truth** for the current website structure and f
 
 ### Implemented Pages
 - `/features/index.html` ✅
+- `/ai-workflow.html` ✅
 
 ### Planned Pages (not yet created)
 - `/index.html`
@@ -26,17 +27,18 @@ This document is the **source of truth** for the current website structure and f
 
 ## Navigation Structure
 
-The navbar (present in `/features/index.html`) links to:
+The navbar (present in all pages) links to:
 
 | Nav Item | Target | Status |
 |----------|--------|--------|
-| Features | `../features/index.html` | ✅ Exists |
-| Install | `../getting-started.html` | ❌ Missing |
-| Docs | `../docs.html` | ❌ Missing |
-| Examples | `../examples.html` | ❌ Missing |
-| Providers | `../providers/index.html` | ❌ Missing |
-| Architecture | `../architecture.html` | ❌ Missing |
-| Contributing | `../contributing.html` | ❌ Missing |
+| Features | `features/index.html` | ✅ Exists |
+| Install | `getting-started.html` | ❌ Missing |
+| Docs | `docs.html` | ❌ Missing |
+| Examples | `examples.html` | ❌ Missing |
+| Providers | `providers/index.html` | ❌ Missing |
+| Architecture | `architecture.html` | ❌ Missing |
+| AI Workflow | `ai-workflow.html` | ✅ Exists |
+| Contributing | `contributing.html` | ❌ Missing |
 | GitHub (CTA) | `https://github.com/oocx/tfplan2md` | ✅ External |
 
 ## Page specifications
@@ -137,4 +139,33 @@ The navbar (present in `/features/index.html`) links to:
 - **Requirements (from chat):**
   - Include information about how this project uses AI
   - Describe the multi-agent workflow (from agents.md)
-  - "Built 100% with GitHub Copilot" badge should link here
+  - "Built 100% with GitHub Copilot" badge should link to ai-workflow.html
+
+### /ai-workflow.html
+
+- **Title:** AI Development Workflow - tfplan2md
+- **Purpose:** Describe the agentic development workflow used in this project
+- **Content summary:** High-level overview of the multi-agent AI workflow, workflow diagram, key agents description, execution modes
+- **Target audience:** Contributors, anyone interested in AI-powered development
+- **Sections:**
+  1. Hero with title and subtitle
+  2. Overview - description of agent-based workflow and benefits (4 benefit cards)
+  3. Workflow Diagram - Mermaid diagram showing complete agent flow
+  4. Key Agents - grid of 12 agent cards with emoji, title, and description
+  5. How It Works - 5-step process explanation
+  6. Dual-Mode Execution - Local (VS Code) vs Cloud (GitHub) modes
+  7. Learn More - CTAs to full agents.md documentation and contributing guide
+  8. Footer with Product/Resources/Community links
+- **External links:**
+  - `https://github.com/oocx/tfplan2md/blob/main/docs/agents.md` (full documentation)
+  - `https://github.com/oocx/tfplan2md` (GitHub repo)
+  - Other standard footer links
+- **Accessibility features:**
+  - Theme toggle with aria-label
+  - Mobile menu button with aria-label
+  - Semantic heading hierarchy (h1 → h2 → h3)
+  - Mermaid diagram with light/dark theme support
+- **Decision log:**
+  - 2026-01-07: Created page based on GitHub issue requirement
+  - 2026-01-07: Added to navbar on all pages
+  - 2026-01-07: Adapted Mermaid diagram from agents.md with theme support

@@ -25,5 +25,5 @@ output "variable_group_id" {
 
 output "pipeline_id" {
   description = "The ID of the created build pipeline"
-  value       = azuredevops_build_definition.example.id
+  value       = azuredevops_build_definition.example2.id
 }

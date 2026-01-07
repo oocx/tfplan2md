@@ -65,6 +65,33 @@ dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --output examples/firewall-rules-demo/firewall-rules.azdo.html
 ```
 
+### Terraform show approximation outputs
+
+Use the TerraformShowRenderer tool to generate authentic "before tfplan2md" examples for website comparisons.
+
+```bash
+# Plan 1 (baseline, colored)
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+  --output tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt
+
+# Plan 1 (plain text)
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+  --no-color \
+  --output tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.nocolor.txt
+
+# Plan 2 (replacement-focused, colored)
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json \
+  --output tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt
+
+# UAT artifact (ANSI, used for feature screenshots)
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json \
+  --output artifacts/uat-terraform-show-approximation.txt
+```
+
 **Source artifacts:**
 - `artifacts/comprehensive-demo.md` - Full comprehensive demo markdown
 - `artifacts/comprehensive-demo.azdo.html` - Azure DevOps rendered HTML

@@ -110,20 +110,30 @@ Before investigating, review relevant context:
 **ALWAYS do this FIRST, before any investigation:**
 
 ```bash
+# Determine the next available issue number
+NEXT_NUMBER=$(scripts/next-issue-number.sh)
+echo "Next issue number: $NEXT_NUMBER"
+
 # Sync with latest main
 git fetch origin && git switch main && git pull --ff-only origin main
 
-# Create fix branch with descriptive name
-git switch -c fix/<short-description>
+# Create fix branch with the determined number and descriptive name
+git switch -c fix/${NEXT_NUMBER}-<short-description>
+
+# IMMEDIATELY push to reserve the issue number
+git push -u origin HEAD
 ```
 
-Use descriptive names like:
-- `fix/docker-hub-secret-in-release-workflow`
-- `fix/null-reference-in-parser`
-- `fix/failing-integration-tests`
-- `fix/markdownlint-table-formatting`
+Use descriptive short-description like:
+- `fix/033-docker-hub-secret-in-release-workflow`
+- `fix/034-null-reference-in-parser`
+- `fix/035-failing-integration-tests`
+- `fix/036-markdownlint-table-formatting`
 
 **Why this matters:**
+- Determines unique issue number across ALL change types (feature, fix, workflow)
+- Checks both local docs and remote branches for accurate numbering
+- Pushes immediately to reserve the number for other agents
 - Ensures you're working from the latest code
 - Prevents merge conflicts later
 - Keeps investigation work isolated

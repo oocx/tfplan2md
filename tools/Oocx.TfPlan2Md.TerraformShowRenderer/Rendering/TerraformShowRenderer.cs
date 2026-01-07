@@ -189,7 +189,9 @@ internal sealed class TerraformShowRenderer
             }
         }
 
-        writer.Write("Plan: ");
+        writer.WriteStyled("Plan:", AnsiStyle.Bold);
+        writer.Write(" ");
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(add.ToString(CultureInfo.InvariantCulture));
         writer.Write(" to add, ");
         writer.Write(update.ToString(CultureInfo.InvariantCulture));
@@ -293,13 +295,12 @@ internal sealed class TerraformShowRenderer
                 return;
             default:
                 writer.WriteStyled("~", AnsiStyle.Yellow);
+                writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                 writer.Write(" ");
                 writer.Write(output.Name.PadRight(width, ' '));
                 writer.Write(" = ");
                 writer.Write(RenderOutputValue(output.Before, null, output.AfterSensitive));
-                writer.Write(" ");
-                writer.WriteStyled("->", AnsiStyle.Yellow);
-                writer.Write(" ");
+                writer.Write(" -> ");
                 writer.Write(RenderOutputValue(output.After, output.AfterUnknown, output.AfterSensitive));
                 writer.WriteLine();
                 return;

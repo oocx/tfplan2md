@@ -356,22 +356,29 @@ internal sealed partial class DiffRenderer
     /// <summary>
     /// Computes the maximum property name width for alignment.
     /// Only considers scalar properties and primitive arrays that render inline,
-    /// excludes nested blocks and object arrays.
+    /// excludes nested blocks, object arrays, and empty values (empty strings/arrays/objects, but NOT null which represents unknown).
     /// </summary>
     /// <param name="properties">Properties to inspect.</param>
-    /// <returns>Maximum name length or zero when no properties exist.</returns>
+    /// <returns>Maximum name length plus one for alignment, or zero when no properties exist.</returns>
     private static int ComputeNameWidth(IEnumerable<(string Name, JsonElement Value)> properties)
     {
         var max = 0;
         foreach (var property in properties)
         {
+            // Skip empty strings, empty arrays, and empty objects, but NOT null (which represents unknown values)
+            if (property.Value.ValueKind != JsonValueKind.Null &&
+                !ShouldRenderValue(property.Value, isUnknown: false, isSensitive: false))
+            {
+                continue;
+            }
+
             // Only include scalars and primitive arrays in width calculation
             // Nested blocks and object arrays don't contribute to alignment
             var isInlineProperty = property.Value.ValueKind switch
             {
                 JsonValueKind.Array => ContainsOnlyPrimitives(property.Value),
                 JsonValueKind.Object => false, // Nested objects render as blocks, not inline
-                _ => true // Scalars render inline
+                _ => true // Scalars (including null) render inline
             };
 
             if (isInlineProperty && property.Name.Length > max)
@@ -380,6 +387,7 @@ internal sealed partial class DiffRenderer
             }
         }
 
-        return max;
+        // Terraform pads to max_name_length + 1 for alignment
+        return max > 0 ? max + 1 : 0;
     }
 }

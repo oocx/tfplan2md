@@ -398,8 +398,8 @@ internal sealed class TerraformShowRenderer
     {
         // Reset before indent, then write marker and block line
         writer.WriteReset();
-        // Read operations use single space, others use Indent (2 spaces)
-        var indent = action == ResourceAction.Read ? " " : Indent;
+        // Replace operations have no indent, Read operations use single space, others use Indent (2 spaces)
+        var indent = action == ResourceAction.Replace ? "" : (action == ResourceAction.Read ? " " : Indent);
         writer.Write(indent);
         WriteMarker(writer, action);
         writer.WriteReset(); // Extra reset after marker to match Terraform output

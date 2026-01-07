@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Oocx.TfPlan2Md\Oocx.TfPlan2Md.csproj" />
+    <ProjectReference Include="..\..\tools\Oocx.TfPlan2Md.TerraformShowRenderer\Oocx.TfPlan2Md.TerraformShowRenderer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

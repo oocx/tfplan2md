@@ -11,6 +11,8 @@ namespace Oocx.TfPlan2Md.ScreenshotGenerator.Capturing;
 internal sealed class HtmlScreenshotCapturer
 {
     private const string InstallHint = "playwright install chromium --with-deps";
+    private const int ScreenshotRetryAttempts = 2;
+    private static readonly string[] ChromiumLaunchArgs = ["--disable-dev-shm-usage"];
     private static readonly JsonSerializerOptions SummarySerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -33,6 +35,10 @@ internal sealed class HtmlScreenshotCapturer
             await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
                 Headless = true,
+                // Disable sandboxing to avoid permission issues on CI/WSL environments.
+                ChromiumSandbox = false,
+                // Avoid /dev/shm limits that can crash Chromium in constrained environments.
+                Args = ChromiumLaunchArgs,
             }).ConfigureAwait(false);
 
             await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
@@ -59,7 +65,7 @@ internal sealed class HtmlScreenshotCapturer
             var clip = await ResolveClipAsync(page, settings, cancellationToken).ConfigureAwait(false);
 
             var screenshotOptions = BuildScreenshotOptions(settings, clip);
-            await page.ScreenshotAsync(screenshotOptions).ConfigureAwait(false);
+            await CaptureWithRetryAsync(page, screenshotOptions, cancellationToken).ConfigureAwait(false);
         }
         catch (PlaywrightException ex)
         {
@@ -119,6 +125,31 @@ internal sealed class HtmlScreenshotCapturer
         }
 
         return options;
+    }
+
+    /// <summary>
+    /// Captures a screenshot with a single retry to absorb transient Playwright protocol failures.
+    /// </summary>
+    /// <param name="page">Active Playwright page.</param>
+    /// <param name="options">Screenshot options to apply.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    private static async Task CaptureWithRetryAsync(IPage page, PageScreenshotOptions options, CancellationToken cancellationToken)
+    {
+        for (var attempt = 1; attempt <= ScreenshotRetryAttempts; attempt++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                await page.ScreenshotAsync(options).ConfigureAwait(false);
+                return;
+            }
+            catch (PlaywrightException) when (attempt < ScreenshotRetryAttempts)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 
     /// <summary>

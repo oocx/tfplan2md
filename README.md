@@ -190,6 +190,23 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --target-selector "details:has(summary:has-text('azurerm_firewall'))"
 ```
 
+### Terraform show renderer (development tool)
+
+Generate terminal-style output that mirrors `terraform show` for creating "before tfplan2md" examples. The default output includes ANSI color; add `--no-color` for plain text.
+
+```bash
+# Colored output
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+  --output artifacts/terraform-show-plan1.txt
+
+# Plain text (no ANSI)
+dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+  --no-color \
+  --output artifacts/terraform-show-plan1.nocolor.txt
+```
+
 ## Example Output
 
 All generated markdown is automatically validated and linted for correct formatting. Special characters in resource names and attribute values are properly escaped to ensure tables and headings render correctly on GitHub and Azure DevOps.

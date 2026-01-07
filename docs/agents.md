@@ -280,6 +280,10 @@ Most agents can support both execution modes by detecting their context. The age
 - **Local:** Interactive workflow analysis, design discussions, complex decisions
 - **Cloud:** Automated workflow improvements from GitHub issues (e.g., batch agent updates)
 
+**Example: Web Designer**
+- **Local:** Interactive design iterations, screenshot generation, Chrome DevTools inspection
+- **Cloud:** Automated content/style updates for well-defined changes (e.g., text updates, style tweaks)
+
 ### Context Detection
 
 Agents determine their execution environment by analyzing:
@@ -301,6 +305,8 @@ Agents determine their execution environment by analyzing:
 - ✅ Batch documentation updates
 - ✅ Agent model assignments based on benchmarks
 - ✅ Automated workflow improvements
+- ✅ Website content/text updates that don't require visual verification
+- ✅ Style changes with clear specifications
 - ✅ Tasks that don't require real-time guidance
 
 **Better as Local:**
@@ -308,6 +314,8 @@ Agents determine their execution environment by analyzing:
 - ❌ Interactive debugging with Maintainer
 - ❌ Complex decisions requiring iterative refinement
 - ❌ Exploratory work with unclear requirements
+- ❌ Website changes requiring screenshot generation or Chrome DevTools
+- ❌ Design prototyping and visual iteration
 
 For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analysis/).
 
@@ -382,10 +390,14 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 
 ### 13. Web Designer (Specialized Agent)
 - **Goal:** Design, develop, and maintain the tfplan2md website hosted on GitHub Pages.
+- **Execution Modes:**
+  - **Local (VS Code):** Interactive design iterations, prototyping, screenshot generation, Chrome DevTools inspection
+  - **Cloud (GitHub):** Automated content/style updates via issue assignment for well-defined changes
 - **Deliverables:** Website pages (HTML/CSS), design prototypes, website content derived from existing documentation.
 - **Initial Creation:** Handoff from Architect after technical approach is defined.
-- **Ongoing Changes:** Direct handoff from Maintainer for content, design, or functionality updates.
+- **Ongoing Changes:** Direct handoff from Maintainer for content, design, or functionality updates (local), or via GitHub issue assignment (cloud).
 - **Definition of Done:** Website changes are complete, accessible (WCAG 2.1 AA), responsive, and PR is created.
+- **Cloud Limitations:** Cannot generate screenshots, preview locally, or use Chrome DevTools. Best for content/text updates and style changes that don't require visual verification.
 - **Note:** This agent operates independently for website-specific work. Website files live in `/website/` directory with isolated CI/CD pipeline triggers.
 
 ---

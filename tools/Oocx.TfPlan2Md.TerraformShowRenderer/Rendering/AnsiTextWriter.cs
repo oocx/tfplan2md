@@ -38,9 +38,20 @@ internal sealed class AnsiTextWriter : IDisposable
     /// Writes text without appending a newline.
     /// </summary>
     /// <param name="text">The text to write.</param>
+    // Tracks whether the most recently written line was empty (a blank line).
+    private bool _lastLineWasEmpty;
+
+    // Tracks whether the current (not-yet-terminated) line contains any non-whitespace content.
+    // This allows WriteLine() (no-arg) to correctly determine whether the terminated line was empty.
+    private bool _currentLineHasContent;
+
     public void Write(string text)
     {
         _writer.Write(text);
+        if (!string.IsNullOrEmpty(text) && !string.IsNullOrWhiteSpace(text))
+        {
+            _currentLineHasContent = true;
+        }
     }
 
     /// <summary>
@@ -50,6 +61,8 @@ internal sealed class AnsiTextWriter : IDisposable
     public void WriteLine(string text)
     {
         _writer.WriteLine(text);
+        _lastLineWasEmpty = string.IsNullOrEmpty(text);
+        _currentLineHasContent = false;
     }
 
     /// <summary>
@@ -58,6 +71,21 @@ internal sealed class AnsiTextWriter : IDisposable
     public void WriteLine()
     {
         _writer.WriteLine();
+        // If the current line had content, terminating it does not produce a blank line.
+        _lastLineWasEmpty = !_currentLineHasContent;
+        _currentLineHasContent = false;
+    }
+
+    /// <summary>
+    /// Writes a blank line only if the previous line was not already blank. This prevents
+    /// emitting duplicate consecutive blank lines in the rendered output.
+    /// </summary>
+    public void WriteLineIfNotBlank()
+    {
+        if (!_lastLineWasEmpty)
+        {
+            WriteLine();
+        }
     }
 
     /// <summary>
@@ -117,6 +145,11 @@ internal sealed class AnsiTextWriter : IDisposable
 
         _writer.Write(text);
 
+        if (!string.IsNullOrEmpty(text) && !string.IsNullOrWhiteSpace(text))
+        {
+            _currentLineHasContent = true;
+        }
+
         if (_useColor && styles.Length > 0)
         {
             WriteEscape(AnsiStyle.Reset);
@@ -125,6 +158,9 @@ internal sealed class AnsiTextWriter : IDisposable
         if (appendNewLine)
         {
             _writer.WriteLine();
+            // A line we just wrote is blank when it contains no non-whitespace characters.
+            _lastLineWasEmpty = !_currentLineHasContent;
+            _currentLineHasContent = false;
         }
     }
 

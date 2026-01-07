@@ -5,6 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.19"></a>
+## [1.0.0-alpha.19](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.18...v1.0.0-alpha.19) (2026-01-07)
+
+### ✨ Features
+
+* add AI workflow page with interactive diagram ([59080fb](https://github.com/oocx/tfplan2md/commit/59080fbf6f2f91e6b92766100245b0ae81f873b0))
+* add GitHub Pages deployment workflow ([3147130](https://github.com/oocx/tfplan2md/commit/3147130432a2b8c2548325e2200bdd310bf8b558))
+* checkpoint terraform show renderer ([8188099](https://github.com/oocx/tfplan2md/commit/81880995ab8fdb2a623f0a70d0f2908aebcecf38))
+* complete website foundation with SVG icons, dark mode, and style isolation ([90ec95a](https://github.com/oocx/tfplan2md/commit/90ec95ac584fced8274a6c65a26aa7b0b6fac141))
+* enable website agent for cloud execution with GitHub issues ([974f6c2](https://github.com/oocx/tfplan2md/commit/974f6c2d9566f1f01b76dd7fd7c74720a4242a5c))
+* enable Workflow Engineer as dual-mode agent (local + cloud) ([9b379da](https://github.com/oocx/tfplan2md/commit/9b379daa3bede842bcf03c7f09cc9e1dcf1a63ee))
+* fix ANSI formatting and improve attribute rendering ([0cfe719](https://github.com/oocx/tfplan2md/commit/0cfe719171721de17117ec345d3221e8970cb92f))
+* implement attribute ordering and improve indentation/formatting ([440464e](https://github.com/oocx/tfplan2md/commit/440464ea4b81f1e6885fadded5aa56236fdd6989))
+* **website:** add backlog tasks for homepage screenshot and terraform show comparison ([3d29de5](https://github.com/oocx/tfplan2md/commit/3d29de5e0a3add3a4fdbdb509c81e8730510b451))
+* **website:** replace all hand-crafted examples with real generated output ([71770fb](https://github.com/oocx/tfplan2md/commit/71770fb4470f895b8945a3132420b6591d1cae8a))
+* **website:** replace hand-crafted examples with real tfplan2md output ([28d2a68](https://github.com/oocx/tfplan2md/commit/28d2a68c5de12d1a6f19a8af0e47154780911da2))
+* **website:** replace homepage interactive example with screenshot and lightbox modal ([4abf3bf](https://github.com/oocx/tfplan2md/commit/4abf3bf90ecbdfbd4d87a18ccc610d8a31d03958))
+* **workflow:** add next-issue-number skill and update agents to use it ([853f155](https://github.com/oocx/tfplan2md/commit/853f1553551258b8be2abcfee994490b4a0accc3))
+
+### 🐛 Bug Fixes
+
+* add alphabetical sorting to nested block properties ([e932a8c](https://github.com/oocx/tfplan2md/commit/e932a8c3e3b7894b1e2a6e150121cbe3546990a3))
+* add Deployment and Other options to website issue template, make pages-affected optional ([22bb0c6](https://github.com/oocx/tfplan2md/commit/22bb0c619d7df2f3ee47c663c18a840291572189))
+* apply dark mode icon filter to all icon classes ([3e9028d](https://github.com/oocx/tfplan2md/commit/3e9028d3b31c2d38247ba1eaaea39367aba36b7f))
+* backslash escaping, map key quoting, and unchanged comment variants ([b5a112d](https://github.com/oocx/tfplan2md/commit/b5a112df09d3c1a85b5cc3096d5ad82bb7c91c33))
+* column width calculation excludes nested blocks and empty arrays ([196cee7](https://github.com/oocx/tfplan2md/commit/196cee7af42377248f145026c3f6a3245dab6deb))
+* compute width from all properties before filtering for rendering ([96e1bc2](https://github.com/oocx/tfplan2md/commit/96e1bc2c02897a874936a944657e93a7a08a439d))
+* correct map key quoting, comment text, unchanged count, and update rendering order ([cccdb1a](https://github.com/oocx/tfplan2md/commit/cccdb1a745efe1633559917e14e58e5c1b9f838d))
+* correct property alignment by filtering before width calculation ([90b0645](https://github.com/oocx/tfplan2md/commit/90b0645b64b9b79e80d5c9ed48a37bdc3ec19970))
+* correct read action properties to use + marker and fix alignment ([8420dd3](https://github.com/oocx/tfplan2md/commit/8420dd3f55e36d90c047fac640b7e008f08cb2f3))
+* correct width calculation for nested blocks vs top-level properties ([dacd9c9](https://github.com/oocx/tfplan2md/commit/dacd9c91311dd08dc46a2631ce6ad6af5117ac7b))
+* correct YAML indentation and add coding agent tools to web-designer ([dde86af](https://github.com/oocx/tfplan2md/commit/dde86af54b9d2595cbd086920b89947deb5e680e))
+* improve context detection and add workflow improvement template ([8797aae](https://github.com/oocx/tfplan2md/commit/8797aae2088f2132a94a2783fb2eb5c86274be44))
+* improve TerraformShowRenderer output formatting (WIP) ([1c1abe0](https://github.com/oocx/tfplan2md/commit/1c1abe047c06cc36ec3ccda651fb9e08b162a752))
+* remove target field to enable web-designer for both VS Code and GitHub Copilot coding agent ([f22ea4a](https://github.com/oocx/tfplan2md/commit/f22ea4aea1b94d4ce439c1215bc107d2a0d1e3b2))
+* render unchanged identifier scalars in update resources ([954ac4f](https://github.com/oocx/tfplan2md/commit/954ac4f5082122eb1edb9d4baa1249e48aea7c22))
+* resolve extra blank line issue in TerraformShowRenderer ([84bf6c3](https://github.com/oocx/tfplan2md/commit/84bf6c3c4ec4a93a1a09a540feb72f21df6eb137))
+* restore version to 1.0.0-alpha.18 ([d195965](https://github.com/oocx/tfplan2md/commit/d195965e9b60eded359c23ce1bd73b19326147bb))
+* update HTML rendering baselines to match current version and commit hash SNAPSHOT_UPDATE_OK ([aa4f894](https://github.com/oocx/tfplan2md/commit/aa4f894633753d6374fc9b55092ae5f57c2554b4))
+* use correct marker and color for read actions ([582e436](https://github.com/oocx/tfplan2md/commit/582e4363406e3e76ac201b6b69eda4016f711be3))
+* **terraform-show:** avoid duplicate blank lines in no-color output and add tests ([b2289af](https://github.com/oocx/tfplan2md/commit/b2289af6d0e5232ed3c7e8524457058aedbc5c08))
+* **website:** improve code block contrast in examples ([d5eccce](https://github.com/oocx/tfplan2md/commit/d5eccce99d0685bd87217eb4d8c0d90df11968de))
+* **website:** improve dark mode rendering to match Azure DevOps ([33a7b38](https://github.com/oocx/tfplan2md/commit/33a7b38bf44c7b591813632dd164a14809f2dbe9))
+
+### 🚀 Performance
+
+* skip PR validation for website-only changes ([b2fe3e3](https://github.com/oocx/tfplan2md/commit/b2fe3e3ba8aa2b75f8ecf8d199800f5c22a328ca))
+
+### ♻️ Refactoring
+
+* move CI/CD Integration to Built-In Capabilities section ([9c1c207](https://github.com/oocx/tfplan2md/commit/9c1c207536361a132ddbd034d6111d007eecfbf5))
+* optimize width calculation by filtering first ([d015d7e](https://github.com/oocx/tfplan2md/commit/d015d7e60a803377ee7a8e725258cc0c5c9555a4))
+* simplify workflow improvement template ([d82582f](https://github.com/oocx/tfplan2md/commit/d82582f29889fa788bc4bc9b9f76db52c9dc116c))
+
+### 📚 Documentation
+
+* add architecture for terraform show approximation ([253863d](https://github.com/oocx/tfplan2md/commit/253863d0dee58f9d55c554d7bf0d37ac057b8999))
+* add cloud orchestrator pattern section with sub-issue coordination ([06ac141](https://github.com/oocx/tfplan2md/commit/06ac141e623dd577d2f297f9b1efc5fe1a860e12))
+* add comprehensive section on multi-agent handoffs and label-based routing ([3e4e03d](https://github.com/oocx/tfplan2md/commit/3e4e03d9f0f2446414192628995824b8ed7741e9))
+* add deployment workflow documentation ([5fc6663](https://github.com/oocx/tfplan2md/commit/5fc6663173a4d3437802838a0610506a816dc0bc))
+* add feature specification for 030-terraform-show-approximation ([7f02b4c](https://github.com/oocx/tfplan2md/commit/7f02b4cc1e2eb62e7cdda5236f4bc40dff4f253e))
+* add implementation summary for cloud agent support ([64061b7](https://github.com/oocx/tfplan2md/commit/64061b782ad83e556e67e5146f125ab1e094a990))
+* add README for cloud agents analysis folder ([42ca09c](https://github.com/oocx/tfplan2md/commit/42ca09c88b4403d3e0fa733002e8f437fd670e81))
+* add tasks for terraform show approximation tool ([8bd0065](https://github.com/oocx/tfplan2md/commit/8bd0065696142d206a8927b44c9a99de8820e915))
+* add test plan and update specification for 030-terraform-show-approximation ([732225b](https://github.com/oocx/tfplan2md/commit/732225b0a594a1a7a23ad3bf8b9005278307124f))
+* comprehensive cloud agents analysis for tfplan2md workflow ([8900017](https://github.com/oocx/tfplan2md/commit/8900017010340643e3489881fb1654428a92da6e))
+* enhance Copilot instructions with project overview and tech stack ([9e5f1c5](https://github.com/oocx/tfplan2md/commit/9e5f1c5bb50ed87077a35c4135c2461c1697e22c))
+* finalize 030-terraform-show-approximation with UAT results and documentation ([cd135df](https://github.com/oocx/tfplan2md/commit/cd135df41f99eb781643aa7bd15bdcbcd10155f2))
+* update branch naming convention for website work ([c0462ba](https://github.com/oocx/tfplan2md/commit/c0462babe0cbcfe82f0755d7f1cc9d82d9801ad6))
+* **website:** add backlog task [#22](https://github.com/oocx/tfplan2md/issues/22) for replacing examples on all pages ([469ed16](https://github.com/oocx/tfplan2md/commit/469ed1625f16c54538fb9674a42474ed10d5a534))
+
 <a name="1.0.0-alpha.17"></a>
 ## [1.0.0-alpha.17](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.16...v1.0.0-alpha.17) (2026-01-03)
 

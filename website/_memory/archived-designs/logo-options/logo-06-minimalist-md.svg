@@ -1,0 +1,25 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Minimalist "M↓" with TF accent -->
+  <defs>
+    <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square -->
+  <rect width="36" height="36" rx="8" fill="url(#grad6)"/>
+  
+  <!-- Large "M" for Markdown -->
+  <text x="12" y="27" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" 
+        fill="white" text-anchor="middle">M</text>
+  
+  <!-- Down arrow -->
+  <path d="M 24,12 L 24,24 M 21,21 L 24,24 L 27,21" 
+        stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Small "tf" badge -->
+  <rect x="6" y="6" width="12" height="8" rx="2" fill="white" opacity="0.95"/>
+  <text x="12" y="12" font-family="monospace" font-size="5" font-weight="bold" 
+        fill="#646cff" text-anchor="middle">tf</text>
+</svg>

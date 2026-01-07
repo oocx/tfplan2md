@@ -1,0 +1,27 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Hash symbol (markdown heading) with terraform accent -->
+  <defs>
+    <linearGradient id="grad9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square -->
+  <rect width="36" height="36" rx="8" fill="url(#grad9)"/>
+  
+  <!-- Large hash/octothorpe symbol -->
+  <!-- Vertical lines -->
+  <line x1="12" y1="9" x2="10" y2="27" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="24" y1="9" x2="22" y2="27" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Horizontal lines -->
+  <line x1="7" y1="14" x2="27" y2="14" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="9" y1="22" x2="29" y2="22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Small TF hexagon in corner -->
+  <polygon points="30,9 33,10.5 33,13.5 30,15 27,13.5 27,10.5" 
+           fill="white" stroke="none" opacity="0.95"/>
+  <text x="30" y="13" font-family="monospace" font-size="3" font-weight="bold" 
+        fill="#646cff" text-anchor="middle">T</text>
+</svg>

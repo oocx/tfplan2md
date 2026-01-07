@@ -1,0 +1,26 @@
+<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept: Monogram combining T and M -->
+  <defs>
+    <linearGradient id="grad14" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#646cff"/>
+      <stop offset="100%" style="stop-color:#747bff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square -->
+  <rect width="36" height="36" rx="8" fill="url(#grad14)"/>
+  
+  <!-- Combined T and M letterform -->
+  <!-- T vertical -->
+  <rect x="9" y="10" width="4" height="16" fill="white"/>
+  <!-- T horizontal top -->
+  <rect x="6" y="10" width="10" height="3" fill="white"/>
+  
+  <!-- M shape -->
+  <path d="M 19,26 L 19,10 L 23,16 L 27,10 L 27,26" 
+        stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Small down arrow accent -->
+  <path d="M 12,29 L 12,32 M 11,31 L 12,32 L 13,31" 
+        stroke="white" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+</svg>

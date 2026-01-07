@@ -87,6 +87,7 @@ internal sealed partial class DiffRenderer
             case JsonValueKind.Object:
                 writer.Write(indent);
                 writer.WriteStyled("-", AnsiStyle.Red);
+                writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                 writer.WriteLine(" {");
                 foreach (var property in element.EnumerateObject())
                 {
@@ -99,6 +100,7 @@ internal sealed partial class DiffRenderer
             case JsonValueKind.Array:
                 writer.Write(indent);
                 writer.WriteStyled("-", AnsiStyle.Red);
+                writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                 writer.WriteLine(" [");
                 var index = 0;
                 foreach (var item in element.EnumerateArray())
@@ -113,6 +115,7 @@ internal sealed partial class DiffRenderer
             default:
                 writer.Write(indent);
                 writer.WriteStyled("-", AnsiStyle.Red);
+                writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                 writer.Write(" ");
                 writer.Write(_valueRenderer.Render(element));
                 writer.WriteLine(",");
@@ -149,6 +152,7 @@ internal sealed partial class DiffRenderer
         {
             writer.Write(indent);
             writer.WriteStyled("~", AnsiStyle.Yellow);
+            writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
             writer.WriteLine(" {");
             var beforeDict = before.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
             var afterProps = after.EnumerateObject().ToList();

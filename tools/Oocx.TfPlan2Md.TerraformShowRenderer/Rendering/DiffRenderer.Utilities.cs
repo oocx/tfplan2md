@@ -98,6 +98,7 @@ internal sealed partial class DiffRenderer
         writer.Write(InlineValue(before));
         writer.Write(" ");
         writer.WriteStyled("->", AnsiStyle.Yellow);
+        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
         writer.Write(InlineValue(after));
         if (appendReplacement)
@@ -212,9 +213,9 @@ internal sealed partial class DiffRenderer
         }
 
         writer.Write(indent);
-        writer.WriteLineStyled("# At least one attribute in this block is (or was) sensitive,", AnsiStyle.Dim);
+        writer.WriteLine("# At least one attribute in this block is (or was) sensitive,");
         writer.Write(indent);
-        writer.WriteLineStyled("# so its contents will not be displayed.", AnsiStyle.Dim);
+        writer.WriteLine("# so its contents will not be displayed.");
     }
 
     /// <summary>

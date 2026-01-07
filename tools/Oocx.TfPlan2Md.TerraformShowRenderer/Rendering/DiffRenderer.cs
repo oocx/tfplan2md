@@ -302,14 +302,13 @@ internal sealed partial class DiffRenderer
                         writer.Write(paddedName);
                         writer.Write(" = ");
                         writer.Write(InlineValue(rValue));
-                        writer.Write(" ");
-                        writer.WriteStyled("->", AnsiStyle.Yellow);
-                        writer.Write(" ");
+                        writer.Write(" -> ");
                         writer.Write("(known after apply)");
                         if (replacement)
                         {
                             writer.Write(" ");
                             writer.WriteStyled("# forces replacement", AnsiStyle.Red);
+                            writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                         }
 
                         writer.WriteLine();
@@ -407,14 +406,13 @@ internal sealed partial class DiffRenderer
                 writer.Write(paddedName);
                 writer.Write(" = ");
                 writer.Write(InlineValue(rValue));
-                writer.Write(" ");
-                writer.WriteStyled("->", AnsiStyle.Yellow);
-                writer.Write(" ");
+                writer.Write(" -> ");
                 writer.Write("(known after apply)");
                 if (replacement)
                 {
                     writer.Write(" ");
                     writer.WriteStyled("# forces replacement", AnsiStyle.Red);
+                    writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
                 }
 
                 writer.WriteLine();

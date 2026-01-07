@@ -356,20 +356,27 @@ internal sealed partial class DiffRenderer
     /// <summary>
     /// Computes the maximum property name width for alignment.
     /// Only considers scalar properties and primitive arrays that render inline,
-    /// excludes nested blocks, object arrays, and empty values (empty strings/arrays/objects, but NOT null which represents unknown).
+    /// excludes nested blocks, object arrays, and null values (unless they're unknown).
     /// </summary>
     /// <param name="properties">Properties to inspect.</param>
-    /// <returns>Maximum name length plus one for alignment, or zero when no properties exist.</returns>
-    private static int ComputeNameWidth(IEnumerable<(string Name, JsonElement Value)> properties)
+    /// <param name="unknown">Unknown subtree for checking if null properties are unknown.</param>
+    /// <returns>Maximum name length for alignment, or zero when no properties exist.</returns>
+    private static int ComputeNameWidth(IEnumerable<(string Name, JsonElement Value)> properties, JsonElement? unknown)
     {
         var max = 0;
         foreach (var property in properties)
         {
-            // Skip empty strings, empty arrays, and empty objects, but NOT null (which represents unknown values)
-            if (property.Value.ValueKind != JsonValueKind.Null &&
-                !ShouldRenderValue(property.Value, isUnknown: false, isSensitive: false))
+            // Skip null values UNLESS they're unknown (from after_unknown)
+            if (property.Value.ValueKind == JsonValueKind.Null)
             {
-                continue;
+                // Check if this property is in the unknown map (meaning it's an unknown value, not a JSON null)
+                var isUnknown = unknown is { ValueKind: JsonValueKind.Object } &&
+                    unknown.Value.TryGetProperty(property.Name, out _);
+
+                if (!isUnknown)
+                {
+                    continue; // Skip actual JSON nulls
+                }
             }
 
             // Only include scalars and primitive arrays in width calculation
@@ -378,7 +385,7 @@ internal sealed partial class DiffRenderer
             {
                 JsonValueKind.Array => ContainsOnlyPrimitives(property.Value),
                 JsonValueKind.Object => false, // Nested objects render as blocks, not inline
-                _ => true // Scalars (including null) render inline
+                _ => true // Scalars (including empty strings and unknown nulls) contribute to width
             };
 
             if (isInlineProperty && property.Name.Length > max)
@@ -387,7 +394,7 @@ internal sealed partial class DiffRenderer
             }
         }
 
-        // Terraform pads to max_name_length + 1 for alignment
-        return max > 0 ? max + 1 : 0;
+        // Terraform pads to max_name_length for alignment (the +1 is implicit in the " = " format)
+        return max;
     }
 }

@@ -28,7 +28,11 @@ internal sealed partial class DiffRenderer
 
         if (IsUnknownPath(unknown, path))
         {
-            WriteScalarLine(writer, indent, marker, style, string.Empty, "(known after apply)");
+            writer.Write(indent);
+            writer.WriteStyled(marker, style);
+            writer.Write(" ");
+            writer.Write("(known after apply)");
+            writer.WriteLine(",");
             return;
         }
 
@@ -61,7 +65,11 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                WriteScalarLine(writer, indent, marker, style, string.Empty, _valueRenderer.Render(element));
+                writer.Write(indent);
+                writer.WriteStyled(marker, style);
+                writer.Write(" ");
+                writer.Write(_valueRenderer.Render(element));
+                writer.WriteLine(",");
                 break;
         }
     }
@@ -103,7 +111,11 @@ internal sealed partial class DiffRenderer
                 WriteClosingBracket(writer, indent + Indent);
                 break;
             default:
-                WriteScalarLine(writer, indent, "-", AnsiStyle.Red, string.Empty, _valueRenderer.Render(element), true);
+                writer.Write(indent);
+                writer.WriteStyled("-", AnsiStyle.Red);
+                writer.Write(" ");
+                writer.Write(_valueRenderer.Render(element));
+                writer.WriteLine(",");
                 break;
         }
     }
@@ -179,7 +191,7 @@ internal sealed partial class DiffRenderer
     /// <param name="unknown">Unknown value map.</param>
     /// <param name="sensitive">Sensitive value map.</param>
     /// <param name="path">Path for unknown/sensitive lookups.</param>
-    private void RenderAddedObjectBlock(AnsiTextWriter writer, JsonElement element, string name, string indent, string marker, AnsiStyle style, JsonElement? unknown, JsonElement? sensitive, List<string> path, int nameWidth)
+    private void RenderAddedObjectBlock(AnsiTextWriter writer, JsonElement element, string name, string indent, string marker, AnsiStyle style, JsonElement? unknown, JsonElement? sensitive, List<string> path)
     {
         if (!ShouldRenderValue(element, isUnknown: false, isSensitive: IsSensitivePath(sensitive, path)))
         {
@@ -189,7 +201,7 @@ internal sealed partial class DiffRenderer
         var childUnknown = GetChildElement(unknown, path);
         var childProperties = EnumerateProperties(element, childUnknown).ToList();
         var childWidth = ComputeNameWidth(childProperties);
-        WriteBlockOpening(writer, indent, marker, style, name, nameWidth);
+        WriteBlockOpening(writer, indent, marker, style, name);
         foreach (var property in childProperties)
         {
             var childPath = new List<string>(path) { property.Name };
@@ -213,10 +225,12 @@ internal sealed partial class DiffRenderer
         }
 
         WriteBlockOpening(writer, indent, "-", AnsiStyle.Red, name);
-        foreach (var property in element.EnumerateObject())
+        var childProperties = element.EnumerateObject().Select(p => (p.Name, p.Value)).ToList();
+        var childWidth = ComputeNameWidth(childProperties);
+        foreach (var property in childProperties)
         {
             var childPath = new List<string>(path) { property.Name };
-            RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath);
+            RenderRemovedValue(writer, property.Value, property.Name, indent + Indent + Indent, sensitive, childPath, childWidth);
         }
 
         WriteClosingBrace(writer, indent + Indent);
@@ -253,7 +267,7 @@ internal sealed partial class DiffRenderer
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
                 var marker = replacePaths.Contains(FormatPath(childPath)) ? "-" : "+";
                 var style = marker == "+" ? AnsiStyle.Green : AnsiStyle.Red;
-                RenderAddedObjectBlock(writer, element, name, indent, marker, style, unknown, sensitive, childPath, 0);
+                RenderAddedObjectBlock(writer, element, name, indent, marker, style, unknown, sensitive, childPath);
                 index++;
             }
         }

@@ -47,9 +47,12 @@ internal sealed partial class DiffRenderer
     private static void WriteScalarLine(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string value, bool appendNull = false, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
-        writer.WriteStyled(marker, style);
-        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
-        writer.Write(" ");
+        if (!string.IsNullOrEmpty(marker))
+        {
+            writer.WriteStyled(marker, style);
+            writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
+            writer.Write(" ");
+        }
         var paddedName = string.IsNullOrWhiteSpace(name) ? string.Empty : (nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
         if (!string.IsNullOrWhiteSpace(paddedName))
         {
@@ -114,9 +117,12 @@ internal sealed partial class DiffRenderer
     private static void WriteContainerOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string symbol, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
-        writer.WriteStyled(marker, style);
-        writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
-        writer.Write(" ");
+        if (!string.IsNullOrEmpty(marker))
+        {
+            writer.WriteStyled(marker, style);
+            writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
+            writer.Write(" ");
+        }
         var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
         writer.Write(paddedName);
         writer.Write(" = ");
@@ -159,14 +165,13 @@ internal sealed partial class DiffRenderer
     /// <param name="style">ANSI style associated with the marker.</param>
     /// <param name="name">Block name.</param>
     /// <returns>Nothing.</returns>
-    private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, int nameWidth = 0)
+    private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
     {
         writer.Write(indent);
         writer.WriteStyled(marker, style);
         writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
         writer.Write(" ");
-        var paddedName = nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name;
-        writer.Write(paddedName);
+        writer.Write(name);
         writer.WriteLine(" {");
     }
 

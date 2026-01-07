@@ -64,4 +64,29 @@ public sealed class AnsiTextWriterTests
         Assert.DoesNotContain("\u001b[", output, StringComparison.Ordinal);
         Assert.Equal("plain", output);
     }
+
+    [Fact]
+    public void WriteLineIfNotBlank_PreventsDuplicateBlankLines()
+    {
+        var buffer = new StringBuilder();
+        using var writer = new StringWriter(buffer);
+        var ansi = new AnsiTextWriter(writer, useColor: false);
+
+        ansi.Write("x");
+        ansi.WriteLine();           // x\n
+        ansi.WriteLineIfNotBlank(); // should be ignored (already a blank line)
+        ansi.WriteLineIfNotBlank(); // still ignored
+
+        ansi.Write("y");
+        ansi.WriteLine();           // y\n
+
+        var lines = buffer.ToString().Split(Environment.NewLine);
+
+        // Expect sequence: "x", "", "y", "" (last trailing newline yields empty trailing entry)
+        Assert.Equal(4, lines.Length);
+        Assert.Equal("x", lines[0]);
+        Assert.Equal(string.Empty, lines[1]);
+        Assert.Equal("y", lines[2]);
+        Assert.Equal(string.Empty, lines[3]);
+    }
 }

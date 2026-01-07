@@ -69,9 +69,31 @@ internal sealed partial class DiffRenderer
         var sorted = SortPropertiesByType(properties);
         var width = ComputeNameWidth(sorted);
 
+        var previousWasNestedBlock = false;
+        string? previousNestedBlockName = null;
+
         foreach (var (name, value) in sorted)
         {
+            var isNestedBlock = value.ValueKind == JsonValueKind.Object ||
+                               (value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value));
+
+            if (ShouldInsertBlankLineBeforeNestedBlock(isNestedBlock, previousWasNestedBlock, previousNestedBlockName, name))
+            {
+                writer.WriteLineIfNotBlank();
+            }
+
             RenderAddedValue(writer, value, name, indent, marker, style, unknown, sensitive, new List<string> { name }, width);
+
+            if (isNestedBlock)
+            {
+                previousWasNestedBlock = true;
+                previousNestedBlockName = name;
+            }
+            else
+            {
+                previousWasNestedBlock = false;
+                previousNestedBlockName = null;
+            }
         }
     }
 
@@ -92,10 +114,61 @@ internal sealed partial class DiffRenderer
         var sorted = SortPropertiesByType(properties);
         var width = ComputeNameWidth(sorted);
 
+        var previousWasNestedBlock = false;
+        string? previousNestedBlockName = null;
+
         foreach (var (name, value) in sorted)
         {
+            var isNestedBlock = value.ValueKind == JsonValueKind.Object ||
+                               (value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value));
+
+            if (ShouldInsertBlankLineBeforeNestedBlock(isNestedBlock, previousWasNestedBlock, previousNestedBlockName, name))
+            {
+                writer.WriteLineIfNotBlank();
+            }
+
             RenderRemovedValue(writer, value, name, indent, sensitive, new List<string> { name }, width);
+
+            if (isNestedBlock)
+            {
+                previousWasNestedBlock = true;
+                previousNestedBlockName = name;
+            }
+            else
+            {
+                previousWasNestedBlock = false;
+                previousNestedBlockName = null;
+            }
         }
+    }
+
+    /// <summary>
+    /// Determines whether a blank line should be inserted before rendering a nested block.
+    /// Terraform show outputs a blank line when transitioning from scalar attributes to blocks,
+    /// and also between different block types, but not between repeated blocks of the same name.
+    /// </summary>
+    /// <param name="isNestedBlock">Whether the current value is a nested block.</param>
+    /// <param name="previousWasNestedBlock">Whether the previously rendered value was a nested block.</param>
+    /// <param name="previousNestedBlockName">The previous block name when <paramref name="previousWasNestedBlock"/> is true.</param>
+    /// <param name="currentName">Current property name.</param>
+    /// <returns>True if a blank line should be inserted.</returns>
+    private static bool ShouldInsertBlankLineBeforeNestedBlock(
+        bool isNestedBlock,
+        bool previousWasNestedBlock,
+        string? previousNestedBlockName,
+        string currentName)
+    {
+        if (!isNestedBlock)
+        {
+            return false;
+        }
+
+        if (!previousWasNestedBlock)
+        {
+            return true;
+        }
+
+        return !string.Equals(previousNestedBlockName, currentName, StringComparison.Ordinal);
     }
 
     /// <summary>Renders updates including replacement scenarios.</summary>
@@ -122,22 +195,92 @@ internal sealed partial class DiffRenderer
         var sortedAfterProps = SortPropertiesByType(afterProps);
         var unchangedAttributes = 0;
         var unchangedBlocks = 0;
+        var unchangedIdName = new List<(string Name, JsonElement Value, List<string> Path)>();
 
+        // First pass: Process scalars and single objects (not block arrays)
         foreach (var (name, value) in sortedAfterProps)
         {
+            var isBlockArray = value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value);
+
+            // Skip block arrays in first pass
+            if (isBlockArray)
+            {
+                continue;
+            }
+
             var path = new List<string> { name };
             if (beforeDict.TryGetValue(name, out var beforeValue))
             {
                 if (AreEqual(beforeValue, value))
                 {
-                    // Count blocks (arrays/objects) vs attributes (scalars)
-                    if (value.ValueKind == JsonValueKind.Array || value.ValueKind == JsonValueKind.Object)
+                    // Skip null values and empty arrays/objects
+                    var isNullOrEmpty = value.ValueKind == JsonValueKind.Null ||
+                                       (value.ValueKind == JsonValueKind.Array && value.GetArrayLength() == 0) ||
+                                       (value.ValueKind == JsonValueKind.Object && !value.EnumerateObject().Any());
+
+                    if (!isNullOrEmpty)
+                    {
+                        var isObject = value.ValueKind == JsonValueKind.Object;
+                        if (isObject)
+                        {
+                            unchangedBlocks++;
+                        }
+                        else
+                        {
+                            // Collect id and name for rendering after changed items, count others
+                            if (name == "id" || name == "name")
+                            {
+                                unchangedIdName.Add((name, value, path));
+                            }
+                            else
+                            {
+                                unchangedAttributes++;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    RenderUpdatedValue(writer, beforeValue, value, name, indent, path, unknown, sensitive, replacePaths);
+                }
+            }
+            else
+            {
+                RenderAddedValue(writer, value, name, indent, "+", AnsiStyle.Green, unknown, sensitive, path, 0);
+            }
+        }
+
+        // Render unchanged id/name and write unchanged comment BEFORE block arrays
+        foreach (var (name, value, path) in unchangedIdName)
+        {
+            RenderAddedValue(writer, value, name, indent, marker: string.Empty, style: AnsiStyle.Reset, unknown, sensitive, path, nameWidth: 0);
+        }
+
+        if (unchangedAttributes > 0)
+        {
+            WriteUnchangedComment(writer, indent, unchangedAttributes, "attributes");
+        }
+
+        // Second pass: Process block arrays and removed items
+        foreach (var (name, value) in sortedAfterProps)
+        {
+            var isBlockArray = value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(value);
+
+            // Only process block arrays in second pass
+            if (!isBlockArray)
+            {
+                continue;
+            }
+
+            var path = new List<string> { name };
+            if (beforeDict.TryGetValue(name, out var beforeValue))
+            {
+                if (AreEqual(beforeValue, value))
+                {
+                    var isNullOrEmpty = value.GetArrayLength() == 0;
+                    if (!isNullOrEmpty)
                     {
                         unchangedBlocks++;
-                    }
-                    else
-                    {
-                        unchangedAttributes++;
                     }
                 }
                 else
@@ -160,11 +303,6 @@ internal sealed partial class DiffRenderer
         foreach (var (name, value) in sortedRemovedProps)
         {
             RenderRemovedValue(writer, value, name, indent, sensitive, new List<string> { name });
-        }
-
-        if (unchangedAttributes > 0)
-        {
-            WriteUnchangedComment(writer, indent, unchangedAttributes, "attributes");
         }
 
         if (unchangedBlocks > 0)

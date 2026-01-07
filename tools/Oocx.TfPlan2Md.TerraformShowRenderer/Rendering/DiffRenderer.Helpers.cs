@@ -65,7 +65,7 @@ internal sealed partial class DiffRenderer
             foreach (var element in value.EnumerateArray())
             {
                 var childPath = new List<string>(path) { index.ToString(CultureInfo.InvariantCulture) };
-                RenderAddedObjectBlock(writer, element, name, indent, marker, style, unknown, sensitive, childPath, nameWidth);
+                RenderAddedObjectBlock(writer, element, name, indent, marker, style, unknown, sensitive, childPath);
                 index++;
             }
 
@@ -167,10 +167,11 @@ internal sealed partial class DiffRenderer
                 WriteContainerOpening(writer, indent, "-", AnsiStyle.Red, name, "{");
                 var removedProperties = value.EnumerateObject().Select(p => (p.Name, Value: p.Value)).ToList();
                 var sortedRemovedProperties = SortPropertiesByType(removedProperties);
+                var removedWidth = ComputeNameWidth(sortedRemovedProperties);
                 foreach (var (propName, propValue) in sortedRemovedProperties)
                 {
                     var childPath = new List<string>(path) { propName };
-                    RenderRemovedValue(writer, propValue, propName, indent + Indent + Indent, sensitive, childPath);
+                    RenderRemovedValue(writer, propValue, propName, indent + Indent + Indent, sensitive, childPath, removedWidth);
                 }
 
                 WriteClosingBrace(writer, indent + Indent);

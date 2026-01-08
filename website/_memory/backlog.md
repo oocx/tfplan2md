@@ -501,7 +501,7 @@ This file is the source of truth for all open website tasks.
 **Description:** Create a new logo for tfplan2md. Current logo is not suitable for small sizes. The new logo must work at navbar scale and should not be based on the old design. Multiple design options will be explored with the Maintainer before final selection.
 
 **Definition of Done:**
-- [ ] Multiple logo options presented to Maintainer
+- [x] Multiple logo options presented to Maintainer
 - [ ] Selected logo works at navbar scale (small sizes)
 - [ ] Logo works in both light and dark themes
 - [ ] Logo placed in `/assets/` directory

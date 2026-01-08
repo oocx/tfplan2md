@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V3 (CNCF Style)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #326ce5; /* CNCF Blue-ish */
+        }
+        p {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            color: #666;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Softer shadow for cleaner look */
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #326ce5;
+        }
+        .logo-container {
+            width: 100%;
+            height: 160px; /* Slightly taller for icon+text vertical stacks */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        /* Utility for centering SVG content */
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V3</h1>
+    <p>inspired by the Cloud Native Computing Foundation landscape</p>
+    
+    <div class="grid">
+
+        <!-- Logo 1: The Navigator (Compass/Helm style) -->
+        <!-- Theme: Navigation, Planning, Blue/Green nautical -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(10, 10)">
+                        <!-- Icon: Stylized Compass Rose / Markdown combo -->
+                        <circle cx="30" cy="30" r="30" fill="#326ce5" />
+                        <path d="M30 5 L38 25 L55 30 L38 35 L30 55 L22 35 L5 30 L22 25 Z" fill="#fff"/>
+                        <circle cx="30" cy="30" r="5" fill="#326ce5"/>
+                    </g>
+                    <!-- Text: Clean sans-serif -->
+                    <text x="80" y="52" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="28" fill="#24292e">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">1. The Navigator</div>
+        </div>
+
+        <!-- Logo 2: The Hex-Doc (Hexagon container) -->
+        <!-- Theme: Infrastructure, Containers, Module -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(10, 5)">
+                        <!-- Icon: Hexagon with doc lines -->
+                        <path d="M30 0 L56 15 L56 45 L30 60 L4 45 L4 15 Z" fill="#00C7B7"/>
+                        <path d="M30 0 L56 15 L30 30 L4 15 Z" fill="#009F93" opacity="0.4"/> <!-- Top shadow -->
+                        <rect x="20" y="25" width="20" height="4" rx="2" fill="white"/>
+                        <rect x="20" y="35" width="20" height="4" rx="2" fill="white"/>
+                        <path d="M40 45 L50 45 L45 53 Z" fill="white" /> <!-- Arrow down -->
+                    </g>
+                     <text x="75" y="47" font-family="'Helvetica Neue', sans-serif" font-weight="700" font-size="26" fill="#1b2a4e">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">2. Hex Infrastructure</div>
+        </div>
+
+        <!-- Logo 3: The Prism (Light/Data transformation) -->
+        <!-- Theme: Input -> Process -> Output -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Icon: Triangle Prism -->
+                    <path d="M30 10 L55 55 L5 55 Z" fill="#24292e"/>
+                    <!-- Beam In -->
+                    <path d="M-10 30 L20 35" stroke="#7d4698" stroke-width="4"/>
+                    <!-- Beam Out (Rainbow/Spectrum) -->
+                    <path d="M45 35 L80 20" stroke="#E91E63" stroke-width="3"/>
+                    <path d="M48 40 L80 40" stroke="#FFC107" stroke-width="3"/>
+                    <path d="M45 45 L80 60" stroke="#00BCD4" stroke-width="3"/>
+                    
+                    <text x="85" y="45" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="#333">tfplan<tspan fill="#7d4698">2md</tspan></text>
+                </svg>
+            </div>
+            <div class="logo-label">3. The Prism</div>
+        </div>
+
+        <!-- Logo 4: The Blueprint Bot -->
+        <!-- Theme: Automation, Friendly Mascot -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(10, 5)">
+                        <!-- Robot Head -->
+                        <rect x="10" y="10" width="40" height="40" rx="8" fill="#607D8B"/>
+                        <!-- Antenna -->
+                        <line x1="30" y1="10" x2="30" y2="0" stroke="#607D8B" stroke-width="3"/>
+                        <circle cx="30" cy="0" r="3" fill="#FF5252"/>
+                        <!-- Eyes -->
+                        <circle cx="23" cy="25" r="4" fill="white"/>
+                        <circle cx="37" cy="25" r="4" fill="white"/>
+                        <!-- Mouth (Markdown M) -->
+                        <path d="M20 38 L25 43 L30 38 L35 43 L40 38" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    </g>
+                    <text x="65" y="50" font-family="'Roboto', sans-serif" font-weight="500" font-size="28" fill="#455a64">tfplan2md</text>
+                 </svg>
+            </div>
+            <div class="logo-label">4. The Bot</div>
+        </div>
+
+        <!-- Logo 5: The Stack (Layers) -->
+        <!-- Theme: Stack, Structure, Database -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <g transform="translate(10, 10)">
+                        <path d="M0 10 L30 0 L60 10 L30 20 Z" fill="url(#blueGrad)"/>
+                        <path d="M0 25 L30 15 L60 25 L30 35 Z" fill="url(#blueGrad)" opacity="0.8"/>
+                        <path d="M0 40 L30 30 L60 40 L30 50 Z" fill="url(#blueGrad)" opacity="0.6"/>
+                    </g>
+                    <text x="80" y="48" font-family="Verdana, sans-serif" font-weight="bold" font-size="22" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">5. The Stack</div>
+        </div>
+
+        <!-- Logo 6: The Connector (Node/Graph) -->
+        <!-- Theme: Connections, Graph, Logic -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="35" r="8" fill="#ff9800"/>
+                    <circle cx="70" cy="35" r="8" fill="#e91e63"/>
+                    <circle cx="45" cy="10" r="6" fill="#9c27b0" opacity="0.5"/>
+                    <line x1="26" y1="35" x2="62" y2="35" stroke="#333" stroke-width="2"/>
+                    <line x1="25" y1="31" x2="40" y2="15" stroke="#333" stroke-width="2"/>
+                    <line x1="65" y1="31" x2="50" y2="15" stroke="#333" stroke-width="2"/>
+                    
+                    <text x="90" y="45" font-family="'Courier New', monospace" font-weight="bold" font-size="26" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">6. The Graph</div>
+        </div>
+
+        <!-- Logo 7: The Block-M (Negative Space) -->
+        <!-- Theme: Solid, Architectural, M hidden in block -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="16" height="40" fill="#2d333b"/>
+                    <rect x="30" y="25" width="16" height="25" fill="#2d333b"/>
+                    <rect x="50" y="10" width="16" height="40" fill="#2d333b"/>
+                    <path d="M30 10 L46 10 L38 20 Z" fill="#58a6ff"/> <!-- Small arrow -->
+                    
+                    <text x="80" y="45" font-family="Impact, sans-serif" font-size="28" fill="#2d333b" letter-spacing="1">TFPLAN2MD</text>
+                </svg>
+            </div>
+            <div class="logo-label">7. Constructivism</div>
+        </div>
+
+        <!-- Logo 8: The Turbine (Process/Engine) -->
+        <!-- Theme: Engine, Spinning, Core -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(35, 35)">
+                        <circle cx="0" cy="0" r="25" fill="none" stroke="#22863a" stroke-width="8" stroke-dasharray="15, 10"/>
+                        <circle cx="0" cy="0" r="12" fill="#22863a"/>
+                    </g>
+                    <text x="80" y="45" font-family="'Trebuchet MS', sans-serif" font-weight="bold" font-size="26" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">8. The Turbine</div>
+        </div>
+
+        <!-- Logo 9: Abstract Bird/Paper -->
+        <!-- Theme: Origami, Paper, Delivery -->
+        <div class="card">
+             <div class="logo-container">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 40 L40 10 L40 60 Z" fill="#0366d6"/> <!-- Left wing -->
+                    <path d="M40 10 L70 40 L40 60 Z" fill="#79b8ff"/> <!-- Right wing -->
+                    <path d="M40 60 L50 70 L30 70 Z" fill="#005cc5"/> <!-- Tail -->
+                    <text x="85" y="45" font-family="'Segoe UI', sans-serif" font-weight="300" font-size="30" fill="#24292e">tfplan<tspan font-weight="bold" fill="#0366d6">2md</tspan></text>
+                </svg>
+            </div>
+            <div class="logo-label">9. Origami Plan</div>
+        </div>
+
+        <!-- Logo 10: The Shield (Security/Protection) -->
+        <!-- Theme: Security, Confidence, Emblem -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M35 5 L65 5 L65 20 C65 40 50 60 35 65 C20 60 5 40 5 20 L5 5 L35 5 Z" fill="#6f42c1"/>
+                    <path d="M20 25 L35 40 L50 15" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <text x="80" y="48" font-family="'Arial Black', sans-serif" font-size="22" fill="#6f42c1">TFPLAN2MD</text>
+                </svg>
+            </div>
+            <div class="logo-label">10. The Guardian</div>
+        </div>
+
+    </div>
+</body>
+</html>

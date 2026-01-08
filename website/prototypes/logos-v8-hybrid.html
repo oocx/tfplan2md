@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V8 (Hybrid & Strict)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --tf-color: #5c4ee5;
+            --md-color: #202020;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        p {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            color: #666;
+        }
+        .intro-note {
+            background: #eef;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #eaecf0;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 16px rgba(0,0,0,0.1);
+            border-color: #d0d7de;
+        }
+        .logo-container {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V8</h1>
+    <p>Theme: "Hybrid Context" - Split Files & Bubbles with Strict Mark</p>
+    
+    <div class="intro-note">
+        Combining strict Markdown Mark geometry with Terraform/Code context.
+    </div>
+
+    <div class="grid">
+
+        <!-- DEFINE REUSABLE PATHS (STRICT GEOMETRY) -->
+        <svg width="0" height="0">
+            <defs>
+                <!-- Official Geometry 208x128 -->
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+            </defs>
+        </svg>
+
+        <!-- Logo 1: The Diagonal Split (V5 #6 Remastered) -->
+        <!-- Concept: File icon split diagonally. Top-Left: Purple Code. Bottom-Right: Strict Mark. -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="140" height="160" viewBox="0 0 140 160">
+                    <defs>
+                        <clipPath id="split-top-left">
+                            <path d="M0 0 L140 0 L0 160 Z" />
+                        </clipPath>
+                        <clipPath id="split-bot-right">
+                            <path d="M140 0 L140 160 L0 160 Z" />
+                        </clipPath>
+                    </defs>
+
+                    <!-- Base Document Shape -->
+                    <rect x="0" y="0" width="140" height="160" rx="8" fill="white" stroke="#333" stroke-width="2"/>
+
+                    <!-- Top Left: Code Context -->
+                    <g clip-path="url(#split-top-left)">
+                        <rect x="0" y="0" width="140" height="160" fill="#f3f0ff"/> <!-- Light Purple BG -->
+                        <text x="10" y="40" font-family="monospace" font-size="24" fill="#5c4ee5" font-weight="bold">{ }</text>
+                        <line x1="10" y1="60" x2="60" y2="60" stroke="#5c4ee5" stroke-width="3"/>
+                        <line x1="10" y1="75" x2="40" y2="75" stroke="#5c4ee5" stroke-width="3"/>
+                        <line x1="10" y1="90" x2="50" y2="90" stroke="#5c4ee5" stroke-width="3"/>
+                    </g>
+
+                    <!-- Diagonal Divider -->
+                    <line x1="0" y1="160" x2="140" y2="0" stroke="#333" stroke-width="1"/>
+
+                    <!-- Bottom Right: Strict Mark (Scaled to fit corner) -->
+                    <g clip-path="url(#split-bot-right)">
+                        <g transform="translate(45, 80) scale(0.4)">
+                           <use href="#md-border" fill="#202020" />
+                           <use href="#md-m" fill="#202020" />
+                           <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Code Split Mark</div>
+        </div>
+
+        <!-- Logo 2: Speech bubbles (V5 #7 Remastered) -->
+        <!-- Concept: Purple Code Bubble interacting with White Mark Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <!-- Code Bubble (Background) -->
+                    <path d="M10 20 H100 V90 H80 L70 100 L70 90 H10 V20 Z" fill="#5c4ee5" />
+                    <text x="25" y="65" font-family="monospace" font-weight="bold" font-size="28" fill="white">&lt;/&gt;</text>
+                    
+                    <!-- Mark Bubble (Foreground, slightly offset) -->
+                    <g transform="translate(80, 40)">
+                        <!-- Bubble Shape -->
+                        <path d="M0 0 H140 V90 H40 L30 100 V90 H0 V0 Z" fill="white" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Content: Strict Mark Scaled -->
+                        <g transform="translate(18, 15) scale(0.5)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Translation Bubbles</div>
+        </div>
+
+        <!-- Logo 3: The Peeling File -->
+        <!-- Concept: Purple Code File peeling up to reveal Mark -->
+        <div class="card">
+             <div class="logo-container">
+                <svg width="120" height="150" viewBox="0 0 120 150">
+                    <!-- Under layer: The Mark -->
+                    <g transform="translate(10, 40) scale(0.48)">
+                         <use href="#md-border" fill="#eee" /> <!-- dim mark -->
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                    
+                    <!-- Top Layer: Code File with Peel -->
+                    <path d="M0 0 H120 V100 L70 150 H0 V0 Z" fill="#5c4ee5" />
+                    <text x="15" y="40" font-family="monospace" font-size="20" fill="white" opacity="0.8">resource</text>
+                    <text x="15" y="60" font-family="monospace" font-size="20" fill="white" opacity="0.8">"group"</text>
+                    
+                    <!-- The Peel Triangle -->
+                    <path d="M120 100 L70 150 L70 100 Z" fill="#3f33a8" />
+                </svg>
+            </div>
+            <div class="logo-label">3. Reveal the Mark</div>
+        </div>
+
+        <!-- Logo 4: Vertical Transition -->
+        <!-- Concept: Top half Purple Code Block, Bottom half White Mark Block connected by arrow -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 180">
+                    <!-- Top Block -->
+                    <rect x="70" y="0" width="100" height="60" rx="4" fill="#5c4ee5" />
+                    <line x1="85" y1="20" x2="155" y2="20" stroke="white" stroke-width="3" opacity="0.7"/>
+                    <line x1="85" y1="35" x2="135" y2="35" stroke="white" stroke-width="3" opacity="0.7"/>
+                    
+                    <!-- Arrow down -->
+                    <path d="M120 65 V85" stroke="#999" stroke-width="3" marker-end="url(#arrow-down)"/>
+                    <defs>
+                         <marker id="arrow-down" markerWidth="10" markerHeight="7" refX="5" refY="7" orient="auto">
+                            <path d="M0 0 L5 7 L10 0" fill="none" stroke="#999" stroke-width="2"/>
+                         </marker>
+                    </defs>
+
+                    <!-- Bottom Block: The Mark -->
+                    <g transform="translate(68, 90) scale(0.5)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Vertical Pipeline</div>
+        </div>
+
+        <!-- Logo 5: The Funnel (Inputs to Mark) -->
+        <!-- Concept: Small code blocks falling into the Mark's Envelope -->
+        <div class="card">
+             <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <!-- Falling Blocks -->
+                    <rect x="80" y="10" width="20" height="20" fill="#5c4ee5" transform="rotate(15)"/>
+                    <rect x="140" y="5" width="20" height="20" fill="#5c4ee5" transform="rotate(-10)"/>
+                    <text x="115" y="30" font-family="monospace" fill="#5c4ee5" font-size="20">{ }</text>
+
+                    <!-- The Mark (acting as catchment) -->
+                    <g transform="translate(16, 50)">
+                        <!-- We only draw the border and M, removing arrow to look like a bin? 
+                             Or just full mark? User said 'Intact'. strict full mark. -->
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Code Consumption</div>
+        </div>
+
+        <!-- Logo 6: Code Card behind Mark Card -->
+        <!-- Concept: Stacking depth -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <!-- Back Card (Terraform) -->
+                    <g transform="translate(40, 20) rotate(-5)">
+                        <rect x="0" y="0" width="140" height="90" rx="8" fill="#5c4ee5"/>
+                        <line x1="15" y1="20" x2="100" y2="20" stroke="white" stroke-width="4" opacity="0.5"/>
+                        <line x1="15" y1="35" x2="80" y2="35" stroke="white" stroke-width="4" opacity="0.5"/>
+                        <line x1="15" y1="50" x2="110" y2="50" stroke="white" stroke-width="4" opacity="0.5"/>
+                    </g>
+                    
+                    <!-- Front Card (Mark) -->
+                    <g transform="translate(60, 40) rotate(2)">
+                        <!-- White background card for mark -->
+                        <rect x="5" y="5" width="140" height="90" rx="8" fill="white" stroke="#ccc" stroke-width="1"/>
+                        <!-- Mark Content (Scaled) -->
+                        <g transform="translate(18, 12) scale(0.5)">
+                             <use href="#md-border" fill="#202020" />
+                             <use href="#md-m" fill="#202020" />
+                             <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. Stacked Cards</div>
+        </div>
+
+        <!-- Logo 7: The Code-Border Mark -->
+        <!-- Concept: The Mark's border is composed of a code bracket shape -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(16, 11)">
+                        <!-- Inner content is strict -->
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                        
+                        <!-- Outer border replaced by stylized TF Purple Bracket Border satisfying strict geometry? 
+                             Or simply strict border colored purple? -->
+                        <use href="#md-border" fill="#5c4ee5" /> 
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Purple Border Mark</div>
+        </div>
+
+        <!-- Logo 8: Transformation Pipe -->
+        <!-- Concept: Horizontal pipe. Left: Code Icon. Right: Mark. Pipe connects them. -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Left Icon (Code) -->
+                    <g transform="translate(10, 20)">
+                         <rect x="0" y="0" width="50" height="60" rx="4" fill="#5c4ee5"/>
+                         <text x="10" y="40" font-family="monospace" fill="white" font-weight="bold">&lt;/&gt;</text>
+                    </g>
+                    
+                    <!-- Pipe -->
+                    <rect x="60" y="45" width="60" height="10" fill="#ccc"/>
+                    <polygon points="120 30, 140 50, 120 70" fill="#ccc"/>
+                    
+                    <!-- Right Icon (Mark) -->
+                    <g transform="translate(140, 20) scale(0.47)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Pipe Processor</div>
+        </div>
+
+         <!-- Logo 9: Code Input to Mark Output -->
+         <!-- Concept: Code lines entering the left side of the Mark -->
+         <div class="card">
+             <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(30, 20)">
+                        <!-- Code lines entering -->
+                        <path d="M-20 30 L0 30" stroke="#5c4ee5" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M-20 50 L0 50" stroke="#5c4ee5" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M-20 70 L0 70" stroke="#5c4ee5" stroke-width="8" stroke-linecap="round"/>
+                        
+                        <!-- The Mark being 'pushed' -->
+                        <g transform="translate(10, 0) scale(0.8)">
+                             <use href="#md-border" fill="#202020" />
+                             <use href="#md-m" fill="#202020" />
+                             <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Input Stream</div>
+        </div>
+
+        <!-- Logo 10: Integrated Document (Mark IS the content) -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="120" height="160" viewBox="0 0 120 160">
+                    <!-- Document Setup -->
+                    <rect x="10" y="10" width="100" height="140" rx="2" fill="white" stroke="#333" stroke-width="2"/>
+                    <!-- Header -->
+                    <rect x="25" y="25" width="70" height="8" fill="#5c4ee5" opacity="0.5"/>
+                    <rect x="25" y="38" width="40" height="8" fill="#5c4ee5" opacity="0.5"/>
+                    
+                    <!-- The Mark as Body Content -->
+                    <g transform="translate(20, 70) scale(0.38)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                 </svg>
+            </div>
+            <div class="logo-label">10. Report Document</div>
+        </div>
+
+    </div>
+</body>
+</html>

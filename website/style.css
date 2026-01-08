@@ -97,7 +97,7 @@ body {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--color-border);
     z-index: 100;
-    padding: 16px 0;
+    padding: 0;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -108,12 +108,29 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 64px;
 }
 
 .nav-brand {
     display: flex;
     align-items: center;
     gap: 12px;
+    height: 100%;
+}
+
+.nav-brand img {
+    height: 64px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .nav-brand img {
+        /* On mobile, limit width to avoid overlapping hamburger menu */
+        /* Assuming ~48px hamburger + margins, and 24px padding */
+        max-width: calc(100vw - 120px); 
+    }
 }
 
 .brand-name {

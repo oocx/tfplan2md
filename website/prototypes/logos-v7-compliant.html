@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V7 (Strict Compliance)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --tf-color: #5c4ee5;
+            --md-color: #202020;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        p {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            color: #666;
+        }
+        .intro-note {
+            background: #eef;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #eaecf0;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 16px rgba(0,0,0,0.1);
+            border-color: #d0d7de;
+        }
+        .logo-container {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V7</h1>
+    <p>Theme: Strict Markdown Mark Compliance + Terraform Identity</p>
+    
+    <div class="intro-note">
+        All designs below use the exact geometry of the official Markdown Mark (208x128 grid).
+    </div>
+
+    <div class="grid">
+
+        <!-- DEFINE REUSABLE PATHS -->
+        <svg width="0" height="0">
+            <defs>
+                <!-- Official Geometry 208x128 -->
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                <!-- Simple outline rect for when we don't want the thick border path -->
+                <rect id="md-rect" x="5" y="5" width="198" height="118" rx="10" />
+            </defs>
+        </svg>
+
+        <!-- Logo 1: The Transition Block -->
+        <!-- Concept: The official Mark, but filled with "Code" logic color, fading to "Mark" logic -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(16, 11)">
+                        <!-- Border -->
+                        <use href="#md-border" fill="#202020" />
+                        
+                        <!-- M (Terraform Color) -->
+                        <use href="#md-m" fill="#5c4ee5" />
+                        
+                        <!-- Arrow (Black) -->
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Code 'M' Input</div>
+        </div>
+
+        <!-- Logo 2: The Negative TF -->
+        <!-- Concept: Solid TF Purple box, with strict White Mark Cutout -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <!-- Solid Container -->
+                    <rect x="0" y="0" width="240" height="150" rx="12" fill="#5c4ee5"/>
+                    
+                    <!-- White Mark Centered (Scaled down slightly to fit) -->
+                    <g transform="translate(16, 11)">
+                        <use href="#md-border" fill="white" />
+                        <use href="#md-m" fill="white" />
+                        <use href="#md-arrow" fill="white" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. The Purple Stamp</div>
+        </div>
+
+        <!-- Logo 3: Side-by-Side (Text + Mark) -->
+        <!-- Concept: Typography + The clean mark -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="300" height="100" viewBox="0 0 300 100">
+                    <!-- Text -->
+                    <text x="0" y="65" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="40" fill="#333">tfplan</text>
+                    <text x="110" y="65" font-family="'Segoe UI', sans-serif" font-weight="300" font-size="40" fill="#999">2</text>
+                    
+                    <!-- The Mark (Scaled) -->
+                    <g transform="translate(140, 18) scale(0.5)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                    
+                    <text x="250" y="65" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="40" fill="#333">md</text>
+                </svg>
+            </div>
+            <div class="logo-label">3. Inline Mark</div>
+        </div>
+        
+        <!-- Logo 4: The Syntax 'M' -->
+        <!-- Concept: The M is made of lines of code (horizontal strips masked by M shape) -->
+        <div class="card">
+             <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <defs>
+                        <mask id="m-mask">
+                            <use href="#md-m" fill="white" transform="translate(16, 11)"/>
+                        </mask>
+                    </defs>
+                    
+                    <g transform="translate(16, 11)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                        
+                        <!-- Syntax Lines inside M -->
+                        <g mask="url(#m-mask)">
+                            <rect x="0" y="0" width="208" height="128" fill="white" /> <!-- Background of M -->
+                            <rect x="0" y="30" width="208" height="8" fill="#5c4ee5" />
+                            <rect x="0" y="42" width="208" height="8" fill="#202020" />
+                            <rect x="0" y="54" width="208" height="8" fill="#5c4ee5" />
+                            <rect x="0" y="66" width="208" height="8" fill="#202020" />
+                            <rect x="0" y="78" width="208" height="8" fill="#5c4ee5" />
+                            <rect x="0" y="90" width="208" height="8" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Syntax M</div>
+        </div>
+
+        <!-- Logo 5: The Arrow Injection -->
+        <!-- Concept: The Down Arrow is the only colored part, signifying "Output action" -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                     <g transform="translate(16, 11)">
+                        <use href="#md-border" fill="#333" />
+                        <use href="#md-m" fill="#333" />
+                        <!-- Arrow is highlight color -->
+                        <use href="#md-arrow" fill="#5c4ee5" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Action Highlight</div>
+        </div>
+
+        <!-- Logo 6: Half-Outline -->
+        <!-- Concept: Left half is Outline (Draft/Code), Right half is Solid (Final) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(16, 11)">
+                        <!-- Base Outline -->
+                        <use href="#md-rect" fill="none" stroke="#202020" stroke-width="10" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                        
+                        <!-- Left Overlay (Purple Theme) -->
+                        <path d="M0 0 H 104 V 128 H 0 Z" fill="#5c4ee5" opacity="0.1" />
+                        <line x1="104" y1="0" x2="104" y2="128" stroke="#5c4ee5" stroke-width="2" stroke-dasharray="4,4"/>
+                    </g>
+                    <text x="120" y="145" font-family="monospace" font-size="12" fill="#5c4ee5" text-anchor="middle">Processing...</text>
+                </svg>
+            </div>
+            <div class="logo-label">6. Processing Split</div>
+        </div>
+
+        <!-- Logo 7: The Blueprint Grid -->
+        <!-- Concept: Showing the 'x' grid lines mentioned in the spec -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(16, 11)">
+                        <!-- Faint Grid lines -->
+                        <path d="M30 0 V128 M50 0 V128 M70 0 V128 M90 0 V128 M110 0 V128 M125 0 V128 M145 0 V128 M165 0 V128 M185 0 V128" stroke="#5c4ee5" stroke-width="0.5" opacity="0.5"/>
+                        <path d="M0 30 H208 M0 55 H208 M0 98 H208" stroke="#5c4ee5" stroke-width="0.5" opacity="0.5"/>
+
+                        <!-- The Mark -->
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Specification Grid</div>
+        </div>
+
+        <!-- Logo 8: Code Brackets Enclosure -->
+        <!-- Concept: The border is replaced by code brackets, content is M+Arrow -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(16, 11)">
+                        <!-- M and Arrow standard -->
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                        
+                        <!-- Brackets instead of border -->
+                        <text x="-15" y="105" font-family="'Consolas', monospace" font-size="120" fill="#5c4ee5">{</text>
+                        <text x="160" y="105" font-family="'Consolas', monospace" font-size="120" fill="#5c4ee5">}</text>
+                    </g>
+                 </svg>
+            </div>
+            <div class="logo-label">8. Encapsulated</div>
+        </div>
+
+        <!-- Logo 9: The Plan Document -->
+        <!-- Concept: File icon with pure mark inside -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="120" height="150" viewBox="0 0 120 150">
+                    <!-- File Shape -->
+                    <path d="M10 10 L80 10 L110 40 L110 140 L10 140 Z" fill="white" stroke="#333" stroke-width="2" />
+                    <polyline points="80 10 80 40 110 40" fill="none" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Code Lines top -->
+                    <line x1="20" y1="30" x2="60" y2="30" stroke="#999" stroke-width="2"/>
+                    <line x1="20" y1="40" x2="70" y2="40" stroke="#999" stroke-width="2"/>
+                    
+                    <!-- Mark Bottom (Scaled) -->
+                    <g transform="translate(20, 70) scale(0.38)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Plan File</div>
+        </div>
+        
+        <!-- Logo 10: Tilted 3D Block (Strict) -->
+        <div class="card">
+             <div class="logo-container">
+                <svg width="240" height="150" viewBox="0 0 240 150">
+                    <g transform="translate(50, 20) skewY(-10)">
+                         <!-- Shadow/Side -->
+                         <rect x="5" y="5" width="140" height="100" fill="#333" transform="translate(10, 10)" opacity="0.3"/>
+                         
+                         <!-- Main Face -->
+                         <rect x="0" y="0" width="140" height="100" fill="#fff" stroke="#333" stroke-width="2"/>
+                         
+                         <!-- Mark Content on Face (Scaled) -->
+                         <g transform="translate(10, 15) scale(0.57)">
+                             <use href="#md-m" fill="#5c4ee5" /> <!-- Purple M -->
+                             <use href="#md-arrow" fill="#202020" />
+                         </g>
+                    </g>
+                    <text x="120" y="140" font-family="'Arial', sans-serif" font-weight="bold" font-size="16" text-anchor="middle" fill="#5c4ee5">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">10. Dimensional Block</div>
+        </div>
+
+    </div>
+</body>
+</html>

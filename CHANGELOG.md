@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.21"></a>
+## [1.0.0-alpha.21](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.20...v1.0.0-alpha.21) (2026-01-08)
+
+### ✨ Features
+
+* add Azure DevOps CSS variables to preview wrapper ([89d95d0](https://github.com/oocx/tfplan2md/commit/89d95d01305c8d8db7b57f434f0c97c16cff5a1a))
+* update templates to use theme-adaptive border colors ([d27fe74](https://github.com/oocx/tfplan2md/commit/d27fe74e0038330e163a6faf098a468612aab6c6))
+
+### 📚 Documentation
+
+* add architecture for 031-azdo-dark-theme-support ([9c8deca](https://github.com/oocx/tfplan2md/commit/9c8deca9974f3d9ec7276d1950b8f5e76d981ab4))
+* add feature specification for 031-azdo-dark-theme-support ([d9dae14](https://github.com/oocx/tfplan2md/commit/d9dae1455c8ff6fcb825f6776c4a32f27c79759e))
+* add tasks for 031-azdo-dark-theme-support ([9f4b634](https://github.com/oocx/tfplan2md/commit/9f4b63452ef5dbc5f7c3f004162c14adad78c201))
+* add test plan for 031-azdo-dark-theme-support ([9580595](https://github.com/oocx/tfplan2md/commit/9580595ac8ee0769ae930d757717c9364a14b99c))
+* add UAT report for 031-azdo-dark-theme-support ([50a5985](https://github.com/oocx/tfplan2md/commit/50a5985aeb8b7187876f2cfdb93d397c37420b1a))
+* mark task 4 as complete ([3561b1c](https://github.com/oocx/tfplan2md/commit/3561b1c80f1e60a1bacbb463cfbd7f44e260fec2))
+* mark task 5 as complete ([517aff1](https://github.com/oocx/tfplan2md/commit/517aff1d016dbd17069c4394774f5247fc12f37d))
+* mark tasks 1-3 as complete ([2a6d73d](https://github.com/oocx/tfplan2md/commit/2a6d73d5ad40bd1079b263c05fbc07c54e3f4525))
+* update demo artifacts with theme-adaptive borders ([5bff449](https://github.com/oocx/tfplan2md/commit/5bff4493f546d61936185bc32501c09821646cea))
+* update examples with current commit hash ([3bd0662](https://github.com/oocx/tfplan2md/commit/3bd066256698dfcc7ccaa37aa1309c55349c6bc2))
+* update feature list and code review notes for 031-azdo-dark-theme-support ([f414d89](https://github.com/oocx/tfplan2md/commit/f414d891e89615b34e2211ce253a0b820301a113))
+
 <a name="1.0.0-alpha.20"></a>
 ## [1.0.0-alpha.20](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.19...v1.0.0-alpha.20) (2026-01-08)
 

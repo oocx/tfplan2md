@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo + Text Variants (V21)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr); /* 1 column for full width text exploration */
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align left to see text relations better */
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .logo-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Left align for text flow */
+            margin-bottom: 1rem;
+            overflow: visible;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #eee;
+            width: 100%;
+            padding-top: 10px;
+        }
+        .logo-details {
+            font-size: 0.75rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo + Text Variants V21</h1>
+    <h2>Base Icon: V20 #5 (Compact Overlap)</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <!-- Official Mark Geometry (208x128) -->
+                <g id="md-mark-geometry">
+                    <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/>
+                    <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="currentColor"/>
+                    <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="currentColor"/>
+                </g>
+                
+                <!-- Diff Card Geometry (208x128) -->
+                <g id="diff-card-geometry">
+                    <rect width="208" height="128" rx="15" fill="#1e1e1e"/>
+                    <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="#2da44e">+</text>
+                    <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="#cf222e">-</text>
+                    <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="#d29922">~</text>
+                    
+                    <rect x="50" y="24" width="80" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="56" width="60" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="88" width="70" height="10" rx="3" fill="#333" />
+                </g>
+
+                <filter id="card-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="-2" dy="2" stdDeviation="4" flood-opacity="0.3"/>
+                </filter>
+
+                <!-- Reusable Icon Group -->
+                <g id="logo-icon-final">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=70, Y=20 Compact Overlap -->
+                    <g transform="translate(70, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="#844fba"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </g>
+            </defs>
+        </svg>
+
+        <!-- 1. Inter Bold (Clean Corporate) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="800" font-size="80" fill="#212529">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">1. Clean Corporate</div>
+            <div class="logo-details">Font: Inter ExtraBold</div>
+        </div>
+
+        <!-- 2. Monospace Classic (Coder Vibe) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="105" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="70" fill="#212529" letter-spacing="-2">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">2. Developer Mono</div>
+            <div class="logo-details">Font: JetBrains Mono</div>
+        </div>
+
+        <!-- 3. Two-Tone (Grey + Purple) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                     <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="800" font-size="80">
+                        <tspan fill="#343a40">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">3. Two-Tone Brand</div>
+            <div class="logo-details">Highlights '2md' in Brand Purple</div>
+        </div>
+
+        <!-- 4. Weight Contrast (Bold + Light) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                     <text x="290" y="110" font-family="'Inter', sans-serif" font-size="80">
+                        <tspan font-weight="800" fill="#212529">tfplan</tspan><tspan font-weight="400" fill="#6c757d">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">4. Weight Contrast</div>
+            <div class="logo-details">Bold 'tfplan', Light '2md'</div>
+        </div>
+
+        <!-- 5. Vertical Divider -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <line x1="290" y1="20" x2="290" y2="130" stroke="#dee2e6" stroke-width="4" />
+                    <text x="320" y="105" font-family="'Inter', sans-serif" font-weight="600" font-size="70" fill="#495057">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">5. With Divider</div>
+            <div class="logo-details">Separates icon from text</div>
+        </div>
+
+        <!-- 6. Fira Code + Variable Colors -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                     <text x="290" y="105" font-family="'Fira Code', monospace" font-weight="700" font-size="70">
+                        <tspan fill="#2da44e">tf</tspan><tspan fill="#212529">plan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">6. Syntax Highlighting</div>
+            <div class="logo-details">Green 'tf' (Terraform), Black 'plan', Purple '2md'</div>
+        </div>
+
+        <!-- 7. Tight Kernel Lowercase -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="800" font-size="90" fill="#212529" letter-spacing="-4">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">7. Tight Tracking</div>
+            <div class="logo-details">Modern, compact style</div>
+        </div>
+
+        <!-- 8. Uppercase Spaced -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="300" y="100" font-family="'Inter', sans-serif" font-weight="700" font-size="60" fill="#212529" letter-spacing="4">TFPLAN2MD</text>
+                </svg>
+            </div>
+            <div class="logo-label">8. Uppercase Spaced</div>
+            <div class="logo-details">More formal/tool-like</div>
+        </div>
+
+        <!-- 9. Code Block Style Text -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <rect x="290" y="35" width="460" height="90" rx="8" fill="#f1f3f5" />
+                    <text x="310" y="98" font-family="'Roboto Mono', monospace" font-weight="500" font-size="60" fill="#343a40">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">9. Code Block Badge</div>
+            <div class="logo-details">Text inside container</div>
+        </div>
+
+        <!-- 10. Stacked (Text Below) - Alternative Concept -->
+        <div class="card">
+            <div class="logo-container" style="height: 250px;">
+                <svg width="400" height="250" viewBox="0 0 300 250">
+                    <g transform="translate(10, 0)">
+                        <use href="#logo-icon-final" />
+                    </g>
+                    <text x="150" y="200" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="50" fill="#212529">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">10. Vertical Stack</div>
+            <div class="logo-details">For square contexts</div>
+        </div>
+
+    </div>
+</body>
+</html>

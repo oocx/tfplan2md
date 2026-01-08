@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Selected Icon Logo</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Selected Logo: V20 #5 -->
+    <!-- Compact Overlap (X=70), White Background Markdown Card, Purple Mark -->
+    <svg width="300" height="148" viewBox="0 0 300 148" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <style>
+                .diff-add { fill: #2da44e; }
+                .diff-del { fill: #cf222e; }
+                .diff-chg { fill: #d29922; }
+                .mark-purple { color: #844fba; }
+            </style>
+            <!-- Shadow for the top card -->
+            <filter id="card-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="-2" dy="2" stdDeviation="4" flood-opacity="0.3"/>
+            </filter>
+            
+            <!-- Official Mark Geometry (208x128) -->
+            <g id="md-mark-geometry">
+                <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/>
+                <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="currentColor"/>
+                <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="currentColor"/>
+            </g>
+            
+            <!-- Diff Card Geometry (208x128) -->
+            <g id="diff-card-geometry">
+                <rect width="208" height="128" rx="15" fill="#1e1e1e"/>
+                <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" class="diff-add">+</text>
+                <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" class="diff-del">-</text>
+                <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" class="diff-chg">~</text>
+                
+                <rect x="50" y="24" width="80" height="10" rx="3" fill="#333" />
+                <rect x="50" y="56" width="60" height="10" rx="3" fill="#333" />
+                <rect x="50" y="88" width="70" height="10" rx="3" fill="#333" />
+            </g>
+        </defs>
+
+        <!-- Layer 1: Diff Card (Back) -->
+        <g transform="translate(0, 0)">
+            <use href="#diff-card-geometry" />
+        </g>
+
+        <!-- Layer 2: Markdown Card (Front, Shifted X=70, Y=20) -->
+        <g transform="translate(70, 20)">
+            <!-- White card with shadow -->
+            <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+            <!-- Purple Logo -->
+            <g class="mark-purple">
+                <use href="#md-mark-geometry" />
+            </g>
+        </g>
+    </svg>
+</body>
+</html>

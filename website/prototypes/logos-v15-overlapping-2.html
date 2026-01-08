@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V15 (Transition "2")</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            
+            /* Diff Colors */
+            --diff-add: #2da44e;
+            --diff-del: #cf222e;
+            --diff-chg: #d29922;
+            --terminal-bg: #1e1e1e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V15</h1>
+    <h2>Focus: "Diff Card" Left + "2" Middle + "Markdown Mark" Right</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                
+                <g id="md-mark-icon">
+                    <use href="#md-border" fill="#202020" />
+                    <use href="#md-m" fill="#202020" />
+                    <use href="#md-arrow" fill="#202020" />
+                </g>
+
+                <!-- The "Diff Card" component from V14 #8 -->
+                <g id="diff-card">
+                    <rect x="0" y="0" width="120" height="80" rx="6" fill="#1e1e1e"/>
+                    <g transform="translate(15, 15)">
+                        <text x="0" y="15" font-family="monospace" font-weight="bold" font-size="16" fill="var(--diff-add)">+ res</text>
+                        <text x="0" y="32" font-family="monospace" font-weight="bold" font-size="16" fill="var(--diff-del)">- res</text>
+                        <text x="0" y="49" font-family="monospace" font-weight="bold" font-size="16" fill="var(--diff-chg)">~ res</text>
+                    </g>
+                </g>
+            </defs>
+        </svg>
+
+        <!-- 1. The Clean Equation -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="280" height="100" viewBox="0 0 280 100">
+                    <g transform="translate(20, 10)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <text x="155" y="65" font-family="monospace" font-weight="bold" font-size="40" fill="#555">2</text>
+                    
+                    <g transform="translate(190, 15) scale(0.55)">
+                         <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Clean Equation</div>
+        </div>
+
+        <!-- 2. The Bridge "2" -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="100" viewBox="0 0 260 100">
+                    <!-- Left -->
+                    <g transform="translate(20, 10)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- Middle "2" (Overlapping Right Edge) -->
+                    <circle cx="140" cy="50" r="20" fill="white" stroke="#ccc" stroke-width="1" />
+                    <text x="130" y="58" font-family="Arial" font-weight="bold" font-size="24" fill="#333">2</text>
+                    
+                    <!-- Right (No Box) -->
+                    <g transform="translate(170, 15) scale(0.55)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. The Bridge Bubble</div>
+        </div>
+
+        <!-- 3. Overlap "2" (The Badge) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Left -->
+                    <g transform="translate(10, 10)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- "2" Badge on the card edge -->
+                    <circle cx="130" cy="50" r="22" fill="#5c4ee5" stroke="#fff" stroke-width="3"/>
+                    <text x="122" y="58" font-family="Arial" font-weight="bold" font-size="24" fill="white">2</text>
+                    
+                    <!-- Right (Tucked closer) -->
+                    <g transform="translate(160, 15) scale(0.55)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. The Overlap Badge</div>
+        </div>
+
+        <!-- 4. Monospace Stream -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="100" viewBox="0 0 260 100">
+                    <g transform="translate(10, 10)">
+                         <rect x="0" y="0" width="120" height="80" rx="6" fill="#1e1e1e"/>
+                         <text x="15" y="30" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                         <text x="15" y="50" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                         <text x="15" y="70" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+                    </g>
+                    
+                    <text x="140" y="60" font-family="monospace" font-weight="bold" font-size="30" fill="#2da44e">&gt;2&gt;</text>
+                    
+                    <g transform="translate(195, 18) scale(0.5)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Monospace Stream</div>
+        </div>
+
+        <!-- 5. Floating "2" (Subtle) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="120" viewBox="0 0 240 120">
+                    <!-- Left -->
+                    <g transform="translate(20, 20)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- Right (Underlapping/Shifted) -->
+                    <g transform="translate(130, 40) scale(0.5)">
+                        <use href="#md-mark-icon" opacity="0.9"/>
+                    </g>
+
+                    <!-- The 2 floating between -->
+                    <text x="135" y="55" font-family="Arial" font-weight="900" font-size="40" fill="#fff" stroke="#333" stroke-width="1">2</text>
+                </svg>
+            </div>
+            <div class="logo-label">5. Layered Float</div>
+        </div>
+
+        <!-- 6. Arrow "2" Shape -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="280" height="100" viewBox="0 0 280 100">
+                    <g transform="translate(20, 10)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- A stylized arrow containing "2" -->
+                    <path d="M145 40 L165 40 L165 30 L185 50 L165 70 L165 60 L145 60 Z" fill="#eee" />
+                    <text x="153" y="55" font-family="Arial" font-weight="bold" font-size="16" fill="#333">2</text>
+                    
+                    <g transform="translate(195, 15) scale(0.55)">
+                         <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. Directional Arrow</div>
+        </div>
+
+        <!-- 7. Tight Integration -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="100" viewBox="0 0 220 100">
+                    <!-- Left -->
+                    <g transform="translate(10, 10)">
+                        <rect x="0" y="0" width="100" height="80" rx="6" fill="#1e1e1e"/>
+                        <g transform="translate(10, 15)">
+                            <text x="0" y="15" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                            <text x="0" y="35" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                            <text x="0" y="55" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+                        </g>
+                    </g>
+
+                    <!-- "2" cutting into the card -->
+                    <text x="110" y="60" font-family="Arial" font-weight="bold" font-size="50" fill="#333">2</text>
+                    
+                    <!-- Right Icon -->
+                    <g transform="translate(145, 15) scale(0.55)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Tight Integration</div>
+        </div>
+
+        <!-- 8. Vertical Stack (Compact) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="160" height="140" viewBox="0 0 160 140">
+                    <!-- Top Left Card -->
+                    <g transform="translate(10, 10) scale(0.8)">
+                         <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- The "2" -->
+                    <text x="75" y="80" font-family="Arial" font-weight="bold" font-size="20" fill="#999">2</text>
+
+                    <!-- Bottom Right Icon -->
+                    <g transform="translate(80, 70) scale(0.4)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Diagonal Stack</div>
+        </div>
+        
+        <!-- 9. Code Comment Style -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="280" height="100" viewBox="0 0 280 100">
+                    <g transform="translate(20, 10)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- "// 2" -->
+                    <text x="145" y="55" font-family="monospace" fill="#999" font-size="20">// 2</text>
+                    
+                    <g transform="translate(195, 15) scale(0.55)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Code Comment</div>
+        </div>
+
+        <!-- 10. The Shadow "2" -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="100" viewBox="0 0 260 100">
+                    <!-- Left -->
+                    <g transform="translate(20, 10)">
+                        <use href="#diff-card" />
+                    </g>
+                    
+                    <!-- Shadow 2 -->
+                    <text x="140" y="65" font-family="Arial" font-weight="900" font-size="60" fill="#eee">2</text>
+                    
+                     <!-- Right (Overlapping the 2) -->
+                    <g transform="translate(180, 15) scale(0.55)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. Background Link</div>
+        </div>
+
+    </div>
+</body>
+</html>

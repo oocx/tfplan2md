@@ -2,7 +2,7 @@
       Provides semantic diffing of firewall rules instead of index-based changes.
       Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
-<details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>{{ change.summary_html }}</summary>
 <br>
 

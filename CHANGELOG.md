@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.22"></a>
+## [1.0.0-alpha.22](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.21...v1.0.0-alpha.22) (2026-01-08)
+
+### ✨ Features
+
+* add logo prototype v19 with overlap and color adjustments ([9bc4a3b](https://github.com/oocx/tfplan2md/commit/9bc4a3be97de8d207973dc10200338b798449052))
+* add logo prototype v20 refined based on feedback ([25f98b1](https://github.com/oocx/tfplan2md/commit/25f98b13a425413b148e99bbd97efeaccb17f861))
+* add v10 refined logo concepts with splits, bubbles, cards and pipes ([ea735ab](https://github.com/oocx/tfplan2md/commit/ea735abdf856dc7bf58c8d98cc2a8c85b640782a))
+* add v11 translator variations with different code bubble representations ([d8ef7a8](https://github.com/oocx/tfplan2md/commit/d8ef7a82c7d082027f21bd9b6faa07e2be0099b9))
+* add v12 diff style logo concepts combining diff colors and markdown mark ([0d6a773](https://github.com/oocx/tfplan2md/commit/0d6a773d0461469ef9ffc9f63c2ccb31f69fcdda))
+* add V13 logo prototypes refining cards, terminals and capsules ([6bd64b9](https://github.com/oocx/tfplan2md/commit/6bd64b9028a8d11742d5e763addf7fa52e2333de))
+* add V14 logo prototypes focusing on transformation ([b5ff687](https://github.com/oocx/tfplan2md/commit/b5ff68757bc3f56a66ccff59aa238e7b4e7284e9))
+* add V15 logo prototypes based on user feedback (fav [#8](https://github.com/oocx/tfplan2md/issues/8) with '2') ([6defe2e](https://github.com/oocx/tfplan2md/commit/6defe2e4e51c57ffdd2a7be501d24f3d5468d85f))
+* add V16 logo prototypes focusing on seamless integration ([d49fadd](https://github.com/oocx/tfplan2md/commit/d49fadda966648aa5c9b9aa3f5fc36f05b808280))
+* add V17 logo prototypes refining shadow and arrow concepts ([b0955b0](https://github.com/oocx/tfplan2md/commit/b0955b0837d76a1096330c2763d1c0579bd34de8))
+* add V18 logo prototypes with compact chevron designs ([44a52c1](https://github.com/oocx/tfplan2md/commit/44a52c1c8bac49a226a6175594ab000b23f7ce02))
+* add v21 logo text variants and save selected icon ([e4012c7](https://github.com/oocx/tfplan2md/commit/e4012c7ef1306679db6525f5499710f3aa94b3df))
+* add v22 logo text refinements for two-tone purple concept ([b81bddb](https://github.com/oocx/tfplan2md/commit/b81bddb37c4a8cf53827abde4179be4517e4ecbd))
+* add v8 hybrid logo concepts with strict markdown mark geometry ([b867bd6](https://github.com/oocx/tfplan2md/commit/b867bd6e6e4d918eef553231d4325e33c3ce1db5))
+* add v9 extensive logo concepts combining chaos and structure ([71c765b](https://github.com/oocx/tfplan2md/commit/71c765b345e2b53bd3cb62c6a07bdff2770d45cf))
+* create 15 logo design options for tfplan2md ([b6f44e5](https://github.com/oocx/tfplan2md/commit/b6f44e587a0b7cbfdaabcfce116939deb93a01f7))
+* implement selected logo design and update all usages ([0430a45](https://github.com/oocx/tfplan2md/commit/0430a45a36f437b9b53f91f6a7300aa77ea401b4))
+* **website:** add 10 CNCF-inspired logo designs ([ca9ed6e](https://github.com/oocx/tfplan2md/commit/ca9ed6e8de7e3c4f61a476072754695e2c1c52a6))
+* **website:** add 10 concept-focused logo designs (v4) ([cef7bce](https://github.com/oocx/tfplan2md/commit/cef7bcece8beb0139b5400b4496d66be8b83089b))
+* **website:** add 10 markdown-focused transition logo designs (v5) ([7903731](https://github.com/oocx/tfplan2md/commit/7903731ea6c9c864c94f59356d8876a91be73252))
+* **website:** add 10 refined logos with compliant markdown mark (v6) ([ae63273](https://github.com/oocx/tfplan2md/commit/ae63273dc60ef768e7cb36cd250585f4a8c5c9d6))
+* **website:** add 10 strict compliance markdown logo designs (v7) ([8c4cde7](https://github.com/oocx/tfplan2md/commit/8c4cde75203dad300891fece39ceb42afe257cf3))
+* **website:** add 12 completely new logo designs options (v2) ([349a6bb](https://github.com/oocx/tfplan2md/commit/349a6bbf29be6837969e8dfd8ec56a23abe781f6))
+
+### 📚 Documentation
+
+* add comprehensive README for logo design options ([e36fb66](https://github.com/oocx/tfplan2md/commit/e36fb66b660cdbd9076e24424bb1aed90f7aa309))
+* add retrospective for 031-azdo-dark-theme-support ([4d38679](https://github.com/oocx/tfplan2md/commit/4d38679e7970060d99bda778f861e6c4ccfa17e7))
+* update backlog for logo redesign progress ([a5ebf7b](https://github.com/oocx/tfplan2md/commit/a5ebf7b4a914a0d667098a6ae26c8d0c27404ff3))
+* **website:** update backlog status for logo redesign ([cc02daf](https://github.com/oocx/tfplan2md/commit/cc02daf7e60fa0779ad77634f0141d5f488c43a3))
+
 <a name="1.0.0-alpha.21"></a>
 ## [1.0.0-alpha.21](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.20...v1.0.0-alpha.21) (2026-01-08)
 

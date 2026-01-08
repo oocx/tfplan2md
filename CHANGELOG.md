@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.20"></a>
+## [1.0.0-alpha.20](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.19...v1.0.0-alpha.20) (2026-01-08)
+
+### ✨ Features
+
+* add Dark/Light Mode feature card to Also Included section ([8f63d92](https://github.com/oocx/tfplan2md/commit/8f63d92e34f92c1f8369551a4f271b7b9f46dc74))
+
+### 📚 Documentation
+
+* add retrospective for feature 030 terraform-show-approximation ([4c0b5e7](https://github.com/oocx/tfplan2md/commit/4c0b5e7784d7b1da494cad76eec9ba6a7c4ee8ce))
+* update site-structure.md with Dark/Light Mode addition ([2d64e1c](https://github.com/oocx/tfplan2md/commit/2d64e1c8740c04a8ef05afc7d750feec48640a4c))
+
 <a name="1.0.0-alpha.19"></a>
 ## [1.0.0-alpha.19](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.18...v1.0.0-alpha.19) (2026-01-07)
 

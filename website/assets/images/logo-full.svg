@@ -1,17 +1,14 @@
 <svg width="800" height="160" viewBox="0 0 800 160" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap');
-    </style>
     <filter id="card-shadow" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="-2" dy="2" stdDeviation="4" flood-opacity="0.3"/>
     </filter>
     
     <!-- Official Mark Geometry (208x128) -->
     <g id="md-mark-geometry">
-      <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/>
-      <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="currentColor"/>
-      <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="currentColor"/>
+      <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="inherit" fill-rule="evenodd" clip-rule="evenodd"/>
+      <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="inherit"/>
+      <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="inherit"/>
     </g>
     
     <!-- Diff Card Geometry (208x128) -->
@@ -30,7 +27,7 @@
         <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
         <g transform="translate(70, 20)">
             <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
-            <g color="#844fba"><use href="#md-mark-geometry" /></g>
+            <g fill="#844fba"><use href="#md-mark-geometry" /></g>
         </g>
     </g>
   </defs>
@@ -38,7 +35,7 @@
   <g transform="translate(10, 5) scale(0.9)">
     <use href="#logo-icon-final" />
     <!-- Text V22 #1 -->
-    <text x="310" y="110" font-family="'Inter', -apple-system, sans-serif" font-weight="800" font-size="80">
+    <text x="310" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="80">
         <tspan fill="#343a40">tfplan</tspan><tspan fill="#844fba">2md</tspan>
     </text>
   </g>

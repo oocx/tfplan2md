@@ -495,7 +495,7 @@ This file is the source of truth for all open website tasks.
 | Page(s) | All pages |
 | Effort | High |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | 🏗️ In progress |
 | Depends On | — |
 
 **Description:** Create a new logo for tfplan2md. Current logo is not suitable for small sizes. The new logo must work at navbar scale and should not be based on the old design. Multiple design options will be explored with the Maintainer before final selection.

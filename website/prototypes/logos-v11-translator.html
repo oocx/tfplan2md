@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V11 (Translator Variations)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --tf-color: #5c4ee5;
+            --md-color: #202020;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .concept-note {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V11</h1>
+    <h2>10 Variations on "The Translator" (V5 #7) — Different Code Bubble Representations</h2>
+
+    <div class="grid">
+        <!-- DEFINITIONS: Strict Markdown Mark -->
+        <svg width="0" height="0">
+            <defs>
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+            </defs>
+        </svg>
+
+        <!-- 1. Braces Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Code Bubble with { } -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="30" y="52" font-family="monospace" font-weight="bold" font-size="28" fill="white">{ }</text>
+                    
+                    <!-- Markdown Bubble (overlapping, offset right) -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Braces Bubble</div>
+            <div class="concept-note">Classic { } representing code</div>
+        </div>
+
+        <!-- 2. Code Lines Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Code Bubble with lines -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <line x1="20" y1="30" x2="75" y2="30" stroke="white" stroke-width="3" opacity="0.8"/>
+                    <line x1="20" y1="42" x2="60" y2="42" stroke="white" stroke-width="3" opacity="0.8"/>
+                    <line x1="20" y1="54" x2="70" y2="54" stroke="white" stroke-width="3" opacity="0.8"/>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Code Lines Bubble</div>
+            <div class="concept-note">Raw text lines representing plan output</div>
+        </div>
+
+        <!-- 3. Angled Bracket Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Code Bubble with </> -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="22" y="52" font-family="monospace" font-weight="bold" font-size="24" fill="white">&lt;/&gt;</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Tag Bubble</div>
+            <div class="concept-note">&lt;/&gt; representing structured data</div>
+        </div>
+
+        <!-- 4. TF Word Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Code Bubble with "TF" -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="28" y="55" font-family="'Arial Black', sans-serif" font-weight="bold" font-size="32" fill="white">TF</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. TF Bubble</div>
+            <div class="concept-note">Explicit Terraform reference</div>
+        </div>
+
+        <!-- 5. Plus/Minus Bubble (Diff) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Code Bubble with +/- diff lines -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="18" y="32" font-family="monospace" font-size="14" fill="#90EE90">+ add</text>
+                    <text x="18" y="48" font-family="monospace" font-size="14" fill="#FFB6C1">- del</text>
+                    <text x="18" y="64" font-family="monospace" font-size="14" fill="#ADD8E6">~ chg</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Diff Bubble</div>
+            <div class="concept-note">+/- showing plan changes</div>
+        </div>
+
+        <!-- 6. Hash/JSON Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Code Bubble with JSON-like content -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="18" y="32" font-family="monospace" font-size="11" fill="white" opacity="0.9">{</text>
+                    <text x="22" y="45" font-family="monospace" font-size="10" fill="white" opacity="0.7">"k":"v"</text>
+                    <text x="18" y="58" font-family="monospace" font-size="11" fill="white" opacity="0.9">}</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. JSON Bubble</div>
+            <div class="concept-note">Key-value structure</div>
+        </div>
+
+        <!-- 7. Question Mark Bubble (Confusion → Clarity) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Confused Bubble -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="38" y="55" font-family="serif" font-size="36" fill="white">?</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Confusion to Clarity</div>
+            <div class="concept-note">? → Structured answer</div>
+        </div>
+
+        <!-- 8. Scribble/Noise Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Chaotic Bubble -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <!-- Scribble lines -->
+                    <path d="M20 28 Q30 35 40 28 T60 28 T80 28" fill="none" stroke="white" stroke-width="2" opacity="0.7"/>
+                    <path d="M20 42 Q35 50 50 42 T80 42" fill="none" stroke="white" stroke-width="2" opacity="0.7"/>
+                    <path d="M20 56 Q40 48 60 56 T80 56" fill="none" stroke="white" stroke-width="2" opacity="0.7"/>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Chaos to Order</div>
+            <div class="concept-note">Scribbled noise → clean output</div>
+        </div>
+
+        <!-- 9. Terminal Prompt Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Terminal Bubble -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#1e1e1e"/>
+                    <text x="18" y="35" font-family="monospace" font-size="12" fill="#4EC9B0">$</text>
+                    <text x="28" y="35" font-family="monospace" font-size="11" fill="#ddd">tf show</text>
+                    <rect x="18" y="42" width="60" height="2" fill="#666"/>
+                    <text x="18" y="58" font-family="monospace" font-size="9" fill="#888">...</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Terminal Bubble</div>
+            <div class="concept-note">CLI output style</div>
+        </div>
+
+        <!-- 10. Resource/Block Bubble -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Resource Block Bubble -->
+                    <path d="M10 15 H90 V70 H50 L40 85 V70 H10 Z" fill="#5c4ee5"/>
+                    <text x="15" y="30" font-family="monospace" font-size="9" fill="white" opacity="0.9">resource</text>
+                    <text x="15" y="42" font-family="monospace" font-size="9" fill="white" opacity="0.7">"azurerm"</text>
+                    <text x="15" y="54" font-family="monospace" font-size="9" fill="white" opacity="0.7">"rg" {</text>
+                    <text x="15" y="64" font-family="monospace" font-size="9" fill="white" opacity="0.5">...</text>
+                    
+                    <!-- Markdown Bubble -->
+                    <path d="M70 30 H200 V100 H140 L125 115 V100 H70 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(100, 48) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. Resource Block</div>
+            <div class="concept-note">Terraform HCL syntax</div>
+        </div>
+
+    </div>
+</body>
+</html>

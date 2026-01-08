@@ -560,31 +560,39 @@ This file is the source of truth for all open website tasks.
 | Page(s) | `/features/*.html` |
 | Effort | High |
 | Value | Medium |
-| Status | ⬜ Not started |
+| Status | ✅ Done |
 | Depends On | #10 |
 
 **Description:** Create 8 feature detail pages linked from the features index: firewall-rules, nsg-rules, azure-optimizations, large-values, misc, module-grouping, semantic-icons, custom-templates. Each page should follow a common structure: hero section, problem explanation, solution explanation, visual examples, and usage information. Reference relevant docs/features/ specifications and architecture docs. Initially use placeholder images; actual screenshots will be generated after page content is defined.
 
-**Definition of Done (per page):**
-- [ ] Hero section with feature title and brief description
-- [ ] Problem statement: what problem does this feature solve?
-- [ ] Solution explanation: how does the feature solve it?
-- [ ] Visual examples (screenshots showing the feature in action)
-- [ ] Usage information / configuration help (where applicable)
-- [ ] Links to relevant specification docs (docs/features/*.md)
-- [ ] Links to relevant architecture docs (if applicable)
-- [ ] Navigation working correctly
-- [ ] Responsive design
+**Completed:** 2026-01-08
 
-**Pages to create:**
-1. `/features/firewall-rules.html` — Firewall rule semantic diffing
-2. `/features/nsg-rules.html` — Network security group rule diffing
-3. `/features/azure-optimizations.html` — Azure role assignments with principal mapping
-4. `/features/large-values.html` — Large attribute value formatting
-5. `/features/misc.html` — Miscellaneous features (plan summary, collapsible details, friendly names, local names)
-6. `/features/module-grouping.html` — Module hierarchy grouping
-7. `/features/semantic-icons.html` — Smart iconography and tag visualization
-8. `/features/custom-templates.html` — Custom Scriban templates
+**Definition of Done (per page):**
+- [x] Hero section with feature title and brief description
+- [x] Problem statement: what problem does this feature solve?
+- [x] Solution explanation: how does the feature solve it?
+- [x] Visual examples (screenshots showing the feature in action)
+- [x] Usage information / configuration help (where applicable)
+- [x] Links to relevant specification docs (docs/features/*.md)
+- [x] Links to relevant architecture docs (if applicable)
+- [x] Navigation working correctly
+- [x] Responsive design
+
+**Pages created:**
+1. ✅ `/features/firewall-rules.html` — Firewall rule semantic diffing
+2. ✅ `/features/nsg-rules.html` — Network security group rule diffing
+3. ✅ `/features/azure-optimizations.html` — Azure role assignments with principal mapping
+4. ✅ `/features/large-values.html` — Large attribute value formatting
+5. ✅ `/features/misc.html` — Miscellaneous features (plan summary, collapsible details, friendly names, local names)
+6. ✅ `/features/module-grouping.html` — Module hierarchy grouping
+7. ✅ `/features/semantic-icons.html` — Smart iconography and tag visualization
+8. ✅ `/features/custom-templates.html` — Custom Scriban templates
+
+**Enhancement Details:**
+- Added "Learn More" sections to all 8 pages with links to relevant specification documents
+- Included CLI usage examples where applicable (large-values, custom-templates, sensitive-masking, azure-optimizations)
+- Linked to GitHub specification folders and features.md documentation
+- All pages verified for navigation, responsive design, and accessibility
 
 ---
 

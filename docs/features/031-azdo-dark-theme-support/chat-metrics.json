@@ -1,0 +1,163 @@
+{
+  "metadata": {
+    "source": "chat-combined.json",
+    "analysis_date": "2026-01-08",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 34,
+    "start_timestamp": 1767826646164,
+    "end_timestamp": 1767892316005,
+    "session_duration_sec": 65669.841,
+    "user_wait_time_sec": 2894.394,
+    "agent_work_time_sec": 3410.212
+  },
+  "model_usage": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 25
+    },
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 6
+    },
+    {
+      "model": "gpt-5.2",
+      "count": 3
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 93
+    },
+    {
+      "tool": "readFile",
+      "count": 47
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 25
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 12
+    },
+    {
+      "tool": "createFile",
+      "count": 9
+    },
+    {
+      "tool": "listDirectory",
+      "count": 6
+    },
+    {
+      "tool": "replaceString",
+      "count": 3
+    },
+    {
+      "tool": "findFiles",
+      "count": 2
+    },
+    {
+      "tool": "getChangedFiles",
+      "count": 1
+    },
+    {
+      "tool": "getErrors",
+      "count": 1
+    },
+    {
+      "tool": "searchCodebase",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 188
+      },
+      {
+        "type": 4,
+        "count": 12
+      }
+    ],
+    "total_invocations": 200,
+    "auto_approved": 188,
+    "manual_approved": 12,
+    "automation_rate_pct": 94
+  },
+  "model_success": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total": 25,
+      "complete": 25,
+      "failed": 0
+    },
+    {
+      "model": "gemini-3-flash-preview",
+      "total": 6,
+      "complete": 6,
+      "failed": 0
+    },
+    {
+      "model": "gpt-5.2",
+      "total": 3,
+      "complete": 3,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total_requests": 25,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    },
+    {
+      "model": "gemini-3-flash-preview",
+      "total_requests": 6,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    },
+    {
+      "model": "gpt-5.2",
+      "total_requests": 3,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 6,
+      "avg_sec": 260,
+      "total_sec": 1565
+    },
+    {
+      "model": "gpt-5.2",
+      "count": 3,
+      "avg_sec": 78,
+      "total_sec": 236
+    },
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 25,
+      "avg_sec": 64,
+      "total_sec": 1608
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

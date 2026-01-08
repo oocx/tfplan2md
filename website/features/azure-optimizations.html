@@ -59,21 +59,38 @@
                 
                 <div class="feature-comparison">
                     <div class="comparison-column">
-                        <h3 class="comparison-title">❌ Before</h3>
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code>| Attribute | Value |
-|-----------|-------|
-| key_vault_id | `/subscriptions/00000000.../resourceGroups/.../providers/Microsoft.KeyVault/vaults/kv-demo` |</code></pre>
+                            <pre><code># module.security.azurerm_key_vault.main will be created
++ resource "azurerm_key_vault" "main" {
+    + id                            = (known after apply)
+    + location                      = "eastus"
+    + name                          = "kv-tfplan2md"
+    + resource_group_name           = "rg-tfplan2md-demo"
+    + tenant_id                     = "11111111-2222-3333-4444-555555555555"
+  }
+
+# module.security.azurerm_key_vault_secret.db_password will be created
++ resource "azurerm_key_vault_secret" "db_password" {
+    + key_vault_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+    + name         = "db-password"
+  }</code></pre>
                         </div>
+                        <p class="comparison-note">Long Azure IDs make it hard to identify resources at a glance.</p>
                     </div>
                     
                     <div class="comparison-column">
-                        <h3 class="comparison-title">✅ After</h3>
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code>| Attribute | Value |
-|-----------|-------|
-| key_vault_id | Key Vault `kv-demo` in resource group `rg-demo` |</code></pre>
+                            <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
+
+| Attribute | Value |
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` |
+| name | `🆔 db-password` |</code></pre>
                         </div>
+                        <p class="comparison-note">Human-readable format shows what you need to know—the resource name and its resource group.</p>
                     </div>
                 </div>
 
@@ -101,20 +118,38 @@
                     Role assignments show human-readable role names, scopes, and principal information in a clear table format.
                 </p>
                 
-                <div class="feature-example">
-                    <h3 class="example-title">Example Output</h3>
-                    <div class="code-block">
-                        <pre><code>### ➕ azurerm_role_assignment.rg_reader
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.security.azurerm_role_assignment.rg_reader will be created
++ resource "azurerm_role_assignment" "rg_reader" {
+    + id                   = (known after apply)
+    + principal_id         = "00000000-0000-0000-0000-000000000001"
+    + principal_type       = "User"
+    + role_definition_id   = "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+    + role_definition_name = "Reader"
+    + scope                = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo"
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">GUIDs and long paths make it hard to understand who gets what access.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### ➕ module.security.azurerm_role_assignment.rg_reader
 
-<summary>👤 Jane Doe (User) → 🛡️ Reader on rg-tfplan2md-demo</summary>
+<summary>👤 User → 🛡️ Reader on rg-tfplan2md-demo</summary>
 
 | Attribute | Value |
 | ----------- | ------- |
-| scope | `📁 rg-tfplan2md-demo` in subscription `12345678-1234-1234-1234-123456789012` |
-| role_definition_id | `🛡️ Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |
-| principal_id | `👤 Jane Doe (User)` [`00000000-0000-0000-0000-000000000001`] |
+| scope | `📁 rg-tfplan2md-demo` |
+| role_definition_name | `🛡️ Reader` |
 | principal_type | `👤 User` |
-| role_definition_name | `🛡️ Reader` |</code></pre>
+| principal_id | `00000000-0000-0000-0000-000000000001` |</code></pre>
+                        </div>
+                        <p class="comparison-note">Clear summary at the top, formatted scope, and visual icons.</p>
                     </div>
                 </div>
             </div>
@@ -148,6 +183,28 @@
                         <li>Immediately see who has access to what</li>
                         <li>Works with role assignments and any resource showing principal IDs</li>
                         <li>Falls back to GUID if no mapping exists</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Azure optimizations include automatic formatting of resource IDs, role assignments, and principal name mapping.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/019-azure-resource-id-formatting" target="_blank" rel="noopener noreferrer">Feature Specification: Azure Resource ID Formatting</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/009-role-assignment-table-format" target="_blank" rel="noopener noreferrer">Feature Specification: Role Assignment Display</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/006-role-assignment-readable-display" target="_blank" rel="noopener noreferrer">Role Assignment Readable Display</a></li>
+                        <li><a href="../docs.html#cli-options">CLI Options Reference</a></li>
                     </ul>
                 </div>
             </div>

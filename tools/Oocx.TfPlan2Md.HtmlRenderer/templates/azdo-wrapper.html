@@ -7,7 +7,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css">
     <style>
         /* Align wrapper with observed AzDO markdown rendering */
-        :root { color-scheme: light dark; }
+        :root {
+            color-scheme: light dark;
+            /* Azure DevOps theme-aware CSS variable for light theme */
+            --palette-neutral-10: 240, 240, 240;
+        }
+
+        /* Dark theme CSS variables */
+        [data-theme="dark"] {
+            --palette-neutral-10: 50, 50, 50;
+        }
 
         body {
             margin: 0;
@@ -167,13 +176,10 @@
 
         .markdown-body details {
             margin-bottom: 12px;
-            border: 1px solid #f0f0f0;
             border-radius: 0;
             padding: 12px;
-        }
-
-        [data-theme="dark"] .markdown-body details {
-            border-color: rgba(255, 255, 255, 0.15);
+            /* Note: border color is defined in inline styles within templates */
+            /* using rgb(var(--palette-neutral-10, 153, 153, 153)) for theme adaptation */
         }
 
         .markdown-body summary {

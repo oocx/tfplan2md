@@ -56,16 +56,34 @@
                     Configuration files, JSON policies, and user data scripts can be huge. tfplan2md automatically detects large values and moves them to a dedicated section with collapsible details, keeping the main report clean.
                 </p>
                 
-                <div class="feature-example">
-                    <h3 class="example-title">Example Output</h3>
-                    <div class="code-block">
-                        <pre><code>### 🔄 azurerm_key_vault_secret.audit_policy
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.security.azurerm_key_vault_secret.audit_policy will be updated in-place
+~ resource "azurerm_key_vault_secret" "audit_policy" {
+    ~ value        = "line1: allow
+line2: log old activity
+line3: end" -> "line1: allow
+line2: log critical activity
+line3: end"
+      name         = "audit-policy"
+      # (2 unchanged attributes hidden)
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">Multi-line values embedded inline—hard to spot the actual change.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### 🔄 module.security.azurerm_key_vault_secret.audit_policy
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | value | *(see below)* | *(see below)* |
 
-Large values: value (4 lines, 2 changed)
+Large values: value (3 lines, 1 changed)
 
 ##### **value:**
 
@@ -75,6 +93,8 @@ line1: allow
 + line2: log critical activity
 line3: end
 ```</code></pre>
+                        </div>
+                        <p class="comparison-note">Line-by-line diff in a separate section—changes are crystal clear.</p>
                     </div>
                 </div>
 
@@ -85,6 +105,43 @@ line3: end
                         <li><strong>Collapsible Sections:</strong> Details are hidden by default to reduce noise.</li>
                         <li><strong>Line-by-Line Diffs:</strong> Changes within large text blocks are highlighted.</li>
                         <li><strong>Syntax Highlighting:</strong> JSON, YAML, and scripts are formatted for readability.</li>
+                    </ul>
+                </div>
+
+                <div class="feature-example">
+                    <h3 class="example-title">Configuration</h3>
+                    <p class="feature-detail-description">
+                        Control the diff format for large values using the <code>--large-value-format</code> CLI option:
+                    </p>
+                    <div class="code-window">
+                        <div class="code-header">
+                            <span class="code-title">Command</span>
+                        </div>
+                        <pre><code># Default: inline-diff (HTML with character-level highlighting)
+tfplan2md plan.json
+
+# Simple diff format (markdown code blocks)
+tfplan2md plan.json --large-value-format simple-diff</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Large value handling automatically detects and formats multi-line or long attribute values for better readability.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/017-large-attribute-value-display" target="_blank" rel="noopener noreferrer">Feature Specification: Large Attribute Value Display</a></li>
+                        <li><a href="../docs.html#cli-options">CLI Options Reference</a></li>
                     </ul>
                 </div>
             </div>

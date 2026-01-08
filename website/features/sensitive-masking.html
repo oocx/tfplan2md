@@ -56,6 +56,40 @@
                     Terraform marks certain values as sensitive. tfplan2md respects these markings and ensures they are never displayed in the generated markdown report, replacing them with <code>(sensitive value)</code>.
                 </p>
                 
+                <div class="feature-comparison" style="margin-bottom: 2rem;">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.security.azurerm_key_vault_secret.db_password will be created
++ resource "azurerm_key_vault_secret" "db_password" {
+    + content_type = "password"
+    + id           = (known after apply)
+    + key_vault_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+    + name         = "db-password"
+    ~ value = (sensitive value)
+    # At least one attribute in this block is (or was) sensitive,
+    # so its contents will not be displayed.
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">Raw Terraform output masks sensitive values but lacks formatting.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
+
+| Attribute | Value |
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` ... |
+| name | `🆔 db-password` |
+| value | `(sensitive)` |</code></pre>
+                        </div>
+                        <p class="comparison-note">Clean table format with sensitive values masked by default.</p>
+                    </div>
+                </div>
+                
                 <div class="feature-comparison">
                     <div class="comparison-column">
                         <h3 class="comparison-title">Default Behavior</h3>
@@ -93,6 +127,43 @@
                         <li>Masks values in tables, diffs, and summaries</li>
                         <li>Prevents accidental leakage of secrets in PR comments</li>
                         <li>Works for all providers and resources</li>
+                    </ul>
+                </div>
+
+                <div class="feature-example">
+                    <h3 class="example-title">Configuration</h3>
+                    <p class="feature-detail-description">
+                        Use the <code>--show-sensitive</code> flag to reveal sensitive values when needed:
+                    </p>
+                    <div class="code-window">
+                        <div class="code-header">
+                            <span class="code-title">Command</span>
+                        </div>
+                        <pre><code># Default: sensitive values masked
+tfplan2md plan.json
+
+# Show sensitive values (use with caution!)
+tfplan2md plan.json --show-sensitive</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Sensitive value masking is enabled by default and respects Terraform's sensitive attribute markers.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/blob/main/docs/features.md#sensitive-values" target="_blank" rel="noopener noreferrer">Feature Overview: Sensitive Values</a></li>
+                        <li><a href="../docs.html#cli-options">CLI Options Reference</a></li>
                     </ul>
                 </div>
             </div>

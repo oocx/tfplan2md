@@ -56,10 +56,70 @@
                     Reviewing changes to Network Security Groups (NSGs) can be tedious. tfplan2md aggregates changes to inline rules and standalone rule resources into a single, easy-to-read table.
                 </p>
                 
-                <div class="feature-example">
-                    <h3 class="example-title">Example Output</h3>
-                    <div class="code-block">
-                        <pre><code>### ♻️ module.network.azurerm_network_security_group.app
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.network.azurerm_network_security_group.app must be replaced
+-/+ resource "azurerm_network_security_group" "app" {
+      name                = "nsg-app"
+      # (2 unchanged attributes hidden)
+
+    - security_rule {
+        - access                     = "Allow" -> null
+        - destination_address_prefix = "*" -> null
+        - destination_port_range     = "80" -> null
+        - direction                  = "Inbound" -> null
+        - name                       = "allow-http" -> null
+        - priority                   = 100 -> null
+        - protocol                   = "Tcp" -> null
+        - source_address_prefix      = "*" -> null
+        - source_port_range          = "*" -> null
+      }
+    + security_rule {
+        + access                     = "Allow"
+        + destination_address_prefix = "*"
+        + destination_port_range     = "443"
+        + direction                  = "Inbound"
+        + name                       = "allow-https"
+        + priority                   = 100
+        + protocol                   = "Tcp"
+        + source_address_prefix      = "*"
+        + source_port_range          = "*"
+      }
+    + security_rule {
+        + access                     = "Deny"
+        + description                = "Block RDP from internet"
+        + destination_address_prefix = "*"
+        + destination_port_range     = "3389"
+        + direction                  = "Inbound"
+        + name                       = "deny-rdp"
+        + priority                   = 200
+        + protocol                   = "Tcp"
+        + source_address_prefix      = "*"
+        + source_port_range          = "*"
+      }
+    + security_rule {
+        + access                     = "Allow"
+        + description                = "Allow outbound HTTPS"
+        + destination_address_prefix = "*"
+        + destination_port_range     = "443"
+        + direction                  = "Outbound"
+        + name                       = "allow-outbound-https"
+        + priority                   = 300
+        + protocol                   = "Tcp"
+        + source_address_prefix      = "*"
+        + source_port_range          = "*"
+      }
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">Hard to scan—rules are scattered across the diff with all fields shown.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### ♻️ module.network.azurerm_network_security_group.app
 
 **Network Security Group:** `nsg-app`
 
@@ -71,6 +131,8 @@
 | ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
 | ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
 | ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | `-` |</code></pre>
+                        </div>
+                        <p class="comparison-note">Clear table view: 3 rules added, 1 removed—easy to review at a glance.</p>
                     </div>
                 </div>
 
@@ -81,6 +143,27 @@
                         <li><code>azurerm_network_security_rule</code> - Individual security rules</li>
                         <li>Shows priority, direction, access, protocol, sources, and destinations</li>
                         <li>Visual icons for IPs (🌐), ports (🔌), and protocols (📨/🔗)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    NSG rule diffing uses resource-specific templates to provide clear, table-based views of security rule changes.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/016-nsg-security-rule-template" target="_blank" rel="noopener noreferrer">Feature Specification: NSG Security Rule Template</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/001-resource-specific-templates" target="_blank" rel="noopener noreferrer">Resource-Specific Templates Architecture</a></li>
+                        <li><a href="../docs.html#templates">Template Customization Guide</a></li>
                     </ul>
                 </div>
             </div>

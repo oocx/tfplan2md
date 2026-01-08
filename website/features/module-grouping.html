@@ -56,10 +56,47 @@
                     Large Terraform plans often contain hundreds of resources scattered across multiple modules. tfplan2md automatically groups these resources by their module path, providing a structured and hierarchical view of changes.
                 </p>
                 
-                <div class="feature-example">
-                    <h3 class="example-title">Example Structure</h3>
-                    <div class="code-block">
-                        <pre><code>### 📦 Module: root
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># azurerm_resource_group.core will be created
++ resource "azurerm_resource_group" "core" {
+    + id       = (known after apply)
+    + location = "eastus"
+    + name     = "rg-tfplan2md-demo"
+  }
+
+# module.network.azurerm_virtual_network.hub will be created
++ resource "azurerm_virtual_network" "hub" {
+    + address_space       = ["10.0.0.0/16"]
+    + id                  = (known after apply)
+    + location            = "eastus"
+    + name                = "vnet-hub"
+  }
+
+# module.security.azurerm_role_assignment.rg_reader will be created
++ resource "azurerm_role_assignment" "rg_reader" {
+    + id                   = (known after apply)
+    + principal_id         = "00000000-0000-0000-0000-000000000001"
+    + principal_type       = "User"
+    + role_definition_name = "Reader"
+    + scope                = "/subscriptions/.../resourceGroups/rg-tfplan2md-demo"
+  }
+
+# module.network.azurerm_virtual_network.spoke will be created
++ resource "azurerm_virtual_network" "spoke" {
+    + address_space       = ["10.1.0.0/16"]
+    + id                  = (known after apply)
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">Resources from different modules are intermixed—hard to see structure.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### 📦 Module: root
 
 <details>
 <summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
@@ -71,12 +108,12 @@
 ### 📦 Module: `module.network`
 
 <details>
-<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>🆔 vnet-hub</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code></summary>
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>🆔 vnet-hub</code> <code>🌐 10.0.0.0/16</code></summary>
 ...
 </details>
 
 <details>
-<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔 network-rules</code> in <code>📁 rg-tfplan2md-demo</code> | 22🔧 changes</summary>
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>🆔 vnet-spoke</code> <code>🌐 10.1.0.0/16</code></summary>
 ...
 </details>
 
@@ -85,18 +122,11 @@
 ### 📦 Module: `module.security`
 
 <details>
-<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
-...
-</details>
-
----
-
-### 📦 Module: `module.network.module.monitoring`
-
-<details>
-<summary>➕ azurerm_log_analytics_workspace <b><code>core</code></b> — <code>🆔 law-core</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 User</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
 ...
 </details></code></pre>
+                        </div>
+                        <p class="comparison-note">Clear module separation—each module's resources are grouped together.</p>
                     </div>
                 </div>
 
@@ -107,6 +137,26 @@
                         <li>Modules without changes are omitted for cleaner reports</li>
                         <li>Nested modules are shown flat but maintain hierarchical sort order</li>
                         <li>Enabled by default—no configuration required</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Module grouping is automatically applied to all reports, organizing resources by their Terraform module hierarchy.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/blob/main/docs/features.md#module-grouping-new" target="_blank" rel="noopener noreferrer">Feature Overview: Module Grouping</a></li>
+                        <li><a href="../docs.html#templates">Template Variables Reference</a></li>
                     </ul>
                 </div>
             </div>

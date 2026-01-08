@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V2</title>
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        .logo-container {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-container.dark {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+        }
+        .logo-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            margin-top: 1rem;
+        }
+        svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V2</h1>
+    <div class="grid">
+        <!-- Logo 1: Tech/Modern Clean -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="250" height="60" viewBox="0 0 250 60" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#0071e3;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#42b883;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M10 30 L30 30 M20 10 L20 50" stroke="url(#grad1)" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M35 30 L55 30" stroke="url(#grad1)" stroke-width="4" stroke-linecap="round"/>
+                    <rect x="65" y="10" width="30" height="40" rx="4" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                    <line x1="72" y1="20" x2="88" y2="20" stroke="url(#grad1)" stroke-width="3"/>
+                    <line x1="72" y1="30" x2="88" y2="30" stroke="url(#grad1)" stroke-width="3"/>
+                    <line x1="72" y1="40" x2="80" y2="40" stroke="url(#grad1)" stroke-width="3"/>
+                    <text x="110" y="42" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="#333">tfplan<tspan fill="#42b883">2md</tspan></text>
+                </svg>
+            </div>
+            <div class="logo-label">1. Modern Tech Gradient</div>
+        </div>
+
+        <!-- Logo 2: Isometric Block -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                   <g transform="translate(10, 10)">
+                       <path d="M30 0 L60 15 L30 30 L0 15 Z" fill="#6C63FF"/>
+                       <path d="M0 15 L30 30 L30 60 L0 45 Z" fill="#5A52D5"/>
+                       <path d="M30 30 L60 15 L60 45 L30 60 Z" fill="#4841AA"/>
+                       <text x="70" y="45" font-family="Verdana, sans-serif" font-weight="bold" font-size="24" fill="#2d2d2d">tfplan2md</text>
+                   </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Isometric Cube</div>
+        </div>
+
+        <!-- Logo 3: Code Terminal Style -->
+        <div class="card">
+            <div class="logo-container dark">
+                <svg width="220" height="60" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="40" font-family="'Courier New', monospace" font-weight="bold" font-size="28" fill="#33ff00">> tfplan2md<animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" /></text>
+                    <rect x="180" y="18" width="12" height="24" fill="#33ff00"/>
+                </svg>
+            </div>
+            <div class="logo-label">3. Retro Terminal (Animated)</div>
+        </div>
+
+        <!-- Logo 4: Abstract Flow -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="250" height="70" viewBox="0 0 250 70" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 50 Q 30 10 60 30 T 110 30" fill="none" stroke="#FF5733" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="110" cy="30" r="5" fill="#C70039"/>
+                    <text x="125" y="45" font-family="Helvetica, sans-serif" font-weight="300" font-size="32" fill="#333">tfplan<tspan font-weight="bold" fill="#C70039">2md</tspan></text>
+                </svg>
+            </div>
+            <div class="logo-label">4. Minimalist Flow</div>
+        </div>
+
+        <!-- Logo 5: Blueprint/Schematic -->
+        <div class="card">
+            <div class="logo-container" style="background-color: #002b36;">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#93a1a1" stroke-width="2" fill="none">
+                        <rect x="10" y="15" width="20" height="20" />
+                        <rect x="10" y="40" width="20" height="20" />
+                        <line x1="30" y1="25" x2="50" y2="25"/>
+                        <line x1="30" y1="50" x2="50" y2="50"/>
+                        <line x1="50" y1="25" x2="50" y2="50"/>
+                        <line x1="50" y1="37.5" x2="70" y2="37.5"/>
+                        <circle cx="75" cy="37.5" r="5" fill="#2aa198" stroke="none"/>
+                    </g>
+                    <text x="95" y="45" font-family="Consolas, monospace" font-size="24" fill="#fdf6e3">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">5. Infrastructure Blueprint</div>
+        </div>
+
+        <!-- Logo 6: Modern Geometric -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="20" height="40" fill="#E91E63"/>
+                    <circle cx="45" cy="30" r="15" fill="#FFC107"/>
+                    <path d="M70 10 L90 50 L110 10" fill="none" stroke="#00BCD4" stroke-width="6" stroke-linejoin="round"/>
+                    <text x="120" y="40" font-family="Futura, sans-serif" font-weight="bold" font-size="24" fill="#333">2MD</text>
+                </svg>
+            </div>
+            <div class="logo-label">6. Bauhaus Geometric</div>
+        </div>
+
+        <!-- Logo 7: Typography Focus -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="250" height="70" viewBox="0 0 250 70" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <mask id="textMask">
+                            <rect x="0" y="0" width="250" height="70" fill="white"/>
+                            <text x="10" y="55" font-family="Impact, sans-serif" font-size="50" fill="black">TFPLAN2MD</text>
+                        </mask>
+                    </defs>
+                    <rect x="0" y="0" width="250" height="70" fill="#333" mask="url(#textMask)"/>
+                    <path d="M0 60 L250 60" stroke="#FF5722" stroke-width="4" />
+                </svg>
+            </div>
+            <div class="logo-label">7. Bold Stencil</div>
+        </div>
+
+        <!-- Logo 8: Markdown Focus -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="250" height="70" viewBox="0 0 250 70" xmlns="http://www.w3.org/2000/svg">
+                     <rect x="20" y="15" width="40" height="40" rx="5" stroke="#444" stroke-width="3" fill="none"/>
+                     <path d="M30 40 L40 30 L50 40" fill="none" stroke="#444" stroke-width="3"/>
+                     <line x1="40" y1="30" x2="40" y2="45" stroke="#444" stroke-width="3"/>
+                     <text x="75" y="45" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#444">tfplan<tspan fill="#007acc" font-weight="bold">2md</tspan></text>
+                </svg>
+            </div>
+            <div class="logo-label">8. Doc & Arrow</div>
+        </div>
+
+        <!-- Logo 9: Badge / Sticker -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#f0f0f0" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+                    <text x="50" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#666">TERRAFORM</text>
+                    <text x="50" y="60" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="14" fill="#333">PLAN > MD</text>
+                    <path d="M30 50 L70 50" stroke="#333" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="logo-label">9. Sticker / Badge</div>
+        </div>
+
+        <!-- Logo 10: Organic / Soft -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 35 Q 35 15 50 35 T 80 35" fill="none" stroke="#8bc34a" stroke-width="8" stroke-linecap="round"/>
+                    <text x="95" y="45" font-family="Segoe UI, sans-serif" font-weight="300" font-size="32" fill="#555">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">10. Organic Wave</div>
+        </div>
+        
+         <!-- Logo 11: Dark Mode Neon -->
+         <div class="card" style="background-color: #111;">
+            <div class="logo-container">
+                <svg width="220" height="60" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <text x="10" y="45" font-family="Orbitron, sans-serif" font-weight="bold" font-size="28" fill="#0ff" filter="url(#glow)">TFPLAN</text>
+                    <text x="135" y="45" font-family="Orbitron, sans-serif" font-weight="bold" font-size="28" fill="#f0f" filter="url(#glow)">2MD</text>
+                </svg>
+            </div>
+            <div class="logo-label" style="color: #999;">11. Cyberpunk Neon</div>
+        </div>
+        
+          <!-- Logo 12: Interlocking -->
+          <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="20" width="40" height="40" fill="#333"/>
+                    <rect x="30" y="20" width="40" height="40" fill="#007bff" fill-opacity="0.7"/>
+                    <text x="80" y="50" font-family="Arial Black, sans-serif" font-size="24" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">12. Overlay Layers</div>
+        </div>
+
+    </div>
+</body>
+</html>

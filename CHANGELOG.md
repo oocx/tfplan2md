@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.23"></a>
+## [1.0.0-alpha.23](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.22...v1.0.0-alpha.23) (2026-01-08)
+
+### ✨ Features
+
+* **website:** update header to use full text logo ([6271e3c](https://github.com/oocx/tfplan2md/commit/6271e3c09831af0cddbf1faf84b4be7fac89e78a))
+
+### 🐛 Bug Fixes
+
+* **assets:** optimize SVGs for GitHub rendering compatibility ([c85d5fb](https://github.com/oocx/tfplan2md/commit/c85d5fb28856de89069f9eba933622a8b2132aa3))
+
 <a name="1.0.0-alpha.22"></a>
 ## [1.0.0-alpha.22](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.21...v1.0.0-alpha.22) (2026-01-08)
 

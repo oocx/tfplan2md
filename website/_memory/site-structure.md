@@ -53,7 +53,7 @@ The navbar (present in all pages) links to:
   1. Hero with title and subtitle
   2. "What Sets Us Apart" - 8 featured cards (Semantic Diffs, Firewall Rules, NSG Rules, Role Assignment, Large Values, CI/CD, PR Rendering, Friendly Names)
   3. "Built-In Capabilities" - 8 cards (Plan Summary, Module Grouping, Collapsible Details, Tag Visualization, Smart Iconography, Custom Templates, Provider Agnostic, Local Names)
-  4. "Also Included" - 3 compact cards (Sensitive Masking, Minimal Container, Container Support)
+  4. "Also Included" - 4 compact cards (Sensitive Masking, Minimal Container, Container Support, Dark/Light Mode)
   5. Footer with Product/Resources/Community links
 - **Feature links (internal, all missing):**
   - `firewall-rules.html`
@@ -80,6 +80,7 @@ The navbar (present in all pages) links to:
 - **Decision log:**
   - 2026-01-03: Seeded from currently present HTML pages in `website/`.
   - 2026-01-03: Documented all internal/external links and navigation structure.
+  - 2026-01-07: Added Dark/Light Mode feature card to "Also Included" section (now 4 cards total).
 
 ### /index.html (Planned)
 

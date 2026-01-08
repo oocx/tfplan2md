@@ -107,6 +107,43 @@ line3: end
                         <li><strong>Syntax Highlighting:</strong> JSON, YAML, and scripts are formatted for readability.</li>
                     </ul>
                 </div>
+
+                <div class="feature-example">
+                    <h3 class="example-title">Configuration</h3>
+                    <p class="feature-detail-description">
+                        Control the diff format for large values using the <code>--large-value-format</code> CLI option:
+                    </p>
+                    <div class="code-window">
+                        <div class="code-header">
+                            <span class="code-title">Command</span>
+                        </div>
+                        <pre><code># Default: inline-diff (HTML with character-level highlighting)
+tfplan2md plan.json
+
+# Simple diff format (markdown code blocks)
+tfplan2md plan.json --large-value-format simple-diff</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <h2 class="feature-detail-title">Learn More</h2>
+                </div>
+                <p class="feature-detail-description">
+                    Large value handling automatically detects and formats multi-line or long attribute values for better readability.
+                </p>
+                <div class="feature-highlights">
+                    <h3 class="highlights-title">Related Documentation</h3>
+                    <ul class="highlights-list">
+                        <li><a href="https://github.com/oocx/tfplan2md/tree/main/docs/features/017-large-attribute-value-display" target="_blank" rel="noopener noreferrer">Feature Specification: Large Attribute Value Display</a></li>
+                        <li><a href="../docs.html#cli-options">CLI Options Reference</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>

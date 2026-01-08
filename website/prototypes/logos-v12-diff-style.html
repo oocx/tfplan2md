@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V12 (Diff Style)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --tf-color: #5c4ee5;
+            --md-color: #202020;
+            
+            /* Diff Colors */
+            --diff-add: #2da44e;
+            --diff-del: #cf222e;
+            --diff-chg: #d29922;
+            --diff-bg: #1e1e1e; /* Dark terminal bg for contrast */
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .concept-note {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V12</h1>
+    <h2>Theme: "Diff Input" (+/-) to "Markdown Output"</h2>
+
+    <div class="grid">
+        <!-- DEFINITIONS: Strict Markdown Mark -->
+        <svg width="0" height="0">
+            <defs>
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                
+                <!-- Reusable Diff Text Group -->
+                <g id="diff-text">
+                    <text x="0" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="var(--diff-add)">+</text>
+                    <text x="20" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="var(--diff-del)">-</text>
+                    <text x="40" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="var(--diff-chg)">~</text>
+                </g>
+                
+                 <!-- Reusable Diff Lines Group -->
+                <g id="diff-lines">
+                    <text x="0" y="0" font-family="monospace" font-size="14" fill="var(--diff-add)">+ resource</text>
+                    <text x="0" y="16" font-family="monospace" font-size="14" fill="var(--diff-del)">- resource</text>
+                    <text x="0" y="32" font-family="monospace" font-size="14" fill="var(--diff-chg)">~ resource</text>
+                </g>
+            </defs>
+        </svg>
+
+        <!-- 1. The Diff Stack -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="140" height="160" viewBox="0 0 140 160">
+                    <!-- Top: Diff Card (Dark) -->
+                    <rect x="20" y="10" width="100" height="70" rx="4" fill="#1e1e1e"/>
+                    <g transform="translate(35, 35)">
+                         <text x="0" y="10" font-family="monospace" font-weight="bold" font-size="30" fill="#2da44e">+</text>
+                         <text x="25" y="10" font-family="monospace" font-weight="bold" font-size="30" fill="#cf222e">-</text>
+                         <text x="50" y="10" font-family="monospace" font-weight="bold" font-size="30" fill="#d29922">~</text>
+                    </g>
+                    
+                    <!-- Arrow Down -->
+                    <path d="M70 85 L70 100" stroke="#999" stroke-width="3" marker-end="url(#arrow-down)"/>
+                    <defs>
+                         <marker id="arrow-down" markerWidth="10" markerHeight="7" refX="5" refY="7" orient="auto">
+                            <path d="M0 0 L5 7 L10 0" fill="none" stroke="#999" stroke-width="2"/>
+                         </marker>
+                    </defs>
+
+                    <!-- Bottom: Mark -->
+                    <g transform="translate(35, 110) scale(0.35)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Vertical Diff Stack</div>
+            <div class="concept-note">Input (Diff) -> Output (MD)</div>
+        </div>
+
+        <!-- 2. Split Rounded Square -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="160" height="140" viewBox="0 0 160 140">
+                    <!-- Container -->
+                    <rect x="10" y="20" width="140" height="100" rx="16" fill="white" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Left Half (Dark Diff info) -->
+                    <path d="M10 20 H80 V120 H10 A16 16 0 0 1 10 104 V36 A16 16 0 0 1 10 20 Z" fill="#1e1e1e" stroke="none"/>
+                    
+                    <g transform="translate(30, 60)">
+                        <text x="0" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="#2da44e">+</text>
+                        <text x="0" y="25" font-family="monospace" font-weight="bold" font-size="24" fill="#cf222e">-</text>
+                        <text x="0" y="50" font-family="monospace" font-weight="bold" font-size="24" fill="#d29922">~</text>
+                    </g>
+                    
+                    <!-- Right Half (Mark) -->
+                    <g transform="translate(90, 35) scale(0.55)">
+                        <!-- Just the M part for simplicity in icon -->
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Split Box</div>
+            <div class="concept-note">Half code, half doc</div>
+        </div>
+
+        <!-- 3. Overlapping Cards (Diff Back) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="140" viewBox="0 0 200 140">
+                    <!-- Back Card (Diffs) -->
+                    <g transform="translate(30, 20) rotate(-10)">
+                        <rect x="0" y="0" width="90" height="110" rx="4" fill="#1e1e1e"/>
+                        <use href="#diff-lines" transform="translate(10, 30)"/>
+                    </g>
+                    
+                    <!-- Front Card (Mark) -->
+                    <g transform="translate(80, 20) rotate(5)">
+                        <rect x="0" y="0" width="90" height="110" rx="4" fill="white" stroke="#333" stroke-width="1"/>
+                        <g transform="translate(15, 30) scale(0.3)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Source & Result</div>
+            <div class="concept-note">Before and after documents</div>
+        </div>
+
+        <!-- 4. The Funnel -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="140" viewBox="0 0 200 140">
+                    <!-- Falling items -->
+                    <text x="60" y="20" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                    <text x="100" y="15" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                    <text x="130" y="25" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+                    
+                    <!-- Funnel -->
+                    <path d="M40 40 H160 L120 90 H80 L40 40 Z" fill="#eee" stroke="#ccc"/>
+                    
+                    <!-- Mark Result -->
+                    <g transform="translate(75, 95) scale(0.25)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Diff Distiller</div>
+            <div class="concept-note">Mixing changes into a report</div>
+        </div>
+
+        <!-- 5. Horizontal Arrow Transition -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Left: Diff Block -->
+                    <g transform="translate(10, 20)">
+                        <rect x="0" y="0" width="60" height="60" rx="8" fill="#1e1e1e"/>
+                        <text x="15" y="38" font-family="monospace" font-weight="bold" font-size="24" fill="#2da44e">+</text>
+                        <text x="35" y="38" font-family="monospace" font-weight="bold" font-size="24" fill="#cf222e">-</text>
+                    </g>
+                    
+                    <!-- Arrow -->
+                    <path d="M80 50 H150" stroke="#ccc" stroke-width="4" marker-end="url(#arrow-right-l)"/>
+                    <defs>
+                         <marker id="arrow-right-l" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto">
+                            <path d="M0 0 L4 3 L0 6" fill="none" stroke="#ccc"/>
+                         </marker>
+                    </defs>
+
+                    <!-- Right: Mark -->
+                    <g transform="translate(170, 20) scale(0.45)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Linear Process</div>
+            <div class="concept-note">Change -> Document</div>
+        </div>
+
+        <!-- 6. Peeling Diffs -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="140" height="160" viewBox="0 0 140 160">
+                    <!-- Background Mark -->
+                    <g transform="translate(20, 20) scale(0.5)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                    
+                    <!-- Foreground Diff Layer (Peeling) -->
+                    <path d="M20 20 H120 V85 L85 120 H20 V20 Z" fill="rgba(30,30,30,0.9)" stroke="none"/>
+                    
+                    <!-- Diff text on layer -->
+                    <text x="30" y="50" font-family="monospace" font-size="16" fill="#2da44e">+ add</text>
+                    <text x="30" y="70" font-family="monospace" font-size="16" fill="#cf222e">- del</text>
+                    
+                    <!-- Peel Flap -->
+                    <path d="M120 85 L85 120 L85 85 Z" fill="#444"/>
+                </svg>
+            </div>
+            <div class="logo-label">6. Reveal Clarity</div>
+            <div class="concept-note">Peel back the dense diffs</div>
+        </div>
+
+        <!-- 7. The Diff Terminal -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="140" viewBox="0 0 220 140">
+                    <!-- Terminal Window -->
+                    <rect x="20" y="20" width="120" height="100" rx="4" fill="#1e1e1e"/>
+                    <rect x="20" y="20" width="120" height="20" rx="4" fill="#333"/> <!-- Title bar -->
+                    <circle cx="30" cy="30" r="3" fill="#ff5f56"/>
+                    <circle cx="40" cy="30" r="3" fill="#ffbd2e"/>
+                    <circle cx="50" cy="30" r="3" fill="#27c93f"/>
+                    
+                    <!-- Content -->
+                    <use href="#diff-lines" transform="translate(30, 60)"/>
+                    
+                    <!-- Mark Badge attached -->
+                    <circle cx="140" cy="110" r="35" fill="white" stroke="#ccc" stroke-width="1"/>
+                    <g transform="translate(118, 92) scale(0.22)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Terminal Export</div>
+            <div class="concept-note">CLI tool generating report</div>
+        </div>
+
+        <!-- 8. Side-by-Side Bubbles (Simple) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Left: Diff Circle -->
+                    <circle cx="60" cy="50" r="40" fill="#1e1e1e"/>
+                    <text x="45" y="45" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                    <text x="60" y="45" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                    <text x="75" y="45" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+                    <text x="48" y="70" font-family="monospace" font-size="10" fill="#aaa">plan</text>
+
+                    <!-- Right: Mark Circle -->
+                    <circle cx="180" cy="50" r="40" fill="white" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(155, 30) scale(0.25)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Dual Badges</div>
+            <div class="concept-note">Two states, one system</div>
+        </div>
+        
+         <!-- 9. Isometric Block Split -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="180" height="140" viewBox="0 0 180 140">
+                    <!-- Left Face (Dark diff) -->
+                    <path d="M90 20 L20 50 V110 L90 80 V20 Z" fill="#1e1e1e"/>
+                    <text x="40" y="70" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e" transform="skewY(20)">+</text>
+                    <text x="60" y="60" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e" transform="skewY(20)">-</text>
+                    
+                    <!-- Right Face (White Mark) -->
+                    <path d="M90 20 L160 50 V110 L90 80 V20 Z" fill="white" stroke="#333" stroke-width="1"/>
+                    <g transform="translate(100, 50) scale(0.25) skewY(-20)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                    
+                    <!-- Top Face -->
+                    <path d="M90 20 L20 50 L90 80 L160 50 Z" fill="#ccc" opacity="0.3"/>
+                </svg>
+            </div>
+            <div class="logo-label">9. The Cube</div>
+            <div class="concept-note">Two sides of same object</div>
+        </div>
+
+        <!-- 10. The Bracket "Container" (Diffs inside, Mark outside?) No, reverse -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Container Shape -->
+                    <rect x="20" y="10" width="200" height="80" rx="40" fill="#f0edf9"/>
+                    
+                    <!-- Left Part: Diff Text -->
+                    <g transform="translate(50, 50)">
+                         <text x="0" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="#2da44e">+</text>
+                         <text x="15" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="#cf222e">-</text>
+                         <text x="30" y="0" font-family="monospace" font-weight="bold" font-size="24" fill="#d29922">~</text>
+                    </g>
+                    
+                    <!-- Arrow in middle -->
+                     <path d="M100 50 L120 50" stroke="#5c4ee5" stroke-width="3" marker-end="url(#arrow-p)"/>
+                     <defs>
+                         <marker id="arrow-p" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto">
+                            <path d="M0 0 L4 3 L0 6" fill="none" stroke="#5c4ee5"/>
+                         </marker>
+                    </defs>
+
+                    <!-- Right Part: Mark -->
+                    <g transform="translate(140, 25) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. Capsule</div>
+            <div class="concept-note">Self-contained unit</div>
+        </div>
+
+    </div>
+</body>
+</html>

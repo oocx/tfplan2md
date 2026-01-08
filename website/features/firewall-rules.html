@@ -60,20 +60,78 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code>~ rule {
-    - rule[2] = {
-        - name = "allow-ssh-old"
-        - protocols = ["TCP"]
-        ...
-      }
-    + rule[1] = {
-        + name = "allow-dns"
-        + protocols = ["UDP"]
-        ...
-      }
-  }</code></pre>
+                            <pre><code># module.network.azurerm_firewall_network_rule_collection.network_rules will be updated in-place
+~ resource "azurerm_firewall_network_rule_collection" "network_rules" {
+    name                = "network-rules"
+    # (4 unchanged attributes hidden)
+
+  - rule {
+      - description           = "DNS to Azure" -> null
+      - destination_addresses = [
+          - "168.63.129.16",
+        ] -> null
+      - destination_ports     = [
+          - "53",
+        ] -> null
+      - name                  = "allow-dns" -> null
+      - protocols             = [
+          - "UDP",
+        ] -> null
+      - source_addresses      = [
+          - "10.1.1.0/24",
+        ] -> null
+    }
+  - rule {
+      - description           = "Legacy HTTP" -> null
+      - destination_addresses = [
+          - "10.1.3.0/24",
+        ] -> null
+      - destination_ports     = [
+          - "80",
+        ] -> null
+      - name                  = "allow-web" -> null
+      - protocols             = [
+          - "TCP",
+        ] -> null
+      - source_addresses      = [
+          - "10.1.1.0/24",
+        ] -> null
+    }
+  + rule {
+      + description           = "Secure web"
+      + destination_addresses = [
+          + "10.1.3.0/24",
+        ]
+      + destination_ports     = [
+          + "443",
+        ]
+      + name                  = "allow-web-secure"
+      + protocols             = [
+          + "TCP",
+        ]
+      + source_addresses      = [
+          + "10.1.1.0/24",
+        ]
+    }
+  + rule {
+      + description           = "Log ingestion"
+      + destination_addresses = [
+          + "10.1.5.0/24",
+        ]
+      + destination_ports     = [
+          + "8080",
+        ]
+      + name                  = "allow-log-ingest"
+      + protocols             = [
+          + "TCP",
+        ]
+      + source_addresses      = [
+          + "10.1.4.0/24",
+        ]
+    }
+}</code></pre>
                         </div>
-                        <p class="comparison-note">Which rule was added? Which was removed? Unclear.</p>
+                        <p class="comparison-note">Which rule was added? Which was removed? Index-based diffs are confusing.</p>
                     </div>
                     
                     <div class="comparison-column">

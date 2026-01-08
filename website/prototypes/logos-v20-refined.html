@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V20 (Refined Overlap)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --diff-bg: #1e1e1e;
+            
+            /* Diff Colors */
+            --diff-add: #2da44e;
+            --diff-del: #cf222e;
+            --diff-chg: #d29922;
+
+            /* Mark Colors */
+            --mark-purple: #844fba;
+            --mark-black: #000000;
+            --mark-dark: #202020;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .logo-details {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V20</h1>
+    <h2>Refining V19 #10: Tighter Overlap + Filled Background</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <!-- Official Mark Geometry (208x128) -->
+                <g id="md-mark-geometry">
+                    <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/>
+                    <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="currentColor"/>
+                    <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="currentColor"/>
+                </g>
+                
+                <!-- Diff Card Geometry (208x128) -->
+                <g id="diff-card-geometry">
+                    <rect width="208" height="128" rx="15" fill="#1e1e1e"/>
+                    <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-add)">+</text>
+                    <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-del)">-</text>
+                    <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-chg)">~</text>
+                    
+                    <rect x="50" y="24" width="80" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="56" width="60" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="88" width="70" height="10" rx="3" fill="#333" />
+                </g>
+
+                <filter id="card-shadow">
+                    <feDropShadow dx="-2" dy="2" stdDeviation="4" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+        </svg>
+
+        <!-- 1. Base V19 #10 (X=110) for comparison -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=110 -->
+                    <g transform="translate(110, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Original V19-10</div>
+            <div class="logo-details">Overlap X=110 (Wide)</div>
+        </div>
+
+        <!-- 2. Minimal Tightening (X=100) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=100 -->
+                    <g transform="translate(100, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Slightly Narrows</div>
+            <div class="logo-details">Overlap X=100</div>
+        </div>
+
+        <!-- 3. Significant Tightening (X=90) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=90 -->
+                    <g transform="translate(90, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Target Narrows</div>
+            <div class="logo-details">Overlap X=90</div>
+        </div>
+
+        <!-- 4. Very Tight (X=80) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=80 -->
+                    <g transform="translate(80, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Tight Overlap</div>
+            <div class="logo-details">Overlap X=80</div>
+        </div>
+
+        <!-- 5. Compact (X=70) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 300 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=70 -->
+                    <g transform="translate(70, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Compact</div>
+            <div class="logo-details">Overlap X=70</div>
+        </div>
+
+        <!-- 6. X=90 with Black Mark -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <g transform="translate(90, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-black)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. Black Mark</div>
+            <div class="logo-details">Overlap X=90, White background</div>
+        </div>
+
+        <!-- 7. X=90 with Brand Purple Background -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <g transform="translate(90, 20)">
+                        <rect width="208" height="128" rx="15" fill="#844fba" filter="url(#card-shadow)"/>
+                        <g color="white"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Inverted Brand</div>
+            <div class="logo-details">Purple BG, White Logo</div>
+        </div>
+
+        <!-- 8. X=90 with Off-White Background -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <g transform="translate(90, 20)">
+                        <rect width="208" height="128" rx="15" fill="#f3f4f6" filter="url(#card-shadow)"/>
+                        <g color="#333"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Soft Grey BG</div>
+            <div class="logo-details">More corporate feel</div>
+        </div>
+
+        <!-- 9. X=80 Adjusted Vertical (Lower) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- Shifted down to y=30 instead of 20 -->
+                    <g transform="translate(80, 30)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Low Rider</div>
+            <div class="logo-details">X=80, Y=30</div>
+        </div>
+
+        <!-- 10. X=80 Adjusted Vertical (Higher/Even) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="340" height="150" viewBox="0 0 320 148">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- Shifted up to y=10, more centered vertically -->
+                    <g transform="translate(80, 10)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="var(--mark-purple)"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. High Alignment</div>
+            <div class="logo-details">X=80, Y=10</div>
+        </div>
+
+    </div>
+</body>
+</html>

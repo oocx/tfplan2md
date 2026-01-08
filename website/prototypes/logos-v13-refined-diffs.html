@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V13 (Refined Diffs)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --tf-color: #5c4ee5;
+            --md-color: #202020;
+            
+            /* Diff Colors */
+            --diff-add: #2da44e;
+            --diff-del: #cf222e;
+            --diff-chg: #d29922;
+            --diff-bg: #1e1e1e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V13</h1>
+    <h2>Refining Themes: Cards (#3), Terminals (#7), Capsules (#10)</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                
+                <g id="diff-content">
+                    <text x="0" y="0" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-add)">+</text>
+                    <text x="25" y="0" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-del)">-</text>
+                    <text x="50" y="0" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-chg)">~</text>
+                </g>
+            </defs>
+        </svg>
+
+        <!-- --- CARD VARIATIONS (Based on V12 #3) --- -->
+
+        <!-- 1. The Fan Deck -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="140" viewBox="0 0 200 140">
+                    <!-- Back Card 2 -->
+                    <rect x="40" y="20" width="90" height="110" rx="6" fill="#1e1e1e" transform="rotate(-15 85 75)" opacity="0.6"/>
+                    <!-- Back Card 1 (Diffs) -->
+                    <g transform="rotate(-7 85 75)">
+                        <rect x="40" y="20" width="90" height="110" rx="6" fill="#1e1e1e"/>
+                        <use href="#diff-content" transform="translate(50, 60) scale(0.8)"/>
+                    </g>
+                    <!-- Front Card (Mark) -->
+                    <g transform="rotate(5 95 75)">
+                        <rect x="55" y="20" width="90" height="110" rx="6" fill="white" stroke="#333" stroke-width="1"/>
+                        <g transform="translate(72, 50) scale(0.28)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Fan Stack</div>
+        </div>
+
+        <!-- 2. Vertical Slip (Foreground) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="160" height="160" viewBox="0 0 160 160">
+                    <!-- Background: Diff Card -->
+                    <rect x="30" y="20" width="100" height="80" rx="6" fill="#1e1e1e"/>
+                    <use href="#diff-content" transform="translate(45, 60) scale(0.8)"/>
+                    
+                    <!-- Foreground: Mark Card overlapping bottom right -->
+                    <g transform="translate(50, 60)">
+                        <rect x="0" y="0" width="100" height="80" rx="6" fill="white" stroke="#ddd" stroke-width="1" filter="drop-shadow(0px 4px 4px rgba(0,0,0,0.1))"/>
+                        <g transform="translate(25, 15) scale(0.4)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Vertical Overlap</div>
+        </div>
+
+        <!-- 3. Tight Cluster -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                    <!-- Diff Card -->
+                    <rect x="10" y="10" width="90" height="90" rx="12" fill="#1e1e1e"/>
+                    <use href="#diff-content" transform="translate(25, 55) scale(0.7)"/>
+                    
+                    <!-- Mark Card -->
+                    <rect x="40" y="40" width="90" height="90" rx="12" fill="white" stroke="#eee" stroke-width="2"/>
+                    <g transform="translate(68, 62) scale(0.27)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Offset Square Icons</div>
+        </div>
+
+
+        <!-- --- TERMINAL VARIATIONS (Based on V12 #7) --- -->
+
+        <!-- 4. Terminal Corner Badge -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="180" height="140" viewBox="0 0 180 140">
+                    <!-- Terminal -->
+                    <rect x="20" y="20" width="140" height="100" rx="6" fill="#1e1e1e"/>
+                    <rect x="25" y="30" width="10" height="10" rx="5" fill="#ff5f56"/>
+                    <rect x="40" y="30" width="10" height="10" rx="5" fill="#ffbd2e"/>
+                    <rect x="55" y="30" width="10" height="10" rx="5" fill="#27c93f"/>
+                    
+                    <!-- Diff Content (faded) -->
+                    <rect x="25" y="55" width="80" height="4" rx="2" fill="#2da44e" opacity="0.6"/>
+                    <rect x="25" y="65" width="60" height="4" rx="2" fill="#cf222e" opacity="0.6"/>
+                    <rect x="25" y="75" width="70" height="4" rx="2" fill="#d29922" opacity="0.6"/>
+
+                    <!-- Mark Badge in Corner -->
+                    <circle cx="145" cy="105" r="30" fill="white" stroke="#1e1e1e" stroke-width="4"/>
+                    <g transform="translate(127, 90) scale(0.18)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Terminal Badge</div>
+        </div>
+
+        <!-- 5. Prompt Output -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="120" viewBox="0 0 220 120">
+                    <!-- Simple Dark Window -->
+                    <rect x="10" y="10" width="200" height="100" rx="6" fill="#1e1e1e"/>
+                    <!-- Prompt -->
+                    <text x="25" y="45" font-family="monospace" fill="#999" font-size="14">&gt; tfplan2md</text>
+                    
+                    <!-- Result -->
+                    <rect x="25" y="60" width="2" height="40" fill="#2da44e"/> <!-- decorative cursor/pipe -->
+                    <g transform="translate(40, 58) scale(0.2)">
+                        <rect x="0" y="0" width="220" height="140" fill="white" rx="10"/> <!-- paper bg for mark -->
+                        <g transform="translate(10, 10)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Command Execution</div>
+        </div>
+
+        <!-- 6. Split Window (Header/Body) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="140" height="160" viewBox="0 0 140 160">
+                    <!-- Window Frame -->
+                    <rect x="20" y="10" width="100" height="140" rx="8" fill="white" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Top (Diff Header) -->
+                    <path d="M20 10 H120 V60 H20 V10 Z" fill="#1e1e1e"/> <!-- Top radius handled by clip or ignored for rough prototype -->
+                    <text x="35" y="40" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                    <text x="55" y="40" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                    <text x="75" y="40" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+
+                    <!-- Bottom (Mark) -->
+                    <g transform="translate(45, 80) scale(0.35)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. Terminal Header</div>
+        </div>
+
+
+        <!-- --- CAPSULE VARIATIONS (Based on V12 #10) --- -->
+
+        <!-- 7. Split Pill (Horizontal) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="100" viewBox="0 0 220 100">
+                    <!-- Left Half -->
+                    <path d="M30 20 H110 V80 H30 A30 30 0 0 1 30 20" fill="#1e1e1e"/>
+                    <!-- Right Half -->
+                    <path d="M110 20 H190 A30 30 0 0 1 190 80 H110 V20" fill="white" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Left Icon -->
+                    <text x="50" y="58" font-family="monospace" font-weight="bold" font-size="24" fill="#2da44e">+</text>
+                    <text x="70" y="58" font-family="monospace" font-weight="bold" font-size="24" fill="#cf222e">-</text>
+                    
+                    <!-- Right Icon -->
+                    <g transform="translate(130, 35) scale(0.25)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Split Capsule</div>
+        </div>
+
+        <!-- 8. Diagonal Pill -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="100" viewBox="0 0 220 100">
+                    <defs>
+                        <clipPath id="pill-clip">
+                             <rect x="30" y="20" width="160" height="60" rx="30"/>
+                        </clipPath>
+                    </defs>
+                    
+                    <!-- Background -->
+                    <rect x="30" y="20" width="160" height="60" rx="30" fill="white" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Left Dark Area (Diagonal) -->
+                    <g clip-path="url(#pill-clip)">
+                        <path d="M0 0 H130 L90 100 H0 Z" fill="#1e1e1e"/>
+                    </g>
+                    
+                    <!-- Icons -->
+                    <g transform="translate(60, 55)">
+                         <text x="0" y="0" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                         <text x="15" y="0" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                    </g>
+                    
+                    <g transform="translate(145, 32) scale(0.28)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Diagonal Pill</div>
+        </div>
+
+        <!-- 9. Connected Nodes -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Left Node -->
+                    <rect x="20" y="25" width="60" height="50" rx="8" fill="#1e1e1e"/>
+                    <text x="35" y="58" font-family="monospace" fill="#2da44e" font-weight="bold">+/-</text>
+                    
+                    <!-- Pipe -->
+                    <line x1="80" y1="50" x2="140" y2="50" stroke="#999" stroke-width="4"/>
+                    
+                    <!-- Right Node -->
+                    <rect x="140" y="25" width="80" height="50" rx="8" fill="white" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(165, 35) scale(0.25)">
+                         <use href="#md-border" fill="#202020" />
+                         <use href="#md-m" fill="#202020" />
+                         <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Connected Nodes</div>
+        </div>
+
+        <!-- 10. The Toggle Switch -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="100" viewBox="0 0 220 100">
+                    <!-- Track -->
+                    <rect x="40" y="30" width="140" height="40" rx="20" fill="#1e1e1e"/>
+                    <text x="60" y="55" font-family="monospace" fill="#white" opacity="0.5" font-size="12">diff</text>
+                    
+                    <!-- Knob (Mark) -->
+                    <circle cx="160" cy="50" r="28" fill="white" stroke="#ccc" stroke-width="1" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.2))"/>
+                    <g transform="translate(142, 32) scale(0.25)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. The Toggle</div>
+        </div>
+
+    </div>
+</body>
+</html>

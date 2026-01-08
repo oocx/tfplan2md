@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V5 (Markdown Transition)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --md-color: #333;
+            --tf-color: #7b42bc; /* Purple-ish for generic infra/terraform association */
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        p {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            color: #666;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Crisp shadow */
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #eee;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #bbb;
+        }
+        .logo-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V5</h1>
+    <p>Theme: "Code to Markdown" Transition</p>
+    
+    <div class="grid">
+
+        <!-- Logo 1: Direct Translation -->
+        <!-- Concept: JSON braces turning into Markdown Mark -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <!-- TF/Code Side -->
+                    <text x="10" y="48" font-family="'Courier New', monospace" font-weight="bold" font-size="32" fill="#7b42bc">{...}</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M90 38 L110 38" stroke="#999" stroke-width="2" marker-end="url(#arrow-grey)"/>
+                    <defs>
+                        <marker id="arrow-grey" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#999" />
+                        </marker>
+                    </defs>
+                    
+                    <!-- Icon: Markdown Mark -->
+                     <g transform="translate(130, 10)">
+                        <rect x="0" y="0" width="50" height="35" rx="3" stroke="#333" stroke-width="3" fill="none"/>
+                        <path d="M10 10 L10 25 M40 10 L40 25 M10 10 L25 25 L40 10" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M25 8 L25 20" fill="none" stroke="none"/> <!-- spacer -->
+                    </g>
+                     <text x="130" y="65" font-family="-apple-system, sans-serif" font-weight="bold" font-size="14" fill="#333">MARKDOWN</text>
+                </svg>
+            </div>
+            <div class="logo-label">1. Direct Translation</div>
+        </div>
+
+        <!-- Logo 2: The Integrated Mark -->
+        <!-- Concept: "tfplan" text merging into the Markdown logo as the "2md" part -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="70" viewBox="0 0 260 70" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="45" font-family="'Consolas', monospace" font-size="32" fill="#5c6bc0">tfplan</text>
+                    
+                    <!-- The "2" as an arrow -->
+                    <path d="M115 35 L135 35" stroke="#333" stroke-width="3" marker-end="url(#arrow-black)"/>
+                    <defs>
+                        <marker id="arrow-black" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#333" />
+                        </marker>
+                    </defs>
+
+                    <!-- Large Markdown Mark representing "md" -->
+                    <g transform="translate(150, 10)">
+                        <rect x="0" y="0" width="60" height="40" rx="4" stroke="#333" stroke-width="4" fill="white"/>
+                        <path d="M12 12 L12 28 M48 12 L48 28 M12 12 L30 30 L48 12" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="30" y1="18" x2="30" y2="28" stroke="white" stroke-width="0"/> <!-- Invisible spacer -->
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Integrated Flow</div>
+        </div>
+
+        <!-- Logo 3: The Braced 'M' -->
+        <!-- Concept: The Markdown M inside code braces, symbolizing "Code containing Structure" -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Left Brace -->
+                    <path d="M20 10 Q 0 10 5 30 T 0 50 Q 0 70 20 70" fill="none" stroke="#7b42bc" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Markdown Mark Inside -->
+                    <g transform="translate(45, 20)">
+                         <path d="M10 5 L10 35 M50 5 L50 35 M10 5 L30 25 L50 5" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                         <line x1="30" y1="10" x2="30" y2="35" stroke="#333" stroke-width="5" opacity="0.1"/> <!-- Hint of arrow -->
+                    </g>
+
+                    <!-- Right Brace -->
+                    <path d="M90 10 Q 110 10 105 30 T 110 50 Q 110 70 90 70" fill="none" stroke="#7b42bc" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <text x="120" y="48" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="24" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">3. The Braced Mark</div>
+        </div>
+
+        <!-- Logo 4: The Down-Arrow Focus -->
+        <!-- Concept: Focus on the "Down Arrow" part of Markdown mark, as "Result" or "Output" -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Outline of Markdown Mark -->
+                    <rect x="20" y="10" width="50" height="35" rx="3" stroke="#ccc" stroke-width="2" fill="none"/>
+                    
+                    <!-- The Arrow is the hero, colored -->
+                    <path d="M45 15 L45 35 M35 25 L45 35 L55 25" fill="none" stroke="#007bff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <!-- Text lines indicating "plan" above, transforming to "arrow" below -->
+                    <line x1="30" y1="18" x2="60" y2="18" stroke="#ccc" stroke-width="2" opacity="0.5"/>
+                    
+                    <text x="85" y="45" font-family="Helvetica, sans-serif" font-weight="bold" font-size="26" fill="#333">tfp<tspan fill="#007bff">2</tspan>md</text>
+                </svg>
+            </div>
+            <div class="logo-label">4. The Output Arrow</div>
+        </div>
+
+        <!-- Logo 5: Blocks to Logo -->
+        <!-- Concept: Infrastructure blocks falling into place to form the Markdown Mark -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(10, 10)">
+                        <!-- Left Leg Block -->
+                        <rect x="0" y="10" width="10" height="30" fill="#5c6bc0"/>
+                        <!-- Right Leg Block -->
+                        <rect x="40" y="10" width="10" height="30" fill="#5c6bc0"/>
+                        <!-- Middle V Blocks (falling) -->
+                        <rect x="10" y="0" width="10" height="25" fill="#3949ab" transform="rotate(-45 15 12)"/>
+                        <rect x="30" y="0" width="10" height="25" fill="#3949ab" transform="rotate(45 35 12)"/>
+                    </g>
+                    <text x="75" y="48" font-family="'Trebuchet MS', sans-serif" font-weight="bold" font-size="26" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">5. Constructing Markdown</div>
+        </div>
+
+        <!-- Logo 6: The Split File -->
+        <!-- Concept: File icon split diagonally. Top-Left is Code, Bottom-Right is Markdown Logo -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+                    <!-- File Outline -->
+                    <path d="M20 10 L50 10 L60 20 L60 60 L20 60 Z" fill="none" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Diagonal Split -->
+                    <line x1="20" y1="60" x2="60" y2="20" stroke="#ccc" stroke-width="1"/>
+                    
+                    <!-- Code Top Left -->
+                    <line x1="25" y1="20" x2="45" y2="20" stroke="#7b42bc" stroke-width="2"/>
+                    <line x1="25" y1="25" x2="40" y2="25" stroke="#7b42bc" stroke-width="2"/>
+                    
+                    <!-- Markdown Mark Bottom Right -->
+                    <path d="M45 45 L55 45 L55 55 L45 55 Z" fill="none" stroke="none"/>
+                    <path d="M42 40 L42 50 M52 40 L52 50 M42 40 L47 45 L52 40" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <text x="75" y="45" font-family="'Arial', sans-serif" font-weight="bold" font-size="24" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">6. Split File</div>
+        </div>
+        
+        <!-- Logo 7: The Translator -->
+        <!-- Concept: Two speech bubbles overlapping. One code, one Markdown mark. -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Code Bubble -->
+                    <path d="M10 10 H50 V40 H30 L20 50 L20 40 H10 Z" fill="#7b42bc"/>
+                    <text x="18" y="30" font-family="monospace" font-size="16" fill="white">{ }</text>
+                    
+                    <!-- Markdown Bubble (Overlapping) -->
+                    <path d="M40 20 H80 V50 H60 L50 60 V50 H40 Z" fill="#eee" stroke="#333" stroke-width="2"/>
+                    <!-- Mini MD Mark -->
+                    <g transform="translate(50, 28)">
+                         <path d="M4 4 L4 16 M16 4 L16 16 M4 4 L10 10 L16 4" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                    
+                    <text x="95" y="45" font-family="'Verdana', sans-serif" font-size="24" fill="#333">tfplan2md</text>
+                </svg>
+            </div>
+            <div class="logo-label">7. The Translator</div>
+        </div>
+
+        <!-- Logo 8: Negative Space -->
+        <!-- Concept: A solid 'Terraform Purple' block with the Markdown M cut out of it -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Solid Block -->
+                    <rect x="15" y="10" width="50" height="40" rx="4" fill="#5c6bc0"/>
+                    
+                    <!-- Cutout M -->
+                    <path d="M25 20 L25 40 M55 20 L55 40 M25 20 L40 35 L55 20" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <text x="80" y="48" font-family="'Impact', sans-serif" font-size="28" fill="#5c6bc0" letter-spacing="1">TFPLAN2MD</text>
+                 </svg>
+            </div>
+            <div class="logo-label">8. Negative Space M</div>
+        </div>
+
+        <!-- Logo 9: The Plan Stamp -->
+        <!-- Concept: Circular emblem with md mark in center -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" stroke="#333" stroke-width="3" fill="#fff"/>
+                    <!-- Mini MD Mark in center -->
+                    <g transform="translate(35, 35)">
+                         <path d="M5 5 L5 25 M25 5 L25 25 M5 5 L15 15 L25 5" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                     <path d="M15 50 a 35 35 0 0 1 70 0" id="curve" fill="none" stroke="none"/>
+                     <text font-family="'Arial', sans-serif" font-size="10" font-weight="bold" letter-spacing="2">
+                        <textPath href="#curve" startOffset="50%" text-anchor="middle" fill="#333">TFPLAN TO MARKDOWN</textPath>
+                     </text>
+                </svg>
+            </div>
+            <div class="logo-label">9. The Approved Stamp</div>
+        </div>
+
+        <!-- Logo 10: Pixel to Vector -->
+        <!-- Concept: Blocky/Pixelated left side turning into smooth Vector Markdown Mark -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Left: Pixels representing 'M' -->
+                    <rect x="20" y="10" width="10" height="10" fill="#bbb"/>
+                    <rect x="20" y="25" width="10" height="10" fill="#bbb"/>
+                    <rect x="35" y="25" width="10" height="10" fill="#bbb"/>
+                    
+                    <!-- Arrow -->
+                    <path d="M60 35 L80 35" stroke="#999" stroke-width="2"/>
+                    
+                    <!-- Right: Smooth M -->
+                    <path d="M100 20 L100 50 M130 20 L130 50 M100 20 L115 35 L130 20" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <text x="145" y="45" font-family="'Segoe UI', sans-serif" font-weight="300" font-size="24" fill="#333">tfplan<tspan font-weight="bold">2md</tspan></text>
+                 </svg>
+            </div>
+            <div class="logo-label">10. Pixels to Smooth</div>
+        </div>
+
+    </div>
+</body>
+</html>

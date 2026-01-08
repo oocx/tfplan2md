@@ -12,6 +12,8 @@ Reference: [Specification](specification.md), [Architecture](architecture.md)
 
 **Priority:** High
 
+**Status:** ✅ Complete
+
 **Description:**
 Update the primary resource template to use the theme-adaptive border style.
 
@@ -27,6 +29,8 @@ Update the primary resource template to use the theme-adaptive border style.
 ### Task 2: Update Resource-Specific Templates
 
 **Priority:** High
+
+**Status:** ✅ Complete
 
 **Description:**
 Update all resource-specific templates that define their own `<details>` border inline to ensure consistency across all resource types.
@@ -44,6 +48,8 @@ Update all resource-specific templates that define their own `<details>` border 
 ### Task 3: Update Azure DevOps Preview Wrapper
 
 **Priority:** Medium
+
+**Status:** ✅ Complete
 
 **Description:**
 Update the HTML preview wrapper to define the `--palette-neutral-10` variable for both light and dark themes. This ensures that demo artifacts and local previews correctly simulate the Azure DevOps environment.

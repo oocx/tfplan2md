@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V14 (Transformation)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            
+            /* Diff Colors */
+            --diff-add: #2da44e;
+            --diff-del: #cf222e;
+            --diff-chg: #d29922;
+            --terminal-bg: #1e1e1e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V14</h1>
+    <h2>Focus: Left-to-Right Transformation with Detailed Diffs</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+                
+                <g id="md-mark-icon">
+                    <use href="#md-border" fill="#202020" />
+                    <use href="#md-m" fill="#202020" />
+                    <use href="#md-arrow" fill="#202020" />
+                </g>
+
+                <g id="diff-lines">
+                     <text x="0" y="20" font-family="monospace" font-weight="bold" font-size="16" fill="var(--diff-add)">+ resource</text>
+                     <text x="0" y="40" font-family="monospace" font-weight="bold" font-size="16" fill="var(--diff-chg)">~ resource</text>
+                     <text x="0" y="60" font-family="monospace" font-weight="bold" font-size="16" fill="var(--diff-del)">- resource</text>
+                </g>
+                 <g id="diff-symbols-large">
+                     <text x="0" y="20" font-family="monospace" font-weight="bold" font-size="24" fill="var(--diff-add)">+</text>
+                     <text x="15" y="20" font-family="monospace" font-weight="bold" font-size="24" fill="var(--diff-chg)">~</text>
+                     <text x="30" y="20" font-family="monospace" font-weight="bold" font-size="24" fill="var(--diff-del)">-</text>
+                </g>
+            </defs>
+        </svg>
+
+        <!-- 1. Explicit Text Transition -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="300" height="100" viewBox="0 0 300 100">
+                    <!-- Left: Terminal Source -->
+                    <rect x="0" y="10" width="120" height="80" rx="4" fill="#1e1e1e"/>
+                    <g transform="translate(10, 10)">
+                        <use href="#diff-lines" />
+                    </g>
+                    
+                    <!-- Middle: Arrow -->
+                    <path d="M135 50 H165 M155 40 L165 50 L155 60" stroke="#333" stroke-width="3" fill="none" />
+
+                    <!-- Right: Mark Output -->
+                    <g transform="translate(185, 15) scale(0.55)">
+                         <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Text Block Transition</div>
+        </div>
+
+        <!-- 2. The Arrow Container -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="280" height="100" viewBox="0 0 280 100">
+                    <!-- Container Shape -->
+                    <path d="M10 10 H200 L240 50 L200 90 H10 Z" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+                    
+                    <!-- Left Content -->
+                    <g transform="translate(30, 25)">
+                        <text x="0" y="15" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                        <text x="20" y="15" font-family="monospace" font-weight="bold" font-size="16" fill="#555">res</text>
+                        
+                        <text x="0" y="35" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                        <text x="20" y="35" font-family="monospace" font-weight="bold" font-size="16" fill="#555">res</text>
+                    </g>
+
+                    <!-- Arrow Separator -->
+                    <text x="140" y="60" font-family="Arial" font-weight="bold" font-size="30" fill="#999">→</text>
+
+                    <!-- Right Content -->
+                    <g transform="translate(170, 22) scale(0.44)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Arrow Container</div>
+        </div>
+
+        <!-- 3. Split Screen Terminal -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Window Frame -->
+                    <rect x="20" y="10" width="220" height="100" rx="6" stroke="#333" stroke-width="2" fill="white"/>
+                    <path d="M20 30 H240" stroke="#333" stroke-width="1"/> <!-- Header line -->
+                    <circle cx="30" cy="20" r="3" fill="#ff5f56" />
+                    <circle cx="40" cy="20" r="3" fill="#ffbd2e" />
+                    <circle cx="50" cy="20" r="3" fill="#27c93f" />
+
+                    <!-- Content Area Split -->
+                    <line x1="130" y1="30" x2="130" y2="110" stroke="#eee" stroke-width="2"/>
+                    
+                    <!-- Left: Inputs -->
+                    <g transform="translate(35, 40)">
+                         <text x="0" y="20" font-family="monospace" font-weight="bold" font-size="14" fill="#2da44e">+ azurerm_rg</text>
+                         <text x="0" y="40" font-family="monospace" font-weight="bold" font-size="14" fill="#cf222e">- azurerm_vm</text>
+                    </g>
+                    
+                    <!-- Right: Mark -->
+                     <g transform="translate(160, 45) scale(0.4)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Split Editor Window</div>
+        </div>
+
+        <!-- 4. The Pipe Operator -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="280" height="100" viewBox="0 0 280 100">
+                    <!-- Left Group -->
+                    <rect x="20" y="20" width="80" height="60" rx="4" fill="#1e1e1e"/>
+                    <text x="35" y="45" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                    <text x="55" y="45" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                    <text x="75" y="45" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+                    <text x="35" y="65" font-family="monospace" fill="#999" font-size="10">plan</text>
+
+                    <!-- Pipe/Arrow -->
+                    <text x="120" y="60" font-family="monospace" font-weight="bold" font-size="40" fill="#555">|></text>
+
+                    <!-- Right Group -->
+                    <g transform="translate(180, 20) scale(0.47)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. The Pipe Operator</div>
+        </div>
+
+        <!-- 5. Floating Documents -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="300" height="120" viewBox="0 0 300 120">
+                     <!-- Left Doc -->
+                     <rect x="40" y="20" width="70" height="90" fill="#fff" stroke="#999" stroke-width="2"/>
+                     <path d="M90 20 L110 40 L110 110 L40 110 Z" fill="none" /> <!-- Clip simulation -->
+                     
+                     <g transform="translate(50, 40)">
+                         <rect x="0" y="0" width="40" height="4" fill="#2da44e"/>
+                         <rect x="0" y="10" width="30" height="4" fill="#cf222e"/>
+                         <rect x="0" y="20" width="50" height="4" fill="#d29922"/>
+                         <rect x="0" y="30" width="20" height="4" fill="#2da44e"/>
+                     </g>
+
+                     <!-- Arrow -->
+                     <path d="M130 65 L170 65 M160 55 L170 65 L160 75" stroke="#333" stroke-width="2" fill="none"/>
+
+                     <!-- Right Doc (The Mark) -->
+                     <g transform="translate(190, 25) scale(0.6)">
+                        <use href="#md-mark-icon" />
+                     </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Document Conversion</div>
+        </div>
+
+        <!-- 6. Card Exchange -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="300" height="140" viewBox="0 0 300 140">
+                    <!-- Left Card (Dark) -->
+                    <g transform="translate(30,30)">
+                        <rect x="0" y="0" width="80" height="80" rx="8" fill="#1e1e1e" shadow="true"/>
+                         <text x="15" y="30" font-family="monospace" font-weight="bold" font-size="20" fill="#2da44e">+</text>
+                         <text x="15" y="50" font-family="monospace" font-weight="bold" font-size="20" fill="#cf222e">-</text>
+                         <text x="15" y="70" font-family="monospace" font-weight="bold" font-size="20" fill="#d29922">~</text>
+                         <rect x="35" y="16" width="30" height="3" fill="#333"/>
+                         <rect x="35" y="36" width="30" height="3" fill="#333"/>
+                         <rect x="35" y="56" width="30" height="3" fill="#333"/>
+                    </g>
+                    
+                    <!-- Arrow -->
+                    <circle cx="150" cy="70" r="15" fill="#eee"/>
+                    <path d="M144 70 H156 M152 66 L156 70 L152 74" stroke="#555" stroke-width="2" fill="none"/>
+                    
+                    <!-- Right Card (Mark) -->
+                    <g transform="translate(190,30)">
+                        <rect x="0" y="0" width="80" height="80" rx="8" fill="white" stroke="#ddd" stroke-width="1"/>
+                         <g transform="translate(14, 18) scale(0.4)">
+                             <use href="#md-mark-icon" />
+                         </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. Card Exchange</div>
+        </div>
+
+        <!-- 7. Syntax Highlighting -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="280" height="100" viewBox="0 0 280 100">
+                    <!-- Syntax Left -->
+                     <g transform="translate(20, 30)">
+                         <text x="0" y="0" font-family="monospace" font-weight="bold" font-size="32" fill="#2da44e">+</text>
+                         <text x="30" y="0" font-family="monospace" font-weight="bold" font-size="32" fill="#cf222e">-</text>
+                         <text x="60" y="0" font-family="monospace" font-weight="bold" font-size="32" fill="#d29922">~</text>
+                     </g>
+                     
+                     <!-- Separator -->
+                     <line x1="120" y1="20" x2="120" y2="80" stroke="#ccc" stroke-dasharray="4"/>
+                     <text x="135" y="55" font-family="monospace" fill="#999" font-size="12">to</text>
+
+                     <!-- Mark Right -->
+                     <g transform="translate(170, 20) scale(0.47)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Syntax Symbols</div>
+        </div>
+
+        <!-- 8. Overlapping Transition -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Left Background -->
+                    <rect x="30" y="20" width="120" height="80" rx="8" fill="#1e1e1e"/>
+                    <g transform="translate(45, 35)">
+                        <text x="0" y="15" font-family="monospace" font-weight="bold" font-size="16" fill="#2da44e">+ res</text>
+                        <text x="0" y="35" font-family="monospace" font-weight="bold" font-size="16" fill="#cf222e">- res</text>
+                        <text x="0" y="55" font-family="monospace" font-weight="bold" font-size="16" fill="#d29922">~ res</text>
+                    </g>
+                    
+                    <!-- Right Overlay (Shifted) -->
+                    <g transform="translate(130, 20)">
+                         <rect x="0" y="0" width="100" height="80" rx="8" fill="white" stroke="#bbb" stroke-width="1" opacity="0.95"/>
+                         <!-- Arrow to imply shift -->
+                         <path d="M-10 40 L10 40 M0 30 L10 40 L0 50" stroke="#fff" stroke-width="4" fill="none"/>
+                         <path d="M-10 40 L10 40 M0 30 L10 40 L0 50" stroke="#333" stroke-width="2" fill="none"/>
+                         
+                         <g transform="translate(24, 18) scale(0.4)">
+                             <use href="#md-mark-icon" />
+                         </g>
+                    </g>
+                 </svg>
+            </div>
+            <div class="logo-label">8. Overlapping Transition</div>
+        </div>
+        
+        <!-- 9. Process Flow -->
+        <div class="card">
+             <div class="logo-container">
+                <svg width="320" height="100" viewBox="0 0 320 100">
+                    <!-- Step 1 -->
+                    <circle cx="50" cy="50" r="30" fill="#1e1e1e"/>
+                    <g transform="translate(30, 48)">
+                        <text font-family="monospace" font-weight="bold" font-size="14" fill="#2da44e" x="0" y="0">+</text>
+                        <text font-family="monospace" font-weight="bold" font-size="14" fill="#cf222e" x="12" y="0">-</text>
+                        <text font-family="monospace" font-weight="bold" font-size="14" fill="#d29922" x="24" y="0">~</text>
+                    </g>
+
+                    <!-- Arrow -->
+                    <path d="M90 50 H130 M120 40 L130 50 L120 60" stroke="#999" stroke-width="2" />
+                    
+                    <!-- Step 2 (Process) -->
+                    <circle cx="160" cy="50" r="25" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="145" y="55" font-family="monospace" font-size="10" fill="#555">cmd</text>
+
+                    <!-- Arrow -->
+                    <path d="M190 50 H230 M220 40 L230 50 L220 60" stroke="#999" stroke-width="2" />
+
+                    <!-- Step 3 -->
+                    <g transform="translate(240, 15) scale(0.55)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                </svg>
+             </div>
+             <div class="logo-label">9. Process Flow Nodes</div>
+        </div>
+
+        <!-- 10. The Horizontal Block -->
+        <div class="card">
+            <div class="logo-container">
+                 <svg width="300" height="100" viewBox="0 0 300 100">
+                    <!-- Long Rect Container -->
+                    <rect x="20" y="20" width="260" height="60" rx="8" fill="white" stroke="#ccc" stroke-width="1"/>
+                    
+                    <!-- Divider -->
+                    <line x1="150" y1="20" x2="150" y2="80" stroke="#eee" stroke-width="2"/>
+                    
+                    <!-- Left Side -->
+                    <g transform="translate(40, 32)">
+                        <text x="0" y="15" font-family="monospace" font-weight="bold" font-size="16" fill="#2da44e">+ resource</text>
+                        <text x="0" y="32" font-family="monospace" font-weight="bold" font-size="16" fill="#cf222e">- resource</text>
+                    </g>
+                    
+                    <!-- Arrow in Center -->
+                    <circle cx="150" cy="50" r="12" fill="white" stroke="#ccc"/>
+                    <text x="143" y="54" font-family="Arial" font-weight="bold" font-size="14" fill="#555">&gt;</text>
+                    
+                    <!-- Right Side -->
+                     <g transform="translate(180, 20) scale(0.33) translate(0, 15)">
+                        <use href="#md-mark-icon" />
+                    </g>
+                 </svg>
+            </div>
+            <div class="logo-label">10. Horizontal Block Split</div>
+        </div>
+
+
+    </div>
+</body>
+</html>

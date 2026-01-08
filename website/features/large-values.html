@@ -56,16 +56,34 @@
                     Configuration files, JSON policies, and user data scripts can be huge. tfplan2md automatically detects large values and moves them to a dedicated section with collapsible details, keeping the main report clean.
                 </p>
                 
-                <div class="feature-example">
-                    <h3 class="example-title">Example Output</h3>
-                    <div class="code-block">
-                        <pre><code>### 🔄 azurerm_key_vault_secret.audit_policy
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.security.azurerm_key_vault_secret.audit_policy will be updated in-place
+~ resource "azurerm_key_vault_secret" "audit_policy" {
+    ~ value        = "line1: allow
+line2: log old activity
+line3: end" -> "line1: allow
+line2: log critical activity
+line3: end"
+      name         = "audit-policy"
+      # (2 unchanged attributes hidden)
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">Multi-line values embedded inline—hard to spot the actual change.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### 🔄 module.security.azurerm_key_vault_secret.audit_policy
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 | value | *(see below)* | *(see below)* |
 
-Large values: value (4 lines, 2 changed)
+Large values: value (3 lines, 1 changed)
 
 ##### **value:**
 
@@ -75,6 +93,8 @@ line1: allow
 + line2: log critical activity
 line3: end
 ```</code></pre>
+                        </div>
+                        <p class="comparison-note">Line-by-line diff in a separate section—changes are crystal clear.</p>
                     </div>
                 </div>
 

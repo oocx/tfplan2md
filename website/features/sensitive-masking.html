@@ -56,6 +56,40 @@
                     Terraform marks certain values as sensitive. tfplan2md respects these markings and ensures they are never displayed in the generated markdown report, replacing them with <code>(sensitive value)</code>.
                 </p>
                 
+                <div class="feature-comparison" style="margin-bottom: 2rem;">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code># module.security.azurerm_key_vault_secret.db_password will be created
++ resource "azurerm_key_vault_secret" "db_password" {
+    + content_type = "password"
+    + id           = (known after apply)
+    + key_vault_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
+    + name         = "db-password"
+    ~ value = (sensitive value)
+    # At least one attribute in this block is (or was) sensitive,
+    # so its contents will not be displayed.
+  }</code></pre>
+                        </div>
+                        <p class="comparison-note">Raw Terraform output masks sensitive values but lacks formatting.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block">
+                            <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
+
+| Attribute | Value |
+| ----------- | ------- |
+| content_type | `password` |
+| key_vault_id | Key Vault `kv-tfplan2md` ... |
+| name | `🆔 db-password` |
+| value | `(sensitive)` |</code></pre>
+                        </div>
+                        <p class="comparison-note">Clean table format with sensitive values masked by default.</p>
+                    </div>
+                </div>
+                
                 <div class="feature-comparison">
                     <div class="comparison-column">
                         <h3 class="comparison-title">Default Behavior</h3>

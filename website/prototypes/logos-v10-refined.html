@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V10 (Refined)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --tf-color: #5c4ee5;
+            --md-color: #202020;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .concept-note {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V10</h1>
+    <h2>10 More Variations: Splits, Bubbles, Cards, Pipes & Documents</h2>
+
+    <div class="grid">
+        <!-- DEFINITIONS -->
+        <svg width="0" height="0">
+            <defs>
+                <path id="md-m" d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" />
+                <path id="md-arrow" d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" />
+                <path id="md-border" d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill-rule="evenodd" clip-rule="evenodd"/>
+            </defs>
+        </svg>
+
+        <!-- 1. Horizontal Split with Jagged Edge -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="180" height="140" viewBox="0 0 180 140">
+                    <defs>
+                        <clipPath id="jagged-left">
+                            <path d="M0 0 L80 0 L90 20 L80 40 L90 60 L80 80 L90 100 L80 120 L90 140 L0 140 Z"/>
+                        </clipPath>
+                        <clipPath id="jagged-right">
+                            <path d="M90 0 L180 0 L180 140 L90 140 L80 120 L90 100 L80 80 L90 60 L80 40 L90 20 Z"/>
+                        </clipPath>
+                    </defs>
+                    
+                    <!-- Left: Code -->
+                    <g clip-path="url(#jagged-left)">
+                        <rect x="0" y="0" width="180" height="140" fill="#5c4ee5"/>
+                        <line x1="10" y1="30" x2="60" y2="30" stroke="white" stroke-width="4" opacity="0.7"/>
+                        <line x1="10" y1="50" x2="50" y2="50" stroke="white" stroke-width="4" opacity="0.7"/>
+                        <line x1="10" y1="70" x2="65" y2="70" stroke="white" stroke-width="4" opacity="0.7"/>
+                        <line x1="10" y1="90" x2="45" y2="90" stroke="white" stroke-width="4" opacity="0.7"/>
+                        <line x1="10" y1="110" x2="55" y2="110" stroke="white" stroke-width="4" opacity="0.7"/>
+                    </g>
+                    
+                    <!-- Right: Mark -->
+                    <g clip-path="url(#jagged-right)">
+                        <rect x="0" y="0" width="180" height="140" fill="white"/>
+                        <g transform="translate(95, 30) scale(0.4)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Torn Edge</div>
+            <div class="concept-note">Jagged transition between worlds</div>
+        </div>
+
+        <!-- 2. Bubble Chain -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="260" height="120" viewBox="0 0 260 120">
+                    <!-- Bubble 1: Raw -->
+                    <circle cx="40" cy="60" r="35" fill="#5c4ee5"/>
+                    <text x="25" y="65" fill="white" font-family="monospace" font-size="14">{..}</text>
+                    
+                    <!-- Connector -->
+                    <line x1="75" y1="60" x2="95" y2="60" stroke="#ccc" stroke-width="2"/>
+                    
+                    <!-- Bubble 2: Processing -->
+                    <circle cx="130" cy="60" r="30" fill="#7a6ff0"/>
+                    <text x="118" y="65" fill="white" font-family="monospace" font-size="12">⟳</text>
+                    
+                    <!-- Connector -->
+                    <line x1="160" y1="60" x2="180" y2="60" stroke="#ccc" stroke-width="2"/>
+                    
+                    <!-- Bubble 3: Mark -->
+                    <circle cx="220" cy="60" r="35" fill="white" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(195, 42) scale(0.24)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Process Chain</div>
+            <div class="concept-note">Stage-by-stage transformation</div>
+        </div>
+
+        <!-- 3. Stacked Cards with Offset -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="200" height="140" viewBox="0 0 200 140">
+                    <!-- Back Card (Code) - offset left -->
+                    <g transform="translate(20, 30) rotate(-8)">
+                        <rect x="0" y="0" width="100" height="70" rx="6" fill="#5c4ee5"/>
+                        <line x1="12" y1="18" x2="75" y2="18" stroke="white" stroke-width="3" opacity="0.6"/>
+                        <line x1="12" y1="30" x2="60" y2="30" stroke="white" stroke-width="3" opacity="0.6"/>
+                        <line x1="12" y1="42" x2="85" y2="42" stroke="white" stroke-width="3" opacity="0.6"/>
+                        <line x1="12" y1="54" x2="50" y2="54" stroke="white" stroke-width="3" opacity="0.6"/>
+                    </g>
+                    
+                    <!-- Front Card (Mark) - offset right -->
+                    <g transform="translate(80, 35) rotate(5)">
+                        <rect x="0" y="0" width="100" height="70" rx="6" fill="white" stroke="#ccc" stroke-width="1"/>
+                        <g transform="translate(20, 12) scale(0.4)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Card Stack</div>
+            <div class="concept-note">One in front of the other</div>
+        </div>
+
+        <!-- 4. Arrow Pipe (thick) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="100" viewBox="0 0 240 100">
+                    <!-- Code Box -->
+                    <rect x="10" y="20" width="70" height="60" rx="4" fill="#5c4ee5"/>
+                    <line x1="20" y1="35" x2="70" y2="35" stroke="white" stroke-width="3" opacity="0.7"/>
+                    <line x1="20" y1="50" x2="55" y2="50" stroke="white" stroke-width="3" opacity="0.7"/>
+                    <line x1="20" y1="65" x2="65" y2="65" stroke="white" stroke-width="3" opacity="0.7"/>
+                    
+                    <!-- Thick Pipe Arrow -->
+                    <path d="M85 35 H150 L165 50 L150 65 H85 V35 Z" fill="#ddd"/>
+                    
+                    <!-- Mark Box -->
+                    <g transform="translate(175, 20) scale(0.45)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. Bold Pipeline</div>
+            <div class="concept-note">Strong directional flow</div>
+        </div>
+
+        <!-- 5. Document with Inset Mark -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="140" height="160" viewBox="0 0 140 160">
+                    <!-- Document Outline -->
+                    <rect x="20" y="10" width="100" height="140" rx="4" fill="white" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Code Header -->
+                    <rect x="30" y="20" width="80" height="35" fill="#5c4ee5" rx="2"/>
+                    <line x1="38" y1="32" x2="95" y2="32" stroke="white" stroke-width="2" opacity="0.7"/>
+                    <line x1="38" y1="42" x2="80" y2="42" stroke="white" stroke-width="2" opacity="0.7"/>
+                    
+                    <!-- Mark Body -->
+                    <g transform="translate(45, 70) scale(0.35)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Report Format</div>
+            <div class="concept-note">Code header, Mark body</div>
+        </div>
+
+        <!-- 6. Diagonal Split (Circular) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="150" height="150" viewBox="0 0 150 150">
+                    <defs>
+                        <clipPath id="diag-top">
+                            <path d="M0 0 L150 0 L0 150 Z"/>
+                        </clipPath>
+                        <clipPath id="diag-bot">
+                            <path d="M150 0 L150 150 L0 150 Z"/>
+                        </clipPath>
+                    </defs>
+                    
+                    <!-- Circle Base -->
+                    <circle cx="75" cy="75" r="65" fill="none" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Top Left: Code -->
+                    <g clip-path="url(#diag-top)">
+                        <circle cx="75" cy="75" r="65" fill="#5c4ee5"/>
+                        <text x="25" y="55" fill="white" font-family="monospace" font-size="18">&lt;/&gt;</text>
+                    </g>
+                    
+                    <!-- Bottom Right: Mark -->
+                    <g clip-path="url(#diag-bot)">
+                        <circle cx="75" cy="75" r="65" fill="white"/>
+                        <g transform="translate(60, 75) scale(0.35)">
+                            <use href="#md-border" fill="#202020" />
+                            <use href="#md-m" fill="#202020" />
+                            <use href="#md-arrow" fill="#202020" />
+                        </g>
+                    </g>
+                    
+                    <!-- Diagonal Divider -->
+                    <line x1="25" y1="125" x2="125" y2="25" stroke="#333" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="logo-label">6. Circle Split</div>
+            <div class="concept-note">Round badge variant</div>
+        </div>
+
+        <!-- 7. Thought Bubble Response -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="240" height="130" viewBox="0 0 240 130">
+                    <!-- Code Thought Bubble -->
+                    <ellipse cx="60" cy="50" rx="50" ry="40" fill="#5c4ee5"/>
+                    <circle cx="30" cy="95" r="8" fill="#5c4ee5"/>
+                    <circle cx="15" cy="110" r="5" fill="#5c4ee5"/>
+                    <text x="30" y="55" fill="white" font-family="monospace" font-size="16">plan</text>
+                    
+                    <!-- Mark Response Bubble -->
+                    <ellipse cx="180" cy="60" rx="50" ry="40" fill="white" stroke="#333" stroke-width="2"/>
+                    <circle cx="210" cy="105" r="8" fill="white" stroke="#333" stroke-width="2"/>
+                    <circle cx="225" cy="118" r="5" fill="white" stroke="#333" stroke-width="2"/>
+                    <g transform="translate(152, 40) scale(0.27)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. Thought Exchange</div>
+            <div class="concept-note">Input thinking, output clarity</div>
+        </div>
+
+        <!-- 8. Minimalist Arrows -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="100" viewBox="0 0 220 100">
+                    <!-- Code Symbol -->
+                    <rect x="20" y="25" width="50" height="50" fill="#5c4ee5" rx="4"/>
+                    <text x="30" y="58" fill="white" font-family="monospace" font-weight="bold" font-size="20">{}</text>
+                    
+                    <!-- Three arrows -->
+                    <path d="M80 50 L100 50" stroke="#5c4ee5" stroke-width="3"/>
+                    <path d="M105 50 L125 50" stroke="#7a6ff0" stroke-width="3"/>
+                    <path d="M130 50 L150 50" stroke="#999" stroke-width="3" marker-end="url(#arrow-end)"/>
+                    <defs>
+                        <marker id="arrow-end" markerWidth="8" markerHeight="6" refX="4" refY="3" orient="auto">
+                            <path d="M0 0 L4 3 L0 6" fill="none" stroke="#999" stroke-width="1.5"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- Mark Symbol -->
+                    <g transform="translate(160, 25) scale(0.38)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Arrow Trio</div>
+            <div class="concept-note">Minimal flow indicator</div>
+        </div>
+
+        <!-- 9. Nested Frames -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="160" height="160" viewBox="0 0 160 160">
+                    <!-- Outer Frame (Code) -->
+                    <rect x="10" y="10" width="140" height="140" rx="8" fill="none" stroke="#5c4ee5" stroke-width="8"/>
+                    
+                    <!-- Inner content lines (representing code) -->
+                    <line x1="25" y1="25" x2="65" y2="25" stroke="#5c4ee5" stroke-width="3" opacity="0.4"/>
+                    <line x1="25" y1="40" x2="50" y2="40" stroke="#5c4ee5" stroke-width="3" opacity="0.4"/>
+                    
+                    <!-- Inner Frame (Mark) -->
+                    <g transform="translate(45, 55) scale(0.45)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Framed Output</div>
+            <div class="concept-note">Code context, Mark center</div>
+        </div>
+
+        <!-- 10. Book/Magazine Spread -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="220" height="130" viewBox="0 0 220 130">
+                    <!-- Book Spine -->
+                    <rect x="105" y="15" width="10" height="100" fill="#333"/>
+                    
+                    <!-- Left Page (Code) -->
+                    <path d="M10 15 Q105 10 105 15 V115 Q105 120 10 115 Z" fill="#5c4ee5"/>
+                    <line x1="20" y1="35" x2="90" y2="35" stroke="white" stroke-width="3" opacity="0.6"/>
+                    <line x1="20" y1="50" x2="75" y2="50" stroke="white" stroke-width="3" opacity="0.6"/>
+                    <line x1="20" y1="65" x2="85" y2="65" stroke="white" stroke-width="3" opacity="0.6"/>
+                    <line x1="20" y1="80" x2="70" y2="80" stroke="white" stroke-width="3" opacity="0.6"/>
+                    
+                    <!-- Right Page (Mark) -->
+                    <path d="M210 15 Q115 10 115 15 V115 Q115 120 210 115 Z" fill="white" stroke="#ccc"/>
+                    <g transform="translate(130, 35) scale(0.4)">
+                        <use href="#md-border" fill="#202020" />
+                        <use href="#md-m" fill="#202020" />
+                        <use href="#md-arrow" fill="#202020" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. Open Book</div>
+            <div class="concept-note">Before & After pages</div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -14,6 +14,22 @@ This document captures specific design decisions made during the website develop
 - Previous banana-shaped design was rejected
 - Current: CSS-only sun/moon icons
 
+## Logo Design
+
+### Icon Geometry
+- **Concept**: Start with the "Diff Card" (dark background, `+ - ~` symbols) and transition to "Markdown" (white card, stacked on top).
+- **Style**: Overlapping cards, symbolizing transformation.
+- **Diff Card**: Dark Grey (`#1e1e1e`) with standard syntax colors (`+` green, `-` red, `~` yellow).
+- **Markdown Card**: White card overlapping the Diff Card.
+- **Alignment**: "Compact Overlap" (X=70 offset) creates a tight, unified symbol.
+
+### Logo Text (Logotype)
+- **Font**: Inter ExtraBold (`font-weight: 800`).
+- **Structure**: Two-Tone color scheme.
+  - `tfplan`: Dark Grey / Theme Text Color (anchors the source).
+  - `2md`: Brand Purple `#844fba` (highlights the destination/value).
+- **Layout**: Text placed to the right of the icon, vertically centered.
+
 ## Visual Hierarchy
 
 ### Section Separation

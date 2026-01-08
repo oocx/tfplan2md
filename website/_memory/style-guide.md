@@ -55,6 +55,18 @@ This document captures **design and style decisions** for the tfplan2md website.
 | `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Card hover |
 | `--shadow-lg` | `0 10px 20px rgba(0,0,0,0.15)` | Modal/overlay |
 | `--shadow-xl` | `0 20px 30px rgba(0,0,0,0.2)` | Large elements |
+| `--color-mark-purple` | `#844fba` | Brand color (Logo `2md` text) |
+| `--color-diff-add` | `#2da44e` | Diff `+` green |
+| `--color-diff-del` | `#cf222e` | Diff `-` red |
+| `--color-diff-chg` | `#d29922` | Diff `~` yellow |
+| `--color-diff-bg` | `#1e1e1e` | Diff Code Block Background |
+
+## Logo Design
+
+- **Primary Logo**: Icon + Text (Two-Tone).
+- **Font**: `Inter` ExtraBold (Weight 800).
+- **Colors**: `tfplan` (Text Color), `2md` (Brand Purple).
+- **Icon**: Stacked Diff Card (Dark) + Markdown Card (White/Purple).
 
 ## Layout
 

@@ -42,7 +42,7 @@ The following screenshots are needed for the website (based on feature page requ
 | 0b2-dark | `firewall-example-lightbox-dark@2x.png` | Homepage Lightbox (Dark 2x) | Detailed firewall rules view | ✅ Created (2400×1600) |
 | 1 | `semantic-diff-example.png` | Semantic Diffs | Before/After table showing inline diff | ✅ Created (316×121) |
 | 2 | `firewall-rules-table.png` | Firewall Rule Interpretation | Firewall rule collection rendered as table | ⚠️ Needs manual crop |
-| 3 | `nsg-rules-table.png` | NSG Rule Interpretation | NSG rules rendered as table | ⚠️ Needs manual crop |
+| 3 | `nsg-rules-table.png` | NSG Rule Interpretation | NSG rules rendered as table | ℹ️ Use nsg-example-crop.png (580×400) |
 | 4 | `role-assignment-mapping.png` | Role Assignment Mapping | GUID-to-name resolution example | ⚠️ Needs manual crop |
 | 5 | `large-value-diff.png` | Large Value Formatting | JSON policy diff in collapsible section | ⚠️ Needs manual crop |
 | 6 | `plan-summary.png` | Plan Summary | Summary table with resource type breakdown | ✅ Created (636×189) |
@@ -60,6 +60,7 @@ Each screenshot must have descriptive alt text for accessibility (WCAG 2.1 AA co
 | `firewall-example-crop-dark.png` | Terraform plan showing Azure Firewall rule changes with semantic diffs highlighting source addresses and destination ports (dark theme) |
 | `firewall-example-lightbox.png` | Detailed view of Azure Firewall rule collection changes showing before/after values for source addresses, destination addresses, and ports in a table format |
 | `firewall-example-lightbox-dark.png` | Detailed view of Azure Firewall rule collection changes showing before/after values for source addresses, destination addresses, and ports in a table format (dark theme) |
+| `nsg-example-crop.png` | Network Security Group rules showing security rule changes with priority, direction, access, and port information |
 | `semantic-diff-example.png` | Storage account resource showing before and after values side-by-side, with account replication type changing from LRS to GRS |
 | `firewall-rules-table.png` | Azure Firewall rule collection rendered as a table showing rule names, protocols, source addresses, destination addresses, and ports |
 | `nsg-rules-table.png` | Network Security Group rules displayed in a table with priority, direction, access, protocol, source, destination, and port information |

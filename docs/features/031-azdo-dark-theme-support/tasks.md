@@ -68,6 +68,8 @@ Update the HTML preview wrapper to define the `--palette-neutral-10` variable fo
 
 **Priority:** High
 
+**Status:** ✅ Complete
+
 **Description:**
 Run existing unit tests and verify the generated output contains the new border style.
 

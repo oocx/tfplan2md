@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Refinements V22</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&family=Roboto+Mono:wght@400;700&family=Ubuntu:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --brand-purple: #844fba;
+            --brand-dark: #343a40;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .logo-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 0.5rem;
+            overflow: visible;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #eee;
+            width: 100%;
+            padding-top: 10px;
+        }
+        .logo-details {
+            font-size: 0.75rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Refinements V22</h1>
+    <h2>Focus: Two-Tone "tfplan" + "2md" (Purple) Variations</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <!-- Reuse Selected Icon: V20 #5 -->
+                <g id="md-mark-geometry">
+                    <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/>
+                    <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="currentColor"/>
+                    <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="currentColor"/>
+                </g>
+                <g id="diff-card-geometry">
+                    <rect width="208" height="128" rx="15" fill="#1e1e1e"/>
+                    <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="#2da44e">+</text>
+                    <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="#cf222e">-</text>
+                    <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="#d29922">~</text>
+                    
+                    <rect x="50" y="24" width="80" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="56" width="60" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="88" width="70" height="10" rx="3" fill="#333" />
+                </g>
+                <filter id="card-shadow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="-2" dy="2" stdDeviation="4" flood-opacity="0.3"/>
+                </filter>
+                <g id="logo-icon-final">
+                    <g transform="translate(0, 0)"><use href="#diff-card-geometry" /></g>
+                    <!-- X=70, Y=20 Compact Overlap -->
+                    <g transform="translate(70, 20)">
+                        <rect width="208" height="128" rx="15" fill="white" filter="url(#card-shadow)"/>
+                        <g color="#844fba"><use href="#md-mark-geometry" /></g>
+                    </g>
+                </g>
+            </defs>
+        </svg>
+
+        <!-- 1. The Original Choice (Reference) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="800" font-size="80">
+                        <tspan fill="#343a40">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">1. Original Reference (Inter ExtraBold)</div>
+            <div class="logo-details">V21 Concept #3 (Base)</div>
+        </div>
+
+        <!-- 2. Extra Heavy "tfplan" -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-size="80">
+                        <tspan font-weight="900" fill="#212529">tfplan</tspan><tspan font-weight="500" fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">2. Heavy Base / Medium Tail</div>
+            <div class="logo-details">Emphasis on the tool name start</div>
+        </div>
+
+        <!-- 3. Heavy "2md" (Emphasis on Transformation) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-size="80">
+                        <tspan font-weight="500" fill="#495057">tfplan</tspan><tspan font-weight="900" fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">3. Medium Base / Heavy Tail</div>
+            <div class="logo-details">Emphasis on the destination format</div>
+        </div>
+
+        <!-- 4. JetBrains Mono (Developer Focused) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="105" font-family="'JetBrains Mono', monospace" font-weight="800" font-size="70" letter-spacing="-2">
+                        <tspan fill="#333">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">4. JetBrains Mono Two-Tone</div>
+            <div class="logo-details">Code-native aesthetic</div>
+        </div>
+
+        <!-- 5. Ubuntu Font (Friendly/Modern) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="105" font-family="'Ubuntu', sans-serif" font-weight="700" font-size="80">
+                        <tspan fill="#343a40">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">5. Ubuntu Font</div>
+            <div class="logo-details">Rounder, friendlier geometry</div>
+        </div>
+
+        <!-- 6. Tight Tracking (Compact Lockup) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="800" font-size="85" letter-spacing="-3">
+                        <tspan fill="#212529">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">6. Tight Tracking</div>
+            <div class="logo-details">More cohesive wordmark</div>
+        </div>
+
+        <!-- 7. Mixed Color Weights (Grey to Vivid) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="700" font-size="80">
+                        <tspan fill="#6c757d">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">7. Soft Base / Vivid Tail</div>
+            <div class="logo-details">Dark grey 'tfplan' softened to #6c757d</div>
+        </div>
+
+        <!-- 8. Uppercase Variations -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="105" font-family="'Inter', sans-serif" font-weight="800" font-size="65" letter-spacing="1">
+                        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
+                        <tspan fill="#343a40">TFPLAN</tspan><tspan fill="#844fba">2MD</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">8. Uppercase Caps</div>
+            <div class="logo-details">Strong, tool-like presence</div>
+        </div>
+
+        <!-- 9. Font Mix (Sans + Mono) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="105" font-size="75">
+                         <tspan font-family="'Inter', sans-serif" font-weight="800" fill="#343a40">tfplan</tspan><tspan font-family="'JetBrains Mono', monospace" font-weight="800" fill="#844fba" font-size="70">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">9. Font Mix</div>
+            <div class="logo-details">Sans for 'tfplan', Mono for '2md'</div>
+        </div>
+
+        <!-- 10. Gradient Tail -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="800" height="160" viewBox="0 0 800 160">
+                    <defs>
+                         <linearGradient id="text-grad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#844fba"/>
+                            <stop offset="100%" stop-color="#b174f7"/>
+                        </linearGradient>
+                    </defs>
+                    <use href="#logo-icon-final" transform="translate(0, 5) scale(0.9)"/>
+                    <text x="290" y="110" font-family="'Inter', sans-serif" font-weight="800" font-size="80">
+                        <tspan fill="#343a40">tfplan</tspan><tspan fill="url(#text-grad)">2md</tspan>
+                    </text>
+                </svg>
+            </div>
+            <div class="logo-label">10. Gradient Tail</div>
+            <div class="logo-details">Subtle gradient on '2md'</div>
+        </div>
+
+    </div>
+</body>
+</html>

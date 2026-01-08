@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Logo Concepts V16 (Seamless)</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            
+            /* Diff Colors */
+            --diff-add: #2da44e;
+            --diff-del: #cf222e;
+            --diff-chg: #d29922;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        h2 { text-align: center; margin-bottom: 2rem; color: #666; font-weight: normal; font-size: 1.1rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eaecf0;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .logo-container {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .logo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>tfplan2md Logo Concepts V16</h1>
+    <h2>Seamless Integration: Equal Size, No whitespace, Optional Overlap</h2>
+
+    <div class="grid">
+        <svg width="0" height="0">
+            <defs>
+                <!-- Official Mark Geometry (208x128) -->
+                <g id="md-mark-geometry">
+                    <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="#202020" fill-rule="evenodd" clip-rule="evenodd"/>
+                    <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="#202020"/>
+                    <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="#202020"/>
+                </g>
+                
+                <!-- Diff Card Geometry (Matches Mark: 208x128) -->
+                <g id="diff-card-geometry">
+                    <rect width="208" height="128" rx="15" fill="#1e1e1e"/>
+                    <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-add)">+</text>
+                    <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-del)">-</text>
+                    <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-chg)">~</text>
+                    
+                    <rect x="50" y="24" width="80" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="56" width="60" height="10" rx="3" fill="#333" />
+                    <rect x="50" y="88" width="70" height="10" rx="3" fill="#333" />
+                </g>
+            </defs>
+        </svg>
+
+        <!-- 1. The Perfect Split -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="420" height="130" viewBox="0 0 416 128">
+                    <!-- Left: Diff -->
+                    <g>
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    <!-- Right: Mark (Transform to sit exactly next to it) -->
+                    <g transform="translate(208, 0)">
+                        <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">1. Perfect Split (Edge-to-Edge)</div>
+        </div>
+
+        <!-- 2. Simple Overlap -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="400" height="130" viewBox="0 0 380 128">
+                    <!-- Left: Diff (Slightly reduced width visual not actual) -->
+                    <g>
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    <!-- Right: Mark overlapping by 30px -->
+                    <g transform="translate(178, 0)">
+                        <rect x="5" y="5" width="200" height="120" fill="white" rx="10"/> <!-- Background for separation -->
+                        <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">2. Simple Overlap</div>
+        </div>
+        
+        <!-- 3. Shadowed Stack -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="400" height="130" viewBox="0 0 380 128">
+                    <g>
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    <!-- Right: Mark with drop shadow -->
+                    <g transform="translate(160, 0)">
+                        <filter id="shadow1">
+                            <feDropShadow dx="-4" dy="0" stdDeviation="4" flood-opacity="0.2"/>
+                        </filter>
+                        <rect x="10" y="10" width="188" height="108" fill="white" filter="url(#shadow1)"/>
+                        <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">3. Shadowed Stack</div>
+        </div>
+
+        <!-- 4. The Fold (Angled) -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="420" height="140" viewBox="0 0 400 128">
+                     <!-- Left Card (Tilted Back) -->
+                    <g transform="skewY(-5)">
+                       <rect width="200" height="128" rx="0" fill="#1e1e1e"/>
+                       <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-add)">+</text>
+                       <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-del)">-</text>
+                       <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-chg)">~</text>
+                    </g>
+                    
+                    <!-- Right Card (Tilted Forward) -->
+                    <g transform="translate(200, 0) skewY(5)">
+                        <rect width="200" height="128" fill="#fff" />
+                        <use href="#md-mark-geometry" transform="translate(0,0) scale(0.96) translate(4, 3)"/>
+                        <!-- Center seam shadow -->
+                        <rect x="0" y="0" width="10" height="128" fill="black" opacity="0.1"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">4. The Fold</div>
+        </div>
+
+        <!-- 5. Diagonal Slash -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="420" height="130" viewBox="0 0 416 128">
+                    <!-- Clip paths -->
+                    <defs>
+                        <clipPath id="slash-left">
+                            <path d="M0 0 H220 L180 128 H0 Z" />
+                        </clipPath>
+                    </defs>
+                    
+                    <!-- Left -->
+                    <g clip-path="url(#slash-left)">
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    
+                    <!-- Right -->
+                    <g transform="translate(190, 0)">
+                        <!-- inverse slash for shape -->
+                         <path d="M30 0 H226 V128 H-10 L30 0Z" fill="white"/>
+                         <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">5. Diagonal Slash</div>
+        </div>
+
+        <!-- 6. Connected Spine -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="430" height="130" viewBox="0 0 426 128">
+                    <g>
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    
+                    <!-- The Spine -->
+                    <rect x="208" y="10" width="10" height="108" fill="#999" rx="2"/>
+                    
+                    <g transform="translate(218, 0)">
+                        <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">6. Connected Spine</div>
+        </div>
+
+        <!-- 7. The Bracket -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="430" height="130" viewBox="0 0 426 128">
+                    <g>
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    
+                    <!-- Connector: Curly Brace -->
+                    <path d="M208 34 Q218 34 218 44 V54 Q218 64 228 64 Q218 64 218 74 V84 Q218 94 208 94" stroke="#555" stroke-width="3" fill="none"/>
+                    
+                    <g transform="translate(228, 0)">
+                        <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">7. The Bracket Connector</div>
+        </div>
+
+        <!-- 8. Gradient Merge -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="420" height="130" viewBox="0 0 416 128">
+                    <defs>
+                        <linearGradient id="merge-grad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0.45" stop-color="#1e1e1e"/>
+                            <stop offset="0.55" stop-color="white"/>
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Shared Background -->
+                    <rect x="0" y="0" width="416" height="128" rx="15" fill="url(#merge-grad)" stroke="#eee"/>
+                    
+                    <!-- Content Left -->
+                    <g transform="translate(0,0)">
+                        <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-add)">+</text>
+                        <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-del)">-</text>
+                        <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-chg)">~</text>
+                    </g>
+
+                    <!-- Content Right -->
+                    <g transform="translate(208, 0)">
+                        <path d="M15 10 C12.2386 10 10 12.2386 10 15 V113 C10 115.761 12.2386 118 15 118 H193 C195.761 118 198 115.761 198 113 V15 C198 12.2386 195.761 10 193 10 H15 Z M0 15 C0 6.71573 6.71573 0 15 0 H193 C201.284 0 208 6.71573 208 15 V113 C208 121.284 201.284 128 193 128 H15 C6.71573 128 0 121.284 0 113 V15 Z" fill="#202020" fill-rule="evenodd" clip-rule="evenodd"/>
+                        <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="#202020"/>
+                        <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="#202020"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">8. Gradient Merge</div>
+        </div>
+
+        <!-- 9. Puzzle Tab -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="420" height="130" viewBox="0 0 416 128">
+                    <!-- Left with Tab -->
+                    <path d="M0 15 C0 6.7 6.7 0 15 0 H208 V44 H228 V84 H208 V128 H15 C6.7 128 0 121.3 0 113 Z" fill="#1e1e1e"/>
+                    <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-add)">+</text>
+                    <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-del)">-</text>
+                    <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="var(--diff-chg)">~</text>
+
+                    <!-- Right with Notch -->
+                    <g transform="translate(208, 0)">
+                        <!-- Mark geometry normally, masked? or just placed -->
+                        <use href="#md-mark-geometry" />
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">9. Puzzle Tab</div>
+        </div>
+
+        <!-- 10. Arrow Overlap -->
+        <div class="card">
+            <div class="logo-container">
+                <svg width="420" height="130" viewBox="0 0 400 128">
+                    <g>
+                       <use href="#diff-card-geometry" />
+                    </g>
+                    <!-- Overlapping Arrow Shape -->
+                    <g transform="translate(180, 0)">
+                        <path d="M0 0 H200 C208 0 215 7 215 15 V113 C215 121 208 128 200 128 H0 L30 64 L0 0 Z" fill="white" stroke="#202020" stroke-width="2"/>
+                        <g transform="translate(20, 0)">
+                             <!-- Simplified mark content inside arrow -->
+                            <path d="M30 98 V30 H50 L70 55 L90 30 H110 V98 H90 V59 L70 84 L50 59 V98 H30 Z" fill="#202020"/>
+                            <path d="M155 98 L125 65 H145 V30 H165 V65 H185 Z" fill="#202020"/>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="logo-label">10. Arrow Overlap</div>
+        </div>
+
+    </div>
+</body>
+</html>

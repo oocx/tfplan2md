@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.24"></a>
+## [1.0.0-alpha.24](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.23...v1.0.0-alpha.24) (2026-01-09)
+
+### 🐛 Bug Fixes
+
+* use non-breaking spaces between icons and labels ([362add0](https://github.com/oocx/tfplan2md/commit/362add05636c6624e6aa6ad58a48383e7b0d3f26))
+
+### 📚 Documentation
+
+* add test plan and UAT report for [#033](https://github.com/oocx/tfplan2md/issues/033) ([882ef83](https://github.com/oocx/tfplan2md/commit/882ef83af17fe255ad0fbf49d224949d6c1a087a))
+
 <a name="1.0.0-alpha.23"></a>
 ## [1.0.0-alpha.23](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.22...v1.0.0-alpha.23) (2026-01-08)
 

@@ -49,14 +49,14 @@ Resource changes are displayed in collapsible `<details>` sections with rich sum
 
 #### Components
 
-- **Action Icon**: Visual indicator (➕, 🔄, ♻️, ❌)
+- **Action Icon**: Visual indicator (➕, 🔄, ♻️, ❌) followed by a non-breaking space before the resource type
 - **Resource Type**: Plain text (e.g., `azurerm_virtual_network`)
 - **Resource Name**: Bold + code-formatted (e.g., `<b><code>hub</code></b>`)
   - For resources in modules, only the **local name** is shown (e.g., `rg_reader` not `module.security.azurerm_role_assignment.rg_reader`)
 - **Context Info**: Code-formatted values separated by plain text connectors
   - Resource identifiers (name, ID)
   - Key attributes (location, CIDR blocks)
-  - Changed attribute summary for updates: `<count> 🔧 <attributes>`
+  - Changed attribute summary for updates: `<count> 🔧 <attributes>` (non-breaking space between wrench icon and attributes)
 
 #### HTML Code Tags in Summaries
 
@@ -85,6 +85,8 @@ Azure DevOps does not reliably render markdown backticks inside HTML `<summary>`
 ```html
 <summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-demo</code></summary>
 ```
+
+**Important**: In all these examples, the space between each action icon (➕, 🔄, ❌) and the following text, as well as the space between the 🔧 icon and attribute names, are non-breaking spaces (U+00A0), not regular spaces. This prevents icons from wrapping to a different line than their labels.
 
 Note: The resource name shows only `rg_reader` (local name), not the full module path.
 
@@ -163,12 +165,13 @@ This structure:
 - Modules are separated by horizontal rules (`---`) for clear visual breaks.
 - The root module is labeled as `root` (plain text).
 - Module paths are code-formatted if they are not "root".
-- Module headers use the 📦 icon before the label.
+- Module headers use the 📦 icon before the label with a non-breaking space.
 
 **Root Module:**
 ```markdown
 ### 📦 Module: root
 ```
+Note: The space between 📦 and "Module:" is a non-breaking space (U+00A0).
 
 **Named Module:**
 ```markdown
@@ -176,6 +179,7 @@ This structure:
 
 ### 📦 Module: `module.network`
 ```
+Note: The space between 📦 and "Module:" is a non-breaking space (U+00A0).
 
 **Nested Module:**
 ```markdown
@@ -238,6 +242,14 @@ Use the following standard set of icons to indicate resource change actions:
 ### Semantic Value Icons
 
 Icons are applied to specific value types to enhance visual scanning and comprehension. Icons are placed **inside** code formatting (backticks or HTML `<code>` tags) alongside the value.
+
+**Non-Breaking Space Rule**: All icons followed by text labels must use a non-breaking space (U+00A0, `\u00A0`) between the icon and the label. This prevents the icon from wrapping to a different line than its label in narrow layouts. Examples:
+- `➕\u00A0Add` (not `➕ Add` with a regular space)
+- `🔄\u00A0Change` (not `🔄 Change` with a regular space)  
+- `🌍\u00A0eastus` (not `🌍 eastus` with a regular space)
+- `📦\u00A0Module:` (not `📦 Module:` with a regular space)
+
+This rule applies to all icon+label combinations throughout the generated markdown, including summary tables, module headers, and attribute values.
 
 #### Network & Infrastructure
 

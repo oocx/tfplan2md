@@ -8,6 +8,8 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class ReportModelBuilderSummaryTests
 {
+    private const string Nbsp = "\u00A0";
+
     [Fact]
     public void Build_PopulatesSummaryAndReplacePaths()
     {
@@ -41,7 +43,7 @@ public class ReportModelBuilderSummaryTests
         var update = model.Changes.Should().Contain(c => c.Action == "update").Subject;
         update.ChangedAttributesSummary.Should().Contain(update.AttributeChanges.Count.ToString(CultureInfo.InvariantCulture));
         update.ChangedAttributesSummary.Should().Contain("🔧");
-        update.SummaryHtml.Should().StartWith($"{update.ActionSymbol} {update.Type} <b><code>{update.Name}</code></b>");
+        update.SummaryHtml.Should().StartWith($"{update.ActionSymbol}{Nbsp}{update.Type} <b><code>{update.Name}</code></b>");
 
         var createWithTags = model.Changes.First(c => c.Action == "create" && c.TagsBadges is not null);
         createWithTags.TagsBadges.Should().Contain("🏷️");
@@ -61,7 +63,7 @@ public class ReportModelBuilderSummaryTests
 
         // Assert
         var update = model.Changes.Should().ContainSingle(c => c.Action == "update").Subject;
-        update.ChangedAttributesSummary.Should().Be("4🔧 account_replication_type, https_only, kind, +1 more");
+        update.ChangedAttributesSummary.Should().Be($"4🔧{Nbsp}account_replication_type, https_only, kind, +1 more");
     }
 
     [Fact]

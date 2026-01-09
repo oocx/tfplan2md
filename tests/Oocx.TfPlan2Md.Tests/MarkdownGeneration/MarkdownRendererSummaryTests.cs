@@ -6,6 +6,8 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class MarkdownRendererSummaryTests
 {
+    private const string Nbsp = "\u00A0";
+
     [Fact]
     public void Render_IncludesSummaryLineAboveDetails()
     {
@@ -19,7 +21,7 @@ public class MarkdownRendererSummaryTests
         var markdown = renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain("♻️ azurerm_subnet <b><code>db</code></b>");
+        markdown.Should().Contain($"♻️{Nbsp}azurerm_subnet <b><code>db</code></b>");
     }
 
     [Fact]

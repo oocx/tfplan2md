@@ -508,6 +508,8 @@ The summary table includes a "Resource Types" column that shows which resource t
 | **Total** | **10** | |
 ```
 
+**Note**: The space between each action icon (➕, 🔄, ♻️, ❌) and the action label (Add, Change, Replace, Destroy) is a non-breaking space (U+00A0) to prevent the icon from wrapping to a different line than its label in narrow layouts.
+
 ### No-Op Resources
 
 Resources with no changes (no-op) are **excluded from the Total count** and are **not displayed** in the detailed changes section. This design choice:
@@ -519,7 +521,7 @@ The `summary.no_op` count is available to custom templates but not shown in the 
 
 ### Action Symbols
 
-Resources are displayed with emoji symbols indicating the action:
+Resources are displayed with emoji symbols indicating the action. These symbols appear in both the summary table and resource summaries, with a non-breaking space (U+00A0) between the icon and following text to prevent wrapping:
 - `➕` - create (add new resource)
 - `🔄` - update (modify existing resource)
 - `❌` - delete (remove resource)
@@ -633,7 +635,7 @@ tfplan2md plan.json --large-value-format simple-diff
 
 Resource changes in the report are now grouped by Terraform module. Each module with at least one change is rendered as its own section (module sections for modules without changes are omitted to keep reports concise).
 
-- **Module header**: Each module is shown as an H3 heading ("### Module: <module_address>"), where `module_address` is the full module path from the Terraform plan (e.g., `module.network.module.subnet`). The root module is shown as `root`.
+- **Module header**: Each module is shown as an H3 heading ("### 📦 Module: <module_address>"), where `module_address` is the full module path from the Terraform plan (e.g., `module.network.module.subnet`). The root module is shown as `root`. The 📦 icon is followed by a non-breaking space (U+00A0) to prevent wrapping.
 - **Resource headings**: Resources within a module are shown as H4 headings ("#### <action_symbol> <address>") to preserve a proper document hierarchy.
 - **Ordering**: Modules are listed so that the root module appears first, followed by other modules in lexicographic order. Nested modules are presented in a flat list but the sort order ensures child modules follow their parent modules.
 - **Template variable**: Templates have access to a top-level `module_changes` collection (in addition to the existing `changes` collection). Each item has:

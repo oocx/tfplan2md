@@ -3,7 +3,7 @@
      Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>{{ change.action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(change.role_assignment.resource_name) }}</b> — {{ change.role_assignment.summary_text }}</summary>
+<summary>{{ change.action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(change.role_assignment.resource_name) }}</b> — {{ change.role_assignment.summary_text }}</summary>
 <br>
 
 {{ if change.role_assignment.description && change.role_assignment.description != "" }}

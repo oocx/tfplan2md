@@ -71,11 +71,11 @@ public class ComprehensiveDemoTests
         var summary = _renderer.Render(model, "summary");
 
         summary.Should().Contain("Terraform Plan Summary")
-            .And.Contain("➕ Add | 12")
-            .And.Contain("🔄 Change | 6")
-            .And.Contain("♻️ Replace | 2")
-            .And.Contain("❌ Destroy | 3")
-                .And.Contain("Total | 23");
+            .And.Contain("➕\u00A0Add | 12")
+            .And.Contain("🔄\u00A0Change | 6")
+            .And.Contain("♻️\u00A0Replace | 2")
+            .And.Contain("❌\u00A0Destroy | 3")
+            .And.Contain("Total | 23");
     }
 
     [Fact]

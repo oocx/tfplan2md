@@ -9,7 +9,7 @@ public static partial class ScribanHelpers
     /// Non-breaking space used to keep semantic icons attached to their labels for reliable markdown rendering.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md
     /// </summary>
-    private const string NonBreakingSpace = "\u00A0";
+    internal const string NonBreakingSpace = "\u00A0";
 
     /// <summary>
     /// Rendering context for semantic formatting.

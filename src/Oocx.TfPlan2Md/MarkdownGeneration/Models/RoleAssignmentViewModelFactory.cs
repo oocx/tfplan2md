@@ -15,6 +15,12 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// </summary>
 internal static class RoleAssignmentViewModelFactory
 {
+    /// <summary>
+    /// Non-breaking space used to keep principal icons attached to their labels in markdown output.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// </summary>
+    private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
+
     private static readonly string[] DesiredOrder =
     [
         "scope",
@@ -148,12 +154,12 @@ internal static class RoleAssignmentViewModelFactory
         PrincipalInfo principal)
     {
         var scopeSummary = scope.SummaryLabel + ScribanHelpers.FormatCodeSummary(scope.SummaryName);
-        var roleSummary = $"<code>🛡️ {ScribanHelpers.EscapeMarkdown(role.Name)}</code>";
+        var roleSummary = $"<code>🛡️{NonBreakingSpace}{ScribanHelpers.EscapeMarkdown(role.Name)}</code>";
         var principalIcon = principal.Type switch
         {
-            "User" => "👤 ",
-            "Group" => "👥 ",
-            "ServicePrincipal" => "💻 ",
+            "User" => $"👤{NonBreakingSpace}",
+            "Group" => $"👥{NonBreakingSpace}",
+            "ServicePrincipal" => $"💻{NonBreakingSpace}",
             _ => string.Empty
         };
         var principalSummary = $"<code>{principalIcon}{ScribanHelpers.EscapeMarkdown(principal.Name)}</code>";
@@ -239,7 +245,7 @@ internal static class RoleAssignmentViewModelFactory
 
                 var nameAndType = !string.IsNullOrEmpty(decoratedName)
                     ? needsIconPrefix
-                        ? $"{principalIcon} {decoratedName}"
+                        ? $"{principalIcon}{NonBreakingSpace}{decoratedName}"
                         : decoratedName
                     : string.Empty;
 

@@ -44,6 +44,7 @@ public class MarkdownSnapshotTests
 
         var markdown = renderer.Render(model);
 
+        AssertNoEmojiFollowedByRegularSpace(markdown, "comprehensive-demo.md");
         AssertMatchesSnapshot("comprehensive-demo.md", markdown);
     }
 
@@ -59,6 +60,7 @@ public class MarkdownSnapshotTests
 
         var markdown = renderer.Render(model, "summary");
 
+        AssertNoEmojiFollowedByRegularSpace(markdown, "summary-template.md");
         AssertMatchesSnapshot("summary-template.md", markdown);
     }
 
@@ -76,6 +78,7 @@ public class MarkdownSnapshotTests
 
         var markdown = renderer.Render(model);
 
+        AssertNoEmojiFollowedByRegularSpace(markdown, "breaking-plan.md");
         AssertMatchesSnapshot("breaking-plan.md", markdown);
     }
 
@@ -93,6 +96,7 @@ public class MarkdownSnapshotTests
 
         var markdown = renderer.Render(model);
 
+        AssertNoEmojiFollowedByRegularSpace(markdown, "role-assignments.md");
         AssertMatchesSnapshot("role-assignments.md", markdown);
     }
 
@@ -109,6 +113,7 @@ public class MarkdownSnapshotTests
 
         var markdown = renderer.Render(model);
 
+        AssertNoEmojiFollowedByRegularSpace(markdown, "firewall-rules.md");
         AssertMatchesSnapshot("firewall-rules.md", markdown);
     }
 
@@ -125,6 +130,7 @@ public class MarkdownSnapshotTests
 
         var markdown = renderer.Render(model);
 
+        AssertNoEmojiFollowedByRegularSpace(markdown, "multi-module.md");
         AssertMatchesSnapshot("multi-module.md", markdown);
     }
 
@@ -251,5 +257,82 @@ public class MarkdownSnapshotTests
         }
 
         return string.Concat(value.AsSpan(0, maxLength - 3), "...");
+    }
+
+    /// <summary>
+    /// Ensures emoji or pictographic characters are never followed by a regular breaking space (U+0020).
+    /// This guards against accidental regressions where semantic icons lose their non-breaking space.
+    /// </summary>
+    private static void AssertNoEmojiFollowedByRegularSpace(string markdown, string context)
+    {
+        var index = 0;
+        while (index < markdown.Length)
+        {
+            var rune = Rune.GetRuneAt(markdown, index);
+            var nextIndex = index + rune.Utf16SequenceLength;
+
+            if (IsEmojiLike(rune))
+            {
+                var lookahead = nextIndex;
+                while (lookahead < markdown.Length)
+                {
+                    var nextRune = Rune.GetRuneAt(markdown, lookahead);
+                    if (!IsPresentationModifier(nextRune))
+                    {
+                        break;
+                    }
+
+                    lookahead += nextRune.Utf16SequenceLength;
+                }
+
+                if (lookahead < markdown.Length && markdown[lookahead] == ' ')
+                {
+                    var nextNonSpace = lookahead;
+                    while (nextNonSpace < markdown.Length && markdown[nextNonSpace] == ' ')
+                    {
+                        nextNonSpace++;
+                    }
+
+                    if (nextNonSpace >= markdown.Length || markdown[nextNonSpace] is '|' or '\n' or '\r')
+                    {
+                        // Allow spacing when the icon is the entire cell or immediately before a pipe/newline.
+                        index = nextIndex;
+                        continue;
+                    }
+
+                    var snippetStart = Math.Max(0, index - 5);
+                    var snippetLength = Math.Min(20, markdown.Length - snippetStart);
+                    var snippet = markdown.Substring(snippetStart, snippetLength).Replace("\n", "⏎");
+                    var runeInfo = $"U+{rune.Value:X4} '{rune}'";
+
+                    Assert.Fail(
+                        $"Emoji or pictograph at position {index} ({runeInfo}) in {context} is followed by a regular space. " +
+                        "Icons must be followed by a non-breaking space (U+00A0). " +
+                        $"Context: '{snippet}'.");
+                }
+            }
+
+            index = nextIndex;
+        }
+    }
+
+    /// <summary>
+    /// Detects emoji-like runes by Unicode category to avoid missing semantic icons in markdown.
+    /// </summary>
+    private static bool IsEmojiLike(Rune rune)
+    {
+        var category = Rune.GetUnicodeCategory(rune);
+        return category is UnicodeCategory.OtherSymbol && rune.Value >= 0x2600;
+    }
+
+    /// <summary>
+    /// Skips over variation selectors or joiners that are part of an emoji sequence.
+    /// </summary>
+    private static bool IsPresentationModifier(Rune rune)
+    {
+        return rune.Value is 0xFE0F or 0xFE0E or 0x200D
+            || Rune.GetUnicodeCategory(rune) is UnicodeCategory.NonSpacingMark
+            || Rune.GetUnicodeCategory(rune) is UnicodeCategory.EnclosingMark
+            || Rune.GetUnicodeCategory(rune) is UnicodeCategory.Format;
     }
 }

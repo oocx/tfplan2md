@@ -4,10 +4,10 @@
 
 | Action | Count | Resource Types |
 | -------- | ------- | ---------------- |
-| ➕ Add | {{ summary.to_add.count }} | {{ for type in summary.to_add.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
-| 🔄 Change | {{ summary.to_change.count }} | {{ for type in summary.to_change.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
-| ♻️ Replace | {{ summary.to_replace.count }} | {{ for type in summary.to_replace.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
-| ❌ Destroy | {{ summary.to_destroy.count }} | {{ for type in summary.to_destroy.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ➕ Add | {{ summary.to_add.count }} | {{ for type in summary.to_add.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| 🔄 Change | {{ summary.to_change.count }} | {{ for type in summary.to_change.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ♻️ Replace | {{ summary.to_replace.count }} | {{ for type in summary.to_replace.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ❌ Destroy | {{ summary.to_destroy.count }} | {{ for type in summary.to_destroy.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 | **Total** | **{{ summary.total }}** | |
 
 ## Resource Changes
@@ -20,7 +20,7 @@ No changes.
 ---
 
 {{ end }}
-### 📦 Module: {{ if module.module_address && module.module_address != "" }}{{ format_code_table(module.module_address) }}{{ else }}root{{ end }}
+### 📦 Module: {{ if module.module_address && module.module_address != "" }}{{ format_code_table(module.module_address) }}{{ else }}root{{ end }}
 
 {{ for change in module.changes }}
 {{~ # Include the appropriate template - the 'change' variable is accessible in the included template ~}}

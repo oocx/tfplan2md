@@ -6,7 +6,7 @@
 <summary>{{ change.summary_html }}</summary>
 <br>
 
-### {{ change.action_symbol }} {{ change.address | escape_markdown }}
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.network_security_group && change.network_security_group.name ~}}
 **Network Security Group:** `{{ change.network_security_group.name | escape_markdown }}`

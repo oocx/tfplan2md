@@ -207,6 +207,12 @@ public class AttributeChangeModel
 public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, bool showSensitive = false, bool showUnchangedValues = false, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff, string? reportTitle = null, Azure.IPrincipalMapper? principalMapper = null, IMetadataProvider? metadataProvider = null, bool hideMetadata = false)
 {
     /// <summary>
+    /// Non-breaking space used to keep semantic icons attached to their labels in markdown output.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// </summary>
+    private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
+
+    /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
     /// </summary>
     private readonly bool _showSensitive = showSensitive;
@@ -404,7 +410,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
 
-        var prefix = $"{model.ActionSymbol} {model.Type} <b>{ScribanHelpers.FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{ScribanHelpers.FormatCodeSummary(model.Name)}</b>";
 
         var detailParts = new List<string>();
 
@@ -471,7 +477,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
             nameList += $", +{remaining} more";
         }
 
-        return $"{names.Count}🔧 {nameList}";
+        return $"{names.Count}🔧{NonBreakingSpace}{nameList}";
     }
 
     /// <summary>
@@ -504,7 +510,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
         }
 
         var badges = tags.Select(tag => ScribanHelpers.FormatCodeTable($"{tag.Key}: {tag.Value}"));
-        return $"**🏷️ Tags:** {string.Join(' ', badges)}";
+        return $"**🏷️{NonBreakingSpace}Tags:** {string.Join(' ', badges)}";
     }
 
     private static string DetermineAction(IReadOnlyList<string> actions)

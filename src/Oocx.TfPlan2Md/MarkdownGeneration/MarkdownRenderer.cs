@@ -139,7 +139,7 @@ public class MarkdownRenderer
         catch (ScribanHelperException ex)
         {
             // Return error message for this resource but allow other resources to render
-            return $"### {change.ActionSymbol} {change.Address}\n\n⚠️ **Template Error:** {ex.Message}\n";
+            return $"### {change.ActionSymbol}{ScribanHelpers.NonBreakingSpace}{change.Address}\n\n⚠️{ScribanHelpers.NonBreakingSpace}**Template Error:** {ex.Message}\n";
         }
     }
 

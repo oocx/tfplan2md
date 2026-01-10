@@ -37,8 +37,8 @@
     --features-bg: white;
     --cicd-bg: white;
     --footer-bg: #f6f8fa;
-    --code-bg: #f6f8fa;
-    --code-header-bg: #e1e4e8;
+    --code-bg: #eaeef2;
+    --code-header-bg: #d0d7de;
     --code-text: #24292f;
     /* Azure DevOps theme-aware border color (feature 031) */
     --palette-neutral-10: 240, 240, 240;

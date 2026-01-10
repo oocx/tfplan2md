@@ -2069,6 +2069,58 @@ body {
     padding-left: 24px;
 }
 
+.doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 15px;
+}
+
+.doc-table th {
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-weight: 600;
+    text-align: left;
+    padding: 16px;
+    border: 1px solid var(--color-border);
+}
+
+.doc-table td {
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.doc-table tr:hover {
+    background: var(--color-surface);
+}
+
+.doc-table code {
+    background: var(--code-bg);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: var(--font-mono);
+}
+
+/* Lists in sections */
+.section ul,
+.section ol {
+    margin: 16px 0;
+    padding-left: 32px;
+}
+
+.section li {
+    margin: 8px 0;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+.section li strong {
+    color: var(--color-text);
+}
+
 .doc-list li {
     margin: 12px 0;
 }

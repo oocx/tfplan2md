@@ -652,8 +652,8 @@ steps:
         }
 
         // Initialize theme
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        toggleHighlightTheme(currentTheme);
+        const initialTheme = document.documentElement.getAttribute('data-theme');
+        toggleHighlightTheme(initialTheme);
 
         // Listen for theme changes
         const observer = new MutationObserver((mutations) => {

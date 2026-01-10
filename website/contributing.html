@@ -34,37 +34,48 @@
         </div>
     </nav>
 
-    <main class="main-content">
-        <div class="content-wrapper">
-            <h1>Contributing to tfplan2md</h1>
-            <p class="lead">Thank you for your interest in contributing! This guide covers development workflow, coding standards, and our AI-powered development process.</p>
+    <header class="hero" style="padding: 60px 0;">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 48px;">Contributing</h1>
+                <p class="hero-subtitle">
+                    Thank you for your interest in contributing! This guide covers development workflow, coding standards, and our AI-powered development process.
+                </p>
+            </div>
+        </div>
+    </header>
 
-            <!-- Quick Links -->
-            <section class="card">
-                <h2>Quick Links</h2>
-                <div class="grid-2">
-                    <a href="https://github.com/oocx/tfplan2md" class="button">GitHub Repository</a>
-                    <a href="https://github.com/oocx/tfplan2md/issues" class="button">Issue Tracker</a>
-                </div>
-            </section>
+    <!-- Quick Links -->
+    <section class="section" style="padding-top: 0;">
+        <div class="section-container">
+            <h2 class="section-title">Quick Links</h2>
+            <div class="features-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <a href="https://github.com/oocx/tfplan2md" class="btn btn-primary" style="text-align: center;">GitHub Repository</a>
+                <a href="https://github.com/oocx/tfplan2md/issues" class="btn btn-secondary" style="text-align: center;">Issue Tracker</a>
+            </div>
+        </div>
+    </section>
 
-            <!-- Development Workflow -->
-            <section class="card">
-                <h2>Development Workflow</h2>
+    <!-- Development Workflow -->
+    <section class="section section-alt">
+        <div class="section-container">
+            <h2 class="section-title">Development Workflow</h2>
                 
-                <h3>Branch Strategy</h3>
+                <h3 class="doc-subtitle">Branch Strategy</h3>
                 <ul>
                     <li><strong>Main branch (<code>main</code>)</strong> — Always in a releasable state</li>
                     <li><strong>Feature branches</strong> — Created from <code>main</code> for new features or fixes</li>
                 </ul>
 
-                <h3>Creating a Feature Branch</h3>
-                <pre><code>git checkout main
+                <h3 class="doc-subtitle">Creating a Feature Branch</h3>
+                <div class="code-block">
+                    <pre><code>git checkout main
 git pull origin main
 git checkout -b feat/your-feature-name</code></pre>
+                </div>
 
-                <h3>Branch Prefixes</h3>
-                <table>
+                <h3 class="doc-subtitle">Branch Prefixes</h3>
+                <table class="doc-table">
                     <thead>
                         <tr>
                             <th>Prefix</th>
@@ -102,14 +113,16 @@ git checkout -b feat/your-feature-name</code></pre>
                         </tr>
                     </tbody>
                 </table>
-            </section>
+            </div>
+        </section>
 
-            <!-- Testing Requirements -->
-            <section class="card">
-                <h2>Testing Requirements</h2>
-                <p>All changes must include appropriate tests. The project uses a comprehensive testing strategy:</p>
+        <!-- Testing Requirements -->
+        <section class="section">
+            <div class="section-container">
+                <h2 class="section-title">Testing Requirements</h2>
+                <p class="section-description">All changes must include appropriate tests. The project uses a comprehensive testing strategy:</p>
 
-                <h3>Test Types</h3>
+                <h3 class="doc-subtitle">Test Types</h3>
                 <ul>
                     <li><strong>Unit Tests</strong> — Test individual components in isolation</li>
                     <li><strong>Integration Tests</strong> — Test end-to-end workflows, including Docker-based tests</li>
@@ -120,15 +133,17 @@ git checkout -b feat/your-feature-name</code></pre>
                     <li><strong>Markdownlint Integration</strong> — Docker-based linting with markdownlint-cli2</li>
                 </ul>
 
-                <h3>Running Tests</h3>
-                <pre><code># Run all tests
+                <h3 class="doc-subtitle" style="margin-top: 32px;">Running Tests</h3>
+                <div class="code-block">
+                    <pre><code># Run all tests
 dotnet test
 
 # Run specific test categories
 dotnet test --filter "FullyQualifiedName~MarkdownInvariantTests"
 dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"</code></pre>
+                </div>
 
-                <h3>Markdown Quality Requirements</h3>
+                <h3 class="doc-subtitle">Markdown Quality Requirements</h3>
                 <p>All generated markdown must:</p>
                 <ul>
                     <li>Pass markdownlint validation (MD012 and other rules)</li>
@@ -138,22 +153,26 @@ dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"</code></p
                     <li>Have proper heading spacing (blank lines before/after)</li>
                     <li>Have balanced HTML tags (<code>&lt;details&gt;</code>, <code>&lt;summary&gt;</code>)</li>
                 </ul>
-            </section>
+            </div>
+        </section>
 
-            <!-- Commit Messages -->
-            <section class="card">
-                <h2>Commit Messages</h2>
+        <!-- Commit Messages -->
+        <section class="section section-alt">
+            <div class="section-container">
+                <h2 class="section-title">Commit Messages</h2>
                 <p>This project uses <a href="https://www.conventionalcommits.org/">Conventional Commits</a> to automate versioning and changelog generation.</p>
 
-                <h3>Format</h3>
-                <pre><code>&lt;type&gt;[optional scope]: &lt;description&gt;
+                <h3 class="doc-subtitle">Format</h3>
+                <div class="code-block">
+                    <pre><code>&lt;type&gt;[optional scope]: &lt;description&gt;
 
 [optional body]
 
 [optional footer(s)]</code></pre>
+                </div>
 
-                <h3>Commit Types</h3>
-                <table>
+                <h3 class="doc-subtitle">Commit Types</h3>
+                <table class="doc-table">
                     <thead>
                         <tr>
                             <th>Type</th>
@@ -200,17 +219,20 @@ dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"</code></p
                     </tbody>
                 </table>
 
-                <h3>Breaking Changes</h3>
+                <h3 class="doc-subtitle">Breaking Changes</h3>
                 <p>For breaking changes, add <code>BREAKING CHANGE:</code> in the commit footer or use <code>!</code> after the type:</p>
-                <pre><code>feat(parser)!: change output format to JSON
+                <div class="code-block">
+                    <pre><code>feat(parser)!: change output format to JSON
 
 BREAKING CHANGE: The output format has changed from plain text to JSON.</code></pre>
+                </div>
 
-                <h3>Commit Cohesion</h3>
+                <h3 class="doc-subtitle">Commit Cohesion</h3>
                 <p>Each commit should focus on a single topic or change. If you find yourself using "and" repeatedly in a commit message, consider splitting it into multiple commits.</p>
 
-                <h3>Examples</h3>
-                <pre><code># Feature
+                <h3 class="doc-subtitle">Examples</h3>
+                <div class="code-block">
+                    <pre><code># Feature
 git commit -m "feat(cli): add --output flag for custom output path"
 
 # Bug fix
@@ -221,32 +243,37 @@ git commit -m "docs: update installation instructions"
 
 # Breaking change
 git commit -m "feat(api)!: rename TerraformPlan to PlanResult"</code></pre>
-            </section>
+                </div>
+            </div>
+        </section>
 
-            <!-- Pull Request Process -->
-            <section class="card">
-                <h2>Pull Request Process</h2>
+        <!-- Pull Request Process -->
+        <section class="section">
+            <div class="section-container">
+                <h2 class="section-title">Pull Request Process</h2>
                 <ol>
                     <li><strong>Create a feature branch</strong> from <code>main</code></li>
                     <li><strong>Make your changes</strong> following the coding guidelines</li>
                     <li><strong>Ensure all checks pass</strong>:
-                        <pre><code>dotnet format --verify-no-changes
+                        <div class="code-block">
+                            <pre><code>dotnet format --verify-no-changes
 dotnet build
 dotnet test</code></pre>
+                        </div>
                     </li>
                     <li><strong>Push your branch</strong> and create a Pull Request</li>
                     <li><strong>Wait for review</strong> — PR validation will run automatically</li>
                     <li><strong>Merge using "Rebase and merge"</strong> — This project requires a linear history</li>
                 </ol>
 
-                <h3>PR Requirements</h3>
+                <h3 class="doc-subtitle">PR Requirements</h3>
                 <ul>
                     <li>All CI checks must pass (build, test, format, vulnerability scan)</li>
                     <li>Code follows the project's style guidelines (enforced by <code>.editorconfig</code>)</li>
                     <li>Commit messages follow Conventional Commits format</li>
                 </ul>
 
-                <h3>Merge Strategy</h3>
+                <h3 class="doc-subtitle">Merge Strategy</h3>
                 <p>This project uses <strong>rebase and merge</strong> to maintain a linear Git history:</p>
                 <ul>
                     <li>When merging a PR, use the "Rebase and merge" button</li>
@@ -254,13 +281,15 @@ dotnet test</code></pre>
                     <li>Force-push your branch: <code>git push --force-with-lease</code></li>
                     <li>Do NOT use "Squash and merge" or "Create a merge commit"</li>
                 </ul>
-            </section>
+            </div>
+        </section>
 
-            <!-- Coding Standards -->
-            <section class="card">
-                <h2>Coding Standards</h2>
+        <!-- Coding Standards -->
+        <section class="section">
+            <div class="section-container">
+                <h2 class="section-title">Coding Standards</h2>
 
-                <h3>Access Modifiers</h3>
+                <h3 class="doc-subtitle">Access Modifiers</h3>
                 <p>tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:</p>
                 <ul>
                     <li>✅ <code>private</code> — Default for class members</li>
@@ -269,7 +298,7 @@ dotnet test</code></pre>
                 </ul>
                 <p><strong>Never use <code>public</code> just for testing.</strong> Instead, use <code>InternalsVisibleTo</code> to expose <code>internal</code> members to test projects.</p>
 
-                <h3>Code Comments</h3>
+                <h3 class="doc-subtitle">Code Comments</h3>
                 <p>All code must be thoroughly documented with XML doc comments:</p>
                 <ul>
                     <li>All members (public, internal, private) require XML doc comments</li>
@@ -278,8 +307,9 @@ dotnet test</code></pre>
                     <li>Reference related features/specifications for traceability</li>
                 </ul>
 
-                <h3>Example</h3>
-                <pre><code>/// &lt;summary&gt;
+                <h3 class="doc-subtitle">Example</h3>
+                <div class="code-block">
+                    <pre><code>/// &lt;summary&gt;
 /// Parses Terraform plan JSON and extracts resource changes.
 /// &lt;/summary&gt;
 /// &lt;param name="planFilePath"&gt;Absolute path to the plan JSON file.&lt;/param&gt;
@@ -292,21 +322,25 @@ internal async Task&lt;IReadOnlyList&lt;ResourceChange&gt;&gt; ParseAsync(string
 {
     // Implementation
 }</code></pre>
-            </section>
+                </div>
+            </div>
+        </section>
 
-            <!-- Local Development Setup -->
-            <section class="card">
-                <h2>Local Development Setup</h2>
+        <!-- Local Development Setup -->
+        <section class="section">
+            <div class="section-container">
+                <h2 class="section-title">Local Development Setup</h2>
 
-                <h3>Prerequisites</h3>
+                <h3 class="doc-subtitle">Prerequisites</h3>
                 <ul>
                     <li><a href="https://dotnet.microsoft.com/download">.NET 10 SDK</a></li>
                     <li><a href="https://git-scm.com/">Git</a></li>
                     <li><a href="https://www.docker.com/">Docker</a> (for running integration tests)</li>
                 </ul>
 
-                <h3>Getting Started</h3>
-                <pre><code># Clone the repository
+                <h3 class="doc-subtitle">Getting Started</h3>
+                <div class="code-block">
+                    <pre><code># Clone the repository
 git clone https://github.com/oocx/tfplan2md.git
 cd tfplan2md
 
@@ -319,8 +353,9 @@ dotnet husky install
 # Build and test
 dotnet build
 dotnet test</code></pre>
+                </div>
 
-                <h3>Pre-commit Hooks</h3>
+                <h3 class="doc-subtitle">Pre-commit Hooks</h3>
                 <p>This project uses <a href="https://github.com/alirezanet/Husky.Net">Husky.Net</a> for git hooks:</p>
                 <ul>
                     <li><strong>pre-commit</strong>: Runs <code>dotnet format --verify-no-changes</code> and <code>dotnet build</code></li>
@@ -333,107 +368,66 @@ dotnet test</code></pre>
                     <li><strong>Build errors</strong>: Fix the build errors before committing</li>
                     <li><strong>Commit message</strong>: Ensure your message follows the format <code>type: description</code></li>
                 </ol>
-            </section>
+            </div>
+        </section>
 
-            <!-- AI-Powered Development Workflow -->
-            <section id="ai-workflow" class="card">
-                <h2>AI-Powered Development Workflow</h2>
+        <!-- AI-Powered Development Workflow -->
+        <section id="ai-workflow" class="section">
+            <div class="section-container">
+                <h2 class="section-title">AI-Powered Development Workflow</h2>
                 <p>This project uses a multi-agent AI workflow to streamline development. Each specialized agent handles a specific phase of the development lifecycle.</p>
 
-                <h3>Workflow Overview</h3>
-                <div class="workflow-diagram">
-                    <div class="workflow-step">
-                        <div class="workflow-icon">📋</div>
-                        <div class="workflow-label">Requirements Engineer</div>
-                        <div class="workflow-desc">Gathers and clarifies requirements</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">🏗️</div>
-                        <div class="workflow-label">Architect</div>
-                        <div class="workflow-desc">Designs solution and documents decisions</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">✅</div>
-                        <div class="workflow-label">Quality Engineer</div>
-                        <div class="workflow-desc">Defines test plan and cases</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">📝</div>
-                        <div class="workflow-label">Task Planner</div>
-                        <div class="workflow-desc">Creates actionable work items</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">💻</div>
-                        <div class="workflow-label">Developer</div>
-                        <div class="workflow-desc">Implements features and tests</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">📚</div>
-                        <div class="workflow-label">Technical Writer</div>
-                        <div class="workflow-desc">Updates documentation</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">🔍</div>
-                        <div class="workflow-label">Code Reviewer</div>
-                        <div class="workflow-desc">Reviews and approves changes</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">🧪</div>
-                        <div class="workflow-label">UAT Tester</div>
-                        <div class="workflow-desc">Validates user-facing features</div>
-                    </div>
-                    <div class="workflow-arrow">→</div>
-                    <div class="workflow-step">
-                        <div class="workflow-icon">🚀</div>
-                        <div class="workflow-label">Release Manager</div>
-                        <div class="workflow-desc">Executes release and deployment</div>
-                    </div>
-                </div>
+                <h3 class="doc-subtitle">Workflow Overview</h3>
+                <p>Development follows this agent-based workflow:</p>
+                <ol>
+                    <li><strong>📋 Requirements Engineer</strong> — Gathers and clarifies requirements</li>
+                    <li><strong>🏗️ Architect</strong> — Designs solution and documents decisions</li>
+                    <li><strong>✅ Quality Engineer</strong> — Defines test plan and cases</li>
+                    <li><strong>📝 Task Planner</strong> — Creates actionable work items</li>
+                    <li><strong>💻 Developer</strong> — Implements features and tests</li>
+                    <li><strong>📚 Technical Writer</strong> — Updates documentation</li>
+                    <li><strong>🔍 Code Reviewer</strong> — Reviews and approves changes</li>
+                    <li><strong>🧪 UAT Tester</strong> — Validates user-facing features</li>
+                    <li><strong>🚀 Release Manager</strong> — Executes release and deployment</li>
+                </ol>
 
-                <h3>Key Agent Roles</h3>
-                <div class="agent-grid">
-                    <div class="agent-card">
+                <h3 class="doc-subtitle">Key Agent Roles</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
                         <h4>📋 Requirements Engineer</h4>
                         <p>Gathers and clarifies user needs for new features. Produces feature specifications.</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>🏗️ Architect</h4>
                         <p>Designs technical solutions and documents decisions in Architecture Decision Records (ADRs).</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>✅ Quality Engineer</h4>
                         <p>Defines test plans, test cases, and quality criteria. For user-facing features, defines acceptance scenarios.</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>💻 Developer</h4>
                         <p>Implements features and tests as specified. Ensures code passes all checks.</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>🔍 Code Reviewer</h4>
                         <p>Ensures code quality and process adherence. Provides feedback or approval.</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>🧪 UAT Tester</h4>
                         <p>Validates user-facing features in real-world environments via PRs in GitHub and Azure DevOps.</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>🚀 Release Manager</h4>
                         <p>Plans, coordinates, and executes releases. Creates PRs and publishes releases.</p>
                     </div>
-                    <div class="agent-card">
+                    <div class="feature-card">
                         <h4>🔧 Workflow Engineer</h4>
                         <p>Analyzes and improves the agent-based workflow itself.</p>
                     </div>
                 </div>
 
-                <h3>Multi-Model Approach</h3>
+                <h3 class="doc-subtitle">Multi-Model Approach</h3>
                 <p>The project uses different AI models optimized for specific tasks:</p>
                 <ul>
                     <li><strong>Claude 3.7 Sonnet</strong> — Complex reasoning, architecture decisions, code review</li>
@@ -441,7 +435,7 @@ dotnet test</code></pre>
                     <li><strong>o1-preview/o1-mini</strong> — Deep reasoning for difficult bugs or design problems</li>
                 </ul>
 
-                <h3>Benefits of Agent-Based Development</h3>
+                <h3 class="doc-subtitle">Benefits of Agent-Based Development</h3>
                 <ul>
                     <li><strong>Consistency</strong> — Each agent follows defined standards and processes</li>
                     <li><strong>Traceability</strong> — All decisions and changes documented in artifacts</li>
@@ -451,11 +445,13 @@ dotnet test</code></pre>
                 </ul>
 
                 <p>For detailed information, see <a href="https://github.com/oocx/tfplan2md/blob/main/docs/agents.md">docs/agents.md</a> in the repository.</p>
-            </section>
+            </div>
+        </section>
 
-            <!-- Release Process -->
-            <section class="card">
-                <h2>Release Process</h2>
+        <!-- Release Process -->
+        <section class="section">
+            <div class="section-container">
+                <h2 class="section-title">Release Process</h2>
                 <p>Releases are automated via GitHub Actions:</p>
                 <ol>
                     <li>When commits are pushed to <code>main</code>, the CI workflow runs Versionize</li>
@@ -473,14 +469,16 @@ dotnet test</code></pre>
                         </ul>
                     </li>
                 </ol>
-            </section>
+            </div>
+        </section>
 
-            <!-- Questions Section -->
-            <section class="card">
-                <h2>Questions?</h2>
+        <!-- Questions Section -->
+        <section class="section">
+            <div class="section-container">
+                <h2 class="section-title">Questions?</h2>
                 <p>If you have questions, feel free to <a href="https://github.com/oocx/tfplan2md/issues">open an issue</a> for discussion.</p>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
@@ -493,6 +491,45 @@ dotnet test</code></pre>
         </div>
     </footer>
 
-    <script src="theme.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            }
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+    </script>
 </body>
 </html>

@@ -188,43 +188,7 @@ body {
     display: block;
     width: 20px;
     height: 20px;
-    position: relative;
-}
-
-/* Moon icon for light mode (switch to dark) */
-[data-theme="light"] .theme-icon::before {
-    content: "";
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--color-text);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 4px -2px 0 0 var(--color-bg);
-}
-
-/* Sun icon for dark mode (switch to light) */
-[data-theme="dark"] .theme-icon::before {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--color-text);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 
-        0 -18px 0 -12px var(--color-text),
-        0 18px 0 -12px var(--color-text),
-        18px 0 0 -12px var(--color-text),
-        -18px 0 0 -12px var(--color-text),
-        12px 12px 0 -12px var(--color-text),
-        -12px -12px 0 -12px var(--color-text),
-        12px -12px 0 -12px var(--color-text),
-        -12px 12px 0 -12px var(--color-text);
+    object-fit: contain;
 }
 
 .nav-cta {

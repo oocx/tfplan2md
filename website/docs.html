@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation - tfplan2md</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <!-- highlight.js themes - loaded based on current theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
     <style>
         .code-block {
             position: relative;
@@ -784,18 +786,33 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
         const currentTheme = localStorage.getItem('theme') || 'light';
         html.setAttribute('data-theme', currentTheme);
         updateThemeButton(currentTheme);
+        updateHighlightTheme(currentTheme);
         
         themeToggle.addEventListener('click', () => {
             const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeButton(newTheme);
+            updateHighlightTheme(newTheme);
         });
         
         function updateThemeButton(theme) {
             const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
+        }
+
+        function updateHighlightTheme(theme) {
+            const lightTheme = document.getElementById('highlight-light');
+            const darkTheme = document.getElementById('highlight-dark');
+            
+            if (theme === 'dark') {
+                lightTheme.disabled = true;
+                darkTheme.disabled = false;
+            } else {
+                lightTheme.disabled = false;
+                darkTheme.disabled = true;
+            }
         }
 
         // Sidebar navigation

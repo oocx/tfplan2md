@@ -61,7 +61,7 @@
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title">Run directly</span>
-                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                            <button class="copy-button" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
                         <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
                     </div>
@@ -78,7 +78,7 @@
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title">Clone and build</span>
-                            <button class="copy-btn" data-copy="git clone https://github.com/oocx/tfplan2md.git
+                            <button class="copy-button" data-copy="git clone https://github.com/oocx/tfplan2md.git
 cd tfplan2md
 dotnet build" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
@@ -128,7 +128,7 @@ dotnet build</code></pre>
                         <h3 class="step-title">Generate Markdown Report</h3>
                         <div class="code-block">
                             <div class="code-header">
-                                <button class="copy-btn" data-copy="cat plan.json | docker run -i oocx/tfplan2md > plan.md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                                <button class="copy-button" data-copy="cat plan.json | docker run -i oocx/tfplan2md > plan.md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                             </div>
                             <pre><code>cat plan.json | docker run -i oocx/tfplan2md > plan.md</code></pre>
                         </div>
@@ -143,7 +143,7 @@ dotnet build</code></pre>
                     <h4 class="example-title">Pipe directly from Terraform</h4>
                     <div class="code-block">
                         <div class="code-header">
-                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                            <button class="copy-button" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
                         <pre><code>terraform show -json plan.tfplan | docker run -i oocx/tfplan2md</code></pre>
                     </div>
@@ -153,7 +153,7 @@ dotnet build</code></pre>
                     <h4 class="example-title">Read from file with mounted volume</h4>
                     <div class="code-block">
                         <div class="code-header">
-                            <button class="copy-btn" data-copy="docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                            <button class="copy-button" data-copy="docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
                         <pre><code>docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json</code></pre>
                     </div>
@@ -163,7 +163,7 @@ dotnet build</code></pre>
                     <h4 class="example-title">Write output to file</h4>
                     <div class="code-block">
                         <div class="code-header">
-                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                            <button class="copy-button" data-copy="terraform show -json plan.tfplan | docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
                         <pre><code>terraform show -json plan.tfplan | \
   docker run -i -v $(pwd):/data oocx/tfplan2md --output /data/plan.md</code></pre>
@@ -174,7 +174,7 @@ dotnet build</code></pre>
                     <h4 class="example-title">Generate summary-only report</h4>
                     <div class="code-block">
                         <div class="code-header">
-                            <button class="copy-btn" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summary" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                            <button class="copy-button" data-copy="terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summary" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
                         <pre><code>terraform show -json plan.tfplan | \
   docker run -i oocx/tfplan2md --template summary</code></pre>
@@ -206,7 +206,7 @@ dotnet build</code></pre>
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title">.github/workflows/terraform.yml</span>
-                            <button class="copy-btn" data-copy="name: Terraform Plan
+                            <button class="copy-button" data-copy="name: Terraform Plan
 
 on:
   pull_request:
@@ -316,7 +316,7 @@ jobs:
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title">azure-pipelines.yml</span>
-                            <button class="copy-btn" data-copy="trigger: none
+                            <button class="copy-button" data-copy="trigger: none
 
 pr:
   branches:
@@ -442,7 +442,7 @@ steps:
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-title">.gitlab-ci.yml</span>
-                            <button class="copy-btn" data-copy="terraform-plan:
+                            <button class="copy-button" data-copy="terraform-plan:
   stage: plan
   image: hashicorp/terraform:1.9
   only:
@@ -584,7 +584,7 @@ steps:
         }
         
         // Copy button functionality
-        document.querySelectorAll('.copy-btn').forEach(button => {
+        document.querySelectorAll('.copy-button').forEach(button => {
             button.addEventListener('click', () => {
                 const code = button.getAttribute('data-copy') || button.closest('.code-block').querySelector('code').textContent;
                 navigator.clipboard.writeText(code).then(() => {

@@ -68,51 +68,60 @@
                 </ul>
 
                 <h3 class="doc-subtitle">Creating a Feature Branch</h3>
-                <div class="code-block">
-                    <pre><code>git checkout main
-git pull origin main
-git checkout -b feat/your-feature-name</code></pre>
-                </div>
-
-                <h3 class="doc-subtitle">Branch Prefixes</h3>
+                <p>Use descriptive branch names with the following prefixes:</p>
                 <table class="doc-table">
                     <thead>
                         <tr>
                             <th>Prefix</th>
                             <th>Purpose</th>
+                            <th>Example</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><code>feat/</code></td>
                             <td>New features</td>
+                            <td><code>feat/semantic-diff-firewall-rules</code></td>
                         </tr>
                         <tr>
                             <td><code>fix/</code></td>
                             <td>Bug fixes</td>
+                            <td><code>fix/template-rendering-escape</code></td>
                         </tr>
                         <tr>
                             <td><code>docs/</code></td>
                             <td>Documentation changes</td>
+                            <td><code>docs/update-installation-guide</code></td>
                         </tr>
                         <tr>
                             <td><code>refactor/</code></td>
                             <td>Code refactoring</td>
+                            <td><code>refactor/parser-immutable-models</code></td>
                         </tr>
                         <tr>
                             <td><code>chore/</code></td>
                             <td>Maintenance tasks</td>
+                            <td><code>chore/update-dependencies</code></td>
                         </tr>
                         <tr>
                             <td><code>workflow/</code></td>
                             <td>Agent/workflow changes</td>
+                            <td><code>workflow/add-uat-skill</code></td>
                         </tr>
                         <tr>
                             <td><code>website/</code></td>
                             <td>Website changes</td>
+                            <td><code>website/add-feature-page</code></td>
                         </tr>
                     </tbody>
                 </table>
+                
+                <p><strong>Example workflow:</strong></p>
+                <div class="code-block">
+                    <pre><code>git checkout main
+git pull origin main
+git checkout -b feat/your-feature-name</code></pre>
+                </div>
             </div>
         </section>
 
@@ -133,7 +142,7 @@ git checkout -b feat/your-feature-name</code></pre>
                     <li><strong>Markdownlint Integration</strong> — Docker-based linting with markdownlint-cli2</li>
                 </ul>
 
-                <h3 class="doc-subtitle" style="margin-top: 32px;">Running Tests</h3>
+                <h3 class="doc-subtitle">Running Tests</h3>
                 <div class="code-block">
                     <pre><code># Run all tests
 dotnet test
@@ -375,76 +384,13 @@ dotnet test</code></pre>
         <section id="ai-workflow" class="section">
             <div class="section-container">
                 <h2 class="section-title">AI-Powered Development Workflow</h2>
-                <p>This project uses a multi-agent AI workflow to streamline development. Each specialized agent handles a specific phase of the development lifecycle.</p>
-
-                <h3 class="doc-subtitle">Workflow Overview</h3>
-                <p>Development follows this agent-based workflow:</p>
-                <ol>
-                    <li><strong>📋 Requirements Engineer</strong> — Gathers and clarifies requirements</li>
-                    <li><strong>🏗️ Architect</strong> — Designs solution and documents decisions</li>
-                    <li><strong>✅ Quality Engineer</strong> — Defines test plan and cases</li>
-                    <li><strong>📝 Task Planner</strong> — Creates actionable work items</li>
-                    <li><strong>💻 Developer</strong> — Implements features and tests</li>
-                    <li><strong>📚 Technical Writer</strong> — Updates documentation</li>
-                    <li><strong>🔍 Code Reviewer</strong> — Reviews and approves changes</li>
-                    <li><strong>🧪 UAT Tester</strong> — Validates user-facing features</li>
-                    <li><strong>🚀 Release Manager</strong> — Executes release and deployment</li>
-                </ol>
-
-                <h3 class="doc-subtitle">Key Agent Roles</h3>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h4>📋 Requirements Engineer</h4>
-                        <p>Gathers and clarifies user needs for new features. Produces feature specifications.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>🏗️ Architect</h4>
-                        <p>Designs technical solutions and documents decisions in Architecture Decision Records (ADRs).</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>✅ Quality Engineer</h4>
-                        <p>Defines test plans, test cases, and quality criteria. For user-facing features, defines acceptance scenarios.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>💻 Developer</h4>
-                        <p>Implements features and tests as specified. Ensures code passes all checks.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>🔍 Code Reviewer</h4>
-                        <p>Ensures code quality and process adherence. Provides feedback or approval.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>🧪 UAT Tester</h4>
-                        <p>Validates user-facing features in real-world environments via PRs in GitHub and Azure DevOps.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>🚀 Release Manager</h4>
-                        <p>Plans, coordinates, and executes releases. Creates PRs and publishes releases.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>🔧 Workflow Engineer</h4>
-                        <p>Analyzes and improves the agent-based workflow itself.</p>
-                    </div>
-                </div>
-
-                <h3 class="doc-subtitle">Multi-Model Approach</h3>
-                <p>The project uses different AI models optimized for specific tasks:</p>
-                <ul>
-                    <li><strong>Claude 3.7 Sonnet</strong> — Complex reasoning, architecture decisions, code review</li>
-                    <li><strong>GPT-4o</strong> — Code generation, refactoring, test implementation</li>
-                    <li><strong>o1-preview/o1-mini</strong> — Deep reasoning for difficult bugs or design problems</li>
-                </ul>
-
-                <h3 class="doc-subtitle">Benefits of Agent-Based Development</h3>
-                <ul>
-                    <li><strong>Consistency</strong> — Each agent follows defined standards and processes</li>
-                    <li><strong>Traceability</strong> — All decisions and changes documented in artifacts</li>
-                    <li><strong>Quality</strong> — Dedicated agents for testing, review, and documentation</li>
-                    <li><strong>Efficiency</strong> — Parallel work on independent tasks</li>
-                    <li><strong>Knowledge Capture</strong> — Workflow and decisions preserved in the repository</li>
-                </ul>
-
-                <p>For detailed information, see <a href="https://github.com/oocx/tfplan2md/blob/main/docs/agents.md">docs/agents.md</a> in the repository.</p>
+                <p>This project was built 100% using GitHub Copilot with a multi-agent AI workflow. Each specialized agent handles a specific phase of the development lifecycle:</p>
+                
+                <p><strong>Agent roles:</strong> Requirements Engineer → Architect → Quality Engineer → Task Planner → Developer → Technical Writer → Code Reviewer → UAT Tester → Release Manager</p>
+                
+                <p>The workflow uses multiple AI models optimized for different tasks (Claude 3.7 Sonnet for reasoning, GPT-4o for code generation, o1-preview for complex problems).</p>
+                
+                <p>📚 <strong>Learn more:</strong> <a href="ai-workflow.html">Full AI Workflow Documentation</a> | <a href="https://github.com/oocx/tfplan2md/blob/main/docs/agents.md">docs/agents.md</a></p>
             </div>
         </section>
 

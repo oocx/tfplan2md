@@ -821,20 +821,6 @@ body {
     color: white;
 }
 
-.copy-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s;
-}
-
-.copy-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
 /* Features Section */
 .features-section {
     background: var(--features-bg);

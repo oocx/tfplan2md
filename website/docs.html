@@ -409,7 +409,129 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
   }
 }</code></pre>
                 </div>
+
+                <h4 style="margin-top: 40px; font-size: 20px; margin-bottom: 16px;">Generating Mapping Files with Azure CLI</h4>
                 <p class="doc-text">
+                    Use Azure CLI to automatically generate principal mapping files from your Azure AD tenant:
+                </p>
+
+                <div style="margin-top: 24px;">
+                    <h5 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">Bash Script</h5>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">generate-principals.sh</span>
+                        </div>
+                        <pre><code>#!/bin/bash
+
+# Generate principal mapping file for tfplan2md
+
+echo '{'
+echo '  "users": {'
+
+# Fetch users
+az ad user list --query '[].{id:id,upn:userPrincipalName}' -o json | \
+  jq -r '.[] | "    \"" + .id + "\": \"" + .upn + "\""' | \
+  paste -sd ',' -
+
+echo '  },'
+echo '  "groups": {'
+
+# Fetch groups
+az ad group list --query '[].{id:id,name:displayName}' -o json | \
+  jq -r '.[] | "    \"" + .id + "\": \"" + .name + "\""' | \
+  paste -sd ',' -
+
+echo '  },'
+echo '  "servicePrincipals": {'
+
+# Fetch service principals
+az ad sp list --all --query '[].{id:id,name:displayName}' -o json | \
+  jq -r '.[] | "    \"" + .id + "\": \"" + .name + "\""' | \
+  paste -sd ',' -
+
+echo '  }'
+echo '}'</code></pre>
+                    </div>
+                    <p class="doc-text" style="margin-top: 12px;">
+                        Run: <code>bash generate-principals.sh > principals.json</code>
+                    </p>
+                </div>
+
+                <div style="margin-top: 32px;">
+                    <h5 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">PowerShell Script</h5>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Generate-Principals.ps1</span>
+                        </div>
+                        <pre><code># Generate principal mapping file for tfplan2md
+
+$mapping = @{
+    users = @{}
+    groups = @{}
+    servicePrincipals = @{}
+}
+
+# Fetch users
+Write-Host "Fetching users..." -ForegroundColor Cyan
+$users = az ad user list --query '[].{id:id,upn:userPrincipalName}' | ConvertFrom-Json
+foreach ($user in $users) {
+    $mapping.users[$user.id] = $user.upn
+}
+
+# Fetch groups
+Write-Host "Fetching groups..." -ForegroundColor Cyan
+$groups = az ad group list --query '[].{id:id,name:displayName}' | ConvertFrom-Json
+foreach ($group in $groups) {
+    $mapping.groups[$group.id] = $group.name
+}
+
+# Fetch service principals
+Write-Host "Fetching service principals..." -ForegroundColor Cyan
+$sps = az ad sp list --all --query '[].{id:id,name:displayName}' | ConvertFrom-Json
+foreach ($sp in $sps) {
+    $mapping.servicePrincipals[$sp.id] = $sp.name
+}
+
+# Output JSON
+$mapping | ConvertTo-Json -Depth 3</code></pre>
+                    </div>
+                    <p class="doc-text" style="margin-top: 12px;">
+                        Run: <code>.\Generate-Principals.ps1 > principals.json</code>
+                    </p>
+                </div>
+
+                <div style="margin-top: 32px;">
+                    <h5 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">Filtering for Specific Principals</h5>
+                    <p class="doc-text">
+                        For large tenants, you may want to filter for specific principals instead of fetching all:
+                    </p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Bash - Filter by IDs</span>
+                        </div>
+                        <pre><code># Extract principal IDs from Terraform plan
+PRINCIPAL_IDS=$(terraform show -json plan.tfplan | \
+  jq -r '.resource_changes[]? | 
+    select(.type == "azurerm_role_assignment") | 
+    .change.after.principal_id' | sort -u)
+
+# Create mapping for only those principals
+echo '{"users":{},"groups":{},"servicePrincipals":{}}'  > principals.json
+for id in $PRINCIPAL_IDS; do
+  # Try as user
+  az ad user show --id "$id" 2>/dev/null | \
+    jq -r '{users: {($id): .userPrincipalName}}' || \
+  # Try as group
+  az ad group show --group "$id" 2>/dev/null | \
+    jq -r '{groups: {($id): .displayName}}' || \
+  # Try as service principal
+  az ad sp show --id "$id" 2>/dev/null | \
+    jq -r '{servicePrincipals: {($id): .displayName}}'
+done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json</code></pre>
+                    </div>
+                </div>
+
+                <p class="doc-text" style="margin-top: 32px;">
                     Use with the <code>--principal-mapping</code> option to replace GUIDs with names in role assignment reports.
                 </p>
                 <div class="code-block">

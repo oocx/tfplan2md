@@ -2121,6 +2121,50 @@ body {
     color: var(--color-text);
 }
 
+/* Consistent spacing for headings in sections */
+.section h3.doc-subtitle {
+    margin-top: 48px;
+    margin-bottom: 20px;
+}
+
+/* First heading after section title shouldn't have top margin */
+.section .section-title + p + h3.doc-subtitle,
+.section .section-title + h3.doc-subtitle {
+    margin-top: 32px;
+}
+
+/* Spacing after paragraphs before headings */
+.section p + h3.doc-subtitle {
+    margin-top: 48px;
+}
+
+/* Spacing after lists before headings */
+.section ul + h3.doc-subtitle,
+.section ol + h3.doc-subtitle {
+    margin-top: 48px;
+}
+
+/* Spacing after tables before headings */
+.section table + h3.doc-subtitle,
+.section .doc-table + h3.doc-subtitle {
+    margin-top: 48px;
+}
+
+/* Spacing after code blocks before headings */
+.section .code-block + h3.doc-subtitle {
+    margin-top: 48px;
+}
+
+/* Spacing after headings to content */
+.section h3.doc-subtitle + p,
+.section h3.doc-subtitle + ul,
+.section h3.doc-subtitle + ol,
+.section h3.doc-subtitle + .code-block,
+.section h3.doc-subtitle + .doc-table,
+.section h3.doc-subtitle + table {
+    margin-top: 16px;
+}
+
 .doc-list li {
     margin: 12px 0;
 }

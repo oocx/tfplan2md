@@ -302,7 +302,85 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
 {{ change.before_sensitive }}      # Sensitive markers (object)
 {{ change.after_sensitive }}       # Sensitive markers (object)</code></pre>
                 </div>
+
+                <h4 style="margin-top: 40px; font-size: 20px; margin-bottom: 16px;">Scriban Helper Functions</h4>
                 <p class="doc-text">
+                    tfplan2md provides custom Scriban functions to help with common formatting tasks:
+                </p>
+
+                <div class="feature-grid" style="margin-top: 24px;">
+                    <div class="feature-category-card" style="padding: 24px;">
+                        <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>inline_diff</code></h5>
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-text-secondary);">
+                            Generate inline diffs showing added (+), removed (-), and unchanged items in collections.
+                        </p>
+                        <div class="code-block" style="margin: 0;">
+                            <pre style="margin: 0; font-size: 13px;"><code>{{ inline_diff before.rules after.rules "name" }}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card" style="padding: 24px;">
+                        <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>format_azure_id</code></h5>
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-text-secondary);">
+                            Format long Azure resource IDs into readable, multi-line scoped paths.
+                        </p>
+                        <div class="code-block" style="margin: 0;">
+                            <pre style="margin: 0; font-size: 13px;"><code>{{ format_azure_id change.after.id }}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card" style="padding: 24px;">
+                        <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>format_bool</code></h5>
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-text-secondary);">
+                            Format boolean values as ✅ (true) or ❌ (false) icons.
+                        </p>
+                        <div class="code-block" style="margin: 0;">
+                            <pre style="margin: 0; font-size: 13px;"><code>{{ format_bool change.after.enabled }}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card" style="padding: 24px;">
+                        <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>format_large_value</code></h5>
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-text-secondary);">
+                            Format large values (>1000 chars) with inline diff or collapsible details.
+                        </p>
+                        <div class="code-block" style="margin: 0;">
+                            <pre style="margin: 0; font-size: 13px;"><code>{{ format_large_value before.policy after.policy }}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card" style="padding: 24px;">
+                        <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>icon_*</code> functions</h5>
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-text-secondary);">
+                            Add semantic icons for common value types: <code>icon_ip</code>, <code>icon_port</code>, <code>icon_protocol</code>, <code>icon_principal</code>.
+                        </p>
+                        <div class="code-block" style="margin: 0;">
+                            <pre style="margin: 0; font-size: 13px;"><code>{{ icon_ip rule.source_address }}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card" style="padding: 24px;">
+                        <h5 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;"><code>get_principal_name</code></h5>
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-text-secondary);">
+                            Resolve Azure principal IDs to friendly names (requires mapping file).
+                        </p>
+                        <div class="code-block" style="margin: 0;">
+                            <pre style="margin: 0; font-size: 13px;"><code>{{ get_principal_name change.after.principal_id }}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 32px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-primary); border-radius: 8px;">
+                    <h5 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">📚 Scriban Reference</h5>
+                    <p style="margin: 0 0 12px 0; font-size: 14px; line-height: 1.6;">
+                        For the complete Scriban language syntax (loops, conditionals, filters, built-in functions), see the official documentation:
+                    </p>
+                    <a href="https://github.com/scriban/scriban/blob/master/doc/language.md" class="btn btn-secondary" target="_blank" rel="noopener" style="display: inline-block;">
+                        Scriban Language Reference
+                    </a>
+                </div>
+
+                <p class="doc-text" style="margin-top: 32px;">
                     Reference the built-in templates in the <a href="https://github.com/oocx/tfplan2md/tree/main/src/Oocx.TfPlan2Md/Templates" class="inline-link">repository</a> for examples.
                 </p>
             </div>

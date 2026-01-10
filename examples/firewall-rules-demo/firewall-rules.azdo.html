@@ -1,4 +1,237 @@
-<h1 id="user-content-terraform-plan-report">Terraform Plan Report</h1>
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Azure DevOps-style Rendering</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css">
+    <style>
+        /* Align wrapper with observed AzDO markdown rendering */
+        :root {
+            color-scheme: light dark;
+            /* Azure DevOps theme-aware CSS variable for light theme */
+            --palette-neutral-10: 240, 240, 240;
+        }
+
+        /* Dark theme CSS variables */
+        [data-theme="dark"] {
+            --palette-neutral-10: 50, 50, 50;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px 0 32px;
+            background: #ffffff;
+            color: rgba(0, 0, 0, 0.9);
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Ubuntu, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        /* Dark mode styles */
+        [data-theme="dark"] body {
+            background: #1e1e1e;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .page-container {
+            box-sizing: border-box;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            max-width: 1062px;
+            padding-left: 8px;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.9);
+        }
+
+        [data-theme="dark"] .markdown-body h1,
+        [data-theme="dark"] .markdown-body h2,
+        [data-theme="dark"] .markdown-body h3,
+        [data-theme="dark"] .markdown-body h4,
+        [data-theme="dark"] .markdown-body h5,
+        [data-theme="dark"] .markdown-body h6 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body h1 {
+            font-size: 21px;
+            margin: 0 0 8px;
+        }
+
+        .markdown-body h2 {
+            font-size: 17px;
+            margin: 24px 0 8px;
+        }
+
+        .markdown-body h3 {
+            font-size: 0.9375rem;
+            margin: 24px 0 8px;
+        }
+
+        .markdown-body h4 {
+            font-size: 14px;
+            margin: 24px 0 8px;
+        }
+
+        .markdown-body p,
+        .markdown-body ul,
+        .markdown-body ol,
+        .markdown-body table,
+        .markdown-body pre {
+            margin: 0 0 16px;
+        }
+
+        .markdown-body a {
+            color: rgb(0, 120, 212);
+            text-decoration: none;
+        }
+
+        [data-theme="dark"] .markdown-body a {
+            color: rgb(51, 153, 255);
+        }
+
+        .markdown-body a:hover { text-decoration: underline; }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 16px;
+            background: transparent;
+        }
+
+        .markdown-body th {
+            padding: 13px 11px;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.55);
+            text-align: left;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: transparent;
+        }
+
+        [data-theme="dark"] .markdown-body th {
+            color: rgba(255, 255, 255, 0.55);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .markdown-body td {
+            padding: 10px 13px;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            text-align: left;
+            min-width: 50px;
+            max-width: 1000px;
+        }
+
+        [data-theme="dark"] .markdown-body td {
+            color: rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .markdown-body code {
+            font-size: 0.75rem;
+            font-family: Menlo, Consolas, "Courier New", monospace;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 2px 4px;
+            border-radius: 2px;
+            border: 0;
+            color: rgba(0, 0, 0, 0.9);
+        }
+
+        [data-theme="dark"] .markdown-body code {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body pre {
+            font-size: 12px;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 15px;
+            border-radius: 2px;
+            border: 0;
+            color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+            line-height: 1.45;
+        }
+
+        [data-theme="dark"] .markdown-body pre {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body details {
+            margin-bottom: 12px;
+            border-radius: 0;
+            padding: 12px;
+            /* Note: border color is defined in inline styles within templates */
+            /* using rgb(var(--palette-neutral-10, 153, 153, 153)) for theme adaptation */
+        }
+
+        .markdown-body summary {
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.875rem;
+            color: rgba(0, 0, 0, 0.9);
+            margin: -12px;
+            padding: 12px;
+        }
+
+        [data-theme="dark"] .markdown-body summary {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body hr {
+            border: 0;
+            border-top: 1px solid #eaeaea;
+            margin: 16px 0;
+            height: 1px;
+            background: none;
+        }
+
+        [data-theme="dark"] .markdown-body hr {
+            border-top-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .markdown-body ul,
+        .markdown-body ol { padding-left: 20px; }
+
+        @media (max-width: 900px) {
+            body { padding: 16px 0 28px; }
+            .page-container { max-width: 100%; padding: 0 12px; }
+            .markdown-body { max-width: 100%; padding-left: 6px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script>
+        // Set theme from URL query parameter, or preserve the theme set in the HTML tag
+        const params = new URLSearchParams(window.location.search);
+        const urlTheme = params.get('theme');
+        if (urlTheme) {
+            document.documentElement.setAttribute('data-theme', urlTheme);
+        }
+        // If no URL parameter, keep the theme from the HTML data-theme attribute (no override)
+    </script>
+</head>
+<body>
+    <div class="page-container">
+        <article class="markdown-body panel-surface">
+            <h1 id="user-content-terraform-plan-report">Terraform Plan Report</h1>
 <p>Generated by tfplan2md 1.0.0-alpha.17 (11dc95b) on 2026-01-04 02:30:02 UTC | Terraform 1.14.0</p>
 <h2 id="user-content-summary">Summary</h2>
 <table>
@@ -39,7 +272,7 @@
 </table>
 <h2 id="user-content-resource-changes">Resource Changes</h2>
 <h3 id="user-content-%F0%9F%93%A6-module%3A-root">📦 Module: root</h3>
-<details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px">
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
 <summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔&nbsp;demo-network-rules</code> in <code>📁&nbsp;rg-firewall-demo</code> | 9🔧 priority, rule[0].destination_addresses[0], rule[0].destination_ports[0], +6 more</summary>
 <br/>
 <h3 id="user-content-%F0%9F%94%84-azurerm_firewall_network_rule_collection.network_rules">🔄 azurerm_firewall_network_rule_collection.network_rules</h3>
@@ -97,3 +330,8 @@
 </tbody>
 </table>
 </details>
+
+        </article>
+    </div>
+</body>
+</html>

@@ -89,7 +89,7 @@
                             <li><a href="#no-valid-json" class="docs-nav-sublink">No valid JSON error</a></li>
                             <li><a href="#template-not-found" class="docs-nav-sublink">Template not found</a></li>
                             <li><a href="#sensitive-values" class="docs-nav-sublink">Sensitive values visible</a></li>
-                            <li><a href="#tables-not-rendering" class="docs-nav-sublink">Tables not rendering</a></li>
+
                             <li><a href="#docker-permission" class="docs-nav-sublink">Docker permission denied</a></li>
                         </ul>
                     </li>
@@ -648,19 +648,6 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                     <li>Remove <code>--show-sensitive</code> flag from your command</li>
                     <li>Mark attributes as <code>sensitive = true</code> in Terraform to enable masking</li>
                     <li>Review your CI/CD configuration to ensure sensitive flags aren't accidentally enabled</li>
-                </ul>
-            </div>
-
-            <div class="trouble-section" id="tables-not-rendering">
-                <h3 class="trouble-title">⚠️ Tables not rendering correctly in GitHub</h3>
-                <p class="trouble-desc">
-                    Markdown tables require specific formatting to render properly.
-                </p>
-                <p class="trouble-solution"><strong>Solution:</strong></p>
-                <ul class="doc-list">
-                    <li>tfplan2md automatically escapes special characters in table cells</li>
-                    <li>If you're manually editing output, ensure pipes (<code>|</code>) in values are escaped</li>
-                    <li>GitHub requires blank lines before and after tables</li>
                 </ul>
             </div>
 

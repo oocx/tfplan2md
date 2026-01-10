@@ -37,8 +37,12 @@
         .code-block .code-header {
             padding-right: 100px;
         }
+        /* Override highlight.js backgrounds to match code-block */
+        .code-block .hljs,
+        .code-block pre code {
+            background: transparent !important;
+        }
         [data-theme="dark"] .hljs {
-            background: var(--color-surface);
             color: #e6edf3;
         }
     </style>

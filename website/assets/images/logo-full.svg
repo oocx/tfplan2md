@@ -13,7 +13,7 @@
     
     <!-- Diff Card Geometry (208x128) -->
     <g id="diff-card-geometry">
-      <rect width="208" height="128" rx="15" fill="#1e1e1e"/>
+      <rect width="208" height="128" rx="15" fill="#1e1e1e" stroke="#444" stroke-width="2"/>
       <text x="20" y="40" font-family="monospace" font-weight="bold" font-size="28" fill="#2da44e">+</text>
       <text x="20" y="72" font-family="monospace" font-weight="bold" font-size="28" fill="#cf222e">-</text>
       <text x="20" y="104" font-family="monospace" font-weight="bold" font-size="28" fill="#d29922">~</text>
@@ -36,7 +36,7 @@
     <use href="#logo-icon-final" />
     <!-- Text V22 #1 -->
     <text x="310" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="80">
-        <tspan fill="#343a40">tfplan</tspan><tspan fill="#844fba">2md</tspan>
+        <tspan class="tfplan-text" fill="#555">tfplan</tspan><tspan fill="#844fba">2md</tspan>
     </text>
   </g>
 </svg>

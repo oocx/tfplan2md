@@ -143,6 +143,16 @@ body {
     color: var(--color-text);
 }
 
+/* Logo SVG adjustments for dark mode */
+.brand-logo-full {
+    display: block;
+}
+
+[data-theme="dark"] .brand-logo-full {
+    /* Add subtle border to diff card and brighten tfplan text */
+    filter: contrast(1.2);
+}
+
 .nav-menu {
     display: flex;
     gap: 16px;

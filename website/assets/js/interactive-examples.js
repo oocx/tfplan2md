@@ -54,9 +54,15 @@
         if (!fullscreenBtn) return;
 
         fullscreenBtn.addEventListener('click', () => {
+            const isFullscreen = example.classList.contains('fullscreen');
             example.classList.toggle('fullscreen');
-            fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
-            document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
+            fullscreenBtn.textContent = !isFullscreen ? '✕' : '⛶';
+            document.body.style.overflow = !isFullscreen ? 'hidden' : '';
+            
+            // Clear inline height when entering fullscreen, restore when exiting
+            if (!isFullscreen) {
+                example.style.removeProperty('height');
+            }
         });
     }
 

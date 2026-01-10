@@ -154,8 +154,8 @@
                             </div>
                             <div class="example-content">
                                 <div class="view-pane rendered-view active">
-                                    <h3>🔄 module.network.azurerm_firewall_network_rule_collection.network_rules</h3>
-                                    <p><strong>Collection:</strong> <code>network-rules</code> | <strong>Priority:</strong> <code>120</code> | <strong>Action:</strong> <code>✅ Allow</code></p>
+                                    <h3>🔄&nbsp;module.network.azurerm_firewall_network_rule_collection.network_rules</h3>
+                                    <p><strong>Collection:</strong> <code>network-rules</code> | <strong>Priority:</strong> <code>120</code> | <strong>Action:</strong> <code>✅&nbsp;Allow</code></p>
                                     <h4>Rule Changes</h4>
                                     <table>
                                         <thead>
@@ -173,64 +173,64 @@
                                             <tr>
                                                 <td>➕</td>
                                                 <td><code>allow-web-secure</code></td>
-                                                <td><code>🔗 TCP</code></td>
-                                                <td><code>🌐 10.1.1.0/24</code></td>
-                                                <td><code>🌐 10.1.3.0/24</code></td>
-                                                <td><code>🔌 443</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>🌐&nbsp;10.1.1.0/24</code></td>
+                                                <td><code>🌐&nbsp;10.1.3.0/24</code></td>
+                                                <td><code>🔌&nbsp;443</code></td>
                                                 <td><code>Secure web</code></td>
                                             </tr>
                                             <tr>
                                                 <td>➕</td>
                                                 <td><code>allow-log-ingest</code></td>
-                                                <td><code>🔗 TCP</code></td>
-                                                <td><code>🌐 10.1.4.0/24</code></td>
-                                                <td><code>🌐 10.1.5.0/24</code></td>
-                                                <td><code>🔌 8080</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>🌐&nbsp;10.1.4.0/24</code></td>
+                                                <td><code>🌐&nbsp;10.1.5.0/24</code></td>
+                                                <td><code>🔌&nbsp;8080</code></td>
                                                 <td><code>Log ingestion</code></td>
                                             </tr>
                                             <tr>
                                                 <td>➕</td>
                                                 <td><code>allow-icmp-ping</code></td>
-                                                <td><code>📡 ICMP</code></td>
-                                                <td><code>🌐 10.1.1.0/24</code></td>
-                                                <td><code>🌐 10.1.4.0/24</code></td>
+                                                <td><code>📡&nbsp;ICMP</code></td>
+                                                <td><code>🌐&nbsp;10.1.1.0/24</code></td>
+                                                <td><code>🌐&nbsp;10.1.4.0/24</code></td>
                                                 <td><code>✳️</code></td>
                                                 <td><code>ICMP ping for network diagnostics</code></td>
                                             </tr>
                                             <tr>
                                                 <td>🔄</td>
                                                 <td><code>allow-dns</code></td>
-                                                <td>📨 UDP</td>
-                                                <td><code><span>- 🌐 10.1.1.0/24</span><br/><span>+ 🌐 10.1.1.0/24<span>, 🌐 10.1.2.0/24</span></span></code></td>
-                                                <td>🌐 168.63.129.16</td>
-                                                <td>🔌 53</td>
+                                                <td>📨&nbsp;UDP</td>
+                                                <td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- 🌐&nbsp;10.1.1.0/24</span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ 🌐&nbsp;10.1.1.0/24<span style="background-color: #acf2bd; color: #24292e; display:inline-block">, 🌐&nbsp;10.1.2.0/24</span></span></code></td>
+                                                <td>🌐&nbsp;168.63.129.16</td>
+                                                <td>🔌&nbsp;53</td>
                                                 <td><code>DNS to Azure</code></td>
                                             </tr>
                                             <tr>
                                                 <td>🔄</td>
                                                 <td><code>allow-api</code></td>
-                                                <td>🔗 TCP</td>
-                                                <td>🌐 10.1.1.0/24</td>
-                                                <td><code><span>- 🌐 10.<span>1</span>.2.0/24</span><br/><span>+ 🌐 10.<span>2</span>.2.0/24</span></code></td>
-                                                <td><code><span>- 🔌 8443</span><br/><span>+ 🔌 8443<span>, 🔌 9443</span></span></code></td>
+                                                <td>🔗&nbsp;TCP</td>
+                                                <td>🌐&nbsp;10.1.1.0/24</td>
+                                                <td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- 🌐&nbsp;10.<span style="background-color: #ffc0c0; color: #24292e; display:inline-block">1</span>.2.0/24</span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ 🌐&nbsp;10.<span style="background-color: #acf2bd; color: #24292e; display:inline-block">2</span>.2.0/24</span></code></td>
+                                                <td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- 🔌&nbsp;8443</span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ 🔌&nbsp;8443<span style="background-color: #acf2bd; color: #24292e; display:inline-block">, 🔌&nbsp;9443</span></span></code></td>
                                                 <td><code>API tier</code></td>
                                             </tr>
                                             <tr>
                                                 <td>❌</td>
                                                 <td><code>allow-web</code></td>
-                                                <td><code>🔗 TCP</code></td>
-                                                <td><code>🌐 10.1.1.0/24</code></td>
-                                                <td><code>🌐 10.1.3.0/24</code></td>
-                                                <td><code>🔌 80</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>🌐&nbsp;10.1.1.0/24</code></td>
+                                                <td><code>🌐&nbsp;10.1.3.0/24</code></td>
+                                                <td><code>🔌&nbsp;80</code></td>
                                                 <td><code>Legacy HTTP</code></td>
                                             </tr>
                                             <tr>
                                                 <td>⏺️</td>
                                                 <td><code>allow-monitoring</code></td>
-                                                <td><code>🔗 TCP</code></td>
-                                                <td><code>🌐 10.1.1.0/24</code></td>
-                                                <td><code>🌐 10.1.4.0/24</code></td>
-                                                <td><code>🔌 443</code></td>
+                                                <td><code>🔗&nbsp;TCP</code></td>
+                                                <td><code>🌐&nbsp;10.1.1.0/24</code></td>
+                                                <td><code>🌐&nbsp;10.1.4.0/24</code></td>
+                                                <td><code>🔌&nbsp;443</code></td>
                                                 <td><code>Monitoring</code></td>
                                             </tr>
                                         </tbody>

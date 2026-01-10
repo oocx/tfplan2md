@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation - tfplan2md</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <style>
         .code-block {
             position: relative;
@@ -38,13 +37,9 @@
         .code-block .code-header {
             padding-right: 100px;
         }
-        [data-theme="dark"] pre[class*="language-"],
-        [data-theme="dark"] code[class*="language-"] {
+        [data-theme="dark"] .hljs {
             background: var(--color-surface);
             color: #e6edf3;
-        }
-        [data-theme="dark"] :not(pre) > code[class*="language-"] {
-            background: var(--color-surface);
         }
     </style>
 </head>
@@ -897,12 +892,11 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
         }
     </script>
 
-    <!-- Prism.js for syntax highlighting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <!-- highlight.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
 
     <script>
         // Add copy buttons to all code blocks
@@ -943,26 +937,24 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
             codeBlock.appendChild(copyButton);
         });
 
-        // Detect language from code content and apply Prism classes
+        // Detect language from code content and apply highlight.js
         document.querySelectorAll('.code-block code').forEach(code => {
             const text = code.textContent.trim();
             
             // Detect language based on content
             if (text.startsWith('{') || text.startsWith('[')) {
                 code.className = 'language-json';
-            } else if (text.includes('terraform ') || text.includes('tfplan2md ') || text.includes('docker run')) {
-                code.className = 'language-bash';
             } else if (text.includes('$') && (text.includes('ConvertFrom-Json') || text.includes('ConvertTo-Json') || text.includes('Write-Host'))) {
                 code.className = 'language-powershell';
-            } else if (text.startsWith('#!/bin/bash')) {
+            } else if (text.startsWith('#!/bin/bash') || text.includes('terraform ') || text.includes('tfplan2md ') || text.includes('docker run')) {
                 code.className = 'language-bash';
             } else {
                 code.className = 'language-bash';
             }
-            
-            // Rerun Prism highlighting
-            Prism.highlightElement(code);
         });
+
+        // Apply highlight.js to all code blocks
+        hljs.highlightAll();
     </script>
 </body>
 </html>

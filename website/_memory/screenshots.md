@@ -43,8 +43,11 @@ The following screenshots are needed for the website (based on feature page requ
 | 1 | `semantic-diff-example.png` | Semantic Diffs | Before/After table showing inline diff | ⬜ Not created |
 | 2 | `firewall-rules-table.png` | Firewall Rule Interpretation | Firewall rule collection rendered as table | ⬜ Not created |
 | 3 | `nsg-rules-table.png` | NSG Rule Interpretation | NSG rules rendered as table | ⬜ Not created |
+| 3a | `nsg-example-crop.png` | NSG Rule Interpretation | Cropped NSG rules example | ✅ Created (1x) |
 | 4 | `role-assignment-mapping.png` | Role Assignment Mapping | GUID-to-name resolution example | ⬜ Not created |
-| 5 | `large-value-diff.png` | Large Value Formatting | JSON policy diff in collapsible section | ⬜ Not created |
+| 5 | `large-value-diff.png` | Large Value Formatting | Key vault secret with line-by-line diff | ✅ Created (1200×250) |
+| 5a | `storage-account-diff.png` | Simple Attribute Changes | Storage account Before/After table | ✅ Created (1x) |
+| 5a2 | `storage-account-diff@2x.png` | Simple Attribute Changes | Storage account Before/After table | ✅ Created (2x) |
 | 6 | `plan-summary.png` | Plan Summary | Summary table with resource type breakdown | ⬜ Not created |
 | 7 | `module-grouping.png` | Module Grouping | Resources grouped by module hierarchy | ⬜ Not created |
 | 8 | `full-report-github.png` | Overview | Full comprehensive demo (GitHub flavor) | ⬜ Not created |
@@ -156,6 +159,30 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --output website/assets/screenshots/plan-summary.png \
   --target-selector "table:has(th:has-text('Action'))"
 ```
+
+### Generate Semantic Diffs Feature Screenshots
+
+```bash
+# Storage account simple attribute changes (with high-DPI version)
+dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.azdo.html \
+  --output website/assets/screenshots/storage-account-diff.png \
+  --target-terraform-resource-id "azurerm_storage_account.data" \
+  --width 1200
+
+# Note: 2x version generation requires manual duplication with different width or post-processing
+
+# Large value diff (cropped from full comprehensive demo screenshot)
+magick website/assets/screenshots/comprehensive-demo-full.png \
+  -crop 1200x250+350+3000 \
+  website/assets/screenshots/large-value-diff.png
+```
+
+**Result:** Creates screenshots for the semantic-diffs.html feature page:
+- `storage-account-diff.png`: Storage account showing Before/After attribute changes in a table
+- `storage-account-diff@2x.png`: High-DPI version (generated manually)
+- `large-value-diff.png`: Key vault secret with line-by-line character-level diffs
+- Uses existing screenshots: `firewall-example-crop.png`, `nsg-example-crop.png`
 
 ## Decision Log
 

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline Diffs - tfplan2md</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                    
+                    <img src="../assets/images/logo-full.svg" alt="tfplan2md" height="64">
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+            <div class="nav-menu">
+                <a href="../features/index.html" class="nav-item">Features</a>
+                <a href="../getting-started.html" class="nav-item">Install</a>
+                <a href="../docs.html" class="nav-item">Docs</a>
+                <a href="../examples.html" class="nav-item">Examples</a>
+                <a href="../providers/index.html" class="nav-item">Providers</a>
+                <a href="../architecture.html" class="nav-item">Architecture</a>
+                <a href="../ai-workflow.html" class="nav-item">AI Workflow</a>
+                <a href="../contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="theme-icon"></span>
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Inline Diffs</h1>
+                <p class="hero-subtitle">
+                    Character-level highlighting shows exactly what changed within a value, making it easy to spot typos, IP address changes, and config modifications.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <p class="feature-detail-description">
+                    When a value changes, tfplan2md shows character-level inline diffs with color highlighting. Added characters appear in green, removed characters in red. This makes it instantly obvious what changed—whether it's a single digit in an IP address, an added port, or a modified policy setting.
+                </p>
+                
+                <p class="feature-detail-description">
+                    Inline diffs appear throughout tfplan2md wherever values change. Here are examples:
+                </p>
+
+                <div class="feature-examples">
+                    <!-- Firewall Rules Example -->
+                    <div class="feature-example-card">
+                        <h3 class="feature-example-title">🔥 Firewall Rules</h3>
+                        <p class="feature-example-description">
+                            When firewall rule attributes change, inline diffs highlight the exact characters that changed. In this example, you can see IP addresses and ports with character-level highlighting—making it easy to spot that "10.1.2.0" changed to "10.2.2.0" (just the second octet).
+                        </p>
+                        <div class="screenshot-container">
+                            <img 
+                                src="../assets/screenshots/firewall-inline-diff-light.png" 
+                                alt="Firewall rules table showing inline character-level diffs for IP addresses and ports"
+                                class="feature-screenshot screenshot-light"
+                                loading="lazy">
+                            <img 
+                                src="../assets/screenshots/firewall-inline-diff-dark.png" 
+                                alt="Firewall rules table showing inline character-level diffs for IP addresses and ports"
+                                class="feature-screenshot screenshot-dark"
+                                loading="lazy">
+                        </div>
+                        <p class="feature-example-note">
+                            Notice how the changed values show both before (red background) and after (green background) with the specific changed characters highlighted even brighter. This makes reviewing IP address changes and port additions trivial.
+                        </p>
+                        <a href="firewall-rules.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>See full firewall rules feature</span>
+                        </a>
+                    </div>
+
+                    <!-- Large Values Example -->
+                    <div class="feature-example-card">
+                        <h3 class="feature-example-title">📄 Large Values (Policies, Scripts, Config)</h3>
+                        <p class="feature-example-description">
+                            For large text values like XML policies, JSON documents, or shell scripts, inline diffs show line-by-line and character-level changes. In this CORS policy example, you can see exactly which origins, methods, and headers were added.
+                        </p>
+                        <div class="screenshot-container">
+                            <img 
+                                src="../assets/screenshots/large-value-inline-diff-light.png" 
+                                alt="API Management policy showing inline character-level diffs in XML"
+                                class="feature-screenshot screenshot-light"
+                                loading="lazy">
+                            <img 
+                                src="../assets/screenshots/large-value-inline-diff-dark.png" 
+                                alt="API Management policy showing inline character-level diffs in XML"
+                                class="feature-screenshot screenshot-dark"
+                                loading="lazy">
+                        </div>
+                        <p class="feature-example-note">
+                            Added text appears in green with bright highlighting, removed text in red. This works for any multi-line value—XML policies, JSON documents, YAML config, shell scripts, etc.
+                        </p>
+                        <a href="large-values.html" class="feature-link">
+                            <span class="feature-link-icon">→</span>
+                            <span>Learn more about Large Value Formatting</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-detail-footer">
+                    <h3 style="font-size: 24px; margin-bottom: 12px;">Precise Change Detection</h3>
+                    <p>
+                        Inline diffs appear automatically wherever values change. Whether it's a single character typo, an IP address octet, or an added configuration option, you'll see exactly what changed with color-coded highlighting. No more hunting through long strings to find the difference.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-heading">tfplan2md</h3>
+                    <p class="footer-text">Making Terraform plan reviews fast, clear, and actionable.</p>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="../getting-started.html">Get Started</a></li>
+                        <li><a href="../features/index.html">Features</a></li>
+                        <li><a href="../docs.html">Documentation</a></li>
+                        <li><a href="../examples.html">Examples</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="../architecture.html">Architecture</a></li>
+                        <li><a href="../ai-workflow.html">AI Workflow</a></li>
+                        <li><a href="../contributing.html">Contributing</a></li>
+                        <li><a href="https://github.com/oocx/tfplan2md">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 tfplan2md contributors. <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE">MIT License</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../style.css"></script>
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+
+        // Theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // Load saved theme or default to light
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+</html>

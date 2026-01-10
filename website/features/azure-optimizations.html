@@ -75,20 +75,60 @@
     + key_vault_id = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.KeyVault/vaults/kv-tfplan2md"
     + name         = "db-password"
   }</code></pre>
+                            </div>
                         </div>
                         <p class="comparison-note">Long Azure IDs make it hard to identify resources at a glance.</p>
                     </div>
                     
                     <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
-                        <div class="code-block">
-                            <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Key Vault Secret Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>➕ module.security.azurerm_key_vault_secret.db_password</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>content_type</td>
+                                                <td><code>password</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>key_vault_id</td>
+                                                <td>Key Vault <code>kv-tfplan2md</code> in resource group <code>rg-tfplan2md-demo</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>name</td>
+                                                <td><code>🆔 db-password</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
 
 | Attribute | Value |
 | ----------- | ------- |
 | content_type | `password` |
 | key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` |
 | name | `🆔 db-password` |</code></pre>
+                                </div>
+                            </div>
                         </div>
                         <p class="comparison-note">Human-readable format shows what you need to know—the resource name and its resource group.</p>
                     </div>
@@ -122,7 +162,11 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code># module.security.azurerm_role_assignment.rg_reader will be created
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># module.iam.azurerm_role_assignment.storage_admin will be created
 + resource "azurerm_role_assignment" "rg_reader" {
     + id                   = (known after apply)
     + principal_id         = "00000000-0000-0000-0000-000000000001"
@@ -137,10 +181,52 @@
                     
                     <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
-                        <div class="code-block">
-                            <pre><code>### ➕ module.security.azurerm_role_assignment.rg_reader
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Role Assignment Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>➕ module.security.azurerm_role_assignment.rg_reader</h3>
+                                    <summary>👤 User → 🛡️ Reader on rg-tfplan2md-demo</summary>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>scope</td>
+                                                <td><code>📁 rg-tfplan2md-demo</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>role_definition_name</td>
+                                                <td><code>🛡️ Reader</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>principal_type</td>
+                                                <td><code>👤 User</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>principal_id</td>
+                                                <td><code>00000000-0000-0000-0000-000000000001</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### ➕ module.security.azurerm_role_assignment.rg_reader
 
-<summary>👤 User → 🛡️ Reader on rg-tfplan2md-demo</summary>
+&lt;summary&gt;👤 User → 🛡️ Reader on rg-tfplan2md-demo&lt;/summary&gt;
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -281,6 +367,10 @@
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
         }
+
+        // Load interactive examples functionality from shared module
+        // See ../assets/js/interactive-examples.js for implementation
     </script>
+    <script src="../assets/js/interactive-examples.js"></script>
 </body>
 </html>

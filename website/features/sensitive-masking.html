@@ -60,7 +60,11 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code># module.security.azurerm_key_vault_secret.db_password will be created
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># module.security.azurerm_key_vault_secret.db_password will be created
 + resource "azurerm_key_vault_secret" "db_password" {
     + content_type = "password"
     + id           = (known after apply)
@@ -70,14 +74,56 @@
     # At least one attribute in this block is (or was) sensitive,
     # so its contents will not be displayed.
   }</code></pre>
+                            </div>
                         </div>
                         <p class="comparison-note">Raw Terraform output masks sensitive values but lacks formatting.</p>
                     </div>
                     
                     <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
-                        <div class="code-block">
-                            <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Masked Sensitive Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>➕ module.security.azurerm_key_vault_secret.db_password</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>content_type</td>
+                                                <td><code>password</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>key_vault_id</td>
+                                                <td>Key Vault <code>kv-tfplan2md</code> ...</td>
+                                            </tr>
+                                            <tr>
+                                                <td>name</td>
+                                                <td><code>🆔 db-password</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>value</td>
+                                                <td><code>(sensitive)</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### ➕ module.security.azurerm_key_vault_secret.db_password
 
 | Attribute | Value |
 | ----------- | ------- |
@@ -85,6 +131,8 @@
 | key_vault_id | Key Vault `kv-tfplan2md` ... |
 | name | `🆔 db-password` |
 | value | `(sensitive)` |</code></pre>
+                                </div>
+                            </div>
                         </div>
                         <p class="comparison-note">Clean table format with sensitive values masked by default.</p>
                     </div>
@@ -240,6 +288,10 @@ tfplan2md plan.json --show-sensitive</code></pre>
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
         }
+
+        // Load interactive examples functionality from shared module
+        // See ../assets/js/interactive-examples.js for implementation
     </script>
+    <script src="../assets/js/interactive-examples.js"></script>
 </body>
 </html>

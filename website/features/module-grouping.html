@@ -60,7 +60,11 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code># azurerm_resource_group.core will be created
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># azurerm_resource_group.core will be created
 + resource "azurerm_resource_group" "core" {
     + id       = (known after apply)
     + location = "eastus"
@@ -89,42 +93,80 @@
     + address_space       = ["10.1.0.0/16"]
     + id                  = (known after apply)
   }</code></pre>
+                            </div>
                         </div>
                         <p class="comparison-note">Resources from different modules are intermixed—hard to see structure.</p>
                     </div>
                     
                     <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
-                        <div class="code-block">
-                            <pre><code>### 📦 Module: root
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Module-Grouped Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>📦 Module: root</h3>
+                                    <details>
+                                        <summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+                                        ...
+                                    </details>
+                                    <hr/>
+                                    <h3>📦 Module: <code>module.network</code></h3>
+                                    <details>
+                                        <summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>🆔 vnet-hub</code> <code>🌐 10.0.0.0/16</code></summary>
+                                        ...
+                                    </details>
+                                    <details>
+                                        <summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>🆔 vnet-spoke</code> <code>🌐 10.1.0.0/16</code></summary>
+                                        ...
+                                    </details>
+                                    <hr/>
+                                    <h3>📦 Module: <code>module.security</code></h3>
+                                    <details>
+                                        <summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 User</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+                                        ...
+                                    </details>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### 📦 Module: root
 
-<details>
-<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+&lt;details&gt;
+&lt;summary&gt;➕ azurerm_resource_group &lt;b&gt;&lt;code&gt;core&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
 ...
-</details>
+&lt;/details&gt;
 
 ---
 
 ### 📦 Module: `module.network`
 
-<details>
-<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>🆔 vnet-hub</code> <code>🌐 10.0.0.0/16</code></summary>
+&lt;details&gt;
+&lt;summary&gt;➕ azurerm_virtual_network &lt;b&gt;&lt;code&gt;hub&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 vnet-hub&lt;/code&gt; &lt;code&gt;🌐 10.0.0.0/16&lt;/code&gt;&lt;/summary&gt;
 ...
-</details>
+&lt;/details&gt;
 
-<details>
-<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>🆔 vnet-spoke</code> <code>🌐 10.1.0.0/16</code></summary>
+&lt;details&gt;
+&lt;summary&gt;➕ azurerm_virtual_network &lt;b&gt;&lt;code&gt;spoke&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 vnet-spoke&lt;/code&gt; &lt;code&gt;🌐 10.1.0.0/16&lt;/code&gt;&lt;/summary&gt;
 ...
-</details>
+&lt;/details&gt;
 
 ---
 
 ### 📦 Module: `module.security`
 
-<details>
-<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 User</code> → <code>🛡️ Reader</code> on <code>rg-tfplan2md-demo</code></summary>
+&lt;details&gt;
+&lt;summary&gt;➕ azurerm_role_assignment &lt;b&gt;&lt;code&gt;rg_reader&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;👤 User&lt;/code&gt; → &lt;code&gt;🛡️ Reader&lt;/code&gt; on &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt;&lt;/summary&gt;
 ...
-</details></code></pre>
+&lt;/details&gt;</code></pre>
+                                </div>
+                            </div>
                         </div>
                         <p class="comparison-note">Clear module separation—each module's resources are grouped together.</p>
                     </div>
@@ -233,6 +275,10 @@
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
         }
+
+        // Load interactive examples functionality from shared module
+        // See ../assets/js/interactive-examples.js for implementation
     </script>
+    <script src="../assets/js/interactive-examples.js"></script>
 </body>
 </html>

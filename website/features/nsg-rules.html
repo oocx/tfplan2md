@@ -60,7 +60,11 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code># module.network.azurerm_network_security_group.app must be replaced
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># module.network.azurerm_network_security_group.app must be replaced
 -/+ resource "azurerm_network_security_group" "app" {
       name                = "nsg-app"
       # (2 unchanged attributes hidden)
@@ -113,13 +117,102 @@
       }
   }</code></pre>
                         </div>
-                        <p class="comparison-note">Hard to scan—rules are scattered across the diff with all fields shown.</p>
                     </div>
-                    
-                    <div class="comparison-column">
+                    <p class="comparison-note">Hard to scan—rules are scattered across the diff with all fields shown.</p>
+                </div>
+                
+                <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
-                        <div class="code-block">
-                            <pre><code>### ♻️ module.network.azurerm_network_security_group.app
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Network Security Group Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>♻️ module.network.azurerm_network_security_group.app</h3>
+                                    <p><strong>Network Security Group:</strong> <code>nsg-app</code></p>
+                                    <h4>Security Rules</h4>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Change</th>
+                                                <th>Name</th>
+                                                <th>Priority</th>
+                                                <th>Direction</th>
+                                                <th>Access</th>
+                                                <th>Protocol</th>
+                                                <th>Source Addresses</th>
+                                                <th>Source Ports</th>
+                                                <th>Destination Addresses</th>
+                                                <th>Destination Ports</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>🆔 allow-https</code></td>
+                                                <td><code>100</code></td>
+                                                <td><code>⬇️ Inbound</code></td>
+                                                <td><code>✅ Allow</code></td>
+                                                <td><code>🔗 TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌 443</code></td>
+                                                <td><code>-</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>🆔 deny-rdp</code></td>
+                                                <td><code>200</code></td>
+                                                <td><code>⬇️ Inbound</code></td>
+                                                <td><code>⛔ Deny</code></td>
+                                                <td><code>🔗 TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌 3389</code></td>
+                                                <td><code>Block RDP from internet</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>🆔 allow-outbound-https</code></td>
+                                                <td><code>300</code></td>
+                                                <td><code>⬆️ Outbound</code></td>
+                                                <td><code>✅ Allow</code></td>
+                                                <td><code>🔗 TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌 443</code></td>
+                                                <td><code>Allow outbound HTTPS</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>❌</td>
+                                                <td><code>🆔 allow-http</code></td>
+                                                <td><code>100</code></td>
+                                                <td><code>⬇️ Inbound</code></td>
+                                                <td><code>✅ Allow</code></td>
+                                                <td><code>🔗 TCP</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>✳️</code></td>
+                                                <td><code>🔌 80</code></td>
+                                                <td><code>-</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### ♻️ module.network.azurerm_network_security_group.app
 
 **Network Security Group:** `nsg-app`
 
@@ -131,6 +224,8 @@
 | ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
 | ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
 | ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | `-` |</code></pre>
+                                </div>
+                            </div>
                         </div>
                         <p class="comparison-note">Clear table view: 3 rules added, 1 removed—easy to review at a glance.</p>
                     </div>
@@ -240,6 +335,10 @@
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
         }
+
+        // Load interactive examples functionality from shared module
+        // See ../assets/js/interactive-examples.js for implementation
     </script>
+    <script src="../assets/js/interactive-examples.js"></script>
 </body>
 </html>

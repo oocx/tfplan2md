@@ -422,7 +422,8 @@
         const currentTheme = localStorage.getItem('theme') || 'light';
         html.setAttribute('data-theme', currentTheme);
         updateThemeButton(currentTheme);
-        updateScreenshots(currentTheme);
+        // Update screenshots after a brief delay to ensure DOM is fully ready
+        setTimeout(() => updateScreenshots(currentTheme), 0);
         
         themeToggle.addEventListener('click', () => {
             const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';

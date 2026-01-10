@@ -68,7 +68,7 @@
                 </ul>
 
                 <h3 class="doc-subtitle">Creating a Feature Branch</h3>
-                <p>Use descriptive branch names with the following prefixes:</p>
+                <p>Use descriptive branch names with the following prefixes. Features and fixes use an issue number (e.g., <code>feat/025-semantic-diff</code>, <code>fix/026-template-escape</code>), while other types use descriptive names:</p>
                 <table class="doc-table">
                     <thead>
                         <tr>
@@ -282,6 +282,19 @@ dotnet test</code></pre>
                     <li>Commit messages follow Conventional Commits format</li>
                 </ul>
 
+                <h3 class="doc-subtitle">Project Directory Structure</h3>
+                <p>Understanding the project layout:</p>
+                <ul>
+                    <li><code>src/</code> — Core library and CLI entry point</li>
+                    <li><code>tests/</code> — All test projects (unit, integration, snapshot tests)</li>
+                    <li><code>tools/</code> — Helper tools (HtmlRenderer, ScreenshotGenerator, TerraformShowRenderer)</li>
+                    <li><code>docs/</code> — Feature specifications, ADRs, architecture documentation</li>
+                    <li><code>examples/</code> — Demo Terraform plans and output samples</li>
+                    <li><code>website/</code> — GitHub Pages website (HTML/CSS)</li>
+                    <li><code>scripts/</code> — Build, test, and workflow automation scripts</li>
+                    <li><code>.github/</code> — GitHub Actions workflows and agent skill definitions</li>
+                </ul>
+
                 <h3 class="doc-subtitle">Merge Strategy</h3>
                 <p>This project uses <strong>rebase and merge</strong> to maintain a linear Git history:</p>
                 <ul>
@@ -384,13 +397,10 @@ dotnet test</code></pre>
         <section id="ai-workflow" class="section">
             <div class="section-container">
                 <h2 class="section-title">AI-Powered Development Workflow</h2>
-                <p>This project was built 100% using GitHub Copilot with a multi-agent AI workflow. Each specialized agent handles a specific phase of the development lifecycle:</p>
-                
-                <p><strong>Agent roles:</strong> Requirements Engineer → Architect → Quality Engineer → Task Planner → Developer → Technical Writer → Code Reviewer → UAT Tester → Release Manager</p>
-                
-                <p>The workflow uses multiple AI models optimized for different tasks (Claude 3.7 Sonnet for reasoning, GPT-4o for code generation, o1-preview for complex problems).</p>
-                
-                <p>📚 <strong>Learn more:</strong> <a href="ai-workflow.html">Full AI Workflow Documentation</a> | <a href="https://github.com/oocx/tfplan2md/blob/main/docs/agents.md">docs/agents.md</a></p>
+                <p>This project was built 100% using GitHub Copilot with a multi-agent AI workflow.</p>
+                <p style="text-align: center; margin-top: 32px;">
+                    <a href="ai-workflow.html" class="btn btn-primary" style="display: inline-block;">Learn About the AI Workflow</a>
+                </p>
             </div>
         </section>
 

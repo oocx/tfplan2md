@@ -814,6 +814,7 @@ body {
     border-radius: 10px;
     font-family: var(--font-mono);
     font-size: 14px;
+    position: relative;
 }
 
 .command-box code {
@@ -1216,6 +1217,7 @@ body {
     margin-bottom: 16px;
     max-width: 100%;
     min-width: 0;
+    position: relative;
 }
 
 .code-block .code-header {

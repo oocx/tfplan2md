@@ -51,20 +51,79 @@
                 tfplan2md includes built-in templates for different use cases. Choose the right level of detail for your workflow.
             </p>
 
-            <div class="template-comparison">
-                <div class="template-card">
-                    <div class="template-header">
-                        <h3 class="template-name">Summary Template</h3>
-                        <span class="template-badge">--template summary</span>
-                    </div>
-                    <p class="template-description">
-                        Compact overview showing only action counts and resource type breakdown. Perfect for PR titles or quick reviews.
-                    </p>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-title">Output</span>
+            <!-- Summary Template Example -->
+            <div class="example-section">
+                <div class="example-header">
+                    <h3 class="example-title">Summary Template</h3>
+                    <span class="template-badge">--template summary</span>
+                </div>
+                <p class="example-description">
+                    Compact overview showing only action counts and resource type breakdown. Perfect for PR titles or quick reviews.
+                </p>
+                <div class="template-usecases" style="margin-bottom: 16px;">
+                    <strong>Best For:</strong>
+                    <ul>
+                        <li>Large plans (&gt;50 resources)</li>
+                        <li>Initial PR review</li>
+                        <li>Management reporting</li>
+                    </ul>
+                </div>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Summary Template Output</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
                         </div>
-                        <pre><code># Terraform Plan Summary
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+<h1 id="user-content-terraform-plan-summary">Terraform Plan Summary</h1>
+<p><strong>Terraform Version:</strong> 1.14.0</p>
+<p><strong>Generated:</strong> 2025-12-20T14:30:00Z</p>
+<h2 id="user-content-summary">Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕ Add</td>
+<td>12</td>
+<td>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_log_analytics_workspace<br/>1 azurerm_resource_group<br/>2 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_subnet<br/>2 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>🔄 Change</td>
+<td>6</td>
+<td>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>♻️ Replace</td>
+<td>2</td>
+<td>1 azurerm_network_security_group<br/>1 azurerm_subnet</td>
+</tr>
+<tr>
+<td>❌ Destroy</td>
+<td>3</td>
+<td>1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>23</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code># Terraform Plan Summary
 
 **Terraform Version:** 1.14.0
 
@@ -79,30 +138,123 @@
 | ♻️ Replace | 2 | 1 azurerm_network_security_group&lt;br/&gt;1 azurerm_subnet |
 | ❌ Destroy | 3 | 1 azurerm_role_assignment&lt;br/&gt;1 azurerm_storage_account&lt;br/&gt;1 azurerm_virtual_network |
 | **Total** | **23** | |</code></pre>
-                    </div>
-                    <div class="template-usecases">
-                        <strong>Best For:</strong>
-                        <ul>
-                            <li>Large plans (&gt;50 resources)</li>
-                            <li>Initial PR review</li>
-                            <li>Management reporting</li>
-                        </ul>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="template-card">
-                    <div class="template-header">
-                        <h3 class="template-name">Default Template</h3>
-                        <span class="template-badge">default</span>
-                    </div>
-                    <p class="template-description">
-                        Full report with summary, resource changes, and attribute details. Shows exactly what will change.
-                    </p>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-title">Output (excerpt)</span>
+            <!-- Default Template Example -->
+            <div class="example-section">
+                <div class="example-header">
+                    <h3 class="example-title">Default Template</h3>
+                    <span class="template-badge">default</span>
+                </div>
+                <p class="example-description">
+                    Full report with summary, resource changes, and attribute details. Shows exactly what will change.
+                </p>
+                <div class="template-usecases" style="margin-bottom: 16px;">
+                    <strong>Best For:</strong>
+                    <ul>
+                        <li>Standard PR reviews</li>
+                        <li>Security audits</li>
+                        <li>Change verification</li>
+                    </ul>
+                </div>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Default Template Output (excerpt)</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
                         </div>
-                        <pre><code># Terraform Plan Report
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+<h1 id="user-content-terraform-plan-report">Terraform Plan Report</h1>
+<p><strong>Terraform Version:</strong> 1.14.0</p>
+<h2 id="user-content-summary">Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕ Add</td>
+<td>12</td>
+<td>...</td>
+</tr>
+<tr>
+<td>🔄 Change</td>
+<td>6</td>
+<td>...</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>23</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-content-resource-changes">Resource Changes</h2>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-root">📦 Module: root</h3>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️ Tags:</strong> <code>environment: demo</code> <code>owner: tfplan2md</code></p>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>🆔 sttfplan2mddata</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> | 2🔧 account_replication_type, tags.cost_center</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+<td><code>GRS</code></td>
+</tr>
+<tr>
+<td>tags.cost_center</td>
+<td>-</td>
+<td><code>1234</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code># Terraform Plan Report
 
 **Terraform Version:** 1.14.0
 
@@ -118,22 +270,22 @@
 
 ### 📦 Module: root
 
-&lt;details style="margin-bottom:12px;"&gt;
-&lt;summary&gt;➕ azurerm_resource_group &lt;b&gt;&lt;code&gt;core&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
-&lt;br&gt;
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px"&gt;
+&lt;summary&gt;➕ azurerm_resource_group &lt;b&gt;&lt;code&gt;core&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br/&gt;
 
 | Attribute | Value |
 |-----------|-------|
 | location | `🌍 eastus` |
-| name | `rg-tfplan2md-demo` |
+| name | `🆔 rg-tfplan2md-demo` |
 
 **🏷️ Tags:** `environment: demo` `owner: tfplan2md`
 
 &lt;/details&gt;
 
-&lt;details style="margin-bottom:12px;"&gt;
-&lt;summary&gt;🔄 azurerm_storage_account &lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;sttfplan2mddata&lt;/code&gt; in &lt;code&gt;rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt; | 2🔧 account_replication_type, tags.cost_center&lt;/summary&gt;
-&lt;br&gt;
+&lt;details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px"&gt;
+&lt;summary&gt;🔄 azurerm_storage_account &lt;b&gt;&lt;code&gt;data&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 sttfplan2mddata&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt; | 2🔧 account_replication_type, tags.cost_center&lt;/summary&gt;
+&lt;br/&gt;
 
 | Attribute | Before | After |
 |-----------|--------|-------|
@@ -141,14 +293,7 @@
 | tags.cost_center | - | `1234` |
 
 &lt;/details&gt;</code></pre>
-                    </div>
-                    <div class="template-usecases">
-                        <strong>Best For:</strong>
-                        <ul>
-                            <li>Standard PR reviews</li>
-                            <li>Security audits</li>
-                            <li>Change verification</li>
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>

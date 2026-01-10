@@ -60,7 +60,11 @@
                     <div class="comparison-column">
                         <h3 class="comparison-title">❌ Without tfplan2md</h3>
                         <div class="code-block">
-                            <pre><code># module.security.azurerm_key_vault_secret.audit_policy will be updated in-place
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code># module.security.azurerm_key_vault_secret.audit_policy will be updated in-place
 ~ resource "azurerm_key_vault_secret" "audit_policy" {
     ~ value        = "line1: allow
 line2: log old activity
@@ -70,14 +74,52 @@ line3: end"
       name         = "audit-policy"
       # (2 unchanged attributes hidden)
   }</code></pre>
+                            </div>
                         </div>
                         <p class="comparison-note">Multi-line values embedded inline—hard to spot the actual change.</p>
                     </div>
                     
                     <div class="comparison-column">
                         <h3 class="comparison-title">✅ With tfplan2md</h3>
-                        <div class="code-block">
-                            <pre><code>### 🔄 module.security.azurerm_key_vault_secret.audit_policy
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Large Value Diff Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>🔄 module.security.azurerm_key_vault_secret.audit_policy</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Attribute</th>
+                                                <th>Before</th>
+                                                <th>After</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>value</td>
+                                                <td><em>(see below)</em></td>
+                                                <td><em>(see below)</em></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <p>Large values: value (3 lines, 1 changed)</p>
+                                    <h5><strong>value:</strong></h5>
+                                    <pre><code class="language-diff">line1: allow
+- line2: log old activity
++ line2: log critical activity
+line3: end</code></pre>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### 🔄 module.security.azurerm_key_vault_secret.audit_policy
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
@@ -93,6 +135,8 @@ line1: allow
 + line2: log critical activity
 line3: end
 ```</code></pre>
+                                </div>
+                            </div>
                         </div>
                         <p class="comparison-note">Line-by-line diff in a separate section—changes are crystal clear.</p>
                     </div>
@@ -218,6 +262,10 @@ tfplan2md plan.json --large-value-format simple-diff</code></pre>
             themeToggle.setAttribute('aria-label', label);
             themeToggle.setAttribute('title', label);
         }
+
+        // Load interactive examples functionality from shared module
+        // See ../assets/js/interactive-examples.js for implementation
     </script>
+    <script src="../assets/js/interactive-examples.js"></script>
 </body>
 </html>

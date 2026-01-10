@@ -655,9 +655,11 @@ body {
 
 .code-header {
     background: var(--code-header-bg);
-    padding: 12px 16px;
+    padding: 10px 16px;
+    min-height: 42px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .code-title {
@@ -1159,7 +1161,7 @@ body {
 
 .code-block .code-header {
     background: var(--code-header-bg);
-    padding: 12px 16px;
+    padding: 8px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1494,7 +1496,6 @@ body {
 }
 
 .feature-detail {
-    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -1541,6 +1542,15 @@ body {
 .comparison-column {
     display: flex;
     flex-direction: column;
+}
+
+.comparison-column .code-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.comparison-column .code-block .example-content {
+    overflow-y: auto;
 }
 
 .comparison-title {
@@ -2821,19 +2831,21 @@ body {
     display: flex;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
-    padding: 2px;
+    padding: 0;
+    line-height: 1;
 }
 
 .toggle-btn {
     background: transparent;
     border: none;
     color: #a0aec0;
-    padding: 4px 12px;
+    padding: 6px 12px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.2s;
+    line-height: 1.1;
 }
 
 .toggle-btn.active {
@@ -2850,12 +2862,13 @@ body {
     border: none;
     color: #a0aec0;
     cursor: pointer;
-    font-size: 16px;
-    padding: 4px;
+    font-size: 14px;
+    padding: 6px;
     transition: color 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
 }
 
 .fullscreen-btn:hover {
@@ -2866,11 +2879,14 @@ body {
     position: relative;
     background: var(--code-bg);
     min-height: 200px;
+    max-height: 900px;
+    overflow: auto;
 }
 
 .view-pane {
     display: none;
     width: 100%;
+    min-width: fit-content;
 }
 
 .view-pane.active {
@@ -2880,7 +2896,6 @@ body {
 .source-view pre {
     margin: 0;
     padding: 20px;
-    overflow-x: auto;
 }
 
 } /* End @layer website */
@@ -2898,7 +2913,6 @@ body {
     font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Ubuntu, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.6;
-    overflow-x: auto;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
@@ -2936,7 +2950,6 @@ body {
     width: 100%;
     margin-bottom: 16px;
     display: block;
-    overflow-x: auto;
 }
 
 .rendered-view th {

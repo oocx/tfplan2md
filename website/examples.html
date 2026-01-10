@@ -958,72 +958,9 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
             themeToggle.setAttribute('title', label);
         }
 
-        // Interactive Examples
-        document.querySelectorAll('.interactive-example').forEach(example => {
-            const toggles = example.querySelectorAll('.toggle-btn');
-            const panes = example.querySelectorAll('.view-pane');
-            const fullscreenBtn = example.querySelector('.fullscreen-btn');
-
-            toggles.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const view = btn.dataset.view;
-                    
-                    // Update buttons
-                    toggles.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    // Update panes
-                    panes.forEach(p => {
-                        p.classList.remove('active');
-                        if (p.classList.contains(view + '-view')) {
-                            p.classList.add('active');
-                        }
-                    });
-                });
-            });
-
-            fullscreenBtn.addEventListener('click', () => {
-                example.classList.toggle('fullscreen');
-                fullscreenBtn.textContent = example.classList.contains('fullscreen') ? '✕' : '⛶';
-                document.body.style.overflow = example.classList.contains('fullscreen') ? 'hidden' : '';
-            });
-        });
-
-        // Simple Markdown Syntax Highlighter
-        function highlightMarkdown() {
-            // Apply to source-view code blocks and template example code blocks
-            document.querySelectorAll('.source-view code, .template-card code, .template-comparison code').forEach(block => {
-                let html = block.innerHTML;
-                
-                // HTML tags (already escaped)
-                html = html.replace(/(&lt;[^&]+&gt;)/g, '<span class="md-tag">$1</span>');
-                
-                // Comments
-                html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
-                
-                // Headings
-                html = html.replace(/^(#{1,6} .+$)/gm, '<span class="md-heading">$1</span>');
-                
-                // Bold
-                html = html.replace(/(\*\*[^*]+\*\*)/g, '<span class="md-bold">$1</span>');
-                
-                // Inline Code (backticks)
-                html = html.replace(/(`[^`]+`)/g, '<span class="md-code">$1</span>');
-                
-                // Links
-                html = html.replace(/(\[[^\]]+\]\([^)]+\))/g, '<span class="md-link">$1</span>');
-                
-                // Lists
-                html = html.replace(/^(\s*[-*+] )/gm, '<span class="md-list">$1</span>');
-                
-                // Tables (pipe separators)
-                html = html.replace(/(\|)/g, '<span class="md-table-sep">$1</span>');
-                
-                block.innerHTML = html;
-            });
-        }
-
-        highlightMarkdown();
+        // Load interactive examples functionality from shared module
+        // See assets/js/interactive-examples.js for implementation
     </script>
+    <script src="assets/js/interactive-examples.js"></script>
 </body>
 </html>

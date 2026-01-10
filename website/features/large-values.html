@@ -64,19 +64,15 @@
                                 <span class="code-title">Raw Terraform Output</span>
                             </div>
                             <div class="example-content">
-                                <pre><code># module.security.azurerm_key_vault_secret.audit_policy will be updated in-place
-~ resource "azurerm_key_vault_secret" "audit_policy" {
-    ~ value        = "line1: allow
-line2: log old activity
-line3: end" -> "line1: allow
-line2: log critical activity
-line3: end"
-      name         = "audit-policy"
-      # (2 unchanged attributes hidden)
+                                <pre style="white-space: pre-wrap; overflow-x: hidden;"><code># azurerm_api_management_policy.global will be updated in-place
+~ resource "azurerm_api_management_policy" "global" {
+    ~ xml_content = "&lt;policies&gt;\n  &lt;inbound&gt;\n    &lt;!-- Rate limiting policy --&gt;\n    &lt;rate-limit calls=\"100\" renewal-period=\"60\" /&gt;\n    &lt;!-- IP filtering --&gt;\n    &lt;ip-filter action=\"allow\"&gt;\n      &lt;address&gt;10.0.0.0/24&lt;/address&gt;\n      &lt;address&gt;172.16.0.0/16&lt;/address&gt;\n    &lt;/ip-filter&gt;\n    &lt;!-- CORS policy --&gt;\n    &lt;cors allow-credentials=\"true\"&gt;\n      &lt;allowed-origins&gt;\n        &lt;origin&gt;https://example.com&lt;/origin&gt;\n        &lt;origin&gt;https://app.example.com&lt;/origin&gt;\n      &lt;/allowed-origins&gt;\n      &lt;allowed-methods&gt;\n        &lt;method&gt;GET&lt;/method&gt;\n        &lt;method&gt;POST&lt;/method&gt;\n        &lt;method&gt;PUT&lt;/method&gt;\n        &lt;method&gt;DELETE&lt;/method&gt;\n      &lt;/allowed-methods&gt;\n      &lt;allowed-headers&gt;\n        &lt;header&gt;Content-Type&lt;/header&gt;\n        &lt;header&gt;Authorization&lt;/header&gt;\n        &lt;header&gt;X-Requested-With&lt;/header&gt;\n      &lt;/allowed-headers&gt;\n    &lt;/cors&gt;\n    &lt;!-- Authentication with Azure AD --&gt;\n    &lt;validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized\"&gt;\n      &lt;openid-config url=\"https://login.microsoftonline.com/common/.well-known/openid-configuration\" /&gt;\n      &lt;audiences&gt;\n        &lt;audience&gt;api://12345678-1234-1234-1234-123456789abc&lt;/audience&gt;\n      &lt;/audiences&gt;\n      &lt;required-claims&gt;\n        &lt;claim name=\"roles\" match=\"any\"&gt;\n          &lt;value&gt;Reader&lt;/value&gt;\n          &lt;value&gt;Writer&lt;/value&gt;\n        &lt;/claim&gt;\n      &lt;/required-claims&gt;\n    &lt;/validate-jwt&gt;\n    &lt;!-- Set backend service URL --&gt;\n    &lt;set-backend-service base-url=\"https://backend-old.example.com\" /&gt;\n    &lt;!-- Add custom headers --&gt;\n    &lt;set-header name=\"X-Environment\" exists-action=\"override\"&gt;\n      &lt;value&gt;Production&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-Request-Id\" exists-action=\"override\"&gt;\n      &lt;value&gt;@(Guid.NewGuid().ToString())&lt;/value&gt;\n    &lt;/set-header&gt;\n  &lt;/inbound&gt;\n  &lt;backend&gt;\n    &lt;base /&gt;\n  &lt;/backend&gt;\n  &lt;outbound&gt;\n    &lt;base /&gt;\n    &lt;!-- Response caching --&gt;\n    &lt;cache-store duration=\"3600\" /&gt;\n    &lt;!-- Remove internal headers --&gt;\n    &lt;set-header name=\"X-AspNet-Version\" exists-action=\"delete\" /&gt;\n    &lt;set-header name=\"X-Powered-By\" exists-action=\"delete\" /&gt;\n  &lt;/outbound&gt;\n  &lt;on-error&gt;\n    &lt;base /&gt;\n    &lt;!-- Log errors to Application Insights --&gt;\n    &lt;trace source=\"policy-error\" severity=\"error\"&gt;\n      &lt;message&gt;@(context.LastError.Message)&lt;/message&gt;\n      &lt;metadata name=\"request-id\" value=\"@(context.RequestId)\" /&gt;\n    &lt;/trace&gt;\n  &lt;/on-error&gt;\n&lt;/policies&gt;" -&gt;
+"&lt;policies&gt;\n  &lt;inbound&gt;\n    &lt;!-- Rate limiting policy with increased limits --&gt;\n    &lt;rate-limit calls=\"200\" renewal-period=\"60\" /&gt;\n    &lt;!-- IP filtering with additional networks --&gt;\n    &lt;ip-filter action=\"allow\"&gt;\n      &lt;address&gt;10.0.0.0/24&lt;/address&gt;\n      &lt;address&gt;172.16.0.0/16&lt;/address&gt;\n      &lt;address&gt;192.168.1.0/24&lt;/address&gt;\n    &lt;/ip-filter&gt;\n    &lt;!-- CORS policy with additional origins --&gt;\n    &lt;cors allow-credentials=\"true\"&gt;\n      &lt;allowed-origins&gt;\n        &lt;origin&gt;https://example.com&lt;/origin&gt;\n        &lt;origin&gt;https://app.example.com&lt;/origin&gt;\n        &lt;origin&gt;https://portal.example.com&lt;/origin&gt;\n      &lt;/allowed-origins&gt;\n      &lt;allowed-methods&gt;\n        &lt;method&gt;GET&lt;/method&gt;\n        &lt;method&gt;POST&lt;/method&gt;\n        &lt;method&gt;PUT&lt;/method&gt;\n        &lt;method&gt;DELETE&lt;/method&gt;\n        &lt;method&gt;PATCH&lt;/method&gt;\n      &lt;/allowed-methods&gt;\n      &lt;allowed-headers&gt;\n        &lt;header&gt;Content-Type&lt;/header&gt;\n        &lt;header&gt;Authorization&lt;/header&gt;\n        &lt;header&gt;X-Requested-With&lt;/header&gt;\n        &lt;header&gt;X-API-Key&lt;/header&gt;\n      &lt;/allowed-headers&gt;\n    &lt;/cors&gt;\n    &lt;!-- Authentication with Azure AD --&gt;\n    &lt;validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized\"&gt;\n      &lt;openid-config url=\"https://login.microsoftonline.com/common/.well-known/openid-configuration\" /&gt;\n      &lt;audiences&gt;\n        &lt;audience&gt;api://12345678-1234-1234-1234-123456789abc&lt;/audience&gt;\n      &lt;/audiences&gt;\n      &lt;required-claims&gt;\n        &lt;claim name=\"roles\" match=\"any\"&gt;\n          &lt;value&gt;Reader&lt;/value&gt;\n          &lt;value&gt;Writer&lt;/value&gt;\n          &lt;value&gt;Admin&lt;/value&gt;\n        &lt;/claim&gt;\n      &lt;/required-claims&gt;\n    &lt;/validate-jwt&gt;\n    &lt;!-- Set backend service URL to new endpoint --&gt;\n    &lt;set-backend-service base-url=\"https://backend-new.example.com\" /&gt;\n    &lt;!-- Add custom headers --&gt;\n    &lt;set-header name=\"X-Environment\" exists-action=\"override\"&gt;\n      &lt;value&gt;Production&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-Request-Id\" exists-action=\"override\"&gt;\n      &lt;value&gt;@(Guid.NewGuid().ToString())&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-API-Version\" exists-action=\"override\"&gt;\n      &lt;value&gt;2.0&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;!-- Request throttling per user --&gt;\n    &lt;quota-by-key calls=\"10000\" renewal-period=\"3600\" counter-key=\"@(context.Request.Headers.GetValueOrDefault(&amp;quot;Authorization&amp;quot;,&amp;quot;&amp;quot;))\" /&gt;\n  &lt;/inbound&gt;\n  &lt;backend&gt;\n    &lt;base /&gt;\n    &lt;!-- Retry policy for backend failures --&gt;\n    &lt;retry condition=\"@(context.Response.StatusCode &amp;gt;= 500)\" count=\"3\" interval=\"2\" first-fast-retry=\"true\" /&gt;\n  &lt;/backend&gt;\n  &lt;outbound&gt;\n    &lt;base /&gt;\n    &lt;!-- Response caching with vary-by headers --&gt;\n    &lt;cache-store duration=\"3600\" vary-by-developer=\"false\" vary-by-developer-groups=\"false\"&gt;\n      &lt;vary-by-header&gt;Accept&lt;/vary-by-header&gt;\n      &lt;vary-by-header&gt;Accept-Encoding&lt;/vary-by-header&gt;\n    &lt;/cache-store&gt;\n    &lt;!-- Remove internal headers --&gt;\n    &lt;set-header name=\"X-AspNet-Version\" exists-action=\"delete\" /&gt;\n    &lt;set-header name=\"X-Powered-By\" exists-action=\"delete\" /&gt;\n    &lt;!-- Add security headers --&gt;\n    &lt;set-header name=\"X-Content-Type-Options\" exists-action=\"override\"&gt;\n      &lt;value&gt;nosniff&lt;/value&gt;\n    &lt;/set-header&gt;\n    &lt;set-header name=\"X-Frame-Options\" exists-action=\"override\"&gt;\n      &lt;value&gt;DENY&lt;/value&gt;\n    &lt;/set-header&gt;\n  &lt;/outbound&gt;\n  &lt;on-error&gt;\n    &lt;base /&gt;\n    &lt;!-- Log errors to Application Insights with additional context --&gt;\n    &lt;trace source=\"policy-error\" severity=\"error\"&gt;\n      &lt;message&gt;@(context.LastError.Message)&lt;/message&gt;\n      &lt;metadata name=\"request-id\" value=\"@(context.RequestId)\" /&gt;\n      &lt;metadata name=\"operation-name\" value=\"@(context.Operation.Name)\" /&gt;\n      &lt;metadata name=\"status-code\" value=\"@(context.Response.StatusCode.ToString())\" /&gt;\n    &lt;/trace&gt;\n    &lt;!-- Send error notification --&gt;\n    &lt;send-one-way-request mode=\"new\"&gt;\n      &lt;set-url&gt;https://monitoring.example.com/api/alerts&lt;/set-url&gt;\n      &lt;set-method&gt;POST&lt;/set-method&gt;\n      &lt;set-header name=\"Content-Type\" exists-action=\"override\"&gt;\n        &lt;value&gt;application/json&lt;/value&gt;\n      &lt;/set-header&gt;\n      &lt;set-body&gt;@{\n        return new JObject(\n          new JProperty(&amp;quot;error&amp;quot;, context.LastError.Message),\n          new JProperty(&amp;quot;requestId&amp;quot;, context.RequestId),\n          new JProperty(&amp;quot;timestamp&amp;quot;, DateTime.UtcNow.ToString())\n        ).ToString();\n      }&lt;/set-body&gt;\n    &lt;/send-one-way-request&gt;\n  &lt;/on-error&gt;\n&lt;/policies&gt;"
+      # (1 unchanged attribute hidden)
   }</code></pre>
                             </div>
                         </div>
-                        <p class="comparison-note">Multi-line values embedded inline—hard to spot the actual change.</p>
+                        <p class="comparison-note">112-line XML policy embedded in strings with \n escape sequences—nearly impossible to spot changes.</p>
                     </div>
                     
                     <div class="comparison-column">
@@ -94,7 +90,7 @@ line3: end"
                             </div>
                             <div class="example-content">
                                 <div class="view-pane rendered-view active">
-                                    <h3>🔄 module.security.azurerm_key_vault_secret.audit_policy</h3>
+                                    <h3>🔄 azurerm_api_management_policy.global</h3>
                                     <table>
                                         <thead>
                                             <tr>
@@ -105,40 +101,78 @@ line3: end"
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>value</td>
+                                                <td>xml_content</td>
                                                 <td><em>(see below)</em></td>
                                                 <td><em>(see below)</em></td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <p>Large values: value (3 lines, 1 changed)</p>
-                                    <h5><strong>value:</strong></h5>
-                                    <pre><code class="language-diff">line1: allow
-- line2: log old activity
-+ line2: log critical activity
-line3: end</code></pre>
+                                    <p>Large values: xml_content (112 lines, 57 changed)</p>
+                                    <h5><strong>xml_content:</strong></h5>
+                                    <pre><code class="language-xml">&lt;policies&gt;
+  &lt;inbound&gt;
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;!-- Rate limiting policy --&gt;</span>
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;rate-limit calls="100" renewal-period="60" /&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;!-- <span style="background-color: #acf2bd; color: #24292e;">Rate limiting policy with increased limits</span> --&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;rate-limit calls="200" renewal-period="60" /&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;!-- IP filtering with additional networks --&gt;</span>
+    &lt;ip-filter action="allow"&gt;
+      &lt;address&gt;10.0.0.0/24&lt;/address&gt;
+      &lt;address&gt;172.16.0.0/16&lt;/address&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+       &lt;address&gt;192.168.1.0/24&lt;/address&gt;</span>
+    &lt;/ip-filter&gt;
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;!-- CORS policy --&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;!-- CORS policy <span style="background-color: #acf2bd; color: #24292e;">with additional origins</span> --&gt;</span>
+    &lt;cors allow-credentials="true"&gt;
+      &lt;allowed-origins&gt;
+        &lt;origin&gt;https://example.com&lt;/origin&gt;
+        &lt;origin&gt;https://app.example.com&lt;/origin&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+         &lt;origin&gt;https://portal.example.com&lt;/origin&gt;</span>
+      &lt;/allowed-origins&gt;
+      &lt;allowed-methods&gt;
+        &lt;method&gt;GET&lt;/method&gt;
+        &lt;method&gt;POST&lt;/method&gt;
+        &lt;method&gt;PUT&lt;/method&gt;
+        &lt;method&gt;DELETE&lt;/method&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+         &lt;method&gt;PATCH&lt;/method&gt;</span>
+      &lt;/allowed-methods&gt;
+      &lt;allowed-headers&gt;
+        &lt;header&gt;Content-Type&lt;/header&gt;
+        &lt;header&gt;Authorization&lt;/header&gt;
+        &lt;header&gt;X-Requested-With&lt;/header&gt;
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+         &lt;header&gt;X-API-Key&lt;/header&gt;</span>
+      &lt;/allowed-headers&gt;
+    &lt;/cors&gt;
+    &lt;!-- Authentication, backend, headers... --&gt;
+<span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">-     &lt;set-backend-service base-url="https://<span style="background-color: #ffc0c0; color: #24292e;">backend-old</span>.example.com" /&gt;</span>
+<span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: block; padding-left: 8px; margin-left: 0;">+     &lt;set-backend-service base-url="https://<span style="background-color: #acf2bd; color: #24292e;">backend-new</span>.example.com" /&gt;</span>
+    <span style="opacity: 0.6;">... 80+ more lines with inline character-level highlighting ...</span>
+&lt;/policies&gt;</code></pre>
                                 </div>
                                 <div class="view-pane source-view">
-                                    <pre><code>### 🔄 module.security.azurerm_key_vault_secret.audit_policy
+                                    <pre><code>### 🔄 azurerm_api_management_policy.global
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| value | *(see below)* | *(see below)* |
+| xml_content | *(see below)* | *(see below)* |
 
-Large values: value (3 lines, 1 changed)
+Large values: xml_content (112 lines, 57 changed)
 
-##### **value:**
+##### **xml_content:**
 
-```diff
-line1: allow
-- line2: log old activity
-+ line2: log critical activity
-line3: end
-```</code></pre>
+&lt;pre&gt;&lt;code&gt;&lt;policies&gt;
+  &lt;inbound&gt;
+&lt;span style="background-color: #fff5f5; ..."&gt;-     &lt;!-- Rate limiting policy --&gt;&lt;/span&gt;
+&lt;span style="background-color: #fff5f5; ..."&gt;-     &lt;rate-limit calls="100" renewal-period="60" /&gt;&lt;/span&gt;
+&lt;span style="background-color: #f0fff4; ..."&gt;+     &lt;!-- &lt;span style="..."&gt;Rate limiting policy with increased limits&lt;/span&gt; --&gt;&lt;/span&gt;
+&lt;span style="background-color: #f0fff4; ..."&gt;+     &lt;rate-limit calls="200" renewal-period="60" /&gt;&lt;/span&gt;
+    ...
+&lt;/policies&gt;
+&lt;/code&gt;&lt;/pre&gt;</code></pre>
                                 </div>
                             </div>
                         </div>
-                        <p class="comparison-note">Line-by-line diff in a separate section—changes are crystal clear.</p>
+                        <p class="comparison-note">Readable XML with character-level diff highlighting—every change is visible and reviewable.</p>
                     </div>
                 </div>
 

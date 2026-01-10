@@ -38,7 +38,7 @@
                 <h2>How Provider Templates Work</h2>
                 <p>tfplan2md automatically detects resource types and applies specialized templates when available. This provides:</p>
                 <ul>
-                    <li><strong>Semantic Diffs</strong> — Show meaningful changes instead of index-based modifications</li>
+                    <li><strong>Inline Diffs</strong> — Show meaningful changes instead of index-based modifications</li>
                     <li><strong>Formatted Values</strong> — Display complex values in readable formats</li>
                     <li><strong>Resource-Specific Intelligence</strong> — Understand and present changes in context</li>
                     <li><strong>Automatic Application</strong> — No configuration needed; works out of the box</li>
@@ -65,10 +65,10 @@
                             <h3>Azure (azurerm)</h3>
                             <span class="provider-status production">Production</span>
                         </div>
-                        <p>Comprehensive support for Azure resources with semantic diffing, resource ID formatting, and role assignment enhancements.</p>
+                        <p>Comprehensive support for Azure resources with inline diffing, resource ID formatting, and role assignment enhancements.</p>
                         <h4>Specialized Resources</h4>
                         <ul>
-                            <li><strong>Firewall Network Rule Collections</strong> — Semantic diff of rules (added/removed/unchanged)</li>
+                            <li><strong>Firewall Network Rule Collections</strong> — Inline diff of rules (added/removed/unchanged)</li>
                             <li><strong>Network Security Groups</strong> — Rule-level diffing with priority awareness</li>
                             <li><strong>Role Assignments</strong> — Principal name mapping and readable scope display</li>
                         </ul>
@@ -208,7 +208,7 @@
                 <h3>Template Design Guidelines</h3>
                 <ul>
                     <li>Focus on showing <strong>what changed</strong>, not just the new state</li>
-                    <li>Use semantic diffing when appropriate (added/removed/unchanged)</li>
+                    <li>Use inline diffing when appropriate (added/removed/unchanged)</li>
                     <li>Format complex values for readability (tables, lists, collapsible sections)</li>
                     <li>Add visual icons for common value types (IPs, ports, protocols)</li>
                     <li>Keep output concise; use collapsible sections for details</li>

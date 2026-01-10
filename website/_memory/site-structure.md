@@ -24,6 +24,7 @@ This document is the **source of truth** for the current website structure and f
 - `/features/module-grouping.html`
 - `/features/semantic-icons.html`
 - `/features/custom-templates.html`
+- `/features/semantic-diffs.html`
 
 ## Navigation Structure
 
@@ -141,6 +142,45 @@ The navbar (present in all pages) links to:
   - Include information about how this project uses AI
   - Describe the multi-agent workflow (from agents.md)
   - "Built 100% with GitHub Copilot" badge should link to ai-workflow.html
+
+### /features/semantic-diffs.html
+
+- **Title:** Semantic Diffs - tfplan2md
+- **Purpose:** Showcase how semantic diffs are used across multiple features
+- **Content summary:** Overview of semantic diffs with examples from firewall rules, NSG rules, large values, and simple attribute changes
+- **Target audience:** Evaluators, Users
+- **Sections:**
+  1. Hero with title and subtitle
+  2. Feature overview description
+  3. Four example cards:
+     - Firewall Rule Changes (with screenshot and link to firewall-rules.html)
+     - NSG Rule Changes (with screenshot and link to nsg-rules.html)
+     - Large Value Diffs (with screenshot and link to large-values.html)
+     - Simple Attribute Changes (with screenshot and link to value-formatting.html)
+  4. Footer section emphasizing diffs are used throughout tfplan2md
+  5. Standard footer with links
+- **Screenshots used:**
+  - `../assets/screenshots/firewall-example-crop.png` (existing)
+  - `../assets/screenshots/nsg-example-crop.png` (existing)
+  - `../assets/screenshots/large-value-diff.png` (new)
+  - `../assets/screenshots/storage-account-diff.png` (new)
+- **Feature links (internal):**
+  - `firewall-rules.html`
+  - `nsg-rules.html`
+  - `large-values.html`
+  - `value-formatting.html`
+- **External links:** Standard GitHub repo and footer links
+- **Accessibility features:**
+  - Theme toggle with aria-label
+  - Mobile menu button with aria-label
+  - Semantic heading hierarchy (h1 → h2 → h3)
+  - Alt text for all screenshots
+  - Responsive srcset for high-DPI displays (where available)
+  - Lazy loading for images
+- **Decision log:**
+  - 2026-01-10: Created page to showcase semantic diffs across multiple features
+  - 2026-01-10: Replaced "See it in action" link on features/index.html from firewall-rules.html to semantic-diffs.html
+  - 2026-01-10: Generated screenshots for storage account diffs and large value diffs
 
 ### /ai-workflow.html
 

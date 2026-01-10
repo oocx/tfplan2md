@@ -2886,7 +2886,7 @@ body {
 .view-pane {
     display: none;
     width: 100%;
-    min-width: fit-content;
+    min-width: max-content;
 }
 
 .view-pane.active {
@@ -3061,11 +3061,13 @@ body {
 .code-block.fullscreen .example-content {
     flex: 1;
     overflow: auto;
+    max-height: none;
 }
 
 .code-block.fullscreen .view-pane {
     height: 100%;
     overflow: auto;
+    min-width: unset;
 }
 
 .code-block.fullscreen .rendered-view {

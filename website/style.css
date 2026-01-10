@@ -186,9 +186,14 @@ body {
 
 .theme-icon {
     display: block;
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
+}
+
+/* Invert icon colors in dark mode */
+[data-theme="dark"] .theme-icon {
+    filter: invert(1);
 }
 
 .nav-cta {

@@ -2,8 +2,85 @@
 
 This document consolidates all maintainer instructions and decisions from the website design sessions (chat1.json and chat2.json).
 
-**Last Updated:** 2026-01-03
+**Last Updated:** 2026-01-11
 **Source Files:** `website/_memory/chat1.json`, `website/_memory/chat2.json`
+
+---
+
+## Technical Implementation Notes
+
+### Syntax Highlighting
+
+**Library:** highlight.js 11.9.0
+
+**Implementation Pattern:**
+1. Add highlight.js theme CSS in `<head>`:
+   ```html
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
+   ```
+
+2. Add override styles to make backgrounds transparent:
+   ```css
+   .code-block .hljs,
+   .code-block pre code {
+       background: transparent !important;
+   }
+   [data-theme="dark"] .hljs {
+       color: var(--code-text);
+   }
+   ```
+
+3. Load highlight.js scripts before closing `</body>`:
+   ```html
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+   <!-- Add other languages as needed -->
+   ```
+
+4. Add language detection and theme toggle JavaScript:
+   ```javascript
+   // Detect language and add class
+   document.querySelectorAll('.code-block code').forEach(code => {
+       const text = code.textContent.trim();
+       // Detection logic based on content patterns
+       if (text.startsWith('name:') || text.startsWith('trigger:')) {
+           code.className = 'language-yaml';
+       } else if (text.startsWith('{') || text.startsWith('[')) {
+           code.className = 'language-json';
+       } else {
+           code.className = 'language-bash';
+       }
+   });
+   
+   // Apply highlighting
+   hljs.highlightAll();
+   
+   // Theme toggle function
+   function toggleHighlightTheme(theme) {
+       const lightTheme = document.getElementById('highlight-light');
+       const darkTheme = document.getElementById('highlight-dark');
+       if (theme === 'dark') {
+           lightTheme.disabled = true;
+           darkTheme.disabled = false;
+       } else {
+           lightTheme.disabled = false;
+           darkTheme.disabled = true;
+       }
+   }
+   
+   // Listen for theme changes via MutationObserver
+   ```
+
+**Supported Languages:**
+- `bash` - Shell commands, scripts
+- `yaml` - CI/CD configs (GitHub Actions, Azure Pipelines, GitLab CI)
+- `json` - JSON examples
+- `powershell` - PowerShell scripts (if needed)
+
+**Reference Implementation:** See `docs.html` for complete example
 
 ---
 

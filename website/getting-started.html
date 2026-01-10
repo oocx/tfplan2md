@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Getting Started - tfplan2md</title>
     <link rel="stylesheet" href="style.css">
+    <!-- highlight.js themes - loaded based on current theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
+    <style>
+        /* Override highlight.js backgrounds to match code-block */
+        .code-block .hljs,
+        .code-block pre code {
+            background: transparent !important;
+        }
+        [data-theme="dark"] .hljs {
+            color: var(--code-text);
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -352,27 +365,19 @@ steps:
     displayName: 'Generate markdown report'
     workingDirectory: terraform
   
-  - task: PowerShell@2
-    displayName: 'Post PR comment'
-    inputs:
-      targetType: 'inline'
-      script: |
-        $markdown = Get-Content terraform/plan.md -Raw
-        $url = \"$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0\"
-        
-        $body = @{
-          comments = @(
-            @{
-              content = $markdown
-              commentType = 1
-            }
-          )
-          status = 1
-        } | ConvertTo-Json -Depth 10
-        
-        Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType \"application/json\" -Headers @{
-          Authorization = \"Bearer $(System.AccessToken)\"
-        }" aria-label="Copy pipeline"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+  - bash: |
+      MARKDOWN=$(cat terraform/plan.md)
+      URL=\"$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0\"
+      
+      BODY=$(jq -n \
+        --arg content \"$MARKDOWN\" \
+        '{comments: [{content: $content, commentType: 1}], status: 1}')
+      
+      curl -X POST \"$URL\" \
+        -H \"Content-Type: application/json\" \
+        -H \"Authorization: Bearer $(System.AccessToken)\" \
+        -d \"$BODY\"
+    displayName: 'Post PR comment'" aria-label="Copy pipeline"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
                         </div>
                         <pre><code>trigger: none
 
@@ -410,27 +415,19 @@ steps:
     displayName: 'Generate markdown report'
     workingDirectory: terraform
   
-  - task: PowerShell@2
-    displayName: 'Post PR comment'
-    inputs:
-      targetType: 'inline'
-      script: |
-        $markdown = Get-Content terraform/plan.md -Raw
-        $url = "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0"
-        
-        $body = @{
-          comments = @(
-            @{
-              content = $markdown
-              commentType = 1
-            }
-          )
-          status = 1
-        } | ConvertTo-Json -Depth 10
-        
-        Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json" -Headers @{
-          Authorization = "Bearer $(System.AccessToken)"
-        }</code></pre>
+  - bash: |
+      MARKDOWN=$(cat terraform/plan.md)
+      URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0"
+      
+      BODY=$(jq -n \
+        --arg content "$MARKDOWN" \
+        '{comments: [{content: $content, commentType: 1}], status: 1}')
+      
+      curl -X POST "$URL" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $(System.AccessToken)" \
+        -d "$BODY"
+    displayName: 'Post PR comment'</code></pre>
                     </div>
                 </div>
 
@@ -615,5 +612,58 @@ steps:
             });
         });
     </script>
-</body>
+    <!-- highlight.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+
+    <script>
+        // Detect language from code content and apply highlight.js
+        document.querySelectorAll('.code-block code').forEach(code => {
+            const text = code.textContent.trim();
+            
+            // Detect language based on content
+            if (text.startsWith('name:') || text.startsWith('trigger:') || text.startsWith('on:')) {
+                code.className = 'language-yaml';
+            } else if (text.startsWith('{') || text.startsWith('[')) {
+                code.className = 'language-json';
+            } else if (text.includes('terraform ') || text.includes('docker run')) {
+                code.className = 'language-bash';
+            } else {
+                code.className = 'language-bash';
+            }
+        });
+
+        // Apply highlight.js to all code blocks
+        hljs.highlightAll();
+
+        // Toggle highlight.js theme based on site theme
+        function toggleHighlightTheme(theme) {
+            const lightTheme = document.getElementById('highlight-light');
+            const darkTheme = document.getElementById('highlight-dark');
+            if (theme === 'dark') {
+                lightTheme.disabled = true;
+                darkTheme.disabled = false;
+            } else {
+                lightTheme.disabled = false;
+                darkTheme.disabled = true;
+            }
+        }
+
+        // Initialize theme
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        toggleHighlightTheme(currentTheme);
+
+        // Listen for theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    toggleHighlightTheme(theme);
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true });
+    </script></body>
 </html>

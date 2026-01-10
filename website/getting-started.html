@@ -620,15 +620,15 @@ steps:
 
     <script>
         // Detect language from code content and apply highlight.js
-        document.querySelectorAll('.code-block code').forEach(code => {
+        document.querySelectorAll('.code-block pre code, .command-box code').forEach(code => {
             const text = code.textContent.trim();
             
             // Detect language based on content
-            if (text.startsWith('name:') || text.startsWith('trigger:') || text.startsWith('on:')) {
+            if (text.startsWith('name:') || text.startsWith('trigger:') || text.startsWith('on:') || text.startsWith('terraform-plan:')) {
                 code.className = 'language-yaml';
             } else if (text.startsWith('{') || text.startsWith('[')) {
                 code.className = 'language-json';
-            } else if (text.includes('terraform ') || text.includes('docker run')) {
+            } else if (text.includes('terraform ') || text.includes('docker run') || text.includes('git clone') || text.includes('cat ') || text.includes('jq ') || text.includes('curl ')) {
                 code.className = 'language-bash';
             } else {
                 code.className = 'language-bash';

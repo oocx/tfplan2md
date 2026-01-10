@@ -53,49 +53,7 @@
                 tfplan2md automatically detects resource types and applies specialized templates when available.
             </p>
 
-            <div class="features-grid features-grid-compact">
-                <div class="feature-category-card compact">
-                    <div class="feature-icon-sm">📝</div>
-                    <div class="feature-compact-content">
-                        <h3 class="feature-category-title-sm">Inline Diffs</h3>
-                        <p class="feature-category-description-sm">
-                            Show meaningful changes instead of index-based modifications for collections like firewall rules and security groups.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="feature-category-card compact">
-                    <div class="feature-icon-sm">🎨</div>
-                    <div class="feature-compact-content">
-                        <h3 class="feature-category-title-sm">Formatted Values</h3>
-                        <p class="feature-category-description-sm">
-                            Display complex values in readable formats with tables, collapsible sections, and semantic icons.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="feature-category-card compact">
-                    <div class="feature-icon-sm">🧠</div>
-                    <div class="feature-compact-content">
-                        <h3 class="feature-category-title-sm">Resource Intelligence</h3>
-                        <p class="feature-category-description-sm">
-                            Understand resource-specific semantics and present changes in context that makes sense for each resource type.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="feature-category-card compact">
-                    <div class="feature-icon-sm">⚡</div>
-                    <div class="feature-compact-content">
-                        <h3 class="feature-category-title-sm">Zero Configuration</h3>
-                        <p class="feature-category-description-sm">
-                            Templates apply automatically based on resource type detection. No manual configuration required.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <h3 style="margin-top: 60px; font-size: 24px; margin-bottom: 16px;">Template Resolution</h3>
+            <h3 style="margin-top: 40px; font-size: 24px; margin-bottom: 16px;">Template Resolution</h3>
             <p style="margin-bottom: 16px;">When rendering a resource change, tfplan2md follows this resolution order:</p>
             <ol style="margin-left: 24px;">
                 <li style="margin-bottom: 8px;"><strong>Provider-specific template</strong> — e.g., <code>azurerm/firewall_network_rule_collection.sbn</code></li>

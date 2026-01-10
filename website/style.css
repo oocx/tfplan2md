@@ -365,11 +365,12 @@ body {
 }
 
 .btn-secondary:hover {
+    background: var(--color-primary);
+    color: white;
     border-color: var(--color-primary);
-    color: var(--color-primary);
 }
 
-/* Copy button - follows btn-secondary pattern */
+/* Copy button - follows feature-link pattern */
 .copy-button {
     position: absolute;
     top: 8px;
@@ -390,13 +391,15 @@ body {
 }
 
 .copy-button:hover {
+    background: var(--color-primary);
+    color: white;
     border-color: var(--color-primary);
-    color: var(--color-primary);
 }
 
 .copy-button.copied {
+    background: var(--color-success);
+    color: white;
     border-color: var(--color-success);
-    color: var(--color-success);
 }
 
 .hero-stats {

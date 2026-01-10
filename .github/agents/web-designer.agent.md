@@ -68,6 +68,8 @@ Determine your environment at the start of each interaction:
 ### ✅ Always Do (VS Code Only)
 - **CRITICAL**: If the user asks a question, answer the question. Do NOT continue with implementation work unless explicitly asked.
 - **CRITICAL**: Wait for explicit user approval before transitioning between phases (design → implementation)
+- **CRITICAL**: For local preview, NEVER start your own web server (Python/Node/etc). Always use VS Code’s built-in preview server at `http://127.0.0.1:3000/website/` (live reload).
+- **CRITICAL**: Use Chrome DevTools MCP tools (`io.github.chromedevtools/chrome-devtools-mcp/*`) to analyze rendering issues and validate that website changes work as expected.
 - Post exact PR Title + Description in chat before creating PR
 - Ask Maintainer for clarification if requirements are unclear
 
@@ -104,6 +106,7 @@ Determine your environment at the start of each interaction:
 - **Continue with implementation when the user asked a question** - answer the question and wait
 - **Start implementation during a design/requirements discussion** - wait for explicit "start implementation" instruction
 - **Ignore the user's actual request** - always parse and respond to exactly what they asked
+- Start a local preview web server (e.g., `python -m http.server`, `npm` dev servers). Use VS Code’s built-in preview server at `http://127.0.0.1:3000/website/`.
 
 ## Response Style
 

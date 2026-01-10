@@ -219,10 +219,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <script>
-        // Set theme from URL query parameter (?theme=dark) or default to light
+        // Set theme from URL query parameter, or preserve the theme set in the HTML tag
         const params = new URLSearchParams(window.location.search);
-        const theme = params.get('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
+        const urlTheme = params.get('theme');
+        if (urlTheme) {
+            document.documentElement.setAttribute('data-theme', urlTheme);
+        }
+        // If no URL parameter, keep the theme from the HTML data-theme attribute (no override)
     </script>
 </head>
 <body>

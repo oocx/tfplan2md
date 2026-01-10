@@ -188,3 +188,4 @@ magick website/assets/screenshots/comprehensive-demo-full.png \
 
 - 2026-01-03: Initial inventory created. No screenshots exist yet.
 - 2026-01-03: Documented planned screenshots and generation commands.
+- 2026-01-10: Regenerated all firewall screenshots to show feature 031 improvements (Azure DevOps dark theme border colors). Screenshots now use `--palette-neutral-10` CSS variable that adapts to light/dark themes.

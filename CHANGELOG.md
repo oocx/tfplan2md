@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.26"></a>
+## [1.0.0-alpha.26](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.25...v1.0.0-alpha.26) (2026-01-11)
+
+### ✨ Features
+
+* **workflow:** add website verify wrapper ([dd5d4fc](https://github.com/oocx/tfplan2md/commit/dd5d4fca643d4266c7afba3f2d37313a0198936e))
+
 <a name="1.0.0-alpha.25"></a>
 ## [1.0.0-alpha.25](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.24...v1.0.0-alpha.25) (2026-01-11)
 

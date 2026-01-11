@@ -134,8 +134,14 @@ You must NOT claim a website task is "done" (and must NOT create a PR) until **a
 - **Files changed:** Run `scripts/git-status.sh --porcelain=v1` and summarize the changed files under `website/`.
 - **Build/Problems panel:** Check `read/problems` and confirm no new errors were introduced by your edits.
 - **Verify (mandatory):** Run `scripts/website-verify.sh` (includes `scripts/website-lint.sh`) and fix any errors before claiming “done”.
+   - If `scripts/git-status.sh --porcelain=v1` shows changes under `website/` but `scripts/website-verify.sh` reports “No changed website HTML/CSS/JS files detected” or “No website HTML files to verify”, you must treat verification as **not performed** and re-run with `scripts/website-verify.sh --all`.
 - **Preview render:** Open the changed pages via VS Code preview at `http://127.0.0.1:3000/website/` and confirm they render (no missing CSS/JS).
 - **DevTools navigation (mandatory):** Load the preview URL(s) in Chrome DevTools MCP (use `website-devtools` if needed) so you can reliably check console + responsive layout.
+   - If Chrome DevTools MCP cannot connect, you are **blocked**. Do not proceed and do not claim “done”.
+   - Provide the Maintainer the smallest unblock steps (example):
+     - Run `scripts/setup-tmp.sh`
+     - Start Chrome with remote debugging enabled (example): `google-chrome --remote-debugging-port=9222 --user-data-dir=$PWD/.tmp/chrome-profile --no-first-run --no-default-browser-check`
+     - Re-try the DevTools MCP connection and continue only once it works.
 - **DevTools sanity:** Use Chrome DevTools MCP (`io.github.chromedevtools/chrome-devtools-mcp/*`) to confirm:
    - No console errors on the changed pages
    - Layout is reasonable at least at mobile and desktop widths

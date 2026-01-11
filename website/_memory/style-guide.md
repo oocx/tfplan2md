@@ -72,7 +72,7 @@ This document captures **design and style decisions** for the tfplan2md website.
 
 - **Max width**: `1280px` (`.nav-container`, `.hero-container`, `.section-container`)
 - **Horizontal padding**: `24px` on containers
-- **Section padding**: `80px 0` vertical (`.section`)
+- **Section padding**: `30px 0 40px 0` (`.section`)
 
 ## Breakpoints
 
@@ -181,3 +181,4 @@ Icons must work correctly in both light and dark modes. Because the site uses `d
 
 - 2026-01-03: Initial style guide created based on the current `website/style.css` design system.
 - 2026-01-03: Documented all color tokens, breakpoints, typography, and component patterns.
+- 2026-01-11: Synced `.section` padding values to match `website/style.css`.

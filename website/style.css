@@ -789,7 +789,7 @@ body {
     align-items: center;
     gap: 16px;
     background: rgba(0, 0, 0, 0.3);
-    padding: 16px 24px;
+    padding: 16px 60px 16px 24px;
     border-radius: 10px;
     font-family: var(--font-mono);
     font-size: 14px;

@@ -8,7 +8,8 @@ Usage: scripts/website-lint.sh [--all] [--base <ref>]
 Lints website files (HTML/CSS/JS) using on-demand tools via npx.
 
 Default behavior:
-  - Lints only files changed vs <base> (auto-detected, default origin/main)
+  - Lints files changed vs <base> (auto-detected, default origin/main)
+  - Also includes staged and unstaged changes on top of HEAD
 
 Options:
   --all           Lint all website files (can be slower / noisier)
@@ -66,8 +67,12 @@ fi
 
 collect_changed_files() {
   local pattern="$1"
-  git diff --name-only --diff-filter=ACMR "${base_ref}...HEAD" -- website \
-    | grep -E "$pattern" || true
+  (
+    git diff --name-only --diff-filter=ACMR "${base_ref}...HEAD" -- website || true
+    git diff --name-only --diff-filter=ACMR --cached -- website || true
+    git diff --name-only --diff-filter=ACMR -- website || true
+  ) | grep -E "$pattern" \
+    | sort -u || true
 }
 
 html_files=()
@@ -85,7 +90,11 @@ if [[ "$lint_all" == "true" ]]; then
   while IFS= read -r file; do css_files+=("$file"); done < <(find website -type f -name '*.css' -print)
   while IFS= read -r file; do js_files+=("$file"); done < <(find website -type f -name '*.js' -print)
 else
-  while IFS= read -r file; do html_files+=("$file"); done < <(collect_changed_files '\\.html$')
+  while IFS= read -r file; do html_files+=("$file"); done < <(
+    collect_changed_files '\\.html$' \
+      | grep -vE '^website/prototypes/' \
+      | grep -vE '^website/assets/icons/.*\\.html$' || true
+  )
   while IFS= read -r file; do css_files+=("$file"); done < <(collect_changed_files '\\.css$')
   while IFS= read -r file; do js_files+=("$file"); done < <(collect_changed_files '\\.js$')
 fi
@@ -95,7 +104,7 @@ if [[ ${#html_files[@]} -eq 0 && ${#css_files[@]} -eq 0 && ${#js_files[@]} -eq 0
   exit 0
 fi
 
-echo "Website lint base: ${base_ref}"
+echo "Website lint base: ${base_ref} (plus staged/unstaged)"
 
 if [[ ${#html_files[@]} -gt 0 ]]; then
   echo "Linting HTML (${#html_files[@]} file(s))..."

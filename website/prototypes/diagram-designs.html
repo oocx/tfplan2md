@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Diagram Design Options</title>
+    <link rel="stylesheet" href="../style.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"></script>
+    <style>
+        .design-grid {
+            display: grid;
+            gap: 60px;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .design-option {
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            padding: 30px;
+            background: var(--color-surface);
+        }
+        
+        .design-header {
+            margin-bottom: 20px;
+        }
+        
+        .design-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin: 0 0 8px 0;
+        }
+        
+        .design-description {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+        
+        .design-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .preview-panel {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            background: var(--color-bg);
+        }
+        
+        .preview-panel.dark {
+            background: #1a1a1a;
+        }
+        
+        .preview-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            color: var(--color-text-secondary);
+        }
+        
+        .preview-panel.dark .preview-label {
+            color: #9ca3af;
+        }
+        
+        /* Design 1: Glassmorphism */
+        #design1-light .mermaid, #design1-dark .mermaid {
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        #design1-light .mermaid {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        #design1-dark .mermaid {
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Design 2: Neumorphism */
+        #design2-light .mermaid {
+            background: #e0e5ec;
+            box-shadow: 9px 9px 16px rgba(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        #design2-dark .mermaid {
+            background: #2a2a2a;
+            box-shadow: 9px 9px 16px rgba(0, 0, 0, 0.4), -9px -9px 16px rgba(60, 60, 60, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        
+        /* Design 3: Bold Drop Shadows */
+        #design3-light .mermaid, #design3-dark .mermaid {
+            border-radius: 12px;
+            padding: 25px;
+            transform: translateY(-2px);
+        }
+        #design3-light .mermaid {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+        #design3-dark .mermaid {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Design 4: Gradient Border */
+        #design4-light, #design4-dark {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 3px;
+        }
+        #design4-light .mermaid {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+        }
+        #design4-dark .mermaid {
+            background: #1a1a1a;
+            border-radius: 14px;
+            padding: 25px;
+        }
+        
+        /* Design 5: Neon Glow */
+        #design5-light .mermaid, #design5-dark .mermaid {
+            border-radius: 12px;
+            padding: 25px;
+        }
+        #design5-light .mermaid {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.3);
+            border: 2px solid #3b82f6;
+        }
+        #design5-dark .mermaid {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.5);
+            border: 2px solid #60a5fa;
+            background: rgba(26, 26, 26, 0.9);
+        }
+        
+        /* Design 6: Embossed */
+        #design6-light .mermaid {
+            background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+        }
+        #design6-dark .mermaid {
+            background: linear-gradient(145deg, #1f1f1f, #2d2d2d);
+            box-shadow: inset 5px 5px 10px #0a0a0a, inset -5px -5px 10px #3a3a3a;
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        /* Design 7: Blueprint */
+        #design7-light .mermaid, #design7-dark .mermaid {
+            background-size: 20px 20px;
+            padding: 30px;
+        }
+        #design7-light .mermaid {
+            background-color: #0c2340;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            border: 2px solid #64b5f6;
+        }
+        #design7-dark .mermaid {
+            background-color: #1a3a5c;
+            background-image: linear-gradient(rgba(100, 181, 246, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 181, 246, 0.15) 1px, transparent 1px);
+            border: 2px solid #90caf9;
+        }
+        
+        /* Design 8: Retro Terminal */
+        #design8-light .mermaid {
+            background: #000000;
+            padding: 30px;
+            border: 4px solid #333;
+            box-shadow: inset 0 0 50px rgba(0, 255, 0, 0.1);
+        }
+        #design8-dark .mermaid {
+            background: #0d1117;
+            padding: 30px;
+            border: 4px solid #1f6feb;
+            box-shadow: 0 0 20px rgba(31, 111, 235, 0.3), inset 0 0 50px rgba(31, 111, 235, 0.1);
+        }
+        
+        /* Design 9: Paper/Sketch */
+        #design9-light .mermaid, #design9-dark .mermaid {
+            padding: 30px;
+            transform: rotate(-0.5deg);
+            background-size: 100% 32px;
+        }
+        #design9-light .mermaid {
+            background-color: #fef9e7;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(0, 0, 0, 0.03) 31px, rgba(0, 0, 0, 0.03) 32px);
+            border: 1px solid #d4c5a9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        #design9-dark .mermaid {
+            background-color: #2c2416;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(255, 255, 255, 0.03) 31px, rgba(255, 255, 255, 0.03) 32px);
+            border: 1px solid #4a3f2a;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Design 10: Holographic */
+        #design10-light .mermaid, #design10-dark .mermaid {
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00) 1;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        #design10-light .mermaid {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1) 0%, rgba(0, 255, 255, 0.1) 50%, rgba(255, 255, 0, 0.1) 100%);
+            box-shadow: 0 8px 32px rgba(127, 0, 255, 0.2);
+        }
+        #design10-dark .mermaid {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.2) 0%, rgba(0, 255, 255, 0.2) 50%, rgba(255, 255, 0, 0.2) 100%), rgba(26, 26, 26, 0.8);
+            box-shadow: 0 8px 32px rgba(127, 0, 255, 0.5);
+        }
+        
+        /* Design 11: Gradient Mesh */
+        #design11-light, #design11-dark {
+            border-radius: 20px;
+            padding: 2px;
+        }
+        #design11-light {
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 50%), radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%);
+        }
+        #design11-dark {
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.3) 0%, transparent 50%);
+        }
+        #design11-light .mermaid {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+        }
+        #design11-dark .mermaid {
+            background: #1a1a1a;
+            border-radius: 18px;
+            padding: 25px;
+        }
+        
+        /* Design 12: Multi-layered Shadow */
+        #design12-light .mermaid, #design12-dark .mermaid {
+            border-radius: 8px;
+            padding: 25px;
+        }
+        #design12-light .mermaid {
+            background: white;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.08), 0 4px 4px rgba(0, 0, 0, 0.08), 0 8px 8px rgba(0, 0, 0, 0.08), 0 16px 16px rgba(0, 0, 0, 0.08);
+        }
+        #design12-dark .mermaid {
+            background: #1a1a1a;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 2px 2px rgba(0, 0, 0, 0.3), 0 4px 4px rgba(0, 0, 0, 0.3), 0 8px 8px rgba(0, 0, 0, 0.3), 0 16px 16px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Design 13: Hand-Drawn Sketch */
+        #design13-light .mermaid, #design13-dark .mermaid {
+            padding: 30px;
+            border-radius: 4px;
+            position: relative;
+        }
+        #design13-light .mermaid {
+            background: #fffef9;
+            border: 3px solid #2c2c2c;
+            box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.15);
+            filter: contrast(1.1);
+        }
+        #design13-dark .mermaid {
+            background: #2a2a2a;
+            border: 3px solid #e5e5e5;
+            box-shadow: 2px 3px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Design 14: Crayon/Chalk Drawing */
+        #design14-light .mermaid, #design14-dark .mermaid {
+            padding: 30px;
+            border-radius: 8px;
+            position: relative;
+        }
+        #design14-light .mermaid {
+            background: #f5f5f0;
+            border: none;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.05);
+        }
+        #design14-dark .mermaid {
+            background: #1a1a1a;
+            border: none;
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Design 15: Excalidraw Style */
+        #design15-light .mermaid, #design15-dark .mermaid {
+            padding: 30px;
+            border-radius: 4px;
+            font-family: 'Virgil', 'Segoe UI', sans-serif;
+        }
+        #design15-light .mermaid {
+            background: #ffffff;
+            border: none;
+        }
+        #design15-dark .mermaid {
+            background: #1e1e1e;
+            border: none;
+        }
+        
+        /* Design 16: Whiteboard Marker */
+        #design16-light .mermaid, #design16-dark .mermaid {
+            padding: 35px;
+            border-radius: 0;
+            position: relative;
+        }
+        #design16-light .mermaid {
+            background: #fafafa;
+            border: 3px solid #e0e0e0;
+        }
+        #design16-dark .mermaid {
+            background: #2a2a2a;
+            border: 3px solid #404040;
+        }
+        
+        /* Design 17: Pencil Sketch */
+        #design17-light .mermaid, #design17-dark .mermaid {
+            padding: 30px;
+            border-radius: 0;
+            position: relative;
+        }
+        #design17-light .mermaid {
+            background: #f8f8f8;
+            border: 1px solid #d0d0d0;
+            filter: contrast(0.95) brightness(1.02);
+        }
+        #design17-dark .mermaid {
+            background: #252525;
+            border: 1px solid #3a3a3a;
+            filter: contrast(0.95) brightness(0.98);
+        }
+        
+        /* Design 18: Comic Book */
+        #design18-light .mermaid, #design18-dark .mermaid {
+            padding: 30px;
+            border-radius: 0;
+            position: relative;
+        }
+        #design18-light .mermaid {
+            background: #fffef8;
+            border: 4px solid #000000;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+        }
+        #design18-dark .mermaid {
+            background: #1a1a1a;
+            border: 4px solid #ffff00;
+            box-shadow: 8px 8px 0 rgba(255, 255, 0, 0.3);
+        }
+        
+        /* Design 19: Isometric 3D */
+        #design19-light .mermaid, #design19-dark .mermaid {
+            padding: 40px;
+            border-radius: 0;
+            position: relative;
+        }
+        #design19-light .mermaid {
+            background: 
+                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #f5f5f5;
+        }
+        #design19-dark .mermaid {
+            background: 
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #1a1a1a;
+        }
+        /* 3D effect on nodes */
+        #design19-light .mermaid svg .node rect,
+        #design19-light .mermaid svg .node polygon {
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)) drop-shadow(8px 8px 0px rgba(0,0,0,0.1));
+            transform: perspective(400px) rotateX(5deg);
+        }
+        #design19-dark .mermaid svg .node rect,
+        #design19-dark .mermaid svg .node polygon {
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.6)) drop-shadow(8px 8px 0px rgba(0,0,0,0.3));
+            transform: perspective(400px) rotateX(5deg);
+        }
+        /* 3D arrows */
+        #design19-light .mermaid svg .edgePath path,
+        #design19-dark .mermaid svg .edgePath path {
+            filter: drop-shadow(2px 2px 1px rgba(0,0,0,0.3));
+        }
+        
+        /* Design 20: Glossy Glass */
+        #design20-light .mermaid, #design20-dark .mermaid {
+            padding: 35px;
+            border-radius: 20px;
+            position: relative;
+        }
+        #design20-light .mermaid {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+        }
+        #design20-dark .mermaid {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+        /* Glossy gradient on nodes */
+        #design20-light .mermaid svg .node rect {
+            fill: url(#glossGradientLight) !important;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+        }
+        #design20-dark .mermaid svg .node rect {
+            fill: url(#glossGradientDark) !important;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+        }
+        /* Glossy highlight effect */
+        #design20-light .mermaid svg .node rect::before,
+        #design20-dark .mermaid svg .node rect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 100%);
+            border-radius: inherit;
+        }
+        /* Glossy shine on arrows */
+        #design20-light .mermaid svg .edgePath path {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            stroke-linecap: round;
+        }
+        #design20-dark .mermaid svg .edgePath path {
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+            stroke-linecap: round;
+        }
+        
+        /* Design 21: Paper Emboss */
+        #design21-light .mermaid, #design21-dark .mermaid {
+            padding: 35px;
+            border-radius: 8px;
+            position: relative;
+        }
+        #design21-light .mermaid {
+            background: #fafafa;
+            box-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.8),
+                0 2px 2px rgba(0, 0, 0, 0.05),
+                0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        #design21-dark .mermaid {
+            background: #252525;
+            box-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.05),
+                0 2px 2px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        /* Embossed raised effect on nodes */
+        #design21-light .mermaid svg .node rect,
+        #design21-light .mermaid svg .node polygon {
+            filter: 
+                drop-shadow(0 1px 0 rgba(255,255,255,0.9))
+                drop-shadow(0 2px 3px rgba(0,0,0,0.15))
+                drop-shadow(0 -1px 0 rgba(0,0,0,0.1));
+        }
+        #design21-dark .mermaid svg .node rect,
+        #design21-dark .mermaid svg .node polygon {
+            filter: 
+                drop-shadow(0 1px 0 rgba(255,255,255,0.1))
+                drop-shadow(0 2px 4px rgba(0,0,0,0.4))
+                drop-shadow(0 -1px 0 rgba(0,0,0,0.3));
+        }
+        /* Subtle embossed arrows */
+        #design21-light .mermaid svg .edgePath path {
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+        }
+        #design21-dark .mermaid svg .edgePath path {
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+        
+        /* Design 22: Floating Cards */
+        #design22-light .mermaid, #design22-dark .mermaid {
+            padding: 40px;
+            border-radius: 12px;
+            position: relative;
+        }
+        #design22-light .mermaid {
+            background: #ffffff;
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.05),
+                0 4px 8px rgba(0, 0, 0, 0.08),
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+        #design22-dark .mermaid {
+            background: #1e1e1e;
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 4px 8px rgba(0, 0, 0, 0.5),
+                0 8px 16px rgba(0, 0, 0, 0.6),
+                0 16px 32px rgba(0, 0, 0, 0.7);
+        }
+        /* Dramatic floating card shadows */
+        #design22-light .mermaid svg .node rect,
+        #design22-light .mermaid svg .node polygon {
+            filter: 
+                drop-shadow(0 4px 6px rgba(0,0,0,0.1))
+                drop-shadow(0 8px 15px rgba(0,0,0,0.15))
+                drop-shadow(0 12px 24px rgba(0,0,0,0.15));
+        }
+        #design22-dark .mermaid svg .node rect,
+        #design22-dark .mermaid svg .node polygon {
+            filter: 
+                drop-shadow(0 4px 8px rgba(0,0,0,0.4))
+                drop-shadow(0 8px 18px rgba(0,0,0,0.5))
+                drop-shadow(0 16px 32px rgba(0,0,0,0.6));
+        }
+        /* Elevated arrows */
+        #design22-light .mermaid svg .edgePath path {
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+        }
+        #design22-dark .mermaid svg .edgePath path {
+            filter: drop-shadow(0 3px 8px rgba(0,0,0,0.5));
+        }
+    </style>
+</head>
+<body>
+    <div style="background: var(--color-surface); padding: 40px 20px; border-bottom: 1px solid var(--color-border); text-align: center;">
+        <h1 style="margin: 0 0 12px 0; font-size: 36px; color: var(--color-text);">Workflow Diagram Design Options</h1>
+        <p style="margin: 0; color: var(--color-text-secondary); font-size: 16px;">Compare different visual styles with creative node styling, icons, and agent/artifact differentiation</p>
+    </div>
+
+    <div class="design-grid">
+        
+        <!-- Design 1: Glassmorphism -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">1. Glassmorphism</h2>
+                <p class="design-description">Frosted glass nodes with rounded corners and subtle shadows</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design1-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:12,ry:12
+    classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design1-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:12,ry:12
+    classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 2: Neumorphism -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">2. Neumorphism</h2>
+                <p class="design-description">Soft 3D raised nodes with dual shadows and rounded shapes</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design2-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#bfdbfe,stroke:#60a5fa,stroke-width:3px,color:#1e3a8a,rx:14,ry:14
+    classDef artifact fill:#ddd6fe,stroke:#a78bfa,stroke-width:2px,color:#4c1d95,rx:10,ry:10
+    classDef human fill:#fef3c7,stroke:#fbbf24,stroke-width:4px,color:#92400e,rx:16,ry:16
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design2-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#1e3a8a,stroke:#3b82f6,stroke-width:3px,color:#bfdbfe,rx:14,ry:14
+    classDef artifact fill:#4c1d95,stroke:#8b5cf6,stroke-width:2px,color:#ddd6fe,rx:10,ry:10
+    classDef human fill:#92400e,stroke:#f59e0b,stroke-width:4px,color:#fef3c7,rx:16,ry:16
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 3: Bold Drop Shadows -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">3. Bold Drop Shadows</h2>
+                <p class="design-description">Strong borders with vibrant colors and crisp edges</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design3-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#2563eb,stroke:#1e40af,stroke-width:4px,color:#ffffff,rx:10,ry:10
+    classDef artifact fill:#7c3aed,stroke:#6d28d9,stroke-width:3px,color:#ffffff,rx:6,ry:6
+    classDef human fill:#ea580c,stroke:#c2410c,stroke-width:5px,color:#ffffff,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design3-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#60a5fa,stroke:#3b82f6,stroke-width:4px,color:#1e3a8a,rx:10,ry:10
+    classDef artifact fill:#a78bfa,stroke:#8b5cf6,stroke-width:3px,color:#4c1d95,rx:6,ry:6
+    classDef human fill:#fb923c,stroke:#f97316,stroke-width:5px,color:#7c2d12,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 4: Gradient Border -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">4. Gradient Border</h2>
+                <p class="design-description">Elegant nodes with gradient accents and subtle fills</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design4-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#f9fafb,stroke:#667eea,stroke-width:3px,color:#1f2937,rx:12,ry:12
+    classDef artifact fill:#faf5ff,stroke:#764ba2,stroke-width:2px,color:#4c1d95,rx:8,ry:8
+    classDef human fill:#fffbeb,stroke:#f59e0b,stroke-width:4px,color:#78350f,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design4-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#374151,stroke:#818cf8,stroke-width:3px,color:#e0e7ff,rx:12,ry:12
+    classDef artifact fill:#4c1d95,stroke:#a78bfa,stroke-width:2px,color:#f3e8ff,rx:8,ry:8
+    classDef human fill:#78350f,stroke:#fbbf24,stroke-width:4px,color:#fef3c7,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 5: Neon Glow -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">5. Neon Glow</h2>
+                <p class="design-description">Cyberpunk-inspired nodes with bright neon colors</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design5-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#06b6d4,stroke:#0891b2,stroke-width:4px,color:#ffffff,rx:8,ry:8
+    classDef artifact fill:#f59e0b,stroke:#d97706,stroke-width:3px,color:#ffffff,rx:6,ry:6
+    classDef human fill:#ec4899,stroke:#db2777,stroke-width:5px,color:#ffffff,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design5-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#22d3ee,stroke:#06b6d4,stroke-width:4px,color:#0c4a6e,rx:8,ry:8
+    classDef artifact fill:#fbbf24,stroke:#f59e0b,stroke-width:3px,color:#78350f,rx:6,ry:6
+    classDef human fill:#f472b6,stroke:#ec4899,stroke-width:5px,color:#831843,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 6: Embossed -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">6. Embossed/Engraved</h2>
+                <p class="design-description">Physical depth with carved-in appearance and thick borders</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design6-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#1e40af,stroke:#1e3a8a,stroke-width:3px,color:#ffffff,rx:12,ry:12
+    classDef artifact fill:#0f766e,stroke:#0f766e,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#b45309,stroke:#92400e,stroke-width:4px,color:#ffffff,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design6-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#93c5fd,stroke:#3b82f6,stroke-width:3px,color:#1e3a8a,rx:12,ry:12
+    classDef artifact fill:#5eead4,stroke:#14b8a6,stroke-width:2px,color:#134e4a,rx:8,ry:8
+    classDef human fill:#fdba74,stroke:#ea580c,stroke-width:4px,color:#7c2d12,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 7: Blueprint -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">7. Blueprint Style</h2>
+                <p class="design-description">Technical drawing with bright nodes on blueprint background</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design7-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#1976d2,stroke:#1565c0,stroke-width:3px,color:#ffffff,rx:4,ry:4
+    classDef artifact fill:#7b1fa2,stroke:#6a1b9a,stroke-width:2px,color:#ffffff,rx:4,ry:4
+    classDef human fill:#388e3c,stroke:#2e7d32,stroke-width:4px,color:#ffffff,rx:6,ry:6
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design7-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#64b5f6,stroke:#42a5f5,stroke-width:3px,color:#0d47a1,rx:4,ry:4
+    classDef artifact fill:#ba68c8,stroke:#ab47bc,stroke-width:2px,color:#4a148c,rx:4,ry:4
+    classDef human fill:#81c784,stroke:#66bb6a,stroke-width:4px,color:#1b5e20,rx:6,ry:6
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 8: Retro Terminal -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">8. Retro Terminal/CRT</h2>
+                <p class="design-description">Classic computer terminal with monospace-inspired shapes</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design8-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px', 'fontFamily':'monospace'}}}%%
+flowchart LR
+    classDef agent fill:#00ff00,stroke:#00cc00,stroke-width:2px,color:#000000,rx:0,ry:0
+    classDef artifact fill:#ffff00,stroke:#cccc00,stroke-width:2px,color:#000000,rx:0,ry:0
+    classDef human fill:#00ffff,stroke:#00cccc,stroke-width:3px,color:#000000,rx:0,ry:0
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design8-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px', 'fontFamily':'monospace'}}}%%
+flowchart LR
+    classDef agent fill:#00ff00,stroke:#00ff00,stroke-width:2px,color:#000000,rx:0,ry:0
+    classDef artifact fill:#ffff00,stroke:#ffff00,stroke-width:2px,color:#000000,rx:0,ry:0
+    classDef human fill:#00ffff,stroke:#00ffff,stroke-width:3px,color:#000000,rx:0,ry:0
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 9: Paper/Sketch -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">9. Paper/Sketch</h2>
+                <p class="design-description">Hand-drawn look with subtle imperfections and soft colors</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design9-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#a855f7,stroke:#9333ea,stroke-width:3px,color:#ffffff,rx:10,ry:10
+    classDef artifact fill:#10b981,stroke:#059669,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#06b6d4,stroke:#0891b2,stroke-width:4px,color:#ffffff,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design9-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#c084fc,stroke:#a855f7,stroke-width:3px,color:#1e1b4b,rx:10,ry:10
+    classDef artifact fill:#34d399,stroke:#10b981,stroke-width:2px,color:#064e3b,rx:8,ry:8
+    classDef human fill:#22d3ee,stroke:#06b6d4,stroke-width:4px,color:#164e63,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 10: Holographic -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">10. Holographic</h2>
+                <p class="design-description">Futuristic nodes with vibrant multi-color schemes</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design10-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#059669,stroke:#047857,stroke-width:3px,color:#ffffff,rx:10,ry:10
+    classDef artifact fill:#d97706,stroke:#b45309,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#dc2626,stroke:#b91c1c,stroke-width:4px,color:#ffffff,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design10-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#34d399,stroke:#10b981,stroke-width:3px,color:#064e3b,rx:10,ry:10
+    classDef artifact fill:#fbbf24,stroke:#f59e0b,stroke-width:2px,color:#78350f,rx:8,ry:8
+    classDef human fill:#f87171,stroke:#ef4444,stroke-width:4px,color:#7f1d1d,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 11: Gradient Mesh -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">11. Gradient Mesh</h2>
+                <p class="design-description">Subtle color nodes with soft ambient background gradients</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design11-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#1e40af,stroke:#1e3a8a,stroke-width:3px,color:#ffffff,rx:12,ry:12
+    classDef artifact fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#0891b2,stroke:#0e7490,stroke-width:4px,color:#ffffff,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design11-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#93c5fd,stroke:#60a5fa,stroke-width:3px,color:#1e3a8a,rx:12,ry:12
+    classDef artifact fill:#60a5fa,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a,rx:8,ry:8
+    classDef human fill:#22d3ee,stroke:#06b6d4,stroke-width:4px,color:#164e63,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 12: Multi-layered Shadow -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">12. Multi-Layered Shadows</h2>
+                <p class="design-description">Clean nodes with realistic stacked shadow depth</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design12-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#3b82f6,stroke:#1e3a8a,stroke-width:2px,color:#ffffff,rx:8,ry:8
+    classDef artifact fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#ffffff,rx:6,ry:6
+    classDef human fill:#f59e0b,stroke:#d97706,stroke-width:3px,color:#ffffff,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design12-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#60a5fa,stroke:#93c5fd,stroke-width:2px,color:#1e3a8a,rx:8,ry:8
+    classDef artifact fill:#a78bfa,stroke:#c4b5fd,stroke-width:2px,color:#4c1d95,rx:6,ry:6
+    classDef human fill:#fbbf24,stroke:#fcd34d,stroke-width:3px,color:#78350f,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 13: Hand-Drawn Sketch -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">13. Hand-Drawn Sketch ✏️</h2>
+                <p class="design-description">Rough hand-drawn style with irregular borders and playful feel</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design13-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#ffeb99,stroke:#2c2c2c,stroke-width:2px,color:#1a1a1a,rx:6,ry:6
+    classDef artifact fill:#d4f4dd,stroke:#2c2c2c,stroke-width:2px,color:#1a1a1a,rx:4,ry:4
+    classDef human fill:#ffc9c9,stroke:#2c2c2c,stroke-width:3px,color:#1a1a1a,rx:8,ry:8
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design13-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#4a4a3a,stroke:#e5e5e5,stroke-width:2px,color:#ffeb99,rx:6,ry:6
+    classDef artifact fill:#2d4a35,stroke:#e5e5e5,stroke-width:2px,color:#d4f4dd,rx:4,ry:4
+    classDef human fill:#4a2d2d,stroke:#e5e5e5,stroke-width:3px,color:#ffc9c9,rx:8,ry:8
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 14: Crayon/Chalk Drawing -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">14. Crayon/Chalk Drawing 🖍️</h2>
+                <p class="design-description">Soft chalk/crayon texture with blended edges and organic feel</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design14-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#b4d4ff,stroke:#6ba3ff,stroke-width:4px,color:#1e3a5f,rx:16,ry:16
+    classDef artifact fill:#ffd4b4,stroke:#ff9b6b,stroke-width:3px,color:#5f3a1e,rx:14,ry:14
+    classDef human fill:#ffb4d4,stroke:#ff6ba3,stroke-width:5px,color:#5f1e3a,rx:18,ry:18
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design14-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#4a5f7a,stroke:#8ba3c7,stroke-width:4px,color:#b4d4ff,rx:16,ry:16
+    classDef artifact fill:#7a5f4a,stroke:#c7a38b,stroke-width:3px,color:#ffd4b4,rx:14,ry:14
+    classDef human fill:#7a4a5f,stroke:#c78ba3,stroke-width:5px,color:#ffb4d4,rx:18,ry:18
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS --> AR --> ADR --> DEV
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 15: Excalidraw Style -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">15. Excalidraw Style ✏️</h2>
+                <p class="design-description">Rough hand-drawn appearance with imperfect shapes and sketchy arrows</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design15-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#c0c8fc,stroke:#6573c3,stroke-width:4px,color:#000000,rx:8,ry:8
+    classDef artifact fill:#ffc9c9,stroke:#e06666,stroke-width:3px,color:#000000,rx:6,ry:6
+    classDef human fill:#ffd966,stroke:#f6b26b,stroke-width:5px,color:#000000,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS -.-> AR ==> ADR --> DEV
+    
+    linkStyle 0 stroke:#f6b26b,stroke-width:5px
+    linkStyle 1 stroke:#6573c3,stroke-width:4px
+    linkStyle 2 stroke:#e06666,stroke-width:3px,stroke-dasharray:5
+    linkStyle 3 stroke:#6573c3,stroke-width:5px
+    linkStyle 4 stroke:#e06666,stroke-width:4px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design15-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#6573c3,stroke:#c0c8fc,stroke-width:4px,color:#ffffff,rx:8,ry:8
+    classDef artifact fill:#e06666,stroke:#ffc9c9,stroke-width:3px,color:#ffffff,rx:6,ry:6
+    classDef human fill:#f6b26b,stroke:#ffd966,stroke-width:5px,color:#000000,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS -.-> AR ==> ADR --> DEV
+    
+    linkStyle 0 stroke:#ffd966,stroke-width:5px
+    linkStyle 1 stroke:#c0c8fc,stroke-width:4px
+    linkStyle 2 stroke:#ffc9c9,stroke-width:3px,stroke-dasharray:5
+    linkStyle 3 stroke:#c0c8fc,stroke-width:5px
+    linkStyle 4 stroke:#ffc9c9,stroke-width:4px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 16: Whiteboard Marker -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">16. Whiteboard Marker 🖊️</h2>
+                <p class="design-description">Thick marker lines with bold colors and varied line weights</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design16-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px', 'fontFamily':'Arial, sans-serif'}}}%%
+flowchart LR
+    classDef agent fill:#ffffff,stroke:#0066cc,stroke-width:6px,color:#0066cc,rx:10,ry:10
+    classDef artifact fill:#ffffff,stroke:#00aa00,stroke-width:5px,color:#00aa00,rx:8,ry:8
+    classDef human fill:#ffffff,stroke:#cc0000,stroke-width:7px,color:#cc0000,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#cc0000,stroke-width:7px
+    linkStyle 1 stroke:#0066cc,stroke-width:6px
+    linkStyle 2 stroke:#00aa00,stroke-width:6px
+    linkStyle 3 stroke:#0066cc,stroke-width:6px
+    linkStyle 4 stroke:#00aa00,stroke-width:6px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design16-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px', 'fontFamily':'Arial, sans-serif'}}}%%
+flowchart LR
+    classDef agent fill:#1a1a1a,stroke:#66b3ff,stroke-width:6px,color:#66b3ff,rx:10,ry:10
+    classDef artifact fill:#1a1a1a,stroke:#66ff66,stroke-width:5px,color:#66ff66,rx:8,ry:8
+    classDef human fill:#1a1a1a,stroke:#ff6666,stroke-width:7px,color:#ff6666,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#ff6666,stroke-width:7px
+    linkStyle 1 stroke:#66b3ff,stroke-width:6px
+    linkStyle 2 stroke:#66ff66,stroke-width:6px
+    linkStyle 3 stroke:#66b3ff,stroke-width:6px
+    linkStyle 4 stroke:#66ff66,stroke-width:6px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 17: Pencil Sketch -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">17. Pencil Sketch ✏️</h2>
+                <p class="design-description">Light gray sketchy lines with organic, hand-drawn feel</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design17-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px'}}}%%
+flowchart LR
+    classDef agent fill:#f0f0f0,stroke:#666666,stroke-width:2px,color:#333333,rx:6,ry:6
+    classDef artifact fill:#e8e8e8,stroke:#888888,stroke-width:2px,color:#444444,rx:4,ry:4
+    classDef human fill:#e0e0e0,stroke:#555555,stroke-width:3px,color:#222222,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H --> RE -.-> FS --> AR -.-> ADR --> DEV
+    
+    linkStyle 0 stroke:#555555,stroke-width:2px
+    linkStyle 1 stroke:#666666,stroke-width:2px,stroke-dasharray:3
+    linkStyle 2 stroke:#888888,stroke-width:2px
+    linkStyle 3 stroke:#666666,stroke-width:2px,stroke-dasharray:3
+    linkStyle 4 stroke:#888888,stroke-width:2px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design17-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px'}}}%%
+flowchart LR
+    classDef agent fill:#3a3a3a,stroke:#b0b0b0,stroke-width:2px,color:#dddddd,rx:6,ry:6
+    classDef artifact fill:#333333,stroke:#999999,stroke-width:2px,color:#cccccc,rx:4,ry:4
+    classDef human fill:#404040,stroke:#c0c0c0,stroke-width:3px,color:#eeeeee,rx:10,ry:10
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements Engineer</b>"]:::agent
+    FS["📄 Feature Spec"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 ADR"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H --> RE -.-> FS --> AR -.-> ADR --> DEV
+    
+    linkStyle 0 stroke:#c0c0c0,stroke-width:2px
+    linkStyle 1 stroke:#b0b0b0,stroke-width:2px,stroke-dasharray:3
+    linkStyle 2 stroke:#999999,stroke-width:2px
+    linkStyle 3 stroke:#b0b0b0,stroke-width:2px,stroke-dasharray:3
+    linkStyle 4 stroke:#999999,stroke-width:2px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 18: Comic Book -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">18. Comic Book Style 💥</h2>
+                <p class="design-description">Bold outlines, vibrant colors, and dramatic comic book aesthetic</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design18-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px', 'fontFamily':'Impact, Arial Black, sans-serif'}}}%%
+flowchart LR
+    classDef agent fill:#ffff00,stroke:#000000,stroke-width:5px,color:#000000,rx:0,ry:0
+    classDef artifact fill:#ff69b4,stroke:#000000,stroke-width:4px,color:#000000,rx:0,ry:0
+    classDef human fill:#00ffff,stroke:#000000,stroke-width:6px,color:#000000,rx:0,ry:0
+    
+    H(["👤 <b>MAINTAINER</b>"]):::human
+    RE["<b>REQUIREMENTS<br/>ENGINEER</b>"]:::agent
+    FS["📄 <b>FEATURE<br/>SPEC</b>"]:::artifact
+    AR["<b>ARCHITECT</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>DEVELOPER</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#000000,stroke-width:6px
+    linkStyle 1 stroke:#000000,stroke-width:5px
+    linkStyle 2 stroke:#000000,stroke-width:5px
+    linkStyle 3 stroke:#000000,stroke-width:5px
+    linkStyle 4 stroke:#000000,stroke-width:5px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design18-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px', 'fontFamily':'Impact, Arial Black, sans-serif'}}}%%
+flowchart LR
+    classDef agent fill:#ffff00,stroke:#ffff00,stroke-width:5px,color:#000000,rx:0,ry:0
+    classDef artifact fill:#ff1493,stroke:#ff69b4,stroke-width:4px,color:#000000,rx:0,ry:0
+    classDef human fill:#00ffff,stroke:#00ffff,stroke-width:6px,color:#000000,rx:0,ry:0
+    
+    H(["👤 <b>MAINTAINER</b>"]):::human
+    RE["<b>REQUIREMENTS<br/>ENGINEER</b>"]:::agent
+    FS["📄 <b>FEATURE<br/>SPEC</b>"]:::artifact
+    AR["<b>ARCHITECT</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>DEVELOPER</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#00ffff,stroke-width:6px
+    linkStyle 1 stroke:#ffff00,stroke-width:5px
+    linkStyle 2 stroke:#ff69b4,stroke-width:5px
+    linkStyle 3 stroke:#ffff00,stroke-width:5px
+    linkStyle 4 stroke:#ff69b4,stroke-width:5px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 19: Isometric 3D -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">19. Isometric 3D 📦</h2>
+                <p class="design-description">3D block nodes with depth shadows and isometric perspective on grid background</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design19-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#4a90e2,stroke:#2e5c8a,stroke-width:2px,color:#ffffff,rx:4,ry:4
+    classDef artifact fill:#e27a4a,stroke:#8a4a2e,stroke-width:2px,color:#ffffff,rx:4,ry:4
+    classDef human fill:#e24a7a,stroke:#8a2e4a,stroke-width:3px,color:#ffffff,rx:6,ry:6
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#8a2e4a,stroke-width:4px
+    linkStyle 1 stroke:#2e5c8a,stroke-width:4px
+    linkStyle 2 stroke:#8a4a2e,stroke-width:4px
+    linkStyle 3 stroke:#2e5c8a,stroke-width:4px
+    linkStyle 4 stroke:#8a4a2e,stroke-width:4px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design19-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#5fa8ff,stroke:#4a90e2,stroke-width:2px,color:#000000,rx:4,ry:4
+    classDef artifact fill:#ff9a5f,stroke:#e27a4a,stroke-width:2px,color:#000000,rx:4,ry:4
+    classDef human fill:#ff5f9a,stroke:#e24a7a,stroke-width:3px,color:#000000,rx:6,ry:6
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#ff5f9a,stroke-width:4px
+    linkStyle 1 stroke:#5fa8ff,stroke-width:4px
+    linkStyle 2 stroke:#ff9a5f,stroke-width:4px
+    linkStyle 3 stroke:#5fa8ff,stroke-width:4px
+    linkStyle 4 stroke:#ff9a5f,stroke-width:4px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 20: Glossy Glass -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">20. Glossy Glass 💎</h2>
+                <p class="design-description">Reflective glass surfaces with highlights, gradients, and transparency</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design20-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#e3f2fd,stroke:#90caf9,stroke-width:3px,color:#1565c0,rx:12,ry:12
+    classDef artifact fill:#fff3e0,stroke:#ffb74d,stroke-width:3px,color:#e65100,rx:10,ry:10
+    classDef human fill:#fce4ec,stroke:#f48fb1,stroke-width:4px,color:#880e4f,rx:16,ry:16
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS ==> AR --> ADR ==> DEV
+    
+    linkStyle 0 stroke:#f48fb1,stroke-width:5px
+    linkStyle 1 stroke:#90caf9,stroke-width:4px
+    linkStyle 2 stroke:#ffb74d,stroke-width:5px
+    linkStyle 3 stroke:#90caf9,stroke-width:4px
+    linkStyle 4 stroke:#ffb74d,stroke-width:5px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design20-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#1565c0,stroke:#64b5f6,stroke-width:3px,color:#e3f2fd,rx:12,ry:12
+    classDef artifact fill:#e65100,stroke:#ffb74d,stroke-width:3px,color:#fff3e0,rx:10,ry:10
+    classDef human fill:#880e4f,stroke:#f48fb1,stroke-width:4px,color:#fce4ec,rx:16,ry:16
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE --> FS ==> AR --> ADR ==> DEV
+    
+    linkStyle 0 stroke:#f48fb1,stroke-width:5px
+    linkStyle 1 stroke:#64b5f6,stroke-width:4px
+    linkStyle 2 stroke:#ffb74d,stroke-width:5px
+    linkStyle 3 stroke:#64b5f6,stroke-width:4px
+    linkStyle 4 stroke:#ffb74d,stroke-width:5px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 21: Paper Emboss -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">21. Paper Emboss 📄</h2>
+                <p class="design-description">Raised paper texture with soft shadows creating tactile depth</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design21-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#ffffff,stroke:#e0e0e0,stroke-width:2px,color:#424242,rx:8,ry:8
+    classDef artifact fill:#f5f5f5,stroke:#d0d0d0,stroke-width:2px,color:#616161,rx:6,ry:6
+    classDef human fill:#ffffff,stroke:#d0d0d0,stroke-width:3px,color:#212121,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H --> RE -.-> FS --> AR -.-> ADR --> DEV
+    
+    linkStyle 0 stroke:#9e9e9e,stroke-width:3px
+    linkStyle 1 stroke:#bdbdbd,stroke-width:2px,stroke-dasharray:4
+    linkStyle 2 stroke:#9e9e9e,stroke-width:3px
+    linkStyle 3 stroke:#bdbdbd,stroke-width:2px,stroke-dasharray:4
+    linkStyle 4 stroke:#9e9e9e,stroke-width:3px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design21-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#3a3a3a,stroke:#4a4a4a,stroke-width:2px,color:#e0e0e0,rx:8,ry:8
+    classDef artifact fill:#2a2a2a,stroke:#3a3a3a,stroke-width:2px,color:#bdbdbd,rx:6,ry:6
+    classDef human fill:#3a3a3a,stroke:#4a4a4a,stroke-width:3px,color:#f5f5f5,rx:12,ry:12
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H --> RE -.-> FS --> AR -.-> ADR --> DEV
+    
+    linkStyle 0 stroke:#757575,stroke-width:3px
+    linkStyle 1 stroke:#616161,stroke-width:2px,stroke-dasharray:4
+    linkStyle 2 stroke:#757575,stroke-width:3px
+    linkStyle 3 stroke:#616161,stroke-width:2px,stroke-dasharray:4
+    linkStyle 4 stroke:#757575,stroke-width:3px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 22: Floating Cards -->
+        <div class="design-option">
+            <div class="design-header">
+                <h2 class="design-title">22. Floating Cards 🃏</h2>
+                <p class="design-description">Card-like nodes with dramatic layered shadows for deep parallax effect</p>
+            </div>
+            <div class="design-preview">
+                <div class="preview-panel" id="design22-light">
+                    <div class="preview-label">Light Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#2196f3,stroke:#1976d2,stroke-width:1px,color:#ffffff,rx:10,ry:10
+    classDef artifact fill:#ff9800,stroke:#f57c00,stroke-width:1px,color:#ffffff,rx:8,ry:8
+    classDef human fill:#e91e63,stroke:#c2185b,stroke-width:2px,color:#ffffff,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#c2185b,stroke-width:3px
+    linkStyle 1 stroke:#1976d2,stroke-width:3px
+    linkStyle 2 stroke:#f57c00,stroke-width:3px
+    linkStyle 3 stroke:#1976d2,stroke-width:3px
+    linkStyle 4 stroke:#f57c00,stroke-width:3px
+                    </div>
+                </div>
+                <div class="preview-panel dark" id="design22-dark">
+                    <div class="preview-label">Dark Mode</div>
+                    <div class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    classDef agent fill:#64b5f6,stroke:#42a5f5,stroke-width:1px,color:#0d47a1,rx:10,ry:10
+    classDef artifact fill:#ffb74d,stroke:#ffa726,stroke-width:1px,color:#e65100,rx:8,ry:8
+    classDef human fill:#f48fb1,stroke:#f06292,stroke-width:2px,color:#880e4f,rx:14,ry:14
+    
+    H(["👤 <b>Maintainer</b>"]):::human
+    RE["<b>Requirements<br/>Engineer</b>"]:::agent
+    FS["📄 <b>Feature<br/>Spec</b>"]:::artifact
+    AR["<b>Architect</b>"]:::agent
+    ADR["📐 <b>ADR</b>"]:::artifact
+    DEV["<b>Developer</b>"]:::agent
+    
+    H ==> RE ==> FS ==> AR ==> ADR ==> DEV
+    
+    linkStyle 0 stroke:#f06292,stroke-width:3px
+    linkStyle 1 stroke:#42a5f5,stroke-width:3px
+    linkStyle 2 stroke:#ffa726,stroke-width:3px
+    linkStyle 3 stroke:#42a5f5,stroke-width:3px
+    linkStyle 4 stroke:#ffa726,stroke-width:3px
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            securityLevel: 'loose'
+        });
+    </script>
+</body>
+</html>

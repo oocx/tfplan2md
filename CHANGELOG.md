@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.27"></a>
+## [1.0.0-alpha.27](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.26...v1.0.0-alpha.27) (2026-01-11)
+
+### ✨ Features
+
+* **workflow:** add website accessibility check skill ([7d2fc7f](https://github.com/oocx/tfplan2md/commit/7d2fc7fc7c73db1ed1de96c59cec59beeebe55d5))
+
+### 🐛 Bug Fixes
+
+* **workflow:** pr-github script avoids merged PR reuse ([cf4b53b](https://github.com/oocx/tfplan2md/commit/cf4b53b289d7e81775c0779ed089bb1505ee7fbf))
+* **workflow:** prevent website verify no-ops and enforce DevTools ([8b07b22](https://github.com/oocx/tfplan2md/commit/8b07b22ca8c1b6b83cb08dbbebe30ae34510d908))
+
+### ♻️ Refactoring
+
+* **workflow:** improve Web Designer agent effectiveness ([154243e](https://github.com/oocx/tfplan2md/commit/154243e9c92feb5112ded75bca3b5eb2a450dfbd))
+* **workflow:** simplify web designer agent prompt ([a6193ae](https://github.com/oocx/tfplan2md/commit/a6193ae2cf132c20df7fe4c0d768972cfc4262f8))
+
+### 📚 Documentation
+
+* **workflow:** add web designer agent refactor tasks ([c91ba27](https://github.com/oocx/tfplan2md/commit/c91ba27ed6881b444469756011d05a286fbdf3db))
+* **workflow:** mark web designer model as wont-change ([3e543cc](https://github.com/oocx/tfplan2md/commit/3e543cc16d09c6c8efb891a9b7310c7599d0262c))
+* **workflow:** mark web designer refactor task 3 done ([5049fe5](https://github.com/oocx/tfplan2md/commit/5049fe52eab44ee49fa5acc99db86dd3f6ef62ad))
+* **workflow:** require devtools mcp for preview navigation ([9ddbdc9](https://github.com/oocx/tfplan2md/commit/9ddbdc98931e933c8bd3a6be120f511e8359b2d5))
+
 <a name="1.0.0-alpha.26"></a>
 ## [1.0.0-alpha.26](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.25...v1.0.0-alpha.26) (2026-01-11)
 

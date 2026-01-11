@@ -397,7 +397,7 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 - **Deliverables:** Website pages (HTML/CSS), design prototypes, website content derived from existing documentation.
 - **Initial Creation:** Handoff from Architect after technical approach is defined.
 - **Ongoing Changes:** Direct handoff from Maintainer for content, design, or functionality updates (local), or via GitHub issue assignment (cloud).
-- **Definition of Done:** Website changes are complete, accessible (WCAG 2.1 AA), responsive, and PR is created.
+- **Definition of Done:** Website changes are complete, accessible (WCAG 2.1 AA), responsive, and the agent provides verification evidence (changed files, Problems panel clean, VS Code preview render, DevTools console clean, style/NFR checklist). Changes must be validated against the style guide; style guide updates require site-wide consistency updates, and new reusable design elements must be documented.
 - **Cloud Limitations:** Cannot generate screenshots, preview locally, or use Chrome DevTools. Best for content/text updates and style changes that don't require visual verification.
 - **Note:** This agent operates independently for website-specific work. Website files live in `/website/` directory with isolated CI/CD pipeline triggers.
 

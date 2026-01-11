@@ -123,6 +123,44 @@ Todo lists:
 - Keep the todo list updated as steps move from not-started → in-progress → completed.
 - Skip todo lists for simple Q&A or one-step actions.
 
+## Definition of Done (CRITICAL)
+
+You must NOT claim a website task is “done” (and must NOT hand off for PR) until **all** items below are satisfied. If you cannot satisfy an item, say so explicitly, explain why, and propose the smallest next action that will unblock it.
+
+### Required evidence (VS Code / Local)
+- **Files changed:** Run `scripts/git-status.sh --porcelain=v1` and summarize the changed files under `website/`.
+- **Build/Problems panel:** Check `read/problems` and confirm no new errors were introduced by your edits.
+- **Verify (mandatory):** Run `scripts/website-verify.sh` (includes `scripts/website-lint.sh`) and fix any errors before claiming “done”.
+- **Preview render:** Open the changed pages via VS Code preview at `http://127.0.0.1:3000/website/` and confirm they render (no missing CSS/JS).
+- **DevTools sanity:** Use Chrome DevTools MCP (`io.github.chromedevtools/chrome-devtools-mcp/*`) to confirm:
+   - No console errors on the changed pages
+   - Layout is reasonable at least at mobile and desktop widths
+- **Style guide compliance (mandatory):** Validate the change against `website/_memory/style-guide.md`.
+   - If your change modifies a “shared” design decision (spacing, typography, containers, component patterns), update the style guide in the same PR.
+   - If you update the style guide, you must also update every affected page/component so the site is consistent.
+   - If you introduce a new reusable design element (new component class/pattern likely to be used elsewhere), document it in the style guide with selector name + intended usage.
+- **Style guide accuracy check (mandatory):** If the style guide contains specific numeric values (e.g., section padding), verify they still match `website/style.css`. If not, update the style guide.
+- **Shared component propagation (mandatory):** If you change a shared component (CSS class, JS behavior, or HTML pattern used across pages), you must:
+   - Use `search` to find all usages across `website/`
+   - Update all affected pages/files in the same change
+   - Explicitly list which pages/files were updated in your “Done” response
+- **NFR checklist:** For each changed page, verify essentials from `website/_memory/non-functional-requirements.md` (use `website-quality-check` as the baseline).
+
+### Required evidence (Cloud)
+- **Files changed:** List all files changed under `website/`.
+- **Verify (mandatory):** If the repo includes `scripts/website-verify.sh`, run it on your branch and fix failures before creating a PR.
+- **Static reasoning checks:** Confirm semantic HTML, accessibility basics (headings, labels/alt text), and that relative links/asset paths are correct.
+- **Limitations stated:** If you can’t preview/run DevTools in cloud mode, state that clearly and mark it as a follow-up for local verification.
+
+### Required “Done” response format
+When you claim completion, include these sections (short and factual):
+- **What changed:** 1–3 bullets.
+- **Files:** bulleted list of changed `website/` files.
+- **Verification:** bullets with evidence (commands run + outcomes; lint results; DevTools check results; Problems panel status).
+- **Style guide:** state whether `website/_memory/style-guide.md` changed; if yes, state which site-wide updates were made to match it; if no, state that the change was validated against it.
+- **Shared components:** if any shared pattern/component was modified, state how you verified all usages were updated.
+- **Known limitations / follow-ups:** only if applicable.
+
 **Next**
 - **Option 1:** <clear next action>
 - **Option 2:** <clear alternative>

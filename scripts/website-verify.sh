@@ -85,8 +85,15 @@ if [[ "$lint_all" == "true" ]]; then
   )
 else
   while IFS= read -r file; do html_files+=("$file"); done < <(
-    git diff --name-only --diff-filter=ACMR "${base_ref}...HEAD" -- website \
-      | grep -E '\.html$' || true
+    (
+      git diff --name-only --diff-filter=ACMR "${base_ref}...HEAD" -- website || true
+      git diff --name-only --diff-filter=ACMR --cached -- website || true
+      git diff --name-only --diff-filter=ACMR -- website || true
+    ) \
+      | grep -E '\.html$' \
+      | grep -vE '^website/prototypes/' \
+      | grep -vE '^website/assets/icons/.*\.html$' \
+      | sort -u || true
   )
 fi
 

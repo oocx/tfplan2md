@@ -1697,6 +1697,17 @@ body {
     flex-shrink: 0;
 }
 
+.highlights-list a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.highlights-list a:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+}
+
 .icon-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -3619,6 +3630,11 @@ body {
     padding: 40px;
     margin: 40px 0;
     overflow-x: auto;
+}
+
+/* Improve Mermaid diagram visibility in dark mode */
+:root[data-theme="dark"] .diagram-container .mermaid {
+    filter: invert(0.85) hue-rotate(180deg) brightness(0.95) contrast(1.4);
 }
 
 .diagram-note {

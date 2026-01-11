@@ -13,7 +13,7 @@ Provide a lightweight, repeatable quality checklist for website changes.
 - [ ] Verify the change follows `website/_memory/style-guide.md`.
 - [ ] Verify the change follows `website/_memory/non-functional-requirements.md`.
 - [ ] If any HTML/CSS/JS files changed under `website/`, run `scripts/website-verify.sh` and fix failures.
-- [ ] If local preview is available, open the changed pages and ensure the browser console has no errors.
+- [ ] If local preview is available, open the changed pages via the VS Code preview server (`http://127.0.0.1:3000/website/`) and load them in Chrome DevTools MCP (`io.github.chromedevtools/chrome-devtools-mcp/*`) to ensure the console has no errors.
 - [ ] Do quick link/navigation sanity checks on changed pages.
 - [ ] Do basic accessibility spot checks (headings, aria labels, keyboard navigation where relevant).
 

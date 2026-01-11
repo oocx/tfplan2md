@@ -90,7 +90,7 @@
             </p>
             
             <div class="diagram-container" style="background: #0d1b2a; padding: 2rem; border-radius: 8px;">
-                <svg viewBox="0 0 1200 1600" style="width: 100%; height: auto; max-width: 1200px; margin: 0 auto; display: block;">
+                <svg viewBox="0 0 1100 1400" style="width: 100%; height: auto; max-width: 1100px; margin: 0 auto; display: block;">
                     <defs>
                         <!-- Blueprint grid pattern -->
                         <pattern id="grid-blueprint-workflow" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -98,176 +98,183 @@
                         </pattern>
                         
                         <!-- Arrow markers -->
-                        <marker id="arrow-blueprint-cyan" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                        <marker id="arrow-cyan" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
                             <path d="M0,0 L0,8 L8,4 z" fill="#00ffff"/>
                         </marker>
-                        <marker id="arrow-blueprint-white" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                        <marker id="arrow-white" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
                             <path d="M0,0 L0,8 L8,4 z" fill="#ffffff"/>
                         </marker>
-                        <marker id="arrow-blueprint-dashed" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-                            <path d="M0,0 L0,8 L8,4 z" fill="rgba(0,255,255,0.4)"/>
+                        <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L0,8 L8,4 z" fill="#10b981"/>
+                        </marker>
+                        <marker id="arrow-dashed" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L0,8 L8,4 z" fill="rgba(0,255,255,0.5)"/>
                         </marker>
                     </defs>
                     
                     <!-- Blueprint grid background -->
-                    <rect width="1200" height="1600" fill="url(#grid-blueprint-workflow)"/>
+                    <rect width="1100" height="1400" fill="url(#grid-blueprint-workflow)"/>
                     
                     <!-- Human / Maintainer (Top Center) -->
                     <g class="node human">
-                        <rect rx="4" ry="4" x="500" y="40" width="200" height="70" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="6,3"/>
-                        <text x="600" y="70" text-anchor="middle" fill="#00ffff" font-weight="700" font-size="18" font-family="monospace">👤 MAINTAINER</text>
-                        <text x="600" y="95" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12" font-family="monospace">(Human)</text>
+                        <rect rx="4" ry="4" x="420" y="30" width="260" height="65" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="6,3"/>
+                        <text x="550" y="58" text-anchor="middle" fill="#00ffff" font-weight="700" font-size="17" font-family="monospace">👤 MAINTAINER</text>
+                        <text x="550" y="80" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="11" font-family="monospace">(Human)</text>
                     </g>
                     
-                    <!-- Connections from Maintainer to Entry Agents -->
-                    <path d="M 550 110 L 550 180" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-blueprint-white)"/>
-                    <path d="M 600 110 L 600 180" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-blueprint-white)"/>
-                    <path d="M 650 110 L 650 180" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-blueprint-white)"/>
+                    <!-- Connections from Maintainer to Entry Agents (3 separate paths) -->
+                    <path d="M 480 95 L 180 155" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
+                    <path d="M 550 95 L 550 155" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
+                    <path d="M 620 95 L 920 155" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
                     
                     <!-- Entry Agents Row -->
                     <!-- Requirements Engineer -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="80" y="190" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="180" y="228" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">REQUIREMENTS</text>
-                        <text x="180" y="245" text-anchor="middle" fill="#00ffff" font-size="13" font-family="monospace">ENGINEER</text>
+                        <rect rx="3" ry="3" x="60" y="165" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="180" y="200" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">REQUIREMENTS ENG</text>
                     </g>
                     
                     <!-- Issue Analyst -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="500" y="190" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="600" y="228" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">ISSUE</text>
-                        <text x="600" y="245" text-anchor="middle" fill="#00ffff" font-size="13" font-family="monospace">ANALYST</text>
+                        <rect rx="3" ry="3" x="430" y="165" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="550" y="200" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">ISSUE ANALYST</text>
                     </g>
                     
                     <!-- Workflow Engineer -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="920" y="190" width="200" height="60" fill="none" stroke="#10b981" stroke-width="2.5"/>
-                        <text x="1020" y="228" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">WORKFLOW</text>
-                        <text x="1020" y="245" text-anchor="middle" fill="#10b981" font-size="13" font-family="monospace">ENGINEER</text>
+                        <rect rx="3" ry="3" x="800" y="165" width="240" height="55" fill="none" stroke="#10b981" stroke-width="2.5"/>
+                        <text x="920" y="200" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">WORKFLOW ENG</text>
                     </g>
                     
-                    <!-- Artifacts from Entry -->
-                    <path d="M 180 250 L 180 310" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
-                    <path d="M 600 250 L 600 310" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
-                    <path d="M 1020 250 L 1020 310" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
+                    <!-- Artifacts from Entry Agents -->
+                    <path d="M 180 220 L 180 275" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+                    <path d="M 550 220 L 550 275" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+                    <path d="M 920 220 L 920 275" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
                     
                     <!-- Feature Spec -->
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="80" y="320" width="200" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="180" y="355" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">📄 FEATURE SPEC</text>
+                        <rect rx="3" ry="3" x="60" y="285" width="240" height="50" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="180" y="317" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">📄 FEATURE SPEC</text>
                     </g>
                     
                     <!-- Issue Analysis -->
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="500" y="320" width="200" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="600" y="355" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">🔍 ANALYSIS</text>
+                        <rect rx="3" ry="3" x="430" y="285" width="240" height="50" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="550" y="317" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">🔍 ISSUE ANALYSIS</text>
                     </g>
                     
-                    <!-- Workflow Docs -->
+                    <!-- Workflow Docs (goes to loop at bottom) -->
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="920" y="320" width="200" height="60" fill="rgba(16,185,129,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="1020" y="355" text-anchor="middle" fill="#10b981" font-weight="600" font-size="15" font-family="monospace">⚙️ WORKFLOW DOC</text>
+                        <rect rx="3" ry="3" x="800" y="285" width="240" height="50" fill="rgba(16,185,129,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="920" y="317" text-anchor="middle" fill="#10b981" font-weight="600" font-size="14" font-family="monospace">⚙️ WORKFLOW DOC</text>
                     </g>
                     
-                    <!-- Converge paths to Architect -->
-                    <path d="M 180 380 L 180 440 L 380 440" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
-                    
-                    <!-- Direct path Issue Analysis to Developer (skip Architect) -->
-                    <path d="M 600 380 L 600 1080" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-blueprint-dashed)"/>
+                    <!-- Main Flow Column (Left side) -->
+                    <path d="M 180 335 L 180 395" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- Architect -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="390" y="420" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="490" y="458" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">ARCHITECT</text>
+                        <rect rx="3" ry="3" x="60" y="405" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="180" y="440" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">ARCHITECT</text>
                     </g>
+                    
+                    <path d="M 180 460 L 180 510" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- ADR -->
-                    <path d="M 490 480 L 490 540" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="390" y="550" width="200" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="490" y="585" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">📐 ADR</text>
+                        <rect rx="3" ry="3" x="60" y="520" width="240" height="50" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="180" y="552" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">📐 ADR</text>
                     </g>
+                    
+                    <path d="M 180 570 L 180 620" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- Quality Engineer -->
-                    <path d="M 490 610 L 490 670" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="390" y="680" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="490" y="718" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">QUALITY ENGINEER</text>
+                        <rect rx="3" ry="3" x="60" y="630" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="180" y="665" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">QUALITY ENGINEER</text>
                     </g>
+                    
+                    <path d="M 180 685 L 180 735" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- Test Plan -->
-                    <path d="M 490 740 L 490 800" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="390" y="810" width="200" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="490" y="845" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">✓ TEST PLAN</text>
+                        <rect rx="3" ry="3" x="60" y="745" width="240" height="50" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="180" y="777" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">✓ TEST PLAN</text>
                     </g>
+                    
+                    <path d="M 180 795 L 180 845" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- Task Planner -->
-                    <path d="M 490 870 L 490 930" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="390" y="940" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="490" y="978" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">TASK PLANNER</text>
+                        <rect rx="3" ry="3" x="60" y="855" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="180" y="890" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">TASK PLANNER</text>
                     </g>
+                    
+                    <path d="M 180 910 L 180 960" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- User Stories -->
-                    <path d="M 490 1000 L 490 1060" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="390" y="1070" width="200" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="490" y="1105" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">📋 USER STORIES</text>
+                        <rect rx="3" ry="3" x="60" y="970" width="240" height="50" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="180" y="1002" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">📋 USER STORIES</text>
                     </g>
                     
-                    <!-- Developer (Receives both paths) -->
-                    <path d="M 520 1130 L 640 1180" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
+                    <!-- Converge to Developer -->
+                    <path d="M 300 995 L 430 995" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+                    
+                    <!-- Direct path Issue Analysis to Developer (bypass planning) -->
+                    <path d="M 550 335 L 550 970 L 430 970" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-dashed)"/>
+                    
+                    <!-- Developer (Center) -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="650" y="1160" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="750" y="1198" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">DEVELOPER</text>
+                        <rect rx="3" ry="3" x="430" y="955" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="550" y="990" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">DEVELOPER</text>
                     </g>
+                    
+                    <path d="M 550 1010 L 550 1060" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- Code & Tests -->
-                    <path d="M 750 1220 L 750 1280" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
                     <g class="node artifact">
-                        <rect rx="3" ry="3" x="650" y="1290" width="200" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="750" y="1325" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">💻 CODE & TESTS</text>
+                        <rect rx="3" ry="3" x="430" y="1070" width="240" height="50" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="550" y="1102" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">💻 CODE & TESTS</text>
                     </g>
                     
                     <!-- Fork to TW and CR -->
-                    <path d="M 700 1350 L 290 1400" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
-                    <path d="M 800 1350 L 920 1400" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
+                    <path d="M 500 1120 L 180 1165" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+                    <path d="M 600 1120 L 790 1165" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
                     <!-- Technical Writer -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="190" y="1410" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="290" y="1448" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">TECH WRITER</text>
+                        <rect rx="3" ry="3" x="60" y="1175" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="180" y="1210" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">TECH WRITER</text>
                     </g>
                     
                     <!-- Code Reviewer -->
                     <g class="node agent">
-                        <rect rx="3" ry="3" x="920" y="1410" width="200" height="60" fill="none" stroke="#00ffff" stroke-width="2.5"/>
-                        <text x="1020" y="1448" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="15" font-family="monospace">CODE REVIEWER</text>
+                        <rect rx="3" ry="3" x="800" y="1175" width="240" height="55" fill="none" stroke="#00ffff" stroke-width="2.5"/>
+                        <text x="920" y="1210" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="14" font-family="monospace">CODE REVIEWER</text>
                     </g>
                     
-                    <!-- Documentation -->
-                    <path d="M 390 1440 L 920 1440" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
+                    <!-- Documentation to CR -->
+                    <path d="M 300 1202 L 800 1202" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
                     
-                    <!-- Review Report + Decision Paths -->
-                    <g class="node artifact">
-                        <rect rx="3" ry="3" x="860" y="1510" width="240" height="60" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="980" y="1545" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="15" font-family="monospace">✅ REVIEW REPORT</text>
-                    </g>
-                    
-                    <!-- Note: simplified the bottom section for brevity, continuing with key nodes -->
+                    <!-- Rework loop -->
+                    <path d="M 920 1230 L 920 1270 L 680 1270 L 680 1020 L 650 1020" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-dashed)"/>
+                    <text x="700" y="1265" fill="rgba(255,255,255,0.5)" font-size="11" font-family="monospace">Rework</text>
                     
                     <!-- Legend -->
-                    <g transform="translate(30, 1480)">
+                    <g transform="translate(30, 1320)">
                         <text x="0" y="0" fill="rgba(255,255,255,0.7)" font-size="12" font-family="monospace">LEGEND:</text>
-                        <rect x="0" y="10" width="40" height="20" fill="none" stroke="#00ffff" stroke-width="2"/>
-                        <text x="50" y="25" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Agent</text>
+                        <rect x="0" y="10" width="35" height="18" fill="none" stroke="#00ffff" stroke-width="2"/>
+                        <text x="45" y="24" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Agent</text>
                         
-                        <rect x="0" y="40" width="40" height="20" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
-                        <text x="50" y="55" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Artifact</text>
+                        <rect x="120" y="10" width="35" height="18" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="165" y="24" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Artifact</text>
                         
-                        <line x1="0" y1="75" x2="40" y2="75" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-blueprint-cyan)"/>
-                        <text x="50" y="80" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Flow</text>
+                        <line x1="250" y1="19" x2="285" y2="19" stroke="#00ffff" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+                        <text x="295" y="24" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Main Flow</text>
+                        
+                        <line x1="400" y1="19" x2="435" y2="19" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-dashed)"/>
+                        <text x="445" y="24" fill="rgba(255,255,255,0.7)" font-size="11" font-family="monospace">Alternative/Rework</text>
                     </g>
                 </svg>
             </div>

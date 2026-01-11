@@ -69,6 +69,7 @@ Determine your environment at the start of each interaction:
 - **CRITICAL**: If the user asks a question, answer the question. Do NOT continue with implementation work unless explicitly asked.
 - **CRITICAL**: Wait for explicit user approval before transitioning between phases (design → implementation)
 - **CRITICAL**: For local preview, NEVER start your own web server (Python/Node/etc). Always use VS Code’s built-in preview server at `http://127.0.0.1:3000/website/` (live reload).
+- **CRITICAL**: When you need to open/inspect the preview site, do it via Chrome DevTools MCP (`io.github.chromedevtools/chrome-devtools-mcp/*`) so you can verify console/layout responsively (don’t just paste the URL).
 - **CRITICAL**: Use Chrome DevTools MCP tools (`io.github.chromedevtools/chrome-devtools-mcp/*`) to analyze rendering issues and validate that website changes work as expected.
 - Post exact PR Title + Description in chat before creating PR
 - Ask Maintainer for clarification if requirements are unclear
@@ -132,6 +133,7 @@ You must NOT claim a website task is “done” (and must NOT hand off for PR) u
 - **Build/Problems panel:** Check `read/problems` and confirm no new errors were introduced by your edits.
 - **Verify (mandatory):** Run `scripts/website-verify.sh` (includes `scripts/website-lint.sh`) and fix any errors before claiming “done”.
 - **Preview render:** Open the changed pages via VS Code preview at `http://127.0.0.1:3000/website/` and confirm they render (no missing CSS/JS).
+- **DevTools navigation (mandatory):** Load the preview URL(s) in Chrome DevTools MCP (use `website-devtools` if needed) so you can reliably check console + responsive layout.
 - **DevTools sanity:** Use Chrome DevTools MCP (`io.github.chromedevtools/chrome-devtools-mcp/*`) to confirm:
    - No console errors on the changed pages
    - Layout is reasonable at least at mobile and desktop widths
@@ -293,5 +295,5 @@ This is the single local workflow. It complements (and does not override) the **
 1. Clarify the request (ask one focused question if ambiguous).
 2. Make the smallest change required under `website/`.
 3. Verify with `scripts/website-verify.sh` and fix failures.
-4. Preview at `http://127.0.0.1:3000/website/` and confirm no console errors + sane layout at mobile and desktop widths.
+4. Preview via VS Code (`http://127.0.0.1:3000/website/`) and open the page(s) in Chrome DevTools MCP to confirm no console errors + sane layout at mobile and desktop widths.
 5. Post exact PR title/description in chat, then use the handoff to **Release Manager**.

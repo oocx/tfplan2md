@@ -26,7 +26,7 @@ Use Chrome DevTools MCP tools to:
 ```
 
 ## Actions
-1. Open or serve the website locally (if needed) so it can be inspected.
+1. Ensure the site is available via the VS Code preview server (`http://127.0.0.1:3000/website/`), then load the relevant page URL in Chrome DevTools MCP so you can inspect it.
 2. Use Chrome DevTools MCP tools to inspect:
    - DOM structure and element attributes
    - Computed CSS and layout metrics

@@ -393,7 +393,7 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 ### 13. Web Designer (Specialized Agent)
 - **Goal:** Design, develop, and maintain the tfplan2md website hosted on GitHub Pages.
 - **Execution Modes:**
-	- **Local (VS Code):** Use VS Code’s built-in preview server (`http://127.0.0.1:3000/website/`) and validate rendering via Chrome DevTools MCP
+	- **Local (VS Code):** Use VS Code’s built-in preview server (`http://127.0.0.1:3000/website/`), and open the relevant pages via Chrome DevTools MCP (not just by pasting the URL) to validate rendering
   - **Cloud (GitHub):** Automated content/style updates via issue assignment for well-defined changes
 - **Deliverables:** Website pages (HTML/CSS), design prototypes, website content derived from existing documentation.
 - **Initial Creation:** Handoff from Architect after technical approach is defined.

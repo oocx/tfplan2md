@@ -26,10 +26,13 @@ This document captures **design and style decisions** for the tfplan2md website.
 | `--color-text` | `#24292f` | Primary text |
 | `--color-text-secondary` | `#57606a` | Secondary/muted text |
 | `--color-border` | `#d0d7de` | Borders and dividers |
-| `--color-primary` | `#0969da` | Links, buttons, accents |
-| `--color-primary-hover` | `#0860ca` | Primary hover state |
-| `--color-accent` | `#1f883d` | Success/accent color |
+| `--color-primary` | `#844fba` | Links, buttons, accents (purple brand color) |
+| `--color-primary-hover` | `#6a3f96` | Primary hover state |
+| `--color-accent` | `#1f883d` | Success/accent color (green) |
 | `--color-success` | `#1a7f37` | Success states |
+| `--code-bg` | `#eaeef2` | Code block backgrounds |
+| `--code-header-bg` | `#d0d7de` | Code block headers |
+| `--code-text` | `#24292f` | Code text color |
 
 ### Dark Mode (`:root[data-theme="dark"]`)
 
@@ -40,10 +43,13 @@ This document captures **design and style decisions** for the tfplan2md website.
 | `--color-text` | `#e6edf3` | Primary text |
 | `--color-text-secondary` | `#7d8590` | Secondary/muted text |
 | `--color-border` | `#30363d` | Borders and dividers |
-| `--color-primary` | `#58a6ff` | Links, buttons, accents |
-| `--color-primary-hover` | `#79c0ff` | Primary hover state |
+| `--color-primary` | `#a371f7` | Links, buttons, accents (purple) |
+| `--color-primary-hover` | `#d2a8ff` | Primary hover state |
 | `--color-accent` | `#a371f7` | Accent color (purple) |
 | `--color-success` | `#3fb950` | Success states |
+| `--code-bg` | `#1a202c` | Code block backgrounds |
+| `--code-header-bg` | `#2d3748` | Code block headers |
+| `--code-text` | `#e2e8f0` | Code text color |
 
 ### Shared Tokens
 

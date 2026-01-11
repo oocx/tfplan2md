@@ -1226,6 +1226,10 @@ body {
     position: relative;
 }
 
+.screenshot-content .code-block {
+    border-radius: 0;
+}
+
 .code-block .code-header {
     background: var(--code-header-bg);
     padding: 8px 16px;

@@ -110,17 +110,33 @@ ensure_pr_exists() {
   local branch
   branch="$(git branch --show-current)"
 
-  if gh_safe pr view --json number,url -q '.number' >/dev/null 2>&1; then
+  # Only consider OPEN PRs for this branch.
+  # `gh pr view` can resolve merged/closed PRs, which breaks workflows when a branch name is reused.
+  local open_pr_number
+  open_pr_number="$(gh_safe pr list --head "$branch" --state open --json number -q '.[0].number' 2>/dev/null || true)"
+  if [[ -n "${open_pr_number//[[:space:]]/}" ]]; then
     return 0
   fi
 
-  echo "No existing PR found for branch '$branch'; creating..." >&2
+  echo "No open PR found for branch '$branch'; creating..." >&2
   require_non_empty "$TITLE" "PR title"
   require_non_empty "$BODY_TEXT" "PR body"
   echo "$BODY_TEXT" | gh_safe pr create --base main --head "$branch" --title "$TITLE" --body-file -
 }
 
 get_pr_number() {
+  local branch
+  branch="$(git branch --show-current)"
+
+  # Prefer the open PR for this branch.
+  local open_pr_number
+  open_pr_number="$(gh_safe pr list --head "$branch" --state open --json number -q '.[0].number' 2>/dev/null || true)"
+  if [[ -n "${open_pr_number//[[:space:]]/}" ]]; then
+    echo "$open_pr_number"
+    return 0
+  fi
+
+  # Fall back to gh's branch inference (may resolve closed PRs). Keep this as a last resort.
   gh_safe pr view --json number -q '.number'
 }
 

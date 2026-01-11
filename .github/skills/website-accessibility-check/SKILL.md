@@ -30,7 +30,7 @@ Provide a focused, repeatable accessibility checklist for changes to `website/` 
 - Color/contrast: avoid low-contrast text and “color-only” meaning
 
 ## Suggested Workflow (VS Code)
-1. Open the changed page in the VS Code preview (`http://127.0.0.1:3000/website/`).
+1. Open the changed page via the VS Code preview server (`http://127.0.0.1:3000/website/`), then load it in Chrome DevTools MCP (use the `website-devtools` skill/tools) so you can inspect DOM/focus/console.
 2. Use keyboard only (Tab/Shift+Tab/Enter/Space) to navigate key flows.
 3. Spot-check headings and landmark structure in the DOM.
 4. If available, use the `website-devtools` skill to validate focus/hover states and check for console errors.

@@ -1009,6 +1009,25 @@ body {
     border-bottom-color: var(--color-primary);
 }
 
+.code-tab-content {
+    display: none;
+    background: var(--code-bg);
+    padding: 24px;
+    overflow-x: auto;
+}
+
+.code-tab-content.active {
+    display: block;
+}
+
+.code-tab-content pre {
+    color: var(--code-text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+}
+
 .code-content {
     background: var(--code-bg);
     padding: 24px;

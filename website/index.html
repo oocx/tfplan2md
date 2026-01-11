@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tfplan2md - Transform Terraform Plans Into Readable Reports</title>
     <link rel="stylesheet" href="style.css">
+    <!-- highlight.js themes - loaded based on current theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
+    <style>
+        /* Override highlight.js backgrounds to match code-tab-content */
+        .code-tab-content .hljs,
+        .code-tab-content pre code {
+            background: transparent !important;
+        }
+        [data-theme="dark"] .code-tab-content .hljs {
+            color: var(--code-text);
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -328,27 +341,53 @@
                 <div class="cicd-example">
                     <div class="code-window">
                         <div class="code-tabs">
-                            <button class="code-tab active">GitHub Actions</button>
-                            <button class="code-tab">Azure Pipelines</button>
+                            <button class="code-tab active" data-tab="github-actions">GitHub Actions</button>
+                            <button class="code-tab" data-tab="azure-pipelines">Azure Pipelines</button>
                         </div>
-                        <div class="code-content">
-<pre>- name: Generate markdown report
+                        <div class="code-tab-content active" id="github-actions">
+<pre><code class="language-yaml">- name: Generate markdown report
   run: |
     terraform show -json plan.tfplan | \
       docker run -i oocx/tfplan2md > plan.md
 
 - name: Post PR comment
-  uses: actions/github-script@v6
+  uses: actions/github-script@v7
   with:
     script: |
       const fs = require('fs');
-      const body = fs.readFileSync('plan.md', 'utf8');
+      const plan = fs.readFileSync('plan.md', 'utf8');
+      
       github.rest.issues.createComment({
         issue_number: context.issue.number,
         owner: context.repo.owner,
         repo: context.repo.repo,
-        body
-      });</pre>
+        body: plan
+      });</code></pre>
+                        </div>
+                        <div class="code-tab-content" id="azure-pipelines">
+<pre><code class="language-yaml">- script: terraform show -json plan.tfplan > plan.json
+  displayName: 'Convert to JSON'
+  workingDirectory: terraform
+
+- script: |
+    docker run -v $(pwd):/data oocx/tfplan2md \
+      /data/plan.json --output /data/plan.md
+  displayName: 'Generate markdown report'
+  workingDirectory: terraform
+
+- bash: |
+    MARKDOWN=$(cat terraform/plan.md)
+    URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.0"
+    
+    BODY=$(jq -n \
+      --arg content "$MARKDOWN" \
+      '{comments: [{content: $content, commentType: 1}], status: 1}')
+    
+    curl -X POST "$URL" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $(System.AccessToken)" \
+      -d "$BODY"
+  displayName: 'Post PR comment'</code></pre>
                         </div>
                     </div>
                 </div>
@@ -603,6 +642,66 @@
         }
 
         highlightMarkdown();
+    </script>
+    
+    <!-- highlight.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+            
+            // CI/CD tabs functionality
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    // Update tab states
+                    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update content states
+                    document.querySelectorAll('.code-tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(tabName).classList.add('active');
+                });
+            });
+            
+            // Toggle highlight.js theme based on site theme
+            function toggleHighlightTheme(theme) {
+                const lightTheme = document.getElementById('highlight-light');
+                const darkTheme = document.getElementById('highlight-dark');
+                if (theme === 'dark') {
+                    lightTheme.disabled = true;
+                    darkTheme.disabled = false;
+                } else {
+                    lightTheme.disabled = false;
+                    darkTheme.disabled = true;
+                }
+            }
+            
+            // Initialize theme
+            const initialTheme = document.documentElement.getAttribute('data-theme');
+            toggleHighlightTheme(initialTheme);
+            
+            // Listen for theme changes
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'data-theme') {
+                        const theme = document.documentElement.getAttribute('data-theme');
+                        toggleHighlightTheme(theme);
+                    }
+                });
+            });
+            
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['data-theme']
+            });
+        });
     </script>
 </body>
 </html>

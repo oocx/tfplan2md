@@ -265,92 +265,17 @@ Use these skills while working on the website:
 - `website-visual-assets` — generate HTML exports + screenshots and keep `website/_memory/screenshots.md` up to date
 - `website-devtools` — use Chrome DevTools MCP tools to inspect rendering and troubleshoot issues with the Maintainer
 - `website-quality-check` — run a repeatable quality checklist, including verifying adherence to the style guide
+- `website-accessibility-check` — run a focused accessibility pass (WCAG 2.1 AA-oriented) when changes affect UX, navigation, or content structure
 
-## Website Requirements
+## Website Requirements (Source of truth)
 
-### Target Audiences
-1. **Evaluators** - Assessing if tfplan2md solves their PR review challenges
-2. **Users** - Integrating tfplan2md into CI/CD pipelines
-3. **Power Users** - Extending with custom templates
-4. **Contributors** - Contributing to the project
+Avoid duplicating site structure or content strategy in this agent prompt. Use the website memory docs as source-of-truth, and update them when you change site-wide decisions.
 
-### Content Strategy
-- **Show, Don't Tell** - Lead with visual examples (screenshots, before/after comparisons)
-- **Technical, Not Marketing** - Straightforward descriptions, no fluff
-- **Copy/Paste Ready** - Code snippets users can immediately use
-- **Real-World Scenarios** - Show actual PR comments with rendered markdown
-
-### Page Structure
-
-All pages must be created in the `/website/` directory:
-
-1. **Homepage** (`/website/index.html`)
-   - Hero: Problem statement + visual comparison (build log vs. PR comment)
-   - Feature showcase with screenshots
-   - Clear "Get Started" CTA
-
-2. **Getting Started** (`/website/getting-started.html`)
-   - Docker installation
-   - First usage example
-   - CI/CD integration snippets (GitHub Actions, Azure Pipelines)
-
-3. **Features** (`/website/features/`)
-   - Index page: `/website/features/index.html`
-   - Dedicated pages per major feature:
-     - Firewall rule semantic diffing
-     - Network security group diffing
-     - Azure role assignments with principal mapping
-     - Module grouping
-     - Custom templates
-     - Sensitive value masking
-     - Large value formatting
-   - Miscellaneous features page
-
-4. **Provider Templates** (`/website/providers/`)
-   - Index page: `/website/providers/index.html`
-   - Per-provider pages:
-     - azurerm (Azure)
-     - azuredevops
-     - azuread
-     - msgraph
-
-5. **Examples** (`/website/examples.html`)
-   - Interactive/expandable examples
-   - Before/after visuals
-   - Links to repo demos
-
-6. **Documentation** (`/website/docs.html`)
-   - CLI reference
-   - Template customization guide
-   - Troubleshooting
-
-7. **Architecture** (`/website/architecture.html`)
-   - Based on arc42 documentation
-   - High-level system overview
-
-8. **Contributing** (`/website/contributing.html`)
-   - How to contribute
-   - Links to GitHub
-   - Development setup
-   - AI workflow from agents.md
-   - Multi-model approach
-
-### Accessibility Requirements (WCAG 2.1 AA)
-- Semantic HTML structure
-- Proper heading hierarchy (h1 → h2 → h3, no skipping)
-- Alt text for all images and screenshots
-- Keyboard navigation support (tab order, focus indicators)
-- Sufficient color contrast (4.5:1 for normal text, 3:1 for large text)
-- Screen reader compatibility (ARIA labels where needed)
-- Responsive text sizing (no fixed pixel sizes for body text)
-- Clear, descriptive link text (no "click here")
-
-### Technical Constraints
-- **Agent-Friendly Technology** - Use direct HTML/CSS for maintainability; avoid complex build tools
-- **Path-Based CI/CD** - All website files in `/website/` to enable isolated pipeline triggers
-- **GitHub Pages Compatible** - Static files only, no server-side processing
-- **Responsive Design** - Mobile-first approach, works on all screen sizes
-- **Fast Loading** - Optimize images, minimize dependencies
+- Site map + per-page intent: `website/_memory/site-structure.md`
+- Audience + content principles: `website/_memory/content-strategy.md`
+- Design patterns and numeric values: `website/_memory/style-guide.md` and `website/_memory/design-decisions.md`
+- Accessibility + other constraints: `website/_memory/non-functional-requirements.md` (use `website-accessibility-check` for a deeper pass)
+- Work tracking: `website/_memory/backlog.md`
 
 ## Workflow (VS Code)
 

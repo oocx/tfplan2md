@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.25"></a>
+## [1.0.0-alpha.25](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.24...v1.0.0-alpha.25) (2026-01-11)
+
+### ✨ Features
+
+* add API Management policy example for large value handling ([e231eab](https://github.com/oocx/tfplan2md/commit/e231eab573144df9a49afc615ba78d1c1a94af68))
+* add comparison section headers and dynamic height alignment ([6a70705](https://github.com/oocx/tfplan2md/commit/6a707050b1da56369f973000c568ce1d89746d49))
+* update website examples with nbsp after emojis ([1345998](https://github.com/oocx/tfplan2md/commit/134599818d7aeab038c53556996e181bf951fa41))
+* **website:** add Azure CLI scripts for generating principal mapping files ([eefdceb](https://github.com/oocx/tfplan2md/commit/eefdceb66292f05053eab73d7fc5d2a96adf80aa))
+* **website:** add community provider request card to providers page ([6e8837c](https://github.com/oocx/tfplan2md/commit/6e8837ce43f6d76b5333ebd1e5d8bf578fc223bf))
+* **website:** add Scriban helper functions documentation to custom templates section ([6d8d919](https://github.com/oocx/tfplan2md/commit/6d8d9190d816c4628dd605562c582a4ba93e6450))
+* **website:** add syntax highlighting and copy buttons to code blocks in docs ([3ce1e9b](https://github.com/oocx/tfplan2md/commit/3ce1e9bab223946063d82746c8b3a9762cb10848))
+* **website:** add syntax highlighting and update Azure Pipelines to bash ([b78e1f6](https://github.com/oocx/tfplan2md/commit/b78e1f69300ce7dff8f6ca77815427f86b6ea6d2))
+* **website:** regenerate screenshots with feature 031 improvements ([378522d](https://github.com/oocx/tfplan2md/commit/378522d0890a02cac4b284c7a1584796faccac08))
+
+### 🐛 Bug Fixes
+
+* use VS Code preview for website ([be82086](https://github.com/oocx/tfplan2md/commit/be820869c02dbb7660b0ca7206da3b1b3e7d13a8))
+* **website:** add brand-logo-full class to all pages for consistent logo styling ([1383a90](https://github.com/oocx/tfplan2md/commit/1383a90dc4c1e00f44e61efecac29686f7fa307d))
+* **website:** add CSS variable for theme-aware borders in website styles ([fd85f92](https://github.com/oocx/tfplan2md/commit/fd85f92014794bb2808464508db693584a4a951b))
+* **website:** add position relative to code containers for proper copy button placement ([66e43b0](https://github.com/oocx/tfplan2md/commit/66e43b0a4818f7d6d2f4bb023ce34e3a02e3f40b))
+* **website:** add theme toggle icon and logo styling to provider pages ([57f8ade](https://github.com/oocx/tfplan2md/commit/57f8ade0cba543f7048f23a18092b68c89a8a7ca))
+* **website:** convert template examples to interactive component format ([fc2c3eb](https://github.com/oocx/tfplan2md/commit/fc2c3eb669ed7985cf3b82e7c8e01d65bc113c71))
+* **website:** correct anchor link to custom templates documentation ([1685ad9](https://github.com/oocx/tfplan2md/commit/1685ad9f2b89c59fe5ae4d67ee48bb38f5fd2269))
+* **website:** correct compact card layout structure on providers page ([88c5ef4](https://github.com/oocx/tfplan2md/commit/88c5ef4b256165b514044ace807ecdaadf9a301a))
+* **website:** enable CI/CD tab switching on homepage with syntax highlighting ([37dbb49](https://github.com/oocx/tfplan2md/commit/37dbb498a2d22ba245069f66f4490c410c6a7f41))
+* **website:** improve contributing page content and spacing ([3cf6b9b](https://github.com/oocx/tfplan2md/commit/3cf6b9b8bf115f84b3b7e107105ba8f88ba600bd))
+* **website:** improve contributing page structure and spacing ([3ac54fc](https://github.com/oocx/tfplan2md/commit/3ac54fc76ca299784430a13aff53b4e9423fd635))
+* **website:** improve logo contrast in dark mode ([d7d419f](https://github.com/oocx/tfplan2md/commit/d7d419fe7857df29b13535b1207d899702a26bf2))
+* **website:** improve providers page layout and styling ([90013af](https://github.com/oocx/tfplan2md/commit/90013afe38d6132e78b15eae03fddee02a57ae3d))
+* **website:** improve syntax highlighting detection on getting-started page ([875032b](https://github.com/oocx/tfplan2md/commit/875032b329a4717c19aa5ea58f4730f3791dd8fb))
+* **website:** improve tab contrast in light mode ([024dd6f](https://github.com/oocx/tfplan2md/commit/024dd6fdca1bf4886a5ce564fc9e2849ae62ce2f))
+* **website:** increase theme toggle icon size and fix dark mode appearance ([5c3cc74](https://github.com/oocx/tfplan2md/commit/5c3cc7462026344b2e0a6c821687bad746063726))
+* **website:** make all buttons change background to accent color on hover ([73d914c](https://github.com/oocx/tfplan2md/commit/73d914caa0dd3f19f970d5219c5eb07bc19d10b2))
+* **website:** make code blocks theme-aware in docs page ([59d8e31](https://github.com/oocx/tfplan2md/commit/59d8e3102f7c6fc27ca1f0edb79940a364d049d3))
+* **website:** make code blocks visible in light mode ([40bd35f](https://github.com/oocx/tfplan2md/commit/40bd35f07ee0f5bc066b26681163adba323a31e8))
+* **website:** make copy buttons follow btn-secondary style pattern ([4640df0](https://github.com/oocx/tfplan2md/commit/4640df063152a587a269a03e1821a1305a5c8462))
+* **website:** modernize providers page styling and improve content structure ([922aaaf](https://github.com/oocx/tfplan2md/commit/922aaaf78c04e1005c83bda12c1edc581e7b1675))
+* **website:** prevent copy button from overlapping command text on homepage ([bba5766](https://github.com/oocx/tfplan2md/commit/bba5766b510b2efb565a5cdbca9aacf4b5533bed))
+* **website:** reduce section spacing from 160px to 100px total ([f8cfadd](https://github.com/oocx/tfplan2md/commit/f8cfadd717ea81064daeb888b9a5e425c0711dcc))
+* **website:** remove 'Tables not rendering' troubleshooting section ([e94e789](https://github.com/oocx/tfplan2md/commit/e94e7894bc06c1346dd732a08e29651451fb5bd2))
+* **website:** remove background mismatch in code blocks ([03407e8](https://github.com/oocx/tfplan2md/commit/03407e8a471a3e12a4322cccba82f49167101afc))
+* **website:** remove incorrect feature cards from 'How Provider Templates Work' section ([b96d8e2](https://github.com/oocx/tfplan2md/commit/b96d8e202dbedf91f770877e1cee9aec9c896973))
+* **website:** replace broken Input icon with document emoji on architecture page ([556acc1](https://github.com/oocx/tfplan2md/commit/556acc18d90761f49152c25235bd911e2a0ccef8))
+* **website:** replace emoji copy icons with SVG icons for consistency ([bc61836](https://github.com/oocx/tfplan2md/commit/bc61836bf54ca45ab768383f380892723c45d561))
+* **website:** replace Prism.js with highlight.js for consistency ([ba7426e](https://github.com/oocx/tfplan2md/commit/ba7426ed91c58a255cbe2e910c9399d6d9a7c29f))
+* **website:** resolve duplicate currentTheme variable causing syntax highlighting failure ([eefcd3f](https://github.com/oocx/tfplan2md/commit/eefcd3fffae900a0a1bcac728b463d9bdfc7dacf))
+* **website:** unify copy button styles across all pages ([ba6a28b](https://github.com/oocx/tfplan2md/commit/ba6a28ba2d6aa96d5bc13677f1fba847410aa632))
+* **website:** update all examples to use improved border colors ([4cbf0b5](https://github.com/oocx/tfplan2md/commit/4cbf0b5039409768af77e2e2429751aa1680e0f0))
+* **website:** update summary template use cases to reflect notification-focused purpose ([0ea78cb](https://github.com/oocx/tfplan2md/commit/0ea78cbd134a9401a40a4db893fd3581ce48aa2e))
+* **website:** use dark-light-mode.svg icon for theme toggle across all pages ([2f16213](https://github.com/oocx/tfplan2md/commit/2f1621339df1bd328d60c2993970085917537914))
+
 <a name="1.0.0-alpha.24"></a>
 ## [1.0.0-alpha.24](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.23...v1.0.0-alpha.24) (2026-01-09)
 

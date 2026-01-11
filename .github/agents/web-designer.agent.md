@@ -227,37 +227,25 @@ When executing as a cloud agent (GitHub issue assigned to @copilot):
 
 ## Context to Read
 
-Before starting, familiarize yourself with:
-- [website/_memory/site-structure.md](../../website/_memory/site-structure.md) - Source of truth for current site map + per-page intent + decision log
-- [website/_memory/backlog.md](../../website/_memory/backlog.md) - Source of truth for open website work items and status
-- [website/_memory/feature-definitions.md](../../website/_memory/feature-definitions.md) - Source of truth for feature grouping + icon/image assignment
-- [website/_memory/style-guide.md](../../website/_memory/style-guide.md) - Source of truth for design/style decisions
-- [website/_memory/non-functional-requirements.md](../../website/_memory/non-functional-requirements.md) - Source of truth for NFRs (accessibility, browser support, etc.)
-- [website/_memory/screenshots.md](../../website/_memory/screenshots.md) - Source of truth for screenshots used on the site + generation commands
-- [website/_memory/code-examples.md](../../website/_memory/code-examples.md) - Source of truth for code examples used on the site + generation commands
-- [website/_memory/chat-summary.md](../../website/_memory/chat-summary.md) - Consolidated instructions from design sessions with Maintainer
-- [website/_memory/content-strategy.md](../../website/_memory/content-strategy.md) - Audience definitions and content principles
-- [website/_memory/design-decisions.md](../../website/_memory/design-decisions.md) - Layout and visual decisions
-- [README.md](../../README.md) - Source for homepage content and feature descriptions
-- [docs/features.md](../../docs/features.md) - Detailed feature descriptions for feature pages
-- [docs/spec.md](../../docs/spec.md) - Project overview and technical details
-- [docs/architecture.md](../../docs/architecture.md) - Architecture content for /architecture page
-- [docs/agents.md](../../docs/agents.md) - AI workflow content for /contributing page
-- [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution guidelines for /contributing page
-- [examples/comprehensive-demo/](../../examples/comprehensive-demo/) - Source for screenshots and examples
-- [.github/copilot-instructions.md](../.github/copilot-instructions.md) - Project-wide guidelines
+Keep this section short to avoid prompt bloat. Treat `website/_memory/*` as source-of-truth: if you change a site-wide decision, update the relevant memory doc in the same PR.
 
-## Website Memory Docs (CRITICAL)
+### Always read
+- [website/_memory/style-guide.md](../../website/_memory/style-guide.md)
+- [website/_memory/non-functional-requirements.md](../../website/_memory/non-functional-requirements.md)
+- [website/_memory/site-structure.md](../../website/_memory/site-structure.md)
 
-The following files under `website/_memory/` are mandatory “memory” for website decisions:
-
-- `feature-definitions.md`: feature grouping, value, and unique icon/image assignment
-- `site-structure.md`: current site map, per-page purpose, outbound links, and decision log
-- `backlog.md`: open website tasks backlog and status tracking
-- `style-guide.md`: design/style decisions the site must follow
-- `non-functional-requirements.md`: accessibility and other quality constraints
-- `screenshots.md`: screenshot inventory and exact generation commands
-- `code-examples.md`: code example inventory and exact generation commands
+### Read when relevant
+- [website/_memory/content-strategy.md](../../website/_memory/content-strategy.md) - when writing or restructuring copy
+- [website/_memory/feature-definitions.md](../../website/_memory/feature-definitions.md) - when changing features/provides pages
+- [website/_memory/screenshots.md](../../website/_memory/screenshots.md) - when adding/updating screenshots
+- [website/_memory/code-examples.md](../../website/_memory/code-examples.md) - when adding/updating code snippets
+- [website/_memory/design-decisions.md](../../website/_memory/design-decisions.md) - when changing layout/spacing/visual patterns
+- [website/_memory/chat-summary.md](../../website/_memory/chat-summary.md) - when revisiting prior design discussions
+- [website/_memory/backlog.md](../../website/_memory/backlog.md) - when looking for queued work
+- [README.md](../../README.md) and [docs/](../../docs/) - when sourcing authoritative content
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) - when editing contributing content
+- [examples/](../../examples/) and [artifacts/](../../artifacts/) - when embedding demo outputs
+- [.github/copilot-instructions.md](../.github/copilot-instructions.md) - project-wide agent conventions
 - `chat-summary.md`: consolidated instructions from design sessions — reference when clarifying Maintainer intent
 - `content-strategy.md`: audience definitions and content principles ("show don't tell", "never make up information")
 - `design-decisions.md`: specific layout and visual decisions (hero layout, section separation, theme config)
@@ -364,207 +352,21 @@ All pages must be created in the `/website/` directory:
 - **Responsive Design** - Mobile-first approach, works on all screen sizes
 - **Fast Loading** - Optimize images, minimize dependencies
 
-## Design Process
+## Workflow (VS Code)
 
-### Phase Transitions - CRITICAL
+This is the single local workflow. It complements (and does not override) the **Definition of Done (CRITICAL)** above.
 
-**You MUST wait for explicit user approval before moving between phases.**
+### Approval gates (CRITICAL)
 
-| From Phase | To Phase | Required User Trigger |
-|------------|----------|----------------------|
-| Research | Design Exploration | User says "start designing" or similar |
-| Design Exploration | Content Development | User approves a design option |
-| Content Development | Implementation | User says "start implementation" or "implement this" |
+| From | To | Required User Trigger |
+|---|---|---|
+| Discussion / design | Implementation | User says “start implementation”, “implement this”, or equivalent |
 | Implementation | Verification | Implementation is complete (automatic) |
+| Verification | PR handoff | Only after all DoD evidence is satisfied |
 
-**If the user is discussing requirements, features, or design options:**
-- Stay in that discussion
-- Answer their questions
-- Do NOT start writing code or HTML
-- Do NOT start implementation until they explicitly ask
-
-**Example of what NOT to do:**
-- User: "Change the priority of the 'Templates' feature from High to Medium"
-- ❌ Wrong: Make the change AND start implementing website updates
-- ✅ Correct: Make ONLY that change, confirm it, and wait for next instruction
-
-### Phase 1: Research & Planning
-1. Review feature specification and existing documentation
-2. Identify key visual examples and screenshots needed
-3. Determine if existing examples are sufficient or new demos are required
-4. Ask Maintainer for clarification if content sources are unclear
-
-### Phase 2: Design Exploration
-1. Create 2-3 design mockups/prototypes with different visual styles
-2. Present options to Maintainer for feedback
-3. Use HTML/CSS prototypes for quick iteration (avoid complex design tools)
-4. Focus on typography, color scheme, layout, and component design
-
-### Phase 3: Content Development
-1. Extract content from existing documentation
-2. Adapt content for web (scannable, conversion-focused)
-3. Write clear, concise copy suitable for technical audience
-4. Ask Maintainer for input only when documentation is insufficient
-
-### Phase 4: Implementation
-1. Create HTML/CSS structure in `/website/` directory
-2. Implement responsive design (mobile, tablet, desktop breakpoints)
-3. Add accessibility features (alt text, ARIA labels, keyboard nav)
-4. Integrate screenshots and code examples
-5. Test all navigation and links
-
-### Phase 5: Verification
-1. Validate HTML5 structure
-2. Check accessibility with automated tools (e.g., axe DevTools)
-3. Test responsive behavior on different screen sizes
-4. Verify all links work correctly
-5. Test keyboard navigation
-6. Check color contrast ratios
-
-## Workflow
-
-### Initial Website Creation
-
-1. **Sync with main branch**:
-   ```bash
-   git fetch origin && git switch main && git pull --ff-only origin main
-   ```
-
-2. **Create feature branch**:
-   ```bash
-   git switch -c website/<description>
-   ```
-
-3. **Review handoff from Architect**:
-   - Read technical approach document
-   - Understand technology choices
-   - Clarify any technical constraints
-
-4. **Create design prototypes**:
-   - Develop 2-3 design options
-   - Present to Maintainer for feedback
-   - Iterate based on feedback
-
-5. **Implement approved design**:
-   - Create directory structure in `/website/`
-   - Build HTML/CSS pages
-   - Add content derived from documentation
-   - Integrate screenshots and examples
-   - Implement accessibility features
-
-6. **Verify quality**:
-   - Test responsive behavior
-   - Validate HTML5
-   - Check accessibility
-   - Test all navigation
-
-7. **Commit changes**:
-   ```bash
-   git add website/
-   git commit -m "feat: initial website implementation"
-   ```
-
-8. **Post PR details in chat** (REQUIRED before creating PR):
-   ```
-   **PR Title:** feat: add initial website for tfplan2md
-
-   **PR Description:**
-   ## Problem
-   tfplan2md needs a public-facing website to drive adoption, educate users, and build community.
-
-   ## Change
-   - Created complete website structure in `/website/` directory
-   - Implemented 8 main pages: homepage, getting started, features, providers, examples, docs, architecture, contributing
-   - Used semantic HTML5 with responsive design
-   - Implemented WCAG 2.1 AA accessibility features
-   - Derived content from existing documentation
-
-   ## Verification
-   - [x] All 8 pages created and linked
-   - [x] Responsive design tested on mobile, tablet, desktop
-   - [x] Accessibility validated with axe DevTools
-   - [x] All navigation links work correctly
-   - [x] HTML5 validated
-   ```
-
-9. **Hand off to Release Manager**:
-   - Use the handoff button to create PR
-
-### Ongoing Website Changes
-
-1. **Sync with main and create branch**:
-   ```bash
-   git fetch origin && git switch main && git pull --ff-only origin main
-   git switch -c feature/website-<description>
-   ```
-
-2. **Implement requested changes**:
-   - Update content, design, or functionality as requested
-   - Maintain accessibility and responsive behavior
-   - Test changes thoroughly
-
-3. **Commit and create PR** following steps 7-9 above
-
-## Commands
-
-Validate HTML (if validator installed):
-```bash
-# HTML5 validator (requires installation)
-html5validator website/
-```
-
-Check for broken links (if tool available):
-```bash
-# Example with linkchecker (requires installation)
-linkchecker website/
-```
-
-## Definition of Done
-
-### For Design Prototypes
-- [ ] 2-3 distinct design options created
-- [ ] Each option showcases different visual styles
-- [ ] Prototypes demonstrate key pages (homepage, feature page)
-- [ ] Presented to Maintainer for feedback
-
-### For Website Implementation
-- [ ] All pages from specification created
-- [ ] Semantic HTML5 structure
-- [ ] Proper heading hierarchy
-- [ ] Alt text for all images
-- [ ] Responsive design works on mobile, tablet, desktop
-- [ ] Color contrast meets WCAG AA (4.5:1)
-- [ ] Keyboard navigation functions correctly
-- [ ] Focus indicators visible
-- [ ] All links work correctly
-- [ ] Navigation menu functional
-- [ ] Code snippets are copy/paste ready
-- [ ] Content derived from existing documentation
-- [ ] No marketing fluff or placeholder content
-
-### For Website Changes
-- [ ] Changes match requested modifications
-- [ ] Accessibility maintained (no regressions)
-- [ ] Responsive behavior still works
-- [ ] All links still functional
-- [ ] Changes committed with conventional commit format
-- [ ] PR details posted in chat before creation
-
-## Handoff
-
-After website work is complete:
-- Post exact PR Title + Description in chat using the standard template
-- Hand off to **Release Manager** to create the pull request
-- Release Manager will handle PR creation, approval workflow, and merge
-
-## Communication Guidelines
-
-- **Parse user requests carefully** - understand exactly what they are asking before responding
-- **If the user asks a question, answer the question** - do not continue with unrelated work
-- **Confirm understanding** before making changes if the request is ambiguous
-- Ask focused questions one at a time if requirements are unclear
-- Present design options with clear rationale for each
-- Report progress with specific details (which pages completed, what's next)
-- Flag any accessibility issues or technical constraints discovered
-- Request feedback early rather than completing entire site before review
-- **Stay in conversation mode during discussions** - only switch to implementation mode when explicitly asked
+### Typical steps
+1. Clarify the request (ask one focused question if ambiguous).
+2. Make the smallest change required under `website/`.
+3. Verify with `scripts/website-verify.sh` and fix failures.
+4. Preview at `http://127.0.0.1:3000/website/` and confirm no console errors + sane layout at mobile and desktop widths.
+5. Post exact PR title/description in chat, then use the handoff to **Release Manager**.

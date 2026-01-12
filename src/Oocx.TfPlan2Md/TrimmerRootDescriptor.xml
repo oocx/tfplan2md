@@ -1,8 +1,6 @@
 <linker>
-  <!-- Preserve Scriban runtime surface used via reflection/dynamic access -->
+  <!-- Preserve Scriban runtime surface - it uses reflection internally for template parsing and built-in functions -->
   <assembly fullname="Scriban" preserve="all" />
-  <!-- Preserve application models that are reflected over by Scriban import -->
-  <assembly fullname="Oocx.TfPlan2Md" preserve="all" />
   <!-- Preserve assembly metadata attributes accessed via reflection in AssemblyMetadataProvider -->
   <assembly fullname="System.Runtime">
     <type fullname="System.Reflection.AssemblyInformationalVersionAttribute" preserve="all" />

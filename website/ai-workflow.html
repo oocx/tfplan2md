@@ -132,10 +132,12 @@
     <text x="1170" y="185" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="10" font-family="monospace">WORKFLOW ENG</text>
   </g>
   
-  <!-- Edges from Maintainer - use slightly different y values to show separate paths -->
+  <!-- Edges from Maintainer - use different y levels to avoid intersection -->
   <path d="M 630 100 L 630 135 L 230 135 L 230 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
-  <path d="M 700 100 L 700 145 L 600 145 L 600 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
-  <path d="M 770 100 L 770 140 L 1170 140 L 1170 160" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
+  <!-- Maintainer to Issue Analyst - horizontal at y=140 (below Path 1's y=135), 20px final approach -->
+  <path d="M 660 100 L 660 140 L 600 140 L 600 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
+  <!-- Maintainer to Workflow Eng - connect at center now that Retro path uses right edge -->
+  <path d="M 770 100 L 770 130 L 1170 130 L 1170 160" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
   
   <!-- Entry Artifacts (y=250) -->
   <g class="node artifact">
@@ -189,7 +191,8 @@
     <rect rx="3" ry="3" x="490" y="600" width="220" height="40" fill="none" stroke="#00ffff" stroke-width="2.5"/>
     <text x="600" y="625" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="11" font-family="monospace">TASK PLANNER</text>
   </g>
-  <path d="M 340 617 L 490 620" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- Test Plan to Task Planner - connect to left side center to avoid crossing through node -->
+  <path d="M 340 617 L 420 617 L 420 620 L 490 620" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- User Stories (y=690) -->
   <g class="node artifact">
@@ -205,8 +208,8 @@
   </g>
   <path d="M 890 725 L 890 780" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- Bug fix path - route far left, well below all left column nodes -->
-  <path d="M 600 285 L 600 650 L 40 650 L 40 800 L 780 800" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- Bug fix path - route right of all center-column nodes, connect to top edge of Developer with longer approach -->
+  <path d="M 600 285 L 600 300 L 1020 300 L 1020 740 L 950 740 L 950 780" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- Code & Tests (y=870) -->
   <g class="node artifact">
@@ -236,8 +239,8 @@
   </g>
   <path d="M 600 1000 L 600 1050" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- Docs to CR -->
-  <path d="M 710 1067 L 1000 1067 L 1000 1000 L 1060 1000" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- Docs to CR - connect to left center of Code Reviewer -->
+  <path d="M 710 1067 L 1000 1067 L 1000 980 L 1060 980" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- Review Report (y=1050) -->
   <g class="node artifact">
@@ -246,7 +249,7 @@
   </g>
   <path d="M 1170 1000 L 1170 1050" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- Rework to Developer - route far right to avoid all crossings -->
+  <!-- Rework to Developer - route far right (x=1340), connect to right edge center -->
   <path d="M 1280 980 L 1340 980 L 1340 800 L 1000 800" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
   
   <!-- UAT Tester (y=1140) -->
@@ -264,8 +267,8 @@
   </g>
   <path d="M 890 1180 L 890 1230" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- UAT rework - route to x=550 (left of Tech Writer, no horizontal crossings), down, then right to Developer bottom -->
-  <path d="M 890 1180 L 550 1180 L 550 820 L 890 820" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
+  <!-- UAT rework - start at left border of UAT Tester, connect to center-left of Developer -->
+  <path d="M 780 1160 L 450 1160 L 450 800 L 780 800" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
   
   <!-- Release Manager (y=1230) -->
   <g class="node agent">
@@ -273,8 +276,8 @@
     <text x="1170" y="1255" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="10" font-family="monospace">RELEASE MGR</text>
   </g>
   
-  <!-- No UAT path -->
-  <path d="M 1170 1085 L 1170 1230" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- No UAT path - route via right side (x=1200) to avoid UAT Tester path, then down to Release Manager center top -->
+  <path d="M 1200 1085 L 1200 1130 L 1170 1130 L 1170 1230" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- UAT approved -->
   <path d="M 1000 1247 L 1060 1247" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
@@ -291,7 +294,8 @@
     <rect rx="3" ry="3" x="120" y="1410" width="220" height="40" fill="none" stroke="#00ffff" stroke-width="2.5"/>
     <text x="230" y="1435" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="11" font-family="monospace">RETROSPECTIVE</text>
   </g>
-  <path d="M 1060 1250 L 400 1250 L 400 1430 L 340 1430" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- Release Manager to Retrospective - route left of Release+PR with longer final approach -->
+  <path d="M 1120 1270 L 1120 1300 L 1040 1300 L 1040 1380 L 230 1380 L 230 1410" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- Retro Report (y=1500) -->
   <g class="node artifact">
@@ -300,8 +304,8 @@
   </g>
   <path d="M 230 1450 L 230 1500" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- Improvement loop - route around the outside edge ABOVE the entry layer -->
-  <path d="M 120 1517 L 20 1517 L 20 30 L 1170 30 L 1170 160" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-green)"/>
+  <!-- Improvement loop - go right, up (far right at x=1360), left to right edge of Workflow Eng -->
+  <path d="M 340 1517 L 1360 1517 L 1360 180 L 1280 180" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-green)"/>
   
   <!-- Legend (y=1720) -->
   <g transform="translate(100, 1720)">

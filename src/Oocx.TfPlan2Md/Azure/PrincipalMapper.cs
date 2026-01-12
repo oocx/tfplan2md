@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using System.Text.Json;
+using Oocx.TfPlan2Md.Parsing;
 
 namespace Oocx.TfPlan2Md.Azure;
 
@@ -58,7 +59,7 @@ public class PrincipalMapper : IPrincipalMapper
         try
         {
             var content = File.ReadAllText(mappingFile);
-            var parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(content);
+            var parsed = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.DictionaryStringString);
             if (parsed is null)
             {
                 return FrozenDictionary<string, string>.Empty;

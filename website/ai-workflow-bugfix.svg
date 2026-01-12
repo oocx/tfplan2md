@@ -1,0 +1,106 @@
+<svg viewBox="0 0 1190 695" xmlns="http://www.w3.org/2000/svg" width="1190" height="695">
+  <defs>
+    <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#00ffff"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#ff6b6b"/>
+    </marker>
+  </defs>
+  
+  <rect width="1190" height="695" fill="#0d1b2a"/>
+  <rect width="1190" height="695" fill="url(#grid-blueprint)"/>
+  
+  <!-- Maintainer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="385" width="300" height="50" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="150" y="415" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">👤 MAINTAINER</text>
+  </g>
+  
+  <path d="M 300,410 L 380,410 L 380,160 L 590,160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Issue Analyst -->
+  <g class="node">
+    <rect rx="2" ry="2" x="590" y="140" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="740" y="165" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">ISSUE ANALYST</text>
+  </g>
+  
+  <path d="M 740,180 L 740,273" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Issue Analysis -->
+  <g class="node">
+    <rect rx="2" ry="2" x="590" y="273" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="740" y="295" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🔍 ISSUE ANALYSIS</text>
+  </g>
+  
+  <path d="M 740,308 L 740,380 L 510,380 L 510,400" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Developer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="360" y="400" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="510" y="425" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">DEVELOPER</text>
+  </g>
+  
+  <path d="M 510,440 L 510,513 L 640,513 L 640,533" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Code & Tests -->
+  <g class="node">
+    <rect rx="2" ry="2" x="490" y="533" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="640" y="555" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">💻 CODE &amp; TESTS</text>
+  </g>
+  
+  <path d="M 640,568 L 640,0 L 630,0 L 630,5" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Code Reviewer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="480" y="5" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="630" y="30" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">CODE REVIEWER</text>
+  </g>
+  
+  <path d="M 630,45 L 630,123 L 550,123 L 550,143" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Review Report -->
+  <g class="node">
+    <rect rx="2" ry="2" x="400" y="143" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="550" y="165" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">✅ REVIEW REPORT</text>
+  </g>
+  
+  <path d="M 550,178 L 550,270" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- UAT Tester -->
+  <g class="node">
+    <rect rx="2" ry="2" x="400" y="270" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="550" y="295" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">UAT TESTER</text>
+  </g>
+  
+  <path d="M 550,310 L 550,383 L 1040,383 L 1040,403" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- UAT PR -->
+  <g class="node">
+    <rect rx="2" ry="2" x="890" y="403" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="1040" y="425" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🧪 UAT PR</text>
+  </g>
+  
+  <path d="M 1040,438 L 1040,530" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Release Manager -->
+  <g class="node">
+    <rect rx="2" ry="2" x="890" y="530" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="1040" y="555" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RELEASE MGR</text>
+  </g>
+  
+  <path d="M 1040,570 L 1040,660" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Release + PR -->
+  <g class="node">
+    <rect rx="2" ry="2" x="890" y="660" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="1040" y="682" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🚀 RELEASE + PR</text>
+  </g>
+  
+  <!-- Rework loops -->
+  <path d="M 780,25 L 920,25 L 920,345 L 660,345 L 660,420 L 660,400" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
+  <path d="M 700,290 L 850,290 L 850,345 L 660,345 L 660,420 L 660,400" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
+</svg>

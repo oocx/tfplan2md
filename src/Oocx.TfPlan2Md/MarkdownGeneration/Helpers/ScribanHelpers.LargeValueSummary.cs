@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -87,16 +88,50 @@ public static partial class ScribanHelpers
             return new AttributeChangeInfo(name, before, after);
         }
 
-        var type = item.GetType();
-        var nameProp = type.GetProperty("Name");
-        var beforeProp = type.GetProperty("Before");
-        var afterProp = type.GetProperty("After");
+        if (item is AttributeChangeModel attrModel)
+        {
+            return new AttributeChangeInfo(attrModel.Name, attrModel.Before, attrModel.After);
+        }
 
-        var resolvedName = nameProp?.GetValue(item)?.ToString() ?? string.Empty;
-        var resolvedBefore = beforeProp?.GetValue(item)?.ToString();
-        var resolvedAfter = afterProp?.GetValue(item)?.ToString();
+        if (item is Models.RoleAssignmentAttributeViewModel roleAttr)
+        {
+            return new AttributeChangeInfo(roleAttr.Name, roleAttr.Before, roleAttr.After);
+        }
 
-        return new AttributeChangeInfo(resolvedName, resolvedBefore, resolvedAfter);
+        if (item is AttributeChangeInfo info)
+        {
+            return info;
+        }
+
+        if (item is IReadOnlyDictionary<string, object?> readOnlyDictionary)
+        {
+            return FromDictionary(readOnlyDictionary);
+        }
+
+        if (item is IDictionary<string, object?> dictionary)
+        {
+            return FromDictionary(dictionary);
+        }
+
+        return new AttributeChangeInfo(string.Empty, item.ToString(), item.ToString());
+    }
+
+    private static AttributeChangeInfo FromDictionary(IReadOnlyDictionary<string, object?> data)
+    {
+        var name = data.TryGetValue("name", out var n) ? n?.ToString() ?? string.Empty : string.Empty;
+        var before = data.TryGetValue("before", out var b) ? b?.ToString() : null;
+        var after = data.TryGetValue("after", out var a) ? a?.ToString() : null;
+
+        return new AttributeChangeInfo(name, before, after);
+    }
+
+    private static AttributeChangeInfo FromDictionary(IDictionary<string, object?> data)
+    {
+        var name = data.TryGetValue("name", out var n) ? n?.ToString() ?? string.Empty : string.Empty;
+        var before = data.TryGetValue("before", out var b) ? b?.ToString() : null;
+        var after = data.TryGetValue("after", out var a) ? a?.ToString() : null;
+
+        return new AttributeChangeInfo(name, before, after);
     }
 
     /// <summary>

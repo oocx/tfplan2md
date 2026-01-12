@@ -5,19 +5,24 @@ WORKDIR /src
 # Copy all files
 COPY . .
 
-# Restore, build and test
+# Install native toolchain prerequisites for NativeAOT
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends clang zlib1g-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Restore and run tests first (RID-agnostic for test compatibility)
 RUN dotnet restore tfplan2md.slnx
 RUN dotnet build tfplan2md.slnx --no-restore -c Release
 RUN dotnet test tfplan2md.slnx --no-build -c Release
 
-# Publish
-RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -o /app --no-restore
+# Publish NativeAOT for linux-x64 (requires separate restore with RID and self-contained)
+RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r linux-x64 --self-contained true -o /app/publish
 
-# Runtime stage - using chiseled (distroless) image for minimal attack surface
-FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS runtime
+# Runtime stage - NativeAOT on chiseled runtime-deps for minimal footprint
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-noble-chiseled AS runtime
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=build /app/publish/ .
 COPY examples/comprehensive-demo /examples/comprehensive-demo
 
-# Set the entrypoint
-ENTRYPOINT ["dotnet", "tfplan2md.dll"]
+# Set the entrypoint to the native binary
+ENTRYPOINT ["/app/tfplan2md"]

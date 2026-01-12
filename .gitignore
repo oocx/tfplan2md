@@ -48,3 +48,4 @@ plan.tfplan
 # VS Code Copilot chat exports (large, may contain sensitive data)
 **/chat.json
 *.chat.json
+node_modules/

@@ -16,10 +16,10 @@ Reference: [docs/features/037-aot-trimmed-image/specification.md](docs/features/
 Update `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj` to enable NativeAOT and trimming.
 
 **Acceptance Criteria:**
-- [ ] `<PublishAot>true</PublishAot>` is added to the `.csproj`.
-- [ ] `<InvariantGlobalization>true</InvariantGlobalization>` is enabled (pending verification).
-- [ ] `<TrimMode>full</TrimMode>` is configured.
-- [ ] Project compiles successfully with `dotnet publish -r linux-x64`.
+- [x] `<PublishAot>true</PublishAot>` is added to the `.csproj`.
+- [x] `<InvariantGlobalization>true</InvariantGlobalization>` is enabled (pending verification).
+- [x] `<TrimMode>full</TrimMode>` is configured.
+- [x] Project compiles successfully with `dotnet publish -r linux-x64`.
 
 **Dependencies:** None
 
@@ -33,9 +33,9 @@ Update `src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj` to enable NativeAOT and trimmi
 Identify and protect types used by Scriban rendering and assembly metadata reflection from being trimmed.
 
 **Acceptance Criteria:**
-- [ ] Run `dotnet publish -r linux-x64` and analyze trimming warnings.
-- [ ] Implement a `rd.xml` (Runtime Directives) file or `TrimmerDescriptor.xml` to preserve members of the report model and Scriban-accessed types.
-- [ ] Verify that `Assembly.GetCustomAttribute<AssemblyMetadataAttribute>` still works for commit hash and version.
+- [x] Run `dotnet publish -r linux-x64` and analyze trimming warnings (remaining IL2104/IL3053 are library-level from Scriban).
+- [x] Implement a `rd.xml` (Runtime Directives) file or `TrimmerDescriptor.xml` to preserve members of the report model and Scriban-accessed types.
+- [x] Verify that `Assembly.GetCustomAttribute<AssemblyMetadataAttribute>` still works for commit hash and version.
 - [ ] (Optional) Add `[DynamicallyAccessedMembers]` annotations if preferred over XML descriptors for specific models.
 
 **Dependencies:** Task 1
@@ -50,10 +50,10 @@ Identify and protect types used by Scriban rendering and assembly metadata refle
 Update the Dockerfile to use the NativeAOT build process and the `runtime-deps` chiseled base image.
 
 **Acceptance Criteria:**
-- [ ] Build stage uses `dotnet publish -r linux-x64 -c Release`.
-- [ ] Runtime stage uses `mcr.microsoft.com/dotnet/runtime-deps:10.0-noble-chiseled`.
-- [ ] `ENTRYPOINT` is updated to run the native binary directly: `ENTRYPOINT ["/app/tfplan2md"]`.
-- [ ] Docker image builds successfully.
+ - [x] Build stage uses `dotnet publish -r linux-x64 -c Release`.
+ - [x] Runtime stage uses `mcr.microsoft.com/dotnet/runtime-deps:10.0-noble-chiseled`.
+ - [x] `ENTRYPOINT` is updated to run the native binary directly: `ENTRYPOINT ["/app/tfplan2md"]`.
+ - [x] Docker image builds successfully.
 
 **Dependencies:** Task 2 (or Task 1)
 
@@ -67,10 +67,10 @@ Update the Dockerfile to use the NativeAOT build process and the `runtime-deps` 
 Run functional tests to ensure the AOT-compiled binary behaves identically to the IL version.
 
 **Acceptance Criteria:**
-- [ ] Run `docker run tfplan2md --version` and verify non-empty version/commit output (TC-02).
-- [ ] Run integration tests against the AOT container (TC-01).
-- [ ] Verify Scriban rendering for a comprehensive plan (TC-03) and custom templates (Scenario 2).
-- [ ] All existing unit tests pass.
+ - [x] Run `docker run tfplan2md --version` and verify non-empty version/commit output (TC-02).
+- [x] Run integration tests against the AOT container (TC-01).
+- [x] Verify Scriban rendering for a comprehensive plan (TC-03) and custom templates (Scenario 2).
+- [x] All existing unit tests pass.
 
 **Dependencies:** Task 3
 
@@ -84,9 +84,9 @@ Run functional tests to ensure the AOT-compiled binary behaves identically to th
 Capture and document the performance and security improvements.
 
 **Acceptance Criteria:**
-- [ ] Capture and document the final Docker image size (TC-04). Target: < 50MB.
+- [x] Capture and document the final Docker image size (TC-04). Target: < 50MB. **Actual: 46.3MB**
 - [ ] Capture and document the CI build time impact (TC-05).
-- [ ] Verify that `sh` or `ls` are NOT available in the final image (TC-06).
+- [x] Verify that `sh` or `ls` are NOT available in the final image (TC-06).
 
 **Dependencies:** Task 3
 

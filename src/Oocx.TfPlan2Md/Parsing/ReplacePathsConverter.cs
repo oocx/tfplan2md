@@ -48,7 +48,56 @@ public class ReplacePathsConverter : JsonConverter<IReadOnlyList<IReadOnlyList<o
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<object>>? value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, value, options);
+        if (value is null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
+        writer.WriteStartArray();
+        foreach (var path in value)
+        {
+            writer.WriteStartArray();
+            foreach (var segment in path)
+            {
+                WriteSegment(writer, segment);
+            }
+
+            writer.WriteEndArray();
+        }
+
+        writer.WriteEndArray();
+    }
+
+    private static void WriteSegment(Utf8JsonWriter writer, object segment)
+    {
+        switch (segment)
+        {
+            case string text:
+                writer.WriteStringValue(text);
+                break;
+            case int intValue:
+                writer.WriteNumberValue(intValue);
+                break;
+            case long longValue:
+                writer.WriteNumberValue(longValue);
+                break;
+            case double doubleValue:
+                writer.WriteNumberValue(doubleValue);
+                break;
+            case decimal decimalValue:
+                writer.WriteNumberValue(decimalValue);
+                break;
+            case bool boolValue:
+                writer.WriteBooleanValue(boolValue);
+                break;
+            case null:
+                writer.WriteNullValue();
+                break;
+            default:
+                writer.WriteStringValue(segment.ToString());
+                break;
+        }
     }
 
     private static object ConvertSegment(JsonElement segment)

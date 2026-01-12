@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Oocx.TfPlan2Md.Parsing;
 
@@ -7,10 +8,7 @@ namespace Oocx.TfPlan2Md.Parsing;
 /// </summary>
 public class TerraformPlanParser
 {
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    private static readonly JsonTypeInfo<TerraformPlan> PlanTypeInfo = TfPlanJsonContext.Default.TerraformPlan;
 
     /// <summary>
     /// Parses a Terraform plan from a JSON string.
@@ -22,7 +20,7 @@ public class TerraformPlanParser
     {
         try
         {
-            var plan = JsonSerializer.Deserialize<TerraformPlan>(json, Options);
+            var plan = JsonSerializer.Deserialize(json, PlanTypeInfo);
             return plan ?? throw new TerraformPlanParseException("Deserialization returned null.");
         }
         catch (JsonException ex)
@@ -42,7 +40,7 @@ public class TerraformPlanParser
     {
         try
         {
-            var plan = await JsonSerializer.DeserializeAsync<TerraformPlan>(stream, Options, cancellationToken);
+            var plan = await JsonSerializer.DeserializeAsync(stream, PlanTypeInfo, cancellationToken);
             return plan ?? throw new TerraformPlanParseException("Deserialization returned null.");
         }
         catch (JsonException ex)

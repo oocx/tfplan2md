@@ -1,0 +1,10 @@
+{
+  "name": "flowchart_layout_optimizer_deps",
+  "version": "1.0.0",
+  "description": "Dependencies for the Flowchart SVG Optimizer skill.",
+  "dependencies": {
+    "@dagrejs/dagre": "^1.1.8",
+    "jsdom": "^24.0.0",
+    "d3-selection": "^3.0.0"
+  }
+}

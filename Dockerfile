@@ -16,7 +16,8 @@ RUN dotnet build tfplan2md.slnx --no-restore -c Release
 RUN dotnet test tfplan2md.slnx --no-build -c Release
 
 # Publish NativeAOT for linux-x64 (requires separate restore with RID and self-contained)
-RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r linux-x64 --self-contained true -o /app/publish
+RUN dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r linux-x64 --self-contained true -o /app/publish \
+	&& rm -f /app/publish/*.dbg
 
 # Runtime stage - NativeAOT on chiseled runtime-deps for minimal footprint
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-noble-chiseled AS runtime

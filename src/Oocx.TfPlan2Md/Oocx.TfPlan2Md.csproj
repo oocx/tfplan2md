@@ -12,6 +12,7 @@
     <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
     <PublishAot>true</PublishAot>
     <TrimMode>full</TrimMode>
+    <StripSymbols>true</StripSymbols>
     <InvariantGlobalization>true</InvariantGlobalization>
     <WarningsNotAsErrors>IL2067;IL2070;IL2075;IL2080;IL2104;IL3050;IL3053</WarningsNotAsErrors>
     <TrimmerRootDescriptor>TrimmerRootDescriptor.xml</TrimmerRootDescriptor>

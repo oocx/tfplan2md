@@ -132,9 +132,9 @@
     <text x="1170" y="185" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="10" font-family="monospace">WORKFLOW ENG</text>
   </g>
   
-  <!-- Edges from Maintainer - straight vertical then horizontal to avoid crossing -->
-  <path d="M 630 100 L 630 140 L 230 140 L 230 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
-  <path d="M 700 100 L 700 140 L 600 140 L 600 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
+  <!-- Edges from Maintainer - use slightly different y values to show separate paths -->
+  <path d="M 630 100 L 630 135 L 230 135 L 230 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
+  <path d="M 700 100 L 700 145 L 600 145 L 600 160" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-white)"/>
   <path d="M 770 100 L 770 140 L 1170 140 L 1170 160" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow-green)"/>
   
   <!-- Entry Artifacts (y=250) -->
@@ -205,8 +205,8 @@
   </g>
   <path d="M 890 725 L 890 780" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- Bug fix path - route far left to avoid crossings -->
-  <path d="M 600 285 L 600 340 L 60 340 L 60 800 L 780 800" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- Bug fix path - route far left, well below all left column nodes -->
+  <path d="M 600 285 L 600 650 L 40 650 L 40 800 L 780 800" stroke="rgba(0,255,255,0.4)" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- Code & Tests (y=870) -->
   <g class="node artifact">
@@ -254,7 +254,8 @@
     <rect rx="3" ry="3" x="780" y="1140" width="220" height="40" fill="none" stroke="#00ffff" stroke-width="2.5"/>
     <text x="890" y="1165" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="11" font-family="monospace">UAT TESTER</text>
   </g>
-  <path d="M 1130 1085 L 920 1085 L 920 1140 L 1000 1160" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <!-- Review Report to UAT Tester - route to top center -->
+  <path d="M 1170 1085 L 1170 1110 L 890 1110 L 890 1140" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
   <!-- UAT PR (y=1230) -->
   <g class="node artifact">
@@ -263,8 +264,8 @@
   </g>
   <path d="M 890 1180 L 890 1230" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
   
-  <!-- UAT rework - route far right -->
-  <path d="M 730 1160 L 70 1160 L 70 800 L 780 800" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
+  <!-- UAT rework - route to x=550 (left of Tech Writer, no horizontal crossings), down, then right to Developer bottom -->
+  <path d="M 890 1180 L 550 1180 L 550 820 L 890 820" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dashed)"/>
   
   <!-- Release Manager (y=1230) -->
   <g class="node agent">

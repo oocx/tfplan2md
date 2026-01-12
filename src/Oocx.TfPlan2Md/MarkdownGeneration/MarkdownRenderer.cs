@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.Azure;
 using Scriban;
@@ -183,24 +182,9 @@ public class MarkdownRenderer
 
         var scriptObject = new ScriptObject();
 
-        // Create a nested ScriptObject for the change to mirror include path behavior
+        // Create a nested ScriptObject for the change using AOT-compatible mapping
         // Templates access properties via change.* for consistency with default.sbn include
-        var changeObject = new ScriptObject();
-        changeObject.Import(change, renamer: member => ToSnakeCase(member.Name));
-
-        // Add large_value_format to change context for template access
-        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
-        changeObject["large_value_format"] = formatString;
-
-        // Convert JsonElement properties to ScriptObjects for proper Scriban navigation
-        if (change.BeforeJson is JsonElement beforeElement)
-        {
-            changeObject["before_json"] = ScribanHelpers.ConvertToScriptObject(beforeElement);
-        }
-        if (change.AfterJson is JsonElement afterElement)
-        {
-            changeObject["after_json"] = ScribanHelpers.ConvertToScriptObject(afterElement);
-        }
+        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, largeValueFormat);
 
         scriptObject["change"] = changeObject;
 
@@ -235,13 +219,8 @@ public class MarkdownRenderer
             throw new MarkdownRenderException($"Template parsing failed: {errors}");
         }
 
-        // Create a script object that properly exposes all properties including nested collections
-        var scriptObject = new ScriptObject();
-        scriptObject.Import(model, renamer: member => ToSnakeCase(member.Name));
-
-        // Add large_value_format at top level for template access
-        var formatString = model.LargeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
-        scriptObject["large_value_format"] = formatString;
+        // Create a script object without relying on Reflection.Emit (unsupported in NativeAOT)
+        var scriptObject = CreateScriptObject(model);
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);
@@ -326,6 +305,17 @@ public class MarkdownRenderer
     private void RegisterRendererHelpers(ScriptObject scriptObject)
     {
         _templateResolver.Register(scriptObject);
+    }
+
+    /// <summary>
+    /// Creates a ScriptObject from a ReportModel using explicit AOT-compatible mapping.
+    /// Reflection-based Import does not work reliably under NativeAOT.
+    /// </summary>
+    private static ScriptObject CreateScriptObject(ReportModel model)
+    {
+        // Use explicit mapping for NativeAOT compatibility - reflection-based
+        // Import fails at runtime even with TrimmerRootDescriptor preservation
+        return AotScriptObjectMapper.MapReportModel(model);
     }
 
     private string LoadTemplate(string templateName)

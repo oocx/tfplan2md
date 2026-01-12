@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 686.43359375 2087.03125" role="graphics-document document" aria-roledescription="flowchart-v2">
+  <defs>
+    <!-- Blueprint grid pattern -->
+    <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+    </pattern>
+    
+    <!-- Arrow marker for solid paths (cyan) -->
+    <marker id="arrow-solid" markerWidth="4" markerHeight="4" refX="3.5" refY="2" orient="auto">
+      <path d="M0,0 L0,4 L4,2 z" fill="#00ffff"/>
+    </marker>
+    
+    <!-- Arrow marker for dashed paths (feedback loops - coral red) -->
+    <marker id="arrow-dashed" markerWidth="4" markerHeight="4" refX="3.5" refY="2" orient="auto">
+      <path d="M0,0 L0,4 L4,2 z" fill="#ff6b6b"/>
+    </marker>
+    
+    <!-- Arrow marker for primary paths from Human (cyan, same as solid) -->
+    <marker id="arrow-thick" markerWidth="4" markerHeight="4" refX="3.5" refY="2" orient="auto">
+      <path d="M0,0 L0,4 L4,2 z" fill="#00ffff"/>
+    </marker>
+  </defs>
+  
+  <style>
+    /* Human/Maintainer node: dashed white border (like technical drawing annotation) */
+    .node-human rect { fill: none; stroke: #ffffff; stroke-width: 2; stroke-dasharray: 4,2; }
+    .node-human text { fill: #00ffff; font-family: monospace; font-size: 13px; font-weight: 600; }
+    .node-human { filter: drop-shadow(0 0 4px rgba(0,255,255,0.6)); }
+    
+    /* Agent nodes: solid cyan border */
+    .node-agent rect { fill: none; stroke: #00ffff; stroke-width: 2; }
+    .node-agent text { fill: #ffffff; font-family: monospace; font-size: 13px; font-weight: 600; }
+    .node-agent { filter: drop-shadow(0 0 4px rgba(0,255,255,0.6)); }
+    
+    /* Meta-agent nodes: green border */
+    .node-metaagent rect { fill: none; stroke: #34d399; stroke-width: 2; }
+    .node-metaagent text { fill: #34d399; font-family: monospace; font-size: 13px; font-weight: 600; }
+    .node-metaagent { filter: drop-shadow(0 0 4px rgba(52,211,153,0.6)); }
+    
+    /* Artifact nodes: dashed white border with subtle cyan fill */
+    .node-artifact rect { fill: rgba(0,255,255,0.1); stroke: #ffffff; stroke-width: 2; stroke-dasharray: 2,2; }
+    .node-artifact text { fill: #00ffff; font-family: monospace; font-size: 13px; font-weight: 600; }
+    .node-artifact { filter: drop-shadow(0 0 4px rgba(0,255,255,0.6)); }
+    
+    /* Paths */
+    .path-solid { fill: none; stroke: #00ffff; stroke-width: 2; filter: drop-shadow(0 0 2px rgba(0,255,255,0.4)); }
+    .path-thick { fill: none; stroke: #00ffff; stroke-width: 2; filter: drop-shadow(0 0 2px rgba(0,255,255,0.4)); }
+    .path-dashed { fill: none; stroke: #ff6b6b; stroke-width: 2; stroke-dasharray: 6,3; filter: drop-shadow(0 0 2px rgba(255,107,107,0.4)); }
+    
+    /* Edge labels */
+    .edge-label { fill: rgba(0,255,255,0.8); font-family: monospace; font-size: 10px; font-weight: 500; }
+    .edge-label-bg { fill: #0d1b2a; }
+  </style>
+  
+  <!-- Background with grid -->
+  <rect x="-8" y="-8" width="686.43359375" height="2087.03125" fill="#0d1b2a"/>
+  <rect x="-8" y="-8" width="686.43359375" height="2087.03125" fill="url(#grid-blueprint)"/>
+  
+  <!-- ===== PATHS (rendered first, behind nodes) ===== -->
+  
+  <!-- Thick paths from HUMAN -->
+  <path class="path-thick" marker-end="url(#arrow-thick)" d="M303.221,37.241L276.811,41.966C250.402,46.692,197.583,56.143,171.173,64.152C144.764,72.16,144.764,78.727,144.764,82.01L144.764,85.294"/>
+  <path class="path-thick" marker-end="url(#arrow-thick)" d="M417.636,40.594L421.684,44.76C425.733,48.927,433.829,57.26,437.878,68.977C441.926,80.693,441.926,95.792,441.926,110.891C441.926,125.99,441.926,141.089,441.926,156.188C441.926,171.286,441.926,186.385,441.926,201.484C441.926,216.583,441.926,231.682,441.926,246.781C441.926,261.88,441.926,276.979,441.926,292.078C441.926,307.177,441.926,322.276,441.926,337.375C441.926,352.474,441.926,367.573,441.926,382.672C441.926,397.771,441.926,412.87,441.926,427.969C441.926,443.068,441.926,458.167,441.926,473.266C441.926,488.365,441.926,503.464,441.926,518.563C441.926,533.661,441.926,548.76,441.926,563.859C441.926,578.958,441.926,594.057,441.926,604.89C441.926,615.723,441.926,622.29,441.926,625.573L441.926,628.856"/>
+  <path class="path-thick" marker-end="url(#arrow-thick)" d="M470.221,40.594L485.065,44.76C499.908,48.927,529.595,57.26,544.438,68.977C559.281,80.693,559.281,95.792,559.281,110.891C559.281,125.99,559.281,141.089,559.281,156.188C559.281,171.286,559.281,186.385,559.281,201.484C559.281,216.583,559.281,231.682,559.281,246.781C559.281,261.88,559.281,276.979,559.281,292.078C559.281,307.177,559.281,322.276,559.281,337.375C559.281,352.474,559.281,367.573,559.281,382.672C559.281,397.771,559.281,412.87,559.281,427.969C559.281,443.068,559.281,458.167,559.281,473.266C559.281,488.365,559.281,503.464,559.281,518.563C559.281,533.661,559.281,548.76,559.281,563.859C559.281,578.958,559.281,594.057,559.281,609.156C559.281,624.255,559.281,639.354,559.281,654.453C559.281,669.552,559.281,684.651,559.281,699.75C559.281,714.849,559.281,729.948,559.281,745.047C559.281,760.146,559.281,775.245,559.281,790.344C559.281,805.443,559.281,820.542,559.281,835.641C559.281,850.74,559.281,865.839,559.281,880.938C559.281,896.036,559.281,911.135,559.281,926.234C559.281,941.333,559.281,956.432,559.281,971.531C559.281,986.63,559.281,1001.729,559.281,1018.961C559.281,1036.193,559.281,1055.557,559.281,1074.922C559.281,1094.286,559.281,1113.651,559.281,1133.016C559.281,1152.38,559.281,1171.745,559.281,1191.109C559.281,1210.474,559.281,1229.839,559.281,1247.07C559.281,1264.302,559.281,1279.401,559.281,1294.5C559.281,1309.599,559.281,1324.698,559.281,1341.93C559.281,1359.161,559.281,1378.526,559.281,1397.891C559.281,1417.255,559.281,1436.62,559.281,1455.984C559.281,1475.349,559.281,1494.714,559.281,1514.078C559.281,1533.443,559.281,1552.807,559.281,1572.172C559.281,1591.536,559.281,1610.901,559.281,1630.266C559.281,1649.63,559.281,1668.995,559.281,1686.227C559.281,1703.458,559.281,1718.557,559.281,1733.656C559.281,1748.755,559.281,1763.854,559.281,1778.953C559.281,1794.052,559.281,1809.151,559.281,1824.25C559.281,1839.349,559.281,1854.448,559.281,1869.547C559.281,1884.646,559.281,1899.745,559.281,1910.578C559.281,1921.41,559.281,1927.977,559.281,1931.26L559.281,1934.544"/>
+  
+  <!-- Regular solid paths -->
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,131.188L144.764,135.354C144.764,139.521,144.764,147.854,144.764,155.304C144.764,162.754,144.764,169.321,144.764,172.604L144.764,175.888"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,221.781L144.764,225.948C144.764,230.115,144.764,238.448,144.764,245.898C144.764,253.348,144.764,259.915,144.764,263.198L144.764,266.481"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M441.926,674.75L441.926,678.917C441.926,683.083,441.926,691.417,441.926,698.867C441.926,706.317,441.926,712.883,441.926,716.167L441.926,719.45"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M441.926,765.344L441.926,769.51C441.926,773.677,441.926,782.01,428.1,790.936C414.274,799.862,386.622,809.379,372.796,814.138L358.97,818.897"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M559.281,1980.438L559.281,1984.604C559.281,1988.771,559.281,1997.104,559.281,2004.554C559.281,2012.004,559.281,2018.571,559.281,2021.854L559.281,2025.138"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,312.375L144.764,316.542C144.764,320.708,144.764,329.042,144.764,336.492C144.764,343.942,144.764,350.508,144.764,353.792L144.764,357.075"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,402.969L144.764,407.135C144.764,411.302,144.764,419.635,144.764,427.085C144.764,434.535,144.764,441.102,144.764,444.385L144.764,447.669"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,493.563L144.764,497.729C144.764,501.896,144.764,510.229,144.764,517.679C144.764,525.129,144.764,531.696,144.764,534.979L144.764,538.263"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,584.156L144.764,588.323C144.764,592.49,144.764,600.823,144.764,608.273C144.764,615.723,144.764,622.29,144.764,625.573L144.764,628.856"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,674.75L144.764,678.917C144.764,683.083,144.764,691.417,144.764,698.867C144.764,706.317,144.764,712.883,144.764,716.167L144.764,719.45"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M144.764,765.344L144.764,769.51C144.764,773.677,144.764,782.01,164.233,791.504C183.703,800.997,222.642,811.651,242.112,816.978L261.581,822.304"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M353.959,847.037L375.591,852.687C397.224,858.337,440.489,869.637,457.731,878.893C474.974,888.149,466.193,895.361,461.803,898.967L457.413,902.573"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M403.897,946.531L398.824,950.698C393.752,954.865,383.606,963.198,378.534,970.648C373.461,978.098,373.461,984.665,373.461,987.948L373.461,991.231"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M320.383,855.938L322.447,860.104C324.512,864.271,328.641,872.604,338.722,880.56C348.804,888.516,364.838,896.094,372.855,899.884L380.872,903.673"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M453.318,946.531L458.39,950.698C463.463,954.865,473.609,963.198,478.681,974.914C483.754,986.63,483.754,1001.729,483.754,1018.961C483.754,1036.193,483.754,1055.557,483.754,1074.922C483.754,1094.286,483.754,1113.651,483.754,1133.016C483.754,1152.38,483.754,1171.745,478.382,1187.086C473.01,1202.427,462.267,1213.745,456.895,1219.404L451.523,1225.062"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M373.461,1037.125L373.461,1043.424C373.461,1049.724,373.461,1062.323,373.461,1074.039C373.461,1085.754,373.461,1096.586,373.461,1102.003L373.461,1107.419"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M373.461,1153.313L373.461,1159.612C373.461,1165.911,373.461,1178.51,378.833,1190.469C384.204,1202.427,394.948,1213.745,400.32,1219.404L405.691,1225.062"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M428.607,1269.5L428.607,1273.667C428.607,1277.833,428.607,1286.167,422.267,1294.053C415.927,1301.939,403.246,1309.379,396.906,1313.098L390.566,1316.818"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M325.066,1360.094L316.893,1366.393C308.72,1372.693,292.375,1385.292,284.202,1397.007C276.029,1408.723,276.029,1419.555,276.029,1424.971L276.029,1430.388"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M385.953,1360.094L396.678,1366.393C407.402,1372.693,428.852,1385.292,439.576,1401.273C450.301,1417.255,450.301,1436.62,450.301,1455.984C450.301,1475.349,450.301,1494.714,450.301,1514.078C450.301,1533.443,450.301,1552.807,450.301,1572.172C450.301,1591.536,450.301,1610.901,430.034,1626.66C409.768,1642.419,369.235,1654.572,348.968,1660.649L328.702,1666.726"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M276.029,1476.281L276.029,1482.581C276.029,1488.88,276.029,1501.479,263.383,1513.703C250.737,1525.928,225.445,1537.777,212.799,1543.702L200.153,1549.626"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M152.031,1592.469L152.031,1598.768C152.031,1605.068,152.031,1617.667,162.593,1629.836C173.155,1642.006,194.278,1653.747,204.839,1659.617L215.401,1665.488"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M189.477,1704.707L169.68,1709.532C149.884,1714.357,110.292,1724.007,90.495,1732.115C70.699,1740.223,70.699,1746.79,70.699,1750.073L70.699,1753.356"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M256.551,1708.656L256.551,1712.823C256.551,1716.99,256.551,1725.323,256.551,1732.773C256.551,1740.223,256.551,1746.79,256.551,1750.073L256.551,1753.356"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M323.625,1706.057L341.059,1710.657C358.492,1715.257,393.359,1724.456,410.793,1732.34C428.227,1740.223,428.227,1746.79,428.227,1750.073L428.227,1753.356"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M428.227,1799.25L428.227,1803.417C428.227,1807.583,428.227,1815.917,428.227,1823.367C428.227,1830.817,428.227,1837.383,428.227,1840.667L428.227,1843.95"/>
+  <path class="path-solid" marker-end="url(#arrow-solid)" d="M428.227,1889.844L428.227,1894.01C428.227,1898.177,428.227,1906.51,439.447,1914.555C450.667,1922.6,473.108,1930.356,484.328,1934.234L495.548,1938.112"/>
+  
+  <!-- Dashed paths (feedback loops) -->
+  <path class="path-dashed" marker-end="url(#arrow-dashed)" d="M311.864,1319.5L303.748,1315.333C295.632,1311.167,279.4,1302.833,271.284,1291.117C263.168,1279.401,263.168,1264.302,263.168,1247.07C263.168,1229.839,263.168,1210.474,263.168,1191.109C263.168,1171.745,263.168,1152.38,263.168,1133.016C263.168,1113.651,263.168,1094.286,263.168,1074.922C263.168,1055.557,263.168,1036.193,263.168,1018.961C263.168,1001.729,263.168,986.63,263.168,971.531C263.168,956.432,263.168,941.333,263.168,926.234C263.168,911.135,263.168,896.036,266.869,884.932C270.57,873.828,277.971,866.718,281.672,863.164L285.373,859.609"/>
+  <path class="path-dashed" marker-end="url(#arrow-dashed)" d="M133.781,1551.875L128.117,1545.576C122.452,1539.276,111.124,1526.677,105.459,1510.695C99.795,1494.714,99.795,1475.349,99.795,1455.984C99.795,1436.62,99.795,1417.255,99.795,1397.891C99.795,1378.526,99.795,1359.161,99.795,1341.93C99.795,1324.698,99.795,1309.599,99.795,1294.5C99.795,1279.401,99.795,1264.302,99.795,1247.07C99.795,1229.839,99.795,1210.474,99.795,1191.109C99.795,1171.745,99.795,1152.38,99.795,1133.016C99.795,1113.651,99.795,1094.286,99.795,1074.922C99.795,1055.557,99.795,1036.193,99.795,1018.961C99.795,1001.729,99.795,986.63,99.795,971.531C99.795,956.432,99.795,941.333,99.795,926.234C99.795,911.135,99.795,896.036,126.748,882.688C153.701,869.339,207.606,857.741,234.559,851.942L261.512,846.143"/>
+  
+  <!-- Edge labels with background -->
+  <g transform="translate(263.168, 1074.922)">
+    <rect class="edge-label-bg" x="-30" y="-10" width="60" height="20" rx="3"/>
+    <text class="edge-label" text-anchor="middle" dy="4">Rework</text>
+  </g>
+  <g transform="translate(276.029, 1397.891)">
+    <rect class="edge-label-bg" x="-88" y="-10" width="176" height="20" rx="3"/>
+    <text class="edge-label" text-anchor="middle" dy="4">Approved (UAT needed)</text>
+  </g>
+  <g transform="translate(450.301, 1514.078)">
+    <rect class="edge-label-bg" x="-70" y="-10" width="140" height="20" rx="3"/>
+    <text class="edge-label" text-anchor="middle" dy="4">Approved (no UAT)</text>
+  </g>
+  <g transform="translate(99.795, 1191.109)">
+    <rect class="edge-label-bg" x="-62" y="-10" width="124" height="20" rx="3"/>
+    <text class="edge-label" text-anchor="middle" dy="4">Rendering Issues</text>
+  </g>
+  <g transform="translate(152.031, 1630.266)">
+    <rect class="edge-label-bg" x="-38" y="-10" width="76" height="20" rx="3"/>
+    <text class="edge-label" text-anchor="middle" dy="4">Approved</text>
+  </g>
+  
+  <!-- ===== NODES ===== -->
+  
+  <!-- HUMAN (Human/Maintainer) -->
+  <g class="node-human" transform="translate(397.916, 20.297)">
+    <rect x="-94.695" y="-20.297" width="189.391" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">👤 MAINTAINER</text>
+  </g>
+  
+  <!-- RE (Requirements Engineer) - Agent -->
+  <g class="node-agent" transform="translate(144.764, 110.891)">
+    <rect x="-90.133" y="-20.297" width="180.266" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Requirements Engineer</text>
+  </g>
+  
+  <!-- IA_AGENT (Issue Analyst) - Agent -->
+  <g class="node-agent" transform="translate(441.926, 654.453)">
+    <rect x="-52.914" y="-20.297" width="105.828" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Issue Analyst</text>
+  </g>
+  
+  <!-- WE (Workflow Engineer) - Meta Agent -->
+  <g class="node-metaagent" transform="translate(559.281, 1960.141)">
+    <rect x="-74.52" y="-20.297" width="149.039" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Workflow Engineer</text>
+  </g>
+  
+  <!-- FS (Feature Specification) - Artifact -->
+  <g class="node-artifact" transform="translate(144.764, 201.484)">
+    <rect x="-97.516" y="-20.297" width="195.031" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">📄 Feature Specification</text>
+  </g>
+  
+  <!-- IA (Issue Analysis) - Artifact -->
+  <g class="node-artifact" transform="translate(441.926, 745.047)">
+    <rect x="-68.656" y="-20.297" width="137.313" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">🔍 Issue Analysis</text>
+  </g>
+  
+  <!-- WD (Workflow Documentation) - Artifact -->
+  <g class="node-artifact" transform="translate(559.281, 2050.734)">
+    <rect x="-111.152" y="-20.297" width="222.305" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">⚙️ Workflow Documentation</text>
+  </g>
+  
+  <!-- AR (Architect) - Agent -->
+  <g class="node-agent" transform="translate(144.764, 292.078)">
+    <rect x="-40.609" y="-20.297" width="81.219" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Architect</text>
+  </g>
+  
+  <!-- ADR (Architecture Decision Records) - Artifact -->
+  <g class="node-artifact" transform="translate(144.764, 382.672)">
+    <rect x="-127.676" y="-20.297" width="255.352" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">📐 Architecture Decision Records</text>
+  </g>
+  
+  <!-- QE (Quality Engineer) - Agent -->
+  <g class="node-agent" transform="translate(144.764, 473.266)">
+    <rect x="-66.809" y="-20.297" width="133.617" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Quality Engineer</text>
+  </g>
+  
+  <!-- TP (Test Plan & Test Cases) - Artifact -->
+  <g class="node-artifact" transform="translate(144.764, 563.859)">
+    <rect x="-94.969" y="-20.297" width="189.938" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">✓ Test Plan &amp; Test Cases</text>
+  </g>
+  
+  <!-- TP_AGENT (Task Planner) - Agent -->
+  <g class="node-agent" transform="translate(144.764, 654.453)">
+    <rect x="-52.273" y="-20.297" width="104.547" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Task Planner</text>
+  </g>
+  
+  <!-- US (User Stories / Tasks) - Artifact -->
+  <g class="node-artifact" transform="translate(144.764, 745.047)">
+    <rect x="-90.742" y="-20.297" width="181.484" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">📋 User Stories / Tasks</text>
+  </g>
+  
+  <!-- DEV (Developer) - Agent -->
+  <g class="node-agent" transform="translate(310.326, 835.641)">
+    <rect x="-43.633" y="-20.297" width="87.266" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Developer</text>
+  </g>
+  
+  <!-- CODE (Code & Tests) - Artifact -->
+  <g class="node-artifact" transform="translate(428.607, 926.234)">
+    <rect x="-66.777" y="-20.297" width="133.555" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">💻 Code &amp; Tests</text>
+  </g>
+  
+  <!-- TW (Technical Writer) - Agent -->
+  <g class="node-agent" transform="translate(373.461, 1016.828)">
+    <rect x="-65.879" y="-20.297" width="131.758" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Technical Writer</text>
+  </g>
+  
+  <!-- DOCS (Documentation) - Artifact -->
+  <g class="node-artifact" transform="translate(373.461, 1133.016)">
+    <rect x="-75.293" y="-20.297" width="150.586" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">📚 Documentation</text>
+  </g>
+  
+  <!-- CR (Code Reviewer) - Agent -->
+  <g class="node-agent" transform="translate(428.607, 1249.203)">
+    <rect x="-60.492" y="-20.297" width="120.984" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Code Reviewer</text>
+  </g>
+  
+  <!-- CRR (Code Review Report) - Artifact -->
+  <g class="node-artifact" transform="translate(351.398, 1339.797)">
+    <rect x="-92.551" y="-20.297" width="185.102" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">✅ Code Review Report</text>
+  </g>
+  
+  <!-- UAT_AGENT (UAT Tester) - Agent -->
+  <g class="node-agent" transform="translate(276.029, 1455.984)">
+    <rect x="-45.289" y="-20.297" width="90.578" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">UAT Tester</text>
+  </g>
+  
+  <!-- UAT (User Acceptance PRs) - Artifact -->
+  <g class="node-artifact" transform="translate(152.031, 1572.172)">
+    <rect x="-95.059" y="-20.297" width="190.117" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">🧪 User Acceptance PRs</text>
+  </g>
+  
+  <!-- RM (Release Manager) - Agent -->
+  <g class="node-agent" transform="translate(256.551, 1688.359)">
+    <rect x="-67.074" y="-20.297" width="134.148" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Release Manager</text>
+  </g>
+  
+  <!-- REL (Release Notes) - Artifact -->
+  <g class="node-artifact" transform="translate(70.699, 1778.953)">
+    <rect x="-70.699" y="-20.297" width="141.398" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">🚀 Release Notes</text>
+  </g>
+  
+  <!-- PR (Pull Request) - Artifact -->
+  <g class="node-artifact" transform="translate(256.551, 1778.953)">
+    <rect x="-65.152" y="-20.297" width="130.305" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">🔀 Pull Request</text>
+  </g>
+  
+  <!-- RETRO_AGENT (Retrospective) - Agent -->
+  <g class="node-agent" transform="translate(428.227, 1778.953)">
+    <rect x="-56.523" y="-20.297" width="113.047" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">Retrospective</text>
+  </g>
+  
+  <!-- RETRO (Retrospective Report) - Artifact -->
+  <g class="node-artifact" transform="translate(428.227, 1869.547)">
+    <rect x="-96.055" y="-20.297" width="192.109" height="40.594" rx="2" ry="2"/>
+    <text text-anchor="middle" dy="5">📝 Retrospective Report</text>
+  </g>
+</svg>

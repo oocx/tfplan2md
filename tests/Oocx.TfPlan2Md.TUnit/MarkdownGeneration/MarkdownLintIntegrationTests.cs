@@ -15,6 +15,11 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// These tests run the actual markdownlint-cli2 tool via Docker to ensure
 /// the generated markdown passes all linting rules in a production-like environment.
 /// </summary>
+/// <remarks>
+/// These tests have a longer timeout (2 minutes) because running Docker containers
+/// takes significant time.
+/// </remarks>
+[Timeout(120_000)] // 2 minutes - accounts for Docker container startup
 public class MarkdownLintIntegrationTests
 {
     private static readonly Lazy<MarkdownLintFixture> s_tunitFixture = new(
@@ -33,7 +38,7 @@ public class MarkdownLintIntegrationTests
     /// This is the primary integration test for markdown quality.
     /// </summary>
     [Test]
-    public async Task Lint_ComprehensiveDemo_PassesAllRules()
+    public async Task Lint_ComprehensiveDemo_PassesAllRules(CancellationToken cancellationToken)
     {
         if (!Fixture.IsDockerAvailable || !Fixture.ImageReady)
         {
@@ -41,7 +46,7 @@ public class MarkdownLintIntegrationTests
             return;
         }
 
-        var plan = _parser.Parse(await File.ReadAllTextAsync(DemoPaths.DemoPlanPath));
+        var plan = _parser.Parse(await File.ReadAllTextAsync(DemoPaths.DemoPlanPath, cancellationToken));
         var model = new ReportModelBuilder().Build(plan);
         var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
 
@@ -62,7 +67,7 @@ public class MarkdownLintIntegrationTests
     /// Verifies that all test plans in TestData produce valid markdown.
     /// </summary>
     [Test]
-    public async Task Lint_AllTestPlans_PassAllRules()
+    public async Task Lint_AllTestPlans_PassAllRules(CancellationToken cancellationToken)
     {
         if (!Fixture.IsDockerAvailable || !Fixture.ImageReady)
         {
@@ -77,7 +82,7 @@ public class MarkdownLintIntegrationTests
 
         foreach (var planFile in planFiles)
         {
-            var json = await File.ReadAllTextAsync(planFile);
+            var json = await File.ReadAllTextAsync(planFile, cancellationToken);
 
             if (!json.Contains("\"resource_changes\""))
             {
@@ -122,14 +127,14 @@ public class MarkdownLintIntegrationTests
     /// Verifies that the summary template produces valid markdown.
     /// </summary>
     [Test]
-    public async Task Lint_SummaryTemplate_PassesAllRules()
+    public async Task Lint_SummaryTemplate_PassesAllRules(CancellationToken cancellationToken)
     {
         if (!Fixture.IsDockerAvailable || !Fixture.ImageReady)
         {
             return;
         }
 
-        var plan = _parser.Parse(await File.ReadAllTextAsync(DemoPaths.DemoPlanPath));
+        var plan = _parser.Parse(await File.ReadAllTextAsync(DemoPaths.DemoPlanPath, cancellationToken));
         var model = new ReportModelBuilder().Build(plan);
         var renderer = new MarkdownRenderer();
 
@@ -150,14 +155,14 @@ public class MarkdownLintIntegrationTests
     /// Verifies that markdown with special characters in resource names passes linting.
     /// </summary>
     [Test]
-    public async Task Lint_BreakingPlan_PassesAllRules()
+    public async Task Lint_BreakingPlan_PassesAllRules(CancellationToken cancellationToken)
     {
         if (!Fixture.IsDockerAvailable || !Fixture.ImageReady)
         {
             return;
         }
 
-        var json = await File.ReadAllTextAsync("TestData/markdown-breaking-plan.json");
+        var json = await File.ReadAllTextAsync("TestData/markdown-breaking-plan.json", cancellationToken);
         var plan = _parser.Parse(json);
         var model = new ReportModelBuilder().Build(plan);
         var renderer = new MarkdownRenderer();

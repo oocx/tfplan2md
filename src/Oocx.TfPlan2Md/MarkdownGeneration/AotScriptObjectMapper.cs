@@ -18,7 +18,7 @@ internal static class AotScriptObjectMapper
     /// </summary>
     /// <param name="model">The report model to map.</param>
     /// <returns>A ScriptObject containing all report data accessible by templates.</returns>
-    public static ScriptObject MapReportModel(ReportModel model)
+    internal static ScriptObject MapReportModel(ReportModel model)
     {
         var scriptObject = new ScriptObject();
 
@@ -55,7 +55,7 @@ internal static class AotScriptObjectMapper
     /// <param name="change">The resource change to map.</param>
     /// <param name="largeValueFormat">The format for large values.</param>
     /// <returns>A ScriptObject containing the change data.</returns>
-    public static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, LargeValueFormat largeValueFormat)
+    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, LargeValueFormat largeValueFormat)
     {
         var changeObject = MapResourceChange(change);
 

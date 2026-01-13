@@ -210,7 +210,7 @@ Follow the project's coding conventions strictly:
    
    c. **Verify acceptance criteria** for the current task:
       - All acceptance criteria for THIS task must be satisfied
-      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test --filter "<TestClass>"`
+      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test tests/Oocx.TfPlan2Md.TUnit/ --filter "<TestClass>"`
       - Check for errors: Use `problems` to verify no workspace errors
    
    d. **Commit the task**:
@@ -235,8 +235,9 @@ Follow the project's coding conventions strictly:
    
    a. **Run full test suite**:
       ```bash
-   scripts/test-with-timeout.sh -- dotnet test
+   scripts/test-with-timeout.sh
       ```
+      - This runs the TUnit test project: `dotnet test tests/Oocx.TfPlan2Md.TUnit/`
       - All tests must pass with ZERO skipped tests
       - If tests are skipped, identify reason and ask Maintainer to resolve
    
@@ -250,10 +251,10 @@ Follow the project's coding conventions strictly:
    
    c. **Update test snapshots (if markdown output changed)**:
       - Use `update-test-snapshots` skill to regenerate snapshot baselines
-         - Review generated snapshots with `scripts/git-diff.sh tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots`
+         - Review generated snapshots with `scripts/git-diff.sh tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots`
       - Commit snapshots if changes are expected:
         ```bash
-        git add tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
+        git add tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/
             git commit -m "test: update snapshots for <feature-name>\n\nSNAPSHOT_UPDATE_OK"
         ```
    

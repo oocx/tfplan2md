@@ -20,7 +20,7 @@ log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 # Navigate to repo root
 cd "$(git rev-parse --show-toplevel)"
 
-SNAPSHOTS_DIR="tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots"
+SNAPSHOTS_DIR="tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots"
 
 if [[ ! -d "$SNAPSHOTS_DIR" ]]; then
   log_error "Snapshots directory not found: $SNAPSHOTS_DIR"
@@ -35,12 +35,12 @@ log_info "Running snapshot tests to regenerate files..."
 log_info "(Tests will fail on first run, but will create new snapshots)"
 
 # Run only the snapshot tests (MarkdownSnapshotTests class)
-dotnet test tests/Oocx.TfPlan2Md.Tests/Oocx.TfPlan2Md.Tests.csproj \
+dotnet test tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
   --filter "FullyQualifiedName~MarkdownSnapshotTests" \
   --verbosity minimal || true
 
 # Copy snapshots from bin/Debug output to source directory
-BIN_SNAPSHOTS="tests/Oocx.TfPlan2Md.Tests/bin/Debug/net10.0/TestData/Snapshots"
+BIN_SNAPSHOTS="tests/Oocx.TfPlan2Md.TUnit/bin/Debug/net10.0/TestData/Snapshots"
 if [[ -d "$BIN_SNAPSHOTS" ]]; then
   log_info "Copying generated snapshots from build output to source..."
   cp -f "$BIN_SNAPSHOTS"/*.md "$SNAPSHOTS_DIR/" 2>/dev/null || true
@@ -57,7 +57,7 @@ fi
 log_info "✓ Generated $SNAPSHOT_COUNT new snapshot files"
 
 log_info "Running snapshot tests again to verify..."
-if dotnet test tests/Oocx.TfPlan2Md.Tests/Oocx.TfPlan2Md.Tests.csproj \
+if dotnet test tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
   --filter "FullyQualifiedName~MarkdownSnapshotTests" \
   --verbosity minimal; then
   log_info "✅ All snapshot tests pass!"

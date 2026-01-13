@@ -10,6 +10,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   validate:
@@ -77,7 +78,33 @@ jobs:
 
       - name: Test
         if: steps.filter.outputs.changed == 'true'
-        run: scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test tests/Oocx.TfPlan2Md.TUnit/ --no-build --configuration Release --verbosity normal
+        run: |
+          chmod +x scripts/test-with-timeout.sh
+          scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
+
+      - name: Verify tests ran
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          if [ ! -d "./TestResults" ] || [ -z "$(ls -A ./TestResults/*.trx 2>/dev/null)" ]; then
+            echo "❌ ERROR: No test results found! Tests may not have run."
+            exit 1
+          fi
+          
+          # Count the test results
+          test_count=$(grep -r "outcome" ./TestResults/*.trx | wc -l)
+          echo "✓ Test results found: $test_count test(s) executed"
+          
+          if [ "$test_count" -eq 0 ]; then
+            echo "❌ ERROR: Test results file exists but contains 0 tests"
+            exit 1
+          fi
+
+      - name: Publish test results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: ./TestResults/*.trx
+          check_name: 'Test Results'
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

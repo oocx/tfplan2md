@@ -874,13 +874,37 @@ The type (User, Group, ServicePrincipal) is automatically read from the Terrafor
 
 ### Docker Image
 
-- **Base image**: .NET Chiseled (distroless) for minimal attack surface
+tfplan2md is distributed as a minimal Docker image optimized for CI/CD pipelines:
+
+- **Size**: 14.7MB (89.6% reduction from standard .NET runtime)
+- **Base image**: FROM scratch with minimal musl libraries for maximum security
+- **Compilation**: NativeAOT-compiled native binary (no JIT overhead)
+- **Security**: Non-root user (UID 1654), no shell, minimal attack surface
 - **Registry**: Docker Hub (`oocx/tfplan2md`)
 - **Tagging**: Semantic versioning with multiple tags per release:
   - Full version: `1.2.3`
   - Minor version: `1.2` (updated with each patch)
   - Major version: `1` (updated with each minor/patch)
   - `latest` (always points to the most recent release)
+
+#### Performance Characteristics
+
+- **Image download**: 89.6% faster than standard .NET runtime (141MB → 14.7MB)
+- **Container startup**: Instant startup with native binary (no JIT compilation)
+- **Build time**: ~90 seconds (2x baseline) - acceptable tradeoff for deployment benefits
+- **Runtime performance**: Native code execution without JIT overhead
+
+#### Technical Details
+
+The Docker image uses NativeAOT (Ahead-of-Time) compilation with full trimming to produce a self-contained native binary:
+
+- **Runtime**: linux-musl-x64 (Alpine-based)
+- **Libraries**: Only 3 essential files (ld-musl-x86_64.so.1, libgcc_s.so.1, libstdc++.so.6)
+- **Trimming**: TrimMode=full with aggressive size optimizations
+- **Globalization**: Invariant globalization (no culture-specific assemblies)
+- **Reflection**: All reflection patterns handled through explicit mapping (AotScriptObjectMapper)
+
+All features work identically to the standard build - templates, principal mapping, metadata extraction, and embedded resources are fully functional with AOT.
 
 ### Usage Example
 

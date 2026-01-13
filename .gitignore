@@ -49,3 +49,4 @@ plan.tfplan
 **/chat.json
 *.chat.json
 node_modules/
+.aider*

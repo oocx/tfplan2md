@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Superseded by Feature 037 (AOT-Compiled Trimmed Docker Image)
+
+As of Feature 037, the Docker image uses FROM scratch with minimal musl libraries instead of the chiseled runtime image, achieving 14.7MB (89.6% reduction from baseline) with superior security posture.
 
 ## Context
 

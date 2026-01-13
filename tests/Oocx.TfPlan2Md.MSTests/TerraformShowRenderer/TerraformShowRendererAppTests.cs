@@ -54,7 +54,7 @@ public sealed class TerraformShowRendererAppTests
         var exitCode = await app.RunAsync(VersionArgs);
 
         Assert.AreEqual(0, exitCode);
-        StringAssert.Matches(output.ToString(), new Regex("\\d+\\.\\d+"));
+        StringStringAssert.Matches(new Regex("\\d+\\.\\d+", new Regex(output.ToString())));
         Assert.IsTrue(string.IsNullOrEmpty(error.ToString()), "Version mode should not write errors.");
     }
 

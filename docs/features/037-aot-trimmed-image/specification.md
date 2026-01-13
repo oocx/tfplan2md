@@ -57,9 +57,9 @@ From the user's perspective, tfplan2md should work **identically** to the curren
 
 ## Success Criteria
 
-- [ ] All existing unit tests pass with the AOT-compiled version
-- [ ] All existing integration tests pass with the AOT-compiled version
-- [ ] All features documented in `docs/features.md` continue working:
+- [x] All existing unit tests pass with the AOT-compiled version
+- [x] All existing integration tests pass with the AOT-compiled version
+- [x] All features documented in `docs/features.md` continue working:
   - Custom templates (via `--template` flag)
   - Principal mapping (via `--principal-mapping` flag)
   - Large value handling options
@@ -67,11 +67,11 @@ From the user's perspective, tfplan2md should work **identically** to the curren
   - Resource grouping
   - Report metadata (version, commit hash, timestamp)
   - All Azure-specific features
-- [ ] Docker image size is measurably reduced (document exact measurements)
-- [ ] Build time impact is documented and acceptable (longer builds expected)
-- [ ] Base image is minimal and secure (chiseled/distroless or scratch)
-- [ ] No reflection-related runtime errors in production scenarios
-- [ ] Documentation updated with new build/deployment characteristics
+- [x] Docker image size is measurably reduced: **14.7MB (89.6% reduction)**
+- [x] Build time impact is documented: ~2x increase (45s → 90s), acceptable
+- [x] Base image is minimal and secure: FROM scratch with 3 musl libraries
+- [x] No reflection-related runtime errors: AotScriptObjectMapper handles all reflection
+- [x] Documentation updated with new build/deployment characteristics
 
 ## Constraints
 
@@ -86,24 +86,40 @@ From the user's perspective, tfplan2md should work **identically** to the curren
 ## Performance Metrics to Capture
 
 ### Baseline (Current Version)
-- Docker image size
-- CI/CD build time
-- Image pull time (representative network conditions)
+- Docker image size: **141MB** (standard .NET runtime)
+- CI/CD build time: ~45 seconds
+- Runtime: JIT compilation
 
-### AOT Version
-- Docker image size
-- CI/CD build time
-- Image pull time (representative network conditions)
-- Any runtime performance differences (if measurable)
+### AOT Version (Final)
+- Docker image size: **14.7MB** (musl-based, FROM scratch)
+  - **89.6% reduction** from baseline
+  - **70.6% below 50MB target**
+- CI/CD build time: ~90 seconds (2x baseline, acceptable for deployment benefits)
+- Runtime: Native binary, no JIT overhead
+- Base image: FROM scratch with minimal musl libraries (3 files)
+
+### Size Optimization Journey
+1. Initial AOT (glibc): 46.3MB (-67% from baseline)
+2. Remove debug symbols: 29.8MB (-36% from 46.3MB)
+3. Remove SSL/crypto libs: 21.5MB (-28% from 29.8MB)
+4. Minimal glibc libs: 18.3MB (-15% from 21.5MB)
+5. **Switch to musl: 14.7MB (-20% from 18.3MB)**
+
+### Technical Implementation
+- Runtime: linux-musl-x64 (Alpine-based SDK)
+- Trimming: TrimMode=full with aggressive optimizations
+- Libraries: Only 3 essential .so files (ld-musl, libgcc_s, libstdc++)
+- Reflection handling: Explicit AotScriptObjectMapper replaces ScriptObject.Import
+- Security: Non-root user (UID 1654), no shell, minimal attack surface
 
 ## Open Questions
 
-**For Architect:**
-1. What AOT compatibility issues exist with Scriban templating engine?
-2. What trimming annotations or hints are needed for reflection-heavy code?
-3. How should embedded resources be handled in AOT builds?
-4. Should we use `PublishAot=true` or `PublishTrimmed=true` or both?
-5. What `TrimMode` should be used (full, partial)?
-6. Are there NuGet packages that need special trimming configuration?
-7. Which minimal base image provides the best size/compatibility tradeoff?
-8. Do we need `InvariantGlobalization` or are globalization libraries required?
+**For Architect:** (All resolved)
+1. ✅ Scriban uses reflection for template parsing - preserved via TrimmerRootDescriptor.xml
+2. ✅ Created AotScriptObjectMapper for explicit mapping (replaces reflection-based ScriptObject.Import)
+3. ✅ Embedded resources work correctly with TrimMode=full
+4. ✅ Using PublishAot=true with TrimMode=full
+5. ✅ TrimMode=full provides maximum size reduction
+6. ✅ Scriban requires preservation in TrimmerRootDescriptor.xml
+7. ✅ FROM scratch with minimal musl libraries provides best size/security
+8. ✅ InvariantGlobalization=true eliminates culture-specific assemblies

@@ -14,7 +14,7 @@ public sealed class AnsiTextWriterTests
     /// Related acceptance: Task 2 ANSI support.
     /// </summary>
     [Test]
-    public void WriteStyled_WithGreen_WritesAnsiSequences()
+    public async Task WriteStyled_WithGreen_WritesAnsiSequences()
     {
         var buffer = new StringBuilder();
         using var writer = new StringWriter(buffer);
@@ -23,9 +23,9 @@ public sealed class AnsiTextWriterTests
         ansi.WriteStyled("value", AnsiStyle.Green);
 
         var output = buffer.ToString();
-        Assert.Contains("\u001b[32m", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[0m", output, StringComparison.Ordinal);
-        Assert.Contains("value", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("\u001b[32m");
+        await Assert.That(output).Contains("\u001b[0m");
+        await Assert.That(output).Contains("value");
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public sealed class AnsiTextWriterTests
     /// Related acceptance: Task 2 ANSI support.
     /// </summary>
     [Test]
-    public void WriteStyled_WithBoldAndRed_EmitsBothStyles()
+    public async Task WriteStyled_WithBoldAndRed_EmitsBothStyles()
     {
         var buffer = new StringBuilder();
         using var writer = new StringWriter(buffer);
@@ -42,9 +42,9 @@ public sealed class AnsiTextWriterTests
         ansi.WriteStyled("critical", AnsiStyle.Bold, AnsiStyle.Red);
 
         var output = buffer.ToString();
-        Assert.Contains("\u001b[1m", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[31m", output, StringComparison.Ordinal);
-        Assert.EndsWith("\u001b[0m", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("\u001b[1m");
+        await Assert.That(output).Contains("\u001b[31m");
+        await Assert.That(output).EndsWith("\u001b[0m");
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public sealed class AnsiTextWriterTests
     /// Related acceptance: Task 2 no-color flag.
     /// </summary>
     [Test]
-    public void WriteStyled_NoColor_OmitsAnsiSequences()
+    public async Task WriteStyled_NoColor_OmitsAnsiSequences()
     {
         var buffer = new StringBuilder();
         using var writer = new StringWriter(buffer);
@@ -61,12 +61,12 @@ public sealed class AnsiTextWriterTests
         ansi.WriteStyled("plain", AnsiStyle.Green);
 
         var output = buffer.ToString();
-        Assert.DoesNotContain("\u001b[", output, StringComparison.Ordinal);
-        Assert.Equal("plain", output);
+        await Assert.That(output).DoesNotContain("\u001b[");
+        await Assert.That(output).IsEqualTo("plain");
     }
 
     [Test]
-    public void WriteLineIfNotBlank_PreventsDuplicateBlankLines()
+    public async Task WriteLineIfNotBlank_PreventsDuplicateBlankLines()
     {
         var buffer = new StringBuilder();
         using var writer = new StringWriter(buffer);
@@ -83,10 +83,10 @@ public sealed class AnsiTextWriterTests
         var lines = buffer.ToString().Split(Environment.NewLine);
 
         // Expect sequence: "x", "", "y", "" (last trailing newline yields empty trailing entry)
-        Assert.Equal(4, lines.Length);
-        Assert.Equal("x", lines[0]);
-        Assert.Equal(string.Empty, lines[1]);
-        Assert.Equal("y", lines[2]);
-        Assert.Equal(string.Empty, lines[3]);
+        await Assert.That(lines.Length).IsEqualTo(4);
+        await Assert.That(lines[0]).IsEqualTo("x");
+        await Assert.That(lines[1]).IsEqualTo(string.Empty);
+        await Assert.That(lines[2]).IsEqualTo("y");
+        await Assert.That(lines[3]).IsEqualTo(string.Empty);
     }
 }

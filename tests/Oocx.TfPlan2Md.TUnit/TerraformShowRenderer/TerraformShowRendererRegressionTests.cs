@@ -24,7 +24,7 @@ public sealed class TerraformShowRendererRegressionTests
         var output = renderer.Render(plan, suppressColor: false, outputChanges);
         var expected = await File.ReadAllTextAsync(Path.Combine("TestData", "TerraformShow", "plan1.txt"));
 
-        Assert.Equal(expected, output);
+        await Assert.That(output).IsEqualTo(expected);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public sealed class TerraformShowRendererRegressionTests
         var output = renderer.Render(plan, suppressColor: false, outputChanges);
         var expected = await File.ReadAllTextAsync(Path.Combine("TestData", "TerraformShow", "plan2.txt"));
 
-        Assert.Equal(expected, output);
+        await Assert.That(output).IsEqualTo(expected);
     }
 
     /// <summary>

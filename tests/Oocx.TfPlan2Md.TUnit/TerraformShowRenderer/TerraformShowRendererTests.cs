@@ -19,17 +19,17 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 2 legend and header.
     /// </summary>
     [Test]
-    public void Render_WithColors_WritesLegendAndHeader()
+    public async Task Render_WithColors_WritesLegendAndHeader()
     {
         var plan = CreateEmptyPlan();
         var renderer = new Renderer();
 
         var output = renderer.Render(plan, suppressColor: false);
 
-        Assert.Contains("Terraform used the selected providers", output, StringComparison.Ordinal);
-        Assert.Contains("Terraform will perform the following actions:", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[32m+\u001b[0m", output, StringComparison.Ordinal); // create symbol
-        Assert.Contains("\u001b[33m~\u001b[0m", output, StringComparison.Ordinal); // update symbol
+        await Assert.That(output).Contains("Terraform used the selected providers");
+        await Assert.That(output).Contains("Terraform will perform the following actions:");
+        await Assert.That(output).Contains("\u001b[32m+\u001b[0m"); // create symbol
+        await Assert.That(output).Contains("\u001b[33m~\u001b[0m"); // update symbol
     }
 
     /// <summary>
@@ -37,16 +37,16 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 2 no-color flag.
     /// </summary>
     [Test]
-    public void Render_NoColor_OmitsAnsiSequences()
+    public async Task Render_NoColor_OmitsAnsiSequences()
     {
         var plan = CreateEmptyPlan();
         var renderer = new Renderer();
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.DoesNotContain("\u001b[", output, StringComparison.Ordinal);
-        Assert.Contains("+ create", output, StringComparison.Ordinal);
-        Assert.Contains("Terraform will perform the following actions:", output, StringComparison.Ordinal);
+        await Assert.That(output).DoesNotContain("\u001b[");
+        await Assert.That(output).Contains("+ create");
+        await Assert.That(output).Contains("Terraform will perform the following actions:");
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 3 action mapping.
     /// </summary>
     [Test]
-    public void Render_CreateResource_WritesHeaderAndMarker()
+    public async Task Render_CreateResource_WritesHeaderAndMarker()
     {
         var after = Json("{ \"name\": \"main\" }");
         var plan = CreatePlan(new ResourceChange("aws_s3_bucket.main", null, "managed", "aws_s3_bucket", "main", "aws", new Change(["create"], null, after)));
@@ -62,9 +62,9 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Contains("# aws_s3_bucket.main will be created", output, StringComparison.Ordinal);
-        Assert.Contains("  + resource \"aws_s3_bucket\" \"main\" {", output, StringComparison.Ordinal);
-        Assert.Contains("  }", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("# aws_s3_bucket.main will be created");
+        await Assert.That(output).Contains("  + resource \"aws_s3_bucket\" \"main\" {");
+        await Assert.That(output).Contains("  }");
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 3 action styling.
     /// </summary>
     [Test]
-    public void Render_DeleteResource_UsesRedBoldPhrase()
+    public async Task Render_DeleteResource_UsesRedBoldPhrase()
     {
         var before = Json("{ \"name\": \"old\" }");
         var plan = CreatePlan(new ResourceChange("aws_s3_bucket.main", null, "managed", "aws_s3_bucket", "main", "aws", new Change(["delete"], before, null)));
@@ -80,10 +80,10 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: false);
 
-        Assert.Contains("will be \u001b[1m\u001b[31m", output, StringComparison.Ordinal);
-        Assert.Contains("destroyed", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[31m-\u001b[0m", output, StringComparison.Ordinal);
-        Assert.Contains("resource \"aws_s3_bucket\" \"main\" {", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("will be \u001b[1m\u001b[31m");
+        await Assert.That(output).Contains("destroyed");
+        await Assert.That(output).Contains("\u001b[31m-\u001b[0m");
+        await Assert.That(output).Contains("resource \"aws_s3_bucket\" \"main\" {");
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 3 replace mapping.
     /// </summary>
     [Test]
-    public void Render_ReplaceResource_ShowsReplacementMarker()
+    public async Task Render_ReplaceResource_ShowsReplacementMarker()
     {
         var before = Json("{ \"name\": \"old\" }");
         var after = Json("{ \"name\": \"new\" }");
@@ -101,9 +101,9 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: false);
 
-        Assert.Contains("must be \u001b[1m\u001b[31m", output, StringComparison.Ordinal);
-        Assert.Contains("replaced", output, StringComparison.Ordinal);
-        Assert.Contains("-\u001b[0m/\u001b[32m+", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("must be \u001b[1m\u001b[31m");
+        await Assert.That(output).Contains("replaced");
+        await Assert.That(output).Contains("-\u001b[0m/\u001b[32m+");
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 3 read mapping.
     /// </summary>
     [Test]
-    public void Render_ReadAction_UsesDataKeywordAndCyanMarker()
+    public async Task Render_ReadAction_UsesDataKeywordAndCyanMarker()
     {
         var after = Json("{ \"account_id\": \"1234567890\" }");
         var plan = CreatePlan(new ResourceChange("data.aws_caller_identity.current", null, "data", "aws_caller_identity", "current", "aws", new Change(["read"], null, after)));
@@ -119,9 +119,9 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: false);
 
-        Assert.Contains("will be read during apply", output, StringComparison.Ordinal);
-        Assert.Contains("\u001b[36m<=\u001b[0m", output, StringComparison.Ordinal);
-        Assert.Contains("data \"aws_caller_identity\" \"current\" {", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("will be read during apply");
+        await Assert.That(output).Contains("\u001b[36m<=\u001b[0m");
+        await Assert.That(output).Contains("data \"aws_caller_identity\" \"current\" {");
     }
 
     /// <summary>
@@ -129,7 +129,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 3 action reasons.
     /// </summary>
     [Test]
-    public void Render_ActionReason_RendersSecondHeaderLine()
+    public async Task Render_ActionReason_RendersSecondHeaderLine()
     {
         var before = Json("{ \"name\": \"orphan\" }");
         var change = new ResourceChange("aws_s3_bucket.orphan", null, "managed", "aws_s3_bucket", "orphan", "aws", new Change(["delete"], before, null), "delete_because_no_resource_config");
@@ -138,8 +138,8 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Contains("# aws_s3_bucket.orphan will be destroyed", output, StringComparison.Ordinal);
-        Assert.Contains("# (because aws_s3_bucket.orphan is not in configuration)", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("# aws_s3_bucket.orphan will be destroyed");
+        await Assert.That(output).Contains("# (because aws_s3_bucket.orphan is not in configuration)");
     }
 
     /// <summary>
@@ -147,7 +147,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 4 after_unknown handling.
     /// </summary>
     [Test]
-    public void Render_CreateUnknown_RendersKnownAfterApply()
+    public async Task Render_CreateUnknown_RendersKnownAfterApply()
     {
         var after = Json("{ \"id\": null }");
         var afterUnknown = Json("{ \"id\": true }");
@@ -157,7 +157,7 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Contains("id = (known after apply)", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("id = (known after apply)");
     }
 
     /// <summary>
@@ -165,7 +165,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 4 sensitive handling.
     /// </summary>
     [Test]
-    public void Render_SensitiveValue_RendersPlaceholder()
+    public async Task Render_SensitiveValue_RendersPlaceholder()
     {
         var after = Json("{ \"secret\": \"value\" }");
         var afterSensitive = Json("{ \"secret\": true }");
@@ -175,7 +175,7 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Contains("secret = (sensitive value)", output, StringComparison.Ordinal);
+        await Assert.That(output).Contains("secret = (sensitive value)");
     }
 
     /// <summary>
@@ -183,7 +183,7 @@ public sealed class TerraformShowRendererTests
     /// Related acceptance: Task 4 unchanged comment.
     /// </summary>
     [Test]
-    public void Render_Update_ShowsHiddenUnchangedCount()
+    public async Task Render_Update_ShowsHiddenUnchangedCount()
     {
         var before = Json("{ \"name\": \"old\", \"unchanged\": \"same\" }");
         var after = Json("{ \"name\": \"new\", \"unchanged\": \"same\" }");
@@ -193,8 +193,8 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Matches("name\\s*=\\s*\"old\"\\s*->\\s*\"new\"", output);
-        Assert.Contains("# (1 unchanged attributes hidden)", output, StringComparison.Ordinal);
+        await Assert.That(output).Matches("name\\s*=\\s*\"old\"\\s*->\\s*\"new\"");
+        await Assert.That(output).Contains("# (1 unchanged attributes hidden)");
     }
 
     /// <summary>

@@ -7,7 +7,7 @@
     <IsPackable>false</IsPackable>
     <LangVersion>13</LangVersion>
     <OutputType>Exe</OutputType>
-    <NoWarn>CA1707;CA1711;TUnit0055;TUnitAssertions0003;TUnitAssertions0005;TUnit0038</NoWarn>
+    <NoWarn>CA1707;CA1711;CA2201;IDE1006;TUnit0055;TUnitAssertions0003;TUnitAssertions0005;TUnit0038</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

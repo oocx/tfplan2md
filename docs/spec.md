@@ -37,8 +37,11 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
   - Do NOT make members `public` solely for testing purposes
   - Add this to the main project's `.csproj` or `AssemblyInfo.cs`:
     ```csharp
+    [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.TUnit")]
     [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.Tests")]
+    [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.MSTests")]
     ```
+  - **Note**: TUnit is the primary framework; xUnit and MSTest are preserved for compatibility
 
 - **Why this matters:**
   - Agents were considering backwards compatibility and breaking changes for `public` methods even though no external consumers exist

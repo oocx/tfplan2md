@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Development Workflow - tfplan2md</title>
     <link rel="stylesheet" href="style.css">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -90,126 +89,11 @@
                 The diagram below shows the complete agent workflow from requirements to release. Each agent produces artifacts that are consumed by the next agent in the sequence.
             </p>
             
-            <div class="diagram-container">
-                <div class="mermaid" id="workflow-diagram">
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
-flowchart TB
-    %% Modern styles optimized for both light and dark backgrounds
-    classDef agent fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:8,ry:8;
-    classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:6,ry:6;
-    classDef metaagent fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff,rx:8,ry:8;
-    classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
-
-    %% Nodes
-    HUMAN(["👤 <b>Maintainer</b><br/>(Human)"])
-
-    %% Row 1: Entry Agents
-    RE["<b>Requirements Engineer</b>"]
-    IA_AGENT["<b>Issue Analyst</b>"]
-    WE["<b>Workflow Engineer</b>"]
-
-    %% Row 2: Artifacts from Entry
-    FS["📄 Feature Specification"]
-    IA["🔍 Issue Analysis"]
-    WD["⚙️ Workflow Documentation"]
-
-    %% Row 3: Planning Agents
-    AR["<b>Architect</b>"]
-    
-    %% Row 4: Planning Artifacts
-    ADR["📐 Architecture Decision Records"]
-
-    %% Row 5: Quality & Tasks
-    QE["<b>Quality Engineer</b>"]
-    
-    %% Row 6: Test Plan
-    TP["✓ Test Plan & Test Cases"]
-
-    %% Row 7: Task Planner
-    TP_AGENT["<b>Task Planner</b>"]
-
-    %% Row 8: User Stories
-    US["📋 User Stories / Tasks"]
-
-    %% Row 9: Developer
-    DEV["<b>Developer</b>"]
-
-    %% Row 10: Code & Tests
-    CODE["💻 Code & Tests"]
-
-    %% Row 11: Tech Writer
-    TW["<b>Technical Writer</b>"]
-
-    %% Row 12: Docs
-    DOCS["📚 Documentation"]
-
-    %% Row 13: Code Reviewer
-    CR["<b>Code Reviewer</b>"]
-
-    %% Row 14: Review Report
-    CRR["✅ Code Review Report"]
-
-    %% Row 15: UAT Tester
-    UAT_AGENT["<b>UAT Tester</b>"]
-
-    %% Row 16: UAT Artifacts
-    UAT["🧪 User Acceptance PRs"]
-
-    %% Row 17: Release Manager
-    RM["<b>Release Manager</b>"]
-
-    %% Row 16: Release Artifacts
-    REL["🚀 Release Notes"]
-    PR["🔀 Pull Request"]
-
-    %% Row 17: Retrospective
-    RETRO_AGENT["<b>Retrospective</b>"]
-
-    %% Row 18: Retro Report
-    RETRO["📝 Retrospective Report"]
-
-    %% Connections - Main Flow
-    HUMAN ==> RE
-    HUMAN ==> IA_AGENT
-    HUMAN ==> WE
-
-    RE --> FS --> AR
-    IA_AGENT --> IA --> DEV
-    WE --> WD
-
-    AR --> ADR --> QE
-    QE --> TP --> TP_AGENT
-    TP_AGENT --> US --> DEV
-
-    DEV --> CODE --> TW
-    DEV --> CODE --> CR
-
-    TW --> DOCS --> CR
-
-    CR --> CRR
-    CRR -. "Rework" .-> DEV
-    CRR -- "Approved (UAT needed)" --> UAT_AGENT
-    CRR -- "Approved (no UAT)" --> RM
-
-    UAT_AGENT --> UAT
-    UAT -. "Rendering Issues" .-> DEV
-    UAT -- "Approved" --> RM
-
-    RM --> REL
-    RM --> PR
-    RM --> RETRO_AGENT
-
-    RETRO_AGENT --> RETRO --> WE
-
-    %% Styling
-    class HUMAN human;
-    class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,UAT_AGENT,RM,RETRO_AGENT agent;
-    class WE metaagent;
-    class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,UAT,RETRO artifact;
-                </div>
+            <div class="diagram-container" style="background: #0d1b2a; padding: 2rem; border-radius: 8px; overflow-x: auto;">
+                <object data="ai-workflow.svg" type="image/svg+xml" style="width: 100%; max-width: 700px; margin: 0 auto; display: block;"></object>
             </div>
             
-            <p class="diagram-note">
+            <p class="diagram-note" style="margin-top: 2rem;">
                 <em>Agents produce and consume artifacts. Solid arrows show artifact creation and consumption. Dashed arrows indicate rework/feedback loops.</em>
             </p>
         </div>
@@ -437,46 +321,6 @@ flowchart TB
         mobileMenuBtn.addEventListener('click', () => {
             navMenu.classList.toggle('active');
             mobileMenuBtn.classList.toggle('active');
-        });
-        
-        // Mermaid diagram rendering
-        async function renderMermaidDiagram() {
-            const theme = html.getAttribute('data-theme');
-            const mermaidConfig = {
-                startOnLoad: false,
-                theme: theme === 'dark' ? 'dark' : 'base',
-                themeVariables: {
-                    fontSize: '16px',
-                    fontFamily: 'ui-sans-serif, system-ui, sans-serif'
-                }
-            };
-            
-            // Import and initialize mermaid
-            const mermaid = (await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')).default;
-            mermaid.initialize(mermaidConfig);
-            
-            // Get diagram element
-            const diagramElement = document.getElementById('workflow-diagram');
-            if (diagramElement) {
-                // Store original content
-                if (!diagramElement.dataset.originalContent) {
-                    diagramElement.dataset.originalContent = diagramElement.textContent;
-                }
-                
-                // Reset to original content
-                diagramElement.textContent = diagramElement.dataset.originalContent;
-                diagramElement.removeAttribute('data-processed');
-                
-                // Re-render
-                await mermaid.run({
-                    querySelector: '#workflow-diagram'
-                });
-            }
-        }
-        
-        // Initial render on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            renderMermaidDiagram();
         });
     </script>
 </body>

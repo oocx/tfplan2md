@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.28"></a>
+## [1.0.0-alpha.28](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.27...v1.0.0-alpha.28) (2026-01-12)
+
+### ✨ Features
+
+* Create detect-diagram-crossings skill with comprehensive testing ([d238db3](https://github.com/oocx/tfplan2md/commit/d238db3bd1bb395a23dd59ff26dac63d8b2f89b1))
+* replace three workflow diagrams with single blueprint-styled SVG ([1923f1e](https://github.com/oocx/tfplan2md/commit/1923f1eca08eb381b9a22067eb518611dd19953d))
+* update ai-workflow diagram to blueprint style (Design 7) ([bb47358](https://github.com/oocx/tfplan2md/commit/bb47358420ddfee6ad4afefadb73552b9d3f0214))
+
+### 🐛 Bug Fixes
+
+* correct ai-workflow diagram layout and paths ([52b4642](https://github.com/oocx/tfplan2md/commit/52b46424c2344733e4708fd656c24fda25fcd879))
+* Eliminate all diagram crossings with improved detection and routing ([ed906ef](https://github.com/oocx/tfplan2md/commit/ed906ef40f8e1e046e49f99dcc5890797c118db9))
+* improve readability of homepage and feature detail page links in dark mode ([34f7844](https://github.com/oocx/tfplan2md/commit/34f78440dedc9bb3109a7b3963ed70fcc33e28de))
+* redesign ai-workflow diagram with compact layout and no crossing paths ([3e43b60](https://github.com/oocx/tfplan2md/commit/3e43b606edeeb0647b65f968dc1e4a22b79e2acb))
+* **website:** improve ai-workflow diagram routing and add enhanced detection ([73f6a1b](https://github.com/oocx/tfplan2md/commit/73f6a1b4b5ce1e4f6719260462f52526aee6630d))
+
 <a name="1.0.0-alpha.27"></a>
 ## [1.0.0-alpha.27](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.26...v1.0.0-alpha.27) (2026-01-11)
 

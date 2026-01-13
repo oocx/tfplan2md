@@ -1,0 +1,163 @@
+<svg viewBox="0 0 680 2215" xmlns="http://www.w3.org/2000/svg" width="680" height="2215">
+  <defs>
+    <pattern id="grid-blueprint" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L0,10 L10,5 z" fill="#00ffff"/>
+    </marker>
+  </defs>
+  
+  <rect width="680" height="2215" fill="#0d1b2a"/>
+  <rect width="680" height="2215" fill="url(#grid-blueprint)"/>
+  
+  <!-- Maintainer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="0" width="300" height="50" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="340" y="30" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="14" font-family="monospace">👤 MAINTAINER</text>
+  </g>
+  
+  <path d="M 340,50 L 340,140" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Requirements Engineer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="140" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="340" y="165" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">REQUIREMENTS ENG</text>
+  </g>
+  
+  <path d="M 340,180 L 340,270" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Feature Spec -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="270" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="340" y="292" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📄 FEATURE SPEC</text>
+  </g>
+  
+  <path d="M 340,305 L 340,395" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Architect -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="395" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="340" y="420" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">ARCHITECT</text>
+  </g>
+  
+  <path d="M 340,435 L 340,525" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- ADR -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="525" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="340" y="547" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📐 ADR</text>
+  </g>
+  
+  <path d="M 340,560 L 340,650" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Quality Engineer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="650" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="340" y="675" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">QUALITY ENGINEER</text>
+  </g>
+  
+  <path d="M 340,690 L 340,780" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Test Plan -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="780" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="340" y="802" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">✓ TEST PLAN</text>
+  </g>
+  
+  <path d="M 340,815 L 340,905" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Task Planner -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="905" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="340" y="930" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">TASK PLANNER</text>
+  </g>
+  
+  <path d="M 340,945 L 340,1035" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- User Stories -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="1035" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="340" y="1057" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📋 USER STORIES</text>
+  </g>
+  
+  <path d="M 340,1070 L 340,1160" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Developer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="1160" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="340" y="1185" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">DEVELOPER</text>
+  </g>
+  
+  <path d="M 340,1200 L 340,1290" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Code & Tests -->
+  <g class="node">
+    <rect rx="2" ry="2" x="190" y="1290" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="340" y="1312" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">💻 CODE &amp; TESTS</text>
+  </g>
+  
+  <path d="M 340,1325 L 150,1325 L 150,1415" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <path d="M 340,1325 L 530,1325 L 530,1415" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Tech Writer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="1415" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="150" y="1440" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">TECH WRITER</text>
+  </g>
+  
+  <!-- Code Reviewer -->
+  <g class="node">
+    <rect rx="2" ry="2" x="380" y="1415" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="530" y="1440" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">CODE REVIEWER</text>
+  </g>
+  
+  <path d="M 150,1455 L 150,1545" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Documentation -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="1545" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="150" y="1567" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">📚 DOCUMENTATION</text>
+  </g>
+  
+  <path d="M 300,1562.5 L 530,1562.5 L 530,1542.5 L 530,1545" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  <path d="M 530,1455 L 530,1530 L 150,1530 L 150,1670" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Review Report -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="1670" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="150" y="1692" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">✅ REVIEW REPORT</text>
+  </g>
+  
+  <path d="M 150,1705 L 150,1795" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- UAT Tester -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="1795" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="150" y="1820" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">UAT TESTER</text>
+  </g>
+  
+  <path d="M 150,1835 L 150,1925" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- UAT PR -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="1925" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="150" y="1947" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🧪 UAT PR</text>
+  </g>
+  
+  <path d="M 150,1960 L 150,2050" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Release Manager -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="2050" width="300" height="40" fill="none" stroke="#00ffff" stroke-width="2"/>
+    <text x="150" y="2075" text-anchor="middle" fill="#ffffff" font-weight="600" font-size="13" font-family="monospace">RELEASE MGR</text>
+  </g>
+  
+  <path d="M 150,2090 L 150,2180" stroke="#00ffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)"/>
+  
+  <!-- Release + PR -->
+  <g class="node">
+    <rect rx="2" ry="2" x="0" y="2180" width="300" height="35" fill="rgba(0,255,255,0.1)" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+    <text x="150" y="2202" text-anchor="middle" fill="#00ffff" font-weight="600" font-size="13" font-family="monospace">🚀 RELEASE + PR</text>
+  </g>
+</svg>

@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <LangVersion>13</LangVersion>
+    <!-- Allow underscores in test method names (common convention) -->
+    <!-- Disable IDE0059 (unused value) for test fixtures and MSTEST0037/0032 for assertion style preferences -->
+    <!-- Disable IDE1006 for static field naming convention in test fixtures -->
+    <NoWarn>CA1707;CA1711;IDE0059;MSTEST0037;MSTEST0032;IDE1006</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AwesomeAssertions" Version="9.3.0" />
+    <PackageReference Include="Markdig" Version="0.44.0" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="MSTest" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Oocx.TfPlan2Md\Oocx.TfPlan2Md.csproj" />
+    <ProjectReference Include="..\..\tools\Oocx.TfPlan2Md.TerraformShowRenderer\Oocx.TfPlan2Md.TerraformShowRenderer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

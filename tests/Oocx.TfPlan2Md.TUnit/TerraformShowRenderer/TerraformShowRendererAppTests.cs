@@ -33,9 +33,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(HelpArgs);
 
-        Assert.Equal(0, exitCode);
-        Assert.Contains("Usage", output.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(error.ToString()), "Help mode should not write errors.");
+        await Assert.That(exitCode).IsEqualTo(0);
+        await Assert.That(output.ToString()).Contains("Usage");
+        await Assert.That(string.IsNullOrEmpty(error.ToString())).IsTrue();
     }
 
     /// <summary>
@@ -51,9 +51,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(VersionArgs);
 
-        Assert.Equal(0, exitCode);
-        Assert.Matches("\\d+\\.\\d+", output.ToString());
-        Assert.True(string.IsNullOrEmpty(error.ToString()), "Version mode should not write errors.");
+        await Assert.That(exitCode).IsEqualTo(0);
+        await Assert.That(output.ToString()).Matches("\\d+\\.\\d+");
+        await Assert.That(string.IsNullOrEmpty(error.ToString())).IsTrue();
     }
 
     /// <summary>
@@ -69,9 +69,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(Array.Empty<string>());
 
-        Assert.Equal(1, exitCode);
-        Assert.Contains("--input", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        await Assert.That(exitCode).IsEqualTo(1);
+        await Assert.That(error.ToString()).Contains("--input");
+        await Assert.That(string.IsNullOrEmpty(output.ToString())).IsTrue();
     }
 
     /// <summary>
@@ -88,9 +88,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(new[] { "--input", missingPath });
 
-        Assert.Equal(2, exitCode);
-        Assert.Contains("Input file not found", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        await Assert.That(exitCode).IsEqualTo(2);
+        await Assert.That(error.ToString()).Contains("Input file not found");
+        await Assert.That(string.IsNullOrEmpty(output.ToString())).IsTrue();
     }
 
     /// <summary>
@@ -107,9 +107,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(new[] { "--input", invalidFile });
 
-        Assert.Equal(3, exitCode);
-        Assert.Contains("Failed to parse", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        await Assert.That(exitCode).IsEqualTo(3);
+        await Assert.That(error.ToString()).Contains("Failed to parse");
+        await Assert.That(string.IsNullOrEmpty(output.ToString())).IsTrue();
     }
 
     /// <summary>
@@ -126,9 +126,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(new[] { "--input", unsupportedPath });
 
-        Assert.Equal(4, exitCode);
-        Assert.Contains("Unsupported plan format version", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        await Assert.That(exitCode).IsEqualTo(4);
+        await Assert.That(error.ToString()).Contains("Unsupported plan format version");
+        await Assert.That(string.IsNullOrEmpty(output.ToString())).IsTrue();
     }
 
     /// <summary>

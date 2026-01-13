@@ -178,7 +178,7 @@ public partial class TemplateArchitectureTests
     /// This test always passes but provides visibility into template sizes.
     /// </summary>
     [Test]
-    public void Templates_LineCountReport()
+    public async Task Templates_LineCountReport()
     {
         var report = new List<(string Name, int LineCount)>();
 
@@ -199,10 +199,10 @@ public partial class TemplateArchitectureTests
         foreach (var (name, lines) in report.OrderByDescending(r => r.LineCount))
         {
             // Using Assert.True with a message to document in test output
-            Assert.True(true, $"Template '{name}': {lines} lines");
+            await Assert.That(true, $"Template '{name}': {lines} lines").IsTrue();
         }
 
-        Assert.True(true, $"Total: {report.Count} templates, {totalLines} total lines, {averageLines} average");
+        await Assert.That(true, $"Total: {report.Count} templates, {totalLines} total lines, {averageLines} average").IsTrue();
     }
 
     #endregion

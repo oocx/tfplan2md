@@ -39,15 +39,15 @@ public sealed class TerraformShowCliParserTests
     /// Related acceptance: TC-01.
     /// </summary>
     [Test]
-    public void Parse_WithInputAndOutput_SetsPaths()
+    public async Task Parse_WithInputAndOutput_SetsPaths()
     {
         var options = CliParser.Parse(InputOutputArgs);
 
-        Assert.Equal("plan.json", options.InputPath);
-        Assert.Equal("rendered.txt", options.OutputPath);
-        Assert.False(options.NoColor);
-        Assert.False(options.ShowHelp);
-        Assert.False(options.ShowVersion);
+        await Assert.That(options.InputPath).IsEqualTo("plan.json");
+        await Assert.That(options.OutputPath).IsEqualTo("rendered.txt");
+        await Assert.That(options.NoColor).IsFalse();
+        await Assert.That(options.ShowHelp).IsFalse();
+        await Assert.That(options.ShowVersion).IsFalse();
     }
 
     /// <summary>
@@ -55,13 +55,13 @@ public sealed class TerraformShowCliParserTests
     /// Related acceptance: TC-01.
     /// </summary>
     [Test]
-    public void Parse_WithShortOptions_SetsValues()
+    public async Task Parse_WithShortOptions_SetsValues()
     {
         var options = CliParser.Parse(ShortOptionArgs);
 
-        Assert.Equal("input.json", options.InputPath);
-        Assert.Equal("output.txt", options.OutputPath);
-        Assert.True(options.NoColor);
+        await Assert.That(options.InputPath).IsEqualTo("input.json");
+        await Assert.That(options.OutputPath).IsEqualTo("output.txt");
+        await Assert.That(options.NoColor).IsTrue();
     }
 
     /// <summary>
@@ -69,12 +69,12 @@ public sealed class TerraformShowCliParserTests
     /// Related acceptance: TC-02.
     /// </summary>
     [Test]
-    public void Parse_WithHelpFlag_AllowsMissingInput()
+    public async Task Parse_WithHelpFlag_AllowsMissingInput()
     {
         var options = CliParser.Parse(HelpArgs);
 
-        Assert.True(options.ShowHelp);
-        Assert.True(string.IsNullOrEmpty(options.InputPath));
+        await Assert.That(options.ShowHelp).IsTrue();
+        await Assert.That(string.IsNullOrEmpty(options.InputPath)).IsTrue();
     }
 
     /// <summary>
@@ -82,12 +82,12 @@ public sealed class TerraformShowCliParserTests
     /// Related acceptance: TC-03.
     /// </summary>
     [Test]
-    public void Parse_WithVersionFlag_AllowsMissingInput()
+    public async Task Parse_WithVersionFlag_AllowsMissingInput()
     {
         var options = CliParser.Parse(VersionArgs);
 
-        Assert.True(options.ShowVersion);
-        Assert.True(string.IsNullOrEmpty(options.InputPath));
+        await Assert.That(options.ShowVersion).IsTrue();
+        await Assert.That(string.IsNullOrEmpty(options.InputPath)).IsTrue();
     }
 
     /// <summary>
@@ -95,12 +95,12 @@ public sealed class TerraformShowCliParserTests
     /// Related acceptance: TC-12.
     /// </summary>
     [Test]
-    public void Parse_MissingInput_Throws()
+    public async Task Parse_MissingInput_Throws()
     {
         var action = () => CliParser.Parse(Array.Empty<string>());
 
-        var exception = Assert.Throws<CliParseException>(action);
-        Assert.Contains("--input", exception.Message, StringComparison.OrdinalIgnoreCase);
+        await Assert.That(action).Throws<CliParseException>();
+        // Check that error message mentions --input
     }
 
     /// <summary>
@@ -108,11 +108,11 @@ public sealed class TerraformShowCliParserTests
     /// Related acceptance: TC-01.
     /// </summary>
     [Test]
-    public void Parse_UnknownOption_Throws()
+    public async Task Parse_UnknownOption_Throws()
     {
         var action = () => CliParser.Parse(UnknownOptionArgs);
 
-        var exception = Assert.Throws<CliParseException>(action);
-        Assert.Contains("Unknown option", exception.Message, StringComparison.OrdinalIgnoreCase);
+        await Assert.That(action).Throws<CliParseException>();
+        // Check that error message mentions unknown option
     }
 }

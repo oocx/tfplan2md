@@ -195,7 +195,7 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        StringAssert.Matches(output, new Regex("name\\s*=\\s*\"old\"\\s*->\\s*\"new\""));
+        StringStringAssert.Matches(new Regex("name\\s*=\\s*\"old\"\\s*->\\s*\"new\"", new Regex(output)));
         Assert.Contains("# (1 unchanged attributes hidden)", output, StringComparison.Ordinal);
     }
 

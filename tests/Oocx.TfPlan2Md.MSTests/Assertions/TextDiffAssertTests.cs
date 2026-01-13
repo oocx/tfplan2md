@@ -17,11 +17,17 @@ public sealed class TextDiffAssertTests
         var expected = "a\n  b\nxyz\n";
         var actual = "a\n  b\nxyZ\n";
 
-        var exception = Assert.ThrowsAny<XunitException>(() => TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, actual));
-
-        Assert.Contains("First difference: line 3, column 3", exception.Message);
-        Assert.Contains("Context (escaped, expected vs actual):", exception.Message);
-        Assert.Contains("L0003", exception.Message);
+        try
+        {
+            TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, actual);
+            Assert.Fail("Expected AssertFailedException to be thrown");
+        }
+        catch (AssertFailedException exception)
+        {
+            Assert.IsTrue(exception.Message.Contains("First difference: line 3, column 3"));
+            Assert.IsTrue(exception.Message.Contains("Context (escaped, expected vs actual):"));
+            Assert.IsTrue(exception.Message.Contains("L0003"));
+        }
     }
 
     /// <summary>
@@ -33,11 +39,17 @@ public sealed class TextDiffAssertTests
         var expected = "a\n";
         var actual = "a\nextra\n";
 
-        var exception = Assert.ThrowsAny<XunitException>(() => TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, actual));
-
-        Assert.Contains("Expected lines: 2", exception.Message);
-        Assert.Contains("Actual lines:   3", exception.Message);
-        Assert.Contains("First difference: line 2", exception.Message);
+        try
+        {
+            TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, actual);
+            Assert.Fail("Expected AssertFailedException to be thrown");
+        }
+        catch (AssertFailedException exception)
+        {
+            Assert.IsTrue(exception.Message.Contains("Expected lines: 2"));
+            Assert.IsTrue(exception.Message.Contains("Actual lines:   3"));
+            Assert.IsTrue(exception.Message.Contains("First difference: line 2"));
+        }
     }
 
     /// <summary>
@@ -49,10 +61,16 @@ public sealed class TextDiffAssertTests
         var expected = "abc \n";
         var actual = "abc\n";
 
-        var exception = Assert.ThrowsAny<XunitException>(() => TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, actual));
-
-        Assert.Contains("Codepoint diagnostics at first difference:", exception.Message);
-        Assert.Contains("U+0020", exception.Message);
-        Assert.Contains("<EOL>", exception.Message);
+        try
+        {
+            TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, actual);
+            Assert.Fail("Expected AssertFailedException to be thrown");
+        }
+        catch (AssertFailedException exception)
+        {
+            Assert.IsTrue(exception.Message.Contains("Codepoint diagnostics at first difference:"));
+            Assert.IsTrue(exception.Message.Contains("U+0020"));
+            Assert.IsTrue(exception.Message.Contains("<EOL>"));
+        }
     }
 }

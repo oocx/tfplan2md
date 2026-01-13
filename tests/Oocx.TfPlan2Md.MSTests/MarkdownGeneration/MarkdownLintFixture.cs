@@ -29,21 +29,21 @@ public class MarkdownLintFixture
     /// </summary>
     public bool ImageReady { get; private set; }
 
-    private static MarkdownLintFixture? _instance;
-    private static readonly object _lock = new();
+    private static MarkdownLintFixture? s_instance;
+    private static readonly object s_lock = new();
 
     public static MarkdownLintFixture Instance
     {
         get
         {
-            lock (_lock)
+            lock (s_lock)
             {
-                if (_instance == null)
+                if (s_instance == null)
                 {
-                    _instance = new MarkdownLintFixture();
-                    _ = _instance.InitializeAsync().GetAwaiter().GetResult();
+                    s_instance = new MarkdownLintFixture();
+                    s_instance.InitializeAsync().GetAwaiter().GetResult();
                 }
-                return _instance;
+                return s_instance;
             }
         }
     }
@@ -217,17 +217,3 @@ public record MarkdownLintViolation(
     string RuleId,
     string RuleName,
     string Message);
-
-/// <summary>
-/// MarkdownLint test initialization for MSTest.
-/// </summary>
-[TestClass]
-public class MarkdownLintTestsInitializer
-{
-    [AssemblyInitialize]
-    public static void AssemblyInit(TestContext context)
-    {
-        // Trigger initialization of MarkdownLint fixture
-        _ = MarkdownLintFixture.Instance;
-    }
-}

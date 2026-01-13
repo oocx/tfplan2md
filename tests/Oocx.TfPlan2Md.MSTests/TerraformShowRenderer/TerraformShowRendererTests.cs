@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 using Renderer = Oocx.TfPlan2Md.TerraformShowRenderer.Rendering.TerraformShowRenderer;
@@ -194,7 +195,7 @@ public sealed class TerraformShowRendererTests
 
         var output = renderer.Render(plan, suppressColor: true);
 
-        Assert.Matches("name\\s*=\\s*\"old\"\\s*->\\s*\"new\"", output);
+        StringAssert.Matches(output, new Regex("name\\s*=\\s*\"old\"\\s*->\\s*\"new\""));
         Assert.Contains("# (1 unchanged attributes hidden)", output, StringComparison.Ordinal);
     }
 

@@ -7,6 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.TerraformShowRenderer;
 /// Validates ANSI styling behavior for the Terraform show renderer writer.
 /// Related feature: docs/features/030-terraform-show-approximation/specification.md
 /// </summary>
+[TestClass]
 public sealed class AnsiTextWriterTests
 {
     /// <summary>
@@ -62,7 +63,7 @@ public sealed class AnsiTextWriterTests
 
         var output = buffer.ToString();
         Assert.DoesNotContain("\u001b[", output, StringComparison.Ordinal);
-        Assert.Equal("plain", output);
+        Assert.AreEqual("plain", output);
     }
 
     [TestMethod]
@@ -83,10 +84,10 @@ public sealed class AnsiTextWriterTests
         var lines = buffer.ToString().Split(Environment.NewLine);
 
         // Expect sequence: "x", "", "y", "" (last trailing newline yields empty trailing entry)
-        Assert.Equal(4, lines.Length);
-        Assert.Equal("x", lines[0]);
-        Assert.Equal(string.Empty, lines[1]);
-        Assert.Equal("y", lines[2]);
-        Assert.Equal(string.Empty, lines[3]);
+        Assert.AreEqual(4, lines.Length);
+        Assert.AreEqual("x", lines[0]);
+        Assert.AreEqual(string.Empty, lines[1]);
+        Assert.AreEqual("y", lines[2]);
+        Assert.AreEqual(string.Empty, lines[3]);
     }
 }

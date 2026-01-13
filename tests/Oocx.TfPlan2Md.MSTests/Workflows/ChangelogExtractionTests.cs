@@ -279,8 +279,14 @@ code block line 2
 
     private static void SkipIfBashUnavailable()
     {
-        Skip.If(OperatingSystem.IsWindows(), "Bash is required to run the release script tests.");
+        if (OperatingSystem.IsWindows())
+        {
+            Assert.Inconclusive("Bash is required to run the release script tests.");
+        }
         var bashExists = File.Exists("/bin/bash") || File.Exists("/usr/bin/bash");
-        Skip.IfNot(bashExists, "Bash is required to run the release script tests.");
+        if (!bashExists)
+        {
+            Assert.Inconclusive("Bash is required to run the release script tests.");
+        }
     }
 }

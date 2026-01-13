@@ -14,21 +14,21 @@ public class DockerFixture
     public bool IsDockerAvailable { get; private set; }
     public bool ImageBuilt { get; private set; }
 
-    private static DockerFixture? _instance;
-    private static readonly object _lock = new();
+    private static DockerFixture? s_instance;
+    private static readonly object s_lock = new();
 
     public static DockerFixture Instance
     {
         get
         {
-            lock (_lock)
+            lock (s_lock)
             {
-                if (_instance == null)
+                if (s_instance == null)
                 {
-                    _instance = new DockerFixture();
-                    _ = _instance.InitializeAsync().GetAwaiter().GetResult();
+                    s_instance = new DockerFixture();
+                    s_instance.InitializeAsync().GetAwaiter().GetResult();
                 }
-                return _instance;
+                return s_instance;
             }
         }
     }

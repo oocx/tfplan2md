@@ -7,7 +7,9 @@
     <IsPackable>false</IsPackable>
     <LangVersion>13</LangVersion>
     <!-- Allow underscores in test method names (common convention) -->
-    <NoWarn>CA1707;CA1711</NoWarn>
+    <!-- Disable IDE0059 (unused value) for test fixtures and MSTEST0037/0032 for assertion style preferences -->
+    <!-- Disable IDE1006 for static field naming convention in test fixtures -->
+    <NoWarn>CA1707;CA1711;IDE0059;MSTEST0037;MSTEST0032;IDE1006</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

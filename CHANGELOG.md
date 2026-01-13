@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.29"></a>
+## [1.0.0-alpha.29](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.28...v1.0.0-alpha.29) (2026-01-13)
+
+### ✨ Features
+
+* achieve 100% test coverage in TUnit - all 393 tests converted ([24568b6](https://github.com/oocx/tfplan2md/commit/24568b65e587e2326af2eb02694779d8bcd29d01))
+* add Docker integration tests to TUnit and document removed tests ([ef4db7a](https://github.com/oocx/tfplan2md/commit/ef4db7a8d4ec4e31ebf02a3e28e56c8b55575ab1))
+* adopt TUnit as primary testing framework for all pipelines and development ([9e6490a](https://github.com/oocx/tfplan2md/commit/9e6490a2fa3be24bad7343ac8f4ad4701d4594ea))
+* complete TUnit v1.9.26 conversion with all 370 tests passing ([686e658](https://github.com/oocx/tfplan2md/commit/686e658243b296f02aaf0749ea6b814fda0a83aa))
+* convert all tests from xUnit to MSTest v4 and begin TUnit exploration ([eab5c34](https://github.com/oocx/tfplan2md/commit/eab5c34ad7fff372cb463f772fedf7da3cb19fb1))
+* convert HtmlRenderer tests to MSTest v4 ([7e9e2ac](https://github.com/oocx/tfplan2md/commit/7e9e2acfb20b7ccb39b5a2fa8d318aa91dfbec93))
+* convert main tests to MSTest v4 (work in progress) ([d3cb6c9](https://github.com/oocx/tfplan2md/commit/d3cb6c9dcd7c903cb64d6a11ea361694d1707077))
+* convert ScreenshotGenerator tests to MSTest v4 ([76a5d41](https://github.com/oocx/tfplan2md/commit/76a5d415749680370020c6980219c3fb6aeb019c))
+
+### 🐛 Bug Fixes
+
+* correct StringAssert.Matches usage in MSTest ([59227fb](https://github.com/oocx/tfplan2md/commit/59227fb497c011e9112142579f044006a4be3fb3))
+* resolve all build errors and complete MSTest v4 conversion ([1fcde99](https://github.com/oocx/tfplan2md/commit/1fcde99fefbefa1213146df4d1804d023bdd7f2f))
+
+### 📚 Documentation
+
+* comprehensive reliability and diagnostics analysis ([4b2d5f2](https://github.com/oocx/tfplan2md/commit/4b2d5f275c84332c691eb5da2ba0c621fddc5e66))
+
 <a name="1.0.0-alpha.28"></a>
 ## [1.0.0-alpha.28](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.27...v1.0.0-alpha.28) (2026-01-12)
 

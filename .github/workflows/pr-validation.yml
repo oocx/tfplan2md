@@ -77,13 +77,14 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Test
+        id: test
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
           scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
 
       - name: Verify tests ran
-        if: steps.filter.outputs.changed == 'true'
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
         run: |
           if [ ! -d "./TestResults" ] || [ -z "$(ls -A ./TestResults/*.trx 2>/dev/null)" ]; then
             echo "❌ ERROR: No test results found! Tests may not have run."
@@ -100,7 +101,7 @@ jobs:
           fi
 
       - name: Publish test results
-        if: always()
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           files: ./TestResults/*.trx

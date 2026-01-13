@@ -73,7 +73,7 @@ if [[ "$explicit_command" == "true" ]]; then
   fi
   cmd=("$@");
 else
-  cmd=(dotnet test "$@")
+  cmd=(dotnet test tests/Oocx.TfPlan2Md.TUnit/ "$@")
 fi
 
 if ! command -v "${cmd[0]}" >/dev/null 2>&1; then

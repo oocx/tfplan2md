@@ -46,7 +46,7 @@ jobs:
       - name: Test
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 3600 -- dotnet test --no-build --configuration Release --verbosity normal
+          scripts/test-with-timeout.sh --timeout-seconds 3600 -- dotnet test tests/Oocx.TfPlan2Md.TUnit/ --no-build --configuration Release --verbosity normal
 
       - name: Setup Node
         uses: actions/setup-node@v6

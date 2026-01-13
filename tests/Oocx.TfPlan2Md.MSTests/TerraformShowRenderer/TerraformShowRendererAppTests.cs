@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.TerraformShowRenderer;
 
 namespace Oocx.TfPlan2Md.Tests.TerraformShowRenderer;
@@ -8,6 +9,7 @@ namespace Oocx.TfPlan2Md.Tests.TerraformShowRenderer;
 /// Exercises high-level CLI orchestration for the Terraform show approximation tool.
 /// Related feature: docs/features/030-terraform-show-approximation/specification.md
 /// </summary>
+[TestClass]
 public sealed class TerraformShowRendererAppTests
 {
     /// <summary>
@@ -33,9 +35,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(HelpArgs);
 
-        Assert.Equal(0, exitCode);
+        Assert.AreEqual(0, exitCode);
         Assert.Contains("Usage", output.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(error.ToString()), "Help mode should not write errors.");
+        Assert.IsTrue(string.IsNullOrEmpty(error.ToString()), "Help mode should not write errors.");
     }
 
     /// <summary>
@@ -51,9 +53,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(VersionArgs);
 
-        Assert.Equal(0, exitCode);
-        Assert.Matches("\\d+\\.\\d+", output.ToString());
-        Assert.True(string.IsNullOrEmpty(error.ToString()), "Version mode should not write errors.");
+        Assert.AreEqual(0, exitCode);
+        StringAssert.Matches(output.ToString(), new Regex("\\d+\\.\\d+"));
+        Assert.IsTrue(string.IsNullOrEmpty(error.ToString()), "Version mode should not write errors.");
     }
 
     /// <summary>
@@ -69,9 +71,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(Array.Empty<string>());
 
-        Assert.Equal(1, exitCode);
+        Assert.AreEqual(1, exitCode);
         Assert.Contains("--input", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        Assert.IsTrue(string.IsNullOrEmpty(output.ToString()));
     }
 
     /// <summary>
@@ -88,9 +90,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(new[] { "--input", missingPath });
 
-        Assert.Equal(2, exitCode);
+        Assert.AreEqual(2, exitCode);
         Assert.Contains("Input file not found", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        Assert.IsTrue(string.IsNullOrEmpty(output.ToString()));
     }
 
     /// <summary>
@@ -107,9 +109,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(new[] { "--input", invalidFile });
 
-        Assert.Equal(3, exitCode);
+        Assert.AreEqual(3, exitCode);
         Assert.Contains("Failed to parse", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        Assert.IsTrue(string.IsNullOrEmpty(output.ToString()));
     }
 
     /// <summary>
@@ -126,9 +128,9 @@ public sealed class TerraformShowRendererAppTests
 
         var exitCode = await app.RunAsync(new[] { "--input", unsupportedPath });
 
-        Assert.Equal(4, exitCode);
+        Assert.AreEqual(4, exitCode);
         Assert.Contains("Unsupported plan format version", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.True(string.IsNullOrEmpty(output.ToString()));
+        Assert.IsTrue(string.IsNullOrEmpty(output.ToString()));
     }
 
     /// <summary>

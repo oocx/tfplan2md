@@ -1,16 +1,18 @@
 namespace Oocx.TfPlan2Md.Tests.Docker;
 
 /// <summary>
-/// Docker test initialization - MSTest doesn't need collection definitions like xUnit.
-/// The DockerFixture.Instance provides shared state across all Docker tests.
+/// Assembly initialization for all MSTest tests.
+/// Initializes shared fixtures.
 /// </summary>
 [TestClass]
-public class DockerTestsInitializer
+public class AssemblyTestInitializer
 {
     [AssemblyInitialize]
     public static void AssemblyInit(TestContext context)
     {
         // Trigger initialization of Docker fixture
-        _ = DockerFixture.Instance;
+        var dockerFixture = DockerFixture.Instance;
+        // Trigger initialization of MarkdownLint fixture  
+        var lintFixture = MarkdownGeneration.MarkdownLintFixture.Instance;
     }
 }

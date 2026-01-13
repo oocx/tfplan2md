@@ -21,6 +21,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// 
 /// See docs/features/026-template-rendering-simplification/architecture.md for rationale.
 /// </remarks>
+[TestClass]
 public partial class TemplateArchitectureTests
 {
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
@@ -199,10 +200,10 @@ public partial class TemplateArchitectureTests
         foreach (var (name, lines) in report.OrderByDescending(r => r.LineCount))
         {
             // Using Assert.True with a message to document in test output
-            Assert.True(true, $"Template '{name}': {lines} lines");
+            Assert.IsTrue(true, $"Template '{name}': {lines} lines");
         }
 
-        Assert.True(true, $"Total: {report.Count} templates, {totalLines} total lines, {averageLines} average");
+        Assert.IsTrue(true, $"Total: {report.Count} templates, {totalLines} total lines, {averageLines} average");
     }
 
     #endregion

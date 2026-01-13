@@ -6,6 +6,7 @@ namespace Oocx.TfPlan2Md.Tests.TerraformShowRenderer;
 /// Validates parsing behavior for the Terraform show approximation CLI.
 /// Related feature: docs/features/030-terraform-show-approximation/specification.md
 /// </summary>
+[TestClass]
 public sealed class TerraformShowCliParserTests
 {
     /// <summary>
@@ -42,11 +43,11 @@ public sealed class TerraformShowCliParserTests
     {
         var options = CliParser.Parse(InputOutputArgs);
 
-        Assert.Equal("plan.json", options.InputPath);
-        Assert.Equal("rendered.txt", options.OutputPath);
-        Assert.False(options.NoColor);
-        Assert.False(options.ShowHelp);
-        Assert.False(options.ShowVersion);
+        Assert.AreEqual("plan.json", options.InputPath);
+        Assert.AreEqual("rendered.txt", options.OutputPath);
+        Assert.IsFalse(options.NoColor);
+        Assert.IsFalse(options.ShowHelp);
+        Assert.IsFalse(options.ShowVersion);
     }
 
     /// <summary>
@@ -58,9 +59,9 @@ public sealed class TerraformShowCliParserTests
     {
         var options = CliParser.Parse(ShortOptionArgs);
 
-        Assert.Equal("input.json", options.InputPath);
-        Assert.Equal("output.txt", options.OutputPath);
-        Assert.True(options.NoColor);
+        Assert.AreEqual("input.json", options.InputPath);
+        Assert.AreEqual("output.txt", options.OutputPath);
+        Assert.IsTrue(options.NoColor);
     }
 
     /// <summary>
@@ -72,8 +73,8 @@ public sealed class TerraformShowCliParserTests
     {
         var options = CliParser.Parse(HelpArgs);
 
-        Assert.True(options.ShowHelp);
-        Assert.True(string.IsNullOrEmpty(options.InputPath));
+        Assert.IsTrue(options.ShowHelp);
+        Assert.IsTrue(string.IsNullOrEmpty(options.InputPath));
     }
 
     /// <summary>
@@ -85,8 +86,8 @@ public sealed class TerraformShowCliParserTests
     {
         var options = CliParser.Parse(VersionArgs);
 
-        Assert.True(options.ShowVersion);
-        Assert.True(string.IsNullOrEmpty(options.InputPath));
+        Assert.IsTrue(options.ShowVersion);
+        Assert.IsTrue(string.IsNullOrEmpty(options.InputPath));
     }
 
     /// <summary>

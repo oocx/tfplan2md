@@ -1,6 +1,7 @@
 using System.Reflection;
 using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.CLI;
+using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 
@@ -59,6 +60,9 @@ static CliOptions? ParseArguments(string[] args)
 
 static async Task<int> RunAsync(CliOptions options)
 {
+    // Create diagnostic context if debug mode is enabled
+    var diagnosticContext = options.Debug ? new DiagnosticContext() : null;
+
     // Read input
     string json;
     if (options.InputFile is not null)
@@ -82,7 +86,7 @@ static async Task<int> RunAsync(CliOptions options)
     var plan = parser.Parse(json);
 
     // Create principal mapper for resolving principal names in role assignments
-    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile);
+    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile, diagnosticContext);
 
     // Build the report model
     var modelBuilder = new ReportModelBuilder(
@@ -95,7 +99,7 @@ static async Task<int> RunAsync(CliOptions options)
     var model = modelBuilder.Build(plan);
 
     // Render to Markdown
-    var renderer = new MarkdownRenderer(principalMapper);
+    var renderer = new MarkdownRenderer(principalMapper, diagnosticContext);
     string markdown;
     if (options.TemplatePath is not null)
     {
@@ -104,6 +108,12 @@ static async Task<int> RunAsync(CliOptions options)
     else
     {
         markdown = renderer.Render(model);
+    }
+
+    // Append debug section if diagnostic context exists
+    if (diagnosticContext is not null)
+    {
+        markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
     }
 
     // Write output

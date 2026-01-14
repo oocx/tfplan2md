@@ -1,7 +1,6 @@
 ---
 description: Review code for quality, standards, and correctness
 name: Code Reviewer
-target: vscode
 model: Claude Sonnet 4.5
 tools: ['search', 'edit/createFile', 'edit/editFiles', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'microsoftdocs/mcp/*', 'io.github.hashicorp/terraform-mcp-server/*', 'copilot-container-tools/*', 'github.vscode-pull-request-github/copilotCodingAgent', 'todo']
 handoffs:

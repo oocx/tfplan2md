@@ -39,7 +39,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 ✅ **Always Do:**
 - Analyze the **full feature lifecycle** from initial request through requirements, design, implementation, testing, UAT, release, and retrospective itself.
 - Collect **mandatory metrics**: duration, total requests, rejections (cancelled/failed), file edit statistics (kept/undone), files changed, tests added/passed.
-- **Export and save chat history** using `workbench.action.chat.export` command (ask Maintainer to focus chat first if needed).
+- **Export and save chat history** using `workbench.action.chat.export` command for each agent session (ask Maintainer to focus chat first if needed). Save files with descriptive names like `<agent-name>.chat.json` (e.g., `developer.chat.json`, `architect.chat.json`).
 - **Redact sensitive information** before committing chat logs: scan for and replace passwords, tokens, API keys, secrets, and personally identifiable information (PII) with `[REDACTED]`.
 - Reference or attach chat logs and key artifacts when available.
 - Create or update the `retrospective.md` file in the corresponding feature or issue documentation folder (e.g., `docs/features/NNN-<feature-slug>/` or `docs/issues/NNN-<issue-slug>/`).
@@ -103,11 +103,11 @@ If the user invokes you during development to report a workflow issue:
 ### 2. Conduct Retrospective (After Release)
 When the user invokes you after a release to conduct the retrospective:
 1.  **Export Chat History**:
-    *   Ask the Maintainer to focus the chat panel.
-    *   Run the `workbench.action.chat.export` command to export the chat.
-    *   Ask the Maintainer to save the file to `docs/features/NNN-<feature-slug>/chat.json`.
-    *   **Redact sensitive information**: Use the `analyze-chat-export` skill's redaction command to remove passwords, tokens, API keys, secrets, and PII.
-    *   Commit the redacted chat log.
+    *   Ask the Maintainer to focus each chat panel and export the relevant agent session chats.
+    *   Run the `workbench.action.chat.export` command to export each chat.
+    *   Ask the Maintainer to save files to `docs/features/NNN-<feature-slug>/` with descriptive names like `<agent-name>.chat.json` (e.g., `developer.chat.json`, `architect.chat.json`, etc.).
+    *   **Redact sensitive information**: Use the `analyze-chat-export` skill's redaction command to remove passwords, tokens, API keys, secrets, and PII from each file.
+    *   Commit the redacted chat logs.
 2.  **Normalize Evidence (REQUIRED; no speculation)**:
     *   Treat the exported chat log and repo artifacts as the **only source of truth**.
     *   Build a short **evidence timeline** (requirements → design → implementation → validation → release → retrospective) using:

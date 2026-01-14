@@ -6,7 +6,7 @@ tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codeb
 handoffs:
   - label: Start Implementation
     agent: "Developer"
-      prompt: Review the Feature Specification, Architecture, Test Plan, and `tasks.md`, then implement the highest-priority task first. Add/adjust automated tests as needed, and keep changes tightly scoped to the current work item.
+    prompt: Review the Feature Specification, Architecture, Test Plan, and `tasks.md`, then implement the highest-priority task first. Add/adjust automated tests as needed, and keep changes tightly scoped to the current work item.
     send: false
 ---
 

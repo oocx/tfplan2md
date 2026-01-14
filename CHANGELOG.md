@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.33"></a>
+## [1.0.0-alpha.33](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.32...v1.0.0-alpha.33) (2026-01-14)
+
+### 🐛 Bug Fixes
+
+* correct import ordering in DockerIntegrationTests ([818db03](https://github.com/oocx/tfplan2md/commit/818db03b796c963790bbbeb909ea2bf50066da58))
+
+### 📚 Documentation
+
+* clarify snapshot removal in testing strategy ([9765c58](https://github.com/oocx/tfplan2md/commit/9765c58ac74f127e59065af000b7477ca56ecc7f))
+* consolidate initial ADRs and update references ([0be1285](https://github.com/oocx/tfplan2md/commit/0be12852a47ef1f7ba6e3c9d9e2576c4a01bd37e))
+
 <a name="1.0.0-alpha.32"></a>
 ## [1.0.0-alpha.32](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.31...v1.0.0-alpha.32) (2026-01-14)
 

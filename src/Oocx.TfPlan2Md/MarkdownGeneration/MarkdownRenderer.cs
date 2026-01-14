@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Diagnostics;
 using Scriban;
 using Scriban.Runtime;
 
@@ -23,26 +24,33 @@ public class MarkdownRenderer
     private readonly Azure.IPrincipalMapper _principalMapper;
     private readonly ScribanTemplateLoader _templateLoader;
     private readonly TemplateResolver _templateResolver;
+    private readonly DiagnosticContext? _diagnosticContext;
 
     /// <summary>
     /// Creates a new MarkdownRenderer using embedded templates.
     /// </summary>
-    public MarkdownRenderer(Azure.IPrincipalMapper? principalMapper = null)
+    /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
+    /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
+    public MarkdownRenderer(Azure.IPrincipalMapper? principalMapper = null, DiagnosticContext? diagnosticContext = null)
     {
         _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
         _templateLoader = new ScribanTemplateLoader(templateResourcePrefix: TemplateResourcePrefix);
         _templateResolver = new TemplateResolver(_templateLoader);
+        _diagnosticContext = diagnosticContext;
     }
 
     /// <summary>
     /// Creates a new MarkdownRenderer with a custom template directory.
     /// </summary>
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
-    public MarkdownRenderer(string customTemplateDirectory, Azure.IPrincipalMapper? principalMapper = null)
+    /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
+    /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
+    public MarkdownRenderer(string customTemplateDirectory, Azure.IPrincipalMapper? principalMapper = null, DiagnosticContext? diagnosticContext = null)
     {
         _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
         _templateLoader = new ScribanTemplateLoader(customTemplateDirectory, templateResourcePrefix: TemplateResourcePrefix);
         _templateResolver = new TemplateResolver(_templateLoader);
+        _diagnosticContext = diagnosticContext;
     }
 
     /// <summary>
@@ -58,6 +66,11 @@ public class MarkdownRenderer
     public string Render(ReportModel model)
     {
         var defaultTemplate = LoadTemplate("default");
+
+        // Record template resolution for main template
+        _diagnosticContext?.TemplateResolutions.Add(
+            new TemplateResolution("_main", "Built-in default template"));
+
         return RenderWithTemplate(model, defaultTemplate, "default");
     }
 
@@ -71,6 +84,17 @@ public class MarkdownRenderer
     public string Render(ReportModel model, string templateNameOrPath)
     {
         var templateText = ResolveTemplateText(templateNameOrPath);
+
+        // Record template resolution for main template
+        var templateSource = _templateLoader.TryGetTemplate(templateNameOrPath, out _)
+            ? $"Built-in template: {templateNameOrPath}"
+            : File.Exists(templateNameOrPath)
+                ? $"Custom template: {templateNameOrPath}"
+                : "Unknown template source";
+
+        _diagnosticContext?.TemplateResolutions.Add(
+            new TemplateResolution("_main", templateSource));
+
         return RenderWithTemplate(model, templateText, templateNameOrPath);
     }
 
@@ -84,6 +108,17 @@ public class MarkdownRenderer
     public async Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
     {
         var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
+
+        // Record template resolution for main template
+        var templateSource = _templateLoader.TryGetTemplate(templatePath, out _)
+            ? $"Built-in template: {templatePath}"
+            : File.Exists(templatePath)
+                ? $"Custom template: {templatePath}"
+                : "Unknown template source";
+
+        _diagnosticContext?.TemplateResolutions.Add(
+            new TemplateResolution("_main", templateSource));
+
         return RenderWithTemplate(model, templateText, templatePath);
     }
 
@@ -160,8 +195,20 @@ public class MarkdownRenderer
         var path = $"{provider}/{resource}";
         if (_templateLoader.TryGetTemplate(path, out var template))
         {
+            // Record template resolution
+            var templateSource = _templateLoader.HasCustomTemplateDirectory
+                ? $"Custom resource-specific template: {path}.sbn"
+                : $"Built-in resource-specific template: {path}.sbn";
+
+            _diagnosticContext?.TemplateResolutions.Add(
+                new TemplateResolution(resourceType, templateSource));
+
             return new TemplateSource(path, template);
         }
+
+        // Record that default template is being used for this resource type
+        _diagnosticContext?.TemplateResolutions.Add(
+            new TemplateResolution(resourceType, "Default template"));
 
         return null;
     }

@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.31"></a>
+## [1.0.0-alpha.31](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.30...v1.0.0-alpha.31) (2026-01-14)
+
+### ✨ Features
+
+* add prepare-test-image script and optimize docker test timeouts ([28ce12b](https://github.com/oocx/tfplan2md/commit/28ce12baf4d93c52616fd071228a8977b40ac80e))
+* enable all agents as GitHub cloud coding agents ([0845192](https://github.com/oocx/tfplan2md/commit/0845192b9bfaa3f9eb0f72ae9bb34c1b206828ab))
+
+### 🐛 Bug Fixes
+
+* clarify manual export with multiple chat files per agent session ([c05427a](https://github.com/oocx/tfplan2md/commit/c05427aaf3313022986be659e733382d7a24f979))
+* clarify multiple chat export files per agent session ([6eede3b](https://github.com/oocx/tfplan2md/commit/6eede3b5d6c0fdbfee4a606ef66373b1327fc787))
+* correct YAML indentation in agent handoffs ([b006d60](https://github.com/oocx/tfplan2md/commit/b006d6053de7f1affb33ff84c898e8d89e8909be))
+* remove target: vscode from all agents to enable cloud usage ([041906d](https://github.com/oocx/tfplan2md/commit/041906d4bae01d872ce1d6c6f1fafdcf3e5efe6a))
+* update Retrospective agent to reflect automated chat export ([b105e72](https://github.com/oocx/tfplan2md/commit/b105e723e86a2b31acced9130d1c4b7678427d88))
+
+### ♻️ Refactoring
+
+* extract execution context detection to skill ([16f123f](https://github.com/oocx/tfplan2md/commit/16f123fbc9270f9e1265800943dba47b9e9e6c79))
+* remove duplicated execution context details from agents ([74ad679](https://github.com/oocx/tfplan2md/commit/74ad6797e04f2e5c23b4231ed0ee79f35fe96d10))
+
+### 📚 Documentation
+
+* add --project flag to TUnit CLI examples for clarity ([e657191](https://github.com/oocx/tfplan2md/commit/e6571912066257ec34cc64e7c9fda7539667060a))
+* add retrospective for 037-aot-trimmed-image ([b8cc0d8](https://github.com/oocx/tfplan2md/commit/b8cc0d85ba44f04c100d3d3daf7fc36626c620d3))
+* standardize TUnit CLI arguments across documentation and agent prompts ([de9e51b](https://github.com/oocx/tfplan2md/commit/de9e51be1ad934a88f3ca4a2b55ede26dd91fa4f))
+* update agents.md to reflect all agents support cloud mode ([85fd025](https://github.com/oocx/tfplan2md/commit/85fd02513e5bfaa8b3d200e53e5b60e7770084b1))
+
 <a name="1.0.0-alpha.30"></a>
 ## [1.0.0-alpha.30](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.29...v1.0.0-alpha.30) (2026-01-14)
 

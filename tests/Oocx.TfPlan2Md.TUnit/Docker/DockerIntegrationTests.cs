@@ -8,11 +8,12 @@ namespace Oocx.TfPlan2Md.TUnit.Docker;
 /// Requires Docker to be running. Tests are skipped if Docker is unavailable.
 /// </summary>
 /// <remarks>
-/// These tests have a longer timeout (3 minutes) because the first test
-/// must wait for the Docker image to build, which can take 1-2 minutes.
+/// These tests assume the Docker image has been pre-built using
+/// scripts/prepare-test-image.sh. The timeout is set to 60 seconds,
+/// which is sufficient for running containers without build time.
 /// </remarks>
 [NotInParallel("Docker")]
-[Timeout(180_000)] // 3 minutes - accounts for Docker image build time
+[Timeout(60_000)] // 60 seconds - image should be pre-built
 public class DockerIntegrationTests
 {
     private readonly DockerFixture _fixture = DockerFixture.Instance;

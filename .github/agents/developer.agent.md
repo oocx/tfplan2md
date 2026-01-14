@@ -218,7 +218,7 @@ Follow the project's coding conventions strictly:
    
    c. **Verify acceptance criteria** for the current task:
       - All acceptance criteria for THIS task must be satisfied
-      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test -- --treenode-filter /*/*/<TestClass>/*`
+      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/<TestClass>/*`
       - Check for errors: Use `problems` to verify no workspace errors
    
    d. **Commit the task**:
@@ -302,39 +302,39 @@ scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test
 
 Filter by class name (hierarchical pattern):
 ```bash
-scripts/test-with-timeout.sh -- dotnet test -- --treenode-filter /*/*/MarkdownRendererTests/*
+scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownRendererTests/*
 ```
 
 Filter by test name:
 ```bash
-dotnet test -- --treenode-filter /*/*/*/Render_ValidPlan_ContainsSummarySection
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/*/Render_ValidPlan_ContainsSummarySection
 ```
 
 Filter by category:
 ```bash
-dotnet test -- --treenode-filter /**[Category=Unit]
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category=Unit]
 ```
 
 Exclude by category (e.g., skip Docker tests):
 ```bash
-dotnet test -- --treenode-filter /**[Category!=Docker]
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category!=Docker]
 ```
 
 ### TUnit Output Control
 
 Show detailed output (all tests, real-time):
 ```bash
-dotnet test -- --output Detailed
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --output Detailed
 ```
 
 Show debug logs:
 ```bash
-dotnet test -- --output Detailed --log-level Debug
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --output Detailed --log-level Debug
 ```
 
 Combine filtering and output:
 ```bash
-dotnet test -- --treenode-filter /*/*/MarkdownRendererTests/* --output Detailed --log-level Debug
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownRendererTests/* --output Detailed --log-level Debug
 ```
 
 ### Docker Commands

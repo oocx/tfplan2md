@@ -55,12 +55,13 @@ public static partial class ScribanHelpers
     /// <param name="principalId">Principal identifier.</param>
     /// <param name="principalType">Principal type.</param>
     /// <param name="principalMapper">Mapper used to resolve names.</param>
+    /// <param name="resourceAddress">Optional Terraform resource address for diagnostic tracking of failed resolutions.</param>
     /// <returns>ScriptObject describing the principal.</returns>
-    private static ScriptObject GetPrincipalInfo(string? principalId, string? principalType, IPrincipalMapper principalMapper)
+    private static ScriptObject GetPrincipalInfo(string? principalId, string? principalType, IPrincipalMapper principalMapper, string? resourceAddress = null)
     {
         var id = principalId ?? string.Empty;
         var type = principalType ?? string.Empty;
-        var name = principalMapper.GetName(id, type) ?? id;
+        var name = principalMapper.GetName(id, type, resourceAddress) ?? id;
         var fullName = BuildPrincipalFullName(name, id, type);
 
         return new ScriptObject
@@ -77,15 +78,24 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="principalId">Principal identifier.</param>
     /// <param name="principalMapper">Mapper used for resolution.</param>
+    /// <param name="resourceAddress">Optional Terraform resource address for diagnostic tracking of failed resolutions.</param>
     /// <returns>Resolved principal name or empty string.</returns>
-    private static string ResolvePrincipalName(string? principalId, IPrincipalMapper principalMapper)
+    private static string ResolvePrincipalName(string? principalId, IPrincipalMapper principalMapper, string? resourceAddress = null)
     {
         if (principalId is null)
         {
             return string.Empty;
         }
 
-        return principalMapper.GetPrincipalName(principalId);
+        // GetPrincipalName has a 2-parameter overload without resource address,
+        // but we want to use the 3-parameter one to track diagnostics
+        var name = principalMapper.GetName(principalId, null, resourceAddress);
+        if (name is null)
+        {
+            return principalId;
+        }
+
+        return $"{name} [{principalId}]";
     }
 
     /// <summary>

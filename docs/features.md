@@ -6,6 +6,61 @@ This document describes the features of `tfplan2md` from a user perspective.
 
 `tfplan2md` is a CLI tool that converts Terraform plan JSON files into human-readable markdown reports. It is designed primarily for use in CI/CD pipelines and is distributed as a Docker image.
 
+## Debug Output
+
+**Status:** ✅ Implemented
+
+tfplan2md can append diagnostic information to reports to help troubleshoot issues and understand the tool's behavior. Enable debug mode with the `--debug` flag to append a "Debug Information" section at the end of the markdown report.
+
+### Features
+
+- **Command-line flag**: Single `--debug` flag enables all diagnostics
+- **Output location**: Debug information is appended to the markdown report as a new section
+- **Principal mapping diagnostics**:
+  - Load status (success/failure) and file path
+  - Count of principals by type (users, groups, service principals)
+  - Failed ID resolutions with resource context showing which resource referenced each missing ID
+- **Template resolution diagnostics**: Shows which templates (custom, built-in resource-specific, or default) were used for each resource type
+- **Non-intrusive**: No impact when debug flag is not used
+
+### Usage
+
+```bash
+# Enable debug output
+tfplan2md --debug plan.json
+
+# With principal mapping
+tfplan2md --debug --principal-mapping principals.json plan.json -o report.md
+
+# Docker
+docker run -v $(pwd):/data oocx/tfplan2md --debug /data/plan.json
+```
+
+### Debug Output Example
+
+When `--debug` is enabled, the report includes a section like:
+
+```markdown
+## Debug Information
+
+### Principal Mapping
+
+Principal Mapping: Loaded successfully from 'principals.json'
+- Found 45 principals
+
+Failed to resolve 2 principal IDs:
+- `12345678-1234-1234-1234-123456789012` (referenced in `azurerm_role_assignment.example`)
+- `87654321-4321-4321-4321-210987654321` (referenced in `azurerm_role_assignment.reader`)
+
+### Template Resolution
+
+- `azurerm_firewall_network_rule_collection`: Built-in resource-specific template
+- `azurerm_role_assignment`: Built-in resource-specific template
+- `azurerm_storage_account`: Default template
+```
+
+This helps diagnose principal mapping failures and verify which templates are being applied to each resource type.
+
 ## Markdown to HTML Renderer (Dev Tool)
 
 **Status:** ✅ Implemented
@@ -771,6 +826,7 @@ Simple single-command interface with flags:
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
+| `--debug` | Append diagnostic information to the report for troubleshooting |
 | `--help` | Display help information |
 | `--version` | Display version information |
 

@@ -3,7 +3,16 @@ using Oocx.TfPlan2Md.MarkdownGeneration;
 
 namespace Oocx.TfPlan2Md.TUnit.Docker;
 
+/// <summary>
+/// Integration tests that verify the Docker image works correctly.
+/// Requires Docker to be running. Tests are skipped if Docker is unavailable.
+/// </summary>
+/// <remarks>
+/// These tests have a longer timeout (3 minutes) because the first test
+/// must wait for the Docker image to build, which can take 1-2 minutes.
+/// </remarks>
 [NotInParallel("Docker")]
+[Timeout(180_000)] // 3 minutes - accounts for Docker image build time
 public class DockerIntegrationTests
 {
     private readonly DockerFixture _fixture = DockerFixture.Instance;
@@ -18,7 +27,7 @@ public class DockerIntegrationTests
     }
 
     [Test]
-    public async Task Docker_WithFileInput_ProducesMarkdownOutput()
+    public async Task Docker_WithFileInput_ProducesMarkdownOutput(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -26,7 +35,7 @@ public class DockerIntegrationTests
             return;
         }
 
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath);
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath, cancellationToken: cancellationToken);
 
         await Assert.That(exitCode).IsEqualTo(0);
         await Assert.That(stderr).IsEmpty();
@@ -35,7 +44,7 @@ public class DockerIntegrationTests
     }
 
     [Test]
-    public async Task Docker_WithStdinInput_ProducesMarkdownOutput()
+    public async Task Docker_WithStdinInput_ProducesMarkdownOutput(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -43,8 +52,8 @@ public class DockerIntegrationTests
             return;
         }
 
-        var json = await File.ReadAllTextAsync(TestDataPath);
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync(json);
+        var json = await File.ReadAllTextAsync(TestDataPath, cancellationToken);
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync(json, cancellationToken: cancellationToken);
 
         await Assert.That(exitCode).IsEqualTo(0);
         await Assert.That(stderr).IsEmpty();
@@ -53,7 +62,7 @@ public class DockerIntegrationTests
     }
 
     [Test]
-    public async Task Docker_WithHelpFlag_DisplaysHelp()
+    public async Task Docker_WithHelpFlag_DisplaysHelp(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -61,7 +70,7 @@ public class DockerIntegrationTests
             return;
         }
 
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--help"]);
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--help"], cancellationToken);
 
         await Assert.That(exitCode).IsEqualTo(0);
         await Assert.That(stderr).IsEmpty();
@@ -70,7 +79,7 @@ public class DockerIntegrationTests
     }
 
     [Test]
-    public async Task Docker_WithVersionFlag_DisplaysVersion()
+    public async Task Docker_WithVersionFlag_DisplaysVersion(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -78,7 +87,7 @@ public class DockerIntegrationTests
             return;
         }
 
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--version"]);
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerWithStdinAsync("", ["--version"], cancellationToken);
 
         await Assert.That(exitCode).IsEqualTo(0);
         await Assert.That(stderr).IsEmpty();
@@ -86,7 +95,7 @@ public class DockerIntegrationTests
     }
 
     [Test]
-    public async Task Docker_WithInvalidInput_ReturnsNonZeroExitCode()
+    public async Task Docker_WithInvalidInput_ReturnsNonZeroExitCode(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -94,14 +103,14 @@ public class DockerIntegrationTests
             return;
         }
 
-        var (exitCode, _, stderr) = await _fixture.RunContainerWithStdinAsync("{ invalid json }");
+        var (exitCode, _, stderr) = await _fixture.RunContainerWithStdinAsync("{ invalid json }", cancellationToken: cancellationToken);
 
         await Assert.That(exitCode).IsNotEqualTo(0);
         await Assert.That(stderr).Contains("Error");
     }
 
     [Test]
-    public async Task Docker_ParsesAllResourceChanges()
+    public async Task Docker_ParsesAllResourceChanges(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -109,7 +118,7 @@ public class DockerIntegrationTests
             return;
         }
 
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath);
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(TestDataPath, cancellationToken: cancellationToken);
 
         await Assert.That(exitCode).IsEqualTo(0);
         await Assert.That(stderr).IsEmpty();
@@ -122,7 +131,7 @@ public class DockerIntegrationTests
     }
 
     [Test]
-    public async Task Docker_Includes_ComprehensiveDemoFiles()
+    public async Task Docker_Includes_ComprehensiveDemoFiles(CancellationToken cancellationToken)
     {
         if (await SkipIfDockerNotAvailableAsync())
         {
@@ -139,7 +148,7 @@ public class DockerIntegrationTests
             "summary"
         };
 
-        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(null, args);
+        var (exitCode, stdout, stderr) = await _fixture.RunContainerAsync(null, args, cancellationToken);
 
         await Assert.That(exitCode).IsEqualTo(0);
         await Assert.That(stderr).IsEmpty();

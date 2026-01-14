@@ -9,6 +9,19 @@
     <RootNamespace>Oocx.TfPlan2Md</RootNamespace>
     <Version>1.0.0-alpha.29</Version>
     <AssemblyName>tfplan2md</AssemblyName>
+    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+    <PublishAot>true</PublishAot>
+    <TrimMode>full</TrimMode>
+    <StripSymbols>true</StripSymbols>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <WarningsNotAsErrors>IL2067;IL2070;IL2075;IL2080;IL2104;IL3050;IL3053</WarningsNotAsErrors>
+    <TrimmerRootDescriptor>TrimmerRootDescriptor.xml</TrimmerRootDescriptor>
   </PropertyGroup>
 
   <Target Name="SetSourceRevisionId" BeforeTargets="GenerateAssemblyInfo" Condition="'$(SourceRevisionId)'==''">

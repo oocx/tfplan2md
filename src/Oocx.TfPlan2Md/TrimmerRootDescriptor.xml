@@ -1,0 +1,13 @@
+<linker>
+  <!-- Preserve Scriban runtime surface - it uses reflection internally for template parsing and built-in functions -->
+  <assembly fullname="Scriban" preserve="all" />
+  <!-- Preserve assembly metadata attributes accessed via reflection in AssemblyMetadataProvider -->
+  <assembly fullname="System.Runtime">
+    <type fullname="System.Reflection.AssemblyInformationalVersionAttribute" preserve="all" />
+    <type fullname="System.Reflection.AssemblyMetadataAttribute" preserve="all" />
+  </assembly>
+  <!-- Preserve DateTimeOffset structure for Scriban template access -->
+  <assembly fullname="System.Private.CoreLib">
+    <type fullname="System.DateTimeOffset" preserve="all" />
+  </assembly>
+</linker>

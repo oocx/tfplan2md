@@ -112,6 +112,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
+| `--debug` | Append diagnostic information to the report for troubleshooting |
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
 
@@ -126,6 +127,25 @@ Example:
 ```bash
 terraform show -json plan.tfplan | tfplan2md --large-value-format simple-diff
 ```
+
+#### Debug Output
+
+When troubleshooting issues or verifying tfplan2md's behavior, enable debug mode to append diagnostic information to the report:
+
+```bash
+# Enable debug output
+terraform show -json plan.tfplan | tfplan2md --debug
+
+# With principal mapping
+tfplan2md --debug --principal-mapping principals.json plan.json -o report.md
+```
+
+Debug information is added as a "Debug Information" section at the end of the report and includes:
+
+- **Principal mapping diagnostics**: Load status, principal type counts, and failed ID resolutions with context showing which resource referenced each missing ID
+- **Template resolution**: Which templates (custom, built-in, or default) were used for each resource type
+
+This helps diagnose principal mapping failures and understand template selection behavior.
 
 ### HTML renderer (development tool)
 

@@ -43,6 +43,12 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
   examples/comprehensive-demo/plan.json \
   --template summary
+
+# Render with debug information
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+  examples/comprehensive-demo/plan.json \
+  --principals examples/comprehensive-demo/demo-principals.json \
+  --debug
 ```
 
 ## Usage (Docker)
@@ -62,6 +68,11 @@ docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
 # Summary report
 docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
   --template summary
+
+# Report with debug information
+docker run --rm oocx/tfplan2md /examples/comprehensive-demo/plan.json \
+  --principals /examples/comprehensive-demo/demo-principals.json \
+  --debug
 ```
 
 ## Regenerating Sample Reports

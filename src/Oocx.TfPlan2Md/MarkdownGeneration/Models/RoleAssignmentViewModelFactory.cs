@@ -58,8 +58,8 @@ internal static class RoleAssignmentViewModelFactory
         var afterScope = GetScopeInfo(afterState);
         var beforeRole = GetRoleInfo(beforeState);
         var afterRole = GetRoleInfo(afterState);
-        var beforePrincipal = GetPrincipalInfo(beforeState, principalMapper);
-        var afterPrincipal = GetPrincipalInfo(afterState, principalMapper);
+        var beforePrincipal = GetPrincipalInfo(beforeState, principalMapper, change.Address);
+        var afterPrincipal = GetPrincipalInfo(afterState, principalMapper, change.Address);
 
         var activeScope = action == "delete" ? beforeScope : afterScope;
         var activeRole = action == "delete" ? beforeRole : afterRole;
@@ -391,7 +391,10 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Extracts principal information from the state.
     /// </summary>
-    private static PrincipalInfo GetPrincipalInfo(JsonElement? state, IPrincipalMapper principalMapper)
+    /// <param name="state">JSON element containing principal information.</param>
+    /// <param name="principalMapper">Mapper used to resolve principal names.</param>
+    /// <param name="resourceAddress">Terraform resource address for diagnostic tracking of failed resolutions.</param>
+    private static PrincipalInfo GetPrincipalInfo(JsonElement? state, IPrincipalMapper principalMapper, string resourceAddress)
     {
         if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
         {
@@ -407,7 +410,7 @@ internal static class RoleAssignmentViewModelFactory
             : string.Empty;
 
         var principalName = !string.IsNullOrEmpty(principalId)
-            ? principalMapper.GetName(principalId, principalType) ?? principalId
+            ? principalMapper.GetName(principalId, principalType, resourceAddress) ?? principalId
             : string.Empty;
 
         return new PrincipalInfo(principalName, principalId, principalType);

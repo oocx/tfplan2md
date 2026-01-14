@@ -16,83 +16,13 @@ permissions:
   checks: write
   pull-requests: read
 
+# CI Optimization: Tests removed from this workflow to eliminate redundancy.
+# All quality gates (format, build, test, lint, vulnerability scan) run in PR Validation.
+# This workflow only handles versioning after merge, reducing CI time significantly.
 jobs:
-  build:
-    name: Build and Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          persist-credentials: true
-
-      - name: Shell test (timeout wrapper)
-        run: tests/shell/test_with_timeout_test.sh
-
-      - name: Shell test (analyze chat)
-        run: tests/shell/analyze_chat_test.sh
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          global-json-file: global.json
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
-
-      - name: Test
-        id: test
-        run: |
-          chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 3600 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
-
-      - name: Verify tests ran
-        if: success() || failure()
-        run: |
-          # Check if TestResults directory exists and contains .trx files
-          if [ ! -d "./TestResults" ] || [ -z "$(ls -A ./TestResults/*.trx 2>/dev/null)" ]; then
-            echo "❌ ERROR: No test results found! Tests may not have run."
-            exit 1
-          fi
-          
-          # Count the test results (safe because we verified .trx files exist above)
-          test_count=$(grep -r "outcome" ./TestResults/*.trx | wc -l)
-          echo "✓ Test results found: $test_count test(s) executed"
-          
-          if [ "$test_count" -eq 0 ]; then
-            echo "❌ ERROR: Test results file exists but contains 0 tests"
-            exit 1
-          fi
-
-      - name: Publish test results
-        if: success() || failure()
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          files: ./TestResults/*.trx
-          check_name: 'Test Results'
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-
-      - name: Generate comprehensive demo report
-        run: |
-          mkdir -p artifacts
-          dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
-
-      - name: Lint comprehensive demo markdown
-        run: npx markdownlint-cli2 artifacts/comprehensive-demo.md
-
   version:
     name: Version and Tag
     runs-on: ubuntu-latest
-    needs: build
 
     steps:
       - name: Checkout

@@ -39,7 +39,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 ✅ **Always Do:**
 - Analyze the **full feature lifecycle** from initial request through requirements, design, implementation, testing, UAT, release, and retrospective itself.
 - Collect **mandatory metrics**: duration, total requests, rejections (cancelled/failed), file edit statistics (kept/undone), files changed, tests added/passed.
-- **Export and save chat history** using `workbench.action.chat.export` command (ask Maintainer to focus chat first if needed).
+- **Locate the chat export file** that was automatically exported at the end of the agent session (typically saved as `chat.json` in the feature folder).
 - **Redact sensitive information** before committing chat logs: scan for and replace passwords, tokens, API keys, secrets, and personally identifiable information (PII) with `[REDACTED]`.
 - Reference or attach chat logs and key artifacts when available.
 - Create or update the `retrospective.md` file in the corresponding feature or issue documentation folder (e.g., `docs/features/NNN-<feature-slug>/` or `docs/issues/NNN-<issue-slug>/`).
@@ -102,10 +102,10 @@ If the user invokes you during development to report a workflow issue:
 
 ### 2. Conduct Retrospective (After Release)
 When the user invokes you after a release to conduct the retrospective:
-1.  **Export Chat History**:
-    *   Ask the Maintainer to focus the chat panel.
-    *   Run the `workbench.action.chat.export` command to export the chat.
-    *   Ask the Maintainer to save the file to `docs/features/NNN-<feature-slug>/chat.json`.
+1.  **Locate Chat Export**:
+    *   The chat history is automatically exported at the end of each agent session.
+    *   Check for the exported file at `docs/features/NNN-<feature-slug>/chat.json` or ask the Maintainer for its location.
+    *   If the file is not present, ask the Maintainer to manually export it using the `workbench.action.chat.export` command.
     *   **Redact sensitive information**: Use the `analyze-chat-export` skill's redaction command to remove passwords, tokens, API keys, secrets, and PII.
     *   Commit the redacted chat log.
 2.  **Normalize Evidence (REQUIRED; no speculation)**:

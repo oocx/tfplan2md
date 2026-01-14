@@ -43,7 +43,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - ✅ **Validated markdown output** - Comprehensive testing ensures GitHub/Azure DevOps compatibility
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
-- 🐳 **Docker-ready** - Distributed as a minimal Docker image for CI/CD pipelines
+- 🐳 **Minimal Docker image** - 14.7MB AOT-compiled native binary for fast deployments and minimal attack surface
 - 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
 - 🆔 **Readable Azure Resource IDs** - Long Azure IDs are automatically formatted as readable scopes with values in code (e.g., Key Vault `kv` in resource group `rg`)
 - 🎨 **Semantic icons** - Visual icons for values: 🌐 for IPs, 🔌 for ports, 📨/🔗 for protocols, ✅/❌ for booleans, 👤/👥/💻 for principals, 🛡️ for roles
@@ -58,7 +58,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 docker pull oocx/tfplan2md:latest
 ```
 
-The Docker image includes a comprehensive demo at `/examples/comprehensive-demo/` showcasing all features.
+The Docker image is a **14.7MB** AOT-compiled native binary built from scratch for optimal security and performance. It includes a comprehensive demo at `/examples/comprehensive-demo/` showcasing all features.
 
 ### From Source
 

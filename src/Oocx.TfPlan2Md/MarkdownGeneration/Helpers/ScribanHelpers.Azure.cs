@@ -77,19 +77,19 @@ public static partial class ScribanHelpers
     /// Resolves a principal name from an identifier using the configured mapper.
     /// </summary>
     /// <param name="principalId">Principal identifier.</param>
+    /// <param name="principalType">Principal type (User, Group, ServicePrincipal).</param>
     /// <param name="principalMapper">Mapper used for resolution.</param>
     /// <param name="resourceAddress">Optional Terraform resource address for diagnostic tracking of failed resolutions.</param>
     /// <returns>Resolved principal name or empty string.</returns>
-    private static string ResolvePrincipalName(string? principalId, IPrincipalMapper principalMapper, string? resourceAddress = null)
+    private static string ResolvePrincipalName(string? principalId, string? principalType, IPrincipalMapper principalMapper, string? resourceAddress = null)
     {
         if (principalId is null)
         {
             return string.Empty;
         }
 
-        // GetPrincipalName has a 2-parameter overload without resource address,
-        // but we want to use the 3-parameter one to track diagnostics
-        var name = principalMapper.GetName(principalId, null, resourceAddress);
+        // Use type-aware resolution to support principals with same ID but different types
+        var name = principalMapper.GetName(principalId, principalType, resourceAddress);
         if (name is null)
         {
             return principalId;

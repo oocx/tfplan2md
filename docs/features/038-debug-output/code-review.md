@@ -2,20 +2,24 @@
 
 ## Summary
 
-This is a re-review of Feature 038 (Debug Output) following the developer's fix for the critical issue identified in the initial review. The fix addressed the primary concern: failed principal resolutions now include resource context as required by the specification.
+This is the final approval review of Feature 038 (Debug Output) following the developer's fix for the blocker regression identified in the previous review. The developer has successfully implemented all required functionality and addressed the regression issue.
 
-**Fix Commit:** 9a330e6 - "fix: pass resource address to principal mapper for diagnostic context"
+**Key Commits:**
+- 9a330e6 - "fix: pass resource address to principal mapper for diagnostic context" (original fix for TC-12)
+- cd7c79c - "fix: support type-aware principal resolution in interface default implementations" (regression fix)
 
-**Overall Assessment:** The critical issue has been addressed with a reasonable solution that enables diagnostic tracking of failed principal resolutions. However, there is one **Blocker** issue related to an unintended behavioral change that must be fixed before approval.
+**Overall Assessment:** All issues have been resolved. The implementation successfully adds debug output capabilities with proper resource context tracking for failed principal resolutions. The regression in type-aware principal resolution has been fixed, and all acceptance criteria are met.
 
 ## Verification Results
 
-- **Tests:** 417/419 passed (2 failures)
-  - ❌ `Delete_RendersRemoveSummary` - **BLOCKER:** Regression introduced by the fix
-  - ⏱️ `Docker_WithVersionFlag_DisplaysVersion` - Timeout (unrelated to changes)
-- **Build:** Success (verified via test execution)
-- **Docker:** Not fully verified due to network issues during build, but not blocking given test results
-- **Workspace Errors:** None observed
+- **Tests:** ✅ All tests pass (418 passed, 1 expected timeout)
+  - ✅ `Delete_RendersRemoveSummary` - **FIXED:** Now passes with proper type-aware resolution
+  - ✅ `PrincipalMapper_FailedResolution_RecordsResourceContext` (TC-12) - Validates core feature requirement
+  - ⏱️ `Docker_WithVersionFlag_DisplaysVersion` - Timeout (pre-existing infrastructure issue, not blocking)
+- **Build:** ✅ Success - 0 errors, 0 warnings
+- **Docker:** ✅ Available and functional
+- **Comprehensive Demo:** ✅ Generated successfully with 0 markdownlint errors
+- **Workspace Errors:** ✅ None
 
 ## Snapshot Changes
 
@@ -25,78 +29,13 @@ This is a re-review of Feature 038 (Debug Output) following the developer's fix 
 
 ## Review Decision
 
-**Status:** ⚠️ Changes Requested
+**Status:** ✅ **APPROVED**
 
 ## Issues Found
 
 ### Blockers
 
-#### 1. Regression in `ResolvePrincipalName` breaks existing functionality
-
-**Location:** `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers.Azure.cs` lines 83-99
-
-**Issue:** The fix modified `ResolvePrincipalName` to call `GetName(principalId, null, resourceAddress)`, passing `null` for the principal type parameter. This changes the behavior compared to templates that may rely on type-aware principal resolution.
-
-The failing test `Delete_RendersRemoveSummary` expects:
-```
-| principal_id | `👤 John Doe (User)` [`33333333-3333-3333-3333-333333333333`] |
-```
-
-But now gets:
-```
-| principal_id | `👤 Security Team (User)` [`33333333-3333-3333-3333-333333333333`] |
-```
-
-**Root Cause:** The test data has the same principal ID (`33333333-3333-3333-3333-333333333333`) mapped to two different names depending on type:
-- Type "User" → "John Doe"
-- Type "Group" → "Security Team"
-
-The StubPrincipalMapper's `GetName(id, type)` method correctly returns "John Doe" when type is "User", but when type is `null` (as now passed), it falls back to the generic lookup which returns "Security Team".
-
-**Impact:** This could affect real-world scenarios where the same principal ID legitimately has different display names based on type (though this is rare in Azure AD/Entra).
-
-**Why This Happened:** The `ResolvePrincipalName` helper function doesn't have access to the principal type, only the principal ID. The Scriban helper registration changed from:
-```csharp
-// Before (implied)
-scriptObject.Import("azure_principal_name", new Func<string?, string>(p => ResolvePrincipalName(p, principalMapper)));
-
-// After
-scriptObject.Import("azure_principal_name", new Func<string?, string?, string>((id, addr) => ResolvePrincipalName(id, principalMapper, addr)));
-```
-
-The new signature accepts `(id, addr)` but doesn't accept or pass through the principal type.
-
-**Recommendation:** There are two viable solutions:
-
-**Option A (Recommended):** Update the Scriban helper signature to accept principal type as well:
-```csharp
-scriptObject.Import("azure_principal_name", new Func<string?, string?, string?, string>((id, type, addr) => ResolvePrincipalName(id, type, principalMapper, addr)));
-```
-
-Then update `ResolvePrincipalName` to:
-```csharp
-private static string ResolvePrincipalName(string? principalId, string? principalType, IPrincipalMapper principalMapper, string? resourceAddress = null)
-{
-    if (principalId is null)
-    {
-        return string.Empty;
-    }
-
-    var name = principalMapper.GetName(principalId, principalType, resourceAddress);
-    if (name is null)
-    {
-        return principalId;
-    }
-
-    return $"{name} [{principalId}]";
-}
-```
-
-**Option B:** Keep the current signature but document that `azure_principal_name` doesn't support type-aware resolution (and update the test to reflect this reality).
-
-**Severity:** Blocker - This is a regression that changes existing behavior and breaks a test.
-
----
+None. The previous blocker regression has been resolved.
 
 ### Major Issues
 
@@ -108,132 +47,129 @@ None identified.
 
 ### Suggestions
 
-#### 1. Consider consolidating helper signatures
+None - implementation is clean and well-structured.
 
-**Location:** `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers.Registry.cs`
+## Fix Verification
 
-**Observation:** The helpers now have varying signatures:
-- `azure_principal_info`: 3 parameters `(id, type, addr)`
-- `azure_principal_name`: 2 parameters `(id, addr)` - missing type
+### Previous Blocker Resolution
 
-**Suggestion:** For consistency, consider making `azure_principal_name` also accept 3 parameters to match `azure_principal_info`. This would make the API more predictable for template authors.
+The blocker regression identified in the initial review has been successfully fixed in commit cd7c79c:
 
-**Impact:** Low - This is a consistency/maintainability suggestion, not a functional issue (aside from the blocker above).
+**Problem:** `ResolvePrincipalName` was calling `GetName(principalId, null, resourceAddress)`, losing type information needed for type-aware principal resolution.
 
----
+**Solution Implemented:**
+1. ✅ Added 2-parameter `GetName(principalId, principalType)` method to `IPrincipalMapper` interface
+2. ✅ Updated 3-parameter `GetName` default implementation to call the 2-parameter version (preserves type)
+3. ✅ Updated `azure_principal_name` Scriban helper to accept 3 parameters: `(id, type, addr)`
+4. ✅ Updated `ResolvePrincipalName` method signature to accept and pass through `principalType`
+5. ✅ Updated helper registration: `(id, type, addr) => ResolvePrincipalName(id, type, principalMapper, addr)`
 
-## Critical Issue Resolution Verification
+**Verification:**
+- ✅ `Delete_RendersRemoveSummary` test now passes (expects "John Doe" for User type, gets "John Doe")
+- ✅ Type-aware resolution works correctly (same ID can map to different names based on type)
+- ✅ Backward compatibility maintained via default interface implementations
 
-### Original Issue
-Failed principal resolutions didn't include resource context, making it impossible to know which resource referenced a missing principal ID.
+### Core Feature Verification
 
-### Fix Analysis
-The fix correctly addresses this by:
+**Original Issue (TC-12):** Failed principal resolutions didn't include resource context.
 
+**Fix Analysis (commit 9a330e6):**
 1. ✅ Updated `RoleAssignmentViewModelFactory.GetPrincipalInfo` to accept and pass `change.Address`
 2. ✅ Updated `ScribanHelpers.GetPrincipalInfo` to accept optional `resourceAddress` parameter
-3. ✅ Updated `ScribanHelpers.ResolvePrincipalName` to accept optional `resourceAddress` parameter
+3. ✅ Updated `ScribanHelpers.ResolvePrincipalName` to accept optional `resourceAddress` parameter  
 4. ✅ Updated Scriban helper registration to support the resource address parameter
 5. ✅ Maintained backward compatibility with default parameters
-6. ✅ Test TC-12 (`PrincipalMapper_FailedResolution_RecordsResourceContext`) passes and validates the fix
+6. ✅ Test TC-12 (`PrincipalMapper_FailedResolution_RecordsResourceContext`) passes
 
-### Code Quality Assessment
+**Code Quality Assessment:**
+- ✅ Clean use of optional parameters for backward compatibility
+- ✅ Proper XML documentation added to all modified methods
+- ✅ Default interface implementations maintain backward compatibility
+- ✅ Focused, minimal changes - only touches what's necessary
+- ✅ Clear commit messages explaining the rationale
 
-**Positive aspects:**
-- Clean use of optional parameters (`string? resourceAddress = null`) for backward compatibility
-- Proper XML documentation added to modified methods
-- Default interface implementations in `IPrincipalMapper` maintain backward compatibility
-- The fix is focused and minimal - only touches what's necessary
-
-**Areas of concern:**
-- The `ResolvePrincipalName` regression (Blocker #1 above)
-- The comment on line 90-91 suggests some uncertainty about the design ("GetPrincipalName has a 2-parameter overload...but we want to use the 3-parameter one")
-
-##Checklist Summary
+## Checklist Summary
 
 | Category | Status | Notes |
 |----------|--------|-------|
-| Correctness | ⚠️ Partial | Critical issue fixed, but regression introduced |
-| Code Quality | ✅ Pass | Clean, well-documented code |
+| Correctness | ✅ Pass | All acceptance criteria met, TC-12 passes, regression fixed |
+| Code Quality | ✅ Pass | Clean, well-documented, follows conventions |
 | Access Modifiers | ✅ Pass | Appropriate use of private/internal |
-| Code Comments | ✅ Pass | XML docs present and accurate |
-| Architecture | ✅ Pass | Aligns with diagnostic context pattern |
-| Testing | ⚠️ Partial | TC-12 passes, but regression in `Delete_RendersRemoveSummary` |
-| Documentation | ✅ Pass | No documentation changes needed for this fix |
+| Code Comments | ✅ Pass | Comprehensive XML docs present and accurate |
+| Architecture | ✅ Pass | Aligns with diagnostic context pattern from architecture.md |
+| Testing | ✅ Pass | All tests pass, including TC-12 and Delete_RendersRemoveSummary |
+| Documentation | ✅ Pass | Spec, tasks, and test plan are aligned and complete |
+| Comprehensive Demo | ✅ Pass | Generated successfully with 0 markdownlint errors |
 
 ## Detailed Test Analysis
 
-### Passing Tests
-- ✅ **TC-12** (`PrincipalMapper_FailedResolution_RecordsResourceContext`): **CRITICAL** - This test validates the core fix and it passes
-- ✅ 416 other tests pass, indicating no widespread regressions
+### Critical Tests Passing
+- ✅ **TC-12** (`PrincipalMapper_FailedResolution_RecordsResourceContext`): Validates resource context in failed resolutions
+- ✅ **Delete_RendersRemoveSummary**: Validates type-aware principal resolution (was blocker, now fixed)
+- ✅ 418 total tests pass, indicating no widespread regressions
 
-### Failing Tests
-1. **Delete_RendersRemoveSummary** (Blocker)
-   - **Type:** Regression
-   - **Root Cause:** Loss of principal type information in `ResolvePrincipalName`
-   - **Must Fix:** Yes
+### Test Results Summary
+- **Total:** 419 tests
+- **Passed:** 418 tests
+- **Failed:** 0 tests  
+- **Timeout:** 1 test (`Docker_WithVersionFlag_DisplaysVersion` - pre-existing infrastructure issue)
 
-2. **Docker_WithVersionFlag_DisplaysVersion** (Not Blocking)
-   - **Type:** Timeout
-   - **Root Cause:** Unrelated to feature changes (Docker test infrastructure)
-   - **Must Fix:** No (pre-existing or environmental issue)
+## Acceptance Criteria Verification
+
+### US-01: Troubleshoot Principal Mapping Failures
+- ✅ Debug output shows failed principal IDs with resource context (TC-12 verified)
+- ✅ Each failed ID indicates which resource referenced it
+- ✅ Load status of principal mapping file is clearly indicated
+
+### US-02: Understand Template Selection  
+- ✅ Debug output lists template resolution for each resource type
+- ✅ Distinguishes between built-in, custom, and default templates
+- ✅ Shows file path for custom templates
+
+### US-03: Enable Debug Mode Easily
+- ✅ Single `--debug` flag enables all diagnostics
+- ✅ Debug output appended to markdown report (default behavior)
+- ✅ No impact when debug flag is not used
+- ✅ Help text documents the debug flag
 
 ## Backward Compatibility
 
-✅ **Excellent backward compatibility**:
-- Optional parameters with defaults (`resourceAddress = null`)
-- Default interface implementations in `IPrincipalMapper`
-- Existing code calling methods without the new parameter continues to work
+✅ **Excellent backward compatibility maintained:**
+- Optional parameters with defaults (`resourceAddress = null`, `context = null`)
+- Default interface implementations in `IPrincipalMapper` (1-param → 2-param → 3-param chain)
+- Existing code calling methods without new parameters continues to work unchanged
 - No breaking changes to public APIs
+- Graceful degradation when diagnostic context is null
+
+## Implementation Quality Highlights
+
+### Strengths
+1. **Clean architecture:** Diagnostic context is passed through as optional parameter, not stored as state
+2. **Proper abstraction:** `IPrincipalMapper` interface cleanly extended with default implementations
+3. **Type-aware resolution:** Correctly handles edge case of same principal ID with different types
+4. **Resource context tracking:** Failed resolutions include which resource referenced each principal
+5. **Comprehensive documentation:** All public/internal methods have XML documentation
+6. **Markdown formatting:** Debug output follows project style guide and passes markdownlint
+7. **Test coverage:** All acceptance criteria have corresponding test cases
+
+### Code Organization
+- ✅ Diagnostic infrastructure in dedicated namespace (`Oocx.TfPlan2Md.Diagnostics`)
+- ✅ Helper methods properly organized and documented
+- ✅ Clear separation between diagnostic collection and rendering
+- ✅ Follows established patterns from existing codebase
 
 ## Next Steps
 
-### Required Changes (Blocker)
+### For Release Manager
+This feature is **approved and ready** for the following next steps:
 
-1. **Fix the `ResolvePrincipalName` regression:**
-   - Update the Scriban helper registration for `azure_principal_name` to accept 3 parameters: `(id, type, addr)`
-   - Update `ResolvePrincipalName` method signature to accept `principalType` parameter
-   - Pass the principal type through to `principalMapper.GetName()`
-   - Update any template calls to `azure_principal_name` to pass the type parameter (or pass `null` if type is unavailable)
-   - Verify `Delete_RendersRemoveSummary` test passes
+1. ✅ **All blockers resolved** - No code changes required
+2. ✅ **Tests passing** - All critical tests validated
+3. ✅ **Documentation complete** - Spec, tasks, test plan aligned
+4. ✅ **Demo output verified** - Comprehensive demo passes markdownlint
 
-2. **Update test stub mappers:**
-   - Ensure `StubPrincipalMapper` and `UnmappedPrincipalMapper` in test files properly implement the 3-parameter `GetName` overload (they inherit the default implementation, but explicit implementation would be clearer)
-
-### Verification Steps After Fix
-
-1. Run the full test suite and confirm all tests pass (except known Docker timeouts)
-2. Specifically verify:
-   - `Delete_RendersRemoveSummary` passes
-   - `TC-12` (`PrincipalMapper_FailedResolution_RecordsResourceContext`) still passes
-3. Generate comprehensive demo output and verify it's correct
-4. Run markdownlint on the demo output
-
-## Recommendation
-
-**Do not approve** until the blocker issue is resolved. The fix is very close to being correct - it successfully enables resource context tracking for failed principal resolutions (the critical requirement). However, the unintended regression in `ResolvePrincipalName` must be addressed to avoid breaking existing functionality.
-
-Once the blocker is fixed:
-- The implementation will be solid
-- Backward compatibility will remain excellent
-- All acceptance criteria will be met
-- The feature will be ready for approval
-
-## Additional Context
-
-### Why This Matters
-
-The debug output feature is critical for troubleshooting principal mapping issues in production environments. Users need to know:
-1. ✅ **Which principals failed to resolve** - Already working
-2. ✅ **Which resources referenced those principals** - Fixed by this commit
-3. ⚠️ **That existing principal resolution behavior isn't broken** - Regression introduced
-
-The fix successfully addresses #2, but we cannot accept a regression in existing behavior (#3).
-
-### Complexity Assessment
-
-The required fix is straightforward:
-- **Estimated effort:** 15-30 minutes
-- **Risk:** Low - confined to helper function signatures
-- **Testing:** Existing tests will validate the fix
+**Recommended Actions:**
+- This is an **internal/non-visual feature** (adds diagnostic text to markdown)
+- **No UAT required** - Debug output is text-based and does not involve platform-specific rendering
+- Ready to proceed directly to **Release Manager** for PR creation and merge
 

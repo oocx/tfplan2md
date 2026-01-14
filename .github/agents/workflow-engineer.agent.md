@@ -264,7 +264,6 @@ All agents must follow this structure:
 ---
 description: Brief, specific description (≤100 chars)
 name: Agent Name
-target: vscode
 model: <model name>
 tools: ['tool1', 'tool2', ...]
 handoffs:

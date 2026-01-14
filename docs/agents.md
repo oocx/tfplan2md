@@ -87,6 +87,7 @@ Format:
 | `create-pr-github` | Create and (optionally) merge a GitHub pull request (prefer GitHub chat tools; gh/wrappers are fallback), following the repo policy to use rebase and merge for a linear history. |
 | `create-pr-azdo` | Create an Azure DevOps pull request using az devops tooling; include the repo’s linear-history merge preference and ask the Maintainer if merge options differ. |
 | `detect-diagram-crossings` | Detect and analyze edge crossings and overlaps in SVG workflow diagrams using geometric intersection algorithms and visual analysis. |
+| `execution-context-detection` | Detect whether agent is running in VS Code (local/interactive) or GitHub (cloud/automated) context and adapt behavior accordingly. |
 
 | `git-rebase-main` | Safely rebase the current feature branch on top of the latest origin/main. |
 | `merge-conflict-resolution` | Resolve git merge/rebase conflicts safely without losing intended changes; verify by reviewing diffs and searching for conflict markers. |

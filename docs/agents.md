@@ -279,7 +279,23 @@ The tfplan2md workflow supports both **local agents** (running in VS Code) and *
 
 ### Dual-Mode Agents
 
-Most agents can support both execution modes by detecting their context. The agent adapts its behavior based on whether it's running in VS Code or processing a GitHub issue.
+**All agents now support both execution modes** by detecting their context. Each agent adapts its behavior based on whether it's running in VS Code or processing a GitHub issue.
+
+**Key Differences Between Modes:**
+
+**Local (VS Code):**
+- Interactive chat with Maintainer
+- Ask one question at a time
+- Full tool access (execute, edit, todo)
+- Iterative refinement and debugging
+- Real-time validation (tests, builds, previews)
+
+**Cloud (GitHub):**
+- Autonomous execution from issue specification
+- Can ask multiple questions in one comment
+- Limited to GitHub-safe tools (search, web, github/*)
+- Creates PR with changes and documentation
+- Relies on CI/CD for validation
 
 **Example: Workflow Engineer**
 - **Local:** Interactive workflow analysis, design discussions, complex decisions
@@ -288,6 +304,10 @@ Most agents can support both execution modes by detecting their context. The age
 **Example: Web Designer**
 - **Local:** Interactive design iterations, screenshot generation, Chrome DevTools inspection
 - **Cloud:** Automated content/style updates for well-defined changes (e.g., text updates, style tweaks)
+
+**Example: Developer**
+- **Local:** Interactive implementation with immediate test feedback
+- **Cloud:** Autonomous code changes with CI/CD validation
 
 ### Context Detection
 
@@ -305,26 +325,39 @@ Agents determine their execution environment by analyzing:
 
 ### When to Use Cloud Agents
 
+**All 13 agents are now cloud-enabled**, but some tasks are still better suited for local execution due to tool availability and interaction patterns.
+
 **Good Fit for Cloud:**
+- ✅ Well-scoped feature implementations with clear specifications
 - ✅ Routine refactoring tasks with clear scope
 - ✅ Batch documentation updates
 - ✅ Agent model assignments based on benchmarks
 - ✅ Automated workflow improvements
 - ✅ Website content/text updates that don't require visual verification
 - ✅ Style changes with clear specifications
+- ✅ Bug fixes with clear reproduction steps
+- ✅ Test plan creation from specifications
+- ✅ Architecture documentation for well-defined features
 - ✅ Tasks that don't require real-time guidance
 
 **Better as Local:**
-- ❌ Tasks requiring local tool access (VS Code extensions, terminals)
+- ❌ Tasks requiring local tool access (VS Code extensions, terminals, Docker)
 - ❌ Interactive debugging with Maintainer
 - ❌ Complex decisions requiring iterative refinement
 - ❌ Exploratory work with unclear requirements
 - ❌ Website changes requiring screenshot generation or Chrome DevTools
 - ❌ Design prototyping and visual iteration
+- ❌ UAT testing (requires running scripts locally)
+- ❌ Tasks requiring multiple rounds of Maintainer feedback
+- ❌ Retrospectives (require chat export from VS Code)
+
+**Note:** Even cloud-capable agents may work better locally for tasks requiring rapid iteration or visual validation.
 
 For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analysis/).
 
 ## Agent Roles & Responsibilities
+
+**Note:** All agents support both local (VS Code) and cloud (GitHub) execution modes. Each agent automatically detects its environment and adapts its behavior accordingly. See [Cloud Agents vs Local Agents](#cloud-agents-vs-local-agents) for details.
 
 ### 1. Issue Analyst
 - **Goal:** Investigate and document bugs, incidents, and technical issues.

@@ -4,6 +4,8 @@
 
 The tfplan2md project uses a comprehensive testing strategy with **TUnit v1.9.26** as the test framework. All tests are located in the `Oocx.TfPlan2Md.TUnit` project.
 
+> **Note**: Legacy MSTest and xUnit test projects were removed as TUnit provides superior performance and reliability. All snapshot files were intentionally removed along with the legacy test projects as they are maintained only in the TUnit test project.
+
 ## Test Infrastructure
 
 - **Test Framework**: TUnit 1.9.26 (async-first with real-time progress reporting)

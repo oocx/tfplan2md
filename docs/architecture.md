@@ -1084,9 +1084,10 @@ All significant architecture decisions are documented as ADRs:
 
 | ADR | Title | Status |
 |-----|-------|--------|
-| [ADR-001](adr-001-scriban-templating.md) | Use Scriban for Markdown Templating | Accepted |
-| [ADR-002](adr-002-chiseled-docker-image.md) | Use .NET Chiseled (Distroless) Docker Image | Accepted |
-| [ADR-003](adr-003-modern-csharp-patterns.md) | Use Modern C# 13 Patterns | Accepted |
+| [ADR-001](features/000-initial-project-setup/architecture.md#adr-001-use-scriban-for-markdown-templating) | Use Scriban for Markdown Templating | Accepted |
+| [ADR-002](features/000-initial-project-setup/architecture.md#adr-002-use-net-chiseled-distroless-docker-image) | Use .NET Chiseled (Distroless) Docker Image | Superseded by Feature 037 |
+| [ADR-003](features/000-initial-project-setup/architecture.md#adr-003-use-modern-c-13-patterns) | Use Modern C# 13 Patterns | Accepted |
+| [ADR-004](features/000-initial-project-setup/architecture.md#adr-004-use-css-layers-for-example-style-isolation) | Use CSS Layers for Example Style Isolation | Accepted |
 
 ---
 

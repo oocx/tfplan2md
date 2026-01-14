@@ -78,6 +78,13 @@ public class DockerFixture
 
     private async Task<bool> BuildDockerImageAsync()
     {
+        // Check if image already exists (built by scripts/prepare-test-image.sh)
+        if (await CheckImageExistsAsync())
+        {
+            Log($"Docker image {FullImageName} already exists; skipping build");
+            return true;
+        }
+
         var repoRoot = FindRepositoryRoot();
         if (repoRoot == null)
         {
@@ -104,6 +111,37 @@ public class DockerFixture
         await process.WaitForExitAsync();
         Log($"docker build exit code: {process.ExitCode}");
         return process.ExitCode == 0;
+    }
+
+    private static async Task<bool> CheckImageExistsAsync()
+    {
+        Log($"Checking if docker image {Instance.FullImageName} exists");
+        try
+        {
+            var psi = new ProcessStartInfo("docker", $"image inspect {Instance.FullImageName}")
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            };
+
+            using var process = Process.Start(psi);
+            if (process == null)
+            {
+                Log("Failed to start docker image inspect process");
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+            var exists = process.ExitCode == 0;
+            Log($"docker image exists: {exists}");
+            return exists;
+        }
+        catch
+        {
+            Log("Exception while checking if docker image exists");
+            return false;
+        }
     }
 
     private static string? FindRepositoryRoot()

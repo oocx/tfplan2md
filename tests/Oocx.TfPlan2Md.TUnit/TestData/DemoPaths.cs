@@ -13,7 +13,7 @@ public static class DemoPaths
 
     public static string DemoPrincipalsPath => Path.Combine(RepositoryRoot, "examples", "comprehensive-demo", "demo-principals.json");
 
-    public static string RoleAssignmentsPlanPath => Path.Combine(RepositoryRoot, "tests", "Oocx.TfPlan2Md.Tests", "TestData", "role-assignments.json");
+    public static string RoleAssignmentsPlanPath => Path.Combine(RepositoryRoot, "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "role-assignments.json");
 
     private static string FindRepositoryRoot()
     {

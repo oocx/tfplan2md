@@ -1,5 +1,7 @@
 # TUnit Conversion: Complete Test Coverage Achieved
 
+> **Note**: This document records the historical conversion from xUnit to TUnit. The xUnit and MSTest test projects have been removed from the repository as of this change.
+
 ## Summary
 
 **Total tests in TUnit**: 393 (100% of xUnit baseline)  

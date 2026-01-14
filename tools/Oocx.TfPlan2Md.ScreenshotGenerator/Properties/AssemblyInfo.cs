@@ -1,4 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Oocx.TfPlan2Md.ScreenshotGenerator.Tests")]
-[assembly: InternalsVisibleTo("Oocx.TfPlan2Md.ScreenshotGenerator.MSTests")]
+// No InternalsVisibleTo needed - no test projects reference this assembly directly

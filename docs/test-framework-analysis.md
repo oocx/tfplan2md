@@ -1,5 +1,7 @@
 # Test Framework Performance Analysis
 
+> **Note**: This document contains historical performance analysis that informed the decision to adopt TUnit. The MSTest and xUnit test projects referenced in this analysis have been removed from the repository as of this change.
+
 ## Executive Summary
 
 Comprehensive analysis of three testing frameworks (xUnit, MSTest v4, TUnit v1.9.26) with statistical performance metrics from 10-run testing cycles.

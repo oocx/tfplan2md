@@ -68,11 +68,11 @@ dotnet test -- --output Detailed --log-level Debug
 # Run all tests with detailed output
 scripts/test-with-timeout.sh -- dotnet test -- --output Detailed
 
-# Run specific test class
-scripts/test-with-timeout.sh -- dotnet test -- --treenode-filter /*/*/MarkdownRendererTests/*
+# Run specific test class (from repo root, use --project)
+scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownRendererTests/*
 
 # Run tests with category, detailed output, and debug logging
-dotnet test -- --treenode-filter /**[Category=Unit] --output Detailed --log-level Debug
+dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category=Unit] --output Detailed --log-level Debug
 ```
 
 ### Why TUnit?

@@ -18,6 +18,7 @@ public static class HelpTextProvider
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
             ("--hide-metadata", "Hide tfplan2md version/commit/timestamp metadata in the header."),
             ("--show-sensitive", "Show sensitive values unmasked."),
+            ("--debug", "Append diagnostic information to the report."),
             ("-h, --help", "Display this help message."),
             ("-v, --version", "Display version information."),
         };

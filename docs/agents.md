@@ -23,15 +23,25 @@ Throughout the workflow, the Maintainer coordinates handoffs between agents and 
 
 For well-defined features or bugs, use the **Workflow Orchestrator** agent to automate the complete workflow:
 
-- **GitHub (Cloud)**: Assign a GitHub issue to `@copilot` to trigger automated orchestration from issue to release
-- **VS Code (Local)**: Use `@workflow-orchestrator` in chat to orchestrate the workflow interactively
+- **GitHub (Cloud) - RECOMMENDED**: Assign a GitHub issue to `@copilot` to trigger automated orchestration from issue to release. The orchestrator runs as a coding agent with full delegation capabilities via the `task` tool.
+- **VS Code (Local) - LIMITED**: Use `@workflow-orchestrator` in chat for interactive orchestration. Note that full programmatic delegation is limited in VS Code context compared to GitHub.
 
-The orchestrator delegates to specialized agents in sequence, handles feedback loops, and minimizes maintainer interactions. Best for:
-- Complete feature implementations with clear requirements
-- Bug fixes needing full workflow
+**How It Works**:
+- The orchestrator **never asks clarifying questions** - it immediately delegates to the appropriate entry point agent (Requirements Engineer for features, Issue Analyst for bugs)
+- The orchestrator **never implements anything itself** - it purely delegates to specialized agents in sequence
+- Entry point agents (Requirements Engineer, Issue Analyst) handle requirements gathering and ask any needed clarifying questions
+- The orchestrator tracks progress and handles feedback loops (code review rework, UAT failures)
+
+**Best for**:
+- Complete feature implementations with clear issue descriptions
+- Bug fixes needing full workflow (investigation → fix → release)
 - Reducing cognitive load on routine development tasks
+- GitHub issue-driven development
 
-**Note**: The orchestrator is designed for high autonomy but will still ask clarifying questions when requirements are ambiguous.
+**Not suitable for**:
+- Exploratory analysis or design work (use individual agents directly)
+- Single-agent tasks (just use that agent)
+- Highly interactive work requiring maintainer decisions at each step
 
 **Verification note:** If a change only touches agent instructions / skills / documentation (for example `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, or `docs/`), running `dotnet test` is not required because the test suite does not validate those changes. Run `dotnet test` when C# code changes.
 
@@ -389,13 +399,21 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 ### 0. Workflow Orchestrator (Optional Automation)
 - **Goal:** Orchestrate complete development workflows from issue to release with minimal maintainer interaction.
 - **Use Cases:**
-  - **GitHub Cloud**: Assign issue to `@copilot` for fully automated end-to-end execution
-  - **VS Code Local**: Use `@workflow-orchestrator` for interactive but automated workflow coordination
+  - **GitHub Cloud (RECOMMENDED)**: Assign issue to `@copilot` for fully automated end-to-end execution with full delegation capabilities
+  - **VS Code Local (LIMITED)**: Use `@workflow-orchestrator` for interactive workflow coordination with limited delegation capabilities
 - **Deliverables:** Complete workflow execution by delegating to all required specialized agents in sequence.
-- **Key Behavior:** Delegates to specialized agents using the task tool, tracks progress, handles feedback loops (code review rework, UAT failures), and minimizes maintainer interactions by batching questions and making reasonable assumptions.
+- **Key Behavior:** 
+  - **Never asks clarifying questions** - immediately delegates to entry point agents who handle requirements gathering
+  - **Never implements anything** - purely orchestrates by delegating to specialized agents via `task` tool
+  - Tracks progress, handles feedback loops (code review rework, UAT failures)
+  - Minimizes maintainer interactions by letting specialized agents make decisions
+- **Entry Points:** Determines workflow type and immediately delegates:
+  - Features → Requirements Engineer (who asks clarifying questions if needed)
+  - Bugs → Issue Analyst (who investigates and clarifies details)
+  - Workflow improvements → Workflow Engineer
 - **Definition of Done:** All workflow stages complete, PR merged, release published, retrospective conducted.
-- **Best For:** Well-defined features/bugs, routine development workflows, reducing cognitive load on maintainer.
-- **Not For:** Highly exploratory work, unclear requirements, tasks requiring frequent design decisions.
+- **Best For:** Well-defined features/bugs with clear issue descriptions, routine development workflows, GitHub issue-driven development.
+- **Not For:** Highly exploratory work, unclear requirements needing extensive clarification, tasks requiring frequent design decisions.
 
 ### 1. Issue Analyst
 - **Goal:** Investigate and document bugs, incidents, and technical issues.

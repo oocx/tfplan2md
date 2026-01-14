@@ -41,7 +41,7 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
     [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.Tests")]
     [assembly: InternalsVisibleTo("Oocx.TfPlan2Md.MSTests")]
     ```
-  - **Note**: TUnit is the primary framework; xUnit and MSTest are preserved for compatibility
+  - **Note**: TUnit is the primary framework; legacy test projects (xUnit and MSTest) are preserved for compatibility but not actively used
 
 - **Why this matters:**
   - Agents were considering backwards compatibility and breaking changes for `public` methods even though no external consumers exist

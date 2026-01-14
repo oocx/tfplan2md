@@ -32,14 +32,25 @@ public interface IPrincipalMapper
     string? GetName(string principalId);
 
     /// <summary>
+    /// Gets the principal name with optional type awareness.
+    /// </summary>
+    /// <param name="principalId">The GUID of the principal.</param>
+    /// <param name="principalType">The type of principal (User, Group, ServicePrincipal) for type-aware resolution.</param>
+    /// <returns>The display name if found, otherwise null.</returns>
+    string? GetName(string principalId, string? principalType)
+    {
+        return GetName(principalId);
+    }
+
+    /// <summary>
     /// Gets the principal name with optional type awareness and diagnostic context.
     /// </summary>
     /// <param name="principalId">The GUID of the principal.</param>
     /// <param name="principalType">The type of principal (optional, may not be used by implementations).</param>
     /// <param name="resourceAddress">Optional Terraform resource address for diagnostic tracking.</param>
     /// <returns>The display name if found, otherwise null.</returns>
-    string? GetName(string principalId, string? principalType, string? resourceAddress = null)
+    string? GetName(string principalId, string? principalType, string? resourceAddress)
     {
-        return GetName(principalId);
+        return GetName(principalId, principalType);
     }
 }

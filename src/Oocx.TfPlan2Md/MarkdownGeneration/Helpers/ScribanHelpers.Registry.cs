@@ -35,7 +35,7 @@ public static partial class ScribanHelpers
         scriptObject.Import("is_large_value", new Func<string?, string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));
         scriptObject.Import("azure_scope", new Func<string?, string>(AzureScopeParser.ParseScope));
-        scriptObject.Import("azure_principal_name", new Func<string?, string?, string>((id, addr) => ResolvePrincipalName(id, principalMapper, addr)));
+        scriptObject.Import("azure_principal_name", new Func<string?, string?, string?, string>((id, type, addr) => ResolvePrincipalName(id, type, principalMapper, addr)));
         scriptObject.Import("azure_scope_info", new Func<string?, ScriptObject>(GetScopeInfo));
         scriptObject.Import("azure_role_info", new Func<string?, string?, ScriptObject>(GetRoleInfo));
         scriptObject.Import("azure_principal_info", new Func<string?, string?, string?, ScriptObject>((id, type, addr) => GetPrincipalInfo(id, type, principalMapper, addr)));

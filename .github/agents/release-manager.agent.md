@@ -118,6 +118,7 @@ This project uses:
 - Version bumping is handled by Versionize based on conventional commits
 - The CI pipeline builds and publishes the Docker image
 - **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
+- **Workflow Status**: Use `scripts/check-workflow-status.sh` for all workflow operations (list, watch, trigger) instead of raw `gh run` commands to reduce approval friction.
 
 ## Workflow Completion Checklist
 
@@ -133,12 +134,6 @@ Before suggesting handoff to Retrospective, verify:
 ## Pre-Release Checklist
 
 Before releasing, verify:
-
-0. **If using gh: prevent CLI blocking** (run once per session):
-   ```bash
-   export GH_PAGER=cat
-   export GH_FORCE_TTY=false
-   ```
 
 1. **Code Review Approved**
    - [ ] Code review report shows "Approved" status
@@ -202,9 +197,11 @@ Before releasing, verify:
 
 6. **Monitor CI on Main Branch** - After PR is merged, wait for CI to complete:
    ```bash
-   export GH_PAGER=cat && export GH_FORCE_TTY=false
-   PAGER=cat gh run list --branch main --limit 1
-   PAGER=cat gh run watch <run-id>
+   # List latest run on main branch
+   scripts/check-workflow-status.sh list --branch main --limit 1
+   
+   # Watch the run until completion
+   scripts/check-workflow-status.sh watch <run-id>
    ```
    - Wait for CI pipeline to complete successfully
    - CI runs Versionize which creates the version tag
@@ -220,14 +217,17 @@ Before releasing, verify:
 
 8. **Trigger Release Workflow** - Use the detected tag:
    ```bash
-   PAGER=cat gh workflow run release.yml --field tag=<detected-tag>
+   scripts/check-workflow-status.sh trigger release.yml --field tag=<detected-tag>
    ```
    - Wait a few seconds for workflow to be queued
 
 9. **Monitor Release Workflow** - Watch the release pipeline:
    ```bash
-   PAGER=cat gh run list --workflow=release.yml --limit 1
-   PAGER=cat gh run watch <release-run-id>
+   # List latest release workflow run
+   scripts/check-workflow-status.sh list --workflow release.yml --limit 1
+   
+   # Watch the release run until completion
+   scripts/check-workflow-status.sh watch <release-run-id>
    ```
    - Wait for release workflow to complete
    - If the release pipeline fails, hand off to Developer agent

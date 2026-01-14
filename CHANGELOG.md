@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.32"></a>
+## [1.0.0-alpha.32](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.31...v1.0.0-alpha.32) (2026-01-14)
+
+### ✨ Features
+
+* Add non-interactive workflow status script for Release Manager ([e30a8c6](https://github.com/oocx/tfplan2md/commit/e30a8c60e13dcb128bb21951b4d3ab3da70b8a6c))
+
+### 📚 Documentation
+
+* add architecture for debug output feature (038) ([541fa1a](https://github.com/oocx/tfplan2md/commit/541fa1a551d272a0c69cda087b0e9e8d0f71b8fb))
+* add feature specification for 038-debug-output ([4ff2ecd](https://github.com/oocx/tfplan2md/commit/4ff2ecda25f42592505006ccaa08f09717bc12ce))
+* update debug output spec with maintainer decisions ([17ad729](https://github.com/oocx/tfplan2md/commit/17ad729288ab08f48fac6b73b22c4013d11dd225))
+
 <a name="1.0.0-alpha.31"></a>
 ## [1.0.0-alpha.31](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.30...v1.0.0-alpha.31) (2026-01-14)
 

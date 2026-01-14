@@ -2,18 +2,17 @@
 
 ## Overview
 
-The tfplan2md project uses a comprehensive testing strategy with **TUnit v1.9.26** as the primary test framework. All active tests are located in the `Oocx.TfPlan2Md.TUnit` project. Legacy test projects (xUnit and MSTest) are preserved for compatibility but are not actively used.
+The tfplan2md project uses a comprehensive testing strategy with **TUnit v1.9.26** as the test framework. All tests are located in the `Oocx.TfPlan2Md.TUnit` project.
 
 ## Test Infrastructure
 
-- **Primary Framework**: TUnit 1.9.26 (async-first with real-time progress reporting)
-- **Legacy Frameworks**: xUnit 2.9.3, MSTest v4.0.2 (preserved but not actively used)
+- **Test Framework**: TUnit 1.9.26 (async-first with real-time progress reporting)
 - **Test Location**: `tests/Oocx.TfPlan2Md.TUnit/`
 - **Test Execution**: `dotnet test tests/Oocx.TfPlan2Md.TUnit/` or use `scripts/test-with-timeout.sh`
 
 ### TUnit CLI Syntax
 
-TUnit uses different CLI arguments compared to xUnit/MSTest. All TUnit-specific flags must be passed after `--`:
+TUnit uses different CLI arguments compared to traditional test frameworks. All TUnit-specific flags must be passed after `--`:
 
 #### Filtering Tests
 ```bash
@@ -33,7 +32,7 @@ dotnet test -- --treenode-filter /**[Category!=Integration]
 dotnet test -- --treenode-filter /**[Category=Unit]&[Priority=High]
 ```
 
-**Note**: TUnit uses `--treenode-filter` with hierarchical patterns (`/Assembly/Namespace/ClassName/TestName`), not xUnit's `--filter` with expression syntax.
+**Note**: TUnit uses `--treenode-filter` with hierarchical patterns (`/Assembly/Namespace/ClassName/TestName`), unlike traditional test frameworks.
 
 #### Output Control
 ```bash
@@ -80,16 +79,16 @@ dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Categ
 Based on comprehensive analysis documented in `docs/test-framework-reliability.md`:
 
 **Performance**:
-- **7.8x faster** than xUnit (36-37s vs 25-45s average)
-- Consistent execution time (σ=0.06s vs xUnit's σ=6.8s)
-- 100% test coverage maintained (all 393 tests converted)
+- **7.8x faster** than traditional test frameworks
+- Consistent execution time (σ=0.06s)
+- 100% test coverage maintained (370 tests)
 
 **Hang Detection & Diagnostics**:
 - **Real-time progress reporting** with test name + elapsed time during execution
-- Detects hangs in **30-60 seconds** vs xUnit's **30-60 minutes**
+- Detects hangs in **30-60 seconds**
 - **Time saved: ~2-4 hours per hang incident**
 - Full async stack traces with context
-- Reliability score: **10/10** vs xUnit 6/10, MSTest 7/10
+- Reliability score: **10/10**
 
 **Architecture**:
 - **Async-first design**: All tests use `async Task`, prevents sync-over-async deadlocks
@@ -197,20 +196,6 @@ scripts/uat-github.sh cleanup "$GH_PR"
 scripts/uat-azdo.sh cleanup "$AZDO_PR"
 git checkout "$ORIGINAL_BRANCH"
 ```
-
-## Legacy Test Infrastructure
-
-Legacy test projects (xUnit, MSTest) are preserved for compatibility but not actively used:
-
-- **Framework**: xUnit 2.9.3 (legacy)
-- **Assertion Library**: AwesomeAssertions (fluent-style assertions)
-- **Test SDK**: Microsoft.NET.Test.Sdk 17.14.1
-- **Coverage**: Coverlet 6.0.4
-- **Skippable Tests**: Xunit.SkippableFact 1.5.23 (for conditional test execution when Docker is unavailable)
-- **Shared Fixtures**: `DockerFixture` provides a shared Docker container context for integration tests using xUnit's `IAsyncLifetime` and `ICollectionFixture`
-- **Shell compatibility**: Release script tests include a POSIX-only run (`POSIXLY_CORRECT=1`) to ensure no GNU awk extensions are required.
-
-> Note: Tests were migrated from `xUnit.Assert` to `AwesomeAssertions` to improve readability and expressiveness of test assertions.
 
 ## Test Data
 

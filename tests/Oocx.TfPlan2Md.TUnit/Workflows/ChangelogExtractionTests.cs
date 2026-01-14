@@ -310,7 +310,7 @@ code block line 2
     private static async Task<string> RunExtraction(string changelogFile, string currentVersion, string? lastVersion, bool usePosixAwk = false)
     {
         var scriptPath = Path.Combine(RepoRoot.Value, "scripts", "extract-changelog.sh");
-        var changelogPath = Path.Combine(RepoRoot.Value, "tests", "Oocx.TfPlan2Md.Tests", "TestData", changelogFile);
+        var changelogPath = Path.Combine(RepoRoot.Value, "tests", "Oocx.TfPlan2Md.TUnit", "TestData", changelogFile);
 
         var arguments = new List<string> { scriptPath, changelogPath, currentVersion };
         if (lastVersion is not null)

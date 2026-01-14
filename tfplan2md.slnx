@@ -8,8 +8,6 @@
     <Project Path="tools/Oocx.TfPlan2Md.TerraformShowRenderer/Oocx.TfPlan2Md.TerraformShowRenderer.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Oocx.TfPlan2Md.Tests/Oocx.TfPlan2Md.Tests.csproj" />
-    <Project Path="tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/Oocx.TfPlan2Md.HtmlRenderer.Tests.csproj" />
-    <Project Path="tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests.csproj" />
+    <Project Path="tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj" />
   </Folder>
 </Solution>

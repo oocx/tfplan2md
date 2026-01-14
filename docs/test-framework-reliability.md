@@ -1,5 +1,7 @@
 # Test Framework Reliability & Diagnostics Analysis
 
+> **Note**: This document contains historical analysis that informed the decision to adopt TUnit. The MSTest and xUnit test projects referenced in this analysis have been removed from the repository as of this change.
+
 ## Executive Summary
 
 Comprehensive evaluation of test framework reliability, timeout detection, hang prevention, and diagnostic capabilities across xUnit, MSTest v4, and TUnit v1.9.26.

@@ -1,4 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Oocx.TfPlan2Md.HtmlRenderer.Tests")]
-[assembly: InternalsVisibleTo("Oocx.TfPlan2Md.HtmlRenderer.MSTests")]
+// No InternalsVisibleTo needed - no test projects reference this assembly directly

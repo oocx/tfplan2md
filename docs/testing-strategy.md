@@ -11,6 +11,70 @@ The tfplan2md project uses a comprehensive testing strategy with **TUnit v1.9.26
 - **Test Location**: `tests/Oocx.TfPlan2Md.TUnit/`
 - **Test Execution**: `dotnet test tests/Oocx.TfPlan2Md.TUnit/` or use `scripts/test-with-timeout.sh`
 
+### TUnit CLI Syntax
+
+TUnit uses different CLI arguments compared to xUnit/MSTest. All TUnit-specific flags must be passed after `--`:
+
+#### Filtering Tests
+```bash
+# Filter by class name (hierarchical pattern)
+dotnet test -- --treenode-filter /*/*/LoginTests/*
+
+# Filter by test name
+dotnet test -- --treenode-filter /*/*/*/AcceptCookiesTest
+
+# Filter by property/category
+dotnet test -- --treenode-filter /**[Category=Unit]
+
+# Exclude by category
+dotnet test -- --treenode-filter /**[Category!=Integration]
+
+# Multiple conditions (AND)
+dotnet test -- --treenode-filter /**[Category=Unit]&[Priority=High]
+```
+
+**Note**: TUnit uses `--treenode-filter` with hierarchical patterns (`/Assembly/Namespace/ClassName/TestName`), not xUnit's `--filter` with expression syntax.
+
+#### Output Control
+```bash
+# Normal output (only failures shown, buffered)
+dotnet test -- --output Normal
+
+# Detailed output (all tests shown, real-time)
+dotnet test -- --output Detailed
+
+# Disable progress reporting
+dotnet test -- --no-progress
+
+# Disable ANSI colors
+dotnet test -- --no-ansi
+```
+
+#### Log Levels
+```bash
+# Set log level for diagnostics
+dotnet test -- --log-level Trace      # Maximum detail
+dotnet test -- --log-level Debug      # Debug information
+dotnet test -- --log-level Information # Default
+dotnet test -- --log-level Warning    # Warnings and errors only
+dotnet test -- --log-level Error      # Errors only
+
+# Combine with output control
+dotnet test -- --output Detailed --log-level Debug
+```
+
+#### Common Examples
+```bash
+# Run all tests with detailed output
+scripts/test-with-timeout.sh -- dotnet test -- --output Detailed
+
+# Run specific test class
+scripts/test-with-timeout.sh -- dotnet test -- --treenode-filter /*/*/MarkdownRendererTests/*
+
+# Run tests with category, detailed output, and debug logging
+dotnet test -- --treenode-filter /**[Category=Unit] --output Detailed --log-level Debug
+```
+
 ### Why TUnit?
 
 Based on comprehensive analysis documented in `docs/test-framework-reliability.md`:
@@ -134,9 +198,11 @@ scripts/uat-azdo.sh cleanup "$AZDO_PR"
 git checkout "$ORIGINAL_BRANCH"
 ```
 
-## Test Infrastructure
+## Legacy Test Infrastructure
 
-- **Framework**: xUnit 2.9.3
+Legacy test projects (xUnit, MSTest) are preserved for compatibility but not actively used:
+
+- **Framework**: xUnit 2.9.3 (legacy)
 - **Assertion Library**: AwesomeAssertions (fluent-style assertions)
 - **Test SDK**: Microsoft.NET.Test.Sdk 17.14.1
 - **Coverage**: Coverlet 6.0.4

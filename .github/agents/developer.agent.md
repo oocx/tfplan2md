@@ -218,7 +218,7 @@ Follow the project's coding conventions strictly:
    
    c. **Verify acceptance criteria** for the current task:
       - All acceptance criteria for THIS task must be satisfied
-      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test tests/Oocx.TfPlan2Md.TUnit/ --filter "<TestClass>"`
+      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test -- --treenode-filter /*/*/<TestClass>/*`
       - Check for errors: Use `problems` to verify no workspace errors
    
    d. **Commit the task**:
@@ -279,12 +279,14 @@ Follow the project's coding conventions strictly:
 
 ## Commands
 
+### Build and Test
+
 Build the project:
 ```bash
 dotnet build
 ```
 
-Run all tests:
+Run all tests (TUnit):
 ```bash
 scripts/test-with-timeout.sh -- dotnet test
 ```
@@ -294,10 +296,48 @@ Override timeout (if needed):
 scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test
 ```
 
-Run specific test file:
+### TUnit Test Filtering
+
+**Important**: TUnit uses `--treenode-filter` (not xUnit's `--filter`). All TUnit flags must come after `--`.
+
+Filter by class name (hierarchical pattern):
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --filter "FullyQualifiedName~ClassName"
+scripts/test-with-timeout.sh -- dotnet test -- --treenode-filter /*/*/MarkdownRendererTests/*
 ```
+
+Filter by test name:
+```bash
+dotnet test -- --treenode-filter /*/*/*/Render_ValidPlan_ContainsSummarySection
+```
+
+Filter by category:
+```bash
+dotnet test -- --treenode-filter /**[Category=Unit]
+```
+
+Exclude by category (e.g., skip Docker tests):
+```bash
+dotnet test -- --treenode-filter /**[Category!=Docker]
+```
+
+### TUnit Output Control
+
+Show detailed output (all tests, real-time):
+```bash
+dotnet test -- --output Detailed
+```
+
+Show debug logs:
+```bash
+dotnet test -- --output Detailed --log-level Debug
+```
+
+Combine filtering and output:
+```bash
+dotnet test -- --treenode-filter /*/*/MarkdownRendererTests/* --output Detailed --log-level Debug
+```
+
+### Docker Commands
 
 Build the Docker image:
 ```bash

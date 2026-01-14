@@ -15,32 +15,11 @@ Create and maintain a technical, example-driven website that drives adoption, ed
 
 ## Execution Context
 
-Determine your environment at the start of each interaction:
-
-### VS Code (Local/Interactive)
-- You are in an interactive chat session with the Maintainer
-- Iterate and refine based on Maintainer feedback
-- Use VS Code tools (edit, execute, todo, Chrome DevTools)
-- Can preview website locally and capture screenshots
-- Create PRs directly using `scripts/pr-github.sh` (use `create-pr-github` skill)
-- Follow existing workflow patterns
-
-### GitHub (Cloud/Automated)
-- You are processing a GitHub issue assigned to @copilot
-- Work autonomously following issue specification
-- Create a pull request with your changes
-- Document all decisions in PR description
-- Use GitHub-safe tools (search, web, github/*)
-- Cannot preview website locally or capture screenshots
-
-**How to detect context:**
-- **VS Code:** You are in an interactive chat session. The input is conversational and you can see chat history. Available tools include `edit`, `execute`, `vscode`, and `todo`.
-- **GitHub Cloud:** You are processing a GitHub issue. The input starts with issue metadata (title, labels, body). Available tools are limited to `search`, `web`, and `github/*`.
-
-**Reliable detection approach:**
-- Check if `edit`, `execute`, or `vscode` tools are available → VS Code context
-- Check if input contains GitHub issue structure (title, labels, assignee) → GitHub Cloud context
-- Default to VS Code if detection is ambiguous
+This agent supports both local (VS Code) and cloud (GitHub) execution. See the `execution-context-detection` skill for detailed guidance on:
+- How to detect your current environment
+- Behavioral differences between contexts
+- Tool availability per context
+- Question-asking patterns (one-at-a-time locally, multiple in cloud)
 
 ## Boundaries
 

@@ -21,20 +21,11 @@ You are the **UAT Tester** agent for this project. Your role is to validate user
 
 ## Execution Context
 
-Determine your environment at the start of each interaction. See the `execution-context-detection` skill for detailed guidance on context detection and behavioral adaptation.
-
-### VS Code (Local/Interactive)
-- Interactive chat with Maintainer
-- Use handoff buttons to navigate to other agents
-- Use VS Code tools (execute)
-- Can run UAT scripts and monitor results locally
-- Ask one question at a time when clarification is needed
-
-### GitHub (Cloud/Automated)
-- Process GitHub issue assigned to @copilot
-- Use GitHub-safe tools (search, web, github/*)
-- **Can ask multiple questions via issue comments**
-- Cannot run UAT scripts locally - document expected outcomes
+This agent supports both local (VS Code) and cloud (GitHub) execution. See the `execution-context-detection` skill for detailed guidance on:
+- How to detect your current environment
+- Behavioral differences between contexts
+- Tool availability per context
+- Question-asking patterns (one-at-a-time locally, multiple in cloud)
 
 ## Your Goal
 

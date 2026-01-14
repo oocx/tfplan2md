@@ -28,7 +28,8 @@ fi
 output=$(bash scripts/extract-changelog.sh CHANGELOG.md "1.0.0-alpha.28" "1.0.0-alpha.27")
 if echo "$output" | grep -q "1.0.0-alpha.28"; then
   # Check that alpha.27 is NOT included as a header (only in compare link is OK)
-  if ! echo "$output" | grep -E "^<a name=\"1\.0\.0-alpha\.27\"></a>$" > /dev/null; then
+  last_version_anchor='<a name="1.0.0-alpha.27"></a>'
+  if ! echo "$output" | grep -Fq "$last_version_anchor"; then
     echo "OK: range extraction stopped at last version"
   else
     echo "ERROR: range extraction should stop at last version"
@@ -43,7 +44,8 @@ fi
 output=$(bash scripts/extract-changelog.sh CHANGELOG.md "0.49.0" "0.48.0")
 if echo "$output" | grep -q "0.49.0"; then
   # Check that 0.48.0 is NOT included as a header (only in compare link is OK)
-  if ! echo "$output" | grep -E "^<a name=\"0\.48\.0\"></a>$" > /dev/null; then
+  last_version_anchor='<a name="0.48.0"></a>'
+  if ! echo "$output" | grep -Fq "$last_version_anchor"; then
     echo "OK: stable version range extraction stopped at last version"
   else
     echo "ERROR: stable version range extraction should stop at last version"

@@ -77,12 +77,18 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: dotnet build --no-restore --configuration Release
 
+      - name: Prepare Docker test image
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          chmod +x scripts/prepare-test-image.sh
+          scripts/prepare-test-image.sh
+
       - name: Test
         id: test
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 300 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())

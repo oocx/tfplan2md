@@ -6,7 +6,7 @@ tools: ['execute/testFailure', 'execute/getTerminalOutput', 'execute/runInTermin
 handoffs:
   - label: Update Documentation
     agent: "Technical Writer"
-      prompt: Review the implementation and update the documentation accordingly.
+    prompt: Review the implementation and update the documentation accordingly.
     send: false
 ---
 

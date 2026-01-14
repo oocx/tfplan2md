@@ -6,11 +6,11 @@ tools: ['search', 'execute/runInTerminal', 'execute/runTests', 'execute/testFail
 handoffs:
   - label: Fix Build Issues
     agent: "Developer"
-      prompt: The PR build validation or release pipeline failed. Investigate and fix the issues.
+    prompt: The PR build validation or release pipeline failed. Investigate and fix the issues.
     send: false
   - label: Conduct Retrospective
     agent: "Retrospective"
-      prompt: The release is complete. Conduct a retrospective to identify workflow improvements.
+    prompt: The release is complete. Conduct a retrospective to identify workflow improvements.
     send: false
 ---
 

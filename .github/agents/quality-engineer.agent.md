@@ -6,7 +6,7 @@ tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 's
 handoffs:
   - label: Create User Stories
     agent: "Task Planner"
-      prompt: Review the Feature Specification, Architecture, and Test Plan documents, then create actionable user stories for implementation with dependencies and a recommended delivery order. Ensure every test plan scenario is covered by at least one story.
+    prompt: Review the Feature Specification, Architecture, and Test Plan documents, then create actionable user stories for implementation with dependencies and a recommended delivery order. Ensure every test plan scenario is covered by at least one story.
     send: false
 ---
 

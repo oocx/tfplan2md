@@ -68,6 +68,20 @@ public record CliOptions
     /// Related feature: docs/features/006-large-attribute-value-display/specification.md
     /// </summary>
     public LargeValueFormat LargeValueFormat { get; init; }
+
+    /// <summary>
+    /// Indicates whether debug diagnostic information should be appended to the report.
+    /// Related feature: docs/features/038-debug-output/specification.md
+    /// </summary>
+    /// <remarks>
+    /// When enabled, debug output includes:
+    /// <list type="bullet">
+    /// <item><description>Principal mapping diagnostics (load status, type counts, failed resolutions)</description></item>
+    /// <item><description>Template resolution decisions (which template was used for each resource type)</description></item>
+    /// </list>
+    /// The debug information is appended to the markdown report as a separate "Debug Information" section.
+    /// </remarks>
+    public bool Debug { get; init; }
 }
 
 /// <summary>
@@ -88,6 +102,7 @@ public static class CliParser
         var showUnchangedValues = false;
         var hideMetadata = false;
         var largeValueFormat = LargeValueFormat.InlineDiff;
+        var debug = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -172,6 +187,9 @@ public static class CliParser
                         throw new CliParseException("--large-value-format requires a format argument (inline-diff or simple-diff).");
                     }
                     break;
+                case "--debug":
+                    debug = true;
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -195,7 +213,8 @@ public static class CliParser
             ShowUnchangedValues = showUnchangedValues,
             HideMetadata = hideMetadata,
             LargeValueFormat = largeValueFormat,
-            ReportTitle = reportTitle
+            ReportTitle = reportTitle,
+            Debug = debug
         };
     }
 

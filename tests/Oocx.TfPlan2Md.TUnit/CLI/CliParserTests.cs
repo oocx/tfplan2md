@@ -375,4 +375,79 @@ public class CliParserTests
         // Assert
         options.LargeValueFormat.Should().Be(LargeValueFormat.InlineDiff);
     }
+
+    /// <summary>
+    /// TC-01: --debug flag in various positions is parsed correctly.
+    /// </summary>
+    [Test]
+    public void Parse_DebugFlagBeforeInput_SetsDebugTrue()
+    {
+        // Arrange
+        var args = new[] { "--debug", "plan.json" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.Debug.Should().BeTrue();
+        options.InputFile.Should().Be("plan.json");
+    }
+
+    /// <summary>
+    /// TC-01: --debug flag after input is parsed correctly.
+    /// </summary>
+    [Test]
+    public void Parse_DebugFlagAfterInput_SetsDebugTrue()
+    {
+        // Arrange
+        var args = new[] { "plan.json", "--debug" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.Debug.Should().BeTrue();
+        options.InputFile.Should().Be("plan.json");
+    }
+
+    /// <summary>
+    /// TC-01: Default (no --debug flag) sets Debug to false.
+    /// </summary>
+    [Test]
+    public void Parse_NoDebugFlag_SetsDebugFalse()
+    {
+        // Arrange
+        var args = new[] { "plan.json" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.Debug.Should().BeFalse();
+    }
+
+    /// <summary>
+    /// Test --debug with multiple other flags.
+    /// </summary>
+    [Test]
+    public void Parse_DebugWithMultipleFlags_ParsesAll()
+    {
+        // Arrange
+        var args = new[]
+        {
+            "plan.json",
+            "--debug",
+            "--output", "output.md",
+            "--show-sensitive"
+        };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.Debug.Should().BeTrue();
+        options.InputFile.Should().Be("plan.json");
+        options.OutputFile.Should().Be("output.md");
+        options.ShowSensitive.Should().BeTrue();
+    }
 }

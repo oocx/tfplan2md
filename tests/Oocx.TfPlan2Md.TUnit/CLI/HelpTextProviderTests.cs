@@ -62,4 +62,18 @@ public class HelpTextProviderTests
         help.Should().Contain("--large-value-format <inline-diff|simple-diff>")
             .And.Contain("Controls rendering of large attribute values");
     }
+
+    /// <summary>
+    /// TC-02: Help text includes --debug flag documentation.
+    /// </summary>
+    [Test]
+    public void GetHelpText_IncludesDebugFlag()
+    {
+        // Arrange & Act
+        var help = HelpTextProvider.GetHelpText();
+
+        // Assert
+        help.Should().Contain("--debug")
+            .And.Contain("diagnostic information");
+    }
 }

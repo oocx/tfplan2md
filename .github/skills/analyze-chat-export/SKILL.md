@@ -21,7 +21,7 @@ Extract structured metrics from VS Code Copilot chat exports to support retrospe
 
 ## Pre-requisites
 - `jq` command-line JSON processor installed.
-- Chat export files (`.json`) automatically saved at the end of each agent session (or manually exported via `workbench.action.chat.export` command if needed). Multiple files may exist, one per agent chat session.
+- Chat export files (`.json`) saved via `workbench.action.chat.export` command. Multiple files may exist per feature, one per agent chat session (e.g., `developer.chat.json`, `architect.chat.json`).
 
 ## Known Limitations
 
@@ -97,11 +97,11 @@ See these reference documents:
 
 ## Actions
 
-### 1. Locate Chat Exports (Prerequisite)
-Chat history is automatically exported at the end of each agent session as separate files (one per agent chat).
-1. Check for exported files in `docs/features/NNN-<feature-slug>/` (typically named `<agent-name>.chat.json` like `developer.chat.json`, `architect.chat.json`, etc.)
-2. Identify which chat export file(s) you need to analyze for the current retrospective
-3. If needed files are not present, ask the Maintainer where they were saved or to manually export them using `workbench.action.chat.export`
+### 1. Export Chat (Prerequisite)
+Ask the Maintainer to export each relevant agent session chat:
+1. Focus the chat panel for the agent session to export.
+2. Run command: `workbench.action.chat.export`
+3. Save to: `docs/features/NNN-<feature-slug>/<agent-name>.chat.json` (e.g., `developer.chat.json`, `architect.chat.json`)
 
 ### 2. Run Extraction Script (Recommended)
 ```bash

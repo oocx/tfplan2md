@@ -18,8 +18,8 @@ fi
 
 awk -v current="$CURRENT_VERSION" -v last="$LAST_VERSION" '
   function header_version(line) {
-    if (line ~ /^##[[:space:]]+\[?v?[0-9]+\.[0-9]+\.[0-9]+\]?/) {
-      match(line, /[0-9]+\.[0-9]+\.[0-9]+/);
+    if (line ~ /^##[[:space:]]+\[?v?[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?/) {
+      match(line, /[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?/);
       return substr(line, RSTART, RLENGTH);
     }
     return "";

@@ -253,6 +253,60 @@ code block line 2
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    [Test]
+    public async Task Extracts_prerelease_version()
+    {
+        if (!BashAvailable.Value)
+        {
+            return;
+        }
+
+        var output = await RunExtraction("changelog-prerelease.md", "1.0.0-alpha.3", null);
+
+        var expected = """
+<a name="1.0.0-alpha.3"></a>
+## [1.0.0-alpha.3] - 2025-12-20
+
+### ✨ Features
+* feature alpha three
+
+### 🐛 Bug Fixes
+* fix alpha three
+""";
+
+        await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
+    }
+
+    [Test]
+    public async Task Extracts_prerelease_version_range()
+    {
+        if (!BashAvailable.Value)
+        {
+            return;
+        }
+
+        var output = await RunExtraction("changelog-prerelease.md", "1.0.0-alpha.3", "1.0.0-alpha.1");
+
+        var expected = """
+<a name="1.0.0-alpha.3"></a>
+## [1.0.0-alpha.3] - 2025-12-20
+
+### ✨ Features
+* feature alpha three
+
+### 🐛 Bug Fixes
+* fix alpha three
+
+<a name="1.0.0-alpha.2"></a>
+## [1.0.0-alpha.2] - 2025-12-19
+
+### ✨ Features
+* feature alpha two
+""";
+
+        await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
+    }
+
     private static async Task<string> RunExtraction(string changelogFile, string currentVersion, string? lastVersion, bool usePosixAwk = false)
     {
         var scriptPath = Path.Combine(RepoRoot.Value, "scripts", "extract-changelog.sh");

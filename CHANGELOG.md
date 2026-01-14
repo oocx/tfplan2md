@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.30"></a>
+## [1.0.0-alpha.30](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.29...v1.0.0-alpha.30) (2026-01-14)
+
+### ✨ Features
+
+* add presentation.html for project overview ([214d5d2](https://github.com/oocx/tfplan2md/commit/214d5d2bc2d24dfc4fda4827d675fe4377ca4125))
+* **aot:** add aggressive size optimization flags ([b8ca4b8](https://github.com/oocx/tfplan2md/commit/b8ca4b8d9fb79bca00eebc60bf0615d0ae95d821))
+* **aot:** add explicit ScriptObject mapper for NativeAOT compatibility ([f939dc0](https://github.com/oocx/tfplan2md/commit/f939dc098870706e322931c96aaf2546066a5534))
+* **aot:** enable NativeAOT with JSON source generation ([bdcba62](https://github.com/oocx/tfplan2md/commit/bdcba62e403883e084f834ca9eaac0b3a126ad13))
+* **aot:** enable NativeAOT with JSON source generation ([ce9c6e3](https://github.com/oocx/tfplan2md/commit/ce9c6e34ec112599c6d62c7d6b1ca64d2ad2c425))
+* **aot:** reduce to minimal essential libraries (18.3MB) ([5bb2a2f](https://github.com/oocx/tfplan2md/commit/5bb2a2f5992df5f1f3c0b3aecf6417e6be23965a))
+* **aot:** switch to musl for smaller image (14.7MB) ([1baf642](https://github.com/oocx/tfplan2md/commit/1baf64272618e073b38acab985ae1d5f7a4989dc))
+* **aot:** update Dockerfile for NativeAOT and fix trimming warnings ([5c1c13b](https://github.com/oocx/tfplan2md/commit/5c1c13bdca985e288bbab3378bea957c4d167a23))
+
+### 🐛 Bug Fixes
+
+* Add checks:write permission for test result publishing ([3f6c1e4](https://github.com/oocx/tfplan2md/commit/3f6c1e438e479302034aa024c471767dc4667d7a))
+
+### 📚 Documentation
+
+* add architecture for 037-aot-trimmed-image ([4e76b23](https://github.com/oocx/tfplan2md/commit/4e76b23d5be387ffc34def121f7ddad55e13537c))
+* add feature specification for 037-aot-trimmed-image ([10e57c4](https://github.com/oocx/tfplan2md/commit/10e57c4b922f60440e8fa058d4289b0475639d5f))
+* add tasks for aot-trimmed-image ([3fdc64f](https://github.com/oocx/tfplan2md/commit/3fdc64fdf030f5ae0326e920fb5c29ecf721c209))
+* add test plan and UAT plan for 037-aot-trimmed-image ([8ad0e18](https://github.com/oocx/tfplan2md/commit/8ad0e18ffddad816c4c25fbfe4b2f392cad82472))
+* add UAT report for AOT-trimmed image ([b2cb94f](https://github.com/oocx/tfplan2md/commit/b2cb94f867711658b077231b9df3fd4908935fff))
+* mark task 4 complete, update task 5 metrics ([e81f2f9](https://github.com/oocx/tfplan2md/commit/e81f2f9e3f1bec8d2d36f2227aa76f6ec9b0cbc9))
+* mark tasks 5-6 complete with final metrics ([6ca0d5f](https://github.com/oocx/tfplan2md/commit/6ca0d5f0208fce2f4800f57d98fc7bfb64d3c9e4))
+* update code review to approved status ([39b00c8](https://github.com/oocx/tfplan2md/commit/39b00c8e5204e178003628424eedf87c83b230e4))
+* update demo artifacts for AOT feature ([bef3889](https://github.com/oocx/tfplan2md/commit/bef3889c50af9f56e22f97d0bba268845e726aad))
+* update specification with final 14.7MB metrics ([19a496d](https://github.com/oocx/tfplan2md/commit/19a496d7f7c1b24d183b81f5d452dcedbeb48c08))
+
 <a name="1.0.0-alpha.29"></a>
 ## [1.0.0-alpha.29](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.28...v1.0.0-alpha.29) (2026-01-13)
 

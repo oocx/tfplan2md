@@ -10,12 +10,28 @@ Agents work locally and produce artifacts as markdown files in the repository. T
 
 The workflow begins when the **Maintainer** identifies a need:
 
+### Manual Coordination (Default)
+
 - **New Feature**: Start with the **Requirements Engineer** agent to gather requirements and create a Feature Specification
 - **Bug Fix / Incident**: Start with the **Issue Analyst** agent to investigate and document the issue
 - **Workflow Improvement**: Start with the **Workflow Engineer** agent to modify the development process itself
 - **Website Changes**: Start with the **Web Designer** agent to implement design, content, or functionality changes to the tfplan2md website
 
 Throughout the workflow, the Maintainer coordinates handoffs between agents and provides clarifications as needed.
+
+### Automated Orchestration (Optional)
+
+For well-defined features or bugs, use the **Workflow Orchestrator** agent to automate the complete workflow:
+
+- **GitHub (Cloud)**: Assign a GitHub issue to `@copilot` to trigger automated orchestration from issue to release
+- **VS Code (Local)**: Use `@workflow-orchestrator` in chat to orchestrate the workflow interactively
+
+The orchestrator delegates to specialized agents in sequence, handles feedback loops, and minimizes maintainer interactions. Best for:
+- Complete feature implementations with clear requirements
+- Bug fixes needing full workflow
+- Reducing cognitive load on routine development tasks
+
+**Note**: The orchestrator is designed for high autonomy but will still ask clarifying questions when requirements are ambiguous.
 
 **Verification note:** If a change only touches agent instructions / skills / documentation (for example `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, or `docs/`), running `dotnet test` is not required because the test suite does not validate those changes. Run `dotnet test` when C# code changes.
 
@@ -127,10 +143,14 @@ flowchart TB
 	classDef agent fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff,rx:8,ry:8;
 	classDef artifact fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff,rx:6,ry:6;
 	classDef metaagent fill:#10b981,stroke:#34d399,stroke-width:3px,color:#ffffff,rx:8,ry:8;
+	classDef orchestrator fill:#ec4899,stroke:#f472b6,stroke-width:3px,color:#ffffff,rx:8,ry:8;
 	classDef human fill:#f59e0b,stroke:#fbbf24,stroke-width:4px,color:#ffffff,rx:10,ry:10;
 
 	%% Nodes
 	HUMAN(["👤 <b>Maintainer</b><br/>(Human)"])
+	
+	%% Orchestrator (Optional)
+	WO["<b>Workflow Orchestrator</b><br/>(Optional)"]
 
 	%% Row 1: Entry Agents
 	RE["<b>Requirements Engineer</b>"]
@@ -198,9 +218,14 @@ flowchart TB
 	RETRO["📝 Retrospective Report"]
 
 	%% Connections - Main Flow
+	HUMAN ==> WO
 	HUMAN ==> RE
 	HUMAN ==> IA_AGENT
 	HUMAN ==> WE
+	
+	%% Orchestrator delegates to entry agents
+	WO -.-> RE
+	WO -.-> IA_AGENT
 
 	RE --> FS --> AR
 	IA_AGENT --> IA --> DEV
@@ -232,6 +257,7 @@ flowchart TB
 
 	%% Styling
 	class HUMAN human;
+	class WO orchestrator;
 	class IA_AGENT,RE,AR,TP_AGENT,QE,DEV,TW,CR,UAT_AGENT,RM,RETRO_AGENT agent;
 	class WE metaagent;
 	class IA,FS,US,ADR,TP,CODE,DOCS,CRR,REL,PR,WD,UAT,RETRO artifact;
@@ -359,6 +385,17 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 ## Agent Roles & Responsibilities
 
 **Note:** All agents support both local (VS Code) and cloud (GitHub) execution modes. Each agent automatically detects its environment and adapts its behavior accordingly. See [Cloud Agents vs Local Agents](#cloud-agents-vs-local-agents) for details.
+
+### 0. Workflow Orchestrator (Optional Automation)
+- **Goal:** Orchestrate complete development workflows from issue to release with minimal maintainer interaction.
+- **Use Cases:**
+  - **GitHub Cloud**: Assign issue to `@copilot` for fully automated end-to-end execution
+  - **VS Code Local**: Use `@workflow-orchestrator` for interactive but automated workflow coordination
+- **Deliverables:** Complete workflow execution by delegating to all required specialized agents in sequence.
+- **Key Behavior:** Delegates to specialized agents using the task tool, tracks progress, handles feedback loops (code review rework, UAT failures), and minimizes maintainer interactions by batching questions and making reasonable assumptions.
+- **Definition of Done:** All workflow stages complete, PR merged, release published, retrospective conducted.
+- **Best For:** Well-defined features/bugs, routine development workflows, reducing cognitive load on maintainer.
+- **Not For:** Highly exploratory work, unclear requirements, tasks requiring frequent design decisions.
 
 ### 1. Issue Analyst
 - **Goal:** Investigate and document bugs, incidents, and technical issues.
@@ -555,6 +592,7 @@ This repository provides prompt files in `.github/prompts/`.
 
 Default prompts use the short agent names (e.g., `/dev`). These are the default actions each agent performs in the workflow:
 
+- `/wo` Workflow Orchestrator (orchestrate complete workflow from issue to release)
 - `/re` Requirements Engineer
 - `/ia` Issue Analyst
 - `/wd` Web Designer

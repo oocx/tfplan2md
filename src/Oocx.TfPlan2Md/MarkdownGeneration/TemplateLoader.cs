@@ -34,6 +34,11 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
         _templateResourcePrefix = templateResourcePrefix;
     }
 
+    /// <summary>
+    /// Gets a value indicating whether a custom template directory was provided.
+    /// </summary>
+    public bool HasCustomTemplateDirectory => _customTemplateDirectory is not null;
+
     /// <inheritdoc />
     public string GetPath(TemplateContext context, SourceSpan callerSpan, string templateName)
     {

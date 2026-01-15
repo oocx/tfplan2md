@@ -987,10 +987,6 @@ docker run \
   -v $(pwd)/plan.json:/data/plan.json:ro \
   -v $(pwd)/principals.json:/app/principals.json:ro \
   oocx/tfplan2md --principal-mapping /app/principals.json /data/plan.json
-
-# With debug output
-docker run -v $(pwd):/data oocx/tfplan2md --debug \
-  /data/plan.json --output /data/plan.md
 ```
 
 ### Releases

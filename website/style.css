@@ -3128,7 +3128,7 @@ body {
 .toggle-btn {
     background: transparent;
     border: none;
-    color: #a0aec0;
+    color: var(--color-text-secondary);
     padding: 6px 12px;
     font-size: 12px;
     font-weight: 600;
@@ -3144,13 +3144,13 @@ body {
 }
 
 .toggle-btn:hover:not(.active) {
-    color: white;
+    color: var(--color-text);
 }
 
 .fullscreen-btn {
     background: transparent;
     border: none;
-    color: #a0aec0;
+    color: var(--color-text-secondary);
     cursor: pointer;
     font-size: 14px;
     padding: 6px;
@@ -3162,7 +3162,7 @@ body {
 }
 
 .fullscreen-btn:hover {
-    color: white;
+    color: var(--color-text);
 }
 
 .example-content {

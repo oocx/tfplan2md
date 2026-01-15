@@ -28,6 +28,7 @@ This agent supports both local (VS Code) and cloud (GitHub) execution. See the `
 ### ✅ Always Do
 - **CRITICAL**: Before making any changes, ensure you're on an up-to-date feature branch, NOT main
 - Check current branch: `git branch --show-current` - if on main, STOP and create feature branch first
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Update `docs/agents.md` whenever agents or workflow change
 - Use valid VS Code Copilot tool IDs (lookup from available tools)
 - Verify handoff agent names exist before committing
@@ -53,9 +54,11 @@ This agent supports both local (VS Code) and cloud (GitHub) execution. See the `
 - Add handoffs to non-existent agents
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
-## Cloud Agent Workflow (GitHub Issues)
+## Cloud Agent Workflow (GitHub)
 
-When executing as a cloud agent (GitHub issue assigned to @copilot):
+### GitHub Issue Assigned to `@copilot`
+
+When executing as a cloud agent from a GitHub issue assigned to `@copilot`:
 
 1. **Parse Issue:** Extract task specification from issue body
    - Identify the specific workflow improvement requested
@@ -90,6 +93,15 @@ When executing as a cloud agent (GitHub issue assigned to @copilot):
    - Document all decisions in PR description
    - Explain rationale for any non-obvious changes
    - Note any limitations or follow-up work needed
+
+### GitHub PR Coding Agent (Existing PR)
+
+When executing as a GitHub **coding agent on an existing pull request** (often on a `copilot/*` branch):
+
+- **Do not create a new branch** and **do not `git switch` away** from the current branch.
+- **Do not create a new PR**. Your job is to push commits to the existing PR branch.
+- If you need clarification, **ask via PR comments** and wait for an answer (do not guess and do not “fill in” answers in docs).
+- If you need to update with latest main, prefer `git fetch origin && git rebase origin/main` while staying on the current branch.
 
 **Cloud Environment Limitations:**
 - Cannot use `edit`, `execute`, `vscode`, `todo` tools directly
@@ -419,6 +431,9 @@ Before making modifications:
 # Check what branch you're on
 git branch --show-current
 
+# If you're on a GitHub Copilot PR branch (often `copilot/*`), do NOT switch branches.
+# Work on the current branch so your commits appear in the existing PR.
+
 # If you're on main, STOP and create workflow branch first:
 # 1. Determine the next available issue number
 NEXT_NUMBER=$(scripts/next-issue-number.sh)
@@ -450,6 +465,10 @@ After implementation:
 
 ### 7. Commit and Create PR
 ```bash
+# NOTE: The following "create PR" flow applies to local work or issue-driven GitHub cloud work.
+# If you're executing as a GitHub PR coding agent (existing PR on `copilot/*`), do NOT switch branches and do NOT create a PR.
+# Instead, commit to the current branch and push.
+
 # Ensure main is current
 git fetch origin && git switch main && git pull --ff-only origin main
 

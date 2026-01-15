@@ -84,7 +84,7 @@
                 <div class="quality-card quality-1">
                     <div class="quality-priority">Priority 1</div>
                     <h3 class="quality-title">Security</h3>
-                    <p class="quality-desc">Mask sensitive values by default · Distroless Docker images · Minimal dependencies · No external network calls</p>
+                    <p class="quality-desc">Mask sensitive values by default · FROM scratch container · AOT-compiled static binary · Non-root user (UID 1654) · No shell · Minimal attack surface</p>
                 </div>
                 <div class="quality-card quality-2">
                     <div class="quality-priority">Priority 2</div>
@@ -109,7 +109,7 @@
                 <div class="quality-card quality-6">
                     <div class="quality-priority">Priority 6</div>
                     <h3 class="quality-title">Performance</h3>
-                    <p class="quality-desc">Fast startup for CI/CD · Handle large plans efficiently · ~50MB Docker image</p>
+                    <p class="quality-desc">Fast startup for CI/CD · Handle large plans efficiently · 14.7MB Docker image (89.6% reduction) · AOT compilation with aggressive trimming</p>
                 </div>
             </div>
         </div>
@@ -178,10 +178,10 @@
                 <div class="component-card">
                     <div class="component-icon">🔒</div>
                     <h3 class="component-title">Security</h3>
-                    <p class="component-desc">Sensitive value detection and masking. Runs in distroless Docker containers with no shell access.</p>
+                    <p class="component-desc">Sensitive value detection and masking. AOT-compiled static binary in FROM scratch container. Non-root user, no shell, minimal dependencies.</p>
                     <div class="component-files">
                         <code>--show-sensitive flag</code>
-                        <code>Chiseled Docker image</code>
+                        <code>FROM scratch + 3 musl libs</code>
                     </div>
                 </div>
             </div>
@@ -195,9 +195,9 @@
 
             <div class="tech-table">
                 <div class="tech-row">
-                    <div class="tech-component">Runtime</div>
-                    <div class="tech-name">.NET 10 Runtime</div>
-                    <div class="tech-purpose">Execute compiled application with latest LTS features</div>
+                    <div class="tech-component">Compilation</div>
+                    <div class="tech-name">NativeAOT (linux-musl-x64)</div>
+                    <div class="tech-purpose">Ahead-of-time compilation to native executable with aggressive trimming</div>
                 </div>
                 <div class="tech-row">
                     <div class="tech-component">Language</div>
@@ -216,8 +216,8 @@
                 </div>
                 <div class="tech-row">
                     <div class="tech-component">Container Base</div>
-                    <div class="tech-name">dotnet/runtime:10.0-noble-chiseled</div>
-                    <div class="tech-purpose">Distroless runtime image (~50MB) with minimal attack surface</div>
+                    <div class="tech-name">FROM scratch</div>
+                    <div class="tech-purpose">Empty base with 3 musl libraries (14.7MB) - minimal attack surface, no shell, non-root user</div>
                 </div>
                 <div class="tech-row">
                     <div class="tech-component">Test Framework</div>
@@ -259,8 +259,8 @@
 
                 <div class="pattern-card">
                     <h3 class="pattern-title">Security by Default</h3>
-                    <p class="pattern-desc">Sensitive values masked unless explicitly shown. Distroless images. No external dependencies.</p>
-                    <div class="pattern-benefit">✅ Safe for CI/CD, minimal attack surface</div>
+                    <p class="pattern-desc">Sensitive values masked unless explicitly shown. FROM scratch containers with AOT-compiled static binaries. Non-root user, no shell, minimal dependencies.</p>
+                    <div class="pattern-benefit">✅ Safe for CI/CD, minimal attack surface, sub-second startup</div>
                 </div>
             </div>
         </div>
@@ -271,27 +271,153 @@
         <div class="section-container">
             <h2 class="section-title">Architecture Decision Records</h2>
             <p class="section-description">
-                Key technical decisions documented for transparency and maintainability.
+                Key technical decisions and architectural patterns that shape tfplan2md. These guide consistent implementation across features.
             </p>
 
-            <div class="adr-list">
-                <a href="https://github.com/oocx/tfplan2md/blob/main/docs/adr-001-scriban-templating.md" class="adr-card">
-                    <div class="adr-number">ADR-001</div>
-                    <h3 class="adr-title">Scriban for Templating</h3>
-                    <p class="adr-desc">Lightweight, text-focused, familiar syntax, embeddable. Better fit than Razor or Liquid for markdown generation.</p>
-                </a>
+            <div class="arch-pattern-grid">
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Scriban for Templating</h3>
+                    <p class="arch-pattern-desc">
+                        Lightweight, text-focused template engine with familiar syntax. Better fit than Razor or Liquid for markdown generation. 
+                        Embeddable, supports custom functions, and works seamlessly with AOT compilation.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Decision:</strong> Use Scriban for all markdown generation. Enable user customization through filesystem templates. 
+                        Provide composable partials for clean template organization.
+                    </div>
+                </div>
 
-                <a href="https://github.com/oocx/tfplan2md/blob/main/docs/adr-002-chiseled-docker-image.md" class="adr-card">
-                    <div class="adr-number">ADR-002</div>
-                    <h3 class="adr-title">Chiseled Docker Images</h3>
-                    <p class="adr-desc">Minimal attack surface (~50MB), no shell, security-first. Distroless base reduces vulnerabilities and image size.</p>
-                </a>
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">NativeAOT with FROM scratch</h3>
+                    <p class="arch-pattern-desc">
+                        Ahead-of-time compilation produces static native executable (linux-musl-x64). Deployed in FROM scratch container with only 3 musl libraries. 
+                        Achieves 14.7MB image size (89.6% reduction from baseline) with fastest possible startup time.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Minimal attack surface, no shell, non-root user (UID 1654), sub-second startup in CI/CD. 
+                        Build-time resource embedding with custom ResourceManager avoids runtime reflection.
+                    </div>
+                </div>
 
-                <a href="https://github.com/oocx/tfplan2md/blob/main/docs/adr-003-modern-csharp-patterns.md" class="adr-card">
-                    <div class="adr-number">ADR-003</div>
-                    <h3 class="adr-title">Modern C# 13 Patterns</h3>
-                    <p class="adr-desc">Records for immutability, file-scoped namespaces, nullable reference types, pattern matching for cleaner code.</p>
-                </a>
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Modern C# 13 Patterns</h3>
+                    <p class="arch-pattern-desc">
+                        Records for immutable data models, file-scoped namespaces, nullable reference types, pattern matching. 
+                        Comprehensive XML documentation (including private members) for AI-assisted development.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Thread-safe, predictable, easier to reason about. Supports 100% AI-assisted development workflow 
+                        with GitHub Copilot multi-model approach.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">CSS Layers for Website Examples</h3>
+                    <p class="arch-pattern-desc">
+                        CSS <code>@layer</code> directive isolates rendered example styles from website page styles. Examples use 
+                        <code>@layer examples</code> with lower cascade priority than website styles.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Prevents specificity conflicts. Examples remain readable while website styles always win conflicts. 
+                        Clean separation between content and presentation layers.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Resource-Specific Templates with ViewModels</h3>
+                    <p class="arch-pattern-desc">
+                        Complex resources (firewall rules, NSG rules, role assignments, variable groups) use specialized templates with ViewModel pattern. 
+                        C# Factory precomputes semantic diffs, matches items by key (e.g., rule name), formats before/after comparisons.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Testable C# logic for complex merging/matching. Clean templates iterate preformatted rows. 
+                        Powerful semantic diffing without Scriban limitations.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Single-Pass Template Rendering</h3>
+                    <p class="arch-pattern-desc">
+                        Direct template dispatch replaces render-then-replace pattern. Main template orchestrates with composable partials 
+                        (<code>_header.sbn</code>, <code>_resource.sbn</code>, <code>_footer.sbn</code>). Resource-specific templates override default partial.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> No anchors or regex replacement. Explicit, debuggable template selection. 
+                        No wasted computation. Scriban <code>include</code> with custom template loader.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Markdig for Platform-Specific HTML</h3>
+                    <p class="arch-pattern-desc">
+                        Standalone HtmlRenderer tool converts markdown to HTML with GitHub and Azure DevOps flavors. Uses Markdig 
+                        with platform-specific pipelines. GitHub strips <code>style</code> attributes; Azure DevOps preserves for theme support.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Use Case:</strong> Visual testing, website examples, screenshot generation. Wrapper templates with <code>{{content}}</code> placeholder. 
+                        Not pixel-perfect but "good enough approximation" for development workflows.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Playwright for Visual Regression</h3>
+                    <p class="arch-pattern-desc">
+                        ScreenshotGenerator tool uses Playwright + Chromium for automated screenshot capture. Supports full-page capture, 
+                        element targeting by Terraform resource address or CSS selector, multiple formats (PNG/JPEG).
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>CI Integration:</strong> Cross-platform, headless-only, actionable error messages. 
+                        Union bounding box for multiple element matches. Enables visual regression testing pipelines.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">DiagnosticContext for Debug Output</h3>
+                    <p class="arch-pattern-desc">
+                        Optional diagnostics collected throughout pipeline via DiagnosticContext passed to components. 
+                        Single <code>--debug</code> flag appends section showing principal mapping status, template resolution, failed ID lookups.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Non-intrusive (zero impact when disabled). Clean separation (diagnostics separate from business logic). 
+                        Flexible (easy to add new categories). Matches immutable architecture patterns.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Report Metadata for Build Traceability</h3>
+                    <p class="arch-pattern-desc">
+                        Every report includes metadata line: tfplan2md version, git commit hash (7 chars), generation timestamp UTC, Terraform version. 
+                        Format: <code>Generated by tfplan2md X.Y.Z (abc1234) on YYYY-MM-DD HH:MM:SS UTC | Terraform 1.x.x</code>
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Audit trail for debugging. Mockable MetadataProvider for deterministic tests. 
+                        Suppressible with <code>--hide-metadata</code> flag.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">TUnit for Async-First Testing</h3>
+                    <p class="arch-pattern-desc">
+                        Modern test framework with true async support, real-time progress reporting, parallel execution. 
+                        Comprehensive test coverage (unit, integration, snapshot) with fast feedback loops.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Benefits:</strong> Faster than MSTest/xUnit. Native async/await support. Better diagnostics. 
+                        Aligns with modern C# patterns and AI-assisted development workflow.
+                    </div>
+                </div>
+
+                <div class="arch-pattern-card">
+                    <h3 class="arch-pattern-title">Terraform Show Approximation</h3>
+                    <p class="arch-pattern-desc">
+                        Development script generates plan JSON from config + state without <code>terraform plan</code> execution. 
+                        Constructs synthetic plan structure for rapid iteration on resource-specific templates.
+                    </p>
+                    <div class="arch-pattern-impl">
+                        <strong>Use Case:</strong> Rapid development workflow. Test templates without full plan cycle. 
+                        <strong>Note:</strong> Approximation only; not suitable for production use.
+                    </div>
+                </div>
             </div>
         </div>
     </section>

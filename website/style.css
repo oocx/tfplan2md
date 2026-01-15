@@ -2006,6 +2006,112 @@ body {
     font-weight: 500;
 }
 
+/* Feature Highlights Grid */
+.feature-highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 32px;
+    margin: 32px 0;
+}
+
+.feature-highlight-card {
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 32px;
+    transition: all 0.3s;
+}
+
+.feature-highlight-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.feature-highlight-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.feature-highlight-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 16px;
+}
+
+.feature-highlight-desc {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.feature-highlight-arch {
+    padding: 16px;
+    background: var(--color-surface);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.feature-highlight-arch strong {
+    color: var(--color-text);
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Architecture Pattern Grid */
+.arch-pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 32px;
+    margin: 32px 0;
+}
+
+.arch-pattern-card {
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 32px;
+    transition: all 0.3s;
+}
+
+.arch-pattern-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+}
+
+.arch-pattern-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 16px;
+}
+
+.arch-pattern-desc {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.arch-pattern-impl {
+    padding: 16px;
+    background: var(--color-surface);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.arch-pattern-impl strong {
+    color: var(--color-text);
+    display: block;
+    margin-bottom: 8px;
+}
+
 .adr-list {
     display: flex;
     flex-direction: column;

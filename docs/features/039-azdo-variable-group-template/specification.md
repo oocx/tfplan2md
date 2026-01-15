@@ -2,16 +2,17 @@
 
 ## Overview
 
-Create a specialized template for Azure DevOps Variable Groups (`azuredevops_variable_group`) that displays all non-secret variables with their names and values in a clear table format. Currently, when variable group resources are included in Terraform plans, the default output shows "At least one attribute in this block is (or was) sensitive, so its contents will not be displayed" for all variables, even those that are not secrets. This makes it impossible to understand what changes to variable group variables will be applied by a Terraform plan, forcing users to either apply blindly or manually inspect the Terraform state.
+Create a specialized template for Azure DevOps Variable Groups (`azuredevops_variable_group`) that displays all variables (both regular and secret) with their metadata in a clear table format. Currently, when variable group resources are included in Terraform plans, the default output shows "At least one attribute in this block is (or was) sensitive, so its contents will not be displayed" for all variables. This makes it impossible to understand what changes to variable group variables will be applied by a Terraform plan, forcing users to either apply blindly or manually inspect the Terraform state.
 
-The new template will distinguish between secret and non-secret variables, displaying all non-secret variables clearly while protecting actual secrets.
+The new template will display all variables in a unified table, showing full metadata for both regular and secret variables while protecting actual secret values by displaying "(sensitive / hidden)" in place of the secret value.
 
 ## User Goals
 
-- Users need to see which non-secret variables are being added, modified, or removed in a variable group
-- Users want to understand what specific values are changing for non-secret variables during updates
+- Users need to see which variables are being added, modified, or removed in a variable group
+- Users want to understand what specific values are changing for regular variables during updates
 - Users need to verify variable changes in CI/CD pipelines before applying Terraform plans
-- Users want secret variables (those in `secret_variable` blocks) to remain hidden for security
+- Users want secret variable values to remain hidden for security while still seeing variable metadata (name, enabled status, etc.)
+- Users need to see Key Vault integration details when a variable group is linked to Azure Key Vault
 - Users need this information presented clearly in Azure DevOps pipeline comments and reports
 
 ## Scope
@@ -20,24 +21,25 @@ The new template will distinguish between secret and non-secret variables, displ
 
 - Specialized template for `azuredevops_variable_group` resource type
 - Display variable group metadata (name, description, project reference)
-- Show non-secret variables in a table format with columns: Name, Value, Enabled, Content Type, Expires
+- Show all variables (from both `variable` and `secret_variable` arrays) in a unified table format with columns: Name, Value, Enabled, Content Type, Expires
+- For secret variables: display all metadata (name, enabled, content_type, expires) but show "(sensitive / hidden)" in the Value column instead of the actual secret_value
 - Categorize variables in update scenarios as: Added (➕), Modified (🔄), Removed (❌), or Unchanged (⏺️)
-- Match variables by `name` attribute for semantic diffing
+- Match variables by `name` attribute for semantic diffing (across both variable arrays)
 - For modified variables: show before/after values with `-` and `+` prefixes for changed attributes
 - For modified variables: show single value without prefix for unchanged attributes
-- Hide `secret_variable` entries completely (they are marked as sensitive in Terraform)
 - Support create, update, and delete operations with appropriate display formats
 - Handle large variable values using the existing large value display mechanism (values over 100 characters or multi-line)
-- Display variable group-level attributes (allow_access, key_vault references) using standard attribute table
+- Display variable group-level attributes (allow_access) using standard attribute table
+- Display Key Vault integration blocks (`key_vault`) in a separate table showing: name, service_endpoint_id, search_depth
 
 ### Out of Scope
 
-- Displaying the actual values of `secret_variable` entries (security requirement)
-- Key Vault-linked variable groups (will use default template or future enhancement)
+- Displaying the actual values of secret variables (security requirement - show "(sensitive / hidden)" instead)
 - Variable group permissions or access control details
 - Standalone `azuredevops_variable` resources (if they exist)
 - Custom sorting options beyond the natural order from Terraform
 - Expandable/collapsible sections per variable (maintain single-table format)
+- Detailed Key Vault secret enumeration (only show the key_vault block metadata)
 
 ## User Experience
 
@@ -70,11 +72,11 @@ This makes it **impossible** to understand what is changing.
 
 ### New Behavior (Variable Group Template)
 
-With the specialized template, the same changes are rendered with full transparency for non-secret variables:
+With the specialized template, the same changes are rendered with full transparency for all variable metadata:
 
 ```markdown
 <details open>
-<summary>🔄 azuredevops_variable_group <b><code>example</code></b> — <code>example-variables</code> | 2 🔧 variables</summary>
+<summary>🔄 azuredevops_variable_group <b><code>example</code></b> — <code>example-variables</code> | 3 🔧 variables</summary>
 <br>
 
 ### 🔄 azuredevops_variable_group.example
@@ -89,12 +91,13 @@ With the specialized template, the same changes are rendered with full transpare
 | ------ | ---- | ----- | ------- | ------------ | ------- |
 | ➕ | `ENV` | `Production` | - | - | - |
 | 🔄 | `APP_VERSION` | - `1.0.0`<br>+ `1.0.0` | - `false`<br>+ `false` | - | - |
+| 🔄 | `SECRET_KEY` | `(sensitive / hidden)` | - `true`<br>+ `false` | - | - |
 | ❌ | `ENVIRONMENT` | `development` | `false` | - | - |
-
-**Note:** Secret variables are not displayed for security reasons.
 
 </details>
 ```
+
+Note how the `SECRET_KEY` variable shows its metadata (name, enabled status) but displays `(sensitive / hidden)` in the Value column instead of the actual secret value.
 
 ### Handling Large Variable Values
 
@@ -132,8 +135,6 @@ Server=tcp:db-new.database.windows.net,1433;Database=mydb;
 
 </details>
 
-**Note:** Secret variables are not displayed for security reasons.
-
 </details>
 ```
 
@@ -158,8 +159,7 @@ For create operations, show a simpler table without the Change column:
 | ---- | ----- | ------- | ------------ | ------- |
 | `APP_VERSION` | `1.0.0` | `false` | - | - |
 | `ENV` | `Production` | - | - | - |
-
-**Note:** Secret variables are not displayed for security reasons.
+| `API_KEY` | `(sensitive / hidden)` | `true` | - | - |
 
 </details>
 ```
@@ -183,11 +183,42 @@ For delete operations, show the variables being deleted:
 | ---- | ----- | ------- | ------------ | ------- |
 | `APP_VERSION` | `1.0.0` | `false` | - | - |
 | `ENVIRONMENT` | `development` | `false` | - | - |
-
-**Note:** Secret variables are not displayed for security reasons.
+| `DB_PASSWORD` | `(sensitive / hidden)` | `true` | - | - |
 
 </details>
 ```
+
+### Key Vault Integration
+
+When a variable group is linked to Azure Key Vault, display the key_vault block(s) in a separate table:
+
+```markdown
+<details open>
+<summary>➕ azuredevops_variable_group <b><code>keyvault_example</code></b> — <code>keyvault-variables</code></summary>
+<br>
+
+### ➕ azuredevops_variable_group.keyvault_example
+
+**Variable Group:** `keyvault-variables`
+
+**Description:** `Variable group linked to Azure Key Vault`
+
+#### Key Vault Integration
+
+| Name | Service Endpoint ID | Search Depth |
+| ---- | ------------------- | ------------ |
+| `my-keyvault` | `a1b2c3d4-e5f6-7890-abcd-ef1234567890` | `1` |
+
+#### Variables
+
+| Name | Value | Enabled | Content Type | Expires |
+| ---- | ----- | ------- | ------------ | ------- |
+| `LOCAL_VAR` | `local-value` | - | - | - |
+
+</details>
+```
+
+Note: Variables retrieved from Key Vault are not listed in the `variable` or `secret_variable` arrays - only the Key Vault connection metadata is shown.
 
 ## Technical Details
 
@@ -235,16 +266,16 @@ Based on the `examples/azuredevops/terraform_plan.json`, the variable group stru
 
 ### Key Observations
 
-1. **Non-secret variables** are in the `variable` array
-2. **Secret variables** are in the `secret_variable` array
+1. **Regular variables** are in the `variable` array with attributes: `name`, `value`, `enabled`, `content_type`, `expires`
+2. **Secret variables** are in the `secret_variable` array with attributes: `name`, `secret_value`, `enabled`, `content_type`, `expires`
 3. The `secret_variable` array is marked as `true` in `before_sensitive` and `after_sensitive`
 4. Individual entries in the `variable` array are **not marked sensitive** (they are empty objects `{}` in the sensitivity markers)
-5. Variable attributes include: `name`, `value`, `enabled`, `content_type`, `expires`
-6. Not all attributes are always present (e.g., `enabled` may be null/missing for new variables)
+5. Not all attributes are always present (e.g., `enabled` may be null/missing for new variables)
+6. Key Vault integration is represented by `key_vault` blocks with attributes: `name`, `service_endpoint_id`, `search_depth`
 
 ### Security Consideration
 
-The template must **never display** any entry from the `secret_variable` array. Only the `variable` array should be processed and displayed.
+The template must **never display** the `secret_value` attribute from `secret_variable` entries. Instead, display "(sensitive / hidden)" in the Value column while showing all other metadata (name, enabled, content_type, expires).
 
 ### Empty Value Handling
 
@@ -255,48 +286,46 @@ The template must **never display** any entry from the `secret_variable` array. 
 
 ### Semantic Diffing
 
-Variables should be matched by their `name` attribute (similar to NSG security rules). This ensures that:
-- Adding a new variable is clearly marked as ➕
-- Removing a variable is clearly marked as ❌
+Variables should be matched by their `name` attribute across both the `variable` and `secret_variable` arrays (similar to NSG security rules). This ensures that:
+- Adding a new variable (regular or secret) is clearly marked as ➕
+- Removing a variable (regular or secret) is clearly marked as ❌
 - Modifying a variable shows before/after values as 🔄
 - Reordering variables doesn't create false change indicators
+- Variables from both arrays are displayed in a unified table
 
 ## Success Criteria
 
 - [ ] Template created for `azuredevops_variable_group` resource type at `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azuredevops/variable_group.sbn`
 - [ ] Template directory created for provider-specific templates: `Templates/azuredevops/`
-- [ ] Non-secret variables displayed in table format with all relevant columns
-- [ ] Variables categorized correctly as Added, Modified, Removed, or Unchanged using semantic matching by name
-- [ ] Secret variables (`secret_variable` array) are completely hidden with a clear note explaining why
-- [ ] Large variable values (>100 chars or multi-line) handled using existing large value display mechanism
+- [ ] All variables (from both `variable` and `secret_variable` arrays) displayed in unified table format with all relevant columns
+- [ ] Secret variables show all metadata (name, enabled, content_type, expires) but display "(sensitive / hidden)" in Value column
+- [ ] Variables categorized correctly as Added, Modified, Removed, or Unchanged using semantic matching by name across both arrays
+- [ ] Large variable values (>100 chars or multi-line) handled using existing large value display mechanism (regular variables only)
 - [ ] Modified variables show before/after values with `-` and `+` prefixes for changed attributes
 - [ ] Unchanged attributes in modified variables show single value without prefix
 - [ ] Empty/null attribute values displayed as `-` (dash)
 - [ ] Create, update, and delete operations each have appropriate table layouts
 - [ ] Variable group metadata (name, description) displayed prominently
 - [ ] Summary line includes variable group name and change count for updates
+- [ ] Key Vault blocks displayed in a separate table with columns: name, service_endpoint_id, search_depth
 - [ ] Template follows Report Style Guide formatting standards (code formatting for values, plain text for labels)
 - [ ] All existing tests pass
 - [ ] New tests verify variable group rendering for:
-  - Create operation with non-secret variables
-  - Update operation with added/modified/removed variables
-  - Delete operation with non-secret variables
-  - Presence of secret variables (verify they are not displayed)
-  - Large variable values
+  - Create operation with both regular and secret variables
+  - Update operation with added/modified/removed variables (both types)
+  - Delete operation with both regular and secret variables
+  - Secret variables display metadata but show "(sensitive / hidden)" for values
+  - Large variable values (regular variables only)
   - Empty/null attribute values
+  - Key Vault integration blocks
 - [ ] Documentation updated in `docs/features.md`
 - [ ] Example output included in feature documentation
 
 ## Open Questions
 
-**Q: Should we show a count of secret variables that exist but are hidden?**
+**Q: How should we display secret variables?**
 
-**A:** Yes, for transparency. Add a note like:
-```markdown
-**Note:** This variable group contains 2 secret variables that are not displayed for security reasons.
-```
-
-This helps users understand that secret variables exist without exposing their values.
+**A (RESOLVED):** Display secret variables in the same table as regular variables, showing all metadata (name, enabled, content_type, expires) but displaying "(sensitive / hidden)" in the Value column instead of the actual `secret_value`. No separate note is needed.
 
 **Q: How should we handle variables with null/unknown values (shown as "known after apply")?**
 
@@ -308,17 +337,13 @@ This helps users understand that secret variables exist without exposing their v
 
 **Q: What if a variable group has ONLY secret variables and no regular variables?**
 
-**A:** Show the variable group metadata and a note:
-```markdown
-**Note:** This variable group contains only secret variables, which are not displayed for security reasons.
-```
+**A:** Show the variable group metadata and the variables table with all secret variables displaying "(sensitive / hidden)" in the Value column. Display the table normally - the secret variables are not hidden, only their values are.
 
-Do not show an empty table.
+**Q: How should we display Key Vault-linked variable groups?**
 
-**Q: Should we display key_vault-linked variable groups differently?**
+**A (RESOLVED):** Show a separate table for `key_vault` blocks with columns:
+- **name**: The name of the Key Vault
+- **service_endpoint_id**: The Azure service endpoint ID
+- **search_depth**: The search depth for secrets
 
-**A:** Out of scope for this feature. If a variable group uses Key Vault integration, the template can either:
-1. Fall back to the default template (showing key_vault configuration), or
-2. Show a message indicating Key Vault integration and defer detailed variable display to future enhancement
-
-For the initial implementation, fallback to default template is acceptable.
+The Key Vault table should appear after the Variables section. Variables from Key Vault are not enumerated in the variable arrays, so only the key_vault block metadata is shown.

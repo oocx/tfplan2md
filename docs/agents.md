@@ -335,7 +335,7 @@ The tfplan2md workflow supports both **local agents** (running in VS Code) and *
 - Relies on CI/CD for validation
 
 **Cloud (GitHub PR coding agent):**
-- Works on an existing PR branch (often `copilot/*`) — do not switch branches
+- Works on an existing PR branch (often `copilot/*`) — do not switch branches and do not create a new branch
 - If clarification is needed, ask via PR comments and wait (do not guess)
 
 **Example: Workflow Engineer**

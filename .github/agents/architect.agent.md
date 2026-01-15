@@ -50,6 +50,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Analyze existing codebase patterns before designing
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Consider multiple implementation approaches
 - Document trade-offs for each option clearly
 - Present your recommendation with rationale
@@ -272,7 +273,9 @@ Your work is complete when:
    git commit -m "docs: add architecture for <feature-name>"
    ```
 
-3. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
+3. **VS Code (local): Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
+
+   **GitHub PR coding agent (existing PR):** Updates must land on the provided PR branch so they show up in the PR.
 
 ## Handoff
 

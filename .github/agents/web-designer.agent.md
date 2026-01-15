@@ -26,6 +26,7 @@ This agent supports both local (VS Code) and cloud (GitHub) execution. See the `
 ### ✅ Always Do (Both Contexts)
 - **CRITICAL**: Before making ANY changes, ensure you're on an up-to-date feature branch, NOT main
 - Check current branch: `git branch --show-current` - if on main, STOP and create feature branch first
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Use branch naming convention: `website/<description>` (e.g., `website/update-homepage-cta`)
 - Sync with latest main before starting work (use `git-rebase-main` skill if needed)
 - **CRITICAL**: Only make the EXACT changes requested by the user - nothing more, nothing less

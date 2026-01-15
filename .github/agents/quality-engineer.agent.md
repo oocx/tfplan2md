@@ -40,6 +40,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Map every acceptance criterion to at least one test case
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Ensure all automated tests are fully automated (no manual steps)
 - For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 - Follow xUnit and AwesomeAssertions patterns
@@ -308,7 +309,9 @@ Your work is complete when:
    git commit -m "docs: add test plan for NNN-<feature-slug>"
    ```
 
-2. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
+2. **VS Code (local): Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
+
+   **GitHub PR coding agent (existing PR):** Updates must land on the provided PR branch so they show up in the PR.
 
 ## Handoff
 

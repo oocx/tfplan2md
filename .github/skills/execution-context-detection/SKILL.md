@@ -35,7 +35,8 @@ Enable agents to detect their execution environment and adapt behavior appropria
 #### GitHub Pull Request (PR Coding Agent)
 - You are executing as a GitHub Copilot **coding agent on an existing pull request**
 - Work on the **branch already associated with the PR** (often `copilot/*`)
-- **Do not create/switch branches**; otherwise changes may not appear in the PR
+- **Do not switch branches** and **do not create a new branch**; otherwise changes may not appear in the PR
+- Ensure commits are made on the provided PR branch so files appear in the PR
 - If clarification is needed, **ask via PR comments** and wait for an answer (do not guess)
 
 ## Detection Methods

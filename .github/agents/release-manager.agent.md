@@ -44,6 +44,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Verify code review is approved before proceeding
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test`) if diagnosing a specific CI failure
 - Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
 - Check that working directory is clean

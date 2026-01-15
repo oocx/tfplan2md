@@ -40,6 +40,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Review implementation to understand actual behavior
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Update README.md for user-facing changes
 - Update docs/features.md with new feature descriptions
 - Ensure consistency across all documentation files

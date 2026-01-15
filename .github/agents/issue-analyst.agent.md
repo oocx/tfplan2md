@@ -54,6 +54,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 ## Boundaries
 
 ### ✅ Always Do
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Create new fix branch from latest main BEFORE starting investigation
 - Ask one clarifying question at a time
 - Reproduce the issue if possible
@@ -115,6 +116,8 @@ Before investigating, review relevant context:
 ### Step 0: Create Fix Branch
 
 **ALWAYS do this FIRST, before any investigation:**
+
+**Exception (GitHub PR coding agent):** If you're already working on an existing PR branch (often `copilot/*`), do **not** create/switch branches. Stay on the provided branch and use PR comments as the feedback loop for any clarifications.
 
 ```bash
 # Determine the next available issue number

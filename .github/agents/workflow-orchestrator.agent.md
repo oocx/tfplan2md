@@ -37,6 +37,7 @@ Execute complete feature implementations or bug fixes autonomously by **delegati
 2. **You NEVER ask clarifying questions** - If requirements are unclear, immediately delegate to Requirements Engineer to gather them
 3. **Your sole job is to delegate** - Use the `task` tool to invoke specialized agents in the correct sequence
 4. **Trust specialized agents** - Every agent has the tools they need; never assume limitations or do their work
+5. **PR coding agent safety:** If you are running on an existing PR branch (often `copilot/*`), do not instruct agents to create/switch branches; all work must land on the provided branch so it appears in the PR.
 
 ## Core Responsibilities
 

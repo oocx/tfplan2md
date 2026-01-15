@@ -40,6 +40,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Sync with latest main before starting ANY work (initial implementation, rework, or fixes)
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Verify you're on the correct feature branch (created by Requirements Engineer)
 - Check Docker availability before running Docker tests (ask Maintainer to start if needed)
 - Work on ONE task at a time - do not move to next task until current task is complete
@@ -193,6 +194,7 @@ Follow the project's coding conventions strictly:
    scripts/git-status.sh  # Confirm you're on feature/<name> branch
    git fetch origin && git rebase origin/main  # Get latest changes from main
    ```
+   - In GitHub PR coding agent context, you are already on the PR branch (often `copilot/*`) — do not `git switch` to another branch.
    - This prevents merge conflicts later
    - Required for both initial implementation and rework after failed PR/CI validation
 

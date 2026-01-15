@@ -48,6 +48,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Check Docker availability before running Docker build (ask maintainer to start if needed)
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Run `scripts/test-with-timeout.sh -- dotnet test` and `docker build` to verify functionality
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - Check that all acceptance criteria are met

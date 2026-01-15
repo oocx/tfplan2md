@@ -443,8 +443,9 @@ internal static class VariableGroupViewModelFactory
     /// <returns>Formatted diff or single value.</returns>
     private static string FormatEnabledDiff(bool? before, bool? after, string format)
     {
-        var beforeStr = before == null ? "" : (before.Value ? "true" : "false");
-        var afterStr = after == null ? "" : (after.Value ? "true" : "false");
+        // Use "-" placeholder for null values in diffs (consistent with initial null rendering)
+        var beforeStr = before == null ? "-" : (before.Value ? "true" : "false");
+        var afterStr = after == null ? "-" : (after.Value ? "true" : "false");
 
         if (beforeStr == afterStr)
         {
@@ -478,8 +479,9 @@ internal static class VariableGroupViewModelFactory
     /// <returns>Formatted diff or single value.</returns>
     private static string FormatOptionalDiff(string? before, string? after, string format)
     {
-        var beforeStr = before ?? "";
-        var afterStr = after ?? "";
+        // Use "-" placeholder for null/empty values in diffs (consistent with initial null rendering)
+        var beforeStr = string.IsNullOrEmpty(before) ? "-" : before;
+        var afterStr = string.IsNullOrEmpty(after) ? "-" : after;
 
         if (beforeStr == afterStr)
         {

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure DevOps Variable Groups - tfplan2md</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html" class="brand-link">
+                    <img src="../assets/images/logo-full.svg" alt="tfplan2md" height="64" class="brand-logo-full">
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+                        <div class="nav-menu">
+                <a href="../features/index.html" class="nav-item">Features</a>
+                <a href="../getting-started.html" class="nav-item">Install</a>
+                <a href="../docs.html" class="nav-item">Docs</a>
+                <a href="../examples.html" class="nav-item">Examples</a>
+                <a href="../providers/index.html" class="nav-item">Providers</a>
+                <a href="../architecture.html" class="nav-item">Architecture</a>
+                <a href="../ai-workflow.html" class="nav-item">AI Workflow</a>
+                <a href="../contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <img src="../assets/icons/dark-light-mode.svg" alt="Toggle theme" class="theme-icon">
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Azure DevOps Variable Groups</h1>
+                <p class="hero-subtitle">
+                    See exactly which variables changed—metadata visible, secret values protected.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">azuredevops</span>
+                </div>
+                <p class="feature-detail-description">
+                    When Azure DevOps variable groups change, Terraform shows "At least one attribute in this block is (or was) sensitive" for all variables—even non-secret ones. This makes it impossible to review changes. tfplan2md's specialized template displays all variable metadata clearly while protecting actual secret values.
+                </p>
+                
+                <div class="feature-comparison">
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">❌ Without tfplan2md</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Raw Terraform Output</span>
+                            </div>
+                            <div class="example-content">
+                                <pre><code>~ azuredevops_variable_group.example will be updated in-place
+~ resource "azuredevops_variable_group" "example" {
+    id          = "123"
+    name        = "example-variables"
+    # (3 unchanged attributes hidden)
+
+  - variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+  - variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+  + variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+  + variable {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <p class="comparison-note">Which variables changed? What are their names? Completely opaque.</p>
+                    </div>
+                    
+                    <div class="comparison-column">
+                        <h3 class="comparison-title">✅ With tfplan2md</h3>
+                        <div class="code-block interactive-example">
+                            <div class="code-header">
+                                <span class="code-title">Variable Group Output</span>
+                                <div class="example-controls">
+                                    <div class="view-toggle">
+                                        <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                        <button class="toggle-btn" data-view="source">Source</button>
+                                    </div>
+                                    <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                                </div>
+                            </div>
+                            <div class="example-content">
+                                <div class="view-pane rendered-view active">
+                                    <h3>🔄&nbsp;azuredevops_variable_group.example</h3>
+                                    <p><strong>Variable Group:</strong> <code>example-variables</code></p>
+                                    <p><strong>Description:</strong> <code>Variables for CI/CD pipeline</code></p>
+                                    <h4>Variables</h4>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Change</th>
+                                                <th>Name</th>
+                                                <th>Value</th>
+                                                <th>Enabled</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>➕</td>
+                                                <td><code>ENV</code></td>
+                                                <td><code>Production</code></td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>🔄</td>
+                                                <td><code>APP_VERSION</code></td>
+                                                <td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- 1.0.0</span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ 2.0.0</span></code></td>
+                                                <td><code>true</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>🔄</td>
+                                                <td><code>API_KEY</code></td>
+                                                <td><code>(sensitive / hidden)</code></td>
+                                                <td><code style="display:block; white-space:normal; padding:0; margin:0"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">- true</span><br/><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0">+ false</span></code></td>
+                                            </tr>
+                                            <tr>
+                                                <td>❌</td>
+                                                <td><code>LEGACY_URL</code></td>
+                                                <td><code>https://old.example.com</code></td>
+                                                <td><code>false</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="view-pane source-view">
+                                    <pre><code>### 🔄 azuredevops_variable_group.example
+
+**Variable Group:** `example-variables`
+
+**Description:** `Variables for CI/CD pipeline`
+
+#### Variables
+
+| Change | Name | Value | Enabled |
+| ------ | ---- | ----- | ------- |
+| ➕ | `ENV` | `Production` | - |
+| 🔄 | `APP_VERSION` | &lt;code style="display:block; white-space:normal; padding:0; margin:0;"&gt;&lt;span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;- 1.0.0&lt;/span&gt;&lt;br&gt;&lt;span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;+ 2.0.0&lt;/span&gt;&lt;/code&gt; | `true` |
+| 🔄 | `API_KEY` | `(sensitive / hidden)` | &lt;code style="display:block; white-space:normal; padding:0; margin:0;"&gt;&lt;span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;- true&lt;/span&gt;&lt;br&gt;&lt;span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;"&gt;+ false&lt;/span&gt;&lt;/code&gt; |
+| ❌ | `LEGACY_URL` | `https://old.example.com` | `false` |</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="comparison-note">Clear semantic diff: added ENV, updated APP_VERSION, API_KEY enabled changed, removed LEGACY_URL.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Key Features</h2>
+            
+            <div class="feature-highlights">
+                <div class="feature-highlight">
+                    <div class="highlight-icon">🔐</div>
+                    <h3 class="highlight-title">Secret Value Protection</h3>
+                    <p class="highlight-description">
+                        Secret variable values display as "(sensitive / hidden)" while showing all metadata: name, enabled status, content type, and expiration. Security maintained, visibility restored.
+                    </p>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="highlight-icon">🔄</div>
+                    <h3 class="highlight-title">Semantic Diffing</h3>
+                    <p class="highlight-description">
+                        Variables matched by name across before/after states. Changes categorized as Added (➕), Modified (🔄), Removed (❌), or Unchanged (⏺️). See exactly what changed.
+                    </p>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="highlight-icon">📊</div>
+                    <h3 class="highlight-title">Unified Display</h3>
+                    <p class="highlight-description">
+                        Regular and secret variables merged into single table. No need to mentally combine separate arrays. All variables visible in one clear, scannable format.
+                    </p>
+                </div>
+
+                <div class="feature-highlight">
+                    <div class="highlight-icon">📝</div>
+                    <h3 class="highlight-title">Complete Metadata</h3>
+                    <p class="highlight-description">
+                        Shows variable group name, description, project reference, and Key Vault integration details. Every attribute visible for informed decision-making.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Operation Examples</h2>
+            <p class="section-description">How variable groups appear for different Terraform operations</p>
+
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h3 class="example-title">Create Operation</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Creating New Variable Group</span>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>### ➕ azuredevops_variable_group.app_config
+
+**Variable Group:** `app-config-prod`
+
+**Description:** `Production app configuration`
+
+#### Variables
+
+| Name | Value | Enabled |
+| ---- | ----- | ------- |
+| `APP_NAME` | `MyApp` | - |
+| `ENVIRONMENT` | `Production` | - |
+| `DB_HOST` | `prod-db.example.com` | `true` |
+| `DB_PASSWORD` | `(sensitive / hidden)` | `true` |
+| `API_KEY` | `(sensitive / hidden)` | `true` |</code></pre>
+                        </div>
+                    </div>
+                    <p class="example-note">Simple table for new variable groups. Secret values protected from the start.</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 class="example-title">Update Operation</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Modifying Existing Variables</span>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>### 🔄 azuredevops_variable_group.app_config
+
+**Variable Group:** `app-config-prod`
+
+#### Variables
+
+| Change | Name | Value | Enabled |
+| ------ | ---- | ----- | ------- |
+| 🔄 | `APP_VERSION` | - `2.1.0`<br>+ `2.2.0` | `true` |
+| 🔄 | `FEATURE_FLAGS` | - `alpha,beta`<br>+ `beta,gamma` | `true` |
+| 🔄 | `API_KEY` | `(sensitive / hidden)` | - `true`<br>+ `false` |
+| ⏺️ | `ENVIRONMENT` | `Production` | - |</code></pre>
+                        </div>
+                    </div>
+                    <p class="example-note">Before/after values with change indicators. Unchanged variables marked with ⏺️.</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 class="example-title">Delete Operation</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">Removing Variable Group</span>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>### ❌ azuredevops_variable_group.legacy_config
+
+**Variable Group:** `legacy-config`
+
+#### Variables (being deleted)
+
+| Name | Value | Enabled |
+| ---- | ----- | ------- |
+| `OLD_API_URL` | `https://legacy.example.com` | `false` |
+| `DEPRECATED_KEY` | `(sensitive / hidden)` | `false` |
+| `TEMP_SETTING` | `temporary` | `false` |</code></pre>
+                        </div>
+                    </div>
+                    <p class="example-note">Clear view of what's being removed. Audit trail for cleanup operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--color-surface);">
+        <div class="section-container">
+            <h2 class="section-title">Key Vault Integration</h2>
+            <p class="section-description">
+                When variable groups are linked to Azure Key Vault, tfplan2md displays the Key Vault block metadata in a separate table showing the connection details.
+            </p>
+
+            <div class="code-block" style="max-width: 900px; margin: 32px auto;">
+                <div class="code-header">
+                    <span class="code-title">Key Vault Linked Variable Group</span>
+                </div>
+                <div class="example-content">
+                    <pre><code>### ➕ azuredevops_variable_group.keyvault_secrets
+
+**Variable Group:** `keyvault-secrets`
+
+**Description:** `Secrets from Azure Key Vault`
+
+#### Key Vault Integration
+
+| Name | Service Endpoint ID | Search Depth |
+| ---- | ------------------- | ------------ |
+| `kv-myapp-prod` | `12345678-1234-1234-1234-123456789012` | `1` |
+
+#### Variables
+
+(No variables configured - all values retrieved from Key Vault)</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title">Technical Details</h2>
+            
+            <div class="tech-details">
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Resource Type</h3>
+                    <p class="tech-detail-content"><code>azuredevops_variable_group</code></p>
+                </div>
+
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Implementation</h3>
+                    <p class="tech-detail-content">ViewModel pattern with C# Factory for semantic diffing. Merges <code>variable</code> and <code>secret_variable</code> arrays by name.</p>
+                </div>
+
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Large Values</h3>
+                    <p class="tech-detail-content">Values >100 characters or multi-line moved to collapsible large values section with inline diff highlighting.</p>
+                </div>
+
+                <div class="tech-detail-card">
+                    <h3 class="tech-detail-title">Security</h3>
+                    <p class="tech-detail-content">Secret variable <code>value</code> attribute always displayed as "(sensitive / hidden)". All other metadata (name, enabled, etc.) visible.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section cta-section">
+        <div class="section-container">
+            <div class="cta-box">
+                <h2 class="cta-title">Ready to see clear variable group diffs?</h2>
+                <p class="cta-description">
+                    No more guessing what changed in your Azure DevOps variable groups. Get the visibility you need for confident deployments.
+                </p>
+                <div class="cta-actions">
+                    <a href="../getting-started.html" class="btn btn-primary">Get Started</a>
+                    <a href="../examples.html" class="btn btn-secondary">View More Examples</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="../features/index.html" class="footer-link">Features</a>
+                    <a href="../getting-started.html" class="footer-link">Get Started</a>
+                    <a href="../docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="../examples.html" class="footer-link">Examples</a>
+                    <a href="../architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="../contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        mobileMenuBtn?.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+        });
+
+        // Load interactive examples functionality from shared module
+        // See ../assets/js/interactive-examples.js for implementation
+    </script>
+    <script src="../assets/js/interactive-examples.js"></script>
+</body>
+</html>

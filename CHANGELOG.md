@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.35"></a>
+## [1.0.0-alpha.35](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.34...v1.0.0-alpha.35) (2026-01-15)
+
+### ✨ Features
+
+* **azdo-variable-group:** add ViewModel classes and Factory with tests ([48441e7](https://github.com/oocx/tfplan2md/commit/48441e79add4c87772eb352853cc4b78d8bc172b))
+* **azdo-variable-group:** create Scriban template ([32e2be6](https://github.com/oocx/tfplan2md/commit/32e2be67af066e095429dcc993921ae2e630b84b))
+* **azdo-variable-group:** fix template action handling ([a6a553b](https://github.com/oocx/tfplan2md/commit/a6a553b706327159a0a3228169ab4354033411da))
+* **azdo-variable-group:** register ViewModel in ResourceChangeModel ([0dcb42f](https://github.com/oocx/tfplan2md/commit/0dcb42ff06a4e1436f7e106f60345f8ed0454318))
+* **azdo-variable-group:** wire Factory in ReportModelBuilder ([d858782](https://github.com/oocx/tfplan2md/commit/d858782fe09b6ff58136bc33bfd04babfc461f8a))
+
+### 🐛 Bug Fixes
+
+* show placeholder for null values in variable group diffs ([1c76e1c](https://github.com/oocx/tfplan2md/commit/1c76e1c64265501db2a38c2c1a0fcbeadb20a76b))
+* **azdo-variable-group:** add VariableGroup ViewModel mapping to AotScriptObjectMapper ([afda024](https://github.com/oocx/tfplan2md/commit/afda02415723fbb09c087623f916895a63f91799))
+
+### ♻️ Refactoring
+
+* **azdo-variable-group:** remove DEBUG line from template ([3c55071](https://github.com/oocx/tfplan2md/commit/3c550718f4b3d127dc1edabaecc5349dcb7b5933))
+
+### 📚 Documentation
+
+* add code review report for variable group template feature ([3c2d0c3](https://github.com/oocx/tfplan2md/commit/3c2d0c3f410dd158ec885f603cb28aa74adc9671))
+* add documentation for Azure DevOps variable group template feature ([c827d25](https://github.com/oocx/tfplan2md/commit/c827d25237b0b6a34247e077554ebae870795ff5))
+* add feature specification for 039-azdo-variable-group-template ([799cdac](https://github.com/oocx/tfplan2md/commit/799cdac4e9ab4dd768e62b037a0d22e79d2646f2))
+* add test plan and UAT plan for feature 039 (Azure DevOps variable group template) ([bcdbfec](https://github.com/oocx/tfplan2md/commit/bcdbfeccfabf040b86ddf6c3fbb6d08629c67aba))
+* mark Task 6 and Task 7 as complete ([79c28c3](https://github.com/oocx/tfplan2md/commit/79c28c30faa356f284ca1127a54ec9de6ab2479d))
+* update specification per maintainer feedback and add architecture ([eb0753b](https://github.com/oocx/tfplan2md/commit/eb0753b99c71df3c9d18b4afe8210ed8c8fd61d1))
+
 <a name="1.0.0-alpha.34"></a>
 ## [1.0.0-alpha.34](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.33...v1.0.0-alpha.34) (2026-01-15)
 

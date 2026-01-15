@@ -229,4 +229,130 @@ public class PrincipalMapperDiagnosticsTests
         context.FailedResolutions.Should().HaveCount(1);
         context.FailedResolutions[0].PrincipalId.Should().Be(missingPrincipalId);
     }
+
+    /// <summary>
+    /// Test that file not found error populates enhanced diagnostics.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_FileNotFound_RecordsEnhancedDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/nonexistent.json";
+
+        // Act
+        _ = new PrincipalMapper(mappingFile, context);
+
+        // Assert
+        context.PrincipalMappingFileProvided.Should().BeTrue();
+        context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+        context.PrincipalMappingFilePath.Should().Be(mappingFile);
+        context.PrincipalMappingFileExists.Should().BeFalse();
+        context.PrincipalMappingDirectoryExists.Should().BeTrue(); // TestData directory exists
+        context.PrincipalMappingErrorType.Should().Be(PrincipalLoadError.FileNotFound);
+        context.PrincipalMappingErrorMessage.Should().NotBeNullOrEmpty();
+    }
+
+    /// <summary>
+    /// Test that directory not found error populates enhanced diagnostics.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_DirectoryNotFound_RecordsEnhancedDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "/nonexistent/directory/principals.json";
+
+        // Act
+        _ = new PrincipalMapper(mappingFile, context);
+
+        // Assert
+        context.PrincipalMappingFileProvided.Should().BeTrue();
+        context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+        context.PrincipalMappingFilePath.Should().Be(mappingFile);
+        context.PrincipalMappingFileExists.Should().BeFalse();
+        context.PrincipalMappingDirectoryExists.Should().BeFalse();
+        context.PrincipalMappingErrorType.Should().Be(PrincipalLoadError.DirectoryNotFound);
+        context.PrincipalMappingErrorMessage.Should().NotBeNullOrEmpty();
+    }
+
+    /// <summary>
+    /// Test that JSON parse error populates enhanced diagnostics with line/column info.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_JsonParseError_RecordsEnhancedDiagnosticsWithLineInfo()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/invalid-json-principal-mapping.json";
+
+        // Create a temporary invalid JSON file for testing
+        var invalidJson = "{ \"key1\": \"value1\", invalid }";
+        Directory.CreateDirectory("TestData");
+        File.WriteAllText(mappingFile, invalidJson);
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+            context.PrincipalMappingFilePath.Should().Be(mappingFile);
+            context.PrincipalMappingFileExists.Should().BeTrue();
+            context.PrincipalMappingDirectoryExists.Should().BeTrue();
+            context.PrincipalMappingErrorType.Should().Be(PrincipalLoadError.JsonParseError);
+            context.PrincipalMappingErrorMessage.Should().NotBeNullOrEmpty();
+            context.PrincipalMappingErrorDetails.Should().NotBeNullOrEmpty();
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Test that empty file (valid JSON but no principals) populates enhanced diagnostics.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_EmptyJsonFile_RecordsEnhancedDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/empty-principal-mapping.json";
+
+        // Create a temporary empty JSON file for testing
+        var emptyJson = "{}";
+        Directory.CreateDirectory("TestData");
+        File.WriteAllText(mappingFile, emptyJson);
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeTrue(); // Empty is technically successful
+            context.PrincipalMappingFilePath.Should().Be(mappingFile);
+            context.PrincipalTypeCount["principals"].Should().Be(0); // But count is 0
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
 }

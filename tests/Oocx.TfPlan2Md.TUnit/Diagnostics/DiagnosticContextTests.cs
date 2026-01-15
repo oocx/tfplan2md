@@ -256,4 +256,165 @@ public class DiagnosticContextTests
         await Assert.That(markdown).Contains("Failed to resolve 1 principal ID:");
         await Assert.That(markdown).DoesNotContain("1 principal IDs");
     }
+
+    /// <summary>
+    /// Test that FileNotFound error shows detailed diagnostics with Docker guidance.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_FileNotFoundError_ShowsDetailedDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "/app/principals.json",
+            PrincipalMappingErrorType = PrincipalMappingErrorType.FileNotFound,
+            PrincipalMappingErrorMessage = "File not found: /app/principals.json",
+            PrincipalMappingParentDirectoryExists = false
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert
+        await Assert.That(markdown).Contains("**Error Type:** FileNotFound");
+        await Assert.That(markdown).Contains("**Error Message:** File not found: /app/principals.json");
+        await Assert.That(markdown).Contains("**File Existence Check:**");
+        await Assert.That(markdown).Contains("- File exists: No");
+        await Assert.That(markdown).Contains("- Parent directory exists: No");
+        await Assert.That(markdown).Contains("**Troubleshooting:**");
+        await Assert.That(markdown).Contains("The parent directory does not exist");
+        await Assert.That(markdown).Contains("If running in Docker: The volume mount may be missing or incorrect");
+        await Assert.That(markdown).Contains("docker run -v /host/path");
+    }
+
+    /// <summary>
+    /// Test that ParseError shows file size and JSON troubleshooting guidance.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_ParseError_ShowsFileSizeAndGuidance()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "principals.json",
+            PrincipalMappingErrorType = PrincipalMappingErrorType.ParseError,
+            PrincipalMappingErrorMessage = "JSON parse error at line 12, column 5: Unexpected character '}'",
+            PrincipalMappingFileSize = 2048
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert
+        await Assert.That(markdown).Contains("**Error Type:** ParseError");
+        await Assert.That(markdown).Contains("**File Size:** 2048 bytes");
+        await Assert.That(markdown).Contains("**Troubleshooting:**");
+        await Assert.That(markdown).Contains("The file contains invalid JSON");
+        await Assert.That(markdown).Contains("Missing or extra commas");
+        await Assert.That(markdown).Contains("Check the error message above for line/column information");
+    }
+
+    /// <summary>
+    /// Test that ParseError with empty file shows special guidance.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_ParseErrorEmptyFile_ShowsEmptyFileWarning()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "principals.json",
+            PrincipalMappingErrorType = PrincipalMappingErrorType.ParseError,
+            PrincipalMappingErrorMessage = "JSON parse error: Unexpected end of input",
+            PrincipalMappingFileSize = 0
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert
+        await Assert.That(markdown).Contains("**File Size:** 0 bytes");
+        await Assert.That(markdown).Contains("**Note:** The file is empty. Ensure it contains valid JSON.");
+    }
+
+    /// <summary>
+    /// Test that ReadError shows permissions troubleshooting guidance.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_ReadError_ShowsPermissionsGuidance()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "principals.json",
+            PrincipalMappingErrorType = PrincipalMappingErrorType.ReadError,
+            PrincipalMappingErrorMessage = "Access denied: principals.json"
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert
+        await Assert.That(markdown).Contains("**Error Type:** ReadError");
+        await Assert.That(markdown).Contains("**Troubleshooting:**");
+        await Assert.That(markdown).Contains("File permissions (the process must have read access)");
+        await Assert.That(markdown).Contains("The file is not locked by another process");
+    }
+
+    /// <summary>
+    /// Test that template loading error shows appropriate diagnostics.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_TemplateFileNotFound_ShowsDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            TemplateErrorType = TemplateErrorType.FileNotFound,
+            TemplateErrorMessage = "Template 'custom.sbn' not found",
+            TemplateFileExists = false
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert
+        await Assert.That(markdown).Contains("### Template Loading Error");
+        await Assert.That(markdown).Contains("**Error Type:** FileNotFound");
+        await Assert.That(markdown).Contains("**Error Message:** Template 'custom.sbn' not found");
+        await Assert.That(markdown).Contains("**File Exists:** No");
+        await Assert.That(markdown).Contains("**Troubleshooting:**");
+        await Assert.That(markdown).Contains("The template file was not found");
+        await Assert.That(markdown).Contains("If running in Docker: The template file is mounted via volume");
+    }
+
+    /// <summary>
+    /// Test that template parse error shows Scriban guidance.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_TemplateParseError_ShowsScribanGuidance()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            TemplateErrorType = TemplateErrorType.ParseError,
+            TemplateErrorMessage = "Scriban syntax error: Unexpected token at line 42"
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert
+        await Assert.That(markdown).Contains("**Error Type:** ParseError");
+        await Assert.That(markdown).Contains("The template contains invalid Scriban syntax");
+        await Assert.That(markdown).Contains("Check the Scriban documentation: https://github.com/scriban/scriban");
+    }
 }

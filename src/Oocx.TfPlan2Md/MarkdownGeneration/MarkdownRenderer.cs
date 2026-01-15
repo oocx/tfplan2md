@@ -131,7 +131,29 @@ public class MarkdownRenderer
 
         if (File.Exists(templateNameOrPath))
         {
-            return File.ReadAllText(templateNameOrPath);
+            try
+            {
+                return File.ReadAllText(templateNameOrPath);
+            }
+            catch (Exception ex)
+            {
+                // Record read error in diagnostic context before throwing
+                if (_diagnosticContext != null)
+                {
+                    _diagnosticContext.TemplateErrorType = TemplateErrorType.ReadError;
+                    _diagnosticContext.TemplateErrorMessage = $"Failed to read template file '{templateNameOrPath}': {ex.Message}";
+                    _diagnosticContext.TemplateFileExists = true;
+                }
+                throw new MarkdownRenderException($"Failed to read template file '{templateNameOrPath}': {ex.Message}", ex);
+            }
+        }
+
+        // Record file not found error in diagnostic context before throwing
+        if (_diagnosticContext != null)
+        {
+            _diagnosticContext.TemplateErrorType = TemplateErrorType.FileNotFound;
+            _diagnosticContext.TemplateErrorMessage = $"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}";
+            _diagnosticContext.TemplateFileExists = false;
         }
 
         throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
@@ -146,7 +168,29 @@ public class MarkdownRenderer
 
         if (File.Exists(templateNameOrPath))
         {
-            return await File.ReadAllTextAsync(templateNameOrPath, cancellationToken);
+            try
+            {
+                return await File.ReadAllTextAsync(templateNameOrPath, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // Record read error in diagnostic context before throwing
+                if (_diagnosticContext != null)
+                {
+                    _diagnosticContext.TemplateErrorType = TemplateErrorType.ReadError;
+                    _diagnosticContext.TemplateErrorMessage = $"Failed to read template file '{templateNameOrPath}': {ex.Message}";
+                    _diagnosticContext.TemplateFileExists = true;
+                }
+                throw new MarkdownRenderException($"Failed to read template file '{templateNameOrPath}': {ex.Message}", ex);
+            }
+        }
+
+        // Record file not found error in diagnostic context before throwing
+        if (_diagnosticContext != null)
+        {
+            _diagnosticContext.TemplateErrorType = TemplateErrorType.FileNotFound;
+            _diagnosticContext.TemplateErrorMessage = $"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}";
+            _diagnosticContext.TemplateFileExists = false;
         }
 
         throw new MarkdownRenderException($"Template '{templateNameOrPath}' not found. Available built-in templates: {string.Join(", ", BuiltInTemplates)}");
@@ -259,10 +303,33 @@ public class MarkdownRenderer
 
     private string RenderWithTemplate(ReportModel model, string templateText, string templatePath)
     {
-        var template = Template.Parse(templateText, templatePath);
+        Template template;
+        try
+        {
+            template = Template.Parse(templateText, templatePath);
+        }
+        catch (Exception ex)
+        {
+            // Record parse error in diagnostic context before throwing
+            if (_diagnosticContext != null)
+            {
+                _diagnosticContext.TemplateErrorType = TemplateErrorType.ParseError;
+                _diagnosticContext.TemplateErrorMessage = $"Failed to parse template '{templatePath}': {ex.Message}";
+            }
+            throw new MarkdownRenderException($"Template parsing failed: {ex.Message}", ex);
+        }
+
         if (template.HasErrors)
         {
             var errors = string.Join(Environment.NewLine, template.Messages);
+
+            // Record parse error in diagnostic context before throwing
+            if (_diagnosticContext != null)
+            {
+                _diagnosticContext.TemplateErrorType = TemplateErrorType.ParseError;
+                _diagnosticContext.TemplateErrorMessage = $"Template parsing failed: {errors}";
+            }
+
             throw new MarkdownRenderException($"Template parsing failed: {errors}");
         }
 

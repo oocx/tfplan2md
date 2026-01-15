@@ -229,4 +229,115 @@ public class PrincipalMapperDiagnosticsTests
         context.FailedResolutions.Should().HaveCount(1);
         context.FailedResolutions[0].PrincipalId.Should().Be(missingPrincipalId);
     }
+
+    /// <summary>
+    /// Test that FileNotFound error captures detailed diagnostics including parent directory check.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_FileNotFound_CapturesDetailedErrorInfo()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/missing.json";
+
+        // Act
+        _ = new PrincipalMapper(mappingFile, context);
+
+        // Assert
+        context.PrincipalMappingFileProvided.Should().BeTrue();
+        context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+        context.PrincipalMappingErrorType.Should().Be(PrincipalMappingErrorType.FileNotFound);
+        context.PrincipalMappingErrorMessage.Should().Contain("File not found");
+        context.PrincipalMappingErrorMessage.Should().Contain("missing.json");
+        context.PrincipalMappingParentDirectoryExists.Should().BeTrue(); // TestData directory exists
+    }
+
+    /// <summary>
+    /// Test that DirectoryNotFound error is detected when parent directory doesn't exist.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_DirectoryNotFound_CapturesErrorType()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "/nonexistent/directory/principals.json";
+
+        // Act
+        _ = new PrincipalMapper(mappingFile, context);
+
+        // Assert
+        context.PrincipalMappingFileProvided.Should().BeTrue();
+        context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+        context.PrincipalMappingErrorType.Should().Be(PrincipalMappingErrorType.DirectoryNotFound);
+        context.PrincipalMappingParentDirectoryExists.Should().BeFalse();
+    }
+
+    /// <summary>
+    /// Test that ParseError captures file size and detailed error message.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_InvalidJson_CapturesParseError()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/invalid-json.json";
+
+        // Create a test file with invalid JSON
+        File.WriteAllText(mappingFile, "{ invalid json }");
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+            context.PrincipalMappingErrorType.Should().Be(PrincipalMappingErrorType.ParseError);
+            context.PrincipalMappingErrorMessage.Should().Contain("JSON parse error");
+            context.PrincipalMappingFileSize.Should().BeGreaterThan(0);
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Test that empty file parse error captures file size of 0.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_EmptyFile_CapturesZeroFileSize()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/empty.json";
+
+        // Create an empty test file
+        File.WriteAllText(mappingFile, "");
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
+            context.PrincipalMappingErrorType.Should().Be(PrincipalMappingErrorType.ParseError);
+            context.PrincipalMappingFileSize.Should().Be(0);
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
 }

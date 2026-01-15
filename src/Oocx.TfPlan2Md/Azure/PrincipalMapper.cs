@@ -165,6 +165,20 @@ public class PrincipalMapper : IPrincipalMapper
             if (diagnosticContext != null)
             {
                 diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorMessage = $"File not found: {mappingFile}";
+
+                // Check if parent directory exists to help diagnose the issue
+                try
+                {
+                    var directory = Path.GetDirectoryName(mappingFile);
+                    diagnosticContext.PrincipalMappingParentDirectoryExists = !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
+                    diagnosticContext.PrincipalMappingErrorType = diagnosticContext.PrincipalMappingParentDirectoryExists == false ? PrincipalMappingErrorType.DirectoryNotFound : PrincipalMappingErrorType.FileNotFound;
+                }
+                catch
+                {
+                    // If we can't determine parent directory existence, just mark as FileNotFound
+                    diagnosticContext.PrincipalMappingErrorType = PrincipalMappingErrorType.FileNotFound;
+                }
             }
             return FrozenDictionary<string, string>.Empty;
         }
@@ -178,6 +192,19 @@ public class PrincipalMapper : IPrincipalMapper
                 if (diagnosticContext != null)
                 {
                     diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                    diagnosticContext.PrincipalMappingErrorType = PrincipalMappingErrorType.ParseError;
+                    diagnosticContext.PrincipalMappingErrorMessage = "JSON deserialization returned null";
+
+                    // Capture file size for parse errors
+                    try
+                    {
+                        var fileInfo = new FileInfo(mappingFile);
+                        diagnosticContext.PrincipalMappingFileSize = fileInfo.Length;
+                    }
+                    catch
+                    {
+                        // Ignore if we can't get file size
+                    }
                 }
                 return FrozenDictionary<string, string>.Empty;
             }
@@ -194,16 +221,75 @@ public class PrincipalMapper : IPrincipalMapper
 
             return parsed.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
         }
-        catch (Exception ex)
+        catch (JsonException jsonEx)
         {
-            // Record failed load
+            // JSON parse error - record detailed error information
             if (diagnosticContext != null)
             {
                 diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalMappingErrorType.ParseError;
+
+                // Include line and column information if available
+                var errorMessage = jsonEx.Message;
+                if (jsonEx.LineNumber.HasValue && jsonEx.BytePositionInLine.HasValue)
+                {
+                    errorMessage = $"JSON parse error at line {jsonEx.LineNumber.Value}, column {jsonEx.BytePositionInLine.Value}: {jsonEx.Message}";
+                }
+                diagnosticContext.PrincipalMappingErrorMessage = errorMessage;
+
+                // Capture file size for parse errors
+                try
+                {
+                    var fileInfo = new FileInfo(mappingFile);
+                    diagnosticContext.PrincipalMappingFileSize = fileInfo.Length;
+                }
+                catch
+                {
+                    // Ignore if we can't get file size
+                }
             }
 
-            // Intentional swallow after logging: malformed or unreadable mapping files should gracefully
-            // fall back to raw principal IDs instead of failing plan generation, but the user should know why.
+            // Intentional swallow after logging: malformed mapping files should gracefully
+            // fall back to raw principal IDs instead of failing plan generation
+            Console.Error.WriteLine($"Warning: Could not parse principal mapping file '{mappingFile}': {jsonEx.Message}");
+            return FrozenDictionary<string, string>.Empty;
+        }
+        catch (IOException ioEx)
+        {
+            // I/O error (permissions, file locked, etc.)
+            if (diagnosticContext != null)
+            {
+                diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalMappingErrorType.ReadError;
+                diagnosticContext.PrincipalMappingErrorMessage = $"I/O error reading file: {ioEx.Message}";
+            }
+
+            Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ioEx.Message}");
+            return FrozenDictionary<string, string>.Empty;
+        }
+        catch (UnauthorizedAccessException accessEx)
+        {
+            // Permission denied
+            if (diagnosticContext != null)
+            {
+                diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalMappingErrorType.ReadError;
+                diagnosticContext.PrincipalMappingErrorMessage = $"Access denied: {accessEx.Message}";
+            }
+
+            Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {accessEx.Message}");
+            return FrozenDictionary<string, string>.Empty;
+        }
+        catch (Exception ex)
+        {
+            // Other unexpected errors
+            if (diagnosticContext != null)
+            {
+                diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalMappingErrorType.ReadError;
+                diagnosticContext.PrincipalMappingErrorMessage = $"Unexpected error: {ex.Message}";
+            }
+
             Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
             return FrozenDictionary<string, string>.Empty;
         }

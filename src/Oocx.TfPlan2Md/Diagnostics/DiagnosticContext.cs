@@ -42,6 +42,42 @@ public class DiagnosticContext
     public bool PrincipalMappingLoadedSuccessfully { get; set; }
 
     /// <summary>
+    /// Gets or sets the type of error that occurred when loading the principal mapping file.
+    /// </summary>
+    /// <remarks>
+    /// This provides detailed information about why the mapping file failed to load,
+    /// enabling users to take appropriate corrective action.
+    /// </remarks>
+    public PrincipalMappingErrorType PrincipalMappingErrorType { get; set; } = PrincipalMappingErrorType.None;
+
+    /// <summary>
+    /// Gets or sets the error message from a failed principal mapping file load.
+    /// </summary>
+    /// <value>
+    /// The detailed error message, or null if no error occurred.
+    /// </value>
+    public string? PrincipalMappingErrorMessage { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the parent directory of the principal mapping file exists.
+    /// </summary>
+    /// <remarks>
+    /// This is checked when the mapping file is not found, to help diagnose whether
+    /// the issue is an invalid directory path (e.g., missing Docker volume mount) or
+    /// just an incorrect file name.
+    /// </remarks>
+    public bool? PrincipalMappingParentDirectoryExists { get; set; }
+
+    /// <summary>
+    /// Gets or sets the size of the principal mapping file in bytes.
+    /// </summary>
+    /// <remarks>
+    /// This is captured when a parse error occurs, as it can help diagnose issues
+    /// (e.g., empty file, truncated file, unexpectedly large file).
+    /// </remarks>
+    public long? PrincipalMappingFileSize { get; set; }
+
+    /// <summary>
     /// Gets or sets the path to the principal mapping file that was provided.
     /// </summary>
     /// <value>
@@ -76,6 +112,32 @@ public class DiagnosticContext
     /// templates, or the default template was used.
     /// </remarks>
     public List<TemplateResolution> TemplateResolutions { get; } = new();
+
+    /// <summary>
+    /// Gets or sets the type of error that occurred when loading a template file.
+    /// </summary>
+    /// <remarks>
+    /// This provides detailed information about why a template failed to load.
+    /// </remarks>
+    public TemplateErrorType TemplateErrorType { get; set; } = TemplateErrorType.None;
+
+    /// <summary>
+    /// Gets or sets the error message from a failed template load.
+    /// </summary>
+    /// <value>
+    /// The detailed error message, or null if no error occurred.
+    /// </value>
+    public string? TemplateErrorMessage { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the template file exists.
+    /// </summary>
+    /// <remarks>
+    /// This is checked when template loading fails, to help diagnose whether
+    /// the issue is a missing file (e.g., incorrect path, missing Docker volume mount)
+    /// or a different error (e.g., parse error, permissions).
+    /// </remarks>
+    public bool? TemplateFileExists { get; set; }
 
     /// <summary>
     /// Generates a markdown section containing all collected diagnostic information.
@@ -153,6 +215,85 @@ public class DiagnosticContext
                 sb.Append("Principal Mapping: Failed to load from '");
                 sb.Append(PrincipalMappingFilePath);
                 sb.AppendLine("'");
+                sb.AppendLine();
+
+                // Error classification
+                sb.Append("**Error Type:** ");
+                sb.AppendLine(PrincipalMappingErrorType.ToString());
+                sb.AppendLine();
+
+                // Detailed error message
+                if (!string.IsNullOrEmpty(PrincipalMappingErrorMessage))
+                {
+                    sb.Append("**Error Message:** ");
+                    sb.AppendLine(PrincipalMappingErrorMessage);
+                    sb.AppendLine();
+                }
+
+                // Diagnostic details based on error type
+                if (PrincipalMappingErrorType == PrincipalMappingErrorType.FileNotFound)
+                {
+                    sb.AppendLine("**File Existence Check:**");
+                    sb.Append("- File exists: No");
+                    sb.AppendLine();
+
+                    if (PrincipalMappingParentDirectoryExists.HasValue)
+                    {
+                        sb.Append("- Parent directory exists: ");
+                        sb.AppendLine(PrincipalMappingParentDirectoryExists.Value ? "Yes" : "No");
+                    }
+                    sb.AppendLine();
+
+                    // Docker guidance
+                    sb.AppendLine("**Troubleshooting:**");
+                    if (PrincipalMappingParentDirectoryExists == false)
+                    {
+                        sb.AppendLine("The parent directory does not exist. This suggests:");
+                        sb.AppendLine("- The file path may be incorrect");
+                        sb.AppendLine("- If running in Docker: The volume mount may be missing or incorrect");
+                        sb.AppendLine();
+                        sb.AppendLine("To fix Docker volume mounts, use:");
+                        sb.AppendLine("```bash");
+                        sb.AppendLine("docker run -v /host/path/to/principals.json:/app/principals.json tfplan2md ...");
+                        sb.AppendLine("```");
+                    }
+                    else
+                    {
+                        sb.AppendLine("The parent directory exists, but the file does not. Check:");
+                        sb.AppendLine("- The file name is spelled correctly");
+                        sb.AppendLine("- The file has been created in the expected location");
+                    }
+                }
+                else if (PrincipalMappingErrorType == PrincipalMappingErrorType.ParseError)
+                {
+                    if (PrincipalMappingFileSize.HasValue)
+                    {
+                        sb.Append("**File Size:** ");
+                        sb.Append(PrincipalMappingFileSize.Value);
+                        sb.AppendLine(" bytes");
+                        sb.AppendLine();
+
+                        if (PrincipalMappingFileSize.Value == 0)
+                        {
+                            sb.AppendLine("**Note:** The file is empty. Ensure it contains valid JSON.");
+                        }
+                    }
+                    sb.AppendLine();
+                    sb.AppendLine("**Troubleshooting:**");
+                    sb.AppendLine("The file contains invalid JSON. Common issues:");
+                    sb.AppendLine("- Missing or extra commas");
+                    sb.AppendLine("- Unclosed braces or brackets");
+                    sb.AppendLine("- Invalid escape sequences");
+                    sb.AppendLine("- Check the error message above for line/column information");
+                }
+                else if (PrincipalMappingErrorType == PrincipalMappingErrorType.ReadError)
+                {
+                    sb.AppendLine("**Troubleshooting:**");
+                    sb.AppendLine("The file exists but could not be read. Check:");
+                    sb.AppendLine("- File permissions (the process must have read access)");
+                    sb.AppendLine("- The file is not locked by another process");
+                    sb.AppendLine("- Disk I/O errors (check system logs)");
+                }
             }
 
             sb.AppendLine();
@@ -177,6 +318,64 @@ public class DiagnosticContext
                 sb.Append(resolution.ResourceType);
                 sb.Append("`: ");
                 sb.AppendLine(resolution.TemplateSource);
+            }
+
+            sb.AppendLine();
+        }
+
+        // Template Errors section
+        if (TemplateErrorType != TemplateErrorType.None)
+        {
+            hasDiagnostics = true;
+            sb.AppendLine("### Template Loading Error");
+            sb.AppendLine();
+
+            sb.Append("**Error Type:** ");
+            sb.AppendLine(TemplateErrorType.ToString());
+            sb.AppendLine();
+
+            if (!string.IsNullOrEmpty(TemplateErrorMessage))
+            {
+                sb.Append("**Error Message:** ");
+                sb.AppendLine(TemplateErrorMessage);
+                sb.AppendLine();
+            }
+
+            if (TemplateErrorType == TemplateErrorType.FileNotFound)
+            {
+                if (TemplateFileExists.HasValue)
+                {
+                    sb.Append("**File Exists:** ");
+                    sb.AppendLine(TemplateFileExists.Value ? "Yes" : "No");
+                    sb.AppendLine();
+                }
+
+                sb.AppendLine("**Troubleshooting:**");
+                sb.AppendLine("The template file was not found. Check:");
+                sb.AppendLine("- The template path is correct");
+                sb.AppendLine("- If using a custom template, the file exists in the specified location");
+                sb.AppendLine("- If running in Docker: The template file is mounted via volume");
+                sb.AppendLine();
+                sb.AppendLine("To mount custom templates in Docker:");
+                sb.AppendLine("```bash");
+                sb.AppendLine("docker run -v /host/path/to/template.sbn:/app/template.sbn tfplan2md ...");
+                sb.AppendLine("```");
+            }
+            else if (TemplateErrorType == TemplateErrorType.ParseError)
+            {
+                sb.AppendLine("**Troubleshooting:**");
+                sb.AppendLine("The template contains invalid Scriban syntax. Common issues:");
+                sb.AppendLine("- Unclosed tags or blocks");
+                sb.AppendLine("- Invalid variable references");
+                sb.AppendLine("- Syntax errors in expressions");
+                sb.AppendLine("- Check the Scriban documentation: https://github.com/scriban/scriban/blob/master/doc/language.md");
+            }
+            else if (TemplateErrorType == TemplateErrorType.ReadError)
+            {
+                sb.AppendLine("**Troubleshooting:**");
+                sb.AppendLine("The template file exists but could not be read. Check:");
+                sb.AppendLine("- File permissions");
+                sb.AppendLine("- The file is not locked by another process");
             }
 
             sb.AppendLine();

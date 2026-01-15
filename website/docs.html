@@ -611,59 +611,6 @@ done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json</code></pre
   --principal-mapping /data/principals.json \
   /data/plan.json --output /data/plan.md</code></pre>
                 </div>
-
-                <h5 style="margin-top: 32px; margin-bottom: 16px; font-size: 16px; font-weight: 600;">Docker Compose</h5>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-title">docker-compose.yml</span>
-                    </div>
-                    <pre><code>services:
-  tfplan2md:
-    image: oocx/tfplan2md:latest
-    volumes:
-      - ./plan.json:/data/plan.json:ro
-      - ./principals.json:/app/principals.json:ro
-    command:
-      - "--principal-mapping"
-      - "/app/principals.json"
-      - "/data/plan.json"</code></pre>
-                </div>
-
-                <h5 style="margin-top: 32px; margin-bottom: 16px; font-size: 16px; font-weight: 600;">Kubernetes Job</h5>
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-title">tfplan2md-job.yaml</span>
-                    </div>
-                    <pre><code>apiVersion: batch/v1
-kind: Job
-metadata:
-  name: tfplan2md
-spec:
-  template:
-    spec:
-      containers:
-      - name: tfplan2md
-        image: oocx/tfplan2md:latest
-        args:
-          - "--principal-mapping"
-          - "/app/principals.json"
-          - "/data/plan.json"
-        volumeMounts:
-          - name: plan
-            mountPath: /data/plan.json
-            readOnly: true
-          - name: principals
-            mountPath: /app/principals.json
-            readOnly: true
-      volumes:
-        - name: plan
-          configMap:
-            name: terraform-plan
-        - name: principals
-          secret:
-            secretName: azure-principals
-      restartPolicy: Never</code></pre>
-                </div>
             </div>
         </div>
     </section>

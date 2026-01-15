@@ -1,0 +1,306 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_variable_group.create_basic",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "create_basic",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "basic-vars",
+          "description": "Basic variable group for testing",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [
+            {
+              "name": "ENV",
+              "value": "Development"
+            }
+          ],
+          "secret_variable": [
+            {
+              "name": "API_KEY",
+              "value": "secret-value"
+            }
+          ]
+        },
+        "after_unknown": {
+          "id": true,
+          "variable": [
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            }
+          ],
+          "secret_variable": [
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.update_mixed",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "update_mixed",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "name": "mixed-vars",
+          "description": "Variable group with mixed changes",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [
+            {
+              "name": "APP_VERSION",
+              "value": "1.0.0",
+              "enabled": false,
+              "content_type": "",
+              "expires": ""
+            },
+            {
+              "name": "OLD_VAR",
+              "value": "to-be-removed",
+              "enabled": true,
+              "content_type": "",
+              "expires": ""
+            }
+          ],
+          "secret_variable": []
+        },
+        "after": {
+          "name": "mixed-vars",
+          "description": "Variable group with mixed changes",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [
+            {
+              "name": "APP_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "NEW_VAR",
+              "value": "newly-added"
+            }
+          ],
+          "secret_variable": []
+        },
+        "after_unknown": {
+          "id": true,
+          "variable": [
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            },
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.update_secret_metadata",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "update_secret_metadata",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "name": "secret-metadata-vars",
+          "description": "Testing secret metadata changes",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [],
+          "secret_variable": [
+            {
+              "name": "SECRET_KEY",
+              "value": "old-secret",
+              "enabled": false,
+              "content_type": "",
+              "expires": ""
+            }
+          ]
+        },
+        "after": {
+          "name": "secret-metadata-vars",
+          "description": "Testing secret metadata changes",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [],
+          "secret_variable": [
+            {
+              "name": "SECRET_KEY",
+              "value": "new-secret"
+            }
+          ]
+        },
+        "after_unknown": {
+          "id": true,
+          "secret_variable": [
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.delete_basic",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "delete_basic",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "delete-vars",
+          "description": "Variable group to be deleted",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [
+            {
+              "name": "ENV",
+              "value": "Staging",
+              "enabled": true,
+              "content_type": "",
+              "expires": ""
+            }
+          ],
+          "secret_variable": [
+            {
+              "name": "SECRET_TOKEN",
+              "value": "secret-value",
+              "enabled": true,
+              "content_type": "password",
+              "expires": ""
+            }
+          ]
+        },
+        "after": null
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.with_keyvault",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "with_keyvault",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "keyvault-vars",
+          "description": "Variable group with Key Vault integration",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [
+            {
+              "name": "prod-keyvault",
+              "service_endpoint_id": "aaaaaaaa-1111-1111-1111-111111111111",
+              "search_depth": "1"
+            }
+          ],
+          "variable": [
+            {
+              "name": "REGION",
+              "value": "eastus"
+            }
+          ],
+          "secret_variable": []
+        },
+        "after_unknown": {
+          "id": true,
+          "variable": [
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.empty_variables",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "empty_variables",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "empty-vars",
+          "description": "Variable group with no variables",
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [],
+          "secret_variable": []
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.no_description",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "no_description",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "no-desc-vars",
+          "description": null,
+          "project_id": "project-id-123",
+          "allow_access": true,
+          "key_vault": [],
+          "variable": [
+            {
+              "name": "TEST_VAR",
+              "value": "test-value"
+            }
+          ],
+          "secret_variable": []
+        },
+        "after_unknown": {
+          "id": true,
+          "variable": [
+            {
+              "content_type": true,
+              "enabled": true,
+              "expires": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -171,6 +171,12 @@ public class ResourceChangeModel
     /// Related feature: docs/features/026-template-rendering-simplification/specification.md
     /// </summary>
     public RoleAssignmentViewModel? RoleAssignment { get; set; }
+
+    /// <summary>
+    /// Gets or sets the precomputed view model for azuredevops_variable_group resources.
+    /// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+    /// </summary>
+    public VariableGroupViewModel? VariableGroup { get; set; }
 }
 
 /// <summary>

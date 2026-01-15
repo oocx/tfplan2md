@@ -50,6 +50,56 @@ public class DiagnosticContext
     public string? PrincipalMappingFilePath { get; set; }
 
     /// <summary>
+    /// Gets or sets whether the principal mapping file exists at the specified path.
+    /// </summary>
+    /// <remarks>
+    /// This is only set when <see cref="PrincipalMappingLoadedSuccessfully"/> is false.
+    /// It helps distinguish between file-not-found errors and other loading errors.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </remarks>
+    public bool? PrincipalMappingFileExists { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the parent directory of the principal mapping file exists.
+    /// </summary>
+    /// <remarks>
+    /// This is only set when <see cref="PrincipalMappingLoadedSuccessfully"/> is false.
+    /// It helps diagnose Docker volume mount issues where the mount point doesn't exist.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </remarks>
+    public bool? PrincipalMappingDirectoryExists { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of error that occurred when loading the principal mapping file.
+    /// </summary>
+    /// <remarks>
+    /// This is only set when <see cref="PrincipalMappingLoadedSuccessfully"/> is false.
+    /// The error type determines what troubleshooting guidance is shown to the user.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </remarks>
+    public PrincipalLoadError? PrincipalMappingErrorType { get; set; }
+
+    /// <summary>
+    /// Gets or sets a user-friendly error message describing what went wrong.
+    /// </summary>
+    /// <remarks>
+    /// This is only set when <see cref="PrincipalMappingLoadedSuccessfully"/> is false.
+    /// The message should be clear and actionable, not just the raw exception message.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </remarks>
+    public string? PrincipalMappingErrorMessage { get; set; }
+
+    /// <summary>
+    /// Gets or sets additional technical details about the error.
+    /// </summary>
+    /// <remarks>
+    /// This is only set when <see cref="PrincipalMappingLoadedSuccessfully"/> is false.
+    /// May include line/column numbers for JSON parse errors, exception details, etc.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </remarks>
+    public string? PrincipalMappingErrorDetails { get; set; }
+
+    /// <summary>
     /// Gets the count of principals by type (e.g., "users", "groups", "service principals").
     /// </summary>
     /// <remarks>
@@ -153,6 +203,114 @@ public class DiagnosticContext
                 sb.Append("Principal Mapping: Failed to load from '");
                 sb.Append(PrincipalMappingFilePath);
                 sb.AppendLine("'");
+
+                // Enhanced diagnostics for load failures (Issue 042)
+                if (PrincipalMappingFileExists.HasValue || PrincipalMappingErrorType.HasValue)
+                {
+                    sb.AppendLine();
+                    sb.AppendLine("**Diagnostic Details:**");
+
+                    // File existence check
+                    if (PrincipalMappingFileExists.HasValue)
+                    {
+                        sb.Append("- File exists: ");
+                        sb.AppendLine(PrincipalMappingFileExists.Value ? "✅" : "❌");
+                    }
+
+                    // Directory existence check
+                    if (PrincipalMappingDirectoryExists.HasValue)
+                    {
+                        sb.Append("- Directory exists: ");
+                        sb.AppendLine(PrincipalMappingDirectoryExists.Value ? "✅" : "❌");
+                    }
+
+                    // Error type
+                    if (PrincipalMappingErrorType.HasValue)
+                    {
+                        sb.Append("- Error type: ");
+                        sb.AppendLine(PrincipalMappingErrorType.Value.ToString());
+                    }
+
+                    // Error message
+                    if (!string.IsNullOrEmpty(PrincipalMappingErrorMessage))
+                    {
+                        sb.Append("- Error message: ");
+                        sb.AppendLine(PrincipalMappingErrorMessage);
+                    }
+
+                    // Error details
+                    if (!string.IsNullOrEmpty(PrincipalMappingErrorDetails))
+                    {
+                        sb.Append("- Details: ");
+                        sb.AppendLine(PrincipalMappingErrorDetails);
+                    }
+
+                    // Common solutions based on error type
+                    if (PrincipalMappingErrorType.HasValue)
+                    {
+                        sb.AppendLine();
+                        sb.AppendLine("**Common Solutions:**");
+
+                        switch (PrincipalMappingErrorType.Value)
+                        {
+                            case PrincipalLoadError.FileNotFound:
+                                sb.AppendLine("1. Verify the file path is correct");
+                                sb.AppendLine("2. If using Docker, ensure the file is mounted:");
+                                sb.AppendLine("   ```bash");
+                                sb.AppendLine("   docker run -v $(pwd):/data oocx/tfplan2md \\");
+                                sb.AppendLine("     --principal-mapping /data/principals.json \\");
+                                sb.AppendLine("     /data/plan.json");
+                                sb.AppendLine("   ```");
+                                sb.AppendLine("3. Check the file exists on your host system");
+                                break;
+
+                            case PrincipalLoadError.DirectoryNotFound:
+                                sb.AppendLine("1. Verify the directory path exists");
+                                sb.AppendLine("2. If using Docker, the directory must be mounted:");
+                                sb.AppendLine("   ```bash");
+                                sb.AppendLine("   docker run -v /host/path:/data oocx/tfplan2md \\");
+                                sb.AppendLine("     --principal-mapping /data/principals.json \\");
+                                sb.AppendLine("     /data/plan.json");
+                                sb.AppendLine("   ```");
+                                sb.AppendLine("3. Check directory permissions and accessibility");
+                                break;
+
+                            case PrincipalLoadError.JsonParseError:
+                                sb.AppendLine("1. Validate JSON syntax using `jq` or an online validator");
+                                sb.AppendLine("2. Check for trailing commas (not allowed in JSON)");
+                                sb.AppendLine("3. Ensure all strings are properly quoted");
+                                sb.AppendLine();
+                                sb.AppendLine("**Expected Format:**");
+                                sb.AppendLine("```json");
+                                sb.AppendLine("{");
+                                sb.AppendLine("  \"00000000-0000-0000-0000-000000000001\": \"Jane Doe (User)\",");
+                                sb.AppendLine("  \"11111111-1111-1111-1111-111111111111\": \"DevOps Team (Group)\"");
+                                sb.AppendLine("}");
+                                sb.AppendLine("```");
+                                break;
+
+                            case PrincipalLoadError.AccessDenied:
+                                sb.AppendLine("1. Check file permissions: `ls -l <file>`");
+                                sb.AppendLine("2. Ensure the file is readable: `chmod +r <file>`");
+                                sb.AppendLine("3. If using Docker, check container user permissions");
+                                break;
+
+                            case PrincipalLoadError.EmptyFile:
+                                sb.AppendLine("1. Verify the file contains principal mappings");
+                                sb.AppendLine("2. Use Azure CLI to generate principal mappings:");
+                                sb.AppendLine("   ```bash");
+                                sb.AppendLine("   az ad user list --query \"[].{id:id, name:displayName}\" -o json");
+                                sb.AppendLine("   ```");
+                                break;
+
+                            case PrincipalLoadError.UnknownError:
+                                sb.AppendLine("1. Check the error details above");
+                                sb.AppendLine("2. Verify file accessibility and format");
+                                sb.AppendLine("3. Check system logs for additional information");
+                                break;
+                        }
+                    }
+                }
             }
 
             sb.AppendLine();

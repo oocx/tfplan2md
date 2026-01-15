@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.34"></a>
+## [1.0.0-alpha.34](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.33...v1.0.0-alpha.34) (2026-01-15)
+
+### ✨ Features
+
+* add --debug CLI flag ([7799a43](https://github.com/oocx/tfplan2md/commit/7799a438292c9660429612bdf45f94d4742d0e74))
+* add workflow orchestrator agent with automated delegation ([9b995a1](https://github.com/oocx/tfplan2md/commit/9b995a10dd7f2d1c82c688b4ce11d65f08b2485d))
+* create DiagnosticContext infrastructure ([dda88b3](https://github.com/oocx/tfplan2md/commit/dda88b3dd2c3d023f48dc48f33c75f4ffe6fa33a))
+* integrate DiagnosticContext with MarkdownRenderer ([a5c677a](https://github.com/oocx/tfplan2md/commit/a5c677a620d1f89a21d5e38306f188d57a9d562c))
+* integrate DiagnosticContext with PrincipalMapper ([75cd196](https://github.com/oocx/tfplan2md/commit/75cd19638aa980aac45c65c5beb91859aeef9653))
+* wire up DiagnosticContext in Program.cs ([2e54eee](https://github.com/oocx/tfplan2md/commit/2e54eeea64a4715b44b25dce8a86d7f8a77a8885))
+
+### 🐛 Bug Fixes
+
+* pass resource address to principal mapper for diagnostic context ([5e58578](https://github.com/oocx/tfplan2md/commit/5e585783bf652ffc0a036ff2002c776b125a24ac))
+* preserve principal type in azure_principal_name helper ([301f754](https://github.com/oocx/tfplan2md/commit/301f75429a4281e564c18eb2310a09cb6bbe8848))
+* remove clarifying questions from workflow orchestrator, strengthen delegation-only behavior ([aa1dea5](https://github.com/oocx/tfplan2md/commit/aa1dea52b80d42c4d373d04ea2b129614739a796))
+* support type-aware principal resolution in interface default implementations ([e6bb3ba](https://github.com/oocx/tfplan2md/commit/e6bb3ba3f6ef6b631afc2e3b7ee89bde17e30071))
+* **workflow:** prevent orchestrator from implementing work directly ([cbf0911](https://github.com/oocx/tfplan2md/commit/cbf09112077a2e63edf3a799893a05801ef35d9f))
+
+### 📚 Documentation
+
+* add comprehensive implementation summary ([929c0c8](https://github.com/oocx/tfplan2md/commit/929c0c8f0d87922cc92f74cdaf5284056669512d))
+* add comprehensive test plan for feature 038 (debug output) ([8a4bd12](https://github.com/oocx/tfplan2md/commit/8a4bd123904b3503626acc50c9b964610481ebfe))
+* update documentation for feature 038 debug output ([71561ea](https://github.com/oocx/tfplan2md/commit/71561ea599dbd7016955deb0f864f86e9d9e012d))
+* update workflow orchestrator documentation to clarify delegation-only behavior ([1e991c4](https://github.com/oocx/tfplan2md/commit/1e991c437ea01a0f6bacd9c3bde06482bc621a65))
+
 <a name="1.0.0-alpha.33"></a>
 ## [1.0.0-alpha.33](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.32...v1.0.0-alpha.33) (2026-01-14)
 

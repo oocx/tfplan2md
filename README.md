@@ -148,6 +148,75 @@ Debug information is added as a "Debug Information" section at the end of the re
 
 This helps diagnose principal mapping failures and understand template selection behavior.
 
+#### Principal Mapping with Docker
+
+When using Docker, you need to mount the `principals.json` file into the container:
+
+```bash
+# Mount from current directory
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md
+
+# Mount as read-only to specific path
+docker run \
+  -v $(pwd)/plan.json:/data/plan.json:ro \
+  -v $(pwd)/principals.json:/app/principals.json:ro \
+  oocx/tfplan2md --principal-mapping /app/principals.json /data/plan.json
+
+# With debug output
+docker run -v $(pwd):/data oocx/tfplan2md --debug \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md
+```
+
+**Docker Compose example:**
+```yaml
+services:
+  tfplan2md:
+    image: oocx/tfplan2md:latest
+    volumes:
+      - ./plan.json:/data/plan.json:ro
+      - ./principals.json:/app/principals.json:ro
+    command:
+      - "--principal-mapping"
+      - "/app/principals.json"
+      - "/data/plan.json"
+```
+
+**Kubernetes Job example:**
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tfplan2md
+spec:
+  template:
+    spec:
+      containers:
+      - name: tfplan2md
+        image: oocx/tfplan2md:latest
+        args:
+          - "--principal-mapping"
+          - "/app/principals.json"
+          - "/data/plan.json"
+        volumeMounts:
+          - name: plan
+            mountPath: /data/plan.json
+            readOnly: true
+          - name: principals
+            mountPath: /app/principals.json
+            readOnly: true
+      volumes:
+        - name: plan
+          configMap:
+            name: terraform-plan
+        - name: principals
+          secret:
+            secretName: azure-principals
+      restartPolicy: Never
+```
+
 ### HTML renderer (development tool)
 
 Render existing tfplan2md reports to HTML with GitHub- or Azure-DevOps-like output using the standalone tool in [tools/Oocx.TfPlan2Md.HtmlRenderer](tools/Oocx.TfPlan2Md.HtmlRenderer):

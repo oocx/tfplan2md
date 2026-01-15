@@ -976,6 +976,21 @@ docker run -i oocx/tfplan2md:1.2
 
 # From file (mounted volume)
 docker run -v $(pwd):/data oocx/tfplan2md /data/plan.json --output /data/plan.md
+
+# With principal mapping (mount file from host)
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md
+
+# With principal mapping (mount as read-only)
+docker run \
+  -v $(pwd)/plan.json:/data/plan.json:ro \
+  -v $(pwd)/principals.json:/app/principals.json:ro \
+  oocx/tfplan2md --principal-mapping /app/principals.json /data/plan.json
+
+# With debug output
+docker run -v $(pwd):/data oocx/tfplan2md --debug \
+  /data/plan.json --output /data/plan.md
 ```
 
 ### Releases

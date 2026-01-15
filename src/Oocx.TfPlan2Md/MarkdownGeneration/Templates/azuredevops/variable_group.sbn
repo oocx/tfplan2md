@@ -8,6 +8,8 @@
 
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
+DEBUG: action={{ change.action }}, variable_group={{ if change.variable_group }}exists{{ else }}null{{ end }}
+
 {{ if change.variable_group && change.variable_group.name ~}}
 **Variable Group:** {{ format_code_summary(change.variable_group.name) }}
 

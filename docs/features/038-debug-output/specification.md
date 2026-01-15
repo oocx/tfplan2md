@@ -84,19 +84,111 @@ Template: Using built-in template (no custom template specified)
 - If principal mapping file is specified but cannot be loaded, this should be reported in debug output (not just silently fail)
 - Debug output generation should not cause the tool to fail if there are issues collecting diagnostics
 
+### Enhanced Error Diagnostics (Issue 042)
+
+When principal mapping fails to load, the debug output provides comprehensive diagnostics to help users troubleshoot:
+
+**File Not Found:**
+```markdown
+### Principal Mapping
+
+Principal Mapping: Failed to load from '/data/principals.json'
+
+**Diagnostic Details:**
+- File exists: ❌
+- Directory exists: ✅
+- Error type: FileNotFound
+- Error message: File not found
+- Details: Could not find file '/data/principals.json'
+
+**Common Solutions:**
+1. Verify the file path is correct
+2. If using Docker, ensure the file is mounted:
+   ```bash
+   docker run -v $(pwd):/data oocx/tfplan2md \
+     --principal-mapping /data/principals.json \
+     /data/plan.json
+   ```
+3. Check the file exists on your host system
+```
+
+**JSON Parse Error:**
+```markdown
+### Principal Mapping
+
+Principal Mapping: Failed to load from '/data/principals.json'
+
+**Diagnostic Details:**
+- File exists: ✅
+- Directory exists: ✅
+- Error type: JsonParseError
+- Error message: Invalid JSON syntax
+- Details: ExpectedStartOfPropertyNotFound at line 3, column 15
+
+**Common Solutions:**
+1. Validate JSON syntax using `jq` or an online validator
+2. Check for trailing commas (not allowed in JSON)
+3. Ensure all strings are properly quoted
+
+**Expected Format:**
+```json
+{
+  "00000000-0000-0000-0000-000000000001": "Jane Doe (User)",
+  "11111111-1111-1111-1111-111111111111": "DevOps Team (Group)"
+}
+```
+```
+
+**Directory Not Found:**
+```markdown
+### Principal Mapping
+
+Principal Mapping: Failed to load from '/nonexistent/dir/principals.json'
+
+**Diagnostic Details:**
+- File exists: ❌
+- Directory exists: ❌
+- Error type: DirectoryNotFound
+- Error message: Directory not found
+- Details: Could not find directory '/nonexistent/dir'
+
+**Common Solutions:**
+1. Verify the directory path exists
+2. If using Docker, the directory must be mounted:
+   ```bash
+   docker run -v /host/path:/data oocx/tfplan2md \
+     --principal-mapping /data/principals.json \
+     /data/plan.json
+   ```
+3. Check directory permissions and accessibility
+```
+
+These enhanced diagnostics help users:
+- Quickly identify the specific error type
+- Understand file system issues (file vs directory problems)
+- Get actionable Docker-specific guidance when running in containers
+- See line and column numbers for JSON syntax errors
+- Learn the expected file format with examples
+
 ## Success Criteria
 
-- [ ] Command-line option `--debug` is available and documented in help text
-- [ ] Debug output is appended to the markdown report as a new section when `--debug` is enabled
-- [ ] Principal mapping diagnostics are displayed when principal mapping is used:
-  - [ ] Shows whether mapping file loaded successfully
-  - [ ] Shows count of principals by type
-  - [ ] Lists IDs that failed to map with context (which resource referenced them)
-- [ ] Template resolution is logged (custom vs built-in)
-- [ ] Debug output does not break existing functionality or report formatting
-- [ ] Debug output is disabled by default (no change to existing behavior)
-- [ ] Help text is updated to document the debug option
-- [ ] Feature is tested with various scenarios (mapping success/failure, with/without debug enabled)
+- [x] Command-line option `--debug` is available and documented in help text
+- [x] Debug output is appended to the markdown report as a new section when `--debug` is enabled
+- [x] Principal mapping diagnostics are displayed when principal mapping is used:
+  - [x] Shows whether mapping file loaded successfully
+  - [x] Shows count of principals by type
+  - [x] Lists IDs that failed to map with context (which resource referenced them)
+  - [x] **(Enhanced)** Shows file existence status
+  - [x] **(Enhanced)** Shows directory existence status
+  - [x] **(Enhanced)** Shows specific error type (FileNotFound, JsonParseError, etc.)
+  - [x] **(Enhanced)** Includes line/column information for JSON parse errors
+  - [x] **(Enhanced)** Provides Docker-specific troubleshooting guidance
+  - [x] **(Enhanced)** Shows actionable solutions based on error type
+- [x] Template resolution is logged (custom vs built-in)
+- [x] Debug output does not break existing functionality or report formatting
+- [x] Debug output is disabled by default (no change to existing behavior)
+- [x] Help text is updated to document the debug option
+- [x] Feature is tested with various scenarios (mapping success/failure, with/without debug enabled)
 
 ## Design Decisions
 

@@ -679,7 +679,7 @@ body {
 }
 
 .code-title {
-    color: #a0aec0;
+    color: var(--color-text);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
@@ -3104,11 +3104,29 @@ body {
 }
 
 /* Interactive Examples */
+.interactive-example {
+    background: var(--code-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
 .interactive-example .code-header {
+    background: var(--code-header-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 16px;
+}
+
+.example-toolbar {
+    background: var(--code-header-bg);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 12px;
 }
 
 .example-controls {

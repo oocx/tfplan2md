@@ -225,50 +225,51 @@
                             <button class="toggle-btn active" data-view="rendered">Rendered</button>
                             <button class="toggle-btn" data-view="source">Source</button>
                         </div>
-                        <div class="example-content rendered-view active">
-                            <h3>➕ azuredevops_variable_group.app_config</h3>
-                            <p><strong>Variable Group:</strong> <code>app-config-prod</code></p>
-                            <p><strong>Description:</strong> <code>Production app configuration</code></p>
-                            <h4>Variables</h4>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Value</th>
-                                        <th>Enabled</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><code>APP_NAME</code></td>
-                                        <td><code>MyApp</code></td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>ENVIRONMENT</code></td>
-                                        <td><code>Production</code></td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>DB_HOST</code></td>
-                                        <td><code>prod-db.example.com</code></td>
-                                        <td><code>true</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>DB_PASSWORD</code></td>
-                                        <td><code>(sensitive / hidden)</code></td>
-                                        <td><code>true</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>API_KEY</code></td>
-                                        <td><code>(sensitive / hidden)</code></td>
-                                        <td><code>true</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="example-content source-view">
-                            <pre><code>### ➕ azuredevops_variable_group.app_config
+                        <div class="example-content">
+                            <div class="view-pane rendered-view active">
+                                <h3>➕ azuredevops_variable_group.app_config</h3>
+                                <p><strong>Variable Group:</strong> <code>app-config-prod</code></p>
+                                <p><strong>Description:</strong> <code>Production app configuration</code></p>
+                                <h4>Variables</h4>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Enabled</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>APP_NAME</code></td>
+                                            <td><code>MyApp</code></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>ENVIRONMENT</code></td>
+                                            <td><code>Production</code></td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>DB_HOST</code></td>
+                                            <td><code>prod-db.example.com</code></td>
+                                            <td><code>true</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>DB_PASSWORD</code></td>
+                                            <td><code>(sensitive / hidden)</code></td>
+                                            <td><code>true</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>API_KEY</code></td>
+                                            <td><code>(sensitive / hidden)</code></td>
+                                            <td><code>true</code></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="view-pane source-view">
+                                <pre><code>### ➕ azuredevops_variable_group.app_config
 
 **Variable Group:** `app-config-prod`
 
@@ -283,6 +284,7 @@
 | `DB_HOST` | `prod-db.example.com` | `true` |
 | `DB_PASSWORD` | `(sensitive / hidden)` | `true` |
 | `API_KEY` | `(sensitive / hidden)` | `true` |</code></pre>
+                            </div>
                         </div>
                     </div>
                     <p class="example-note">Simple table for new variable groups. Secret values protected from the start.</p>
@@ -295,7 +297,8 @@
                             <button class="toggle-btn active" data-view="rendered">Rendered</button>
                             <button class="toggle-btn" data-view="source">Source</button>
                         </div>
-                        <div class="example-content rendered-view active">
+                        <div class="example-content">
+                            <div class="view-pane rendered-view active">
                             <h3>🔄 azuredevops_variable_group.app_config</h3>
                             <p><strong>Variable Group:</strong> <code>app-config-prod</code></p>
                             <h4>Variables</h4>
@@ -344,8 +347,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="example-content source-view">
+                            </div>
+                            <div class="view-pane source-view">
                             <pre><code>### 🔄 azuredevops_variable_group.app_config
 
 **Variable Group:** `app-config-prod`
@@ -358,6 +361,7 @@
 | 🔄 | `FEATURE_FLAGS` | - `alpha,beta`<br>+ `beta,gamma` | `true` |
 | 🔄 | `API_KEY` | `(sensitive / hidden)` | - `true`<br>+ `false` |
 | ⏺️ | `ENVIRONMENT` | `Production` | - |</code></pre>
+                            </div>
                         </div>
                     </div>
                     <p class="example-note">Before/after values with change indicators. Unchanged variables marked with ⏺️.</p>
@@ -370,7 +374,8 @@
                             <button class="toggle-btn active" data-view="rendered">Rendered</button>
                             <button class="toggle-btn" data-view="source">Source</button>
                         </div>
-                        <div class="example-content rendered-view active">
+                        <div class="example-content">
+                            <div class="view-pane rendered-view active">
                             <h3>❌ azuredevops_variable_group.legacy_config</h3>
                             <p><strong>Variable Group:</strong> <code>legacy-config</code></p>
                             <h4>Variables (being deleted)</h4>
@@ -400,8 +405,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="example-content source-view">
+                            </div>
+                            <div class="view-pane source-view">
                             <pre><code>### ❌ azuredevops_variable_group.legacy_config
 
 **Variable Group:** `legacy-config`
@@ -413,6 +418,8 @@
 | `OLD_API_URL` | `https://legacy.example.com` | `false` |
 | `DEPRECATED_KEY` | `(sensitive / hidden)` | `false` |
 | `TEMP_SETTING` | `temporary` | `false` |</code></pre>
+                            </div>
+                            </div>
                         </div>
                     </div>
                     <p class="example-note">Clear view of what's being removed. Audit trail for cleanup operations.</p>
@@ -433,7 +440,8 @@
                     <button class="toggle-btn active" data-view="rendered">Rendered</button>
                     <button class="toggle-btn" data-view="source">Source</button>
                 </div>
-                <div class="example-content rendered-view active">
+                <div class="example-content">
+                    <div class="view-pane rendered-view active">
                     <h3>➕ azuredevops_variable_group.keyvault_secrets</h3>
                     <p><strong>Variable Group:</strong> <code>keyvault-secrets</code></p>
                     <p><strong>Description:</strong> <code>Secrets from Azure Key Vault</code></p>
@@ -456,8 +464,8 @@
                     </table>
                     <h4>Variables</h4>
                     <p>(No variables configured - all values retrieved from Key Vault)</p>
-                </div>
-                <div class="example-content source-view">
+                    </div>
+                    <div class="view-pane source-view">
                     <pre><code>### ➕ azuredevops_variable_group.keyvault_secrets
 
 **Variable Group:** `keyvault-secrets`
@@ -473,6 +481,7 @@
 #### Variables
 
 (No variables configured - all values retrieved from Key Vault)</code></pre>
+                    </div>
                 </div>
             </div>
         </div>

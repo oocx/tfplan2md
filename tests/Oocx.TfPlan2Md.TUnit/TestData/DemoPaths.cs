@@ -15,6 +15,8 @@ public static class DemoPaths
 
     public static string RoleAssignmentsPlanPath => Path.Combine(RepositoryRoot, "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "role-assignments.json");
 
+    public static string AzureDevOpsVariableGroupPlanPath => Path.Combine(RepositoryRoot, "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuredevops-variable-groups.json");
+
     private static string FindRepositoryRoot()
     {
         var directory = Directory.GetCurrentDirectory();

@@ -39,7 +39,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">Azure DevOps Provider</h1>
                 <p class="hero-subtitle">
-                    Planned support for Azure DevOps resources including projects, pipelines, and variable groups.
+                    Specialized support for Azure DevOps variable groups with semantic diffing and secret protection.
                 </p>
             </div>
         </div>
@@ -49,18 +49,24 @@
         <div class="section-container">
             <div class="feature-detail">
                 <div class="feature-detail-header">
-                    <span class="feature-badge" style="background: #6e7681;">Planned</span>
+                    <span class="feature-badge" style="background: var(--color-success);">Partial Support</span>
                 </div>
                 <p class="feature-detail-description">
-                    Support for the Azure DevOps provider is currently in the planning phase. We aim to bring the same level of readability and semantic understanding to Azure DevOps resources as we have for Azure.
+                    Support for Azure DevOps provider includes specialized rendering for variable groups, with additional resources planned.
                 </p>
                 
                 <div class="feature-highlights">
+                    <h3 class="highlights-title">Implemented Resources</h3>
+                    <ul class="highlights-list">
+                        <li><strong>Variable Groups</strong> (<code>azuredevops_variable_group</code>): Variable-level semantic diffing with secret value protection, Key Vault integration display, and unified regular/secret variable tables. See the <a href="../features/azdo-variable-groups.html" style="color: var(--color-primary); font-weight: 600;">Variable Groups feature page</a> for details.</li>
+                    </ul>
+                </div>
+
+                <div class="feature-highlights" style="margin-top: 32px;">
                     <h3 class="highlights-title">Planned Resources</h3>
                     <ul class="highlights-list">
                         <li><strong>Projects:</strong> Clear display of project settings and visibility</li>
                         <li><strong>Pipelines:</strong> Build and release pipeline configuration diffs</li>
-                        <li><strong>Variable Groups:</strong> Secure display of variables with sensitive value masking</li>
                         <li><strong>Service Connections:</strong> Simplified view of connection details</li>
                     </ul>
                 </div>

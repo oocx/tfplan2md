@@ -209,6 +209,84 @@ public class VariableGroupViewModelFactoryTests
 
     #endregion
 
+    #region TC-07: Update Operation - Null Attribute Transition
+
+    /// <summary>
+    /// TC-07: Verifies that when an attribute changes from a value to null, the diff shows a proper placeholder.
+    /// This tests the critical bug found in UAT where enabled: false → null showed empty "+ " text.
+    /// </summary>
+    [Test]
+    public void Build_UpdateWithNullTransition_ShowsPlaceholderForNullAfter()
+    {
+        // Arrange
+        var changeJson = CreateResourceChange("update", new
+        {
+            name = "test-group",
+            variable = new object[]
+            {
+                new { name = "APP_VERSION", value = "1.0.0", enabled = false, content_type = "text/plain", expires = "" }
+            },
+            secret_variable = new object[]
+            {
+                new { name = "SECRET_KEY", value = "supersecret", enabled = false, content_type = "", expires = "" }
+            }
+        }, new
+        {
+            name = "test-group",
+            variable = new object[]
+            {
+                new { name = "APP_VERSION", value = "1.0.0", enabled = (bool?)null, content_type = (string?)null, expires = "" }
+            },
+            secret_variable = new object[]
+            {
+                new { name = "SECRET_KEY", value = "supersecret", enabled = (bool?)null, content_type = "", expires = "" }
+            }
+        });
+
+        // Act
+        var viewModel = VariableGroupViewModelFactory.Build(changeJson, ProviderName, DefaultFormat);
+
+        // Assert
+        viewModel.VariableChanges.Should().HaveCount(2);
+
+        // Find APP_VERSION (regular variable)
+        var appVersion = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`APP_VERSION`");
+        appVersion.Should().NotBeNull();
+        appVersion!.Change.Should().Be("🔄");
+
+        // Value is unchanged - shows as single value
+        appVersion.Value.Should().Contain("1.0.0");
+
+        // Critical: Enabled should show diff with placeholder for null
+        // Should NOT be empty after the "+" sign
+        appVersion.Enabled.Should().NotBeEmpty();
+        appVersion.Enabled.Should().Contain("false"); // Contains before value
+        appVersion.Enabled.Should().Contain("+"); // Contains diff indicator
+        // After the "+", should show "-" placeholder for null
+        appVersion.Enabled.Should().Contain("+ ");
+        appVersion.Enabled.Should().Contain("-"); // Placeholder for null in after state
+
+        // ContentType should also show null transition
+        appVersion.ContentType.Should().NotBeEmpty();
+        appVersion.ContentType.Should().Contain("text/plain");
+        appVersion.ContentType.Should().Contain("+");
+        appVersion.ContentType.Should().Contain("-"); // Placeholder for null
+
+        // Find SECRET_KEY (secret variable)
+        var secretKey = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`SECRET_KEY`");
+        secretKey.Should().NotBeNull();
+        secretKey!.Change.Should().Be("🔄");
+        secretKey.Value.Should().Be("`(sensitive / hidden)`"); // Secrets always masked
+
+        // Enabled should show diff with placeholder for null
+        secretKey.Enabled.Should().NotBeEmpty();
+        secretKey.Enabled.Should().Contain("false");
+        secretKey.Enabled.Should().Contain("+");
+        secretKey.Enabled.Should().Contain("-"); // Placeholder for null
+    }
+
+    #endregion
+
     #region Helper Methods
 
     /// <summary>

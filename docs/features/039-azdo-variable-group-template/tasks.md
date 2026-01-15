@@ -228,26 +228,26 @@ Create the Scriban template that renders variable group changes using the precom
 Write tests that validate the template rendering with mock ViewModels. These tests verify the template structure, table layouts, and proper handling of different operations.
 
 **Acceptance Criteria:**
-- [ ] Test file created or updated: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupTemplateTests.cs`
-- [ ] Template tests implemented covering test cases from test-plan.md:
+- [x] Test file created or updated: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupTemplateTests.cs`
+- [x] Template tests implemented covering test cases from test-plan.md:
   - TC-14: Template renders create operation layout (no Change column)
   - TC-15: Template renders update operation layout with change indicators
   - TC-16: Template renders delete operation layout
   - TC-21: Template follows Report Style Guide (inline code for values, plain text for labels)
   - TC-22: Template renders Key Vault section when blocks present
   - TC-23: Template handles large values section (if implemented)
-- [ ] Tests create mock `VariableGroupViewModel` objects with controlled data
-- [ ] Tests render template and verify output structure:
+- [x] Tests create mock `VariableGroupViewModel` objects with controlled data
+- [x] Tests render template and verify output structure:
   - Correct table headers
   - Correct number of rows
   - Change indicators present in update tables
   - Key Vault section appears before Variables section
   - HTML structure is valid (balanced tags)
-- [ ] Tests verify template doesn't error on edge cases:
+- [x] Tests verify template doesn't error on edge cases:
   - Empty variable arrays
   - Null description
   - Empty Key Vault blocks
-- [ ] All tests pass consistently
+- [x] All tests pass consistently (8/8 tests passing)
 
 **Dependencies:** Task 5 (Template implementation)
 
@@ -267,21 +267,21 @@ Write tests that validate the template rendering with mock ViewModels. These tes
 Validate the complete feature using actual Azure DevOps Terraform plan data from the examples directory. This ensures the factory, ViewModel, and template work correctly together.
 
 **Acceptance Criteria:**
-- [ ] Integration test created covering TC-24 from test-plan.md
-- [ ] Test loads `examples/azuredevops/terraform_plan2.json` (or creates test fixture if needed)
-- [ ] Test parses plan with `TerraformPlanParser`
-- [ ] Test builds report with `ReportModelBuilder`
-- [ ] Test extracts variable group section from rendered markdown
-- [ ] Test verifies:
+- [x] Integration test created covering TC-24 from test-plan.md
+- [x] Test loads `examples/azuredevops/terraform_plan2.json` (or creates test fixture if needed)
+- [x] Test parses plan with `TerraformPlanParser`
+- [x] Test builds report with `ReportModelBuilder`
+- [x] Test extracts variable group section from rendered markdown
+- [x] Test verifies:
   - Variable group section exists in output
   - All variables from plan are displayed
   - Secret variables show `(sensitive / hidden)` for values
   - Metadata (enabled, content_type) is visible for secret variables
   - Markdown is valid (no parsing errors)
   - Output matches specification examples
-- [ ] Test covering TC-25: Full report generation with mixed resource types
-- [ ] Test covering TC-26: Markdown validation (no lint errors)
-- [ ] All integration tests pass consistently
+- [x] Test covering TC-25: Full report generation with mixed resource types
+- [x] Test covering TC-26: Markdown validation (no lint errors - 0 errors confirmed)
+- [x] All integration tests pass consistently
 
 **Dependencies:** Task 6 (Template tests passing)
 

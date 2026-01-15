@@ -1,0 +1,60 @@
+{{~## Template for azuredevops_variable_group
+     Uses VariableGroupViewModel for pre-computed formatting.
+     Access properties via 'change' variable - works for both include and direct render paths.
+~}}
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>{{ change.summary_html }}</summary>
+<br>
+
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
+
+{{ if change.variable_group && change.variable_group.name ~}}
+**Variable Group:** {{ format_code_summary(change.variable_group.name) }}
+
+{{ end ~}}
+{{ if change.variable_group && change.variable_group.description && change.variable_group.description != "" ~}}
+**Description:** {{ format_code_summary(change.variable_group.description) }}
+
+{{ end ~}}
+
+{{ if change.variable_group && change.variable_group.key_vault_blocks.size > 0 ~}}
+#### Key Vault Integration
+
+| Name | Service Endpoint ID | Search Depth |
+| ---- | ------------------- | ------------ |
+{{ for kv in change.variable_group.key_vault_blocks ~}}
+| {{ kv.name }} | {{ kv.service_endpoint_id }} | {{ kv.search_depth }} |
+{{ end ~}}
+
+{{ end ~}}
+
+{{ if change.action == "create" && change.variable_group && change.variable_group.after_variables.size > 0 ~}}
+#### Variables
+
+| Name | Value | Enabled | Content Type | Expires |
+| ---- | ----- | ------- | ------------ | ------- |
+{{ for var in change.variable_group.after_variables ~}}
+| {{ var.name }} | {{ var.value }} | {{ var.enabled }} | {{ var.content_type }} | {{ var.expires }} |
+{{ end ~}}
+
+{{ else if change.action == "delete" && change.variable_group && change.variable_group.before_variables.size > 0 ~}}
+#### Variables (being deleted)
+
+| Name | Value | Enabled | Content Type | Expires |
+| ---- | ----- | ------- | ------------ | ------- |
+{{ for var in change.variable_group.before_variables ~}}
+| {{ var.name }} | {{ var.value }} | {{ var.enabled }} | {{ var.content_type }} | {{ var.expires }} |
+{{ end ~}}
+
+{{ else if change.variable_group && change.variable_group.variable_changes.size > 0 ~}}
+#### Variables
+
+| Change | Name | Value | Enabled | Content Type | Expires |
+| ------ | ---- | ----- | ------- | ------------ | ------- |
+{{ for var in change.variable_group.variable_changes ~}}
+| {{ var.change }} | {{ var.name }} | {{ var.value }} | {{ var.enabled }} | {{ var.content_type }} | {{ var.expires }} |
+{{ end ~}}
+
+{{ end ~}}
+
+</details>

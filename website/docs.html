@@ -562,6 +562,92 @@ done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json</code></pre
                     </div>
                     <pre><code>tfplan2md plan.json --principal-mapping principals.json</code></pre>
                 </div>
+
+                <h4 style="margin-top: 40px; font-size: 20px; margin-bottom: 16px;">Using Principal Mapping with Docker</h4>
+                <p class="doc-text">
+                    When running tfplan2md in a Docker container, you need to mount the principals.json file into the container:
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Docker - Mount from current directory</span>
+                    </div>
+                    <pre><code>docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md</code></pre>
+                </div>
+
+                <div class="code-block" style="margin-top: 16px;">
+                    <div class="code-header">
+                        <span class="code-title">Docker - Mount as read-only</span>
+                    </div>
+                    <pre><code>docker run \
+  -v $(pwd)/plan.json:/data/plan.json:ro \
+  -v $(pwd)/principals.json:/app/principals.json:ro \
+  oocx/tfplan2md --principal-mapping /app/principals.json /data/plan.json</code></pre>
+                </div>
+
+                <div class="code-block" style="margin-top: 16px;">
+                    <div class="code-header">
+                        <span class="code-title">Docker - With debug output</span>
+                    </div>
+                    <pre><code>docker run -v $(pwd):/data oocx/tfplan2md --debug \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md</code></pre>
+                </div>
+
+                <h5 style="margin-top: 32px; margin-bottom: 16px; font-size: 16px; font-weight: 600;">Docker Compose</h5>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">docker-compose.yml</span>
+                    </div>
+                    <pre><code>services:
+  tfplan2md:
+    image: oocx/tfplan2md:latest
+    volumes:
+      - ./plan.json:/data/plan.json:ro
+      - ./principals.json:/app/principals.json:ro
+    command:
+      - "--principal-mapping"
+      - "/app/principals.json"
+      - "/data/plan.json"</code></pre>
+                </div>
+
+                <h5 style="margin-top: 32px; margin-bottom: 16px; font-size: 16px; font-weight: 600;">Kubernetes Job</h5>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">tfplan2md-job.yaml</span>
+                    </div>
+                    <pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tfplan2md
+spec:
+  template:
+    spec:
+      containers:
+      - name: tfplan2md
+        image: oocx/tfplan2md:latest
+        args:
+          - "--principal-mapping"
+          - "/app/principals.json"
+          - "/data/plan.json"
+        volumeMounts:
+          - name: plan
+            mountPath: /data/plan.json
+            readOnly: true
+          - name: principals
+            mountPath: /app/principals.json
+            readOnly: true
+      volumes:
+        - name: plan
+          configMap:
+            name: terraform-plan
+        - name: principals
+          secret:
+            secretName: azure-principals
+      restartPolicy: Never</code></pre>
+                </div>
             </div>
         </div>
     </section>

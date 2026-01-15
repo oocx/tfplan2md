@@ -206,6 +206,22 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                     </div>
                     <div class="option-row">
                         <div class="option-name">
+                            <code>--hide-metadata</code>
+                        </div>
+                        <div class="option-desc">
+                            Suppress tfplan2md version and generation timestamp from the report header.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--debug</code>
+                        </div>
+                        <div class="option-desc">
+                            Append diagnostic information to the report for troubleshooting. Includes principal mapping diagnostics (load status, principal counts, failed ID resolutions) and template resolution details.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
                             <code>-h, --help</code>
                         </div>
                         <div class="option-desc">

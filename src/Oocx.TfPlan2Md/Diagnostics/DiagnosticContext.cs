@@ -24,7 +24,7 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 /// thread during report generation.
 /// </para>
 /// </remarks>
-public class DiagnosticContext
+internal class DiagnosticContext
 {
     /// <summary>
     /// Gets or sets whether a principal mapping file was provided via CLI.

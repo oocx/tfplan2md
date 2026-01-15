@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 /// enabling more detailed and actionable debug output. Each error type corresponds to
 /// a different troubleshooting approach and user guidance.
 /// </remarks>
-public enum PrincipalLoadError
+internal enum PrincipalLoadError
 {
     /// <summary>
     /// The principal mapping file does not exist at the specified path.

@@ -12,4 +12,4 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 /// when troubleshooting custom template behavior or verifying that resource-specific
 /// templates are being used as expected.
 /// </remarks>
-public record TemplateResolution(string ResourceType, string TemplateSource);
+internal record TemplateResolution(string ResourceType, string TemplateSource);

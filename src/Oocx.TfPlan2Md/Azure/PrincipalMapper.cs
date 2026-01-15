@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Azure;
 /// of principal IDs to display names. When a principal ID is encountered in role
 /// assignments, it is replaced with the display name for improved readability.
 /// </remarks>
-public class PrincipalMapper : IPrincipalMapper
+internal class PrincipalMapper : IPrincipalMapper
 {
     private readonly FrozenDictionary<string, string> _principals;
     private readonly DiagnosticContext? _diagnosticContext;

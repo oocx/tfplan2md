@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.36"></a>
+## [1.0.0-alpha.36](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.35...v1.0.0-alpha.36) (2026-01-15)
+
+### ✨ Features
+
+* add Azure DevOps variable groups feature detail page ([a5d9ccf](https://github.com/oocx/tfplan2md/commit/a5d9ccf53212440a4986856f552d78f39533523a))
+* convert operation examples and key vault integration to interactive component ([c64a4eb](https://github.com/oocx/tfplan2md/commit/c64a4ebde15f343cc0b81e46fc7933d248dd30f3))
+* convert operation examples and key vault integration to interactive component ([4f1b585](https://github.com/oocx/tfplan2md/commit/4f1b585fb92cccaf26825913cc8b5bc886889ea9))
+* update website with latest features and architecture decisions ([b0fb6c9](https://github.com/oocx/tfplan2md/commit/b0fb6c96f3f998ad7e4d41bba11c5537c93be596))
+
+### 🐛 Bug Fixes
+
+* improve toggle button text contrast in light mode ([2cf6333](https://github.com/oocx/tfplan2md/commit/2cf633397640eb65c787ee4c4f24460f6ff3d695))
+
+### 📚 Documentation
+
+* add --debug and --hide-metadata flags to CLI reference in docs.html ([216db88](https://github.com/oocx/tfplan2md/commit/216db88dcd39d223fac7b44bdf845218c23c7c03))
+* add Docker/Kubernetes examples to docs.html for principal mapping ([dfa03f1](https://github.com/oocx/tfplan2md/commit/dfa03f12d29800c45b0749bdf5585d90b8cff21a))
+* remove Docker Compose and Kubernetes examples ([24350c4](https://github.com/oocx/tfplan2md/commit/24350c47318e9d253eb36c4ab0d7e37b86432b7a))
+* update documentation for variable groups, debug flag, and principal mapping in containers ([8134a25](https://github.com/oocx/tfplan2md/commit/8134a25ee3e1b6049f5e1931051cf81d7f25f270))
+
 <a name="1.0.0-alpha.35"></a>
 ## [1.0.0-alpha.35](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.34...v1.0.0-alpha.35) (2026-01-15)
 

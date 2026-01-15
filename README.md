@@ -144,9 +144,15 @@ tfplan2md --debug --principal-mapping principals.json plan.json -o report.md
 Debug information is added as a "Debug Information" section at the end of the report and includes:
 
 - **Principal mapping diagnostics**: Load status, principal type counts, and failed ID resolutions with context showing which resource referenced each missing ID
+- **Enhanced error diagnostics** (when principal mapping fails):
+  - File and directory existence checks
+  - Specific error type (FileNotFound, JsonParseError, DirectoryNotFound, AccessDenied)
+  - Line and column numbers for JSON syntax errors
+  - Docker-specific troubleshooting guidance
+  - Actionable solutions based on the error type
 - **Template resolution**: Which templates (custom, built-in, or default) were used for each resource type
 
-This helps diagnose principal mapping failures and understand template selection behavior.
+This helps diagnose principal mapping failures, Docker volume mount issues, and understand template selection behavior.
 
 #### Principal Mapping with Docker
 

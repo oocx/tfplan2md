@@ -15,8 +15,6 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 
 ## Execution Context
 
-## Execution Context
-
 This agent supports both local (VS Code) and cloud (GitHub) execution. See the `execution-context-detection` skill for detailed guidance on:
 - How to detect your current environment
 - Behavioral differences between contexts

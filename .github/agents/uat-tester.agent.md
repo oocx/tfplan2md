@@ -44,6 +44,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**.
 - **Validate artifact before running**: Verify the specified artifact exercises the changed code paths. If using a default artifact (e.g., comprehensive-demo.md), confirm it will test the new feature. If not, generate a feature-specific artifact first.
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
 - For simulations: Set `UAT_SIMULATE=true` environment variable

@@ -38,6 +38,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 ## Boundaries
 ✅ **Always Do:**
 - Analyze the **full feature lifecycle** from initial request through requirements, design, implementation, testing, UAT, release, and retrospective itself.
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**.
 - Collect **mandatory metrics**: duration, total requests, rejections (cancelled/failed), file edit statistics (kept/undone), files changed, tests added/passed.
 - **Export and save chat history** using `workbench.action.chat.export` command for each agent session (ask Maintainer to focus chat first if needed). Save files with descriptive names like `<agent-name>.chat.json` (e.g., `developer.chat.json`, `architect.chat.json`).
 - **Redact sensitive information** before committing chat logs: scan for and replace passwords, tokens, API keys, secrets, and personally identifiable information (PII) with `[REDACTED]`.

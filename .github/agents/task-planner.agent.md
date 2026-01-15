@@ -64,6 +64,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Break features into small, independently testable tasks
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Write clear, measurable acceptance criteria for each task
 - Prioritize tasks based on dependencies and risk
 - Ensure each task maps back to the Feature Specification
@@ -237,7 +238,9 @@ Your work is complete when:
    git commit -m "docs: add tasks for <feature-name>"
    ```
 
-2. **Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
+2. **VS Code (local): Do NOT push** - The changes stay on the local branch until Release Manager creates the PR.
+
+   **GitHub PR coding agent (existing PR):** Updates must land on the provided PR branch so they show up in the PR.
 
 3. **Do NOT start implementing** - Your role ends here. Use the handoff button.
 

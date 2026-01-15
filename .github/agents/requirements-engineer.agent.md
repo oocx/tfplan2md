@@ -56,6 +56,7 @@ This includes both:
 
 ### ✅ Always Do
 - Create feature branch from latest main before starting (for NEW features only)
+- **GitHub PR coding agent safety:** If the current branch starts with `copilot/` (or you're operating in an existing PR created by GitHub Copilot), **do not switch branches** and **do not create a new branch**. Commit only to the provided branch so changes appear in the PR.
 - Ask one question at a time, wait for answer
 - Focus on WHAT users need, not HOW to implement it
 - Listen completely before asking clarifying questions

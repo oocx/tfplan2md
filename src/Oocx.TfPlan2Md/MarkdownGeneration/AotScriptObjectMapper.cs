@@ -187,6 +187,11 @@ internal static class AotScriptObjectMapper
             obj["role_assignment"] = MapRoleAssignment(change.RoleAssignment);
         }
 
+        if (change.VariableGroup != null)
+        {
+            obj["variable_group"] = MapVariableGroup(change.VariableGroup);
+        }
+
         return obj;
     }
 
@@ -355,6 +360,85 @@ internal static class AotScriptObjectMapper
         obj["name"] = attr.Name;
         obj["before"] = attr.Before;
         obj["after"] = attr.After;
+        return obj;
+    }
+
+    private static ScriptObject MapVariableGroup(VariableGroupViewModel vg)
+    {
+        var obj = new ScriptObject();
+        obj["name"] = vg.Name;
+        obj["description"] = vg.Description;
+
+        // Variable changes for update scenarios
+        var variableChanges = new ScriptArray();
+        foreach (var variable in vg.VariableChanges)
+        {
+            variableChanges.Add(MapVariableChangeRow(variable));
+        }
+
+        obj["variable_changes"] = variableChanges;
+
+        // After variables for create scenarios
+        var afterVariables = new ScriptArray();
+        foreach (var variable in vg.AfterVariables)
+        {
+            afterVariables.Add(MapVariableRow(variable));
+        }
+
+        obj["after_variables"] = afterVariables;
+
+        // Before variables for delete scenarios
+        var beforeVariables = new ScriptArray();
+        foreach (var variable in vg.BeforeVariables)
+        {
+            beforeVariables.Add(MapVariableRow(variable));
+        }
+
+        obj["before_variables"] = beforeVariables;
+
+        // Key Vault blocks
+        var keyVaultBlocks = new ScriptArray();
+        foreach (var kv in vg.KeyVaultBlocks)
+        {
+            keyVaultBlocks.Add(MapKeyVaultRow(kv));
+        }
+
+        obj["key_vault_blocks"] = keyVaultBlocks;
+
+        return obj;
+    }
+
+    private static ScriptObject MapVariableChangeRow(VariableChangeRowViewModel variable)
+    {
+        var obj = new ScriptObject();
+        obj["change"] = variable.Change;
+        obj["name"] = variable.Name;
+        obj["value"] = variable.Value;
+        obj["enabled"] = variable.Enabled;
+        obj["content_type"] = variable.ContentType;
+        obj["expires"] = variable.Expires;
+        obj["is_large_value"] = variable.IsLargeValue;
+        return obj;
+    }
+
+    private static ScriptObject MapVariableRow(VariableRowViewModel variable)
+    {
+        var obj = new ScriptObject();
+        obj["name"] = variable.Name;
+        obj["value"] = variable.Value;
+        obj["enabled"] = variable.Enabled;
+        obj["content_type"] = variable.ContentType;
+        obj["expires"] = variable.Expires;
+        obj["is_large_value"] = variable.IsLargeValue;
+        return obj;
+    }
+
+    private static ScriptObject MapKeyVaultRow(KeyVaultRowViewModel kv)
+    {
+        var obj = new ScriptObject();
+        obj["name"] = kv.Name;
+        obj["service_endpoint_id"] = kv.ServiceEndpointId;
+        obj["search_depth"] = kv.SearchDepth;
         return obj;
     }
 }

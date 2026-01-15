@@ -89,5 +89,5 @@ terraform destroy
 ## Notes
 
 - The pipeline expects an `azure-pipelines.yml` file in the repository root
-- Secret variables are marked as sensitive and won't appear in plan outputs
+- When using tfplan2md, variable groups display all variable metadata including secret variables (with values shown as `(sensitive / hidden)`)
 - The project is created with private visibility by default

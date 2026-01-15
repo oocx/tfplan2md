@@ -49,6 +49,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🎨 **Semantic icons** - Visual icons for values: 🌐 for IPs, 🔌 for ports, 📨/🔗 for protocols, ✅/❌ for booleans, 👤/👥/💻 for principals, 🛡️ for roles
 - 📝 **Resource summaries** - Each resource change shows a concise one-line summary for quick scanning
 - 🔄 **Replacement reasons** - Resources being replaced show which attributes forced the replacement
+- 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps variable groups)
 
 ## Installation
 
@@ -336,7 +337,9 @@ For complex resources like firewall rule collections, tfplan2md provides resourc
 
 **Currently supported:**
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
+- `azurerm_network_security_group` - Shows security rule changes with semantic diffing
 - `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information
+- `azuredevops_variable_group` - Shows all variables (regular and secret) with metadata, hiding only secret values
 
 Example output for a firewall rule update:
 

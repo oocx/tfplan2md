@@ -391,6 +391,10 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
         {
             model.RoleAssignment = RoleAssignmentViewModelFactory.Build(rc, action, attributeChanges, _principalMapper);
         }
+        else if (string.Equals(rc.Type, "azuredevops_variable_group", StringComparison.OrdinalIgnoreCase))
+        {
+            model.VariableGroup = VariableGroupViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+        }
 
         model.Summary = _summaryBuilder.BuildSummary(model);
         model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);

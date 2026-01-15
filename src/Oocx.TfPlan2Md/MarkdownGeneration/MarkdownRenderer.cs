@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Renders Terraform plan reports to Markdown using Scriban templates.
 /// </summary>
-public class MarkdownRenderer
+internal class MarkdownRenderer
 {
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
 

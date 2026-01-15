@@ -11,4 +11,4 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 /// missing entries in their principal mapping file. The resource address indicates where
 /// the failed lookup occurred, allowing users to understand the impact.
 /// </remarks>
-public record FailedPrincipalResolution(string PrincipalId, string ResourceAddress);
+internal record FailedPrincipalResolution(string PrincipalId, string ResourceAddress);

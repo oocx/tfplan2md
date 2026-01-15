@@ -256,4 +256,123 @@ public class DiagnosticContextTests
         await Assert.That(markdown).Contains("Failed to resolve 1 principal ID:");
         await Assert.That(markdown).DoesNotContain("1 principal IDs");
     }
+
+    /// <summary>
+    /// Test that enhanced file system diagnostics are included when file doesn't exist.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_PrincipalMappingFileNotFound_ShowsDetailedDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "/data/principals.json",
+            PrincipalMappingFileExists = false,
+            PrincipalMappingDirectoryExists = true,
+            PrincipalMappingErrorType = PrincipalLoadError.FileNotFound,
+            PrincipalMappingErrorMessage = "File not found",
+            PrincipalMappingErrorDetails = "Could not find file '/data/principals.json'"
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Should show detailed diagnostics
+        await Assert.That(markdown).Contains("### Principal Mapping");
+        await Assert.That(markdown).Contains("Failed to load from '/data/principals.json'");
+        await Assert.That(markdown).Contains("**Diagnostic Details:**");
+        await Assert.That(markdown).Contains("File exists: ❌");
+        await Assert.That(markdown).Contains("Directory exists: ✅");
+        await Assert.That(markdown).Contains("Error type: FileNotFound");
+        await Assert.That(markdown).Contains("File not found");
+    }
+
+    /// <summary>
+    /// Test that JSON parse errors show line and column information.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_JsonParseError_ShowsLineAndColumn()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "/data/principals.json",
+            PrincipalMappingFileExists = true,
+            PrincipalMappingDirectoryExists = true,
+            PrincipalMappingErrorType = PrincipalLoadError.JsonParseError,
+            PrincipalMappingErrorMessage = "Invalid JSON syntax",
+            PrincipalMappingErrorDetails = "Unexpected character 'i' at line 3, column 15"
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Should show parse error details
+        await Assert.That(markdown).Contains("Error type: JsonParseError");
+        await Assert.That(markdown).Contains("Invalid JSON syntax");
+        await Assert.That(markdown).Contains("line 3, column 15");
+    }
+
+    /// <summary>
+    /// Test that directory not found shows parent directory status.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_DirectoryNotFound_ShowsDirectoryDiagnostics()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "/data/subdir/principals.json",
+            PrincipalMappingFileExists = false,
+            PrincipalMappingDirectoryExists = false,
+            PrincipalMappingErrorType = PrincipalLoadError.DirectoryNotFound,
+            PrincipalMappingErrorMessage = "Directory not found",
+            PrincipalMappingErrorDetails = "Could not find directory '/data/subdir'"
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Should show directory not found
+        await Assert.That(markdown).Contains("Directory exists: ❌");
+        await Assert.That(markdown).Contains("Error type: DirectoryNotFound");
+        await Assert.That(markdown).Contains("Directory not found");
+    }
+
+    /// <summary>
+    /// Test that Docker volume mount guidance is included in error output.
+    /// Related to issue 042: Enhanced principal loading debug context.
+    /// </summary>
+    [Test]
+    public async Task GenerateMarkdownSection_FileNotFound_IncludesDockerGuidance()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = false,
+            PrincipalMappingFilePath = "/data/principals.json",
+            PrincipalMappingFileExists = false,
+            PrincipalMappingDirectoryExists = true,
+            PrincipalMappingErrorType = PrincipalLoadError.FileNotFound
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Should include Docker mount guidance
+        await Assert.That(markdown).Contains("**Common Solutions:**");
+        await Assert.That(markdown).Contains("docker run");
+        await Assert.That(markdown).Contains("-v");
+        await Assert.That(markdown).Contains("--principal-mapping");
+    }
 }

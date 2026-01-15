@@ -145,6 +145,7 @@ public class PrincipalMapper : IPrincipalMapper
     /// If the file doesn't exist, is malformed, or cannot be read, an empty dictionary is
     /// returned and a warning is logged to stderr. When a diagnostic context is provided,
     /// the load status and principal type counts are recorded.
+    /// Enhanced in issue 042 to provide detailed error diagnostics for troubleshooting.
     /// </remarks>
     private static FrozenDictionary<string, string> LoadMappings(string? mappingFile, DiagnosticContext? diagnosticContext)
     {
@@ -160,12 +161,40 @@ public class PrincipalMapper : IPrincipalMapper
             diagnosticContext.PrincipalMappingFilePath = mappingFile;
         }
 
-        if (!File.Exists(mappingFile))
+        // Pre-flight file system checks (Issue 042)
+        var fileExists = File.Exists(mappingFile);
+        var directory = Path.GetDirectoryName(mappingFile);
+        var directoryExists = !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
+
+        if (diagnosticContext != null)
+        {
+            diagnosticContext.PrincipalMappingFileExists = fileExists;
+            diagnosticContext.PrincipalMappingDirectoryExists = directoryExists;
+        }
+
+        // Handle file not found early
+        if (!fileExists)
         {
             if (diagnosticContext != null)
             {
                 diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+
+                // Determine error type based on directory existence
+                if (!directoryExists)
+                {
+                    diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.DirectoryNotFound;
+                    diagnosticContext.PrincipalMappingErrorMessage = "Directory not found";
+                    diagnosticContext.PrincipalMappingErrorDetails = $"Could not find directory '{directory}'";
+                }
+                else
+                {
+                    diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.FileNotFound;
+                    diagnosticContext.PrincipalMappingErrorMessage = "File not found";
+                    diagnosticContext.PrincipalMappingErrorDetails = $"Could not find file '{mappingFile}'";
+                }
             }
+
+            Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': File not found");
             return FrozenDictionary<string, string>.Empty;
         }
 
@@ -173,12 +202,18 @@ public class PrincipalMapper : IPrincipalMapper
         {
             var content = File.ReadAllText(mappingFile);
             var parsed = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.DictionaryStringString);
+
             if (parsed is null)
             {
                 if (diagnosticContext != null)
                 {
                     diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                    diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.EmptyFile;
+                    diagnosticContext.PrincipalMappingErrorMessage = "File is empty or contains null";
+                    diagnosticContext.PrincipalMappingErrorDetails = "The JSON file was parsed but resulted in null";
                 }
+
+                Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': File is empty or invalid");
                 return FrozenDictionary<string, string>.Empty;
             }
 
@@ -194,12 +229,50 @@ public class PrincipalMapper : IPrincipalMapper
 
             return parsed.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
-            // Record failed load
+            // JSON parsing errors - provide line/column information if available
             if (diagnosticContext != null)
             {
                 diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.JsonParseError;
+                diagnosticContext.PrincipalMappingErrorMessage = "Invalid JSON syntax";
+
+                // Extract line/column information if available
+                var details = ex.Message;
+                if (ex.LineNumber.HasValue || ex.BytePositionInLine.HasValue)
+                {
+                    details = $"{ex.Message} at line {ex.LineNumber}, column {ex.BytePositionInLine}";
+                }
+                diagnosticContext.PrincipalMappingErrorDetails = details;
+            }
+
+            Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
+            return FrozenDictionary<string, string>.Empty;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            // Permission denied errors
+            if (diagnosticContext != null)
+            {
+                diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.AccessDenied;
+                diagnosticContext.PrincipalMappingErrorMessage = "Access denied";
+                diagnosticContext.PrincipalMappingErrorDetails = ex.Message;
+            }
+
+            Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
+            return FrozenDictionary<string, string>.Empty;
+        }
+        catch (Exception ex)
+        {
+            // Catch-all for unexpected errors
+            if (diagnosticContext != null)
+            {
+                diagnosticContext.PrincipalMappingLoadedSuccessfully = false;
+                diagnosticContext.PrincipalMappingErrorType = PrincipalLoadError.UnknownError;
+                diagnosticContext.PrincipalMappingErrorMessage = ex.GetType().Name;
+                diagnosticContext.PrincipalMappingErrorDetails = ex.Message;
             }
 
             // Intentional swallow after logging: malformed or unreadable mapping files should gracefully

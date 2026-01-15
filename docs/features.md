@@ -999,6 +999,7 @@ When rendering the full report, the default renderer applies resource-specific t
 |----------|--------------|----------|
 | azurerm | `azurerm_firewall_network_rule_collection` | Semantic rule diffing with `diff_array` |
 | azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
+| azuredevops | `azuredevops_variable_group` | Variable changes with secret value protection |
 
 #### Firewall Rule Collections
 
@@ -1030,6 +1031,60 @@ Example of a modified NSG rule with a port change and description update:
 ```markdown
 | 🔄 | allow-http | 110 | Inbound | Allow | Tcp | - *<br>+ 10.0.1.0/24, 10.0.2.0/24 | * | * | - 80<br>+ 8080 | - Allow HTTP<br>+ Allow alternate HTTP |
 ```
+
+#### Azure DevOps Variable Groups
+
+For `azuredevops_variable_group`, variables from both the `variable` and `secret_variable` arrays are displayed in a unified table showing all metadata. This solves the common problem where Terraform marks all variable group content as sensitive, making it impossible to review changes.
+
+**Features:**
+- **Unified display**: Shows all variables (regular and secret) in a single table
+- **Secret protection**: Secret variable values display as `(sensitive / hidden)` while showing all metadata (name, enabled, content_type, expires)
+- **Semantic diffing**: Variables matched by name across before/after states, showing Added (➕), Modified (🔄), Removed (❌), or Unchanged (⏺️)
+- **Large value handling**: Connection strings and multi-line values moved to collapsible section
+- **Key Vault integration**: Displays Key Vault connection metadata in separate table when present
+
+**Table columns:**
+- **Change**: Icon indicating the type of change (update operations only)
+- **Name**: Variable name (formatted as inline code)
+- **Value**: Variable value or `(sensitive / hidden)` for secrets
+- **Enabled**: Whether the variable is enabled (true/false/-)
+- **Content Type**: Content type metadata if specified
+- **Expires**: Expiration date if specified
+
+**Example output for update operation:**
+
+```markdown
+### 🔄 azuredevops_variable_group.example
+
+**Variable Group:** `example-variables`
+
+**Description:** `Variable group for example pipeline`
+
+#### Variables
+
+| Change | Name | Value | Enabled | Content Type | Expires |
+| ------ | ---- | ----- | ------- | ------------ | ------- |
+| ➕ | `ENV` | `Production` | - | - | - |
+| 🔄 | `APP_VERSION` | - `1.0.0`<br>+ `2.0.0` | `false` | - | - |
+| 🔄 | `SECRET_KEY` | `(sensitive / hidden)` | - `true`<br>+ `false` | - | - |
+| ❌ | `ENVIRONMENT` | `development` | `false` | - | - |
+```
+
+Note how the `SECRET_KEY` variable shows its metadata (name, enabled status) but displays `(sensitive / hidden)` instead of the actual secret value. Modified attributes show before/after values with `-` and `+` prefixes; unchanged attributes show a single value without prefix.
+
+**Key Vault integration example:**
+
+When a variable group is linked to Azure Key Vault, the connection metadata is displayed:
+
+```markdown
+#### Key Vault Integration
+
+| Name | Service Endpoint ID | Search Depth |
+| ---- | ------------------- | ------------ |
+| `my-keyvault` | `a1b2c3d4-e5f6-7890-abcd-ef1234567890` | `1` |
+```
+
+This template makes it possible to review variable group changes in CI/CD pipelines without exposing secret values.
 
 ### Helper Functions
 

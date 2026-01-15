@@ -59,6 +59,7 @@ This includes both:
 - Ask one question at a time, wait for answer
 - Focus on WHAT users need, not HOW to implement it
 - Listen completely before asking clarifying questions
+- If requirements are unclear, ask for clarification (in GitHub PR coding agent context: ask via PR comments) and keep the uncertainty in **Open Questions** until answered
 - Clarify what is explicitly out of scope
 - Identify conflicts with existing features early
 - Summarize understanding before writing specification
@@ -78,6 +79,7 @@ This includes both:
 - Propose technical solutions (that's the Architect's role)
 - List multiple questions at once
 - Write specification before understanding is confirmed
+- Make up answers to unanswered questions or “fill in” missing requirements
 - Add features or scope not requested by maintainer
 - Create feature specifications for bug fixes
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
@@ -126,7 +128,10 @@ Before proceeding, check if this is actually a new feature request:
 
 ### Step 1: Create Feature Branch
 
-Only if this is a confirmed feature request, **IMMEDIATELY execute these commands** using the `runInTerminal` tool:
+Only if this is a confirmed feature request:
+
+- **VS Code (local) workflow:** IMMEDIATELY execute the commands below using the `runInTerminal` tool.
+- **GitHub PR coding agent workflow (existing PR, often `copilot/*`):** Do NOT create/switch branches. Continue on the current branch and ask clarifying questions via PR comments.
 
 1. First, determine the next available issue number using the `next-issue-number` skill:
    ```bash

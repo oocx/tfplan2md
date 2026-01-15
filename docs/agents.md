@@ -308,7 +308,7 @@ The tfplan2md workflow supports both **local agents** (running in VS Code) and *
 
 ### Cloud Agents (Automated)
 
-- **Invocation:** Assign GitHub issue to `@copilot`
+- **Invocation:** Assign GitHub issue to `@copilot` (issue-driven) OR run as a GitHub Copilot coding agent on an existing PR (PR-driven)
 - **Use Case:** Well-scoped automation, batch updates, routine tasks
 - **Output:** Pull requests with code changes
 - **Best For:** Tasks with clear specifications that can run autonomously
@@ -329,10 +329,14 @@ The tfplan2md workflow supports both **local agents** (running in VS Code) and *
 
 **Cloud (GitHub):**
 - Autonomous execution from issue specification
-- Can ask multiple questions in one comment
+- Can ask multiple questions in one comment (issue-driven)
 - Limited to GitHub-safe tools (search, web, github/*)
 - Creates PR with changes and documentation
 - Relies on CI/CD for validation
+
+**Cloud (GitHub PR coding agent):**
+- Works on an existing PR branch (often `copilot/*`) — do not switch branches
+- If clarification is needed, ask via PR comments and wait (do not guess)
 
 **Example: Workflow Engineer**
 - **Local:** Interactive workflow analysis, design discussions, complex decisions
@@ -350,7 +354,8 @@ The tfplan2md workflow supports both **local agents** (running in VS Code) and *
 
 Agents determine their execution environment by analyzing:
 - **VS Code:** Interactive chat session with Maintainer, real-time feedback
-- **GitHub:** Issue body with task specification, autonomous execution expected
+- **GitHub Issue:** Issue body with task specification, autonomous execution expected
+- **GitHub PR coding agent:** Existing PR context (PR comments are the feedback loop; branch is typically `copilot/*`)
 
 ### Tool Availability
 

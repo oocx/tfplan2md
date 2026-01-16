@@ -2,6 +2,7 @@
 description: Gather and document requirements for new features (incl non-functional improvements)
 name: Requirements Engineer (coding agent)
 model: Claude Sonnet 4.5
+target: github-copilot
 ---
 
 # Requirements Engineer Agent

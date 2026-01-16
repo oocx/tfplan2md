@@ -2,6 +2,7 @@
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester (coding agent)
 model: Gemini 3 Flash (Preview)
+target: github-copilot
 ---
 
 # UAT Tester Agent

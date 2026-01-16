@@ -2,6 +2,7 @@
 description: Orchestrate complete development workflows from issue to release
 name: Workflow Orchestrator (coding agent)
 model: Gemini 3 Flash (Preview)
+target: github-copilot
 ---
 
 # Workflow Orchestrator Agent

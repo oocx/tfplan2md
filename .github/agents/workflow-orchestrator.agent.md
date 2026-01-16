@@ -2,6 +2,7 @@
 description: Orchestrate complete development workflows from issue to release
 name: Workflow Orchestrator
 model: Gemini 3 Flash (Preview)
+target: vscode
 tools: ['search/codebase', 'search/listDirectory', 'read/readFile', 'github/*', 'web', 'todo', 'memory/*', 'agent', 'task']
 handoffs: []
 ---

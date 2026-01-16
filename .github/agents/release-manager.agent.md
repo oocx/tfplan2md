@@ -2,6 +2,7 @@
 description: Coordinate and execute releases
 name: Release Manager
 model: Gemini 3 Flash (Preview)
+target: vscode
 tools: ['search', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'search/usages', 'read/readFile', 'search/listDirectory', 'search/codebase', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'web/githubRepo', 'github/*', 'todo']
 handoffs:
   - label: Fix Build Issues

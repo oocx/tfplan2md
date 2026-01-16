@@ -2,6 +2,7 @@
 description: Investigate and document bugs, incidents, and technical issues
 name: Issue Analyst (coding agent)
 model: GPT-5.2
+target: github-copilot
 ---
 
 # Issue Analyst Agent

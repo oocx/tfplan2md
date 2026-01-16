@@ -2,6 +2,7 @@
 description: Implement features and tests according to specifications
 name: Developer (coding agent)
 model: GPT-5.1-Codex-Max
+target: github-copilot
 ---
 
 # Developer Agent

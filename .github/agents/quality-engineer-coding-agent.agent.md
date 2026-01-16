@@ -2,6 +2,7 @@
 description: Define test plans and test cases for features
 name: Quality Engineer (coding agent)
 model: Gemini 3 Flash (Preview)
+target: github-copilot
 ---
 
 # Quality Engineer Agent

@@ -2,6 +2,7 @@
 description: Coordinate and execute releases
 name: Release Manager (coding agent)
 model: Gemini 3 Flash (Preview)
+target: github-copilot
 ---
 
 # Release Manager Agent

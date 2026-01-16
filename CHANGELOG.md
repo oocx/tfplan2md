@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.38"></a>
+## [1.0.0-alpha.38](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.37...v1.0.0-alpha.38) (2026-01-16)
+
+### ✨ Features
+
+* support nested principal mapping format ([1daa7fc](https://github.com/oocx/tfplan2md/commit/1daa7fcf9f5ab1d3b774bd146f14bb5dba6a2b67))
+
 <a name="1.0.0-alpha.37"></a>
 ## [1.0.0-alpha.37](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.36...v1.0.0-alpha.37) (2026-01-16)
 

@@ -141,7 +141,11 @@ internal class PrincipalMapper : IPrincipalMapper
     /// <param name="diagnosticContext">Optional diagnostic context to record load status.</param>
     /// <returns>A frozen dictionary of principal IDs to display names.</returns>
     /// <remarks>
-    /// The JSON file should contain a flat dictionary of principal ID (GUID) to display name.
+    /// The JSON file can be in one of two formats:
+    /// 1. Nested format (recommended): Separate sections for "users", "groups", and "servicePrincipals".
+    /// 2. Flat format (legacy): A flat dictionary of principal ID (GUID) to display name.
+    /// Both formats are supported for backward compatibility. The method attempts to parse as
+    /// nested format first, then falls back to flat format if parsing fails.
     /// If the file doesn't exist, is malformed, or cannot be read, an empty dictionary is
     /// returned and a warning is logged to stderr. When a diagnostic context is provided,
     /// the load status and principal type counts are recorded.
@@ -201,7 +205,89 @@ internal class PrincipalMapper : IPrincipalMapper
         try
         {
             var content = File.ReadAllText(mappingFile);
-            var parsed = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.DictionaryStringString);
+
+            // Try to parse as nested format first (recommended format)
+            Dictionary<string, string>? parsed = null;
+            var isNestedFormat = false;
+
+            try
+            {
+                var nestedMapping = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.PrincipalMappingFile);
+
+                if (nestedMapping != null &&
+                    (nestedMapping.Users != null || nestedMapping.Groups != null || nestedMapping.ServicePrincipals != null))
+                {
+                    // Flatten the nested structure into a single dictionary
+                    parsed = new Dictionary<string, string>();
+
+                    if (nestedMapping.Users != null)
+                    {
+                        foreach (var (id, name) in nestedMapping.Users)
+                        {
+                            parsed[id] = name;
+                        }
+                    }
+
+                    if (nestedMapping.Groups != null)
+                    {
+                        foreach (var (id, name) in nestedMapping.Groups)
+                        {
+                            parsed[id] = name;
+                        }
+                    }
+
+                    if (nestedMapping.ServicePrincipals != null)
+                    {
+                        foreach (var (id, name) in nestedMapping.ServicePrincipals)
+                        {
+                            parsed[id] = name;
+                        }
+                    }
+
+                    isNestedFormat = true;
+
+                    // Record successful load and count principals by type
+                    if (diagnosticContext != null)
+                    {
+                        diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
+
+                        // Count principals by type for nested format
+                        if (nestedMapping.Users != null && nestedMapping.Users.Count > 0)
+                        {
+                            diagnosticContext.PrincipalTypeCount["users"] = nestedMapping.Users.Count;
+                        }
+                        if (nestedMapping.Groups != null && nestedMapping.Groups.Count > 0)
+                        {
+                            diagnosticContext.PrincipalTypeCount["groups"] = nestedMapping.Groups.Count;
+                        }
+                        if (nestedMapping.ServicePrincipals != null && nestedMapping.ServicePrincipals.Count > 0)
+                        {
+                            diagnosticContext.PrincipalTypeCount["servicePrincipals"] = nestedMapping.ServicePrincipals.Count;
+                        }
+                    }
+                }
+            }
+            catch (JsonException)
+            {
+                // Not nested format, try flat format (backward compatibility)
+                isNestedFormat = false;
+            }
+
+            // If nested format parsing didn't work, try flat format
+            if (!isNestedFormat)
+            {
+                parsed = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.DictionaryStringString);
+
+                // Record successful load and count principals
+                if (diagnosticContext != null && parsed != null)
+                {
+                    diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
+
+                    // Count total principals (we don't have type information in the mapping file,
+                    // so we'll just report total count as "principals")
+                    diagnosticContext.PrincipalTypeCount["principals"] = parsed.Count;
+                }
+            }
 
             if (parsed is null)
             {
@@ -215,16 +301,6 @@ internal class PrincipalMapper : IPrincipalMapper
 
                 Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': File is empty or invalid");
                 return FrozenDictionary<string, string>.Empty;
-            }
-
-            // Record successful load and count principals
-            if (diagnosticContext != null)
-            {
-                diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
-
-                // Count total principals (we don't have type information in the mapping file,
-                // so we'll just report total count as "principals")
-                diagnosticContext.PrincipalTypeCount["principals"] = parsed.Count;
             }
 
             return parsed.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);

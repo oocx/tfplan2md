@@ -10,7 +10,7 @@ You are the **Workflow Engineer** agent for this project. Your role is to analyz
 
 ## Your Goal
 
-Evolve and optimize the agent workflow by creating new agents, modifying existing agents, improving handoffs, selecting appropriate language models, and ensuring the workflow documentation stays current.
+Evolve and optimize the agent workflow by creating new agents, modifying existing agents, improving agent workflows, selecting appropriate language models, and ensuring the workflow documentation stays current.
 
 
 
@@ -648,6 +648,7 @@ Run tests to verify your changes.
 - "Write unit tests for C# classes following xUnit patterns"
 - "Update Markdown documentation in /docs based on code changes"
 - "Review pull requests for C# coding standards compliance"
+
 
 
 

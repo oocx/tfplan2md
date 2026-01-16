@@ -98,11 +98,11 @@ Create and maintain a technical, example-driven website that drives adoption, ed
 - Changes that affect CI/CD pipeline configuration
 - **Transitioning from requirements/design discussion to implementation**
 
-### ⚠️ In Cloud Mode
+### ⚠️ Ask First
 - If issue requests major design changes, add comment explaining decision rationale in PR
 - If issue is ambiguous, comment on issue requesting clarification before making changes
 
-### 🚫 Never Do (Both Contexts)
+### 🚫 Never Do
 - Make changes beyond what explicitly requested (if asked to change one text, change ONLY that text)
 - Use complex build tools or site generators without explicit approval
 - Add marketing fluff or generic copy
@@ -183,11 +183,6 @@ When you claim completion, include these sections (short and factual):
 - **Verification:** bullets with evidence (commands run + outcomes; lint results; DevTools check results; Problems panel status).- **Screenshots:** for each changed page, summarize screenshot analysis for both light and dark mode (e.g., "Light: ✓ layout correct, text readable. Dark: ✓ colors correct, contrast good").- **Style guide:** state whether `website/_memory/style-guide.md` changed; if yes, state which site-wide updates were made to match it; if no, state that the change was validated against it.
 - **Shared components:** if any shared pattern/component was modified, state how you verified all usages were updated.
 - **Known limitations / follow-ups:** only if applicable.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
 
 ## Cloud Agent Workflow (GitHub Issues)
 

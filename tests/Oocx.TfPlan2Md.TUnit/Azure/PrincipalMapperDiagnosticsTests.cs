@@ -355,4 +355,145 @@ public class PrincipalMapperDiagnosticsTests
             }
         }
     }
+
+    /// <summary>
+    /// Test that nested format records principal type counts by category.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_NestedFormat_RecordsTypeCounts()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/nested-principal-mapping.json";
+
+        // Create a nested format JSON file
+        var nestedJson = """
+        {
+          "users": {
+            "user-1": "Jane Doe",
+            "user-2": "John Smith"
+          },
+          "groups": {
+            "group-1": "Platform Team",
+            "group-2": "Security Team",
+            "group-3": "DevOps Team"
+          },
+          "servicePrincipals": {
+            "spn-1": "terraform-spn"
+          }
+        }
+        """;
+        Directory.CreateDirectory("TestData");
+        File.WriteAllText(mappingFile, nestedJson);
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
+            context.PrincipalMappingFilePath.Should().Be(mappingFile);
+            context.PrincipalTypeCount["users"].Should().Be(2);
+            context.PrincipalTypeCount["groups"].Should().Be(3);
+            context.PrincipalTypeCount["servicePrincipals"].Should().Be(1);
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Test that nested format with only users section records only users count.
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_NestedFormatUsersOnly_RecordsOnlyUserCount()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/nested-users-only.json";
+
+        // Create a nested format JSON file with only users
+        var nestedJson = """
+        {
+          "users": {
+            "user-1": "Jane Doe",
+            "user-2": "John Smith"
+          }
+        }
+        """;
+        Directory.CreateDirectory("TestData");
+        File.WriteAllText(mappingFile, nestedJson);
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
+            context.PrincipalTypeCount["users"].Should().Be(2);
+            context.PrincipalTypeCount.Should().NotContainKey("groups");
+            context.PrincipalTypeCount.Should().NotContainKey("servicePrincipals");
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Test that flat format still works and records "principals" count (backward compatibility).
+    /// </summary>
+    [Test]
+    public void PrincipalMapper_FlatFormat_RecordsPrincipalsCount()
+    {
+        // Arrange
+        var context = new DiagnosticContext();
+        var mappingFile = "TestData/flat-principal-mapping.json";
+
+        // Create a flat format JSON file
+        var flatJson = """
+        {
+          "00000000-0000-0000-0000-000000000001": "Jane Doe (User)",
+          "00000000-0000-0000-0000-000000000002": "DevOps Team (Group)",
+          "00000000-0000-0000-0000-000000000003": "terraform-spn (Service Principal)"
+        }
+        """;
+        Directory.CreateDirectory("TestData");
+        File.WriteAllText(mappingFile, flatJson);
+
+        try
+        {
+            // Act
+            _ = new PrincipalMapper(mappingFile, context);
+
+            // Assert
+            context.PrincipalMappingFileProvided.Should().BeTrue();
+            context.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
+            context.PrincipalTypeCount["principals"].Should().Be(3);
+            context.PrincipalTypeCount.Should().NotContainKey("users");
+            context.PrincipalTypeCount.Should().NotContainKey("groups");
+            context.PrincipalTypeCount.Should().NotContainKey("servicePrincipals");
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(mappingFile))
+            {
+                File.Delete(mappingFile);
+            }
+        }
+    }
 }

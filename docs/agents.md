@@ -47,6 +47,26 @@ For well-defined features or bugs, use the **Workflow Orchestrator** agent to au
 
 ---
 
+## Agent Execution Contexts
+
+All agents exist in two variants optimized for their execution environment:
+
+### Local Agents (VS Code)
+- **Usage**: `@agent-name` in VS Code Copilot chat
+- **Tools**: Explicitly configured tool list with local-only tools (execute, edit, vscode, todo, etc.)
+- **Behavior**: Interactive with Maintainer, asks one question at a time, runs tests/builds locally
+- **File naming**: Standard name (e.g., `developer.agent.md`)
+
+### Coding Agents (GitHub Cloud)
+- **Usage**: Automatically used when GitHub assigns issues to `@copilot` or when running as PR coding agent
+- **Tools**: No explicit tool list (defaults to all available tools in cloud environment)
+- **Behavior**: Autonomous operation, may ask multiple questions via comments, relies on CI/CD for validation
+- **File naming**: Name with ` (coding agent)` suffix (e.g., `developer-coding-agent.agent.md`)
+
+The workflow diagram and agent descriptions below refer to the conceptual agent roles, not the specific variants. Both variants follow the same workflow patterns and handoff relationships.
+
+---
+
 ## Agent Skills
 
 Agents are empowered by **Agent Skills**, which are specialized, reusable capabilities stored in `.github/skills/`. Skills encapsulate complex workflows, scripts, and strict procedures (like UAT or Release) that can be loaded on-demand by agents. This ensures consistency and reduces the cognitive load on the primary agent prompts.
@@ -113,8 +133,6 @@ Format:
 | `create-pr-github` | Create and (optionally) merge a GitHub pull request (prefer GitHub chat tools; gh/wrappers are fallback), following the repo policy to use rebase and merge for a linear history. |
 | `create-pr-azdo` | Create an Azure DevOps pull request using az devops tooling; include the repo’s linear-history merge preference and ask the Maintainer if merge options differ. |
 | `detect-diagram-crossings` | Detect and analyze edge crossings and overlaps in SVG workflow diagrams using geometric intersection algorithms and visual analysis. |
-| `execution-context-detection` | Detect whether agent is running in VS Code (local/interactive) or GitHub (cloud/automated) context and adapt behavior accordingly. |
-
 | `git-rebase-main` | Safely rebase the current feature branch on top of the latest origin/main. |
 | `merge-conflict-resolution` | Resolve git merge/rebase conflicts safely without losing intended changes; verify by reviewing diffs and searching for conflict markers. |
 | `next-issue-number` | Determine the next available issue number across all change types (feature, fix, workflow) by checking both local docs and remote branches, then reserve it by pushing an empty branch. |

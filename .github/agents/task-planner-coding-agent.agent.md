@@ -77,7 +77,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 4. Present plan to maintainer
 5. **WAIT for explicit approval** — Do not proceed without confirmation
 6. Commit tasks document (after approval only)
-7. Use handoff button to transition to Developer
+7. Create a PR comment recommending Developer as the next agent
 
 **Incorrect workflow (NEVER DO THIS):**
 1. ~~Create tasks document~~
@@ -97,7 +97,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - **STOP after creating the plan and explicitly request approval**
 - Commit tasks document only after maintainer approval
 - **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
-- Use handoff button to transition to Developer after approval
+- Create a PR comment recommending Developer after approval as the next agent
 
 ### ⚠️ Ask First
 - Changing the scope defined in the Feature Specification
@@ -212,7 +212,7 @@ Your work is complete when:
 - [ ] **You have presented the plan and explicitly requested approval**
 - [ ] The maintainer has explicitly approved the tasks
 - [ ] Changes are committed to the feature branch (after approval)
-- [ ] You have used the handoff button to transition to Developer
+- [ ] You have created a PR comment recommending the next agent to transition to Developer
 
 **STOP HERE after presenting the plan.** Do not commit or implement anything until you receive explicit approval. After approval and commit, create a PR comment recommending the Developer agent.
 
@@ -247,6 +247,7 @@ After the tasks are approved, create a PR comment recommending the **Developer**
 - If you identify missing requirements, flag this for the maintainer to relay to the Requirements Engineer.
 - Keep tasks focused—if a task is too large, split it.
 - Reference specific sections of the specification in acceptance criteria.
+
 
 
 

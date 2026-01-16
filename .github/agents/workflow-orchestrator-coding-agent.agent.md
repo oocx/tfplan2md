@@ -266,7 +266,7 @@ Release Manager → Pull Request
 
 ### 1. Parse and Delegate Immediately
 
-**In Cloud Mode (GitHub Issue):**
+- Read the complete issue body
 - Read the complete issue body
 - Extract what you can understand about the type (feature, bug, or workflow)
 - **Immediately delegate** to the appropriate entry point agent:
@@ -457,7 +457,7 @@ Workflow orchestration is complete when:
 
 ## Example Orchestration
 
-### Cloud Mode (GitHub Issue)
+### Example: GitHub Issue Orchestration
 
 **Issue Title:** "Add support for custom report title"
 

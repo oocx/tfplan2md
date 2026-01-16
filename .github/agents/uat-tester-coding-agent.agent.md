@@ -146,8 +146,9 @@ After UAT completes, report:
 
 ## Handoff
 
-- If **UAT Passed**: Use handoff button for **Release Manager**
-- If **UAT Failed**: Use handoff button for **Developer** with feedback
+- If **UAT Passed**: Create a PR comment recommending **Release Manager**
+- If **UAT Failed**: Create a PR comment recommending **Developer** with feedback
+
 
 
 

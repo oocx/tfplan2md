@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.37"></a>
+## [1.0.0-alpha.37](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.36...v1.0.0-alpha.37) (2026-01-16)
+
+### ✨ Features
+
+* enhance debug output for principal loading errors with detailed diagnostics ([a477fba](https://github.com/oocx/tfplan2md/commit/a477fba54160a48fe55860ed26f31a43dcdfa1d9))
+* **diagnostics:** add enhanced error context for principal loading ([497483f](https://github.com/oocx/tfplan2md/commit/497483f174702a0005d23486315582d9e1097bc8))
+* **principal-mapper:** implement enhanced error diagnostics ([5df0a91](https://github.com/oocx/tfplan2md/commit/5df0a91a680e01e5ecdeb4629d8b98fe15fb7d69))
+
+### 🐛 Bug Fixes
+
+* change diagnostic types to internal per code review ([ff15e98](https://github.com/oocx/tfplan2md/commit/ff15e98a422e6ec7d6da0d0bbe40345329903aed))
+* **workflow:** enforce PR coding-agent branch safety ([e058856](https://github.com/oocx/tfplan2md/commit/e05885647a176c7fbd837ff04bbbb169f48ba592))
+* **workflow:** respect GitHub PR coding agent branches ([1aa3060](https://github.com/oocx/tfplan2md/commit/1aa306095d15ee050342c1e3d8cd691c6f8d75b4))
+
+### 📚 Documentation
+
+* add issue analysis for enhanced debug context in principal/template loading ([a1e345c](https://github.com/oocx/tfplan2md/commit/a1e345cd034bd0efd1601038c1a230714b8f9217))
+* update debug output documentation with enhanced error diagnostics ([1b8094d](https://github.com/oocx/tfplan2md/commit/1b8094d39f49f2f2bd571c5ec50c9620c41cf8a7))
+
 <a name="1.0.0-alpha.36"></a>
 ## [1.0.0-alpha.36](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.35...v1.0.0-alpha.36) (2026-01-15)
 

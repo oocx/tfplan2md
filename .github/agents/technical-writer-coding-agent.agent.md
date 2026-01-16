@@ -1,8 +1,7 @@
 ---
 description: Update documentation to reflect new features and changes
-name: Technical Writer
+name: Technical Writer (coding agent)
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'web/fetch', 'web/githubRepo', 'github/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'todo']
 handoffs:
   - label: Request Code Review
     agent: "Code Reviewer"

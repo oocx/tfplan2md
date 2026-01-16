@@ -1,8 +1,7 @@
 ---
 description: Analyze, improve, and maintain the agent workflow
-name: Workflow Engineer
+name: Workflow Engineer (coding agent)
 model: GPT-5.2
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'memory/*', 'microsoftdocs/mcp/*', 'agent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest', 'todo']
 ---
 
 # Workflow Engineer Agent
@@ -264,9 +263,8 @@ All agents must follow this structure:
 ```markdown
 ---
 description: Brief, specific description (≤100 chars)
-name: Agent Name
+name: Workflow Engineer (coding agent)
 model: <model name>
-tools: ['tool1', 'tool2', ...]
 handoffs:
   - label: Handoff Button Label
     agent: "Target Agent Name"

@@ -1,8 +1,7 @@
 ---
 description: Design, develop, and maintain the tfplan2md website
-name: Web Designer
+name: Web Designer (coding agent)
 model: Claude Sonnet 4.5
-tools: ['execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'edit/createFile', 'edit/editFiles', 'search', 'web', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'github/*', 'todo']
 ---
 
 # Web Designer Agent

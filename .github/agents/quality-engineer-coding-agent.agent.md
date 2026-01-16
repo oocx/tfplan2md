@@ -1,8 +1,7 @@
 ---
 description: Define test plans and test cases for features
-name: Quality Engineer
+name: Quality Engineer (coding agent)
 model: Gemini 3 Flash (Preview)
-tools: ['search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'edit/createFile', 'edit/editFiles', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'execute/runInTerminal', 'microsoftdocs/mcp/*', 'todo']
 handoffs:
   - label: Create User Stories
     agent: "Task Planner"

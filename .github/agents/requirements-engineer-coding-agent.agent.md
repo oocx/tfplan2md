@@ -1,8 +1,7 @@
 ---
 description: Gather and document requirements for new features (incl non-functional improvements)
-name: Requirements Engineer
+name: Requirements Engineer (coding agent)
 model: Claude Sonnet 4.5
-tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'web/fetch', 'web/githubRepo', 'execute/runInTerminal', 'execute/getTerminalOutput', 'read/terminalLastCommand', 'github/*', 'memory/*', 'io.github.hashicorp/terraform-mcp-server/*', 'todo']
 handoffs:
   - label: Start Architecture Design
     agent: "Architect"

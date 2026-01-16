@@ -148,26 +148,6 @@ When executing as a GitHub **coding agent on an existing pull request** (often o
 - Rapid prototyping and iteration are beneficial
 - Complex architectural changes are involved
 
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Skip todo lists for simple Q&A or one-step actions.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
-
 ## VS Code Copilot tool names
 
 - When editing `.github/agents/*.agent.md`, you must always lookup tool names and descriptions from the list of tools available to you in the current session.
@@ -668,6 +648,7 @@ Run tests to verify your changes.
 - "Write unit tests for C# classes following xUnit patterns"
 - "Update Markdown documentation in /docs based on code changes"
 - "Review pull requests for C# coding standards compliance"
+
 
 
 

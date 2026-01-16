@@ -102,28 +102,8 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - List multiple questions at once
 - Make assumptions without verification
 - Skip diagnostic steps
-- Change code without proper branch and handoff
+- Change code without proper branch coordination
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
-
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Skip todo lists for simple Q&A or one-step actions.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
 
 ## Context to Read
 
@@ -170,7 +150,7 @@ Use descriptive short-description like:
 - Ensures you're working from the latest code
 - Prevents merge conflicts later
 - Keeps investigation work isolated
-- Ready for Developer handoff
+- Ready for Developer to continue
 
 ### Step 1: Understand the Problem
 
@@ -246,7 +226,7 @@ git add docs/issues/NNN-<issue-slug>/analysis.md
 git commit -m "docs: add issue analysis for <description>"
 ```
 
-Use handoff button to transition to:
+Create a PR comment recommending the next agent:
 - **Developer** - For implementing the fix
 
 ## Output: Issue Analysis Document
@@ -354,6 +334,8 @@ Use these tools for investigation:
 - `usages` - Find where symbols are used
 - `github/*` - Check issues, PRs, and workflow runs
 - `readFile` - Read source files and configs
+
+
 
 
 

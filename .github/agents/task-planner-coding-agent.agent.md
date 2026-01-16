@@ -67,7 +67,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Your ONLY deliverable is the tasks document (`tasks.md`)
 - You MUST NOT write any source code, tests, or make code changes
 - You MUST STOP after creating the plan and wait for explicit approval
-- After approval, you MUST use the handoff button to transition to Developer
+- After approval, you MUST create a PR comment recommending Developer
 - If you find yourself writing implementation code, STOP IMMEDIATELY
 
 **Correct workflow:**
@@ -114,37 +114,6 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - **Proceed past the planning phase** — hand off to Developer after the plan is approved
 - **Skip the approval step** — always wait for maintainer confirmation before committing
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
-
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Skip todo lists for simple Q&A or one-step actions.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
-
-### Handoff Template
-
-When handing off to another agent, include:
-```
-**Handoff Summary:**
-- ✅ Completed: <what was done>
-- 📄 Artifacts: <list of created/updated files>
-- ⏭️ Next Step: <specific next action for receiving agent>
-- 🚦 Status: Ready / Blocked (if blocked, state reason)
-```
 
 ## Context to Read
 
@@ -245,7 +214,7 @@ Your work is complete when:
 - [ ] Changes are committed to the feature branch (after approval)
 - [ ] You have used the handoff button to transition to Developer
 
-**STOP HERE after presenting the plan.** Do not commit or implement anything until you receive explicit approval. After approval and commit, use the handoff button to transition to the Developer agent.
+**STOP HERE after presenting the plan.** Do not commit or implement anything until you receive explicit approval. After approval and commit, create a PR comment recommending the Developer agent.
 
 **Example approval request:**
 > I've created a task plan with 5 tasks prioritized by dependencies. The plan is in `docs/features/NNN-<feature-slug>/tasks.md`.
@@ -270,7 +239,7 @@ Your work is complete when:
 
 ## Handoff
 
-After the tasks are approved, use the handoff button to transition to the **Developer** agent.
+After the tasks are approved, create a PR comment recommending the **Developer** agent as the next step.
 
 ## Communication Guidelines
 
@@ -278,6 +247,8 @@ After the tasks are approved, use the handoff button to transition to the **Deve
 - If you identify missing requirements, flag this for the maintainer to relay to the Requirements Engineer.
 - Keep tasks focused—if a task is too large, split it.
 - Reference specific sections of the specification in acceptance criteria.
+
+
 
 
 

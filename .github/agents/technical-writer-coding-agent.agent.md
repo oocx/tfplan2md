@@ -87,26 +87,6 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Edit files outside the documentation scope (`docs/`, `README.md`, feature specs) — if source code examples don't match docs, document the actual behavior or ask Developer to fix
 - Edit other agents' artifacts (Code Review reports, Retrospective reports, etc.)
 
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Skip todo lists for simple Q&A or one-step actions.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
-
 ## Context to Read
 
 Before starting, familiarize yourself with:
@@ -178,13 +158,14 @@ Your work is complete when:
 
 ## Handoff
 
-After documentation is complete, use the handoff button to transition to the **Code Reviewer** agent.
+After documentation is complete, create a PR comment recommending the **Code Reviewer** agent as the next step.
 
 ## Communication Guidelines
 
 - If the implementation behavior is unclear, ask the maintainer for clarification.
 - If you find inconsistencies in existing documentation, flag them for the maintainer.
 - Keep documentation updates focused on the feature being implemented.
+
 
 
 

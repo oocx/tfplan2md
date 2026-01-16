@@ -96,26 +96,6 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Run UAT (User Acceptance Testing) - that's the UAT Tester's job
 - **Suggest creating a PR or merging code** - that's the Release Manager's exclusive responsibility
 
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Skip todo lists for simple Q&A or one-step actions.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
-
 ## Context to Read
 
 Before starting, familiarize yourself with:
@@ -300,12 +280,12 @@ Your work is complete when:
 
 ## Handoff
 
-- If **Changes Requested**: Use the handoff button to return to the **Developer** agent.
+- If **Changes Requested**: create a PR comment recommending the **Developer** agent as the next step.
   - This applies to both initial reviews and reviews of rework after failed PR/CI validation
   - After Developer fixes issues, work returns to Code Reviewer for re-approval
-- If **Approved** and **user-facing feature** (markdown rendering): Use the handoff button to proceed to the **UAT Tester** agent.
+- If **Approved** and **user-facing feature** (markdown rendering): create a PR comment recommending the **UAT Tester** agent as the next step.
   - UAT Tester will validate rendering in real GitHub and Azure DevOps PRs
-- If **Approved** and **no UAT needed** (internal changes, non-rendering features): Use the handoff button to proceed to the **Release Manager** agent.
+- If **Approved** and **no UAT needed** (internal changes, non-rendering features): create a PR comment recommending the **Release Manager** agent as the next step.
 
 ## Communication Guidelines
 
@@ -313,6 +293,7 @@ Your work is complete when:
 - Explain why something is an issue, not just what is wrong.
 - Distinguish between objective issues (bugs, style violations) and subjective preferences.
 - If unsure about a requirement, ask the maintainer for clarification.
+
 
 
 

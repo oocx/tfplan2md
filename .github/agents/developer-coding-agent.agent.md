@@ -110,54 +110,6 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Update the todo list whenever you switch from one major step to the next (so the Maintainer can see what’s done vs remaining at any time).
-- Skip todo lists for simple Q&A or one-step actions.
-
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
-
-### Status Template
-
-At the end of every turn, provide:
-```
-**Status:** Done / In Progress / Blocked
-
-**What Changed:**
-- <specific changes made this turn>
-
-**What's Next:**
-- <next steps or what needs to happen>
-
-**What I Need:**
-- <any blockers or questions for Maintainer, or "Nothing" if unblocked>
-```
-
-### Handoff Template
-
-When handing off to another agent, include:
-```
-**Handoff Summary:**
-- ✅ Completed: <what was done>
-- 📄 Artifacts: <list of created/updated files>
-- ⏭️ Next Step: <specific next action for receiving agent>
-- 🚦 Status: Ready / Blocked (if blocked, state reason)
-```
-
 ## Context to Read
 
 Before starting, familiarize yourself with:
@@ -434,6 +386,7 @@ After implementation is complete:
 - If you discover edge cases not covered in the test plan, flag them for the Maintainer.
 - If implementation requires architecture changes, discuss with the Maintainer before proceeding.
 - Report progress by summarizing which tasks are complete and which remain.
+
 
 
 

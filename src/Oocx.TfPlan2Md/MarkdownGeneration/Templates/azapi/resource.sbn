@@ -53,171 +53,42 @@
 {{~ end ~}}
 
 {{~ # Body rendering based on action type ~}}
-{{~ if change.action == "create" ~}}
-{{~ # CREATE: Show body configuration using flatten_json ~}}
+{{~ if change.action == "create" || change.action == "replace" ~}}
+{{~ body_heading = change.action == "replace" ? "Body Configuration (replacing existing resource)" : "Body Configuration" ~}}
 {{~ if change.after_json && change.after_json.body ~}}
-
-#### Body Configuration
-
-{{~ flattened = flatten_json change.after_json.body "" ~}}
-{{~ small_props = flattened | array.filter @(do; ret !$0.is_large; end) ~}}
-{{~ large_props = flattened | array.filter @(do; ret $0.is_large; end) ~}}
-
-{{~ if small_props.size > 0 ~}}
-| Property | Value |
-|----------|-------|
-{{~ for prop in small_props ~}}
-| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table null prop.value null }} |
-{{~ end ~}}
-{{~ end ~}}
-
-{{~ if large_props.size > 0 ~}}
-
-<details>
-<summary>Large body properties</summary>
-
-| Property | Value |
-|----------|-------|
-{{~ for prop in large_props ~}}
-| {{ prop.path | escape_markdown }} | {{ format_large_value null prop.value "inline-diff" }} |
-{{~ end ~}}
-
-</details>
-{{~ end ~}}
+{{ render_azapi_body change.after_json.body body_heading "create" null null null false "inline-diff" }}
 {{~ else ~}}
 
 *Body: (empty)*
 {{~ end ~}}
-
 {{~ else if change.action == "update" ~}}
-{{~ # UPDATE: Show body changes using compare_json_properties ~}}
 {{~ if change.before_json && change.before_json.body && change.after_json && change.after_json.body ~}}
-
-#### Body Changes
-
-{{~ # Get before/after sensitive structures for body (safely) ~}}
 {{~ before_sensitive_body = change.before_sensitive ? change.before_sensitive.body : null ~}}
 {{~ after_sensitive_body = change.after_sensitive ? change.after_sensitive.body : null ~}}
-
-{{~ # Compare body properties ~}}
-{{~ comparisons = compare_json_properties change.before_json.body change.after_json.body before_sensitive_body after_sensitive_body false false ~}}
-{{~ small_changes = comparisons | array.filter @(do; ret !$0.is_large; end) ~}}
-{{~ large_changes = comparisons | array.filter @(do; ret $0.is_large; end) ~}}
-
-{{~ if small_changes.size > 0 ~}}
-| Property | Before | After |
-|----------|--------|-------|
-{{~ for prop in small_changes ~}}
-| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table prop.before prop.after null }} | {{ format_attribute_value_table null prop.after null }} |
-{{~ end ~}}
-{{~ end ~}}
-
-{{~ if large_changes.size > 0 ~}}
-
-<details>
-<summary>Large body property changes</summary>
-
-| Property | Before | After |
-|----------|--------|-------|
-{{~ for prop in large_changes ~}}
-| {{ prop.path | escape_markdown }} | {{ format_large_value prop.before prop.after "inline-diff" }} | {{ format_large_value prop.before prop.after "inline-diff" }} |
-{{~ end ~}}
-
-</details>
-{{~ end ~}}
-
-{{~ if small_changes.size == 0 && large_changes.size == 0 ~}}
-
-*No body changes detected*
-{{~ end ~}}
+{{ render_azapi_body change.after_json.body "Body Changes" "update" change.before_json.body before_sensitive_body after_sensitive_body false "inline-diff" }}
 {{~ else ~}}
 
 *Body: (no changes or missing data)*
 {{~ end ~}}
-
 {{~ else if change.action == "delete" ~}}
-{{~ # DELETE: Show body configuration from before state ~}}
 {{~ if change.before_json && change.before_json.body ~}}
-
-#### Body Configuration (being deleted)
-
-{{~ flattened = flatten_json change.before_json.body "" ~}}
-{{~ small_props = flattened | array.filter @(do; ret !$0.is_large; end) ~}}
-{{~ large_props = flattened | array.filter @(do; ret $0.is_large; end) ~}}
-
-{{~ if small_props.size > 0 ~}}
-| Property | Value |
-|----------|-------|
-{{~ for prop in small_props ~}}
-| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table null prop.value null }} |
-{{~ end ~}}
-{{~ end ~}}
-
-{{~ if large_props.size > 0 ~}}
-
-<details>
-<summary>Large body properties</summary>
-
-| Property | Value |
-|----------|-------|
-{{~ for prop in large_props ~}}
-| {{ prop.path | escape_markdown }} | {{ format_large_value null prop.value "inline-diff" }} |
-{{~ end ~}}
-
-</details>
-{{~ end ~}}
+{{ render_azapi_body change.before_json.body "Body Configuration (being deleted)" "delete" null null null false "inline-diff" }}
 {{~ else ~}}
 
 *Body: (empty)*
 {{~ end ~}}
-
-{{~ else if change.action == "replace" ~}}
-{{~ # REPLACE: Treat similar to create ~}}
-{{~ if change.after_json && change.after_json.body ~}}
-
-#### Body Configuration (replacing existing resource)
-
-{{~ flattened = flatten_json change.after_json.body "" ~}}
-{{~ small_props = flattened | array.filter @(do; ret !$0.is_large; end) ~}}
-{{~ large_props = flattened | array.filter @(do; ret $0.is_large; end) ~}}
-
-{{~ if small_props.size > 0 ~}}
-| Property | Value |
-|----------|-------|
-{{~ for prop in small_props ~}}
-| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table null prop.value null }} |
-{{~ end ~}}
 {{~ end ~}}
 
-{{~ if large_props.size > 0 ~}}
-
-<details>
-<summary>Large body properties</summary>
-
-| Property | Value |
-|----------|-------|
-{{~ for prop in large_props ~}}
-| {{ prop.path | escape_markdown }} | {{ format_large_value null prop.value "inline-diff" }} |
-{{~ end ~}}
-
-</details>
-{{~ end ~}}
-{{~ else ~}}
-
-*Body: (empty)*
-{{~ end ~}}
-
-{{~ end ~}}
-
-{{~ # Show any non-body attribute changes ~}}
-{{~ if change.attribute_changes && change.attribute_changes.size > 0 ~}}
+{{~ # Show any non-body attribute changes (filter out body.* since body is rendered separately) ~}}
+{{~ non_body_changes = change.attribute_changes | array.filter @(do; ret !string.starts_with $0.name "body."; end) ~}}
+{{~ if non_body_changes && non_body_changes.size > 0 ~}}
 
 <details>
 <summary>Other Attribute Changes</summary>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-{{~ for attr in change.attribute_changes ~}}
+{{~ for attr in non_body_changes ~}}
 | {{ attr.name | escape_markdown }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
 {{~ end ~}}
 

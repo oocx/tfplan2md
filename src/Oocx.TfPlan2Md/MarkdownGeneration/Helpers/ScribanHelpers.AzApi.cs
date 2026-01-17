@@ -676,4 +676,207 @@ public static partial class ScribanHelpers
 
         return result;
     }
+
+    /// <summary>
+    /// Renders azapi_resource body content as formatted markdown with proper handling of large values.
+    /// </summary>
+    /// <param name="bodyJson">The JSON body object to render.</param>
+    /// <param name="heading">The heading text (e.g., "Body Configuration", "Body Changes").</param>
+    /// <param name="mode">The rendering mode: "create", "update", or "delete".</param>
+    /// <param name="beforeJson">The before state JSON (for update mode).</param>
+    /// <param name="beforeSensitive">The before_sensitive structure (for update mode).</param>
+    /// <param name="afterSensitive">The after_sensitive structure (for update mode).</param>
+    /// <param name="showUnchanged">Whether to show unchanged properties (for update mode).</param>
+    /// <param name="largeValueFormat">Format for rendering large values ("inline-diff" or "simple-diff").</param>
+    /// <returns>Formatted markdown string for the body section.</returns>
+    /// <remarks>
+    /// This helper consolidates body rendering logic to keep the template concise.
+    /// For create/delete modes, it flattens the body and separates small vs. large properties.
+    /// For update mode, it compares before/after and shows only changed properties.
+    /// Large properties are rendered outside of tables to avoid markdown parsing issues with newlines.
+    /// Related feature: docs/features/040-azapi-resource-template/specification.md
+    /// </remarks>
+    public static string RenderAzapiBody(
+        object? bodyJson,
+        string heading,
+        string mode,
+        object? beforeJson = null,
+        object? beforeSensitive = null,
+        object? afterSensitive = null,
+        bool showUnchanged = false,
+        string largeValueFormat = "inline-diff")
+    {
+        if (bodyJson is null)
+        {
+            return $"*{heading}: (empty)*\n";
+        }
+
+        var sb = new StringBuilder();
+        sb.AppendLine();
+        sb.AppendLine($"#### {heading}");
+        sb.AppendLine();
+
+        if (mode == "update" && beforeJson is not null)
+        {
+            // Update mode: compare before/after and show changes
+            var comparisons = CompareJsonProperties(beforeJson, bodyJson, beforeSensitive, afterSensitive, showUnchanged, false);
+            var smallChanges = new ScriptArray();
+            var largeChanges = new ScriptArray();
+
+            foreach (var item in comparisons)
+            {
+                if (item is ScriptObject scriptObj)
+                {
+                    if (scriptObj["is_large"] is bool isLarge)
+                    {
+                        if (isLarge)
+                        {
+                            largeChanges.Add(scriptObj);
+                        }
+                        else
+                        {
+                            smallChanges.Add(scriptObj);
+                        }
+                    }
+                }
+            }
+
+            if (smallChanges.Count > 0)
+            {
+                sb.AppendLine("| Property | Before | After |");
+                sb.AppendLine("|----------|--------|-------|");
+
+                foreach (var item in smallChanges)
+                {
+                    if (item is ScriptObject prop)
+                    {
+                        var path = prop["path"]?.ToString() ?? string.Empty;
+                        var before = prop["before"];
+                        var after = prop["after"];
+
+                        var beforeFormatted = FormatAttributeValueTable(null, before?.ToString(), null);
+                        var afterFormatted = FormatAttributeValueTable(null, after?.ToString(), null);
+
+                        sb.AppendLine($"| {EscapeMarkdown(path)} | {beforeFormatted} | {afterFormatted} |");
+                    }
+                }
+
+                sb.AppendLine();
+            }
+
+            if (largeChanges.Count > 0)
+            {
+                sb.AppendLine("<details>");
+                sb.AppendLine("<summary>Large body property changes</summary>");
+                sb.AppendLine();
+
+                foreach (var item in largeChanges)
+                {
+                    if (item is ScriptObject prop)
+                    {
+                        var path = prop["path"]?.ToString() ?? string.Empty;
+                        var before = prop["before"];
+                        var after = prop["after"];
+
+                        sb.AppendLine($"##### **{EscapeMarkdown(path)}:**");
+                        sb.AppendLine();
+
+                        var beforeStr = before?.ToString();
+                        var afterStr = after?.ToString();
+                        sb.AppendLine(FormatLargeValue(beforeStr, afterStr, largeValueFormat));
+                        sb.AppendLine();
+                    }
+                }
+
+                sb.AppendLine("</details>");
+                sb.AppendLine();
+            }
+
+            if (smallChanges.Count == 0 && largeChanges.Count == 0)
+            {
+                sb.AppendLine("*No body changes detected*");
+                sb.AppendLine();
+            }
+        }
+        else
+        {
+            // Create/delete mode: flatten and display body properties
+            var flattened = FlattenJson(bodyJson, string.Empty);
+            var smallProps = new ScriptArray();
+            var largeProps = new ScriptArray();
+
+            foreach (var item in flattened)
+            {
+                if (item is ScriptObject scriptObj)
+                {
+                    if (scriptObj["is_large"] is bool isLarge)
+                    {
+                        if (isLarge)
+                        {
+                            largeProps.Add(scriptObj);
+                        }
+                        else
+                        {
+                            smallProps.Add(scriptObj);
+                        }
+                    }
+                }
+            }
+
+            // Always show the main table structure (even if no small properties exist)
+            sb.AppendLine("| Property | Value |");
+            sb.AppendLine("|----------|-------|");
+
+            if (smallProps.Count > 0)
+            {
+                foreach (var item in smallProps)
+                {
+                    if (item is ScriptObject prop)
+                    {
+                        var path = prop["path"]?.ToString() ?? string.Empty;
+                        var value = prop["value"];
+
+                        var valueFormatted = FormatAttributeValueTable(null, value?.ToString(), null);
+                        sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
+                    }
+                }
+            }
+
+            sb.AppendLine();
+
+            if (largeProps.Count > 0)
+            {
+                sb.AppendLine("<details>");
+                sb.AppendLine("<summary>Large body properties</summary>");
+                sb.AppendLine();
+
+                foreach (var item in largeProps)
+                {
+                    if (item is ScriptObject prop)
+                    {
+                        var path = prop["path"]?.ToString() ?? string.Empty;
+                        var value = prop["value"];
+
+                        sb.AppendLine($"##### **{EscapeMarkdown(path)}:**");
+                        sb.AppendLine();
+
+                        var valueStr = value?.ToString();
+                        sb.AppendLine(FormatLargeValue(null, valueStr, largeValueFormat));
+                        sb.AppendLine();
+                    }
+                }
+
+                sb.AppendLine("</details>");
+                sb.AppendLine();
+            }
+
+            if (smallProps.Count == 0 && largeProps.Count == 0)
+            {
+                sb.AppendLine($"*{heading}: (empty)*");
+                sb.AppendLine();
+            }
+        }
+
+        return sb.ToString();
+    }
 }

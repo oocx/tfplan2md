@@ -524,6 +524,48 @@ The implementation consists of:
 2. **Scriban template** for rendering azapi_resource
 3. **Integration** with existing template resolution (already in place)
 
+### Template Refactoring (Post-Code Review)
+
+**Context:** The initial implementation produced a 228-line template that exceeded the project's 100-line architectural guideline for templates. This was flagged during code review as Blocker #2.
+
+**Root Cause:** The template contained repeated body rendering logic across create/update/delete/replace actions (~150 lines of duplication). Each action followed nearly identical logic:
+1. Flatten the body JSON
+2. Separate small vs. large properties
+3. Render small properties in main table
+4. Render large properties in collapsible section
+
+**Solution:** Refactored repeated logic into a C# helper function `RenderAzapiBody()` that:
+- Consolidates body rendering for all action types
+- Handles flattening, comparison, and formatting in C# (more testable and maintainable)
+- Returns formatted markdown string ready for template output
+- Properly renders large values OUTSIDE of tables to prevent markdown parsing issues
+
+**Result:** Template reduced from 228 lines to 98 lines (57% reduction), now compliant with project guidelines.
+
+**Additional Fix:** Large property values are now rendered as markdown headings followed by code blocks, NOT inside table cells. This prevents raw newlines from breaking markdown table parsing (Blocker #1).
+
+**Helper Function Signature:**
+```csharp
+public static string RenderAzapiBody(
+    object? bodyJson,
+    string heading,
+    string mode,  // "create", "update", or "delete"
+    object? beforeJson = null,
+    object? beforeSensitive = null,
+    object? afterSensitive = null,
+    bool showUnchanged = false,
+    string largeValueFormat = "inline-diff")
+```
+
+**Template Usage Example:**
+```scriban
+{{~ if change.action == "create" ~}}
+{{ render_azapi_body change.after_json.body "Body Configuration" "create" null null null false "inline-diff" }}
+{{~ end ~}}
+```
+
+This approach aligns with the project's philosophy: **templates should be concise view layer, with complex logic in well-tested C# helpers**.
+
 ### Component Breakdown
 
 #### 1. Scriban Helpers (New Functions)
@@ -587,6 +629,28 @@ internal static partial class ScribanHelpers
     /// <param name="change">The resource change model.</param>
     /// <returns>Object with name, type, parent_id, location, tags properties.</returns>
     public static object ExtractAzapiMetadata(object change);
+
+    /// <summary>
+    /// Renders azapi_resource body content as formatted markdown (added post-code review).
+    /// </summary>
+    /// <param name="bodyJson">The JSON body object to render.</param>
+    /// <param name="heading">Heading text (e.g., "Body Configuration").</param>
+    /// <param name="mode">Rendering mode: "create", "update", or "delete".</param>
+    /// <param name="beforeJson">Before state JSON (for update mode).</param>
+    /// <param name="beforeSensitive">Before sensitive structure (for update mode).</param>
+    /// <param name="afterSensitive">After sensitive structure (for update mode).</param>
+    /// <param name="showUnchanged">Whether to show unchanged properties.</param>
+    /// <param name="largeValueFormat">Format for large values.</param>
+    /// <returns>Formatted markdown string with tables and collapsible sections.</returns>
+    public static string RenderAzapiBody(
+        object? bodyJson,
+        string heading,
+        string mode,
+        object? beforeJson = null,
+        object? beforeSensitive = null,
+        object? afterSensitive = null,
+        bool showUnchanged = false,
+        string largeValueFormat = "inline-diff");
 }
 ```
 
@@ -596,10 +660,13 @@ internal static partial class ScribanHelpers
 - Respect large value thresholds (200 characters)
 - Handle null/missing properties gracefully
 - Ensure AOT compatibility (no reflection)
+- **Large values rendered OUTSIDE tables** as headings + code blocks to prevent markdown parsing issues
 
 #### 2. Scriban Template
 
 **File:** `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azapi/resource.sbn`
+
+**Note:** Post-code review refactoring reduced template from 228 lines to 98 lines by moving body rendering logic to `RenderAzapiBody()` helper.
 
 **Template Structure:**
 

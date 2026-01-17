@@ -572,4 +572,240 @@ public class ScribanHelpersAzApiTests
     }
 
     #endregion
+
+    #region CompareJsonProperties Tests (TC-10 to TC-13, TC-34)
+
+    [Test]
+    public async Task CompareJsonProperties_AddedProperties_DetectsNewProperties()
+    {
+        // Arrange - TC-10: Detect added properties
+        var before = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "enabled": true,
+                    "name": "test"
+                }
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "enabled": true,
+                    "name": "test",
+                    "newProperty": "newValue"
+                }
+            }
+            """).RootElement;
+
+        // Act
+        var result = ScribanHelpers.CompareJsonProperties(
+            before, after, null, null, showUnchanged: false, showSensitive: false);
+
+        // Assert - Should only return the added property (showUnchanged: false)
+        result.Should().HaveCount(1);
+
+        var addedProp = result[0] as ScriptObject;
+        addedProp?["path"].Should().Be("properties.newProperty");
+        addedProp?["before"].Should().BeNull();
+        addedProp?["after"].Should().Be("newValue");
+        addedProp?["is_changed"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_RemovedProperties_DetectsDeletedProperties()
+    {
+        // Arrange - TC-11: Detect removed properties
+        var before = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "enabled": true,
+                    "name": "test",
+                    "removedProp": "oldValue"
+                }
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "enabled": true,
+                    "name": "test"
+                }
+            }
+            """).RootElement;
+
+        // Act
+        var result = ScribanHelpers.CompareJsonProperties(
+            before, after, null, null, showUnchanged: false, showSensitive: false);
+
+        // Assert - Should only return the removed property
+        result.Should().HaveCount(1);
+
+        var removedProp = result[0] as ScriptObject;
+        removedProp?["path"].Should().Be("properties.removedProp");
+        removedProp?["before"].Should().Be("oldValue");
+        removedProp?["after"].Should().BeNull();
+        removedProp?["is_changed"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_ModifiedProperties_DetectsValueChanges()
+    {
+        // Arrange - TC-12: Detect modified properties
+        var before = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "sku": {
+                        "name": "Basic"
+                    }
+                }
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "sku": {
+                        "name": "Standard"
+                    }
+                }
+            }
+            """).RootElement;
+
+        // Act
+        var result = ScribanHelpers.CompareJsonProperties(
+            before, after, null, null, showUnchanged: false, showSensitive: false);
+
+        // Assert - Should return the changed property
+        result.Should().HaveCount(1);
+
+        var changedProp = result[0] as ScriptObject;
+        changedProp?["path"].Should().Be("properties.sku.name");
+        changedProp?["before"].Should().Be("Basic");
+        changedProp?["after"].Should().Be("Standard");
+        changedProp?["is_changed"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_ShowUnchangedTrue_ReturnsAllProperties()
+    {
+        // Arrange - TC-13: showUnchanged flag
+        var before = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "enabled": true,
+                    "name": "test"
+                }
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "enabled": true,
+                    "name": "updated"
+                }
+            }
+            """).RootElement;
+
+        // Act
+        var result = ScribanHelpers.CompareJsonProperties(
+            before, after, null, null, showUnchanged: true, showSensitive: false);
+
+        // Assert - Should return both properties (1 changed, 1 unchanged)
+        result.Should().HaveCount(2);
+
+        var unchangedProp = result.FirstOrDefault(p =>
+            (p as ScriptObject)?["path"]?.ToString() == "properties.enabled") as ScriptObject;
+        unchangedProp?["before"].Should().Be(true);
+        unchangedProp?["after"].Should().Be(true);
+        unchangedProp?["is_changed"].Should().Be(false);
+
+        var changedProp = result.FirstOrDefault(p =>
+            (p as ScriptObject)?["path"]?.ToString() == "properties.name") as ScriptObject;
+        changedProp?["before"].Should().Be("test");
+        changedProp?["after"].Should().Be("updated");
+        changedProp?["is_changed"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_SensitiveProperties_MarksSensitiveFlags()
+    {
+        // Arrange - TC-34: Per-property sensitivity
+        var before = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "password": "oldSecret",
+                    "enabled": true
+                }
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "password": "newSecret",
+                    "enabled": true
+                }
+            }
+            """).RootElement;
+
+        var beforeSensitive = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "password": true
+                }
+            }
+            """).RootElement;
+
+        var afterSensitive = JsonDocument.Parse("""
+            {
+                "properties": {
+                    "password": true
+                }
+            }
+            """).RootElement;
+
+        // Act
+        var result = ScribanHelpers.CompareJsonProperties(
+            before, after, beforeSensitive, afterSensitive, showUnchanged: false, showSensitive: false);
+
+        // Assert - Should mark password as sensitive
+        result.Should().HaveCount(1);
+
+        var sensitiveProp = result[0] as ScriptObject;
+        sensitiveProp?["path"].Should().Be("properties.password");
+        sensitiveProp?["is_sensitive"].Should().Be(true);
+        sensitiveProp?["is_changed"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_NullInputs_ReturnsEmptyList()
+    {
+        // Arrange
+        object? nullBefore = null;
+        object? nullAfter = null;
+
+        // Act
+        var result = ScribanHelpers.CompareJsonProperties(
+            nullBefore, nullAfter, null, null, showUnchanged: false, showSensitive: false);
+
+        // Assert
+        result.Should().BeEmpty();
+
+        await Task.CompletedTask;
+    }
+
+    #endregion
 }

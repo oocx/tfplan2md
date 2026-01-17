@@ -1,0 +1,86 @@
+{
+  "terraform_version": "1.14.0",
+  "format_version": "1.2",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.app_service",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Web/sites@2022-03-01",
+          "name": "myWebApp",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "serverFarmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-resources/providers/Microsoft.Web/serverfarms/myPlan",
+              "siteConfig": {
+                "netFrameworkVersion": "v6.0",
+                "alwaysOn": true,
+                "connectionStrings": [
+                  {
+                    "name": "Database",
+                    "connectionString": "Server=tcp:myserver.database.windows.net,1433;Initial Catalog=mydb;User ID=admin;Password=***;",
+                    "type": "SQLAzure"
+                  },
+                  {
+                    "name": "Redis",
+                    "connectionString": "myredis.redis.cache.windows.net:6380,password=***,ssl=True",
+                    "type": "RedisCache"
+                  }
+                ],
+                "appSettings": [
+                  {
+                    "name": "ASPNETCORE_ENVIRONMENT",
+                    "value": "Production"
+                  },
+                  {
+                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                    "value": "InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/"
+                  }
+                ],
+                "cors": {
+                  "allowedOrigins": [
+                    "https://portal.azure.com",
+                    "https://myapp.azurewebsites.net"
+                  ],
+                  "supportCredentials": true
+                },
+                "metadata": [
+                  {
+                    "name": "CURRENT_STACK",
+                    "value": "dotnet"
+                  }
+                ]
+              },
+              "httpsOnly": true,
+              "clientAffinityEnabled": false
+            }
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": {
+          "body": {
+            "properties": {
+              "siteConfig": {
+                "connectionStrings": [
+                  {
+                    "connectionString": true
+                  },
+                  {
+                    "connectionString": true
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

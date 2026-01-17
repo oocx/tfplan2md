@@ -560,7 +560,7 @@ public static string RenderAzapiBody(
 **Template Usage Example:**
 ```scriban
 {{~ if change.action == "create" ~}}
-{{ render_azapi_body change.after_json.body "Body Configuration" "create" null null null false "inline-diff" }}
+{{ render_azapi_body change.after_json.body "Body" "create" null null null false "inline-diff" }}
 {{~ end ~}}
 ```
 
@@ -634,7 +634,7 @@ internal static partial class ScribanHelpers
     /// Renders azapi_resource body content as formatted markdown (added post-code review).
     /// </summary>
     /// <param name="bodyJson">The JSON body object to render.</param>
-    /// <param name="heading">Heading text (e.g., "Body Configuration").</param>
+    /// <param name="heading">Heading text (e.g., "Body").</param>
     /// <param name="mode">Rendering mode: "create", "update", or "delete".</param>
     /// <param name="beforeJson">Before state JSON (for update mode).</param>
     /// <param name="beforeSensitive">Before sensitive structure (for update mode).</param>
@@ -721,7 +721,7 @@ internal static partial class ScribanHelpers
     
     {{~ if small_props.size > 0 ~}}
     
-#### Body Configuration
+#### Body
 
 | Property | Value |
 |----------|-------|
@@ -751,7 +751,7 @@ internal static partial class ScribanHelpers
     
     {{~ if small_props.size > 0 ~}}
     
-#### Body Configuration
+#### Body
 
 | Property | Value |
 |----------|-------|
@@ -969,7 +969,7 @@ scriptObject.Import("extract_azapi_metadata", new Func<object, object>(ExtractAz
 | parent_id | Resource Group `example-resources` |
 | location | 🌍 `westeurope` |
 
-#### Body Configuration
+#### Body
 
 | Property | Value |
 |----------|-------|

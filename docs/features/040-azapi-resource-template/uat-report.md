@@ -155,8 +155,8 @@ This checklist should be used during manual UAT review:
 - [ ] Link URL: `https://learn.microsoft.com/rest/api/automation/automation-accounts/`
 - [ ] Link is clickable (not just text)
 
-**Body Configuration Table:**
-- [ ] Heading: "Body Configuration" (not "Body Changes")
+**Body Table:**
+- [ ] Heading: "Body" (not "Body Changes")
 - [ ] Table has two columns: "Property" and "Value"
 - [ ] Property paths use dot notation:
   - `properties.disableLocalAuth`
@@ -183,7 +183,7 @@ This checklist should be used during manual UAT review:
 - [ ] Wrench emoji (🔧) renders correctly
 
 **Body Changes Table:**
-- [ ] Heading: "Body Changes" (not "Body Configuration")
+- [ ] Heading: "Body Changes" (not "Body")
 - [ ] Table has **three columns**: "Property", "Before", "After"
 - [ ] Only changed properties shown (2 properties):
   - `properties.disableLocalAuth`

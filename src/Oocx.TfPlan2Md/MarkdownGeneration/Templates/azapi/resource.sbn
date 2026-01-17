@@ -54,7 +54,7 @@
 
 {{~ # Body rendering based on action type ~}}
 {{~ if change.action == "create" || change.action == "replace" ~}}
-{{~ body_heading = change.action == "replace" ? "Body Configuration (replacing existing resource)" : "Body Configuration" ~}}
+{{~ body_heading = change.action == "replace" ? "Body (replacing existing resource)" : "Body" ~}}
 {{~ if change.after_json && change.after_json.body ~}}
 {{ render_azapi_body change.after_json.body body_heading "create" null null null false "inline-diff" }}
 {{~ else ~}}
@@ -72,7 +72,7 @@
 {{~ end ~}}
 {{~ else if change.action == "delete" ~}}
 {{~ if change.before_json && change.before_json.body ~}}
-{{ render_azapi_body change.before_json.body "Body Configuration (being deleted)" "delete" null null null false "inline-diff" }}
+{{ render_azapi_body change.before_json.body "Body (being deleted)" "delete" null null null false "inline-diff" }}
 {{~ else ~}}
 
 *Body: (empty)*

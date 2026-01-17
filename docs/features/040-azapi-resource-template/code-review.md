@@ -203,7 +203,7 @@ Create a C# helper function that encapsulates the body rendering logic:
 /// Renders azapi_resource body content as formatted markdown.
 /// </summary>
 /// <param name="body">The JSON body object to render.</param>
-/// <param name="heading">Heading text (e.g., "Body Configuration" or "Body Changes").</param>
+/// <param name="heading">Heading text (e.g., "Body" or "Body Changes").</param>
 /// <returns>Markdown string with tables for small and large properties.</returns>
 public static string RenderAzapiBody(object? body, string heading)
 {
@@ -214,7 +214,7 @@ public static string RenderAzapiBody(object? body, string heading)
 Then the template becomes:
 ```scriban
 {{~ if change.action == "create" && change.after_json && change.after_json.body ~}}
-{{ render_azapi_body change.after_json.body "Body Configuration" }}
+{{ render_azapi_body change.after_json.body "Body" }}
 {{~ end ~}}
 ```
 

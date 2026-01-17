@@ -681,7 +681,7 @@ public static partial class ScribanHelpers
     /// Renders azapi_resource body content as formatted markdown with proper handling of large values.
     /// </summary>
     /// <param name="bodyJson">The JSON body object to render.</param>
-    /// <param name="heading">The heading text (e.g., "Body Configuration", "Body Changes").</param>
+    /// <param name="heading">The heading text (e.g., "Body", "Body Changes").</param>
     /// <param name="mode">The rendering mode: "create", "update", or "delete".</param>
     /// <param name="beforeJson">The before state JSON (for update mode).</param>
     /// <param name="beforeSensitive">The before_sensitive structure (for update mode).</param>

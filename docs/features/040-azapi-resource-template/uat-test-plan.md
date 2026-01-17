@@ -281,8 +281,8 @@ We will use multiple test artifacts to cover different scenarios:
 - [ ] Tags displayed as badges: `🏷️ environment: production` `🏷️ team: platform`
 - [ ] Badges appear below the standard attributes table
 
-#### Body Configuration Section
-- [ ] Heading: "Body Configuration"
+#### Body Section
+- [ ] Heading: "Body"
 - [ ] Table has two columns: "Property" and "Value"
 - [ ] Property paths use dot notation:
   - `properties.disableLocalAuth`
@@ -317,7 +317,7 @@ Previously, users would see only "body changed" for azapi resources, making it d
 #### Resource Details (Expanded)
 - [ ] Type, documentation link, and standard attributes table present (same as create)
 
-#### Body Changes Section (NOT "Body Configuration")
+#### Body Changes Section (NOT "Body")
 - [ ] Heading: "Body Changes"
 - [ ] Table has **three columns**: "Property", "Before", "After"
 - [ ] Only **changed properties** are shown (not unchanged ones)

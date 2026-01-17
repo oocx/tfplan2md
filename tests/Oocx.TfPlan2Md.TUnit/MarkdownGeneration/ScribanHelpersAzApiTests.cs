@@ -445,4 +445,131 @@ public class ScribanHelpersAzApiTests
     }
 
     #endregion
+
+    #region ExtractAzapiMetadata Tests (TC-02, TC-03, TC-04)
+
+    [Test]
+    public async Task ExtractAzapiMetadata_CreateOperation_ExtractsFromAfterState()
+    {
+        // Arrange - TC-02: Extract standard attributes
+        var change = new ResourceChangeModel
+        {
+            Address = "azapi_resource.test",
+            Type = "azapi_resource",
+            Name = "test",
+            ProviderName = "azapi",
+            Action = "create",
+            ActionSymbol = "➕",
+            AttributeChanges = [],
+            AfterJson = new ScriptObject
+            {
+                ["type"] = "Microsoft.Automation/automationAccounts@2021-06-22",
+                ["name"] = "myAccount",
+                ["parent_id"] = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+                ["location"] = "westeurope",
+                ["tags"] = new ScriptObject
+                {
+                    ["environment"] = "dev",
+                    ["project"] = "demo"
+                }
+            }
+        };
+
+        // Act
+        var result = ScribanHelpers.ExtractAzapiMetadata(change);
+
+        // Assert
+        result["type"].Should().Be("`Microsoft.Automation/automationAccounts@2021-06-22`");
+        result["name"].Should().Be("`myAccount`");
+        result["parent_id"].Should().Be("example-resources"); // Resource group summary format
+        result["location"].Should().Be("🌍 `westeurope`");
+        result["tags"].Should().NotBeNull();
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ExtractAzapiMetadata_DeleteOperation_ExtractsFromBeforeState()
+    {
+        // Arrange - TC-03: Extract from before state for delete
+        var change = new ResourceChangeModel
+        {
+            Address = "azapi_resource.test",
+            Type = "azapi_resource",
+            Name = "test",
+            ProviderName = "azapi",
+            Action = "delete",
+            ActionSymbol = "❌",
+            AttributeChanges = [],
+            BeforeJson = new ScriptObject
+            {
+                ["type"] = "Microsoft.Storage/storageAccounts@2023-01-01",
+                ["name"] = "myStorageAccount",
+                ["parent_id"] = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/storage-rg",
+                ["location"] = "eastus"
+            }
+        };
+
+        // Act
+        var result = ScribanHelpers.ExtractAzapiMetadata(change);
+
+        // Assert
+        result["type"].Should().Be("`Microsoft.Storage/storageAccounts@2023-01-01`");
+        result["name"].Should().Be("`myStorageAccount`");
+        result["parent_id"].Should().Be("storage-rg"); // Resource group summary format
+        result["location"].Should().Be("🌍 `eastus`");
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ExtractAzapiMetadata_MissingOptionalAttributes_HandlesGracefully()
+    {
+        // Arrange - TC-04: Missing optional attributes
+        var change = new ResourceChangeModel
+        {
+            Address = "azapi_resource.test",
+            Type = "azapi_resource",
+            Name = "test",
+            ProviderName = "azapi",
+            Action = "create",
+            ActionSymbol = "➕",
+            AttributeChanges = [],
+            AfterJson = new ScriptObject
+            {
+                ["type"] = "Microsoft.Resources/resourceGroups@2021-04-01",
+                ["name"] = "minimal-rg"
+                // No parent_id, location, or tags
+            }
+        };
+
+        // Act
+        var result = ScribanHelpers.ExtractAzapiMetadata(change);
+
+        // Assert
+        result["type"].Should().Be("`Microsoft.Resources/resourceGroups@2021-04-01`");
+        result["name"].Should().Be("`minimal-rg`");
+        result.ContainsKey("parent_id").Should().BeFalse();
+        result.ContainsKey("location").Should().BeFalse();
+        result.ContainsKey("tags").Should().BeFalse();
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task ExtractAzapiMetadata_NullChange_ReturnsEmptyObject()
+    {
+        // Arrange
+        object? nullChange = null;
+
+        // Act
+        var result = ScribanHelpers.ExtractAzapiMetadata(nullChange);
+
+        // Assert
+        result.Should().BeEmpty();
+
+        await Task.CompletedTask;
+    }
+
+    #endregion
 }

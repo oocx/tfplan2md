@@ -360,4 +360,89 @@ public class ScribanHelpersAzApiTests
     }
 
     #endregion
+
+    #region AzureApiDocLink Tests (TC-14, TC-15)
+
+    [Test]
+    public async Task AzureApiDocLink_MicrosoftResourceType_ConstructsUrl()
+    {
+        // Arrange - TC-14: Generate documentation link
+        var resourceType = "Microsoft.Automation/automationAccounts@2021-06-22";
+
+        // Act
+        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+
+        // Assert
+        result.Should().Be("https://learn.microsoft.com/rest/api/automation/automation-accounts/");
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task AzureApiDocLink_DifferentServices_GeneratesCorrectUrls()
+    {
+        // Arrange
+        var tests = new[]
+        {
+            ("Microsoft.Storage/storageAccounts@2023-01-01", "https://learn.microsoft.com/rest/api/storage/storage-accounts/"),
+            ("Microsoft.Network/virtualNetworks@2022-07-01", "https://learn.microsoft.com/rest/api/network/virtual-networks/"),
+            ("Microsoft.Compute/virtualMachines@2023-03-01", "https://learn.microsoft.com/rest/api/compute/virtual-machines/")
+        };
+
+        // Act & Assert
+        foreach (var (resourceType, expectedUrl) in tests)
+        {
+            var result = ScribanHelpers.AzureApiDocLink(resourceType);
+            result.Should().Be(expectedUrl, $"for resource type {resourceType}");
+        }
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task AzureApiDocLink_NonMicrosoftProvider_ReturnsNull()
+    {
+        // Arrange - TC-15: Non-Microsoft provider
+        var resourceType = "Custom.Provider/customResource@2023-01-01";
+
+        // Act
+        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+
+        // Assert
+        result.Should().BeNull();
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task AzureApiDocLink_NullInput_ReturnsNull()
+    {
+        // Arrange
+        string? resourceType = null;
+
+        // Act
+        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+
+        // Assert
+        result.Should().BeNull();
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task AzureApiDocLink_InvalidFormat_ReturnsNull()
+    {
+        // Arrange
+        var resourceType = "InvalidFormat";
+
+        // Act
+        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+
+        // Assert
+        result.Should().BeNull();
+
+        await Task.CompletedTask;
+    }
+
+    #endregion
 }

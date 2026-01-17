@@ -364,6 +364,7 @@ See [Scriban documentation](https://github.com/scriban/scriban) for template syn
 For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes. The default renderer (used by the CLI) applies resource-specific templates automatically when a matching template is available; the global default template is used as a fallback.
 
 **Currently supported:**
+- `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
 - `azurerm_network_security_group` - Shows security rule changes with semantic diffing
 - `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information

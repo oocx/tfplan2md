@@ -1,0 +1,31 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.empty_body",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "empty_body",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Resources/resourceGroups@2021-04-01",
+          "name": "empty-rg",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012",
+          "location": "westeurope",
+          "body": {}
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

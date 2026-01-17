@@ -1,11 +1,12 @@
 # AI Model Reference for GitHub Copilot Agents
 
-**Last Updated**: December 27, 2025  
+**Last Updated**: January 17, 2026  
 **Data Sources**: 
 - LiveBench 2025-12-23
 - SWE-bench Verified (via mini-SWE-agent)
 - Artificial Analysis (Performance & Speed)
-- GitHub Copilot Documentation
+- GitHub Copilot Documentation (model release status, multipliers, plans/clients)
+- GitHub Copilot model comparison table (model cards)
 - Google Cloud Status
 
 This document provides reference data for selecting AI models when creating or modifying custom GitHub Copilot agents. It includes performance benchmarks, availability, cost information, speed/latency metrics, and reliability data to support data-driven model selection.
@@ -34,6 +35,7 @@ Source: [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/ref
 | GPT-5 mini | GA | 0x (included) | 400K | Vision | Fast, lightweight |
 | GPT-5.1 | GA | 1x | 400K | - | Improved reasoning |
 | GPT-5.2 | GA | 1x | 400K | - | Latest general model |
+| GPT-5.2-Codex | GA | 1x | 400K | - | Latest Codex model (agentic coding) |
 | GPT-5-Codex | GA | 1x | 400K | - | Specialized for code |
 | GPT-5.1-Codex | GA | 1x | 400K | - | Improved code model |
 | GPT-5.1-Codex-Mini | Public Preview | 0.33x | 400K | - | Fast coding |
@@ -349,7 +351,7 @@ Context window size determines how much conversation history and documentation t
 - **0x**: GPT-5 mini, GPT-4.1, Raptor mini - Included in base allowance
 - **0.25x**: Grok Code Fast 1 - Complimentary (temporary)
 - **0.33x**: Claude Haiku 4.5, Gemini 3 Flash, GPT-5.1-Codex-Mini - Very cost-effective
-- **1x**: Most standard models (GPT-5, GPT-5.1, GPT-5.2, Gemini 2.5 Pro, Claude Sonnet 4.5, etc.) - Normal cost
+- **1x**: Most standard models (GPT-5, GPT-5.1, GPT-5.2, GPT-5.2-Codex, Gemini 2.5 Pro, Claude Sonnet 4.5, etc.) - Normal cost
 - **3x**: Claude Opus 4.5 - Premium
 - **10x**: Claude Opus 4.1 - Very expensive
 
@@ -594,6 +596,7 @@ The table below maps Copilot model IDs from this document to the closest indepen
 - **GPT-5.1-Codex-Max**: LiveBench variant "GPT-5.1 Codex Max" — https://livebench.ai/?search=GPT-5.1%20Codex%20Max (strong coding + instruction-following scores; actionable)
 - **GPT-5 family (GPT-5, GPT-5.1, GPT-5.2, GPT-5 Pro, GPT-5 mini)**: LiveBench variants "GPT-5.2 High", "GPT-5 Pro", "GPT-5.1 High", "GPT-5 Mini High" — https://livebench.ai/?search=GPT-5 (independent per-category scores available; verify exact Copilot ID → LiveBench variant mapping before changing recommendations)
 - **GPT-5-Codex / GPT-5.1-Codex / GPT-5.1-Codex-Mini**: LiveBench variants include "GPT-5.1 Codex" and "GPT-5.1 Codex Max" — https://livebench.ai/?search=GPT-5.1%20Codex (Codex and Codex Max: actionable; Codex-Mini: limited independent runs)
+- **GPT-5.2-Codex**: No independent LiveBench rows found yet — https://livebench.ai/?search=GPT-5.2%20Codex (flagged: No independent scores found; recommend vendor confirmation)
 - **Claude Haiku 4.5**: LiveBench variant "Claude Haiku 4.5" — https://livebench.ai/?search=Claude%20Haiku%204.5 (independent per-category scores available)
 - **Claude Opus 4.1 / Opus 4.5**: LiveBench variants "Claude Opus" / "Claude Opus 4.1/4.5" — https://livebench.ai/?search=Claude%20Opus (actionable; map effort/thinking modes to Copilot IDs)
 - **Gemini 2.5 Pro**: LiveBench variant "Gemini 2.5 Pro" — https://livebench.ai/?search=Gemini%202.5%20Pro (independent scores available)

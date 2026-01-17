@@ -1,0 +1,49 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.web_app",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "web_app",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "type": "Microsoft.Web/sites@2022-03-01",
+          "name": "myWebApp",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "siteConfig": {
+                "connectionStrings": "Server=tcp:oldserver.database.windows.net,1433;Initial Catalog=olddatabase;Persist Security Info=False;User ID=olduser;Password=oldpassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30"
+              }
+            }
+          }
+        },
+        "after": {
+          "type": "Microsoft.Web/sites@2022-03-01",
+          "name": "myWebApp",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "siteConfig": {
+                "connectionStrings": "Server=tcp:newserver.database.windows.net,1433;Initial Catalog=newdatabase;Persist Security Info=False;User ID=newuser;Password=newpassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+              }
+            }
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {}
+        },
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

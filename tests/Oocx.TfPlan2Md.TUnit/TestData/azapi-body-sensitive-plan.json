@@ -1,0 +1,40 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.key_vault",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "key_vault",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.KeyVault/vaults@2023-02-01",
+          "name": "mykeyvault",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "tenantId": "12345678-1234-1234-1234-123456789012",
+              "sku": {
+                "name": "standard",
+                "family": "A"
+              },
+              "accessPolicies": []
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": true
+        }
+      }
+    }
+  ]
+}

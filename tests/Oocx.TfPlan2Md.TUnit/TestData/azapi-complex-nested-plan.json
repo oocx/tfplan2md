@@ -1,0 +1,64 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.complex_app",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "complex_app",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Web/sites@2022-03-01",
+          "name": "complexApp",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "enabled": true,
+              "siteConfig": {
+                "appSettings": [
+                  {
+                    "name": "APP_ENV",
+                    "value": "production"
+                  },
+                  {
+                    "name": "DB_HOST",
+                    "value": "mydb.database.windows.net"
+                  }
+                ],
+                "connectionStrings": [
+                  {
+                    "name": "DefaultConnection",
+                    "connectionString": "Server=tcp:myserver.database.windows.net",
+                    "type": "SQLAzure"
+                  }
+                ],
+                "cors": {
+                  "allowedOrigins": [
+                    "https://example.com",
+                    "https://api.example.com",
+                    "https://app.example.com"
+                  ],
+                  "supportCredentials": true
+                }
+              },
+              "httpsOnly": true,
+              "clientAffinityEnabled": false
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

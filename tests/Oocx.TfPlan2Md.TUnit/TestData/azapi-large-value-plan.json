@@ -1,0 +1,37 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.web_app",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "web_app",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Web/sites@2022-03-01",
+          "name": "myWebApp",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "siteConfig": {
+                "connectionStrings": "Server=tcp:myserver.database.windows.net,1433;Initial Catalog=mydatabase;Persist Security Info=False;User ID=myuser;Password=mypassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;Authentication=ActiveDirectoryPassword"
+              }
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{{~## Template for azapi_resource
+     Provides human-readable rendering of azapi_resource body content using dot notation.
+     Related feature: docs/features/040-azapi-resource-template/specification.md
+~}}
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>{{ change.summary_html }}</summary>
+<br>
+
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
+
+{{~ # Extract azapi metadata (type, name, parent_id, location, tags) ~}}
+{{~ metadata = extract_azapi_metadata change ~}}
+
+{{~ if metadata.type ~}}
+**Type:** {{ metadata.type | escape_markdown }}
+{{~ end ~}}
+
+{{~ # Generate documentation link if available ~}}
+{{~ if change.after_json && change.after_json.type ~}}
+{{~ doc_link = azure_api_doc_link change.after_json.type ~}}
+{{~ else if change.before_json && change.before_json.type ~}}
+{{~ doc_link = azure_api_doc_link change.before_json.type ~}}
+{{~ end ~}}
+
+{{~ if doc_link ~}}
+
+📚 [View API Documentation (best-effort)]({{ doc_link | escape_markdown }})
+{{~ end ~}}
+
+{{~ # Standard attributes table ~}}
+{{~ if metadata.name || metadata.parent_id || metadata.location ~}}
+
+| Attribute | Value |
+|-----------|-------|
+{{~ if metadata.name ~}}
+| name | {{ metadata.name | escape_markdown }} |
+{{~ end ~}}
+{{~ if metadata.parent_id ~}}
+| parent_id | {{ metadata.parent_id | escape_markdown }} |
+{{~ end ~}}
+{{~ if metadata.location ~}}
+| location | {{ metadata.location }} |
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ # Tags badges (if present) ~}}
+{{~ if metadata.tags ~}}
+
+**Tags:**
+{{~ for tag in metadata.tags ~}}
+{{~ tag_key = tag[0] ~}}
+{{~ tag_value = tag[1] ~}}
+ `{{ tag_key | escape_markdown }}: {{ tag_value | escape_markdown }}`
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ # Body rendering based on action type ~}}
+{{~ if change.action == "create" ~}}
+{{~ # CREATE: Show body configuration using flatten_json ~}}
+{{~ if change.after_json && change.after_json.body ~}}
+
+#### Body Configuration
+
+{{~ flattened = flatten_json change.after_json.body "" ~}}
+{{~ small_props = flattened | array.filter @(do; ret !$0.is_large; end) ~}}
+{{~ large_props = flattened | array.filter @(do; ret $0.is_large; end) ~}}
+
+{{~ if small_props.size > 0 ~}}
+| Property | Value |
+|----------|-------|
+{{~ for prop in small_props ~}}
+| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table null prop.value null }} |
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ if large_props.size > 0 ~}}
+
+<details>
+<summary>Large body properties</summary>
+
+| Property | Value |
+|----------|-------|
+{{~ for prop in large_props ~}}
+| {{ prop.path | escape_markdown }} | {{ format_large_value null prop.value "inline-diff" }} |
+{{~ end ~}}
+
+</details>
+{{~ end ~}}
+{{~ else ~}}
+
+*Body: (empty)*
+{{~ end ~}}
+
+{{~ else if change.action == "update" ~}}
+{{~ # UPDATE: Show body changes using compare_json_properties ~}}
+{{~ if change.before_json && change.before_json.body && change.after_json && change.after_json.body ~}}
+
+#### Body Changes
+
+{{~ # Get before/after sensitive structures for body ~}}
+{{~ before_sensitive_body = change.before_sensitive.body ~}}
+{{~ after_sensitive_body = change.after_sensitive.body ~}}
+
+{{~ # Compare body properties ~}}
+{{~ comparisons = compare_json_properties change.before_json.body change.after_json.body before_sensitive_body after_sensitive_body false false ~}}
+{{~ small_changes = comparisons | array.filter @(do; ret !$0.is_large; end) ~}}
+{{~ large_changes = comparisons | array.filter @(do; ret $0.is_large; end) ~}}
+
+{{~ if small_changes.size > 0 ~}}
+| Property | Before | After |
+|----------|--------|-------|
+{{~ for prop in small_changes ~}}
+| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table prop.before prop.after null }} | {{ format_attribute_value_table null prop.after null }} |
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ if large_changes.size > 0 ~}}
+
+<details>
+<summary>Large body property changes</summary>
+
+| Property | Before | After |
+|----------|--------|-------|
+{{~ for prop in large_changes ~}}
+| {{ prop.path | escape_markdown }} | {{ format_large_value prop.before prop.after "inline-diff" }} | {{ format_large_value prop.before prop.after "inline-diff" }} |
+{{~ end ~}}
+
+</details>
+{{~ end ~}}
+
+{{~ if small_changes.size == 0 && large_changes.size == 0 ~}}
+
+*No body changes detected*
+{{~ end ~}}
+{{~ else ~}}
+
+*Body: (no changes or missing data)*
+{{~ end ~}}
+
+{{~ else if change.action == "delete" ~}}
+{{~ # DELETE: Show body configuration from before state ~}}
+{{~ if change.before_json && change.before_json.body ~}}
+
+#### Body Configuration (being deleted)
+
+{{~ flattened = flatten_json change.before_json.body "" ~}}
+{{~ small_props = flattened | array.filter @(do; ret !$0.is_large; end) ~}}
+{{~ large_props = flattened | array.filter @(do; ret $0.is_large; end) ~}}
+
+{{~ if small_props.size > 0 ~}}
+| Property | Value |
+|----------|-------|
+{{~ for prop in small_props ~}}
+| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table null prop.value null }} |
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ if large_props.size > 0 ~}}
+
+<details>
+<summary>Large body properties</summary>
+
+| Property | Value |
+|----------|-------|
+{{~ for prop in large_props ~}}
+| {{ prop.path | escape_markdown }} | {{ format_large_value null prop.value "inline-diff" }} |
+{{~ end ~}}
+
+</details>
+{{~ end ~}}
+{{~ else ~}}
+
+*Body: (empty)*
+{{~ end ~}}
+
+{{~ else if change.action == "replace" ~}}
+{{~ # REPLACE: Treat similar to create ~}}
+{{~ if change.after_json && change.after_json.body ~}}
+
+#### Body Configuration (replacing existing resource)
+
+{{~ flattened = flatten_json change.after_json.body "" ~}}
+{{~ small_props = flattened | array.filter @(do; ret !$0.is_large; end) ~}}
+{{~ large_props = flattened | array.filter @(do; ret $0.is_large; end) ~}}
+
+{{~ if small_props.size > 0 ~}}
+| Property | Value |
+|----------|-------|
+{{~ for prop in small_props ~}}
+| {{ prop.path | escape_markdown }} | {{ format_attribute_value_table null prop.value null }} |
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ if large_props.size > 0 ~}}
+
+<details>
+<summary>Large body properties</summary>
+
+| Property | Value |
+|----------|-------|
+{{~ for prop in large_props ~}}
+| {{ prop.path | escape_markdown }} | {{ format_large_value null prop.value "inline-diff" }} |
+{{~ end ~}}
+
+</details>
+{{~ end ~}}
+{{~ else ~}}
+
+*Body: (empty)*
+{{~ end ~}}
+
+{{~ end ~}}
+
+{{~ # Show any non-body attribute changes ~}}
+{{~ if change.attribute_changes && change.attribute_changes.size > 0 ~}}
+
+<details>
+<summary>Other Attribute Changes</summary>
+
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+{{~ for attr in change.attribute_changes ~}}
+| {{ attr.name | escape_markdown }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
+
+</details>
+{{~ end ~}}
+
+</details>

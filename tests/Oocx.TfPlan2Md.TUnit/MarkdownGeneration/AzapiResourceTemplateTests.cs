@@ -168,12 +168,21 @@ public class AzapiResourceTemplateTests
     {
         // Arrange - TC-30: Complex nested JSON
         var result = RenderAzapiPlan("azapi-complex-nested-plan.json");
-        var normalized = Normalize(result);
 
-        // Assert - Should flatten nested properties with dot notation
-        normalized.Should().Contain("properties.");
-        // Should handle arrays - check for presence of flattened content
-        result.Should().NotBeEmpty();
+        // Assert - Should remove "properties." prefix as requested
+        result.Should().NotContain("properties.enabled");
+        result.Should().NotContain("properties.siteConfig");
+
+        // Should create separate table for siteConfig (has >3 attributes)
+        result.Should().Contain("Body Configuration - `siteConfig`");
+
+        // Should show simplified paths
+        result.Should().Contain("| enabled |");
+        result.Should().Contain("| httpsOnly |");
+
+        // Should handle arrays with simplified paths in nested table
+        result.Should().Contain("appSettings[0].name");
+        result.Should().Contain("connectionStrings[0].name");
 
         await Task.CompletedTask;
     }

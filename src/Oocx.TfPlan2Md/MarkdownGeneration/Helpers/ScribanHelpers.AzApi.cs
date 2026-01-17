@@ -241,4 +241,76 @@ public static partial class ScribanHelpers
 
         return result;
     }
+
+    /// <summary>
+    /// Constructs a best-effort Azure REST API documentation URL from a resource type string.
+    /// </summary>
+    /// <param name="resourceType">
+    /// Azure resource type string (e.g., "Microsoft.Automation/automationAccounts@2021-06-22").
+    /// </param>
+    /// <returns>
+    /// Documentation URL or null for non-Microsoft providers. Links use a heuristic pattern
+    /// and may not always be accurate (best-effort approach).
+    /// </returns>
+    /// <remarks>
+    /// Generates documentation links by converting service names to lowercase and resource types
+    /// to kebab-case. The pattern follows: https://learn.microsoft.com/rest/api/{service}/{resource}/
+    /// This is a best-effort heuristic as Azure documentation URLs don't follow a perfectly
+    /// predictable pattern across all services.
+    /// </remarks>
+    /// <example>
+    /// Input: "Microsoft.Automation/automationAccounts@2021-06-22"
+    /// Output: "https://learn.microsoft.com/rest/api/automation/automation-accounts/"
+    /// </example>
+    public static string? AzureApiDocLink(string? resourceType)
+    {
+        if (string.IsNullOrWhiteSpace(resourceType))
+        {
+            return null;
+        }
+
+        var parsed = ParseAzureResourceType(resourceType);
+        var service = parsed["service"] as string;
+        var resourceTypeName = parsed["resource_type"] as string;
+
+        // Only generate links for Microsoft resource types
+        if (string.IsNullOrEmpty(service) || string.IsNullOrEmpty(resourceTypeName))
+        {
+            return null;
+        }
+
+        // Convert service to lowercase
+        var serviceLower = service.ToLowerInvariant();
+
+        // Convert resource type to kebab-case
+        var resourceKebab = ConvertToKebabCase(resourceTypeName);
+
+        // Construct URL: https://learn.microsoft.com/rest/api/{service}/{resource}/
+        return $"https://learn.microsoft.com/rest/api/{serviceLower}/{resourceKebab}/";
+    }
+
+    /// <summary>
+    /// Converts a PascalCase or camelCase string to kebab-case.
+    /// </summary>
+    /// <param name="input">The input string to convert.</param>
+    /// <returns>Kebab-case string (e.g., "automationAccounts" → "automation-accounts").</returns>
+    private static string ConvertToKebabCase(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+
+        var result = new StringBuilder();
+        for (var i = 0; i < input.Length; i++)
+        {
+            var c = input[i];
+            if (char.IsUpper(c) && i > 0)
+            {
+                result.Append('-');
+            }
+            result.Append(char.ToLowerInvariant(c));
+        }
+        return result.ToString();
+    }
 }

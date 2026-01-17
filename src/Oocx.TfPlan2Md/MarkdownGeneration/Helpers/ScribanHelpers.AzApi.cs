@@ -741,18 +741,54 @@ public static partial class ScribanHelpers
                 }
             }
 
-            if (smallChanges.Count > 0)
+            // Group properties by their nested object parent (for properties with >3 attributes)
+            var groupedProps = GroupPropertiesByNestedObject(smallChanges);
+
+            // Render main table with root-level and ungrouped properties
+            if (groupedProps.mainProps.Count > 0)
             {
                 sb.AppendLine("| Property | Before | After |");
                 sb.AppendLine("|----------|--------|-------|");
 
-                foreach (var item in smallChanges)
+                foreach (var item in groupedProps.mainProps)
                 {
                     if (item is ScriptObject prop)
                     {
                         var path = prop["path"]?.ToString() ?? string.Empty;
                         var before = prop["before"];
                         var after = prop["after"];
+
+                        // Remove "properties." prefix if present
+                        path = RemovePropertiesPrefix(path);
+
+                        var beforeFormatted = FormatAttributeValueTable(null, before?.ToString(), null);
+                        var afterFormatted = FormatAttributeValueTable(null, after?.ToString(), null);
+
+                        sb.AppendLine($"| {EscapeMarkdown(path)} | {beforeFormatted} | {afterFormatted} |");
+                    }
+                }
+
+                sb.AppendLine();
+            }
+
+            // Render separate tables for nested objects with >3 attributes
+            foreach (var group in groupedProps.nestedGroups)
+            {
+                sb.AppendLine($"###### {heading} - `{group.Key}`");
+                sb.AppendLine();
+                sb.AppendLine("| Property | Before | After |");
+                sb.AppendLine("|----------|--------|-------|");
+
+                foreach (var item in group.Value)
+                {
+                    if (item is ScriptObject prop)
+                    {
+                        var path = prop["path"]?.ToString() ?? string.Empty;
+                        var before = prop["before"];
+                        var after = prop["after"];
+
+                        // Remove the parent prefix and "properties." prefix
+                        path = RemoveNestedPrefix(path, group.Key);
 
                         var beforeFormatted = FormatAttributeValueTable(null, before?.ToString(), null);
                         var afterFormatted = FormatAttributeValueTable(null, after?.ToString(), null);
@@ -777,6 +813,9 @@ public static partial class ScribanHelpers
                         var path = prop["path"]?.ToString() ?? string.Empty;
                         var before = prop["before"];
                         var after = prop["after"];
+
+                        // Remove "properties." prefix
+                        path = RemovePropertiesPrefix(path);
 
                         sb.AppendLine($"##### **{EscapeMarkdown(path)}:**");
                         sb.AppendLine();
@@ -823,26 +862,58 @@ public static partial class ScribanHelpers
                 }
             }
 
-            // Always show the main table structure (even if no small properties exist)
-            sb.AppendLine("| Property | Value |");
-            sb.AppendLine("|----------|-------|");
+            // Group properties by their nested object parent (for properties with >3 attributes)
+            var groupedProps = GroupPropertiesByNestedObject(smallProps);
 
-            if (smallProps.Count > 0)
+            // Render main table with root-level and ungrouped properties
+            if (groupedProps.mainProps.Count > 0 || groupedProps.nestedGroups.Count == 0)
             {
-                foreach (var item in smallProps)
+                sb.AppendLine("| Property | Value |");
+                sb.AppendLine("|----------|-------|");
+
+                foreach (var item in groupedProps.mainProps)
                 {
                     if (item is ScriptObject prop)
                     {
                         var path = prop["path"]?.ToString() ?? string.Empty;
                         var value = prop["value"];
 
+                        // Remove "properties." prefix if present
+                        path = RemovePropertiesPrefix(path);
+
                         var valueFormatted = FormatAttributeValueTable(null, value?.ToString(), null);
                         sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
                     }
                 }
+
+                sb.AppendLine();
             }
 
-            sb.AppendLine();
+            // Render separate tables for nested objects with >3 attributes
+            foreach (var group in groupedProps.nestedGroups)
+            {
+                sb.AppendLine($"###### {heading} - `{group.Key}`");
+                sb.AppendLine();
+                sb.AppendLine("| Property | Value |");
+                sb.AppendLine("|----------|-------|");
+
+                foreach (var item in group.Value)
+                {
+                    if (item is ScriptObject prop)
+                    {
+                        var path = prop["path"]?.ToString() ?? string.Empty;
+                        var value = prop["value"];
+
+                        // Remove the parent prefix and "properties." prefix
+                        path = RemoveNestedPrefix(path, group.Key);
+
+                        var valueFormatted = FormatAttributeValueTable(null, value?.ToString(), null);
+                        sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
+                    }
+                }
+
+                sb.AppendLine();
+            }
 
             if (largeProps.Count > 0)
             {
@@ -856,6 +927,9 @@ public static partial class ScribanHelpers
                     {
                         var path = prop["path"]?.ToString() ?? string.Empty;
                         var value = prop["value"];
+
+                        // Remove "properties." prefix
+                        path = RemovePropertiesPrefix(path);
 
                         sb.AppendLine($"##### **{EscapeMarkdown(path)}:**");
                         sb.AppendLine();
@@ -878,5 +952,125 @@ public static partial class ScribanHelpers
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Removes the "properties." prefix from a property path if present.
+    /// </summary>
+    /// <param name="path">The property path.</param>
+    /// <returns>Path with "properties." prefix removed.</returns>
+    private static string RemovePropertiesPrefix(string path)
+    {
+        if (path.StartsWith("properties.", StringComparison.Ordinal))
+        {
+            return path.Substring("properties.".Length);
+        }
+        return path;
+    }
+
+    /// <summary>
+    /// Removes the nested object prefix and "properties." prefix from a property path.
+    /// </summary>
+    /// <param name="path">The full property path.</param>
+    /// <param name="parentPath">The parent path to remove.</param>
+    /// <returns>Path with parent and "properties." prefixes removed.</returns>
+    private static string RemoveNestedPrefix(string path, string parentPath)
+    {
+        // First remove "properties." if present
+        path = RemovePropertiesPrefix(path);
+        parentPath = RemovePropertiesPrefix(parentPath);
+
+        // Then remove the parent path
+        if (path.StartsWith(parentPath + ".", StringComparison.Ordinal))
+        {
+            return path.Substring(parentPath.Length + 1);
+        }
+        return path;
+    }
+
+    /// <summary>
+    /// Groups properties by their nested object parent if the parent has more than 3 attributes.
+    /// </summary>
+    /// <param name="properties">The list of properties to group.</param>
+    /// <returns>A tuple with main properties and nested groups.</returns>
+    private static (ScriptArray mainProps, Dictionary<string, ScriptArray> nestedGroups) GroupPropertiesByNestedObject(ScriptArray properties)
+    {
+        var mainProps = new ScriptArray();
+        var nestedGroups = new Dictionary<string, ScriptArray>();
+
+        // First pass: identify nested objects with >3 attributes
+        var nestedObjectCounts = new Dictionary<string, int>();
+
+        foreach (var item in properties)
+        {
+            if (item is ScriptObject prop)
+            {
+                var path = prop["path"]?.ToString() ?? string.Empty;
+
+                // Remove "properties." prefix for analysis
+                path = RemovePropertiesPrefix(path);
+
+                // Check if this is a nested property (has at least 2 segments)
+                var segments = path.Split('.');
+                if (segments.Length >= 2)
+                {
+                    // Get the parent path (everything except the last segment)
+                    var parentPath = string.Join(".", segments.Take(segments.Length - 1));
+
+                    // For deeply nested properties, only consider the first level
+                    // (e.g., for "siteConfig.connectionStrings[0].name", parent is "siteConfig")
+                    var firstLevelParent = segments[0];
+                    if (firstLevelParent.Contains('['))
+                    {
+                        // Skip array indices
+                        continue;
+                    }
+
+                    if (!nestedObjectCounts.TryGetValue(firstLevelParent, out var count))
+                    {
+                        count = 0;
+                    }
+                    nestedObjectCounts[firstLevelParent] = count + 1;
+                }
+            }
+        }
+
+        // Identify which nested objects should be grouped (>3 attributes)
+        var nestedObjectsToGroup = nestedObjectCounts
+            .Where(kvp => kvp.Value > 3)
+            .Select(kvp => kvp.Key)
+            .ToHashSet();
+
+        // Second pass: assign properties to main or nested groups
+        foreach (var item in properties)
+        {
+            if (item is ScriptObject prop)
+            {
+                var path = prop["path"]?.ToString() ?? string.Empty;
+                var pathWithoutProperties = RemovePropertiesPrefix(path);
+                var segments = pathWithoutProperties.Split('.');
+
+                if (segments.Length >= 2)
+                {
+                    var firstLevelParent = segments[0];
+                    if (!firstLevelParent.Contains('[') && nestedObjectsToGroup.Contains(firstLevelParent))
+                    {
+                        // This property belongs to a nested group
+                        if (!nestedGroups.TryGetValue(firstLevelParent, out var groupArray))
+                        {
+                            groupArray = new ScriptArray();
+                            nestedGroups[firstLevelParent] = groupArray;
+                        }
+                        groupArray.Add(item);
+                        continue;
+                    }
+                }
+
+                // Property stays in main table
+                mainProps.Add(item);
+            }
+        }
+
+        return (mainProps, nestedGroups);
     }
 }

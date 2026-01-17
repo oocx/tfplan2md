@@ -1043,7 +1043,7 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 **Tags:**
  `environment: production` `cost-center: engineering`
 
-#### Body Configuration
+#### Body
 
 | Property | Value |
 |----------|-------|

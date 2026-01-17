@@ -46,7 +46,7 @@ This test plan defines the testing strategy for the custom Scriban template for 
 - Resource type shown clearly: `Microsoft.Automation/automationAccounts@2021-06-22`
 - Documentation link displayed with "best-effort" disclaimer
 - Standard attributes table shows name, parent_id (resource group), location
-- Body Configuration table shows flattened properties:
+- Body table shows flattened properties:
   - `properties.disableLocalAuth` → ✅ `true`
   - `properties.publicNetworkAccess` → ❌ `false`
   - `properties.sku.name` → `Basic`
@@ -997,7 +997,7 @@ Verify complete end-to-end rendering of azapi_resource create operation includin
    - Resource type with API version
    - Documentation link (best-effort)
    - Standard attributes table
-   - Body Configuration section
+   - Body section
    - Property table with values
 
 **Expected Result:**
@@ -1030,7 +1030,7 @@ Verify complete end-to-end rendering of azapi_resource update operation with bef
    - Resource type
    - Documentation link
    - Standard attributes
-   - Body Changes section (not "Body Configuration")
+   - Body Changes section (not "Body")
    - Before/After columns in table
 
 **Expected Result:**
@@ -1064,7 +1064,7 @@ Verify complete end-to-end rendering of azapi_resource delete operation.
    - Resource type
    - Documentation link (if shown for deletes)
    - Standard attributes (before state)
-   - Body Configuration (before state)
+   - Body (before state)
 
 **Expected Result:**
 - Delete operation shows before state
@@ -1120,7 +1120,7 @@ Verify that azapi_resource with an empty body (`{}` or `null`) is handled gracef
 
 **Expected Result:**
 - No template errors
-- Message like "Body Configuration: (empty)" or similar
+- Message like "Body: (empty)" or similar
 - Standard attributes still shown
 
 **Test Data:**
@@ -1207,7 +1207,7 @@ Verify that a single large property value (>200 chars) is moved to a collapsible
 4. Verify large property in collapsible section
 
 **Expected Result:**
-- Small properties displayed in main "Body Configuration" table
+- Small properties displayed in main "Body" table
 - Large property in separate `<details>` section titled "Large body properties"
 - Large property shows full value in collapsible section
 
@@ -1370,7 +1370,7 @@ Verify that if the entire body is marked sensitive (not per-property), the whole
 3. Verify entire body section shows masked message
 
 **Expected Result:**
-- Body Configuration/Changes section shows: `(sensitive - use --show-sensitive to view)`
+- Body/Changes section shows: `(sensitive - use --show-sensitive to view)`
 - No individual properties displayed when body is entirely sensitive
 - Standard attributes (name, type, location) still shown
 

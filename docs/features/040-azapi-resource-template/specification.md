@@ -111,7 +111,7 @@ The expanded resource view should include:
 | parent_id | Resource Group `example-resources` |
 | location | `🌍 westeurope` |
 
-#### Body Configuration
+#### Body
 
 | Property | Value |
 |----------|-------|

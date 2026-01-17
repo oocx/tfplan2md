@@ -42,7 +42,7 @@ public class AzapiResourceTemplateTests
 
         // Assert - Should contain key elements
         normalized.Should().Contain("azapi_resource");
-        normalized.Should().Contain("Body Configuration");
+        normalized.Should().Contain("Body");
         normalized.Should().Contain("properties.");
 
         await Task.CompletedTask;
@@ -174,7 +174,7 @@ public class AzapiResourceTemplateTests
         result.Should().NotContain("properties.siteConfig");
 
         // Should create separate table for siteConfig (has >3 attributes)
-        result.Should().Contain("Body Configuration - `siteConfig`");
+        result.Should().Contain("Body - `siteConfig`");
 
         // Should show simplified paths
         result.Should().Contain("| enabled |");

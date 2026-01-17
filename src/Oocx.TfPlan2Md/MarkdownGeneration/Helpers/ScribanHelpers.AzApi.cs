@@ -51,17 +51,28 @@ public static partial class ScribanHelpers
             return result;
         }
 
-        // Convert to JsonElement if needed
-        JsonElement element;
+        // Handle different input types
         if (jsonObject is JsonElement jsonElement)
         {
-            element = jsonElement;
+            // Flatten JsonElement directly
+            FlattenJsonElement(jsonElement, prefix, result);
+            return result;
         }
-        else if (jsonObject is string jsonString)
+
+        if (jsonObject is ScriptObject scriptObject)
+        {
+            // Flatten ScriptObject recursively
+            FlattenScriptObject(scriptObject, prefix, result);
+            return result;
+        }
+
+        if (jsonObject is string jsonString)
         {
             try
             {
-                element = JsonDocument.Parse(jsonString).RootElement;
+                var element = JsonDocument.Parse(jsonString).RootElement;
+                FlattenJsonElement(element, prefix, result);
+                return result;
             }
             catch
             {
@@ -70,18 +81,60 @@ public static partial class ScribanHelpers
                 return result;
             }
         }
-        else
-        {
-            // For non-JsonElement types that aren't strings, treat as primitive values
-            // This avoids AOT-incompatible JsonSerializer.Serialize calls
-            result.Add(CreatePropertyObject(prefix, jsonObject));
-            return result;
-        }
 
-        // Flatten based on element type
-        FlattenJsonElement(element, prefix, result);
-
+        // For other types, treat as primitive values
+        result.Add(CreatePropertyObject(prefix, jsonObject));
         return result;
+    }
+
+    /// <summary>
+    /// Recursively flattens a ScriptObject into the result array.
+    /// </summary>
+    /// <param name="scriptObject">The ScriptObject to flatten.</param>
+    /// <param name="prefix">Current property path prefix.</param>
+    /// <param name="result">The result array to populate.</param>
+    private static void FlattenScriptObject(ScriptObject scriptObject, string prefix, ScriptArray result)
+    {
+        foreach (var key in scriptObject.Keys)
+        {
+            var value = scriptObject[key];
+            var path = string.IsNullOrEmpty(prefix) ? key : $"{prefix}.{key}";
+
+            if (value is null)
+            {
+                result.Add(CreatePropertyObject(path, null));
+            }
+            else if (value is ScriptObject nestedScriptObject)
+            {
+                // Skip empty objects
+                if (nestedScriptObject.Count > 0)
+                {
+                    FlattenScriptObject(nestedScriptObject, path, result);
+                }
+            }
+            else if (value is ScriptArray scriptArray)
+            {
+                for (var i = 0; i < scriptArray.Count; i++)
+                {
+                    var arrayPath = $"{path}[{i}]";
+                    var arrayItem = scriptArray[i];
+
+                    if (arrayItem is ScriptObject nestedArrayObject)
+                    {
+                        FlattenScriptObject(nestedArrayObject, arrayPath, result);
+                    }
+                    else
+                    {
+                        result.Add(CreatePropertyObject(arrayPath, arrayItem));
+                    }
+                }
+            }
+            else
+            {
+                // Leaf value (string, number, boolean)
+                result.Add(CreatePropertyObject(path, value));
+            }
+        }
     }
 
     /// <summary>

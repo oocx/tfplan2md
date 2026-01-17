@@ -97,9 +97,9 @@
 
 #### Body Changes
 
-{{~ # Get before/after sensitive structures for body ~}}
-{{~ before_sensitive_body = change.before_sensitive.body ~}}
-{{~ after_sensitive_body = change.after_sensitive.body ~}}
+{{~ # Get before/after sensitive structures for body (safely) ~}}
+{{~ before_sensitive_body = change.before_sensitive ? change.before_sensitive.body : null ~}}
+{{~ after_sensitive_body = change.after_sensitive ? change.after_sensitive.body : null ~}}
 
 {{~ # Compare body properties ~}}
 {{~ comparisons = compare_json_properties change.before_json.body change.after_json.body before_sensitive_body after_sensitive_body false false ~}}

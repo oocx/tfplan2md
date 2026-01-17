@@ -28,7 +28,6 @@
 {{~ end ~}}
 
 {{~ # Standard attributes table ~}}
-{{~ if metadata.name || metadata.parent_id || metadata.location ~}}
 
 | Attribute | Value |
 |-----------|-------|
@@ -40,7 +39,6 @@
 {{~ end ~}}
 {{~ if metadata.location ~}}
 | location | {{ metadata.location }} |
-{{~ end ~}}
 {{~ end ~}}
 
 {{~ # Tags badges (if present) ~}}

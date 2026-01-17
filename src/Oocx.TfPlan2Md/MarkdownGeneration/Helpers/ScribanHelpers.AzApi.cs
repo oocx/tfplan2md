@@ -761,8 +761,8 @@ public static partial class ScribanHelpers
                         // Remove "properties." prefix if present
                         path = RemovePropertiesPrefix(path);
 
-                        var beforeFormatted = FormatAttributeValueTable(null, before?.ToString(), null);
-                        var afterFormatted = FormatAttributeValueTable(null, after?.ToString(), null);
+                        var beforeFormatted = FormatAttributeValueTable(path, before?.ToString(), "azurerm");
+                        var afterFormatted = FormatAttributeValueTable(path, after?.ToString(), "azurerm");
 
                         sb.AppendLine($"| {EscapeMarkdown(path)} | {beforeFormatted} | {afterFormatted} |");
                     }
@@ -790,8 +790,8 @@ public static partial class ScribanHelpers
                         // Remove the parent prefix and "properties." prefix
                         path = RemoveNestedPrefix(path, group.Key);
 
-                        var beforeFormatted = FormatAttributeValueTable(null, before?.ToString(), null);
-                        var afterFormatted = FormatAttributeValueTable(null, after?.ToString(), null);
+                        var beforeFormatted = FormatAttributeValueTable(path, before?.ToString(), "azurerm");
+                        var afterFormatted = FormatAttributeValueTable(path, after?.ToString(), "azurerm");
 
                         sb.AppendLine($"| {EscapeMarkdown(path)} | {beforeFormatted} | {afterFormatted} |");
                     }
@@ -881,7 +881,7 @@ public static partial class ScribanHelpers
                         // Remove "properties." prefix if present
                         path = RemovePropertiesPrefix(path);
 
-                        var valueFormatted = FormatAttributeValueTable(null, value?.ToString(), null);
+                        var valueFormatted = FormatAttributeValueTable(path, value?.ToString(), "azurerm");
                         sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
                     }
                 }
@@ -907,7 +907,7 @@ public static partial class ScribanHelpers
                         // Remove the parent prefix and "properties." prefix
                         path = RemoveNestedPrefix(path, group.Key);
 
-                        var valueFormatted = FormatAttributeValueTable(null, value?.ToString(), null);
+                        var valueFormatted = FormatAttributeValueTable(path, value?.ToString(), "azurerm");
                         sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
                     }
                 }

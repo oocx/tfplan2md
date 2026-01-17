@@ -27,18 +27,18 @@
 📚 [View API Documentation (best-effort)]({{ doc_link | escape_markdown }})
 {{~ end ~}}
 
-{{~ # Standard attributes table ~}}
+{{~ # Standard attributes table with semantic formatting ~}}
 
 | Attribute | Value |
 |-----------|-------|
 {{~ if metadata.name ~}}
-| name | {{ metadata.name | escape_markdown }} |
+| name | {{ format_attribute_value_table "name" metadata.name "azapi" }} |
 {{~ end ~}}
 {{~ if metadata.parent_id ~}}
-| parent_id | {{ metadata.parent_id | escape_markdown }} |
+| parent_id | {{ format_attribute_value_table "parent_id" metadata.parent_id "azurerm" }} |
 {{~ end ~}}
 {{~ if metadata.location ~}}
-| location | {{ metadata.location }} |
+| location | {{ format_attribute_value_table "location" metadata.location "azapi" }} |
 {{~ end ~}}
 
 {{~ # Tags badges (if present) ~}}
@@ -89,7 +89,7 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{~ for attr in non_body_changes ~}}
-| {{ attr.name | escape_markdown }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+| {{ attr.name | escape_markdown }} | {{ format_attribute_value_table attr.name (attr.before ?? "(null)") "azurerm" }} | {{ format_attribute_value_table attr.name (attr.after ?? "(null)") "azurerm" }} |
 {{~ end ~}}
 
 </details>

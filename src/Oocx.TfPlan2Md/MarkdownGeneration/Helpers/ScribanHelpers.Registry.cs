@@ -47,5 +47,6 @@ public static partial class ScribanHelpers
         scriptObject.Import("parse_azure_resource_type", new Func<string?, ScriptObject>(ParseAzureResourceType));
         scriptObject.Import("azure_api_doc_link", new Func<string?, string?>(AzureApiDocLink));
         scriptObject.Import("extract_azapi_metadata", new Func<object?, ScriptObject>(ExtractAzapiMetadata));
+        scriptObject.Import("render_azapi_body", new Func<object?, string, string, object?, object?, object?, bool, string, string>(RenderAzapiBody));
     }
 }

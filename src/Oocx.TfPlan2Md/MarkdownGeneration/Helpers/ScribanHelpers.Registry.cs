@@ -40,5 +40,12 @@ public static partial class ScribanHelpers
         scriptObject.Import("azure_role_info", new Func<string?, string?, ScriptObject>(GetRoleInfo));
         scriptObject.Import("azure_principal_info", new Func<string?, string?, string?, ScriptObject>((id, type, addr) => GetPrincipalInfo(id, type, principalMapper, addr)));
         scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
+
+        // AzApi helpers - Related feature: docs/features/040-azapi-resource-template/specification.md
+        scriptObject.Import("flatten_json", new Func<object?, string, ScriptArray>(FlattenJson));
+        scriptObject.Import("compare_json_properties", new Func<object?, object?, object?, object?, bool, bool, ScriptArray>(CompareJsonProperties));
+        scriptObject.Import("parse_azure_resource_type", new Func<string?, ScriptObject>(ParseAzureResourceType));
+        scriptObject.Import("azure_api_doc_link", new Func<string?, string?>(AzureApiDocLink));
+        scriptObject.Import("extract_azapi_metadata", new Func<object?, ScriptObject>(ExtractAzapiMetadata));
     }
 }

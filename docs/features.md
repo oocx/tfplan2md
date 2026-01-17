@@ -1008,9 +1008,89 @@ When rendering the full report, the default renderer applies resource-specific t
 
 | Provider | Resource Type | Template |
 |----------|--------------|----------|
+| azapi | `azapi_resource` | Flattened body representation with dot notation |
 | azurerm | `azurerm_firewall_network_rule_collection` | Semantic rule diffing with `diff_array` |
 | azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
 | azuredevops | `azuredevops_variable_group` | Variable changes with secret value protection |
+
+#### azapi_resource
+
+The `azapi_resource` resource type from the AzAPI Terraform provider manages Azure resources via the Azure Resource Manager REST API. Most configuration resides in a JSON `body` attribute, making changes difficult to review without parsing dense JSON. The custom template transforms this JSON into scannable markdown tables using dot notation for property paths.
+
+**Key Features:**
+- **Flattened body representation**: JSON properties displayed in tables with dot notation (e.g., `properties.sku.name`)
+- **Before/after comparison**: Update operations show changed properties with before/after values
+- **Auto-generated documentation links**: Best-effort links to Azure REST API documentation on Microsoft Learn
+- **Per-property sensitive masking**: Respects Terraform's sensitivity markers at the property level (not just entire body)
+- **Large value handling**: Properties over 200 characters moved to collapsible sections
+- **All operations supported**: Create, update, delete, and replace actions handled appropriately
+
+**Example output for create operation:**
+
+```markdown
+### ➕ azapi_resource.automation_account
+
+**Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
+
+📚 [View API Documentation (best-effort)](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
+
+| Attribute | Value |
+|-----------|-------|
+| name | `completeAccount` |
+| parent_id | Resource Group `rg-complete-azapi` |
+| location | 🌍 `westeurope` |
+
+**Tags:**
+ `environment: production` `cost-center: engineering`
+
+#### Body Configuration
+
+| Property | Value |
+|----------|-------|
+| properties.sku.name | `Basic` |
+| properties.disableLocalAuth | ✅ `true` |
+| properties.publicNetworkAccess | ✅ `true` |
+```
+
+**Example output for update operation:**
+
+```markdown
+### 🔄 azapi_resource.automation_account
+
+**Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
+
+📚 [View API Documentation (best-effort)](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
+
+| Attribute | Value |
+|-----------|-------|
+| name | `updateAccount` |
+| parent_id | Resource Group `rg-update-azapi` |
+| location | 🌍 `westeurope` |
+
+#### Body Changes
+
+| Property | Before | After |
+|----------|--------|-------|
+| properties.sku.name | `Basic` | `Standard` |
+| properties.disableLocalAuth | ❌ `false` | ✅ `true` |
+```
+
+**Documentation Links:**
+
+Documentation links are generated using a best-effort heuristic from the resource type string (e.g., `Microsoft.Automation/automationAccounts@2021-06-22`). The link construction:
+1. Extracts the service name (`Automation`)
+2. Converts resource type to kebab-case (`automation-accounts`)
+3. Constructs URL: `https://learn.microsoft.com/rest/api/{service}/{resource}/`
+
+These links work for most common Azure services but may not be accurate for all resources. The "(best-effort)" label indicates the link is not guaranteed to be correct. For custom resource providers or non-Microsoft resources, no link is generated.
+
+**Sensitive Value Handling:**
+
+The template respects Terraform's per-property sensitivity markers. If Terraform marks specific properties as sensitive (e.g., `properties.administratorLoginPassword`), only those properties are masked unless the `--show-sensitive` flag is used. This provides better visibility than masking the entire body.
+
+**Large Properties:**
+
+Properties with values exceeding 200 characters are automatically moved to a collapsible "Large body properties" section below the main table. This keeps the main view scannable while preserving access to detailed configuration values.
 
 #### Firewall Rule Collections
 
@@ -1114,6 +1194,52 @@ Templates have access to custom Scriban helper functions:
 {{ format_diff (item.before.protocols | array.join ", ") (item.after.protocols | array.join ", ") }}
 ```
 Returns the single escaped value if unchanged, or `"- escapedBefore<br>+ escapedAfter"` if different. Values are escaped for markdown safety while the `<br>` tag is preserved to render as a line break in tables.
+
+**AzAPI-specific helpers** (for `azapi_resource` template):
+
+**`flatten_json`** - Flattens JSON into dot-notation key-value pairs:
+```scriban
+{{ flattened = flatten_json change.after_json.body "" }}
+{{ for prop in flattened }}
+  {{ prop.path }}: {{ prop.value }}
+{{ end }}
+```
+Converts nested JSON objects into flat property paths (e.g., `properties.sku.name`). Values exceeding 200 characters are marked with `is_large: true` for separate rendering.
+
+**`compare_json_properties`** - Compares before/after JSON and returns changed properties:
+```scriban
+{{ comparisons = compare_json_properties before_json.body after_json.body before_sensitive after_sensitive false false }}
+{{ for prop in comparisons }}
+  {{ prop.path }}: {{ prop.before }} → {{ prop.after }}
+{{ end }}
+```
+Parameters: beforeJson, afterJson, beforeSensitive, afterSensitive, showUnchanged, showSensitive. Returns list with path, before, after, is_large, is_sensitive, is_changed.
+
+**`parse_azure_resource_type`** - Parses Azure resource type strings:
+```scriban
+{{ type_info = parse_azure_resource_type "Microsoft.Automation/automationAccounts@2021-06-22" }}
+Provider: {{ type_info.provider }}       // "Microsoft.Automation"
+Service: {{ type_info.service }}         // "Automation"
+Type: {{ type_info.resource_type }}      // "automationAccounts"
+API Version: {{ type_info.api_version }} // "2021-06-22"
+```
+
+**`azure_api_doc_link`** - Generates Azure REST API documentation URLs:
+```scriban
+{{ doc_link = azure_api_doc_link "Microsoft.Automation/automationAccounts@2021-06-22" }}
+// Returns: "https://learn.microsoft.com/rest/api/automation/automation-accounts/"
+```
+Uses best-effort heuristic; may not be accurate for all resources. Returns null for non-Microsoft resource types.
+
+**`extract_azapi_metadata`** - Extracts key attributes from azapi_resource:
+```scriban
+{{ metadata = extract_azapi_metadata change }}
+Name: {{ metadata.name }}
+Type: {{ metadata.type }}
+Location: {{ metadata.location }}
+Parent: {{ metadata.parent_id }}
+Tags: {{ metadata.tags }}
+```
 
 See [resource-specific-templates.md](features/resource-specific-templates.md) for full specification.
 

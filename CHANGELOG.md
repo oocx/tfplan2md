@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.39"></a>
+## [1.0.0-alpha.39](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.38...v1.0.0-alpha.39) (2026-01-17)
+
+### ✨ Features
+
+* add ScriptObject handling to FlattenJson and create integration tests ([f5839b5](https://github.com/oocx/tfplan2md/commit/f5839b536ef4fce7ed20629b8dbc78b9c581c25b))
+* add target attributes to all agents ([4391fb5](https://github.com/oocx/tfplan2md/commit/4391fb52866d861eed1214a03fda3248b6848ac0))
+* create azapi/resource.sbn template ([9f2645f](https://github.com/oocx/tfplan2md/commit/9f2645fdea761ed952e04792d7f5f5ee376270fc))
+* implement AzureApiDocLink helper (Task 5, 11 partial) ([b23754f](https://github.com/oocx/tfplan2md/commit/b23754fc9e6b9a154351e97f879162819bad50b0))
+* implement CompareJsonProperties helper for azapi_resource ([699920d](https://github.com/oocx/tfplan2md/commit/699920d97dd00e33b890c94f5bfab94dca5bd75a))
+* implement ExtractAzapiMetadata helper (Task 6, 12) ([4f4982e](https://github.com/oocx/tfplan2md/commit/4f4982e9c27ea69ab96f52be4eb691926b1fad77))
+* implement FlattenJson and ParseAzureResourceType helpers (Task 2, 4, 9, 11 partial) ([3f9e439](https://github.com/oocx/tfplan2md/commit/3f9e439e07e9bf813c509de924304841fab461b6))
+* improve azapi body rendering with prefix removal and nested grouping ([41485f2](https://github.com/oocx/tfplan2md/commit/41485f250b95f7d9c1eeab31aaef7f6da6d2f6cc))
+* integrate azapi template with semantic formatting features ([63ffb7a](https://github.com/oocx/tfplan2md/commit/63ffb7a406c45779c2cc7e00507e3529272ca93d))
+* register azapi helpers in Scriban registry ([609ee3c](https://github.com/oocx/tfplan2md/commit/609ee3c5161b670e3fbbb03a510ace344ee09f16))
+* split agents into local and coding variants ([dfe4f7b](https://github.com/oocx/tfplan2md/commit/dfe4f7bf2460a7ce09cf1139921e81d86e258ca5))
+
+### 🐛 Bug Fixes
+
+* final cleanup of coding agent environment references ([5c10a1b](https://github.com/oocx/tfplan2md/commit/5c10a1b87612d04372eb92fbcf855da9d8ee8f0a))
+* regenerate azapi artifacts with latest tfplan2md version ([733ac75](https://github.com/oocx/tfplan2md/commit/733ac752223c994abbac94f7076daafb9b2414b5))
+* remove conditional wrapper from metadata table in azapi template ([b63ee23](https://github.com/oocx/tfplan2md/commit/b63ee237bf03a738436e9fe2291a8ec44386b808))
+* remove environment-specific instructions from coding agents ([1b5c7c3](https://github.com/oocx/tfplan2md/commit/1b5c7c3d21c76c85f73eb8943c89e527427ae117))
+* remove handoffs from coding agents and add workflow instructions ([bf3e673](https://github.com/oocx/tfplan2md/commit/bf3e67340474c192718cef065aa65d42c26eef0d))
+* resolve all code review blocker issues for azapi template ([09fd713](https://github.com/oocx/tfplan2md/commit/09fd713df297c0f55207e2a80627fa365c4dd52d))
+* resolve azapi template blocker issues ([4f902bf](https://github.com/oocx/tfplan2md/commit/4f902bf56713a393d3b1a9ec9114b5670e4e6756))
+
+### ♻️ Refactoring
+
+* simplify heading from "Body Configuration" to "Body" ([6e74ea7](https://github.com/oocx/tfplan2md/commit/6e74ea792d084905f1215b14a3188c73b2fd1b99))
+
+### 📚 Documentation
+
+* add architecture for azapi_resource template feature ([256348b](https://github.com/oocx/tfplan2md/commit/256348b8e966fc0d1d3521d4bb968d83f4da4ef9))
+* add code review report for azapi_resource template ([232767c](https://github.com/oocx/tfplan2md/commit/232767c9d48c895c2a904ac17f6c2398069f4603))
+* add code review report for azapi_resource template feature ([f5c975c](https://github.com/oocx/tfplan2md/commit/f5c975c722147af691ce8a389fe7b6913c6250dc))
+* add feature specification for azapi_resource template (040) ([d1ba522](https://github.com/oocx/tfplan2md/commit/d1ba5227391f468ae2382afd6e20cd1ffff73c98))
+* add implementation tasks for azapi_resource template ([b01dafc](https://github.com/oocx/tfplan2md/commit/b01dafc18022a5f6062490636e57f674aafb7d70))
+* add test plan and UAT test plan for azapi_resource template feature ([e434b3e](https://github.com/oocx/tfplan2md/commit/e434b3e7a131ee4fb6774d50ab54de2f71278d53))
+* Add UAT report for azapi_resource template (blocked on auth) ([4a2296c](https://github.com/oocx/tfplan2md/commit/4a2296c00a3e5404e51adff6832369359e5ce8b7))
+* code review re-approval - azapi_resource ready for UAT ([a4191b0](https://github.com/oocx/tfplan2md/commit/a4191b0930f6ef3f9867892841cf6a751fadd4b4))
+* code review re-approval - azapi_resource template ready for UAT ([2c37434](https://github.com/oocx/tfplan2md/commit/2c37434f3620ea41a106bc519e50db588f5fdcb9))
+* document azapi template refactoring in architecture ([e258bb3](https://github.com/oocx/tfplan2md/commit/e258bb3625976a788cc27ef4b9cd5e300a8998c2))
+* document azapi_resource template feature ([2cc7c4a](https://github.com/oocx/tfplan2md/commit/2cc7c4a9adfd69286cb871a79adfda039eba4387))
+* remove execution-context-detection skill and update agents.md ([25fd21e](https://github.com/oocx/tfplan2md/commit/25fd21e95dab0d8962ea220f5939571c2b1d43a9))
+
 <a name="1.0.0-alpha.38"></a>
 ## [1.0.0-alpha.38](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.37...v1.0.0-alpha.38) (2026-01-16)
 

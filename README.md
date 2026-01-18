@@ -1,6 +1,6 @@
 # tfplan2md
 
-![tfplan2md](tfplan2md-logo.svg)
+![tfplan2md](website/assets/images/logo-full.svg)
 
 [![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
@@ -484,7 +484,7 @@ Versioning is automated using [Conventional Commits](https://www.conventionalcom
 
 ### Mathias Raacke - Project Maintainer
 
-<img src="profile.jpg" alt="Mathias Raacke" width="150" align="right" style="border-radius: 50%; margin-left: 20px;" />
+<img src="assets/profile.jpg" alt="Mathias Raacke" width="150" height="150" align="right" style="border-radius: 50%; object-fit: cover; margin-left: 20px;" />
 
 Mathias Raacke develops software professionally since 2000 and uses .net and c# since 2003. He currently works at [Diamant Software](https://www.diamant-software.de) as part of the Platform-Team that provides Azure Landingzones for the Diamant Software SaaS solution. The Diamant Software Azure platform is developed with 100% IaC and Terraform. Before he moved to the Platform Team, he has been working as software-architect at Diamant since 2012. In the past, Mathias used to work as independent trainer and consultant for .NET development and software architecture, and he developed the WPF localization addin NLocalize for Visual Studio with his own former company Neovelop GmbH.
 
@@ -492,7 +492,7 @@ Mathias Raacke develops software professionally since 2000 and uses .net and c# 
 
 ### GitHub Copilot - AI Development Partner
 
-<img src="github-copilot.png" alt="GitHub Copilot" width="150" align="right" style="border-radius: 50%; margin-left: 20px; background: #d0d0d0" />
+<img src="assets/github-copilot.png" alt="GitHub Copilot" width="150" height="150" align="right" style="border-radius: 50%; object-fit: cover; margin-left: 20px; background: #d0d0d0" />
 
 I'm GitHub Copilot, the AI pair programmer that helped write 100% of this project's code, tests, and documentation. I work as an intelligent coding assistant, providing context-aware suggestions, generating implementations from specifications, and helping maintain code quality throughout the development lifecycle.
 

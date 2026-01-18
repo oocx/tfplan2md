@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.40"></a>
+## [1.0.0-alpha.40](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.39...v1.0.0-alpha.40) (2026-01-18)
+
+### 🐛 Bug Fixes
+
+* correct shell test repo root ([3db6466](https://github.com/oocx/tfplan2md/commit/3db6466d6656b25640d78dc5a364038a99689112))
+* use src TestResults in CI ([202a9e3](https://github.com/oocx/tfplan2md/commit/202a9e3fd413755bbdc70337386b69b0507f2e58))
+
+### ♻️ Refactoring
+
+* move sources under src and update test guidance ([91cc449](https://github.com/oocx/tfplan2md/commit/91cc44984a9269e2b3cc5a68d22dbcfd8cf07894))
+
 <a name="1.0.0-alpha.39"></a>
 ## [1.0.0-alpha.39](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.38...v1.0.0-alpha.39) (2026-01-17)
 

@@ -500,7 +500,7 @@ Verifies that all existing tests continue to pass after adding debug output feat
 - All existing tests in test suite
 
 **Test Steps:**
-1. Run full test suite: `dotnet test tests/Oocx.TfPlan2Md.TUnit/`
+1. Run full test suite: `dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/`
 
 **Expected Result:**
 - All existing tests pass
@@ -613,19 +613,19 @@ None
 ### Unit Tests
 Execute with:
 ```bash
-dotnet test tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category=Unit]
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /**[Category=Unit]
 ```
 
 ### Integration Tests
 Execute with:
 ```bash
-scripts/test-with-timeout.sh -- dotnet test tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category=Integration]
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /**[Category=Integration]
 ```
 
 ### Regression Tests
 Execute full suite:
 ```bash
-scripts/test-with-timeout.sh -- dotnet test tests/Oocx.TfPlan2Md.TUnit/
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/
 ```
 
 ## Open Questions
@@ -636,7 +636,7 @@ None - all design decisions have been finalized in the architecture document.
 
 - [ ] All test cases (TC-01 through TC-20) are implemented
 - [ ] All test data files are created
-- [ ] All tests pass when executed via `scripts/test-with-timeout.sh -- dotnet test`
+- [ ] All tests pass when executed via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`
 - [ ] Edge cases are covered
 - [ ] Regression tests confirm no existing functionality is broken
 - [ ] Docker integration test verifies containerized behavior

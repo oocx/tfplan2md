@@ -55,7 +55,7 @@ Update all resource-specific templates that define their own `<details>` border 
 Update the HTML preview wrapper to define the `--palette-neutral-10` variable for both light and dark themes. This ensures that demo artifacts and local previews correctly simulate the Azure DevOps environment.
 
 **Acceptance Criteria:**
-- [ ] [tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html](tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html) updated.
+- [ ] [src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html](src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html) updated.
 - [ ] CSS variable `--palette-neutral-10` is defined within `[data-theme="light"]` and `[data-theme="dark"]` scopes.
 - [ ] Light theme value should be a light gray (e.g., `240, 240, 240` for `#f0f0f0`).
 - [ ] Dark theme value should be a dark gray (e.g., `50, 50, 50`).

@@ -90,13 +90,13 @@ None - the implementation is solid with no identified improvements needed.
 
 ### Test Coverage
 
-**Parser Tests ([TerraformPlanParserReplacePathsTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/Parsing/TerraformPlanParserReplacePathsTests.cs)):**
+**Parser Tests ([TerraformPlanParserReplacePathsTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/Parsing/TerraformPlanParserReplacePathsTests.cs)):**
 - ✅ Verifies `replace_paths` deserialization
 - ✅ Tests nested arrays with mixed types (strings, integers)
-- ✅ Test data file created ([replace-paths-plan.json](../../../tests/Oocx.TfPlan2Md.Tests/TestData/replace-paths-plan.json))
+- ✅ Test data file created ([replace-paths-plan.json](../../../src/tests/Oocx.TfPlan2Md.Tests/TestData/replace-paths-plan.json))
 - ✅ Proper assertions on parsed values
 
-**Summary Builder Tests ([ResourceSummaryBuilderTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/Summaries/ResourceSummaryBuilderTests.cs)):**
+**Summary Builder Tests ([ResourceSummaryBuilderTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/Summaries/ResourceSummaryBuilderTests.cs)):**
 - ✅ Tests create summaries (resource-specific, provider fallback, generic fallback)
 - ✅ Tests update summaries (few changes, many changes with truncation)
 - ✅ Tests replace summaries (with/without `replace_paths`)
@@ -105,11 +105,11 @@ None - the implementation is solid with no identified improvements needed.
 - ✅ Proper test naming convention: `BuildSummary_Action_Scenario`
 - ✅ Helper method `CreateChange` reduces duplication
 
-**Integration Tests ([ReportModelBuilderSummaryTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/Summaries/ReportModelBuilderSummaryTests.cs)):**
+**Integration Tests ([ReportModelBuilderSummaryTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/Summaries/ReportModelBuilderSummaryTests.cs)):**
 - ✅ Verifies summary passed through from builder to model
 - ✅ Tests with mock `IResourceSummaryBuilder`
 
-**Renderer Tests ([MarkdownRendererSummaryTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/Summaries/MarkdownRendererSummaryTests.cs)):**
+**Renderer Tests ([MarkdownRendererSummaryTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/Summaries/MarkdownRendererSummaryTests.cs)):**
 - ✅ End-to-end tests from data model to markdown output
 - ✅ Verifies template rendering
 - ✅ Tests both presence and absence of summaries

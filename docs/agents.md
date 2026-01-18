@@ -54,7 +54,7 @@ All agents exist in two variants optimized for their execution environment:
 ### Local Agents (VS Code)
 - **Usage**: `@agent-name` in VS Code Copilot chat
 - **Tools**: Explicitly configured tool list with local-only tools (execute, edit, vscode, todo, etc.)
-- **Behavior**: Interactive with Maintainer, asks one question at a time, runs tests/builds locally
+- **Behavior**: Interactive with Maintainer, asks one question at a time, runs src/tests/builds locally
 - **File naming**: Standard name (e.g., `developer.agent.md`)
 
 ### Coding Agents (GitHub Cloud)
@@ -111,7 +111,7 @@ Guidelines:
 
 Todo lists:
 
-- Use a todo list when the work is multi-step (3+ steps) or when the agent expects to run tools/commands or edit files.
+- Use a todo list when the work is multi-step (3+ steps) or when the agent expects to run src/tools/commands or edit files.
 - Keep the todo list updated as steps move from not-started → in-progress → completed.
 - Skip todo lists for simple Q&A or one-step actions.
 
@@ -546,7 +546,7 @@ When multiple branches are created in parallel, they may independently pick the 
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress (features) or workflow improvement work (workflow). | Markdown. For workflow improvements, use a table with a Status column (icon + text) and a short rationale per item. | `docs/features/NNN-<feature-slug>/tasks.md` and `docs/workflow/NNN-<topic-slug>/tasks.md` |
 | **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/NNN-<feature-slug>/test-plan.md` |
 | **User Acceptance PRs** | Real-environment verification for user-facing features (especially markdown rendering). Used to catch rendering bugs and validate real-world usage. Managed by UAT Tester agent. | Temporary PRs in GitHub and Azure DevOps. Markdown report is posted as **PR comment** (not description). Fixes posted as new comments. Agent polls automatically; approved when Maintainer comments "approved"/"passed" or (Azure DevOps) marks thread "Resolved" or (GitHub) closes PR. PRs cleaned up after approval. | GitHub + Azure DevOps (via `scripts/uat-*.sh`) |
-| **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `tests/` directory. | `src/` and `tests/` directories |
+| **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `src/tests/` directory. | `src/` and `src/tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/NNN-<feature-slug>/code-review.md` |
 | **Pull Request** | Pull request created for merging the feature branch into main. Triggers CI/CD pipeline for validation and deployment. | GitHub Pull Request with title, description, and link to feature documentation. | GitHub repository |
@@ -702,7 +702,7 @@ This keeps all decisions traceable through the conversation history and artifact
 
 - **Clear Agent Boundaries:** Each agent should have a single responsibility and clear handoff criteria.
 - **Artifact Ownership:** Each artifact type has exactly one responsible agent. Agents must NOT edit artifacts owned by other agents:
-  - Source code (`src/`, `tests/`) → Developer only
+  - Source code (`src/`, `src/tests/`) → Developer only
   - Documentation (`docs/`, `README.md`) → Technical Writer only
   - Code Review Reports → Code Reviewer only
   - Retrospective Reports → Retrospective agent only

@@ -22,7 +22,7 @@ The implementation meets all acceptance criteria and is ready for User Acceptanc
 
 ## Snapshot Changes
 
-- **Snapshot files changed**: Yes (5 files in `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`)
+- **Snapshot files changed**: Yes (5 files in `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`)
 - **Commit message token `SNAPSHOT_UPDATE_OK` present**: Yes (commit `c2f37c2`)
 - **Justification**: The snapshot diff is correct and expected. The border color changed from `border:1px solid #f0f0f0` to `border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153))` across all resource `<details>` elements. This is the exact change required by the feature specification. The commit message clearly explains the change and confirms all snapshot tests pass after update. The fallback color `#999` (rgb 153, 153, 153) is semantically equivalent to the original `#f0f0f0` in environments without the CSS variable.
 
@@ -96,7 +96,7 @@ All four templates were updated identically:
 The change is minimal, surgical, and consistent across all affected templates.
 
 **Preview Wrapper Enhancement**:
-- [tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html](tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html)
+- [src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html](src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html)
 
 The wrapper was updated to define `--palette-neutral-10` for both light and dark themes:
 - Light theme: `240, 240, 240` (equivalent to `#f0f0f0`)

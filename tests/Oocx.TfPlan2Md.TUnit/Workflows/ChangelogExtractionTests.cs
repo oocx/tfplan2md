@@ -357,7 +357,7 @@ code block line 2
     private static string FindRepoRoot()
     {
         var current = new DirectoryInfo(AppContext.BaseDirectory);
-        while (current is not null && !File.Exists(Path.Combine(current.FullName, "tfplan2md.slnx")))
+        while (current is not null && !File.Exists(Path.Combine(current.FullName, "src", "tfplan2md.slnx")))
         {
             current = current.Parent;
         }

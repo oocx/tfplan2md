@@ -52,7 +52,7 @@ Which renders as a single line with visible `<br>` text.
 - [src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/firewall_network_rule_collection.sbn](../../../src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/firewall_network_rule_collection.sbn#L22) - Template applies `escape_markdown` after `format_diff`
 
 **Test Files:**
-- [tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md](../../../tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md#L28) - Snapshot shows escaped `\<br\>` tags
+- [src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md](../../../src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md#L28) - Snapshot shows escaped `\<br\>` tags
 
 ### What's Broken
 
@@ -288,9 +288,9 @@ The recommended approach (Option 1) achieves this by having `FormatDiff` escape 
 - Modified [firewall_network_rule_collection.sbn](../../../src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/firewall_network_rule_collection.sbn#L23) template to remove `escape_markdown` from `format_diff` outputs
 
 **Test Updates:**
-- Updated all unit tests in [ScribanHelpersFormatDiffTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersFormatDiffTests.cs) to verify escaping behavior
-- Updated integration tests in [MarkdownRendererResourceTemplateTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererResourceTemplateTests.cs) to expect unescaped `<br>` tags
-- Updated snapshots: [firewall-rules.md](../../../tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md) and [comprehensive-demo.md](../../../tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md)
+- Updated all unit tests in [ScribanHelpersFormatDiffTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersFormatDiffTests.cs) to verify escaping behavior
+- Updated integration tests in [MarkdownRendererResourceTemplateTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererResourceTemplateTests.cs) to expect unescaped `<br>` tags
+- Updated snapshots: [firewall-rules.md](../../../src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/firewall-rules.md) and [comprehensive-demo.md](../../../src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md)
 - Added new test `FormatDiff_EscapesValuesAndPreservesLineBreakTags` to verify markdown-sensitive characters are escaped while `<br>` remains intact
 
 **Documentation Updates:**

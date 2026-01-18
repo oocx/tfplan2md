@@ -246,7 +246,7 @@ src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs
 
 **Test files to create:**
 ```
-tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/
+src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/
   VariableGroupViewModelFactoryTests.cs
   VariableGroupTemplateTests.cs
 ```

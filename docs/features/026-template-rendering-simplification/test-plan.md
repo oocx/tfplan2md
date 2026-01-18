@@ -245,7 +245,7 @@ No "function not found" errors; correct output from all helpers.
 
 ## Test Data Requirements
 
-- Existing test data in `tests/Oocx.TfPlan2Md.Tests/TestData/`:
+- Existing test data in `src/tests/Oocx.TfPlan2Md.Tests/TestData/`:
   - `comprehensive-demo.json`
   - `nsg-plan.json`
   - `firewall-plan.json`

@@ -69,7 +69,7 @@ All previously identified issues have been addressed:
 1. ✅ **Help text formatting fixed**
    - Implemented [HelpTextProvider.cs](../../../src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs) with consistent column alignment
    - All option descriptions now align at column 34 (2 spaces indent + 32 padding)
-   - Added [HelpTextProviderTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/CLI/HelpTextProviderTests.cs) to enforce formatting consistency
+   - Added [HelpTextProviderTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/CLI/HelpTextProviderTests.cs) to enforce formatting consistency
 
 2. ✅ **Azure role coverage expanded**
    - **473 Azure built-in roles** now mapped (up from 11)
@@ -81,7 +81,7 @@ All previously identified issues have been addressed:
    - **20+ common Azure resource types** now have friendly names (up from 5)
    - Covers: Compute, Storage, Networking, Web/Apps, Data, Monitoring categories
    - Handles nested resource types (e.g., SQL Server → SQL Database)
-   - Tests added: [AzureScopeParserTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs) covers AKS, App Service, SQL Database mappings
+   - Tests added: [AzureScopeParserTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs) covers AKS, App Service, SQL Database mappings
 
 ### Suggestions
 

@@ -63,7 +63,7 @@ Similar comments were added to `destination_addresses`, `source_ports`, and `des
 
 **S-02: Test coverage could include edge cases**
 
-**Location:** [tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs](../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs)
+**Location:** [src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs](../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs)
 
 **Description:** The current test suite covers the primary scenarios (create, update, delete, priority sorting, singular/plural fields). Additional edge case tests could include:
 - Empty security_rule arrays

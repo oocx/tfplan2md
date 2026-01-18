@@ -65,11 +65,11 @@ All tests passing (145 total):
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/summary.sbn` - New template
 
 ### Tests
-- `tests/Oocx.TfPlan2Md.Tests/Parsing/TerraformPlanParserTests.cs` - Timestamp parsing test
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderTests.cs` - Timestamp mapping test
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs` - Template resolution tests
-- `tests/Oocx.TfPlan2Md.Tests/CLI/HelpTextProviderTests.cs` - Help text test
-- `tests/Oocx.TfPlan2Md.Tests/TestData/timestamp-plan.json` - Test data
+- `src/tests/Oocx.TfPlan2Md.Tests/Parsing/TerraformPlanParserTests.cs` - Timestamp parsing test
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderTests.cs` - Timestamp mapping test
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs` - Template resolution tests
+- `src/tests/Oocx.TfPlan2Md.Tests/CLI/HelpTextProviderTests.cs` - Help text test
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/timestamp-plan.json` - Test data
 
 ### Documentation
 - `README.md` - Built-in templates, summary example, updated template variables

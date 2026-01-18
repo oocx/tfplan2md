@@ -45,7 +45,7 @@ Non-goals (per spec):
 ## Existing Architecture & Patterns to Reuse
 
 - The repo already parses Terraform plan JSON in `Oocx.TfPlan2Md.Parsing` using `TerraformPlanParser` and immutable record types.
-- Existing `tools/*` projects follow a consistent pattern:
+- Existing `src/tools/*` projects follow a consistent pattern:
   - `Program` delegates to an `*App` class
   - `CLI/` contains a simple, explicit `CliParser` and `CliOptions`
   - File IO and validation live in the `*App`
@@ -55,14 +55,14 @@ This tool should follow the same conventions for consistency and low dependency 
 
 ## Key Architectural Decisions
 
-### Decision 1: Implement as a separate tool project under `tools/`
+### Decision 1: Implement as a separate tool project under `src/tools/`
 
 Create a new console project at:
-- `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
+- `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
 
 Rationale:
 - Matches the spec (“standalone development tool”).
-- Matches established patterns from `tools/Oocx.TfPlan2Md.HtmlRenderer/` and `tools/Oocx.TfPlan2Md.ScreenshotGenerator/`.
+- Matches established patterns from `src/tools/Oocx.TfPlan2Md.HtmlRenderer/` and `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`.
 - Keeps the main `tfplan2md` CLI focused on Markdown reporting (see [docs/spec.md](../../spec.md)).
 
 ### Decision 2: Reuse the existing Terraform plan JSON model (`TerraformPlanParser`)

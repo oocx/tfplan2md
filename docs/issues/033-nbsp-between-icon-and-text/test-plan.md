@@ -15,6 +15,6 @@ Verify that all "icon + label" combinations in the generated markdown output use
 4. **Visual Verification**: Check rendered website examples in `website/features/nsg-rules.html` to ensure icons do not wrap.
 
 ## Automated Tests
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs`
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ComprehensiveDemoTests.cs`
-- `tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/MarkdownToHtmlRendererTests.cs`
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs`
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ComprehensiveDemoTests.cs`
+- `src/tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/MarkdownToHtmlRendererTests.cs`

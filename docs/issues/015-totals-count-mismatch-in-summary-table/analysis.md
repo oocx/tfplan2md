@@ -95,7 +95,7 @@ This ensures the Total matches what's visible in the summary table.
 
 ## Test Coverage
 
-- ✅ New test: `Build_SummaryTotal_ExcludesNoOpActions` - Verifies Total excludes no-op changes ([ReportModelBuilderNoOpTests.cs](../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderNoOpTests.cs))
+- ✅ New test: `Build_SummaryTotal_ExcludesNoOpActions` - Verifies Total excludes no-op changes ([ReportModelBuilderNoOpTests.cs](../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderNoOpTests.cs))
 - ✅ Updated existing test expectations for no-op plans
 - ✅ Snapshot tests updated - comprehensive-demo, summary-template, firewall-rules
 - ✅ All 261 tests passing

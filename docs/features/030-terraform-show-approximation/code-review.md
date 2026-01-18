@@ -2,7 +2,7 @@
 
 ## Summary
 
-Reviewed the implementation of the Terraform Show Output Approximation Tool (Feature 030), a standalone development tool at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/` that generates output approximating `terraform show` from Terraform plan JSON files. The implementation is complete, well-tested, and meets all acceptance criteria defined in the specification.
+Reviewed the implementation of the Terraform Show Output Approximation Tool (Feature 030), a standalone development tool at `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/` that generates output approximating `terraform show` from Terraform plan JSON files. The implementation is complete, well-tested, and meets all acceptance criteria defined in the specification.
 
 ## Verification Results
 
@@ -22,7 +22,7 @@ The implementation is complete, well-tested, and production-ready. All acceptanc
 
 - **Snapshot files changed:** No
 - **Commit message token `SNAPSHOT_UPDATE_OK` present:** N/A (no snapshot changes)
-- **Why the snapshot diff is correct:** N/A - This feature adds a new tool in `tools/` and does not modify the main tfplan2md markdown generation, so no snapshot changes are expected or present.
+- **Why the snapshot diff is correct:** N/A - This feature adds a new tool in `src/tools/` and does not modify the main tfplan2md markdown generation, so no snapshot changes are expected or present.
 
 ## Issues Found
 
@@ -61,7 +61,7 @@ None - The implementation follows all project conventions and best practices.
 All acceptance criteria from [tasks.md](tasks.md) are implemented:
 
 **Task 1: Project Setup and CLI Infrastructure** ✅
-- New project created at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
+- New project created at `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
 - CLI options (`--input`, `--output`, `--no-color`, `--help`, `--version`) implemented
 - Exit codes (0-4) correctly implemented
 - Help and version commands work as specified
@@ -178,7 +178,7 @@ internal sealed class AnsiTextWriter : IDisposable
 The implementation aligns with [architecture.md](architecture.md):
 
 **Design Decisions:**
-- ✅ Implemented as separate tool project under `tools/`
+- ✅ Implemented as separate tool project under `src/tools/`
 - ✅ Reuses existing `TerraformPlanParser` from `Oocx.TfPlan2Md.Parsing`
 - ✅ Uses lightweight internal ANSI abstraction (no external console libraries)
 - ✅ Preserves JSON property ordering by using `JsonElement` directly
@@ -288,7 +288,7 @@ public void Render_NoColor_OmitsAnsiSequences()
 - Feature has no impact on main tfplan2md markdown generation (this is a separate tool)
 
 **Why no demo changes are expected:**
-This feature adds a standalone tool in `tools/Oocx.TfPlan2Md.TerraformShowRenderer/` that approximates `terraform show` output. It does **not** modify the main tfplan2md markdown generation pipeline, so the comprehensive demo report remains unchanged. This is correct and expected behavior.
+This feature adds a standalone tool in `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/` that approximates `terraform show` output. It does **not** modify the main tfplan2md markdown generation pipeline, so the comprehensive demo report remains unchanged. This is correct and expected behavior.
 
 ## Next Steps
 

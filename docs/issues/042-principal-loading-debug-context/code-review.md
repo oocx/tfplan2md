@@ -232,7 +232,7 @@ This demonstrates understanding of the user's context and provides guidance for 
 
 2. **Re-run verification**:
    - `dotnet build` (should succeed)
-   - `scripts/test-with-timeout.sh -- dotnet test` (should pass)
+  - `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` (should pass)
    - `docker build -t tfplan2md:local .` (should build successfully)
 
 3. **Submit for re-review** after fixes are applied

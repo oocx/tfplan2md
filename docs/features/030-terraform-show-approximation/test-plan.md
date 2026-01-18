@@ -116,8 +116,8 @@ Verifies that an invalid JSON file results in exit code 3 and a clear error mess
 Verifies that the tool generates exactly the same output as real `terraform show` for `plan1.json`.
 
 **Test Data:**
-- Input: `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json`
-- Expected: `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt`
+- Input: `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json`
+- Expected: `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt`
 
 ---
 
@@ -129,8 +129,8 @@ Verifies that the tool generates exactly the same output as real `terraform show
 Verifies that the tool generates exactly the same output as real `terraform show` for `plan2.json`.
 
 **Test Data:**
-- Input: `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json`
-- Expected: `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt`
+- Input: `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json`
+- Expected: `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt`
 
 ---
 
@@ -203,12 +203,12 @@ Verifies that when `--output` is omitted, the renderer writes to the standard ou
 
 ## Test Data Requirements
 
-- `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json` - Terraform plan JSON
-- `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt` - Expected `terraform show` output for plan1
-- `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json` - Terraform plan JSON with replacement
-- `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt` - Expected `terraform show` output for plan2
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json` - Terraform plan JSON
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt` - Expected `terraform show` output for plan1
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json` - Terraform plan JSON with replacement
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt` - Expected `terraform show` output for plan2
 - `examples/comprehensive-demo/plan.json` (Existing)
-- `tests/Oocx.TfPlan2Md.Tests/TestData/unsupported-version-plan.json` (New) - Plan with `format_version: "1.1"`
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/unsupported-version-plan.json` (New) - Plan with `format_version: "1.1"`
 
 ## Edge Cases
 

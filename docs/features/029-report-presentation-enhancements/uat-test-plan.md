@@ -7,7 +7,7 @@ Verify that the visual enhancements (borders, icons, metadata) render correctly 
 **Artifact to use:** `artifacts/presentation-enhancements-demo.md`
 
 **Creation Instructions:**
-- **Source Plan:** `tests/Oocx.TfPlan2Md.Tests/TestData/comprehensive-plan.json` (or similar)
+- **Source Plan:** `src/tests/Oocx.TfPlan2Md.Tests/TestData/comprehensive-plan.json` (or similar)
 - **Command:** `tfplan2md --input comprehensive-plan.json --output artifacts/presentation-enhancements-demo.md`
 - **Rationale:** Need a plan with multiple resource types (including Firewall/NSG) and various naming attributes to verify all visual changes.
 
@@ -48,7 +48,7 @@ Verify that the visual enhancements (borders, icons, metadata) render correctly 
 
 ### 4. Partial Screenshot Capture
 **Command:**
-`dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator artifacts/presentation-enhancements-demo.github.html artifacts/partial-capture.png --target-terraform-resource-id "azurerm_storage_account.example"`
+`dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator artifacts/presentation-enhancements-demo.github.html artifacts/partial-capture.png --target-terraform-resource-id "azurerm_storage_account.example"`
 
 **Expected Outcome:**
 - The generated `artifacts/partial-capture.png` should contain ONLY the storage account resource block, not the whole page.

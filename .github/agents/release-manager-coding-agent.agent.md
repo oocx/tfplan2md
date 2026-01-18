@@ -66,7 +66,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Verify code review is approved before proceeding
-- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test`) if diagnosing a specific CI failure
+- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`) if diagnosing a specific CI failure
 - Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
 - Check that working directory is clean
 - Verify branch is up to date with main
@@ -105,7 +105,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - Code documentation requirements
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution and release guidelines
-- Current version in `Directory.Build.props`
+- Current version in `src/Directory.Build.props`
 
 ## Release Process
 
@@ -144,7 +144,7 @@ Before releasing, verify:
 2. **Tests Pass** (trust CI — only run locally if debugging a failure)
    ```bash
    # Only if CI failed and you need to reproduce:
-   scripts/test-with-timeout.sh -- dotnet test
+   scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
    ```
 
 3. **Docker Build Succeeds** (only if not recently verified by Code Reviewer)

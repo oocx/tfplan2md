@@ -31,7 +31,7 @@ jobs:
           fi
           
           # Check if any UAT-related files changed
-          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E '^(scripts/uat-|tests/shell/)' || true)
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E '^(scripts/uat-|src/tests/shell/)' || true)
           
           if [ -z "$CHANGED_FILES" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -43,11 +43,11 @@ jobs:
 
       - name: Ensure tests are executable
         if: steps.filter.outputs.changed == 'true'
-        run: chmod +x tests/shell/uat_validate_test.sh
+        run: chmod +x src/tests/shell/uat_validate_test.sh
 
       - name: Run UAT validation tests
         if: steps.filter.outputs.changed == 'true'
-        run: ./tests/shell/uat_validate_test.sh
+        run: ./src/tests/shell/uat_validate_test.sh
       
       - name: Skip validation (no files changed)
         if: steps.filter.outputs.changed == 'false'

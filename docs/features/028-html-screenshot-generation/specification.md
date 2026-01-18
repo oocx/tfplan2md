@@ -66,14 +66,14 @@ A standalone .NET tool that generates screenshots from HTML files using the Chro
 
 **Basic Usage - Default Viewport:**
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html
 ```
 Output: `artifacts/comprehensive-demo.github.png` (1920x1080, PNG format)
 
 **Custom Viewport Size:**
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot-1280x720.png \
   --width 1280 \
@@ -83,7 +83,7 @@ Output: `artifacts/screenshot-1280x720.png` (1280x720, PNG format)
 
 **Full-Page Capture:**
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output artifacts/full-report.png \
   --full-page
@@ -93,12 +93,12 @@ Output: `artifacts/full-report.png` (1920x[variable], full scrollable height)
 **Different Image Formats:**
 ```bash
 # JPEG output (format detected from extension)
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot.jpg
 
 # Explicit format parameter (overrides extension)
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot.img \
   --format png
@@ -157,7 +157,7 @@ Format is determined in this priority order:
 
 ## Success Criteria
 
-- [x] Standalone .NET 10 console application created in `tools/Oocx.TfPlan2Md.ScreenshotGenerator/`
+- [x] Standalone .NET 10 console application created in `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`
 - [x] Playwright for .NET integrated for Chromium automation
 - [x] Unit test project created for the screenshot generator
 - [x] CLI accepts all specified options and validates inputs correctly
@@ -257,14 +257,14 @@ The screenshot generator is designed to work seamlessly with the HTML renderer f
 **Typical Workflow:**
 ```bash
 # Step 1: Convert markdown to HTML
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html \
   --output artifacts/comprehensive-demo.github.html
 
 # Step 2: Generate screenshot from HTML
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/comprehensive-demo.github.png \
   --full-page
@@ -274,10 +274,10 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 ```bash
 #!/bin/bash
 # Generate GitHub-flavored HTML and screenshot
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
-  -i "$1" -f github -t tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html -o "${1%.md}.github.html"
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+  -i "$1" -f github -t src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html -o "${1%.md}.github.html"
 
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   -i "${1%.md}.github.html" -o "${1%.md}.github.png" --full-page
 ```
 
@@ -321,12 +321,12 @@ jobs:
       - name: Generate HTML and Screenshots
         run: |
           # Generate HTML
-          dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+          dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
             -i artifacts/comprehensive-demo.md -f github \
-            -t tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html
+            -t src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html
           
           # Generate screenshot
-          dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+          dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
             -i artifacts/comprehensive-demo.github.html --full-page
       
       - name: Upload Screenshots

@@ -7,21 +7,21 @@ Verify that the `Oocx.TfPlan2Md.HtmlRenderer` tool generates HTML that accuratel
 **Artifact to use:** `artifacts/comprehensive-demo.md`
 
 **Creation Instructions:**
-1. Build the tool: `dotnet build tools/Oocx.TfPlan2Md.HtmlRenderer`
+1. Build the tool: `dotnet build src/tools/Oocx.TfPlan2Md.HtmlRenderer`
 2. Generate GitHub version:
    ```bash
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+   dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
      --input artifacts/comprehensive-demo.md \
      --flavor github \
-     --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html \
+     --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html \
      --output artifacts/uat-027-github.html
    ```
 3. Generate Azure DevOps version:
    ```bash
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+   dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
      --input artifacts/comprehensive-demo.md \
      --flavor azdo \
-     --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+     --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
      --output artifacts/uat-027-azdo.html
    ```
 

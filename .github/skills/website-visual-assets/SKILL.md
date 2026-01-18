@@ -10,8 +10,8 @@ Provide a repeatable workflow to generate HTML exports and screenshots for the w
 
 ## Hard Rules
 ### Must
-- [ ] Use `tools/Oocx.TfPlan2Md.HtmlRenderer` to generate HTML from markdown reports.
-- [ ] Use `tools/Oocx.TfPlan2Md.ScreenshotGenerator` (Playwright) to generate screenshots from those HTML exports.
+- [ ] Use `src/tools/Oocx.TfPlan2Md.HtmlRenderer` to generate HTML from markdown reports.
+- [ ] Use `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator` (Playwright) to generate screenshots from those HTML exports.
 - [ ] Store website screenshots under `website/assets/screenshots/`.
 - [ ] Add/update an entry in `website/_memory/screenshots.md` for every screenshot used by the website.
 
@@ -22,19 +22,19 @@ Provide a repeatable workflow to generate HTML exports and screenshots for the w
 
 ```bash
 # 1) Generate HTML (GitHub flavor)
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github
 
 # 2) Generate HTML (Azure DevOps flavor, wrapped)
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
   --output artifacts/comprehensive-demo.azdo.html
 
 # 3) Capture a screenshot
-DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/full-report-azdo.png \
   --full-page
@@ -42,8 +42,8 @@ DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet run --project tools/Oocx.TfPlan2M
 
 ## Actions
 1. Pick the markdown report under `artifacts/` to use as the source.
-2. Generate the required HTML exports with `tools/Oocx.TfPlan2Md.HtmlRenderer`.
-3. Generate screenshots from the exported HTML with `tools/Oocx.TfPlan2Md.ScreenshotGenerator`.
+2. Generate the required HTML exports with `src/tools/Oocx.TfPlan2Md.HtmlRenderer`.
+3. Generate screenshots from the exported HTML with `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator`.
 4. Add/update `website/_memory/screenshots.md` with:
    - Screenshot file name
    - Exact commands used

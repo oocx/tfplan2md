@@ -192,7 +192,7 @@ scripts/git-log.sh --oneline --since="1 week ago" -- <relevant-path>
 dotnet build --no-restore
 
 # Run tests
-scripts/test-with-timeout.sh -- dotnet test --verbosity normal
+scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --verbosity normal
 
 # Check for problems in workspace
 # Use the 'problems' tool to see diagnostics

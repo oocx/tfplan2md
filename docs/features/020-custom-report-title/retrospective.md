@@ -226,7 +226,7 @@ This adaptive approach demonstrates the strength of unified agent mode with inte
 | Issue | Proposed Solution | Action Item |
 |-------|-------------------|-------------|
 | **Release pipeline duplication** | Update `release.yml` to handle tag triggers correctly (GitHub Pro behavior) and remove manual trigger instruction from Release Manager if tags are sufficient. | Update `release.yml` and RM instructions |
-| **Versionize major release** | Investigate and fix Versionize configuration or `Directory.Build.props` to enforce correct versioning strategy (prevent unintended major bumps). | Fix Versionize config |
+| **Versionize major release** | Investigate and fix Versionize configuration or `src/Directory.Build.props` to enforce correct versioning strategy (prevent unintended major bumps). | Fix Versionize config |
 | **Agent instruction errors** | Fix folder paths in Quality Engineer instructions and clarify PR creation boundaries in Code Reviewer instructions. | Update QE and CR agent definitions |
 | **Release Manager polling** | Update Release Manager instructions to use `gh run watch` (blocking) instead of polling loops to prevent chat flooding. | Update RM instructions |
 | **UAT stability & reporting** | Update UAT Tester instructions to: 1) Update report after *every* run, 2) Validate artifacts before running. Investigate GPT-5.2 performance issues. | Update UAT agent instructions |

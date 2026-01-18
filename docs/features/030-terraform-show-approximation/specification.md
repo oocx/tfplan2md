@@ -44,7 +44,7 @@ Create a standalone development tool that generates output approximating `terraf
 - Known-after-apply indicators for computed values
 
 **Tool Structure**:
-- Standalone .NET tool project at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
+- Standalone .NET tool project at `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
 - CLI interface consistent with other project tools (HtmlRenderer, ScreenshotGenerator)
 - Input: JSON plan file path
 - Output: Text file or stdout with ANSI codes
@@ -75,23 +75,23 @@ The tool follows the same CLI patterns as existing project tools:
 
 ```bash
 # Basic usage with output file
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
   --input examples/comprehensive-demo/plan.json \
   --output examples/comprehensive-demo/plan-show.txt
 
 # Output to stdout (for piping or inspection)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
   --input examples/comprehensive-demo/plan.json
 
 # With short option names
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
   -i plan.json -o plan-show.txt
 
 # Show help
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- --help
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- --help
 
 # Show version
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- --version
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- --version
 ```
 
 ### CLI Options
@@ -146,7 +146,7 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 The feature is complete when:
 
-- [ ] Tool project created at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
+- [ ] Tool project created at `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/`
 - [ ] CLI accepts `--input`, `--output`, `--no-color`, `--help`, `--version` options
 - [ ] Tool reads Terraform JSON plan files (format version 1.2+)
 - [ ] Output approximates `terraform show` format with high fidelity (pixel-perfect or close-enough based on implementation feasibility)

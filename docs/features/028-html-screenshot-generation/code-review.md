@@ -68,8 +68,8 @@ The developer successfully addressed all issues from the previous review:
 **Previous Issue:** Implementation files were untracked and not committed.
 
 **Resolution:** All implementation files were properly committed in commit `f393dd2`:
-- `tools/Oocx.TfPlan2Md.ScreenshotGenerator/` - Complete tool project with 11 source files
-- `tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/` - Complete test project with 6 test classes
+- `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/` - Complete tool project with 11 source files
+- `src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/` - Complete test project with 6 test classes
 - UAT artifacts committed: `artifacts/comprehensive-demo*.png` and `*.html` files
 - Documentation updates: README.md, features.md, and all feature docs
 
@@ -119,10 +119,10 @@ The implementation demonstrates excellent code quality:
 - **Naming conventions:** Uses `_camelCase` for private fields consistently
 
 Key implementation files reviewed:
-- [Program.cs](../../../tools/Oocx.TfPlan2Md.ScreenshotGenerator/Program.cs) - Entry point (21 lines)
-- [ScreenshotGeneratorApp.cs](../../../tools/Oocx.TfPlan2Md.ScreenshotGenerator/ScreenshotGeneratorApp.cs) - Orchestration (93 lines)
-- [HtmlScreenshotCapturer.cs](../../../tools/Oocx.TfPlan2Md.ScreenshotGenerator/Capturing/HtmlScreenshotCapturer.cs) - Core capture (102 lines)
-- [CliParser.cs](../../../tools/Oocx.TfPlan2Md.ScreenshotGenerator/CLI/CliParser.cs) - CLI parsing (163 lines)
+- [Program.cs](../../../src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/Program.cs) - Entry point (21 lines)
+- [ScreenshotGeneratorApp.cs](../../../src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/ScreenshotGeneratorApp.cs) - Orchestration (93 lines)
+- [HtmlScreenshotCapturer.cs](../../../src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/Capturing/HtmlScreenshotCapturer.cs) - Core capture (102 lines)
+- [CliParser.cs](../../../src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/CLI/CliParser.cs) - CLI parsing (163 lines)
 
 ### Code Documentation ✅
 
@@ -148,7 +148,7 @@ The implementation correctly uses restrictive access modifiers:
 - `Program` class: `public static` (entry point requirement)
 - All other types: `internal sealed` (appropriate for tool project)
 - Members within internal types: `public` (appropriate for internal API)
-- Test access: Uses `InternalsVisibleTo` attribute in [AssemblyInfo.cs](../../../tools/Oocx.TfPlan2Md.ScreenshotGenerator/Properties/AssemblyInfo.cs)
+- Test access: Uses `InternalsVisibleTo` attribute in [AssemblyInfo.cs](../../../src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/Properties/AssemblyInfo.cs)
 
 This follows the guideline to use the most restrictive access modifier while allowing proper testing.
 
@@ -156,7 +156,7 @@ This follows the guideline to use the most restrictive access modifier while all
 
 The implementation follows [architecture.md](architecture.md) precisely:
 
-- **Project structure:** Separate tool and test projects under `tools/` and `tests/`
+- **Project structure:** Separate tool and test projects under `src/tools/` and `src/tests/`
 - **CLI pattern:** Mirrors the HtmlRenderer approach with `CliParser`, `CliOptions`, `CliValidator`
 - **Component organization:** Clean separation into `CLI/`, `Capturing/`, and orchestration layers
 - **Playwright integration:** Uses Chromium with proper error handling and installation hints
@@ -175,11 +175,11 @@ Comprehensive test coverage with 24 tests in 6 test classes:
 - **Skippable tests:** Correctly uses `[SkippableFact]` for Playwright-dependent tests
 
 Test files reviewed:
-- [CliParserTests.cs](../../../tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/CliParserTests.cs) - 8 tests
-- [CliValidationTests.cs](../../../tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/CliValidationTests.cs) - 3 tests
-- [AppOrchestrationTests.cs](../../../tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/AppOrchestrationTests.cs) - 3 tests
-- [CaptureIntegrationTests.cs](../../../tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/CaptureIntegrationTests.cs) - 7 tests
-- [HelpTextProviderTests.cs](../../../tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/HelpTextProviderTests.cs) - 3 tests
+- [CliParserTests.cs](../../../src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/CliParserTests.cs) - 8 tests
+- [CliValidationTests.cs](../../../src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/CliValidationTests.cs) - 3 tests
+- [AppOrchestrationTests.cs](../../../src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/AppOrchestrationTests.cs) - 3 tests
+- [CaptureIntegrationTests.cs](../../../src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/CaptureIntegrationTests.cs) - 7 tests
+- [HelpTextProviderTests.cs](../../../src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/HelpTextProviderTests.cs) - 3 tests
 
 All tests pass consistently.
 

@@ -80,10 +80,10 @@ All templates:
 - Are under 100 lines as required
 
 **Test Updates:**
-- [MarkdownRendererTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs): Updated ResourceSection() helper to use regex patterns instead of anchor comments
-- [RoleAssignmentTemplateTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/RoleAssignmentTemplateTests.cs): Updated ExtractSection() to use pattern matching
-- [ComprehensiveDemoTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/ComprehensiveDemoTests.cs): Updated blank line verification
-- [DockerIntegrationTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/DockerIntegrationTests.cs): Updated resource assertions
+- [MarkdownRendererTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs): Updated ResourceSection() helper to use regex patterns instead of anchor comments
+- [RoleAssignmentTemplateTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/RoleAssignmentTemplateTests.cs): Updated ExtractSection() to use pattern matching
+- [ComprehensiveDemoTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/ComprehensiveDemoTests.cs): Updated blank line verification
+- [DockerIntegrationTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/DockerIntegrationTests.cs): Updated resource assertions
 - **Deleted** MarkdownRendererAnchorTests.cs: Tests for removed functionality (correct decision)
 
 #### ✅ Access Modifiers

@@ -10,7 +10,7 @@ This test plan defines the testing strategy for the custom Scriban template for 
 
 **Testing Framework:** TUnit 1.9.26
 
-**Test Location:** `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/`
+**Test Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/`
 
 ## Test Coverage Matrix
 
@@ -1433,7 +1433,7 @@ New test file: `azapi-deep-nested-large-plan.json`
 
 ## Test Data Requirements
 
-The following new test data files need to be created in `tests/Oocx.TfPlan2Md.TUnit/TestData/`:
+The following new test data files need to be created in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/`:
 
 1. **`azapi-create-plan.json`** - Simple azapi_resource create with basic body configuration
 2. **`azapi-update-plan.json`** - azapi_resource update with 2-3 changed body properties
@@ -1532,7 +1532,7 @@ Each test data file should follow the structure of existing test files (Terrafor
 Run all unit tests for Scriban helpers:
 
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/ScribanHelpersAzApiTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/ScribanHelpersAzApiTests/*
 ```
 
 ### Integration Tests
@@ -1540,7 +1540,7 @@ scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit
 Run all integration tests for azapi_resource template:
 
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/AzapiResourceTemplateTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/AzapiResourceTemplateTests/*
 ```
 
 ### Snapshot Tests
@@ -1548,7 +1548,7 @@ scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit
 Run snapshot tests to verify markdown output matches baseline:
 
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownSnapshotTests/Snapshot_AzapiResource*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownSnapshotTests/Snapshot_AzapiResource*
 ```
 
 ### Markdown Validation
@@ -1556,7 +1556,7 @@ scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit
 Run markdownlint validation on all azapi test outputs:
 
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownLintIntegrationTests/Lint_AzapiPlans*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownLintIntegrationTests/Lint_AzapiPlans*
 ```
 
 ### Full Test Suite
@@ -1564,7 +1564,7 @@ scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit
 Run all tests:
 
 ```bash
-scripts/test-with-timeout.sh -- dotnet test
+scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
 ```
 
 ## Open Questions

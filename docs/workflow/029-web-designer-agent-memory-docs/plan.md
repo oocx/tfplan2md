@@ -18,8 +18,8 @@
 - Website content currently lives in: `website/` (today it contains `style.css` and `features/index.html`).
 - Web Designer agent exists in: `.github/agents/web-designer.agent.md`.
 - Dev tools exist and have documented CLI usage:
-  - HTML renderer: `dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- ...` (supports `--flavor github|azdo`).
-  - Screenshot generator: `dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- ...` (captures from the HTML output; supports targets).
+  - HTML renderer: `dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- ...` (supports `--flavor github|azdo`).
+  - Screenshot generator: `dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- ...` (captures from the HTML output; supports targets).
 
 ## Design goals for the change
 
@@ -116,7 +116,7 @@ Recommended conventions:
 
 2) Chrome DevTools-based troubleshooting / rendering analysis
 
-- Skill: `.github/skills/website-devtools/`
+- Skill: `.github/skills/website-devsrc/tools/`
 
 3) Website quality checks (local verification workflow)
 
@@ -250,12 +250,12 @@ Add instructions that the agent must:
 
 Add instructions that the agent must:
 
-- Be configured with the Chrome DevTools MCP tool set: `io.github.chromedevtools/chrome-devtools-mcp/*`.
+- Be configured with the Chrome DevTools MCP tool set: `io.github.chromedevsrc/tools/chrome-devtools-mcp/*`.
 - Use the Chrome DevTools tools while working on the website to:
   - Analyze how pages render (DOM/CSS/layout) and confirm expected behavior.
   - Troubleshoot issues together with the Maintainer (e.g., reproduce and inspect a rendering issue).
 
-Note: This plan does not enumerate specific DevTools MCP commands/APIs; the agent should use whatever capabilities are available via `io.github.chromedevtools/chrome-devtools-mcp/*` in the current environment.
+Note: This plan does not enumerate specific DevTools MCP commands/APIs; the agent should use whatever capabilities are available via `io.github.chromedevsrc/tools/chrome-devtools-mcp/*` in the current environment.
 
 Update to incorporate skills:
 
@@ -268,7 +268,7 @@ Update to incorporate skills:
 
 HTML export (GitHub):
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github
 # Output: artifacts/comprehensive-demo.github.html
@@ -276,10 +276,10 @@ dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
 
 HTML export (Azure DevOps wrapper):
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
   --output artifacts/comprehensive-demo.azdo.html
 ```
 
@@ -287,7 +287,7 @@ Screenshot generation examples:
 
 - Full page:
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/full-report-azdo.png \
   --full-page
@@ -295,7 +295,7 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 
 - Target specific Terraform resource:
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/firewall-resource-azdo.png \
   --target-terraform-resource-id "azurerm_firewall.example"
@@ -303,7 +303,7 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 
 - Target selector:
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/firewall-details-azdo.png \
   --target-selector "details:has(summary:has-text('azurerm_firewall'))"
@@ -335,7 +335,7 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 
 4. Add new skills
   - Create `.github/skills/website-visual-assets/`.
-  - Create `.github/skills/website-devtools/`.
+  - Create `.github/skills/website-devsrc/tools/`.
   - Create `.github/skills/website-quality-check/`.
   - Reference these skills from the Web Designer agent instructions.
 
@@ -367,4 +367,4 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 - Code examples inventory document with generation instructions.
 - Web Designer agent explicitly reads these docs and updates them when decisions change.
 - Screenshot inventory requires exact, reproducible commands using the existing HTML renderer + screenshot generator tools.
-- Web Designer agent is configured to use `io.github.chromedevtools/chrome-devtools-mcp/*` and uses it during website work for inspection/troubleshooting.
+- Web Designer agent is configured to use `io.github.chromedevsrc/tools/chrome-devtools-mcp/*` and uses it during website work for inspection/troubleshooting.

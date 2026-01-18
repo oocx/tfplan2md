@@ -72,7 +72,7 @@ Implement the `VariableGroupViewModelFactory` class using Test-Driven Developmen
 
 **Acceptance Criteria:**
 - [ ] File created: `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/VariableGroupViewModelFactory.cs`
-- [ ] Test file created: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupViewModelFactoryTests.cs`
+- [ ] Test file created: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupViewModelFactoryTests.cs`
 - [ ] Factory class is `internal static` with static `Build()` method:
   - Signature: `public static VariableGroupViewModel Build(ResourceChange change, string providerName, LargeValueFormat largeValueFormat)`
 - [ ] Factory extracts variable group name and description from before/after JSON
@@ -228,7 +228,7 @@ Create the Scriban template that renders variable group changes using the precom
 Write tests that validate the template rendering with mock ViewModels. These tests verify the template structure, table layouts, and proper handling of different operations.
 
 **Acceptance Criteria:**
-- [x] Test file created or updated: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupTemplateTests.cs`
+- [x] Test file created or updated: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupTemplateTests.cs`
 - [x] Template tests implemented covering test cases from test-plan.md:
   - TC-14: Template renders create operation layout (no Change column)
   - TC-15: Template renders update operation layout with change indicators
@@ -288,7 +288,7 @@ Validate the complete feature using actual Azure DevOps Terraform plan data from
 **Notes:**
 - If `examples/azuredevops/terraform_plan2.json` doesn't have suitable variable group data, examine the file and either:
   - Use existing data if sufficient
-  - Create a test fixture in `tests/Oocx.TfPlan2Md.TUnit/TestData/`
+  - Create a test fixture in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/`
 - Integration tests may take longer - that's acceptable
 - Consider running markdown lint validation programmatically if feasible
 
@@ -303,7 +303,7 @@ Create dedicated test data fixtures for edge cases and specific scenarios not co
 
 **Acceptance Criteria:**
 - [ ] Evaluate existing test data in `examples/azuredevops/terraform_plan2.json`
-- [ ] If needed, create test fixtures in `tests/Oocx.TfPlan2Md.TUnit/TestData/`:
+- [ ] If needed, create test fixtures in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/`:
   - `variable-group-create.json` - create operation with mixed variables
   - `variable-group-update-mixed.json` - update with added/modified/removed/unchanged
   - `variable-group-delete.json` - delete operation
@@ -353,22 +353,22 @@ Recommended sequence for test-first development:
 
 Run all variable group tests:
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/VariableGroup*/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/VariableGroup*/*
 ```
 
 Run factory unit tests only:
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/VariableGroupViewModelFactoryTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/VariableGroupViewModelFactoryTests/*
 ```
 
 Run template tests only:
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/VariableGroupTemplateTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/VariableGroupTemplateTests/*
 ```
 
 Run full test suite:
 ```bash
-scripts/test-with-timeout.sh -- dotnet test
+scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
 ```
 
 ## Open Questions
@@ -412,7 +412,7 @@ This feature is complete when:
 - Existing ViewModel pattern: `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/NetworkSecurityGroupViewModel*.cs`
 - Existing template: `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn`
 - Report Style Guide: `docs/report-style-guide.md`
-- Test framework patterns: Look at existing tests in `tests/Oocx.TfPlan2Md.TUnit/`
+- Test framework patterns: Look at existing tests in `src/tests/Oocx.TfPlan2Md.TUnit/`
 
 ### Key Implementation Details
 

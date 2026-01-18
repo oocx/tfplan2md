@@ -24,7 +24,7 @@ Read [](file:///home/mathias/git/tfplan2md/docs/features)
 
 Read [](file:///home/mathias/git/tfplan2md/docs/features/011-role-assignment-readable-display/specification.md#1-1), lines 1 to 150
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/role-assignments.md#1-1), lines 1 to 100
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/role-assignments.md#1-1), lines 1 to 100
 
 Let me look at the Azure scope parser implementation and understand how resource IDs are formatted: 
 
@@ -196,13 +196,13 @@ Made changes.
 
 User: Review the architecture decisions above and define the test plan.
 
-GitHub Copilot: Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/Azure)
+GitHub Copilot: Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/Azure)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs#1-1), lines 1 to 100
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs#1-1), lines 1 to 100
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersLargeValueTests.cs#1-1), lines 1 to 100
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersLargeValueTests.cs#1-1), lines 1 to 100
 
 Created [](file:///home/mathias/git/tfplan2md/docs/features/019-azure-resource-id-formatting/test-plan.md)
 
@@ -328,7 +328,7 @@ Using "Apply Patch"
 ```
 
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersTests.cs#1-1), lines 1 to 200
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersTests.cs#1-1), lines 1 to 200
 
 Using "Apply Patch"
 
@@ -346,13 +346,13 @@ Using "Apply Patch"
 ```
 
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 120
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 120
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/minimal-plan.json)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/minimal-plan.json)
 
-Created [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/azure-resource-ids.json)
+Created [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/azure-resource-ids.json)
 
 Using "Apply Patch"
 
@@ -464,7 +464,7 @@ Searched for text `format_value` (`**/src/Oocx.TfPlan2Md/MarkdownGeneration/Temp
 
 294/296 tests passed (99.3%, 63 skipped)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 140
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 140
 
 Searched for text `class ResourceChangeModel` (`**/src/Oocx.TfPlan2Md/**/*.cs`), 1 result
 
@@ -591,7 +591,7 @@ Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration
 
 Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration/Summaries/ResourceSummaryBuilder.cs#80-80), lines 80 to 260
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#30-30), lines 30 to 90
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#30-30), lines 30 to 90
 
 - Added Azure ID detection helper so we can safely recognize Azure scopes anywhere we see a string ID AzureScopeParser.cs.
 - Updated Scriban helpers to exempt azurerm IDs from large-value handling and to render them as readable scopes; other providers still get backticked values ScribanHelpers.cs. Templates now call the provider-aware helpers, and the role assignment template’s internal formatter was renamed to avoid collisions.
@@ -801,13 +801,13 @@ Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration
 
 Updated todo list
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 320
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 320
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersLargeValueTests.cs)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersLargeValueTests.cs)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersTests.cs#1-1), lines 1 to 260
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersTests.cs#1-1), lines 1 to 260
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/azure-resource-ids.json)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/azure-resource-ids.json)
 
 Completed: *Verify model/template use precomputed is_large flag only* (1/3)
 
@@ -853,11 +853,11 @@ Using "Apply Patch"
 
 Searched for files matching `**/role-assignments*.json`, 1 match
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json)
 
 Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/role_assignment.sbn#1-1), lines 1 to 80
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/role-assignments.md)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/role-assignments.md)
 
 Searched for text `IsAzureResourceId` (`**/src/Oocx.TfPlan2Md/Azure/AzureScopeParser.cs`), 1 result
 
@@ -908,7 +908,7 @@ User: @agent Continue: "Continue to iterate?"
 
 GitHub Copilot: Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/role_assignment.sbn)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererRoleAssignmentTests.cs)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererRoleAssignmentTests.cs)
 
 Using "Apply Patch"
 
@@ -934,11 +934,11 @@ Made changes.
 
 User: I removed access to the runTests tool, as it was hanging multiple times
 
-GitHub Copilot: Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererRoleAssignmentTests.cs)
+GitHub Copilot: Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererRoleAssignmentTests.cs)
 
 Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/role_assignment.sbn)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json)
 
 Searched for files matching `**/azure*.sbn`, no matches
 
@@ -1034,7 +1034,7 @@ Ran terminal command: cd /home/mathias/git/tfplan2md && dotnet test --filter "Fu
 
 Good progress! The template is now working correctly (Scriban accepted `array.contains`). Only 1 failed - the snapshot doesn't exist. Let me copy the generated snapshot to source and run again: 
 
-Ran terminal command: cd /home/mathias/git/tfplan2md && cp tests/Oocx.TfPlan2Md.Tests/bin/Debug/net10.0/TestData/Snapshots/role-assignments.md tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/ && cat tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/role-assignments.md | head -80
+Ran terminal command: cd /home/mathias/git/tfplan2md && cp src/tests/Oocx.TfPlan2Md.Tests/bin/Debug/net10.0/TestData/Snapshots/role-assignments.md src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/ && cat src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/role-assignments.md | head -80
 
 Made changes.
 
@@ -1048,9 +1048,9 @@ Ran terminal command: cd /home/mathias/git/tfplan2md && dotnet test 2>&1 | tail 
 
 All 307 tests pass. Let me review the snapshot changes: 
 
-Ran terminal command: cd /home/mathias/git/tfplan2md && git diff --stat tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
+Ran terminal command: cd /home/mathias/git/tfplan2md && git diff --stat src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
 
-Ran terminal command: cd /home/mathias/git/tfplan2md && git diff tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
+Ran terminal command: cd /home/mathias/git/tfplan2md && git diff src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
 
 The changes look good! The snapshots now reflect:
 
@@ -1585,7 +1585,7 @@ Ran terminal command: cd /home/mathias/git/tfplan2md && nl -ba src/Oocx.TfPlan2M
 Ran terminal command: cd /home/mathias/git/tfplan2md && nl -ba src/Oocx.TfPlan2Md/Azure/AzureScopeParser.cs | sed -n '40,140p'
 
 - Azure resource IDs now render as inline code (no bold) via provider-aware formatting: ScribanHelpers.cs and plain-text scope strings (no emphasis) in the parser: AzureScopeParser.cs.
-- Regenerated demo artifacts and updated snapshots to reflect the code-styled Azure scopes (artifact files under artifacts/ and snapshots under tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/).
+- Regenerated demo artifacts and updated snapshots to reflect the code-styled Azure scopes (artifact files under artifacts/ and snapshots under src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/).
 
 Tests
 - update-test-snapshots.sh (passes after regenerating snapshots).
@@ -1845,11 +1845,11 @@ Ran terminal command: cd /home/mathias/git/tfplan2md && dotnet test
 
 Summarized conversation history
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/Azure/AzureScopeParserTests.cs)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersTests.cs#150-150), lines 150 to 260
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersTests.cs#150-150), lines 150 to 260
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 120
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#1-1), lines 1 to 120
 
 Using "Apply Patch"
 
@@ -1982,9 +1982,9 @@ Searched for files matching `**/src/Oocx.TfPlan2Md/MarkdownGeneration/ReportMode
 
 Read [](file:///home/mathias/git/tfplan2md/src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs#260-260), lines 260 to 395
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersLargeValueTests.cs)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ScribanHelpersLargeValueTests.cs)
 
-Read [](file:///home/mathias/git/tfplan2md/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererRoleAssignmentTests.cs)
+Read [](file:///home/mathias/git/tfplan2md/src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererRoleAssignmentTests.cs)
 
 Read [](file:///home/mathias/git/tfplan2md/scripts/uat-helpers.sh)
 

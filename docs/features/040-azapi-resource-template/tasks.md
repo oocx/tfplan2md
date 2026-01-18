@@ -17,7 +17,7 @@ This feature implements a custom Scriban template for `azapi_resource` resources
 **Priority:** High
 
 **Description:**
-Create 18 JSON test plan files in `tests/Oocx.TfPlan2Md.TUnit/TestData/` to support integration and snapshot tests. These files represent various scenarios for azapi_resource operations (create, update, delete, replace) with different complexity levels (simple, nested, large values, sensitive values).
+Create 18 JSON test plan files in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/` to support integration and snapshot tests. These files represent various scenarios for azapi_resource operations (create, update, delete, replace) with different complexity levels (simple, nested, large values, sensitive values).
 
 **Acceptance Criteria:**
 - [ ] All 18 test plan JSON files created in correct format (Terraform plan JSON structure)
@@ -294,7 +294,7 @@ Create the Scriban template file `src/Oocx.TfPlan2Md/MarkdownGeneration/Template
 Create unit tests for the `FlattenJson` Scriban helper covering all specified test cases from the test plan.
 
 **Acceptance Criteria:**
-- [ ] Test class created: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersAzApiTests.cs`
+- [ ] Test class created: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersAzApiTests.cs`
 - [ ] Test methods follow TUnit conventions and project patterns
 - [ ] All test cases implemented: TC-05, TC-06, TC-07, TC-08, TC-09, TC-30
 - [ ] Tests verify correct dot-notation path generation
@@ -411,7 +411,7 @@ Create unit tests for the `ExtractAzapiMetadata` Scriban helper covering all spe
 Create integration tests that verify end-to-end rendering of azapi_resource resources using the new template. These tests load test plan JSON files, build report models, render to markdown, and validate output.
 
 **Acceptance Criteria:**
-- [ ] Test class created: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzapiResourceTemplateTests.cs`
+- [ ] Test class created: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzapiResourceTemplateTests.cs`
 - [ ] Integration tests for all operation types: TC-24, TC-25, TC-26, TC-27
 - [ ] Tests verify complete rendering (all sections present)
 - [ ] Tests verify correct template resolution (azapi/resource.sbn)
@@ -443,9 +443,9 @@ Create integration tests that verify end-to-end rendering of azapi_resource reso
 Create snapshot tests that compare generated markdown output against baseline snapshots. This ensures markdown output remains consistent and any changes are intentional.
 
 **Acceptance Criteria:**
-- [ ] Snapshot test class created or extended: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownSnapshotTests.cs`
+- [ ] Snapshot test class created or extended: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownSnapshotTests.cs`
 - [ ] Snapshot tests for all 18 test plan files
-- [ ] Snapshot files stored in `tests/Oocx.TfPlan2Md.TUnit/Snapshots/` (or appropriate location)
+- [ ] Snapshot files stored in `src/tests/Oocx.TfPlan2Md.TUnit/Snapshots/` (or appropriate location)
 - [ ] Tests verify complete markdown output matches snapshot
 - [ ] Snapshots cover create, update, delete, replace operations
 - [ ] Snapshots cover simple, complex, large, sensitive scenarios
@@ -473,7 +473,7 @@ Create snapshot tests that compare generated markdown output against baseline sn
 Create tests that validate generated markdown output passes markdownlint validation with project rules. This ensures all generated markdown is compliant and renders correctly.
 
 **Acceptance Criteria:**
-- [ ] Test class created or extended: `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintIntegrationTests.cs`
+- [ ] Test class created or extended: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownLintIntegrationTests.cs`
 - [ ] Tests validate markdown for all azapi test scenarios (TC-23)
 - [ ] Tests use project's `.markdownlint.json` configuration
 - [ ] Tests verify no linting errors (MD012, table formatting, heading spacing, etc.)

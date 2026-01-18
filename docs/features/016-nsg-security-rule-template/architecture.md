@@ -54,14 +54,14 @@ This template applies to the `azurerm_network_security_group` resource. Rules de
 
 ### New Files
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/azurerm/network_security_group.sbn` - NSG rule template
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs` - Unit tests
-- `tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` - Test data
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs` - Unit tests
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` - Test data
 
 ### Modified Files
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/TemplateIsolationTests.cs` - Added NSG template validation
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/TemplateIsolationTests.cs` - Added NSG template validation
 - `docs/features.md` - Updated with NSG template documentation
 - `docs/features/001-resource-specific-templates/specification.md` - Added NSG template example
-- `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md` - Updated snapshot
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md` - Updated snapshot
 - `artifacts/comprehensive-demo.md` - Regenerated with NSG template rendering
 
 ## Implementation Details

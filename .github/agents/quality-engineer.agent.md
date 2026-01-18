@@ -37,7 +37,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/NNN-<feature-slug>/uat-test-plan.md`
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
-- Verify tests can run via `scripts/test-with-timeout.sh -- dotnet test` without human intervention
+- Verify tests can run via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` without human intervention
 - Consider edge cases, error conditions, and boundary values
 - Create test plan markdown file at `docs/features/NNN-<feature-slug>/test-plan.md`
 - Create UAT test plan (if needed) at `docs/features/NNN-<feature-slug>/uat-test-plan.md`
@@ -86,17 +86,17 @@ Before starting, familiarize yourself with:
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Project testing conventions and infrastructure
 - [docs/agents.md](../../docs/agents.md) - Workflow overview and artifact formats
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
-- Existing tests in `tests/` to understand patterns and conventions
+- Existing tests in `src/tests/` to understand patterns and conventions
 
 ## Project Testing Conventions
 
 This project uses:
 - **Framework**: xUnit
 - **Assertions**: AwesomeAssertions (fluent-style)
-- **Test Data**: JSON files in `tests/Oocx.TfPlan2Md.Tests/TestData/`
+- **Test Data**: JSON files in `src/tests/Oocx.TfPlan2Md.Tests/TestData/`
 - **Docker Integration Tests**: For end-to-end CLI testing
 
-**Important constraint:** All tests must be fully automated. No manual testing steps are acceptable. Every test case must be executable via `dotnet test` without human intervention (typically executed via `scripts/test-with-timeout.sh -- dotnet test` to prevent hangs). If a custom timeout is required, add `--timeout-seconds <seconds>`.
+**Important constraint:** All tests must be fully automated. No manual testing steps are acceptable. Every test case must be executable via `dotnet test` without human intervention (typically executed via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` to prevent hangs). If a custom timeout is required, add `--timeout-seconds <seconds>`.
 
 Follow the existing test naming convention: `MethodName_Scenario_ExpectedResult`
 

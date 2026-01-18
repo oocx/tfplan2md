@@ -9,8 +9,8 @@ The tfplan2md project uses a comprehensive testing strategy with **TUnit v1.9.26
 ## Test Infrastructure
 
 - **Test Framework**: TUnit 1.9.26 (async-first with real-time progress reporting)
-- **Test Location**: `tests/Oocx.TfPlan2Md.TUnit/`
-- **Test Execution**: `dotnet test tests/Oocx.TfPlan2Md.TUnit/` or use `scripts/test-with-timeout.sh`
+- **Test Location**: `src/tests/Oocx.TfPlan2Md.TUnit/`
+- **Test Execution**: `dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/` or use `scripts/test-with-timeout.sh`
 
 ### TUnit CLI Syntax
 
@@ -19,19 +19,19 @@ TUnit uses different CLI arguments compared to traditional test frameworks. All 
 #### Filtering Tests
 ```bash
 # Filter by class name (hierarchical pattern)
-dotnet test -- --treenode-filter /*/*/LoginTests/*
+dotnet test --treenode-filter /*/*/LoginTests/*
 
 # Filter by test name
-dotnet test -- --treenode-filter /*/*/*/AcceptCookiesTest
+dotnet test --treenode-filter /*/*/*/AcceptCookiesTest
 
 # Filter by property/category
-dotnet test -- --treenode-filter /**[Category=Unit]
+dotnet test --treenode-filter /**[Category=Unit]
 
 # Exclude by category
-dotnet test -- --treenode-filter /**[Category!=Integration]
+dotnet test --treenode-filter /**[Category!=Integration]
 
 # Multiple conditions (AND)
-dotnet test -- --treenode-filter /**[Category=Unit]&[Priority=High]
+dotnet test --treenode-filter /**[Category=Unit]&[Priority=High]
 ```
 
 **Note**: TUnit uses `--treenode-filter` with hierarchical patterns (`/Assembly/Namespace/ClassName/TestName`), unlike traditional test frameworks.
@@ -39,41 +39,41 @@ dotnet test -- --treenode-filter /**[Category=Unit]&[Priority=High]
 #### Output Control
 ```bash
 # Normal output (only failures shown, buffered)
-dotnet test -- --output Normal
+dotnet test --output Normal
 
 # Detailed output (all tests shown, real-time)
-dotnet test -- --output Detailed
+dotnet test --output Detailed
 
 # Disable progress reporting
-dotnet test -- --no-progress
+dotnet test --no-progress
 
 # Disable ANSI colors
-dotnet test -- --no-ansi
+dotnet test --no-ansi
 ```
 
 #### Log Levels
 ```bash
 # Set log level for diagnostics
-dotnet test -- --log-level Trace      # Maximum detail
-dotnet test -- --log-level Debug      # Debug information
-dotnet test -- --log-level Information # Default
-dotnet test -- --log-level Warning    # Warnings and errors only
-dotnet test -- --log-level Error      # Errors only
+dotnet test --log-level Trace      # Maximum detail
+dotnet test --log-level Debug      # Debug information
+dotnet test --log-level Information # Default
+dotnet test --log-level Warning    # Warnings and errors only
+dotnet test --log-level Error      # Errors only
 
 # Combine with output control
-dotnet test -- --output Detailed --log-level Debug
+dotnet test --output Detailed --log-level Debug
 ```
 
 #### Common Examples
 ```bash
 # Run all tests with detailed output
-scripts/test-with-timeout.sh -- dotnet test -- --output Detailed
+scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --output Detailed
 
 # Run specific test class (from repo root, use --project)
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownRendererTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownRendererTests/*
 
 # Run tests with category, detailed output, and debug logging
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category=Unit] --output Detailed --log-level Debug
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /**[Category=Unit] --output Detailed --log-level Debug
 ```
 
 ### Why TUnit?

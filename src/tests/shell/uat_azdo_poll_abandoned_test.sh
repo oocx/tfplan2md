@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 cd "$REPO_ROOT"
 
 # Ensure a workspace-local temp dir exists (avoid /tmp)

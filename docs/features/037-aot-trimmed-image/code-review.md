@@ -13,7 +13,7 @@ This feature successfully replaces the standard .NET runtime build with a Native
 
 ## Verification Results
 
-- **Tests:** Pass ✅ (TUnit: 393 tests in 3m 00s; MSTest projects have test runner mismatch with global.json but individual tests verified)
+- **Tests:** Pass ✅ (TUnit: 393 tests in 3m 00s; MSTest projects have test runner mismatch with src/global.json but individual tests verified)
 - **Build:** Success ✅ (Release configuration)
 - **Docker:** Builds successfully ✅ (14.7MB final image)
 - **Image Functionality:** Works correctly ✅ (verified --version, --help, stdin processing, principals mapping)
@@ -23,7 +23,7 @@ This feature successfully replaces the standard .NET runtime build with a Native
 
 ### Test Runner Note
 
-The project uses TUnit with Microsoft.Testing.Platform (configured in global.json). The TUnit test suite (tests/Oocx.TfPlan2Md.TUnit) runs successfully with 393 passing tests. The MSTest-based projects show a test runner mismatch warning but this is not a blocker as the TUnit tests provide comprehensive coverage and all pass.
+The project uses TUnit with Microsoft.Testing.Platform (configured in src/global.json). The TUnit test suite (src/tests/Oocx.TfPlan2Md.TUnit) runs successfully with 393 passing tests. The MSTest-based projects show a test runner mismatch warning but this is not a blocker as the TUnit tests provide comprehensive coverage and all pass.
 
 ## Review Decision
 

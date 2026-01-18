@@ -53,29 +53,29 @@ jobs:
 
       - name: Shell test (timeout wrapper)
         if: steps.filter.outputs.changed == 'true'
-        run: tests/shell/test_with_timeout_test.sh
+        run: src/tests/shell/test_with_timeout_test.sh
 
       - name: Shell test (analyze chat)
         if: steps.filter.outputs.changed == 'true'
-        run: tests/shell/analyze_chat_test.sh
+        run: src/tests/shell/analyze_chat_test.sh
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: src/global.json
 
       - name: Restore dependencies
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet restore
+        run: dotnet restore src/tfplan2md.slnx
 
       - name: Check formatting
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet format --verify-no-changes --verbosity diagnostic
+        run: dotnet format src/tfplan2md.slnx --verify-no-changes --verbosity diagnostic
 
       - name: Build
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build src/tfplan2md.slnx --no-restore --configuration Release
 
       - name: Prepare Docker test image
         if: steps.filter.outputs.changed == 'true'
@@ -88,7 +88,7 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())

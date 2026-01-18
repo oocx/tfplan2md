@@ -52,7 +52,7 @@ Cons:
 
 ### Option 3: Fix only the HTML renderer wrapper CSS (preview tooling)
 
-Update [tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html](tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html) to use Azure DevOps variables for `.markdown-body details { border-color: ... }`.
+Update [src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html](src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html) to use Azure DevOps variables for `.markdown-body details { border-color: ... }`.
 
 Pros:
 - Improves local preview artifacts and screenshots

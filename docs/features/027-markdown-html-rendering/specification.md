@@ -136,7 +136,7 @@ This design mirrors how tfplan2md handles the fundamental limitation: **GitHub s
 - Two default wrapper template files (one for GitHub flavor, one for Azure DevOps flavor)
 - Templates include basic HTML structure (`<html>`, `<head>`, `<body>`)
 - Templates include CSS styles approximating platform rendering
-- Templates stored alongside the renderer project (e.g., `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`)
+- Templates stored alongside the renderer project (e.g., `src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`)
 
 ### Out of Scope
 
@@ -156,14 +156,14 @@ This design mirrors how tfplan2md handles the fundamental limitation: **GitHub s
 
 **Basic Usage - HTML Fragment:**
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github
 ```
 Output: `artifacts/comprehensive-demo.github.html` (fragment)
 
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
   --output artifacts/comprehensive-demo-azdo.html
@@ -172,10 +172,10 @@ Output: `artifacts/comprehensive-demo-azdo.html` (fragment)
 
 **With Wrapper Template:**
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html \
   --output artifacts/comprehensive-demo-complete.html
 ```
 Output: `artifacts/comprehensive-demo-complete.html` (complete HTML document)
@@ -247,7 +247,7 @@ Templates use a simple placeholder syntax:
 
 ## Success Criteria
 
-- [ ] Standalone .NET 10 console application created in `tools/Oocx.TfPlan2Md.HtmlRenderer/`
+- [ ] Standalone .NET 10 console application created in `src/tools/Oocx.TfPlan2Md.HtmlRenderer/`
 - [ ] Markdig library integrated for markdown parsing
 - [ ] Unit test project created for the HTML renderer
 - [ ] CLI accepts all specified options and validates inputs correctly
@@ -257,7 +257,7 @@ Templates use a simple placeholder syntax:
   - Handles line breaks according to Azure DevOps conventions (two trailing spaces for soft breaks)
 - [ ] HTML fragment mode generates valid HTML content without document structure
 - [ ] Wrapper template mode generates complete HTML documents with fragment embedded
-- [ ] Example wrapper templates provided for both GitHub and Azure DevOps flavors in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`
+- [ ] Example wrapper templates provided for both GitHub and Azure DevOps flavors in `src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`
 - [ ] Wrapper templates include syntax highlighting via Highlight.js or Prism.js (referenced via CDN)
 - [ ] Wrapper templates include reasonable default CSS styles approximating platform appearance
 - [ ] Code blocks generate `class="language-*"` attributes for syntax highlighting library compatibility
@@ -329,7 +329,7 @@ Use industry-standard JavaScript syntax highlighting libraries that provide good
 
 **Rationale:**
 - No default template fallback - clearer user intent and fewer surprises
-- Default wrapper template files provided in repository as examples (`tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`)
+- Default wrapper template files provided in repository as examples (`src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`)
 - Users must explicitly pass template file path via `--template` argument
 - Removes ambiguity about which template is being used
 

@@ -69,7 +69,7 @@ Register new Scriban helper functions that return structured objects (DTOs) inst
 Create a new Terraform plan JSON file containing all scenarios required to verify the feature.
 
 **Acceptance Criteria:**
-- [ ] `tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json` is created.
+- [ ] `src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json` is created.
 - [ ] Includes at least one resource for each action: `create`, `update`, `delete`, and `replace`.
 - [ ] Includes a resource with a non-empty `description`.
 - [ ] Includes a resource with optional attributes (e.g., `condition`) and one without.

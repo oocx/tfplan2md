@@ -209,7 +209,7 @@ Verifies that the firewall rule template correctly uses `format_diff` to display
 - The output is valid markdown
 
 **Test Data:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
 
 **Test Name:** `Render_FirewallModifiedRules_ShowsDiffForChangedAttributes`
 
@@ -242,7 +242,7 @@ Verifies that unchanged attributes in modified firewall rules show only a single
 Unchanged attributes display single values without diff formatting.
 
 **Test Data:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
 
 **Test Name:** `Render_FirewallModifiedRules_ShowsSingleValueForUnchangedAttributes`
 
@@ -274,7 +274,7 @@ Verifies that the template changes do not affect the display of added, removed, 
 Added, removed, and unchanged rules continue to display as they did before the feature implementation.
 
 **Test Data:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
 
 **Test Name:** `Render_FirewallNonModifiedRules_DisplayAsExpected`
 

@@ -425,8 +425,8 @@ Some workflow improvements still benefit from local execution:
 - `read/terminalLastCommand` → No terminal history
 - `edit` (direct file edit) → Cloud agents use PR-based changes
 - `todo` → VS Code-specific UI
-- `copilot-container-tools/*` → Local Docker/container tools
-- `io.github.chromedevtools/chrome-devtools-mcp/*` → Local browser tools
+- `copilot-container-src/tools/*` → Local Docker/container tools
+- `io.github.chromedevsrc/tools/chrome-devtools-mcp/*` → Local browser tools
 
 ### 8.3 GitHub-Specific Tools (Cloud Agents)
 

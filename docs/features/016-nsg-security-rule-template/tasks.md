@@ -19,7 +19,7 @@ Reference:
 Create a Terraform plan JSON file that includes various NSG rule changes to support testing.
 
 **Acceptance Criteria:**
-- [ ] File `tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` is created.
+- [ ] File `src/tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` is created.
 - [ ] Includes an `azurerm_network_security_group` resource with an `update` action.
 - [ ] `before` state contains at least 4 rules.
 - [ ] `after` state contains:
@@ -64,7 +64,7 @@ Create the Scriban template for `azurerm_network_security_group` that renders se
 Create unit tests to verify the NSG template rendering logic.
 
 **Acceptance Criteria:**
-- [ ] File `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs` is created.
+- [ ] File `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs` is created.
 - [ ] **TC-01**: Verifies NSG creation renders a simple table.
 - [ ] **TC-02**: Verifies NSG deletion renders a table of removed rules.
 - [ ] **TC-03**: Verifies NSG update correctly categorizes rules (➕, 🔄, ❌, ⏺️) and shows diffs.

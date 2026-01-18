@@ -139,7 +139,7 @@ None
 
 **Alignment with Architecture Document:**
 - ✅ Uses Markdig as specified (Option 1 from ADR)
-- ✅ Separate console project in `tools/` directory
+- ✅ Separate console project in `src/tools/` directory
 - ✅ Two rendering pipelines (GitHub and Azure DevOps flavors)
 - ✅ Post-processing applies flavor-specific adjustments
 - ✅ Wrapper template mechanism with `{{content}}` placeholder

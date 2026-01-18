@@ -182,9 +182,9 @@ The implementation is complete and ready for merge:
 ### Files Reviewed
 - [.github/workflows/release.yml](.github/workflows/release.yml) - ✅ Workflow changes correct
 - [scripts/extract-changelog.sh](scripts/extract-changelog.sh) - ✅ Script logic sound
-- [tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs](tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs) - ✅ Tests comprehensive
-- [tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md](tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md) - ✅ Test data appropriate
-- [tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md](tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md) - ✅ Test data appropriate
+- [src/tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs](src/tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs) - ✅ Tests comprehensive
+- [src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md](src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md) - ✅ Test data appropriate
+- [src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md](src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md) - ✅ Test data appropriate
 - All documentation files - ✅ Complete and accurate
 
 ### Workflow Changes Analysis

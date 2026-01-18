@@ -2,7 +2,7 @@
 
 ## Overview
 
-Create a standalone development tool `tools/Oocx.TfPlan2Md.TerraformShowRenderer` that generates output approximating `terraform show` from Terraform plan JSON files. This tool is used to provide authentic "before tfplan2md" examples for the website.
+Create a standalone development tool `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer` that generates output approximating `terraform show` from Terraform plan JSON files. This tool is used to provide authentic "before tfplan2md" examples for the website.
 
 Reference: [specification.md](specification.md), [architecture.md](architecture.md).
 
@@ -16,7 +16,7 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Create the new tool project and implement the command-line interface following the project's established patterns.
 
 **Acceptance Criteria:**
-- [x] New project created at `tools/Oocx.TfPlan2Md.TerraformShowRenderer/`.
+- [x] New project created at `src/tools/Oocx.TfPlan2Md.TerraformShowRenderer/`.
 - [x] Project added to `tfplan2md.slnx`.
 - [x] `CLI/CliOptions.cs` defines `--input`, `--output`, `--no-color`, `--help`, and `--version`.
 - [x] `CLI/CliParser.cs` correctly parses arguments and handles errors.
@@ -113,7 +113,7 @@ Implement the final sections of the output: the plan summary and output changes.
 Add automated tests to ensure the tool's output matches the established baselines.
 
 **Acceptance Criteria:**
-- [x] Integration tests added in `tests/Oocx.TfPlan2Md.Tests/TerraformShowRendererTests.cs`.
+- [x] Integration tests added in `src/tests/Oocx.TfPlan2Md.Tests/TerraformShowRendererTests.cs`.
 - [x] `TC-06`: Output for `plan1.json` matches `plan1.txt`.
 - [x] `TC-07`: Output for `plan2.json` matches `plan2.txt`.
 - [x] `TC-08`: Custom plan with all operations (create, update, delete, replace, read, no-op) verified.

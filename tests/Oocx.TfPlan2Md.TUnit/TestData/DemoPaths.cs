@@ -22,7 +22,7 @@ public static class DemoPaths
         var directory = Directory.GetCurrentDirectory();
         while (!string.IsNullOrEmpty(directory))
         {
-            if (File.Exists(Path.Combine(directory, "tfplan2md.slnx")))
+            if (File.Exists(Path.Combine(directory, "src", "tfplan2md.slnx")))
             {
                 return directory;
             }
@@ -30,6 +30,6 @@ public static class DemoPaths
             directory = Directory.GetParent(directory)?.FullName;
         }
 
-        throw new InvalidOperationException("Could not locate repository root (tfplan2md.slnx not found)");
+        throw new InvalidOperationException("Could not locate repository root (src/tfplan2md.slnx not found)");
     }
 }

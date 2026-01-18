@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj" />
+    <ProjectReference Include="../../Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj" />
   </ItemGroup>
 
 </Project>

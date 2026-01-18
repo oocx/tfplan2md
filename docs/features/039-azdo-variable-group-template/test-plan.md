@@ -849,7 +849,7 @@ Reuse existing test data from `examples/azuredevops/terraform_plan2.json`:
 
 ### New Test Data Needed
 
-Create the following test fixtures in `tests/Oocx.TfPlan2Md.TUnit/TestData/`:
+Create the following test fixtures in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/`:
 
 #### 1. `variable-group-create.json`
 
@@ -954,7 +954,7 @@ Variable group with edge cases:
 
 - **TUnit 1.9.26**: Primary test framework
 - **AwesomeAssertions**: Fluent assertion library
-- Test location: `tests/Oocx.TfPlan2Md.TUnit/`
+- Test location: `src/tests/Oocx.TfPlan2Md.TUnit/`
 
 ### Test Naming Convention
 
@@ -969,13 +969,13 @@ Examples:
 
 ```bash
 # Run all variable group tests
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/VariableGroup*/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/VariableGroup*/*
 
 # Run factory unit tests
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/VariableGroupViewModelFactoryTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/VariableGroupViewModelFactoryTests/*
 
 # Run template tests
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/VariableGroupTemplateTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/VariableGroupTemplateTests/*
 ```
 
 ### Mock Data Helpers
@@ -1000,7 +1000,7 @@ Testing is complete when:
 - [ ] All integration tests implemented and passing (TC-24 through TC-26)
 - [ ] All edge cases covered with test cases
 - [ ] Test data fixtures created
-- [ ] All tests executable via `scripts/test-with-timeout.sh -- dotnet test` without human intervention
+- [ ] All tests executable via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` without human intervention
 - [ ] Test coverage >80% for ViewModel and Factory classes
 - [ ] All tests follow TUnit and AwesomeAssertions patterns
 - [ ] Test naming follows convention

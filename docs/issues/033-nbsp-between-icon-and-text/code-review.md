@@ -83,7 +83,7 @@ The implementation correctly addresses the issue:
 
 3. **Tests Updated:**
    - All test assertions updated to expect NBSP instead of regular spaces
-   - New `AssertNoEmojiFollowedByRegularSpace` method added to [MarkdownSnapshotTests.cs](../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownSnapshotTests.cs) to catch regressions
+   - New `AssertNoEmojiFollowedByRegularSpace` method added to [MarkdownSnapshotTests.cs](../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownSnapshotTests.cs) to catch regressions
    - Snapshot files updated with NBSP (diff shows the intentional changes)
 
 4. **Documentation Updated:**

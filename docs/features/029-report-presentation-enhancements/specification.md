@@ -91,13 +91,13 @@ When viewing in GitHub:
 
 ```bash
 # Capture full report
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png
 
 # Capture specific resource by address
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-terraform-resource-id "azurerm_firewall.example"
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-terraform-resource-id "azurerm_firewall.example"
 
 # Capture by selector (Playwright selector syntax)
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-selector "details:has(summary:has-text(\"azurerm_firewall\"))"
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator report.html output.png --target-selector "details:has(summary:has-text(\"azurerm_firewall\"))"
 ```
 
 Expected behavior:

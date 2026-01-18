@@ -268,7 +268,7 @@ This pattern:
 
 ### Fix 3: Add Comprehensive Linting Test
 
-**File:** [tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs)
+**File:** [src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs)
 
 **Add new test:**
 ```csharp

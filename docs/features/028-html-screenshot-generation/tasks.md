@@ -17,8 +17,8 @@ Prepare the development environment by installing Playwright dependencies and cr
 
 **Acceptance Criteria:**
 - [x] Playwright CLI installed and Chromium browser binaries downloaded (`dotnet tool install --global Microsoft.Playwright.CLI` and `playwright install chromium`).
-- [x] `tools/Oocx.TfPlan2Md.ScreenshotGenerator/Oocx.TfPlan2Md.ScreenshotGenerator.csproj` created (Target .NET 10).
-- [x] `tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests.csproj` created.
+- [x] `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/Oocx.TfPlan2Md.ScreenshotGenerator.csproj` created (Target .NET 10).
+- [x] `src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests.csproj` created.
 - [x] Both projects added to `tfplan2md.slnx`.
 - [x] `Microsoft.Playwright` NuGet package added to the tool project.
 - [x] Basic `Program.cs` created in the tool project.

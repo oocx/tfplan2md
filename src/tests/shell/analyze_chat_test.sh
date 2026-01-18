@@ -6,7 +6,7 @@ cd "$REPO_ROOT"
 
 chmod +x scripts/analyze-chat.py
 
-output="$(scripts/analyze-chat.py tests/shell/testdata/chat-minimal.json)"
+output="$(scripts/analyze-chat.py src/tests/shell/testdata/chat-minimal.json)"
 
 echo "$output" | grep -q "Agent Attribution:" || {
   echo "ERROR: expected Agent Attribution section" >&2

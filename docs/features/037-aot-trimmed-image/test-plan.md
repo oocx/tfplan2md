@@ -67,7 +67,7 @@ Run the existing suite of Docker-based integration tests against the newly built
 - NativeAOT Docker image is built and tagged locally.
 
 **Test Steps:**
-1. Execute `scripts/test-with-timeout.sh -- dotnet test --filter Category=Docker`.
+1. Execute `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --filter Category=Docker`.
 2. Monitor output for any AOT/Trimming specific warnings or errors.
 
 **Expected Result:**
@@ -99,7 +99,7 @@ Version and commit hash are non-empty and reflect the build-time values, not "un
 **Type:** Integration
 
 **Description:**
-Comprehensive run against all plans in `tests/Oocx.TfPlan2Md.Tests/TestData/` to ensure all Scriban templates and helpers work without reflection-related failures.
+Comprehensive run against all plans in `src/tests/Oocx.TfPlan2Md.Tests/TestData/` to ensure all Scriban templates and helpers work without reflection-related failures.
 
 **Preconditions:**
 - AOT Docker image built.
@@ -165,7 +165,7 @@ Verify the final image uses the minimal `runtime-deps` base and contains no unne
 
 ## Test Data Requirements
 
-No new test data files are required. The existing suite in `tests/Oocx.TfPlan2Md.Tests/TestData/` is sufficient:
+No new test data files are required. The existing suite in `src/tests/Oocx.TfPlan2Md.Tests/TestData/` is sufficient:
 - `azurerm-azuredevops-plan.json` (Comprehensive)
 - `firewall-rule-changes.json` (Custom helpers/templates)
 - `multi-module-plan.json` (Complex hierarchy)

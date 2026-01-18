@@ -252,7 +252,7 @@ Verifies that very long resource names or principal names are not truncated.
 
 ## Test Data Requirements
 
-New file: `tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json`
+New file: `src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json`
 - Contains a `resource_changes` array with at least 5 items:
     1.  Create operation (standard)
     2.  Update operation (standard)

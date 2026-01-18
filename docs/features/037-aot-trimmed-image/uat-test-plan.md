@@ -7,8 +7,8 @@ Verify that the NativeAOT-compiled version of `tfplan2md` renders reports correc
 **Artifact to use:** `artifacts/comprehensive-demo.md`
 
 **Creation Instructions:**
-- **Source Plan:** `tests/Oocx.TfPlan2Md.Tests/TestData/azurerm-azuredevops-plan.json`
-- **Command:** `docker run --rm -i <aot-image-tag> < tests/Oocx.TfPlan2Md.Tests/TestData/azurerm-azuredevops-plan.json > artifacts/comprehensive-demo.md`
+- **Source Plan:** `src/tests/Oocx.TfPlan2Md.Tests/TestData/azurerm-azuredevops-plan.json`
+- **Command:** `docker run --rm -i <aot-image-tag> < src/tests/Oocx.TfPlan2Md.Tests/TestData/azurerm-azuredevops-plan.json > artifacts/comprehensive-demo.md`
 - **Rationale:** This plan exercises various Scriban templates (Summary, Azure, Azure DevOps, Tables) and helpers, which are higher-risk areas for trimming and reflection in an AOT environment.
 
 ## Test Steps

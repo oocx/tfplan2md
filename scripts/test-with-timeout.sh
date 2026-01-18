@@ -17,6 +17,7 @@ set -euo pipefail
 timeout_seconds=120
 grace_seconds=10
 explicit_command=false
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 usage() {
   cat <<'USAGE'
@@ -25,7 +26,7 @@ Usage:
   scripts/test-with-timeout.sh [--timeout-seconds <n>] [--grace-seconds <n>] -- <command> [args...]
 
 Examples:
-  scripts/test-with-timeout.sh --timeout-seconds 1800 --no-build --configuration Release
+  scripts/test-with-timeout.sh --timeout-seconds 1800 -- dotnet test --solution src/tfplan2md.slnx --no-build --configuration Release
   scripts/test-with-timeout.sh --timeout-seconds 5 -- bash -c 'sleep 30'
 USAGE
 }
@@ -66,14 +67,28 @@ if ! [[ "$timeout_seconds" =~ ^[0-9]+$ ]] || ! [[ "$grace_seconds" =~ ^[0-9]+$ ]
 fi
 
 cmd=()
+work_dir="$repo_root"
 if [[ "$explicit_command" == "true" ]]; then
   if [[ ${#@} -eq 0 ]]; then
     usage >&2
     exit 125
   fi
-  cmd=("$@");
+  cmd=("$@")
+  if [[ "${cmd[0]}" == "dotnet" && "${cmd[1]:-}" == "test" ]]; then
+    work_dir="$repo_root/src"
+    normalized_cmd=()
+    for arg in "${cmd[@]}"; do
+      if [[ "$arg" == src/* && -e "$repo_root/$arg" ]]; then
+        normalized_cmd+=("${arg#src/}")
+      else
+        normalized_cmd+=("$arg")
+      fi
+    done
+    cmd=("${normalized_cmd[@]}")
+  fi
 else
-  cmd=(dotnet test tests/Oocx.TfPlan2Md.TUnit/ "$@")
+  work_dir="$repo_root/src"
+  cmd=(dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ "$@")
 fi
 
 if ! command -v "${cmd[0]}" >/dev/null 2>&1; then
@@ -86,9 +101,9 @@ fi
 
 set +e
 if command -v setsid >/dev/null 2>&1; then
-  setsid "${cmd[@]}" &
+  (cd "$work_dir" && setsid "${cmd[@]}") &
 else
-  "${cmd[@]}" &
+  (cd "$work_dir" && "${cmd[@]}") &
 fi
 pid=$!
 set -e

@@ -25,7 +25,7 @@ This workflow improvement implements **Option A (Enhanced Workflow Engineer Agen
 
 **Tools Retained:**
 - All VS Code-specific tools: `vscode`, `execute`, `read`, `edit`, `todo`
-- All local development tools: `copilot-container-tools/*`, `io.github.chromedevtools/*`
+- All local development tools: `copilot-container-src/tools/*`, `io.github.chromedevsrc/tools/*`
 - All shared tools: `search`, `web`, `github/*`, `memory/*`
 - All GitHub PR tools: `github.vscode-pull-request-github/*`
 

@@ -12,7 +12,7 @@ Feature 028 introduces a standalone .NET tool that generates screenshots (PNG/JP
 
 Key constraints from the spec:
 
-- Separate **tool project** under `tools/` (not integrated into the main `tfplan2md` CLI).
+- Separate **tool project** under `src/tools/` (not integrated into the main `tfplan2md` CLI).
 - **Cross-platform** (Windows, Linux, macOS) and CI-friendly.
 - Use **Chromium automation** via **Playwright for .NET**.
 - CLI supports:
@@ -82,8 +82,8 @@ This matches the feature spec’s “Technology Selection” decision, provides 
 
 Introduce a new console project:
 
-- `tools/Oocx.TfPlan2Md.ScreenshotGenerator/`
-- `tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/`
+- `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`
+- `src/tests/Oocx.TfPlan2Md.ScreenshotGenerator.Tests/`
 
 This mirrors feature 027’s approach: the tool is separate from the main CLI project (consistent with [docs/spec.md](../../spec.md)).
 
@@ -100,7 +100,7 @@ Follow the existing tooling style seen in feature 027’s HtmlRenderer:
   - error handling and user-facing messages
   - calling the screenshot engine
 
-This keeps the tool dependency-light and consistent across `tools/*` projects.
+This keeps the tool dependency-light and consistent across `src/tools/*` projects.
 
 ### Suggested components (conceptual)
 

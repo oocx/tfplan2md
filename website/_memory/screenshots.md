@@ -55,45 +55,45 @@ The following screenshots are needed for the website (based on feature page requ
 
 ## Generation Commands
 
-Screenshots are generated using the tools in `tools/Oocx.TfPlan2Md.ScreenshotGenerator/`.
+Screenshots are generated using the tools in `src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`.
 
 ### Prerequisites
 
 ```bash
 # Install Playwright Chromium (one-time setup)
-pwsh tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
+pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
 
 ### Generate Firewall Section Screenshots
 
 ```bash
 # First generate the HTML with Azure DevOps styling (for more authentic screenshot appearance)
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
   --output artifacts/comprehensive-demo.azdo.html
 
 # Create dark mode version by changing data-theme attribute
 sed 's/data-theme="light"/data-theme="dark"/' artifacts/comprehensive-demo.azdo.html > artifacts/comprehensive-demo.azdo-dark.html
 
 # Generate full-page screenshots at 1x and 2x DPI for both themes
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/comprehensive-demo-full.png \
   --full-page --width 1920
 
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/comprehensive-demo-full@2x.png \
   --full-page --width 1920 --device-scale-factor 2
 
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo-dark.html \
   --output website/assets/screenshots/comprehensive-demo-full-dark.png \
   --full-page --width 1920
 
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo-dark.html \
   --output website/assets/screenshots/comprehensive-demo-full-dark@2x.png \
   --full-page --width 1920 --device-scale-factor 2
@@ -145,7 +145,7 @@ magick website/assets/screenshots/comprehensive-demo-full-dark@2x.png \
 ### Generate Full Report Screenshot (Azure DevOps flavor)
 
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output website/assets/screenshots/firewall-rules-table.png \
   --target-terraform-resource-id "azurerm_firewall_policy_rule_collection_group.example"
@@ -154,7 +154,7 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 ### Generate Targeted Screenshot (by selector)
 
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output website/assets/screenshots/plan-summary.png \
   --target-selector "table:has(th:has-text('Action'))"
@@ -164,7 +164,7 @@ dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 
 ```bash
 # Storage account simple attribute changes (with high-DPI version)
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/storage-account-diff.png \
   --target-terraform-resource-id "azurerm_storage_account.data" \

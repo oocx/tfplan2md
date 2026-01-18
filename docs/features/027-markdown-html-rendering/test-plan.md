@@ -73,10 +73,10 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Verify that the CLI accepts all required options and executes successfully.
 
 **Preconditions:**
-- `tfplan2md` report exists at `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md`
+- `tfplan2md` report exists at `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/comprehensive-demo.md`
 
 **Test Steps:**
-1. Run `dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input <path> --flavor github`
+1. Run `dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input <path> --flavor github`
 2. Check exit code.
 
 **Expected Result:**
@@ -93,7 +93,7 @@ Verify that the CLI accepts all required options and executes successfully.
 Verify that the CLI fails when required options are missing.
 
 **Test Steps:**
-1. Run `dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input <path>` (missing flavor)
+1. Run `dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input <path>` (missing flavor)
 2. Check exit code and error message.
 
 **Expected Result:**
@@ -110,7 +110,7 @@ Verify that the CLI fails when required options are missing.
 Verify that the CLI fails when an invalid flavor is provided.
 
 **Test Steps:**
-1. Run `dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input <path> --flavor invalid`
+1. Run `dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input <path> --flavor invalid`
 2. Check exit code and error message.
 
 **Expected Result:**
@@ -127,7 +127,7 @@ Verify that the CLI fails when an invalid flavor is provided.
 Verify that the output filename is correctly derived when `--output` is omitted.
 
 **Test Steps:**
-1. Run `dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input reports/my-plan.md --flavor github`
+1. Run `dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input reports/my-plan.md --flavor github`
 2. Verify existence of `reports/my-plan.github.html`.
 
 **Expected Result:**
@@ -318,7 +318,7 @@ Verify that the generated HTML for Azure DevOps flavor is "close enough" to the 
 
 ## Test Data Requirements
 
-- `tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/TestData/`
+- `src/tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/TestData/`
   - `inline-diff.md` - Snippet with `<span>` and `style`.
   - `simple-diff.md` - Snippet with ` ```diff `.
   - `line-breaks.md` - Snippet testing ADO line break rules.

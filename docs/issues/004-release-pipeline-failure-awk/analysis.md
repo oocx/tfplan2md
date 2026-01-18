@@ -92,7 +92,7 @@ function header_version(line) {
   2. Then use `match()` without capture array
   3. Extract matched text using `substr(line, RSTART, RLENGTH)`
 
-**2. Added regression test** in [tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs):
+**2. Added regression test** in [src/tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs):
 
 ```csharp
 [Fact]
@@ -167,8 +167,8 @@ Total tests: 1
 ## Related Files
 
 - [scripts/extract-changelog.sh](../../../scripts/extract-changelog.sh) - Fixed AWK script
-- [tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs) - Test suite with new POSIX compatibility test
-- [Dockerfile](../../../Dockerfile) - Build configuration that runs tests
+- [src/tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/Workflows/ChangelogExtractionTests.cs) - Test suite with new POSIX compatibility test
+- [Dockerfile](../../../src/Dockerfile) - Build configuration that runs tests
 - [.github/workflows/release.yml](../../../.github/workflows/release.yml) - Release workflow that uses the script
 
 ## References

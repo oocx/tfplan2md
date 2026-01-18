@@ -20,7 +20,7 @@ This code review evaluates the implementation of Feature #039: Custom template f
 
 ### Test Execution
 ```bash
-Running tests from /home/runner/work/tfplan2md/tfplan2md/tests/Oocx.TfPlan2Md.TUnit/bin/Debug/net10.0/Oocx.TfPlan2Md.TUnit.dll (net10.0|x64)
+Running tests from /home/runner/work/tfplan2md/tfplan2md/src/tests/Oocx.TfPlan2Md.TUnit/bin/Debug/net10.0/Oocx.TfPlan2Md.TUnit.dll (net10.0|x64)
 Test run summary: Passed!
   total: 12
   failed: 0
@@ -187,7 +187,7 @@ The current implementation sets `IsLargeValue` flag on variables but the templat
 - **Key Vault**: Separate table with Name, Service Endpoint ID, Search Depth columns
 
 ### 4. Factory Tests (VariableGroupViewModelFactoryTests.cs)
-**File:** `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupViewModelFactoryTests.cs`
+**File:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupViewModelFactoryTests.cs`
 
 ✅ **Coverage:**
 - ✅ TC-01: Create operation with regular variables
@@ -202,7 +202,7 @@ The current implementation sets `IsLargeValue` flag on variables but the templat
 - XML documentation explains test purpose and maps to test cases
 
 ### 5. Template Tests (VariableGroupTemplateTests.cs)
-**File:** `tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupTemplateTests.cs`
+**File:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/VariableGroupTemplateTests.cs`
 
 ✅ **Coverage:**
 - ✅ TC-14: Create operation layout
@@ -240,7 +240,7 @@ The current implementation sets `IsLargeValue` flag on variables but the templat
 - Consistent with existing mapper patterns
 
 ### 8. Test Data (azuredevops-variable-groups.json)
-**File:** `tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-variable-groups.json`
+**File:** `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-variable-groups.json`
 
 ✅ **Coverage:**
 - Multiple scenarios: create_basic, update_mixed, update_secret_metadata, delete_basic, with_keyvault, empty_variables, no_description

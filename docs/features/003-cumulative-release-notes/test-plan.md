@@ -31,7 +31,7 @@ Since the logic involves parsing a Markdown file using bash/awk, we will:
 Verify that if no last version is provided (simulating first release), only the current version's changelog is extracted.
 
 **Preconditions:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
 
 **Test Steps:**
 1.  Run extraction script with:
@@ -53,7 +53,7 @@ Verify that if no last version is provided (simulating first release), only the 
 Verify that if the last release was the immediate predecessor, only the current version is extracted.
 
 **Preconditions:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
 
 **Test Steps:**
 1.  Run extraction script with:
@@ -74,7 +74,7 @@ Verify that if the last release was the immediate predecessor, only the current 
 Verify that if there is a gap between the last release and current version, all intermediate versions are extracted.
 
 **Preconditions:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
 
 **Test Steps:**
 1.  Run extraction script with:
@@ -96,7 +96,7 @@ Verify that if there is a gap between the last release and current version, all 
 Verify that complex Markdown (lists, code blocks, links) is preserved exactly as is.
 
 **Preconditions:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md` exists.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md` exists.
 
 **Test Steps:**
 1.  Run extraction script.
@@ -115,7 +115,7 @@ Verify that complex Markdown (lists, code blocks, links) is preserved exactly as
 Verify that the script handles version inputs with and without 'v' prefix.
 
 **Preconditions:**
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md` exists.
 
 **Test Steps:**
 1.  Run with `v0.12.0` and `v0.11.0`.
@@ -142,8 +142,8 @@ Verify that running the extraction multiple times produces the same result.
 
 ## Test Data Requirements
 
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md`: A comprehensive changelog with multiple versions (0.12.0 down to 0.1.0).
-- `tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md`: A changelog entry with nested lists, code blocks, and links.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-full.md`: A comprehensive changelog with multiple versions (0.12.0 down to 0.1.0).
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/changelog-complex.md`: A changelog entry with nested lists, code blocks, and links.
 
 ## Edge Cases
 

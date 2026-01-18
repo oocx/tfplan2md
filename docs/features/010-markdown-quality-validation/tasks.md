@@ -37,7 +37,7 @@ Add the `Markdig` library to the test project and create a test plan JSON that c
 
 **Acceptance Criteria:**
 - [ ] `Markdig` package added to `Oocx.TfPlan2Md.Tests.csproj`.
-- [ ] `tests/Oocx.TfPlan2Md.Tests/TestData/markdown-breaking-plan.json` created with:
+- [ ] `src/tests/Oocx.TfPlan2Md.Tests/TestData/markdown-breaking-plan.json` created with:
     - Resource names containing pipes `|` and asterisks `*`.
     - Tag values containing newlines `\n`.
     - Attribute values containing brackets `[` `]` and backticks `` ` ``.
@@ -54,7 +54,7 @@ Add the `Markdig` library to the test project and create a test plan JSON that c
 Implement tests that use `Markdig` to validate the structure of the generated markdown. These tests should fail initially, revealing the current bugs.
 
 **Acceptance Criteria:**
-- [ ] `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs` created.
+- [ ] `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs` created.
 - [ ] `Render_BreakingPlan_ValidatesTableStructure` implemented (TC-04).
 - [ ] `Render_Headings_ValidatesStructure` implemented (TC-05).
 - [ ] `Render_ComprehensiveDemo_ValidatesFullReport` implemented (TC-06).

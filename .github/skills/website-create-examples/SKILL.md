@@ -101,7 +101,7 @@ If the exact example doesn't exist in artifacts:
 3. **Render to HTML:**
    Use the HtmlRenderer tool:
    ```bash
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer \
+   dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer \
      --input artifacts/comprehensive-demo.md \
      --output artifacts/custom-example.github.html \
      --platform github

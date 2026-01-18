@@ -111,7 +111,7 @@ private List<AttributeChangeModel> BuildAttributeChanges(Change change)
 **File Sizes:**
 - [CliParser.cs](../../../src/Oocx.TfPlan2Md/CLI/CliParser.cs): ~145 lines ✅
 - [ReportModel.cs](../../../src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs): ~337 lines ✅
-- [ReportModelBuilderUnchangedValuesTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderUnchangedValuesTests.cs): ~52 lines ✅
+- [ReportModelBuilderUnchangedValuesTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderUnchangedValuesTests.cs): ~52 lines ✅
 
 All files are well under the 300-line threshold.
 

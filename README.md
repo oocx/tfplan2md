@@ -178,62 +178,62 @@ docker run -v $(pwd):/data oocx/tfplan2md --debug \
 
 ### HTML renderer (development tool)
 
-Render existing tfplan2md reports to HTML with GitHub- or Azure-DevOps-like output using the standalone tool in [tools/Oocx.TfPlan2Md.HtmlRenderer](tools/Oocx.TfPlan2Md.HtmlRenderer):
+Render existing tfplan2md reports to HTML with GitHub- or Azure-DevOps-like output using the standalone tool in [src/tools/Oocx.TfPlan2Md.HtmlRenderer](src/tools/Oocx.TfPlan2Md.HtmlRenderer):
 
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github
 
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
   --output artifacts/comprehensive-demo.azdo.html
 ```
 
 ### Screenshot generator (development tool)
 
-Generate PNG or JPEG screenshots from HTML using Playwright in [tools/Oocx.TfPlan2Md.ScreenshotGenerator](tools/Oocx.TfPlan2Md.ScreenshotGenerator). Install the browser once after build:
+Generate PNG or JPEG screenshots from HTML using Playwright in [src/tools/Oocx.TfPlan2Md.ScreenshotGenerator](src/tools/Oocx.TfPlan2Md.ScreenshotGenerator). Install the browser once after build:
 
 ```bash
-pwsh tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
+pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
 
 Usage examples (formats: png default, jpeg; WebP deferred):
 
 ```bash
 # Default viewport (1920x1080), output derived from input name
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html
 
 # Custom viewport
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot-1280x720.png \
   --width 1280 \
   --height 720
 
 # Full-page capture
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/full-report.png \
   --full-page
 
 # JPEG with quality
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot.jpg \
   --quality 85
 
 # Capture specific resource by Terraform address
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/resource.png \
   --target-terraform-resource-id "azurerm_storage_account.example"
 
 # Capture by selector (Playwright syntax)
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/firewall.png \
   --target-selector "details:has(summary:has-text('azurerm_firewall'))"
@@ -245,13 +245,13 @@ Generate terminal-style output that mirrors `terraform show` for creating "befor
 
 ```bash
 # Colored output
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
   --output artifacts/terraform-show-plan1.txt
 
 # Plain text (no ANSI)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
   --no-color \
   --output artifacts/terraform-show-plan1.nocolor.txt
 ```

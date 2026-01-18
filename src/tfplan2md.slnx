@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj" />
+    <Project Path="Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj" />

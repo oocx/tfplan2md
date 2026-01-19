@@ -63,7 +63,7 @@ log_info "Generating artifacts/role.md (role assignments with principal mapping)
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
   --output artifacts/role.md \
-  src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/role-assignments.json
 
 if [[ -s artifacts/role.md ]]; then
   log_info "✓ artifacts/role.md generated successfully"
@@ -75,7 +75,7 @@ fi
 log_info "Generating artifacts/role-default.md (role assignments without principal mapping)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --output artifacts/role-default.md \
-  src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/role-assignments.json
 
 if [[ -s artifacts/role-default.md ]]; then
   log_info "✓ artifacts/role-default.md generated successfully"

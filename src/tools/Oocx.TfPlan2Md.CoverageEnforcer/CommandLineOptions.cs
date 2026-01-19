@@ -14,7 +14,17 @@ internal sealed class CommandLineOptions
     /// <param name="reportPath">Path to the Cobertura report.</param>
     /// <param name="lineThreshold">Line coverage threshold percentage.</param>
     /// <param name="branchThreshold">Branch coverage threshold percentage.</param>
-    private CommandLineOptions(string reportPath, decimal lineThreshold, decimal branchThreshold, string? summaryOutputPath, Uri? reportLink, bool overrideActive)
+    private CommandLineOptions(
+        string reportPath,
+        decimal lineThreshold,
+        decimal branchThreshold,
+        string? summaryOutputPath,
+        Uri? reportLink,
+        bool overrideActive,
+        string? badgeOutputPath,
+        string? historyOutputPath,
+        string? commitSha,
+        DateTimeOffset? timestamp)
     {
         ReportPath = reportPath;
         LineThreshold = lineThreshold;
@@ -22,6 +32,10 @@ internal sealed class CommandLineOptions
         SummaryOutputPath = summaryOutputPath;
         ReportLink = reportLink;
         OverrideActive = overrideActive;
+        BadgeOutputPath = badgeOutputPath;
+        HistoryOutputPath = historyOutputPath;
+        CommitSha = commitSha;
+        Timestamp = timestamp;
     }
 
     /// <summary>
@@ -55,6 +69,26 @@ internal sealed class CommandLineOptions
     internal bool OverrideActive { get; }
 
     /// <summary>
+    /// Gets the optional path for writing the badge SVG.
+    /// </summary>
+    internal string? BadgeOutputPath { get; }
+
+    /// <summary>
+    /// Gets the optional path for writing the coverage history JSON.
+    /// </summary>
+    internal string? HistoryOutputPath { get; }
+
+    /// <summary>
+    /// Gets the commit SHA used for history tracking.
+    /// </summary>
+    internal string? CommitSha { get; }
+
+    /// <summary>
+    /// Gets the timestamp to store in history entries.
+    /// </summary>
+    internal DateTimeOffset? Timestamp { get; }
+
+    /// <summary>
     /// Parses command line arguments and environment variables into options.
     /// </summary>
     /// <param name="args">Command line arguments.</param>
@@ -79,8 +113,22 @@ internal sealed class CommandLineOptions
         var summaryOutputPath = GetArgumentValue(args, "--summary-output");
         var reportLink = GetUriArgument(args, "--report-link");
         var overrideActive = GetBooleanArgument(args, "--override-active") ?? false;
+        var badgeOutputPath = GetArgumentValue(args, "--badge-output");
+        var historyOutputPath = GetArgumentValue(args, "--history-output");
+        var commitSha = GetArgumentValue(args, "--commit-sha");
+        var timestamp = GetTimestampArgument(args, "--timestamp");
 
-        return new CommandLineOptions(reportPath, lineThreshold, branchThreshold, summaryOutputPath, reportLink, overrideActive);
+        return new CommandLineOptions(
+            reportPath,
+            lineThreshold,
+            branchThreshold,
+            summaryOutputPath,
+            reportLink,
+            overrideActive,
+            badgeOutputPath,
+            historyOutputPath,
+            commitSha,
+            timestamp);
     }
 
     /// <summary>
@@ -195,5 +243,28 @@ internal sealed class CommandLineOptions
         }
 
         return parsed;
+    }
+
+    /// <summary>
+    /// Parses a timestamp argument value from the command line.
+    /// </summary>
+    /// <param name="args">Command line arguments.</param>
+    /// <param name="name">Argument name to search for.</param>
+    /// <returns>Parsed timestamp or null if not present.</returns>
+    /// <exception cref="InvalidDataException">Thrown when the timestamp cannot be parsed.</exception>
+    private static DateTimeOffset? GetTimestampArgument(string[] args, string name)
+    {
+        var value = GetArgumentValue(args, name);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        if (!DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var parsed))
+        {
+            throw new InvalidDataException($"Invalid timestamp value '{value}' for {name}.");
+        }
+
+        return parsed.ToUniversalTime();
     }
 }

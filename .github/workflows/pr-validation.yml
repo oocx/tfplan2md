@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
   checks: write
 
@@ -170,6 +170,32 @@ jobs:
         with:
           name: coverage-cobertura
           path: ./src/TestResults/**/coverage.cobertura.xml
+
+      - name: Update coverage badge and history
+        if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (success() || steps.coverage_override.outputs.active == 'true')
+        run: |
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report ./src/TestResults/coverage.cobertura.xml \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80 \
+            --badge-output ./assets/coverage-badge.svg \
+            --history-output ./docs/coverage/history.json \
+            --commit-sha "${{ github.event.pull_request.head.sha }}" \
+            --timestamp "${{ github.run_started_at }}" \
+            --override-active "${{ steps.coverage_override.outputs.active }}"
+
+      - name: Commit coverage badge and history
+        if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (success() || steps.coverage_override.outputs.active == 'true')
+        run: |
+          if [ -n "$(git status --porcelain assets/coverage-badge.svg docs/coverage/history.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add assets/coverage-badge.svg docs/coverage/history.json
+            git commit -m "docs: update coverage badge and history"
+            git push
+          else
+            echo "No coverage badge or history changes to commit."
+          fi
 
       - name: Post coverage summary comment
         if: steps.filter.outputs.changed == 'true' && (success() || failure()) && github.event.pull_request.head.repo.full_name == github.repository

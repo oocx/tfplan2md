@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Globalization;
+using System.Text.Json;
 using Oocx.TfPlan2Md.CoverageEnforcer;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Assertions;
@@ -132,6 +134,44 @@ public class CoverageEnforcerTests
     }
 
     /// <summary>
+    /// Generates an SVG badge with the expected percentage and color.
+    /// </summary>
+    [Test]
+    public async Task Badge_generator_includes_percentage_and_color()
+    {
+        var generator = new CoverageBadgeGenerator();
+
+        var svg = generator.GenerateSvg(85.5m);
+
+        await Assert.That(svg).Contains("85.50%", StringComparison.Ordinal);
+        await Assert.That(svg).Contains("#97ca00", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Appends the latest entry to the coverage history file.
+    /// </summary>
+    [Test]
+    public async Task History_writer_appends_entry()
+    {
+        var tempDirectory = CreateTempDirectory();
+        var historyPath = Path.Combine(tempDirectory, "history.json");
+        var entry = new CoverageHistoryEntry(
+            DateTimeOffset.Parse("2026-01-20T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+            "abc123",
+            80m,
+            70m);
+        var writer = new CoverageHistoryWriter();
+
+        writer.UpdateHistory(historyPath, entry);
+
+        var json = File.ReadAllText(historyPath);
+        using var document = JsonDocument.Parse(json);
+        var entries = document.RootElement.GetProperty("Entries");
+        await Assert.That(entries.GetArrayLength()).IsEqualTo(1);
+        await Assert.That(entries[0].GetProperty("CommitSha").GetString()).IsEqualTo("abc123");
+    }
+
+    /// <summary>
     /// Builds the absolute path for a coverage test data file.
     /// </summary>
     /// <param name="fileName">Coverage test data file name.</param>
@@ -139,5 +179,16 @@ public class CoverageEnforcerTests
     private static string GetCoveragePath(string fileName)
     {
         return Path.Combine(DemoPaths.RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "Coverage", fileName);
+    }
+
+    /// <summary>
+    /// Creates a temporary directory under the repository root for test output.
+    /// </summary>
+    /// <returns>Path to the created directory.</returns>
+    private static string CreateTempDirectory()
+    {
+        var tempPath = Path.Combine(DemoPaths.RepositoryRoot, ".tmp", "coverage-tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempPath);
+        return tempPath;
     }
 }

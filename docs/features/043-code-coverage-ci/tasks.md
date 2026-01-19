@@ -49,10 +49,10 @@ Update `pr-validation.yml` to collect coverage using the Microsoft Testing Platf
 Create a script or tool to parse the Cobertura XML report, extract line/branch coverage percentages, compare them against thresholds, and fail the CI job if they are below.
 
 **Acceptance Criteria:**
-- [ ] Tool/script accurately parses Cobertura XML.
-- [ ] Initial thresholds are set based on current measured coverage on `main`.
-- [ ] CI job fails if line coverage or branch coverage falls below defined thresholds.
-- [ ] Exit codes are used correctly to signal success/failure to GitHub Actions.
+- [x] Tool/script accurately parses Cobertura XML.
+- [x] Initial thresholds are set based on current measured coverage on `main`.
+- [x] CI job fails if line coverage or branch coverage falls below defined thresholds.
+- [x] Exit codes are used correctly to signal success/failure to GitHub Actions.
 
 **Dependencies:** Task 2
 

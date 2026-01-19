@@ -32,6 +32,8 @@ coverage/
 *.coveragexml
 CoverletSourceRootsMapping_*
 .msCoverageSourceRootsMapping_*
+!docs/coverage/
+!docs/coverage/history.json
 
 # OS generated files
 .DS_Store

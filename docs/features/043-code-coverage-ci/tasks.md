@@ -99,10 +99,10 @@ Update the CI workflow to respect the `coverage-override` label. If present, the
 Implement automatic updates for the coverage badge and history data. This should only run for internal PRs to avoid token permission issues with forks.
 
 **Acceptance Criteria:**
-- [ ] `assets/coverage-badge.svg` is updated based on the latest coverage from the PR validation run.
-- [ ] `docs/coverage/history.json` (or similar) is updated with new metrics.
-- [ ] For internal PRs, these changes are committed back to the branch by the CI.
-- [ ] README.md links to the badge correctly.
+- [x] `assets/coverage-badge.svg` is updated based on the latest coverage from the PR validation run.
+- [x] `docs/coverage/history.json` (or similar) is updated with new metrics.
+- [x] For internal PRs, these changes are committed back to the branch by the CI.
+- [x] README.md links to the badge correctly.
 
 **Dependencies:** Task 4
 

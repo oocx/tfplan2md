@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
@@ -7,7 +6,6 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 /// Applies GitHub-specific sanitization and attribute alignment.
 /// Related feature: docs/features/027-markdown-html-rendering/specification.md
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal static class GitHubHtmlPostProcessor
 {
     /// <summary>

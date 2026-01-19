@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -8,7 +7,6 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 /// Applies Azure DevOps-specific formatting and attribute adjustments.
 /// Related feature: docs/features/027-markdown-html-rendering/specification.md
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal static class AzureDevOpsHtmlPostProcessor
 {
     /// <summary>

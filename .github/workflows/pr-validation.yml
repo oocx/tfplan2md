@@ -92,7 +92,7 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory ./src/TestResults --collect:"XPlat Code Coverage" -- --report-trx --results-directory ./src/TestResults
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
 
       - name: Generate coverage report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
@@ -101,6 +101,20 @@ jobs:
             -reports:"./src/TestResults/**/coverage.cobertura.xml" \
             -targetdir:"./src/TestResults/coverage-report" \
             -reporttypes:Html
+
+      - name: Enforce coverage thresholds
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: |
+          report_path="./src/TestResults/coverage.cobertura.xml"
+          if [ ! -f "$report_path" ]; then
+            echo "❌ ERROR: Cobertura report not found for coverage enforcement."
+            exit 1
+          fi
+
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report "$report_path" \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())

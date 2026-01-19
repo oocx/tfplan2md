@@ -92,6 +92,28 @@ public class CoverageEnforcerTests
     }
 
     /// <summary>
+    /// Builds a markdown summary table including metrics and thresholds.
+    /// </summary>
+    [Test]
+    public async Task Summary_builder_includes_metric_rows()
+    {
+        var evaluation = new CoverageEvaluation(
+            new CoverageMetrics(85.5m, 70.2m),
+            new CoverageThresholds(80m, 75m),
+            linePass: true,
+            branchPass: false);
+        var builder = new CoverageSummaryBuilder();
+
+        var summary = builder.BuildMarkdown(evaluation, new Uri("https://example.test/coverage"));
+
+        await Assert.That(summary).Contains("Code Coverage Summary", StringComparison.Ordinal);
+        await Assert.That(summary).Contains("Line", StringComparison.Ordinal);
+        await Assert.That(summary).Contains("85.50%", StringComparison.Ordinal);
+        await Assert.That(summary).Contains("70.20%", StringComparison.Ordinal);
+        await Assert.That(summary).Contains("Coverage report artifact", StringComparison.Ordinal);
+    }
+
+    /// <summary>
     /// Builds the absolute path for a coverage test data file.
     /// </summary>
     /// <param name="fileName">Coverage test data file name.</param>

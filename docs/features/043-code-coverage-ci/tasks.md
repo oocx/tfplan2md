@@ -16,8 +16,8 @@ Reference: [docs/features/043-code-coverage-ci/specification.md](docs/features/0
 Ensure coverage reflects all production code as requested in the specification. Remove any `[ExcludeFromCodeCoverage]` attributes from production code.
 
 **Acceptance Criteria:**
-- [ ] No `[ExcludeFromCodeCoverage]` attributes exist in `src/Oocx.TfPlan2Md` (excluding test projects).
-- [ ] Documentation updated to reflect "no exclusions" policy if necessary.
+- [x] No `[ExcludeFromCodeCoverage]` attributes exist in `src/Oocx.TfPlan2Md` (excluding test projects).
+- [x] Documentation updated to reflect "no exclusions" policy if necessary.
 
 **Dependencies:** None
 

@@ -66,10 +66,10 @@ Create a script or tool to parse the Cobertura XML report, extract line/branch c
 Format the coverage metrics into a markdown table and publish it to the GitHub Job Summary and as a PR comment.
 
 **Acceptance Criteria:**
-- [ ] GitHub Job Summary (`GITHUB_STEP_SUMMARY`) contains a "Code Coverage Summary" table with line and branch metrics.
-- [ ] A PR comment is created/updated with the same summary.
-- [ ] Summary includes links to the detailed HTML report artifact.
-- [ ] Summary clearly indicates which thresholds passed or failed.
+- [x] GitHub Job Summary (`GITHUB_STEP_SUMMARY`) contains a "Code Coverage Summary" table with line and branch metrics.
+- [x] A PR comment is created/updated with the same summary.
+- [x] Summary includes links to the detailed HTML report artifact.
+- [x] Summary clearly indicates which thresholds passed or failed.
 
 **Dependencies:** Task 3
 

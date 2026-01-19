@@ -9,6 +9,13 @@ try
     var evaluator = new CoverageThresholdEvaluator();
     var evaluation = evaluator.Evaluate(metrics, thresholds);
 
+    if (!string.IsNullOrWhiteSpace(options.SummaryOutputPath))
+    {
+        var summaryBuilder = new CoverageSummaryBuilder();
+        var summary = summaryBuilder.BuildMarkdown(evaluation, options.ReportLink);
+        File.WriteAllText(options.SummaryOutputPath, summary);
+    }
+
     Console.WriteLine("Coverage summary:");
     Console.WriteLine($"  Line:   {metrics.LinePercentage:0.00}% (threshold {thresholds.LineThreshold:0.00}%) {(evaluation.LinePass ? "PASS" : "FAIL")}");
     Console.WriteLine($"  Branch: {metrics.BranchPercentage:0.00}% (threshold {thresholds.BranchThreshold:0.00}%) {(evaluation.BranchPass ? "PASS" : "FAIL")}");

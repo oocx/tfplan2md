@@ -14,11 +14,13 @@ internal sealed class CommandLineOptions
     /// <param name="reportPath">Path to the Cobertura report.</param>
     /// <param name="lineThreshold">Line coverage threshold percentage.</param>
     /// <param name="branchThreshold">Branch coverage threshold percentage.</param>
-    private CommandLineOptions(string reportPath, decimal lineThreshold, decimal branchThreshold)
+    private CommandLineOptions(string reportPath, decimal lineThreshold, decimal branchThreshold, string? summaryOutputPath, Uri? reportLink)
     {
         ReportPath = reportPath;
         LineThreshold = lineThreshold;
         BranchThreshold = branchThreshold;
+        SummaryOutputPath = summaryOutputPath;
+        ReportLink = reportLink;
     }
 
     /// <summary>
@@ -35,6 +37,16 @@ internal sealed class CommandLineOptions
     /// Gets the configured branch coverage threshold percentage.
     /// </summary>
     internal decimal BranchThreshold { get; }
+
+    /// <summary>
+    /// Gets the optional path for writing the markdown summary.
+    /// </summary>
+    internal string? SummaryOutputPath { get; }
+
+    /// <summary>
+    /// Gets the optional link to the detailed coverage report.
+    /// </summary>
+    internal Uri? ReportLink { get; }
 
     /// <summary>
     /// Parses command line arguments and environment variables into options.
@@ -58,7 +70,10 @@ internal sealed class CommandLineOptions
             ?? GetDecimalEnvironment("COVERAGE_BRANCH_THRESHOLD")
             ?? throw new InvalidDataException("Branch coverage threshold is required. Use --branch-threshold or COVERAGE_BRANCH_THRESHOLD.");
 
-        return new CommandLineOptions(reportPath, lineThreshold, branchThreshold);
+        var summaryOutputPath = GetArgumentValue(args, "--summary-output");
+        var reportLink = GetUriArgument(args, "--report-link");
+
+        return new CommandLineOptions(reportPath, lineThreshold, branchThreshold, summaryOutputPath, reportLink);
     }
 
     /// <summary>
@@ -127,5 +142,28 @@ internal sealed class CommandLineOptions
         }
 
         return parsed;
+    }
+
+    /// <summary>
+    /// Parses a URI argument value from the command line.
+    /// </summary>
+    /// <param name="args">Command line arguments.</param>
+    /// <param name="name">Argument name to search for.</param>
+    /// <returns>Parsed URI or null if not present.</returns>
+    /// <exception cref="InvalidDataException">Thrown when the URI cannot be parsed.</exception>
+    private static Uri? GetUriArgument(string[] args, string name)
+    {
+        var value = GetArgumentValue(args, name);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        if (!Uri.TryCreate(value, UriKind.Absolute, out var uri))
+        {
+            throw new InvalidDataException($"Invalid URI value '{value}' for {name}.");
+        }
+
+        return uri;
     }
 }

@@ -69,6 +69,10 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: dotnet restore src/tfplan2md.slnx
 
+      - name: Restore .NET tools
+        if: steps.filter.outputs.changed == 'true'
+        run: dotnet tool restore
+
       - name: Check formatting
         if: steps.filter.outputs.changed == 'true'
         run: dotnet format src/tfplan2md.slnx --verify-no-changes --verbosity diagnostic
@@ -88,7 +92,15 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory ./src/TestResults --collect:"XPlat Code Coverage" -- --report-trx --results-directory ./src/TestResults
+
+      - name: Generate coverage report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: |
+          dotnet tool run reportgenerator \
+            -reports:"./src/TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"./src/TestResults/coverage-report" \
+            -reporttypes:Html
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
@@ -114,6 +126,20 @@ jobs:
         with:
           files: ./src/TestResults/*.trx
           check_name: 'Test Results'
+
+      - name: Upload coverage report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./src/TestResults/coverage-report
+
+      - name: Upload Cobertura report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cobertura
+          path: ./src/TestResults/**/coverage.cobertura.xml
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

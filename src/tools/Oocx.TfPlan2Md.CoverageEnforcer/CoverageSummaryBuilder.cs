@@ -14,8 +14,9 @@ internal sealed class CoverageSummaryBuilder
     /// </summary>
     /// <param name="evaluation">Coverage evaluation results.</param>
     /// <param name="reportLink">Optional link to the detailed coverage report.</param>
+    /// <param name="overrideActive">Whether a coverage override is active.</param>
     /// <returns>Markdown summary content.</returns>
-    internal string BuildMarkdown(CoverageEvaluation evaluation, Uri? reportLink)
+    internal string BuildMarkdown(CoverageEvaluation evaluation, Uri? reportLink, bool overrideActive)
     {
         var builder = new StringBuilder();
         builder.AppendLine("<!-- coverage-summary -->");
@@ -25,6 +26,12 @@ internal sealed class CoverageSummaryBuilder
         builder.AppendLine("| --- | --- | --- | --- |");
         builder.AppendLine(BuildRow("Line", evaluation.Metrics.LinePercentage, evaluation.Thresholds.LineThreshold, evaluation.LinePass));
         builder.AppendLine(BuildRow("Branch", evaluation.Metrics.BranchPercentage, evaluation.Thresholds.BranchThreshold, evaluation.BranchPass));
+
+        if (overrideActive)
+        {
+            builder.AppendLine();
+            builder.AppendLine("**Override active:** coverage enforcement bypassed via `coverage-override` label.");
+        }
 
         if (reportLink is not null)
         {

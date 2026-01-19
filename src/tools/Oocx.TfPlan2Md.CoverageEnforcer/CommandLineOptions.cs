@@ -14,13 +14,14 @@ internal sealed class CommandLineOptions
     /// <param name="reportPath">Path to the Cobertura report.</param>
     /// <param name="lineThreshold">Line coverage threshold percentage.</param>
     /// <param name="branchThreshold">Branch coverage threshold percentage.</param>
-    private CommandLineOptions(string reportPath, decimal lineThreshold, decimal branchThreshold, string? summaryOutputPath, Uri? reportLink)
+    private CommandLineOptions(string reportPath, decimal lineThreshold, decimal branchThreshold, string? summaryOutputPath, Uri? reportLink, bool overrideActive)
     {
         ReportPath = reportPath;
         LineThreshold = lineThreshold;
         BranchThreshold = branchThreshold;
         SummaryOutputPath = summaryOutputPath;
         ReportLink = reportLink;
+        OverrideActive = overrideActive;
     }
 
     /// <summary>
@@ -49,6 +50,11 @@ internal sealed class CommandLineOptions
     internal Uri? ReportLink { get; }
 
     /// <summary>
+    /// Gets a value indicating whether coverage enforcement is overridden.
+    /// </summary>
+    internal bool OverrideActive { get; }
+
+    /// <summary>
     /// Parses command line arguments and environment variables into options.
     /// </summary>
     /// <param name="args">Command line arguments.</param>
@@ -72,8 +78,9 @@ internal sealed class CommandLineOptions
 
         var summaryOutputPath = GetArgumentValue(args, "--summary-output");
         var reportLink = GetUriArgument(args, "--report-link");
+        var overrideActive = GetBooleanArgument(args, "--override-active") ?? false;
 
-        return new CommandLineOptions(reportPath, lineThreshold, branchThreshold, summaryOutputPath, reportLink);
+        return new CommandLineOptions(reportPath, lineThreshold, branchThreshold, summaryOutputPath, reportLink, overrideActive);
     }
 
     /// <summary>
@@ -165,5 +172,28 @@ internal sealed class CommandLineOptions
         }
 
         return uri;
+    }
+
+    /// <summary>
+    /// Parses a boolean argument value from the command line.
+    /// </summary>
+    /// <param name="args">Command line arguments.</param>
+    /// <param name="name">Argument name to search for.</param>
+    /// <returns>Parsed boolean value or null if not present.</returns>
+    /// <exception cref="InvalidDataException">Thrown when the value cannot be parsed.</exception>
+    private static bool? GetBooleanArgument(string[] args, string name)
+    {
+        var value = GetArgumentValue(args, name);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        if (!bool.TryParse(value, out var parsed))
+        {
+            throw new InvalidDataException($"Invalid boolean value '{value}' for {name}.");
+        }
+
+        return parsed;
     }
 }

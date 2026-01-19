@@ -31,10 +31,10 @@ Ensure coverage reflects all production code as requested in the specification. 
 Update `pr-validation.yml` to collect coverage using the Microsoft Testing Platform / TUnit coverage collector and produce a Cobertura report.
 
 **Acceptance Criteria:**
-- [ ] `dotnet test` (or equivalent TUnit runner) in `pr-validation.yml` produces a Cobertura XML report.
-- [ ] `dotnet test` also produces an HTML report.
-- [ ] HTML coverage report is uploaded as a GitHub Actions artifact.
-- [ ] Cobertura XML report is uploaded as a (short-term) GitHub Actions artifact for debugging.
+- [x] `dotnet test` (or equivalent TUnit runner) in `pr-validation.yml` produces a Cobertura XML report.
+- [x] `dotnet test` also produces an HTML report.
+- [x] HTML coverage report is uploaded as a GitHub Actions artifact.
+- [x] Cobertura XML report is uploaded as a (short-term) GitHub Actions artifact for debugging.
 - [ ] Performance impact is measured and confirmed to be within limits (< 2 minutes).
 
 **Dependencies:** Task 1

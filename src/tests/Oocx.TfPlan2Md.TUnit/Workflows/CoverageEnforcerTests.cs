@@ -104,13 +104,31 @@ public class CoverageEnforcerTests
             branchPass: false);
         var builder = new CoverageSummaryBuilder();
 
-        var summary = builder.BuildMarkdown(evaluation, new Uri("https://example.test/coverage"));
+        var summary = builder.BuildMarkdown(evaluation, new Uri("https://example.test/coverage"), overrideActive: false);
 
         await Assert.That(summary).Contains("Code Coverage Summary", StringComparison.Ordinal);
         await Assert.That(summary).Contains("Line", StringComparison.Ordinal);
         await Assert.That(summary).Contains("85.50%", StringComparison.Ordinal);
         await Assert.That(summary).Contains("70.20%", StringComparison.Ordinal);
         await Assert.That(summary).Contains("Coverage report artifact", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Includes an override note when enforcement is bypassed.
+    /// </summary>
+    [Test]
+    public async Task Summary_builder_includes_override_note_when_active()
+    {
+        var evaluation = new CoverageEvaluation(
+            new CoverageMetrics(70m, 60m),
+            new CoverageThresholds(80m, 75m),
+            linePass: false,
+            branchPass: false);
+        var builder = new CoverageSummaryBuilder();
+
+        var summary = builder.BuildMarkdown(evaluation, reportLink: null, overrideActive: true);
+
+        await Assert.That(summary).Contains("Override active", StringComparison.Ordinal);
     }
 
     /// <summary>

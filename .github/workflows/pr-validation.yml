@@ -102,6 +102,15 @@ jobs:
             -targetdir:"./src/TestResults/coverage-report" \
             -reporttypes:Html
 
+      - name: Check coverage override label
+        id: coverage_override
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels?.map(label => label.name) ?? [];
+            core.setOutput('active', labels.includes('coverage-override'));
+
       - name: Enforce coverage thresholds
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         run: |
@@ -116,7 +125,8 @@ jobs:
             --line-threshold 84.48 \
             --branch-threshold 72.80 \
             --summary-output ./src/TestResults/coverage-summary.md \
-            --report-link "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            --report-link "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --override-active "${{ steps.coverage_override.outputs.active }}"
 
       - name: Publish coverage summary
         if: steps.filter.outputs.changed == 'true' && (success() || failure())

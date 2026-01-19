@@ -12,7 +12,7 @@ try
     if (!string.IsNullOrWhiteSpace(options.SummaryOutputPath))
     {
         var summaryBuilder = new CoverageSummaryBuilder();
-        var summary = summaryBuilder.BuildMarkdown(evaluation, options.ReportLink);
+        var summary = summaryBuilder.BuildMarkdown(evaluation, options.ReportLink, options.OverrideActive);
         File.WriteAllText(options.SummaryOutputPath, summary);
     }
 
@@ -22,6 +22,12 @@ try
 
     if (!evaluation.IsPassing)
     {
+        if (options.OverrideActive)
+        {
+            Console.WriteLine("Coverage override active; bypassing enforcement failure.");
+            return 0;
+        }
+
         Console.Error.WriteLine("Coverage thresholds not met.");
         return 1;
     }

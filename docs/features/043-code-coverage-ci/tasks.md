@@ -83,9 +83,9 @@ Format the coverage metrics into a markdown table and publish it to the GitHub J
 Update the CI workflow to respect the `coverage-override` label. If present, the coverage check should succeed even if thresholds are not met.
 
 **Acceptance Criteria:**
-- [ ] Coverage check passes if the `coverage-override` label is present on the PR.
-- [ ] The PR summary/comment explicitly states that an override is active.
-- [ ] The label check works correctly for both internal and fork PRs (respecting token limitations).
+- [x] Coverage check passes if the `coverage-override` label is present on the PR.
+- [x] The PR summary/comment explicitly states that an override is active.
+- [x] The label check works correctly for both internal and fork PRs (respecting token limitations).
 
 **Dependencies:** Task 4
 

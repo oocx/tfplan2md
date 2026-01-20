@@ -35,7 +35,7 @@ Update `pr-validation.yml` to collect coverage using the Microsoft Testing Platf
 - [x] `dotnet test` also produces an HTML report.
 - [x] HTML coverage report is uploaded as a GitHub Actions artifact.
 - [x] Cobertura XML report is uploaded as a (short-term) GitHub Actions artifact for debugging.
-- [ ] Performance impact is measured and confirmed to be within limits (< 2 minutes).
+- [x] Performance impact is measured and confirmed to be within limits (< 2 minutes).
 
 **Dependencies:** Task 1
 
@@ -119,7 +119,7 @@ Perform User Acceptance Testing to ensure all scenarios from the test plan are c
 - [x] Scenario 1: Coverage regressions are caught (verified via UAT PR).
 - [x] Scenario 2: Coverage failure override works (verified via UAT PR).
 - [x] Scenario 3: Coverage badge and history update correctly (verified upon merge).
-- [ ] All test cases (TC-01 through TC-14) from `test-plan.md` are executed and pass.
+- [x] All test cases (TC-01 through TC-14) from `test-plan.md` are executed and pass.
 
 **Dependencies:** All previous tasks
 

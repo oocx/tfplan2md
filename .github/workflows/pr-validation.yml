@@ -122,8 +122,8 @@ jobs:
 
           dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
             --report "$report_path" \
-            --line-threshold 84.48 \
-            --branch-threshold 72.80 \
+            --line-threshold 99.00 \
+            --branch-threshold 99.00 \
             --summary-output ./src/TestResults/coverage-summary.md \
             --report-link "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --override-active "${{ steps.coverage_override.outputs.active }}"
@@ -176,8 +176,8 @@ jobs:
         run: |
           dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
             --report ./src/TestResults/coverage.cobertura.xml \
-            --line-threshold 84.48 \
-            --branch-threshold 72.80 \
+            --line-threshold 99.00 \
+            --branch-threshold 99.00 \
             --badge-output ./assets/coverage-badge.svg \
             --history-output ./docs/coverage/history.json \
             --commit-sha "${{ github.event.pull_request.head.sha }}" \

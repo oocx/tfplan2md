@@ -116,9 +116,9 @@ Implement automatic updates for the coverage badge and history data. This should
 Perform User Acceptance Testing to ensure all scenarios from the test plan are covered.
 
 **Acceptance Criteria:**
-- [ ] Scenario 1: Coverage regressions are caught (verified via UAT PR).
-- [ ] Scenario 2: Coverage failure override works (verified via UAT PR).
-- [ ] Scenario 3: Coverage badge and history update correctly (verified upon merge).
+- [x] Scenario 1: Coverage regressions are caught (verified via UAT PR).
+- [x] Scenario 2: Coverage failure override works (verified via UAT PR).
+- [x] Scenario 3: Coverage badge and history update correctly (verified upon merge).
 - [ ] All test cases (TC-01 through TC-14) from `test-plan.md` are executed and pass.
 
 **Dependencies:** All previous tasks

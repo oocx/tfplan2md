@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
@@ -13,7 +15,8 @@ internal sealed record CoverageHistoryEntry
     /// <param name="commitSha">Commit SHA associated with the measurement.</param>
     /// <param name="lineCoverage">Line coverage percentage.</param>
     /// <param name="branchCoverage">Branch coverage percentage.</param>
-    internal CoverageHistoryEntry(DateTimeOffset timestamp, string commitSha, decimal lineCoverage, decimal branchCoverage)
+    [JsonConstructor]
+    public CoverageHistoryEntry(DateTimeOffset timestamp, string commitSha, decimal lineCoverage, decimal branchCoverage)
     {
         Timestamp = timestamp;
         CommitSha = commitSha;

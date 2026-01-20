@@ -468,9 +468,19 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 | Workflow | Trigger | Purpose |
 |----------|---------|----------|
-| **PR Validation** | Pull requests to `main` | Format check, build, test, vulnerability scan |
+| **PR Validation** | Pull requests to `main` | Format check, build, test, coverage enforcement, vulnerability scan |
 | **CI** | Push to `main` | Build, test, auto-version with [Versionize](https://github.com/versionize/versionize) |
 | **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
+
+### Code Coverage
+
+Code coverage is automatically collected and enforced on every pull request:
+
+- **Coverage badge**: The [![Coverage](assets/coverage-badge.svg)](docs/coverage/history.json) badge in the README shows current line coverage percentage
+- **Coverage thresholds**: PRs must maintain or improve code coverage (currently 84.48% line coverage and 72.80% branch coverage)
+- **Coverage history**: Historical coverage data is tracked in [docs/coverage/history.json](docs/coverage/history.json)
+- **Coverage reports**: Detailed HTML coverage reports are available as workflow artifacts
+- **Maintainer override**: PRs can bypass coverage requirements using the `coverage-override` label when justified
 
 ### Versioning
 

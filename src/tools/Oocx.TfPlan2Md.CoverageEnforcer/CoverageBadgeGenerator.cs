@@ -18,26 +18,26 @@ internal sealed class CoverageBadgeGenerator
         var valueText = string.Create(CultureInfo.InvariantCulture, $"{coveragePercentage:0.00}%");
         var color = ResolveColor(coveragePercentage);
 
-        return string.Create(CultureInfo.InvariantCulture, $"""
-<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"20\" role=\"img\" aria-label=\"coverage: {valueText}\">
-  <linearGradient id=\"s\" x2=\"0\" y2=\"100%\">
-    <stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/>
-    <stop offset=\"1\" stop-opacity=\".1\"/>
+        return $"""
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20" role="img" aria-label="coverage: {valueText}">
+  <linearGradient id="s" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
   </linearGradient>
-  <clipPath id=\"r\">
-    <rect width=\"120\" height=\"20\" rx=\"3\" fill=\"#fff\"/>
+  <clipPath id="r">
+    <rect width="120" height="20" rx="3" fill="#fff"/>
   </clipPath>
-  <g clip-path=\"url(#r)\">
-    <rect width=\"60\" height=\"20\" fill=\"#555\"/>
-    <rect x=\"60\" width=\"60\" height=\"20\" fill=\"{color}\"/>
-    <rect width=\"120\" height=\"20\" fill=\"url(#s)\"/>
+  <g clip-path="url(#r)">
+    <rect width="60" height="20" fill="#555"/>
+    <rect x="60" width="60" height="20" fill="{color}"/>
+    <rect width="120" height="20" fill="url(#s)"/>
   </g>
-  <g fill=\"#fff\" text-anchor=\"middle\" font-family=\"Verdana,Geneva,DejaVu Sans,sans-serif\" font-size=\"11\">
-    <text x=\"30\" y=\"14\">coverage</text>
-    <text x=\"90\" y=\"14\">{valueText}</text>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11">
+    <text x="30" y="14">coverage</text>
+    <text x="90" y="14">{valueText}</text>
   </g>
 </svg>
-""");
+""";
     }
 
     /// <summary>

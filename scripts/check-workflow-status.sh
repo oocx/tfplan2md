@@ -9,10 +9,10 @@ export PAGER=cat
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/check-workflow-status.sh list [--branch <branch>] [--workflow <workflow-name>] [--limit <n>]
-  scripts/check-workflow-status.sh watch <run-id>
-  scripts/check-workflow-status.sh trigger <workflow-file> [--field key=value ...]
-  scripts/check-workflow-status.sh view <run-id>
+  scripts/check-workflow-status.sh [--repo <owner/repo>] list [--branch <branch>] [--workflow <workflow-name>] [--limit <n>]
+  scripts/check-workflow-status.sh [--repo <owner/repo>] watch <run-id>
+  scripts/check-workflow-status.sh [--repo <owner/repo>] trigger <workflow-file> [--field key=value ...]
+  scripts/check-workflow-status.sh [--repo <owner/repo>] view <run-id>
 
 Commands:
   list      List workflow runs (default: all runs)
@@ -21,6 +21,7 @@ Commands:
   view      View details of a specific workflow run
 
 Options:
+  --repo <owner/repo>       Target repository (overrides GH_REPO)
   --branch <branch>         Filter runs by branch (for list command)
   --workflow <name>         Filter runs by workflow name/file (for list command)
   --limit <n>               Limit number of results (default: 1 for list)
@@ -28,19 +29,19 @@ Options:
 
 Examples:
   # List latest run on main branch
-  scripts/check-workflow-status.sh list --branch main --limit 1
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md list --branch main --limit 1
 
   # List latest release workflow run
-  scripts/check-workflow-status.sh list --workflow release.yml --limit 1
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md list --workflow release.yml --limit 1
 
   # Watch a specific run
-  scripts/check-workflow-status.sh watch 12345678
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md watch 12345678
 
   # View run details
-  scripts/check-workflow-status.sh view 12345678
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md view 12345678
 
   # Trigger release workflow with tag
-  scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md trigger release.yml --field tag=v1.0.0
 
 Notes:
   - All commands suppress interactive pagers (GH_PAGER=cat, GH_FORCE_TTY=false)
@@ -49,8 +50,15 @@ Notes:
 USAGE
 }
 
+repo=""
+
 gh_safe() {
-  GH_PAGER=cat GH_FORCE_TTY=false gh "$@"
+  unset GH_REPO
+  if [[ -n "$repo" ]]; then
+    GH_PAGER=cat GH_FORCE_TTY=false gh "$@" --repo "$repo"
+  else
+    GH_PAGER=cat GH_FORCE_TTY=false gh "$@"
+  fi
 }
 
 cmd_list() {
@@ -149,6 +157,18 @@ main() {
     usage
     exit 1
   fi
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --repo)
+        repo="$2"
+        shift 2
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
   
   local command="$1"
   shift

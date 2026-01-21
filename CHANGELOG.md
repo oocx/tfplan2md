@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.41"></a>
+## [1.0.0-alpha.41](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.40...v1.0.0-alpha.41) (2026-01-21)
+
+### ✨ Features
+
+* add coverage badge and history ([26bf292](https://github.com/oocx/tfplan2md/commit/26bf292ff9ec6f79cec51a0d71e3034ede0962dd))
+* add coverage enforcement tool ([f3453b2](https://github.com/oocx/tfplan2md/commit/f3453b297f665d916356c8058ea74c1cc403ebe2))
+* add coverage override support ([d7f7cbd](https://github.com/oocx/tfplan2md/commit/d7f7cbd65d6b78d925e65292aea52dd98aa861a0))
+* publish coverage summary ([8df9f2e](https://github.com/oocx/tfplan2md/commit/8df9f2e5d43df5ce6284e031d56b37362dd44a9f))
+
+### 🐛 Bug Fixes
+
+* correct demo artifact paths ([b7810c3](https://github.com/oocx/tfplan2md/commit/b7810c33974237c0ef6ab698308786da17b36266))
+* stabilize coverage history update in ci ([0ad7672](https://github.com/oocx/tfplan2md/commit/0ad7672c26305bde76b9b7da265a5d58884106cb))
+
+### ♻️ Refactoring
+
+* use raw string literals in badge generator ([298c276](https://github.com/oocx/tfplan2md/commit/298c2768d49ff7e728d6a35d8cd137d52a90e264))
+
+### 📚 Documentation
+
+* add architecture for code coverage CI ([ec15b4f](https://github.com/oocx/tfplan2md/commit/ec15b4f089c743a0c04ca3f4978713860bd690bf))
+* add coverage documentation updates ([9726773](https://github.com/oocx/tfplan2md/commit/9726773c881b6d486dbe39fd8df5ec4188671af9))
+* add feature specification for 043-code-coverage-ci ([0787bf5](https://github.com/oocx/tfplan2md/commit/0787bf5573294515a4d4c3fe0dd84309e9452356))
+* add tasks for code coverage ci ([7457311](https://github.com/oocx/tfplan2md/commit/745731172d0bc9488d0928e6d788497f63d09d71))
+* add test plan and uat test plan for 043-code-coverage-ci ([01de8c4](https://github.com/oocx/tfplan2md/commit/01de8c4c571a8f6667965198ebcfba81a4e6f867))
+* approve code coverage implementation after fixes ([10bda7a](https://github.com/oocx/tfplan2md/commit/10bda7ab59634bbf3d91136226b5b400333039de))
+* finalize coverage task checklist ([092fd1d](https://github.com/oocx/tfplan2md/commit/092fd1dd8a93f503d32acb70549281bd1c62226a))
+* update coverage badge and history ([38b1138](https://github.com/oocx/tfplan2md/commit/38b1138926367a0c7575d8f5474034588aa5cd31))
+* update coverage badge and history ([875c00a](https://github.com/oocx/tfplan2md/commit/875c00a65db6ebc70c87f172bf69c4de57deccab))
+* update demo artifacts for coverage ([db4dc87](https://github.com/oocx/tfplan2md/commit/db4dc878d8d38733a51754ea5e8297ab1c0d7996))
+* update uat status for coverage ([129b4e0](https://github.com/oocx/tfplan2md/commit/129b4e00d1eacc4be1e83ab03388847635cd0ad4))
+
 <a name="1.0.0-alpha.40"></a>
 ## [1.0.0-alpha.40](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.39...v1.0.0-alpha.40) (2026-01-18)
 

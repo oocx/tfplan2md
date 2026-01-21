@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
@@ -7,7 +6,6 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 /// Performs normalization steps shared by all rendering flavors.
 /// Related feature: docs/features/027-markdown-html-rendering/specification.md
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal static class CommonHtmlNormalization
 {
     /// <summary>

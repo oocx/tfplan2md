@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.42"></a>
+## [1.0.0-alpha.42](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.41...v1.0.0-alpha.42) (2026-01-21)
+
+### ✨ Features
+
+* trigger release after ci workflow fix ([399d40c](https://github.com/oocx/tfplan2md/commit/399d40c069c31327d1d3d6b8da81add4526e382e))
+
+### 🐛 Bug Fixes
+
+* update Dockerfile path in release workflow ([bae9fc5](https://github.com/oocx/tfplan2md/commit/bae9fc5b56e8cf90157187be2c26e68259e1e528))
+
 <a name="1.0.0-alpha.41"></a>
 ## [1.0.0-alpha.41](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.40...v1.0.0-alpha.41) (2026-01-21)
 

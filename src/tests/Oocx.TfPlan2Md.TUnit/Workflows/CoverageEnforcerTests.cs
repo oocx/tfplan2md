@@ -172,6 +172,144 @@ public class CoverageEnforcerTests
     }
 
     /// <summary>
+    /// Replaces an existing history entry when the commit SHA matches.
+    /// </summary>
+    [Test]
+    public async Task History_writer_replaces_existing_entry_for_same_commit()
+    {
+        var tempDirectory = CreateTempDirectory();
+        var historyPath = Path.Combine(tempDirectory, "history.json");
+        var writer = new CoverageHistoryWriter();
+        var originalEntry = new CoverageHistoryEntry(
+            DateTimeOffset.Parse("2026-01-19T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+            "abc123",
+            80m,
+            70m);
+        var updatedEntry = new CoverageHistoryEntry(
+            DateTimeOffset.Parse("2026-01-20T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+            "abc123",
+            85m,
+            72m);
+
+        writer.UpdateHistory(historyPath, originalEntry);
+        writer.UpdateHistory(historyPath, updatedEntry);
+
+        var json = File.ReadAllText(historyPath);
+        using var document = JsonDocument.Parse(json);
+        var entries = document.RootElement.GetProperty("Entries");
+        await Assert.That(entries.GetArrayLength()).IsEqualTo(1);
+        await Assert.That(entries[0].GetProperty("LineCoverage").GetDecimal()).IsEqualTo(85m);
+    }
+
+    /// <summary>
+    /// Throws when the history path is missing.
+    /// </summary>
+    [Test]
+    public async Task History_writer_throws_when_history_path_is_missing()
+    {
+        var writer = new CoverageHistoryWriter();
+        var entry = new CoverageHistoryEntry(
+            DateTimeOffset.Parse("2026-01-20T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
+            "abc123",
+            80m,
+            70m);
+
+        var action = () => writer.UpdateHistory(string.Empty, entry);
+
+        await Assert.That(action).Throws<InvalidDataException>();
+    }
+
+    /// <summary>
+    /// Parses full command line options including optional parameters.
+    /// </summary>
+    [Test]
+    public async Task Command_line_options_parse_reads_all_supported_arguments()
+    {
+        var args = new[]
+        {
+            "--report",
+            "/tmp/coverage.cobertura.xml",
+            "--line-threshold=81.25",
+            "--branch-threshold",
+            "72.50",
+            "--summary-output",
+            "/tmp/summary.md",
+            "--report-link",
+            "https://example.test/coverage",
+            "--override-active",
+            "true",
+            "--badge-output",
+            "/tmp/badge.svg",
+            "--history-output",
+            "/tmp/history.json",
+            "--commit-sha",
+            "abc123",
+            "--timestamp",
+            "2026-01-20T00:00:00Z",
+        };
+
+        var options = CommandLineOptions.Parse(args);
+
+        await Assert.That(options.ReportPath).IsEqualTo("/tmp/coverage.cobertura.xml");
+        await Assert.That(options.LineThreshold).IsEqualTo(81.25m);
+        await Assert.That(options.BranchThreshold).IsEqualTo(72.50m);
+        await Assert.That(options.SummaryOutputPath).IsEqualTo("/tmp/summary.md");
+        await Assert.That(options.ReportLink?.ToString()).IsEqualTo("https://example.test/coverage");
+        await Assert.That(options.OverrideActive).IsTrue();
+        await Assert.That(options.BadgeOutputPath).IsEqualTo("/tmp/badge.svg");
+        await Assert.That(options.HistoryOutputPath).IsEqualTo("/tmp/history.json");
+        await Assert.That(options.CommitSha).IsEqualTo("abc123");
+        await Assert.That(options.Timestamp).IsEqualTo(DateTimeOffset.Parse("2026-01-20T00:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal));
+    }
+
+    /// <summary>
+    /// Uses environment variables when thresholds are not provided on the command line.
+    /// </summary>
+    [Test]
+    public async Task Command_line_options_parse_uses_environment_thresholds_when_missing()
+    {
+        var originalLine = Environment.GetEnvironmentVariable("COVERAGE_LINE_THRESHOLD");
+        var originalBranch = Environment.GetEnvironmentVariable("COVERAGE_BRANCH_THRESHOLD");
+        try
+        {
+            Environment.SetEnvironmentVariable("COVERAGE_LINE_THRESHOLD", "88.5");
+            Environment.SetEnvironmentVariable("COVERAGE_BRANCH_THRESHOLD", "77.25");
+            var args = new[] { "--report", "/tmp/coverage.cobertura.xml" };
+
+            var options = CommandLineOptions.Parse(args);
+
+            await Assert.That(options.LineThreshold).IsEqualTo(88.5m);
+            await Assert.That(options.BranchThreshold).IsEqualTo(77.25m);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("COVERAGE_LINE_THRESHOLD", originalLine);
+            Environment.SetEnvironmentVariable("COVERAGE_BRANCH_THRESHOLD", originalBranch);
+        }
+    }
+
+    /// <summary>
+    /// Throws when an invalid decimal threshold is provided.
+    /// </summary>
+    [Test]
+    public async Task Command_line_options_parse_throws_on_invalid_decimal_threshold()
+    {
+        var args = new[]
+        {
+            "--report",
+            "/tmp/coverage.cobertura.xml",
+            "--line-threshold",
+            "not-a-number",
+            "--branch-threshold",
+            "70",
+        };
+
+        var action = () => CommandLineOptions.Parse(args);
+
+        await Assert.That(action).Throws<InvalidDataException>();
+    }
+
+    /// <summary>
     /// Builds the absolute path for a coverage test data file.
     /// </summary>
     /// <param name="fileName">Coverage test data file name.</param>

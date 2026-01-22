@@ -545,3 +545,108 @@ dotnet_diagnostic.MA0051.severity = suggestion
 # Logic error - dead code or copy-paste mistake
 # Set to suggestion initially - will fix or suppress with justification
 dotnet_diagnostic.MA0140.severity = suggestion
+
+################################################################################
+# Roslynator.Analyzers Rules (Phase 4)
+################################################################################
+
+# Reference: https://github.com/dotnet/roslynator
+# Strategy: Selective enabling - Roslynator has 200+ rules, many overlap with other analyzers
+# Start with all rules disabled globally, enable high-value rules incrementally
+
+# Global default - DISABLE all Roslynator rules initially
+dotnet_analyzer_diagnostic.category-Roslynator.severity = none
+
+# ========================================
+# Selectively Enabled Rules (High Value)
+# ========================================
+
+# RCS1194: Implement exception constructors
+# Critical: Design consistency - custom exceptions should follow standard patterns
+# Default severity: error (built-in) - keeping as error after fixing violations
+dotnet_diagnostic.RCS1194.severity = error
+
+# RCS1018: Add accessibility modifiers (or remove 'this' qualifier)
+# Medium: Code consistency - explicit accessibility improves clarity
+# Note: May overlap with StyleCop SA1400, evaluate during fixing
+dotnet_diagnostic.RCS1018.severity = warning
+
+# RCS1033: Remove redundant boolean literal
+# High: Code simplification - removes unnecessary true/false in expressions
+dotnet_diagnostic.RCS1033.severity = warning
+
+# RCS1077: Optimize LINQ method call
+# High: Performance - suggests more efficient LINQ patterns
+dotnet_diagnostic.RCS1077.severity = warning
+
+# RCS1146: Use conditional access
+# High: Null handling - use ?. instead of if-not-null checks
+dotnet_diagnostic.RCS1146.severity = warning
+
+# RCS1175: Unused 'this' parameter (extension method)
+# Medium: Dead code detection
+dotnet_diagnostic.RCS1175.severity = warning
+
+# RCS1197: Optimize StringBuilder.Append/AppendLine call
+# Medium: Performance - StringBuilder optimization
+dotnet_diagnostic.RCS1197.severity = warning
+
+# RCS1214: Unnecessary interpolated string
+# Medium: Code simplification - removes unnecessary $"..." when no interpolation
+dotnet_diagnostic.RCS1214.severity = warning
+
+# ========================================
+# Rules Set to Suggestion (Lower Priority)
+# ========================================
+
+# RCS1036: Remove unnecessary blank line
+# Low priority: Formatting preference handled by .editorconfig
+dotnet_diagnostic.RCS1036.severity = suggestion
+
+# RCS1037: Remove trailing whitespace
+# Low priority: Handled by editor/formatter
+dotnet_diagnostic.RCS1037.severity = suggestion
+
+# RCS1124: Inline local variable
+# Low priority: Refactoring suggestion, not always desirable
+dotnet_diagnostic.RCS1124.severity = suggestion
+
+# ========================================
+# Rules Explicitly Disabled (Overlap/Not Applicable)
+# ========================================
+
+# RCS1001: Add braces to if-else
+# Disabled: Conflicts with existing code style (single-line if statements allowed)
+dotnet_diagnostic.RCS1001.severity = none
+
+# RCS1003: Add braces to if-else (when expression spans over multiple lines)
+# Disabled: Same rationale as RCS1001
+dotnet_diagnostic.RCS1003.severity = none
+
+# RCS1032: Remove redundant parentheses
+# Disabled: Parentheses often improve readability even when technically redundant
+dotnet_diagnostic.RCS1032.severity = none
+
+# RCS1089: Use --/++ operator instead of assignment
+# Disabled: Stylistic preference, both forms are equally clear
+dotnet_diagnostic.RCS1089.severity = none
+
+# RCS1097: Remove redundant 'ToString' call
+# Disabled: Overlaps with other analyzers and can reduce clarity
+dotnet_diagnostic.RCS1097.severity = none
+
+# RCS1158: Static member in generic type should use a type parameter
+# Disabled: Specific design scenario, not broadly applicable
+dotnet_diagnostic.RCS1158.severity = none
+
+# RCS1199: Simplify Boolean expression
+# Disabled: Overlaps with SonarAnalyzer rules
+dotnet_diagnostic.RCS1199.severity = none
+
+# RCS1235: Optimize method call
+# Disabled: May conflict with readability goals
+dotnet_diagnostic.RCS1235.severity = none
+
+################################################################################
+# End of Roslynator.Analyzers Configuration
+################################################################################

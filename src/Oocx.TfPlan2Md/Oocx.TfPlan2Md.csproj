@@ -22,6 +22,7 @@
     <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
     <WarningsNotAsErrors>IL2067;IL2070;IL2075;IL2080;IL2104;IL3050;IL3053</WarningsNotAsErrors>
     <TrimmerRootDescriptor>TrimmerRootDescriptor.xml</TrimmerRootDescriptor>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <Target Name="SetSourceRevisionId" BeforeTargets="GenerateAssemblyInfo" Condition="'$(SourceRevisionId)'==''">

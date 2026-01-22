@@ -171,7 +171,7 @@ internal class DiagnosticContext
                     var typeCountStrings = PrincipalTypeCount
                         .OrderBy(kvp => kvp.Key)
                         .Select(kvp => $"{kvp.Value} {kvp.Key}");
-                    sb.Append(string.Join(", ", typeCountStrings));
+                    sb.AppendJoin(", ", typeCountStrings);
                     sb.AppendLine();
                 }
 

@@ -13,9 +13,26 @@ internal sealed class CliValidationException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="CliValidationException"/> class.
     /// </summary>
+    public CliValidationException()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliValidationException"/> class.
+    /// </summary>
     /// <param name="message">Description of the validation error.</param>
     public CliValidationException(string message)
         : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliValidationException"/> class.
+    /// </summary>
+    /// <param name="message">Description of the validation error.</param>
+    /// <param name="innerException">The exception that is the cause of this exception.</param>
+    public CliValidationException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 }

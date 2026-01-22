@@ -13,9 +13,25 @@ internal sealed class ScreenshotCaptureException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="ScreenshotCaptureException"/> class.
     /// </summary>
+    public ScreenshotCaptureException()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ScreenshotCaptureException"/> class.
+    /// </summary>
+    /// <param name="message">Exception message describing the failure.</param>
+    public ScreenshotCaptureException(string message)
+        : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ScreenshotCaptureException"/> class.
+    /// </summary>
     /// <param name="message">Exception message describing the failure.</param>
     /// <param name="innerException">Original exception cause.</param>
-    public ScreenshotCaptureException(string message, Exception? innerException = null)
+    public ScreenshotCaptureException(string message, Exception? innerException)
         : base(message, innerException)
     {
     }

@@ -13,9 +13,26 @@ internal sealed class CliParseException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="CliParseException"/> class.
     /// </summary>
+    public CliParseException()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliParseException"/> class.
+    /// </summary>
     /// <param name="message">Description of the parsing error.</param>
     public CliParseException(string message)
         : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliParseException"/> class.
+    /// </summary>
+    /// <param name="message">Description of the parsing error.</param>
+    /// <param name="innerException">The exception that is the cause of this exception.</param>
+    public CliParseException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 }

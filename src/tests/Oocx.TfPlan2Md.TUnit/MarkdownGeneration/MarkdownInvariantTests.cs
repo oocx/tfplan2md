@@ -83,7 +83,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"MD012 violation - found consecutive blank lines:\n" +
+            "MD012 violation - found consecutive blank lines:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.MaxBlanks} blanks at line {v.Line}")));
     }
 
@@ -159,7 +159,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Some tables failed to parse (likely broken by blank lines):\n" +
+            "Some tables failed to parse (likely broken by blank lines):\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: expected {v.Expected} tables, parsed {v.Actual}")));
     }
 
@@ -185,7 +185,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Found blank lines between table rows:\n" +
+            "Found blank lines between table rows:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.Count} occurrences")));
     }
 
@@ -224,7 +224,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Found potential raw newlines in table cells:\n" +
+            "Found potential raw newlines in table cells:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File} line {v.Line}")));
     }
 
@@ -304,7 +304,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Headings must be surrounded by blank lines:\n" +
+            "Headings must be surrounded by blank lines:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File} line {v.Line}: {v.Issue}")));
     }
 
@@ -334,7 +334,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Unbalanced <details> tags:\n" +
+            "Unbalanced <details> tags:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.Open} open, {v.Close} close")));
     }
 
@@ -360,7 +360,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Unbalanced <summary> tags:\n" +
+            "Unbalanced <summary> tags:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.Open} open, {v.Close} close")));
     }
 
@@ -387,7 +387,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Plans missing '# Terraform Plan' heading:\n" +
+            "Plans missing '# Terraform Plan' heading:\n" +
             string.Join("\n", violations.Select(v => $"  {v}")));
     }
 
@@ -418,7 +418,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Non-empty plans missing '## Summary' heading:\n" +
+            "Non-empty plans missing '## Summary' heading:\n" +
             string.Join("\n", violations.Select(v => $"  {v}")));
     }
 

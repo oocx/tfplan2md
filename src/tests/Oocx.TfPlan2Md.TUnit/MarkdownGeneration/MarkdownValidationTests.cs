@@ -98,10 +98,10 @@ public class MarkdownValidationTests
         var document = Markdown.Parse(markdown, pipeline);
         var headings = document.Descendants<HeadingBlock>().ToList();
 
-        var summaryPresent = headings.Any(h => h.Inline != null && h.Inline.FirstChild != null && h.Inline.FirstChild.ToString() == "Summary");
+        var summaryPresent = headings.Any(h => h.Inline?.FirstChild != null && h.Inline.FirstChild.ToString() == "Summary");
         summaryPresent.Should().BeTrue("because summary heading should be present");
 
-        var resourceChangesPresent = headings.Any(h => h.Inline != null && h.Inline.FirstChild != null && h.Inline.FirstChild.ToString() == "Resource Changes");
+        var resourceChangesPresent = headings.Any(h => h.Inline?.FirstChild != null && h.Inline.FirstChild.ToString() == "Resource Changes");
         resourceChangesPresent.Should().BeTrue("because resource changes heading should be present");
     }
 

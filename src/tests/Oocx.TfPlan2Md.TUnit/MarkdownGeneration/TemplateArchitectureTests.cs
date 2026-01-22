@@ -182,7 +182,7 @@ public partial class TemplateArchitectureTests
     {
         var report = new List<(string Name, int LineCount)>();
 
-        foreach (var resourceName in GetAllTemplateResources().OrderBy(n => n))
+        foreach (var resourceName in GetAllTemplateResources().Order())
         {
             var content = ReadTemplateContent(resourceName);
             var templateName = GetTemplateName(resourceName);

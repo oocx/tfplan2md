@@ -432,5 +432,7 @@ dotnet_diagnostic.S3923.severity = warning
 dotnet_diagnostic.S6602.severity = warning
 
 # S6618: "string.Create" should be used instead of "FormattableString"
-# Medium: Performance - keep as warning
-dotnet_diagnostic.S6618.severity = warning
+# Medium: Performance micro-optimization - set to suggestion for CLI tool
+# Justification: string.Create is a performance micro-optimization that reduces readability
+# For a CLI reporting tool, code clarity is more important than microsecond string allocation savings
+dotnet_diagnostic.S6618.severity = suggestion

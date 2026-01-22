@@ -244,3 +244,112 @@ dotnet_naming_style.camel_case.capitalization = camel_case
 
 dotnet_naming_style.underscore_camel_case.required_prefix = _
 dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+
+# ========================================
+# StyleCop.Analyzers Rules
+# ========================================
+# Phase 1: Documentation and code consistency
+# Start all rules as warnings, promote critical rules to errors after violations fixed
+# Reference: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/
+
+# SA0001: XML comment analysis disabled - Enable XML documentation
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1101: Prefix local calls with this
+# Disabled - conflicts with project convention (dotnet_style_qualification_for_* = false)
+dotnet_diagnostic.SA1101.severity = none
+
+# SA1108: Block statements should not contain embedded comments
+dotnet_diagnostic.SA1108.severity = suggestion
+
+# SA1117: Parameters should be on same line or separate lines
+dotnet_diagnostic.SA1117.severity = suggestion
+
+# SA1122: Use string.Empty for empty strings
+dotnet_diagnostic.SA1122.severity = suggestion
+
+# SA1111: Closing parenthesis should be on line of last parameter
+dotnet_diagnostic.SA1111.severity = suggestion
+
+# SA1116: The parameters should begin on the line after declaration when spanning multiple lines
+dotnet_diagnostic.SA1116.severity = suggestion
+
+# SA1118: The parameter spans multiple lines
+dotnet_diagnostic.SA1118.severity = suggestion
+
+# SA1124: Do not use regions
+dotnet_diagnostic.SA1124.severity = none
+
+# SA1128: Put constructor initializers on their own line
+dotnet_diagnostic.SA1128.severity = suggestion
+
+# SA1201: Element ordering (constructor, property, method)
+dotnet_diagnostic.SA1201.severity = suggestion
+
+# SA1202: Public members should come before private members
+dotnet_diagnostic.SA1202.severity = suggestion
+
+# SA1203: Constant fields should appear before non-constant fields
+dotnet_diagnostic.SA1203.severity = suggestion
+
+# SA1204: Static members should appear before non-static members
+dotnet_diagnostic.SA1204.severity = suggestion
+
+# SA1316: Tuple element names should use correct casing
+dotnet_diagnostic.SA1316.severity = warning
+
+# SA1311: Static readonly fields should begin with upper-case letter
+# Relaxed - static readonly field naming varies by context (test fixtures, etc.)
+dotnet_diagnostic.SA1311.severity = suggestion
+
+# SA1312: Variable names should begin with lower-case letter
+# Relaxed - C# discard pattern uses '_' which is intentional
+dotnet_diagnostic.SA1312.severity = none
+
+# SA1402: File may only contain a single type
+# Relaxed - project uses multiple related types per file (records, enums)
+dotnet_diagnostic.SA1402.severity = suggestion
+
+# SA1649: File name should match first type name
+# Relaxed due to SA1402 - multiple types per file is intentional
+dotnet_diagnostic.SA1649.severity = suggestion
+
+# SA1308: Field names should not begin with prefix 's_'
+# Relaxed - static field naming convention varies
+dotnet_diagnostic.SA1308.severity = none
+
+# SA1309: Field names should not begin with underscore
+# Disabled - project convention uses _camelCase for private fields
+dotnet_diagnostic.SA1309.severity = none
+
+# SA1413: Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion
+
+# SA1600: Elements should be documented
+# This will be the primary documentation rule - start as warning, promote to error later
+dotnet_diagnostic.SA1600.severity = warning
+
+# SA1633: File should have header
+# Disabled - project doesn't use file headers
+dotnet_diagnostic.SA1633.severity = none
+
+# Documentation Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = warning
+
+# Ordering Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.OrderingRules.severity = warning
+
+# Naming Rules - Default to warning (except SA1309 disabled above)
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.NamingRules.severity = warning
+
+# Maintainability Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.MaintainabilityRules.severity = warning
+
+# Layout Rules - Default to suggestion (formatting not critical)
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.LayoutRules.severity = suggestion
+
+# Readability Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.ReadabilityRules.severity = warning
+
+# Spacing Rules - Default to suggestion (formatting not critical)
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.SpacingRules.severity = suggestion

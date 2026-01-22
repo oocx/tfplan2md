@@ -42,10 +42,12 @@ internal static class AzureDevOpsHtmlPostProcessor
                 var style = styleMatch.Groups["style"].Value.Trim();
                 style = style.TrimEnd(';');
                 return $"style=\"{style}\"";
-            }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            },
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             return $"<details{(normalized.StartsWith(' ') ? string.Empty : " ")}{normalized}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 
     /// <summary>
@@ -63,7 +65,8 @@ internal static class AzureDevOpsHtmlPostProcessor
             style = EnsureStyleDirective(style, "padding:0");
             style = EnsureStyleDirective(style, "margin:0");
             return $"<code style=\"{style}\"{match.Groups["rest"].Value}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         var withSpanStyles = Regex.Replace(withCodeStyles, "<span\\s+style=\\\"(?<style>[^\\\"]*)\\\"(?<rest>[^>]*)>", match =>
         {
@@ -78,7 +81,8 @@ internal static class AzureDevOpsHtmlPostProcessor
             }
 
             return $"<span style=\"{style}\"{match.Groups["rest"].Value}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         return withSpanStyles;
     }
@@ -95,7 +99,8 @@ internal static class AzureDevOpsHtmlPostProcessor
             var style = match.Groups["style"].Value.Trim();
             style = style.TrimEnd(';');
             return $"style=\"{style}\"";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 
     /// <summary>
@@ -167,7 +172,8 @@ internal static class AzureDevOpsHtmlPostProcessor
 
             var withoutExistingId = Regex.Replace(attributes, "\\sid=\".*?\"", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled);
             return $"<{tag}{withoutExistingId} id=\"{prefix}{slug}\">{content}</{tag}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
     }
 
     /// <summary>

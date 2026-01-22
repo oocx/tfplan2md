@@ -45,7 +45,8 @@ internal static class GitHubHtmlPostProcessor
             }
 
             return $"<{tagName} dir=\"auto\"{attributes}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 
     /// <summary>
@@ -74,7 +75,8 @@ internal static class GitHubHtmlPostProcessor
             }
 
             return $"<markdown-accessiblity-table data-catalyst=\"\"><table{attributes}>{match.Groups["body"].Value}</table></markdown-accessiblity-table>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
     }
 
     /// <summary>
@@ -103,7 +105,8 @@ internal static class GitHubHtmlPostProcessor
             }
 
             return $"<code class=\"notranslate\"{attributes}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 
     /// <summary>

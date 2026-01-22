@@ -7,7 +7,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Formats a before/after pair into a diff-style string while preserving table compatibility.
-    /// Related features: docs/features/005-firewall-rule-before-after-display/specification.md, docs/features/003-consistent-value-formatting/specification.md
+    /// Related features: docs/features/005-firewall-rule-before-after-display/specification.md, docs/features/003-consistent-value-formatting/specification.md.
     /// </summary>
     /// <param name="before">The original value.</param>
     /// <param name="after">The updated value.</param>

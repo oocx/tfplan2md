@@ -7,13 +7,13 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Non-breaking space used to keep semantic icons attached to their labels for reliable markdown rendering.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     internal const string NonBreakingSpace = "\u00A0";
 
     /// <summary>
     /// Rendering context for semantic formatting.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     private enum ValueFormatContext
     {
@@ -30,7 +30,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values for summary context using semantic icons and HTML code spans.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -43,7 +43,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values for table context using semantic icons and markdown code spans.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -56,7 +56,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values without wrapping so callers can apply their own wrappers.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -134,7 +134,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values with semantic icons for the requested rendering context.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>

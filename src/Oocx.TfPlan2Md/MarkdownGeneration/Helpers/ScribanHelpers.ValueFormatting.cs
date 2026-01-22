@@ -9,7 +9,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Determines whether a value should be treated as large based on newlines or length.
-    /// Related features: docs/features/006-large-attribute-value-display/specification.md, docs/features/019-azure-resource-id-formatting/specification.md
+    /// Related features: docs/features/006-large-attribute-value-display/specification.md, docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     /// <param name="input">The raw value.</param>
     /// <param name="providerName">The Terraform provider name to allow azurerm-specific exemptions.</param>
@@ -36,7 +36,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats attribute values with provider-aware logic (Azure IDs are rendered readably; others as inline code).
-    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     /// <param name="value">The raw value.</param>
     /// <param name="providerName">The Terraform provider name.</param>

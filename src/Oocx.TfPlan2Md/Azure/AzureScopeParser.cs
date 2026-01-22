@@ -11,7 +11,7 @@ public static class AzureScopeParser
 {
     /// <summary>
     /// Determines whether the provided scope string is a valid Azure resource identifier.
-    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     /// <param name="scope">The scope string to evaluate.</param>
     /// <returns>True when the scope parses to a known Azure scope level; otherwise false.</returns>
@@ -23,7 +23,7 @@ public static class AzureScopeParser
 
     /// <summary>
     /// Parses an Azure resource identifier into structured scope information.
-    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     /// <param name="scope">The Azure resource identifier string to parse.</param>
     /// <returns>A ScopeInfo object containing parsed scope details and level.</returns>
@@ -127,7 +127,7 @@ public static class AzureScopeParser
 
     /// <summary>
     /// Formats an Azure resource identifier into a human-readable scope description with markdown formatting.
-    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     /// <param name="scope">The Azure resource identifier string to format.</param>
     /// <returns>A markdown-formatted string describing the scope in human-readable terms.</returns>

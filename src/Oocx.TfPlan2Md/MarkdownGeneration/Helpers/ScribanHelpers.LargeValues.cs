@@ -9,7 +9,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Formats large attribute values according to the requested rendering format.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
     public static string FormatLargeValue(string? before, string? after, string format)
     {

@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Builds <see cref="VariableGroupViewModel"/> instances from Terraform plan data.
-/// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+/// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
 /// </summary>
 internal static class VariableGroupViewModelFactory
 {

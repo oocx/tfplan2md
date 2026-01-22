@@ -11,13 +11,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Builds <see cref="RoleAssignmentViewModel"/> instances from Terraform plan data.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 internal static class RoleAssignmentViewModelFactory
 {
     /// <summary>
     /// Non-breaking space used to keep principal icons attached to their labels in markdown output.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
 

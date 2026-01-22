@@ -243,11 +243,19 @@ internal static class RoleAssignmentViewModelFactory
                     && !string.IsNullOrEmpty(decoratedName)
                     && !decoratedName.StartsWith(principalIcon, StringComparison.Ordinal);
 
-                var nameAndType = !string.IsNullOrEmpty(decoratedName)
-                    ? needsIconPrefix
-                        ? $"{principalIcon}{NonBreakingSpace}{decoratedName}"
-                        : decoratedName
-                    : string.Empty;
+                string nameAndType;
+                if (string.IsNullOrEmpty(decoratedName))
+                {
+                    nameAndType = string.Empty;
+                }
+                else if (needsIconPrefix)
+                {
+                    nameAndType = $"{principalIcon}{NonBreakingSpace}{decoratedName}";
+                }
+                else
+                {
+                    nameAndType = decoratedName;
+                }
 
                 var nameValue = !string.IsNullOrEmpty(nameAndType)
                     ? ScribanHelpers.FormatCodeTable(nameAndType)

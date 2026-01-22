@@ -240,7 +240,7 @@ public static class CliParser
 /// <summary>
 /// Exception thrown when CLI parsing fails.
 /// </summary>
-public class CliParseException : ApplicationException
+public class CliParseException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CliParseException"/> class with a specified error message.

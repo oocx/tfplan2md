@@ -3,7 +3,7 @@ namespace Oocx.TfPlan2Md.Parsing;
 /// <summary>
 /// Exception thrown when parsing a Terraform plan fails.
 /// </summary>
-public class TerraformPlanParseException : ApplicationException
+public class TerraformPlanParseException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TerraformPlanParseException"/> class with a specified error message.

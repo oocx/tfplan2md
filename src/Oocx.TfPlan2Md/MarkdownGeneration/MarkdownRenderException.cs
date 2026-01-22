@@ -3,7 +3,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Exception thrown when Markdown rendering fails.
 /// </summary>
-public class MarkdownRenderException : ApplicationException
+public class MarkdownRenderException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderException"/> class with a specified error message.

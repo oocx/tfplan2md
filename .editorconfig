@@ -509,8 +509,8 @@ dotnet_diagnostic.MA0008.severity = suggestion
 
 # MA0009: Add regex timeout
 # Critical: Prevents ReDoS (Regular Expression Denial of Service) attacks
-# Set to suggestion initially - will review each regex pattern and promote in P3-T6
-dotnet_diagnostic.MA0009.severity = suggestion
+# PROMOTED TO ERROR: Security-critical - prevents ReDoS attacks
+dotnet_diagnostic.MA0009.severity = error
 
 # MA0011: IFormatProvider is missing
 # Disabled: Application runs in Docker with consistent Invariant culture
@@ -522,14 +522,14 @@ dotnet_diagnostic.MA0011.severity = none
 
 # MA0013: Types should not extend System.ApplicationException
 # ApplicationException is obsolete design pattern
-# Fix: Use Exception or custom exception base class
+# PROMOTED TO WARNING: Framework best practice
 # Set to suggestion initially - will promote to warning in P3-T6
 dotnet_diagnostic.MA0013.severity = warning
 
 # MA0023: Add RegexOptions.ExplicitCapture
 # Performance optimization for regex
 # Set to suggestion initially - will promote to warning after fixes
-dotnet_diagnostic.MA0023.severity = warning
+dotnet_diagnostic.MA0023.severity = suggestion
 
 # MA0048: File name must match type name
 # Suggestion: Relaxed due to project convention of multiple types per file

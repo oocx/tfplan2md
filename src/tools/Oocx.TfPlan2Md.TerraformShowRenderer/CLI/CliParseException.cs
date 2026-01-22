@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.CLI;
 // SonarAnalyzer S3871: Exception is intentionally internal
 // Justification: CLI exception used only within this tool, not exposed in public API
 #pragma warning disable S3871 // Exception types should be "public"
-internal sealed class CliParseException : ApplicationException
+internal sealed class CliParseException : Exception
 #pragma warning restore S3871
 {
     /// <summary>

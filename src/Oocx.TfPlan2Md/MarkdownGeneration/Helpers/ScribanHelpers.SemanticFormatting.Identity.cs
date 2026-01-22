@@ -205,6 +205,6 @@ public static partial class ScribanHelpers
             return true;
         }
 
-        return Regex.IsMatch(value, "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
+        return Regex.IsMatch(value, "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
     }
 }

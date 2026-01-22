@@ -725,19 +725,17 @@ public static partial class ScribanHelpers
 
             foreach (var item in comparisons)
             {
-                if (item is ScriptObject scriptObj)
+                if (item is ScriptObject scriptObj && scriptObj["is_large"] is bool isLarge)
                 {
-                    if (scriptObj["is_large"] is bool isLarge)
+                    if (isLarge)
                     {
-                        if (isLarge)
-                        {
-                            largeChanges.Add(scriptObj);
-                        }
-                        else
-                        {
-                            smallChanges.Add(scriptObj);
-                        }
+                        largeChanges.Add(scriptObj);
                     }
+                    else
+                    {
+                        smallChanges.Add(scriptObj);
+                    }
+                }
                 }
             }
 
@@ -846,18 +844,15 @@ public static partial class ScribanHelpers
 
             foreach (var item in flattened)
             {
-                if (item is ScriptObject scriptObj)
+                if (item is ScriptObject scriptObj && scriptObj["is_large"] is bool isLarge)
                 {
-                    if (scriptObj["is_large"] is bool isLarge)
+                    if (isLarge)
                     {
-                        if (isLarge)
-                        {
-                            largeProps.Add(scriptObj);
-                        }
-                        else
-                        {
-                            smallProps.Add(scriptObj);
-                        }
+                        largeProps.Add(scriptObj);
+                    }
+                    else
+                    {
+                        smallProps.Add(scriptObj);
                     }
                 }
             }
@@ -1014,9 +1009,6 @@ public static partial class ScribanHelpers
                 var segments = path.Split('.');
                 if (segments.Length >= 2)
                 {
-                    // Get the parent path (everything except the last segment)
-                    var parentPath = string.Join(".", segments.Take(segments.Length - 1));
-
                     // For deeply nested properties, only consider the first level
                     // (e.g., for "siteConfig.connectionStrings[0].name", parent is "siteConfig")
                     var firstLevelParent = segments[0];

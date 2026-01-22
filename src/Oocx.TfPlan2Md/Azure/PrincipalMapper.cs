@@ -115,7 +115,7 @@ internal class PrincipalMapper : IPrincipalMapper
     /// If a diagnostic context was provided and the principal ID cannot be resolved,
     /// the failure is recorded with the resource address for troubleshooting.
     /// </remarks>
-    public string? GetName(string principalId, string? principalType, string? resourceAddress = null)
+    public string? GetName(string principalId, string? principalType, string? resourceAddress)
     {
         if (string.IsNullOrWhiteSpace(principalId))
         {

@@ -35,7 +35,7 @@ public static partial class ScribanHelpers
             var changedLines = CountChangedLines(before, after);
 
             var totalLabel = totalLines == 1 ? "line" : "lines";
-            var changedLabel = changedLines == 1 ? "changed" : "changed";
+            var changedLabel = changedLines == 1 ? "change" : "changes";
             parts.Add($"{attr.Name} ({totalLines} {totalLabel}, {changedLines} {changedLabel})");
         }
 

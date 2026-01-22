@@ -28,11 +28,13 @@ public static partial class ScribanHelpers
 
         if (normalizedAfter is null)
         {
-            return CodeFence(normalizedBefore ?? string.Empty);
+            // At this point, normalizedBefore is guaranteed non-null
+            return CodeFence(normalizedBefore!);
         }
 
         if (normalizedBefore is null)
         {
+            // At this point, normalizedAfter is guaranteed non-null
             return CodeFence(normalizedAfter);
         }
 
@@ -166,7 +168,6 @@ public static partial class ScribanHelpers
             {
                 AppendStyledLine(sb, entry.Text, removed: false);
                 index++;
-                continue;
             }
         }
 

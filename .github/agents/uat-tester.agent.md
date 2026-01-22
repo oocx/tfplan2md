@@ -118,6 +118,14 @@ After UAT completes, report:
 
 ## Handoff
 
+**Before handoff:** Commit the UAT report:
+```bash
+git add docs/features/NNN-<feature-slug>/uat-report.md
+git commit -m "docs: add UAT report for <feature-name>"
+git push origin HEAD
+```
+
+After committing:
 - If **UAT Passed**: Use handoff button for **Release Manager**
 - If **UAT Failed**: Use handoff button for **Developer** with feedback
 

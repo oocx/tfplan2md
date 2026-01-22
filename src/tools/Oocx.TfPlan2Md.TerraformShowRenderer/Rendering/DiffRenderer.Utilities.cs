@@ -23,6 +23,12 @@ internal sealed partial class DiffRenderer
 
         // A map has all scalar values (string, number, bool, null)
         // A block has nested objects, arrays, or mixed types
+        // SonarAnalyzer S3267: Loop simplification
+        // Justification: This is an early-exit validation pattern, not a mapping operation.
+        // Returns false immediately upon finding a complex type (Object or Array). While LINQ
+        // All() or Any() could express this, the explicit loop with early return is clearer
+        // for this "fail-fast" validation pattern and matches common C# idioms.
+#pragma warning disable S3267
         foreach (var prop in obj.EnumerateObject())
         {
             if (prop.Value.ValueKind == JsonValueKind.Object || prop.Value.ValueKind == JsonValueKind.Array)
@@ -30,6 +36,7 @@ internal sealed partial class DiffRenderer
                 return false;
             }
         }
+#pragma warning restore S3267
 
         return true;
     }
@@ -53,7 +60,13 @@ internal sealed partial class DiffRenderer
             writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
             writer.Write(" ");
         }
+        // SonarAnalyzer S3358: Nested ternary operation
+        // Justification: This handles 3 cases for name padding (empty→empty, width>0→padded, else→raw)
+        // in a rendering context where conditional formatting is common. The ternary is readable and
+        // extracting to a helper method would add overhead for simple conditional string formatting.
+#pragma warning disable S3358
         var paddedName = string.IsNullOrWhiteSpace(name) ? string.Empty : (nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+#pragma warning restore S3358
         if (!string.IsNullOrWhiteSpace(paddedName))
         {
             writer.Write(paddedName);
@@ -349,6 +362,12 @@ internal sealed partial class DiffRenderer
             }
         }
 
+        // SonarAnalyzer S3267: Loop simplification with Where
+        // Justification: This is NOT a simple Where operation - it's a mutation loop using HashSet's
+        // Add return value (true if new, false if duplicate) to filter while building the set.
+        // Converting to Where(p => seen.Add(p.Name)) would be side-effectful LINQ (bad practice).
+        // The alternative of two passes (build set, then Where) would be less efficient.
+#pragma warning disable S3267
         foreach (var property in unknown.Value.EnumerateObject())
         {
             if (seen.Add(property.Name))
@@ -356,6 +375,7 @@ internal sealed partial class DiffRenderer
                 yield return (property.Name, CreateNullElement());
             }
         }
+#pragma warning restore S3267
     }
 
 

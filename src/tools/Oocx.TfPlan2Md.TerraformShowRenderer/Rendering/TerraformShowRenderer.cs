@@ -400,7 +400,14 @@ internal sealed class TerraformShowRenderer
         // Reset before indent, then write marker and block line
         writer.WriteReset();
         // Replace operations have no indent, Read operations use single space, others use Indent (2 spaces)
+        // SonarAnalyzer S3358: Nested ternary operation
+        // Justification: This 3-way indent selection (Replace→no indent, Read→1 space, others→2 spaces)
+        // is highly readable in the rendering context and matches Terraform's output formatting convention
+        // where precise visual layout is critical. Extracting to separate statements or method would
+        // obscure the simple mapping between actions and their indent widths.
+#pragma warning disable S3358
         var indent = action == ResourceAction.Replace ? "" : (action == ResourceAction.Read ? " " : Indent);
+#pragma warning restore S3358
         writer.Write(indent);
         WriteMarker(writer, action);
         writer.WriteReset(); // Extra reset after marker to match Terraform output

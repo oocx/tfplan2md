@@ -35,7 +35,11 @@ internal sealed partial class DiffRenderer
         {
             case ResourceAction.Create:
             case ResourceAction.Read:
+                // SonarAnalyzer S3923: Both branches return "+" by design
+                // Justification: Ternary kept for future extension where Read might use different symbol
+#pragma warning disable S3923 // All branches return same value
                 RenderAdd(writer, after, afterUnknown, afterSensitive, indent, action == ResourceAction.Read ? "+" : "+", AnsiStyle.Green);
+#pragma warning restore S3923
                 break;
             case ResourceAction.Delete:
                 RenderRemove(writer, before, indent, beforeSensitive);

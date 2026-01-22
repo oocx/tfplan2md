@@ -11,6 +11,10 @@ public static partial class ScribanHelpers
     /// Formats large attribute values according to the requested rendering format.
     /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
+    /// <param name="before">The value before the change (may be null or whitespace).</param>
+    /// <param name="after">The value after the change (may be null or whitespace).</param>
+    /// <param name="format">The rendering format to use (e.g., "inline-diff", "simple-diff").</param>
+    /// <returns>Formatted markdown string representing the value change.</returns>
     public static string FormatLargeValue(string? before, string? after, string format)
     {
         var normalizedBefore = string.IsNullOrWhiteSpace(before) ? null : before;

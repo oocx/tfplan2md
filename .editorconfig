@@ -326,8 +326,14 @@ dotnet_diagnostic.SA1309.severity = none
 dotnet_diagnostic.SA1413.severity = suggestion
 
 # SA1600: Elements should be documented
-# This will be the primary documentation rule - start as warning, promote to error later
-dotnet_diagnostic.SA1600.severity = warning
+# Primary documentation rule - promoted to error after all violations fixed
+dotnet_diagnostic.SA1600.severity = error
+
+# SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1601.severity = error
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = error
 
 # SA1633: File should have header
 # Disabled - project doesn't use file headers

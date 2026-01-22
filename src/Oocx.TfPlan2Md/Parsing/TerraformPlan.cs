@@ -82,7 +82,7 @@ public record Change
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; init; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record for deserialization.
+    /// Initializes a new instance of the <see cref="Change"/> class for deserialization.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
@@ -112,7 +112,7 @@ public record Change
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record with only actions specified.
+    /// Initializes a new instance of the <see cref="Change"/> class with only actions specified.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
@@ -122,7 +122,7 @@ public record Change
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record with before/after state.
+    /// Initializes a new instance of the <see cref="Change"/> class with before/after state.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>

@@ -660,6 +660,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     /// Builds attribute changes for a resource, filtering unchanged values when configured.
     /// </summary>
     /// <param name="change">The resource change containing before and after state.</param>
+    /// <param name="providerName">The provider name for the resource (e.g., "azurerm", "aws").</param>
     /// <returns>Attribute changes prepared for rendering.</returns>
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would

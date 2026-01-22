@@ -78,6 +78,13 @@ internal sealed partial class DiffRenderer
     /// <param name="root">Root element of the sensitive tree.</param>
     /// <param name="path">Path to evaluate.</param>
     /// <returns><c>true</c> when the path is sensitive; otherwise <c>false</c>.</returns>
+    // SonarAnalyzer S4144: Duplicate method bodies
+    // Justification: IsSensitivePath and IsUnknownPath are semantically distinct domain concepts
+    // representing separate Terraform plan JSON trees (after_sensitive vs after_unknown).
+    // While implementation is currently identical, these concepts should remain separate methods
+    // to maintain domain clarity and allow independent evolution if future Terraform versions
+    // require different handling for sensitive vs unknown path navigation.
+#pragma warning disable S4144
     private static bool IsSensitivePath(JsonElement? root, IReadOnlyList<string> path)
     {
         if (root is null)
@@ -110,6 +117,7 @@ internal sealed partial class DiffRenderer
 
         return current.ValueKind == JsonValueKind.True;
     }
+#pragma warning restore S4144
 
     /// <summary>Checks JSON equality while preserving formatting fidelity.</summary>
     /// <param name="left">Left-hand JSON element.</param>

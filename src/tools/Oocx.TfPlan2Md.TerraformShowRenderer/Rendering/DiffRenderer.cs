@@ -442,7 +442,14 @@ internal sealed partial class DiffRenderer
         }
 
         // Check if there are any block arrays to process in second pass
+        // SonarAnalyzer S6605: Use Exists instead of Any
+        // Justification: This is a false positive. sortedAfterProps is List<JsonProperty>, where
+        // JsonProperty is a struct from System.Text.Json. The List<JsonProperty> type does not
+        // have an Exists method - only List<T> for reference types does. Any() is the correct
+        // method for this collection type.
+#pragma warning disable S6605
         var hasBlockArrays = sortedAfterProps.Any(p => p.Value.ValueKind == JsonValueKind.Array && !ContainsOnlyPrimitives(p.Value));
+#pragma warning restore S6605
 
         // Insert blank line before block arrays if there were scalar attributes AND there are block arrays to show
         // For replace operations, count only unprocessed unchangedIdName
@@ -564,6 +571,12 @@ internal sealed partial class DiffRenderer
             return false;
         }
 
+        // SonarAnalyzer S3267: Loop simplification
+        // Justification: This is an early-exit check with state mutation (hasAnyElement tracking),
+        // not a pure Select operation. Converting to LINQ would require either two separate
+        // Any() calls (double enumeration) or forcing full enumeration when early exit is needed.
+        // The explicit loop is more efficient and clearer for this "check-while-tracking" pattern.
+#pragma warning disable S3267
         var hasAnyElement = false;
         foreach (var item in array.EnumerateArray())
         {
@@ -573,6 +586,7 @@ internal sealed partial class DiffRenderer
                 return false;
             }
         }
+#pragma warning restore S3267
 
         // Empty arrays are treated as non-primitive (likely object arrays in schema)
         return hasAnyElement;

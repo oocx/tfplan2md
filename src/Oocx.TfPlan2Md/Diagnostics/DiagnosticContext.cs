@@ -4,8 +4,7 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 
 /// <summary>
 /// Collects diagnostic information during tfplan2md execution for debug output.
-/// Related feature: docs/features/038-debug-output/
-.
+/// Related feature: docs/features/038-debug-output/.
 /// </summary>
 /// <remarks>
 /// <para>

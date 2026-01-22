@@ -146,7 +146,14 @@ Your work is complete when:
 
 ## Handoff
 
-After documentation is complete, use the handoff button to transition to the **Code Reviewer** agent.
+**Before handoff:** Commit all documentation changes:
+```bash
+git add docs/ README.md
+git commit -m "docs: update documentation for <feature-name>"
+git push origin HEAD
+```
+
+After committing, use the handoff button to transition to the **Code Reviewer** agent.
 
 ## Communication Guidelines
 

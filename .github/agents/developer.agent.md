@@ -391,7 +391,9 @@ Verify:
 
 ## Handoff
 
-After implementation is complete:
+**Before handoff:** Ensure all changes are committed and pushed (use the checklist above to verify).
+
+After all work is committed:
 - For new features: Hand off to **Technical Writer** to update docs
 - For rework or if docs are complete: Hand off to **Code Reviewer** for review
 - **Never create a pull request** - that's the Release Manager's responsibility after code review approval

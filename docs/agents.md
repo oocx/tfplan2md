@@ -608,6 +608,8 @@ Each agent hands off to the next by producing a specific deliverable. The workfl
 
 Handoffs are triggered when the deliverable is complete and meets the "Definition of Done" for that agent. Automation (e.g., GitHub Actions) can be used to detect completion and notify the next agent(s).
 
+**Commit Before Handoff (Required):** Agents must commit and push all pending changes **before** suggesting a handoff to the next agent or asking the Maintainer if they're ready to proceed. This ensures the next agent has access to the complete work and eliminates unnecessary back-and-forth.
+
 ---
 
 ## Handoffs and Communication

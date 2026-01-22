@@ -253,7 +253,7 @@ git commit -m "docs: add feature specification for NNN-<feature-slug>"
 
 ## Handoff
 
-After the specification is approved, use the handoff button to transition to the **Architect** agent.
+After the specification is approved **and committed** (see "Committing Your Work" above), use the handoff button to transition to the **Architect** agent.
 
 ## Communication Guidelines
 

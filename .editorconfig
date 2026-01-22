@@ -387,17 +387,17 @@ dotnet_diagnostic.S1066.severity = warning
 dotnet_diagnostic.S1144.severity = warning
 
 # S1481: Unused local variables should be removed
-# Critical: Indicates potential logic error - promote to error later
-dotnet_diagnostic.S1481.severity = warning
+# Critical: Indicates potential logic error - promoted to error (P2-T6)
+dotnet_diagnostic.S1481.severity = error
 
 # S2583: Conditionally executed code should be reachable
 # Critical: Logic error - unreachable code paths - promote to error later
 dotnet_diagnostic.S2583.severity = warning
 
 # S2259: Null pointers should not be dereferenced
-# Note: This rule may have false positives with nullable reference types
-# Setting to suggestion for initial review
-dotnet_diagnostic.S2259.severity = suggestion
+# Critical: Null reference errors - promoted to error (P2-T6)
+# Note: Monitor for false positives with nullable reference types
+dotnet_diagnostic.S2259.severity = error
 
 # S3267: Loops should be simplified with LINQ
 # Medium: Code simplification - keep as warning

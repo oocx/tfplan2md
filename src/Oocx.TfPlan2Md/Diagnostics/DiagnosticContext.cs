@@ -5,6 +5,7 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 /// <summary>
 /// Collects diagnostic information during tfplan2md execution for debug output.
 /// Related feature: docs/features/038-debug-output/
+.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,12 +28,12 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 internal class DiagnosticContext
 {
     /// <summary>
-    /// Gets or sets whether a principal mapping file was provided via CLI.
+    /// Gets or sets a value indicating whether a principal mapping file was provided via CLI.
     /// </summary>
     public bool PrincipalMappingFileProvided { get; set; }
 
     /// <summary>
-    /// Gets or sets whether the principal mapping file loaded successfully.
+    /// Gets or sets a value indicating whether the principal mapping file loaded successfully.
     /// </summary>
     /// <remarks>
     /// This is only meaningful when <see cref="PrincipalMappingFileProvided"/> is true.

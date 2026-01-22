@@ -24,26 +24,26 @@ public class ReportModel
     public required string FormatVersion { get; init; }
 
     /// <summary>
-    /// tfplan2md semantic version used to generate the report.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Gets the tfplan2md semantic version used to generate the report.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     public required string TfPlan2MdVersion { get; init; }
 
     /// <summary>
-    /// Short git commit hash (7 characters) of the tfplan2md build used for rendering.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Gets the Short git commit hash (7 characters) of the tfplan2md build used for rendering.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     public required string CommitHash { get; init; }
 
     /// <summary>
-    /// UTC timestamp captured when the report was generated.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Gets the UTC timestamp captured when the report was generated.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     public required DateTimeOffset GeneratedAtUtc { get; init; }
 
     /// <summary>
-    /// Indicates whether the metadata line should be hidden in the rendered report.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Gets a value indicating whether the metadata line should be hidden in the rendered report.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     public required bool HideMetadata { get; init; }
 
@@ -52,8 +52,8 @@ public class ReportModel
     /// </summary>
     public string? Timestamp { get; init; }
     /// <summary>
-    /// Optional custom report title provided via the CLI.
-    /// Related feature: docs/features/020-custom-report-title/specification.md
+    /// Gets the optional custom report title provided via the CLI.
+    /// Related feature: docs/features/020-custom-report-title/specification.md.
     /// </summary>
     /// <value>
     /// The escaped title text used by templates; null when no custom title is provided so templates can apply defaults.
@@ -76,14 +76,14 @@ public class ReportModel
     public required SummaryModel Summary { get; init; }
 
     /// <summary>
-    /// Indicates whether unchanged attribute values are included in attribute change tables.
-    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
+    /// Gets a value indicating whether unchanged attribute values are included in attribute change tables.
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// </summary>
     public required bool ShowUnchangedValues { get; init; }
 
     /// <summary>
-    /// Rendering format to use for large attribute values.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
+    /// Gets the Rendering format to use for large attribute values.
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
     public required LargeValueFormat LargeValueFormat { get; init; }
 }
@@ -94,7 +94,7 @@ public class ReportModel
 public class ModuleChangeGroup
 {
     /// <summary>
-    /// The module address (e.g. "module.network.module.subnet"). Empty string represents the root module.
+    /// Gets the the module address (e.g. "module.network.module.subnet"). Empty string represents the root module.
     /// </summary>
     public required string ModuleAddress { get; init; }
 
@@ -145,7 +145,7 @@ public class SummaryModel
     public required ActionSummary NoOp { get; init; }
 
     /// <summary>
-    /// Total count of resources with changes, excluding no-op resources.
+    /// Gets the Total count of resources with changes, excluding no-op resources.
     /// Calculated as: ToAdd.Count + ToChange.Count + ToDestroy.Count + ToReplace.Count.
     /// </summary>
     public int Total { get; init; }
@@ -197,68 +197,68 @@ public class ResourceChangeModel
     public required IReadOnlyList<AttributeChangeModel> AttributeChanges { get; init; }
 
     /// <summary>
-    /// Raw JSON representation of the resource state before the change.
+    /// Gets the raw JSON representation of the resource state before the change.
     /// Used by resource-specific templates for semantic diffing.
     /// </summary>
     public object? BeforeJson { get; init; }
 
     /// <summary>
-    /// Raw JSON representation of the resource state after the change.
+    /// Gets the raw JSON representation of the resource state after the change.
     /// Used by resource-specific templates for semantic diffing.
     /// </summary>
     public object? AfterJson { get; init; }
 
     /// <summary>
-    /// Paths to attributes that triggered replacement (from Terraform plan replace_paths).
-    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
+    /// Gets or sets the paths to attributes that triggered replacement (from Terraform plan replace_paths).
+    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
     /// </summary>
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; set; }
 
     /// <summary>
-    /// Human-readable summary of the resource change for quick scanning in templates.
-    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
+    /// Gets or sets the human-readable summary of the resource change for quick scanning in templates.
+    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
     /// </summary>
     public string? Summary { get; set; }
 
     /// <summary>
-    /// Precomputed HTML summary line content for rich <summary> rendering (includes action, type, name, and context values with HTML code spans).
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Gets or sets the precomputed HTML summary line content for rich summary rendering (includes action, type, name, and context values with HTML code spans).
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     public string? SummaryHtml { get; set; }
 
     /// <summary>
-    /// Precomputed changed-attributes summary for update operations (e.g., "2 🔧 attr1, attr2"). Empty for non-update actions.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Gets or sets the precomputed changed-attributes summary for update operations (e.g., "2 🔧 attr1, attr2"). Empty for non-update actions.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     public string? ChangedAttributesSummary { get; set; }
 
     /// <summary>
-    /// Precomputed tags badge string for create/delete actions (e.g., "**🏷️ Tags:** `env: prod` `owner: ops`"). Null when no tags or on updates.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Gets or sets the precomputed tags badge string for create/delete actions (e.g., "**🏷️ Tags:** `env: prod` `owner: ops`"). Null when no tags or on updates.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     public string? TagsBadges { get; set; }
 
     /// <summary>
     /// Gets or sets the precomputed view model for azurerm_network_security_group resources.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
     /// </summary>
     public NetworkSecurityGroupViewModel? NetworkSecurityGroup { get; set; }
 
     /// <summary>
     /// Gets or sets the precomputed view model for azurerm_firewall_network_rule_collection resources.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
     /// </summary>
     public FirewallNetworkRuleCollectionViewModel? FirewallNetworkRuleCollection { get; set; }
 
     /// <summary>
     /// Gets or sets the precomputed view model for azurerm_role_assignment resources.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
     /// </summary>
     public RoleAssignmentViewModel? RoleAssignment { get; set; }
 
     /// <summary>
     /// Gets or sets the precomputed view model for azuredevops_variable_group resources.
-    /// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+    /// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
     /// </summary>
     public VariableGroupViewModel? VariableGroup { get; set; }
 }
@@ -289,8 +289,8 @@ public class AttributeChangeModel
     public bool IsSensitive { get; init; }
 
     /// <summary>
-    /// Indicates whether the attribute value should be rendered as a large value block (collapsible section).
-    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
+    /// Gets a value indicating whether the attribute value should be rendered as a large value block (collapsible section).
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     public bool IsLarge { get; init; }
 }
@@ -313,7 +313,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 {
     /// <summary>
     /// Non-breaking space used to keep semantic icons attached to their labels in markdown output.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
 
@@ -504,11 +504,11 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     }
 
     /// <summary>
-    /// Builds a summary-safe HTML string for use inside <summary> elements, including action icon, type, name, location, address space, and changed attributes.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Builds a summary-safe HTML string for use inside summary elements, including action icon, type, name, location, address space, and changed attributes.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="model">Resource change model containing the source data.</param>
-    /// <returns>HTML string safe for use inside a <summary> element.</returns>
+    /// <returns>HTML string safe for use inside a summary element.</returns>
     private static string BuildSummaryHtml(ResourceChangeModel model)
     {
         var state = model.AfterJson ?? model.BeforeJson;
@@ -559,7 +559,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
     /// <summary>
     /// Builds a concise changed-attributes summary for update operations (e.g., "2 🔧 attr1, attr2, +N more").
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeChanges">Attribute changes for the resource.</param>
     /// <param name="action">Terraform action derived from the plan.</param>
@@ -591,7 +591,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
 
     /// <summary>
     /// Builds inline tag badges for create/delete operations, keeping templates free from tag formatting logic.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="after">After-state JSON for the resource.</param>
     /// <param name="before">Before-state JSON for the resource.</param>
@@ -664,7 +664,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
-    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// </remarks>
     private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
     {

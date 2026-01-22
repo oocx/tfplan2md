@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
 /// Provides precomputed rule data for the azurerm_network_security_group template.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class NetworkSecurityGroupViewModel
 {
@@ -32,7 +32,7 @@ public sealed class NetworkSecurityGroupViewModel
 
 /// <summary>
 /// Represents a security rule row that includes a change indicator for update tables.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class SecurityRuleChangeRowViewModel
 {
@@ -94,7 +94,7 @@ public sealed class SecurityRuleChangeRowViewModel
 
 /// <summary>
 /// Represents a security rule row used for create/delete tables.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class SecurityRuleRowViewModel
 {

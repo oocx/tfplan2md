@@ -24,7 +24,7 @@ public record CliOptions
 
     /// <summary>
     /// Gets the optional custom report title provided via the CLI.
-    /// Related feature: docs/features/020-custom-report-title/specification.md
+    /// Related feature: docs/features/020-custom-report-title/specification.md.
     /// </summary>
     /// <value>
     /// Custom level-1 heading text for the generated report. When null, templates fall back to their defaults.
@@ -53,25 +53,25 @@ public record CliOptions
 
     /// <summary>
     /// Gets a value indicating whether unchanged attribute values are included in the output.
-    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// </summary>
     public bool ShowUnchangedValues { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether tfplan2md metadata should be hidden from the report header.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     public bool HideMetadata { get; init; }
 
     /// <summary>
     /// Gets the rendering format for large attribute values.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
     public LargeValueFormat LargeValueFormat { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether debug diagnostic information should be appended to the report.
-    /// Related feature: docs/features/038-debug-output/specification.md
+    /// Related feature: docs/features/038-debug-output/specification.md.
     /// </summary>
     /// <remarks>
     /// When enabled, debug output includes:

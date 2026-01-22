@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Scriban helper functions for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md
+/// Related feature: docs/features/040-azapi-resource-template/specification.md.
 /// </summary>
 /// <remarks>
 /// These helpers transform JSON body content from azapi_resource resources into human-readable
@@ -40,7 +40,7 @@ public static partial class ScribanHelpers
     /// Output: [
     ///   { path: "properties.sku.name", value: "Basic", is_large: false },
     ///   { path: "properties.enabled", value: true, is_large: false }
-    /// ]
+    /// ].
     /// </example>
     public static ScriptArray FlattenJson(object? jsonObject, string prefix = "")
     {
@@ -239,7 +239,7 @@ public static partial class ScribanHelpers
     /// Parses an Azure resource type string into its components.
     /// </summary>
     /// <param name="resourceType">
-    /// Azure resource type string in format: Microsoft.{Service}/{ResourceType}@{ApiVersion}
+    /// Azure resource type string in format: Microsoft.{Service}/{ResourceType}@{ApiVersion}.
     /// </param>
     /// <returns>
     /// ScriptObject with properties: provider, service, resource_type, api_version.
@@ -248,7 +248,7 @@ public static partial class ScribanHelpers
     /// <remarks>
     /// Extracts components from Azure resource type strings for display and documentation link generation.
     /// Example: "Microsoft.Automation/automationAccounts@2021-06-22" →
-    /// { provider: "Microsoft.Automation", service: "Automation", resource_type: "automationAccounts", api_version: "2021-06-22" }
+    /// { provider: "Microsoft.Automation", service: "Automation", resource_type: "automationAccounts", api_version: "2021-06-22" }.
     /// </remarks>
     public static ScriptObject ParseAzureResourceType(string? resourceType)
     {
@@ -312,8 +312,8 @@ public static partial class ScribanHelpers
     /// predictable pattern across all services.
     /// </remarks>
     /// <example>
-    /// Input: "Microsoft.Automation/automationAccounts@2021-06-22"
-    /// Output: "https://learn.microsoft.com/rest/api/automation/automation-accounts/"
+    /// Input: "Microsoft.Automation/automationAccounts@2021-06-22".
+    /// Output: "https://learn.microsoft.com/rest/api/automation/automation-accounts/".
     /// </example>
     public static string? AzureApiDocLink(string? resourceType)
     {
@@ -694,7 +694,7 @@ public static partial class ScribanHelpers
     /// For create/delete modes, it flattens the body and separates small vs. large properties.
     /// For update mode, it compares before/after and shows only changed properties.
     /// Large properties are rendered outside of tables to avoid markdown parsing issues with newlines.
-    /// Related feature: docs/features/040-azapi-resource-template/specification.md
+    /// Related feature: docs/features/040-azapi-resource-template/specification.md.
     /// </remarks>
     public static string RenderAzapiBody(
         object? bodyJson,

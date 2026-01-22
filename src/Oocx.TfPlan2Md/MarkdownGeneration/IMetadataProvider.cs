@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Provides tfplan2md version metadata for report rendering.
-/// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+/// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
 /// </summary>
 public interface IMetadataProvider
 {
@@ -24,13 +24,13 @@ public interface IMetadataProvider
 /// <param name="CommitHash">Short git commit hash (7 characters) for the build.</param>
 /// <param name="GeneratedAtUtc">Timestamp in UTC when the report was generated.</param>
 /// <remarks>
-/// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+/// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
 /// </remarks>
 public readonly record struct ReportMetadata(string Version, string CommitHash, DateTimeOffset GeneratedAtUtc);
 
 /// <summary>
 /// Default metadata provider that reads assembly attributes and captures the current UTC time.
-/// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+/// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
 /// </summary>
 public class AssemblyMetadataProvider : IMetadataProvider
 {

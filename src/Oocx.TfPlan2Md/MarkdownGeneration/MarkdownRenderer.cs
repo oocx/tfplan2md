@@ -180,7 +180,7 @@ internal class MarkdownRenderer
     /// <summary>
     /// Resolves a template for the given resource type.
     /// Resolution order: custom directory (if set) → embedded resources.
-    /// Within each: Templates/{provider}/{resource}.sbn → Templates/default.sbn
+    /// Within each: Templates/{provider}/{resource}.sbn → Templates/default.sbn.
     /// </summary>
     /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
     /// <returns>The template text if a resource-specific template exists, null otherwise.</returns>

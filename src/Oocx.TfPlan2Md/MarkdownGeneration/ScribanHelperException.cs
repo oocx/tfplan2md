@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Exception thrown when a Scriban helper function encounters an error.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public class ScribanHelperException : Exception
 {

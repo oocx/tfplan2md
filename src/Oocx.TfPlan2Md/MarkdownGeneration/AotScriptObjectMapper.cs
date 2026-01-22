@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Provides explicit mapping of ReportModel to ScriptObject for NativeAOT compatibility.
 /// Reflection-based Scriban Import does not work reliably under AOT trimming.
-/// Related feature: docs/features/037-aot-trimmed-image/specification.md
+/// Related feature: docs/features/037-aot-trimmed-image/specification.md.
 /// </summary>
 internal static class AotScriptObjectMapper
 {

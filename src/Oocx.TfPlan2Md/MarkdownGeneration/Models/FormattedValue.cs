@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
 /// Wraps a value with its pre-computed formatted representation for template consumption.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 /// <typeparam name="T">The type of the raw value.</typeparam>
 public sealed record FormattedValue<T>
@@ -35,7 +35,7 @@ public sealed record FormattedValue<T>
 
 /// <summary>
 /// Wraps a list of values with a pre-computed formatted representation for template consumption.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 /// <typeparam name="T">The type of the raw list elements.</typeparam>
 public sealed record FormattedList<T>

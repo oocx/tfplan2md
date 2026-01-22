@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Builds <see cref="NetworkSecurityGroupViewModel"/> instances from Terraform plan data.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 internal static class NetworkSecurityGroupViewModelFactory
 {

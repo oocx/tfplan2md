@@ -10,7 +10,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Determines whether an attribute represents a principal type and formats it with the appropriate icon.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -52,7 +52,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a role definition and formats it with the role icon.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -76,7 +76,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats icon-bearing values with context-aware code wrapping and optional parentheses.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="iconValue">The value including the icon prefix.</param>
     /// <param name="context">The rendering context.</param>
@@ -96,7 +96,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats name-related attributes with semantic icons for the requested context.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate (e.g., name or resource_group_name).</param>
     /// <param name="value">The raw attribute value.</param>
@@ -123,7 +123,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats name-related attributes with semantic icons without applying code wrapping.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -149,7 +149,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Applies non-breaking spacing to icon-prefixed values without adding code fences.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     /// <param name="iconValue">Icon-prefixed value.</param>
     /// <returns>Value with non-breaking spacing preserved.</returns>
@@ -160,7 +160,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Replaces the first regular space after an icon with a non-breaking space to prevent icon-value separation in rendered markdown.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="iconValue">The icon-prefixed value to normalize.</param>
     /// <returns>The icon value with a non-breaking space between the icon and text.</returns>
@@ -177,7 +177,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute name represents a location value.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <returns>True when the attribute represents a location.</returns>
@@ -189,7 +189,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether a value resembles an IP address or CIDR block.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="value">The value to evaluate.</param>
     /// <returns>True when the value is an IP address or CIDR.</returns>

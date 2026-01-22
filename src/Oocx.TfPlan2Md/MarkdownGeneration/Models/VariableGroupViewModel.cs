@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
 /// Provides precomputed variable data for the azuredevops_variable_group template.
-/// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+/// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
 /// </summary>
 public sealed class VariableGroupViewModel
 {
@@ -45,7 +45,7 @@ public sealed class VariableGroupViewModel
 
 /// <summary>
 /// Represents a variable row that includes a change indicator for update tables.
-/// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+/// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
 /// </summary>
 public sealed class VariableChangeRowViewModel
 {
@@ -89,7 +89,7 @@ public sealed class VariableChangeRowViewModel
 
 /// <summary>
 /// Represents a variable row used for create/delete tables.
-/// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+/// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
 /// </summary>
 public sealed class VariableRowViewModel
 {
@@ -127,7 +127,7 @@ public sealed class VariableRowViewModel
 
 /// <summary>
 /// Represents a Key Vault block row for Key Vault integration table.
-/// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+/// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
 /// </summary>
 public sealed class KeyVaultRowViewModel
 {

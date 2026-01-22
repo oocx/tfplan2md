@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
 /// Provides precomputed rule data for the azurerm_firewall_network_rule_collection template.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class FirewallNetworkRuleCollectionViewModel
 {
@@ -42,7 +42,7 @@ public sealed class FirewallNetworkRuleCollectionViewModel
 
 /// <summary>
 /// Represents a firewall rule row that includes a change indicator for update tables.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class FirewallRuleChangeRowViewModel
 {
@@ -84,7 +84,7 @@ public sealed class FirewallRuleChangeRowViewModel
 
 /// <summary>
 /// Represents a firewall rule row used for create/delete tables.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class FirewallRuleRowViewModel
 {

@@ -1,9 +1,12 @@
 using System.Collections.Frozen;
 
-
 namespace Oocx.TfPlan2Md.Azure;
 
-
+/// <summary>
+/// Maps Azure role definition IDs to their human-readable role names.
+/// This partial class contains the role definitions lookup dictionary.
+/// Related feature: docs/features/025-azure-role-definition-mapping/specification.md.
+/// </summary>
 public static partial class AzureRoleDefinitionMapper
 {
     private static readonly FrozenDictionary<string, string> Roles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)

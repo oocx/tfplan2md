@@ -11,7 +11,7 @@ internal static class GitHubHtmlPostProcessor
     /// <summary>
     /// Matches inline style attributes so output mirrors GitHub sanitization rules.
     /// </summary>
-    private static readonly Regex StyleRegex = new("(\\s)style\\s*=\\s*\"[^\"]*\"|(\\s)style\\s*=\\s*'[^']*'", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex StyleRegex = new("(\\s)style\\s*=\\s*\"[^\"]*\"|(\\s)style\\s*=\\s*'[^']*'", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
 
     /// <summary>
     /// Applies the GitHub rendering adjustments to the provided HTML fragment.
@@ -39,14 +39,14 @@ internal static class GitHubHtmlPostProcessor
         {
             var tagName = match.Groups[1].Value;
             var attributes = match.Groups[2].Value;
-            if (Regex.IsMatch(attributes, "\\sdir=", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(attributes, "\\sdir=", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 return match.Value;
             }
 
             return $"<{tagName} dir=\"auto\"{attributes}>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -64,19 +64,19 @@ internal static class GitHubHtmlPostProcessor
             }
 
             var attributes = match.Groups["attrs"].Value;
-            if (!Regex.IsMatch(attributes, "\\srole=", RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(attributes, "\\srole=", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 attributes = $"{attributes} role=\"table\"";
             }
 
-            if (!Regex.IsMatch(attributes, "\\stabindex=", RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(attributes, "\\stabindex=", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 attributes = $"{attributes} tabindex=\"0\"";
             }
 
             return $"<markdown-accessiblity-table data-catalyst=\"\"><table{attributes}>{match.Groups["body"].Value}</table></markdown-accessiblity-table>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -89,12 +89,12 @@ internal static class GitHubHtmlPostProcessor
         return Regex.Replace(html, "<code(?<attrs>[^>]*)>", match =>
         {
             var attributes = match.Groups["attrs"].Value;
-            if (Regex.IsMatch(attributes, "notranslate", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(attributes, "notranslate", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 return match.Value;
             }
 
-            var classMatch = Regex.Match(attributes, "\\bclass\\s*=\\s*([\"'])(.*?)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            var classMatch = Regex.Match(attributes, "\\bclass\\s*=\\s*([\"'])(.*?)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
             if (classMatch.Success)
             {
                 var beforeClass = attributes[..classMatch.Index];
@@ -106,7 +106,7 @@ internal static class GitHubHtmlPostProcessor
 
             return $"<code class=\"notranslate\"{attributes}>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ internal static class GitHubHtmlPostProcessor
     /// <returns>HTML without heading ids.</returns>
     private static string RemoveHeadingIds(string html)
     {
-        return Regex.Replace(html, "<(h[1-6])(.*?)\\sid=\".*?\"(.*?)>", "<$1$2$3>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.Replace(html, "<(h[1-6])(.*?)\\sid=\".*?\"(.*?)>", "<$1$2$3>", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>
@@ -136,6 +136,6 @@ internal static class GitHubHtmlPostProcessor
     /// <returns>HTML with compact tag delimiters.</returns>
     private static string CollapseDanglingTagWhitespace(string html)
     {
-        return Regex.Replace(html, "<(\\w+)\\s+>", "<$1>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.Replace(html, "<(\\w+)\\s+>", "<$1>", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
 }

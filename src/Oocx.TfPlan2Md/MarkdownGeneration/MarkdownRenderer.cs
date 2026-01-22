@@ -260,9 +260,9 @@ internal class MarkdownRenderer
         {
             var rendered = template.Render(context);
             // Collapse blank lines between table rows (which breaks tables)
-            rendered = Regex.Replace(rendered, @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)", "\n");
+            rendered = Regex.Replace(rendered, @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)", "\n", RegexOptions.None, TimeSpan.FromSeconds(2));
             // Remove indentation from table rows (which causes them to be treated as code blocks)
-            rendered = Regex.Replace(rendered, @"\n[ \t]+(\|)", "\n$1");
+            rendered = Regex.Replace(rendered, @"\n[ \t]+(\|)", "\n$1", RegexOptions.None, TimeSpan.FromSeconds(1));
             rendered = NormalizeHeadingSpacing(rendered);
             return rendered;
         }
@@ -336,16 +336,16 @@ internal class MarkdownRenderer
     private static string NormalizeHeadingSpacing(string markdown)
     {
         // Collapse runs of multiple blank lines (including whitespace-only lines) to a single blank line.
-        markdown = Regex.Replace(markdown, @"\n([ \t]*\n){2,}", "\n\n");
+        markdown = Regex.Replace(markdown, @"\n([ \t]*\n){2,}", "\n\n", RegexOptions.None, TimeSpan.FromSeconds(1));
 
         // Ensure exactly one blank line before any heading that follows non-blank content.
         // Match: newline, optional horizontal whitespace, non-whitespace content, newline(s), then heading.
         // If there's already a blank line (\n\n or more), the heading is fine.
         // Only add a blank line when there's exactly one newline before the heading.
-        markdown = Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2");
+        markdown = Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2", RegexOptions.None, TimeSpan.FromSeconds(1));
 
         // Ensure a blank line after headings when the following line is not already blank.
-        markdown = Regex.Replace(markdown, @"(#{1,6}\s.+)\n(?!\n)", "$1\n\n");
+        markdown = Regex.Replace(markdown, @"(#{1,6}\s.+)\n(?!\n)", "$1\n\n", RegexOptions.None, TimeSpan.FromSeconds(1));
 
         // Remove trailing blank lines while keeping a single newline at EOF for POSIX tools.
         markdown = markdown.TrimEnd();

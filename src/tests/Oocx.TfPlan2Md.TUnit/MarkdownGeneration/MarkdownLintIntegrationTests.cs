@@ -143,7 +143,7 @@ public class MarkdownLintIntegrationTests
 
         if (!result.IsValid)
         {
-            var errorMsg = $"Summary template produced invalid markdown:\n" +
+            var errorMsg = "Summary template produced invalid markdown:\n" +
                 string.Join("\n", result.Violations.Select(v => $"  Line {v.Line}: {v.RuleId} - {v.Message}"));
             throw new Exception(errorMsg);
         }
@@ -172,7 +172,7 @@ public class MarkdownLintIntegrationTests
 
         if (!result.IsValid)
         {
-            var errorMsg = $"Breaking plan produced invalid markdown:\n" +
+            var errorMsg = "Breaking plan produced invalid markdown:\n" +
                 string.Join("\n", result.Violations.Select(v => $"  Line {v.Line}: {v.RuleId} - {v.Message}"));
             throw new Exception(errorMsg);
         }

@@ -495,9 +495,9 @@ public class MarkdownRendererTests
 
         // Assert
         markdown.Should().Contain($"➕{Nbsp}azurerm_resource_group <b><code>main</code></b>")
-            .And.Contain($"➕{Nbsp}azurerm_storage_account <b><code>main</code></b>")
-            .And.Contain($"| ➕{Nbsp}Add | 2 |")
-            .And.Contain($"Module: root");
+            .And.Contain("➕" + Nbsp + "azurerm_storage_account <b><code>main</code></b>")
+            .And.Contain("| ➕" + Nbsp + "Add | 2 |")
+            .And.Contain("Module: root");
     }
 
     [Test]

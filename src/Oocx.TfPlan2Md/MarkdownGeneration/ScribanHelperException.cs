@@ -9,6 +9,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 public class ScribanHelperException : Exception
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="ScribanHelperException"/> class.
+    /// </summary>
+    public ScribanHelperException()
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ScribanHelperException"/> class with a message.
     /// </summary>
     /// <param name="message">The exception message.</param>

@@ -677,7 +677,7 @@ public class ReportModelBuilder(IResourceSummaryBuilder? summaryBuilder = null, 
         var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
         var afterSensitiveDict = ConvertToFlatDictionary(change.AfterSensitive);
 
-        var allKeys = beforeDict.Keys.Union(afterDict.Keys).OrderBy(k => k);
+        var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order();
 
         var changes = new List<AttributeChangeModel>();
 

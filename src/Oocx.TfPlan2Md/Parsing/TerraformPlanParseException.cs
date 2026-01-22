@@ -6,6 +6,13 @@ namespace Oocx.TfPlan2Md.Parsing;
 public class TerraformPlanParseException : Exception
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="TerraformPlanParseException"/> class.
+    /// </summary>
+    public TerraformPlanParseException()
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="TerraformPlanParseException"/> class with a specified error message.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>

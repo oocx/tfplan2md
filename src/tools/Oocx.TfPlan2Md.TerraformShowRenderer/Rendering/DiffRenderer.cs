@@ -222,7 +222,7 @@ internal sealed partial class DiffRenderer
         var unchangedIdName = new List<(string Name, JsonElement Value, List<string> Path)>();
 
         // Compute width based on ALL properties in the update block for consistent alignment
-        var allProperties = afterProps.Select(p => (p.Name, p.Value)).ToList();
+        var allProperties = afterProps.Select(p => (p.Name, p.Value)).Order().ToList();
         var width = ComputeNameWidth(allProperties, unknown);
 
         // Identify removed properties that are actually unknown (for replace operations)

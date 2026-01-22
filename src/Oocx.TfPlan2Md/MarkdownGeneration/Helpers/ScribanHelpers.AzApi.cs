@@ -199,7 +199,7 @@ public static partial class ScribanHelpers
     private static ScriptObject CreatePropertyObject(string path, object? value)
     {
         var serializedValue = SerializeValue(value);
-        var isLarge = serializedValue != null && serializedValue.Length > LargeValueThreshold;
+        var isLarge = serializedValue?.Length > LargeValueThreshold;
 
         return new ScriptObject
         {
@@ -408,7 +408,7 @@ public static partial class ScribanHelpers
         var afterSensitiveFlattened = FlattenSensitivity(afterSensitive);
 
         // Get all unique property paths
-        var allPaths = beforeFlattened.Keys.Union(afterFlattened.Keys).OrderBy(p => p).ToList();
+        var allPaths = beforeFlattened.Keys.Union(afterFlattened.Keys).Order().ToList();
 
         foreach (var path in allPaths)
         {

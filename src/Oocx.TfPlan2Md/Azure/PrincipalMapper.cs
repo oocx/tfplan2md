@@ -252,15 +252,15 @@ internal class PrincipalMapper : IPrincipalMapper
                         diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
 
                         // Count principals by type for nested format
-                        if (nestedMapping.Users != null && nestedMapping.Users.Count > 0)
+                        if (nestedMapping.Users?.Count > 0)
                         {
                             diagnosticContext.PrincipalTypeCount["users"] = nestedMapping.Users.Count;
                         }
-                        if (nestedMapping.Groups != null && nestedMapping.Groups.Count > 0)
+                        if (nestedMapping.Groups?.Count > 0)
                         {
                             diagnosticContext.PrincipalTypeCount["groups"] = nestedMapping.Groups.Count;
                         }
-                        if (nestedMapping.ServicePrincipals != null && nestedMapping.ServicePrincipals.Count > 0)
+                        if (nestedMapping.ServicePrincipals?.Count > 0)
                         {
                             diagnosticContext.PrincipalTypeCount["servicePrincipals"] = nestedMapping.ServicePrincipals.Count;
                         }

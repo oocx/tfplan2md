@@ -23,5 +23,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+
+    <!-- Phase 3: Best practices, performance patterns, StringComparison -->
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.127">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

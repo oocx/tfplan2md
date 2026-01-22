@@ -484,10 +484,12 @@ dotnet_diagnostic.S6618.severity = suggestion
 dotnet_analyzer_diagnostic.category-Meziantou.Analyzer.severity = suggestion
 
 # MA0002: IEqualityComparer<string> or IComparer<string> is missing
-# Critical: Culture-specific string comparison can cause bugs
-# Fix: Add StringComparer.Ordinal or StringComparer.OrdinalIgnoreCase
-# Set to suggestion initially - will promote to warning/error in P3-T6
-dotnet_diagnostic.MA0002.severity = suggestion
+# Disabled: Application runs in Docker container with consistent culture (Invariant)
+# Justification: tfplan2md is a console tool that runs in Docker without locale configuration.
+# The container environment ensures consistent Invariant culture across all deployments.
+# Culture-specific string operations would add code complexity without benefit.
+# String comparisons in this codebase are for identifiers, not user-facing text.
+dotnet_diagnostic.MA0002.severity = none
 
 # MA0004: Use ConfigureAwait(false)
 # Suggestion for console applications (no UI synchronization context)
@@ -496,8 +498,10 @@ dotnet_diagnostic.MA0002.severity = suggestion
 dotnet_diagnostic.MA0004.severity = suggestion
 
 # MA0006: Use String.Equals instead of equality operator
-# Will promote to warning after fixes - complements MA0002
-dotnet_diagnostic.MA0006.severity = suggestion
+# Disabled: Related to MA0002 - culture-specific behavior not applicable
+# Justification: Same rationale as MA0002. Using == for string comparison is acceptable
+# and more readable when culture-specific behavior is not required.
+dotnet_diagnostic.MA0006.severity = none
 
 # MA0008: Add StructLayoutAttribute
 # Suggestion: Struct layout is a low-level optimization rarely needed
@@ -509,8 +513,12 @@ dotnet_diagnostic.MA0008.severity = suggestion
 dotnet_diagnostic.MA0009.severity = suggestion
 
 # MA0011: IFormatProvider is missing
-# Important for globalization - will promote to warning after fixes
-dotnet_diagnostic.MA0011.severity = suggestion
+# Disabled: Application runs in Docker with consistent Invariant culture
+# Justification: This application generates markdown/text output for technical use,
+# not localized user-facing content. The Docker environment provides consistent
+# Invariant culture. Adding IFormatProvider to every ToString/Format call would
+# reduce readability without providing value in our deployment model.
+dotnet_diagnostic.MA0011.severity = none
 
 # MA0013: Types should not extend System.ApplicationException
 # ApplicationException is obsolete design pattern

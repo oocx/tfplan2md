@@ -11,7 +11,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 public sealed record FormattedValue<T>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FormattedValue{T}"/> record.
+    /// Initializes a new instance of the <see cref="FormattedValue{T}"/> class.
     /// </summary>
     /// <param name="raw">The raw underlying value.</param>
     /// <param name="formatted">The pre-computed formatted representation.</param>
@@ -41,7 +41,7 @@ public sealed record FormattedValue<T>
 public sealed record FormattedList<T>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FormattedList{T}"/> record.
+    /// Initializes a new instance of the <see cref="FormattedList{T}"/> class.
     /// </summary>
     /// <param name="raw">The raw values.</param>
     /// <param name="formatted">The pre-computed formatted representation.</param>

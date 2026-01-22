@@ -27,7 +27,7 @@ internal class MarkdownRenderer
     private readonly DiagnosticContext? _diagnosticContext;
 
     /// <summary>
-    /// Creates a new MarkdownRenderer using embedded templates.
+    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
     /// </summary>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
@@ -40,7 +40,7 @@ internal class MarkdownRenderer
     }
 
     /// <summary>
-    /// Creates a new MarkdownRenderer with a custom template directory.
+    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class with a custom template directory.
     /// </summary>
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
@@ -157,6 +157,7 @@ internal class MarkdownRenderer
     /// Falls back to the default template rendering if no specific template exists.
     /// </summary>
     /// <param name="change">The resource change to render.</param>
+    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
     public string? RenderResourceChange(ResourceChangeModel change, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
     {
@@ -214,10 +215,12 @@ internal class MarkdownRenderer
     }
 
     /// <summary>
-    /// Parses a Terraform resource type into provider and resource name.
+    /// Renders a resource change using a specific Scriban template.
     /// </summary>
-    /// <param name="resourceType">The resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
-    /// <returns>Tuple of (provider, resource) or (null, null) if parsing fails.</returns>
+    /// <param name="change">The resource change model to render.</param>
+    /// <param name="templateSource">The template source to use for rendering.</param>
+    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
+    /// <returns>The rendered Markdown string.</returns>
     private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, LargeValueFormat largeValueFormat)
     {
         var template = Template.Parse(templateSource.Content, templateSource.Path);

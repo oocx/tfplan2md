@@ -43,11 +43,11 @@ internal static class AzureDevOpsHtmlPostProcessor
                 style = style.TrimEnd(';');
                 return $"style=\"{style}\"";
             },
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
 
             return $"<details{(normalized.StartsWith(' ') ? string.Empty : " ")}{normalized}>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -66,14 +66,14 @@ internal static class AzureDevOpsHtmlPostProcessor
             style = EnsureStyleDirective(style, "margin:0");
             return $"<code style=\"{style}\"{match.Groups["rest"].Value}>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
 
         var withSpanStyles = Regex.Replace(withCodeStyles, "<span\\s+style=\\\"(?<style>[^\\\"]*)\\\"(?<rest>[^>]*)>", match =>
         {
             var style = match.Groups["style"].Value;
             if (style.Contains("border-left", StringComparison.OrdinalIgnoreCase) || style.Contains("background-color", StringComparison.OrdinalIgnoreCase))
             {
-                var hasDisplay = Regex.IsMatch(style, "(^|;\\s*)display\\s*:", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                var hasDisplay = Regex.IsMatch(style, "(^|;\\s*)display\\s*:", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
                 if (!hasDisplay)
                 {
                     style = EnsureStyleDirective(style, "display:inline-block");
@@ -82,7 +82,7 @@ internal static class AzureDevOpsHtmlPostProcessor
 
             return $"<span style=\"{style}\"{match.Groups["rest"].Value}>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
 
         return withSpanStyles;
     }
@@ -100,7 +100,7 @@ internal static class AzureDevOpsHtmlPostProcessor
             style = style.TrimEnd(';');
             return $"style=\"{style}\"";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ internal static class AzureDevOpsHtmlPostProcessor
         }
 
         var pattern = $"(^|;\\s*){Regex.Escape(property)}\\s*:\\s*{Regex.Escape(value)}(\\s*(;|$))";
-        return Regex.IsMatch(style, pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.IsMatch(style, pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>
@@ -170,10 +170,10 @@ internal static class AzureDevOpsHtmlPostProcessor
                 return match.Value;
             }
 
-            var withoutExistingId = Regex.Replace(attributes, "\\sid=\".*?\"", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            var withoutExistingId = Regex.Replace(attributes, "\\sid=\".*?\"", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
             return $"<{tag}{withoutExistingId} id=\"{prefix}{slug}\">{content}</{tag}>";
         },
-        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -188,8 +188,8 @@ internal static class AzureDevOpsHtmlPostProcessor
             return string.Empty;
         }
 
-        var withBackticks = Regex.Replace(headingContent, "<code>(.*?)</code>", match => $"`{match.Groups[1].Value}`", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        var withoutTags = Regex.Replace(withBackticks, "<.*?>", string.Empty, RegexOptions.Singleline | RegexOptions.Compiled);
+        var withBackticks = Regex.Replace(headingContent, "<code>(.*?)</code>", match => $"`{match.Groups[1].Value}`", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+        var withoutTags = Regex.Replace(withBackticks, "<.*?>", string.Empty, RegexOptions.Singleline | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         var decoded = WebUtility.HtmlDecode(withoutTags);
         var trimmed = decoded.Trim();
 
@@ -199,7 +199,7 @@ internal static class AzureDevOpsHtmlPostProcessor
         }
 
         var lowered = trimmed.ToLowerInvariant();
-        var hyphenated = Regex.Replace(lowered, "\\s+", "-", RegexOptions.Compiled);
+        var hyphenated = Regex.Replace(lowered, "\\s+", "-", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         return Uri.EscapeDataString(hyphenated);
     }
 }

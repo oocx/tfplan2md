@@ -130,7 +130,7 @@ public class RoleAssignmentTemplateTests
         // Look for a <details> block containing the resource name in <b><code>{name}</code></b>
         var pattern = $@"(?s)<details[^>]*>\s*<summary>[^<]*{Regex.Escape(resourceType)}\s+<b><code>{Regex.Escape(resourceName)}</code></b>(.*?)</details>";
 
-        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline);
+        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline, TimeSpan.FromSeconds(2));
         return match.Success ? match.Value : string.Empty;
     }
 

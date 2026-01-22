@@ -178,7 +178,7 @@ public class MarkdownValidationTests
 
         // Regex matches a blank line that is immediately preceded by a table row and followed by a table row
         // (?<=\|[^\n]*)\n\s*\n(?=\|)
-        var matches = Regex.Matches(markdown, @"(?<=\|[^\n]*)\n\s*\n(?=\|)");
+        var matches = Regex.Matches(markdown, @"(?<=\|[^\n]*)\n\s*\n(?=\|)", RegexOptions.None, TimeSpan.FromSeconds(1));
 
         matches.Should().BeEmpty("because blank lines between table rows break markdown table rendering");
     }

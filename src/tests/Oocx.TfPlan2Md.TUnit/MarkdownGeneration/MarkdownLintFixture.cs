@@ -156,7 +156,9 @@ public class MarkdownLintFixture
             // Example: stdin:359 MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]
             var match = System.Text.RegularExpressions.Regex.Match(
                 line,
-                @"stdin:(\d+)\s+(\w+)/([^\s]+)\s+(.+)");
+                @"stdin:(\d+)\s+(\w+)/([^\s]+)\s+(.+)",
+                System.Text.RegularExpressions.RegexOptions.None,
+                TimeSpan.FromSeconds(1));
 
             if (match.Success)
             {

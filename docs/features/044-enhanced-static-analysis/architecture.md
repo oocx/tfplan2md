@@ -99,7 +99,63 @@ New section added for each analyzer with:
 - Let Dependabot propose updates weekly via PRs
 - Evaluate each update for rule changes/new warnings
 
-### 3. Progressive Severity Escalation
+### 3. Architectural Decision: Culture Invariance
+
+**Decision**: Disable culture-specific behavior rules (MA0002, MA0006, MA0011)
+
+**Context**:
+Meziantou.Analyzer includes rules that enforce explicit culture specification for string operations:
+- MA0002: Requires explicit IComparer<string> or IEqualityComparer<string> for collections
+- MA0006: Requires String.Equals() instead of == operator
+- MA0011: Requires explicit IFormatProvider for ToString() and string formatting
+
+These rules prevent culture-specific bugs in applications that process localized user content or run in varied cultural environments.
+
+**Decision Rationale**:
+
+tfplan2md is a **console tool deployed exclusively in Docker containers** with the following characteristics:
+
+1. **Consistent Execution Environment**: Docker containers run with Invariant culture by default. No locale configuration is provided or expected.
+
+2. **Technical Data Only**: All string operations in tfplan2md process:
+   - Terraform resource identifiers (e.g., `azurerm_resource_group.example`)
+   - Azure resource names and IDs
+   - API keys and technical configuration
+   - Markdown formatting tokens
+   - **Not localized user-facing content**
+
+3. **Deployment Model**: The application:
+   - Ships as a Docker container image
+   - Has no user-configurable locale settings
+   - Runs in CI/CD pipelines with consistent Invariant culture
+   - Never processes culture-specific date/number formats or user text
+
+**Consequences**:
+
+**Accepted**:
+- Culture-specific boilerplate code (StringComparer.Ordinal, CultureInfo.InvariantCulture) is unnecessary
+- Code remains more readable without culture specification on every string operation
+- String comparison behavior is consistent across all deployments (Invariant culture)
+
+**Rejected**:
+- The 578 violations (73% of initial Meziantou baseline) provide no functional value
+- Culture-aware string operations would add code complexity without benefit
+- False sense of "correctness" from passing these rules in an environment where culture doesn't vary
+
+**Implementation**:
+- MA0002: severity = none (disabled globally)
+- MA0006: severity = none (disabled globally)
+- MA0011: severity = none (disabled globally)
+
+All three rules disabled in `.editorconfig` with this rationale documented inline.
+
+**Review Trigger**: If deployment model changes (e.g., desktop app, web app with user locales), re-evaluate this decision.
+
+**References**:
+- Phase 3 baseline: `docs/features/044-enhanced-static-analysis/phase-3-baseline.md`
+- Configuration: `.editorconfig` (Meziantou.Analyzer section)
+
+### 4. Progressive Severity Escalation
 
 **Phase Workflow** (repeat for each analyzer):
 
@@ -135,7 +191,7 @@ public void DoSomething() { }
 #pragma warning restore CA1822
 ```
 
-### 4. CI/CD Integration
+### 5. CI/CD Integration
 
 **No Changes to Existing Workflows** - analyzers run automatically via existing steps:
 

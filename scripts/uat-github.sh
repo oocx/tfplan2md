@@ -169,10 +169,10 @@ cmd_comment() {
 }
 
 cmd_poll() {
-    local pr_number="${1:-}"
+    local pr_number=""
     local quiet=false
     
-    # Parse flags
+    # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --quiet)
@@ -180,6 +180,7 @@ cmd_poll() {
                 shift
                 ;;
             *)
+                # First non-flag argument is the PR number
                 if [[ -z "$pr_number" ]]; then
                     pr_number="$1"
                     shift

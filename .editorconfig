@@ -436,3 +436,71 @@ dotnet_diagnostic.S6602.severity = warning
 # Justification: string.Create is a performance micro-optimization that reduces readability
 # For a CLI reporting tool, code clarity is more important than microsecond string allocation savings
 dotnet_diagnostic.S6618.severity = suggestion
+
+################################################################################
+# Meziantou.Analyzer Rules (Phase 3)
+################################################################################
+
+# Reference: https://github.com/meziantou/Meziantou.Analyzer/blob/main/docs/README.md
+# Strategy: Start all rules as warnings, promote critical rules to errors after violations fixed
+# Focus: Best practices, performance patterns, StringComparison enforcement
+
+# Global default for Meziantou.Analyzer rules - set to suggestion initially
+# This prevents build failures while we triage and fix violations
+# Will promote specific rules to warning/error after fixes complete (P3-T4, P3-T5, P3-T6)
+dotnet_analyzer_diagnostic.category-Meziantou.Analyzer.severity = suggestion
+
+# MA0002: IEqualityComparer<string> or IComparer<string> is missing
+# Critical: Culture-specific string comparison can cause bugs
+# Fix: Add StringComparer.Ordinal or StringComparer.OrdinalIgnoreCase
+# Set to suggestion initially - will promote to warning/error in P3-T6
+dotnet_diagnostic.MA0002.severity = suggestion
+
+# MA0004: Use ConfigureAwait(false)
+# Suggestion for console applications (no UI synchronization context)
+# Justification: This is a console application with no synchronization context
+# ConfigureAwait(false) adds no value and reduces readability in console apps
+dotnet_diagnostic.MA0004.severity = suggestion
+
+# MA0006: Use String.Equals instead of equality operator
+# Will promote to warning after fixes - complements MA0002
+dotnet_diagnostic.MA0006.severity = suggestion
+
+# MA0008: Add StructLayoutAttribute
+# Suggestion: Struct layout is a low-level optimization rarely needed
+dotnet_diagnostic.MA0008.severity = suggestion
+
+# MA0009: Add regex timeout
+# Critical: Prevents ReDoS (Regular Expression Denial of Service) attacks
+# Set to suggestion initially - will review each regex pattern and promote in P3-T6
+dotnet_diagnostic.MA0009.severity = suggestion
+
+# MA0011: IFormatProvider is missing
+# Important for globalization - will promote to warning after fixes
+dotnet_diagnostic.MA0011.severity = suggestion
+
+# MA0013: Types should not extend System.ApplicationException
+# ApplicationException is obsolete design pattern
+# Fix: Use Exception or custom exception base class
+# Set to suggestion initially - will promote to warning in P3-T6
+dotnet_diagnostic.MA0013.severity = suggestion
+
+# MA0023: Add RegexOptions.ExplicitCapture
+# Performance optimization for regex
+# Set to suggestion initially - will promote to warning after fixes
+dotnet_diagnostic.MA0023.severity = suggestion
+
+# MA0048: File name must match type name
+# Suggestion: Relaxed due to project convention of multiple types per file
+# Conflicts with SA1402 (multiple types per file) which is intentional
+dotnet_diagnostic.MA0048.severity = suggestion
+
+# MA0051: Method is too long
+# Enforces method length <60 lines for maintainability
+# Set to suggestion initially - will suppress specific complex methods with justification
+dotnet_diagnostic.MA0051.severity = suggestion
+
+# MA0140: Both if and else branch have identical code
+# Logic error - dead code or copy-paste mistake
+# Set to suggestion initially - will fix or suppress with justification
+dotnet_diagnostic.MA0140.severity = suggestion

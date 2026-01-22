@@ -745,12 +745,12 @@ public static partial class ScribanHelpers
             var groupedProps = GroupPropertiesByNestedObject(smallChanges);
 
             // Render main table with root-level and ungrouped properties
-            if (groupedProps.mainProps.Count > 0)
+            if (groupedProps.MainProps.Count > 0)
             {
                 sb.AppendLine("| Property | Before | After |");
                 sb.AppendLine("|----------|--------|-------|");
 
-                foreach (var item in groupedProps.mainProps)
+                foreach (var item in groupedProps.MainProps)
                 {
                     if (item is ScriptObject prop)
                     {
@@ -772,7 +772,7 @@ public static partial class ScribanHelpers
             }
 
             // Render separate tables for nested objects with >3 attributes
-            foreach (var group in groupedProps.nestedGroups)
+            foreach (var group in groupedProps.NestedGroups)
             {
                 sb.AppendLine($"###### {heading} - `{group.Key}`");
                 sb.AppendLine();
@@ -866,12 +866,12 @@ public static partial class ScribanHelpers
             var groupedProps = GroupPropertiesByNestedObject(smallProps);
 
             // Render main table with root-level and ungrouped properties
-            if (groupedProps.mainProps.Count > 0 || groupedProps.nestedGroups.Count == 0)
+            if (groupedProps.MainProps.Count > 0 || groupedProps.NestedGroups.Count == 0)
             {
                 sb.AppendLine("| Property | Value |");
                 sb.AppendLine("|----------|-------|");
 
-                foreach (var item in groupedProps.mainProps)
+                foreach (var item in groupedProps.MainProps)
                 {
                     if (item is ScriptObject prop)
                     {
@@ -890,7 +890,7 @@ public static partial class ScribanHelpers
             }
 
             // Render separate tables for nested objects with >3 attributes
-            foreach (var group in groupedProps.nestedGroups)
+            foreach (var group in groupedProps.NestedGroups)
             {
                 sb.AppendLine($"###### {heading} - `{group.Key}`");
                 sb.AppendLine();
@@ -993,7 +993,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="properties">The list of properties to group.</param>
     /// <returns>A tuple with main properties and nested groups.</returns>
-    private static (ScriptArray mainProps, Dictionary<string, ScriptArray> nestedGroups) GroupPropertiesByNestedObject(ScriptArray properties)
+    private static (ScriptArray MainProps, Dictionary<string, ScriptArray> NestedGroups) GroupPropertiesByNestedObject(ScriptArray properties)
     {
         var mainProps = new ScriptArray();
         var nestedGroups = new Dictionary<string, ScriptArray>();

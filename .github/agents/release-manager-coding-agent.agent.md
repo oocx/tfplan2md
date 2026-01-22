@@ -242,7 +242,9 @@ Before releasing, verify:
    # Check CHANGELOG.md was updated
    head -n 20 CHANGELOG.md
    
-   # Verify GitHub Release created
+   # Verify GitHub Release created (fallback to raw gh if no script available)
+   # Preferred: Use GitHub chat tools in VS Code
+   # Fallback only:
    PAGER=cat gh release view <tag>
    ```
    - [ ] CHANGELOG.md updated with new version and commits

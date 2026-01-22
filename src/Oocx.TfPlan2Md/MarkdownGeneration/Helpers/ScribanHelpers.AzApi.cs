@@ -736,7 +736,6 @@ public static partial class ScribanHelpers
                         smallChanges.Add(scriptObj);
                     }
                 }
-                }
             }
 
             // Group properties by their nested object parent (for properties with >3 attributes)

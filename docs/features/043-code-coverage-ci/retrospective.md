@@ -127,10 +127,10 @@ The process involved multiple agents and models, with a significant amount of wo
 ## Improvement Opportunities
 | Issue | Proposed Solution | Action Item |
 |-------|-------------------|-------------|
-| Missing commits before handoff | Enforce "commit then handoff" rule in agent instructions. | Update `docs/agents.md` and agent prompts. |
-| Raw `gh` command usage | Strictly prohibit raw `gh` calls when scripts exist. | Update RM agent prompt and `.github/gh-cli-instructions.md`. |
-| Misplaced chat logs | Add validation check for chat log locations. | Update `scripts/validate-agents.py` or new pre-commit hook. |
-| CI Polling friction | Improve `uat-watch` scripts to be more "agent-friendly" (simpler output). | Refactor `scripts/uat-watch-github.sh`. |
+| Missing commits before handoff | Enforce "commit then handoff" rule in agent instructions. | Update `docs/agents.md` and agent prompts (Issue #338). |
+| Raw `gh` command usage | Strictly prohibit raw `gh` calls when scripts exist. | Update RM agent prompt and `.github/gh-cli-instructions.md` (Issue #340). |
+| Misplaced chat logs | Add validation check for chat log locations. | Update `scripts/validate-agents.py` or new pre-commit hook (Issue #341). |
+| CI Polling friction | Improve `uat-watch` scripts to be more "agent-friendly" (simpler output). | Refactor `scripts/uat-watch-github.sh` (Issue #339). |
 
 ## User Feedback (verbatim)
 - "Whenever an agent thinks it has completed all tasks and asks if we should handoff to the next agent, it must commit files *before* it asks for the handoff - otherwise, I would always need one extra message to confirm and request the commit."

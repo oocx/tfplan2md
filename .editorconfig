@@ -359,3 +359,78 @@ dotnet_analyzer_diagnostic.category-StyleCop.CSharp.ReadabilityRules.severity = 
 
 # Spacing Rules - Default to suggestion (formatting not critical)
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.SpacingRules.severity = suggestion
+
+################################################################################
+# SonarAnalyzer.CSharp Rules (Phase 2)
+################################################################################
+
+# Reference: https://rules.sonarsource.com/csharp/
+# Strategy: Start all rules as suggestions/warnings, promote critical rules to errors after fixes
+# Note: TreatWarningsAsErrors=true in Directory.Build.props means warnings fail builds
+
+# Global default for SonarAnalyzer rules - set to suggestion initially
+# This allows build to pass while we triage and fix violations
+dotnet_analyzer_diagnostic.category-SonarAnalyzer.CSharp.severity = suggestion
+
+# Critical rules that will be promoted to 'error' after violations are fixed (P2-T6)
+
+# S1006: Method overloads with default parameter values should not overlap
+# Critical: Can cause unexpected behavior with method overloads
+dotnet_diagnostic.S1006.severity = warning
+
+# S1066: Mergeable if statements should be combined
+# Medium: Code readability - keep as warning for now
+dotnet_diagnostic.S1066.severity = warning
+
+# S1144: Unused private types or members should be removed
+# Medium: Dead code detection - keep as warning
+dotnet_diagnostic.S1144.severity = warning
+
+# S1481: Unused local variables should be removed
+# Critical: Indicates potential logic error - promote to error later
+dotnet_diagnostic.S1481.severity = warning
+
+# S2583: Conditionally executed code should be reachable
+# Critical: Logic error - unreachable code paths - promote to error later
+dotnet_diagnostic.S2583.severity = warning
+
+# S2259: Null pointers should not be dereferenced
+# Note: This rule may have false positives with nullable reference types
+# Setting to suggestion for initial review
+dotnet_diagnostic.S2259.severity = suggestion
+
+# S3267: Loops should be simplified with LINQ
+# Medium: Code simplification - keep as warning
+dotnet_diagnostic.S3267.severity = warning
+
+# S3358: Ternary operators should not be nested
+# Medium: Code readability - keep as warning
+dotnet_diagnostic.S3358.severity = warning
+
+# S3400: Methods should not return constants
+# Medium: Code design - keep as warning
+dotnet_diagnostic.S3400.severity = warning
+
+# S3459: Unassigned members should be removed
+# Medium: Dead code detection - keep as warning
+dotnet_diagnostic.S3459.severity = warning
+
+# S3626: Jump statements should not be redundant
+# Medium: Code simplification - keep as warning
+dotnet_diagnostic.S3626.severity = warning
+
+# S3871: Exception types should be "public"
+# Medium: API design - keep as warning
+dotnet_diagnostic.S3871.severity = warning
+
+# S3923: Conditional operations should not always return the same value
+# Critical: Logic error - promote to error later
+dotnet_diagnostic.S3923.severity = warning
+
+# S6602: "Find" method should be used instead of "FirstOrDefault"
+# Medium: Performance - keep as warning
+dotnet_diagnostic.S6602.severity = warning
+
+# S6618: "string.Create" should be used instead of "FormattableString"
+# Medium: Performance - keep as warning
+dotnet_diagnostic.S6618.severity = warning

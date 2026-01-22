@@ -341,7 +341,7 @@ internal static class RoleAssignmentViewModelFactory
 
         foreach (var desiredName in DesiredOrder)
         {
-            var match = attributes.FirstOrDefault(a => string.Equals(a.Name, desiredName, StringComparison.Ordinal));
+            var match = attributes.Find(a => string.Equals(a.Name, desiredName, StringComparison.Ordinal));
             if (match != null)
             {
                 ordered.Add(match);

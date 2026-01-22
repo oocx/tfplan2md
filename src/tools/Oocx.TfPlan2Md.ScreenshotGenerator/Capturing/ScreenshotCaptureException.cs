@@ -4,7 +4,11 @@ namespace Oocx.TfPlan2Md.ScreenshotGenerator.Capturing;
 /// Represents a failure during screenshot capture.
 /// Related feature: docs/features/028-html-screenshot-generation/specification.md.
 /// </summary>
+// SonarAnalyzer S3871: Exception is intentionally internal
+// Justification: Screenshot exception used only within this tool, not exposed in public API
+#pragma warning disable S3871 // Exception types should be "public"
 internal sealed class ScreenshotCaptureException : ApplicationException
+#pragma warning restore S3871
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ScreenshotCaptureException"/> class.

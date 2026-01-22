@@ -444,8 +444,8 @@ internal static class VariableGroupViewModelFactory
     private static string FormatEnabledDiff(bool? before, bool? after, string format)
     {
         // Use "-" placeholder for null values in diffs (consistent with initial null rendering)
-        var beforeStr = before == null ? "-" : (before.Value ? "true" : "false");
-        var afterStr = after == null ? "-" : (after.Value ? "true" : "false");
+        var beforeStr = ConvertBoolToString(before);
+        var afterStr = ConvertBoolToString(after);
 
         if (beforeStr == afterStr)
         {
@@ -453,6 +453,21 @@ internal static class VariableGroupViewModelFactory
         }
 
         return ScribanHelpers.FormatDiff(beforeStr, afterStr, format);
+    }
+
+    /// <summary>
+    /// Converts a nullable boolean to its string representation for display.
+    /// </summary>
+    /// <param name="value">Boolean value to convert.</param>
+    /// <returns>"true", "false", or "-" for null.</returns>
+    private static string ConvertBoolToString(bool? value)
+    {
+        if (value == null)
+        {
+            return "-";
+        }
+
+        return value.Value ? "true" : "false";
     }
 
     /// <summary>

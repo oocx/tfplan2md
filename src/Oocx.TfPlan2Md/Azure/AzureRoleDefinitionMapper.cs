@@ -34,10 +34,11 @@ public static partial class AzureRoleDefinitionMapper
         var mappedName = string.Empty;
         var hasMapping = !string.IsNullOrEmpty(roleGuid) && Roles.TryGetValue(roleGuid, out mappedName);
 
-        // SonarAnalyzer S2583: Defensive null-coalescing expressions below are intentional
+        // SonarAnalyzer S2583 & S3358: Defensive null-coalescing and nested ternaries are intentional
         // Justification: Complex control flow with multiple nullable inputs requires defensive fallbacks
         // even if some code paths appear statically unreachable. This ensures robustness.
 #pragma warning disable S2583 // Conditionally executed code should be reachable
+#pragma warning disable S3358 // Extract nested ternary operation
         var name = hasMapping
             ? mappedName
             : roleDefinitionName ?? (string.IsNullOrEmpty(roleGuid) ? roleDefinitionId : roleGuid) ?? string.Empty;
@@ -50,6 +51,7 @@ public static partial class AzureRoleDefinitionMapper
 
         var safeName = name ?? string.Empty;
         var safeId = id ?? string.Empty;
+#pragma warning restore S3358
 #pragma warning restore S2583
 
         return new RoleDefinitionInfo(safeName, safeId, fullName);

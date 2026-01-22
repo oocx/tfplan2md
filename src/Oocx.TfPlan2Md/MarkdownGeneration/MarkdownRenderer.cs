@@ -86,16 +86,32 @@ internal class MarkdownRenderer
         var templateText = ResolveTemplateText(templateNameOrPath);
 
         // Record template resolution for main template
-        var templateSource = _templateLoader.TryGetTemplate(templateNameOrPath, out _)
-            ? $"Built-in template: {templateNameOrPath}"
-            : File.Exists(templateNameOrPath)
-                ? $"Custom template: {templateNameOrPath}"
-                : "Unknown template source";
+        var templateSource = DetermineTemplateSource(templateNameOrPath);
 
         _diagnosticContext?.TemplateResolutions.Add(
             new TemplateResolution("_main", templateSource));
 
         return RenderWithTemplate(model, templateText, templateNameOrPath);
+    }
+
+    /// <summary>
+    /// Determines the source description of a template (built-in, custom file, or unknown).
+    /// </summary>
+    /// <param name="templateNameOrPath">Template name or file path.</param>
+    /// <returns>Human-readable template source description.</returns>
+    private string DetermineTemplateSource(string templateNameOrPath)
+    {
+        if (_templateLoader.TryGetTemplate(templateNameOrPath, out _))
+        {
+            return $"Built-in template: {templateNameOrPath}";
+        }
+
+        if (File.Exists(templateNameOrPath))
+        {
+            return $"Custom template: {templateNameOrPath}";
+        }
+
+        return "Unknown template source";
     }
 
     /// <summary>
@@ -110,11 +126,7 @@ internal class MarkdownRenderer
         var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
 
         // Record template resolution for main template
-        var templateSource = _templateLoader.TryGetTemplate(templatePath, out _)
-            ? $"Built-in template: {templatePath}"
-            : File.Exists(templatePath)
-                ? $"Custom template: {templatePath}"
-                : "Unknown template source";
+        var templateSource = DetermineTemplateSource(templatePath);
 
         _diagnosticContext?.TemplateResolutions.Add(
             new TemplateResolution("_main", templateSource));

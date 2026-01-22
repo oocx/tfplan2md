@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.ScreenshotGenerator.Capturing;
 // SonarAnalyzer S3871: Exception is intentionally internal
 // Justification: Screenshot exception used only within this tool, not exposed in public API
 #pragma warning disable S3871 // Exception types should be "public"
-internal sealed class ScreenshotCaptureException : ApplicationException
+internal sealed class ScreenshotCaptureException : Exception
 #pragma warning restore S3871
 {
     /// <summary>

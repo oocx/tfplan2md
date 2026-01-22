@@ -29,9 +29,8 @@ public class MarkdownRendererTemplateFormattingTests
         // Assert - ensure that details blocks are not inline inside the main rule table
         result.Should().NotBeNull();
         var lines = result.Split('\n');
-        // Find the index of the main Rule table header row (the row with 'Rule Name') and its separator line
+        // Find the index of the main Rule table header row (the row with 'Rule Name')
         var headerRow = lines.Select((l, i) => (l, i)).First(t => t.l.Contains("Rule Name"));
-        var headerSep = lines[headerRow.i + 1];
         // Ensure no <details> tags appear between the header separator and the first blank line after the table rows
         var afterHeader = lines.Skip(headerRow.i + 2).ToList();
         var indexOfBlank = afterHeader.FindIndex(l => string.IsNullOrWhiteSpace(l));

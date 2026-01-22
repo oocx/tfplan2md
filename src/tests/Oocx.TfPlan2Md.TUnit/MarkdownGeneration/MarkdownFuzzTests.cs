@@ -178,14 +178,11 @@ public class MarkdownFuzzTests
             .Where(l => l.TrimStart().StartsWith('|') && !l.Contains("---"))
             .ToList();
 
-        foreach (var line in tableLines)
+        foreach (var line in tableLines.Where(line => line.TrimStart().StartsWith('|')))
         {
             // Each table row should start and end with |
-            if (line.TrimStart().StartsWith('|'))
-            {
-                line.TrimEnd().Should().EndWith("|",
-                    "because table rows must be complete on one line");
-            }
+            line.TrimEnd().Should().EndWith("|",
+                "because table rows must be complete on one line");
         }
 
         AssertValidTables(markdown);

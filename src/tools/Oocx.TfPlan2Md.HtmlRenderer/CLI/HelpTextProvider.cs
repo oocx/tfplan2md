@@ -10,7 +10,11 @@ internal static class HelpTextProvider
     /// Builds the help text string for the CLI.
     /// </summary>
     /// <returns>A formatted help text block.</returns>
+    // SonarAnalyzer S3400: Method returning constant is intentional
+    // Justification: Keeping help text in a method (not const field) improves readability and follows CLI tool conventions
+#pragma warning disable S3400 // Methods should not return constants
     public static string GetHelpText()
+#pragma warning restore S3400
     {
         return """
         tfplan2md-html - Convert tfplan2md markdown to HTML

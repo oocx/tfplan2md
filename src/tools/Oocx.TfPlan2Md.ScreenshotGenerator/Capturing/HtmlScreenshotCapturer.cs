@@ -379,6 +379,10 @@ internal sealed class HtmlScreenshotCapturer
     /// <summary>
     /// Represents summary text and owning module text for resource matching.
     /// </summary>
+    // SonarAnalyzer S3459 & S1144: Properties appear unused but are set by JSON deserializer
+    // Justification: JSON deserialization from browser JavaScript populates these via reflection
+#pragma warning disable S3459 // Unassigned members should be removed
+#pragma warning disable S1144 // Unused private types or members should be removed
     private sealed record SummaryInfo
     {
         public int Index { get; init; }
@@ -387,6 +391,8 @@ internal sealed class HtmlScreenshotCapturer
 
         public string? Text { get; init; }
     }
+#pragma warning restore S1144
+#pragma warning restore S3459
 
     /// <summary>
     /// Represents a screenshot clip rectangle.

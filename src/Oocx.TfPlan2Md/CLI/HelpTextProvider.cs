@@ -2,10 +2,17 @@ using System.Text;
 
 namespace Oocx.TfPlan2Md.CLI;
 
+/// <summary>
+/// Provides formatted help text for the tfplan2md command-line interface.
+/// </summary>
 public static class HelpTextProvider
 {
     private const int OptionPadding = 50;
 
+    /// <summary>
+    /// Generates the complete help text including usage, options, and examples.
+    /// </summary>
+    /// <returns>A formatted help text string ready for display.</returns>
     public static string GetHelpText()
     {
         var options = new (string Option, string Description)[]

@@ -13,28 +13,43 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// </summary>
 public class ReportModel
 {
+    /// <summary>
+    /// Gets the Terraform version that created the plan.
+    /// </summary>
     public required string TerraformVersion { get; init; }
+
+    /// <summary>
+    /// Gets the Terraform plan format version.
+    /// </summary>
     public required string FormatVersion { get; init; }
+
     /// <summary>
     /// tfplan2md semantic version used to generate the report.
     /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
     /// </summary>
     public required string TfPlan2MdVersion { get; init; }
+
     /// <summary>
     /// Short git commit hash (7 characters) of the tfplan2md build used for rendering.
     /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
     /// </summary>
     public required string CommitHash { get; init; }
+
     /// <summary>
     /// UTC timestamp captured when the report was generated.
     /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
     /// </summary>
     public required DateTimeOffset GeneratedAtUtc { get; init; }
+
     /// <summary>
     /// Indicates whether the metadata line should be hidden in the rendered report.
     /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
     /// </summary>
     public required bool HideMetadata { get; init; }
+
+    /// <summary>
+    /// Gets the timestamp string from the plan (if available).
+    /// </summary>
     public string? Timestamp { get; init; }
     /// <summary>
     /// Optional custom report title provided via the CLI.
@@ -44,8 +59,20 @@ public class ReportModel
     /// The escaped title text used by templates; null when no custom title is provided so templates can apply defaults.
     /// </value>
     public string? ReportTitle { get; init; }
+
+    /// <summary>
+    /// Gets the list of all resource changes in the plan.
+    /// </summary>
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
+
+    /// <summary>
+    /// Gets resource changes organized by module.
+    /// </summary>
     public required IReadOnlyList<ModuleChangeGroup> ModuleChanges { get; init; }
+
+    /// <summary>
+    /// Gets the summary statistics for the plan.
+    /// </summary>
     public required SummaryModel Summary { get; init; }
 
     /// <summary>
@@ -61,12 +88,19 @@ public class ReportModel
     public required LargeValueFormat LargeValueFormat { get; init; }
 }
 
+/// <summary>
+/// Groups resource changes by module for hierarchical presentation.
+/// </summary>
 public class ModuleChangeGroup
 {
     /// <summary>
     /// The module address (e.g. "module.network.module.subnet"). Empty string represents the root module.
     /// </summary>
     public required string ModuleAddress { get; init; }
+
+    /// <summary>
+    /// Gets the list of resource changes within this module.
+    /// </summary>
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
 }
 
@@ -85,10 +119,29 @@ public record ActionSummary(int Count, IReadOnlyList<ResourceTypeBreakdown> Brea
 /// </summary>
 public class SummaryModel
 {
+    /// <summary>
+    /// Gets the summary of resources to be added.
+    /// </summary>
     public required ActionSummary ToAdd { get; init; }
+
+    /// <summary>
+    /// Gets the summary of resources to be changed in place.
+    /// </summary>
     public required ActionSummary ToChange { get; init; }
+
+    /// <summary>
+    /// Gets the summary of resources to be destroyed.
+    /// </summary>
     public required ActionSummary ToDestroy { get; init; }
+
+    /// <summary>
+    /// Gets the summary of resources to be replaced.
+    /// </summary>
     public required ActionSummary ToReplace { get; init; }
+
+    /// <summary>
+    /// Gets the summary of resources with no changes.
+    /// </summary>
     public required ActionSummary NoOp { get; init; }
 
     /// <summary>
@@ -103,13 +156,44 @@ public class SummaryModel
 /// </summary>
 public class ResourceChangeModel
 {
+    /// <summary>
+    /// Gets the full Terraform address of the resource.
+    /// </summary>
     public required string Address { get; init; }
+
+    /// <summary>
+    /// Gets or sets the module address containing this resource.
+    /// </summary>
     public string? ModuleAddress { get; set; }
+
+    /// <summary>
+    /// Gets the resource type (e.g., "aws_s3_bucket").
+    /// </summary>
     public required string Type { get; init; }
+
+    /// <summary>
+    /// Gets the resource name.
+    /// </summary>
     public required string Name { get; init; }
+
+    /// <summary>
+    /// Gets the provider name (e.g., "aws", "azurerm").
+    /// </summary>
     public required string ProviderName { get; init; }
+
+    /// <summary>
+    /// Gets the action being performed (e.g., "create", "update", "delete").
+    /// </summary>
     public required string Action { get; init; }
+
+    /// <summary>
+    /// Gets the symbol representing the action (e.g., "+", "~", "-").
+    /// </summary>
     public required string ActionSymbol { get; init; }
+
+    /// <summary>
+    /// Gets the list of attribute changes for this resource.
+    /// </summary>
     public required IReadOnlyList<AttributeChangeModel> AttributeChanges { get; init; }
 
     /// <summary>
@@ -184,9 +268,24 @@ public class ResourceChangeModel
 /// </summary>
 public class AttributeChangeModel
 {
+    /// <summary>
+    /// Gets the name of the attribute that changed.
+    /// </summary>
     public required string Name { get; init; }
+
+    /// <summary>
+    /// Gets the value before the change, or null if the attribute is being added.
+    /// </summary>
     public string? Before { get; init; }
+
+    /// <summary>
+    /// Gets the value after the change, or null if the attribute is being removed.
+    /// </summary>
     public string? After { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether this attribute contains sensitive data.
+    /// </summary>
     public bool IsSensitive { get; init; }
 
     /// <summary>

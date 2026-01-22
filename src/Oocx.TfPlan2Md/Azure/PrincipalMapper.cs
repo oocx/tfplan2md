@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Azure;
 
 /// <summary>
 /// Maps Azure AD/Entra principal IDs to display names.
-/// Related feature: docs/features/006-role-assignment-readable-display/
+/// Related feature: docs/features/006-role-assignment-readable-display/.
 /// </summary>
 /// <remarks>
 /// The mapper loads principal information from a JSON file containing a dictionary

@@ -276,6 +276,14 @@ Your work is complete when:
 
 ## Handoff
 
+**Before handoff:** Commit the code review report:
+```bash
+git add docs/features/NNN-<feature-slug>/code-review.md
+git commit -m "docs: add code review for <feature-name>"
+git push origin HEAD
+```
+
+After committing:
 - If **Changes Requested**: Use the handoff button to return to the **Developer** agent.
   - This applies to both initial reviews and reviews of rework after failed PR/CI validation
   - After Developer fixes issues, work returns to Code Reviewer for re-approval

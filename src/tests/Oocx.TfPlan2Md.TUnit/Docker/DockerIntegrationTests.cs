@@ -19,8 +19,6 @@ public class DockerIntegrationTests
     private readonly DockerFixture _fixture = DockerFixture.Instance;
     private const string TestDataPath = "TestData/azurerm-azuredevops-plan.json";
 
-    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
-
     private async Task<bool> SkipIfDockerNotAvailableAsync()
     {
         await DockerFixture.EnsureInitializedAsync();

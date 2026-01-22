@@ -157,12 +157,6 @@ public class RoleAssignmentTemplateTests
             return name is null ? principalId : $"{name} [{principalId}]";
         }
 
-        public string GetPrincipalName(string principalId, string? principalType)
-        {
-            var name = GetName(principalId, principalType);
-            return name is null ? principalId : $"{name} [{principalId}]";
-        }
-
         public string? GetName(string principalId)
         {
             return Names.TryGetValue(principalId, out var name) ? name : null;

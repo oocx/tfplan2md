@@ -215,13 +215,10 @@ public class MarkdownInvariantTests
 
                 // Check if this line starts with | but doesn't end with |
                 // That would indicate a broken row (newline inside cell)
-                if (line.TrimStart().StartsWith('|') && !line.TrimEnd().EndsWith('|'))
+                // Exception: separator row like |---|---|
+                if (line.TrimStart().StartsWith('|') && !line.TrimEnd().EndsWith('|') && !Regex.IsMatch(line, @"^\|[-:\s|]+$"))
                 {
-                    // Exception: separator row like |---|---|
-                    if (!Regex.IsMatch(line, @"^\|[-:\s|]+$"))
-                    {
-                        violations.Add((Path.GetFileName(planPath), i + 1));
-                    }
+                    violations.Add((Path.GetFileName(planPath), i + 1));
                 }
             }
         }

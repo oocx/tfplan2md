@@ -20,6 +20,39 @@ indent_size = 2
 [*.json]
 indent_size = 2
 
+# Test files - Relax some analyzer rules  
+[{src/tests/**/*.cs,tests/**/*.cs}]
+# S112: Generic exceptions acceptable in test code
+dotnet_diagnostic.S112.severity = suggestion
+# S1066: Nested if statements acceptable in test assertions
+dotnet_diagnostic.S1066.severity = suggestion
+# S1075: Hardcoded paths acceptable in test data
+dotnet_diagnostic.S1075.severity = suggestion
+# S1144: Test helper methods may appear unused (used via reflection/dynamic)
+dotnet_diagnostic.S1144.severity = suggestion
+# S1481: Unused variables acceptable for test readability
+dotnet_diagnostic.S1481.severity = suggestion
+# S2589: Always-true conditions acceptable in defensive test code
+dotnet_diagnostic.S2589.severity = suggestion
+# S3236: Caller information attributes acceptable in test helpers
+dotnet_diagnostic.S3236.severity = suggestion
+# S3267: LINQ simplification not required in test code (readability over conciseness)
+dotnet_diagnostic.S3267.severity = suggestion
+# S3878: Array creation syntax acceptable for test clarity
+dotnet_diagnostic.S3878.severity = suggestion
+# S4144: Identical methods acceptable in tests (test isolation over DRY)
+dotnet_diagnostic.S4144.severity = suggestion
+# S5445: Path.GetTempFileName acceptable in tests
+dotnet_diagnostic.S5445.severity = suggestion
+# S6603: Collection-specific methods not required in tests
+dotnet_diagnostic.S6603.severity = suggestion
+# S6605: Collection-specific methods not required in tests
+dotnet_diagnostic.S6605.severity = suggestion
+
+# Markdown files
+[*.md]
+indent_size = 2
+
 # Markdown files
 [*.md]
 trim_trailing_whitespace = false

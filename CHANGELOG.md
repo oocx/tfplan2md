@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.44"></a>
+## [1.0.0-alpha.44](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.43...v1.0.0-alpha.44) (2026-01-23)
+
+### ✨ Features
+
+* add quiet mode to CI polling scripts for agent consumption ([#346](https://github.com/oocx/tfplan2md/issues/346)) ([a00b829](https://github.com/oocx/tfplan2md/commit/a00b829a4611017cf97904101eac4317ce966014))
+
 <a name="1.0.0-alpha.43"></a>
 ## [1.0.0-alpha.43](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.42...v1.0.0-alpha.43) (2026-01-23)
 

@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>13</LangVersion>
     <RootNamespace>Oocx.TfPlan2Md</RootNamespace>
-    <Version>1.0.0-alpha.43</Version>
+    <Version>1.0.0-alpha.44</Version>
     <AssemblyName>tfplan2md</AssemblyName>
     <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
     <PublishAot>true</PublishAot>

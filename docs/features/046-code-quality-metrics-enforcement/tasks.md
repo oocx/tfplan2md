@@ -57,9 +57,9 @@ Generate/update baseline files to suppress existing violations, allowing the bui
 Update project documentation to guide developers on how to handle legitimate exceptions to the quality metrics.
 
 **Acceptance Criteria:**
-- [ ] Update `docs/commenting-guidelines.md` with a section on Quality Metric Suppressions.
-- [ ] Define requirements for suppression: `SuppressMessage` attribute, justification comment, and maintainer approval.
-- [ ] Document acceptable exceptions for line length (e.g., long URLs, error messages).
+- [x] Update `docs/commenting-guidelines.md` with a section on Quality Metric Suppressions.
+- [x] Define requirements for suppression: `SuppressMessage` attribute, justification comment, and maintainer approval.
+- [x] Document acceptable exceptions for line length (e.g., long URLs, error messages).
 
 **Dependencies:** Task 1
 

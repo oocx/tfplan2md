@@ -1,3 +1,4 @@
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -58,11 +59,6 @@ public partial class ReportModelBuilder(
     private readonly string? _reportTitle = reportTitle;
 
     /// <summary>
-    /// Mapper for resolving principal names in role assignments.
-    /// </summary>
-    private readonly Azure.IPrincipalMapper _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
-
-    /// <summary>
     /// Provider for tfplan2md build metadata used in the report header.
     /// </summary>
     private readonly IMetadataProvider _metadataProvider = metadataProvider ?? new AssemblyMetadataProvider();
@@ -71,4 +67,10 @@ public partial class ReportModelBuilder(
     /// Indicates whether metadata should be hidden from the rendered report.
     /// </summary>
     private readonly bool _hideMetadata = hideMetadata;
+
+    /// <summary>
+    /// Registry for resource-specific view model factories.
+    /// </summary>
+    private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
+        new(largeValueFormat, principalMapper ?? new Azure.NullPrincipalMapper());
 }

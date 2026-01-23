@@ -79,7 +79,7 @@ public class MarkdownRendererTemplateFormattingTests
         // Assert
         markdown.Should().Contain("| name | `🆔\u00A0vm-app-01` | `🆔\u00A0vm-app-02` |", "because small attributes should be in the table");
         markdown.Should().NotContain("custom_data | line1", "because large attributes should not be in the main table");
-        markdown.Should().Contain("<summary>Large values: custom_data (3 lines, 2 changed)</summary>", "because large attributes should have a summary");
+        markdown.Should().Contain("<summary>Large values: custom_data (3 lines, 2 changes)</summary>", "because large attributes should have a summary");
         markdown.Should().Contain("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", "because inline-diff uses styled HTML pre blocks");
         markdown.Should().Contain("##### **custom_data:**", "because large attribute headings should be level 5 with bold labels");
     }
@@ -162,7 +162,7 @@ public class MarkdownRendererTemplateFormattingTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain("Large values: custom_data (3 lines, 3 changed)", "because large attribute summaries should still show counts");
+        markdown.Should().Contain("Large values: custom_data (3 lines, 3 changes)", "because large attribute summaries should still show counts");
         markdown.Should().NotContain("<details>\n<summary>Large values", "because large-only resources should not be collapsible");
     }
 }

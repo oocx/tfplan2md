@@ -5,6 +5,73 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.43"></a>
+## [1.0.0-alpha.43](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.42...v1.0.0-alpha.43) (2026-01-23)
+
+### ✨ Features
+
+* add Meziantou.Analyzer v2.0.127 (Phase 3) ([b2b8533](https://github.com/oocx/tfplan2md/commit/b2b8533badf69f9eb017e565ba213bb228069bdb))
+* add SonarAnalyzer.CSharp v9.16.0.82469 for code quality analysis ([92b3ad5](https://github.com/oocx/tfplan2md/commit/92b3ad58f50f2c1afbb9833753fe22b0af75dd65))
+* add StyleCop.Analyzers v1.2.0-beta.556 package ([49962e4](https://github.com/oocx/tfplan2md/commit/49962e4ecc7935defab2501e4a4c14473ebc4479))
+* configure Meziantou.Analyzer rules in .editorconfig (Phase 3) ([af21724](https://github.com/oocx/tfplan2md/commit/af217248b9df04a403cb50f9c324f6f231911460))
+* configure SonarAnalyzer.CSharp rules in .editorconfig ([704178b](https://github.com/oocx/tfplan2md/commit/704178bfbd941a43c7bff42afde9aa16a726449d))
+* configure StyleCop rules and fix violations ([418422a](https://github.com/oocx/tfplan2md/commit/418422a8a8f83698e9875abb76303f1925b6e11a))
+* enable XML documentation generation for main project ([d556140](https://github.com/oocx/tfplan2md/commit/d556140ca3b850749e26f47e06397431d0bfb911))
+* promote critical SonarAnalyzer rules to error severity ([8d5c106](https://github.com/oocx/tfplan2md/commit/8d5c1064a38dfe9f9e4f62a1f37a1649f4b5d238))
+* suppress 7 SonarAnalyzer violations in TerraformShowRenderer with documented justifications ([773ca36](https://github.com/oocx/tfplan2md/commit/773ca3668a3b07e11086e3912b433851be2b7684))
+* **analyzer:** add Roslynator.Analyzers v4.12.11 (P4-T1) ([46a350b](https://github.com/oocx/tfplan2md/commit/46a350bf7e6e2f8162a41802deb17dee6c56806c))
+* **analyzer:** configure Roslynator rules with selective enabling (P4-T3) ([54158d9](https://github.com/oocx/tfplan2md/commit/54158d93ce4f5c2a2649a3ef96e76f9ed098790b))
+* **analyzer:** promote MA0009 to error, MA0013 to warning (P3-T6) ([ce3c8ed](https://github.com/oocx/tfplan2md/commit/ce3c8ed199ae9dd0452e64873028a45a4779b994))
+* **workflow:** orchestrator must forward agent questions to maintainer ([2cc9f8c](https://github.com/oocx/tfplan2md/commit/2cc9f8cdb6552152f4906b81e485283a90f7b841))
+
+### 🐛 Bug Fixes
+
+* disable SA documentation rules for test project ([f2e3da0](https://github.com/oocx/tfplan2md/commit/f2e3da0c70108cc8ad9431cee8d6a7137df99b6f))
+* resolve critical SonarAnalyzer violations (logic errors and bugs) ([dd5f01b](https://github.com/oocx/tfplan2md/commit/dd5f01b3fc829e29a420b22f31c63facafe3424f))
+* resolve inherited SonarAnalyzer violations in test code (Phase 2 cleanup) ([525cba3](https://github.com/oocx/tfplan2md/commit/525cba3eded58b5be6515a193bba2992b758c4c2))
+* resolve remaining SonarAnalyzer violations (except S6618) ([816e769](https://github.com/oocx/tfplan2md/commit/816e769ea434a8728b63463cf541e597d6604417))
+* resolve S6618 performance warnings and fix syntax error ([557f037](https://github.com/oocx/tfplan2md/commit/557f037bab2951d44f76e589df2e128e86351a00))
+* resolve SonarAnalyzer code readability violations (S3267, S3358) ([7e045cd](https://github.com/oocx/tfplan2md/commit/7e045cdfb05acc1de576fad942887e90aa1e6163))
+* suppress remaining TerraformShowRenderer SonarAnalyzer violations ([051a97e](https://github.com/oocx/tfplan2md/commit/051a97ee73e50bd95d7522ec771016aad3e7b215))
+* **analyzer:** add regex timeouts to prevent ReDoS attacks (MA0009) ([97defe2](https://github.com/oocx/tfplan2md/commit/97defe265a9e158d54c2312ba47e917f04b56392))
+* **analyzer:** replace ApplicationException with Exception (MA0013) ([f60fc7d](https://github.com/oocx/tfplan2md/commit/f60fc7d53e6cf4d503ec8e0f3ad45868f2f0b886))
+* **analyzer:** resolve Roslynator violations in source code (P4-T4) ([b6c8206](https://github.com/oocx/tfplan2md/commit/b6c820674867aa1c08eca8011005f966528fb2f7))
+* **analyzer:** resolve Roslynator violations in tests (P4-T5) ([1dccc87](https://github.com/oocx/tfplan2md/commit/1dccc87489ae0987459825bb2b407cb3fb5fa502))
+* **workflow:** prohibit raw gh commands when repository scripts exist ([0b5dbdb](https://github.com/oocx/tfplan2md/commit/0b5dbdbf31809c89cd58303b6fb4e34af8c58de4))
+
+### 🚀 Performance
+
+* **analyzer:** add RegexOptions.ExplicitCapture where applicable (MA0023) ([42705a0](https://github.com/oocx/tfplan2md/commit/42705a0467f10cf41cd9c22a47ceb11d8d9d08a4))
+
+### ♻️ Refactoring
+
+* disable culture-specific Meziantou rules for Docker deployment ([52e9a7d](https://github.com/oocx/tfplan2md/commit/52e9a7d3d09046541e298abf9c3f747d2e7d5300))
+
+### 📚 Documentation
+
+* add architecture design for 044-enhanced-static-analysis ([7f81281](https://github.com/oocx/tfplan2md/commit/7f812819099dd3434bde1723fdfb6af6189b8285))
+* add implementation tasks for 044-enhanced-static-analysis ([8960b45](https://github.com/oocx/tfplan2md/commit/8960b452ec658a1e1a328bff4305d9af206da95d))
+* add missing XML documentation to fix SA1600 violations ([ec4e5e9](https://github.com/oocx/tfplan2md/commit/ec4e5e9902a3031c29ae1a0389a8e0a2f0e6c622))
+* add Phase 1 code review for feature [#044](https://github.com/oocx/tfplan2md/issues/044) ([1f74fa4](https://github.com/oocx/tfplan2md/commit/1f74fa4f53eba477b4dccd6635f658b538f422a9))
+* add Phase 1 code review report ([052f820](https://github.com/oocx/tfplan2md/commit/052f8206529a6c96b3e57d1f0c8861eb88811572))
+* add Phase 2 code review report ([559d3b2](https://github.com/oocx/tfplan2md/commit/559d3b233c0d73a187274a9dea59d0623c856d5f))
+* add Phase 2 code review report - APPROVED ([f3d5e08](https://github.com/oocx/tfplan2md/commit/f3d5e08ce02ad4c16b8f54cef179a9d6f39cecb4))
+* add Phase 2 completion summary for SonarAnalyzer integration ([2f950c2](https://github.com/oocx/tfplan2md/commit/2f950c2cb8ec450b6d3777c1593848f32c7c2abb))
+* add Phase 3 code review report - APPROVED ([c05ba0d](https://github.com/oocx/tfplan2md/commit/c05ba0d112ca072d7c68c8c1a5488f88d7d00814))
+* add Phase 3 code review report - APPROVED ([1bc13a4](https://github.com/oocx/tfplan2md/commit/1bc13a4b9c351a49c29bc669d3165c6ac8241288))
+* add Phase 4 code review - CHANGES REQUIRED ([118312a](https://github.com/oocx/tfplan2md/commit/118312ac3afd8d3745727fea5af18133ba96f134))
+* add test plan for feature 044 (enhanced static analysis) ([c3f6721](https://github.com/oocx/tfplan2md/commit/c3f6721d17df38fe7eab3b5e5b0dd9fd02f4ceb4))
+* add XML documentation to Azure and CLI classes ([559003b](https://github.com/oocx/tfplan2md/commit/559003bd33e8fde23aee9e96454b79f0fef71990))
+* add XML documentation to remaining classes ([aea9a10](https://github.com/oocx/tfplan2md/commit/aea9a10ac70a9f5c98c8ae9a7c9f18c1aedc4c32))
+* complete Phase 4 with test validation and performance analysis (P4-T6 through P4-T9) ([0a8416c](https://github.com/oocx/tfplan2md/commit/0a8416c6cf414f1396802dff3aaf0af084ed6a48))
+* document architecture decision for culture invariance ([90be154](https://github.com/oocx/tfplan2md/commit/90be1542e718b130b29525a8be0699859867cdab))
+* document Phase 3 Meziantou.Analyzer baseline violations ([cbdeeb4](https://github.com/oocx/tfplan2md/commit/cbdeeb4c39360e7184122d488162f6ef44b191f0))
+* enforce mandatory commit before agent handoff ([ae50cec](https://github.com/oocx/tfplan2md/commit/ae50cecd4034d3e1b07548b884bdafbdfb8f19b0))
+* fix duplicate and malformed XML documentation tags ([d108709](https://github.com/oocx/tfplan2md/commit/d1087098469dd0b95df80c79567312564a44fd7c))
+* fix XML documentation parameter and constructor errors ([206b80a](https://github.com/oocx/tfplan2md/commit/206b80a8b3dcf8f99160fe1e5840d4ffaf4dc25d))
+* Phase 4 re-review - APPROVED after test regression fix ([94b1983](https://github.com/oocx/tfplan2md/commit/94b1983214bd2f1e87066841410b5ca06f8508ab))
+* update coverage badge and history ([5ba73f3](https://github.com/oocx/tfplan2md/commit/5ba73f3b3e44a1ede3dae1c5339a74e07314334a))
+
 <a name="1.0.0-alpha.42"></a>
 ## [1.0.0-alpha.42](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.41...v1.0.0-alpha.42) (2026-01-21)
 

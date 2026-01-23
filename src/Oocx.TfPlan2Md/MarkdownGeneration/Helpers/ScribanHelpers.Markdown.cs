@@ -9,7 +9,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Escapes only markdown-breaking characters to keep generated tables and headings valid while preserving readability.
-    /// Related feature: docs/features/007-markdown-quality-validation/specification.md
+    /// Related feature: docs/features/007-markdown-quality-validation/specification.md.
     /// </summary>
     /// <param name="input">The raw value to escape.</param>
     /// <returns>A markdown-safe string with newlines replaced by &lt;br/&gt;.</returns>
@@ -38,7 +38,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Escapes markdown characters specifically for headings so literal text renders correctly.
-    /// Related feature: docs/features/020-custom-report-title/specification.md
+    /// Related feature: docs/features/020-custom-report-title/specification.md.
     /// </summary>
     /// <param name="input">The raw heading text.</param>
     /// <returns>Heading-safe text with special characters escaped.</returns>
@@ -102,7 +102,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Escapes characters that break HTML code spans while preserving emoji glyphs.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="text">The raw text to escape.</param>
     /// <returns>HTML-safe text with emoji preserved.</returns>

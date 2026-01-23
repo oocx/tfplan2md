@@ -147,7 +147,7 @@ public class MarkdownSnapshotTests
     /// To update snapshots after intentional changes:
     /// 1. Delete the old snapshot file
     /// 2. Run the test (it will create a new snapshot)
-    /// 3. Review and commit the new snapshot
+    /// 3. Review and commit the new snapshot.
     /// </remarks>
     private void AssertMatchesSnapshot(string snapshotName, string actual)
     {
@@ -166,10 +166,10 @@ public class MarkdownSnapshotTests
             File.WriteAllText(absolutePath, actual);
 
             Assert.Fail(
-                $"Snapshot '{snapshotName}' did not exist and has been created at:\n" +
+                "Snapshot '" + snapshotName + "' did not exist and has been created at:\n" +
                 $"  {absolutePath}\n\n" +
-                $"Please review the generated snapshot and commit it if correct.\n" +
-                $"Re-run the test after committing to verify it passes.");
+                "Please review the generated snapshot and commit it if correct.\n" +
+                "Re-run the test after committing to verify it passes.");
         }
 
         var expected = NormalizeLineEndings(File.ReadAllText(absolutePath));
@@ -180,11 +180,11 @@ public class MarkdownSnapshotTests
             var diff = GenerateDiff(expected, actual);
 
             Assert.Fail(
-                $"Snapshot '{snapshotName}' does not match the current output.\n\n" +
-                $"If this change is intentional:\n" +
+                "Snapshot '" + snapshotName + "' does not match the current output.\n\n" +
+                "If this change is intentional:\n" +
                 $"  1. Delete the snapshot file: {absolutePath}\n" +
-                $"  2. Re-run the test to regenerate it\n" +
-                $"  3. Review and commit the new snapshot\n\n" +
+                "  2. Re-run the test to regenerate it\n" +
+                "  3. Review and commit the new snapshot\n\n" +
                 $"Diff (first 50 differences):\n{diff}");
         }
     }
@@ -226,7 +226,7 @@ public class MarkdownSnapshotTests
 
         if (diffCount >= maxDiffs)
         {
-            sb.AppendLine($"... (more differences truncated)");
+            sb.AppendLine("... (more differences truncated)");
         }
 
         if (diffCount == 0)

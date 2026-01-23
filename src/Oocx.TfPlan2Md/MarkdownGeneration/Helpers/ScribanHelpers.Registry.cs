@@ -11,7 +11,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Registers all custom helper functions with the given <see cref="ScriptObject"/>.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md
+    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
     /// </summary>
     /// <param name="scriptObject">The script object receiving helpers.</param>
     /// <param name="principalMapper">Mapper used to resolve principal names.</param>

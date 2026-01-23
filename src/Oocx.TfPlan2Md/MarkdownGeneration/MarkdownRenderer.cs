@@ -27,7 +27,7 @@ internal class MarkdownRenderer
     private readonly DiagnosticContext? _diagnosticContext;
 
     /// <summary>
-    /// Creates a new MarkdownRenderer using embedded templates.
+    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
     /// </summary>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
@@ -40,7 +40,7 @@ internal class MarkdownRenderer
     }
 
     /// <summary>
-    /// Creates a new MarkdownRenderer with a custom template directory.
+    /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class with a custom template directory.
     /// </summary>
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
@@ -86,16 +86,32 @@ internal class MarkdownRenderer
         var templateText = ResolveTemplateText(templateNameOrPath);
 
         // Record template resolution for main template
-        var templateSource = _templateLoader.TryGetTemplate(templateNameOrPath, out _)
-            ? $"Built-in template: {templateNameOrPath}"
-            : File.Exists(templateNameOrPath)
-                ? $"Custom template: {templateNameOrPath}"
-                : "Unknown template source";
+        var templateSource = DetermineTemplateSource(templateNameOrPath);
 
         _diagnosticContext?.TemplateResolutions.Add(
             new TemplateResolution("_main", templateSource));
 
         return RenderWithTemplate(model, templateText, templateNameOrPath);
+    }
+
+    /// <summary>
+    /// Determines the source description of a template (built-in, custom file, or unknown).
+    /// </summary>
+    /// <param name="templateNameOrPath">Template name or file path.</param>
+    /// <returns>Human-readable template source description.</returns>
+    private string DetermineTemplateSource(string templateNameOrPath)
+    {
+        if (_templateLoader.TryGetTemplate(templateNameOrPath, out _))
+        {
+            return $"Built-in template: {templateNameOrPath}";
+        }
+
+        if (File.Exists(templateNameOrPath))
+        {
+            return $"Custom template: {templateNameOrPath}";
+        }
+
+        return "Unknown template source";
     }
 
     /// <summary>
@@ -110,11 +126,7 @@ internal class MarkdownRenderer
         var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
 
         // Record template resolution for main template
-        var templateSource = _templateLoader.TryGetTemplate(templatePath, out _)
-            ? $"Built-in template: {templatePath}"
-            : File.Exists(templatePath)
-                ? $"Custom template: {templatePath}"
-                : "Unknown template source";
+        var templateSource = DetermineTemplateSource(templatePath);
 
         _diagnosticContext?.TemplateResolutions.Add(
             new TemplateResolution("_main", templateSource));
@@ -157,6 +169,7 @@ internal class MarkdownRenderer
     /// Falls back to the default template rendering if no specific template exists.
     /// </summary>
     /// <param name="change">The resource change to render.</param>
+    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
     public string? RenderResourceChange(ResourceChangeModel change, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
     {
@@ -180,7 +193,7 @@ internal class MarkdownRenderer
     /// <summary>
     /// Resolves a template for the given resource type.
     /// Resolution order: custom directory (if set) → embedded resources.
-    /// Within each: Templates/{provider}/{resource}.sbn → Templates/default.sbn
+    /// Within each: Templates/{provider}/{resource}.sbn → Templates/default.sbn.
     /// </summary>
     /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
     /// <returns>The template text if a resource-specific template exists, null otherwise.</returns>
@@ -214,10 +227,12 @@ internal class MarkdownRenderer
     }
 
     /// <summary>
-    /// Parses a Terraform resource type into provider and resource name.
+    /// Renders a resource change using a specific Scriban template.
     /// </summary>
-    /// <param name="resourceType">The resource type (e.g., "azurerm_firewall_network_rule_collection").</param>
-    /// <returns>Tuple of (provider, resource) or (null, null) if parsing fails.</returns>
+    /// <param name="change">The resource change model to render.</param>
+    /// <param name="templateSource">The template source to use for rendering.</param>
+    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
+    /// <returns>The rendered Markdown string.</returns>
     private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, LargeValueFormat largeValueFormat)
     {
         var template = Template.Parse(templateSource.Content, templateSource.Path);
@@ -245,9 +260,12 @@ internal class MarkdownRenderer
         {
             var rendered = template.Render(context);
             // Collapse blank lines between table rows (which breaks tables)
-            rendered = Regex.Replace(rendered, @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)", "\n");
+            rendered = Regex.Replace(rendered, @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)", "\n", RegexOptions.None, TimeSpan.FromSeconds(2));
             // Remove indentation from table rows (which causes them to be treated as code blocks)
-            rendered = Regex.Replace(rendered, @"\n[ \t]+(\|)", "\n$1");
+            // MA0023: Uses numbered group $1 in replacement - ExplicitCapture would break this
+#pragma warning disable MA0023
+            rendered = Regex.Replace(rendered, @"\n[ \t]+(\|)", "\n$1", RegexOptions.None, TimeSpan.FromSeconds(1));
+#pragma warning restore MA0023
             rendered = NormalizeHeadingSpacing(rendered);
             return rendered;
         }
@@ -321,16 +339,20 @@ internal class MarkdownRenderer
     private static string NormalizeHeadingSpacing(string markdown)
     {
         // Collapse runs of multiple blank lines (including whitespace-only lines) to a single blank line.
-        markdown = Regex.Replace(markdown, @"\n([ \t]*\n){2,}", "\n\n");
+        markdown = Regex.Replace(markdown, @"\n([ \t]*\n){2,}", "\n\n", RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
 
         // Ensure exactly one blank line before any heading that follows non-blank content.
         // Match: newline, optional horizontal whitespace, non-whitespace content, newline(s), then heading.
         // If there's already a blank line (\n\n or more), the heading is fine.
         // Only add a blank line when there's exactly one newline before the heading.
-        markdown = Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2");
+        // MA0023: Uses numbered groups $1 and $2 in replacement - ExplicitCapture would break this
+#pragma warning disable MA0023
+        markdown = Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2", RegexOptions.None, TimeSpan.FromSeconds(1));
 
         // Ensure a blank line after headings when the following line is not already blank.
-        markdown = Regex.Replace(markdown, @"(#{1,6}\s.+)\n(?!\n)", "$1\n\n");
+        // MA0023: Uses numbered group $1 in replacement - ExplicitCapture would break this
+        markdown = Regex.Replace(markdown, @"(#{1,6}\s.+)\n(?!\n)", "$1\n\n", RegexOptions.None, TimeSpan.FromSeconds(1));
+#pragma warning restore MA0023
 
         // Remove trailing blank lines while keeping a single newline at EOF for POSIX tools.
         markdown = markdown.TrimEnd();

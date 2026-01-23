@@ -11,13 +11,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Builds <see cref="RoleAssignmentViewModel"/> instances from Terraform plan data.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 internal static class RoleAssignmentViewModelFactory
 {
     /// <summary>
     /// Non-breaking space used to keep principal icons attached to their labels in markdown output.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
 
@@ -243,11 +243,19 @@ internal static class RoleAssignmentViewModelFactory
                     && !string.IsNullOrEmpty(decoratedName)
                     && !decoratedName.StartsWith(principalIcon, StringComparison.Ordinal);
 
-                var nameAndType = !string.IsNullOrEmpty(decoratedName)
-                    ? needsIconPrefix
-                        ? $"{principalIcon}{NonBreakingSpace}{decoratedName}"
-                        : decoratedName
-                    : string.Empty;
+                string nameAndType;
+                if (string.IsNullOrEmpty(decoratedName))
+                {
+                    nameAndType = string.Empty;
+                }
+                else if (needsIconPrefix)
+                {
+                    nameAndType = $"{principalIcon}{NonBreakingSpace}{decoratedName}";
+                }
+                else
+                {
+                    nameAndType = decoratedName;
+                }
 
                 var nameValue = !string.IsNullOrEmpty(nameAndType)
                     ? ScribanHelpers.FormatCodeTable(nameAndType)
@@ -333,7 +341,7 @@ internal static class RoleAssignmentViewModelFactory
 
         foreach (var desiredName in DesiredOrder)
         {
-            var match = attributes.FirstOrDefault(a => string.Equals(a.Name, desiredName, StringComparison.Ordinal));
+            var match = attributes.Find(a => string.Equals(a.Name, desiredName, StringComparison.Ordinal));
             if (match != null)
             {
                 ordered.Add(match);

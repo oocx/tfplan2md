@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Azure;
 
 /// <summary>
 /// Maps Azure AD/Entra principal IDs to display names.
-/// Related feature: docs/features/006-role-assignment-readable-display/
+/// Related feature: docs/features/006-role-assignment-readable-display/.
 /// </summary>
 /// <remarks>
 /// The mapper loads principal information from a JSON file containing a dictionary
@@ -115,7 +115,7 @@ internal class PrincipalMapper : IPrincipalMapper
     /// If a diagnostic context was provided and the principal ID cannot be resolved,
     /// the failure is recorded with the resource address for troubleshooting.
     /// </remarks>
-    public string? GetName(string principalId, string? principalType, string? resourceAddress = null)
+    public string? GetName(string principalId, string? principalType, string? resourceAddress)
     {
         if (string.IsNullOrWhiteSpace(principalId))
         {
@@ -252,15 +252,15 @@ internal class PrincipalMapper : IPrincipalMapper
                         diagnosticContext.PrincipalMappingLoadedSuccessfully = true;
 
                         // Count principals by type for nested format
-                        if (nestedMapping.Users != null && nestedMapping.Users.Count > 0)
+                        if (nestedMapping.Users?.Count > 0)
                         {
                             diagnosticContext.PrincipalTypeCount["users"] = nestedMapping.Users.Count;
                         }
-                        if (nestedMapping.Groups != null && nestedMapping.Groups.Count > 0)
+                        if (nestedMapping.Groups?.Count > 0)
                         {
                             diagnosticContext.PrincipalTypeCount["groups"] = nestedMapping.Groups.Count;
                         }
-                        if (nestedMapping.ServicePrincipals != null && nestedMapping.ServicePrincipals.Count > 0)
+                        if (nestedMapping.ServicePrincipals?.Count > 0)
                         {
                             diagnosticContext.PrincipalTypeCount["servicePrincipals"] = nestedMapping.ServicePrincipals.Count;
                         }

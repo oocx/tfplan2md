@@ -11,7 +11,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// <summary>
 /// Tests for the azuredevops_variable_group Scriban template.
 /// Verifies template structure, table layouts, and proper handling of different operations.
-/// Related feature: docs/features/039-azdo-variable-group-template
+/// Related feature: docs/features/039-azdo-variable-group-template.
 /// </summary>
 public class VariableGroupTemplateTests
 {
@@ -177,7 +177,7 @@ public class VariableGroupTemplateTests
         var resourceName = parts.Length > 1 ? parts[1] : parts[0];
         // Look for a <details> block containing the resource name in <b><code>{name}</code></b>
         var pattern = $@"(?s)<details[^>]*>\s*<summary>[^<]*{Regex.Escape(resourceType)}\s+<b><code>{Regex.Escape(resourceName)}</code></b>(.*?)</details>";
-        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline);
+        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline, TimeSpan.FromSeconds(2));
         return match.Success ? match.Value : string.Empty;
     }
 }

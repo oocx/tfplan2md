@@ -177,12 +177,13 @@ public partial class TemplateArchitectureTests
     /// Documents the current line counts for all templates.
     /// This test always passes but provides visibility into template sizes.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Templates_LineCountReport()
     {
         var report = new List<(string Name, int LineCount)>();
 
-        foreach (var resourceName in GetAllTemplateResources().OrderBy(n => n))
+        foreach (var resourceName in GetAllTemplateResources().Order())
         {
             var content = ReadTemplateContent(resourceName);
             var templateName = GetTemplateName(resourceName);
@@ -245,14 +246,14 @@ public partial class TemplateArchitectureTests
     /// <summary>
     /// Matches Scriban 'func' definitions like: {{ func my_function }} or {{func foo}}
     /// </summary>
-    [GeneratedRegex(@"\{\{[-~]?\s*func\s+\w+")]
+    [GeneratedRegex(@"\{\{[-~]?\s*func\s+\w+", RegexOptions.None, matchTimeoutMilliseconds: 1000)]
     private static partial Regex FuncDefinitionRegex();
 
     /// <summary>
     /// Matches legacy anchor patterns that were used for regex replacement.
     /// Does NOT match resource-start/end which are allowed for semantic purposes.
     /// </summary>
-    [GeneratedRegex(@"<!--\s*tfplan2md:anchor\b")]
+    [GeneratedRegex(@"<!--\s*tfplan2md:anchor\b", RegexOptions.None, matchTimeoutMilliseconds: 1000)]
     private static partial Regex LegacyAnchorRegex();
 
     #endregion

@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Evaluates coverage metrics against configured thresholds.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed class CoverageThresholdEvaluator
 {

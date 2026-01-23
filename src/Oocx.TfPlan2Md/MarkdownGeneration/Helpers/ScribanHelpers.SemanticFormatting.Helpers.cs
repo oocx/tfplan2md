@@ -7,7 +7,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Determines whether a value represents a boolean and formats it with icons.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="value">The raw value to evaluate.</param>
     /// <param name="context">The rendering context (table or summary).</param>
@@ -30,7 +30,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats access rules (Allow/Deny) with semantic icons when applicable.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic application.</param>
     /// <param name="value">The access value.</param>
@@ -66,7 +66,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats network direction values with semantic icons.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic application.</param>
     /// <param name="value">The direction value.</param>
@@ -101,7 +101,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats protocol values with semantic icons.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic application.</param>
     /// <param name="value">The protocol value.</param>
@@ -149,7 +149,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a port and formats it with the port icon.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>

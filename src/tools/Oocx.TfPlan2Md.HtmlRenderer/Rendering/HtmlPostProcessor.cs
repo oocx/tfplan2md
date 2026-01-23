@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Coordinates flavor-specific HTML post-processing for rendered markdown.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal static class HtmlPostProcessor
 {

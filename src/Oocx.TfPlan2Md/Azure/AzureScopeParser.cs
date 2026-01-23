@@ -3,11 +3,15 @@ using System.Linq;
 
 namespace Oocx.TfPlan2Md.Azure;
 
+/// <summary>
+/// Parses and interprets Azure resource identifiers into structured scope information.
+/// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
+/// </summary>
 public static class AzureScopeParser
 {
     /// <summary>
     /// Determines whether the provided scope string is a valid Azure resource identifier.
-    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
     /// <param name="scope">The scope string to evaluate.</param>
     /// <returns>True when the scope parses to a known Azure scope level; otherwise false.</returns>
@@ -17,6 +21,12 @@ public static class AzureScopeParser
         return parsed.Level != ScopeLevel.Unknown;
     }
 
+    /// <summary>
+    /// Parses an Azure resource identifier into structured scope information.
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
+    /// </summary>
+    /// <param name="scope">The Azure resource identifier string to parse.</param>
+    /// <returns>A ScopeInfo object containing parsed scope details and level.</returns>
     public static ScopeInfo Parse(string? scope)
     {
         if (string.IsNullOrWhiteSpace(scope))
@@ -115,6 +125,12 @@ public static class AzureScopeParser
         return new ScopeInfo(scope, string.Empty, string.Empty, string.Empty, ScopeLevel.Unknown, scope, string.Empty, scope, scope);
     }
 
+    /// <summary>
+    /// Formats an Azure resource identifier into a human-readable scope description with markdown formatting.
+    /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
+    /// </summary>
+    /// <param name="scope">The Azure resource identifier string to format.</param>
+    /// <returns>A markdown-formatted string describing the scope in human-readable terms.</returns>
     public static string ParseScope(string? scope)
     {
         var parsed = Parse(scope);

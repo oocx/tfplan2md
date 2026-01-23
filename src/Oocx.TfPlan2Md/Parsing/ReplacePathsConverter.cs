@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Parsing;
 
 /// <summary>
 /// Converts Terraform replace_paths arrays into simple CLR objects (strings, numbers, booleans, nulls).
-/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
+/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
 /// </summary>
 public class ReplacePathsConverter : JsonConverter<IReadOnlyList<IReadOnlyList<object>>?>
 {

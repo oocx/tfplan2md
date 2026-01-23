@@ -4,11 +4,12 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Represents a single coverage measurement entry for historical tracking.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed record CoverageHistoryEntry
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="CoverageHistoryEntry"/> class.
     /// Initializes a new instance of the <see cref="CoverageHistoryEntry"/> record.
     /// </summary>
     /// <param name="timestamp">Timestamp of the coverage measurement.</param>

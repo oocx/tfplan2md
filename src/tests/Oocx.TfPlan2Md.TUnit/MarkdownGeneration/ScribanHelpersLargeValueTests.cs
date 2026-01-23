@@ -129,6 +129,6 @@ public class ScribanHelpersLargeValueTests
 
         var summary = ScribanHelpers.LargeAttributesSummary(attrs);
 
-        summary.Should().Be("Large values: policy (3 lines, 2 changed), data (1 line, 0 changed)");
+        summary.Should().Be("Large values: policy (3 lines, 2 changes), data (1 line, 0 changes)");
     }
 }

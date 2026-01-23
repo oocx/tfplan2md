@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.TUnit.Azure;
 
 /// <summary>
 /// Integration tests for PrincipalMapper with diagnostic context.
-/// Related feature: docs/features/038-debug-output/
+/// Related feature: docs/features/038-debug-output/.
 /// </summary>
 [Category("Integration")]
 public class PrincipalMapperDiagnosticsTests

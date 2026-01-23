@@ -1,0 +1,19 @@
+Unable to fix SA1611. No associated code fix found.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SettingsFileCodeFixProvider doesn't support Fix All in Solution.
+Unable to fix SA1600. Code fix InheritdocCodeFixProvider didn't return a Fix All action.
+Unable to fix SA1600. Code fix SA1600CodeFixProvider didn't return a Fix All action.

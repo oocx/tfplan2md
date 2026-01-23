@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Parses command line arguments for the coverage enforcer tool.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed class CommandLineOptions
 {

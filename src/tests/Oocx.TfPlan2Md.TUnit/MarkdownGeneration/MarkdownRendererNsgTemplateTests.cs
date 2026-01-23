@@ -15,9 +15,9 @@ public class MarkdownRendererNsgTemplateTests
     private static string Normalize(string markdown)
     {
         var decoded = WebUtility.HtmlDecode(markdown);
-        var withoutTags = Regex.Replace(decoded, "<.*?>", string.Empty, RegexOptions.Singleline);
+        var withoutTags = Regex.Replace(decoded, "<.*?>", string.Empty, RegexOptions.Singleline, TimeSpan.FromSeconds(2));
         var withoutBackticks = withoutTags.Replace("`", string.Empty, StringComparison.Ordinal);
-        return Regex.Replace(withoutBackticks, "\\s+", " ", RegexOptions.Singleline).Trim();
+        return Regex.Replace(withoutBackticks, "\\s+", " ", RegexOptions.Singleline, TimeSpan.FromSeconds(2)).Trim();
     }
 
     private string RenderNsgPlan()

@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Scriban helper functions for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md
+/// Related feature: docs/features/040-azapi-resource-template/specification.md.
 /// </summary>
 /// <remarks>
 /// These helpers transform JSON body content from azapi_resource resources into human-readable
@@ -40,7 +40,7 @@ public static partial class ScribanHelpers
     /// Output: [
     ///   { path: "properties.sku.name", value: "Basic", is_large: false },
     ///   { path: "properties.enabled", value: true, is_large: false }
-    /// ]
+    /// ].
     /// </example>
     public static ScriptArray FlattenJson(object? jsonObject, string prefix = "")
     {
@@ -199,7 +199,7 @@ public static partial class ScribanHelpers
     private static ScriptObject CreatePropertyObject(string path, object? value)
     {
         var serializedValue = SerializeValue(value);
-        var isLarge = serializedValue != null && serializedValue.Length > LargeValueThreshold;
+        var isLarge = serializedValue?.Length > LargeValueThreshold;
 
         return new ScriptObject
         {
@@ -239,7 +239,7 @@ public static partial class ScribanHelpers
     /// Parses an Azure resource type string into its components.
     /// </summary>
     /// <param name="resourceType">
-    /// Azure resource type string in format: Microsoft.{Service}/{ResourceType}@{ApiVersion}
+    /// Azure resource type string in format: Microsoft.{Service}/{ResourceType}@{ApiVersion}.
     /// </param>
     /// <returns>
     /// ScriptObject with properties: provider, service, resource_type, api_version.
@@ -248,7 +248,7 @@ public static partial class ScribanHelpers
     /// <remarks>
     /// Extracts components from Azure resource type strings for display and documentation link generation.
     /// Example: "Microsoft.Automation/automationAccounts@2021-06-22" →
-    /// { provider: "Microsoft.Automation", service: "Automation", resource_type: "automationAccounts", api_version: "2021-06-22" }
+    /// { provider: "Microsoft.Automation", service: "Automation", resource_type: "automationAccounts", api_version: "2021-06-22" }.
     /// </remarks>
     public static ScriptObject ParseAzureResourceType(string? resourceType)
     {
@@ -312,8 +312,8 @@ public static partial class ScribanHelpers
     /// predictable pattern across all services.
     /// </remarks>
     /// <example>
-    /// Input: "Microsoft.Automation/automationAccounts@2021-06-22"
-    /// Output: "https://learn.microsoft.com/rest/api/automation/automation-accounts/"
+    /// Input: "Microsoft.Automation/automationAccounts@2021-06-22".
+    /// Output: "https://learn.microsoft.com/rest/api/automation/automation-accounts/".
     /// </example>
     public static string? AzureApiDocLink(string? resourceType)
     {
@@ -408,7 +408,7 @@ public static partial class ScribanHelpers
         var afterSensitiveFlattened = FlattenSensitivity(afterSensitive);
 
         // Get all unique property paths
-        var allPaths = beforeFlattened.Keys.Union(afterFlattened.Keys).OrderBy(p => p).ToList();
+        var allPaths = beforeFlattened.Keys.Union(afterFlattened.Keys).Order().ToList();
 
         foreach (var path in allPaths)
         {
@@ -694,7 +694,7 @@ public static partial class ScribanHelpers
     /// For create/delete modes, it flattens the body and separates small vs. large properties.
     /// For update mode, it compares before/after and shows only changed properties.
     /// Large properties are rendered outside of tables to avoid markdown parsing issues with newlines.
-    /// Related feature: docs/features/040-azapi-resource-template/specification.md
+    /// Related feature: docs/features/040-azapi-resource-template/specification.md.
     /// </remarks>
     public static string RenderAzapiBody(
         object? bodyJson,
@@ -725,18 +725,15 @@ public static partial class ScribanHelpers
 
             foreach (var item in comparisons)
             {
-                if (item is ScriptObject scriptObj)
+                if (item is ScriptObject scriptObj && scriptObj["is_large"] is bool isLarge)
                 {
-                    if (scriptObj["is_large"] is bool isLarge)
+                    if (isLarge)
                     {
-                        if (isLarge)
-                        {
-                            largeChanges.Add(scriptObj);
-                        }
-                        else
-                        {
-                            smallChanges.Add(scriptObj);
-                        }
+                        largeChanges.Add(scriptObj);
+                    }
+                    else
+                    {
+                        smallChanges.Add(scriptObj);
                     }
                 }
             }
@@ -745,12 +742,12 @@ public static partial class ScribanHelpers
             var groupedProps = GroupPropertiesByNestedObject(smallChanges);
 
             // Render main table with root-level and ungrouped properties
-            if (groupedProps.mainProps.Count > 0)
+            if (groupedProps.MainProps.Count > 0)
             {
                 sb.AppendLine("| Property | Before | After |");
                 sb.AppendLine("|----------|--------|-------|");
 
-                foreach (var item in groupedProps.mainProps)
+                foreach (var item in groupedProps.MainProps)
                 {
                     if (item is ScriptObject prop)
                     {
@@ -772,7 +769,7 @@ public static partial class ScribanHelpers
             }
 
             // Render separate tables for nested objects with >3 attributes
-            foreach (var group in groupedProps.nestedGroups)
+            foreach (var group in groupedProps.NestedGroups)
             {
                 sb.AppendLine($"###### {heading} - `{group.Key}`");
                 sb.AppendLine();
@@ -846,18 +843,15 @@ public static partial class ScribanHelpers
 
             foreach (var item in flattened)
             {
-                if (item is ScriptObject scriptObj)
+                if (item is ScriptObject scriptObj && scriptObj["is_large"] is bool isLarge)
                 {
-                    if (scriptObj["is_large"] is bool isLarge)
+                    if (isLarge)
                     {
-                        if (isLarge)
-                        {
-                            largeProps.Add(scriptObj);
-                        }
-                        else
-                        {
-                            smallProps.Add(scriptObj);
-                        }
+                        largeProps.Add(scriptObj);
+                    }
+                    else
+                    {
+                        smallProps.Add(scriptObj);
                     }
                 }
             }
@@ -866,12 +860,12 @@ public static partial class ScribanHelpers
             var groupedProps = GroupPropertiesByNestedObject(smallProps);
 
             // Render main table with root-level and ungrouped properties
-            if (groupedProps.mainProps.Count > 0 || groupedProps.nestedGroups.Count == 0)
+            if (groupedProps.MainProps.Count > 0 || groupedProps.NestedGroups.Count == 0)
             {
                 sb.AppendLine("| Property | Value |");
                 sb.AppendLine("|----------|-------|");
 
-                foreach (var item in groupedProps.mainProps)
+                foreach (var item in groupedProps.MainProps)
                 {
                     if (item is ScriptObject prop)
                     {
@@ -890,7 +884,7 @@ public static partial class ScribanHelpers
             }
 
             // Render separate tables for nested objects with >3 attributes
-            foreach (var group in groupedProps.nestedGroups)
+            foreach (var group in groupedProps.NestedGroups)
             {
                 sb.AppendLine($"###### {heading} - `{group.Key}`");
                 sb.AppendLine();
@@ -993,7 +987,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="properties">The list of properties to group.</param>
     /// <returns>A tuple with main properties and nested groups.</returns>
-    private static (ScriptArray mainProps, Dictionary<string, ScriptArray> nestedGroups) GroupPropertiesByNestedObject(ScriptArray properties)
+    private static (ScriptArray MainProps, Dictionary<string, ScriptArray> NestedGroups) GroupPropertiesByNestedObject(ScriptArray properties)
     {
         var mainProps = new ScriptArray();
         var nestedGroups = new Dictionary<string, ScriptArray>();
@@ -1014,9 +1008,6 @@ public static partial class ScribanHelpers
                 var segments = path.Split('.');
                 if (segments.Length >= 2)
                 {
-                    // Get the parent path (everything except the last segment)
-                    var parentPath = string.Join(".", segments.Take(segments.Length - 1));
-
                     // For deeply nested properties, only consider the first level
                     // (e.g., for "siteConfig.connectionStrings[0].name", parent is "siteConfig")
                     var firstLevelParent = segments[0];

@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 
 /// <summary>
 /// Collects diagnostic information during tfplan2md execution for debug output.
-/// Related feature: docs/features/038-debug-output/
+/// Related feature: docs/features/038-debug-output/.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,12 +27,12 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 internal class DiagnosticContext
 {
     /// <summary>
-    /// Gets or sets whether a principal mapping file was provided via CLI.
+    /// Gets or sets a value indicating whether a principal mapping file was provided via CLI.
     /// </summary>
     public bool PrincipalMappingFileProvided { get; set; }
 
     /// <summary>
-    /// Gets or sets whether the principal mapping file loaded successfully.
+    /// Gets or sets a value indicating whether the principal mapping file loaded successfully.
     /// </summary>
     /// <remarks>
     /// This is only meaningful when <see cref="PrincipalMappingFileProvided"/> is true.
@@ -171,7 +171,7 @@ internal class DiagnosticContext
                     var typeCountStrings = PrincipalTypeCount
                         .OrderBy(kvp => kvp.Key)
                         .Select(kvp => $"{kvp.Value} {kvp.Key}");
-                    sb.Append(string.Join(", ", typeCountStrings));
+                    sb.AppendJoin(", ", typeCountStrings);
                     sb.AppendLine();
                 }
 

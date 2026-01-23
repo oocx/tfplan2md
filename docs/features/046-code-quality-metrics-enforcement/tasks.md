@@ -96,11 +96,17 @@ Split `ReportModel.cs` (774 lines) into separate class/record files.
 **Acceptance Criteria:**
 - [x] Extract logical entities/records into their own files.
 - [x] Target file size: under 300 lines per file.
-- [x] Introduce factory registry pattern to reduce class coupling (from 50 to 44 types).
-- [ ] Remove corresponding baseline entries for this file (still exceeds CA1506 threshold of 21 types).
+- [x] Introduce factory registry pattern to reduce class coupling.
+- [x] Extract summary and JSON helper classes to further reduce coupling.
+- [ ] Remove corresponding baseline entries for this file (coupling reduced 24%: 50→38 types, threshold: 21).
 - [x] Verify all tests pass.
 
-**Status:** Partially complete. File split achieved line count targets and reduced coupling significantly, but ReportModelBuilder still couples with 44 types (threshold: 21). Additional refactoring needed to extract more responsibilities before suppression can be removed.
+**Status:** Significant progress made on coupling reduction:
+- Files split (largest: 152 lines, all under 300)
+- Factory registry pattern implemented (reduced coupling from 50 to 44 types)
+- Summary/JSON helpers extracted (reduced coupling from 44 to 38 types)
+- Remaining coupling likely from TerraformPlan parsing model dependencies
+- Further architectural changes may be needed to reach threshold of 21 types
 
 **Dependencies:** Task 2
 

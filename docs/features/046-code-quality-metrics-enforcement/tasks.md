@@ -16,17 +16,17 @@ Reference: [Specification](specification.md) | [Architecture](architecture.md)
 Create the foundation for metrics enforcement by defining thresholds and integrating them into the build system.
 
 **Acceptance Criteria:**
-- [ ] Create `CodeMetricsConfig.txt` in the repository root with the following thresholds:
+- [x] Create `CodeMetricsConfig.txt` in the repository root with the following thresholds:
   - CA1502 (Complexity): 15
   - CA1505 (Method Maintainability): 20
   - CA1506 (Class Maintainability): 20
-- [ ] Update `src/Directory.Build.props` to include `CodeMetricsConfig.txt` as `AdditionalFiles`.
-- [ ] Update `.editorconfig` to set severities:
+- [x] Update `src/Directory.Build.props` to include `CodeMetricsConfig.txt` as `AdditionalFiles`.
+- [x] Update `.editorconfig` to set severities:
   - `dotnet_diagnostic.CA1502.severity = error`
   - `dotnet_diagnostic.CA1505.severity = error`
   - `dotnet_diagnostic.CA1506.severity = error`
   - `dotnet_diagnostic.IDE0055.severity = error` (with `max_line_length = 160`)
-- [ ] Add test file exemptions to `.editorconfig` (disable CA1502, CA1505, CA1506 for `src/tests/**/*.cs`).
+- [x] Add test file exemptions to `.editorconfig` (disable CA1502, CA1505, CA1506 for `src/tests/**/*.cs`).
 
 **Dependencies:** None
 
@@ -40,10 +40,10 @@ Create the foundation for metrics enforcement by defining thresholds and integra
 Generate/update baseline files to suppress existing violations, allowing the build to pass while enforcing rules for new code.
 
 **Acceptance Criteria:**
-- [ ] Run a clean build and capture all new quality violations.
-- [ ] Update `build-sonaranalyzer-baseline.txt` (or create a new metrics baseline if necessary) to suppress current violations.
-- [ ] Verify that `dotnet build` succeeds on the current codebase with the baseline in place.
-- [ ] Verify that a *new* violation (e.g., a method with complexity 20 in a new file) causes a build failure.
+- [x] Run a clean build and capture all new quality violations.
+- [x] Baseline current violations using `GlobalSuppressions.cs` and targeted in-source suppressions (per maintainer decision).
+- [x] Verify that `dotnet build` succeeds on the current codebase with the baseline in place.
+- [x] Verify that a *new* violation (e.g., a method with complexity 20 in a new file) causes a build failure.
 
 **Dependencies:** Task 1
 

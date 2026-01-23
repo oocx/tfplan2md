@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
@@ -181,6 +182,14 @@ internal sealed partial class DiffRenderer
     /// <param name="indent">Indentation to use for nested attributes.</param>
     /// <param name="replacePaths">Paths that force replacement.</param>
     /// <param name="action">Resource action (Update or Replace).</param>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
+    [SuppressMessage(
+        "Maintainability",
+        "CA1505:Avoid unmaintainable code",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     private void RenderUpdate(AnsiTextWriter writer, JsonElement? before, JsonElement? after, JsonElement? unknown, JsonElement? sensitive, string indent, HashSet<string> replacePaths, ResourceAction action)
     {
         var beforeObj = before is { ValueKind: JsonValueKind.Object } ? before : null;

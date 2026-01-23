@@ -1,4 +1,8 @@
 // Triggering release after CI fix
+// Baseline suppression for code-quality metrics rollout.
+// Related feature: docs/features/046-code-quality-metrics-enforcement/.
+#pragma warning disable CA1506
+
 using System.Reflection;
 using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.CLI;
@@ -142,3 +146,5 @@ static void PrintVersion()
         ?.InformationalVersion ?? "0.0.0";
     Console.WriteLine($"tfplan2md {version}");
 }
+
+#pragma warning restore CA1506

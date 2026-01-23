@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
@@ -141,6 +143,10 @@ public static partial class ScribanHelpers
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <param name="context">The rendering context (table or summary).</param>
     /// <returns>Formatted value respecting semantic icon rules and context-specific code wrapping.</returns>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     private static string FormatAttributeValue(string? attributeName, string? value, string? providerName, ValueFormatContext context)
     {
         if (string.IsNullOrWhiteSpace(value))

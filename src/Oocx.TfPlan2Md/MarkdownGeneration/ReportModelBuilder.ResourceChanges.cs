@@ -1,0 +1,212 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using Oocx.TfPlan2Md.Parsing;
+
+namespace Oocx.TfPlan2Md.MarkdownGeneration;
+
+/// <summary>
+/// Builds a ReportModel from a TerraformPlan.
+/// </summary>
+/// <remarks>
+/// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
+/// </remarks>
+public partial class ReportModelBuilder
+{
+    private ResourceChangeModel BuildResourceChangeModel(ResourceChange rc)
+    {
+        var action = DetermineAction(rc.Change.Actions);
+        var actionSymbol = GetActionSymbol(action);
+        var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName);
+
+        var model = new ResourceChangeModel
+        {
+            Address = rc.Address,
+            ModuleAddress = rc.ModuleAddress,
+            Type = rc.Type,
+            Name = rc.Name,
+            ProviderName = rc.ProviderName,
+            Action = action,
+            ActionSymbol = actionSymbol,
+            AttributeChanges = attributeChanges,
+            BeforeJson = rc.Change.Before,
+            AfterJson = rc.Change.After,
+            ReplacePaths = rc.Change.ReplacePaths
+        };
+
+        if (string.Equals(rc.Type, "azurerm_network_security_group", StringComparison.OrdinalIgnoreCase))
+        {
+            model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+        }
+        else if (string.Equals(rc.Type, "azurerm_firewall_network_rule_collection", StringComparison.OrdinalIgnoreCase))
+        {
+            model.FirewallNetworkRuleCollection = FirewallNetworkRuleCollectionViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+        }
+        else if (string.Equals(rc.Type, "azurerm_role_assignment", StringComparison.OrdinalIgnoreCase))
+        {
+            model.RoleAssignment = RoleAssignmentViewModelFactory.Build(rc, action, attributeChanges, _principalMapper);
+        }
+        else if (string.Equals(rc.Type, "azuredevops_variable_group", StringComparison.OrdinalIgnoreCase))
+        {
+            model.VariableGroup = VariableGroupViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+        }
+
+        model.Summary = _summaryBuilder.BuildSummary(model);
+        model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);
+        model.TagsBadges = BuildTagsBadges(model.AfterJson, model.BeforeJson, model.Action);
+        model.SummaryHtml = BuildSummaryHtml(model);
+
+        return model;
+    }
+
+    /// <summary>
+    /// Builds attribute changes for a resource, filtering unchanged values when configured.
+    /// </summary>
+    /// <param name="change">The resource change containing before and after state.</param>
+    /// <param name="providerName">The provider name for the resource (e.g., "azurerm", "aws").</param>
+    /// <returns>Attribute changes prepared for rendering.</returns>
+    /// <remarks>
+    /// Compares raw values before masking to avoid dropping masked sensitive creates that would
+    /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
+    /// </remarks>
+    private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
+    {
+        var beforeDict = ConvertToFlatDictionary(change.Before);
+        var afterDict = ConvertToFlatDictionary(change.After);
+        var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
+        var afterSensitiveDict = ConvertToFlatDictionary(change.AfterSensitive);
+
+        var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order();
+
+        var changes = new List<AttributeChangeModel>();
+
+        foreach (var key in allKeys)
+        {
+            beforeDict.TryGetValue(key, out var beforeValue);
+            afterDict.TryGetValue(key, out var afterValue);
+
+            var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
+            var beforeDisplay = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue;
+            var afterDisplay = isSensitive && !_showSensitive ? "(sensitive)" : afterValue;
+
+            var valuesEqual = string.Equals(beforeValue, afterValue, StringComparison.Ordinal);
+
+            if (!_showUnchangedValues && valuesEqual)
+            {
+                continue;
+            }
+
+            var isLarge = ScribanHelpers.IsLargeValue(beforeDisplay, providerName)
+                || ScribanHelpers.IsLargeValue(afterDisplay, providerName);
+
+            changes.Add(new AttributeChangeModel
+            {
+                Name = key,
+                Before = beforeDisplay,
+                After = afterDisplay,
+                IsSensitive = isSensitive,
+                IsLarge = isLarge
+            });
+        }
+
+        return changes;
+    }
+
+    private static bool IsSensitiveAttribute(
+        string key,
+        Dictionary<string, string?> beforeSensitive,
+        Dictionary<string, string?> afterSensitive)
+    {
+        // Check if the key is marked as sensitive in either before or after state
+        return (beforeSensitive.TryGetValue(key, out var bv) && bv == "true")
+            || (afterSensitive.TryGetValue(key, out var av) && av == "true");
+    }
+
+    private static Dictionary<string, string?> ConvertToFlatDictionary(object? obj, string prefix = "")
+    {
+        Dictionary<string, string?> result = [];
+        if (obj is null)
+        {
+            return result;
+        }
+
+        if (obj is JsonElement element)
+        {
+            FlattenJsonElement(element, prefix, result);
+        }
+
+        return result;
+    }
+
+    private static void FlattenJsonElement(JsonElement element, string prefix, Dictionary<string, string?> result)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (var property in element.EnumerateObject())
+                {
+                    var key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+                    FlattenJsonElement(property.Value, key, result);
+                }
+                break;
+            case JsonValueKind.Array:
+                var index = 0;
+                foreach (var item in element.EnumerateArray())
+                {
+                    var key = $"{prefix}[{index}]";
+                    FlattenJsonElement(item, key, result);
+                    index++;
+                }
+                break;
+            case JsonValueKind.String:
+                result[prefix] = element.GetString();
+                break;
+            case JsonValueKind.Number:
+                result[prefix] = element.GetRawText();
+                break;
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+                result[prefix] = element.GetBoolean().ToString().ToLowerInvariant();
+                break;
+            case JsonValueKind.Null:
+                result[prefix] = null;
+                break;
+        }
+    }
+
+    private static string DetermineAction(IReadOnlyList<string> actions)
+    {
+        if (actions.Contains("create") && actions.Contains("delete"))
+        {
+            return "replace";
+        }
+
+        if (actions.Contains("create"))
+        {
+            return "create";
+        }
+
+        if (actions.Contains("delete"))
+        {
+            return "delete";
+        }
+
+        if (actions.Contains("update"))
+        {
+            return "update";
+        }
+
+        return "no-op";
+    }
+
+    private static string GetActionSymbol(string action) => action switch
+    {
+        "create" => "➕",
+        "delete" => "❌",
+        "update" => "🔄",
+        "replace" => "♻️",
+        _ => " "
+    };
+}

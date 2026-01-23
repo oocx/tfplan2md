@@ -87,14 +87,14 @@ using System.Diagnostics.CodeAnalysis;
     "CA1506:Avoid excessive class coupling",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
-    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.NetworkSecurityGroupViewModelFactory")]
+    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.ReportModelBuilder")]
 
 [assembly: SuppressMessage(
     "Maintainability",
     "CA1506:Avoid excessive class coupling",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
-    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.ReportModelBuilder")]
+    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.NetworkSecurityGroupViewModelFactory")]
 
 [assembly: SuppressMessage(
     "Maintainability",

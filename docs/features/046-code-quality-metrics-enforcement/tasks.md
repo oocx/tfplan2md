@@ -94,10 +94,10 @@ Break down the large `ScribanHelpers.AzApi.cs` (1,067 lines) into smaller, focus
 Split `ReportModel.cs` (774 lines) into separate class/record files.
 
 **Acceptance Criteria:**
-- [ ] Extract logical entities/records into their own files.
-- [ ] Target file size: under 300 lines per file.
-- [ ] Remove corresponding baseline entries for this file.
-- [ ] Verify all tests pass.
+- [x] Extract logical entities/records into their own files.
+- [x] Target file size: under 300 lines per file.
+- [x] Remove corresponding baseline entries for this file.
+- [x] Verify all tests pass.
 
 **Dependencies:** Task 2
 

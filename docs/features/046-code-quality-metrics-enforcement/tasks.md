@@ -120,10 +120,19 @@ Split `ReportModel.cs` (774 lines) into separate class/record files.
 Refactor `VariableGroupViewModelFactory.cs` (587 lines) to reduce complexity and length.
 
 **Acceptance Criteria:**
-- [ ] Extract helper classes or private methods into focused service/mapper classes.
-- [ ] Target file size: under 400 lines (ideally 300).
-- [ ] Remove corresponding baseline entries for this file.
-- [ ] Verify all tests pass.
+- [x] Extract helper classes or private methods into focused service/mapper classes.
+- [x] Target file size: under 400 lines (ideally 300).
+- [x] Remove corresponding baseline entries for this file.
+- [x] Verify all tests pass.
+
+**Status:** Complete. Split into 4 focused files:
+- VariableGroupViewModelFactory.cs (94 lines) - coordination logic
+- VariableGroupExtractors.cs (183 lines) - JSON extraction
+- VariableGroupChangeBuilders.cs (106 lines) - change row building
+- VariableGroupFormatters.cs (248 lines) - formatting logic
+- All files under 300 lines (largest: 248 vs original 587)
+- CA1506 suppression successfully removed
+- All 516 tests passing
 
 **Dependencies:** Task 2
 

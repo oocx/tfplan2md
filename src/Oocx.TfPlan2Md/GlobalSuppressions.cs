@@ -125,22 +125,6 @@ using System.Diagnostics.CodeAnalysis;
     "CA1502:Avoid excessive complexity",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "member",
-    Target = "~M:Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers.RenderAzapiBody(" +
-             "System.Object,System.String,System.String,System.Object,System.Object," +
-             "System.Object,System.Boolean,System.String)")]
-
-[assembly: SuppressMessage(
-    "Maintainability",
-    "CA1502:Avoid excessive complexity",
-    Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
-    Scope = "member",
-    Target = "~M:Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers.GroupPropertiesByNestedObject(Scriban.Runtime.ScriptArray)")]
-
-[assembly: SuppressMessage(
-    "Maintainability",
-    "CA1502:Avoid excessive complexity",
-    Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
-    Scope = "member",
     Target = "~M:Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers.FormatAttributeValue(" +
              "System.String,System.String,System.String," +
              "Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers+ValueFormatContext)")]

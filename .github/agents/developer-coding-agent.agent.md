@@ -23,14 +23,14 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -330,15 +330,30 @@ docker run --rm -v $(pwd):/data tfplan2md:local /data/plan.json
 
 When fixing PR/CI failures, check workflow logs:
 
+**⚠️ Prefer repository scripts over raw `gh` commands:**
+
+```bash
+# List recent workflow runs (use wrapper script)
+scripts/check-workflow-status.sh list --branch main --limit 5
+
+# View specific failed run (use wrapper script)
+scripts/check-workflow-status.sh view <run-id>
+
+# Watch a run until completion (use wrapper script)
+scripts/check-workflow-status.sh watch <run-id>
+```
+
+**Fallback only (when scripts don't support the operation):**
+
 Preferred in VS Code chat:
 - Use GitHub chat tools to fetch PR status checks.
 - If you do not have repo context (owner/repo) or a tool is missing, fall back to `gh`.
 
 ```bash
-# List recent workflow runs (non-blocking)
+# List recent workflow runs (fallback)
 PAGER=cat gh run list --limit 5
 
-# View specific failed run
+# View specific failed run (fallback)
 PAGER=cat gh run view <run-id> --log-failed
 
 # PR validation status (fallback)

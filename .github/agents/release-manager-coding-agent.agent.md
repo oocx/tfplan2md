@@ -23,14 +23,14 @@ Ensure the feature is ready for release, create the pull request (for both new f
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -242,7 +242,9 @@ Before releasing, verify:
    # Check CHANGELOG.md was updated
    head -n 20 CHANGELOG.md
    
-   # Verify GitHub Release created
+   # Verify GitHub Release created (fallback to raw gh if no script available)
+   # Preferred: Use GitHub chat tools in VS Code
+   # Fallback only:
    PAGER=cat gh release view <tag>
    ```
    - [ ] CHANGELOG.md updated with new version and commits

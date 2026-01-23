@@ -166,10 +166,17 @@ Collect relevant data:
 # Preferred in VS Code chat:
 # - Use GitHub chat tools to inspect PR status checks, PR details, and PR comments.
 #
-# Fallback: check workflow runs via gh (non-blocking)
-PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
+# Preferred: Use repository wrapper scripts for workflow operations
+scripts/check-workflow-status.sh list --branch main --limit 5
 
-# View specific workflow run (non-blocking)
+# View specific workflow run (use wrapper script)
+scripts/check-workflow-status.sh view <run-id>
+
+# Watch a run until completion (use wrapper script)
+scripts/check-workflow-status.sh watch <run-id>
+
+# Fallback only (if script doesn't support the operation):
+PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
 PAGER=cat gh run view <run-id> --log-failed
 
 # Check git history

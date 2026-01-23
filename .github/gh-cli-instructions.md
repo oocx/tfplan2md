@@ -3,9 +3,22 @@
 ## Pager / Non-Interactive Mode
 # GitHub CLI Usage Instructions for Agents
 
+**CRITICAL: Prefer repository wrapper scripts over raw `gh` commands** to minimize manual approval friction.
+
+Available wrapper scripts (use these instead of raw `gh`):
+- **`scripts/check-workflow-status.sh`** - For workflow operations (list, watch, trigger, view)
+- **`scripts/uat-watch-github.sh`** - For UAT PR watching
+- **`scripts/pr-github.sh`** - For PR operations (create, merge)
+- **`scripts/git-status.sh`** - For git status
+- **`scripts/git-diff.sh`** - For git diff
+- **`scripts/git-log.sh`** - For git log
+
 Preferred: use GitHub chat tools for GitHub PR/issue inspection and management.
 
-Use `gh` only as a fallback when the required operation is not available via chat tools or when a maintainer explicitly requests CLI reproduction steps.
+Use `gh` only as a fallback when:
+1. The required operation is not available via repository scripts
+2. The required operation is not available via GitHub chat tools
+3. A maintainer explicitly requests CLI reproduction steps
 
 ## Critical: Prevent Interactive Mode
 
@@ -44,6 +57,29 @@ export GH_FORCE_TTY=false
 # Safe non-interactive issue creation
 echo "Automated issue body" | GH_PAGER=cat GH_FORCE_TTY=false gh issue create --title "Automated" --body-file -
 ```
+
+## Workflow Operations (Use Repository Scripts)
+
+**⚠️ DO NOT use raw `gh run` or `gh workflow` commands.** Use `scripts/check-workflow-status.sh` instead:
+
+```bash
+# List workflow runs
+scripts/check-workflow-status.sh list --branch main --limit 5
+
+# List specific workflow
+scripts/check-workflow-status.sh list --workflow release.yml --limit 1
+
+# Watch a run until completion
+scripts/check-workflow-status.sh watch <run-id>
+
+# View run details
+scripts/check-workflow-status.sh view <run-id>
+
+# Trigger a workflow
+scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0
+```
+
+**Why?** The wrapper script handles pager suppression and is designed for permanent approval in VS Code, reducing friction during long-running operations like CI polling.
 
 ## Common Commands - Correct Usage
 
@@ -128,12 +164,20 @@ PAGER=cat gh run list --json conclusion,status,name,createdAt
 
 ### Workflow Operations
 
+**⚠️ DEPRECATED: Do not use raw `gh run` commands. Use `scripts/check-workflow-status.sh` instead.**
+
 ```bash
-# View workflow run
+# ❌ WRONG - Requires manual approval every time
+PAGER=cat gh run list --limit 5
+
+# ✅ CORRECT - Use the wrapper script
+scripts/check-workflow-status.sh list --branch main --limit 5
+
+# ❌ WRONG - Requires manual approval every time
 PAGER=cat gh run view 12345 --json conclusion,status,jobs
 
-# List workflow runs
-PAGER=cat gh run list --workflow "CI" --json databaseId,conclusion,status
+# ✅ CORRECT - Use the wrapper script
+scripts/check-workflow-status.sh view 12345
 ```
 
 ## Output Format Guidelines

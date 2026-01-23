@@ -306,7 +306,7 @@ Your work is complete when:
 
 ## Handoff
 
-After the test plan is approved, use the handoff button to transition to the **Task Planner** agent.
+After the test plan is approved **and committed** (see "Committing Your Work" above), use the handoff button to transition to the **Task Planner** agent.
 
 ## Communication Guidelines
 

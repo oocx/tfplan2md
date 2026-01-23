@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0-alpha.45"></a>
+## [1.0.0-alpha.45](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.44...v1.0.0-alpha.45) (2026-01-23)
+
+### ✨ Features
+
+* baseline code metrics violations ([5a87bdb](https://github.com/oocx/tfplan2md/commit/5a87bdb55dccb2e5229a30b279fdd890aa8121a6))
+* configure code metrics enforcement ([9dbf38e](https://github.com/oocx/tfplan2md/commit/9dbf38e014fc9154fd060d3bd5eb00d5266b4ad6))
+* refactor Azure role definitions to data-driven approach ([f1109e7](https://github.com/oocx/tfplan2md/commit/f1109e7d078cd6f1567b84f6825343bbeccd4185))
+* refactor ResourceSummaryBuilder to reduce file size and class coupling ([61a7c96](https://github.com/oocx/tfplan2md/commit/61a7c962eabfa414bcd297f8dd5962312e6fae2e))
+
+### 🐛 Bug Fixes
+
+* restore CA1506 suppression for ReportModelBuilder ([49249d2](https://github.com/oocx/tfplan2md/commit/49249d2802d0fea15b785ceaf90747c20465e939))
+
+### ♻️ Refactoring
+
+* extract summary and JSON helpers to reduce ReportModelBuilder coupling ([9cc9e6f](https://github.com/oocx/tfplan2md/commit/9cc9e6f05d2ef7bbc54a289ad992fef68fdea6db))
+* introduce factory registry to reduce ReportModelBuilder coupling ([fccc201](https://github.com/oocx/tfplan2md/commit/fccc2015feef2f510439d47bf3f2fe1c6f87b618))
+* split azapi scriban helpers ([b537d21](https://github.com/oocx/tfplan2md/commit/b537d2190888739b22ab6372a52a5f67119b44ab))
+* split VariableGroupViewModelFactory into focused helpers ([8885219](https://github.com/oocx/tfplan2md/commit/8885219f2fd935b309c239af6020548e4b693ac8))
+
+### 📚 Documentation
+
+* add architecture for 046-code-quality-metrics-enforcement ([b49125e](https://github.com/oocx/tfplan2md/commit/b49125e764cbf6e56c70e1f6a193f7dc7b6f2326))
+* add code review for code-quality-metrics-enforcement ([9d03e35](https://github.com/oocx/tfplan2md/commit/9d03e351a89afd5157d8af9d724a5d20cf69120d))
+* add feature specification for 046-code-quality-metrics-enforcement ([fab1a4c](https://github.com/oocx/tfplan2md/commit/fab1a4ced46f04e8947d50e75ec4b78b7d2ff052))
+* add retrospective and redacted chat logs for feature 043 ([58a47c8](https://github.com/oocx/tfplan2md/commit/58a47c8ae2774819ada2e302d61b8928308cbb49))
+* add tasks for 046-code-quality-metrics-enforcement ([fdbf5a3](https://github.com/oocx/tfplan2md/commit/fdbf5a3ca22bbc68ba4ae7b03e923df85d6fe0c2))
+* add test plan and UAT test plan for 046-code-quality-metrics-enforcement ([6849f14](https://github.com/oocx/tfplan2md/commit/6849f14e608edddf3140e3b18c7f63b694aea888))
+* document quality metric suppressions ([d29545d](https://github.com/oocx/tfplan2md/commit/d29545dd419c751559918a01855191c0b4eded8e))
+* link improvement opportunities to github issues in retrospective ([a55e7b1](https://github.com/oocx/tfplan2md/commit/a55e7b10e1301f78f57fe5e8666da27f54c36e81))
+* mark Task 6 complete - VariableGroupViewModelFactory refactored ([8fec3b1](https://github.com/oocx/tfplan2md/commit/8fec3b1355c9e212beff5127c4371b1de2dfeb1f))
+* mark Task 7 as complete ([43b9a6e](https://github.com/oocx/tfplan2md/commit/43b9a6eb229bfd225560d896257a60367b29e79c))
+* mark Task 8 as complete ([25b8af1](https://github.com/oocx/tfplan2md/commit/25b8af1d5590dd366de65d8c304c267789b29f08))
+* mark Task 9 as complete with audit results ([2a253cc](https://github.com/oocx/tfplan2md/commit/2a253cc7f4a2121978be9af1f14b5797b78b6698))
+* update coverage badge and history ([3083f4f](https://github.com/oocx/tfplan2md/commit/3083f4fa14b71491c308de1923ce93ab656b71bc))
+* update documentation for code quality metrics enforcement ([5546664](https://github.com/oocx/tfplan2md/commit/55466642490bfbe723d74a51b6178b024d77b7e3))
+* update Task 5 progress - coupling reduced 24% (50→38 types) ([0baa651](https://github.com/oocx/tfplan2md/commit/0baa6511c3d847a5aaddc13cdeac7a6779395940))
+* update Task 5 status to reflect partial completion ([a7d0051](https://github.com/oocx/tfplan2md/commit/a7d005105cbb919d7680ff2066ffca55ae1e52a5))
+
 <a name="1.0.0-alpha.44"></a>
 ## [1.0.0-alpha.44](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.43...v1.0.0-alpha.44) (2026-01-23)
 

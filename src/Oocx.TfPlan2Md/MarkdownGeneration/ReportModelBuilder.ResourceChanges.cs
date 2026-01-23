@@ -35,21 +35,10 @@ public partial class ReportModelBuilder
             ReplacePaths = rc.Change.ReplacePaths
         };
 
-        if (string.Equals(rc.Type, "azurerm_network_security_group", StringComparison.OrdinalIgnoreCase))
+        // Apply resource-specific view model if a factory is registered for this type
+        if (_viewModelFactoryRegistry.TryGetFactory(rc.Type, out var factory) && factory is not null)
         {
-            model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
-        }
-        else if (string.Equals(rc.Type, "azurerm_firewall_network_rule_collection", StringComparison.OrdinalIgnoreCase))
-        {
-            model.FirewallNetworkRuleCollection = FirewallNetworkRuleCollectionViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
-        }
-        else if (string.Equals(rc.Type, "azurerm_role_assignment", StringComparison.OrdinalIgnoreCase))
-        {
-            model.RoleAssignment = RoleAssignmentViewModelFactory.Build(rc, action, attributeChanges, _principalMapper);
-        }
-        else if (string.Equals(rc.Type, "azuredevops_variable_group", StringComparison.OrdinalIgnoreCase))
-        {
-            model.VariableGroup = VariableGroupViewModelFactory.Build(rc, rc.ProviderName, _largeValueFormat);
+            factory.ApplyViewModel(model, rc, action, attributeChanges);
         }
 
         model.Summary = _summaryBuilder.BuildSummary(model);

@@ -24,7 +24,7 @@ public sealed class TerraformShowRendererAppTests
     /// Ensures help mode prints usage content and exits successfully.
     /// Related acceptance: TC-02.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task RunAsync_WithHelp_PrintsUsage()
     {
@@ -43,7 +43,7 @@ public sealed class TerraformShowRendererAppTests
     /// Ensures version mode prints assembly informational version and exits successfully.
     /// Related acceptance: TC-03.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task RunAsync_WithVersion_PrintsVersion()
     {
@@ -62,7 +62,7 @@ public sealed class TerraformShowRendererAppTests
     /// Ensures missing required input produces exit code 1 and a helpful message.
     /// Related acceptance: TC-12.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task RunAsync_MissingInput_ReturnsExitCode1()
     {
@@ -81,7 +81,7 @@ public sealed class TerraformShowRendererAppTests
     /// Ensures referencing a missing file produces exit code 2.
     /// Related acceptance: TC-10.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task RunAsync_InputFileMissing_ReturnsExitCode2()
     {
@@ -101,7 +101,7 @@ public sealed class TerraformShowRendererAppTests
     /// Ensures invalid JSON content produces exit code 3.
     /// Related acceptance: TC-05.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task RunAsync_InvalidJson_ReturnsExitCode3()
     {
@@ -121,7 +121,7 @@ public sealed class TerraformShowRendererAppTests
     /// Ensures unsupported format versions produce exit code 4.
     /// Related acceptance: TC-04.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task RunAsync_UnsupportedVersion_ReturnsExitCode4()
     {

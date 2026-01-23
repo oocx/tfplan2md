@@ -18,7 +18,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Parses a valid Cobertura report and returns rounded percentages.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parses_cobertura_report_with_expected_percentages()
     {
@@ -34,7 +34,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Treats missing branch data as zero percent rather than throwing.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Handles_missing_branch_rate_gracefully()
     {
@@ -50,7 +50,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Throws a descriptive exception when the Cobertura report is malformed.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Throws_when_cobertura_report_is_malformed()
     {
@@ -65,7 +65,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Fails evaluation when coverage falls below the threshold.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Evaluator_fails_when_thresholds_not_met()
     {
@@ -83,7 +83,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Passes evaluation when coverage meets or exceeds thresholds.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Evaluator_passes_when_thresholds_met()
     {
@@ -101,7 +101,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Builds a markdown summary table including metrics and thresholds.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Summary_builder_includes_metric_rows()
     {
@@ -124,7 +124,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Includes an override note when enforcement is bypassed.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Summary_builder_includes_override_note_when_active()
     {
@@ -143,7 +143,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Generates an SVG badge with the expected percentage and color.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Badge_generator_includes_percentage_and_color()
     {
@@ -158,7 +158,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Appends the latest entry to the coverage history file.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task History_writer_appends_entry()
     {
@@ -183,7 +183,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Replaces an existing history entry when the commit SHA matches.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task History_writer_replaces_existing_entry_for_same_commit()
     {
@@ -214,7 +214,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Throws when the history path is missing.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task History_writer_throws_when_history_path_is_missing()
     {
@@ -233,7 +233,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Parses full command line options including optional parameters.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Command_line_options_parse_reads_all_supported_arguments()
     {
@@ -277,7 +277,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Uses environment variables when thresholds are not provided on the command line.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Command_line_options_parse_uses_environment_thresholds_when_missing()
     {
@@ -304,7 +304,7 @@ public class CoverageEnforcerTests
     /// <summary>
     /// Throws when an invalid decimal threshold is provided.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Command_line_options_parse_throws_on_invalid_decimal_threshold()
     {

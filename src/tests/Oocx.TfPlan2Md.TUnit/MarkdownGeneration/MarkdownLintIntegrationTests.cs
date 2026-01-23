@@ -37,7 +37,7 @@ public class MarkdownLintIntegrationTests
     /// Verifies that the comprehensive demo output passes all markdownlint rules.
     /// This is the primary integration test for markdown quality.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_ComprehensiveDemo_PassesAllRules(CancellationToken cancellationToken)
     {
@@ -67,7 +67,7 @@ public class MarkdownLintIntegrationTests
     /// <summary>
     /// Verifies that all test plans in TestData produce valid markdown.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_AllTestPlans_PassAllRules(CancellationToken cancellationToken)
     {
@@ -128,7 +128,7 @@ public class MarkdownLintIntegrationTests
     /// <summary>
     /// Verifies that the summary template produces valid markdown.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_SummaryTemplate_PassesAllRules(CancellationToken cancellationToken)
     {
@@ -157,7 +157,7 @@ public class MarkdownLintIntegrationTests
     /// <summary>
     /// Verifies that markdown with special characters in resource names passes linting.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_BreakingPlan_PassesAllRules(CancellationToken cancellationToken)
     {

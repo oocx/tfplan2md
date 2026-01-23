@@ -2,13 +2,13 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.CLI;
 
 /// <summary>
 /// Represents parsed command-line options for the Terraform show approximation tool.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal sealed class CliOptions
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CliOptions"/> class.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     /// <param name="inputPath">Path to the Terraform plan JSON file.</param>
     /// <param name="outputPath">Optional output path for the rendered text; defaults to stdout when <see langword="null"/>.</param>

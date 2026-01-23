@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.ScreenshotGenerator;
 
 /// <summary>
 /// Entry point for the screenshot generator tool.
-/// Related feature: docs/features/028-html-screenshot-generation/specification.md
+/// Related feature: docs/features/028-html-screenshot-generation/specification.md.
 /// </summary>
 public static class Program
 {

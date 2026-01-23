@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Unit tests for azapi_resource Scriban helper functions.
-/// Related feature: docs/features/040-azapi-resource-template/test-plan.md
+/// Related feature: docs/features/040-azapi-resource-template/test-plan.md.
 /// </summary>
 public class ScribanHelpersAzApiTests
 {

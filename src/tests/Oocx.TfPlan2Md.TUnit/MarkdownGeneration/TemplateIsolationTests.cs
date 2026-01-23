@@ -34,6 +34,7 @@ public class TemplateIsolationTests
     private readonly MarkdownPipeline _pipeline;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="TemplateIsolationTests"/> class.
     /// Initializes the test class with a Markdig pipeline.
     /// </summary>
     public TemplateIsolationTests()
@@ -167,7 +168,7 @@ public class TemplateIsolationTests
         var markdown = renderer.Render(model);
 
         // Find all table rows and verify no blank lines between them
-        var tableRowPattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)");
+        var tableRowPattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)", RegexOptions.None, TimeSpan.FromSeconds(2));
         var matches = tableRowPattern.Matches(markdown);
 
         matches.Should().BeEmpty(
@@ -244,7 +245,7 @@ public class TemplateIsolationTests
 
         var markdown = renderer.Render(model);
 
-        var tableRowPattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)");
+        var tableRowPattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)", RegexOptions.None, TimeSpan.FromSeconds(2));
         var matches = tableRowPattern.Matches(markdown);
 
         matches.Should().BeEmpty("because blank lines between table rows break markdown tables");
@@ -368,7 +369,7 @@ public class TemplateIsolationTests
         var tables = document.Descendants<Table>().ToList();
 
         // Count expected tables by markdown patterns
-        var expectedAttributeTables = Regex.Matches(markdown, @"\| Attribute \|").Count;
+        var expectedAttributeTables = Regex.Matches(markdown, @"\| Attribute \|", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
         var expectedSummaryTable = markdown.Contains("| Action |") ? 1 : 0;
 
         tables.Count.Should().BeGreaterThanOrEqualTo(
@@ -381,12 +382,12 @@ public class TemplateIsolationTests
     /// </summary>
     private static void AssertHtmlTagsBalanced(string markdown, string context)
     {
-        var detailsOpen = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>").Count;
-        var detailsClose = Regex.Matches(markdown, @"</details>").Count;
+        var detailsOpen = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+        var detailsClose = Regex.Matches(markdown, @"</details>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
         detailsOpen.Should().Be(detailsClose, $"{context}: unbalanced <details> tags");
 
-        var summaryOpen = Regex.Matches(markdown, @"<summary(?:\s[^>]*)?>").Count;
-        var summaryClose = Regex.Matches(markdown, @"</summary>").Count;
+        var summaryOpen = Regex.Matches(markdown, @"<summary(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+        var summaryClose = Regex.Matches(markdown, @"</summary>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
         summaryOpen.Should().Be(summaryClose, $"{context}: unbalanced <summary> tags");
     }
 
@@ -399,7 +400,7 @@ public class TemplateIsolationTests
 
         for (var i = 0; i < lines.Length; i++)
         {
-            if (Regex.IsMatch(lines[i], @"^#{1,6}\s"))
+            if (Regex.IsMatch(lines[i], @"^#{1,6}\s", RegexOptions.None, TimeSpan.FromSeconds(1)))
             {
                 // Check line before (except for first line)
                 if (i > 0)

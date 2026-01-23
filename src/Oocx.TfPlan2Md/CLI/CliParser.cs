@@ -8,23 +8,23 @@ namespace Oocx.TfPlan2Md.CLI;
 public record CliOptions
 {
     /// <summary>
-    /// Input file path. If null, read from stdin.
+    /// Gets the input file path. If null, read from stdin.
     /// </summary>
     public string? InputFile { get; init; }
 
     /// <summary>
-    /// Output file path. If null, write to stdout.
+    /// Gets the output file path. If null, write to stdout.
     /// </summary>
     public string? OutputFile { get; init; }
 
     /// <summary>
-    /// Custom template file path.
+    /// Gets the custom template file path.
     /// </summary>
     public string? TemplatePath { get; init; }
 
     /// <summary>
-    /// Optional custom report title provided via the CLI.
-    /// Related feature: docs/features/020-custom-report-title/specification.md
+    /// Gets the optional custom report title provided via the CLI.
+    /// Related feature: docs/features/020-custom-report-title/specification.md.
     /// </summary>
     /// <value>
     /// Custom level-1 heading text for the generated report. When null, templates fall back to their defaults.
@@ -32,46 +32,46 @@ public record CliOptions
     public string? ReportTitle { get; init; }
 
     /// <summary>
-    /// Whether to show sensitive values unmasked.
+    /// Gets a value indicating whether to show sensitive values unmasked.
     /// </summary>
     public bool ShowSensitive { get; init; }
 
     /// <summary>
-    /// Whether to show help information.
+    /// Gets a value indicating whether to show help information.
     /// </summary>
     public bool ShowHelp { get; init; }
 
     /// <summary>
-    /// Whether to show version information.
+    /// Gets a value indicating whether to show version information.
     /// </summary>
     public bool ShowVersion { get; init; }
 
     /// <summary>
-    /// Optional principal mapping file path.
+    /// Gets the optional principal mapping file path.
     /// </summary>
     public string? PrincipalMappingFile { get; init; }
 
     /// <summary>
-    /// Determines whether unchanged attribute values are included in the output.
-    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md
+    /// Gets a value indicating whether unchanged attribute values are included in the output.
+    /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// </summary>
     public bool ShowUnchangedValues { get; init; }
 
     /// <summary>
-    /// Indicates whether tfplan2md metadata should be hidden from the report header.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Gets a value indicating whether tfplan2md metadata should be hidden from the report header.
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     public bool HideMetadata { get; init; }
 
     /// <summary>
-    /// Controls the rendering format for large attribute values.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
+    /// Gets the rendering format for large attribute values.
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
     public LargeValueFormat LargeValueFormat { get; init; }
 
     /// <summary>
-    /// Indicates whether debug diagnostic information should be appended to the report.
-    /// Related feature: docs/features/038-debug-output/specification.md
+    /// Gets a value indicating whether debug diagnostic information should be appended to the report.
+    /// Related feature: docs/features/038-debug-output/specification.md.
     /// </summary>
     /// <remarks>
     /// When enabled, debug output includes:
@@ -89,6 +89,12 @@ public record CliOptions
 /// </summary>
 public static class CliParser
 {
+    /// <summary>
+    /// Parses the command-line arguments into a CliOptions object.
+    /// </summary>
+    /// <param name="args">The command-line arguments to parse.</param>
+    /// <returns>A CliOptions object representing the parsed arguments.</returns>
+    /// <exception cref="CliParseException">Thrown when argument parsing fails.</exception>
     public static CliOptions Parse(string[] args)
     {
         string? inputFile = null;
@@ -234,9 +240,29 @@ public static class CliParser
 /// <summary>
 /// Exception thrown when CLI parsing fails.
 /// </summary>
-public class CliParseException : ApplicationException
+public class CliParseException : Exception
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliParseException"/> class.
+    /// </summary>
+    public CliParseException()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliParseException"/> class with a specified error message.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
     public CliParseException(string message) : base(message)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliParseException"/> class with a specified error message and inner exception.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that is the cause of this exception.</param>
+    public CliParseException(string message, Exception innerException) : base(message, innerException)
     {
     }
 }

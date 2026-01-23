@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
-/// <summary>Utility helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md</summary>
+/// <summary>Utility helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md.</summary>
 internal sealed partial class DiffRenderer
 {
     /// <summary>
@@ -23,6 +23,12 @@ internal sealed partial class DiffRenderer
 
         // A map has all scalar values (string, number, bool, null)
         // A block has nested objects, arrays, or mixed types
+        // SonarAnalyzer S3267: Loop simplification
+        // Justification: This is an early-exit validation pattern, not a mapping operation.
+        // Returns false immediately upon finding a complex type (Object or Array). While LINQ
+        // All() or Any() could express this, the explicit loop with early return is clearer
+        // for this "fail-fast" validation pattern and matches common C# idioms.
+#pragma warning disable S3267
         foreach (var prop in obj.EnumerateObject())
         {
             if (prop.Value.ValueKind == JsonValueKind.Object || prop.Value.ValueKind == JsonValueKind.Array)
@@ -30,6 +36,7 @@ internal sealed partial class DiffRenderer
                 return false;
             }
         }
+#pragma warning restore S3267
 
         return true;
     }
@@ -43,7 +50,6 @@ internal sealed partial class DiffRenderer
     /// <param name="value">Rendered attribute value.</param>
     /// <param name="appendNull">Whether to append the Terraform <c>-> null</c> suffix.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteScalarLine(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string value, bool appendNull = false, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
@@ -53,7 +59,13 @@ internal sealed partial class DiffRenderer
             writer.WriteReset(); // Extra reset to match Terraform's double-reset pattern
             writer.Write(" ");
         }
+        // SonarAnalyzer S3358: Nested ternary operation
+        // Justification: This handles 3 cases for name padding (empty→empty, width>0→padded, else→raw)
+        // in a rendering context where conditional formatting is common. The ternary is readable and
+        // extracting to a helper method would add overhead for simple conditional string formatting.
+#pragma warning disable S3358
         var paddedName = string.IsNullOrWhiteSpace(name) ? string.Empty : (nameWidth > 0 ? name.PadRight(nameWidth, ' ') : name);
+#pragma warning restore S3358
         if (!string.IsNullOrWhiteSpace(paddedName))
         {
             writer.Write(paddedName);
@@ -85,7 +97,6 @@ internal sealed partial class DiffRenderer
     /// <param name="before">Value before the change.</param>
     /// <param name="after">Value after the change.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
-    /// <returns>Nothing.</returns>
     private void WriteArrowLine(AnsiTextWriter writer, string indent, string name, JsonElement before, JsonElement after, bool appendReplacement, int nameWidth = 0)
     {
         writer.Write(indent);
@@ -118,7 +129,6 @@ internal sealed partial class DiffRenderer
     /// <param name="name">Attribute or collection name.</param>
     /// <param name="symbol">Container symbol, such as <c>{</c> or <c>[</c>.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteContainerOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string symbol, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
@@ -144,7 +154,6 @@ internal sealed partial class DiffRenderer
     /// <summary>Writes closing braces for object containers.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteClosingBrace(AnsiTextWriter writer, string indent)
     {
         writer.Write(indent);
@@ -154,7 +163,6 @@ internal sealed partial class DiffRenderer
     /// <summary>Writes closing brackets for array containers.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteClosingBracket(AnsiTextWriter writer, string indent)
     {
         writer.Write(indent);
@@ -169,7 +177,6 @@ internal sealed partial class DiffRenderer
     /// <param name="marker">Change marker to prefix the line.</param>
     /// <param name="style">ANSI style associated with the marker.</param>
     /// <param name="name">Block name.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
     {
         writer.Write(indent);
@@ -185,7 +192,6 @@ internal sealed partial class DiffRenderer
     /// <param name="indent">Indentation for the current depth.</param>
     /// <param name="count">Number of unchanged attributes hidden.</param>
     /// <param name="itemType">Type of items ("attributes", "elements", or "blocks").</param>
-    /// <returns>Nothing.</returns>
     private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count, string itemType = "attributes")
     {
         writer.Write(indent);
@@ -199,7 +205,6 @@ internal sealed partial class DiffRenderer
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
     /// <param name="name">Optional attribute name for the placeholder.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteSensitivePlaceholder(AnsiTextWriter writer, string indent, string? name)
     {
         if (!string.IsNullOrWhiteSpace(name))
@@ -226,7 +231,6 @@ internal sealed partial class DiffRenderer
     /// <param name="marker">Marker to display (<c>+</c>, <c>-</c>, or <c>~</c>).</param>
     /// <param name="style">ANSI style for the marker.</param>
     /// <param name="name">Block name.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteSensitiveBlock(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
     {
         writer.Write(indent);
@@ -349,6 +353,12 @@ internal sealed partial class DiffRenderer
             }
         }
 
+        // SonarAnalyzer S3267: Loop simplification with Where
+        // Justification: This is NOT a simple Where operation - it's a mutation loop using HashSet's
+        // Add return value (true if new, false if duplicate) to filter while building the set.
+        // Converting to Where(p => seen.Add(p.Name)) would be side-effectful LINQ (bad practice).
+        // The alternative of two passes (build set, then Where) would be less efficient.
+#pragma warning disable S3267
         foreach (var property in unknown.Value.EnumerateObject())
         {
             if (seen.Add(property.Name))
@@ -356,6 +366,7 @@ internal sealed partial class DiffRenderer
                 yield return (property.Name, CreateNullElement());
             }
         }
+#pragma warning restore S3267
     }
 
 

@@ -14,8 +14,6 @@ public class ComprehensiveDemoTests
     private readonly MarkdownRenderer _renderer;
     private readonly IPrincipalMapper _principalMapper;
 
-    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
-
     public ComprehensiveDemoTests()
     {
         _principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);

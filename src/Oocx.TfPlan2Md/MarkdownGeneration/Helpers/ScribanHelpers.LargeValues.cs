@@ -9,8 +9,12 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Formats large attribute values according to the requested rendering format.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
+    /// <param name="before">The value before the change (may be null or whitespace).</param>
+    /// <param name="after">The value after the change (may be null or whitespace).</param>
+    /// <param name="format">The rendering format to use (e.g., "inline-diff", "simple-diff").</param>
+    /// <returns>Formatted markdown string representing the value change.</returns>
     public static string FormatLargeValue(string? before, string? after, string format)
     {
         var normalizedBefore = string.IsNullOrWhiteSpace(before) ? null : before;
@@ -24,11 +28,13 @@ public static partial class ScribanHelpers
 
         if (normalizedAfter is null)
         {
-            return CodeFence(normalizedBefore ?? string.Empty);
+            // At this point, normalizedBefore is guaranteed non-null
+            return CodeFence(normalizedBefore!);
         }
 
         if (normalizedBefore is null)
         {
+            // At this point, normalizedAfter is guaranteed non-null
             return CodeFence(normalizedAfter);
         }
 
@@ -162,7 +168,6 @@ public static partial class ScribanHelpers
             {
                 AppendStyledLine(sb, entry.Text, removed: false);
                 index++;
-                continue;
             }
         }
 

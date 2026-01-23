@@ -48,7 +48,7 @@ internal sealed class NullPrincipalMapper : IPrincipalMapper
     /// <param name="principalType">Principal type (ignored by null mapper).</param>
     /// <param name="resourceAddress">Resource address (ignored by null mapper).</param>
     /// <returns>Always null.</returns>
-    public string? GetName(string principalId, string? principalType, string? resourceAddress = null)
+    public string? GetName(string principalId, string? principalType, string? resourceAddress)
     {
         return null;
     }

@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Generates a simple SVG badge for coverage reporting.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed class CoverageBadgeGenerator
 {

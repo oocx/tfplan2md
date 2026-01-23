@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
 /// <summary>
 /// Produces Terraform show-like text output from parsed plan data.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal sealed class TerraformShowRenderer
 {
@@ -22,6 +22,7 @@ internal sealed class TerraformShowRenderer
     /// </summary>
     /// <param name="plan">Parsed Terraform plan.</param>
     /// <param name="suppressColor">Determines whether ANSI sequences are omitted.</param>
+    /// <param name="outputChanges">Optional output changes element from terraform show -json output.</param>
     /// <returns>Rendered text approximating terraform show output.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="plan"/> is null.</exception>
     public string Render(TerraformPlan plan, bool suppressColor, JsonElement? outputChanges = null)
@@ -400,7 +401,14 @@ internal sealed class TerraformShowRenderer
         // Reset before indent, then write marker and block line
         writer.WriteReset();
         // Replace operations have no indent, Read operations use single space, others use Indent (2 spaces)
+        // SonarAnalyzer S3358: Nested ternary operation
+        // Justification: This 3-way indent selection (Replace→no indent, Read→1 space, others→2 spaces)
+        // is highly readable in the rendering context and matches Terraform's output formatting convention
+        // where precise visual layout is critical. Extracting to separate statements or method would
+        // obscure the simple mapping between actions and their indent widths.
+#pragma warning disable S3358
         var indent = action == ResourceAction.Replace ? "" : (action == ResourceAction.Read ? " " : Indent);
+#pragma warning restore S3358
         writer.Write(indent);
         WriteMarker(writer, action);
         writer.WriteReset(); // Extra reset after marker to match Terraform output
@@ -478,7 +486,7 @@ internal sealed class TerraformShowRenderer
 
 /// <summary>
 /// Represents the normalized action applied to a resource change.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal enum ResourceAction
 {

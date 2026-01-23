@@ -130,7 +130,7 @@ public class RoleAssignmentTemplateTests
         // Look for a <details> block containing the resource name in <b><code>{name}</code></b>
         var pattern = $@"(?s)<details[^>]*>\s*<summary>[^<]*{Regex.Escape(resourceType)}\s+<b><code>{Regex.Escape(resourceName)}</code></b>(.*?)</details>";
 
-        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline);
+        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline, TimeSpan.FromSeconds(2));
         return match.Success ? match.Value : string.Empty;
     }
 
@@ -154,12 +154,6 @@ public class RoleAssignmentTemplateTests
         public string GetPrincipalName(string principalId)
         {
             var name = GetName(principalId);
-            return name is null ? principalId : $"{name} [{principalId}]";
-        }
-
-        public string GetPrincipalName(string principalId, string? principalType)
-        {
-            var name = GetName(principalId, principalType);
             return name is null ? principalId : $"{name} [{principalId}]";
         }
 

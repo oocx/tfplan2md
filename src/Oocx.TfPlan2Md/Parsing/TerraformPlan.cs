@@ -32,49 +32,49 @@ public record ResourceChange(
 public record Change
 {
     /// <summary>
-    /// The ordered list of actions applied to the resource.
+    /// Gets the the ordered list of actions applied to the resource.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("actions")]
     public IReadOnlyList<string> Actions { get; init; }
 
     /// <summary>
-    /// Optional state before the change.
+    /// Gets the optional state before the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("before")]
     public object? Before { get; init; }
 
     /// <summary>
-    /// Optional state after the change.
+    /// Gets the optional state after the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("after")]
     public object? After { get; init; }
 
     /// <summary>
-    /// Attributes with unknown values after the change.
+    /// Gets the Attributes with unknown values after the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("after_unknown")]
     public object? AfterUnknown { get; init; }
 
     /// <summary>
-    /// Sensitive values before the change.
+    /// Gets the Sensitive values before the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("before_sensitive")]
     public object? BeforeSensitive { get; init; }
 
     /// <summary>
-    /// Sensitive values after the change.
+    /// Gets the Sensitive values after the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("after_sensitive")]
     public object? AfterSensitive { get; init; }
 
     /// <summary>
-    /// Paths that require replacement due to the change.
+    /// Gets the Paths that require replacement due to the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("replace_paths")]
@@ -82,7 +82,7 @@ public record Change
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; init; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record for deserialization.
+    /// Initializes a new instance of the <see cref="Change"/> class for deserialization.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
@@ -112,7 +112,7 @@ public record Change
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record with only actions specified.
+    /// Initializes a new instance of the <see cref="Change"/> class with only actions specified.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
@@ -122,7 +122,7 @@ public record Change
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record with before/after state.
+    /// Initializes a new instance of the <see cref="Change"/> class with before/after state.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>

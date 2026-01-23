@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Performs normalization steps shared by all rendering flavors.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal static class CommonHtmlNormalization
 {
@@ -27,7 +27,7 @@ internal static class CommonHtmlNormalization
     /// <returns>HTML with canonical &lt;br/&gt; tags.</returns>
     private static string NormalizeBreakTags(string html)
     {
-        return Regex.Replace(html, "<br\\s*/?>", "<br/>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.Replace(html, "<br\\s*/?>", "<br/>", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ internal static class CommonHtmlNormalization
     /// <returns>HTML with canonical &lt;hr/&gt; tags.</returns>
     private static string NormalizeHorizontalRuleTags(string html)
     {
-        return Regex.Replace(html, "<hr\\s*/?>", "<hr/>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.Replace(html, "<hr\\s*/?>", "<hr/>", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>

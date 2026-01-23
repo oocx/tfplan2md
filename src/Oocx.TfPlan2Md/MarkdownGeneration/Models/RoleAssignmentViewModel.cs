@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
 /// Provides precomputed display data for the azurerm_role_assignment template.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class RoleAssignmentViewModel
 {
@@ -37,7 +37,7 @@ public sealed class RoleAssignmentViewModel
 
 /// <summary>
 /// Represents a formatted role assignment attribute for display.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 public sealed class RoleAssignmentAttributeViewModel
 {

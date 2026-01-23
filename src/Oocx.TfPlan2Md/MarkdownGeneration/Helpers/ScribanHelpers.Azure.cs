@@ -114,7 +114,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Formats an Azure scope for table display with semantic icons for resource and resource group names.
-    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+    /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     /// <param name="scope">Parsed scope information.</param>
     /// <returns>Formatted scope string with semantic icons.</returns>

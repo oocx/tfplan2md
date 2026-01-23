@@ -21,9 +21,9 @@ public class MarkdownRendererTests
     {
         ArgumentNullException.ThrowIfNull(markdown);
         var decoded = WebUtility.HtmlDecode(markdown);
-        var withoutTags = Regex.Replace(decoded, "<.*?>", string.Empty, RegexOptions.Singleline);
+        var withoutTags = Regex.Replace(decoded, "<.*?>", string.Empty, RegexOptions.Singleline, TimeSpan.FromSeconds(2));
         var withoutBackticks = withoutTags.Replace("`", string.Empty, StringComparison.Ordinal);
-        return Regex.Replace(withoutBackticks, "\\s+", " ", RegexOptions.Singleline).Trim();
+        return Regex.Replace(withoutBackticks, "\\s+", " ", RegexOptions.Singleline, TimeSpan.FromSeconds(2)).Trim();
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class MarkdownRendererTests
         // Pattern: look for <details...> or <div...> that contains resourceType and resourceName
         var pattern = $@"(?s)(<details[^>]*>|<div[^>]*>)\s*(?:<summary>)?[^<]*{Regex.Escape(resourceType)}\s+<b><code>{Regex.Escape(resourceName)}</code></b>(.*?)(</details>|</div>)";
 
-        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline);
+        var match = Regex.Match(markdown, pattern, RegexOptions.Singleline, TimeSpan.FromSeconds(2));
         match.Success.Should().BeTrue($"Resource section not found for {address}");
 
         return match.Value;
@@ -495,9 +495,9 @@ public class MarkdownRendererTests
 
         // Assert
         markdown.Should().Contain($"➕{Nbsp}azurerm_resource_group <b><code>main</code></b>")
-            .And.Contain($"➕{Nbsp}azurerm_storage_account <b><code>main</code></b>")
-            .And.Contain($"| ➕{Nbsp}Add | 2 |")
-            .And.Contain($"Module: root");
+            .And.Contain("➕" + Nbsp + "azurerm_storage_account <b><code>main</code></b>")
+            .And.Contain("| ➕" + Nbsp + "Add | 2 |")
+            .And.Contain("Module: root");
     }
 
     [Test]

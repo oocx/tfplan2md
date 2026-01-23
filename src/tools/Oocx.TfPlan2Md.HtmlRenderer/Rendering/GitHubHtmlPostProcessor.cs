@@ -4,14 +4,17 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Applies GitHub-specific sanitization and attribute alignment.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal static class GitHubHtmlPostProcessor
 {
     /// <summary>
     /// Matches inline style attributes so output mirrors GitHub sanitization rules.
     /// </summary>
-    private static readonly Regex StyleRegex = new("(\\s)style\\s*=\\s*\"[^\"]*\"|(\\s)style\\s*=\\s*'[^']*'", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    // MA0023: Uses numbered groups $1 and $2 in replacement - ExplicitCapture would break this
+#pragma warning disable MA0023
+    private static readonly Regex StyleRegex = new("(\\s)style\\s*=\\s*\"[^\"]*\"|(\\s)style\\s*=\\s*'[^']*'", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+#pragma warning restore MA0023
 
     /// <summary>
     /// Applies the GitHub rendering adjustments to the provided HTML fragment.
@@ -33,20 +36,24 @@ internal static class GitHubHtmlPostProcessor
     /// </summary>
     /// <param name="html">HTML fragment.</param>
     /// <returns>HTML with dir attributes on headings and paragraphs.</returns>
+    // MA0023: Uses numbered groups $1 and $2 - ExplicitCapture would break this
+#pragma warning disable MA0023
     private static string AddDirAuto(string html)
     {
         return Regex.Replace(html, "<(h[1-6]|p)(?=[\\s>])([^>]*)>", match =>
         {
             var tagName = match.Groups[1].Value;
             var attributes = match.Groups[2].Value;
-            if (Regex.IsMatch(attributes, "\\sdir=", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(attributes, "\\sdir=", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 return match.Value;
             }
 
             return $"<{tagName} dir=\"auto\"{attributes}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
     }
+#pragma warning restore MA0023
 
     /// <summary>
     /// Wraps tables with GitHub's accessibility helper and assigns role attributes.
@@ -63,18 +70,19 @@ internal static class GitHubHtmlPostProcessor
             }
 
             var attributes = match.Groups["attrs"].Value;
-            if (!Regex.IsMatch(attributes, "\\srole=", RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(attributes, "\\srole=", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 attributes = $"{attributes} role=\"table\"";
             }
 
-            if (!Regex.IsMatch(attributes, "\\stabindex=", RegexOptions.IgnoreCase))
+            if (!Regex.IsMatch(attributes, "\\stabindex=", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 attributes = $"{attributes} tabindex=\"0\"";
             }
 
             return $"<markdown-accessiblity-table data-catalyst=\"\"><table{attributes}>{match.Groups["body"].Value}</table></markdown-accessiblity-table>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -87,12 +95,15 @@ internal static class GitHubHtmlPostProcessor
         return Regex.Replace(html, "<code(?<attrs>[^>]*)>", match =>
         {
             var attributes = match.Groups["attrs"].Value;
-            if (Regex.IsMatch(attributes, "notranslate", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(attributes, "notranslate", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
             {
                 return match.Value;
             }
 
-            var classMatch = Regex.Match(attributes, "\\bclass\\s*=\\s*([\"'])(.*?)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            // MA0023: Nested pattern uses numbered groups $1 and $2 - ExplicitCapture would break this
+#pragma warning disable MA0023
+            var classMatch = Regex.Match(attributes, "\\bclass\\s*=\\s*([\"'])(.*?)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+#pragma warning restore MA0023
             if (classMatch.Success)
             {
                 var beforeClass = attributes[..classMatch.Index];
@@ -103,7 +114,8 @@ internal static class GitHubHtmlPostProcessor
             }
 
             return $"<code class=\"notranslate\"{attributes}>";
-        }, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        },
+        RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(2));
     }
 
     /// <summary>
@@ -111,10 +123,13 @@ internal static class GitHubHtmlPostProcessor
     /// </summary>
     /// <param name="html">HTML fragment.</param>
     /// <returns>HTML without heading ids.</returns>
+    // MA0023: Uses numbered groups $1, $2, $3 in replacement - ExplicitCapture would break this
+#pragma warning disable MA0023
     private static string RemoveHeadingIds(string html)
     {
-        return Regex.Replace(html, "<(h[1-6])(.*?)\\sid=\".*?\"(.*?)>", "<$1$2$3>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.Replace(html, "<(h[1-6])(.*?)\\sid=\".*?\"(.*?)>", "<$1$2$3>", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
+#pragma warning restore MA0023
 
     /// <summary>
     /// Strips style attributes from rendered HTML to mimic GitHub sanitization.
@@ -131,8 +146,11 @@ internal static class GitHubHtmlPostProcessor
     /// </summary>
     /// <param name="html">HTML fragment.</param>
     /// <returns>HTML with compact tag delimiters.</returns>
+    // MA0023: Uses numbered group $1 in replacement - ExplicitCapture would break this
+#pragma warning disable MA0023
     private static string CollapseDanglingTagWhitespace(string html)
     {
-        return Regex.Replace(html, "<(\\w+)\\s+>", "<$1>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        return Regex.Replace(html, "<(\\w+)\\s+>", "<$1>", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(1));
     }
+#pragma warning restore MA0023
 }

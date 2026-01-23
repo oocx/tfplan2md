@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Updates the coverage history file with the latest measurement.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed class CoverageHistoryWriter
 {
@@ -29,7 +29,7 @@ internal sealed class CoverageHistoryWriter
         }
 
         var document = LoadDocument(historyPath);
-        var existing = document.Entries.FirstOrDefault(item => string.Equals(item.CommitSha, entry.CommitSha, StringComparison.OrdinalIgnoreCase));
+        var existing = document.Entries.Find(item => string.Equals(item.CommitSha, entry.CommitSha, StringComparison.OrdinalIgnoreCase));
         if (existing is not null)
         {
             document.Entries.Remove(existing);

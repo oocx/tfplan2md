@@ -13,7 +13,7 @@ public static partial class ScribanHelpers
 {
     /// <summary>
     /// Builds the summary string for a set of large attributes.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md
+    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
     /// </summary>
     /// <param name="attributes">Collection of attribute change objects (ScriptArray) with name/before/after.</param>
     /// <returns>Summary string like "Large values: policy (3 lines, 2 changed)" or empty when none.</returns>
@@ -35,7 +35,7 @@ public static partial class ScribanHelpers
             var changedLines = CountChangedLines(before, after);
 
             var totalLabel = totalLines == 1 ? "line" : "lines";
-            var changedLabel = changedLines == 1 ? "changed" : "changed";
+            var changedLabel = changedLines == 1 ? "change" : "changes";
             parts.Add($"{attr.Name} ({totalLines} {totalLabel}, {changedLines} {changedLabel})");
         }
 

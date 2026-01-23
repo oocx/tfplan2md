@@ -9,25 +9,25 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer;
 
 /// <summary>
 /// Coordinates CLI parsing, validation, and initial input handling for the Terraform show approximation tool.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal sealed class TerraformShowRendererApp
 {
     /// <summary>
     /// Destination for standard output messages.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     private readonly TextWriter _output;
 
     /// <summary>
     /// Destination for error output messages.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     private readonly TextWriter _error;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TerraformShowRendererApp"/> class.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     /// <param name="output">Writer used for informational output.</param>
     /// <param name="error">Writer used for error output.</param>

@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer;
 
 /// <summary>
 /// Supplies version information for the Terraform show approximation tool.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal static class VersionProvider
 {

@@ -83,7 +83,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"MD012 violation - found consecutive blank lines:\n" +
+            "MD012 violation - found consecutive blank lines:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.MaxBlanks} blanks at line {v.Line}")));
     }
 
@@ -148,7 +148,7 @@ public class MarkdownInvariantTests
             var tables = document.Descendants<Table>().ToList();
 
             // Count expected tables by counting "| Attribute |" headers (1 per resource) + 1 summary
-            var expectedResourceTables = Regex.Matches(markdown, @"\| Attribute \|").Count;
+            var expectedResourceTables = Regex.Matches(markdown, @"\| Attribute \|", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
             var expectedSummaryTable = markdown.Contains("| Action |") ? 1 : 0;
             var expectedTotal = expectedResourceTables + expectedSummaryTable;
 
@@ -159,7 +159,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Some tables failed to parse (likely broken by blank lines):\n" +
+            "Some tables failed to parse (likely broken by blank lines):\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: expected {v.Expected} tables, parsed {v.Actual}")));
     }
 
@@ -171,7 +171,7 @@ public class MarkdownInvariantTests
     public void Invariant_NoBlankLinesBetweenTableRows_AllPlans()
     {
         var violations = new List<(string File, int Count)>();
-        var pattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)");
+        var pattern = new Regex(@"(?<=\|[^\n]*)\n[ \t]*\n(?=[ \t]*\|)", RegexOptions.None, TimeSpan.FromSeconds(2));
 
         foreach (var planPath in GetTestPlanPaths())
         {
@@ -185,7 +185,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Found blank lines between table rows:\n" +
+            "Found blank lines between table rows:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.Count} occurrences")));
     }
 
@@ -215,19 +215,16 @@ public class MarkdownInvariantTests
 
                 // Check if this line starts with | but doesn't end with |
                 // That would indicate a broken row (newline inside cell)
-                if (line.TrimStart().StartsWith('|') && !line.TrimEnd().EndsWith('|'))
+                // Exception: separator row like |---|---|
+                if (line.TrimStart().StartsWith('|') && !line.TrimEnd().EndsWith('|') && !Regex.IsMatch(line, @"^\|[-:\s|]+$", RegexOptions.None, TimeSpan.FromSeconds(1)))
                 {
-                    // Exception: separator row like |---|---|
-                    if (!Regex.IsMatch(line, @"^\|[-:\s|]+$"))
-                    {
-                        violations.Add((Path.GetFileName(planPath), i + 1));
-                    }
+                    violations.Add((Path.GetFileName(planPath), i + 1));
                 }
             }
         }
 
         violations.Should().BeEmpty(
-            $"Found potential raw newlines in table cells:\n" +
+            "Found potential raw newlines in table cells:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File} line {v.Line}")));
     }
 
@@ -289,7 +286,7 @@ public class MarkdownInvariantTests
                 var line = lines[i];
 
                 // Check for headings (# at start of line)
-                if (Regex.IsMatch(line, @"^#{1,6}\s"))
+                if (Regex.IsMatch(line, @"^#{1,6}\s", RegexOptions.None, TimeSpan.FromSeconds(1)))
                 {
                     // Check line before (except for first line)
                     if (i > 0 && !string.IsNullOrWhiteSpace(lines[i - 1]))
@@ -307,7 +304,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Headings must be surrounded by blank lines:\n" +
+            "Headings must be surrounded by blank lines:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File} line {v.Line}: {v.Issue}")));
     }
 
@@ -327,8 +324,8 @@ public class MarkdownInvariantTests
         {
             var markdown = RenderPlan(planPath);
 
-            var openTags = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>").Count;
-            var closeTags = Regex.Matches(markdown, @"</details>").Count;
+            var openTags = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+            var closeTags = Regex.Matches(markdown, @"</details>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
 
             if (openTags != closeTags)
             {
@@ -337,7 +334,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Unbalanced <details> tags:\n" +
+            "Unbalanced <details> tags:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.Open} open, {v.Close} close")));
     }
 
@@ -353,8 +350,8 @@ public class MarkdownInvariantTests
         {
             var markdown = RenderPlan(planPath);
 
-            var openTags = Regex.Matches(markdown, @"<summary>").Count;
-            var closeTags = Regex.Matches(markdown, @"</summary>").Count;
+            var openTags = Regex.Matches(markdown, @"<summary>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+            var closeTags = Regex.Matches(markdown, @"</summary>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
 
             if (openTags != closeTags)
             {
@@ -363,7 +360,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Unbalanced <summary> tags:\n" +
+            "Unbalanced <summary> tags:\n" +
             string.Join("\n", violations.Select(v => $"  {v.File}: {v.Open} open, {v.Close} close")));
     }
 
@@ -390,7 +387,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Plans missing '# Terraform Plan' heading:\n" +
+            "Plans missing '# Terraform Plan' heading:\n" +
             string.Join("\n", violations.Select(v => $"  {v}")));
     }
 
@@ -421,7 +418,7 @@ public class MarkdownInvariantTests
         }
 
         violations.Should().BeEmpty(
-            $"Non-empty plans missing '## Summary' heading:\n" +
+            "Non-empty plans missing '## Summary' heading:\n" +
             string.Join("\n", violations.Select(v => $"  {v}")));
     }
 

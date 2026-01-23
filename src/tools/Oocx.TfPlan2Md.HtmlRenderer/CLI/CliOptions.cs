@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.CLI;
 
 /// <summary>
 /// Represents parsed command-line options for the HTML renderer.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal sealed class CliOptions
 {

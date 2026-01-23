@@ -73,14 +73,14 @@ Update project documentation to guide developers on how to handle legitimate exc
 Break down the large `ScribanHelpers.AzApi.cs` (1,067 lines) into smaller, focused partial files.
 
 **Acceptance Criteria:**
-- [ ] Convert `ScribanHelpers` class in `ScribanHelpers.AzApi.cs` to `partial`.
-- [ ] Move resource-specific logic into separate files:
+- [x] Convert `ScribanHelpers` class in `ScribanHelpers.AzApi.cs` to `partial`.
+- [x] Move resource-specific logic into separate files:
   - `ScribanHelpers.AzApi.Resources.cs`
   - `ScribanHelpers.AzApi.Data.cs`
   - (Other splits as logical)
-- [ ] Ensure each resulting file is under 300 lines.
-- [ ] Remove corresponding baseline entries for this file.
-- [ ] Verify all tests pass.
+- [x] Ensure each resulting file is under 300 lines.
+- [x] Remove corresponding baseline entries for this file.
+- [x] Verify all tests pass.
 
 **Dependencies:** Task 2
 

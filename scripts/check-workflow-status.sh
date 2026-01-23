@@ -10,13 +10,14 @@ usage() {
   cat <<'USAGE'
 Usage:
   scripts/check-workflow-status.sh [--repo <owner/repo>] list [--branch <branch>] [--workflow <workflow-name>] [--limit <n>]
-  scripts/check-workflow-status.sh [--repo <owner/repo>] watch <run-id>
+  scripts/check-workflow-status.sh [--repo <owner/repo>] watch <run-id> [--quiet]
   scripts/check-workflow-status.sh [--repo <owner/repo>] trigger <workflow-file> [--field key=value ...]
   scripts/check-workflow-status.sh [--repo <owner/repo>] view <run-id>
 
 Commands:
   list      List workflow runs (default: all runs)
   watch     Watch a specific workflow run until completion
+            --quiet: Output only final status line: WORKFLOW: SUCCESS|FAILURE|CANCELLED (agent-friendly)
   trigger   Trigger a workflow with optional input fields
   view      View details of a specific workflow run
 
@@ -34,8 +35,11 @@ Examples:
   # List latest release workflow run
   scripts/check-workflow-status.sh --repo oocx/tfplan2md list --workflow release.yml --limit 1
 
-  # Watch a specific run
+  # Watch a specific run (verbose)
   scripts/check-workflow-status.sh --repo oocx/tfplan2md watch 12345678
+
+  # Watch a specific run (quiet, agent-friendly)
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md watch 12345678 --quiet
 
   # View run details
   scripts/check-workflow-status.sh --repo oocx/tfplan2md view 12345678
@@ -47,6 +51,7 @@ Notes:
   - All commands suppress interactive pagers (GH_PAGER=cat, GH_FORCE_TTY=false)
   - Designed for permanent approval in VS Code (single script vs multiple gh commands)
   - Use this instead of raw `gh run` commands to reduce approval friction
+  - Use --quiet flag for agent consumption to minimize token usage
 USAGE
 }
 
@@ -102,14 +107,56 @@ cmd_list() {
 }
 
 cmd_watch() {
-  if [[ $# -ne 1 ]]; then
+  local quiet=false
+  local run_id=""
+  
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --quiet)
+        quiet=true
+        shift
+        ;;
+      *)
+        if [[ -z "$run_id" ]]; then
+          run_id="$1"
+          shift
+        else
+          echo "Error: Unknown argument '$1' for watch command" >&2
+          usage
+          exit 1
+        fi
+        ;;
+    esac
+  done
+  
+  if [[ -z "$run_id" ]]; then
     echo "Error: watch command requires exactly one argument (run-id)" >&2
     usage
     exit 1
   fi
   
-  local run_id="$1"
-  gh_safe run watch "$run_id"
+  if [[ "$quiet" == "true" ]]; then
+    # Quiet mode: Run watch, capture output, and print only final status
+    local watch_output
+    watch_output=$(gh_safe run watch "$run_id" 2>&1) || true
+    
+    # Extract final status from the run
+    local run_status
+    run_status=$(gh_safe run view "$run_id" --json conclusion -q '.conclusion' 2>/dev/null || echo "UNKNOWN")
+    
+    if [[ "$run_status" == "success" ]]; then
+      echo "WORKFLOW: SUCCESS"
+    elif [[ "$run_status" == "failure" ]]; then
+      echo "WORKFLOW: FAILURE"
+    elif [[ "$run_status" == "cancelled" ]]; then
+      echo "WORKFLOW: CANCELLED"
+    else
+      echo "WORKFLOW: $run_status"
+    fi
+  else
+    # Normal mode: Pass through to gh run watch
+    gh_safe run watch "$run_id"
+  fi
 }
 
 cmd_trigger() {

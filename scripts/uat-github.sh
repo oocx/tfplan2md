@@ -6,12 +6,15 @@
 #   create <file> <test-description>   - Create a UAT PR with initial comment from <file>
 #                                         test-description: Detailed, resource-specific validation instructions
 #   comment <pr-number> <file> - Add a comment to PR from <file>
-#   poll <pr-number> - Poll for new comments and check for approval
+#   poll <pr-number> [--quiet] - Poll for new comments and check for approval
+#                                 --quiet: Output only STATUS: APPROVED|WAITING|CLOSED|ERROR (agent-friendly)
 #   cleanup <pr-number> - Close the PR after UAT completion
 #
 # Example:
 #   scripts/uat-github.sh create artifacts/report.md \
 #     "In module.security.azurerm_key_vault_secret.audit_policy, verify key_vault_id displays as 'Key Vault \`kv-name\` in resource group \`rg-name\`' instead of full /subscriptions/ path"
+#
+#   scripts/uat-github.sh poll 123 --quiet
 #
 # Environment:
 #   UAT_GITHUB_REPO - Target repository for UAT PRs (default: oocx/tfplan2md-uat)
@@ -166,14 +169,37 @@ cmd_comment() {
 }
 
 cmd_poll() {
-    local pr_number="${1:-}"
+    local pr_number=""
+    local quiet=false
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --quiet)
+                quiet=true
+                shift
+                ;;
+            *)
+                # First non-flag argument is the PR number
+                if [[ -z "$pr_number" ]]; then
+                    pr_number="$1"
+                    shift
+                else
+                    log_error "Unknown argument: $1"
+                    exit 1
+                fi
+                ;;
+        esac
+    done
     
     if [[ -z "$pr_number" ]]; then
-        log_error "Usage: $0 poll <pr-number>"
+        log_error "Usage: $0 poll <pr-number> [--quiet]"
         exit 1
     fi
     
-    log_info "Polling comments for PR #$pr_number in $UAT_GITHUB_REPO..."
+    if [[ "$quiet" != "true" ]]; then
+        log_info "Polling comments for PR #$pr_number in $UAT_GITHUB_REPO..."
+    fi
     
     # Get PR state (structured)
     local pr_state
@@ -184,8 +210,12 @@ cmd_poll() {
     fi
     
     if [[ "$pr_state" == "CLOSED" || "$pr_state" == "MERGED" ]]; then
-        echo -e "${GREEN}✓ PR CLOSED${NC}"
-        echo "PR has been closed by Maintainer. UAT passed."
+        if [[ "$quiet" == "true" ]]; then
+            echo "STATUS: CLOSED"
+        else
+            echo -e "${GREEN}✓ PR CLOSED${NC}"
+            echo "PR has been closed by Maintainer. UAT passed."
+        fi
         return 0
     fi
     
@@ -197,27 +227,37 @@ cmd_poll() {
             | select((.body // "") | test("(?i)(approved|passed|accept|lgtm)"))
             | .body' 2>/dev/null || true)
 
-    echo ""
-    echo "=== Recent Comments (JSON) ==="
-    # Show up to the last 3 comments (author + truncated body). Avoid parsing formatted text output.
-    PAGER=cat gh pr view "$pr_number" --repo "$UAT_GITHUB_REPO" --json comments -q '(
-            if (.comments | length) == 0 then
-                "(no comments)"
-            else
-                .comments[-3:][]
-                | "[\(.author.login // "unknown")]: \((.body // "") | gsub("\r"; "") | .[0:200])"
-            end
-        )' 2>/dev/null || echo "(failed to load comments)"
-    echo ""
+    if [[ "$quiet" != "true" ]]; then
+        echo ""
+        echo "=== Recent Comments (JSON) ==="
+        # Show up to the last 3 comments (author + truncated body). Avoid parsing formatted text output.
+        PAGER=cat gh pr view "$pr_number" --repo "$UAT_GITHUB_REPO" --json comments -q '(
+                if (.comments | length) == 0 then
+                    "(no comments)"
+                else
+                    .comments[-3:][]
+                    | "[\(.author.login // "unknown")]: \((.body // "") | gsub("\r"; "") | .[0:200])"
+                end
+            )' 2>/dev/null || echo "(failed to load comments)"
+        echo ""
+    fi
     
     if [[ -n "$approval_found" ]]; then
-        echo -e "${GREEN}✓ APPROVAL DETECTED${NC}"
-        echo "Approval keyword found in comments. UAT passed."
+        if [[ "$quiet" == "true" ]]; then
+            echo "STATUS: APPROVED"
+        else
+            echo -e "${GREEN}✓ APPROVAL DETECTED${NC}"
+            echo "Approval keyword found in comments. UAT passed."
+        fi
         return 0
     fi
     
-    echo -e "${YELLOW}⏳ AWAITING FEEDBACK${NC}"
-    echo "No approval detected yet. Continue polling or check GitHub UI."
+    if [[ "$quiet" == "true" ]]; then
+        echo "STATUS: WAITING"
+    else
+        echo -e "${YELLOW}⏳ AWAITING FEEDBACK${NC}"
+        echo "No approval detected yet. Continue polling or check GitHub UI."
+    fi
     return 1
 }
 
@@ -253,10 +293,11 @@ case "$action" in
         echo "Usage: $0 <action> [args]"
         echo ""
         echo "Actions:"
-        echo "  create <file>   - Create a UAT PR with initial comment from <file>"
-        echo "  comment <pr-number> <file> - Add a comment to PR from <file>"
-        echo "  poll <pr-number> - Poll for new comments and check for approval"
-        echo "  cleanup <pr-number> - Close the PR after UAT completion"
+        echo "  create <file> <test-description>  - Create a UAT PR with initial comment from <file>"
+        echo "  comment <pr-number> <file>        - Add a comment to PR from <file>"
+        echo "  poll <pr-number> [--quiet]        - Poll for new comments and check for approval"
+        echo "                                       --quiet: Output only STATUS: APPROVED|WAITING|CLOSED|ERROR"
+        echo "  cleanup <pr-number>               - Close the PR after UAT completion"
         exit 1
         ;;
 esac

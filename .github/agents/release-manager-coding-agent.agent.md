@@ -121,6 +121,7 @@ This project uses:
 - The CI pipeline builds and publishes the Docker image
 - **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 - **Workflow Status**: Use `scripts/check-workflow-status.sh` for all workflow operations (list, watch, trigger) instead of raw `gh run` commands to reduce approval friction.
+- **Agent-Friendly Output**: Use `--quiet` flag with `watch` command (e.g., `scripts/check-workflow-status.sh watch <run-id> --quiet`) to get minimal, parseable output (`WORKFLOW: SUCCESS|FAILURE|CANCELLED`) that reduces token usage and makes status checks faster.
 
 ## Workflow Completion Checklist
 
@@ -202,8 +203,12 @@ Before releasing, verify:
    # List latest run on main branch
    scripts/check-workflow-status.sh list --branch main --limit 1
    
-   # Watch the run until completion
-   scripts/check-workflow-status.sh watch <run-id>
+   # Watch the run (quiet mode for minimal output)
+   scripts/check-workflow-status.sh watch <run-id> --quiet
+   ```
+   **Expected output (quiet mode):**
+   ```
+   WORKFLOW: SUCCESS
    ```
    - Wait for CI pipeline to complete successfully
    - CI runs Versionize which creates the version tag
@@ -228,8 +233,12 @@ Before releasing, verify:
    # List latest release workflow run
    scripts/check-workflow-status.sh list --workflow release.yml --limit 1
    
-   # Watch the release run until completion
-   scripts/check-workflow-status.sh watch <release-run-id>
+   # Watch the release run (quiet mode for minimal output)
+   scripts/check-workflow-status.sh watch <release-run-id> --quiet
+   ```
+   **Expected output (quiet mode):**
+   ```
+   WORKFLOW: SUCCESS
    ```
    - Wait for release workflow to complete
    - If the release pipeline fails, hand off to Developer agent

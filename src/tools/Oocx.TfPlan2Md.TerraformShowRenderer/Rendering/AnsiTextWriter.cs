@@ -45,6 +45,10 @@ internal sealed class AnsiTextWriter : IDisposable
     // This allows WriteLine() (no-arg) to correctly determine whether the terminated line was empty.
     private bool _currentLineHasContent;
 
+    /// <summary>
+    /// Writes the specified text to the underlying writer.
+    /// </summary>
+    /// <param name="text">The text to write.</param>
     public void Write(string text)
     {
         _writer.Write(text);

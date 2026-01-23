@@ -106,6 +106,9 @@ public sealed class TerraformShowRendererRegressionTests
         TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, output);
     }
 
+    /// <summary>
+    /// Verifies that the rendered output does not contain consecutive empty lines.
+    /// </summary>
     [Test]
     public async Task Render_Plan1_NoColor_HasNoConsecutiveEmptyLines()
     {

@@ -143,3 +143,10 @@ using System.Diagnostics.CodeAnalysis;
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
     Target = "~T:Oocx.TfPlan2Md.Parsing.TfPlanJsonContext")]
+
+[assembly: SuppressMessage(
+    "Maintainability",
+    "CA1506:Avoid excessive class coupling",
+    Justification = "JSON source generation context required for AOT compilation; high coupling is inherent to infrastructure code.",
+    Scope = "type",
+    Target = "~T:Oocx.TfPlan2Md.Azure.AzureRoleDefinitionsJsonContext")]

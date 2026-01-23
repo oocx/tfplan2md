@@ -5,25 +5,25 @@ namespace Oocx.TfPlan2Md.HtmlRenderer;
 
 /// <summary>
 /// Coordinates CLI parsing, validation, and file IO for the HTML renderer tool.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal sealed class HtmlRendererApp
 {
     /// <summary>
     /// Holds the output target for informational messages.
-    /// Related feature: docs/features/027-markdown-html-rendering/specification.md
+    /// Related feature: docs/features/027-markdown-html-rendering/specification.md.
     /// </summary>
     private readonly TextWriter _output;
 
     /// <summary>
     /// Holds the output target for error messages.
-    /// Related feature: docs/features/027-markdown-html-rendering/specification.md
+    /// Related feature: docs/features/027-markdown-html-rendering/specification.md.
     /// </summary>
     private readonly TextWriter _error;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmlRendererApp"/> class.
-    /// Related feature: docs/features/027-markdown-html-rendering/specification.md
+    /// Related feature: docs/features/027-markdown-html-rendering/specification.md.
     /// </summary>
     /// <param name="output">Destination for informational messages.</param>
     /// <param name="error">Destination for error messages.</param>
@@ -36,7 +36,7 @@ internal sealed class HtmlRendererApp
 
     /// <summary>
     /// Parses CLI arguments, validates inputs, and writes rendered output files.
-    /// Related feature: docs/features/027-markdown-html-rendering/specification.md
+    /// Related feature: docs/features/027-markdown-html-rendering/specification.md.
     /// </summary>
     /// <param name="args">Raw command-line arguments.</param>
     /// <returns>A <see cref="Task"/> containing the process exit code.</returns>

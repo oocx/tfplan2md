@@ -11,7 +11,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// <summary>
 /// Tests for the azuredevops_variable_group Scriban template.
 /// Verifies template structure, table layouts, and proper handling of different operations.
-/// Related feature: docs/features/039-azdo-variable-group-template
+/// Related feature: docs/features/039-azdo-variable-group-template.
 /// </summary>
 public class VariableGroupTemplateTests
 {

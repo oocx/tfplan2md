@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.Tests.Assertions;
 
 /// <summary>
 /// Assertion helpers for producing actionable diffs when comparing multi-line text.
-/// Related feature: docs/features/030-terraform-show-approximation/
+/// Related feature: docs/features/030-terraform-show-approximation/.
 /// </summary>
 internal static class TextDiffAssert
 {

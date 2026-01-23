@@ -177,6 +177,7 @@ public partial class TemplateArchitectureTests
     /// Documents the current line counts for all templates.
     /// This test always passes but provides visibility into template sizes.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
     [Test]
     public async Task Templates_LineCountReport()
     {

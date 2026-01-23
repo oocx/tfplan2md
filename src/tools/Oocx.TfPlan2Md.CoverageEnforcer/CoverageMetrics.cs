@@ -2,11 +2,12 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Represents line and branch coverage percentages extracted from a Cobertura report.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed record CoverageMetrics
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="CoverageMetrics"/> class.
     /// Initializes a new instance of the <see cref="CoverageMetrics"/> record.
     /// </summary>
     /// <param name="linePercentage">Line coverage percentage in the 0-100 range.</param>

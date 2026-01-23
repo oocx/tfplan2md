@@ -6,7 +6,7 @@ using Oocx.TfPlan2Md.Parsing;
 
 namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
-/// <summary>Renders before/after differences in a Terraform show-like format. Related feature: docs/features/030-terraform-show-approximation/specification.md</summary>
+/// <summary>Renders before/after differences in a Terraform show-like format. Related feature: docs/features/030-terraform-show-approximation/specification.md.</summary>
 internal sealed partial class DiffRenderer
 {
     /// <summary>Standard Terraform indentation spacing.</summary>
@@ -20,7 +20,6 @@ internal sealed partial class DiffRenderer
     /// <param name="change">Resource change data from the plan.</param>
     /// <param name="action">Effective resource action.</param>
     /// <param name="baseIndent">Indentation used for the resource block.</param>
-    /// <returns>Nothing.</returns>
     public void RenderAttributes(AnsiTextWriter writer, ResourceChange change, ResourceAction action, string baseIndent)
     {
         var indent = baseIndent + Indent + Indent;
@@ -60,7 +59,6 @@ internal sealed partial class DiffRenderer
     /// <param name="indent">Indentation to use for nested attributes.</param>
     /// <param name="marker">Change marker to display (e.g., <c>+</c> or <c>&lt;=</c>).</param>
     /// <param name="style">ANSI style associated with the marker.</param>
-    /// <returns>Nothing.</returns>
     private void RenderAdd(AnsiTextWriter writer, JsonElement? after, JsonElement? unknown, JsonElement? sensitive, string indent, string marker, AnsiStyle style)
     {
         if (after is not { ValueKind: JsonValueKind.Object })
@@ -105,7 +103,6 @@ internal sealed partial class DiffRenderer
     /// <param name="writer">Target writer that applies ANSI styling.</param>
     /// <param name="before">State before the change.</param>
     /// <param name="indent">Indentation to use for nested attributes.</param>
-    /// <returns>Nothing.</returns>
     private void RenderRemove(AnsiTextWriter writer, JsonElement? before, string indent, JsonElement? sensitive)
     {
         if (before is not { ValueKind: JsonValueKind.Object })
@@ -184,7 +181,6 @@ internal sealed partial class DiffRenderer
     /// <param name="indent">Indentation to use for nested attributes.</param>
     /// <param name="replacePaths">Paths that force replacement.</param>
     /// <param name="action">Resource action (Update or Replace).</param>
-    /// <returns>Nothing.</returns>
     private void RenderUpdate(AnsiTextWriter writer, JsonElement? before, JsonElement? after, JsonElement? unknown, JsonElement? sensitive, string indent, HashSet<string> replacePaths, ResourceAction action)
     {
         var beforeObj = before is { ValueKind: JsonValueKind.Object } ? before : null;

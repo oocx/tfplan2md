@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
-/// <summary>Handles array-level diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md</summary>
+/// <summary>Handles array-level diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md.</summary>
 internal sealed partial class DiffRenderer
 {
     /// <summary>Renders added array items while preserving Terraform ordering.</summary>
@@ -17,7 +17,6 @@ internal sealed partial class DiffRenderer
     /// <param name="unknown">Unknown value map from <c>after_unknown</c>.</param>
     /// <param name="sensitive">Sensitive value map from <c>after_sensitive</c>.</param>
     /// <param name="path">Current array path for lookups.</param>
-    /// <returns>Nothing.</returns>
     private void RenderAddedArrayItem(AnsiTextWriter writer, JsonElement element, string indent, string marker, AnsiStyle style, JsonElement? unknown, JsonElement? sensitive, List<string> path)
     {
         if (IsSensitivePath(sensitive, path))
@@ -83,7 +82,6 @@ internal sealed partial class DiffRenderer
     /// <param name="element">Array element to render.</param>
     /// <param name="indent">Indentation for current depth.</param>
     /// <param name="path">Current array path for lookups.</param>
-    /// <returns>Nothing.</returns>
     private void RenderRemovedArrayItem(AnsiTextWriter writer, JsonElement element, string indent, JsonElement? sensitive, List<string> path)
     {
         switch (element.ValueKind)
@@ -136,7 +134,6 @@ internal sealed partial class DiffRenderer
     /// <param name="unknown">Unknown value map from <c>after_unknown</c>.</param>
     /// <param name="sensitive">Sensitive value map from <c>after_sensitive</c>.</param>
     /// <param name="replacePaths">Paths that force replacement.</param>
-    /// <returns>Nothing.</returns>
     private void RenderUpdatedArrayItem(AnsiTextWriter writer, JsonElement before, JsonElement after, string indent, List<string> path, JsonElement? unknown, JsonElement? sensitive, HashSet<string> replacePaths)
     {
         var replacement = replacePaths.Contains(FormatPath(path));

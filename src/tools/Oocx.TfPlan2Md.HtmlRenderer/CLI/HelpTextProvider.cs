@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.CLI;
 
 /// <summary>
 /// Provides usage information for the HTML renderer CLI.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal static class HelpTextProvider
 {

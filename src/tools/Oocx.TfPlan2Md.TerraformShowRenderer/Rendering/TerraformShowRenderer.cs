@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
 /// <summary>
 /// Produces Terraform show-like text output from parsed plan data.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal sealed class TerraformShowRenderer
 {
@@ -485,7 +485,7 @@ internal sealed class TerraformShowRenderer
 
 /// <summary>
 /// Represents the normalized action applied to a resource change.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal enum ResourceAction
 {

@@ -147,7 +147,7 @@ public class MarkdownSnapshotTests
     /// To update snapshots after intentional changes:
     /// 1. Delete the old snapshot file
     /// 2. Run the test (it will create a new snapshot)
-    /// 3. Review and commit the new snapshot
+    /// 3. Review and commit the new snapshot.
     /// </remarks>
     private void AssertMatchesSnapshot(string snapshotName, string actual)
     {

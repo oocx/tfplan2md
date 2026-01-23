@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.CLI;
 
 /// <summary>
 /// Represents an error encountered while parsing CLI arguments.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 // SonarAnalyzer S3871: Exception is intentionally internal
 // Justification: CLI exception used only within this tool, not exposed in public API

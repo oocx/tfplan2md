@@ -34,6 +34,7 @@ public class TemplateIsolationTests
     private readonly MarkdownPipeline _pipeline;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="TemplateIsolationTests"/> class.
     /// Initializes the test class with a Markdig pipeline.
     /// </summary>
     public TemplateIsolationTests()

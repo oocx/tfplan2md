@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
-/// <summary>Utility helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md</summary>
+/// <summary>Utility helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md.</summary>
 internal sealed partial class DiffRenderer
 {
     /// <summary>
@@ -50,7 +50,6 @@ internal sealed partial class DiffRenderer
     /// <param name="value">Rendered attribute value.</param>
     /// <param name="appendNull">Whether to append the Terraform <c>-> null</c> suffix.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteScalarLine(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string value, bool appendNull = false, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
@@ -98,7 +97,6 @@ internal sealed partial class DiffRenderer
     /// <param name="before">Value before the change.</param>
     /// <param name="after">Value after the change.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
-    /// <returns>Nothing.</returns>
     private void WriteArrowLine(AnsiTextWriter writer, string indent, string name, JsonElement before, JsonElement after, bool appendReplacement, int nameWidth = 0)
     {
         writer.Write(indent);
@@ -131,7 +129,6 @@ internal sealed partial class DiffRenderer
     /// <param name="name">Attribute or collection name.</param>
     /// <param name="symbol">Container symbol, such as <c>{</c> or <c>[</c>.</param>
     /// <param name="appendReplacement">Whether to append the replacement comment.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteContainerOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name, string symbol, bool appendReplacement = false, int nameWidth = 0)
     {
         writer.Write(indent);
@@ -157,7 +154,6 @@ internal sealed partial class DiffRenderer
     /// <summary>Writes closing braces for object containers.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteClosingBrace(AnsiTextWriter writer, string indent)
     {
         writer.Write(indent);
@@ -167,7 +163,6 @@ internal sealed partial class DiffRenderer
     /// <summary>Writes closing brackets for array containers.</summary>
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteClosingBracket(AnsiTextWriter writer, string indent)
     {
         writer.Write(indent);
@@ -182,7 +177,6 @@ internal sealed partial class DiffRenderer
     /// <param name="marker">Change marker to prefix the line.</param>
     /// <param name="style">ANSI style associated with the marker.</param>
     /// <param name="name">Block name.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteBlockOpening(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
     {
         writer.Write(indent);
@@ -198,7 +192,6 @@ internal sealed partial class DiffRenderer
     /// <param name="indent">Indentation for the current depth.</param>
     /// <param name="count">Number of unchanged attributes hidden.</param>
     /// <param name="itemType">Type of items ("attributes", "elements", or "blocks").</param>
-    /// <returns>Nothing.</returns>
     private static void WriteUnchangedComment(AnsiTextWriter writer, string indent, int count, string itemType = "attributes")
     {
         writer.Write(indent);
@@ -212,7 +205,6 @@ internal sealed partial class DiffRenderer
     /// <param name="writer">Target writer for diff output.</param>
     /// <param name="indent">Indentation for the current depth.</param>
     /// <param name="name">Optional attribute name for the placeholder.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteSensitivePlaceholder(AnsiTextWriter writer, string indent, string? name)
     {
         if (!string.IsNullOrWhiteSpace(name))
@@ -239,7 +231,6 @@ internal sealed partial class DiffRenderer
     /// <param name="marker">Marker to display (<c>+</c>, <c>-</c>, or <c>~</c>).</param>
     /// <param name="style">ANSI style for the marker.</param>
     /// <param name="name">Block name.</param>
-    /// <returns>Nothing.</returns>
     private static void WriteSensitiveBlock(AnsiTextWriter writer, string indent, string marker, AnsiStyle style, string name)
     {
         writer.Write(indent);

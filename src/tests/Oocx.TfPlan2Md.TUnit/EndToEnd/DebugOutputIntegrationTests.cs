@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.TUnit.EndToEnd;
 /// <summary>
 /// End-to-end integration tests for the debug output feature.
 /// Related feature: docs/features/038-debug-output/
-/// Test cases: TC-10, TC-11
+/// Test cases: TC-10, TC-11.
 /// </summary>
 [Category("Integration")]
 public class DebugOutputIntegrationTests
@@ -16,6 +16,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-10: Without --debug flag, no debug section appears in output.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
     [Test]
     public async Task WithoutDebugFlag_NoDebugSection()
     {
@@ -49,6 +50,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-11: With --debug flag, debug section is appended to report.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
     [Test]
     public async Task WithDebugFlag_DebugSectionAppended()
     {
@@ -99,6 +101,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-11 (extended): Verify debug section contains template resolution details.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
     [Test]
     public async Task WithDebugFlag_TemplateResolutionRecorded()
     {
@@ -138,6 +141,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-11 (extended): Verify debug section contains failed principal resolution details.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
     [Test]
     public async Task WithDebugFlag_FailedPrincipalResolutionsRecorded()
     {
@@ -179,6 +183,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-10 (regression): Verify existing tests still pass - main report unchanged without debug.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
     [Test]
     public async Task WithoutDebugFlag_ReportContentUnchanged()
     {

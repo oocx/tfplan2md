@@ -2,11 +2,12 @@ namespace Oocx.TfPlan2Md.CoverageEnforcer;
 
 /// <summary>
 /// Captures the results of evaluating coverage metrics against thresholds.
-/// Related feature: docs/features/043-code-coverage-ci/specification.md
+/// Related feature: docs/features/043-code-coverage-ci/specification.md.
 /// </summary>
 internal sealed record CoverageEvaluation
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="CoverageEvaluation"/> class.
     /// Initializes a new instance of the <see cref="CoverageEvaluation"/> record.
     /// </summary>
     /// <param name="metrics">Measured coverage metrics.</param>

@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Integration tests for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/test-plan.md
+/// Related feature: docs/features/040-azapi-resource-template/test-plan.md.
 /// </summary>
 public class AzapiResourceTemplateTests
 {

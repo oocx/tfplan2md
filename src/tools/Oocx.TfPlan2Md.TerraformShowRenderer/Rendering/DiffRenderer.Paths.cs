@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
-/// <summary>Path and comparison helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md</summary>
+/// <summary>Path and comparison helpers for diff rendering. Related feature: docs/features/030-terraform-show-approximation/specification.md.</summary>
 internal sealed partial class DiffRenderer
 {
     /// <summary>Normalizes Terraform replacement paths to a lookup set.</summary>

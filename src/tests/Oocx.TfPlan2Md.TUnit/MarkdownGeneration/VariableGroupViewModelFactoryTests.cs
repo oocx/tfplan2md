@@ -13,7 +13,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// Tests for <see cref="VariableGroupViewModelFactory"/>.
 /// Verifies factory correctly builds ViewModels from Terraform plan data,
 /// including semantic diffing, secret masking, and large value detection.
-/// Related feature: docs/features/039-azdo-variable-group-template/specification.md
+/// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
 /// </summary>
 public class VariableGroupViewModelFactoryTests
 {

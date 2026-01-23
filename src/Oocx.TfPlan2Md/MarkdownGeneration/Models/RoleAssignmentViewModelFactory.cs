@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using Oocx.TfPlan2Md.Azure;
@@ -175,6 +176,10 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Formats a role assignment attribute value for display.
     /// </summary>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     private static string? FormatRoleValue(
         string attrName,
         JsonElement? state,

@@ -444,8 +444,10 @@ Tests use **TUnit** with **AwesomeAssertions** for fluent, readable assertions.
 
 This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git hooks:
 
-- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build`
+- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build` (enforces code style and quality metrics)
 - **commit-msg**: Validates commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format
+
+**Code quality checks:** The build enforces cyclomatic complexity (≤15), maintainability index (≥20), and line length (≤160 characters). See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ### Docker Build
 

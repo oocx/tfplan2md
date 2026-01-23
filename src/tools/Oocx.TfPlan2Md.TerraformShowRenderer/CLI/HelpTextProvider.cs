@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.CLI;
 
 /// <summary>
 /// Provides usage text for the Terraform show approximation CLI.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal static class HelpTextProvider
 {

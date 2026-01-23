@@ -34,6 +34,7 @@ public class MarkdownFuzzTests
     private readonly Random _random = new(42); // Fixed seed for reproducibility
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="MarkdownFuzzTests"/> class.
     /// Initializes the test class with a Markdig pipeline.
     /// </summary>
     public MarkdownFuzzTests()

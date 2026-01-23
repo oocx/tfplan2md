@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.CLI;
 
 /// <summary>
 /// Represents CLI parsing failures for the Terraform show approximation tool.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 // SonarAnalyzer S3871: Exception is intentionally internal
 // Justification: CLI exception used only within this tool, not exposed in public API

@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.Tests.TestData;
 
 /// <summary>
 /// Provides deterministic metadata values for snapshot and markdown rendering tests.
-/// Related feature: docs/features/029-report-presentation-enhancements/specification.md
+/// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
 /// </summary>
 internal static class TestMetadataProvider
 {
@@ -15,7 +15,7 @@ internal static class TestMetadataProvider
     internal static readonly ReportMetadata SnapshotMetadata = new("2.0.0-test", "abc1234", DateTimeOffset.Parse("2026-01-01T00:00:00Z", CultureInfo.InvariantCulture));
 
     /// <summary>
-    /// Metadata provider that always returns <see cref="SnapshotMetadata"/>.
+    /// Gets metadata provider that always returns <see cref="SnapshotMetadata"/>.
     /// </summary>
     internal static IMetadataProvider Instance { get; } = new FixedMetadataProvider(SnapshotMetadata);
 

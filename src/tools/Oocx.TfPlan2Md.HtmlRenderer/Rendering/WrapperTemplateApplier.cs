@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Applies wrapper templates by inserting rendered HTML fragments into a <c>{{content}}</c> placeholder.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal sealed class WrapperTemplateApplier
 {

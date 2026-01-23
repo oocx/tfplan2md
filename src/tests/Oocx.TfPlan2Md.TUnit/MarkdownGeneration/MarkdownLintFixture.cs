@@ -20,18 +20,19 @@ public class MarkdownLintFixture
     private const string MarkdownLintImage = "davidanson/markdownlint-cli2:v0.20.0";
 
     /// <summary>
-    /// Gets whether Docker is available on the current system.
+    /// Gets a value indicating whether gets whether Docker is available on the current system.
     /// </summary>
     public bool IsDockerAvailable { get; private set; }
 
     /// <summary>
-    /// Gets whether the markdownlint image was successfully pulled.
+    /// Gets a value indicating whether gets whether the markdownlint image was successfully pulled.
     /// </summary>
     public bool ImageReady { get; private set; }
 
     /// <summary>
     /// Initializes the fixture by checking Docker availability and pulling the image.
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
     public async Task InitializeAsync()
     {
         IsDockerAvailable = await CheckDockerAvailableAsync();
@@ -46,6 +47,7 @@ public class MarkdownLintFixture
     /// <summary>
     /// Cleans up resources (no-op for this fixture).
     /// </summary>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
     public Task DisposeAsync() => Task.CompletedTask;
 
     /// <summary>
@@ -188,7 +190,7 @@ public record MarkdownLintResult(
     IReadOnlyList<MarkdownLintViolation> Violations)
 {
     /// <summary>
-    /// Gets whether the markdown passed all linting rules.
+    /// Gets a value indicating whether gets whether the markdown passed all linting rules.
     /// </summary>
     public bool IsValid => ExitCode == 0 && Violations.Count == 0;
 }

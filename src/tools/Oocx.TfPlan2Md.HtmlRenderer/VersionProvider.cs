@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer;
 
 /// <summary>
 /// Supplies version information for the HTML renderer tool.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal static class VersionProvider
 {

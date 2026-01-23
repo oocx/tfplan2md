@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Applies GitHub-specific sanitization and attribute alignment.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal static class GitHubHtmlPostProcessor
 {

@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.Parsing;
 
 /// <summary>
 /// Coverage tests for ReplacePathsConverter behavior.
-/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md
+/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
 /// </summary>
 public class ReplacePathsConverterTests
 {

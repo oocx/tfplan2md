@@ -18,7 +18,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures legend and header are rendered with ANSI styling enabled.
     /// Related acceptance: Task 2 legend and header.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_WithColors_WritesLegendAndHeader()
     {
@@ -37,7 +37,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures legend and header render without ANSI escape sequences when color is suppressed.
     /// Related acceptance: Task 2 no-color flag.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_NoColor_OmitsAnsiSequences()
     {
@@ -55,7 +55,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures resource headers and block markers render for create actions without color noise.
     /// Related acceptance: Task 3 action mapping.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_CreateResource_WritesHeaderAndMarker()
     {
@@ -74,7 +74,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures delete actions are emphasized in red and bold.
     /// Related acceptance: Task 3 action styling.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_DeleteResource_UsesRedBoldPhrase()
     {
@@ -94,7 +94,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures replace actions show the combined marker and red bold keyword.
     /// Related acceptance: Task 3 replace mapping.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_ReplaceResource_ShowsReplacementMarker()
     {
@@ -115,7 +115,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures read actions use the cyan marker and data keyword.
     /// Related acceptance: Task 3 read mapping.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_ReadAction_UsesDataKeywordAndCyanMarker()
     {
@@ -134,7 +134,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures action reasons are rendered when supplied.
     /// Related acceptance: Task 3 action reasons.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_ActionReason_RendersSecondHeaderLine()
     {
@@ -153,7 +153,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures unknown values render the known-after-apply placeholder.
     /// Related acceptance: Task 4 after_unknown handling.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_CreateUnknown_RendersKnownAfterApply()
     {
@@ -172,7 +172,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures sensitive values are hidden.
     /// Related acceptance: Task 4 sensitive handling.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_SensitiveValue_RendersPlaceholder()
     {
@@ -191,7 +191,7 @@ public sealed class TerraformShowRendererTests
     /// Ensures unchanged attributes emit a hidden count comment on update.
     /// Related acceptance: Task 4 unchanged comment.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Update_ShowsHiddenUnchangedCount()
     {

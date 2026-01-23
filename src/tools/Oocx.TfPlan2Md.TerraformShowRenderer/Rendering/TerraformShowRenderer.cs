@@ -22,6 +22,7 @@ internal sealed class TerraformShowRenderer
     /// </summary>
     /// <param name="plan">Parsed Terraform plan.</param>
     /// <param name="suppressColor">Determines whether ANSI sequences are omitted.</param>
+    /// <param name="outputChanges">Optional output changes element from terraform show -json output.</param>
     /// <returns>Rendered text approximating terraform show output.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="plan"/> is null.</exception>
     public string Render(TerraformPlan plan, bool suppressColor, JsonElement? outputChanges = null)

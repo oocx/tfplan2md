@@ -17,7 +17,7 @@ public sealed class TextDiffAssertTests
     /// <summary>
     /// Ensures the failure message includes the first differing line and column.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task EqualIgnoringLeadingWhitespace_WhenDifferent_ReportsLineAndColumn()
     {
@@ -44,7 +44,7 @@ public sealed class TextDiffAssertTests
     /// <summary>
     /// Ensures the failure message clearly indicates when the actual output has extra lines.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task EqualIgnoringLeadingWhitespace_WhenActualHasExtraLines_ReportsMismatch()
     {
@@ -71,7 +71,7 @@ public sealed class TextDiffAssertTests
     /// <summary>
     /// Ensures trailing whitespace differences are explained via codepoint output.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task EqualIgnoringLeadingWhitespace_WhenTrailingSpaceDiffers_ShowsCodepoints()
     {

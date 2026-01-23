@@ -16,7 +16,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// TC-03: Empty diagnostic context generates appropriate output.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_EmptyDiagnostics_ReturnsHeaderWithNoData()
     {
@@ -34,7 +34,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// TC-04: Full diagnostic context generates correctly formatted markdown.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_WithAllDiagnostics_ReturnsFormattedMarkdown()
     {
@@ -86,7 +86,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// TC-15: Failed principal resolutions are formatted correctly.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_FailedResolutions_FormatsCorrectly()
     {
@@ -115,7 +115,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// TC-16: Template resolutions are formatted correctly.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_TemplateResolutions_FormatsCorrectly()
     {
@@ -143,7 +143,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// TC-20: No principal mapping file provided is handled gracefully.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_NoPrincipalMappingFile_OmitsPrincipalSection()
     {
@@ -164,7 +164,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// Test that principal mapping load failure is reported correctly.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_PrincipalMappingLoadFailure_ShowsFailureMessage()
     {
@@ -187,7 +187,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// Test that duplicate resource types in template resolutions are deduplicated.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_DuplicateResourceTypes_ShowsOnlyFirst()
     {
@@ -212,7 +212,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// Test that principal type counts are sorted alphabetically.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_PrincipalTypeCounts_AreSortedAlphabetically()
     {
@@ -243,7 +243,7 @@ public class DiagnosticContextTests
     /// <summary>
     /// Test singular vs plural for failed principal count.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_SingleFailedResolution_UsesSingularForm()
     {
@@ -270,7 +270,7 @@ public class DiagnosticContextTests
     /// Test that enhanced file system diagnostics are included when file doesn't exist.
     /// Related to issue 042: Enhanced principal loading debug context.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_PrincipalMappingFileNotFound_ShowsDetailedDiagnostics()
     {
@@ -304,7 +304,7 @@ public class DiagnosticContextTests
     /// Test that JSON parse errors show line and column information.
     /// Related to issue 042: Enhanced principal loading debug context.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_JsonParseError_ShowsLineAndColumn()
     {
@@ -334,7 +334,7 @@ public class DiagnosticContextTests
     /// Test that directory not found shows parent directory status.
     /// Related to issue 042: Enhanced principal loading debug context.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_DirectoryNotFound_ShowsDirectoryDiagnostics()
     {
@@ -364,7 +364,7 @@ public class DiagnosticContextTests
     /// Test that Docker volume mount guidance is included in error output.
     /// Related to issue 042: Enhanced principal loading debug context.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GenerateMarkdownSection_FileNotFound_IncludesDockerGuidance()
     {

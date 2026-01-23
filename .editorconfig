@@ -22,6 +22,48 @@ indent_size = 2
 
 # Test files - Relax some analyzer rules  
 [{src/tests/**/*.cs,tests/**/*.cs}]
+# SA1600: XML documentation not required for test methods
+dotnet_diagnostic.SA1600.severity = none
+# SA1601: XML documentation not required for test partial elements
+dotnet_diagnostic.SA1601.severity = none
+# SA1602: XML documentation not required for test enumerations
+dotnet_diagnostic.SA1602.severity = none
+# SA1611: XML documentation parameters not required for test methods
+dotnet_diagnostic.SA1611.severity = none
+# SA1615: XML documentation return values not required for test methods
+dotnet_diagnostic.SA1615.severity = none
+# SA1616: XML documentation return values not required for test methods
+dotnet_diagnostic.SA1616.severity = none
+# SA1618: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1618.severity = none
+# SA1619: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1619.severity = none
+# SA1620: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1620.severity = none
+# SA1621: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1621.severity = none
+# SA1622: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1622.severity = none
+# SA1623: Property documentation not required for tests
+dotnet_diagnostic.SA1623.severity = none
+# SA1624: Property documentation not required for tests
+dotnet_diagnostic.SA1624.severity = none
+# SA1625: Documentation not required for copy-paste test variations
+dotnet_diagnostic.SA1625.severity = none
+# SA1626: Documentation not required for copy-paste test variations
+dotnet_diagnostic.SA1626.severity = none
+# SA1627: Documentation not required for test code
+dotnet_diagnostic.SA1627.severity = none
+# SA1629: Documentation not required for test code
+dotnet_diagnostic.SA1629.severity = none
+# SA1633: File headers not required for test files
+dotnet_diagnostic.SA1633.severity = none
+# SA1648: Documentation value not required for tests
+dotnet_diagnostic.SA1648.severity = none
+# SA1649: File name/type mismatch acceptable in tests
+dotnet_diagnostic.SA1649.severity = none
+# SA1651: Placeholder elements not allowed (but tests may use them for brevity)
+dotnet_diagnostic.SA1651.severity = none
 # S112: Generic exceptions acceptable in test code
 dotnet_diagnostic.S112.severity = suggestion
 # S1066: Nested if statements acceptable in test assertions

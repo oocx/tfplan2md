@@ -13,7 +13,7 @@ public sealed class AnsiTextWriterTests
     /// Ensures styled writes include start and reset escape sequences.
     /// Related acceptance: Task 2 ANSI support.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WriteStyled_WithGreen_WritesAnsiSequences()
     {
@@ -33,7 +33,7 @@ public sealed class AnsiTextWriterTests
     /// Ensures multiple styles are emitted together and reset once.
     /// Related acceptance: Task 2 ANSI support.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WriteStyled_WithBoldAndRed_EmitsBothStyles()
     {
@@ -53,7 +53,7 @@ public sealed class AnsiTextWriterTests
     /// Ensures ANSI escape sequences are suppressed when color is disabled.
     /// Related acceptance: Task 2 no-color flag.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WriteStyled_NoColor_OmitsAnsiSequences()
     {
@@ -71,7 +71,7 @@ public sealed class AnsiTextWriterTests
     /// <summary>
     /// Verifies that WriteLineIfNotBlank prevents duplicate consecutive blank lines.
     /// </summary>
-    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous unit test.</placeholder></returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WriteLineIfNotBlank_PreventsDuplicateBlankLines()
     {

@@ -96,8 +96,11 @@ Split `ReportModel.cs` (774 lines) into separate class/record files.
 **Acceptance Criteria:**
 - [x] Extract logical entities/records into their own files.
 - [x] Target file size: under 300 lines per file.
-- [x] Remove corresponding baseline entries for this file.
+- [x] Introduce factory registry pattern to reduce class coupling (from 50 to 44 types).
+- [ ] Remove corresponding baseline entries for this file (still exceeds CA1506 threshold of 21 types).
 - [x] Verify all tests pass.
+
+**Status:** Partially complete. File split achieved line count targets and reduced coupling significantly, but ReportModelBuilder still couples with 44 types (threshold: 21). Additional refactoring needed to extract more responsibilities before suppression can be removed.
 
 **Dependencies:** Task 2
 

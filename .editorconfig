@@ -91,6 +91,13 @@ dotnet_diagnostic.S6603.severity = suggestion
 # S6605: Collection-specific methods not required in tests
 dotnet_diagnostic.S6605.severity = suggestion
 
+# CA1502: Avoid excessive complexity not enforced in tests
+dotnet_diagnostic.CA1502.severity = none
+# CA1505: Avoid unmaintainable code not enforced in tests
+dotnet_diagnostic.CA1505.severity = none
+# CA1506: Avoid excessive class coupling not enforced in tests
+dotnet_diagnostic.CA1506.severity = none
+
 # Markdown files
 [*.md]
 indent_size = 2
@@ -105,6 +112,8 @@ indent_size = 2
 
 # C# files
 [*.cs]
+# Line length enforcement
+max_line_length = 160
 # Organize usings
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
@@ -234,7 +243,7 @@ csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
 
 # IDE0055: Fix formatting - enforces all formatting rules
-dotnet_diagnostic.IDE0055.severity = warning
+dotnet_diagnostic.IDE0055.severity = error
 
 # IDE0052: Remove unread private member
 dotnet_diagnostic.IDE0052.severity = warning
@@ -247,6 +256,15 @@ dotnet_diagnostic.IDE0060.severity = warning
 
 # CA1822: Mark members as static - suppress for public members (design choice for DI/testability)
 dotnet_diagnostic.CA1822.severity = suggestion
+
+# CA1502: Avoid excessive complexity
+dotnet_diagnostic.CA1502.severity = error
+
+# CA1505: Avoid unmaintainable code
+dotnet_diagnostic.CA1505.severity = error
+
+# CA1506: Avoid excessive class coupling
+dotnet_diagnostic.CA1506.severity = error
 
 # IDE1006: Naming rule violations
 dotnet_diagnostic.IDE1006.severity = warning
@@ -692,3 +710,12 @@ dotnet_diagnostic.RCS1235.severity = none
 ################################################################################
 # End of Roslynator.Analyzers Configuration
 ################################################################################
+
+# Test files - Code metrics exemptions (override general C# rules)
+[{src/tests/**/*.cs,tests/**/*.cs}]
+# CA1502: Avoid excessive complexity not enforced in tests
+dotnet_diagnostic.CA1502.severity = none
+# CA1505: Avoid unmaintainable code not enforced in tests
+dotnet_diagnostic.CA1505.severity = none
+# CA1506: Avoid excessive class coupling not enforced in tests
+dotnet_diagnostic.CA1506.severity = none

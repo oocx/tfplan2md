@@ -113,57 +113,8 @@ public partial class ReportModelBuilder
             || (afterSensitive.TryGetValue(key, out var av) && av == "true");
     }
 
-    private static Dictionary<string, string?> ConvertToFlatDictionary(object? obj, string prefix = "")
-    {
-        Dictionary<string, string?> result = [];
-        if (obj is null)
-        {
-            return result;
-        }
-
-        if (obj is JsonElement element)
-        {
-            FlattenJsonElement(element, prefix, result);
-        }
-
-        return result;
-    }
-
-    private static void FlattenJsonElement(JsonElement element, string prefix, Dictionary<string, string?> result)
-    {
-        switch (element.ValueKind)
-        {
-            case JsonValueKind.Object:
-                foreach (var property in element.EnumerateObject())
-                {
-                    var key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
-                    FlattenJsonElement(property.Value, key, result);
-                }
-                break;
-            case JsonValueKind.Array:
-                var index = 0;
-                foreach (var item in element.EnumerateArray())
-                {
-                    var key = $"{prefix}[{index}]";
-                    FlattenJsonElement(item, key, result);
-                    index++;
-                }
-                break;
-            case JsonValueKind.String:
-                result[prefix] = element.GetString();
-                break;
-            case JsonValueKind.Number:
-                result[prefix] = element.GetRawText();
-                break;
-            case JsonValueKind.True:
-            case JsonValueKind.False:
-                result[prefix] = element.GetBoolean().ToString().ToLowerInvariant();
-                break;
-            case JsonValueKind.Null:
-                result[prefix] = null;
-                break;
-        }
-    }
+    private static Dictionary<string, string?> ConvertToFlatDictionary(object? obj, string prefix = "") =>
+        Helpers.JsonFlattener.ConvertToFlatDictionary(obj, prefix);
 
     private static string DetermineAction(IReadOnlyList<string> actions)
     {

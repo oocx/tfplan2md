@@ -28,12 +28,6 @@ public partial class ReportModelBuilder(
     bool hideMetadata = false)
 {
     /// <summary>
-    /// Non-breaking space used to keep semantic icons attached to their labels in markdown output.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
-    /// </summary>
-    private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
-
-    /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
     /// </summary>
     private readonly bool _showSensitive = showSensitive;

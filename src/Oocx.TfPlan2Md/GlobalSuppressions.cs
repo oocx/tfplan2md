@@ -85,7 +85,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage(
     "Maintainability",
     "CA1506:Avoid excessive class coupling",
-    Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/. Coupling reduced from 50 to 44 types via factory registry pattern.",
+    Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/. Coupling reduced from 50 to 38 types via extracted helpers.",
     Scope = "type",
     Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.ReportModelBuilder")]
 

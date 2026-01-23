@@ -85,9 +85,11 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 
 ### Code Quality
 - **Analyzers**: Microsoft.CodeAnalysis.NetAnalyzers with `TreatWarningsAsErrors`
+- **Code Metrics**: Automated enforcement of cyclomatic complexity (≤15), maintainability index (≥20), line length (≤160), and file length (~300 lines)
 - **Code Style**: Enforced via `.editorconfig` and `dotnet format`
 - **Pre-commit Hooks**: [Husky.Net](https://github.com/alirezanet/Husky.Net) runs format check and build before commit
 - **Dependency Updates**: Dependabot configured for NuGet, Docker, and GitHub Actions
+- **Suppression Policy**: Quality metric violations require explicit `SuppressMessage` attributes with justification and maintainer approval (see [docs/commenting-guidelines.md](commenting-guidelines.md))
 
 ### Branch Strategy
 - `main` branch is always in a releasable state

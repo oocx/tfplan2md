@@ -65,6 +65,9 @@ public sealed class AnsiTextWriterTests
         await Assert.That(output).IsEqualTo("plain");
     }
 
+    /// <summary>
+    /// Verifies that WriteLineIfNotBlank prevents duplicate consecutive blank lines.
+    /// </summary>
     [Test]
     public async Task WriteLineIfNotBlank_PreventsDuplicateBlankLines()
     {

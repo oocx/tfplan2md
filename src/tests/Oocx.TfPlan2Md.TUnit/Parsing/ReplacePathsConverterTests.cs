@@ -21,6 +21,9 @@ public class ReplacePathsConverterTests
         result.Should().BeNull();
     }
 
+    /// <summary>
+    /// Verifies that attempting to deserialize a non-array JSON token throws JsonException.
+    /// </summary>
     [Test]
     public void Read_NonArray_ThrowsJsonException()
     {
@@ -31,6 +34,9 @@ public class ReplacePathsConverterTests
         action.Should().Throw<JsonException>();
     }
 
+    /// <summary>
+    /// Verifies that the converter skips non-array entries in the JSON array and only deserializes valid array entries.
+    /// </summary>
     [Test]
     public void Read_SkipsNonArrayEntries()
     {
@@ -44,6 +50,9 @@ public class ReplacePathsConverterTests
         result[0].Should().ContainInOrder("name", 1);
     }
 
+    /// <summary>
+    /// Verifies that the converter correctly parses common segment types (string, int, long, double, bool, null).
+    /// </summary>
     [Test]
     public void Read_ParsesCommonSegmentTypes()
     {
@@ -63,6 +72,9 @@ public class ReplacePathsConverterTests
         segments[6].Should().BeOfType<string>().Which.Should().Be(string.Empty);
     }
 
+    /// <summary>
+    /// Verifies that serializing a null value writes the JSON null literal.
+    /// </summary>
     [Test]
     public void Write_NullValue_WritesNullLiteral()
     {
@@ -73,6 +85,9 @@ public class ReplacePathsConverterTests
         json.Should().Be("null");
     }
 
+    /// <summary>
+    /// Verifies that the converter serializes segments to their expected JSON types (string, number, bool, null).
+    /// </summary>
     [Test]
     public void Write_SerializesSegmentsToExpectedJsonTypes()
     {

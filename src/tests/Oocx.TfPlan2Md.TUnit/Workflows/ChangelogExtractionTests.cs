@@ -5,11 +5,17 @@ using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.Workflows;
 
+/// <summary>
+/// Tests for the extract-changelog.sh script that extracts version-specific sections from CHANGELOG.md.
+/// </summary>
 public class ChangelogExtractionTests
 {
     private static readonly Lazy<string> RepoRoot = new(FindRepoRoot);
     private static readonly Lazy<bool> BashAvailable = new(CheckBashAvailable);
 
+    /// <summary>
+    /// Verifies that the script extracts only the current version section when no previous release is specified.
+    /// </summary>
     [Test]
     public async Task Extracts_only_current_version_when_no_previous_release_exists()
     {
@@ -34,6 +40,9 @@ public class ChangelogExtractionTests
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script extracts only the current version section when the previous release is consecutive (e.g., 0.11.0 -> 0.12.0).
+    /// </summary>
     [Test]
     public async Task Extracts_only_current_version_when_previous_is_consecutive()
     {
@@ -58,6 +67,9 @@ public class ChangelogExtractionTests
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script extracts cumulative sections when versions were skipped (e.g., 0.9.0 -> 0.12.0 includes 0.10.0, 0.11.0).
+    /// </summary>
     [Test]
     public async Task Extracts_cumulative_sections_when_versions_were_skipped()
     {
@@ -100,6 +112,9 @@ public class ChangelogExtractionTests
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script preserves complex markdown formatting (nested lists, code blocks, links).
+    /// </summary>
     [Test]
     public async Task Preserves_complex_markdown_formatting()
     {
@@ -134,6 +149,9 @@ code block line 2
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script handles versions with or without 'v' prefix consistently.
+    /// </summary>
     [Test]
     public async Task Handles_versions_with_or_without_v_prefix_consistently()
     {
@@ -148,6 +166,9 @@ code block line 2
         await Assert.That(Normalize(withPrefix)).IsEqualTo(Normalize(withoutPrefix));
     }
 
+    /// <summary>
+    /// Verifies that the script produces identical output when run multiple times with the same inputs (idempotent).
+    /// </summary>
     [Test]
     public async Task Is_idempotent_for_same_inputs()
     {
@@ -162,6 +183,9 @@ code block line 2
         await Assert.That(Normalize(first)).IsEqualTo(Normalize(second));
     }
 
+    /// <summary>
+    /// Verifies that the script extracts all sections until the end of the changelog when the last version is not found.
+    /// </summary>
     [Test]
     public async Task Extracts_until_end_when_last_version_not_found()
     {
@@ -216,6 +240,9 @@ code block line 2
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script returns empty output when the current version is not found in the changelog.
+    /// </summary>
     [Test]
     public async Task Returns_empty_output_when_current_version_not_found()
     {
@@ -229,6 +256,9 @@ code block line 2
         await Assert.That(Normalize(output)).IsEqualTo(string.Empty);
     }
 
+    /// <summary>
+    /// Verifies that the script works correctly with POSIX-compliant awk implementation.
+    /// </summary>
     [Test]
     public async Task Works_with_posix_awk()
     {
@@ -253,6 +283,9 @@ code block line 2
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script can extract prerelease versions (e.g., 1.0.0-alpha.3).
+    /// </summary>
     [Test]
     public async Task Extracts_prerelease_version()
     {
@@ -277,6 +310,9 @@ code block line 2
         await Assert.That(Normalize(output)).IsEqualTo(Normalize(expected));
     }
 
+    /// <summary>
+    /// Verifies that the script can extract a range of prerelease versions (e.g., 1.0.0-alpha.3 to 1.0.0-alpha.1).
+    /// </summary>
     [Test]
     public async Task Extracts_prerelease_version_range()
     {

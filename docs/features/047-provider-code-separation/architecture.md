@@ -333,7 +333,7 @@ tfplan2md plan.json --render-target azuredevops   # or: azdo
 **Design:**
 - The `--render-target` option selects the appropriate rendering strategy for the target platform
 - Default remains Azure DevOps (current behavior: `InlineDiff`)
-- `--large-value-format` can be kept as a hidden/advanced option for backward compatibility
+- `--large-value-format` is removed (breaking change permitted as product is not yet released)
 - Each render target can define multiple rendering behaviors (diff format, collapsible sections, etc.)
 
 **Benefits:**

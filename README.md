@@ -108,7 +108,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
-| `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `simple-diff` (cross-platform) |
+| `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
@@ -117,17 +117,19 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
 
-#### Large Value Formatting
+#### Render Target Selection
 
-Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
+The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
 
-- **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps (GitHub strips styles but content remains readable).
-- **`simple-diff`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
+- **`azuredevops`** (default, alias: `azdo`): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps PR comments (GitHub strips styles but content remains readable).
+- **`github`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
 
 Example:
 ```bash
-terraform show -json plan.tfplan | tfplan2md --large-value-format simple-diff
+terraform show -json plan.tfplan | tfplan2md --render-target github
 ```
+
+**Migration note:** The `--large-value-format` flag has been deprecated and replaced by `--render-target`. Use `--render-target azuredevops` for `inline-diff` behavior or `--render-target github` for `simple-diff` behavior.
 
 #### Debug Output
 
@@ -438,6 +440,18 @@ dotnet build
 dotnet test
 
 Tests use **TUnit** with **AwesomeAssertions** for fluent, readable assertions.
+
+### Coverage Helpers
+
+Use the helper scripts to summarize coverage from Cobertura output:
+
+```bash
+# Print overall line/branch coverage
+scripts/coverage-summary.sh
+
+# List lowest branch coverage classes (default 30, can pass a count)
+scripts/coverage-low-branches.sh 20
+```
 ```
 
 ### Pre-commit Hooks

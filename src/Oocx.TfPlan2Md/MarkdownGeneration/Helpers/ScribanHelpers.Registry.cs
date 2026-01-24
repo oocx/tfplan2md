@@ -17,7 +17,7 @@ public static partial class ScribanHelpers
     /// <param name="scriptObject">The script object receiving helpers.</param>
     /// <param name="principalMapper">Mapper used to resolve principal names.</param>
     /// <param name="diffFormatter">Formatter used for rendering before/after diffs.</param>
-    public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, IDiffFormatter diffFormatter)
+    internal static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, IDiffFormatter diffFormatter)
     {
         scriptObject.Import("format_diff", new Func<string?, string?, string>((before, after) => diffFormatter.FormatDiff(before, after)));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));

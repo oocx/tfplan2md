@@ -138,6 +138,83 @@ public sealed class TerraformShowRendererAppTests
     }
 
     /// <summary>
+    /// Ensures invalid format versions produce exit code 4.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task RunAsync_InvalidFormatVersion_ReturnsExitCode4()
+    {
+        var invalidPath = await CreateTemporaryPlanAsync("not-a-version");
+        using var output = new StringWriter(new StringBuilder());
+        using var error = new StringWriter(new StringBuilder());
+        var app = new TerraformShowRendererApp(output, error);
+
+        var exitCode = await app.RunAsync(new[] { "--input", invalidPath });
+
+        await Assert.That(exitCode).IsEqualTo(4);
+        await Assert.That(error.ToString()).Contains("Unsupported plan format version");
+        await Assert.That(string.IsNullOrEmpty(output.ToString())).IsTrue();
+    }
+
+    /// <summary>
+    /// Ensures successful rendering writes to stdout when no output file is provided.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task RunAsync_ValidPlan_WritesToStdOut()
+    {
+        var inputPath = Path.Combine(AppContext.BaseDirectory, "TestData", "TerraformShow", "plan1.json");
+        using var output = new StringWriter(new StringBuilder());
+        using var error = new StringWriter(new StringBuilder());
+        var app = new TerraformShowRendererApp(output, error);
+
+        var exitCode = await app.RunAsync(new[] { "--input", inputPath });
+
+        await Assert.That(exitCode).IsEqualTo(0);
+        await Assert.That(string.IsNullOrEmpty(error.ToString())).IsTrue();
+        await Assert.That(output.ToString()).Contains("Terraform will perform the following actions");
+    }
+
+    /// <summary>
+    /// Ensures successful rendering writes to a file when an output path is provided.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task RunAsync_ValidPlan_WritesOutputFile()
+    {
+        var inputPath = Path.Combine(AppContext.BaseDirectory, "TestData", "TerraformShow", "plan1.json");
+        var outputPath = CreateTemporaryOutputPath("terraform-show-output", "rendered.txt");
+        using var output = new StringWriter(new StringBuilder());
+        using var error = new StringWriter(new StringBuilder());
+        var app = new TerraformShowRendererApp(output, error);
+
+        var exitCode = await app.RunAsync(new[] { "--input", inputPath, "--output", outputPath });
+
+        await Assert.That(exitCode).IsEqualTo(0);
+        await Assert.That(File.Exists(outputPath)).IsTrue();
+        await Assert.That(string.IsNullOrEmpty(error.ToString())).IsTrue();
+    }
+
+    /// <summary>
+    /// Ensures no-color mode omits ANSI escape codes.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task RunAsync_NoColor_OmitsAnsiSequences()
+    {
+        var inputPath = Path.Combine(AppContext.BaseDirectory, "TestData", "TerraformShow", "plan1.json");
+        using var output = new StringWriter(new StringBuilder());
+        using var error = new StringWriter(new StringBuilder());
+        var app = new TerraformShowRendererApp(output, error);
+
+        var exitCode = await app.RunAsync(new[] { "--input", inputPath, "--no-color" });
+
+        await Assert.That(exitCode).IsEqualTo(0);
+        await Assert.That(output.ToString()).DoesNotContain("\u001b[");
+        await Assert.That(string.IsNullOrEmpty(error.ToString())).IsTrue();
+    }
+
+    /// <summary>
     /// Creates a temporary file containing the specified content.
     /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
@@ -150,5 +227,47 @@ public sealed class TerraformShowRendererAppTests
         var path = Path.Combine(root, "plan.json");
         await File.WriteAllTextAsync(path, content).ConfigureAwait(false);
         return path;
+    }
+
+    /// <summary>
+    /// Creates a temporary plan file with a custom format version.
+    /// </summary>
+    /// <param name="formatVersion">Format version to embed.</param>
+    /// <returns>Path to the plan file.</returns>
+    private static async Task<string> CreateTemporaryPlanAsync(string formatVersion)
+    {
+        var content = $$"""
+            {
+              "format_version": "{{formatVersion}}",
+              "terraform_version": "1.6.0",
+              "resource_changes": []
+            }
+            """;
+
+        return await CreateTemporaryFileAsync(content).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Creates a temporary output path under the test data folder.
+    /// </summary>
+    /// <param name="folderName">Folder name to create.</param>
+    /// <param name="fileName">Output file name.</param>
+    /// <returns>Absolute path to the output file.</returns>
+    private static string CreateTemporaryOutputPath(string folderName, string fileName)
+    {
+        var root = CreateTemporaryDirectory(folderName);
+        return Path.Combine(root, fileName);
+    }
+
+    /// <summary>
+    /// Creates a temporary directory under the test data folder.
+    /// </summary>
+    /// <param name="folderName">Folder name to create.</param>
+    /// <returns>Absolute path to the directory.</returns>
+    private static string CreateTemporaryDirectory(string folderName)
+    {
+        var root = Path.Combine(AppContext.BaseDirectory, "terraform-show", folderName, Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
+        Directory.CreateDirectory(root);
+        return root;
     }
 }

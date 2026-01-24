@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
@@ -804,6 +805,146 @@ public class ScribanHelpersAzApiTests
 
         // Assert
         result.Should().BeEmpty();
+
+        await Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region CompareJsonProperties Tests
+
+    [Test]
+    public async Task CompareJsonProperties_WhenShowUnchangedFalse_ReturnsOnlyChanges()
+    {
+        var before = JsonDocument.Parse("""
+            {
+                "unchanged": "same",
+                "changed": "before"
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "unchanged": "same",
+                "changed": "after"
+            }
+            """).RootElement;
+
+        var result = AzApiHelpers.CompareJsonProperties(before, after, null, null, showUnchanged: false, showSensitive: false);
+
+        result.Should().ContainSingle();
+        var change = result[0] as ScriptObject;
+        change?["path"].Should().Be("changed");
+        change?["is_changed"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_WhenShowUnchangedTrue_IncludesUnchanged()
+    {
+        var before = JsonDocument.Parse("""
+            {
+                "unchanged": "same",
+                "changed": "before"
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "unchanged": "same",
+                "changed": "after"
+            }
+            """).RootElement;
+
+        var result = AzApiHelpers.CompareJsonProperties(before, after, null, null, showUnchanged: true, showSensitive: false);
+
+        result.Should().HaveCount(2);
+        var unchanged = result.Cast<ScriptObject>().Single(item => item["path"]?.ToString() == "unchanged");
+        unchanged.Should().NotBeNull();
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_MarksSensitivePaths_FromNestedStructure()
+    {
+        var before = JsonDocument.Parse("""
+            {
+                "secret": "value",
+                "nested": { "inner": "value" },
+                "array": ["value", "value2"]
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "secret": "value",
+                "nested": { "inner": "value" },
+                "array": ["value", "value2"]
+            }
+            """).RootElement;
+
+        var sensitive = JsonDocument.Parse("""
+            {
+                "secret": true,
+                "nested": { "inner": true },
+                "array": [true, { "deep": true }]
+            }
+            """).RootElement;
+
+        var result = AzApiHelpers.CompareJsonProperties(before, after, sensitive, null, showUnchanged: true, showSensitive: false);
+
+        result.Cast<ScriptObject>().Single(item => item["path"]?.ToString() == "secret")["is_sensitive"].Should().Be(true);
+        result.Cast<ScriptObject>().Single(item => item["path"]?.ToString() == "nested.inner")["is_sensitive"].Should().Be(true);
+        result.Cast<ScriptObject>().Single(item => item["path"]?.ToString() == "array[0]")["is_sensitive"].Should().Be(true);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_NumericValues_WithDifferentTypes_AreEqual()
+    {
+        var before = JsonDocument.Parse("""
+            {
+                "count": 1
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse("""
+            {
+                "count": 1.0
+            }
+            """).RootElement;
+
+        var result = AzApiHelpers.CompareJsonProperties(before, after, null, null, showUnchanged: true, showSensitive: false);
+
+        var change = result[0] as ScriptObject;
+        change?["is_changed"].Should().Be(false);
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task CompareJsonProperties_MarksLargeValues()
+    {
+        var largeValue = new string('x', 250);
+        var before = JsonDocument.Parse($$"""
+            {
+                "payload": "{{largeValue}}"
+            }
+            """).RootElement;
+
+        var after = JsonDocument.Parse($$"""
+            {
+                "payload": "{{largeValue}}"
+            }
+            """).RootElement;
+
+        var result = AzApiHelpers.CompareJsonProperties(before, after, null, null, showUnchanged: true, showSensitive: false);
+
+        var change = result[0] as ScriptObject;
+        change?["is_large"].Should().Be(true);
 
         await Task.CompletedTask;
     }

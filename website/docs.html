@@ -99,10 +99,10 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="#large-value-formatting" class="docs-nav-link">Large Value Formatting</a>
+                        <a href="#render-targets" class="docs-nav-link">Render Targets</a>
                         <ul class="docs-nav-sublist">
-                            <li><a href="#inline-diff" class="docs-nav-sublink">inline-diff</a></li>
-                            <li><a href="#standard-diff" class="docs-nav-sublink">standard-diff</a></li>
+                            <li><a href="#azuredevops" class="docs-nav-sublink">azuredevops</a></li>
+                            <li><a href="#github" class="docs-nav-sublink">github</a></li>
                         </ul>
                     </li>
                     <li>
@@ -180,12 +180,13 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                     </div>
                     <div class="option-row">
                         <div class="option-name">
-                            <code>--large-value-format &lt;format&gt;</code>
+                            <code>--render-target &lt;platform&gt;</code>
                         </div>
                         <div class="option-desc">
-                            Controls rendering of large attribute values:<br>
-                            • <code>inline-diff</code> (default) — Styled HTML with line-by-line highlighting<br>
-                            • <code>standard-diff</code> — Traditional diff format with +/- markers
+                            Target platform for rendering:<br>
+                            • <code>azuredevops</code> (default, alias: <code>azdo</code>) — Styled HTML with line-by-line and character-level diff highlighting<br>
+                            • <code>github</code> — Traditional diff format with +/- markers<br>
+                            <em>Note: Replaces deprecated <code>--large-value-format</code> flag.</em>
                         </div>
                     </div>
                     <div class="option-row">
@@ -267,9 +268,9 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                 </div>
                 <div class="code-block">
                     <div class="code-header">
-                        <span class="code-title">GitHub-friendly large value diff</span>
+                        <span class="code-title">GitHub-friendly rendering</span>
                     </div>
-                    <pre><code>tfplan2md plan.json --large-value-format standard-diff</code></pre>
+                    <pre><code>tfplan2md plan.json --render-target github</code></pre>
                 </div>
                 <div class="code-block">
                     <div class="code-header">
@@ -615,19 +616,19 @@ done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json</code></pre
         </div>
     </section>
 
-    <!-- Large Value Formatting -->
-    <section class="section" id="large-value-formatting">
+    <!-- Render Targets -->
+    <section class="section" id="render-targets">
         <div class="section-container">
-            <h2 class="section-title">Large Value Formatting</h2>
+            <h2 class="section-title">Render Targets</h2>
             <p class="section-description">
-                Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.
+                The <code>--render-target</code> flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to collapsible sections below the main table.
             </p>
 
             <div class="format-comparison">
-                <div class="format-card" id="inline-diff">
-                    <h3 class="format-title">inline-diff (default)</h3>
+                <div class="format-card" id="azuredevops">
+                    <h3 class="format-title">azuredevops (default)</h3>
                     <p class="format-desc">
-                        Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps. GitHub strips styles but content remains readable.
+                        Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps PR comments. GitHub strips styles but content remains readable.
                     </p>
                     <div class="code-block">
                         <div class="code-header">
@@ -640,14 +641,14 @@ apt-get update
 &lt;/code&gt;&lt;/pre&gt;</code></pre>
                     </div>
                     <div class="format-usage">
-                        <code>--large-value-format inline-diff</code>
+                        <code>--render-target azuredevops</code> or <code>--render-target azdo</code>
                     </div>
                 </div>
 
-                <div class="format-card" id="standard-diff">
-                    <h3 class="format-title">standard-diff</h3>
+                <div class="format-card" id="github">
+                    <h3 class="format-title">github</h3>
                     <p class="format-desc">
-                        Traditional diff format with +/- markers. Fully portable and works on both GitHub and Azure DevOps without style stripping.
+                        Traditional diff format with +/- markers. Fully portable and works on both GitHub and Azure DevOps.
                     </p>
                     <div class="code-block">
                         <div class="code-header">
@@ -661,9 +662,16 @@ apt-get update
 ```</code></pre>
                     </div>
                     <div class="format-usage">
-                        <code>--large-value-format standard-diff</code>
+                        <code>--render-target github</code>
                     </div>
                 </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1rem; background: var(--color-surface-dark); border-radius: 8px;">
+                <p style="margin: 0; color: var(--color-text-secondary);">
+                    <strong>Migration note:</strong> The <code>--large-value-format</code> flag has been deprecated and replaced by <code>--render-target</code>.
+                    Use <code>--render-target azuredevops</code> for <code>inline-diff</code> behavior or <code>--render-target github</code> for <code>standard-diff</code> behavior.
+                </p>
             </div>
         </div>
     </section>

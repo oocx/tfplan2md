@@ -7,8 +7,8 @@ Verify that the refactored template rendering system produces output that is vis
 **Artifact to use:** `artifacts/comprehensive-demo.md`
 
 **Creation Instructions:**
-- **Source Plan:** `tests/Oocx.TfPlan2Md.Tests/TestData/comprehensive-demo.json`
-- **Command:** `dotnet run --project src/Oocx.TfPlan2Md -- render --plan tests/Oocx.TfPlan2Md.Tests/TestData/comprehensive-demo.json --out artifacts/comprehensive-demo.md`
+- **Source Plan:** `src/tests/Oocx.TfPlan2Md.Tests/TestData/comprehensive-demo.json`
+- **Command:** `dotnet run --project src/Oocx.TfPlan2Md -- render --plan src/tests/Oocx.TfPlan2Md.Tests/TestData/comprehensive-demo.json --out artifacts/comprehensive-demo.md`
 - **Rationale:** This plan exercises all resource-specific templates (NSG, Firewall, Role Assignment) and the default rendering logic, making it the best candidate for regression testing.
 
 ## Test Steps

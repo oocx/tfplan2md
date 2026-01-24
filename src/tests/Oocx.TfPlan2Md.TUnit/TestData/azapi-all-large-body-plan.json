@@ -1,0 +1,38 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.large_config",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "large_config",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.ContainerService/managedClusters@2023-01-01",
+          "name": "myakscluster",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "dnsPrefix": "myakscluster-dns-with-very-long-configuration-string-that-exceeds-two-hundred-characters-to-test-large-value-handling-in-the-template-rendering-logic-and-ensure-that-it-properly-collapses-large-values-into-details-sections-for-better-readability",
+              "kubernetesVersion": "1.27.3-with-extremely-long-version-string-that-should-be-collapsed-because-it-exceeds-the-two-hundred-character-threshold-for-large-values-defined-in-the-architecture-document-and-test-plan-specifications",
+              "agentPoolProfiles": "pool1-configuration-with-very-long-string,pool2-configuration-with-very-long-string,pool3-configuration-with-very-long-string,pool4-configuration-with-very-long-string,pool5-configuration-with-very-long-string-exceeding-two-hundred-characters",
+              "networkProfile": "configuration-string-with-subnet-ids-virtual-network-ids-dns-service-ip-docker-bridge-cidr-service-cidr-load-balancer-sku-and-other-network-settings-that-collectively-exceed-two-hundred-character-threshold-for-large-values"
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

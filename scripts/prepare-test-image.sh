@@ -63,10 +63,10 @@ if ! docker version >/dev/null 2>&1; then
   exit 1
 fi
 
-# Find repository root (directory containing Dockerfile)
+# Find repository root (directory containing src/Dockerfile)
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-if [ ! -f "$REPO_ROOT/Dockerfile" ]; then
-  echo "ERROR: Dockerfile not found at $REPO_ROOT/Dockerfile" >&2
+if [ ! -f "$REPO_ROOT/src/Dockerfile" ]; then
+  echo "ERROR: Dockerfile not found at $REPO_ROOT/src/Dockerfile" >&2
   exit 1
 fi
 
@@ -86,7 +86,7 @@ fi
 echo "Building Docker image $FULL_IMAGE_NAME from $REPO_ROOT..."
 cd "$REPO_ROOT"
 
-if docker build -t "$FULL_IMAGE_NAME" .; then
+if docker build -t "$FULL_IMAGE_NAME" -f src/Dockerfile .; then
   echo "✓ Docker image $FULL_IMAGE_NAME built successfully"
   exit 0
 else

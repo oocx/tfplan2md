@@ -106,7 +106,7 @@ Verifies that the default resource template wraps the resource in a `<details>` 
 The resource is wrapped in `<details style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">`.
 
 **Test Data:**
-`tests/Oocx.TfPlan2Md.Tests/TestData/azurerm_storage_account.json`
+`src/tests/Oocx.TfPlan2Md.Tests/TestData/azurerm_storage_account.json`
 
 ---
 
@@ -128,7 +128,7 @@ Verifies that resources that don't normally use details blocks (like Firewall ru
 The firewall resource is wrapped in `<details open style="margin-bottom:12px; border:1px solid #f0f0f0; padding:12px;">`.
 
 **Test Data:**
-`tests/Oocx.TfPlan2Md.Tests/TestData/azurerm_firewall.json`
+`src/tests/Oocx.TfPlan2Md.Tests/TestData/azurerm_firewall.json`
 
 ---
 
@@ -327,8 +327,8 @@ Value is rendered as `🆔 my-name` (with non-breaking space).
 
 ## Test Data Requirements
 
-- `tests/Oocx.TfPlan2Md.Tests/TestData/metadata_test.json` - A simple plan to test metadata display.
-- `tests/Oocx.TfPlan2Md.Tests/TestData/icons_test.json` - A plan with various `name` and `resource_group_name` attributes.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/metadata_test.json` - A simple plan to test metadata display.
+- `src/tests/Oocx.TfPlan2Md.Tests/TestData/icons_test.json` - A plan with various `name` and `resource_group_name` attributes.
 
 ## Edge Cases
 

@@ -202,7 +202,7 @@ Write comprehensive unit tests for the `DiagnosticContext` class to verify markd
 **Dependencies:** Task 1
 
 **Notes:**
-- Tests should be in `tests/Oocx.TfPlan2Md.TUnit/Diagnostics/` directory
+- Tests should be in `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/` directory
 - Use inline test data (no external files needed for these unit tests)
 - Verify markdown formatting (code blocks, bullet lists, headings)
 
@@ -229,7 +229,7 @@ Write unit tests to verify the CLI parser correctly handles the `--debug` flag a
 **Dependencies:** Task 2
 
 **Notes:**
-- Locate tests in `tests/Oocx.TfPlan2Md.TUnit/CLI/` directory
+- Locate tests in `src/tests/Oocx.TfPlan2Md.TUnit/CLI/` directory
 - Follow existing test naming conventions
 
 ---

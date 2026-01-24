@@ -58,8 +58,8 @@ None
 - ✅ Task 3: Template uses `summary.<action>.breakdown` to render breakdown
 - ✅ Task 3: Breakdown formatted as `<count> <type><br/>` per specification
 - ✅ Task 3: Total row has empty Resource Types column
-- ✅ Task 4: `ReportModelBuilderTests` updated with new tests ([ReportModelBuilderTests.cs#L192-L260](tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderTests.cs#L192-L260))
-- ✅ Task 4: `MarkdownRendererTests` updated with new tests ([MarkdownRendererTests.cs#L90-L129](tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#L90-L129))
+- ✅ Task 4: `ReportModelBuilderTests` updated with new tests ([ReportModelBuilderTests.cs#L192-L260](src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderTests.cs#L192-L260))
+- ✅ Task 4: `MarkdownRendererTests` updated with new tests ([MarkdownRendererTests.cs#L90-L129](src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs#L90-L129))
 - ✅ Task 4: All 116 tests pass (including 6 Docker integration tests)
 - ✅ Docker image builds successfully and feature works in container
 

@@ -23,14 +23,14 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -124,7 +124,7 @@ Before starting, familiarize yourself with:
 - [.github/copilot-instructions.md](../copilot-instructions.md) - Coding guidelines
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - **GitHub CLI fallback guidance (when checking failed workflows)**
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
-- Existing source code in `src/` and tests in `tests/`
+- Existing source code in `src/` and tests in `src/tests/`
 
 ## Coding Guidelines
 
@@ -195,7 +195,7 @@ Follow the project's coding conventions strictly:
    
    c. **Verify acceptance criteria** for the current task:
       - All acceptance criteria for THIS task must be satisfied
-      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/<TestClass>/*`
+      - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/<TestClass>/*`
       - Check for errors: Use `problems` to verify no workspace errors
    
    d. **Commit the task**:
@@ -222,7 +222,7 @@ Follow the project's coding conventions strictly:
       ```bash
    scripts/test-with-timeout.sh
       ```
-      - This runs the TUnit test project: `dotnet test tests/Oocx.TfPlan2Md.TUnit/`
+      - This runs the TUnit test project: `dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/`
       - All tests must pass with ZERO skipped tests
       - If tests are skipped, identify reason and ask Maintainer to resolve
    
@@ -236,10 +236,10 @@ Follow the project's coding conventions strictly:
    
    c. **Update test snapshots (if markdown output changed)**:
       - Use `update-test-snapshots` skill to regenerate snapshot baselines
-         - Review generated snapshots with `scripts/git-diff.sh tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots`
+         - Review generated snapshots with `scripts/git-diff.sh src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots`
       - Commit snapshots if changes are expected:
         ```bash
-        git add tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/
+      git add src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/
             git commit -m "test: update snapshots for <feature-name>\n\nSNAPSHOT_UPDATE_OK"
         ```
    
@@ -265,7 +265,7 @@ dotnet build
 
 Run all tests (TUnit):
 ```bash
-scripts/test-with-timeout.sh -- dotnet test
+scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
 ```
 
 Override timeout (if needed):
@@ -279,39 +279,39 @@ scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test
 
 Filter by class name (hierarchical pattern):
 ```bash
-scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownRendererTests/*
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownRendererTests/*
 ```
 
 Filter by test name:
 ```bash
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/*/Render_ValidPlan_ContainsSummarySection
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/*/Render_ValidPlan_ContainsSummarySection
 ```
 
 Filter by category:
 ```bash
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category=Unit]
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /**[Category=Unit]
 ```
 
 Exclude by category (e.g., skip Docker tests):
 ```bash
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /**[Category!=Docker]
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /**[Category!=Docker]
 ```
 
 ### TUnit Output Control
 
 Show detailed output (all tests, real-time):
 ```bash
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --output Detailed
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --output Detailed
 ```
 
 Show debug logs:
 ```bash
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --output Detailed --log-level Debug
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --output Detailed --log-level Debug
 ```
 
 Combine filtering and output:
 ```bash
-dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ -- --treenode-filter /*/*/MarkdownRendererTests/* --output Detailed --log-level Debug
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownRendererTests/* --output Detailed --log-level Debug
 ```
 
 ### Docker Commands
@@ -330,15 +330,30 @@ docker run --rm -v $(pwd):/data tfplan2md:local /data/plan.json
 
 When fixing PR/CI failures, check workflow logs:
 
+**⚠️ Prefer repository scripts over raw `gh` commands:**
+
+```bash
+# List recent workflow runs (use wrapper script)
+scripts/check-workflow-status.sh list --branch main --limit 5
+
+# View specific failed run (use wrapper script)
+scripts/check-workflow-status.sh view <run-id>
+
+# Watch a run until completion (use wrapper script)
+scripts/check-workflow-status.sh watch <run-id>
+```
+
+**Fallback only (when scripts don't support the operation):**
+
 Preferred in VS Code chat:
 - Use GitHub chat tools to fetch PR status checks.
 - If you do not have repo context (owner/repo) or a tool is missing, fall back to `gh`.
 
 ```bash
-# List recent workflow runs (non-blocking)
+# List recent workflow runs (fallback)
 PAGER=cat gh run list --limit 5
 
-# View specific failed run
+# View specific failed run (fallback)
 PAGER=cat gh run view <run-id> --log-failed
 
 # PR validation status (fallback)
@@ -365,7 +380,7 @@ Verify:
 
 Verify:
 - [ ] All tasks are complete and marked as done in tasks.md
-- [ ] Full test suite passes with ZERO skipped tests (`scripts/test-with-timeout.sh -- dotnet test`)
+- [ ] Full test suite passes with ZERO skipped tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
 - [ ] Demo artifacts regenerated using `generate-demo-artifacts` skill (REQUIRED)

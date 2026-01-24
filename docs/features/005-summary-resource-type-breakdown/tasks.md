@@ -72,8 +72,8 @@ Update the default Scriban template to include the new column and reflect the da
 Update existing tests to accommodate the breaking change in the data model and add new tests to verify the breakdown logic and rendering.
 
 **Acceptance Criteria:**
-- [ ] `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderTests.cs` updated to verify `ActionSummary` and `Breakdown` content.
-- [ ] `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs` updated to verify the new column is rendered correctly in the markdown output.
+- [ ] `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ReportModelBuilderTests.cs` updated to verify `ActionSummary` and `Breakdown` content.
+- [ ] `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs` updated to verify the new column is rendered correctly in the markdown output.
 - [ ] New test cases added for multiple resource types of the same action to verify sorting and multi-line formatting.
 - [ ] All tests pass.
 

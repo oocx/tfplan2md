@@ -36,7 +36,7 @@ cd /home/mathias/git/tfplan2md
 sed -n '180,195p' artifacts/comprehensive-demo.md > .tmp/homepage-nsg-example.md
 
 # Generate Azure DevOps HTML
-dotnet run --no-build --project tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj \
+dotnet run --no-build --project src/tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj \
   --input .tmp/homepage-nsg-example.md \
   --flavor azdo > .tmp/homepage-nsg-example.azdo.html
 ```
@@ -47,19 +47,19 @@ The rendered HTML examples use the HtmlRenderer tool to convert markdown artifac
 
 ```bash
 # Generate Azure DevOps flavor HTML from comprehensive-demo
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
   --output artifacts/comprehensive-demo.azdo.html
 
 # Generate GitHub flavor HTML from comprehensive-demo
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github \
   --output artifacts/comprehensive-demo.github.html
 
 # Generate firewall rules demo HTML
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input examples/firewall-rules-demo/firewall-rules.md \
   --flavor azdo \
   --output examples/firewall-rules-demo/firewall-rules.azdo.html
@@ -71,24 +71,24 @@ Use the TerraformShowRenderer tool to generate authentic "before tfplan2md" exam
 
 ```bash
 # Plan 1 (baseline, colored)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
-  --output tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+  --output src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.txt
 
 # Plan 1 (plain text)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
   --no-color \
-  --output tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.nocolor.txt
+  --output src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.nocolor.txt
 
 # Plan 2 (replacement-focused, colored)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json \
-  --output tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json \
+  --output src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt
 
 # UAT artifact (ANSI, used for feature screenshots)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json \
   --output artifacts/uat-terraform-show-approximation.txt
 ```
 
@@ -114,10 +114,10 @@ dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
    - `.tmp/sensitive-shown-example.md` - azurerm_key_vault_secret with actual value `super-secret-value`
 2. Generated HTML using HtmlRenderer (azdo flavor):
    ```bash
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/module-grouping-example.md --flavor azdo --output .tmp/module-grouping-example.azdo.html
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/role-assignment-example.md --flavor azdo --output .tmp/role-assignment-example.azdo.html
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/sensitive-masked-example.md --flavor azdo --output .tmp/sensitive-masked-example.azdo.html
-   dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/sensitive-shown-example.md --flavor azdo --output .tmp/sensitive-shown-example.azdo.html
+  dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/module-grouping-example.md --flavor azdo --output .tmp/module-grouping-example.azdo.html
+  dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/role-assignment-example.md --flavor azdo --output .tmp/role-assignment-example.azdo.html
+  dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/sensitive-masked-example.md --flavor azdo --output .tmp/sensitive-masked-example.azdo.html
+  dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- --input .tmp/sensitive-shown-example.md --flavor azdo --output .tmp/sensitive-shown-example.azdo.html
    ```
 3. Extracted HTML from generated files and embedded into examples.html
 

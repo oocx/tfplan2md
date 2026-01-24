@@ -1,0 +1,49 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.deep_nested",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "deep_nested",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Web/sites@2022-03-01",
+          "name": "deepNestedApp",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "siteConfig": {
+                "appSettings": {
+                  "level1": {
+                    "level2": {
+                      "level3": {
+                        "level4": {
+                          "level5": {
+                            "deepValue": "value-at-level-5-with-extremely-long-configuration-string-that-exceeds-two-hundred-characters-to-test-deep-nesting-combined-with-large-value-handling-in-the-template-rendering-logic"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

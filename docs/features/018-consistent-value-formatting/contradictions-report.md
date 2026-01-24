@@ -183,4 +183,4 @@ The choice depends on which approach better serves readability, consistency, and
 
 ### Task 5: Regenerate Test Snapshots
 - **Action:** Run test suite and regenerate snapshots to capture new formatting
-- **Files affected:** All snapshot files in `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`
+- **Files affected:** All snapshot files in `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`

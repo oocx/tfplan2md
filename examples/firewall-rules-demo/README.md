@@ -40,7 +40,7 @@ docker run --rm -v "$(pwd):/data" ghcr.io/oocx/tfplan2md:latest \
   --output /data/firewall-rules.md
 
 # Generate HTML for website
-dotnet run --project ../../tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project ../../src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input firewall-rules.md \
   --flavor azdo \
   --output firewall-rules.azdo.html

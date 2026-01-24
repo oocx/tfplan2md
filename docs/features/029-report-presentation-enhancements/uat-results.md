@@ -54,7 +54,7 @@ The feature implementation requires the following fixes:
 1. Run `scripts/generate-demo-artifacts.sh`.
 2. Inspect `artifacts/comprehensive-demo.md` for duplicate dates and missing icons in Azure scopes.
 3. Verify screenshot tool still works after fixes by running:
-   `dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- --input artifacts/comprehensive-demo.github.html --target-terraform-resource-id "azurerm_resource_group.core"`
+   `dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- --input artifacts/comprehensive-demo.github.html --target-terraform-resource-id "azurerm_resource_group.core"`
 
 ---
 

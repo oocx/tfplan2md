@@ -23,14 +23,14 @@ Ensure the feature is ready for release, create the pull request (for both new f
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -66,7 +66,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Verify code review is approved before proceeding
-- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test`) if diagnosing a specific CI failure
+- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`) if diagnosing a specific CI failure
 - Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
 - Check that working directory is clean
 - Verify branch is up to date with main
@@ -105,7 +105,7 @@ Before starting, familiarize yourself with:
 - [docs/spec.md](../../docs/spec.md) - Project specification and coding standards
 - [docs/commenting-guidelines.md](../../docs/commenting-guidelines.md) - Code documentation requirements
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution and release guidelines
-- Current version in `Directory.Build.props`
+- Current version in `src/Directory.Build.props`
 
 ## Release Process
 
@@ -121,6 +121,7 @@ This project uses:
 - The CI pipeline builds and publishes the Docker image
 - **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 - **Workflow Status**: Use `scripts/check-workflow-status.sh` for all workflow operations (list, watch, trigger) instead of raw `gh run` commands to reduce approval friction.
+- **Agent-Friendly Output**: Use `--quiet` flag with `watch` command (e.g., `scripts/check-workflow-status.sh watch <run-id> --quiet`) to get minimal, parseable output (`WORKFLOW: SUCCESS|FAILURE|CANCELLED`) that reduces token usage and makes status checks faster.
 
 ## Workflow Completion Checklist
 
@@ -144,7 +145,7 @@ Before releasing, verify:
 2. **Tests Pass** (trust CI — only run locally if debugging a failure)
    ```bash
    # Only if CI failed and you need to reproduce:
-   scripts/test-with-timeout.sh -- dotnet test
+   scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
    ```
 
 3. **Docker Build Succeeds** (only if not recently verified by Code Reviewer)
@@ -202,8 +203,12 @@ Before releasing, verify:
    # List latest run on main branch
    scripts/check-workflow-status.sh list --branch main --limit 1
    
-   # Watch the run until completion
-   scripts/check-workflow-status.sh watch <run-id>
+   # Watch the run (quiet mode for minimal output)
+   scripts/check-workflow-status.sh watch <run-id> --quiet
+   ```
+   **Expected output (quiet mode):**
+   ```
+   WORKFLOW: SUCCESS
    ```
    - Wait for CI pipeline to complete successfully
    - CI runs Versionize which creates the version tag
@@ -228,8 +233,12 @@ Before releasing, verify:
    # List latest release workflow run
    scripts/check-workflow-status.sh list --workflow release.yml --limit 1
    
-   # Watch the release run until completion
-   scripts/check-workflow-status.sh watch <release-run-id>
+   # Watch the release run (quiet mode for minimal output)
+   scripts/check-workflow-status.sh watch <release-run-id> --quiet
+   ```
+   **Expected output (quiet mode):**
+   ```
+   WORKFLOW: SUCCESS
    ```
    - Wait for release workflow to complete
    - If the release pipeline fails, hand off to Developer agent
@@ -242,7 +251,9 @@ Before releasing, verify:
    # Check CHANGELOG.md was updated
    head -n 20 CHANGELOG.md
    
-   # Verify GitHub Release created
+   # Verify GitHub Release created (fallback to raw gh if no script available)
+   # Preferred: Use GitHub chat tools in VS Code
+   # Fallback only:
    PAGER=cat gh release view <tag>
    ```
    - [ ] CHANGELOG.md updated with new version and commits

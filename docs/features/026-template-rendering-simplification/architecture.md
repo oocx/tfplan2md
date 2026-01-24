@@ -252,14 +252,14 @@ All existing snapshot tests and UAT artifacts must produce **byte-identical or w
    ```bash
    scripts/generate-demo-artifacts.sh
    scripts/uat-run.sh
-   git add artifacts/ tests/**/*.verified.*
+   git add artifacts/ src/tests/**/*.verified.*
    git commit -m "chore: capture baseline outputs before refactoring"
    ```
 
 2. **After each incremental change**: Compare outputs
    ```bash
    git diff --stat artifacts/
-   git diff tests/**/*.verified.*
+   git diff src/tests/**/*.verified.*
    ```
 
 3. **For any difference**:

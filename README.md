@@ -1,8 +1,8 @@
 # tfplan2md
 
-![tfplan2md](tfplan2md-logo.svg)
+![tfplan2md](website/assets/images/logo-full.svg)
 
-[![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![Coverage](assets/coverage-badge.svg)](docs/coverage/history.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 Convert Terraform plan JSON files into human-readable Markdown reports.
 
@@ -108,7 +108,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
-| `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `simple-diff` (cross-platform) |
+| `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
@@ -117,17 +117,19 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
 
-#### Large Value Formatting
+#### Render Target Selection
 
-Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
+The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
 
-- **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps (GitHub strips styles but content remains readable).
-- **`simple-diff`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
+- **`azuredevops`** (default, alias: `azdo`): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps PR comments (GitHub strips styles but content remains readable).
+- **`github`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
 
 Example:
 ```bash
-terraform show -json plan.tfplan | tfplan2md --large-value-format simple-diff
+terraform show -json plan.tfplan | tfplan2md --render-target github
 ```
+
+**Migration note:** The `--large-value-format` flag has been deprecated and replaced by `--render-target`. Use `--render-target azuredevops` for `inline-diff` behavior or `--render-target github` for `simple-diff` behavior.
 
 #### Debug Output
 
@@ -178,62 +180,62 @@ docker run -v $(pwd):/data oocx/tfplan2md --debug \
 
 ### HTML renderer (development tool)
 
-Render existing tfplan2md reports to HTML with GitHub- or Azure-DevOps-like output using the standalone tool in [tools/Oocx.TfPlan2Md.HtmlRenderer](tools/Oocx.TfPlan2Md.HtmlRenderer):
+Render existing tfplan2md reports to HTML with GitHub- or Azure-DevOps-like output using the standalone tool in [src/tools/Oocx.TfPlan2Md.HtmlRenderer](src/tools/Oocx.TfPlan2Md.HtmlRenderer):
 
 ```bash
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor github
 
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
-  --template tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
+  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
   --output artifacts/comprehensive-demo.azdo.html
 ```
 
 ### Screenshot generator (development tool)
 
-Generate PNG or JPEG screenshots from HTML using Playwright in [tools/Oocx.TfPlan2Md.ScreenshotGenerator](tools/Oocx.TfPlan2Md.ScreenshotGenerator). Install the browser once after build:
+Generate PNG or JPEG screenshots from HTML using Playwright in [src/tools/Oocx.TfPlan2Md.ScreenshotGenerator](src/tools/Oocx.TfPlan2Md.ScreenshotGenerator). Install the browser once after build:
 
 ```bash
-pwsh tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
+pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
 
 Usage examples (formats: png default, jpeg; WebP deferred):
 
 ```bash
 # Default viewport (1920x1080), output derived from input name
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html
 
 # Custom viewport
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot-1280x720.png \
   --width 1280 \
   --height 720
 
 # Full-page capture
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/full-report.png \
   --full-page
 
 # JPEG with quality
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/screenshot.jpg \
   --quality 85
 
 # Capture specific resource by Terraform address
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/resource.png \
   --target-terraform-resource-id "azurerm_storage_account.example"
 
 # Capture by selector (Playwright syntax)
-dotnet run --project tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/firewall.png \
   --target-selector "details:has(summary:has-text('azurerm_firewall'))"
@@ -245,13 +247,13 @@ Generate terminal-style output that mirrors `terraform show` for creating "befor
 
 ```bash
 # Colored output
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
   --output artifacts/terraform-show-plan1.txt
 
 # Plain text (no ANSI)
-dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
-  --input tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
+dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- \
+  --input src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan1.json \
   --no-color \
   --output artifacts/terraform-show-plan1.nocolor.txt
 ```
@@ -364,6 +366,7 @@ See [Scriban documentation](https://github.com/scriban/scriban) for template syn
 For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes. The default renderer (used by the CLI) applies resource-specific templates automatically when a matching template is available; the global default template is used as a fallback.
 
 **Currently supported:**
+- `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
 - `azurerm_network_security_group` - Shows security rule changes with semantic diffing
 - `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information
@@ -437,14 +440,28 @@ dotnet build
 dotnet test
 
 Tests use **TUnit** with **AwesomeAssertions** for fluent, readable assertions.
+
+### Coverage Helpers
+
+Use the helper scripts to summarize coverage from Cobertura output:
+
+```bash
+# Print overall line/branch coverage
+scripts/coverage-summary.sh
+
+# List lowest branch coverage classes (default 30, can pass a count)
+scripts/coverage-low-branches.sh 20
+```
 ```
 
 ### Pre-commit Hooks
 
 This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git hooks:
 
-- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build`
+- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build` (enforces code style and quality metrics)
 - **commit-msg**: Validates commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format
+
+**Code quality checks:** The build enforces cyclomatic complexity (≤15), maintainability index (≥20), and line length (≤160 characters). See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ### Docker Build
 
@@ -467,9 +484,19 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 | Workflow | Trigger | Purpose |
 |----------|---------|----------|
-| **PR Validation** | Pull requests to `main` | Format check, build, test, vulnerability scan |
+| **PR Validation** | Pull requests to `main` | Format check, build, test, coverage enforcement, vulnerability scan |
 | **CI** | Push to `main` | Build, test, auto-version with [Versionize](https://github.com/versionize/versionize) |
 | **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
+
+### Code Coverage
+
+Code coverage is automatically collected and enforced on every pull request:
+
+- **Coverage badge**: The [![Coverage](assets/coverage-badge.svg)](docs/coverage/history.json) badge in the README shows current line coverage percentage
+- **Coverage thresholds**: PRs must maintain or improve code coverage (currently 84.48% line coverage and 72.80% branch coverage)
+- **Coverage history**: Historical coverage data is tracked in [docs/coverage/history.json](docs/coverage/history.json)
+- **Coverage reports**: Detailed HTML coverage reports are available as workflow artifacts
+- **Maintainer override**: PRs can bypass coverage requirements using the `coverage-override` label when justified
 
 ### Versioning
 
@@ -483,7 +510,7 @@ Versioning is automated using [Conventional Commits](https://www.conventionalcom
 
 ### Mathias Raacke - Project Maintainer
 
-<img src="profile.jpg" alt="Mathias Raacke" width="150" align="right" style="border-radius: 50%; margin-left: 20px;" />
+<img src="assets/profile.jpg" alt="Mathias Raacke" width="150" height="150" align="right" style="border-radius: 50%; object-fit: cover; margin-left: 20px;" />
 
 Mathias Raacke develops software professionally since 2000 and uses .net and c# since 2003. He currently works at [Diamant Software](https://www.diamant-software.de) as part of the Platform-Team that provides Azure Landingzones for the Diamant Software SaaS solution. The Diamant Software Azure platform is developed with 100% IaC and Terraform. Before he moved to the Platform Team, he has been working as software-architect at Diamant since 2012. In the past, Mathias used to work as independent trainer and consultant for .NET development and software architecture, and he developed the WPF localization addin NLocalize for Visual Studio with his own former company Neovelop GmbH.
 
@@ -491,7 +518,7 @@ Mathias Raacke develops software professionally since 2000 and uses .net and c# 
 
 ### GitHub Copilot - AI Development Partner
 
-<img src="github-copilot.png" alt="GitHub Copilot" width="150" align="right" style="border-radius: 50%; margin-left: 20px; background: #d0d0d0" />
+<img src="assets/github-copilot.png" alt="GitHub Copilot" width="150" height="150" align="right" style="border-radius: 50%; object-fit: cover; margin-left: 20px; background: #d0d0d0" />
 
 I'm GitHub Copilot, the AI pair programmer that helped write 100% of this project's code, tests, and documentation. I work as an intelligent coding assistant, providing context-aware suggestions, generating implementations from specifications, and helping maintain code quality throughout the development lifecycle.
 

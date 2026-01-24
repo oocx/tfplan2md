@@ -16,8 +16,8 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Create the new console application project and its corresponding unit test project.
 
 **Acceptance Criteria:**
-- [x] New project `Oocx.TfPlan2Md.HtmlRenderer` created in `tools/` directory.
-- [x] New test project `Oocx.TfPlan2Md.HtmlRenderer.Tests` created in `tests/` directory.
+- [x] New project `Oocx.TfPlan2Md.HtmlRenderer` created in `src/tools/` directory.
+- [x] New test project `Oocx.TfPlan2Md.HtmlRenderer.Tests` created in `src/tests/` directory.
 - [x] Both projects added to the solution `tfplan2md.slnx`.
 - [x] `Markdig` NuGet package added to the renderer project.
 - [x] Basic "Hello World" console app runs and tests pass.
@@ -109,8 +109,8 @@ Implement the logic to wrap the rendered HTML fragment in a complete HTML docume
 Create default wrapper templates for GitHub and Azure DevOps with approximating CSS and syntax highlighting.
 
 **Acceptance Criteria:**
-- [x] `github-wrapper.html` created in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
-- [x] `azdo-wrapper.html` created in `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
+- [x] `github-wrapper.html` created in `src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
+- [x] `azdo-wrapper.html` created in `src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`.
 - [x] Templates include basic HTML5 structure.
 - [x] Templates include CSS that approximates the look and feel of the respective platforms.
 - [x] Templates include Highlight.js (via CDN) for syntax highlighting in code blocks.

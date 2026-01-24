@@ -188,7 +188,7 @@ Options:
 - **Option 1 (recommended): Inject deterministic metadata provider in tests**
   - Provide fixed `generated_at`, `version`, and `commit` values when constructing the model in tests.
   - Pros: keeps snapshots meaningful; no “regex filtering” hiding real regressions.
-  - Cons: requires a small change to how tests/builders get metadata.
+  - Cons: requires a small change to how src/tests/builders get metadata.
 - **Option 2: Filter the metadata line during snapshot comparison**
   - Pros: minimal product code changes.
   - Cons: risks masking real formatting regressions in the metadata line.

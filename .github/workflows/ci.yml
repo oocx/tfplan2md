@@ -34,7 +34,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: src/global.json
 
       - name: Install Versionize
         run: dotnet tool install --global Versionize

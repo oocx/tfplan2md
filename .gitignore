@@ -32,6 +32,8 @@ coverage/
 *.coveragexml
 CoverletSourceRootsMapping_*
 .msCoverageSourceRootsMapping_*
+!docs/coverage/
+!docs/coverage/history.json
 
 # OS generated files
 .DS_Store
@@ -43,6 +45,12 @@ publish/
 # Workspace temp files (agents must not write outside repo)
 .tmp/*
 !.tmp/.gitkeep
+
+# Temporary build/format output files
+build-output.txt
+build-verify*.txt
+format-*.txt
+format-*.json
 
 plan.tfplan
 # VS Code Copilot chat exports (large, may contain sensitive data)

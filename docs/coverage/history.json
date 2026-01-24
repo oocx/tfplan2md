@@ -1,0 +1,46 @@
+{
+  "Entries": [
+    {
+      "Timestamp": "2026-01-19T23:20:39+00:00",
+      "CommitSha": "c5b5b6d65c72dbc33f21a10921256567a2ae337c",
+      "LineCoverage": 84.48,
+      "BranchCoverage": 72.80
+    },
+    {
+      "Timestamp": "2026-01-21T22:46:16+00:00",
+      "CommitSha": "34421dfc5f16f1a8426091ae222749e8e852c5e5",
+      "LineCoverage": 85.44,
+      "BranchCoverage": 73.46
+    },
+    {
+      "Timestamp": "2026-01-21T23:00:39+00:00",
+      "CommitSha": "ee095b0cef893835d22b33d36d9d0c5c207dad27",
+      "LineCoverage": 85.44,
+      "BranchCoverage": 73.46
+    },
+    {
+      "Timestamp": "2026-01-23T16:40:02+00:00",
+      "CommitSha": "1237fe7eef33a36239bc76a7e33738912fe34611",
+      "LineCoverage": 85.26,
+      "BranchCoverage": 73.58
+    },
+    {
+      "Timestamp": "2026-01-23T17:32:23+00:00",
+      "CommitSha": "a88fb168e88d13c935b1424e7b47e6595e5ea800",
+      "LineCoverage": 85.26,
+      "BranchCoverage": 73.58
+    },
+    {
+      "Timestamp": "2026-01-23T23:36:03+00:00",
+      "CommitSha": "04af3395988a48fc224cd3d0e592347c1b7c164a",
+      "LineCoverage": 84.54,
+      "BranchCoverage": 73.28
+    },
+    {
+      "Timestamp": "2026-01-24T22:29:12+00:00",
+      "CommitSha": "c55e322120c61e42f9d6154149a8e1705ea408be",
+      "LineCoverage": 89.44,
+      "BranchCoverage": 80.02
+    }
+  ]
+}

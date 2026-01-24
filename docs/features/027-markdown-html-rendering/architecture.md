@@ -101,11 +101,11 @@ We will **start with Option 1**. If, after using the tool in real workflows, Git
 
 Per spec, introduce a new console project:
 
-- `tools/Oocx.TfPlan2Md.HtmlRenderer/` (new .NET console app)
-- `tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`
+- `src/tools/Oocx.TfPlan2Md.HtmlRenderer/` (new .NET console app)
+- `src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/`
   - `github-wrapper.html`
   - `azdo-wrapper.html`
-- `tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/` (new test project)
+- `src/tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/` (new test project)
 
 This stays separate from the main `tfplan2md` CLI project, preserving the existing “single project for the CLI tool” guidance in [docs/spec.md](../../spec.md).
 

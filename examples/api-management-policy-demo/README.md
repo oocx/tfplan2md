@@ -42,13 +42,13 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
   examples/api-management-policy-demo/plan.json > examples/api-management-policy-demo/output.md
 
 # Generate GitHub HTML
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj -- \
   --input examples/api-management-policy-demo/output.md \
   --flavor github \
   --output examples/api-management-policy-demo/output-github.html
 
 # Generate Azure DevOps HTML
-dotnet run --project tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj -- \
+dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer/Oocx.TfPlan2Md.HtmlRenderer.csproj -- \
   --input examples/api-management-policy-demo/output.md \
   --flavor azdo \
   --output examples/api-management-policy-demo/output-azdo.html

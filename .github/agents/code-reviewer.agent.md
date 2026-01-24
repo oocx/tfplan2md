@@ -41,14 +41,14 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Check Docker availability before running Docker build (ask maintainer to start if needed)
-- Run `scripts/test-with-timeout.sh -- dotnet test` and `docker build` to verify functionality
+- Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and `docker build` to verify functionality
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
 - Ensure tests follow naming convention and are meaningful
 - Confirm documentation is updated
 - Check that CHANGELOG.md was NOT modified
-- Treat snapshot changes (`tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`) as high-risk and require explicit justification
+- Treat snapshot changes (`src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`) as high-risk and require explicit justification
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
 - When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
 - For user-facing features affecting markdown rendering, hand off to UAT Tester after code approval
@@ -106,14 +106,21 @@ Before starting, familiarize yourself with:
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
-- The implementation in `src/` and `tests/`
+- The implementation in `src/` and `src/tests/`
 
 ## Review Checklist
 
 ### Correctness
 - [ ] Code implements all acceptance criteria from the tasks
 - [ ] All test cases from the test plan are implemented
-- [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test`)
+- [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
+- [ ] **Coverage thresholds met** (line ≥84.48%, branch ≥72.80%):
+  ```bash
+  # Run tests with coverage
+  dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+  # Verify thresholds
+  dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- --report ./src/TestResults/coverage.cobertura.xml --line-threshold 84.48 --branch-threshold 72.80
+  ```
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 - [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
@@ -178,7 +185,7 @@ Before starting, familiarize yourself with:
 
 2. **Run verification** - Execute tests and check for errors:
    ```bash
-  scripts/test-with-timeout.sh -- dotnet test
+  scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
    docker build -t tfplan2md:local .
    ```
 
@@ -214,6 +221,7 @@ Brief summary of what was reviewed and the overall assessment.
 ## Verification Results
 
 - Tests: Pass / Fail (X passed, Y failed)
+- Coverage: Line X% (threshold ≥84.48%), Branch Y% (threshold ≥72.80%)
 - Build: Success / Failure
 - Docker: Builds / Fails
 - Errors: None / List
@@ -276,6 +284,14 @@ Your work is complete when:
 
 ## Handoff
 
+**Before handoff:** Commit the code review report:
+```bash
+git add docs/features/NNN-<feature-slug>/code-review.md
+git commit -m "docs: add code review for <feature-name>"
+git push origin HEAD
+```
+
+After committing:
 - If **Changes Requested**: Use the handoff button to return to the **Developer** agent.
   - This applies to both initial reviews and reviews of rework after failed PR/CI validation
   - After Developer fixes issues, work returns to Code Reviewer for re-approval

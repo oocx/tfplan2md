@@ -1,0 +1,38 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.storage_account",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "storage_account",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Storage/storageAccounts@2023-01-01",
+          "name": "mystorageaccount",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "networkAcls": {
+                "ipRules": "10.0.0.0/24,10.0.1.0/24,10.0.2.0/24,10.0.3.0/24,10.0.4.0/24,10.0.5.0/24,10.0.6.0/24,10.0.7.0/24,10.0.8.0/24,10.0.9.0/24,10.0.10.0/24,10.0.11.0/24,10.0.12.0/24,10.0.13.0/24,10.0.14.0/24,10.0.15.0/24,10.0.16.0/24,10.0.17.0/24,10.0.18.0/24,10.0.19.0/24"
+              },
+              "corsRules": "rule1=https://example.com,https://api.example.com,https://web.example.com,https://admin.example.com,https://portal.example.com,https://dashboard.example.com,https://app.example.com,https://staging.example.com,https://dev.example.com,https://test.example.com"
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

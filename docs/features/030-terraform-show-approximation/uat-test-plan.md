@@ -7,8 +7,8 @@ Verify that the `TerraformShowRenderer` tool generates output that is visually i
 **Artifact to use:** `artifacts/uat-terraform-show-approximation.txt`
 
 **Creation Instructions:**
-- **Source Plan:** `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json`
-- **Command:** `dotnet run --project tools/Oocx.TfPlan2Md.TerraformShowRenderer -- -i tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json -o artifacts/uat-terraform-show-approximation.txt`
+- **Source Plan:** `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json`
+- **Command:** `dotnet run --project src/tools/Oocx.TfPlan2Md.TerraformShowRenderer -- -i src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.json -o artifacts/uat-terraform-show-approximation.txt`
 - **Rationale:** This plan includes a replacement (`-/+`) operation, which is one of the most complex visual elements to render correctly with ANSI colors.
 
 ## Test Steps
@@ -28,7 +28,7 @@ Verify that the `TerraformShowRenderer` tool generates output that is visually i
 **Expected Outcome:**
 - The output should look like a real Terraform plan.
 - ANSI colors should be correctly applied to action symbols and changed values.
-- Indentation should match the baseline `tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt`.
+- Indentation should match the baseline `src/tests/Oocx.TfPlan2Md.Tests/TestData/TerraformShow/plan2.txt`.
 
 **Before/After Context:**
 - This tool is new. It allows us to show "Before" examples on the website without needing the original binary `.tfplan` files.

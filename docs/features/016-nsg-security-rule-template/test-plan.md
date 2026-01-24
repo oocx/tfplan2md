@@ -9,11 +9,11 @@ This test plan covers the verification of the specialized Scriban template for `
 **Status**: ✅ All tests implemented and passing
 
 All test cases defined in this plan have been implemented in:
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs`
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/TemplateIsolationTests.cs`
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownInvariantTests.cs` (existing invariant tests cover NSG output)
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererNsgTemplateTests.cs`
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/TemplateIsolationTests.cs`
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownInvariantTests.cs` (existing invariant tests cover NSG output)
 
-Test data: `tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json`
+Test data: `src/tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json`
 
 ## Test Coverage Matrix
 
@@ -151,7 +151,7 @@ Verify the logic for handling singular vs. plural address and port fields.
 
 ## Test Data Requirements
 
-Create a new test data file `tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` containing:
+Create a new test data file `src/tests/Oocx.TfPlan2Md.Tests/TestData/nsg-rule-changes.json` containing:
 - An `azurerm_network_security_group` resource change.
 - `before` state with a set of rules.
 - `after` state with:

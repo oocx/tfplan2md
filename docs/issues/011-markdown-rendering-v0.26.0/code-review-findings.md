@@ -76,7 +76,7 @@ Remove the trailing blank line at EOF.
 
 ### Fix 2: Update Blank Line Detection Test
 
-**File:** [tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs)
+**File:** [src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs)
 
 **Current:**
 ```csharp
@@ -110,7 +110,7 @@ maxConsecutiveBlanks.Should().BeLessThan(2,
 
 ### Fix 3: Add Actual markdownlint Integration Test
 
-**File:** [tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs](../../../tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs)
+**File:** [src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs](../../../src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs)
 
 **Add:**
 ```csharp

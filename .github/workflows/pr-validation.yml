@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
   checks: write
 
@@ -53,29 +53,33 @@ jobs:
 
       - name: Shell test (timeout wrapper)
         if: steps.filter.outputs.changed == 'true'
-        run: tests/shell/test_with_timeout_test.sh
+        run: src/tests/shell/test_with_timeout_test.sh
 
       - name: Shell test (analyze chat)
         if: steps.filter.outputs.changed == 'true'
-        run: tests/shell/analyze_chat_test.sh
+        run: src/tests/shell/analyze_chat_test.sh
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-dotnet@v5
         with:
-          global-json-file: global.json
+          global-json-file: src/global.json
 
       - name: Restore dependencies
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet restore
+        run: dotnet restore src/tfplan2md.slnx
+
+      - name: Restore .NET tools
+        if: steps.filter.outputs.changed == 'true'
+        run: dotnet tool restore
 
       - name: Check formatting
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet format --verify-no-changes --verbosity diagnostic
+        run: dotnet format src/tfplan2md.slnx --verify-no-changes --verbosity diagnostic
 
       - name: Build
         if: steps.filter.outputs.changed == 'true'
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build src/tfplan2md.slnx --no-restore --configuration Release
 
       - name: Prepare Docker test image
         if: steps.filter.outputs.changed == 'true'
@@ -88,7 +92,45 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory ${{ github.workspace }}/TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+
+      - name: Generate coverage report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: |
+          dotnet tool run reportgenerator \
+            -reports:"./TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"./TestResults/coverage-report" \
+            -reporttypes:Html
+
+      - name: Check coverage override label
+        id: coverage_override
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels?.map(label => label.name) ?? [];
+            core.setOutput('active', labels.includes('coverage-override'));
+
+      - name: Enforce coverage thresholds
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: |
+          report_path="./TestResults/coverage.cobertura.xml"
+          if [ ! -f "$report_path" ]; then
+            echo "❌ ERROR: Cobertura report not found for coverage enforcement."
+            exit 1
+          fi
+
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report "$report_path" \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80 \
+            --summary-output ./TestResults/coverage-summary.md \
+            --report-link "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --override-active "${{ steps.coverage_override.outputs.active }}"
+
+      - name: Publish coverage summary
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: cat ./TestResults/coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
@@ -114,6 +156,82 @@ jobs:
         with:
           files: ./TestResults/*.trx
           check_name: 'Test Results'
+
+      - name: Upload coverage report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./TestResults/coverage-report
+
+      - name: Upload Cobertura report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cobertura
+          path: ./TestResults/**/coverage.cobertura.xml
+
+      - name: Update coverage badge and history
+        id: coverage_badge_history
+        if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (success() || steps.coverage_override.outputs.active == 'true')
+        run: |
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report ./TestResults/coverage.cobertura.xml \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80 \
+            --badge-output ./assets/coverage-badge.svg \
+            --history-output ./docs/coverage/history.json \
+            --commit-sha "${{ github.event.pull_request.head.sha }}" \
+            --timestamp "${{ github.event.pull_request.updated_at }}" \
+            --override-active "${{ steps.coverage_override.outputs.active }}"
+
+      - name: Commit coverage badge and history
+        if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && steps.coverage_badge_history.outcome == 'success'
+        run: |
+          if [ -n "$(git status --porcelain assets/coverage-badge.svg docs/coverage/history.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add assets/coverage-badge.svg docs/coverage/history.json
+            git commit -m "docs: update coverage badge and history"
+            git push origin HEAD:"${{ github.event.pull_request.head.ref }}"
+          else
+            echo "No coverage badge or history changes to commit."
+          fi
+
+      - name: Post coverage summary comment
+        if: steps.filter.outputs.changed == 'true' && (success() || failure()) && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- coverage-summary -->';
+            const body = fs.readFileSync('./TestResults/coverage-summary.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number,
+            });
+
+            const existing = comments.find(comment => comment.body && comment.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

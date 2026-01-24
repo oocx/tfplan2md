@@ -1,0 +1,52 @@
+{
+  "terraform_version": "1.14.0",
+  "format_version": "1.2",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.automation_account",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "name": "myAccount",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "disableLocalAuth": false,
+              "publicNetworkAccess": true,
+              "sku": {
+                "name": "Basic"
+              }
+            }
+          }
+        },
+        "after": {
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "name": "myAccount",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "disableLocalAuth": true,
+              "publicNetworkAccess": true,
+              "sku": {
+                "name": "Standard"
+              }
+            }
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {}
+        },
+        "after_sensitive": {
+          "body": {}
+        }
+      }
+    }
+  ]
+}

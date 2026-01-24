@@ -23,14 +23,14 @@ Review the implementation thoroughly and produce a Code Review Report that eithe
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -66,14 +66,14 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Check Docker availability before running Docker build (ask maintainer to start if needed)
-- Run `scripts/test-with-timeout.sh -- dotnet test` and `docker build` to verify functionality
+- Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and `docker build` to verify functionality
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
 - Ensure tests follow naming convention and are meaningful
 - Confirm documentation is updated
 - Check that CHANGELOG.md was NOT modified
-- Treat snapshot changes (`tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`) as high-risk and require explicit justification
+- Treat snapshot changes (`src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`) as high-risk and require explicit justification
 - Categorize issues by severity (Blocker/Major/Minor/Suggestion)
 - When reviewing rework from failed PR/CI pipelines, verify the specific failure is resolved
 - For user-facing features affecting markdown rendering, hand off to UAT Tester after code approval
@@ -111,14 +111,14 @@ Before starting, familiarize yourself with:
 - [.github/gh-cli-instructions.md](../gh-cli-instructions.md) - GitHub CLI fallback guidance (only if a chat tool is missing)
 - [docs/testing-strategy.md](../../docs/testing-strategy.md) - Testing conventions
 - [Scriban Language Reference](https://github.com/scriban/scriban/blob/master/doc/language.md) - For template-related work
-- The implementation in `src/` and `tests/`
+- The implementation in `src/` and `src/tests/`
 
 ## Review Checklist
 
 ### Correctness
 - [ ] Code implements all acceptance criteria from the tasks
 - [ ] All test cases from the test plan are implemented
-- [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test`)
+- [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 - [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
@@ -183,7 +183,7 @@ Before starting, familiarize yourself with:
 
 2. **Run verification** - Execute tests and check for errors:
    ```bash
-  scripts/test-with-timeout.sh -- dotnet test
+   scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
    docker build -t tfplan2md:local .
    ```
 

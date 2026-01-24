@@ -23,14 +23,14 @@ Gather diagnostic information, perform initial analysis, and document the proble
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -179,10 +179,17 @@ Collect relevant data:
 # Preferred in VS Code chat:
 # - Use GitHub chat tools to inspect PR status checks, PR details, and PR comments.
 #
-# Fallback: check workflow runs via gh (non-blocking)
-PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
+# Preferred: Use repository wrapper scripts for workflow operations
+scripts/check-workflow-status.sh list --branch main --limit 5
 
-# View specific workflow run (non-blocking)
+# View specific workflow run (use wrapper script)
+scripts/check-workflow-status.sh view <run-id>
+
+# Watch a run until completion (use wrapper script)
+scripts/check-workflow-status.sh watch <run-id>
+
+# Fallback only (if script doesn't support the operation):
+PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
 PAGER=cat gh run view <run-id> --log-failed
 
 # Check git history
@@ -192,7 +199,7 @@ scripts/git-log.sh --oneline --since="1 week ago" -- <relevant-path>
 dotnet build --no-restore
 
 # Run tests
-scripts/test-with-timeout.sh -- dotnet test --verbosity normal
+scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --verbosity normal
 
 # Check for problems in workspace
 # Use the 'problems' tool to see diagnostics

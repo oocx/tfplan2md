@@ -14,24 +14,28 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
     private const string TemplateExtension = ".sbn";
     private readonly string? _customTemplateDirectory;
     private readonly Assembly _assembly;
-    private readonly string _templateResourcePrefix;
+    private readonly string _coreTemplateResourcePrefix;
+    private readonly IEnumerable<string> _providerTemplateResourcePrefixes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ScribanTemplateLoader"/> class.
     /// </summary>
     /// <param name="customTemplateDirectory">Optional custom template directory for overrides.</param>
     /// <param name="assembly">Assembly that embeds built-in templates.</param>
-    /// <param name="templateResourcePrefix">Namespace prefix for embedded templates.</param>
+    /// <param name="coreTemplateResourcePrefix">Namespace prefix for core embedded templates.</param>
+    /// <param name="providerTemplateResourcePrefixes">Namespace prefixes for provider-specific templates.</param>
     public ScribanTemplateLoader(
         string? customTemplateDirectory = null,
         Assembly? assembly = null,
-        string templateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.")
+        string coreTemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.",
+        IEnumerable<string>? providerTemplateResourcePrefixes = null)
     {
         _customTemplateDirectory = string.IsNullOrWhiteSpace(customTemplateDirectory)
             ? null
             : customTemplateDirectory;
         _assembly = assembly ?? Assembly.GetExecutingAssembly();
-        _templateResourcePrefix = templateResourcePrefix;
+        _coreTemplateResourcePrefix = coreTemplateResourcePrefix;
+        _providerTemplateResourcePrefixes = providerTemplateResourcePrefixes ?? [];
     }
 
     /// <summary>
@@ -98,6 +102,7 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
     {
         var normalized = EnsureExtension(NormalizePath(templatePath));
 
+        // 1. Check custom template directory first (highest priority)
         if (_customTemplateDirectory is not null)
         {
             var customPath = Path.Combine(_customTemplateDirectory, normalized.Replace('/', Path.DirectorySeparatorChar));
@@ -107,15 +112,31 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
             }
         }
 
-        var resourceName = _templateResourcePrefix + normalized.Replace('/', '.');
-        using var stream = _assembly.GetManifestResourceStream(resourceName);
-        if (stream is null)
+        // 2. Try core templates
+        var coreResourceName = _coreTemplateResourcePrefix + normalized.Replace('/', '.');
+        using (var stream = _assembly.GetManifestResourceStream(coreResourceName))
         {
-            return null;
+            if (stream is not null)
+            {
+                using var reader = new StreamReader(stream);
+                return reader.ReadToEnd();
+            }
         }
 
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
+        // 3. Try provider-specific templates
+        foreach (var providerPrefix in _providerTemplateResourcePrefixes)
+        {
+            var providerResourceName = providerPrefix + normalized.Replace('/', '.');
+            using var stream = _assembly.GetManifestResourceStream(providerResourceName);
+            if (stream is not null)
+            {
+                using var reader = new StreamReader(stream);
+                return reader.ReadToEnd();
+            }
+        }
+
+        // Template not found
+        return null;
     }
 
     private static string CombinePath(string? currentPath, string templateName)

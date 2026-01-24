@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Provides explicit mapping of ReportModel to ScriptObject for NativeAOT compatibility.
 /// Reflection-based Scriban Import does not work reliably under AOT trimming.
-/// Related feature: docs/features/037-aot-trimmed-image/specification.md
+/// Related feature: docs/features/037-aot-trimmed-image/specification.md.
 /// </summary>
 internal static class AotScriptObjectMapper
 {
@@ -31,7 +34,7 @@ internal static class AotScriptObjectMapper
         scriptObject["timestamp"] = model.Timestamp;
         scriptObject["report_title"] = model.ReportTitle;
         scriptObject["show_unchanged_values"] = model.ShowUnchangedValues;
-        scriptObject["large_value_format"] = model.LargeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        scriptObject["large_value_format"] = model.RenderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
 
         // Generated timestamp as nested object with DateTime for Scriban date functions
         var generatedAtUtcObj = new ScriptObject();
@@ -53,14 +56,14 @@ internal static class AotScriptObjectMapper
     /// Includes large_value_format from the provided parameter.
     /// </summary>
     /// <param name="change">The resource change to map.</param>
-    /// <param name="largeValueFormat">The format for large values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>A ScriptObject containing the change data.</returns>
-    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, LargeValueFormat largeValueFormat)
+    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget)
     {
         var changeObject = MapResourceChange(change);
 
         // Add large_value_format to change context for template access
-        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        var formatString = renderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
         changeObject["large_value_format"] = formatString;
 
         return changeObject;
@@ -138,10 +141,10 @@ internal static class AotScriptObjectMapper
 
         // JSON values
         obj["before_json"] = change.BeforeJson is JsonElement jsonBefore
-            ? ScribanHelpers.ConvertToScriptObject(jsonBefore)
+            ? ConvertToScriptObject(jsonBefore)
             : null;
         obj["after_json"] = change.AfterJson is JsonElement jsonAfter
-            ? ScribanHelpers.ConvertToScriptObject(jsonAfter)
+            ? ConvertToScriptObject(jsonAfter)
             : null;
 
         // Replace paths

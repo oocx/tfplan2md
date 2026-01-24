@@ -14,7 +14,7 @@ set -euo pipefail
 #   scripts/validate-snapshot-changes.sh --base-ref "origin/${GITHUB_BASE_REF}" --head-ref "${GITHUB_SHA}"
 
 TOKEN="SNAPSHOT_UPDATE_OK"
-SNAPSHOT_PATH_PREFIX="tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/"
+SNAPSHOT_PATH_PREFIX="src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/"
 
 cd "$(git rev-parse --show-toplevel)"
 

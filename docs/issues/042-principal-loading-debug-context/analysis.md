@@ -768,4 +768,4 @@ This analysis is complete and ready for Developer handoff when:
 - Current Implementation: `src/Oocx.TfPlan2Md/Azure/PrincipalMapper.cs`
 - Diagnostics: `src/Oocx.TfPlan2Md/Diagnostics/DiagnosticContext.cs`
 - Template Loading: `src/Oocx.TfPlan2Md/MarkdownGeneration/MarkdownRenderer.cs`
-- Existing Tests: `tests/Oocx.TfPlan2Md.TUnit/Azure/PrincipalMapperDiagnosticsTests.cs`
+- Existing Tests: `src/tests/Oocx.TfPlan2Md.TUnit/Azure/PrincipalMapperDiagnosticsTests.cs`

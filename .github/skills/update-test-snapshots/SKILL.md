@@ -30,7 +30,7 @@ scripts/update-test-snapshots.sh
 ```
 
 This single command:
-1. Deletes all existing snapshot files in `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`
+1. Deletes all existing snapshot files in `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`
 2. Runs snapshot tests (which will fail but create new snapshots)
 3. Counts generated snapshots to verify success
 4. Runs snapshot tests again to verify they pass with new baselines
@@ -47,7 +47,7 @@ This single command:
 [INFO] ✅ All snapshot tests pass!
 
 Snapshots updated successfully. Review changes with:
-  scripts/git-diff.sh tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
+  scripts/git-diff.sh src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots
 ```
 
 ## When to Use
@@ -58,7 +58,7 @@ Snapshots updated successfully. Review changes with:
 - When snapshot tests fail due to expected changes
 
 ## What Gets Updated
-Snapshot files in `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`:
+Snapshot files in `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`:
 - `comprehensive-demo.md` - Full comprehensive demo output
 - `summary-template.md` - Summary template output
 - `breaking-plan.md` - Edge cases with escaping
@@ -69,11 +69,11 @@ Snapshot files in `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`:
 ## After Running
 Always review the changes:
 ```bash
-scripts/git-diff.sh tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
+scripts/git-diff.sh src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
 ```
 
 Verify the changes match your expectations, then stage and commit:
 ```bash
-git add tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
+git add src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/
 git commit -m "test: update snapshots after [describe change]"
 ```

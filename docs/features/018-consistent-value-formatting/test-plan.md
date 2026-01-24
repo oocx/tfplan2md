@@ -28,7 +28,7 @@ Reference: [Specification](specification.md), [Architecture](architecture.md)
 **User Goal**: View a standard plan report and see that values are highlighted while attribute names are not.
 
 **Steps**:
-1. Setup: Use `tests/Oocx.TfPlan2Md.Tests/TestData/azurerm-azuredevops-plan.json`
+1. Setup: Use `src/tests/Oocx.TfPlan2Md.Tests/TestData/azurerm-azuredevops-plan.json`
 2. Execute: `tfplan2md -i plan.json`
 3. Inspect: The generated Markdown report.
 
@@ -47,7 +47,7 @@ Reference: [Specification](specification.md), [Architecture](architecture.md)
 **User Goal**: See detailed diffs for firewall rule changes using the preferred format.
 
 **Steps**:
-1. Setup: Use `tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
+1. Setup: Use `src/tests/Oocx.TfPlan2Md.Tests/TestData/firewall-rule-changes.json`
 2. Execute: `tfplan2md -i plan.json --large-value-format inline-diff`
 3. Inspect: The "Rule Changes" table for modified rules.
 4. Execute: `tfplan2md -i plan.json --large-value-format standard-diff`

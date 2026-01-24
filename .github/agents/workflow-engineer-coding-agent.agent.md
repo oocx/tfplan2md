@@ -23,14 +23,14 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -64,7 +64,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 - Use conventional commit messages (`feat:`, `refactor:`, `fix:`, `docs:`)
 - Ensure Mermaid diagram reflects all agents and artifacts
 - Test proposed changes incrementally
-- Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; run tests via `scripts/test-with-timeout.sh -- dotnet test` when C# code changes
+- Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; run tests via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` when C# code changes
 - **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
@@ -620,7 +620,7 @@ Help with development tasks
 Implement features and tests according to specifications, following C# coding conventions and test-first development.
 
 ## Boundaries
-✅ Always: Write tests before code; run `scripts/test-with-timeout.sh -- dotnet test` before committing when C# code changes
+✅ Always: Write tests before code; run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` before committing when C# code changes
 ⚠️ Ask First: Database schema changes, adding NuGet packages
 🚫 Never: Edit CHANGELOG.md (auto-generated), commit to main
 ```
@@ -635,7 +635,7 @@ Run tests to verify your changes.
 ```markdown
 ## Commands
 - **Build:** `dotnet build` - Compiles solution, check for errors
-- **Test:** `scripts/test-with-timeout.sh -- dotnet test` - Runs all tests; required when C# code changes (not needed for agent/docs-only changes)
+- **Test:** `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` - Runs all tests; required when C# code changes (not needed for agent/docs-only changes)
    - Override timeout if needed: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test`
 - **Format:** `dotnet format` - Auto-formats code to match .editorconfig
 ```

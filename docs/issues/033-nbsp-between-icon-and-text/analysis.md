@@ -62,17 +62,17 @@ Additionally, the website example page `website/features/nsg-rules.html` contain
    - Minimal approach: replace the literal spaces with a literal NBSP character (U+00A0) in the `.sbn` files.
    - More maintainable approach: expose a Scriban helper like `icon_label(icon, text)` (or `nbsp()`) from C# that returns `${icon}\u00A0${text}`, and use it consistently in templates.
 2. Update tests and snapshots that assert the old strings.
-   - `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs` currently asserts strings containing `"➕ Add"` and module headings like `"### 📦 Module:"`.
-   - Snapshot files under `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/` include the old spacing.
-   - `tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/MarkdownToHtmlRendererTests.cs` uses `"### 📦 Module: …"`.
+   - `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs` currently asserts strings containing `"➕ Add"` and module headings like `"### 📦 Module:"`.
+   - Snapshot files under `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/` include the old spacing.
+   - `src/tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/MarkdownToHtmlRendererTests.cs` uses `"### 📦 Module: …"`.
 3. Regenerate website example snippets (or update the HTML source) so the examples reflect actual tfplan2md output.
 
 ## Related Tests
 
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs`
-- `tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ComprehensiveDemoTests.cs`
-- `tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/MarkdownToHtmlRendererTests.cs`
-- Snapshots: `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownRendererTests.cs`
+- `src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/ComprehensiveDemoTests.cs`
+- `src/tests/Oocx.TfPlan2Md.HtmlRenderer.Tests/MarkdownToHtmlRendererTests.cs`
+- Snapshots: `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/*.md`
 
 ## Additional Context
 

@@ -2,10 +2,17 @@ using System.Text;
 
 namespace Oocx.TfPlan2Md.CLI;
 
+/// <summary>
+/// Provides formatted help text for the tfplan2md command-line interface.
+/// </summary>
 public static class HelpTextProvider
 {
     private const int OptionPadding = 50;
 
+    /// <summary>
+    /// Generates the complete help text including usage, options, and examples.
+    /// </summary>
+    /// <returns>A formatted help text string ready for display.</returns>
     public static string GetHelpText()
     {
         var options = new (string Option, string Description)[]
@@ -14,7 +21,7 @@ public static class HelpTextProvider
             ("-t, --template <name|file>", "Use a built-in template by name or a custom Scriban template file."),
             ("--report-title <title>", "Override the report title (level-1 heading) with a custom value."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
-            ("--large-value-format <inline-diff|simple-diff>", "Controls rendering of large attribute values."),
+            ("--render-target <github|azuredevops>", "Target platform for rendering (default: azuredevops)."),
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
             ("--hide-metadata", "Hide tfplan2md version/commit/timestamp metadata in the header."),
             ("--show-sensitive", "Show sensitive values unmasked."),
@@ -37,8 +44,8 @@ public static class HelpTextProvider
             "# With custom report title",
             "tfplan2md plan.json --report-title \"Drift Detection - repo\"",
             string.Empty,
-            "# GitHub-friendly large value diff",
-            "tfplan2md plan.json --large-value-format simple-diff",
+            "# GitHub-friendly rendering",
+            "tfplan2md plan.json --render-target github",
             string.Empty,
             "# With output file and custom template",
             "tfplan2md plan.json --output plan.md --template my-template.sbn"

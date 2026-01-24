@@ -96,9 +96,9 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
   - For `az`: Use `AZURE_CORE_PAGER=cat az ...` or `export AZURE_CORE_PAGER=cat`.
   - For general tools: Use `export PAGER=cat`.
 - **Test hangs**: When running the full test suite, use the timeout wrapper instead of calling `dotnet test` directly.
-  - Example: `scripts/test-with-timeout.sh -- dotnet test --no-build --configuration Release --verbosity normal`
-  - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test ...`
-- **Snapshot updates**: Snapshot diffs (files under `tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
+  - Example: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --no-build --configuration Release --verbosity normal`
+  - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test --solution src/tfplan2md.slnx ...`
+- **Snapshot updates**: Snapshot diffs (files under `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
   - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
   - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.
 - **Option selection**: If you present the user with an option list and the user replies with a number (e.g., `1`), that number always refers to the **most recent** option list you presented.

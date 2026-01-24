@@ -180,6 +180,40 @@ git commit -m "feat(api)!: rename TerraformPlan to PlanResult"
 
 ## Coding Standards
 
+### Code Quality Metrics
+
+This project enforces automated code quality metrics to ensure maintainable, readable code:
+
+- **Cyclomatic Complexity** (CA1502): Maximum 15 per method
+- **Maintainability Index** (CA1505/CA1506): Minimum 20 per method/class (on 0-100 scale)
+- **Line Length** (IDE0055): Maximum 160 characters
+- **File Length**: Target ~300 lines per file (guideline, not enforced)
+
+These metrics are enforced at build time and will cause build failures if violated. Thresholds are defined in [CodeMetricsConfig.txt](../src/CodeMetricsConfig.txt) and [.editorconfig](../.editorconfig).
+
+**Suppression Policy:**
+
+Suppressions are allowed only when refactoring would harm readability or maintainability. Requirements:
+
+1. Use `[SuppressMessage]` attribute with clear `Justification` parameter
+2. Add a comment above the suppressed member explaining why the suppression is necessary
+3. Reference related feature/task documentation if applicable
+4. Obtain maintainer approval in the PR review
+
+Example:
+```csharp
+// Complex state machine requires 18 branches for RFC compliance
+// Approved by maintainer in PR #346
+[SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", 
+    Justification = "State machine for RFC 9110 HTTP semantics requires explicit branch handling")]
+public HttpStatus ProcessRequest(HttpRequest request)
+{
+    // Implementation
+}
+```
+
+See [docs/commenting-guidelines.md](docs/commenting-guidelines.md) for complete suppression guidelines.
+
 ### Access Modifiers
 
 tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:
@@ -221,6 +255,57 @@ internal async Task<IReadOnlyList<ResourceChange>> ParseAsync(string planFilePat
 ```
 
 See [docs/commenting-guidelines.md](docs/commenting-guidelines.md) for complete guidelines.
+
+## Project Structure
+
+Understanding the codebase organization will help you navigate and contribute effectively.
+
+### High-Level Organization
+
+```
+tfplan2md/
+├── src/Oocx.TfPlan2Md/              # Main application
+│   ├── CLI/                         # Command-line interface
+│   ├── Parsing/                     # Terraform plan JSON parsing
+│   ├── MarkdownGeneration/          # Core rendering logic
+│   ├── Providers/                   # Provider-specific implementations
+│   ├── RenderTargets/               # Platform-specific rendering (GitHub vs Azure DevOps)
+│   └── Platforms/                   # Cloud platform utilities (Azure)
+├── src/tests/                       # Test projects
+└── docs/                            # Documentation
+```
+
+### Provider Architecture
+
+Terraform provider-specific code (azurerm, azapi, azuredevops) is organized into modular provider implementations:
+
+**Location:** `src/Oocx.TfPlan2Md/Providers/`
+
+Each provider is self-contained:
+- **Templates** (`.sbn` files): Provider-specific Scriban templates
+- **Models**: Resource view models and factories for complex resources
+- **Helpers**: Provider-specific Scriban helper functions
+- **Module**: `IProviderModule` implementation for registration
+
+**Adding a new provider?** See [src/Oocx.TfPlan2Md/Providers/README.md](src/Oocx.TfPlan2Md/Providers/README.md) for a comprehensive guide.
+
+### Core Components
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| **CLI** | `CLI/` | Command-line parsing and orchestration |
+| **Parsing** | `Parsing/` | Terraform plan JSON deserialization |
+| **MarkdownGeneration** | `MarkdownGeneration/` | Core report building and rendering |
+| **Providers** | `Providers/{Provider}/` | Provider-specific logic (azurerm, azapi, azuredevops) |
+| **RenderTargets** | `RenderTargets/` | Platform-specific diff formatting (GitHub, Azure DevOps) |
+| **Platforms** | `Platforms/Azure/` | Azure-specific utilities (principal mapping, role names) |
+
+### Architecture Documentation
+
+For comprehensive architecture details, see:
+- [docs/architecture.md](docs/architecture.md) - Full arc42 architecture documentation
+- [docs/spec.md](docs/spec.md) - Project specification and technical details
+- [src/Oocx.TfPlan2Md/Providers/README.md](src/Oocx.TfPlan2Md/Providers/README.md) - Provider development guide
 
 ## Local Development Setup
 

@@ -121,7 +121,7 @@ Reviewed the fix for markdown rendering issues in v0.26.0 that caused MD012 viol
    - **Impact:** Defensive cleanup for any template-generated table issues
    - **Quality:** ✅ Good - provides safety net for table formatting
 
-4. **tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs**
+4. **src/tests/Oocx.TfPlan2Md.Tests/MarkdownGeneration/MarkdownValidationTests.cs**
    - **Changes:** Added three new validation tests:
      - `Render_ComprehensiveDemo_NoMultipleBlankLines`: Detects MD012 violations using line-by-line blank counting
      - `Render_ComprehensiveDemo_NoBlankLinesInTables`: Regex check for table formatting

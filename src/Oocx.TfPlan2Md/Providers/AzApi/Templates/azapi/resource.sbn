@@ -1,0 +1,98 @@
+{{~## Template for azapi_resource
+     Provides human-readable rendering of azapi_resource body content using dot notation.
+     Related feature: docs/features/040-azapi-resource-template/specification.md
+~}}
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>{{ change.summary_html }}</summary>
+<br>
+
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
+
+{{~ # Extract azapi metadata (type, name, parent_id, location, tags) ~}}
+{{~ metadata = extract_azapi_metadata change ~}}
+
+{{~ if metadata.type ~}}
+**Type:** {{ metadata.type | escape_markdown }}
+{{~ end ~}}
+
+{{~ # Generate documentation link if available ~}}
+{{~ if change.after_json && change.after_json.type ~}}
+{{~ doc_link = azure_api_doc_link change.after_json.type ~}}
+{{~ else if change.before_json && change.before_json.type ~}}
+{{~ doc_link = azure_api_doc_link change.before_json.type ~}}
+{{~ end ~}}
+
+{{~ if doc_link ~}}
+
+📚 [View API Documentation (best-effort)]({{ doc_link | escape_markdown }})
+{{~ end ~}}
+
+{{~ # Standard attributes table with semantic formatting ~}}
+
+| Attribute | Value |
+|-----------|-------|
+{{~ if metadata.name ~}}
+| name | {{ format_attribute_value_table "name" metadata.name "azapi" }} |
+{{~ end ~}}
+{{~ if metadata.parent_id ~}}
+| parent_id | {{ format_attribute_value_table "parent_id" metadata.parent_id "azurerm" }} |
+{{~ end ~}}
+{{~ if metadata.location ~}}
+| location | {{ format_attribute_value_table "location" metadata.location "azapi" }} |
+{{~ end ~}}
+
+{{~ # Tags badges (if present) ~}}
+{{~ if metadata.tags ~}}
+
+**Tags:**
+{{~ for tag in metadata.tags ~}}
+{{~ tag_key = tag[0] ~}}
+{{~ tag_value = tag[1] ~}}
+ `{{ tag_key | escape_markdown }}: {{ tag_value | escape_markdown }}`
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ # Body rendering based on action type ~}}
+{{~ if change.action == "create" || change.action == "replace" ~}}
+{{~ body_heading = change.action == "replace" ? "Body (replacing existing resource)" : "Body" ~}}
+{{~ if change.after_json && change.after_json.body ~}}
+{{ render_azapi_body change.after_json.body body_heading "create" null null null false "inline-diff" }}
+{{~ else ~}}
+
+*Body: (empty)*
+{{~ end ~}}
+{{~ else if change.action == "update" ~}}
+{{~ if change.before_json && change.before_json.body && change.after_json && change.after_json.body ~}}
+{{~ before_sensitive_body = change.before_sensitive ? change.before_sensitive.body : null ~}}
+{{~ after_sensitive_body = change.after_sensitive ? change.after_sensitive.body : null ~}}
+{{ render_azapi_body change.after_json.body "Body Changes" "update" change.before_json.body before_sensitive_body after_sensitive_body false "inline-diff" }}
+{{~ else ~}}
+
+*Body: (no changes or missing data)*
+{{~ end ~}}
+{{~ else if change.action == "delete" ~}}
+{{~ if change.before_json && change.before_json.body ~}}
+{{ render_azapi_body change.before_json.body "Body (being deleted)" "delete" null null null false "inline-diff" }}
+{{~ else ~}}
+
+*Body: (empty)*
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ # Show any non-body attribute changes (filter out body.* since body is rendered separately) ~}}
+{{~ non_body_changes = change.attribute_changes | array.filter @(do; ret !string.starts_with $0.name "body."; end) ~}}
+{{~ if non_body_changes && non_body_changes.size > 0 ~}}
+
+<details>
+<summary>Other Attribute Changes</summary>
+
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+{{~ for attr in non_body_changes ~}}
+| {{ attr.name | escape_markdown }} | {{ format_attribute_value_table attr.name (attr.before ?? "(null)") "azurerm" }} | {{ format_attribute_value_table attr.name (attr.after ?? "(null)") "azurerm" }} |
+{{~ end ~}}
+
+</details>
+{{~ end ~}}
+
+</details>

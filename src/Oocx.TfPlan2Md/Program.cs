@@ -4,11 +4,11 @@
 #pragma warning disable CA1506
 
 using System.Reflection;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 var options = ParseArguments(args);
 if (options is null)

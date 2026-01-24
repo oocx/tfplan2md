@@ -1,4 +1,4 @@
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Interface for mapping Azure AD/Entra principal IDs to display names.

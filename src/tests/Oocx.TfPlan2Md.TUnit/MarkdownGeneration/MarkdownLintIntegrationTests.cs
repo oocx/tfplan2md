@@ -1,8 +1,8 @@
 using System.IO;
 using System.Linq;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Assertions;
 using TUnit.Assertions.Extensions;

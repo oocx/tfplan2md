@@ -24,7 +24,7 @@ internal partial class ReportModelBuilder(
     bool showUnchangedValues = false,
     RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps,
     string? reportTitle = null,
-    Azure.IPrincipalMapper? principalMapper = null,
+    Platforms.Azure.IPrincipalMapper? principalMapper = null,
     IMetadataProvider? metadataProvider = null,
     bool hideMetadata = false,
     Providers.ProviderRegistry? providerRegistry = null)
@@ -63,7 +63,7 @@ internal partial class ReportModelBuilder(
     /// Registry for resource-specific view model factories.
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
-        CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new Azure.NullPrincipalMapper(), providerRegistry);
+        CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new Platforms.Azure.NullPrincipalMapper(), providerRegistry);
 
     /// <summary>
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.
@@ -85,7 +85,7 @@ internal partial class ReportModelBuilder(
     /// <returns>Configured factory registry.</returns>
     private static ResourceViewModelFactoryRegistry CreateFactoryRegistry(
         LargeValueFormat largeValueFormat,
-        Azure.IPrincipalMapper principalMapper,
+        Platforms.Azure.IPrincipalMapper principalMapper,
         Providers.ProviderRegistry? providerRegistry)
     {
         var registry = new ResourceViewModelFactoryRegistry(largeValueFormat, principalMapper);

@@ -3,7 +3,7 @@ using System.Text.Json;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.Parsing;
 
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Maps Azure AD/Entra principal IDs to display names.

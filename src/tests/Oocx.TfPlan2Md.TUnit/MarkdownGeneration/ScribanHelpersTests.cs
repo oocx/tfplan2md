@@ -340,7 +340,8 @@ public class ScribanHelpersTests
         var scriptObject = new ScriptObject();
 
         // Act
-        ScribanHelpers.RegisterHelpers(scriptObject, new NullMapper(), LargeValueFormat.InlineDiff);
+        var diffFormatter = new Oocx.TfPlan2Md.RenderTargets.AzureDevOps.AzureDevOpsDiffFormatter();
+        ScribanHelpers.RegisterHelpers(scriptObject, new NullMapper(), diffFormatter);
 
         // Assert
         scriptObject.ContainsKey("diff_array").Should().BeTrue();

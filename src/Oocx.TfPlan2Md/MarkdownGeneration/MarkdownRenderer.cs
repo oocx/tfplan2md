@@ -2,6 +2,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.Diagnostics;
+using Oocx.TfPlan2Md.RenderTargets;
+using Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
+using Oocx.TfPlan2Md.RenderTargets.GitHub;
 using Scriban;
 using Scriban.Runtime;
 
@@ -268,7 +271,8 @@ internal class MarkdownRenderer
         scriptObject["change"] = changeObject;
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, largeValueFormat);
+        var diffFormatter = CreateDiffFormatter(largeValueFormat);
+        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
@@ -306,7 +310,8 @@ internal class MarkdownRenderer
         var scriptObject = CreateScriptObject(model);
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);
+        var diffFormatter = CreateDiffFormatter(model.LargeValueFormat);
+        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
@@ -419,6 +424,18 @@ internal class MarkdownRenderer
         }
 
         throw new MarkdownRenderException($"Template '{templateName}' not found.");
+    }
+
+    /// <summary>
+    /// Creates the appropriate diff formatter based on the large value format setting.
+    /// </summary>
+    /// <param name="format">The large value format that determines which formatter to use.</param>
+    /// <returns>A diff formatter instance for the specified format.</returns>
+    private static IDiffFormatter CreateDiffFormatter(LargeValueFormat format)
+    {
+        return format == LargeValueFormat.SimpleDiff
+            ? new GitHubDiffFormatter()
+            : new AzureDevOpsDiffFormatter();
     }
 
     private readonly record struct TemplateSource(string Path, string Content);

@@ -1,5 +1,6 @@
 using System;
 using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.RenderTargets;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -15,12 +16,10 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="scriptObject">The script object receiving helpers.</param>
     /// <param name="principalMapper">Mapper used to resolve principal names.</param>
-    /// <param name="largeValueFormat">Preferred formatting for large values.</param>
-    public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, LargeValueFormat largeValueFormat)
+    /// <param name="diffFormatter">Formatter used for rendering before/after diffs.</param>
+    public static void RegisterHelpers(ScriptObject scriptObject, IPrincipalMapper principalMapper, IDiffFormatter diffFormatter)
     {
-        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
-
-        scriptObject.Import("format_diff", new Func<string?, string?, string>((before, after) => FormatDiff(before, after, formatString)));
+        scriptObject.Import("format_diff", new Func<string?, string?, string>((before, after) => diffFormatter.FormatDiff(before, after)));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("escape_heading", new Func<string?, string>(EscapeMarkdownHeading));

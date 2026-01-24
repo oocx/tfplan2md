@@ -363,38 +363,40 @@ public class ScribanHelpersAzApiTests
 
     #endregion
 
-    #region AzureApiDocLink Tests (TC-14, TC-15)
+    #region AzureApiDocLink Tests (TC-08, TC-09, TC-10)
 
     [Test]
-    public async Task AzureApiDocLink_MicrosoftResourceType_ConstructsUrl()
+    public async Task AzureApiDocLink_KnownResourceType_ReturnsMappedUrl()
     {
-        // Arrange - TC-14: Generate documentation link
+        // Arrange - TC-08: Known resource type with mapping
         var resourceType = "Microsoft.Automation/automationAccounts@2021-06-22";
 
         // Act
         var result = AzApiHelpers.AzureApiDocLink(resourceType);
 
         // Assert
-        result.Should().Be("https://learn.microsoft.com/rest/api/automation/automation-accounts/");
+        result.Should().NotBeNull("Known resource type should have mapping");
+        result.Should().Be("https://learn.microsoft.com/rest/api/automation/automation-account");
 
         await Task.CompletedTask;
     }
 
     [Test]
-    public async Task AzureApiDocLink_DifferentServices_GeneratesCorrectUrls()
+    public async Task AzureApiDocLink_KnownResourceTypes_ReturnMappedUrls()
     {
-        // Arrange
+        // Arrange - TC-08: Multiple known resource types
         var tests = new[]
         {
-            ("Microsoft.Storage/storageAccounts@2023-01-01", "https://learn.microsoft.com/rest/api/storage/storage-accounts/"),
-            ("Microsoft.Network/virtualNetworks@2022-07-01", "https://learn.microsoft.com/rest/api/network/virtual-networks/"),
-            ("Microsoft.Compute/virtualMachines@2023-03-01", "https://learn.microsoft.com/rest/api/compute/virtual-machines/")
+            ("Microsoft.Storage/storageAccounts@2023-01-01", "https://learn.microsoft.com/rest/api/storagerp/storage-accounts"),
+            ("Microsoft.Network/virtualNetworks@2022-07-01", "https://learn.microsoft.com/rest/api/virtualnetwork/virtual-networks"),
+            ("Microsoft.Compute/virtualMachines@2023-03-01", "https://learn.microsoft.com/rest/api/compute/virtual-machines")
         };
 
         // Act & Assert
         foreach (var (resourceType, expectedUrl) in tests)
         {
             var result = AzApiHelpers.AzureApiDocLink(resourceType);
+            result.Should().NotBeNull($"Known resource type '{resourceType}' should have mapping");
             result.Should().Be(expectedUrl, $"for resource type {resourceType}");
         }
 
@@ -402,9 +404,24 @@ public class ScribanHelpersAzApiTests
     }
 
     [Test]
+    public async Task AzureApiDocLink_UnknownResourceType_ReturnsNull()
+    {
+        // Arrange - TC-09: Unknown resource type without mapping
+        var resourceType = "Microsoft.UnknownService/unknownResource@2023-01-01";
+
+        // Act
+        var result = AzApiHelpers.AzureApiDocLink(resourceType);
+
+        // Assert
+        result.Should().BeNull("Unknown resource type should return null (no heuristic fallback)");
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
     public async Task AzureApiDocLink_NonMicrosoftProvider_ReturnsNull()
     {
-        // Arrange - TC-15: Non-Microsoft provider
+        // Arrange - TC-07: Non-Microsoft provider
         var resourceType = "Custom.Provider/customResource@2023-01-01";
 
         // Act
@@ -417,9 +434,33 @@ public class ScribanHelpersAzApiTests
     }
 
     [Test]
+    public async Task AzureApiDocLink_EdgeCases_ReturnsNull()
+    {
+        // Arrange - TC-10: Edge cases
+        var edgeCases = new[]
+        {
+            null,
+            "",
+            "   ",
+            "invalid-format",
+            "no-slash",
+            "@version-only"
+        };
+
+        // Act & Assert
+        foreach (var resourceType in edgeCases)
+        {
+            var result = AzApiHelpers.AzureApiDocLink(resourceType);
+            result.Should().BeNull($"Edge case '{resourceType ?? "(null)"}' should return null");
+        }
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
     public async Task AzureApiDocLink_NullInput_ReturnsNull()
     {
-        // Arrange
+        // Arrange - TC-10: Null input
         string? resourceType = null;
 
         // Act

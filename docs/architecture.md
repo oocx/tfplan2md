@@ -363,7 +363,7 @@ flowchart LR
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Apply templates to generate markdown; validate output is compatible with GitHub and Azure DevOps |
 | `ScribanHelpers` | Custom Scriban functions (`diff_array`, `format_diff`, etc.); provides complex logic that templates should not implement |
-| `LargeValueFormat` (enum) | Display mode for large values (inline-diff, simple-diff) |
+| `RenderTarget` (enum) | Target platform for rendering (GitHub, AzureDevOps); controls diff formatting and markdown features |
 | `IResourceSummaryBuilder` / `ResourceSummaryBuilder` | Generate one-line summaries for resources |
 
 **Design Principle: Logic in Code, Not Templates**
@@ -430,7 +430,7 @@ classDiagram
         +IReadOnlyList~ModuleChangeGroup~ ModuleChanges
         +SummaryModel Summary
         +bool ShowUnchangedValues
-        +LargeValueFormat LargeValueFormat
+        +RenderTarget RenderTarget
     }
     
     class ModuleChangeGroup {
@@ -483,10 +483,10 @@ classDiagram
         +bool IsLarge
     }
     
-    class LargeValueFormat {
+    class RenderTarget {
         <<enumeration>>
-        InlineDiff
-        SimpleDiff
+        GitHub
+        AzureDevOps
     }
     
     ReportModel "1" *-- "0..*" ResourceChangeModel : changes

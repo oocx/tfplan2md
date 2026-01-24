@@ -24,7 +24,7 @@
 
 {{~ if doc_link ~}}
 
-📚 [View API Documentation (best-effort)]({{ doc_link | escape_markdown }})
+📚 [View API Documentation]({{ doc_link | escape_markdown }})
 {{~ end ~}}
 
 {{~ # Standard attributes table with semantic formatting ~}}

@@ -69,7 +69,9 @@ internal partial class ReportModelBuilder(
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.
     /// This will be removed in Task 6 when LargeValueFormat enum is fully removed.
     /// </summary>
-    private static LargeValueFormat ConvertRenderTargetToLargeValueFormat(RenderTargets.RenderTarget target)
+    /// <param name="target">The render target to convert.</param>
+    /// <returns>The corresponding LargeValueFormat value.</returns>
+    internal static LargeValueFormat ConvertRenderTargetToLargeValueFormat(RenderTargets.RenderTarget target)
     {
         return target == RenderTargets.RenderTarget.GitHub
             ? LargeValueFormat.SimpleDiff

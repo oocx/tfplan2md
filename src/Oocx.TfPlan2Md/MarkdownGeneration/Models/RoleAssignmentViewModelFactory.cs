@@ -6,6 +6,7 @@ using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;

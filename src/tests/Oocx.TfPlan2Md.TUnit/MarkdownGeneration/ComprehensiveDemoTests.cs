@@ -3,6 +3,9 @@ using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
+using Oocx.TfPlan2Md.RenderTargets;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
@@ -17,14 +20,32 @@ public class ComprehensiveDemoTests
     public ComprehensiveDemoTests()
     {
         _principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
-        _renderer = new MarkdownRenderer(_principalMapper);
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: _principalMapper));
+        _renderer = new MarkdownRenderer(
+            principalMapper: _principalMapper,
+            providerRegistry: providerRegistry);
+    }
+
+    private ReportModelBuilder CreateBuilder(bool showSensitive = false)
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: _principalMapper));
+        return new ReportModelBuilder(
+            showSensitive: showSensitive,
+            principalMapper: _principalMapper,
+            providerRegistry: providerRegistry);
     }
 
     [Test]
     public void DefaultTemplate_RendersAllKeyFeatures()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var model = new ReportModelBuilder(principalMapper: _principalMapper).Build(plan);
+        var model = CreateBuilder().Build(plan);
 
         var markdown = _renderer.Render(model);
 
@@ -52,7 +73,7 @@ public class ComprehensiveDemoTests
     public void Render_WithShowSensitive_RevealsSecretValues()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var builder = new ReportModelBuilder(showSensitive: true, principalMapper: _principalMapper);
+        var builder = CreateBuilder(showSensitive: true);
         var model = builder.Build(plan);
 
         var markdown = _renderer.Render(model);
@@ -65,7 +86,7 @@ public class ComprehensiveDemoTests
     public void SummaryTemplate_ShowsExpectedCounts()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var model = new ReportModelBuilder().Build(plan);
+        var model = CreateBuilder().Build(plan);
 
         var summary = _renderer.Render(model, "summary");
 
@@ -81,7 +102,7 @@ public class ComprehensiveDemoTests
     public void DefaultTemplate_AddsBlankLineAfterDetailsSections()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var model = new ReportModelBuilder().Build(plan);
+        var model = CreateBuilder().Build(plan);
 
         var markdown = _renderer.Render(model);
 

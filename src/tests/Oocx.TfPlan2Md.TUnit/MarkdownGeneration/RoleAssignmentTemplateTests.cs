@@ -3,6 +3,8 @@ using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
@@ -108,9 +110,20 @@ public class RoleAssignmentTemplateTests
     {
         var principalMapper = mapper ?? new StubPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.RoleAssignmentsPlanPath));
-        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+
+        // Create provider registry with AzureRM module
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: principalMapper));
+
+        var builder = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(principalMapper);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
         return renderer.Render(model);
     }
 

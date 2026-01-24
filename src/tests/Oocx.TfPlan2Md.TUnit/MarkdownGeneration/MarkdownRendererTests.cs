@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
@@ -13,8 +16,30 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class MarkdownRendererTests
 {
     private readonly TerraformPlanParser _parser = new();
-    private readonly MarkdownRenderer _renderer = new();
+    private readonly MarkdownRenderer _renderer = CreateRenderer();
     private const string Nbsp = "\u00A0";
+
+    private static MarkdownRenderer CreateRenderer()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new MarkdownRenderer(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
+
+    private static ReportModelBuilder CreateBuilder()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new ReportModelBuilder(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
 
     private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
@@ -68,7 +93,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -87,7 +112,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -139,7 +164,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azure-resource-ids.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -158,7 +183,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/timestamp-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -193,7 +218,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -210,7 +235,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         var tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".sbn");
@@ -263,7 +288,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -283,7 +308,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -305,7 +330,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -323,7 +348,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -342,7 +367,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/create-only-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -369,7 +394,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -390,7 +415,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/create-only-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -406,7 +431,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/empty-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -432,7 +457,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/no-op-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -454,7 +479,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/empty-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -471,7 +496,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/minimal-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -488,7 +513,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/create-only-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -507,7 +532,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/create-only-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -530,7 +555,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/delete-only-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -548,7 +573,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/delete-only-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -612,7 +637,7 @@ public class MarkdownRendererTests
             ResourceChanges: new List<ResourceChange> { resourceChange }
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -669,7 +694,7 @@ public class MarkdownRendererTests
             ResourceChanges: new List<ResourceChange> { resourceChange }
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -726,7 +751,7 @@ public class MarkdownRendererTests
             ResourceChanges: new List<ResourceChange> { resourceChange }
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -778,7 +803,7 @@ public class MarkdownRendererTests
             ResourceChanges: new List<ResourceChange> { resourceChange }
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -840,7 +865,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -915,7 +940,7 @@ public class MarkdownRendererTests
             ResourceChanges: resourceChanges
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act & Assert - Should NOT throw "Exceeding number of iteration limit '1000' for loop statement"
@@ -931,7 +956,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/multi-module-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -962,7 +987,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/multi-module-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -1005,7 +1030,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
 
@@ -1023,7 +1048,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1041,7 +1066,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1059,7 +1084,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/nsg-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var nsgChange = model.Changes.First(c => c.Address == "azurerm_network_security_group.app");
 
@@ -1076,7 +1101,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1094,7 +1119,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1112,7 +1137,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1130,7 +1155,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1152,7 +1177,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1173,7 +1198,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -1193,7 +1218,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.database_tier");
 
@@ -1211,7 +1236,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.legacy");
 
@@ -1229,7 +1254,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var resourceGroup = model.Changes.First(c => c.Type == "azurerm_resource_group");
 
@@ -1246,7 +1271,7 @@ public class MarkdownRendererTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 

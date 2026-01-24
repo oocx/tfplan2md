@@ -11,6 +11,7 @@ using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzApi;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 
 var options = ParseArguments(args);
 if (options is null)
@@ -92,12 +93,15 @@ static async Task<int> RunAsync(CliOptions options)
     var parser = new TerraformPlanParser();
     var plan = parser.Parse(json);
 
+    // Create principal mapper for resolving principal names in role assignments
+    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile, diagnosticContext);
+
     // Create and configure provider registry
     var providerRegistry = new ProviderRegistry();
     providerRegistry.RegisterProvider(new AzApiModule());
-
-    // Create principal mapper for resolving principal names in role assignments
-    var principalMapper = new PrincipalMapper(options.PrincipalMappingFile, diagnosticContext);
+    providerRegistry.RegisterProvider(new AzureRMModule(
+        largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget),
+        principalMapper: principalMapper));
 
     // Build the report model
     var modelBuilder = new ReportModelBuilder(

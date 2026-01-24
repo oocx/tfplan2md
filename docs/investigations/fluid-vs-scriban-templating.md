@@ -190,9 +190,165 @@ If binary size optimization remains a goal, consider:
 2. **Template optimization**: Reduce template complexity to minimize helper code
 3. **Dependency audit**: Review other dependencies for size reduction opportunities
 
+---
+
+## Appendix A: Profile Trimming (Sizoscope Analysis)
+
+### What is Profile Trimming?
+
+Profile trimming involves using specialized tools to analyze what contributes to binary size and identifying unused code that can be safely removed. The primary tool for NativeAOT binaries is **Sizoscope**.
+
+### How to Use Sizoscope
+
+1. **Enable diagnostic output** in the project file:
+   ```xml
+   <PropertyGroup>
+     <IlcGenerateMstatFile>true</IlcGenerateMstatFile>
+     <IlcGenerateDgmlFile>true</IlcGenerateDgmlFile>
+   </PropertyGroup>
+   ```
+
+2. **Publish the application** with NativeAOT:
+   ```bash
+   dotnet publish -c Release -r linux-musl-x64
+   ```
+
+3. **Locate diagnostic files** in `obj/Release/net10.0/linux-musl-x64/native/`:
+   - `tfplan2md.mstat` - Binary size breakdown
+   - `tfplan2md.dgml.xml` - Dependency graph
+
+4. **Install and run Sizoscope**:
+   ```bash
+   dotnet tool install sizoscope --global
+   sizoscope tfplan2md.mstat
+   ```
+
+5. **Analyze contributors**:
+   - View size per assembly, namespace, type, and method
+   - Use diff mode to compare before/after changes
+   - Identify large contributors for potential optimization
+
+### Sizoscope Benefits
+
+| Capability | Description |
+|------------|-------------|
+| Size visualization | Hierarchical breakdown by assembly/namespace/type/method |
+| Diff snapshots | Compare two builds to measure optimization impact |
+| Root cause analysis | Track why code is included in binary (.NET 8+) |
+| CI integration | Automate regression checks for binary size |
+
+---
+
+## Appendix B: Dependency Audit
+
+### Current Dependencies
+
+| Package | Version | Type | Purpose | Size Impact |
+|---------|---------|------|---------|-------------|
+| **Scriban** | 6.5.2 | Runtime | Template engine | ~507 KB NuGet, preserved in full |
+| Meziantou.Analyzer | 2.0.127 | Analyzer | Code quality | Build-only, 0 KB runtime |
+| Microsoft.CodeAnalysis.NetAnalyzers | 10.0.101 | Analyzer | Code quality | Build-only, 0 KB runtime |
+| Microsoft.DotNet.ILCompiler | 10.0.2 | Build | NativeAOT toolchain | Build-only, 0 KB runtime |
+| Microsoft.NET.ILLink.Tasks | 10.0.2 | Build | Trimmer | Build-only, 0 KB runtime |
+| Roslynator.Analyzers | 4.12.11 | Analyzer | Code quality | Build-only, 0 KB runtime |
+| SonarAnalyzer.CSharp | 9.16.0.82469 | Analyzer | Code quality | Build-only, 0 KB runtime |
+| StyleCop.Analyzers | 1.2.0-beta.556 | Analyzer | Code style | Build-only, 0 KB runtime |
+
+### Audit Findings
+
+**✅ Minimal runtime dependencies**: The project has excellent dependency hygiene:
+- Only 1 runtime dependency (Scriban)
+- All analyzers are build-time only
+- No transitive runtime dependencies
+
+**⚠️ No optimization opportunities**: There are no unused runtime packages to remove.
+
+---
+
+## Appendix C: Scriban Selective Trimming Analysis
+
+### Current Configuration
+
+```xml
+<!-- TrimmerRootDescriptor.xml -->
+<linker>
+  <assembly fullname="Scriban" preserve="all" />
+</linker>
+```
+
+This preserves the entire Scriban assembly (~507 KB), preventing any trimming.
+
+### Scriban Built-in Functions Used in Templates
+
+Analysis of templates reveals only 3 built-in functions are used:
+
+| Function | Namespace | Usage Location |
+|----------|-----------|----------------|
+| `string.starts_with` | `Scriban.Functions.StringFunctions` | `_resource.sbn`, `azapi/resource.sbn` |
+| `array.filter` | `Scriban.Functions.ArrayFunctions` | `azapi/resource.sbn` |
+| `date.to_string` | `Scriban.Functions.DateTimeFunctions` | `_header.sbn` |
+
+### Potential Selective Preservation
+
+Theoretically, we could preserve only the used types:
+
+```xml
+<linker>
+  <!-- Core runtime types - required -->
+  <assembly fullname="Scriban">
+    <type fullname="Scriban.Template" preserve="all"/>
+    <type fullname="Scriban.TemplateContext" preserve="all"/>
+    <type fullname="Scriban.Runtime.ScriptObject" preserve="all"/>
+    <type fullname="Scriban.Runtime.ScriptArray" preserve="all"/>
+    <type fullname="Scriban.Parsing.*" preserve="all"/>
+    <type fullname="Scriban.Syntax.*" preserve="all"/>
+    <!-- Used built-in functions -->
+    <type fullname="Scriban.Functions.StringFunctions" preserve="all"/>
+    <type fullname="Scriban.Functions.ArrayFunctions" preserve="all"/>
+    <type fullname="Scriban.Functions.DateTimeFunctions" preserve="all"/>
+  </assembly>
+</linker>
+```
+
+### Why Selective Trimming is Risky for Scriban
+
+| Risk | Impact | Mitigation Difficulty |
+|------|--------|----------------------|
+| **Dynamic function registration** | Scriban registers built-ins dynamically at runtime | High - requires deep understanding of internals |
+| **Template parsing dependencies** | Parser may reference types not obviously used | High - trial and error approach |
+| **Future template changes** | Adding new built-in usage would require config updates | Medium - requires process discipline |
+| **User custom templates** | Users may use any built-in function | Critical - breaks extensibility |
+| **Internal reflection** | Scriban uses reflection for member access | High - may fail in non-obvious ways |
+
+### Recommendation
+
+**Do not reduce Scriban's `preserve="all"` configuration.**
+
+Reasons:
+1. **Risk/reward mismatch**: Potential savings are small (maybe 100-200 KB) vs. risk of runtime failures
+2. **User extensibility**: Custom templates may use any built-in function
+3. **Maintenance burden**: Every template change requires trimmer config review
+4. **Testing complexity**: Hard to verify all code paths work under selective trimming
+5. **Current size is already optimized**: 14.7 MB image is well within target
+
+### If Size Reduction is Critical
+
+If future requirements demand smaller binaries:
+
+1. **Use Sizoscope first** to identify actual contributors
+2. **Target application code** before library trimming
+3. **Consider Scriban.Lite** if it exists (Scriban has no official "lite" variant)
+4. **Benchmark selective preservation** with extensive test coverage
+5. **Accept the maintenance cost** of keeping trimmer config in sync with templates
+
+---
+
 ## References
 
 - [Scriban GitHub](https://github.com/scriban/scriban)
 - [Fluid GitHub](https://github.com/sebastienros/fluid)
 - [ADR-001: Scriban Templating](../adr-001-scriban-templating.md)
 - [Feature 037: AOT Trimmed Image](../features/037-aot-trimmed-image/architecture.md)
+- [Sizoscope GitHub](https://github.com/MichalStrehovsky/sizoscope)
+- [Microsoft: Trimming Options](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options)
+- [Microsoft: Optimizing AOT Deployments](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/optimizing)

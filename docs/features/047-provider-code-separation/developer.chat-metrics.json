@@ -1,0 +1,130 @@
+{
+  "metadata": {
+    "source": "developer.chat-redacted.json",
+    "analysis_date": "2026-01-24",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 22,
+    "start_timestamp": 1769214944766,
+    "end_timestamp": 1769268845543,
+    "session_duration_sec": 53900.777,
+    "user_wait_time_sec": 36783.263,
+    "agent_work_time_sec": 18703.579
+  },
+  "model_usage": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 22
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "readFile",
+      "count": 267
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 245
+    },
+    {
+      "tool": "replaceString",
+      "count": 171
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 109
+    },
+    {
+      "tool": "multiReplaceString",
+      "count": 41
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 30
+    },
+    {
+      "tool": "findFiles",
+      "count": 25
+    },
+    {
+      "tool": "createFile",
+      "count": 14
+    },
+    {
+      "tool": "listDirectory",
+      "count": 14
+    },
+    {
+      "tool": "createDirectory",
+      "count": 7
+    },
+    {
+      "tool": "getErrors",
+      "count": 4
+    },
+    {
+      "tool": "searchCodebase",
+      "count": 3
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 890
+      },
+      {
+        "type": 4,
+        "count": 39
+      },
+      {
+        "type": 0,
+        "count": 1
+      }
+    ],
+    "total_invocations": 930,
+    "auto_approved": 890,
+    "manual_approved": 39,
+    "automation_rate_pct": 95
+  },
+  "model_success": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total": 22,
+      "complete": 22,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total_requests": 22,
+      "cancelled": 1,
+      "failed": 0,
+      "tool_rejections": 1,
+      "error_codes": [],
+      "rejection_rate": 9
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 142
+    },
+    {
+      "status": "modified",
+      "count": 28
+    }
+  ],
+  "response_times": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 22,
+      "avg_sec": 850,
+      "total_sec": 18703
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "source": "task planner.chat-redacted.json",
+    "analysis_date": "2026-01-24",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 3,
+    "start_timestamp": 1769214394426,
+    "end_timestamp": 1769214588788,
+    "session_duration_sec": 194.362,
+    "user_wait_time_sec": 0,
+    "agent_work_time_sec": 79.511
+  },
+  "model_usage": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 3
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "readFile",
+      "count": 4
+    },
+    {
+      "tool": "replaceString",
+      "count": 4
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 2
+    },
+    {
+      "tool": "createFile",
+      "count": 1
+    },
+    {
+      "tool": "listDirectory",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 12
+      }
+    ],
+    "total_invocations": 12,
+    "auto_approved": 12,
+    "manual_approved": 0,
+    "automation_rate_pct": 100
+  },
+  "model_success": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total": 3,
+      "complete": 3,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total_requests": 3,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 3,
+      "avg_sec": 26,
+      "total_sec": 79
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

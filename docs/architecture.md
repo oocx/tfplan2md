@@ -189,32 +189,69 @@ flowchart LR
 
 ```
 tfplan2md/
-├── CLI/                    # Command-line parsing and orchestration
-│   ├── CliParser.cs        # Argument parsing
-│   └── HelpTextProvider.cs # Usage documentation
+├── CLI/                         # Command-line parsing and orchestration
+│   ├── CliParser.cs             # Argument parsing
+│   └── HelpTextProvider.cs      # Usage documentation
 │
-├── Parsing/                # Terraform plan JSON parsing
-│   ├── TerraformPlan.cs    # Domain models (records)
+├── Parsing/                     # Terraform plan JSON parsing
+│   ├── TerraformPlan.cs         # Domain models (records)
 │   ├── TerraformPlanParser.cs
 │   └── TerraformPlanParseException.cs
 │
-├── MarkdownGeneration/     # Report model building and rendering
-│   ├── ReportModel.cs      # Report data models
-│   ├── MarkdownRenderer.cs # Template application
-│   ├── ScribanHelpers.cs   # Custom template functions
-│   ├── LargeValueFormat.cs # Enum for value display modes
-│   ├── Summaries/          # Resource summary builders
-│   └── Templates/          # Embedded Scriban templates
-│       ├── default.sbn     # Global report template
-│       ├── summary.sbn     # Summary-only template
-│       ├── _resource.sbn   # Default per-resource template
-│       └── azurerm/        # Resource-specific templates
+├── MarkdownGeneration/          # Core report model building and rendering
+│   ├── ReportModel.cs           # Report data models
+│   ├── MarkdownRenderer.cs      # Template application and orchestration
+│   ├── ReportModelBuilder.cs    # Transform domain models to report models
+│   ├── Models/                  # Core model interfaces and registries
+│   │   ├── IResourceViewModelFactory.cs
+│   │   └── ResourceViewModelFactoryRegistry.cs
+│   ├── Summaries/               # Resource summary builders
+│   ├── Helpers/                 # Core Scriban helper functions
+│   │   ├── ScribanHelpers.*.cs  # Grouped by concern (DiffFormatting, Markdown, etc.)
+│   │   └── ScribanTemplateLoader.cs  # Multi-prefix template loading
+│   └── Templates/               # Core embedded Scriban templates
+│       ├── default.sbn          # Global report template
+│       ├── summary.sbn          # Summary-only template
+│       └── _resource.sbn        # Default per-resource fallback template
 │
-├── Azure/                  # Azure-specific utilities
-│   └── PrincipalMapper.cs  # Principal ID to name mapping
+├── Providers/                   # Provider-specific implementations (modular)
+│   ├── IProviderModule.cs       # Provider registration contract
+│   ├── ProviderRegistry.cs      # Explicit provider registration
+│   ├── AzApi/                   # AzApi provider (azapi_resource, azapi_update_resource)
+│   │   ├── AzApiModule.cs       # Provider registration
+│   │   ├── Helpers/             # AzApi-specific Scriban helpers
+│   │   └── Templates/           # AzApi-specific .sbn templates
+│   ├── AzureRM/                 # AzureRM provider (azurerm_*)
+│   │   ├── AzureRMModule.cs     # Provider registration
+│   │   ├── Models/              # AzureRM-specific view models and factories
+│   │   │   ├── FirewallNetworkRuleCollectionViewModelFactory.cs
+│   │   │   ├── NetworkSecurityGroupViewModelFactory.cs
+│   │   │   └── RoleAssignmentViewModelFactory.cs
+│   │   ├── Helpers/             # AzureRM-specific Scriban helpers
+│   │   └── Templates/           # AzureRM-specific .sbn templates (NSG, firewall, etc.)
+│   └── AzureDevOps/             # AzureDevOps provider (azuredevops_*)
+│       ├── AzureDevOpsModule.cs # Provider registration
+│       ├── Models/              # AzureDevOps-specific view models
+│       └── Templates/           # AzureDevOps-specific .sbn templates
 │
-└── Program.cs              # Application entry point
+├── RenderTargets/               # Platform-specific rendering (GitHub vs Azure DevOps)
+│   ├── IDiffFormatter.cs        # Diff formatting abstraction
+│   ├── GitHubDiffFormatter.cs   # Simple diff format for GitHub PR comments
+│   └── AzureDevOpsDiffFormatter.cs  # Inline diff format for Azure DevOps PR comments
+│
+├── Platforms/                   # Cloud platform utilities (Azure-specific, provider-agnostic)
+│   └── Azure/
+│       ├── PrincipalMapper.cs   # Map Azure principal IDs to names
+│       └── RoleNamesProvider.cs # Azure role name constants
+│
+└── Program.cs                   # Application entry point
 ```
+
+**Key Architectural Changes (Feature 047):**
+- **Provider Separation:** All Terraform provider-specific code (azapi, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProviderModule`.
+- **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
+- **Template Multi-Prefix Loading:** `ScribanTemplateLoader` checks core templates first, then provider-specific templates, enabling modular template organization.
+- **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry`.
 
 ---
 
@@ -227,21 +264,28 @@ tfplan2md/
 flowchart LR
     classDef componentNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
     classDef utilNode fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
+    classDef providerNode fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
     
     subgraph tfplan2md
         CLI[CLI]
         Parsing[Parsing]
         Markdown[Markdown<br/>Generation]
-        Azure[Azure Utilities<br/>PrincipalMapper, etc.]
+        Providers[Providers<br/>AzApi, AzureRM,<br/>AzureDevOps]
+        RenderTargets[RenderTargets<br/>GitHub, Azure DevOps]
+        Platforms[Platform Utilities<br/>PrincipalMapper, etc.]
         
         CLI --> Parsing
         Parsing --> Markdown
-        CLI -.-> Azure
-        Markdown -.-> Azure
+        Markdown --> Providers
+        Markdown --> RenderTargets
+        CLI -.-> Platforms
+        Markdown -.-> Platforms
+        Providers -.-> Platforms
     end
     
     class CLI,Parsing,Markdown componentNode
-    class Azure utilNode
+    class Providers,RenderTargets providerNode
+    class Platforms utilNode
 ```
 
 ### 5.2 Level 2: Component Details
@@ -530,16 +574,142 @@ flowchart LR
     class Changes,ModuleChanges,Summary outputNode
 ```
 
-#### 5.2.4 Azure Component
+#### 5.2.4 Providers Component
 
-**Purpose:** Azure-specific utilities (principal mapping, resource ID formatting).
+**Purpose:** Encapsulate Terraform provider-specific logic (templates, helpers, view models) in dedicated modules.
+
+**Responsibilities:**
+- Register provider-specific Scriban helpers
+- Register provider-specific resource view model factories
+- Provide embedded templates for provider-specific resources
+- Keep provider-specific concerns isolated and modular
+
+**Architecture:**
+
+Each provider is a self-contained module implementing the `IProviderModule` interface:
+
+```csharp
+public interface IProviderModule
+{
+    string Name { get; }
+    void RegisterHelpers(Scriban.TemplateContext context);
+    void RegisterFactories(IResourceViewModelFactoryRegistry registry);
+}
+```
+
+**Provider Registration:**
+
+Providers are explicitly registered in `ProviderRegistry` at application startup (no reflection):
+
+```csharp
+ProviderRegistry.RegisterProviders(
+    new AzApiModule(),
+    new AzureRMModule(),
+    new AzureDevOpsModule()
+);
+```
+
+**Current Providers:**
+
+| Provider | Namespace | Resources | Key Features |
+|----------|-----------|-----------|--------------|
+| **AzApi** | `Oocx.TfPlan2Md.Providers.AzApi` | `azapi_resource`, `azapi_update_resource` | Templates for Azure API resources, AzApi-specific helpers |
+| **AzureRM** | `Oocx.TfPlan2Md.Providers.AzureRM` | `azurerm_*` (firewall, NSG, role assignments, etc.) | Resource-specific view models, semantic diffs for complex resources |
+| **AzureDevOps** | `Oocx.TfPlan2Md.Providers.AzureDevOps` | `azuredevops_variable_group` | Variable group templates and view models |
+
+**Provider Structure (Example: AzureRM):**
+
+```
+Providers/AzureRM/
+├── AzureRMModule.cs          # IProviderModule implementation
+├── Models/                   # View models and factories
+│   ├── FirewallNetworkRuleCollectionViewModelFactory.cs
+│   ├── NetworkSecurityGroupViewModelFactory.cs
+│   └── RoleAssignmentViewModelFactory.cs
+├── Helpers/                  # AzureRM-specific Scriban helpers
+│   └── ScribanHelpers.AzureRM.*.cs
+└── Templates/                # .sbn templates for azurerm_* resources
+    ├── azurerm_network_security_group.sbn
+    ├── azurerm_firewall_network_rule_collection.sbn
+    └── azurerm_role_assignment.sbn
+```
+
+**Template Multi-Prefix Loading:**
+
+The `ScribanTemplateLoader` searches for templates in multiple locations:
+1. Core templates: `MarkdownGeneration.Templates.*`
+2. Provider templates: `Providers.{Provider}.Templates.*`
+
+This enables modular template organization without breaking the fallback to `_resource.sbn`.
+
+**Adding a New Provider:**
+
+See [src/Oocx.TfPlan2Md/Providers/README.md](../../src/Oocx.TfPlan2Md/Providers/README.md) for guidance on adding new providers.
+
+---
+
+#### 5.2.5 RenderTargets Component
+
+**Purpose:** Platform-specific rendering logic for GitHub vs Azure DevOps PR comments.
+
+**Responsibilities:**
+- Format diffs according to platform markdown capabilities
+- Provide platform-specific formatting (simple diff for GitHub, inline diff for Azure DevOps)
+- Abstract platform differences from core rendering logic
+
+**Architecture:**
+
+The `IDiffFormatter` interface abstracts platform-specific diff formatting:
+
+```csharp
+public interface IDiffFormatter
+{
+    string FormatDiff(string before, string after);
+}
+```
+
+**Current Implementations:**
+
+| Implementation | Target Platform | Diff Format |
+|----------------|-----------------|-------------|
+| `GitHubDiffFormatter` | GitHub PR comments | **Simple Diff**: Separate before/after blocks with `-` and `+` prefixes |
+| `AzureDevOpsDiffFormatter` | Azure DevOps PR comments | **Inline Diff**: Strikethrough for before, green for after in single line |
+
+**CLI Integration:**
+
+Users select the render target via `--render-target` flag:
+
+```bash
+tfplan2md plan.json --render-target github      # Use simple diff format
+tfplan2md plan.json --render-target azuredevops # Use inline diff format (alias: azdo)
+```
+
+The selected `IDiffFormatter` is injected into `ScribanHelpers` and used by templates via the `diff` helper function.
+
+**Design Rationale:**
+
+GitHub and Azure DevOps have different markdown rendering capabilities:
+- **GitHub**: No strikethrough support in code blocks → use separate before/after blocks
+- **Azure DevOps**: Full HTML support in markdown → use inline strikethrough for compact diffs
+
+See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) for details (if created).
+
+---
+
+#### 5.2.6 Platform Utilities Component
+
+**Purpose:** Cloud platform utilities (Azure-specific, provider-agnostic).
 
 **Responsibilities:**
 - Map Azure principal IDs to human-readable names
+- Provide Azure role name constants
 - Format Azure resource IDs for readability
 
 **Key Classes:**
 - `PrincipalMapper` - Load and resolve principal ID mappings from JSON file
+- `RoleNamesProvider` - Azure role name constants
+
+**Note:** This component is Azure-specific but not Terraform provider-specific. It's used by both AzApi and AzureRM providers.
 
 ---
 

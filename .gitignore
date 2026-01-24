@@ -46,6 +46,12 @@ publish/
 .tmp/*
 !.tmp/.gitkeep
 
+# Temporary build/format output files
+build-output.txt
+build-verify*.txt
+format-*.txt
+format-*.json
+
 plan.tfplan
 # VS Code Copilot chat exports (large, may contain sensitive data)
 **/chat.json

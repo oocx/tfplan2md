@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
@@ -26,7 +27,7 @@ internal static class VariableGroupFormatters
             .OrderBy(variable => variable.Name, StringComparer.Ordinal)
             .Select(variable => new VariableRowViewModel
             {
-                Name = $"`{ScribanHelpers.EscapeMarkdown(variable.Name)}`",
+                Name = $"`{EscapeMarkdown(variable.Name)}`",
                 Value = FormatVariableValue(variable),
                 Enabled = FormatEnabled(variable.Enabled),
                 ContentType = FormatOptionalString(variable.ContentType),
@@ -46,7 +47,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = "➕",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(variable.Name)}`",
+            Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
             ContentType = FormatOptionalString(variable.ContentType),
@@ -65,7 +66,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = "❌",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(variable.Name)}`",
+            Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
             ContentType = FormatOptionalString(variable.ContentType),
@@ -84,7 +85,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = "⏺️",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(variable.Name)}`",
+            Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
             ContentType = FormatOptionalString(variable.ContentType),
@@ -110,12 +111,12 @@ internal static class VariableGroupFormatters
         // For secret variables, always show masked value (no diff)
         var valueDisplay = after.IsSecret
             ? "`(sensitive / hidden)`"
-            : ScribanHelpers.FormatDiff(before.Value, after.Value, format);
+            : FormatDiff(before.Value, after.Value, format);
 
         return new VariableChangeRowViewModel
         {
             Change = "🔄",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(after.Name)}`",
+            Name = $"`{EscapeMarkdown(after.Name)}`",
             Value = valueDisplay,
             Enabled = FormatEnabledDiff(before.Enabled, after.Enabled, format),
             ContentType = FormatOptionalDiff(before.ContentType, after.ContentType, format),
@@ -141,7 +142,7 @@ internal static class VariableGroupFormatters
             return "-";
         }
 
-        return $"`{ScribanHelpers.EscapeMarkdown(variable.Value)}`";
+        return $"`{EscapeMarkdown(variable.Value)}`";
     }
 
     /// <summary>
@@ -177,7 +178,7 @@ internal static class VariableGroupFormatters
             return FormatEnabled(after);
         }
 
-        return ScribanHelpers.FormatDiff(beforeStr, afterStr, format);
+        return FormatDiff(beforeStr, afterStr, format);
     }
 
     /// <summary>
@@ -207,7 +208,7 @@ internal static class VariableGroupFormatters
             return "-";
         }
 
-        return $"`{ScribanHelpers.EscapeMarkdown(value)}`";
+        return $"`{EscapeMarkdown(value)}`";
     }
 
     /// <summary>
@@ -228,7 +229,7 @@ internal static class VariableGroupFormatters
             return FormatOptionalString(after);
         }
 
-        return ScribanHelpers.FormatDiff(beforeStr, afterStr, format);
+        return FormatDiff(beforeStr, afterStr, format);
     }
 
     /// <summary>

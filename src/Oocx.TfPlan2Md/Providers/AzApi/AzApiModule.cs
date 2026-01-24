@@ -1,5 +1,6 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzApi;
 
@@ -25,7 +26,7 @@ internal sealed class AzApiModule : IProviderModule
     /// <param name="scriptObject">The Scriban script object to register helpers with.</param>
     public void RegisterHelpers(ScriptObject scriptObject)
     {
-        ScribanHelpers.RegisterAzApiHelpers(scriptObject);
+        Oocx.TfPlan2Md.Providers.AzApi.ScribanHelpers.RegisterAzApiHelpers(scriptObject);
     }
 
     /// <summary>

@@ -5,6 +5,7 @@ using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Scriban.Runtime;
 using TUnit.Core;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -28,7 +29,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         var added = result["added"] as ScriptArray;
@@ -56,7 +57,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         var removed = result["removed"] as ScriptArray;
@@ -83,7 +84,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         var modified = result["modified"] as ScriptArray;
@@ -117,7 +118,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         var unchanged = result["unchanged"] as ScriptArray;
@@ -152,7 +153,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         ((ScriptArray)result["added"]!).Should().ContainSingle();
@@ -173,7 +174,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         ((ScriptArray)result["added"]!).Should().ContainSingle();
@@ -194,7 +195,7 @@ public class ScribanHelpersTests
         var afterJson = JsonDocument.Parse("[]").RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         ((ScriptArray)result["added"]!).Should().BeEmpty();
@@ -209,7 +210,7 @@ public class ScribanHelpersTests
         const string providerName = "registry.terraform.io/hashicorp/azurerm";
         const string value = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
 
-        var result = ScribanHelpers.FormatValue(value, providerName);
+        var result = FormatValue(value, providerName);
 
         result.Should().Be("Key Vault `my-kv` in resource group `my-rg` of subscription `sub-id`");
     }
@@ -220,7 +221,7 @@ public class ScribanHelpersTests
         const string providerName = "registry.terraform.io/hashicorp/azurerm";
         const string value = "standard-value";
 
-        var result = ScribanHelpers.FormatValue(value, providerName);
+        var result = FormatValue(value, providerName);
 
         result.Should().Be("`standard-value`");
     }
@@ -236,7 +237,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(null, afterJson, "name");
+        var result = DiffArray(null, afterJson, "name");
 
         // Assert
         ((ScriptArray)result["added"]!).Should().ContainSingle();
@@ -254,7 +255,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, null, "name");
+        var result = DiffArray(beforeJson, null, "name");
 
         // Assert
         ((ScriptArray)result["added"]!).Should().BeEmpty();
@@ -278,7 +279,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act & Assert
-        Action act = () => ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        Action act = () => DiffArray(beforeJson, afterJson, "name");
         act.Should().Throw<ScribanHelperException>()
             .Which.Message.Should().Contain("missing required key property 'name'").And.Contain("index 0").And.Contain("'after'");
     }
@@ -300,7 +301,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         var modified = result["modified"] as ScriptArray;
@@ -325,7 +326,7 @@ public class ScribanHelpersTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.DiffArray(beforeJson, afterJson, "name");
+        var result = DiffArray(beforeJson, afterJson, "name");
 
         // Assert
         var modified = result["modified"] as ScriptArray;
@@ -341,7 +342,7 @@ public class ScribanHelpersTests
 
         // Act
         var diffFormatter = new Oocx.TfPlan2Md.RenderTargets.AzureDevOps.AzureDevOpsDiffFormatter();
-        ScribanHelpers.RegisterHelpers(scriptObject, new NullMapper(), diffFormatter);
+        RegisterHelpers(scriptObject, new NullMapper(), diffFormatter);
 
         // Assert
         scriptObject.ContainsKey("diff_array").Should().BeTrue();

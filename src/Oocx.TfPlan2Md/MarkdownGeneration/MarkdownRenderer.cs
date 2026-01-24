@@ -7,6 +7,7 @@ using Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 using Oocx.TfPlan2Md.RenderTargets.GitHub;
 using Scriban;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -206,7 +207,7 @@ internal class MarkdownRenderer
         catch (ScribanHelperException ex)
         {
             // Return error message for this resource but allow other resources to render
-            return $"### {change.ActionSymbol}{ScribanHelpers.NonBreakingSpace}{change.Address}\n\n⚠️{ScribanHelpers.NonBreakingSpace}**Template Error:** {ex.Message}\n";
+            return $"### {change.ActionSymbol}{NonBreakingSpace}{change.Address}\n\n⚠️{NonBreakingSpace}**Template Error:** {ex.Message}\n";
         }
     }
 
@@ -272,7 +273,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         var diffFormatter = CreateDiffFormatter(renderTarget);
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
@@ -311,7 +312,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         var diffFormatter = CreateDiffFormatter(model.RenderTarget);
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 

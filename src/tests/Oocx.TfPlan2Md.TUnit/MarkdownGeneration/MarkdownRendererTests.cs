@@ -10,6 +10,7 @@ using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -41,7 +42,7 @@ public class MarkdownRendererTests
             providerRegistry: providerRegistry);
     }
 
-    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
+    private static string Escape(string value) => EscapeMarkdown(value);
 
     private static string Normalize(string markdown)
     {

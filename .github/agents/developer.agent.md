@@ -396,6 +396,13 @@ Verify:
 Verify:
 - [ ] All tasks are complete and marked as done in tasks.md
 - [ ] Full test suite passes with ZERO skipped tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
+- [ ] **Coverage thresholds met** (line ≥84.48%, branch ≥72.80%):
+  ```bash
+  # Run tests with coverage
+  dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+  # Verify thresholds
+  dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- --report ./src/TestResults/coverage.cobertura.xml --line-threshold 84.48 --branch-threshold 72.80
+  ```
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
 - [ ] Demo artifacts regenerated using `generate-demo-artifacts` skill (REQUIRED)

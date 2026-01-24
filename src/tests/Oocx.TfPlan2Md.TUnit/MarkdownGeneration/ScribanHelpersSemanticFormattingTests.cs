@@ -16,6 +16,22 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     [Test]
+    public void FormatCodeTable_EncodesMarkdownAndWrapsCode()
+    {
+        var result = FormatCodeTable("value|`");
+
+        result.Should().Be("`value\\|\\``");
+    }
+
+    [Test]
+    public void FormatCodeTable_WithEmptyValue_ReturnsEmpty()
+    {
+        var result = FormatCodeTable(string.Empty);
+
+        result.Should().Be(string.Empty);
+    }
+
+    [Test]
     public void FormatAttributeValueTable_BooleanTrue_UsesIconAndCode()
     {
         var result = FormatAttributeValueTable("https_only", "true", null);
@@ -32,11 +48,103 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     [Test]
+    public void FormatAttributeValueTable_AccessAllow_UsesIconAndCode()
+    {
+        var result = FormatAttributeValueTable("action", "Allow", null);
+
+        result.Should().Be("`✅\u00A0Allow`");
+    }
+
+    [Test]
     public void FormatAttributeValueTable_DirectionInbound_UsesIconAndCode()
     {
         var result = FormatAttributeValueTable("direction", "Inbound", null);
 
         result.Should().Be("`⬇️\u00A0Inbound`");
+    }
+
+    [Test]
+    public void FormatAttributeValueSummary_DirectionOutbound_UsesIconWithoutCode()
+    {
+        var result = FormatAttributeValueSummary("direction", "Outbound", null);
+
+        result.Should().Be("⬆️\u00A0Outbound");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_ProtocolValues_UseExpectedIcons()
+    {
+        var cases = new Dictionary<string, string>
+        {
+            ["tcp"] = "`🔗\u00A0TCP`",
+            ["udp"] = "`📨\u00A0UDP`",
+            ["icmp"] = "`📡\u00A0ICMP`",
+            ["*"] = "`✳️`"
+        };
+
+        foreach (var entry in cases)
+        {
+            var result = FormatAttributeValueTable("protocol", entry.Key, null);
+            result.Should().Be(entry.Value);
+        }
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_PortValues_UsePlugIcon()
+    {
+        var cases = new Dictionary<string, string>
+        {
+            ["443"] = "`🔌\u00A0443`",
+            ["80-443"] = "`🔌\u00A080-443`",
+            ["*"] = "`✳️`"
+        };
+
+        foreach (var entry in cases)
+        {
+            var result = FormatAttributeValueTable("destination_port_range", entry.Key, null);
+            result.Should().Be(entry.Value);
+        }
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_PrincipalTypes_UseExpectedIcons()
+    {
+        var cases = new Dictionary<string, string>
+        {
+            ["User"] = "`👤\u00A0User`",
+            ["Group"] = "`👥\u00A0Group`",
+            ["ServicePrincipal"] = "`💻\u00A0ServicePrincipal`"
+        };
+
+        foreach (var entry in cases)
+        {
+            var result = FormatAttributeValueTable("principal_type", entry.Key, null);
+            result.Should().Be(entry.Value);
+        }
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_RoleDefinition_UsesShieldIcon()
+    {
+        var result = FormatAttributeValueTable("role_definition_name", "Contributor", null);
+
+        result.Should().Be("`🛡️\u00A0Contributor`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_ResourceGroupName_UsesFolderIcon()
+    {
+        var result = FormatAttributeValueTable("resource_group_name", "rg-app", null);
+
+        result.Should().Be("`📁\u00A0rg-app`");
+    }
+
+    [Test]
+    public void FormatAttributeValuePlain_ResourceGroupName_UsesFolderIcon()
+    {
+        var result = FormatAttributeValuePlain("resource_group_name", "rg-app", null);
+
+        result.Should().Be("📁\u00A0rg-app");
     }
 
     [Test]

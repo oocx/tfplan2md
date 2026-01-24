@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using TUnit.Core;
@@ -77,6 +78,56 @@ public class AzureScopeParserTests
     }
 
     [Test]
+    public void ParseScope_SubscriptionProviderScope_ReturnsFormattedString()
+    {
+        const string scope = "/subscriptions/sub-id/providers/Microsoft.Storage/storageAccounts/st1";
+
+        var result = AzureScopeParser.ParseScope(scope);
+
+        result.Should().Be("Storage Account `st1` in subscription `sub-id`");
+    }
+
+    [Test]
+    public void ParseScope_KnownResourceTypes_ReturnFriendlyNames()
+    {
+        var cases = new Dictionary<string, string>
+        {
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/acc1/blobServices/default"] = "Storage Account Blob Service",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/acc1/fileServices/default"] = "Storage Account File Service",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Compute/virtualMachines/vm1"] = "Virtual Machine",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Compute/virtualMachineScaleSets/vmss1"] = "Virtual Machine Scale Set",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Compute/disks/disk1"] = "Managed Disk",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/acr1"] = "Container Registry",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Web/serverfarms/plan1"] = "App Service Plan",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Sql/servers/sql1"] = "SQL Server",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.DocumentDB/databaseAccounts/cosmos1"] = "Cosmos DB Account",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.EventHub/namespaces/eh1"] = "Event Hubs Namespace",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.ServiceBus/namespaces/sb1"] = "Service Bus Namespace",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet1"] = "Virtual Network",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/sub1"] = "Subnet",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/networkSecurityGroups/nsg1"] = "Network Security Group",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/pip1"] = "Public IP Address",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/loadBalancers/lb1"] = "Load Balancer",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/applicationGateways/appgw1"] = "Application Gateway",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/azureFirewalls/afw1"] = "Azure Firewall",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/vpnGateways/vpng1"] = "VPN Gateway",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/privateEndpoints/pe1"] = "Private Endpoint",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/trafficManagerProfiles/tm1"] = "Traffic Manager Profile",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.OperationalInsights/workspaces/log1"] = "Log Analytics Workspace",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Insights/components/ai1"] = "Application Insights",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Cache/Redis/cache1"] = "Azure Cache for Redis",
+            ["/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.AppConfiguration/configurationStores/appcfg1"] = "App Configuration Store"
+        };
+
+        foreach (var entry in cases)
+        {
+            var result = AzureScopeParser.ParseScope(entry.Key);
+
+            result.Should().StartWith(entry.Value);
+        }
+    }
+
+    [Test]
     public void ParseScope_AppServiceScope_ReturnsFriendlyType()
     {
         const string scope = "/subscriptions/sub-id/resourceGroups/app-rg/providers/Microsoft.Web/sites/myapp";
@@ -149,5 +200,13 @@ public class AzureScopeParserTests
         result.Level.Should().Be(ScopeLevel.Resource);
         result.Summary.Should().Be("Storage Account sttfplan2mddata");
         result.Details.Should().Be("Storage Account sttfplan2mddata in resource group my-rg of subscription sub-id");
+    }
+
+    [Test]
+    public void Parse_WithEmptyScope_ReturnsEmptyScopeInfo()
+    {
+        var result = AzureScopeParser.Parse(" ");
+
+        result.Should().Be(ScopeInfo.Empty);
     }
 }

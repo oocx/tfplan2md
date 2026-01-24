@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 using TUnit.Core;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
@@ -131,5 +133,78 @@ public class ScribanHelpersLargeValueTests
         var summary = LargeAttributesSummary(attrs);
 
         summary.Should().Be("Large values: policy (3 lines, 2 changes), data (1 line, 0 changes)");
+    }
+
+    [Test]
+    public void LargeAttributesSummary_WhenAttributesAreNull_ReturnsEmpty()
+    {
+        var summary = LargeAttributesSummary(null);
+
+        summary.Should().Be(string.Empty);
+    }
+
+    [Test]
+    public void LargeAttributesSummary_WhenAttributesAreString_ReturnsEmpty()
+    {
+        var summary = LargeAttributesSummary("not-a-list");
+
+        summary.Should().Be(string.Empty);
+    }
+
+    [Test]
+    public void LargeAttributesSummary_MapsVariousAttributeShapes()
+    {
+        var scriptObject = new ScriptObject
+        {
+            ["name"] = "script",
+            ["before"] = "line1",
+            ["after"] = "line2"
+        };
+
+        var model = new AttributeChangeModel
+        {
+            Name = "model",
+            Before = "before",
+            After = "after"
+        };
+
+        var roleAttribute = new RoleAssignmentAttributeViewModel
+        {
+            Name = "role",
+            Before = "one",
+            After = "two"
+        };
+
+        IReadOnlyDictionary<string, object?> readOnlyDictionary = new Dictionary<string, object?>
+        {
+            ["name"] = "readonly",
+            ["before"] = "first",
+            ["after"] = "second"
+        };
+
+        var dictionary = new Dictionary<string, object?>
+        {
+            ["name"] = "dictionary",
+            ["before"] = "alpha",
+            ["after"] = "beta"
+        };
+
+        var attrs = new List<object?>
+        {
+            null,
+            scriptObject,
+            model,
+            roleAttribute,
+            readOnlyDictionary,
+            dictionary
+        };
+
+        var summary = LargeAttributesSummary(attrs);
+
+        summary.Should().Contain("script (2 lines, 2 changes)");
+        summary.Should().Contain("model (2 lines, 2 changes)");
+        summary.Should().Contain("role (2 lines, 2 changes)");
+        summary.Should().Contain("readonly (2 lines, 2 changes)");
+        summary.Should().Contain("dictionary (2 lines, 2 changes)");
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Oocx.TfPlan2Md.Parsing;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -12,7 +13,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-public partial class ReportModelBuilder
+internal partial class ReportModelBuilder
 {
     private ResourceChangeModel BuildResourceChangeModel(ResourceChange rc)
     {
@@ -87,8 +88,8 @@ public partial class ReportModelBuilder
                 continue;
             }
 
-            var isLarge = ScribanHelpers.IsLargeValue(beforeDisplay, providerName)
-                || ScribanHelpers.IsLargeValue(afterDisplay, providerName);
+            var isLarge = IsLargeValue(beforeDisplay, providerName)
+                || IsLargeValue(afterDisplay, providerName);
 
             changes.Add(new AttributeChangeModel
             {

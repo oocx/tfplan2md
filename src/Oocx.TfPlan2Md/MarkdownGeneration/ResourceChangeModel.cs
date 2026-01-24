@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
@@ -13,13 +14,13 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
 {
     private static string? FormatSummaryValue(string? value, string providerName)
     {
-        var formatted = ScribanHelpers.FormatValue(value, providerName);
+        var formatted = FormatValue(value, providerName);
         return string.IsNullOrEmpty(formatted) ? null : formatted;
     }
 
     private static string? FormatPlainValue(string? value)
     {
-        return string.IsNullOrEmpty(value) ? null : ScribanHelpers.EscapeMarkdown(value);
+        return string.IsNullOrEmpty(value) ? null : EscapeMarkdown(value);
     }
 
     /// <inheritdoc />
@@ -123,7 +124,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var state = GetStateDictionary(change.AfterJson) ?? GetStateDictionary(change.BeforeJson);
         var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: true), change.ProviderName);
         var changeNames = change.AttributeChanges
-            .Select(a => ScribanHelpers.EscapeMarkdown(a.Name))
+            .Select(a => EscapeMarkdown(a.Name))
             .ToList();
 
         if (changeNames.Count == 0)
@@ -153,7 +154,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
                 .ToList();
 
             var suffix = change.ReplacePaths.Count > 3 ? $", +{change.ReplacePaths.Count - 3} more" : string.Empty;
-            var reason = string.Join(", ", formatted.Select(r => ScribanHelpers.EscapeMarkdown(r!)));
+            var reason = string.Join(", ", formatted.Select(r => EscapeMarkdown(r!)));
             return name is not null
                 ? $"recreate {name} ({reason} changed: force replacement{suffix})"
                 : $"recreate ({reason} changed: force replacement{suffix})";

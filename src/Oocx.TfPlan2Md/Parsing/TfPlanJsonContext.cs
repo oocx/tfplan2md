@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Parsing;
 

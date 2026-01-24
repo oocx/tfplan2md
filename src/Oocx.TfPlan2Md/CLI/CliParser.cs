@@ -1,11 +1,11 @@
-using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.CLI;
 
 /// <summary>
 /// Represents the parsed command-line options.
 /// </summary>
-public record CliOptions
+internal record CliOptions
 {
     /// <summary>
     /// Gets the input file path. If null, read from stdin.
@@ -64,10 +64,10 @@ public record CliOptions
     public bool HideMetadata { get; init; }
 
     /// <summary>
-    /// Gets the rendering format for large attribute values.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
+    /// Gets the target platform for markdown rendering.
+    /// Related feature: docs/features/047-provider-code-separation/specification.md.
     /// </summary>
-    public LargeValueFormat LargeValueFormat { get; init; }
+    public RenderTarget RenderTarget { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether debug diagnostic information should be appended to the report.
@@ -87,7 +87,7 @@ public record CliOptions
 /// <summary>
 /// Parses command-line arguments into CliOptions.
 /// </summary>
-public static class CliParser
+internal static class CliParser
 {
     /// <summary>
     /// Parses the command-line arguments into a CliOptions object.
@@ -107,7 +107,7 @@ public static class CliParser
         var showVersion = false;
         var showUnchangedValues = false;
         var hideMetadata = false;
-        var largeValueFormat = LargeValueFormat.InlineDiff;
+        var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
         var debug = false;
 
         for (var i = 0; i < args.Length; i++)
@@ -182,17 +182,19 @@ public static class CliParser
                 case "--hide-metadata":
                     hideMetadata = true;
                     break;
-                case "--large-value-format":
+                case "--render-target":
                     if (i + 1 < args.Length)
                     {
-                        var formatValue = args[++i];
-                        largeValueFormat = ParseLargeValueFormat(formatValue);
+                        var targetValue = args[++i];
+                        renderTarget = ParseRenderTarget(targetValue);
                     }
                     else
                     {
-                        throw new CliParseException("--large-value-format requires a format argument (inline-diff or simple-diff).");
+                        throw new CliParseException("--render-target requires a value (github or azuredevops).");
                     }
                     break;
+                case "--large-value-format":
+                    throw new CliParseException("--large-value-format is deprecated. Use --render-target instead (github or azuredevops).");
                 case "--debug":
                     debug = true;
                     break;
@@ -218,21 +220,27 @@ public static class CliParser
             PrincipalMappingFile = principalMappingFile,
             ShowUnchangedValues = showUnchangedValues,
             HideMetadata = hideMetadata,
-            LargeValueFormat = largeValueFormat,
+            RenderTarget = renderTarget,
             ReportTitle = reportTitle,
             Debug = debug
         };
     }
 
-    private static LargeValueFormat ParseLargeValueFormat(string value)
+    /// <summary>
+    /// Parses the render target value from CLI input.
+    /// </summary>
+    /// <param name="value">The render target string (case-insensitive).</param>
+    /// <returns>The parsed <see cref="RenderTarget"/> enum value.</returns>
+    /// <exception cref="CliParseException">Thrown when the value is not recognized.</exception>
+    private static RenderTarget ParseRenderTarget(string value)
     {
         var normalized = value.Trim().ToLowerInvariant();
 
         return normalized switch
         {
-            "inline-diff" => LargeValueFormat.InlineDiff,
-            "simple-diff" => LargeValueFormat.SimpleDiff,
-            _ => throw new CliParseException("--large-value-format must be 'inline-diff' or 'simple-diff'.")
+            "github" => RenderTarget.GitHub,
+            "azuredevops" or "azdo" => RenderTarget.AzureDevOps,
+            _ => throw new CliParseException("--render-target must be 'github' or 'azuredevops' (alias: azdo).")
         };
     }
 }

@@ -3,9 +3,11 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using AwesomeAssertions;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
@@ -40,8 +42,14 @@ public class MarkdownSnapshotTests
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
         var principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
-        var model = new ReportModelBuilder(principalMapper: principalMapper, metadataProvider: TestMetadataProvider.Instance).Build(plan);
-        var renderer = new MarkdownRenderer(principalMapper);
+        var providerRegistry = CreateProviderRegistry(principalMapper);
+        var model = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -56,8 +64,11 @@ public class MarkdownSnapshotTests
     public void Snapshot_SummaryTemplate_MatchesBaseline()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var model = new ReportModelBuilder(metadataProvider: TestMetadataProvider.Instance).Build(plan);
-        var renderer = new MarkdownRenderer();
+        var providerRegistry = CreateProviderRegistry();
+        var model = new ReportModelBuilder(
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model, "summary");
 
@@ -74,8 +85,11 @@ public class MarkdownSnapshotTests
     {
         var json = File.ReadAllText("TestData/markdown-breaking-plan.json");
         var plan = _parser.Parse(json);
-        var model = new ReportModelBuilder(metadataProvider: TestMetadataProvider.Instance).Build(plan);
-        var renderer = new MarkdownRenderer();
+        var providerRegistry = CreateProviderRegistry();
+        var model = new ReportModelBuilder(
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -92,8 +106,14 @@ public class MarkdownSnapshotTests
         var json = File.ReadAllText("TestData/role-assignments.json");
         var plan = _parser.Parse(json);
         var principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
-        var model = new ReportModelBuilder(principalMapper: principalMapper, metadataProvider: TestMetadataProvider.Instance).Build(plan);
-        var renderer = new MarkdownRenderer(principalMapper);
+        var providerRegistry = CreateProviderRegistry(principalMapper);
+        var model = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -109,8 +129,11 @@ public class MarkdownSnapshotTests
     {
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var model = new ReportModelBuilder(metadataProvider: TestMetadataProvider.Instance).Build(plan);
-        var renderer = new MarkdownRenderer();
+        var providerRegistry = CreateProviderRegistry();
+        var model = new ReportModelBuilder(
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -126,8 +149,11 @@ public class MarkdownSnapshotTests
     {
         var json = File.ReadAllText("TestData/multi-module-plan.json");
         var plan = _parser.Parse(json);
-        var model = new ReportModelBuilder(metadataProvider: TestMetadataProvider.Instance).Build(plan);
-        var renderer = new MarkdownRenderer();
+        var providerRegistry = CreateProviderRegistry();
+        var model = new ReportModelBuilder(
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
         var markdown = renderer.Render(model);
 
@@ -335,5 +361,17 @@ public class MarkdownSnapshotTests
             || Rune.GetUnicodeCategory(rune) is UnicodeCategory.NonSpacingMark
             || Rune.GetUnicodeCategory(rune) is UnicodeCategory.EnclosingMark
             || Rune.GetUnicodeCategory(rune) is UnicodeCategory.Format;
+    }
+
+    /// <summary>
+    /// Creates a ProviderRegistry with AzureRM module for testing.
+    /// </summary>
+    private static ProviderRegistry CreateProviderRegistry(IPrincipalMapper? principalMapper = null)
+    {
+        var registry = new ProviderRegistry();
+        registry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: principalMapper ?? new NullPrincipalMapper()));
+        return registry;
     }
 }

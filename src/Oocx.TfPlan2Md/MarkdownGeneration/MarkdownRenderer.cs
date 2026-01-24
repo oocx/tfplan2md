@@ -1,9 +1,13 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.Diagnostics;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.RenderTargets;
+using Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
+using Oocx.TfPlan2Md.RenderTargets.GitHub;
 using Scriban;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -21,20 +25,28 @@ internal class MarkdownRenderer
             "summary"
         };
 
-    private readonly Azure.IPrincipalMapper _principalMapper;
+    private readonly Platforms.Azure.IPrincipalMapper _principalMapper;
     private readonly ScribanTemplateLoader _templateLoader;
     private readonly TemplateResolver _templateResolver;
     private readonly DiagnosticContext? _diagnosticContext;
+    private readonly Providers.ProviderRegistry? _providerRegistry;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
     /// </summary>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
-    public MarkdownRenderer(Azure.IPrincipalMapper? principalMapper = null, DiagnosticContext? diagnosticContext = null)
+    /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
+    public MarkdownRenderer(
+        Platforms.Azure.IPrincipalMapper? principalMapper = null,
+        DiagnosticContext? diagnosticContext = null,
+        Providers.ProviderRegistry? providerRegistry = null)
     {
-        _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
-        _templateLoader = new ScribanTemplateLoader(templateResourcePrefix: TemplateResourcePrefix);
+        _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
+        _providerRegistry = providerRegistry;
+        _templateLoader = new ScribanTemplateLoader(
+            coreTemplateResourcePrefix: TemplateResourcePrefix,
+            providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
         _templateResolver = new TemplateResolver(_templateLoader);
         _diagnosticContext = diagnosticContext;
     }
@@ -45,10 +57,19 @@ internal class MarkdownRenderer
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
-    public MarkdownRenderer(string customTemplateDirectory, Azure.IPrincipalMapper? principalMapper = null, DiagnosticContext? diagnosticContext = null)
+    /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
+    public MarkdownRenderer(
+        string customTemplateDirectory,
+        Platforms.Azure.IPrincipalMapper? principalMapper = null,
+        DiagnosticContext? diagnosticContext = null,
+        Providers.ProviderRegistry? providerRegistry = null)
     {
-        _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
-        _templateLoader = new ScribanTemplateLoader(customTemplateDirectory, templateResourcePrefix: TemplateResourcePrefix);
+        _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
+        _providerRegistry = providerRegistry;
+        _templateLoader = new ScribanTemplateLoader(
+            customTemplateDirectory,
+            coreTemplateResourcePrefix: TemplateResourcePrefix,
+            providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
         _templateResolver = new TemplateResolver(_templateLoader);
         _diagnosticContext = diagnosticContext;
     }
@@ -169,9 +190,9 @@ internal class MarkdownRenderer
     /// Falls back to the default template rendering if no specific template exists.
     /// </summary>
     /// <param name="change">The resource change to render.</param>
-    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
-    public string? RenderResourceChange(ResourceChangeModel change, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
+    public string? RenderResourceChange(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps)
     {
         var templateSource = ResolveResourceTemplate(change.Type);
         if (templateSource is null)
@@ -181,12 +202,12 @@ internal class MarkdownRenderer
 
         try
         {
-            return RenderResourceWithTemplate(change, templateSource.Value, largeValueFormat);
+            return RenderResourceWithTemplate(change, templateSource.Value, renderTarget);
         }
         catch (ScribanHelperException ex)
         {
             // Return error message for this resource but allow other resources to render
-            return $"### {change.ActionSymbol}{ScribanHelpers.NonBreakingSpace}{change.Address}\n\n⚠️{ScribanHelpers.NonBreakingSpace}**Template Error:** {ex.Message}\n";
+            return $"### {change.ActionSymbol}{NonBreakingSpace}{change.Address}\n\n⚠️{NonBreakingSpace}**Template Error:** {ex.Message}\n";
         }
     }
 
@@ -231,9 +252,9 @@ internal class MarkdownRenderer
     /// </summary>
     /// <param name="change">The resource change model to render.</param>
     /// <param name="templateSource">The template source to use for rendering.</param>
-    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>The rendered Markdown string.</returns>
-    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, LargeValueFormat largeValueFormat)
+    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, RenderTargets.RenderTarget renderTarget)
     {
         var template = Template.Parse(templateSource.Content, templateSource.Path);
         if (template.HasErrors)
@@ -246,12 +267,14 @@ internal class MarkdownRenderer
 
         // Create a nested ScriptObject for the change using AOT-compatible mapping
         // Templates access properties via change.* for consistency with default.sbn include
-        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, largeValueFormat);
+        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, renderTarget);
 
         scriptObject["change"] = changeObject;
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, largeValueFormat);
+        var diffFormatter = CreateDiffFormatter(renderTarget);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
+        _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
         var context = CreateTemplateContext(scriptObject);
@@ -288,7 +311,9 @@ internal class MarkdownRenderer
         var scriptObject = CreateScriptObject(model);
 
         // Register custom helper functions
-        ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);
+        var diffFormatter = CreateDiffFormatter(model.RenderTarget);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
+        _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
         var context = CreateTemplateContext(scriptObject);
@@ -400,6 +425,18 @@ internal class MarkdownRenderer
         }
 
         throw new MarkdownRenderException($"Template '{templateName}' not found.");
+    }
+
+    /// <summary>
+    /// Creates the appropriate diff formatter based on the render target.
+    /// </summary>
+    /// <param name="target">The render target that determines which formatter to use.</param>
+    /// <returns>A diff formatter instance for the specified target.</returns>
+    private static IDiffFormatter CreateDiffFormatter(RenderTargets.RenderTarget target)
+    {
+        return target == RenderTargets.RenderTarget.GitHub
+            ? new RenderTargets.GitHub.GitHubDiffFormatter()
+            : new RenderTargets.AzureDevOps.AzureDevOpsDiffFormatter();
     }
 
     private readonly record struct TemplateSource(string Path, string Content);

@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-public partial class ReportModelBuilder
+internal partial class ReportModelBuilder
 {
     /// <summary>
     /// Builds a summary-safe HTML string for use inside summary elements, including action icon, type, name, location, address space, and changed attributes.

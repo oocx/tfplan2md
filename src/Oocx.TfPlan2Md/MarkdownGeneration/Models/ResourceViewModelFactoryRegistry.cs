@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
@@ -12,22 +12,22 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// direct dependencies on specific factory classes.
 /// Related feature: docs/features/046-code-quality-metrics-enforcement/specification.md.
 /// </remarks>
-internal sealed class ResourceViewModelFactoryRegistry
+internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFactoryRegistry
 {
     private readonly Dictionary<string, IResourceViewModelFactory> _factories = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResourceViewModelFactoryRegistry"/> class.
     /// </summary>
-    /// <param name="largeValueFormat">The format to use for large values.</param>
-    /// <param name="principalMapper">The mapper for resolving principal names.</param>
+    /// <param name="largeValueFormat">The format to use for large values (unused, kept for potential future core factories).</param>
+    /// <param name="principalMapper">The mapper for resolving principal names (unused, kept for potential future core factories).</param>
+#pragma warning disable IDE0060 // Remove unused parameter - kept for future extensibility
     public ResourceViewModelFactoryRegistry(LargeValueFormat largeValueFormat, IPrincipalMapper principalMapper)
+#pragma warning restore IDE0060
     {
-        // Register all resource-specific factories
-        _factories["azurerm_network_security_group"] = new NetworkSecurityGroupFactory(largeValueFormat);
-        _factories["azurerm_firewall_network_rule_collection"] = new FirewallNetworkRuleCollectionFactory(largeValueFormat);
-        _factories["azurerm_role_assignment"] = new RoleAssignmentFactory(principalMapper);
-        _factories["azuredevops_variable_group"] = new VariableGroupFactory(largeValueFormat);
+        // All resource-specific factories are now registered via ProviderRegistry
+        // This registry only holds factories registered by provider modules
+        // Related feature: docs/features/047-provider-code-separation/specification.md
     }
 
     /// <summary>
@@ -42,103 +42,12 @@ internal sealed class ResourceViewModelFactoryRegistry
     }
 
     /// <summary>
-    /// Adapter for <see cref="NetworkSecurityGroupViewModelFactory"/>.
+    /// Registers a factory for a specific resource type.
     /// </summary>
-    private sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
+    /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_network_security_group").</param>
+    /// <param name="factory">The factory instance to register.</param>
+    public void RegisterFactory(string resourceType, IResourceViewModelFactory factory)
     {
-        private readonly LargeValueFormat _largeValueFormat;
-
-        public NetworkSecurityGroupFactory(LargeValueFormat largeValueFormat)
-        {
-            _largeValueFormat = largeValueFormat;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(
-                resourceChange,
-                resourceChange.ProviderName,
-                _largeValueFormat);
-        }
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="FirewallNetworkRuleCollectionViewModelFactory"/>.
-    /// </summary>
-    private sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelFactory
-    {
-        private readonly LargeValueFormat _largeValueFormat;
-
-        public FirewallNetworkRuleCollectionFactory(LargeValueFormat largeValueFormat)
-        {
-            _largeValueFormat = largeValueFormat;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.FirewallNetworkRuleCollection = FirewallNetworkRuleCollectionViewModelFactory.Build(
-                resourceChange,
-                resourceChange.ProviderName,
-                _largeValueFormat);
-        }
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="RoleAssignmentViewModelFactory"/>.
-    /// </summary>
-    private sealed class RoleAssignmentFactory : IResourceViewModelFactory
-    {
-        private readonly IPrincipalMapper _principalMapper;
-
-        public RoleAssignmentFactory(IPrincipalMapper principalMapper)
-        {
-            _principalMapper = principalMapper;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.RoleAssignment = RoleAssignmentViewModelFactory.Build(
-                resourceChange,
-                action,
-                attributeChanges,
-                _principalMapper);
-        }
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="VariableGroupViewModelFactory"/>.
-    /// </summary>
-    private sealed class VariableGroupFactory : IResourceViewModelFactory
-    {
-        private readonly LargeValueFormat _largeValueFormat;
-
-        public VariableGroupFactory(LargeValueFormat largeValueFormat)
-        {
-            _largeValueFormat = largeValueFormat;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.VariableGroup = VariableGroupViewModelFactory.Build(
-                resourceChange,
-                resourceChange.ProviderName,
-                _largeValueFormat);
-        }
+        _factories[resourceType] = factory;
     }
 }

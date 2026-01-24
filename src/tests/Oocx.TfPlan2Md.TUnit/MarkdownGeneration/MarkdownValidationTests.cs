@@ -5,11 +5,12 @@ using AwesomeAssertions;
 using Markdig;
 using Markdig.Extensions.Tables;
 using Markdig.Syntax;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -203,7 +204,7 @@ public class MarkdownValidationTests
         var tables = document.Descendants<Table>().ToList();
 
         // Expected: 1 summary table + 1 table for each resource change that has at least one small attribute
-        var changesWithSmallAttributes = model.Changes.Count(change => change.AttributeChanges.Any(attr => !ScribanHelpers.IsLargeValue(attr.Before) && !ScribanHelpers.IsLargeValue(attr.After)));
+        var changesWithSmallAttributes = model.Changes.Count(change => change.AttributeChanges.Any(attr => !IsLargeValue(attr.Before) && !IsLargeValue(attr.After)));
         var expectedTableCount = 1 + changesWithSmallAttributes;
 
         tables.Count.Should().Be(expectedTableCount, "because every resource change should render exactly one table, plus the summary table");

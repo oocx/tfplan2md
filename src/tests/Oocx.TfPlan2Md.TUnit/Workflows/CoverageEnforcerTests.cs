@@ -324,6 +324,120 @@ public class CoverageEnforcerTests
     }
 
     /// <summary>
+    /// Throws when the report path is missing.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task Command_line_options_parse_throws_when_report_missing()
+    {
+        var args = new[]
+        {
+            "--line-threshold",
+            "80",
+            "--branch-threshold",
+            "70"
+        };
+
+        var action = () => CommandLineOptions.Parse(args);
+
+        await Assert.That(action).Throws<InvalidDataException>();
+    }
+
+    /// <summary>
+    /// Throws when an invalid report link URI is provided.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task Command_line_options_parse_throws_on_invalid_uri()
+    {
+        var args = new[]
+        {
+            "--report",
+            "/tmp/coverage.cobertura.xml",
+            "--line-threshold",
+            "80",
+            "--branch-threshold",
+            "70",
+            "--report-link",
+            "not-a-uri"
+        };
+
+        var action = () => CommandLineOptions.Parse(args);
+
+        await Assert.That(action).Throws<InvalidDataException>();
+    }
+
+    /// <summary>
+    /// Throws when an invalid boolean value is provided.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task Command_line_options_parse_throws_on_invalid_boolean()
+    {
+        var args = new[]
+        {
+            "--report",
+            "/tmp/coverage.cobertura.xml",
+            "--line-threshold",
+            "80",
+            "--branch-threshold",
+            "70",
+            "--override-active",
+            "not-bool"
+        };
+
+        var action = () => CommandLineOptions.Parse(args);
+
+        await Assert.That(action).Throws<InvalidDataException>();
+    }
+
+    /// <summary>
+    /// Throws when an invalid timestamp is provided.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task Command_line_options_parse_throws_on_invalid_timestamp()
+    {
+        var args = new[]
+        {
+            "--report",
+            "/tmp/coverage.cobertura.xml",
+            "--line-threshold",
+            "80",
+            "--branch-threshold",
+            "70",
+            "--timestamp",
+            "invalid-date"
+        };
+
+        var action = () => CommandLineOptions.Parse(args);
+
+        await Assert.That(action).Throws<InvalidDataException>();
+    }
+
+    /// <summary>
+    /// Parses report path using the short flag.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task Command_line_options_parse_accepts_short_report_flag()
+    {
+        var args = new[]
+        {
+            "-r",
+            "/tmp/coverage.cobertura.xml",
+            "--line-threshold",
+            "80",
+            "--branch-threshold",
+            "70"
+        };
+
+        var options = CommandLineOptions.Parse(args);
+
+        await Assert.That(options.ReportPath).IsEqualTo("/tmp/coverage.cobertura.xml");
+    }
+
+    /// <summary>
     /// Builds the absolute path for a coverage test data file.
     /// </summary>
     /// <param name="fileName">Coverage test data file name.</param>

@@ -1,5 +1,6 @@
 using System.Linq;
 using Oocx.TfPlan2Md.Parsing;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -9,7 +10,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-public partial class ReportModelBuilder
+internal partial class ReportModelBuilder
 {
     /// <summary>
     /// Builds a fully-populated report model from a parsed Terraform plan.
@@ -80,7 +81,7 @@ public partial class ReportModelBuilder
             })
             .ToList();
 
-        var escapedReportTitle = _reportTitle is null ? null : ScribanHelpers.EscapeMarkdownHeading(_reportTitle);
+        var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
 
         return new ReportModel
@@ -97,7 +98,7 @@ public partial class ReportModelBuilder
             ModuleChanges = moduleGroups,
             Summary = summary,
             ShowUnchangedValues = _showUnchangedValues,
-            LargeValueFormat = _largeValueFormat
+            RenderTarget = renderTarget
         };
     }
 

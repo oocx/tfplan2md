@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <AssemblyMetadata Include="CommitHash" Value="$(SourceRevisionId)" Condition="'$(SourceRevisionId)'!=''" />
+    <InternalsVisibleTo Include="Oocx.TfPlan2Md.TUnit" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,8 +44,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" />
-    <EmbeddedResource Include="Azure/AzureRoleDefinitions.json" />
+    <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" Exclude="MarkdownGeneration/Templates/azapi/**/*.sbn;MarkdownGeneration/Templates/azurerm/**/*.sbn;MarkdownGeneration/Templates/azuredevops/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzApi/Templates/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzureRM/Templates/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzureDevOps/Templates/**/*.sbn" />
+    <EmbeddedResource Include="Platforms/Azure/AzureRoleDefinitions.json" />
   </ItemGroup>
 
 </Project>

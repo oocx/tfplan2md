@@ -55,12 +55,12 @@ public class HelpTextProviderTests
     }
 
     [Test]
-    public void GetHelpText_IncludesLargeValueFormatOption()
+    public void GetHelpText_IncludesRenderTargetOption()
     {
         var help = HelpTextProvider.GetHelpText();
 
-        help.Should().Contain("--large-value-format <inline-diff|simple-diff>")
-            .And.Contain("Controls rendering of large attribute values");
+        help.Should().Contain("--render-target <github|azuredevops>")
+            .And.Contain("Target platform for rendering");
     }
 
     /// <summary>

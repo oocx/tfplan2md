@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 
@@ -31,7 +32,7 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
         // Return the unchanged value wrapped in code when both are identical
         if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
         {
-            return WrapInlineCode(MarkdownGeneration.ScribanHelpers.EscapeMarkdown(afterValue));
+            return WrapInlineCode(EscapeMarkdown(afterValue));
         }
 
         // Build inline diff with HTML styling
@@ -96,7 +97,7 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
         // This uses the existing diff logic until we fully extract shared utilities
         // For now, we'll reconstruct it using the public FormatLargeValue method
         // This is a temporary approach - full extraction will happen when we move shared utilities
-        return MarkdownGeneration.ScribanHelpers.FormatLargeValue(before, after, "inline-diff")
+        return FormatLargeValue(before, after, "inline-diff")
             .Replace("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", string.Empty, StringComparison.Ordinal)
             .Replace("</code></pre>", string.Empty, StringComparison.Ordinal)
             .Replace("\r", string.Empty, StringComparison.Ordinal)

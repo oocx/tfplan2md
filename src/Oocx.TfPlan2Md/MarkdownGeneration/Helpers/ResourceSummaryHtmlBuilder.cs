@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 
@@ -13,12 +14,6 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 /// </remarks>
 internal static class ResourceSummaryHtmlBuilder
 {
-    /// <summary>
-    /// Non-breaking space used to keep semantic icons attached to their labels in markdown output.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
-    /// </summary>
-    private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
-
     /// <summary>
     /// Builds a summary-safe HTML string for use inside summary elements, including action icon, type, name, location, address space, and changed attributes.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
@@ -35,23 +30,23 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
 
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{ScribanHelpers.FormatCodeSummary(model.Name)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
 
         var detailParts = new List<string>();
 
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
-            ? ScribanHelpers.FormatAttributeValueSummary("name", nameValue!, null)
+            ? FormatAttributeValueSummary("name", nameValue!, null)
             : null;
 
         if (!string.IsNullOrWhiteSpace(resourceGroup))
         {
-            var groupText = ScribanHelpers.FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
+            var groupText = FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
             primaryContext = primaryContext != null ? $"{primaryContext} in {groupText}" : groupText;
         }
 
         if (!string.IsNullOrWhiteSpace(location))
         {
-            var locationText = ScribanHelpers.FormatAttributeValueSummary("location", location!, null);
+            var locationText = FormatAttributeValueSummary("location", location!, null);
             primaryContext = primaryContext != null ? $"{primaryContext} {locationText}" : locationText;
         }
 
@@ -62,7 +57,7 @@ internal static class ResourceSummaryHtmlBuilder
 
         if (!string.IsNullOrWhiteSpace(addressSpace))
         {
-            detailParts.Add(ScribanHelpers.FormatAttributeValueSummary("address_space[0]", addressSpace!, null));
+            detailParts.Add(FormatAttributeValueSummary("address_space[0]", addressSpace!, null));
         }
 
         if (!string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
@@ -136,7 +131,7 @@ internal static class ResourceSummaryHtmlBuilder
             return null;
         }
 
-        var badges = tags.Select(tag => ScribanHelpers.FormatCodeTable($"{tag.Key}: {tag.Value}"));
+        var badges = tags.Select(tag => FormatCodeTable($"{tag.Key}: {tag.Value}"));
         return $"**🏷️{NonBreakingSpace}Tags:** {string.Join(' ', badges)}";
     }
 }

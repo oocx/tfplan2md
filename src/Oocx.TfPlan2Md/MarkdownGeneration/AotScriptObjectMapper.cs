@@ -5,6 +5,7 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -140,10 +141,10 @@ internal static class AotScriptObjectMapper
 
         // JSON values
         obj["before_json"] = change.BeforeJson is JsonElement jsonBefore
-            ? ScribanHelpers.ConvertToScriptObject(jsonBefore)
+            ? ConvertToScriptObject(jsonBefore)
             : null;
         obj["after_json"] = change.AfterJson is JsonElement jsonAfter
-            ? ScribanHelpers.ConvertToScriptObject(jsonAfter)
+            ? ConvertToScriptObject(jsonAfter)
             : null;
 
         // Replace paths

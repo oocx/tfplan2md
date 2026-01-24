@@ -8,6 +8,7 @@ using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -17,12 +18,6 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// </summary>
 internal static class RoleAssignmentViewModelFactory
 {
-    /// <summary>
-    /// Non-breaking space used to keep principal icons attached to their labels in markdown output.
-    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
-    /// </summary>
-    private const string NonBreakingSpace = ScribanHelpers.NonBreakingSpace;
-
     private static readonly string[] DesiredOrder =
     [
         "scope",
@@ -155,8 +150,8 @@ internal static class RoleAssignmentViewModelFactory
         RoleInfo role,
         PrincipalInfo principal)
     {
-        var scopeSummary = scope.SummaryLabel + ScribanHelpers.FormatCodeSummary(scope.SummaryName);
-        var roleSummary = $"<code>🛡️{NonBreakingSpace}{ScribanHelpers.EscapeMarkdown(role.Name)}</code>";
+        var scopeSummary = scope.SummaryLabel + FormatCodeSummary(scope.SummaryName);
+        var roleSummary = $"<code>🛡️{NonBreakingSpace}{EscapeMarkdown(role.Name)}</code>";
         var principalIcon = principal.Type switch
         {
             "User" => $"👤{NonBreakingSpace}",
@@ -164,7 +159,7 @@ internal static class RoleAssignmentViewModelFactory
             "ServicePrincipal" => $"💻{NonBreakingSpace}",
             _ => string.Empty
         };
-        var principalSummary = $"<code>{principalIcon}{ScribanHelpers.EscapeMarkdown(principal.Name)}</code>";
+        var principalSummary = $"<code>{principalIcon}{EscapeMarkdown(principal.Name)}</code>";
 
         return action switch
         {
@@ -196,14 +191,14 @@ internal static class RoleAssignmentViewModelFactory
         switch (attrName)
         {
             case "scope":
-                return ScribanHelpers.FormatAzureScopeForTable(scope);
+                return FormatAzureScopeForTable(scope);
 
             case "role_definition_id":
                 var roleName = !string.IsNullOrEmpty(role.Name)
-                    ? ScribanHelpers.FormatAttributeValueTable("role_definition_name", role.Name, null)
+                    ? FormatAttributeValueTable("role_definition_name", role.Name, null)
                     : string.Empty;
                 var roleId = !string.IsNullOrEmpty(role.Id)
-                    ? ScribanHelpers.FormatCodeTable(role.Id)
+                    ? FormatCodeTable(role.Id)
                     : string.Empty;
 
                 if (string.IsNullOrEmpty(roleName) && string.IsNullOrEmpty(roleId))
@@ -264,11 +259,11 @@ internal static class RoleAssignmentViewModelFactory
                 }
 
                 var nameValue = !string.IsNullOrEmpty(nameAndType)
-                    ? ScribanHelpers.FormatCodeTable(nameAndType)
+                    ? FormatCodeTable(nameAndType)
                     : string.Empty;
 
                 var idValue = !string.IsNullOrEmpty(principal.Id)
-                    ? $"[{ScribanHelpers.FormatCodeTable(principal.Id)}]"
+                    ? $"[{FormatCodeTable(principal.Id)}]"
                     : string.Empty;
 
                 var text = nameValue;
@@ -285,7 +280,7 @@ internal static class RoleAssignmentViewModelFactory
                     var value = propType.GetString();
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return ScribanHelpers.FormatAttributeValueTable("principal_type", value, null);
+                        return FormatAttributeValueTable("principal_type", value, null);
                     }
                 }
                 return null;
@@ -296,7 +291,7 @@ internal static class RoleAssignmentViewModelFactory
                     var value = propRole.GetString();
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return ScribanHelpers.FormatAttributeValueTable("role_definition_name", value, null);
+                        return FormatAttributeValueTable("role_definition_name", value, null);
                     }
                 }
                 return null;
@@ -314,7 +309,7 @@ internal static class RoleAssignmentViewModelFactory
                     };
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return ScribanHelpers.FormatAttributeValueTable(attrName, value, null);
+                        return FormatAttributeValueTable(attrName, value, null);
                     }
                 }
                 return null;

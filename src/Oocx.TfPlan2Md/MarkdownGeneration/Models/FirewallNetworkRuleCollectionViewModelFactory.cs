@@ -5,6 +5,7 @@ using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -29,7 +30,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
 
         var formattedPriority = !string.IsNullOrEmpty(priority) ? priority : null;
         var formattedAction = !string.IsNullOrEmpty(action)
-            ? ScribanHelpers.FormatAttributeValueTable("access", action, providerName)
+            ? FormatAttributeValueTable("access", action, providerName)
             : null;
 
         var beforeRules = ExtractRules(change.Change.Before);
@@ -196,12 +197,12 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return rules
             .Select(rule => new FirewallRuleRowViewModel
             {
-                Name = $"`{ScribanHelpers.EscapeMarkdown(rule.Name)}`",
+                Name = $"`{EscapeMarkdown(rule.Name)}`",
                 Protocols = FormatList("protocol", rule.Protocols, providerName),
                 SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
                 DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
                 DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-                Description = $"`{ScribanHelpers.EscapeMarkdown(rule.Description)}`"
+                Description = $"`{EscapeMarkdown(rule.Description)}`"
             })
             .ToList();
     }
@@ -214,12 +215,12 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "➕",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(rule.Name)}`",
+            Name = $"`{EscapeMarkdown(rule.Name)}`",
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
             DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-            Description = $"`{ScribanHelpers.EscapeMarkdown(rule.Description)}`"
+            Description = $"`{EscapeMarkdown(rule.Description)}`"
         };
     }
 
@@ -231,12 +232,12 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "❌",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(rule.Name)}`",
+            Name = $"`{EscapeMarkdown(rule.Name)}`",
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
             DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-            Description = $"`{ScribanHelpers.EscapeMarkdown(rule.Description)}`"
+            Description = $"`{EscapeMarkdown(rule.Description)}`"
         };
     }
 
@@ -248,12 +249,12 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "⏺️",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(rule.Name)}`",
+            Name = $"`{EscapeMarkdown(rule.Name)}`",
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
             DestinationPorts = FormatList("destination_ports", rule.DestinationPorts, providerName),
-            Description = $"`{ScribanHelpers.EscapeMarkdown(rule.Description)}`"
+            Description = $"`{EscapeMarkdown(rule.Description)}`"
         };
     }
 
@@ -271,12 +272,12 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "🔄",
-            Name = $"`{ScribanHelpers.EscapeMarkdown(after.Name)}`",
+            Name = $"`{EscapeMarkdown(after.Name)}`",
             Protocols = FormatListDiff("protocol", before.Protocols, after.Protocols, providerName, format),
             SourceAddresses = FormatListDiff("source_addresses", before.SourceAddresses, after.SourceAddresses, providerName, format),
             DestinationAddresses = FormatListDiff("destination_addresses", before.DestinationAddresses, after.DestinationAddresses, providerName, format),
             DestinationPorts = FormatListDiff("destination_ports", before.DestinationPorts, after.DestinationPorts, providerName, format),
-            Description = ScribanHelpers.FormatDiff(before.Description, after.Description, format)
+            Description = FormatDiff(before.Description, after.Description, format)
         };
     }
 
@@ -291,7 +292,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         }
 
         var formatted = values
-            .Select(v => ScribanHelpers.FormatAttributeValueTable(attributeName, v, providerName))
+            .Select(v => FormatAttributeValueTable(attributeName, v, providerName))
             .ToList();
 
         return string.Join(", ", formatted);
@@ -303,11 +304,11 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     private static string FormatListDiff(string attributeName, IReadOnlyList<string> before, IReadOnlyList<string> after, string providerName, string format)
     {
         var beforeFormatted = before
-            .Select(v => ScribanHelpers.FormatAttributeValuePlain(attributeName, v, providerName))
+            .Select(v => FormatAttributeValuePlain(attributeName, v, providerName))
             .ToList();
 
         var afterFormatted = after
-            .Select(v => ScribanHelpers.FormatAttributeValuePlain(attributeName, v, providerName))
+            .Select(v => FormatAttributeValuePlain(attributeName, v, providerName))
             .ToList();
 
         var beforeStr = string.Join(", ", beforeFormatted);
@@ -318,7 +319,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
             return afterStr;
         }
 
-        return ScribanHelpers.FormatDiff(beforeStr, afterStr, format);
+        return FormatDiff(beforeStr, afterStr, format);
     }
 
     /// <summary>

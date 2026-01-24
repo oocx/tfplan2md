@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
@@ -136,9 +137,9 @@ internal static class VariableGroupExtractors
 
             blocks.Add(new KeyVaultRowViewModel
             {
-                Name = ScribanHelpers.FormatAttributeValueTable("name", name, null),
-                ServiceEndpointId = ScribanHelpers.FormatAttributeValueTable("service_endpoint_id", serviceEndpointId, null),
-                SearchDepth = ScribanHelpers.FormatAttributeValueTable("search_depth", searchDepth, null)
+                Name = FormatAttributeValueTable("name", name, null),
+                ServiceEndpointId = FormatAttributeValueTable("service_endpoint_id", serviceEndpointId, null),
+                SearchDepth = FormatAttributeValueTable("search_depth", searchDepth, null)
             });
         }
 

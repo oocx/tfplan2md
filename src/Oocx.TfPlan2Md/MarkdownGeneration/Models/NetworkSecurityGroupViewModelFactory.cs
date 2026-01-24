@@ -5,6 +5,7 @@ using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -222,16 +223,16 @@ internal static class NetworkSecurityGroupViewModelFactory
             .ThenBy(rule => rule.Name, StringComparer.Ordinal)
             .Select(rule => new SecurityRuleRowViewModel
             {
-                Name = ScribanHelpers.FormatAttributeValueTable("name", rule.Name, providerName),
-                Priority = ScribanHelpers.FormatAttributeValueTable("priority", rule.Priority, providerName),
-                Direction = ScribanHelpers.FormatAttributeValueTable("direction", rule.Direction, providerName),
-                Access = ScribanHelpers.FormatAttributeValueTable("access", rule.Access, providerName),
-                Protocol = ScribanHelpers.FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-                SourceAddresses = ScribanHelpers.FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
-                SourcePorts = ScribanHelpers.FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-                DestinationAddresses = ScribanHelpers.FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
-                DestinationPorts = ScribanHelpers.FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-                Description = ScribanHelpers.FormatAttributeValueTable("description", rule.Description, providerName)
+                Name = FormatAttributeValueTable("name", rule.Name, providerName),
+                Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
+                Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
+                Access = FormatAttributeValueTable("access", rule.Access, providerName),
+                Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
+                SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+                SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
+                DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+                DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
+                Description = FormatAttributeValueTable("description", rule.Description, providerName)
             })
             .ToList();
     }
@@ -247,16 +248,16 @@ internal static class NetworkSecurityGroupViewModelFactory
         return new SecurityRuleChangeRowViewModel
         {
             Change = "➕",
-            Name = ScribanHelpers.FormatAttributeValueTable("name", rule.Name, providerName),
-            Priority = ScribanHelpers.FormatAttributeValueTable("priority", rule.Priority, providerName),
-            Direction = ScribanHelpers.FormatAttributeValueTable("direction", rule.Direction, providerName),
-            Access = ScribanHelpers.FormatAttributeValueTable("access", rule.Access, providerName),
-            Protocol = ScribanHelpers.FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-            SourceAddresses = ScribanHelpers.FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
-            SourcePorts = ScribanHelpers.FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-            DestinationAddresses = ScribanHelpers.FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
-            DestinationPorts = ScribanHelpers.FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-            Description = ScribanHelpers.FormatAttributeValueTable("description", rule.Description, providerName)
+            Name = FormatAttributeValueTable("name", rule.Name, providerName),
+            Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
+            Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
+            Access = FormatAttributeValueTable("access", rule.Access, providerName),
+            Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
+            SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+            SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
+            DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+            DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
+            Description = FormatAttributeValueTable("description", rule.Description, providerName)
         };
     }
 
@@ -271,16 +272,16 @@ internal static class NetworkSecurityGroupViewModelFactory
         return new SecurityRuleChangeRowViewModel
         {
             Change = "❌",
-            Name = ScribanHelpers.FormatAttributeValueTable("name", rule.Name, providerName),
-            Priority = ScribanHelpers.FormatAttributeValueTable("priority", rule.Priority, providerName),
-            Direction = ScribanHelpers.FormatAttributeValueTable("direction", rule.Direction, providerName),
-            Access = ScribanHelpers.FormatAttributeValueTable("access", rule.Access, providerName),
-            Protocol = ScribanHelpers.FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-            SourceAddresses = ScribanHelpers.FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
-            SourcePorts = ScribanHelpers.FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-            DestinationAddresses = ScribanHelpers.FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
-            DestinationPorts = ScribanHelpers.FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-            Description = ScribanHelpers.FormatAttributeValueTable("description", rule.Description, providerName)
+            Name = FormatAttributeValueTable("name", rule.Name, providerName),
+            Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
+            Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
+            Access = FormatAttributeValueTable("access", rule.Access, providerName),
+            Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
+            SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+            SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
+            DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+            DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
+            Description = FormatAttributeValueTable("description", rule.Description, providerName)
         };
     }
 
@@ -295,16 +296,16 @@ internal static class NetworkSecurityGroupViewModelFactory
         return new SecurityRuleChangeRowViewModel
         {
             Change = "⏺️",
-            Name = ScribanHelpers.FormatAttributeValueTable("name", rule.Name, providerName),
-            Priority = ScribanHelpers.FormatAttributeValueTable("priority", rule.Priority, providerName),
-            Direction = ScribanHelpers.FormatAttributeValueTable("direction", rule.Direction, providerName),
-            Access = ScribanHelpers.FormatAttributeValueTable("access", rule.Access, providerName),
-            Protocol = ScribanHelpers.FormatAttributeValueTable("protocol", rule.Protocol, providerName),
-            SourceAddresses = ScribanHelpers.FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
-            SourcePorts = ScribanHelpers.FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
-            DestinationAddresses = ScribanHelpers.FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
-            DestinationPorts = ScribanHelpers.FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
-            Description = ScribanHelpers.FormatAttributeValueTable("description", rule.Description, providerName)
+            Name = FormatAttributeValueTable("name", rule.Name, providerName),
+            Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
+            Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
+            Access = FormatAttributeValueTable("access", rule.Access, providerName),
+            Protocol = FormatAttributeValueTable("protocol", rule.Protocol, providerName),
+            SourceAddresses = FormatAttributeValueTable("source_addresses", rule.SourceAddresses, providerName),
+            SourcePorts = FormatAttributeValueTable("source_ports", rule.SourcePorts, providerName),
+            DestinationAddresses = FormatAttributeValueTable("destination_addresses", rule.DestinationAddresses, providerName),
+            DestinationPorts = FormatAttributeValueTable("destination_ports", rule.DestinationPorts, providerName),
+            Description = FormatAttributeValueTable("description", rule.Description, providerName)
         };
     }
 
@@ -327,16 +328,16 @@ internal static class NetworkSecurityGroupViewModelFactory
         return new SecurityRuleChangeRowViewModel
         {
             Change = "🔄",
-            Name = ScribanHelpers.FormatAttributeValueTable("name", after.Name, providerName),
-            Priority = ScribanHelpers.FormatDiff(before.Priority, after.Priority, format),
-            Direction = ScribanHelpers.FormatDiff(before.Direction, after.Direction, format),
-            Access = ScribanHelpers.FormatDiff(before.Access, after.Access, format),
-            Protocol = ScribanHelpers.FormatDiff(before.Protocol, after.Protocol, format),
-            SourceAddresses = ScribanHelpers.FormatDiff(before.SourceAddresses, after.SourceAddresses, format),
-            SourcePorts = ScribanHelpers.FormatDiff(before.SourcePorts, after.SourcePorts, format),
-            DestinationAddresses = ScribanHelpers.FormatDiff(before.DestinationAddresses, after.DestinationAddresses, format),
-            DestinationPorts = ScribanHelpers.FormatDiff(before.DestinationPorts, after.DestinationPorts, format),
-            Description = ScribanHelpers.FormatDiff(before.Description, after.Description, format)
+            Name = FormatAttributeValueTable("name", after.Name, providerName),
+            Priority = FormatDiff(before.Priority, after.Priority, format),
+            Direction = FormatDiff(before.Direction, after.Direction, format),
+            Access = FormatDiff(before.Access, after.Access, format),
+            Protocol = FormatDiff(before.Protocol, after.Protocol, format),
+            SourceAddresses = FormatDiff(before.SourceAddresses, after.SourceAddresses, format),
+            SourcePorts = FormatDiff(before.SourcePorts, after.SourcePorts, format),
+            DestinationAddresses = FormatDiff(before.DestinationAddresses, after.DestinationAddresses, format),
+            DestinationPorts = FormatDiff(before.DestinationPorts, after.DestinationPorts, format),
+            Description = FormatDiff(before.Description, after.Description, format)
         };
     }
 

@@ -1,5 +1,6 @@
 using System.Linq;
 using Oocx.TfPlan2Md.Parsing;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -80,7 +81,7 @@ internal partial class ReportModelBuilder
             })
             .ToList();
 
-        var escapedReportTitle = _reportTitle is null ? null : ScribanHelpers.EscapeMarkdownHeading(_reportTitle);
+        var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
 
         return new ReportModel

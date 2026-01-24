@@ -7,6 +7,7 @@ using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -14,7 +15,7 @@ public class RoleAssignmentTemplateTests
 {
     private const string Nbsp = "\u00A0";
     private readonly TerraformPlanParser _parser = new();
-    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
+    private static string Escape(string value) => EscapeMarkdown(value);
 
     [Test]
     public void Create_RendersSummaryAndDetailsTable()

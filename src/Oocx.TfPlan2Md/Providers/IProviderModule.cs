@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Providers;
 /// This interface enables explicit, AOT-compatible provider registration without reflection.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
-public interface IProviderModule
+internal interface IProviderModule
 {
     /// <summary>
     /// Gets the unique name of the Terraform provider (e.g., "azurerm", "azapi", "azuredevops").

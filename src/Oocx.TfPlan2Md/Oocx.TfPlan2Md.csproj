@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <AssemblyMetadata Include="CommitHash" Value="$(SourceRevisionId)" Condition="'$(SourceRevisionId)'!=''" />
+    <InternalsVisibleTo Include="Oocx.TfPlan2Md.TUnit" />
   </ItemGroup>
 
   <ItemGroup>

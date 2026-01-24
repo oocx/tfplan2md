@@ -12,15 +12,17 @@ Reference: [specification.md](specification.md) and [architecture.md](architectu
 
 **Priority:** High
 
+**Status:** ✅ Complete
+
 **Description:**
 Establish the foundation for explicit provider registration and multi-prefix template loading.
 
 **Acceptance Criteria:**
-- [ ] `IProviderModule` interface created in `Oocx.TfPlan2Md.Providers`.
-- [ ] `ProviderRegistry` class created for managing explicit registration (no reflection).
-- [ ] `TemplateLoader` updated to support multiple embedded resource prefixes (checking Core first, then Provider locations).
-- [ ] `ReportModelBuilder` refactored to use `ProviderRegistry` for helper registration and factory lookup.
-- [ ] Unit test verifies `TemplateLoader` can load from multiple prefixes.
+- [x] `IProviderModule` interface created in `Oocx.TfPlan2Md.Providers`.
+- [x] `ProviderRegistry` class created for managing explicit registration (no reflection).
+- [x] `TemplateLoader` updated to support multiple embedded resource prefixes (checking Core first, then Provider locations).
+- [x] `ReportModelBuilder` refactored to use `ProviderRegistry` for helper registration and factory lookup.
+- [x] Unit test verifies `TemplateLoader` can load from multiple prefixes.
 
 **Dependencies:** None
 

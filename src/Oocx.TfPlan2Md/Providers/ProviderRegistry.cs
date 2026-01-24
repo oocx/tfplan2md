@@ -12,7 +12,7 @@ namespace Oocx.TfPlan2Md.Providers;
 /// All provider modules must be registered manually in the application startup code.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
-public sealed class ProviderRegistry
+internal sealed class ProviderRegistry
 {
     private readonly List<IProviderModule> _providers = new();
 

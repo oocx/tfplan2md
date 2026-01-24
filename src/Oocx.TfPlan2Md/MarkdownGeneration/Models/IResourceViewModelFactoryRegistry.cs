@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// to register factories without depending on the internal implementation details.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
-public interface IResourceViewModelFactoryRegistry
+internal interface IResourceViewModelFactoryRegistry
 {
     /// <summary>
     /// Registers a factory for a specific resource type.

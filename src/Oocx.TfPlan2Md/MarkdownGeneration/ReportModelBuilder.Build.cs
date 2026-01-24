@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
-public partial class ReportModelBuilder
+internal partial class ReportModelBuilder
 {
     /// <summary>
     /// Builds a fully-populated report model from a parsed Terraform plan.

@@ -92,14 +92,14 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory src/TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
 
       - name: Generate coverage report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         run: |
           dotnet tool run reportgenerator \
-            -reports:"./src/TestResults/**/coverage.cobertura.xml" \
-            -targetdir:"./src/TestResults/coverage-report" \
+            -reports:"./TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"./TestResults/coverage-report" \
             -reporttypes:Html
 
       - name: Check coverage override label
@@ -114,7 +114,7 @@ jobs:
       - name: Enforce coverage thresholds
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         run: |
-          report_path="./src/TestResults/coverage.cobertura.xml"
+          report_path="./TestResults/coverage.cobertura.xml"
           if [ ! -f "$report_path" ]; then
             echo "❌ ERROR: Cobertura report not found for coverage enforcement."
             exit 1
@@ -124,25 +124,25 @@ jobs:
             --report "$report_path" \
             --line-threshold 84.48 \
             --branch-threshold 72.80 \
-            --summary-output ./src/TestResults/coverage-summary.md \
+            --summary-output ./TestResults/coverage-summary.md \
             --report-link "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --override-active "${{ steps.coverage_override.outputs.active }}"
 
       - name: Publish coverage summary
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        run: cat ./src/TestResults/coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat ./TestResults/coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         run: |
           # Check if TestResults directory exists and contains .trx files
-          if [ ! -d "./src/TestResults" ] || [ -z "$(ls -A ./src/TestResults/*.trx 2>/dev/null)" ]; then
+          if [ ! -d "./TestResults" ] || [ -z "$(ls -A ./TestResults/*.trx 2>/dev/null)" ]; then
             echo "❌ ERROR: No test results found! Tests may not have run."
             exit 1
           fi
           
           # Count the test results (safe because we verified .trx files exist above)
-          test_count=$(grep -r "outcome" ./src/TestResults/*.trx | wc -l)
+          test_count=$(grep -r "outcome" ./TestResults/*.trx | wc -l)
           echo "✓ Test results found: $test_count test(s) executed"
           
           if [ "$test_count" -eq 0 ]; then
@@ -154,7 +154,7 @@ jobs:
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: ./src/TestResults/*.trx
+          files: ./TestResults/*.trx
           check_name: 'Test Results'
 
       - name: Upload coverage report
@@ -162,21 +162,21 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: ./src/TestResults/coverage-report
+          path: ./TestResults/coverage-report
 
       - name: Upload Cobertura report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: coverage-cobertura
-          path: ./src/TestResults/**/coverage.cobertura.xml
+          path: ./TestResults/**/coverage.cobertura.xml
 
       - name: Update coverage badge and history
         id: coverage_badge_history
         if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (success() || steps.coverage_override.outputs.active == 'true')
         run: |
           dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
-            --report ./src/TestResults/coverage.cobertura.xml \
+            --report ./TestResults/coverage.cobertura.xml \
             --line-threshold 84.48 \
             --branch-threshold 72.80 \
             --badge-output ./assets/coverage-badge.svg \
@@ -205,7 +205,7 @@ jobs:
           script: |
             const fs = require('fs');
             const marker = '<!-- coverage-summary -->';
-            const body = fs.readFileSync('./src/TestResults/coverage-summary.md', 'utf8');
+            const body = fs.readFileSync('./TestResults/coverage-summary.md', 'utf8');
             const { owner, repo } = context.repo;
             const issue_number = context.payload.pull_request.number;
 

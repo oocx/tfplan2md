@@ -7,7 +7,9 @@ set -euo pipefail
 coverage_path="${1:-}"
 
 if [[ -z "$coverage_path" ]]; then
-  if [[ -f "src/TestResults/coverage.cobertura.xml" ]]; then
+  if [[ -f "TestResults/coverage.cobertura.xml" ]]; then
+    coverage_path="TestResults/coverage.cobertura.xml"
+  elif [[ -f "src/TestResults/coverage.cobertura.xml" ]]; then
     coverage_path="src/TestResults/coverage.cobertura.xml"
   else
     matches=(src/tests/Oocx.TfPlan2Md.TUnit/bin/**/TestResults/*.cobertura.xml)

@@ -91,15 +91,17 @@ Move generic cloud platform utilities (Azure-specific but provider-agnostic) to 
 
 **Priority:** Medium
 
+**Status:** ✅ Complete
+
 **Description:**
 Consolidate all AzApi-specific logic and templates into the `Providers/AzApi/` folder.
 
 **Acceptance Criteria:**
-- [ ] Folder `src/Oocx.TfPlan2Md/Providers/AzApi/` created.
-- [ ] Templates moved from `MarkdownGeneration/Templates/azapi/` (and resource files updated).
-- [ ] Helpers moved from `MarkdownGeneration/Helpers/ScribanHelpers.AzApi.*.cs`.
-- [ ] `AzApiModule` implemented and registered in `ProviderRegistry`.
-- [ ] Namespaces updated to `Oocx.TfPlan2Md.Providers.AzApi`.
+- [x] Folder `src/Oocx.TfPlan2Md/Providers/AzApi/` created.
+- [x] Templates moved from `MarkdownGeneration/Templates/azapi/` (and resource files updated).
+- [x] Helpers moved from `MarkdownGeneration/Helpers/ScribanHelpers.AzApi.*.cs`.
+- [x] `AzApiModule` implemented and registered in `ProviderRegistry`.
+- [x] Namespaces updated to `Oocx.TfPlan2Md.Providers.AzApi`.
 
 **Dependencies:** Task 1, Task 4
 

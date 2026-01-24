@@ -171,7 +171,6 @@ public class ProgramMainTests
     /// Invokes the program entry point while capturing stdout/stderr.
     /// </summary>
     /// <param name="args">Command-line arguments.</param>
-    /// <param name="stdIn">Optional stdin content.</param>
     /// <returns>Captured exit code and console output.</returns>
     private static async Task<(int ExitCode, string StdOut, string StdErr)> RunMainAsync(string[] args)
     {

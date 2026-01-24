@@ -10,10 +10,10 @@ Feature 048 introduces official Azure API documentation mappings to replace URL 
 
 We need to:
 - Map Azure resource types (e.g., `Microsoft.Compute/virtualMachines`) to Microsoft Learn documentation URLs
-- Support 50-100 mappings initially, potentially growing to several hundred
+- Support comprehensive coverage (all Azure resources if possible)
 - Load mappings efficiently at application startup
 - Keep mappings synchronized with code releases
-- Enable maintainers and community to update mappings easily
+- Enable maintainers to update mappings via automated script
 
 ## Options Considered
 
@@ -161,9 +161,9 @@ The project already uses embedded JSON for `AzureRoleDefinitions.json` (Feature 
 - Maintains architectural consistency
 
 ### Performance Characteristics
-- **Startup**: One-time load at application startup (~10ms for 100 mappings)
+- **Startup**: One-time load at application startup (~10-50ms for comprehensive mappings)
 - **Runtime**: O(1) lookup via `FrozenDictionary<string, string>`
-- **Memory**: ~10-50 KB for 100-200 mappings (negligible for modern systems)
+- **Memory**: ~50-500 KB for comprehensive mappings (negligible for modern systems)
 
 ### Deployment Simplicity
 - **No external files**: Docker image contains everything needed
@@ -199,8 +199,8 @@ JSON structure allows future enhancements without breaking changes:
 - **Compilation dependency**: Mappings embedded at build time
 
 ### Mitigations
-- **Regular releases**: Update mappings quarterly or when Azure releases major services
-- **Community contributions**: Users can submit PRs for missing mappings
+- **On-demand updates**: Maintainer runs discovery script when mappings need updating
+- **User reports**: Users can report missing/broken mappings via GitHub issues
 - **Fast release cycle**: CI/CD pipeline enables quick releases when needed
 - **Future enhancement option**: Can add external file override in future if users request it
 

@@ -1,0 +1,287 @@
+{
+  "mappings": {
+    "Microsoft.AnalysisServices/servers": {
+      "url": "https://learn.microsoft.com/rest/api/analysisservices/servers"
+    },
+    "Microsoft.ApiManagement/service": {
+      "url": "https://learn.microsoft.com/rest/api/apimanagement/api-management-service"
+    },
+    "Microsoft.ApiManagement/service/apis": {
+      "url": "https://learn.microsoft.com/rest/api/apimanagement/apis"
+    },
+    "Microsoft.Automation/automationAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/automation/automation-account"
+    },
+    "Microsoft.Automation/automationAccounts/credentials": {
+      "url": "https://learn.microsoft.com/rest/api/automation/credential"
+    },
+    "Microsoft.Automation/automationAccounts/runbooks": {
+      "url": "https://learn.microsoft.com/rest/api/automation/runbook"
+    },
+    "Microsoft.Automation/automationAccounts/variables": {
+      "url": "https://learn.microsoft.com/rest/api/automation/variable"
+    },
+    "Microsoft.Batch/batchAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/batchmanagement/batch-account"
+    },
+    "Microsoft.Batch/batchAccounts/pools": {
+      "url": "https://learn.microsoft.com/rest/api/batchmanagement/pool"
+    },
+    "Microsoft.Cache/redis": {
+      "url": "https://learn.microsoft.com/rest/api/redis/redis"
+    },
+    "Microsoft.Cdn/profiles": {
+      "url": "https://learn.microsoft.com/rest/api/cdn/profiles"
+    },
+    "Microsoft.CognitiveServices/accounts": {
+      "url": "https://learn.microsoft.com/rest/api/cognitiveservices/accountmanagement/accounts"
+    },
+    "Microsoft.Compute/availabilitySets": {
+      "url": "https://learn.microsoft.com/rest/api/compute/availability-sets"
+    },
+    "Microsoft.Compute/disks": {
+      "url": "https://learn.microsoft.com/rest/api/compute/disks"
+    },
+    "Microsoft.Compute/images": {
+      "url": "https://learn.microsoft.com/rest/api/compute/images"
+    },
+    "Microsoft.Compute/snapshots": {
+      "url": "https://learn.microsoft.com/rest/api/compute/snapshots"
+    },
+    "Microsoft.Compute/virtualMachineScaleSets": {
+      "url": "https://learn.microsoft.com/rest/api/compute/virtual-machine-scale-sets"
+    },
+    "Microsoft.Compute/virtualMachines": {
+      "url": "https://learn.microsoft.com/rest/api/compute/virtual-machines"
+    },
+    "Microsoft.ContainerInstance/containerGroups": {
+      "url": "https://learn.microsoft.com/rest/api/container-instances/container-groups"
+    },
+    "Microsoft.ContainerRegistry/registries": {
+      "url": "https://learn.microsoft.com/rest/api/containerregistry/registries"
+    },
+    "Microsoft.ContainerService/managedClusters": {
+      "url": "https://learn.microsoft.com/rest/api/aks/managed-clusters"
+    },
+    "Microsoft.DataFactory/factories": {
+      "url": "https://learn.microsoft.com/rest/api/datafactory/factories"
+    },
+    "Microsoft.DataFactory/factories/datasets": {
+      "url": "https://learn.microsoft.com/rest/api/datafactory/datasets"
+    },
+    "Microsoft.DataFactory/factories/pipelines": {
+      "url": "https://learn.microsoft.com/rest/api/datafactory/pipelines"
+    },
+    "Microsoft.Databricks/workspaces": {
+      "url": "https://learn.microsoft.com/rest/api/databricks/workspaces"
+    },
+    "Microsoft.Devices/IotHubs": {
+      "url": "https://learn.microsoft.com/rest/api/iothub/iot-hub-resource"
+    },
+    "Microsoft.Devices/provisioningServices": {
+      "url": "https://learn.microsoft.com/rest/api/iot-dps/iot-dps-resource"
+    },
+    "Microsoft.DocumentDB/databaseAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/cosmos-db-resource-provider/database-accounts"
+    },
+    "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases": {
+      "url": "https://learn.microsoft.com/rest/api/cosmos-db-resource-provider/mongodb-resources"
+    },
+    "Microsoft.DocumentDB/databaseAccounts/sqlDatabases": {
+      "url": "https://learn.microsoft.com/rest/api/cosmos-db-resource-provider/sql-resources"
+    },
+    "Microsoft.EventGrid/domains": {
+      "url": "https://learn.microsoft.com/rest/api/eventgrid/domains"
+    },
+    "Microsoft.EventGrid/topics": {
+      "url": "https://learn.microsoft.com/rest/api/eventgrid/topics"
+    },
+    "Microsoft.EventHub/namespaces": {
+      "url": "https://learn.microsoft.com/rest/api/eventhub/namespaces"
+    },
+    "Microsoft.EventHub/namespaces/eventhubs": {
+      "url": "https://learn.microsoft.com/rest/api/eventhub/event-hubs"
+    },
+    "Microsoft.HDInsight/clusters": {
+      "url": "https://learn.microsoft.com/rest/api/hdinsight/clusters"
+    },
+    "Microsoft.Insights/actionGroups": {
+      "url": "https://learn.microsoft.com/rest/api/monitor/action-groups"
+    },
+    "Microsoft.Insights/activityLogAlerts": {
+      "url": "https://learn.microsoft.com/rest/api/monitor/activity-log-alerts"
+    },
+    "Microsoft.Insights/components": {
+      "url": "https://learn.microsoft.com/rest/api/application-insights/components"
+    },
+    "Microsoft.Insights/metricAlerts": {
+      "url": "https://learn.microsoft.com/rest/api/monitor/metric-alerts"
+    },
+    "Microsoft.KeyVault/managedHSMs": {
+      "url": "https://learn.microsoft.com/rest/api/keyvault/managed-hsm/managed-hsms"
+    },
+    "Microsoft.KeyVault/vaults": {
+      "url": "https://learn.microsoft.com/rest/api/keyvault/keyvault/vaults"
+    },
+    "Microsoft.KeyVault/vaults/keys": {
+      "url": "https://learn.microsoft.com/rest/api/keyvault/keyvault/vaults/keys"
+    },
+    "Microsoft.KeyVault/vaults/secrets": {
+      "url": "https://learn.microsoft.com/rest/api/keyvault/keyvault/vaults/secrets"
+    },
+    "Microsoft.Logic/integrationAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/logic/integration-accounts"
+    },
+    "Microsoft.Logic/workflows": {
+      "url": "https://learn.microsoft.com/rest/api/logic/workflows"
+    },
+    "Microsoft.MachineLearningServices/workspaces": {
+      "url": "https://learn.microsoft.com/rest/api/azureml/workspaces"
+    },
+    "Microsoft.MachineLearningServices/workspaces/computes": {
+      "url": "https://learn.microsoft.com/rest/api/azureml/compute"
+    },
+    "Microsoft.Media/mediaServices": {
+      "url": "https://learn.microsoft.com/rest/api/media/media-services"
+    },
+    "Microsoft.Network/applicationGateways": {
+      "url": "https://learn.microsoft.com/rest/api/application-gateway/application-gateways"
+    },
+    "Microsoft.Network/dnsZones": {
+      "url": "https://learn.microsoft.com/rest/api/dns/zones"
+    },
+    "Microsoft.Network/frontDoors": {
+      "url": "https://learn.microsoft.com/rest/api/frontdoor/front-doors"
+    },
+    "Microsoft.Network/loadBalancers": {
+      "url": "https://learn.microsoft.com/rest/api/load-balancer/load-balancers"
+    },
+    "Microsoft.Network/networkInterfaces": {
+      "url": "https://learn.microsoft.com/rest/api/virtualnetwork/network-interfaces"
+    },
+    "Microsoft.Network/networkSecurityGroups": {
+      "url": "https://learn.microsoft.com/rest/api/virtualnetwork/network-security-groups"
+    },
+    "Microsoft.Network/networkWatchers": {
+      "url": "https://learn.microsoft.com/rest/api/network-watcher/network-watchers"
+    },
+    "Microsoft.Network/privateDnsZones": {
+      "url": "https://learn.microsoft.com/rest/api/dns/private-zones"
+    },
+    "Microsoft.Network/publicIPAddresses": {
+      "url": "https://learn.microsoft.com/rest/api/virtualnetwork/public-ip-addresses"
+    },
+    "Microsoft.Network/routeTables": {
+      "url": "https://learn.microsoft.com/rest/api/virtualnetwork/route-tables"
+    },
+    "Microsoft.Network/trafficManagerProfiles": {
+      "url": "https://learn.microsoft.com/rest/api/trafficmanager/profiles"
+    },
+    "Microsoft.Network/virtualNetworkGateways": {
+      "url": "https://learn.microsoft.com/rest/api/network-gateway/virtual-network-gateways"
+    },
+    "Microsoft.Network/virtualNetworks": {
+      "url": "https://learn.microsoft.com/rest/api/virtualnetwork/virtual-networks"
+    },
+    "Microsoft.NotificationHubs/namespaces": {
+      "url": "https://learn.microsoft.com/rest/api/notificationhubs/namespaces"
+    },
+    "Microsoft.NotificationHubs/namespaces/notificationHubs": {
+      "url": "https://learn.microsoft.com/rest/api/notificationhubs/notification-hubs"
+    },
+    "Microsoft.PowerBIDedicated/capacities": {
+      "url": "https://learn.microsoft.com/rest/api/power-bi-embedded/capacities"
+    },
+    "Microsoft.RecoveryServices/vaults": {
+      "url": "https://learn.microsoft.com/rest/api/recoveryservices/vaults"
+    },
+    "Microsoft.RecoveryServices/vaults/backupPolicies": {
+      "url": "https://learn.microsoft.com/rest/api/backup/backup-policies"
+    },
+    "Microsoft.Relay/namespaces": {
+      "url": "https://learn.microsoft.com/rest/api/relay/namespaces"
+    },
+    "Microsoft.Search/searchServices": {
+      "url": "https://learn.microsoft.com/rest/api/searchmanagement/services"
+    },
+    "Microsoft.ServiceBus/namespaces": {
+      "url": "https://learn.microsoft.com/rest/api/servicebus/namespaces"
+    },
+    "Microsoft.ServiceBus/namespaces/queues": {
+      "url": "https://learn.microsoft.com/rest/api/servicebus/queues"
+    },
+    "Microsoft.ServiceBus/namespaces/topics": {
+      "url": "https://learn.microsoft.com/rest/api/servicebus/topics"
+    },
+    "Microsoft.SignalRService/signalR": {
+      "url": "https://learn.microsoft.com/rest/api/signalr/signalr"
+    },
+    "Microsoft.Sql/managedInstances": {
+      "url": "https://learn.microsoft.com/rest/api/sql/managed-instances"
+    },
+    "Microsoft.Sql/servers": {
+      "url": "https://learn.microsoft.com/rest/api/sql/servers"
+    },
+    "Microsoft.Sql/servers/databases": {
+      "url": "https://learn.microsoft.com/rest/api/sql/databases"
+    },
+    "Microsoft.Sql/servers/elasticPools": {
+      "url": "https://learn.microsoft.com/rest/api/sql/elastic-pools"
+    },
+    "Microsoft.Sql/servers/firewallRules": {
+      "url": "https://learn.microsoft.com/rest/api/sql/firewall-rules"
+    },
+    "Microsoft.Storage/storageAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/storage-accounts"
+    },
+    "Microsoft.Storage/storageAccounts/blobServices": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/blob-services"
+    },
+    "Microsoft.Storage/storageAccounts/blobServices/containers": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/blob-containers"
+    },
+    "Microsoft.Storage/storageAccounts/fileServices": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/file-services"
+    },
+    "Microsoft.Storage/storageAccounts/fileServices/shares": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/file-shares"
+    },
+    "Microsoft.Storage/storageAccounts/queueServices": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/queue-services"
+    },
+    "Microsoft.Storage/storageAccounts/tableServices": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/table-services"
+    },
+    "Microsoft.StreamAnalytics/streamingjobs": {
+      "url": "https://learn.microsoft.com/rest/api/streamanalytics/streaming-jobs"
+    },
+    "Microsoft.Synapse/workspaces": {
+      "url": "https://learn.microsoft.com/rest/api/synapse/workspaces"
+    },
+    "Microsoft.Synapse/workspaces/sqlPools": {
+      "url": "https://learn.microsoft.com/rest/api/synapse/sql-pools"
+    },
+    "Microsoft.TimeSeriesInsights/environments": {
+      "url": "https://learn.microsoft.com/rest/api/time-series-insights/management/environments"
+    },
+    "Microsoft.Web/certificates": {
+      "url": "https://learn.microsoft.com/rest/api/appservice/certificates"
+    },
+    "Microsoft.Web/hostingEnvironments": {
+      "url": "https://learn.microsoft.com/rest/api/appservice/app-service-environments"
+    },
+    "Microsoft.Web/serverFarms": {
+      "url": "https://learn.microsoft.com/rest/api/appservice/app-service-plans"
+    },
+    "Microsoft.Web/sites": {
+      "url": "https://learn.microsoft.com/rest/api/appservice/web-apps"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-01-24",
+    "source": "Microsoft Learn REST API Documentation (manually curated)",
+    "generatedBy": "scripts/update-azure-api-mappings.py",
+    "totalMappings": 92
+  }
+}

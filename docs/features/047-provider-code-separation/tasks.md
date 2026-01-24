@@ -32,15 +32,17 @@ Establish the foundation for explicit provider registration and multi-prefix tem
 
 **Priority:** High
 
+**Status:** ✅ Complete
+
 **Description:**
 Extract platform-specific rendering logic (GitHub vs Azure DevOps) from generic helpers into a dedicated `RenderTargets` structure.
 
 **Acceptance Criteria:**
-- [ ] `IDiffFormatter` interface created in `Oocx.TfPlan2Md.RenderTargets`.
-- [ ] `GitHubDiffFormatter` implemented (extracting "Simple Diff" logic).
-- [ ] `AzureDevOpsDiffFormatter` implemented (extracting "Inline Diff" logic).
-- [ ] `ScribanHelpers.DiffFormatting.cs` refactored to delegate formatting to the injected `IDiffFormatter`.
-- [ ] TC-04, TC-05, and TC-11 from the test plan are satisfied.
+- [x] `IDiffFormatter` interface created in `Oocx.TfPlan2Md.RenderTargets`.
+- [x] `GitHubDiffFormatter` implemented (extracting "Simple Diff" logic).
+- [x] `AzureDevOpsDiffFormatter` implemented (extracting "Inline Diff" logic).
+- [x] `ScribanHelpers.DiffFormatting.cs` refactored to delegate formatting to the injected `IDiffFormatter`.
+- [x] TC-04, TC-05, and TC-11 from the test plan are satisfied.
 
 **Dependencies:** None
 

@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 /// visual representation of changes than simple +/- notation.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
-public sealed class AzureDevOpsDiffFormatter : IDiffFormatter
+internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
 {
     /// <inheritdoc />
     public string FormatDiff(string? before, string? after)

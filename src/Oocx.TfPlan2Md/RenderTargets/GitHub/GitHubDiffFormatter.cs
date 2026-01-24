@@ -11,7 +11,7 @@ namespace Oocx.TfPlan2Md.RenderTargets.GitHub;
 /// This format is more compact and readable in GitHub's UI.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
-public sealed class GitHubDiffFormatter : IDiffFormatter
+internal sealed class GitHubDiffFormatter : IDiffFormatter
 {
     /// <inheritdoc />
     public string FormatDiff(string? before, string? after)

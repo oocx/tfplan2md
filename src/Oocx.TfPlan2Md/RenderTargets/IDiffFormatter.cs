@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.RenderTargets;
 /// This interface enables platform-specific diff rendering while keeping the core logic platform-agnostic.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
-public interface IDiffFormatter
+internal interface IDiffFormatter
 {
     /// <summary>
     /// Formats a before/after value pair as a diff suitable for the target platform.

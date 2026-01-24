@@ -72,14 +72,16 @@ Introduce the `--render-target` flag and remove the `--large-value-format` flag 
 
 **Priority:** Medium
 
+**Status:** ✅ Complete
+
 **Description:**
 Move generic cloud platform utilities (Azure-specific but provider-agnostic) to a new `Platforms/` folder.
 
 **Acceptance Criteria:**
-- [ ] `src/Oocx.TfPlan2Md/Azure/` moved to `src/Oocx.TfPlan2Md/Platforms/Azure/`.
-- [ ] Namespaces updated to `Oocx.TfPlan2Md.Platforms.Azure`.
-- [ ] All code references updated and compilation succeeds.
-- [ ] TC-02 (partially) satisfied.
+- [x] `src/Oocx.TfPlan2Md/Azure/` moved to `src/Oocx.TfPlan2Md/Platforms/Azure/`.
+- [x] Namespaces updated to `Oocx.TfPlan2Md.Platforms.Azure`.
+- [x] All code references updated and compilation succeeds.
+- [x] TC-02 (partially) satisfied.
 
 **Dependencies:** None
 

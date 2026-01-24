@@ -12,7 +12,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// direct dependencies on specific factory classes.
 /// Related feature: docs/features/046-code-quality-metrics-enforcement/specification.md.
 /// </remarks>
-internal sealed class ResourceViewModelFactoryRegistry
+internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFactoryRegistry
 {
     private readonly Dictionary<string, IResourceViewModelFactory> _factories = new(StringComparer.OrdinalIgnoreCase);
 
@@ -39,6 +39,16 @@ internal sealed class ResourceViewModelFactoryRegistry
     public bool TryGetFactory(string resourceType, out IResourceViewModelFactory? factory)
     {
         return _factories.TryGetValue(resourceType, out factory);
+    }
+
+    /// <summary>
+    /// Registers a factory for a specific resource type.
+    /// </summary>
+    /// <param name="resourceType">The Terraform resource type (e.g., "azurerm_network_security_group").</param>
+    /// <param name="factory">The factory instance to register.</param>
+    public void RegisterFactory(string resourceType, IResourceViewModelFactory factory)
+    {
+        _factories[resourceType] = factory;
     }
 
     /// <summary>

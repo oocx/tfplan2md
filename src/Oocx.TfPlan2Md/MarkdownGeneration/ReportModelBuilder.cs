@@ -14,6 +14,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <param name="principalMapper">Optional mapper for resolving principal names in role assignments.</param>
 /// <param name="metadataProvider">Provider for tfplan2md version, commit, and generation timestamp metadata.</param>
 /// <param name="hideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
+/// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
@@ -25,7 +26,8 @@ public partial class ReportModelBuilder(
     string? reportTitle = null,
     Azure.IPrincipalMapper? principalMapper = null,
     IMetadataProvider? metadataProvider = null,
-    bool hideMetadata = false)
+    bool hideMetadata = false,
+    Providers.ProviderRegistry? providerRegistry = null)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -66,5 +68,25 @@ public partial class ReportModelBuilder(
     /// Registry for resource-specific view model factories.
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
-        new(largeValueFormat, principalMapper ?? new Azure.NullPrincipalMapper());
+        CreateFactoryRegistry(largeValueFormat, principalMapper ?? new Azure.NullPrincipalMapper(), providerRegistry);
+
+    /// <summary>
+    /// Creates and configures the resource view model factory registry.
+    /// </summary>
+    /// <param name="largeValueFormat">Preferred rendering format for large attribute values.</param>
+    /// <param name="principalMapper">Mapper for resolving principal names.</param>
+    /// <param name="providerRegistry">Optional registry of provider modules.</param>
+    /// <returns>Configured factory registry.</returns>
+    private static ResourceViewModelFactoryRegistry CreateFactoryRegistry(
+        LargeValueFormat largeValueFormat,
+        Azure.IPrincipalMapper principalMapper,
+        Providers.ProviderRegistry? providerRegistry)
+    {
+        var registry = new ResourceViewModelFactoryRegistry(largeValueFormat, principalMapper);
+
+        // Register provider-specific factories if a provider registry is available
+        providerRegistry?.RegisterAllFactories(registry);
+
+        return registry;
+    }
 }

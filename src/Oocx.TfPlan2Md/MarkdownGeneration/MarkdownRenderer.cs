@@ -25,16 +25,24 @@ internal class MarkdownRenderer
     private readonly ScribanTemplateLoader _templateLoader;
     private readonly TemplateResolver _templateResolver;
     private readonly DiagnosticContext? _diagnosticContext;
+    private readonly Providers.ProviderRegistry? _providerRegistry;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
     /// </summary>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
-    public MarkdownRenderer(Azure.IPrincipalMapper? principalMapper = null, DiagnosticContext? diagnosticContext = null)
+    /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
+    public MarkdownRenderer(
+        Azure.IPrincipalMapper? principalMapper = null,
+        DiagnosticContext? diagnosticContext = null,
+        Providers.ProviderRegistry? providerRegistry = null)
     {
         _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
-        _templateLoader = new ScribanTemplateLoader(templateResourcePrefix: TemplateResourcePrefix);
+        _providerRegistry = providerRegistry;
+        _templateLoader = new ScribanTemplateLoader(
+            coreTemplateResourcePrefix: TemplateResourcePrefix,
+            providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
         _templateResolver = new TemplateResolver(_templateLoader);
         _diagnosticContext = diagnosticContext;
     }
@@ -45,10 +53,19 @@ internal class MarkdownRenderer
     /// <param name="customTemplateDirectory">Path to custom template directory for resource-specific template overrides.</param>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
-    public MarkdownRenderer(string customTemplateDirectory, Azure.IPrincipalMapper? principalMapper = null, DiagnosticContext? diagnosticContext = null)
+    /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
+    public MarkdownRenderer(
+        string customTemplateDirectory,
+        Azure.IPrincipalMapper? principalMapper = null,
+        DiagnosticContext? diagnosticContext = null,
+        Providers.ProviderRegistry? providerRegistry = null)
     {
         _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
-        _templateLoader = new ScribanTemplateLoader(customTemplateDirectory, templateResourcePrefix: TemplateResourcePrefix);
+        _providerRegistry = providerRegistry;
+        _templateLoader = new ScribanTemplateLoader(
+            customTemplateDirectory,
+            coreTemplateResourcePrefix: TemplateResourcePrefix,
+            providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
         _templateResolver = new TemplateResolver(_templateLoader);
         _diagnosticContext = diagnosticContext;
     }
@@ -252,6 +269,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, largeValueFormat);
+        _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
         var context = CreateTemplateContext(scriptObject);
@@ -289,6 +307,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, model.LargeValueFormat);
+        _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
         var context = CreateTemplateContext(scriptObject);

@@ -52,15 +52,17 @@ Extract platform-specific rendering logic (GitHub vs Azure DevOps) from generic 
 
 **Priority:** High
 
+**Status:** ✅ Complete
+
 **Description:**
 Introduce the `--render-target` flag and remove the `--large-value-format` flag as part of the CLI cleanup.
 
 **Acceptance Criteria:**
-- [ ] `CliOptions` includes `RenderTarget` property with values `github`, `azuredevops` (alias `azdo`).
-- [ ] `CliOptions` no longer contains `LargeValueFormat`.
-- [ ] `CliParser` correctly maps `--render-target` and handles error for deprecated `--large-value-format`.
-- [ ] Selected `IDiffFormatter` is correctly injected into the rendering pipeline based on CLI choice.
-- [ ] TC-12 from the test plan is satisfied.
+- [x] `CliOptions` includes `RenderTarget` property with values `github`, `azuredevops` (alias `azdo`).
+- [x] `CliOptions` no longer contains `LargeValueFormat`.
+- [x] `CliParser` correctly maps `--render-target` and handles error for deprecated `--large-value-format`.
+- [x] Selected `IDiffFormatter` is correctly injected into the rendering pipeline based on CLI choice.
+- [x] TC-12 from the test plan is satisfied.
 
 **Dependencies:** Task 2
 

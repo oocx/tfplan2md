@@ -1,7 +1,7 @@
 using System.Text;
 using Scriban.Runtime;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration;
+namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Scriban helper functions for azapi_resource template rendering.

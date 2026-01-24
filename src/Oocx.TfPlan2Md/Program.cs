@@ -9,6 +9,8 @@ using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzApi;
 
 var options = ParseArguments(args);
 if (options is null)
@@ -90,6 +92,10 @@ static async Task<int> RunAsync(CliOptions options)
     var parser = new TerraformPlanParser();
     var plan = parser.Parse(json);
 
+    // Create and configure provider registry
+    var providerRegistry = new ProviderRegistry();
+    providerRegistry.RegisterProvider(new AzApiModule());
+
     // Create principal mapper for resolving principal names in role assignments
     var principalMapper = new PrincipalMapper(options.PrincipalMappingFile, diagnosticContext);
 
@@ -100,11 +106,12 @@ static async Task<int> RunAsync(CliOptions options)
         renderTarget: options.RenderTarget,
         reportTitle: options.ReportTitle,
         principalMapper: principalMapper,
-        hideMetadata: options.HideMetadata);
+        hideMetadata: options.HideMetadata,
+        providerRegistry: providerRegistry);
     var model = modelBuilder.Build(plan);
 
     // Render to Markdown
-    var renderer = new MarkdownRenderer(principalMapper, diagnosticContext);
+    var renderer = new MarkdownRenderer(principalMapper, diagnosticContext, providerRegistry);
     string markdown;
     if (options.TemplatePath is not null)
     {

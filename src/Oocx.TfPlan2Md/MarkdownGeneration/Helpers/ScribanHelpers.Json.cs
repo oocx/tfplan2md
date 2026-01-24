@@ -45,7 +45,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="obj">Source object (JsonElement or ScriptObject).</param>
     /// <returns>Dictionary of property names to values.</returns>
-    private static Dictionary<string, object?> ToDictionary(object? obj)
+    internal static Dictionary<string, object?> ToDictionary(object? obj)
     {
         var result = new Dictionary<string, object?>();
 
@@ -105,7 +105,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="element">Element to convert.</param>
     /// <returns>Converted value.</returns>
-    private static object? ConvertJsonValue(JsonElement element)
+    internal static object? ConvertJsonValue(JsonElement element)
     {
         return element.ValueKind switch
         {

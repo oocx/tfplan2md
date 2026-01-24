@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
+namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
 /// <summary>
 /// Extracts variable data from Terraform JSON state for Azure DevOps variable groups.

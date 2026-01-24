@@ -3,6 +3,9 @@ using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureDevOps;
+using Oocx.TfPlan2Md.RenderTargets;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
@@ -17,6 +20,26 @@ public class VariableGroupTemplateTests
 {
     private const string Nbsp = "\u00A0";
     private readonly TerraformPlanParser _parser = new();
+
+    private static ReportModelBuilder CreateBuilder()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureDevOpsModule(
+            largeValueFormat: LargeValueFormat.InlineDiff));
+        return new ReportModelBuilder(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
+
+    private static MarkdownRenderer CreateRenderer()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureDevOpsModule(
+            largeValueFormat: LargeValueFormat.InlineDiff));
+        return new MarkdownRenderer(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
 
     [Test]
     public void Create_RendersSummaryAndVariablesTable()
@@ -157,9 +180,9 @@ public class VariableGroupTemplateTests
     private string Render()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureDevOpsVariableGroupPlanPath));
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(new NullPrincipalMapper());
+        var renderer = CreateRenderer();
         return renderer.Render(model);
     }
 

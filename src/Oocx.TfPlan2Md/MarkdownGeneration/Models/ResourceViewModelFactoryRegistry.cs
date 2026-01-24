@@ -19,16 +19,14 @@ internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFacto
     /// <summary>
     /// Initializes a new instance of the <see cref="ResourceViewModelFactoryRegistry"/> class.
     /// </summary>
-    /// <param name="largeValueFormat">The format to use for large values.</param>
-    /// <param name="principalMapper">The mapper for resolving principal names.</param>
-#pragma warning disable IDE0060 // Remove unused parameter - kept for future extensibility (AzureDevOps migration)
+    /// <param name="largeValueFormat">The format to use for large values (unused, kept for potential future core factories).</param>
+    /// <param name="principalMapper">The mapper for resolving principal names (unused, kept for potential future core factories).</param>
+#pragma warning disable IDE0060 // Remove unused parameter - kept for future extensibility
     public ResourceViewModelFactoryRegistry(LargeValueFormat largeValueFormat, IPrincipalMapper principalMapper)
 #pragma warning restore IDE0060
     {
-        // Register core/non-provider-specific factories
-        _factories["azuredevops_variable_group"] = new VariableGroupFactory(largeValueFormat);
-
-        // Note: AzureRM and AzApi provider-specific factories are registered via ProviderRegistry
+        // All resource-specific factories are now registered via ProviderRegistry
+        // This registry only holds factories registered by provider modules
         // Related feature: docs/features/047-provider-code-separation/specification.md
     }
 
@@ -51,30 +49,5 @@ internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFacto
     public void RegisterFactory(string resourceType, IResourceViewModelFactory factory)
     {
         _factories[resourceType] = factory;
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="VariableGroupViewModelFactory"/>.
-    /// </summary>
-    private sealed class VariableGroupFactory : IResourceViewModelFactory
-    {
-        private readonly LargeValueFormat _largeValueFormat;
-
-        public VariableGroupFactory(LargeValueFormat largeValueFormat)
-        {
-            _largeValueFormat = largeValueFormat;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.VariableGroup = VariableGroupViewModelFactory.Build(
-                resourceChange,
-                resourceChange.ProviderName,
-                _largeValueFormat);
-        }
     }
 }

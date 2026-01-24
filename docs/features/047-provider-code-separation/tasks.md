@@ -111,15 +111,17 @@ Consolidate all AzApi-specific logic and templates into the `Providers/AzApi/` f
 
 **Priority:** Medium
 
+**Status:** ✅ Complete
+
 **Description:**
 Consolidate all AzureRM-specific logic and templates into the `Providers/AzureRM/` folder.
 
 **Acceptance Criteria:**
-- [ ] Folder `src/Oocx.TfPlan2Md/Providers/AzureRM/` created.
-- [ ] Templates moved from `MarkdownGeneration/Templates/azurerm/`.
-- [ ] Resource view models and factories moved from `MarkdownGeneration/Models/` (e.g., `FirewallNetworkRuleCollectionViewModel.cs`).
-- [ ] `AzureRMModule` implemented and registered in `ProviderRegistry`.
-- [ ] Namespaces updated to `Oocx.TfPlan2Md.Providers.AzureRM`.
+- [x] Folder `src/Oocx.TfPlan2Md/Providers/AzureRM/` created.
+- [x] Templates moved from `MarkdownGeneration/Templates/azurerm/`.
+- [x] Resource view models and factories moved from `MarkdownGeneration/Models/` (e.g., `FirewallNetworkRuleCollectionViewModel.cs`).
+- [x] `AzureRMModule` implemented and registered in `ProviderRegistry`.
+- [x] Namespaces updated to `Oocx.TfPlan2Md.Providers.AzureRM`.
 
 **Dependencies:** Task 1, Task 4
 
@@ -128,6 +130,8 @@ Consolidate all AzureRM-specific logic and templates into the `Providers/AzureRM
 ### Task 7: Migrate AzureDevOps Provider
 
 **Priority:** Medium
+
+**Status:** 🔄 In Progress
 
 **Description:**
 Consolidate all AzureDevOps-specific logic and templates into the `Providers/AzureDevOps/` folder.

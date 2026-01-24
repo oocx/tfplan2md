@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
+namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
 /// <summary>
 /// Formats variable values and change rows for Azure DevOps variable group rendering.

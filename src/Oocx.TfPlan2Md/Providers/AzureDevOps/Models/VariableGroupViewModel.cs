@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
+namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
 /// <summary>
 /// Provides precomputed variable data for the azuredevops_variable_group template.

@@ -44,7 +44,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" />
+    <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" Exclude="MarkdownGeneration/Templates/azapi/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzApi/Templates/**/*.sbn" />
     <EmbeddedResource Include="Platforms/Azure/AzureRoleDefinitions.json" />
   </ItemGroup>
 

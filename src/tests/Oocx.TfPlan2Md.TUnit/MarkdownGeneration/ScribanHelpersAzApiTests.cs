@@ -3,6 +3,7 @@ using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Scriban.Runtime;
 using TUnit.Core;
+using AzApiHelpers = Oocx.TfPlan2Md.Providers.AzApi.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
@@ -30,7 +31,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().HaveCount(2);
@@ -62,7 +63,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().HaveCount(4);
@@ -107,7 +108,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().ContainSingle();
@@ -127,7 +128,7 @@ public class ScribanHelpersAzApiTests
         var json = JsonDocument.Parse("{}").RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().BeEmpty();
@@ -147,7 +148,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().HaveCount(2);
@@ -175,7 +176,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().ContainSingle();
@@ -204,7 +205,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(json);
+        var result = AzApiHelpers.FlattenJson(json);
 
         // Assert
         result.Should().HaveCount(5);
@@ -239,7 +240,7 @@ public class ScribanHelpersAzApiTests
         object? nullInput = null;
 
         // Act
-        var result = ScribanHelpers.FlattenJson(nullInput);
+        var result = AzApiHelpers.FlattenJson(nullInput);
 
         // Assert
         result.Should().BeEmpty();
@@ -258,7 +259,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "Microsoft.Automation/automationAccounts@2021-06-22";
 
         // Act
-        var result = ScribanHelpers.ParseAzureResourceType(resourceType);
+        var result = AzApiHelpers.ParseAzureResourceType(resourceType);
 
         // Assert
         result["provider"].Should().Be("Microsoft.Automation");
@@ -276,7 +277,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "Microsoft.Storage/storageAccounts";
 
         // Act
-        var result = ScribanHelpers.ParseAzureResourceType(resourceType);
+        var result = AzApiHelpers.ParseAzureResourceType(resourceType);
 
         // Assert
         result["provider"].Should().Be("Microsoft.Storage");
@@ -294,7 +295,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "Custom.Provider/customResource@2023-01-01";
 
         // Act
-        var result = ScribanHelpers.ParseAzureResourceType(resourceType);
+        var result = AzApiHelpers.ParseAzureResourceType(resourceType);
 
         // Assert
         result["provider"].Should().Be("Custom.Provider");
@@ -312,7 +313,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "InvalidFormat";
 
         // Act
-        var result = ScribanHelpers.ParseAzureResourceType(resourceType);
+        var result = AzApiHelpers.ParseAzureResourceType(resourceType);
 
         // Assert
         result["provider"].Should().Be(string.Empty);
@@ -330,7 +331,7 @@ public class ScribanHelpersAzApiTests
         string? resourceType = null;
 
         // Act
-        var result = ScribanHelpers.ParseAzureResourceType(resourceType);
+        var result = AzApiHelpers.ParseAzureResourceType(resourceType);
 
         // Assert
         result["provider"].Should().Be(string.Empty);
@@ -348,7 +349,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "";
 
         // Act
-        var result = ScribanHelpers.ParseAzureResourceType(resourceType);
+        var result = AzApiHelpers.ParseAzureResourceType(resourceType);
 
         // Assert
         result["provider"].Should().Be(string.Empty);
@@ -370,7 +371,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "Microsoft.Automation/automationAccounts@2021-06-22";
 
         // Act
-        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+        var result = AzApiHelpers.AzureApiDocLink(resourceType);
 
         // Assert
         result.Should().Be("https://learn.microsoft.com/rest/api/automation/automation-accounts/");
@@ -392,7 +393,7 @@ public class ScribanHelpersAzApiTests
         // Act & Assert
         foreach (var (resourceType, expectedUrl) in tests)
         {
-            var result = ScribanHelpers.AzureApiDocLink(resourceType);
+            var result = AzApiHelpers.AzureApiDocLink(resourceType);
             result.Should().Be(expectedUrl, $"for resource type {resourceType}");
         }
 
@@ -406,7 +407,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "Custom.Provider/customResource@2023-01-01";
 
         // Act
-        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+        var result = AzApiHelpers.AzureApiDocLink(resourceType);
 
         // Assert
         result.Should().BeNull();
@@ -421,7 +422,7 @@ public class ScribanHelpersAzApiTests
         string? resourceType = null;
 
         // Act
-        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+        var result = AzApiHelpers.AzureApiDocLink(resourceType);
 
         // Assert
         result.Should().BeNull();
@@ -436,7 +437,7 @@ public class ScribanHelpersAzApiTests
         var resourceType = "InvalidFormat";
 
         // Act
-        var result = ScribanHelpers.AzureApiDocLink(resourceType);
+        var result = AzApiHelpers.AzureApiDocLink(resourceType);
 
         // Assert
         result.Should().BeNull();
@@ -476,7 +477,7 @@ public class ScribanHelpersAzApiTests
         };
 
         // Act
-        var result = ScribanHelpers.ExtractAzapiMetadata(change);
+        var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
         result["type"].Should().Be("`Microsoft.Automation/automationAccounts@2021-06-22`");
@@ -511,7 +512,7 @@ public class ScribanHelpersAzApiTests
         };
 
         // Act
-        var result = ScribanHelpers.ExtractAzapiMetadata(change);
+        var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
         result["type"].Should().Be("`Microsoft.Storage/storageAccounts@2023-01-01`");
@@ -544,7 +545,7 @@ public class ScribanHelpersAzApiTests
         };
 
         // Act
-        var result = ScribanHelpers.ExtractAzapiMetadata(change);
+        var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
         result["type"].Should().Be("`Microsoft.Resources/resourceGroups@2021-04-01`");
@@ -563,7 +564,7 @@ public class ScribanHelpersAzApiTests
         object? nullChange = null;
 
         // Act
-        var result = ScribanHelpers.ExtractAzapiMetadata(nullChange);
+        var result = AzApiHelpers.ExtractAzapiMetadata(nullChange);
 
         // Assert
         result.Should().BeEmpty();
@@ -599,7 +600,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.CompareJsonProperties(
+        var result = AzApiHelpers.CompareJsonProperties(
             before, after, null, null, showUnchanged: false, showSensitive: false);
 
         // Assert - Should only return the added property (showUnchanged: false)
@@ -638,7 +639,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.CompareJsonProperties(
+        var result = AzApiHelpers.CompareJsonProperties(
             before, after, null, null, showUnchanged: false, showSensitive: false);
 
         // Assert - Should only return the removed property
@@ -678,7 +679,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.CompareJsonProperties(
+        var result = AzApiHelpers.CompareJsonProperties(
             before, after, null, null, showUnchanged: false, showSensitive: false);
 
         // Assert - Should return the changed property
@@ -716,7 +717,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.CompareJsonProperties(
+        var result = AzApiHelpers.CompareJsonProperties(
             before, after, null, null, showUnchanged: true, showSensitive: false);
 
         // Assert - Should return both properties (1 changed, 1 unchanged)
@@ -776,7 +777,7 @@ public class ScribanHelpersAzApiTests
             """).RootElement;
 
         // Act
-        var result = ScribanHelpers.CompareJsonProperties(
+        var result = AzApiHelpers.CompareJsonProperties(
             before, after, beforeSensitive, afterSensitive, showUnchanged: false, showSensitive: false);
 
         // Assert - Should mark password as sensitive
@@ -798,7 +799,7 @@ public class ScribanHelpersAzApiTests
         object? nullAfter = null;
 
         // Act
-        var result = ScribanHelpers.CompareJsonProperties(
+        var result = AzApiHelpers.CompareJsonProperties(
             nullBefore, nullAfter, null, null, showUnchanged: false, showSensitive: false);
 
         // Assert

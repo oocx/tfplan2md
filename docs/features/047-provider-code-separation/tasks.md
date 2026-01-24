@@ -131,10 +131,19 @@ Consolidate all AzureRM-specific logic and templates into the `Providers/AzureRM
 
 **Priority:** Medium
 
-**Status:** 🔄 In Progress
+**Status:** ✅ Complete
 
 **Description:**
 Consolidate all AzureDevOps-specific logic and templates into the `Providers/AzureDevOps/` folder.
+
+**Acceptance Criteria:**
+- [x] Folder `src/Oocx.TfPlan2Md/Providers/AzureDevOps/` created.
+- [x] Templates moved from `MarkdownGeneration/Templates/azuredevops/`.
+- [x] VariableGroup view models moved from `MarkdownGeneration/Models/`.
+- [x] `AzureDevOpsModule` implemented and registered in `ProviderRegistry`.
+- [x] Namespaces updated to `Oocx.TfPlan2Md.Providers.AzureDevOps`.
+
+**Dependencies:** Task 1
 
 **Acceptance Criteria:**
 - [ ] Folder `src/Oocx.TfPlan2Md/Providers/AzureDevOps/` created.

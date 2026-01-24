@@ -92,7 +92,7 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory src/TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
 
       - name: Generate coverage report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())

@@ -11,7 +11,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <summary>
 /// Represents the data model passed to the Scriban template.
 /// </summary>
-public class ReportModel
+internal class ReportModel
 {
     /// <summary>
     /// Gets the Terraform version that created the plan.
@@ -82,8 +82,8 @@ public class ReportModel
     public required bool ShowUnchangedValues { get; init; }
 
     /// <summary>
-    /// Gets the Rendering format to use for large attribute values.
-    /// Related feature: docs/features/006-large-attribute-value-display/specification.md.
+    /// Gets the target platform for markdown rendering.
+    /// Related feature: docs/features/047-provider-code-separation/specification.md.
     /// </summary>
-    public required LargeValueFormat LargeValueFormat { get; init; }
+    public required RenderTargets.RenderTarget RenderTarget { get; init; }
 }

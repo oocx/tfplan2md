@@ -2,6 +2,7 @@ using System.Linq;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -27,13 +28,13 @@ public class MarkdownRendererFormatDiffConfigTests
     {
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/firewall-rule-changes.json"));
-        var builder = new ReportModelBuilder(largeValueFormat: LargeValueFormat.SimpleDiff);
+        var builder = new ReportModelBuilder(renderTarget: RenderTarget.GitHub);
         var model = builder.Build(plan);
         var change = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
         var renderer = new MarkdownRenderer();
 
         // Act
-        var markdown = renderer.RenderResourceChange(change, LargeValueFormat.SimpleDiff)!;
+        var markdown = renderer.RenderResourceChange(change, RenderTarget.GitHub)!;
 
         // Assert - simple diff uses -/+ prefix with <br> separator; semantic icons are preserved inside code formatting without inline diff styling
         markdown.Should().Contain("- `🌐 10.0.1.0/24`<br>+ `🌐 10.0.1.0/24, 🌐 10.0.3.0/24`")
@@ -49,13 +50,13 @@ public class MarkdownRendererFormatDiffConfigTests
     {
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/firewall-rule-changes.json"));
-        var builder = new ReportModelBuilder(largeValueFormat: LargeValueFormat.InlineDiff);
+        var builder = new ReportModelBuilder(renderTarget: RenderTarget.AzureDevOps);
         var model = builder.Build(plan);
         var change = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
         var renderer = new MarkdownRenderer();
 
         // Act
-        var markdown = renderer.RenderResourceChange(change, LargeValueFormat.InlineDiff)!;
+        var markdown = renderer.RenderResourceChange(change, RenderTarget.AzureDevOps)!;
 
         // Assert
         markdown.Should().Contain("background-color:")

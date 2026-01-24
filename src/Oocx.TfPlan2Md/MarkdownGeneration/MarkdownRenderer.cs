@@ -189,9 +189,9 @@ internal class MarkdownRenderer
     /// Falls back to the default template rendering if no specific template exists.
     /// </summary>
     /// <param name="change">The resource change to render.</param>
-    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
-    public string? RenderResourceChange(ResourceChangeModel change, LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff)
+    public string? RenderResourceChange(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps)
     {
         var templateSource = ResolveResourceTemplate(change.Type);
         if (templateSource is null)
@@ -201,7 +201,7 @@ internal class MarkdownRenderer
 
         try
         {
-            return RenderResourceWithTemplate(change, templateSource.Value, largeValueFormat);
+            return RenderResourceWithTemplate(change, templateSource.Value, renderTarget);
         }
         catch (ScribanHelperException ex)
         {
@@ -251,9 +251,9 @@ internal class MarkdownRenderer
     /// </summary>
     /// <param name="change">The resource change model to render.</param>
     /// <param name="templateSource">The template source to use for rendering.</param>
-    /// <param name="largeValueFormat">The format to use for rendering large attribute values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>The rendered Markdown string.</returns>
-    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, LargeValueFormat largeValueFormat)
+    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, RenderTargets.RenderTarget renderTarget)
     {
         var template = Template.Parse(templateSource.Content, templateSource.Path);
         if (template.HasErrors)
@@ -266,12 +266,12 @@ internal class MarkdownRenderer
 
         // Create a nested ScriptObject for the change using AOT-compatible mapping
         // Templates access properties via change.* for consistency with default.sbn include
-        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, largeValueFormat);
+        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, renderTarget);
 
         scriptObject["change"] = changeObject;
 
         // Register custom helper functions
-        var diffFormatter = CreateDiffFormatter(largeValueFormat);
+        var diffFormatter = CreateDiffFormatter(renderTarget);
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
@@ -310,7 +310,7 @@ internal class MarkdownRenderer
         var scriptObject = CreateScriptObject(model);
 
         // Register custom helper functions
-        var diffFormatter = CreateDiffFormatter(model.LargeValueFormat);
+        var diffFormatter = CreateDiffFormatter(model.RenderTarget);
         ScribanHelpers.RegisterHelpers(scriptObject, _principalMapper, diffFormatter);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
@@ -427,15 +427,15 @@ internal class MarkdownRenderer
     }
 
     /// <summary>
-    /// Creates the appropriate diff formatter based on the large value format setting.
+    /// Creates the appropriate diff formatter based on the render target.
     /// </summary>
-    /// <param name="format">The large value format that determines which formatter to use.</param>
-    /// <returns>A diff formatter instance for the specified format.</returns>
-    private static IDiffFormatter CreateDiffFormatter(LargeValueFormat format)
+    /// <param name="target">The render target that determines which formatter to use.</param>
+    /// <returns>A diff formatter instance for the specified target.</returns>
+    private static IDiffFormatter CreateDiffFormatter(RenderTargets.RenderTarget target)
     {
-        return format == LargeValueFormat.SimpleDiff
-            ? new GitHubDiffFormatter()
-            : new AzureDevOpsDiffFormatter();
+        return target == RenderTargets.RenderTarget.GitHub
+            ? new RenderTargets.GitHub.GitHubDiffFormatter()
+            : new RenderTargets.AzureDevOps.AzureDevOpsDiffFormatter();
     }
 
     private readonly record struct TemplateSource(string Path, string Content);

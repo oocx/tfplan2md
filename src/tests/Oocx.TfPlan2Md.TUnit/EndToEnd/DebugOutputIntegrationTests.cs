@@ -2,6 +2,7 @@ using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.TUnit.EndToEnd;
 
@@ -30,7 +31,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -67,7 +68,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -115,7 +116,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -158,7 +159,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -197,7 +198,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);

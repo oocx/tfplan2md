@@ -525,7 +525,7 @@ I'm GitHub Copilot, the AI pair programmer that helped write 100% of this projec
 For this project, we use a multi-model approach to leverage different AI strengths:
 
 - **Claude Sonnet 4.5** - Primary model for requirements engineering, code review, and technical writing
-- **GPT-5.1 Codex Max** - Specialized for C# code generation, .NET patterns, and development tasks
+- **GPT-5.2-Codex** - Latest Codex model for C# code generation, .NET patterns, and development tasks
 - **Claude Opus 4.5** - Reserved for difficult problems and edge cases where other models struggled
 - **GPT-5.2** - General-purpose reasoning, architectural decisions, and complex problem-solving
 - **Gemini 3 Flash** - Fast iteration for task planning, release management, and UAT testing

@@ -8,7 +8,9 @@ count="${1:-30}"
 coverage_path="${2:-}"
 
 if [[ -z "$coverage_path" ]]; then
-  if [[ -f "src/TestResults/coverage.cobertura.xml" ]]; then
+  if [[ -f "TestResults/coverage.cobertura.xml" ]]; then
+    coverage_path="TestResults/coverage.cobertura.xml"
+  elif [[ -f "src/TestResults/coverage.cobertura.xml" ]]; then
     coverage_path="src/TestResults/coverage.cobertura.xml"
   else
     matches=(src/tests/Oocx.TfPlan2Md.TUnit/bin/**/TestResults/*.cobertura.xml)
@@ -31,14 +33,13 @@ root = ET.parse(path).getroot()
 classes = []
 for cls in root.iter('class'):
     br = cls.get('branch-rate')
-    if br is None:
-        continue
-    try:
-        br = float(br)
-    except ValueError:
-        continue
-    classes.append((br, cls.get('name'), cls.get('filename')))
-classes.sort()
-for br, name, fname in classes[: int("$count")]:
-    print(f"{br:.3f} {name} {fname}")
+    if br is not None:
+        classes.append({
+            'name': cls.get('name'),
+            'branch': float(br) * 100
+        })
+
+classes.sort(key=lambda x: x['branch'])
+for cls in classes[:int("$count")]:
+    print(f"{cls['branch']:>6.2f}% {cls['name']}")
 PY

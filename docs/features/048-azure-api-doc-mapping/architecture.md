@@ -87,65 +87,62 @@ Step 3: Return URL or null
 }
 ```
 
-### 3. Coverage Strategy: Incremental with Top Resources
+### 3. Coverage Strategy: Comprehensive (All Azure Resources)
 
-**Decision:** Start with top 50-100 most common Azure resources, expand incrementally based on usage data and community contributions.
-
-**Initial Coverage Priority:**
-1. **Core compute**: Virtual Machines, VM Scale Sets, App Services, Container Instances, AKS
-2. **Core networking**: Virtual Networks, Subnets, NSGs, Load Balancers, Application Gateways
-3. **Core storage**: Storage Accounts, Blob/Table/Queue/File Services
-4. **Identity & security**: Key Vaults, Managed Identities, Role Assignments
-5. **Databases**: SQL Databases, Cosmos DB, PostgreSQL, MySQL
-6. **Monitoring**: Log Analytics, Application Insights, Monitor Action Groups
-
-**Rationale:**
-- **Pragmatic**: Comprehensive mapping of 1000+ resources is high-effort and error-prone
-- **Fast initial value**: Users see improvements immediately for common resources
-- **Quality over quantity**: Better to have 50 accurate mappings than 500 unverified ones
-- **Incremental validation**: Each batch can be tested and validated
-- **Usage-driven expansion**: Community can report missing mappings via issues
-
-**Success metrics:**
-- Target 80% coverage of resources seen in real-world Terraform plans within 6 months
-- Track "mapping found" vs "mapping missing" in telemetry (if added later)
-
-### 4. Automation Level: Hybrid (Semi-Automated)
-
-**Decision:** Semi-automated generation with manual curation and review.
+**Decision:** Include mappings for all Azure resources if possible, rather than incremental batches.
 
 **Approach:**
-1. **Automated discovery script** (one-time or on-demand):
-   - Scrape Azure SDK Specs Inventory page
-   - Parse specification folders from azure-rest-api-specs repo
-   - Generate candidate mappings based on discovered patterns
-   - Output as JSON for review
+- Generate mappings for all available Azure resource types from authoritative sources
+- Use automated discovery script to maximize coverage
+- Validate generated mappings through spot-checking
+- Focus on quality and accuracy over manual curation of subsets
 
-2. **Manual curation process**:
-   - Maintainer reviews generated mappings
-   - Validates URLs by spot-checking (curl/browser)
-   - Adds missing mappings for resources not auto-discovered
+**Rationale:**
+- **Maximum value**: Users get documentation links for all resources from day one
+- **No artificial limitations**: Avoid prioritizing certain resources over others
+- **Simpler maintenance**: One comprehensive generation run instead of multiple incremental batches
+- **Automation-friendly**: Discovery script can process all resources as easily as a subset
+- **Better user experience**: Consistent documentation link availability across all resource types
+
+**Fallback for unmappable resources:**
+- If a resource type cannot be reliably mapped, it will be omitted from the mappings
+- Template will gracefully handle missing mappings (no link shown)
+
+### 4. Automation Level: Semi-Automated with Update Script
+
+**Decision:** Semi-automated generation with manual/on-demand execution.
+
+**Approach:**
+1. **Automated discovery script** (required component):
+   - Scrape Azure SDK Specs Inventory page or parse azure-rest-api-specs repository
+   - Parse specification folders to discover resource types
+   - Generate candidate mappings based on discovered patterns
+   - Output as JSON file with comprehensive mappings
+
+2. **Manual execution**:
+   - Script is run manually by maintainer on-demand
+   - No automated CI/CD integration
+   - Maintainer reviews generated output for obvious errors
+   - Validates mappings through spot-checking (sample URLs)
    - Commits validated mappings to the repository
 
 3. **Update workflow**:
-   - Quarterly or semi-annual mapping refresh
-   - Run discovery script to find new resources
-   - Review and merge updates
-   - No automated CI/CD integration initially (avoid false positives)
+   - Run discovery script when needed (new Azure services, maintainer discretion)
+   - Review and validate output
+   - Update `AzureApiDocumentationMappings.json`
+   - Release with next version of tfplan2md
 
 **Rationale:**
-- **Quality over automation**: Manual review prevents broken links
-- **One-time cost**: Mapping generation script is written once, run rarely
-- **Human judgment needed**: Azure documentation has inconsistencies that require manual intervention
-- **Low maintenance burden**: Quarterly updates are manageable for maintainer
-- **Script provides scaffolding**: Automation does the tedious work, human does validation
+- **Script required**: Automated generation is necessary for comprehensive coverage
+- **Manual execution**: Maintainer controls when updates occur; no CI/CD overhead
+- **On-demand updates**: Run script as needed rather than on fixed schedule
+- **Quality validation**: Spot-checking catches major issues without full manual review
+- **Low maintenance burden**: Script does heavy lifting; maintainer validates and commits
 
-**Out of scope (for now):**
+**Out of scope:**
 - Automated CI/CD pipeline to refresh mappings on every build
 - Real-time scraping or API calls at runtime
-- Automated validation of URLs (link checking)
-
-These can be added later if maintenance burden increases.
+- Comprehensive URL validation (checking all generated URLs)
 
 ### 5. Fallback Behavior: No Link (Clean Degradation)
 
@@ -207,57 +204,45 @@ If users request it, add a configuration flag to enable heuristic fallback for a
 
 **Lookup algorithm:** Direct dictionary lookup; no fallback to parent resource.
 
-### 7. Update Cadence: Quarterly Manual Updates
+### 7. Update Process: Manual/On-Demand Script Execution
 
-**Decision:** Manually update mappings quarterly or when new Azure services are released.
+**Decision:** Update mappings on-demand by manually running the discovery script.
 
 **Update process:**
-1. Maintainer runs the discovery script (if available) or manually reviews Azure SDK releases
-2. Identifies new resource types or changed documentation URLs
-3. Updates `AzureApiDocumentationMappings.json`
-4. Commits to main branch or feature branch
+1. Maintainer runs the discovery script when updates are needed
+2. Script generates updated `AzureApiDocumentationMappings.json`
+3. Maintainer reviews output for obvious errors (spot-checking)
+4. Commits updated mappings to repository
 5. Releases with next version of tfplan2md
 
 **Rationale:**
-- **Azure release cadence**: Azure services don't change URLs frequently
-- **Manageable burden**: Quarterly updates take ~1-2 hours, acceptable for maintainer
-- **User-driven updates**: Users can contribute mappings via PRs between scheduled updates
-- **No automation complexity**: Avoids CI/CD overhead, false positives, and link validation infrastructure
+- **Maintainer-controlled**: Updates happen when maintainer determines they're needed
+- **Script-driven**: Automation handles discovery and generation
+- **No fixed schedule**: Avoids unnecessary updates when Azure documentation is stable
+- **Simple workflow**: Run script, review, commit, release
+- **Low overhead**: No CI/CD integration or complex automation
 
-**Trigger for ad-hoc updates:**
+**Trigger for updates:**
 - User reports broken or missing mapping
 - Major Azure service launch (e.g., new compute service)
 - Microsoft restructures documentation URLs (rare but possible)
+- Maintainer discretion based on Azure release notes
 
-### 8. Community Contributions: Encouraged with Guidelines
+### 8. Community Contributions: Out of Scope
 
-**Decision:** Accept community contributions for new mappings with clear validation guidelines.
-
-**Contribution process:**
-1. User opens issue or PR to add missing mapping
-2. User provides:
-   - Resource type (e.g., `Microsoft.Network/privateEndpoints`)
-   - Documentation URL
-   - Verification: Screenshot or confirmation that URL is correct
-3. Maintainer validates URL and merges PR
-4. Mapping included in next release
-
-**Validation guidelines (for contributors and maintainers):**
-- URL must be on `learn.microsoft.com/rest/api/*`
-- URL must return HTTP 200 (not 404)
-- URL must document the exact resource type (not a parent or unrelated resource)
-- Prefer stable documentation URLs over preview/versioned URLs
-
-**Documentation:**
-- Add `CONTRIBUTING.md` section: "Adding Azure API Documentation Mappings"
-- Template PR description for mapping contributions
-- Link to Azure SDK Specs Inventory for resource type discovery
+**Decision:** Community contribution process for mappings is out of scope for this feature.
 
 **Rationale:**
-- **Leverage community knowledge**: Users working with specific Azure resources know the correct URLs
-- **Faster coverage expansion**: Don't wait for maintainer to discover every resource type
-- **Simple validation**: URL verification is straightforward; low risk of incorrect contributions
-- **Engagement**: Community contributions increase project engagement and quality
+- **Comprehensive coverage**: With automated script generating all mappings, individual contributions are less critical
+- **Simpler workflow**: Maintainer runs script on-demand instead of managing individual mapping PRs
+- **Reduced maintenance burden**: No need to document contribution guidelines, review individual submissions, or validate contributor URLs
+- **Script-first approach**: Updates come from running the discovery script rather than manual contributions
+- **Focus on core feature**: Keep initial implementation focused on automated generation and core functionality
+
+**Alternative for user-reported issues:**
+- Users can report broken or missing mappings via GitHub issues
+- Maintainer investigates and re-runs discovery script if needed
+- Fixes included in next mapping update
 
 ## Component Design
 
@@ -363,42 +348,48 @@ public static string? AzureApiDocLink(string? resourceType)
 
 **No other template changes needed.**
 
-### 5. Discovery Script (Optional but Recommended)
+### 5. Discovery Script (Required Component)
 
 **File:** `scripts/generate-azure-api-mappings.py` (or C#/PowerShell)
 
-**Purpose:** Generate candidate mappings for manual review.
+**Purpose:** Generate comprehensive mappings for all Azure resources.
 
 **Approach:**
-1. Fetch Azure SDK Specs Inventory HTML page
-2. Parse service names and resource types
-3. Generate URLs using known patterns:
+1. Fetch Azure SDK Specs Inventory page or parse azure-rest-api-specs repository
+2. Discover all resource types from specifications
+3. Generate documentation URLs using known patterns:
    - `Microsoft.Compute` → `/rest/api/compute/`
-   - Resource type → kebab-case
-4. Output JSON file with candidate mappings
-5. Maintainer validates and merges
+   - Resource type → kebab-case conversion
+4. Output complete JSON file with all mappings
+5. Maintainer runs script manually/on-demand
+6. Maintainer validates via spot-checking and commits
 
-**Out of scope for MVP:** Can be added in a future enhancement if manual curation becomes too time-consuming.
+**Requirements:**
+- Must be part of the feature implementation (not optional)
+- Should generate mappings for all discoverable Azure resource types
+- Should be runnable manually by maintainer
+- Should output valid JSON matching the expected schema
 
-## Migration Strategy
+## Implementation Strategy
 
 ### Phase 1: Infrastructure (Developer)
-1. Create `AzureApiDocumentationMappings.json` with 10-20 common resources
-2. Implement `AzureApiDocumentationMapper` class
-3. Update `AzureApiDocLink()` helper to use mapper
-4. Update tests to validate mapping-based behavior
-5. Remove "(best-effort)" from template
+1. Create discovery script to generate mappings from Azure sources
+2. Run script to generate initial `AzureApiDocumentationMappings.json`
+3. Implement `AzureApiDocumentationMapper` class
+4. Update `AzureApiDocLink()` helper to use mapper
+5. Update tests to validate mapping-based behavior
+6. Remove "(best-effort)" from template
 
-### Phase 2: Initial Mappings (Maintainer)
-1. Curate 50-100 most common Azure resources
-2. Manually verify each URL
-3. Populate `AzureApiDocumentationMappings.json`
-4. Document contribution process in CONTRIBUTING.md
+### Phase 2: Validation and Release (Maintainer)
+1. Review generated mappings via spot-checking (sample URLs)
+2. Verify script can be re-run on-demand
+3. Document script usage for future updates
+4. Release feature with comprehensive mappings
 
-### Phase 3: Community Expansion (Ongoing)
-1. Accept community PRs for missing mappings
-2. Quarterly reviews to add new Azure services
-3. Monitor user feedback for broken or missing links
+### Phase 3: Ongoing Maintenance (Maintainer)
+1. Run discovery script on-demand when updates needed
+2. Respond to user reports of broken/missing mappings
+3. Update mappings and release new version
 
 ## Testing Strategy
 
@@ -470,15 +461,15 @@ public static string? AzureApiDocLink(string? resourceType)
 - **Consistent with existing patterns**: Follows AzureRoleDefinitions.json precedent
 
 ### Negative
-- **Initial curation effort**: Maintainer must populate initial 50-100 mappings (estimated 4-8 hours)
-- **Incomplete coverage initially**: Not all 1000+ Azure resources will have mappings on day one
-- **Quarterly maintenance**: Requires periodic updates to stay current with Azure releases
-- **No automatic discovery**: Users must request missing mappings (or contribute them)
+- **Script development effort**: Initial time to build discovery script (estimated 4-8 hours)
+- **Potential incomplete coverage**: Some Azure resources may not be discoverable via automated script
+- **Manual update trigger**: Maintainer must remember to run script when Azure releases new services
+- **No automated validation**: Generated URLs not automatically verified for correctness
 
 ### Risks
-- **Microsoft changes URL structure**: Low risk; Microsoft maintains stable documentation URLs. If it happens, mass-update mappings JSON.
-- **Outdated mappings**: Quarterly updates may lag behind new Azure services. Mitigated by community contributions.
-- **Broken links over time**: Azure may deprecate old services. Mitigated by maintainer reviews and user reports.
+- **Microsoft changes URL structure**: Low risk; Microsoft maintains stable documentation URLs. If it happens, re-run script to regenerate mappings.
+- **Outdated mappings**: Updates depend on maintainer running script. Mitigated by user reports triggering script re-runs.
+- **Broken links over time**: Azure may deprecate old services. Mitigated by maintainer spot-checking and user reports.
 
 ## Open Questions (Resolved)
 
@@ -486,12 +477,12 @@ All 8 open questions from the specification have been answered:
 
 1. ✅ **Storage format**: Embedded JSON
 2. ✅ **API versioning**: Version-agnostic (strip version suffix)
-3. ✅ **Coverage strategy**: Incremental, starting with top 50-100 resources
-4. ✅ **Automation level**: Hybrid (semi-automated generation with manual review)
+3. ✅ **Coverage strategy**: Comprehensive (all Azure resources if possible)
+4. ✅ **Automation level**: Semi-automated with required update script (manual/on-demand execution)
 5. ✅ **Fallback behavior**: No link when mapping missing (clean degradation)
 6. ✅ **Nested resources**: Individual mappings per level
-7. ✅ **Update cadence**: Quarterly manual updates
-8. ✅ **Community contributions**: Encouraged with clear validation guidelines
+7. ✅ **Update process**: Manual/on-demand script execution (no fixed schedule)
+8. ✅ **Community contributions**: Out of scope
 
 ## Next Steps
 
@@ -510,10 +501,9 @@ All 8 open questions from the specification have been answered:
 
 **For Technical Writer:**
 1. Document new mapping-based approach in README
-2. Create CONTRIBUTING.md section for adding mappings
-3. Document validation guidelines for contributors
+2. Document discovery script usage for maintainer reference
 
 **For Maintainer:**
-1. Curate initial 50-100 common Azure resource mappings
-2. Validate URLs manually or with script
-3. Review and approve architecture decisions
+1. Review generated mappings from discovery script
+2. Spot-check sample URLs for accuracy
+3. Validate script can be re-run for future updates

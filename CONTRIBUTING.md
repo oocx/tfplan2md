@@ -189,7 +189,7 @@ This project enforces automated code quality metrics to ensure maintainable, rea
 - **Line Length** (IDE0055): Maximum 160 characters
 - **File Length**: Target ~300 lines per file (guideline, not enforced)
 
-These metrics are enforced at build time and will cause build failures if violated. Thresholds are defined in [CodeMetricsConfig.txt](../CodeMetricsConfig.txt) and [.editorconfig](../.editorconfig).
+These metrics are enforced at build time and will cause build failures if violated. Thresholds are defined in [CodeMetricsConfig.txt](../src/CodeMetricsConfig.txt) and [.editorconfig](../.editorconfig).
 
 **Suppression Policy:**
 

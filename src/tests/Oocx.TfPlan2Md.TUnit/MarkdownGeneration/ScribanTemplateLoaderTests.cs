@@ -88,6 +88,86 @@ public class ScribanTemplateLoaderTests
         result.Should().Be("_resource");
     }
 
+    /// <summary>
+    /// Verifies that ScribanTemplateLoader can load templates from multiple prefixes.
+    /// Related feature: docs/features/047-provider-code-separation/specification.md.
+    /// </summary>
+    [Test]
+    public void MultiPrefix_LoadsFromCoreFirst()
+    {
+        // Arrange - Use actual embedded resources
+        var corePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
+        var providerPrefixes = new[] { "Oocx.TfPlan2Md.MarkdownGeneration.Templates." };
+        var loader = new ScribanTemplateLoader(
+            coreTemplateResourcePrefix: corePrefix,
+            providerTemplateResourcePrefixes: providerPrefixes);
+
+        // Act - Try to load a core template
+        var result = loader.TryGetTemplate("default", out var template);
+
+        // Assert - Core template should be loaded
+        result.Should().BeTrue();
+        template.Should().Contain("include \"_header.sbn\"");
+    }
+
+    /// <summary>
+    /// Verifies that ScribanTemplateLoader can load provider-specific templates.
+    /// Related feature: docs/features/047-provider-code-separation/specification.md.
+    /// </summary>
+    [Test]
+    public void MultiPrefix_LoadsFromProviderWhenNotInCore()
+    {
+        // Arrange - Use actual embedded resources
+        var corePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
+        var providerPrefixes = new[] { "Oocx.TfPlan2Md.MarkdownGeneration.Templates." };
+        var loader = new ScribanTemplateLoader(
+            coreTemplateResourcePrefix: corePrefix,
+            providerTemplateResourcePrefixes: providerPrefixes);
+
+        // Act - Try to load a provider-specific template (azurerm/role_assignment)
+        var result = loader.TryGetTemplate("azurerm/role_assignment", out var template);
+
+        // Assert - Provider template should be loaded
+        result.Should().BeTrue();
+        template.Should().Contain("azurerm_role_assignment");
+    }
+
+    /// <summary>
+    /// Verifies that custom templates take precedence over all embedded resources.
+    /// Related feature: docs/features/047-provider-code-separation/specification.md.
+    /// </summary>
+    [Test]
+    public void MultiPrefix_CustomDirectoryTakesPrecedence()
+    {
+        var tempDirectory = CreateTempDirectory();
+        try
+        {
+            // Arrange - Create custom template that would otherwise be in provider
+            var customTemplatePath = Path.Combine(tempDirectory, "azurerm");
+            Directory.CreateDirectory(customTemplatePath);
+            var customFile = Path.Combine(customTemplatePath, "role_assignment.sbn");
+            File.WriteAllText(customFile, "custom-provider-template");
+
+            var corePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
+            var providerPrefixes = new[] { "Oocx.TfPlan2Md.MarkdownGeneration.Templates." };
+            var loader = new ScribanTemplateLoader(
+                tempDirectory,
+                coreTemplateResourcePrefix: corePrefix,
+                providerTemplateResourcePrefixes: providerPrefixes);
+
+            // Act
+            var result = loader.TryGetTemplate("azurerm/role_assignment", out var template);
+
+            // Assert - Custom template should be loaded
+            result.Should().BeTrue();
+            template.Should().Be("custom-provider-template");
+        }
+        finally
+        {
+            Directory.Delete(tempDirectory, true);
+        }
+    }
+
     private static string CreateTempDirectory()
     {
         var directory = Path.Combine(Path.GetTempPath(), "tfplan2md-templates-" + Guid.NewGuid());

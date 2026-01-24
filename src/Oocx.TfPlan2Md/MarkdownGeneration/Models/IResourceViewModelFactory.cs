@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 /// reducing class coupling and enabling easier extensibility for new resource types.
 /// Related feature: docs/features/046-code-quality-metrics-enforcement/specification.md.
 /// </remarks>
-internal interface IResourceViewModelFactory
+public interface IResourceViewModelFactory
 {
     /// <summary>
     /// Applies resource-specific view model to the provided model.

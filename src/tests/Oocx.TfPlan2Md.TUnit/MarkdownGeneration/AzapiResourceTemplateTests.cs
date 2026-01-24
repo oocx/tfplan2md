@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzApi;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -14,7 +16,16 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class AzapiResourceTemplateTests
 {
     private readonly TerraformPlanParser _parser = new();
-    private readonly MarkdownRenderer _renderer = new();
+    private readonly MarkdownRenderer _renderer;
+    private readonly ReportModelBuilder _modelBuilder;
+
+    public AzapiResourceTemplateTests()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzApiModule());
+        _renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
+        _modelBuilder = new ReportModelBuilder(providerRegistry: providerRegistry);
+    }
 
     private static string Normalize(string markdown)
     {
@@ -28,7 +39,7 @@ public class AzapiResourceTemplateTests
     {
         var json = File.ReadAllText($"TestData/{testDataFile}");
         var plan = _parser.Parse(json);
-        var model = new ReportModelBuilder().Build(plan);
+        var model = _modelBuilder.Build(plan);
 
         return _renderer.Render(model);
     }

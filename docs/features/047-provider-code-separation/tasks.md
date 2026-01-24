@@ -160,15 +160,18 @@ Consolidate all AzureDevOps-specific logic and templates into the `Providers/Azu
 
 **Priority:** Medium
 
+**Status:** ✅ Complete
+
 **Description:**
 Clean up the remaining core folders and align the test suite structure with the main project structure.
 
 **Acceptance Criteria:**
-- [ ] Empty/obsolete folders in `MarkdownGeneration/` removed.
-- [ ] TUnit tests for providers moved to matching folder structure in `tests/`.
-- [ ] `InternalsVisibleTo` attributes updated if necessary for new namespaces.
-- [ ] Full regression suite (TC-08) passes.
-- [ ] Snapshot comparison (TC-09) passes with NO changes to existing snapshots.
+- [x] Empty/obsolete folders in `MarkdownGeneration/` removed.
+- [x] Provider-specific ViewModelFactory classes moved to their respective provider folders.
+- [x] TUnit tests for providers moved to matching folder structure in `tests/`.
+- [x] `InternalsVisibleTo` attributes verified (still correct).
+- [x] Full regression suite (TC-08) passes (527/527 tests).
+- [x] Snapshot comparison (TC-09) passes with NO changes to existing snapshots.
 
 **Dependencies:** Task 5, Task 6, Task 7
 

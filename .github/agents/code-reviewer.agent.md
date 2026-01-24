@@ -114,6 +114,13 @@ Before starting, familiarize yourself with:
 - [ ] Code implements all acceptance criteria from the tasks
 - [ ] All test cases from the test plan are implemented
 - [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
+- [ ] **Coverage thresholds met** (line ≥84.48%, branch ≥72.80%):
+  ```bash
+  # Run tests with coverage
+  dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+  # Verify thresholds
+  dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- --report ./src/TestResults/coverage.cobertura.xml --line-threshold 84.48 --branch-threshold 72.80
+  ```
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 - [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
@@ -214,6 +221,7 @@ Brief summary of what was reviewed and the overall assessment.
 ## Verification Results
 
 - Tests: Pass / Fail (X passed, Y failed)
+- Coverage: Line X% (threshold ≥84.48%), Branch Y% (threshold ≥72.80%)
 - Build: Success / Failure
 - Docker: Builds / Fails
 - Errors: None / List

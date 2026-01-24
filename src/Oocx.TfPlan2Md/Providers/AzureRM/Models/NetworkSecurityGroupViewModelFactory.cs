@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration;
+namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
 /// <summary>
 /// Builds <see cref="NetworkSecurityGroupViewModel"/> instances from Terraform plan data.

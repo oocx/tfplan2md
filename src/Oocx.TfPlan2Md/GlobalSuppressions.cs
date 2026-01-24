@@ -70,7 +70,7 @@ using System.Diagnostics.CodeAnalysis;
     "CA1506:Avoid excessive class coupling",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
-    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.FirewallNetworkRuleCollectionViewModelFactory")]
+    Target = "~T:Oocx.TfPlan2Md.Providers.AzureRM.Models.FirewallNetworkRuleCollectionViewModelFactory")]
 
 [assembly: SuppressMessage(
     "Maintainability",
@@ -101,21 +101,21 @@ using System.Diagnostics.CodeAnalysis;
     "CA1506:Avoid excessive class coupling",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
-    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.NetworkSecurityGroupViewModelFactory")]
+    Target = "~T:Oocx.TfPlan2Md.Providers.AzureRM.Models.NetworkSecurityGroupViewModelFactory")]
 
 [assembly: SuppressMessage(
     "Maintainability",
     "CA1506:Avoid excessive class coupling",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "type",
-    Target = "~T:Oocx.TfPlan2Md.MarkdownGeneration.RoleAssignmentViewModelFactory")]
+    Target = "~T:Oocx.TfPlan2Md.Providers.AzureRM.Models.RoleAssignmentViewModelFactory")]
 
 [assembly: SuppressMessage(
     "Maintainability",
     "CA1502:Avoid excessive complexity",
     Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.",
     Scope = "member",
-    Target = "~M:Oocx.TfPlan2Md.MarkdownGeneration.RoleAssignmentViewModelFactory.FormatRoleValue(" +
+    Target = "~M:Oocx.TfPlan2Md.Providers.AzureRM.Models.RoleAssignmentViewModelFactory.FormatRoleValue(" +
              "System.String,System.Text.Json.JsonElement," +
              "Oocx.TfPlan2Md.Platforms.Azure.ScopeInfo,Oocx.TfPlan2Md.Platforms.Azure.RoleInfo," +
              "Oocx.TfPlan2Md.Platforms.Azure.PrincipalInfo)")]

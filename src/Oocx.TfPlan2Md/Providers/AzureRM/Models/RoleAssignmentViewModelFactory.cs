@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
-using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration;
+namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
 /// <summary>
 /// Builds <see cref="RoleAssignmentViewModel"/> instances from Terraform plan data.

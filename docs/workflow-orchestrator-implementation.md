@@ -154,7 +154,7 @@ Created a Workflow Orchestrator agent that:
   - Architect: 1x (GPT-5.2)
   - Quality Engineer: 0.33x (Gemini 3 Flash)
   - Task Planner: 0.33x (Gemini 3 Flash)
-  - Developer: 1x (GPT-5.1 Codex Max)
+  - Developer: 1x (GPT-5.2-Codex)
   - Technical Writer: 1x (Claude Sonnet 4.5)
   - Code Reviewer: 1x (GPT-5.2)
   - UAT Tester: 1x (GPT-5.2)

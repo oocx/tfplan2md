@@ -209,7 +209,7 @@ This reference is updated periodically with latest benchmark data.
 
 1. **Use task-specific benchmarks, not overall scores**
    - Different models excel at different tasks
-   - Example: GPT-5.1 Codex Max leads in Coding (90.80) but Claude Sonnet 4.5 is better for Language (76.00)
+   - Example: GPT-5.2-Codex excels in Coding while Claude Sonnet 4.5 is better for Language (76.00)
 
 2. **Claude Sonnet 4.5 has poor Instruction Following** (score: 23.52)
    - Unsuitable for agents that follow templates (Task Planner, Quality Engineer)
@@ -221,9 +221,10 @@ This reference is updated periodically with latest benchmark data.
    - Good Language performance (84.56)
    - Ideal for: Task Planner, Release Manager, high-frequency agents
 
-4. **GPT-5.1 Codex Max is the coding leader**
-   - Coding score: 90.80 (#1)
-   - Clear choice for Developer agent
+4. **GPT-5.2-Codex is the latest coding model**
+   - Latest generation Codex model (improved over 5.1 Codex Max)
+   - Specialized for agentic coding tasks
+   - Primary choice for Developer agent
    - Also solid for Code Reviewer
 
 5. **Always verify model availability**

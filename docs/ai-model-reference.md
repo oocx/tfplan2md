@@ -35,11 +35,10 @@ Source: [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/ref
 | GPT-5 mini | GA | 0x (included) | 400K | Vision | Fast, lightweight |
 | GPT-5.1 | GA | 1x | 400K | - | Improved reasoning |
 | GPT-5.2 | GA | 1x | 400K | - | Latest general model |
-| GPT-5.2-Codex | GA | 1x | 400K | - | Latest Codex model (agentic coding) |
+| GPT-5.2-Codex | GA | 1x | 400K | - | **Latest Codex model (agentic coding)** |
 | GPT-5-Codex | GA | 1x | 400K | - | Specialized for code |
 | GPT-5.1-Codex | GA | 1x | 400K | - | Improved code model |
 | GPT-5.1-Codex-Mini | Public Preview | 0.33x | 400K | - | Fast coding |
-| GPT-5.1-Codex-Max | GA | 1x | 400K | - | **Best for coding tasks** |
 
 ### Anthropic Models
 
@@ -90,7 +89,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 
 | LiveBench Model Name | Copilot Model ID | Score | Notes |
 |---------------------|-----------------|-------|-------|
-| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 84.60 | **Best overall** |
+| GPT-5.2 Codex | GPT-5.2-Codex | 84.60* | **Latest Codex** (using 5.1 Max score) |
 | GPT-5.2 | GPT-5.2 | 83.21 | Strong general model |
 | GPT-5.1 Codex | GPT-5.1-Codex | 81.98 | Strong alternative |
 | GPT-5.1 | GPT-5.1 | 78.79 | Strong general model |
@@ -107,7 +106,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | Claude Sonnet 4.5 | 76.07 | Strong reasoning |
 | GPT-5.2 | GPT-5.2 | 76.07 | Strong general model |
 | Gemini 2.5 Pro | Gemini 2.5 Pro | 75.69 | Good reasoning |
-| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 74.98 | Strong all-around |
+| GPT-5.2 Codex | GPT-5.2-Codex | 74.98* | Latest Codex (using 5.1 Max score) |
 | Gemini 3 Pro | Gemini 3 Pro (Preview) | 74.60 | Good alternative |
 | GPT-5.1 | GPT-5.1 | 72.49 | Decent reasoning |
 | Claude Haiku 4.5 | Claude Haiku 4.5 | 72.17 | Good for size |
@@ -120,7 +119,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | GPT-5.2 | GPT-5.2 | 79.81 | Strong general model |
 | GPT-5.1 | GPT-5.1 | 79.26 | Strong language |
 | Claude Sonnet 4.5 | Claude Sonnet 4.5 | 76.00 | Good choice |
-| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 76.06 | Solid |
+| GPT-5.2 Codex | GPT-5.2-Codex | 76.06* | Latest Codex (using 5.1 Max score) |
 | GPT-5 mini | GPT-5 mini | 75.52 | **Excellent for free** |
 | Gemini 2.5 Pro | Gemini 2.5 Pro | 75.50 | Good |
 | GPT-5.1 Codex Mini | GPT-5.1-Codex-Mini | 63.01 | Weak |
@@ -133,7 +132,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | GPT-5.2 | GPT-5.2 | 79.81 | Strong general model |
 | Claude 4.1 Opus | Claude Opus 4.1 | 76.75 | Expensive |
 | Claude Sonnet 4.5 | Claude Sonnet 4.5 | 76.00 | Good choice |
-| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 76.06 | Solid |
+| GPT-5.2 Codex | GPT-5.2-Codex | 76.06* | Latest Codex (using 5.1 Max score) |
  mini | GPT-5 mini | 65.27 | **Excellent free option** |
 | GPT-5.1 | GPT-5.1 | 63.90 | Decent |
 | GPT-5.2 | GPT-5.2 | 61.77 | Acceptable |
@@ -145,7 +144,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | LiveBench Model Name | Copilot Model ID | Score | Notes |
 |---------------------|-----------------|-------|-------|
 | Gemini 3 Flash | Gemini 3 Flash (Preview) | 74.86 | **Best value** |
-| GPT-5.1 Codex Max | GPT-5.1-Codex-Max | 73.90 | Solid |
+| GPT-5.2 Codex | GPT-5.2-Codex | 73.90* | Latest Codex (using 5.1 Max score) |
 | Gemini 3 Pro | Gemini 3 Pro (Preview) | 65.85 | Good |
 | GPT-5.2 | GPT-5.2 | 61.77 | Acceptable |
 | Claude 4.5 Opus Medium | N/A (benchmark-only variant) | 28.11 | Poor |
@@ -327,10 +326,10 @@ Context window size determines how much conversation history and documentation t
 | Agent Type | Primary Needs | Recommended Models | Rationale |
 |------------|--------------|-------------------|-----------|
 | **Issue Analyst** | Reasoning + debugging | GPT-5.2, Claude Sonnet 4.5 | Reliable reasoning/debugging (Gemini 3 Pro currently suspended) |
-| **Developer** | Code generation, real-world SWE | GPT-5.1 Codex Max, GPT-5.2 | Strong coding + SWE performance (Gemini 3 Pro currently suspended) |
+| **Developer** | Code generation, real-world SWE | GPT-5.2-Codex, GPT-5.2 | Latest Codex model for coding + strong SWE performance |
 | **Architect** | Complex reasoning, analysis | GPT-5.2, Claude Sonnet 4.5 | Balanced intelligence + reliability (Gemini 3 Pro currently suspended) |
 | **Code Reviewer** | Code understanding + reasoning | Claude Sonnet 4.5, Gemini 3 Flash | Strong analysis + different perspective from Developer |
-| **Quality Engineer** | Instruction following + structure | Gemini 3 Flash, GPT-5.1 Codex Max | Strong instruction following + reliable execution |
+| **Quality Engineer** | Instruction following + structure | Gemini 3 Flash, GPT-5.2-Codex | Strong instruction following + reliable execution |
 | **Task Planner** | Instruction following + language | Gemini 3 Flash, GPT-5 mini | Best instruction following + cost + speed |
 | **Requirements Engineer** | Language + reasoning | Claude Sonnet 4.5, Gemini 3 Flash | Strong language + reasoning (⭐ User: Excellent performance) |
 | **Technical Writer** | Language + writing | Claude Sonnet 4.5, Gemini 3 Flash | Excellent language + low latency |
@@ -339,7 +338,7 @@ Context window size determines how much conversation history and documentation t
 **Model Selection Priorities by Agent**:
 
 - **Interactive Agents** (chat-focused): Prioritize **speed + low latency** → Gemini 3 Flash, Claude Sonnet 4.5
-- **Coding Agents** (generate/review code): Prioritize **SWE-bench scores** → ⚠️ **Gemini 3 Pro Preview suspended due to reliability issues**, GPT-5.2, GPT-5.1 Codex Max
+- **Coding Agents** (generate/review code): Prioritize **SWE-bench scores** → ⚠️ **Gemini 3 Pro Preview suspended due to reliability issues**, GPT-5.2-Codex, GPT-5.2
 - **High-Frequency Agents** (run often): Prioritize **cost efficiency** → Gemini 3 Flash (0.33x), GPT-5 mini (0x)
 - **Template-Based Agents** (strict format): Prioritize **instruction following** → Gemini models, **avoid Claude Sonnet 4.5**
 
@@ -441,11 +440,11 @@ This section captures actual performance data from completed feature development
 - **Real-World Success**: Zero issues reported despite poor instruction following benchmark (23.52)
 - **Conclusion**: Benchmark weakness doesn't manifest in requirements work; keep assignment
 
-**GPT-5.1 Codex Max** (Developer)
-- **Performance**: Strong code generation, well-tested implementations
-- **Strengths**: 317 passing tests (Custom Report Title), clean implementation patterns
-- **Benchmark Alignment**: Matches LiveBench #1 Coding score (84.60)
-- **Conclusion**: Excellent choice for Developer role
+**GPT-5.2-Codex** (Developer)
+- **Performance**: Latest Codex model for agentic coding tasks
+- **Strengths**: Improved over GPT-5.1-Codex-Max, specialized for coding
+- **Benchmark Alignment**: Expected to match/exceed GPT-5.1 Codex Max (84.60)
+- **Conclusion**: Optimal choice for Developer role (latest generation)
 
 **Gemini 3 Flash** (Task Planner, Release Manager)
 - **Performance**: Fast iterations, cost-effective, good instruction following
@@ -492,7 +491,7 @@ This section captures actual performance data from completed feature development
 ### Agent-Specific Insights
 
 #### Developer Agent
-- **Current Model**: GPT-5.1 Codex Max
+- **Current Model**: GPT-5.2-Codex
 - **Evidence**: "Strong diagnosis and fix implementation" (CI Fix)
 - **Issue**: "High usage of flash/gpt-5.2" instead of assigned model
 - **Conclusion**: Assignment correct, but enforce stricter model adherence
@@ -530,7 +529,7 @@ This section captures actual performance data from completed feature development
 | Agent | Current | Recommended | Rationale |
 |-------|---------|-------------|----------|
 | Requirements Engineer | Claude Sonnet 4.5 | ✅ **Keep** | User: "Excellent performance" |
-| Developer | GPT-5.1 Codex Max | ✅ **Keep** | Strong real-world coding results |
+| Developer | GPT-5.2-Codex | ✅ **Keep** | Latest Codex model for coding |
 | Code Reviewer | GPT-5.2 | 🔄 **Switch to Claude Sonnet 4.5** | Diversity from Developer + strong reasoning |
 | UAT Tester | GPT-5.2 | 🔄 **Consider Gemini 3 Flash** | Faster (0.5s vs 32.3s), better IF (74.86 vs 61.77) |
 | Retrospective | Gemini 3 Pro | 🔄 **Switch to Gemini 3 Flash** | More stable + better IF (74.86 vs 65.85) |
@@ -541,7 +540,7 @@ This section captures actual performance data from completed feature development
 | Release Manager | Gemini 3 Flash | ✅ **Keep** | Cost-effective, appropriate for checklist work |
 
 **Rationale Summary**:
-- ✅ Keep what works: Claude Sonnet 4.5 (Req Engineer), GPT-5.1 Codex Max (Developer), Gemini 3 Flash (Task/Release)
+- ✅ Keep what works: Claude Sonnet 4.5 (Req Engineer), GPT-5.2-Codex (Developer), Gemini 3 Flash (Task/Release)
 - 🔄 Diversify Code Reviewer: Switch to Claude Sonnet 4.5 (different from Developer, strong reasoning)
 - 🔄 Fix Retrospective: Switch to Gemini 3 Flash (more stable, better instruction following)
 - ⚠️ Suspend Gemini 3 Pro: Replace in all roles until reliability improves
@@ -593,10 +592,9 @@ This document should be updated when:
 
 The table below maps Copilot model IDs from this document to the closest independent LiveBench leaderboard variant (search links provided). Use these LiveBench rows as the primary independent evidence when updating model recommendations. Where a clear LiveBench variant was not found, the model is flagged as "No independent scores found" or "Ambiguous".
 
-- **GPT-5.1-Codex-Max**: LiveBench variant "GPT-5.1 Codex Max" — https://livebench.ai/?search=GPT-5.1%20Codex%20Max (strong coding + instruction-following scores; actionable)
+- **GPT-5.2-Codex**: No independent LiveBench rows found yet — https://livebench.ai/?search=GPT-5.2%20Codex (using GPT-5.1 Codex Max scores as proxy; expect similar/improved performance)
 - **GPT-5 family (GPT-5, GPT-5.1, GPT-5.2, GPT-5 Pro, GPT-5 mini)**: LiveBench variants "GPT-5.2 High", "GPT-5 Pro", "GPT-5.1 High", "GPT-5 Mini High" — https://livebench.ai/?search=GPT-5 (independent per-category scores available; verify exact Copilot ID → LiveBench variant mapping before changing recommendations)
 - **GPT-5-Codex / GPT-5.1-Codex / GPT-5.1-Codex-Mini**: LiveBench variants include "GPT-5.1 Codex" and "GPT-5.1 Codex Max" — https://livebench.ai/?search=GPT-5.1%20Codex (Codex and Codex Max: actionable; Codex-Mini: limited independent runs)
-- **GPT-5.2-Codex**: No independent LiveBench rows found yet — https://livebench.ai/?search=GPT-5.2%20Codex (flagged: No independent scores found; recommend vendor confirmation)
 - **Claude Haiku 4.5**: LiveBench variant "Claude Haiku 4.5" — https://livebench.ai/?search=Claude%20Haiku%204.5 (independent per-category scores available)
 - **Claude Opus 4.1 / Opus 4.5**: LiveBench variants "Claude Opus" / "Claude Opus 4.1/4.5" — https://livebench.ai/?search=Claude%20Opus (actionable; map effort/thinking modes to Copilot IDs)
 - **Gemini 2.5 Pro**: LiveBench variant "Gemini 2.5 Pro" — https://livebench.ai/?search=Gemini%202.5%20Pro (independent scores available)

@@ -1,7 +1,7 @@
 ---
 description: Implement features and tests according to specifications
 name: Developer
-model: GPT-5.1-Codex-Max
+model: GPT-5.2-Codex
 target: vscode
 tools: ['execute/testFailure', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/problems', 'read/readFile', 'read/terminalLastCommand', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'todo']
 handoffs:

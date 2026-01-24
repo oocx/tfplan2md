@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
+namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
 /// <summary>
 /// Provides precomputed rule data for the azurerm_firewall_network_rule_collection template.

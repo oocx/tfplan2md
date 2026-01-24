@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 using Scriban;
 using TUnit.Core;
 
@@ -69,7 +72,10 @@ public class ScribanTemplateLoaderTests
     [Test]
     public void ResolveTemplate_ReturnsExistingResourceTemplate()
     {
-        var loader = new ScribanTemplateLoader();
+        var providerRegistry = CreateProviderRegistry();
+        var loader = new ScribanTemplateLoader(
+            coreTemplateResourcePrefix: "Oocx.TfPlan2Md.MarkdownGeneration.Templates.",
+            providerTemplateResourcePrefixes: providerRegistry.GetTemplateResourcePrefixes());
         var resolver = new TemplateResolver(loader);
 
         var result = resolver.ResolveTemplate("azurerm_role_assignment");
@@ -117,9 +123,9 @@ public class ScribanTemplateLoaderTests
     [Test]
     public void MultiPrefix_LoadsFromProviderWhenNotInCore()
     {
-        // Arrange - Use actual embedded resources
+        // Arrange - Use actual embedded resources with correct provider prefix
         var corePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
-        var providerPrefixes = new[] { "Oocx.TfPlan2Md.MarkdownGeneration.Templates." };
+        var providerPrefixes = new[] { "Oocx.TfPlan2Md.Providers.AzureRM.Templates." };
         var loader = new ScribanTemplateLoader(
             coreTemplateResourcePrefix: corePrefix,
             providerTemplateResourcePrefixes: providerPrefixes);
@@ -173,5 +179,17 @@ public class ScribanTemplateLoaderTests
         var directory = Path.Combine(Path.GetTempPath(), "tfplan2md-templates-" + Guid.NewGuid());
         Directory.CreateDirectory(directory);
         return directory;
+    }
+
+    /// <summary>
+    /// Creates a ProviderRegistry with AzureRM provider for testing.
+    /// </summary>
+    private static ProviderRegistry CreateProviderRegistry()
+    {
+        var registry = new ProviderRegistry();
+        registry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return registry;
     }
 }

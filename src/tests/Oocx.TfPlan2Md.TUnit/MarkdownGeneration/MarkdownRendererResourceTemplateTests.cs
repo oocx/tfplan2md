@@ -3,6 +3,10 @@ using System.Text.RegularExpressions;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
+using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -10,7 +14,29 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class MarkdownRendererResourceTemplateTests
 {
     private readonly TerraformPlanParser _parser = new();
-    private readonly MarkdownRenderer _renderer = new();
+    private readonly MarkdownRenderer _renderer = CreateRenderer();
+
+    private static MarkdownRenderer CreateRenderer()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new MarkdownRenderer(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
+
+    private static ReportModelBuilder CreateBuilder()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new ReportModelBuilder(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
 
     private static string Normalize(string markdown)
     {
@@ -24,8 +50,7 @@ public class MarkdownRendererResourceTemplateTests
     {
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
-        var model = builder.Build(plan);
+        var model = CreateBuilder().Build(plan);
 
         return _renderer.Render(model);
     }

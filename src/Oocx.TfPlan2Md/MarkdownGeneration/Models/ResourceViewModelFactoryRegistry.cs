@@ -21,13 +21,15 @@ internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFacto
     /// </summary>
     /// <param name="largeValueFormat">The format to use for large values.</param>
     /// <param name="principalMapper">The mapper for resolving principal names.</param>
+#pragma warning disable IDE0060 // Remove unused parameter - kept for future extensibility (AzureDevOps migration)
     public ResourceViewModelFactoryRegistry(LargeValueFormat largeValueFormat, IPrincipalMapper principalMapper)
+#pragma warning restore IDE0060
     {
-        // Register all resource-specific factories
-        _factories["azurerm_network_security_group"] = new NetworkSecurityGroupFactory(largeValueFormat);
-        _factories["azurerm_firewall_network_rule_collection"] = new FirewallNetworkRuleCollectionFactory(largeValueFormat);
-        _factories["azurerm_role_assignment"] = new RoleAssignmentFactory(principalMapper);
+        // Register core/non-provider-specific factories
         _factories["azuredevops_variable_group"] = new VariableGroupFactory(largeValueFormat);
+
+        // Note: AzureRM and AzApi provider-specific factories are registered via ProviderRegistry
+        // Related feature: docs/features/047-provider-code-separation/specification.md
     }
 
     /// <summary>
@@ -49,82 +51,6 @@ internal sealed class ResourceViewModelFactoryRegistry : IResourceViewModelFacto
     public void RegisterFactory(string resourceType, IResourceViewModelFactory factory)
     {
         _factories[resourceType] = factory;
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="NetworkSecurityGroupViewModelFactory"/>.
-    /// </summary>
-    private sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
-    {
-        private readonly LargeValueFormat _largeValueFormat;
-
-        public NetworkSecurityGroupFactory(LargeValueFormat largeValueFormat)
-        {
-            _largeValueFormat = largeValueFormat;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(
-                resourceChange,
-                resourceChange.ProviderName,
-                _largeValueFormat);
-        }
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="FirewallNetworkRuleCollectionViewModelFactory"/>.
-    /// </summary>
-    private sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelFactory
-    {
-        private readonly LargeValueFormat _largeValueFormat;
-
-        public FirewallNetworkRuleCollectionFactory(LargeValueFormat largeValueFormat)
-        {
-            _largeValueFormat = largeValueFormat;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.FirewallNetworkRuleCollection = FirewallNetworkRuleCollectionViewModelFactory.Build(
-                resourceChange,
-                resourceChange.ProviderName,
-                _largeValueFormat);
-        }
-    }
-
-    /// <summary>
-    /// Adapter for <see cref="RoleAssignmentViewModelFactory"/>.
-    /// </summary>
-    private sealed class RoleAssignmentFactory : IResourceViewModelFactory
-    {
-        private readonly IPrincipalMapper _principalMapper;
-
-        public RoleAssignmentFactory(IPrincipalMapper principalMapper)
-        {
-            _principalMapper = principalMapper;
-        }
-
-        public void ApplyViewModel(
-            ResourceChangeModel model,
-            Parsing.ResourceChange resourceChange,
-            string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
-        {
-            model.RoleAssignment = RoleAssignmentViewModelFactory.Build(
-                resourceChange,
-                action,
-                attributeChanges,
-                _principalMapper);
-        }
     }
 
     /// <summary>

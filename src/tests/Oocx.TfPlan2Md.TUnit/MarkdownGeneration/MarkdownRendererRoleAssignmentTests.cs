@@ -2,6 +2,9 @@ using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
+using Oocx.TfPlan2Md.RenderTargets;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
@@ -16,15 +19,37 @@ public class MarkdownRendererRoleAssignmentTests
     private const string Nbsp = "\u00A0";
     private readonly TerraformPlanParser _parser = new();
 
+    private static ReportModelBuilder CreateBuilder(IPrincipalMapper principalMapper)
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: principalMapper));
+        return new ReportModelBuilder(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+    }
+
+    private static MarkdownRenderer CreateRenderer(IPrincipalMapper principalMapper)
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: principalMapper));
+        return new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+    }
+
     [Test]
     public void Render_RoleAssignment_UsesEnhancedTemplate()
     {
         // Arrange
         var principalMapper = new StubPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.RoleAssignmentsPlanPath));
-        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+        var builder = CreateBuilder(principalMapper);
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(principalMapper: principalMapper);
+        var renderer = CreateRenderer(principalMapper);
 
         // Act
         var result = renderer.Render(model);
@@ -47,9 +72,9 @@ public class MarkdownRendererRoleAssignmentTests
         // Arrange - use a mapper that doesn't resolve any principals
         var principalMapper = new NullPrincipalMapper();
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.RoleAssignmentsPlanPath));
-        var builder = new ReportModelBuilder(principalMapper: principalMapper);
+        var builder = CreateBuilder(principalMapper);
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(principalMapper: principalMapper);
+        var renderer = CreateRenderer(principalMapper);
 
         // Act
         var result = renderer.Render(model);

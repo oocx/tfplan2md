@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 

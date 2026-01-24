@@ -24,17 +24,21 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public partial class TemplateArchitectureTests
 {
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
+    private const string AzureRMTemplateResourcePrefix = "Oocx.TfPlan2Md.Providers.AzureRM.Templates.";
+    private const string AzApiTemplateResourcePrefix = "Oocx.TfPlan2Md.Providers.AzApi.Templates.";
     private const int MaxTemplateLines = 100;
 
     private static readonly Assembly TemplateAssembly = typeof(Oocx.TfPlan2Md.MarkdownGeneration.MarkdownRenderer).Assembly;
 
     /// <summary>
-    /// Gets all embedded template resources.
+    /// Gets all embedded template resources from core and provider locations.
     /// </summary>
     private static IEnumerable<string> GetAllTemplateResources()
     {
         return TemplateAssembly.GetManifestResourceNames()
-            .Where(name => name.StartsWith(TemplateResourcePrefix, StringComparison.Ordinal)
+            .Where(name => (name.StartsWith(TemplateResourcePrefix, StringComparison.Ordinal) ||
+                           name.StartsWith(AzureRMTemplateResourcePrefix, StringComparison.Ordinal) ||
+                           name.StartsWith(AzApiTemplateResourcePrefix, StringComparison.Ordinal))
                 && name.EndsWith(".sbn", StringComparison.Ordinal));
     }
 
@@ -58,9 +62,23 @@ public partial class TemplateArchitectureTests
     /// </summary>
     private static string GetTemplateName(string resourceName)
     {
-        return resourceName
-            .Replace(TemplateResourcePrefix, "")
-            .Replace(".sbn", "");
+        // Remove any known prefix and the extension
+        var name = resourceName;
+        if (name.StartsWith(AzureRMTemplateResourcePrefix, StringComparison.Ordinal))
+        {
+            name = name[AzureRMTemplateResourcePrefix.Length..];
+        }
+        else if (name.StartsWith(AzApiTemplateResourcePrefix, StringComparison.Ordinal))
+        {
+            name = name[AzApiTemplateResourcePrefix.Length..];
+        }
+        else if (name.StartsWith(TemplateResourcePrefix, StringComparison.Ordinal))
+        {
+            name = name[TemplateResourcePrefix.Length..];
+        }
+
+        // Convert dots to slashes for provider/resource format (azurerm.network_security_group -> azurerm/network_security_group)
+        return name.Replace(".sbn", "").Replace('.', '/');
     }
 
     #region No Func Definitions
@@ -223,9 +241,9 @@ public partial class TemplateArchitectureTests
             "_header",
             "_summary",
             "_resource",
-            "azurerm.network_security_group",
-            "azurerm.firewall_network_rule_collection",
-            "azurerm.role_assignment"
+            "azurerm/network_security_group",
+            "azurerm/firewall_network_rule_collection",
+            "azurerm/role_assignment"
         };
 
         var actualTemplates = GetAllTemplateResources()

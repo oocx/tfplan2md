@@ -4,6 +4,10 @@ using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
+using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -11,7 +15,29 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class MarkdownRendererTemplateFormattingTests
 {
     private readonly TerraformPlanParser _parser = new();
-    private readonly MarkdownRenderer _renderer = new();
+    private readonly MarkdownRenderer _renderer = CreateRenderer();
+
+    private static MarkdownRenderer CreateRenderer()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new MarkdownRenderer(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
+
+    private static ReportModelBuilder CreateBuilder()
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new ReportModelBuilder(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+    }
 
     [Test]
     public void Render_FirewallRules_DetailsSectionsAreOutsideMainTable()
@@ -19,7 +45,7 @@ public class MarkdownRendererTemplateFormattingTests
         // Arrange
         var json = File.ReadAllText("TestData/firewall-rule-changes.json");
         var plan = _parser.Parse(json);
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
         var firewallChange = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
 
@@ -114,7 +140,7 @@ public class MarkdownRendererTemplateFormattingTests
             }
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act
@@ -155,7 +181,7 @@ public class MarkdownRendererTemplateFormattingTests
             }
         );
 
-        var builder = new ReportModelBuilder();
+        var builder = CreateBuilder();
         var model = builder.Build(plan);
 
         // Act

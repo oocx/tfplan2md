@@ -97,7 +97,7 @@ static async Task<int> RunAsync(CliOptions options)
     var modelBuilder = new ReportModelBuilder(
         showSensitive: options.ShowSensitive,
         showUnchangedValues: options.ShowUnchangedValues,
-        largeValueFormat: options.LargeValueFormat,
+        renderTarget: options.RenderTarget,
         reportTitle: options.ReportTitle,
         principalMapper: principalMapper,
         hideMetadata: options.HideMetadata);

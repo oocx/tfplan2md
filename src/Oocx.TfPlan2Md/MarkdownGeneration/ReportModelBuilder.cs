@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <param name="summaryBuilder">Factory for resource summaries; defaults to <see cref="ResourceSummaryBuilder"/>.</param>
 /// <param name="showSensitive">Whether to show sensitive values without masking.</param>
 /// <param name="showUnchangedValues">Whether unchanged attributes should be included in tables.</param>
-/// <param name="largeValueFormat">Rendering format for large values (inline-diff or simple-diff).</param>
+/// <param name="renderTarget">Target platform for markdown rendering (GitHub or Azure DevOps).</param>
 /// <param name="reportTitle">Optional custom report title to propagate to templates.</param>
 /// <param name="principalMapper">Optional mapper for resolving principal names in role assignments.</param>
 /// <param name="metadataProvider">Provider for tfplan2md version, commit, and generation timestamp metadata.</param>
@@ -22,7 +22,7 @@ internal partial class ReportModelBuilder(
     IResourceSummaryBuilder? summaryBuilder = null,
     bool showSensitive = false,
     bool showUnchangedValues = false,
-    LargeValueFormat largeValueFormat = LargeValueFormat.InlineDiff,
+    RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps,
     string? reportTitle = null,
     Azure.IPrincipalMapper? principalMapper = null,
     IMetadataProvider? metadataProvider = null,
@@ -45,11 +45,6 @@ internal partial class ReportModelBuilder(
     private readonly IResourceSummaryBuilder _summaryBuilder = summaryBuilder ?? new ResourceSummaryBuilder();
 
     /// <summary>
-    /// Preferred rendering format for large attribute values.
-    /// </summary>
-    private readonly LargeValueFormat _largeValueFormat = largeValueFormat;
-
-    /// <summary>
     /// Optional custom report title provided by the user.
     /// </summary>
     private readonly string? _reportTitle = reportTitle;
@@ -68,7 +63,18 @@ internal partial class ReportModelBuilder(
     /// Registry for resource-specific view model factories.
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
-        CreateFactoryRegistry(largeValueFormat, principalMapper ?? new Azure.NullPrincipalMapper(), providerRegistry);
+        CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new Azure.NullPrincipalMapper(), providerRegistry);
+
+    /// <summary>
+    /// Converts RenderTarget to LargeValueFormat for backwards compatibility.
+    /// This will be removed in Task 6 when LargeValueFormat enum is fully removed.
+    /// </summary>
+    private static LargeValueFormat ConvertRenderTargetToLargeValueFormat(RenderTargets.RenderTarget target)
+    {
+        return target == RenderTargets.RenderTarget.GitHub
+            ? LargeValueFormat.SimpleDiff
+            : LargeValueFormat.InlineDiff;
+    }
 
     /// <summary>
     /// Creates and configures the resource view model factory registry.

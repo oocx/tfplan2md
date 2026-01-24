@@ -97,7 +97,7 @@ internal partial class ReportModelBuilder
             ModuleChanges = moduleGroups,
             Summary = summary,
             ShowUnchangedValues = _showUnchangedValues,
-            LargeValueFormat = _largeValueFormat
+            RenderTarget = renderTarget
         };
     }
 

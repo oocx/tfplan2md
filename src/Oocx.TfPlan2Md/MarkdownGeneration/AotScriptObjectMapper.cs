@@ -31,7 +31,7 @@ internal static class AotScriptObjectMapper
         scriptObject["timestamp"] = model.Timestamp;
         scriptObject["report_title"] = model.ReportTitle;
         scriptObject["show_unchanged_values"] = model.ShowUnchangedValues;
-        scriptObject["large_value_format"] = model.LargeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        scriptObject["large_value_format"] = model.RenderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
 
         // Generated timestamp as nested object with DateTime for Scriban date functions
         var generatedAtUtcObj = new ScriptObject();
@@ -53,14 +53,14 @@ internal static class AotScriptObjectMapper
     /// Includes large_value_format from the provided parameter.
     /// </summary>
     /// <param name="change">The resource change to map.</param>
-    /// <param name="largeValueFormat">The format for large values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>A ScriptObject containing the change data.</returns>
-    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, LargeValueFormat largeValueFormat)
+    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget)
     {
         var changeObject = MapResourceChange(change);
 
         // Add large_value_format to change context for template access
-        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        var formatString = renderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
         changeObject["large_value_format"] = formatString;
 
         return changeObject;

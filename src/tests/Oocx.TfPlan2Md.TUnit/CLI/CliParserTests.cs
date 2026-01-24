@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.RenderTargets;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.CLI;
@@ -338,20 +339,20 @@ public class CliParserTests
     }
 
     [Test]
-    public void Parse_LargeValueFormatStandardDiff_SetsOption()
+    public void Parse_RenderTargetGitHub_SetsOption()
     {
         // Arrange
-        var args = new[] { "plan.json", "--large-value-format", "simple-diff" };
+        var args = new[] { "plan.json", "--render-target", "github" };
 
         // Act
         var options = CliParser.Parse(args);
 
         // Assert
-        options.LargeValueFormat.Should().Be(LargeValueFormat.SimpleDiff);
+        options.RenderTarget.Should().Be(RenderTarget.GitHub);
     }
 
     [Test]
-    public void Parse_LargeValueFormatDefault_IsInlineDiff()
+    public void Parse_RenderTargetDefault_IsAzureDevOps()
     {
         // Arrange
         var args = Array.Empty<string>();
@@ -360,20 +361,32 @@ public class CliParserTests
         var options = CliParser.Parse(args);
 
         // Assert
-        options.LargeValueFormat.Should().Be(LargeValueFormat.InlineDiff);
+        options.RenderTarget.Should().Be(RenderTarget.AzureDevOps);
     }
 
     [Test]
-    public void Parse_LargeValueFormat_IsCaseInsensitive()
+    public void Parse_RenderTarget_IsCaseInsensitive()
     {
         // Arrange
-        var args = new[] { "--large-value-format", "INLINE-DIFF" };
+        var args = new[] { "--render-target", "AZUREDEVOPS" };
 
         // Act
         var options = CliParser.Parse(args);
 
         // Assert
-        options.LargeValueFormat.Should().Be(LargeValueFormat.InlineDiff);
+        options.RenderTarget.Should().Be(RenderTarget.AzureDevOps);
+    }
+
+    [Test]
+    public void Parse_LargeValueFormat_ThrowsError()
+    {
+        // Arrange
+        var args = new[] { "plan.json", "--large-value-format", "simple-diff" };
+
+        // Act & Assert
+        var act = () => CliParser.Parse(args);
+        act.Should().Throw<CliParseException>()
+            .WithMessage("*--large-value-format*deprecated*--render-target*");
     }
 
     /// <summary>

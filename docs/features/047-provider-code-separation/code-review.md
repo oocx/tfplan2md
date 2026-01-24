@@ -7,6 +7,7 @@ This code review evaluates Feature 047: Provider Code Separation. The feature su
 ## Verification Results
 
 - **Tests**: ✅ Pass (527/527 tests passed)
+- **Coverage**: ❌ **Line: 83.13% (threshold ≥84.48%), Branch: 72.01% (threshold ≥72.80%)**
 - **Build**: ✅ Success
 - **Docker**: ✅ Builds successfully (151.9s)
 - **Markdownlint**: ✅ Pass (0 errors on comprehensive demo)
@@ -14,7 +15,7 @@ This code review evaluates Feature 047: Provider Code Separation. The feature su
 
 ## Review Decision
 
-**Status:** ✅ Approved
+**Status:** ❌ Changes Requested
 
 ## Snapshot Changes
 
@@ -28,7 +29,33 @@ This code review evaluates Feature 047: Provider Code Separation. The feature su
 
 ### Blockers
 
-None
+**Coverage Regression Below Thresholds**
+
+**Location**: Overall project coverage
+
+**Current Coverage**:
+- Line coverage: 83.13% (threshold: ≥84.48%) - **1.35% below threshold**
+- Branch coverage: 72.01% (threshold: ≥72.80%) - **0.79% below threshold**
+
+**Issue**: The code restructuring has resulted in coverage dropping below the required thresholds defined in the Code Reviewer instructions.
+
+**Root Cause Analysis Needed**:
+1. Determine which specific code is now uncovered
+2. Identify if coverage was lost due to:
+   - Code movement affecting instrumentation
+   - Missing test coverage for newly structured code
+   - Test organization changes that excluded tests
+
+**Required Action**:
+- Add tests to bring coverage back above thresholds
+- OR identify and fix coverage measurement issue if tests exist but aren't being counted
+- Re-run coverage verification after fixes
+
+**Verification Command**:
+```bash
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --coverage --coverage-output-format cobertura
+# Check: src/tests/Oocx.TfPlan2Md.TUnit/bin/Release/net10.0/TestResults/*.cobertura.xml
+```
 
 ### Major Issues
 
@@ -46,12 +73,12 @@ None
 
 | Category | Status |
 |----------|--------|
-| Correctness | ✅ |
+| Correctness | ❌ |
 | Code Quality | ✅ |
 | Access Modifiers | ✅ |
 | Code Comments | ✅ |
 | Architecture | ✅ |
-| Testing | ✅ |
+| Testing | ❌ |
 | Documentation | ✅ |
 
 ## Detailed Assessment
@@ -158,14 +185,17 @@ None
 - Top-level decomposition diagram reflects new structure
 - Building block view updated with provider organization
 
-### Testing ✅
+### Testing ❌
 
 **Test coverage:**
+- ❌ **Coverage below thresholds** - Line: 83.13% (required ≥84.48%), Branch: 72.01% (required ≥72.80%)
 - ✅ All 527 tests pass
 - ✅ Test structure mirrors main project (providers tests under `Providers/` subfolders)
 - ✅ Template loading tests verify multi-prefix behavior
 - ✅ CLI tests verify `--render-target` parsing and deprecated flag error
 - ✅ Regression tests confirm no markdown output changes
+
+**Coverage gap**: The code restructuring has resulted in a 1.35% line coverage drop and 0.79% branch coverage drop below required thresholds. This must be investigated and resolved before approval.
 
 **Test quality:**
 - Naming follows convention: `MethodName_Scenario_ExpectedResult`
@@ -224,12 +254,26 @@ None
 
 ## Next Steps
 
-The implementation is approved and ready for release. No changes required.
+**The implementation requires changes before approval.**
 
-**Recommended workflow:**
-1. ✅ Code review complete (this document)
-2. **Next**: Hand off to **UAT Tester** for platform rendering validation
-3. **After UAT**: Hand off to **Release Manager** for PR creation and merge
+**Required Actions**:
+1. Investigate coverage drop (1.35% line, 0.79% branch below thresholds)
+2. Add missing tests or fix coverage measurement
+3. Verify coverage thresholds are met
+4. Re-submit for code review
+
+**After fixes are complete**:
+- Code Reviewer will re-evaluate
+- If approved: Hand off to UAT Tester (or directly to Release Manager for internal refactoring)
+
+**Debugging Coverage**:
+```bash
+# Generate coverage report
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --coverage --coverage-output-format cobertura
+
+# View coverage details
+cat src/tests/Oocx.TfPlan2Md.TUnit/bin/Release/net10.0/TestResults/*.cobertura.xml
+```
 
 ## Acknowledgments
 

@@ -136,7 +136,7 @@ Both libraries can work with NativeAOT, but:
 
 ### Potential Benefits of Fluid
 
-1. **Smaller NuGet package**: ~250 KB savings (negligible after trimming)
+1. **Smaller NuGet package**: ~260 KB savings (negligible after trimming)
 2. **Strict Liquid compatibility**: Not a requirement for this project
 3. **Allow-list security model**: Already have explicit mapping with AotScriptObjectMapper
 

@@ -1,4 +1,4 @@
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Defines the hierarchical level of an Azure scope.

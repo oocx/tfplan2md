@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Text.Json;
 using AwesomeAssertions;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Scriban.Runtime;
 using TUnit.Core;
 

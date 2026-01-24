@@ -1,4 +1,4 @@
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Represents information about an Azure Active Directory principal (user, group, or service principal).

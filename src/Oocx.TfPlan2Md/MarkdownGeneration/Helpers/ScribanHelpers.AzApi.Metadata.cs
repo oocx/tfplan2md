@@ -65,7 +65,7 @@ public static partial class ScribanHelpers
             if (!string.IsNullOrEmpty(parentIdStr))
             {
                 // Parse parent_id as Azure scope
-                var scopeInfo = Oocx.TfPlan2Md.Azure.AzureScopeParser.Parse(parentIdStr);
+                var scopeInfo = Platforms.Azure.AzureScopeParser.Parse(parentIdStr);
                 result["parent_id"] = scopeInfo.Summary;
             }
         }

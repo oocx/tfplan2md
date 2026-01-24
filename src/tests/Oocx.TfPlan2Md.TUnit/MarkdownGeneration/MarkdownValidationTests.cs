@@ -5,9 +5,9 @@ using AwesomeAssertions;
 using Markdig;
 using Markdig.Extensions.Tables;
 using Markdig.Syntax;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 

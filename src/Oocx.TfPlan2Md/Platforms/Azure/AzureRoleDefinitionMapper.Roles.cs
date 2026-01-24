@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Maps Azure role definition IDs to their human-readable role names.
@@ -24,7 +24,7 @@ public static partial class AzureRoleDefinitionMapper
     private static FrozenDictionary<string, string> LoadRoleDefinitions()
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "Oocx.TfPlan2Md.Azure.AzureRoleDefinitions.json";
+        var resourceName = "Oocx.TfPlan2Md.Platforms.Azure.AzureRoleDefinitions.json";
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream is null)

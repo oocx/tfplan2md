@@ -1,7 +1,7 @@
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.TUnit.EndToEnd;

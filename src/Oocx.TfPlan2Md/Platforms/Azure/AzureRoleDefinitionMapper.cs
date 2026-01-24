@@ -1,4 +1,4 @@
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Maps Azure role definition IDs to their human-readable role names.

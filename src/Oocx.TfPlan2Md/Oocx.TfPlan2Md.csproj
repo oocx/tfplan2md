@@ -45,7 +45,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" />
-    <EmbeddedResource Include="Azure/AzureRoleDefinitions.json" />
+    <EmbeddedResource Include="Platforms/Azure/AzureRoleDefinitions.json" />
   </ItemGroup>
 
 </Project>

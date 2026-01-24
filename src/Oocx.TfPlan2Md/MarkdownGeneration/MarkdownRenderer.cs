@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.Diagnostics;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.RenderTargets;
 using Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 using Oocx.TfPlan2Md.RenderTargets.GitHub;
@@ -24,7 +24,7 @@ internal class MarkdownRenderer
             "summary"
         };
 
-    private readonly Azure.IPrincipalMapper _principalMapper;
+    private readonly Platforms.Azure.IPrincipalMapper _principalMapper;
     private readonly ScribanTemplateLoader _templateLoader;
     private readonly TemplateResolver _templateResolver;
     private readonly DiagnosticContext? _diagnosticContext;
@@ -37,11 +37,11 @@ internal class MarkdownRenderer
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
     /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
     public MarkdownRenderer(
-        Azure.IPrincipalMapper? principalMapper = null,
+        Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         Providers.ProviderRegistry? providerRegistry = null)
     {
-        _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
+        _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
         _templateLoader = new ScribanTemplateLoader(
             coreTemplateResourcePrefix: TemplateResourcePrefix,
@@ -59,11 +59,11 @@ internal class MarkdownRenderer
     /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
     public MarkdownRenderer(
         string customTemplateDirectory,
-        Azure.IPrincipalMapper? principalMapper = null,
+        Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         Providers.ProviderRegistry? providerRegistry = null)
     {
-        _principalMapper = principalMapper ?? new Azure.NullPrincipalMapper();
+        _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
         _templateLoader = new ScribanTemplateLoader(
             customTemplateDirectory,

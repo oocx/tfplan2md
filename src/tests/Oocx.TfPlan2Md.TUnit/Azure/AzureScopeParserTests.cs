@@ -1,5 +1,5 @@
 using AwesomeAssertions;
-using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.Azure;

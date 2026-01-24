@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// Parses and interprets Azure resource identifiers into structured scope information.

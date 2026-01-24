@@ -1,5 +1,5 @@
 using System;
-using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.RenderTargets;
 using Scriban.Runtime;
 

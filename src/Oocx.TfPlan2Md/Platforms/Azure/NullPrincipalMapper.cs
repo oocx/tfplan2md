@@ -1,4 +1,4 @@
-namespace Oocx.TfPlan2Md.Azure;
+namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
 /// A null implementation of <see cref="IPrincipalMapper"/> that returns principal IDs unchanged.

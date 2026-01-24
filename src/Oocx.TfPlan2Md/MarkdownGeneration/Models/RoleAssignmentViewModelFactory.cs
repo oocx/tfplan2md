@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -150,7 +150,7 @@ internal static class RoleAssignmentViewModelFactory
     /// </summary>
     private static string BuildSummaryText(
         string action,
-        Azure.ScopeInfo scope,
+        Platforms.Azure.ScopeInfo scope,
         RoleInfo role,
         PrincipalInfo principal)
     {
@@ -361,16 +361,16 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Extracts scope information from the state using Azure helpers.
     /// </summary>
-    private static Azure.ScopeInfo GetScopeInfo(JsonElement? state)
+    private static Platforms.Azure.ScopeInfo GetScopeInfo(JsonElement? state)
     {
         if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
         {
-            return Azure.ScopeInfo.Empty;
+            return Platforms.Azure.ScopeInfo.Empty;
         }
 
         if (!element.TryGetProperty("scope", out var scopeProp) || scopeProp.ValueKind != JsonValueKind.String)
         {
-            return Azure.ScopeInfo.Empty;
+            return Platforms.Azure.ScopeInfo.Empty;
         }
 
         var scopeValue = scopeProp.GetString();

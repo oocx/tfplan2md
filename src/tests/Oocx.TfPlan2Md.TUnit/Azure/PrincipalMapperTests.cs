@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using AwesomeAssertions;
-using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Tests.Azure;
 

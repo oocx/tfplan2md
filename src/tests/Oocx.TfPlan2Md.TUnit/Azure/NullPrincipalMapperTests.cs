@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json;
-using Oocx.TfPlan2Md.Azure;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using TUnit.Assertions;
 using TUnit.Core;
 

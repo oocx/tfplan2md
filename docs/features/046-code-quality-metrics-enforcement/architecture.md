@@ -67,7 +67,7 @@ dotnet build /p:SonarAnalyzerBaselinePath=$(pwd)/build-sonaranalyzer-baseline.tx
 dotnet build /p:MeziantouAnalyzerBaselinePath=$(pwd)/build-meziantou-baseline.txt
 ```
 
-Baseline files are already in use in this repository (see [build-meziantou-baseline.txt](../../../build-meziantou-baseline.txt) and [build-sonaranalyzer-baseline.txt](../../../build-sonaranalyzer-baseline.txt)).
+Baseline files are already in use in this repository (see [build-meziantou-baseline.txt](../../../src/build-meziantou-baseline.txt) and [build-sonaranalyzer-baseline.txt](../../../src/build-sonaranalyzer-baseline.txt)).
 
 ---
 

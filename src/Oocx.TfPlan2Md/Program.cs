@@ -11,6 +11,7 @@ using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzApi;
+using Oocx.TfPlan2Md.Providers.AzureDevOps;
 using Oocx.TfPlan2Md.Providers.AzureRM;
 
 var options = ParseArguments(args);
@@ -102,6 +103,8 @@ static async Task<int> RunAsync(CliOptions options)
     providerRegistry.RegisterProvider(new AzureRMModule(
         largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget),
         principalMapper: principalMapper));
+    providerRegistry.RegisterProvider(new AzureDevOpsModule(
+        largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget)));
 
     // Build the report model
     var modelBuilder = new ReportModelBuilder(

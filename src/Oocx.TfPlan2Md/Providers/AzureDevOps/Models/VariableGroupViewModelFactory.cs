@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 
-namespace Oocx.TfPlan2Md.MarkdownGeneration;
+namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
 /// <summary>
 /// Builds <see cref="VariableGroupViewModel"/> instances from Terraform plan data.

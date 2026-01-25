@@ -16,6 +16,11 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// </remarks>
 internal class PrincipalMapper : IPrincipalMapper
 {
+    /// <summary>
+    /// Maps principal IDs to resolved principal types when the mapping file provides type metadata.
+    /// </summary>
+    private readonly FrozenDictionary<string, string> _principalTypes;
+
     private readonly FrozenDictionary<string, string> _principals;
     private readonly DiagnosticContext? _diagnosticContext;
 
@@ -32,7 +37,9 @@ internal class PrincipalMapper : IPrincipalMapper
     public PrincipalMapper(string? mappingFile, DiagnosticContext? diagnosticContext = null)
     {
         _diagnosticContext = diagnosticContext;
-        _principals = LoadMappings(mappingFile, diagnosticContext);
+        var mappings = LoadMappings(mappingFile, diagnosticContext);
+        _principals = mappings.Names;
+        _principalTypes = mappings.Types;
     }
 
     /// <summary>
@@ -135,11 +142,31 @@ internal class PrincipalMapper : IPrincipalMapper
     }
 
     /// <summary>
+    /// Attempts to resolve the principal type for the provided ID using nested mapping metadata.
+    /// </summary>
+    /// <param name="principalId">The GUID of the principal.</param>
+    /// <param name="principalType">The resolved principal type when available.</param>
+    /// <returns><c>true</c> when the mapping contains a type; otherwise <c>false</c>.</returns>
+    public bool TryGetPrincipalType(string principalId, out string? principalType)
+    {
+        principalType = null;
+
+        if (string.IsNullOrWhiteSpace(principalId))
+        {
+            return false;
+        }
+
+        return _principalTypes.TryGetValue(principalId, out principalType);
+    }
+
+    /// <summary>
     /// Loads principal mappings from a JSON file and records diagnostic information.
     /// </summary>
     /// <param name="mappingFile">Path to the JSON file containing principal mappings.</param>
     /// <param name="diagnosticContext">Optional diagnostic context to record load status.</param>
-    /// <returns>A frozen dictionary of principal IDs to display names.</returns>
+    /// <returns>
+    /// A tuple containing frozen dictionaries for principal display names and inferred principal types.
+    /// </returns>
     /// <remarks>
     /// The JSON file can be in one of two formats:
     /// 1. Nested format (recommended): Separate sections for "users", "groups", and "servicePrincipals".
@@ -151,11 +178,13 @@ internal class PrincipalMapper : IPrincipalMapper
     /// the load status and principal type counts are recorded.
     /// Enhanced in issue 042 to provide detailed error diagnostics for troubleshooting.
     /// </remarks>
-    private static FrozenDictionary<string, string> LoadMappings(string? mappingFile, DiagnosticContext? diagnosticContext)
+    private static (FrozenDictionary<string, string> Names, FrozenDictionary<string, string> Types) LoadMappings(
+        string? mappingFile,
+        DiagnosticContext? diagnosticContext)
     {
         if (string.IsNullOrWhiteSpace(mappingFile))
         {
-            return FrozenDictionary<string, string>.Empty;
+            return (FrozenDictionary<string, string>.Empty, FrozenDictionary<string, string>.Empty);
         }
 
         // Record that a mapping file was provided
@@ -199,7 +228,7 @@ internal class PrincipalMapper : IPrincipalMapper
             }
 
             Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': File not found");
-            return FrozenDictionary<string, string>.Empty;
+            return (FrozenDictionary<string, string>.Empty, FrozenDictionary<string, string>.Empty);
         }
 
         try
@@ -208,6 +237,7 @@ internal class PrincipalMapper : IPrincipalMapper
 
             // Try to parse as nested format first (recommended format)
             Dictionary<string, string>? parsed = null;
+            Dictionary<string, string>? parsedTypes = null;
             var isNestedFormat = false;
 
             try
@@ -218,13 +248,15 @@ internal class PrincipalMapper : IPrincipalMapper
                     (nestedMapping.Users != null || nestedMapping.Groups != null || nestedMapping.ServicePrincipals != null))
                 {
                     // Flatten the nested structure into a single dictionary
-                    parsed = new Dictionary<string, string>();
+                    parsed = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    parsedTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
                     if (nestedMapping.Users != null)
                     {
                         foreach (var (id, name) in nestedMapping.Users)
                         {
                             parsed[id] = name;
+                            parsedTypes[id] = "User";
                         }
                     }
 
@@ -233,6 +265,7 @@ internal class PrincipalMapper : IPrincipalMapper
                         foreach (var (id, name) in nestedMapping.Groups)
                         {
                             parsed[id] = name;
+                            parsedTypes[id] = "Group";
                         }
                     }
 
@@ -241,6 +274,7 @@ internal class PrincipalMapper : IPrincipalMapper
                         foreach (var (id, name) in nestedMapping.ServicePrincipals)
                         {
                             parsed[id] = name;
+                            parsedTypes[id] = "ServicePrincipal";
                         }
                     }
 
@@ -277,6 +311,7 @@ internal class PrincipalMapper : IPrincipalMapper
             if (!isNestedFormat)
             {
                 parsed = JsonSerializer.Deserialize(content, TfPlanJsonContext.Default.DictionaryStringString);
+                parsedTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
                 // Record successful load and count principals
                 if (diagnosticContext != null && parsed != null)
@@ -300,10 +335,13 @@ internal class PrincipalMapper : IPrincipalMapper
                 }
 
                 Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': File is empty or invalid");
-                return FrozenDictionary<string, string>.Empty;
+                return (FrozenDictionary<string, string>.Empty, FrozenDictionary<string, string>.Empty);
             }
 
-            return parsed.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+            var names = parsed.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+            var types = parsedTypes?.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase)
+                ?? FrozenDictionary<string, string>.Empty;
+            return (names, types);
         }
         catch (JsonException ex)
         {
@@ -324,7 +362,7 @@ internal class PrincipalMapper : IPrincipalMapper
             }
 
             Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
-            return FrozenDictionary<string, string>.Empty;
+            return (FrozenDictionary<string, string>.Empty, FrozenDictionary<string, string>.Empty);
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -338,7 +376,7 @@ internal class PrincipalMapper : IPrincipalMapper
             }
 
             Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
-            return FrozenDictionary<string, string>.Empty;
+            return (FrozenDictionary<string, string>.Empty, FrozenDictionary<string, string>.Empty);
         }
         catch (Exception ex)
         {
@@ -354,7 +392,7 @@ internal class PrincipalMapper : IPrincipalMapper
             // Intentional swallow after logging: malformed or unreadable mapping files should gracefully
             // fall back to raw principal IDs instead of failing plan generation, but the user should know why.
             Console.Error.WriteLine($"Warning: Could not read principal mapping file '{mappingFile}': {ex.Message}");
-            return FrozenDictionary<string, string>.Empty;
+            return (FrozenDictionary<string, string>.Empty, FrozenDictionary<string, string>.Empty);
         }
     }
 }

@@ -403,6 +403,7 @@ internal static class RoleAssignmentViewModelFactory
     /// <param name="state">JSON element containing principal information.</param>
     /// <param name="principalMapper">Mapper used to resolve principal names.</param>
     /// <param name="resourceAddress">Terraform resource address for diagnostic tracking of failed resolutions.</param>
+    /// <returns>Resolved principal name, id, and type information for formatting.</returns>
     private static PrincipalInfo GetPrincipalInfo(JsonElement? state, IPrincipalMapper principalMapper, string resourceAddress)
     {
         if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
@@ -417,6 +418,14 @@ internal static class RoleAssignmentViewModelFactory
         var principalType = element.TryGetProperty("principal_type", out var typeProp) && typeProp.ValueKind == JsonValueKind.String
             ? typeProp.GetString() ?? string.Empty
             : string.Empty;
+
+        if (string.IsNullOrEmpty(principalType)
+            && !string.IsNullOrEmpty(principalId)
+            && principalMapper.TryGetPrincipalType(principalId, out var inferredType)
+            && !string.IsNullOrEmpty(inferredType))
+        {
+            principalType = inferredType;
+        }
 
         var principalName = !string.IsNullOrEmpty(principalId)
             ? principalMapper.GetName(principalId, principalType, resourceAddress) ?? principalId

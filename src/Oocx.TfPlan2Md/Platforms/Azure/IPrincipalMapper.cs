@@ -53,4 +53,16 @@ public interface IPrincipalMapper
     {
         return GetName(principalId, principalType);
     }
+
+    /// <summary>
+    /// Attempts to resolve the principal type for a principal ID from mapping metadata.
+    /// </summary>
+    /// <param name="principalId">The GUID of the principal.</param>
+    /// <param name="principalType">The resolved principal type when available.</param>
+    /// <returns><c>true</c> when a type is available; otherwise <c>false</c>.</returns>
+    bool TryGetPrincipalType(string principalId, out string? principalType)
+    {
+        principalType = null;
+        return false;
+    }
 }

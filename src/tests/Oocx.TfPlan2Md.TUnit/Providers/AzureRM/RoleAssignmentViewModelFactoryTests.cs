@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using AwesomeAssertions;
@@ -150,6 +151,101 @@ public class RoleAssignmentViewModelFactoryTests
     }
 
     /// <summary>
+    /// Verifies missing principal types are inferred from nested principal mappings.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenPrincipalTypeMissing_InfersTypeFromMapping()
+    {
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/sub-id",
+                "role_definition_id": "role-id",
+                "role_definition_name": "Contributor",
+                "principal_id": "user-123"
+            }
+            """).RootElement;
+
+        var mappingPath = CreateTempMapping("""
+            {
+              "users": {
+                "user-123": "user@example.com"
+              }
+            }
+            """);
+
+        try
+        {
+            var mapper = new PrincipalMapper(mappingPath);
+            var change = CreateChange(before: null, after: after, actions: ["create"]);
+
+            var viewModel = RoleAssignmentViewModelFactory.Build(
+                change,
+                action: "create",
+                attributeChanges: [],
+                principalMapper: mapper);
+
+            var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
+            principal.After.Should().Contain("👤");
+            principal.After.Should().Contain("(User)");
+            principal.After.Should().Contain("user-123");
+            viewModel.SummaryText.Should().Contain("👤");
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies missing principal types are not decorated when mapping lacks type metadata.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenPrincipalTypeMissingAndMappingFlat_DoesNotDecorate()
+    {
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/sub-id",
+                "role_definition_id": "role-id",
+                "role_definition_name": "Contributor",
+                "principal_id": "user-123"
+            }
+            """).RootElement;
+
+        var mappingPath = CreateTempMapping("""
+            {
+              "user-123": "user@example.com"
+            }
+            """);
+
+        try
+        {
+            var mapper = new PrincipalMapper(mappingPath);
+            var change = CreateChange(before: null, after: after, actions: ["create"]);
+
+            var viewModel = RoleAssignmentViewModelFactory.Build(
+                change,
+                action: "create",
+                attributeChanges: [],
+                principalMapper: mapper);
+
+            var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
+            principal.After.Should().Contain("user@example.com");
+            principal.After.Should().Contain("user-123");
+            principal.After.Should().NotContain("👤");
+            principal.After.Should().NotContain("(User)");
+            viewModel.SummaryText.Should().NotContain("👤");
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Creates a resource change model for tests.
     /// </summary>
     /// <param name="before">Before state JSON.</param>
@@ -166,5 +262,17 @@ public class RoleAssignmentViewModelFactoryTests
             Name: "example",
             ProviderName: "registry.terraform.io/hashicorp/azurerm",
             Change: new Change(actions, before, after));
+    }
+
+    /// <summary>
+    /// Creates a temporary principal mapping file for tests.
+    /// </summary>
+    /// <param name="content">JSON content to write to the mapping file.</param>
+    /// <returns>The path to the temporary mapping file.</returns>
+    private static string CreateTempMapping(string content)
+    {
+        var path = Path.GetTempFileName();
+        File.WriteAllText(path, content);
+        return path;
     }
 }

@@ -58,10 +58,15 @@ internal sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelF
         string action,
         IReadOnlyList<AttributeChangeModel> attributeChanges)
     {
-        model.FirewallNetworkRuleCollection = FirewallNetworkRuleCollectionViewModelFactory.Build(
+        var viewModel = FirewallNetworkRuleCollectionViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
             _largeValueFormat);
+
+        model.FirewallNetworkRuleCollection = viewModel;
+        model.ChangedAttributesSummary = FirewallNetworkRuleCollectionViewModelFactory.BuildChangedAttributesSummary(
+            viewModel,
+            action);
     }
 }
 

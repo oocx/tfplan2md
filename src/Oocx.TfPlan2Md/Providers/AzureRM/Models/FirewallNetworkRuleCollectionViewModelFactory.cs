@@ -59,6 +59,45 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     }
 
     /// <summary>
+    /// Builds a changed-attributes summary using semantic rule changes for update actions.
+    /// Related issue: docs/issues/049-firewall-summary-array-shift/analysis.md.
+    /// </summary>
+    /// <param name="model">Firewall rule collection view model containing rule changes.</param>
+    /// <param name="action">Terraform action derived from the plan.</param>
+    /// <returns>Summary string or empty when not applicable.</returns>
+    internal static string BuildChangedAttributesSummary(FirewallNetworkRuleCollectionViewModel model, string action)
+    {
+        if (!string.Equals(action, "update", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Empty;
+        }
+
+        var changes = model.RuleChanges
+            .Where(change => !string.Equals(change.Change, "⏺️", StringComparison.Ordinal))
+            .ToList();
+
+        if (changes.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var displayed = changes
+            .Take(3)
+            .Select(FormatSummaryEntry)
+            .ToList();
+
+        var remaining = changes.Count - displayed.Count;
+        var nameList = string.Join(", ", displayed);
+
+        if (remaining > 0)
+        {
+            nameList += $", +{remaining} more";
+        }
+
+        return $"{changes.Count}🔧{NonBreakingSpace}{nameList}";
+    }
+
+    /// <summary>
     /// Extracts a string property from the state object.
     /// Handles both string and number values.
     /// </summary>
@@ -320,6 +359,36 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         }
 
         return FormatDiff(beforeStr, afterStr, format);
+    }
+
+    /// <summary>
+    /// Formats a summary entry for a single firewall rule change.
+    /// Related issue: docs/issues/049-firewall-summary-array-shift/analysis.md.
+    /// </summary>
+    /// <param name="change">The rule change row view model.</param>
+    /// <returns>Formatted summary entry string.</returns>
+    private static string FormatSummaryEntry(FirewallRuleChangeRowViewModel change)
+    {
+        var ruleName = TrimMarkdownCode(change.Name);
+        return $"{change.Change}{NonBreakingSpace}{FormatCodeSummary(ruleName)}";
+    }
+
+    /// <summary>
+    /// Removes surrounding markdown code ticks for summary-friendly HTML rendering.
+    /// Related issue: docs/issues/049-firewall-summary-array-shift/analysis.md.
+    /// </summary>
+    /// <param name="value">The formatted markdown code value.</param>
+    /// <returns>Value without surrounding backticks.</returns>
+    private static string TrimMarkdownCode(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return value;
+        }
+
+        return value.Length >= 2 && value.StartsWith('`') && value.EndsWith('`')
+            ? value[1..^1]
+            : value;
     }
 
     /// <summary>

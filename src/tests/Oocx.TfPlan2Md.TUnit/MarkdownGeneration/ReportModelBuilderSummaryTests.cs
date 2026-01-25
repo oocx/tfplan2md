@@ -3,6 +3,9 @@ using System.Linq;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -65,6 +68,31 @@ public class ReportModelBuilderSummaryTests
         // Assert
         var update = model.Changes.Should().ContainSingle(c => c.Action == "update").Subject;
         update.ChangedAttributesSummary.Should().Be($"4🔧{Nbsp}account_replication_type, https_only, kind, +1 more");
+    }
+
+    [Test]
+    public void Build_ChangedAttributesSummary_UsesFirewallRuleChanges()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = new TerraformPlanParser().Parse(json);
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        var builder = new ReportModelBuilder(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var update = model.Changes
+            .First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
+
+        update.ChangedAttributesSummary.Should().Be(
+            $"3🔧{Nbsp}➕{Nbsp}<code>allow-dns</code>, 🔄{Nbsp}<code>allow-http</code>, ❌{Nbsp}<code>allow-ssh-old</code>");
     }
 
     [Test]

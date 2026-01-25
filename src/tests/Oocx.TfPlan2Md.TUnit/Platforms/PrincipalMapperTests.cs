@@ -255,6 +255,100 @@ public class PrincipalMapperTests
         }
     }
 
+    [Test]
+    public void TryGetPrincipalType_NestedFormat_ReturnsType()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("""
+        {
+          "users": {
+            "user-123": "jane.doe@contoso.com"
+          },
+          "groups": {
+            "group-456": "Platform Team"
+          },
+          "servicePrincipals": {
+            "spn-789": "terraform-spn"
+          }
+        }
+        """);
+        try
+        {
+            var mapper = new PrincipalMapper(mappingPath);
+
+            // Act
+            var userFound = mapper.TryGetPrincipalType("user-123", out var userType);
+            var groupFound = mapper.TryGetPrincipalType("group-456", out var groupType);
+            var spnFound = mapper.TryGetPrincipalType("spn-789", out var spnType);
+
+            // Assert
+            userFound.Should().BeTrue();
+            userType.Should().Be("User");
+            groupFound.Should().BeTrue();
+            groupType.Should().Be("Group");
+            spnFound.Should().BeTrue();
+            spnType.Should().Be("ServicePrincipal");
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void TryGetPrincipalType_FlatFormat_ReturnsFalse()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("""
+        {
+          "00000000-0000-0000-0000-000000000001": "Jane Doe (User)"
+        }
+        """);
+        try
+        {
+            var mapper = new PrincipalMapper(mappingPath);
+
+            // Act
+            var found = mapper.TryGetPrincipalType("00000000-0000-0000-0000-000000000001", out var principalType);
+
+            // Assert
+            found.Should().BeFalse();
+            principalType.Should().BeNull();
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void TryGetPrincipalType_EmptyId_ReturnsFalse()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("""
+        {
+          "users": {
+            "user-123": "jane.doe@contoso.com"
+          }
+        }
+        """);
+        try
+        {
+            var mapper = new PrincipalMapper(mappingPath);
+
+            // Act
+            var found = mapper.TryGetPrincipalType(" ", out var principalType);
+
+            // Assert
+            found.Should().BeFalse();
+            principalType.Should().BeNull();
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
     private static string CreateTempMapping(string content)
     {
         var path = Path.GetTempFileName();

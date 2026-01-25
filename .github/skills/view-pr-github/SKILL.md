@@ -1,7 +1,7 @@
 ---
 name: view-pr-github
-description: View GitHub PR status/details (prefer GitHub chat tools; gh is fallback).
-compatibility: Preferred: GitHub chat tools configured for the repo. Fallback: GitHub CLI (gh) authenticated, plus network access.
+description: View GitHub PR status/details using GitHub MCP tools (preferred) or gh CLI (fallback).
+compatibility: Preferred: GitHub MCP tools (github-mcp-server-*). Fallback: GitHub CLI (gh) authenticated, plus network access.
 ---
 
 # View PR (GitHub)
@@ -9,126 +9,165 @@ compatibility: Preferred: GitHub chat tools configured for the repo. Fallback: G
 ## Purpose
 Read pull request status/details from GitHub.
 
-Preferred: use GitHub chat tools (stable, structured, avoids pager/editor pitfalls).
-Fallback: use non-interactive `gh` patterns.
+**Priority order:**
+1. **FIRST**: Use GitHub MCP tools - stable, structured, no pager/editor issues
+2. **SECOND**: Use `scripts/pr-github.sh` wrapper (for create/merge only)
+3. **LAST**: Use `gh` CLI as final fallback
 
-Use this skill for **read-only PR inspection** (status, checks, reviewers, files, body). For creating/merging PRs, prefer the repo wrapper scripts (see the `create-pr-github` skill).
+Use this skill for **read-only PR inspection** (status, checks, reviewers, files, body). For creating/merging PRs, use the `create-pr-github` skill.
 
-## Prefer GitHub Chat Tools (When Available)
+## GitHub MCP Tools (Preferred)
 
-If GitHub chat tools are available in the current session, prefer them for read-only inspection to reduce terminal approvals and avoid pager issues. Typical tool coverage:
+Use these GitHub MCP tools for PR operations:
 
-- PR details: `mcp_github_get_pull_request`
-- Changed files: `mcp_github_get_pull_request_files`
-- Inline review comments: `mcp_github_get_pull_request_comments`
-- Reviews: `mcp_github_get_pull_request_reviews`
-- Status checks: `mcp_github_get_pull_request_status`
+### PR Details and Metadata
+```
+github-mcp-server-pull_request_read
+  method: "get"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+```
 
-Use the `gh` CLI patterns below only when there is no matching chat tool (or you need `gh api` flexibility).
+Returns: PR number, title, state, body, author, timestamps, merge status, etc.
 
-## Hard Rules
-### Must
-- Prefer GitHub chat tools when they can answer the question.
+### PR Diff
+```
+github-mcp-server-pull_request_read
+  method: "get_diff"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+```
+
+Returns: Full diff of the PR changes
+
+### PR Status Checks
+```
+github-mcp-server-pull_request_read
+  method: "get_status"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+```
+
+Returns: Status of CI/CD checks, required checks, conclusion
+
+### PR Changed Files
+```
+github-mcp-server-pull_request_read
+  method: "get_files"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+  perPage: 100
+```
+
+Returns: List of files changed with stats (additions, deletions, changes)
+
+### PR Review Comments (inline on code)
+```
+github-mcp-server-pull_request_read
+  method: "get_review_comments"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+  perPage: 100
+```
+
+Returns: Code review comments with file paths, line numbers, and comment bodies
+
+### PR Reviews
+```
+github-mcp-server-pull_request_read
+  method: "get_reviews"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+  perPage: 100
+```
+
+Returns: Review submissions with state (APPROVED, CHANGES_REQUESTED, etc.)
+
+### PR Conversation Comments
+```
+github-mcp-server-pull_request_read
+  method: "get_comments"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+  perPage: 100
+```
+
+Returns: General conversation comments on the PR
+
+### List PRs
+```
+github-mcp-server-list_pull_requests
+  owner: "oocx"
+  repo: "tfplan2md"
+  state: "open"  # or "closed", "all"
+  perPage: 30
+  page: 1
+```
+
+Returns: List of PRs with basic metadata
+
+## GitHub CLI Fallback (Last Resort)
+
+**⚠️ Only use when GitHub MCP tools are unavailable**
+
+### Hard Rules
+- Prefer GitHub MCP tools when they can answer the question
 - If using `gh`, use a **non-interactive pager** for every `gh` call:
-  - Prefer `GH_PAGER=cat` (gh-specific, overrides gh’s internal pager logic)
+  - Use `GH_PAGER=cat` (gh-specific, overrides gh's internal pager logic)
   - Also set `GH_FORCE_TTY=false` to reduce TTY-driven behavior
-  - Prefer structured output (`--json`) and keep output small with `--jq` when practical.
+  - Prefer structured output (`--json`) and keep output small with `--jq` when practical
+- Never run plain `gh ...` without `GH_PAGER=cat` (it may open `less` and block)
+- Never change global GitHub CLI config (no `gh config set ...`)
 
-### Must Not
-- Run plain `gh ...` without `GH_PAGER=cat` (it may open `less` and block).
-- Change global GitHub CLI config (no `gh config set ...`).
+### Fallback `gh` Patterns
 
-## Patterns
-
-### Preferred: GitHub Chat Tools
-Use chat tools for:
-- PR details/metadata
-- changed files
-- reviews
-- status checks
-- conversation comments and inline review comments
-
-If a tool exists that directly answers the question, use it. If not, use the `gh` fallback patterns below.
-
-### Fallback: Minimal Safe Prefix
 Use this prefix for every command:
 
 ```bash
 GH_PAGER=cat GH_FORCE_TTY=false gh ...
 ```
 
-### 1) View PR Summary (safe JSON)
-
+#### View PR Summary
 ```bash
 GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> \
   --json number,title,state,isDraft,url,mergeStateStatus,reviewDecision
 ```
 
-### 2) View Checks (success/fail)
-
+#### View Status Checks
 ```bash
 GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> \
   --json statusCheckRollup \
   --jq '.statusCheckRollup[] | {name, status, conclusion}'
 ```
 
-### 3) View Reviews / Review Requests
-
+#### View Reviews
 ```bash
 GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> \
   --json latestReviews,reviewRequests \
   --jq '{latestReviews: [.latestReviews[] | {author: .author.login, state, submittedAt}], reviewRequests: [.reviewRequests[].login]}'
 ```
 
-### 3a) View PR Conversation Comments (timeline discussion)
+## When To Use Different Approaches
 
-These are the “issue comments” on the PR conversation.
+### Prefer GitHub MCP Tools when
+- You need **structured PR metadata** (details, changed files, status checks, comments, reviews)
+- You want to avoid terminal-side pitfalls (auth prompts, pager behavior, large output)
+- You want operations that can be permanently allowed in VS Code
+- You're in any VS Code Copilot context (chat, inline, etc.)
 
-```bash
-GH_PAGER=cat GH_FORCE_TTY=false gh api \
-  --paginate \
-  "/repos/{owner}/{repo}/issues/<pr-number>/comments" \
-  --jq '.[] | {author: .user.login, createdAt: .created_at, url: .html_url, body: .body}'
-```
+### Prefer Wrapper Scripts when
+- You're **creating** or **merging** a PR: use `scripts/pr-github.sh create` / `scripts/pr-github.sh create-and-merge`
 
-### 3b) View Review Comments (inline on diffs)
+### Prefer `gh` CLI when (rare)
+- You need an API surface the MCP tools don't expose (use `gh api` for custom calls)
+- You need commands for Maintainers to reproduce locally
+- A maintainer explicitly requests CLI examples
 
-These are the code-review comments attached to specific lines/paths in the diff.
-
-```bash
-GH_PAGER=cat GH_FORCE_TTY=false gh api \
-  --paginate \
-  "/repos/{owner}/{repo}/pulls/<pr-number>/comments" \
-  --jq '.[] | {author: .user.login, createdAt: .created_at, url: .html_url, path: .path, line: .line, side: .side, body: .body}'
-```
-
-### 4) View Changed Files (names only)
-
-```bash
-GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> --json files \
-  --jq '.files[].path'
-```
-
-### 5) View PR Body (for review)
-
-```bash
-GH_PAGER=cat GH_FORCE_TTY=false gh pr view <pr-number> --json body --jq '.body'
-```
-
-## When To Prefer Wrapper Scripts
-- If you are about to **create** or **merge** a PR: use `scripts/pr-github.sh create` / `scripts/pr-github.sh create-and-merge`.
-- If you just need to **inspect** PR state/checks/reviews: use this skill’s `gh` patterns.
-
-## When To Use `gh` CLI vs GitHub Chat Tools
-
-### Prefer GitHub Chat Tools when
-- You’re already in chat and just need **structured PR metadata** (details, changed files, status checks, comments).
-- You want to avoid terminal-side pitfalls (auth prompts, pager behavior, large output).
-- A tool exists that directly answers the question (e.g., a “get PR details” tool, “list PR comments”, active/open PR helpers).
-
-### Prefer `gh` CLI when
-- You need an API surface the chat tools don’t expose (or you need `gh api` flexibility).
-- You need commands that are easy for Maintainers to reproduce locally.
-- You’re following a documented repo workflow that standardizes on wrapper scripts and `gh`.
-
-**Rule of thumb:** if a GitHub chat tool can fetch the data you need, use it; otherwise use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` (or `gh api`) from this skill.
+**Rule of thumb:** Always start with GitHub MCP tools; only fall back to wrapper scripts for create/merge, and only use `gh` CLI as final resort.

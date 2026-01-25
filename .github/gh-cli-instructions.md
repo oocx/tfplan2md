@@ -1,24 +1,95 @@
-# GitHub CLI (gh) Instructions
-
-## Pager / Non-Interactive Mode
 # GitHub CLI Usage Instructions for Agents
 
-**CRITICAL: Prefer repository wrapper scripts over raw `gh` commands** to minimize manual approval friction.
+## Priority Order for GitHub Operations
 
-Available wrapper scripts (use these instead of raw `gh`):
-- **`scripts/check-workflow-status.sh`** - For workflow operations (list, watch, trigger, view)
-- **`scripts/uat-watch-github.sh`** - For UAT PR watching
-- **`scripts/pr-github.sh`** - For PR operations (create, merge)
-- **`scripts/git-status.sh`** - For git status
-- **`scripts/git-diff.sh`** - For git diff
-- **`scripts/git-log.sh`** - For git log
+**CRITICAL: Follow this priority order to minimize manual approval friction:**
 
-Preferred: use GitHub chat tools for GitHub PR/issue inspection and management.
+1. **FIRST: Use GitHub MCP Tools** (when available in your session)
+   - Available via `github-mcp-server-*` tool names
+   - Can be permanently allowed in VS Code
+   - Structured, reliable output
+   - No pager/editor issues
+   - Examples: `github-mcp-server-pull_request_read`, `github-mcp-server-list_pull_requests`
 
-Use `gh` only as a fallback when:
-1. The required operation is not available via repository scripts
-2. The required operation is not available via GitHub chat tools
-3. A maintainer explicitly requests CLI reproduction steps
+2. **SECOND: Use Repository Wrapper Scripts** (when MCP tools don't cover the use case)
+   - **`scripts/pr-github.sh`** - For PR operations (create, merge)
+   - **`scripts/check-workflow-status.sh`** - For workflow operations (list, watch, trigger, view)
+   - **`scripts/uat-watch-github.sh`** - For UAT PR watching
+   - **`scripts/git-status.sh`** - For git status
+   - **`scripts/git-diff.sh`** - For git diff
+   - **`scripts/git-log.sh`** - For git log
+
+3. **LAST: Use `gh` CLI as final fallback** (only when neither MCP tools nor scripts are available)
+   - A maintainer explicitly requests CLI reproduction steps
+   - The required operation is not available via MCP tools or scripts
+   - You need `gh api` flexibility for custom API calls
+
+## GitHub MCP Tools (Preferred)
+
+GitHub MCP tools provide reliable, structured access to GitHub operations without the friction of terminal approvals.
+
+### Available GitHub MCP Tools
+
+**Pull Requests:**
+- `github-mcp-server-pull_request_read` - Get PR details, diff, status, files, reviews, comments
+- `github-mcp-server-list_pull_requests` - List PRs with filters (state, base, head, sort)
+- `github-mcp-server-search_pull_requests` - Search PRs across repositories
+
+**Issues:**
+- `github-mcp-server-issue_read` - Get issue details, comments, labels
+- `github-mcp-server-list_issues` - List issues with filters (state, labels, since)
+- `github-mcp-server-search_issues` - Search issues across repositories
+
+**Repository:**
+- `github-mcp-server-get_file_contents` - Read file contents from repository
+- `github-mcp-server-list_commits` - List commits with filters
+- `github-mcp-server-get_commit` - Get commit details with diff
+- `github-mcp-server-list_branches` - List repository branches
+- `github-mcp-server-list_tags` - List repository tags
+- `github-mcp-server-search_code` - Search code across repositories
+- `github-mcp-server-search_repositories` - Search for repositories
+
+**Releases:**
+- `github-mcp-server-list_releases` - List releases
+- `github-mcp-server-get_latest_release` - Get latest release
+- `github-mcp-server-get_release_by_tag` - Get specific release by tag
+
+**Workflows:**
+- `github-mcp-server-actions_list` - List workflows, runs, jobs, artifacts
+- `github-mcp-server-actions_get` - Get workflow, run, or job details
+- `github-mcp-server-get_job_logs` - Get logs for workflow jobs
+
+### Example Usage
+
+**Instead of:**
+```bash
+GH_PAGER=cat gh pr view 123 --json number,title,state
+```
+
+**Use:**
+```
+github-mcp-server-pull_request_read with method="get", owner="oocx", repo="tfplan2md", pullNumber=123
+```
+
+**Instead of:**
+```bash
+GH_PAGER=cat gh pr list --state open --json number,title
+```
+
+**Use:**
+```
+github-mcp-server-list_pull_requests with owner="oocx", repo="tfplan2md", state="open"
+```
+
+**Instead of:**
+```bash
+GH_PAGER=cat gh run list --limit 5
+```
+
+**Use:**
+```
+github-mcp-server-actions_list with method="list_workflow_runs", owner="oocx", repo="tfplan2md", perPage=5
+```
 
 ## Critical: Prevent Interactive Mode
 
@@ -58,9 +129,14 @@ export GH_FORCE_TTY=false
 echo "Automated issue body" | GH_PAGER=cat GH_FORCE_TTY=false gh issue create --title "Automated" --body-file -
 ```
 
-## Workflow Operations (Use Repository Scripts)
+## Workflow Operations
 
-**⚠️ DO NOT use raw `gh run` or `gh workflow` commands.** Use `scripts/check-workflow-status.sh` instead:
+**Priority order:**
+1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-actions_list`, `github-mcp-server-actions_get`, `github-mcp-server-get_job_logs`)
+2. **SECOND**: Use `scripts/check-workflow-status.sh` wrapper script
+3. **LAST**: Raw `gh run` or `gh workflow` commands (avoid)
+
+**Wrapper script usage:**
 
 ```bash
 # List workflow runs
@@ -81,84 +157,58 @@ scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0
 
 **Why?** The wrapper script handles pager suppression and is designed for permanent approval in VS Code, reducing friction during long-running operations like CI polling.
 
-## Common Commands - Correct Usage
+## GitHub CLI Fallback Patterns (Last Resort)
 
-## Prefer GitHub Chat Tools (When Available)
+**⚠️ Only use these `gh` patterns when:**
+- GitHub MCP tools don't support the operation
+- Repository wrapper scripts don't cover the use case
+- You need custom API access via `gh api`
 
-When you are operating inside VS Code Copilot chat and a GitHub tool exists for the task, prefer it.
+When using `gh`, always follow the critical paging rules below.
 
-Examples (non-exhaustive):
-- PR details: get pull request details tool
-- PR files: list changed files tool
-- PR reviews / review comments: reviews + review comments tools
-- PR status checks: PR status tool
+### Pull Requests (Fallback Examples)
 
-Only use the `gh` examples below if the tool surface is missing what you need.
+**⚠️ Prefer:** `github-mcp-server-pull_request_read` and `github-mcp-server-list_pull_requests` tools
 
-### Pull Requests
-
+**Fallback (if MCP tools unavailable):**
 ```bash
-# List pull requests
+# List pull requests (prefer: github-mcp-server-list_pull_requests)
 GH_PAGER=cat GH_FORCE_TTY=false gh pr list --json number,title,state,author
 
-# View pull request details
+# View pull request details (prefer: github-mcp-server-pull_request_read)
 GH_PAGER=cat GH_FORCE_TTY=false gh pr view 123 --json number,title,body,state,commits,reviews
-GH_PAGER=cat GH_FORCE_TTY=false gh pr view 123 --json number,title,body,state,commits,reviews
 
-## Prefer GitHub Chat Tools In VS Code
-
-When operating inside VS Code chat, prefer GitHub chat tools for read-only PR inspection (details, files, reviews, status checks, comments). This makes it easier for the Maintainer to permanently allow a small set of tools and reduces repeated terminal approvals.
-
-Use `gh` only as a fallback when there is no matching GitHub chat tool (or for `gh api` flexibility).
-
-# Create pull request (preferred: repo wrapper scripts)
-# CRITICAL: Post the exact PR Title + Description in chat BEFORE creating/merging a PR.
-
-# Standard PR body template:
-#   ## Problem
-#   <why is this change needed?>
-#
-#   ## Change
-#   <what changed?>
-#
-#   ## Verification
-#   <how was it validated?>
-
-echo "## Summary\n\nPR description" | scripts/pr-github.sh create --title "<type(scope): summary>" --body-from-stdin
-
-# Manual fallback (only if wrapper scripts are unavailable)
-echo "Description" | GH_PAGER=cat GH_FORCE_TTY=false gh pr create --title "Title" --body-file - --base main --head feature-branch
-
-# Check pull request status
+# Check pull request status (prefer: github-mcp-server-pull_request_read with method="get_status")
 GH_PAGER=cat GH_FORCE_TTY=false gh pr status --json number,title,state
 ```
 
-### Issues
+**For PR Creation/Merge:** ALWAYS use `scripts/pr-github.sh` wrapper, never raw `gh pr create` or `gh pr merge`
 
+### Issues (Fallback Examples)
+
+**⚠️ Prefer:** `github-mcp-server-issue_read`, `github-mcp-server-list_issues`, `github-mcp-server-search_issues` tools
+
+**Fallback (if MCP tools unavailable):**
 ```bash
-# List issues
+# List issues (prefer: github-mcp-server-list_issues)
 GH_PAGER=cat GH_FORCE_TTY=false gh issue list --json number,title,state,author
 
-# View issue details
+# View issue details (prefer: github-mcp-server-issue_read)
 GH_PAGER=cat GH_FORCE_TTY=false gh issue view 123 --json number,title,body,state,comments
-
-# Create issue
-GH_PAGER=cat GH_FORCE_TTY=false gh issue create --title "Title" --body "Description"
-
-# Close issue
-GH_PAGER=cat GH_FORCE_TTY=false gh issue close 123
 ```
 
-### Repository Information
+**Note:** Issue creation/closing is typically not needed for agents
 
+### Repository Information (Fallback Examples)
+
+**⚠️ Prefer:** GitHub MCP tools for repository operations
+
+**Fallback (if MCP tools unavailable):**
 ```bash
-# View repository details
-PAGER=cat gh repo view --json name,description,url,defaultBranchRef
-
-# List repository branches
+# List repository branches (prefer: github-mcp-server-list_branches)
 PAGER=cat gh api repos/{owner}/{repo}/branches --jq '.[].name'
 
-# Check workflow runs
+# Check workflow runs (prefer: github-mcp-server-actions_list)
 PAGER=cat gh run list --json conclusion,status,name,createdAt
 ```
 

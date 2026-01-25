@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/oocx/tfplan2md/compare/v1.0.0...v1.0.1) (2026-01-25)
+
+### 🐛 Bug Fixes
+
+* infer principal type from mappings ([0bce648](https://github.com/oocx/tfplan2md/commit/0bce64887c6a532d2af3aa86600abae4b5989b3b))
+
+### 📚 Documentation
+
+* add issue analysis for principal type inference ([193141f](https://github.com/oocx/tfplan2md/commit/193141fe071f5e7c32bdf5630556de8c12f1e614))
+* update coverage badge and history ([13057ce](https://github.com/oocx/tfplan2md/commit/13057ced571f3bb383a631b4a68946553fce8bb5))
+
 <a name="1.0.0"></a>
 ## [1.0.0](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.46...v1.0.0) (2026-01-25)
 

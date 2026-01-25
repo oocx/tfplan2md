@@ -102,6 +102,7 @@ internal static class ResourceSummaryHtmlBuilder
         return $"{names.Count}🔧{NonBreakingSpace}{nameList}";
     }
 
+
     /// <summary>
     /// Builds inline tag badges for create/delete operations, keeping templates free from tag formatting logic.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md.

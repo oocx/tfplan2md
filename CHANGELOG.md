@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/oocx/tfplan2md/compare/v1.0.1...v1.0.2) (2026-01-25)
+
+### 🐛 Bug Fixes
+
+* summarize firewall rule changes in updates ([11627d7](https://github.com/oocx/tfplan2md/commit/11627d7f7e25b12fb1513c521d3c8e5e04a170d0))
+* update comprehensive-demo artifact with semantic firewall summary ([76e46f2](https://github.com/oocx/tfplan2md/commit/76e46f226f39aabbf7298c71932507f5d6c1fc91))
+
+### 📚 Documentation
+
+* add code review for firewall summary fix ([5cb6faa](https://github.com/oocx/tfplan2md/commit/5cb6faa7f64c8726a02ffa93d7510739f6aa9f79))
+* add issue analysis for firewall summary ([535dc26](https://github.com/oocx/tfplan2md/commit/535dc26b4483b606b58e06a9864e3447ec3ce421))
+* add UAT report for firewall summary fix ([4606144](https://github.com/oocx/tfplan2md/commit/46061449c8a32418dee3e0d0c66a6e25c651f985))
+* update coverage badge and history ([5b4191f](https://github.com/oocx/tfplan2md/commit/5b4191fc55fca47de6eeddb8591b0a92a5b8711c))
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/oocx/tfplan2md/compare/v1.0.0...v1.0.1) (2026-01-25)
 

@@ -43,7 +43,10 @@ internal partial class ReportModelBuilder
         }
 
         model.Summary = _summaryBuilder.BuildSummary(model);
-        model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);
+        if (string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
+        {
+            model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);
+        }
         model.TagsBadges = BuildTagsBadges(model.AfterJson, model.BeforeJson, model.Action);
         model.SummaryHtml = BuildSummaryHtml(model);
 

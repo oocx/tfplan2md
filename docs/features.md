@@ -926,6 +926,56 @@ The principal mapping JSON format:
 
 The type (User, Group, ServicePrincipal) is automatically read from the Terraform plan's `principal_type` attribute and displayed as: `Display Name (Type) [guid]`.
 
+## Azure API Documentation Mapping
+
+**Status:** ✅ Implemented  
+**Related specification:** [docs/features/048-azure-api-doc-mapping/specification.md](features/048-azure-api-doc-mapping/specification.md)
+
+When rendering `azapi_resource` resources, tfplan2md includes links to official Microsoft Learn REST API documentation. Instead of using heuristic URL guessing (which often produced broken links), the tool now uses curated mappings from authoritative Azure sources.
+
+**Features:**
+- **Reliable documentation links**: 92 Azure resource types across 37 services have verified documentation URLs
+- **Clean degradation**: Unmapped resource types omit the link rather than showing a broken URL
+- **Version-agnostic**: API version suffixes (e.g., `@2023-03-01`) are stripped during lookup; mappings work across all versions
+- **Fast lookup**: O(1) dictionary lookup using `FrozenDictionary` for optimal performance
+- **Embedded mappings**: JSON mappings are compiled into the application for offline use
+- **Maintainable**: Discovery script (`scripts/update-azure-api-mappings.py`) automates mapping generation from official sources
+
+**Example output:**
+
+When a mapping exists:
+```markdown
+**Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
+
+📚 [View API Documentation](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
+```
+
+When no mapping exists:
+```markdown
+**Type:** `Microsoft.UnknownService/unknownResource@2023-01-01`
+```
+*(No documentation link shown)*
+
+**Supported Azure Services (37 total):**
+
+The current mappings cover major Azure services including Compute, Storage, Networking, Key Vault, SQL, Cosmos DB, Container Instances, API Management, Automation, Analysis Services, Cognitive Services, and many more. See the full list in [AzureApiDocumentationMappings.json](../src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json).
+
+**Updating mappings:**
+
+Maintainers can refresh mappings by running the discovery script:
+```bash
+# Generate updated mappings from Microsoft Learn
+python3 scripts/update-azure-api-mappings.py
+
+# Validate URLs (slow, not recommended for routine use)
+python3 scripts/update-azure-api-mappings.py --validate
+
+# Custom output location
+python3 scripts/update-azure-api-mappings.py --output custom-path.json
+```
+
+The script scrapes the Azure SDK Specs Inventory to discover all Azure resource types and their documentation URLs, ensuring mappings stay current with Microsoft's official documentation structure.
+
 ## Distribution
 
 ### Docker Image
@@ -1032,7 +1082,7 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 
 **Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
 
-📚 [View API Documentation (best-effort)](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
+📚 [View API Documentation](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
 
 | Attribute | Value |
 |-----------|-------|
@@ -1059,7 +1109,7 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 
 **Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
 
-📚 [View API Documentation (best-effort)](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
+📚 [View API Documentation](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
 
 | Attribute | Value |
 |-----------|-------|
@@ -1077,12 +1127,9 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 
 **Documentation Links:**
 
-Documentation links are generated using a best-effort heuristic from the resource type string (e.g., `Microsoft.Automation/automationAccounts@2021-06-22`). The link construction:
-1. Extracts the service name (`Automation`)
-2. Converts resource type to kebab-case (`automation-accounts`)
-3. Constructs URL: `https://learn.microsoft.com/rest/api/{service}/{resource}/`
+Documentation links are generated from curated mappings of Azure resource types to their official Microsoft Learn REST API documentation URLs. The mappings currently cover 92 Azure resource types across 37 services including Compute, Storage, Networking, Key Vault, SQL, Cosmos DB, and more.
 
-These links work for most common Azure services but may not be accurate for all resources. The "(best-effort)" label indicates the link is not guaranteed to be correct. For custom resource providers or non-Microsoft resources, no link is generated.
+When a mapping exists, the resource displays a reliable documentation link. When no mapping exists for a resource type, the link is omitted rather than showing a potentially broken URL. This ensures users only see links that work correctly. See [Azure API Documentation Mapping](#azure-api-documentation-mapping) for more details.
 
 **Sensitive Value Handling:**
 
@@ -1224,12 +1271,12 @@ Type: {{ type_info.resource_type }}      // "automationAccounts"
 API Version: {{ type_info.api_version }} // "2021-06-22"
 ```
 
-**`azure_api_doc_link`** - Generates Azure REST API documentation URLs:
+**`azure_api_doc_link`** - Generates Azure REST API documentation URLs from curated mappings:
 ```scriban
 {{ doc_link = azure_api_doc_link "Microsoft.Automation/automationAccounts@2021-06-22" }}
 // Returns: "https://learn.microsoft.com/rest/api/automation/automation-accounts/"
 ```
-Uses best-effort heuristic; may not be accurate for all resources. Returns null for non-Microsoft resource types.
+Uses curated mappings from Microsoft Learn for 92 Azure resource types. Returns null for unmapped resources or non-Microsoft resource types. API version suffixes are stripped during lookup.
 
 **`extract_azapi_metadata`** - Extracts key attributes from azapi_resource:
 ```scriban

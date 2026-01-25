@@ -52,6 +52,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 📝 **Resource summaries** - Each resource change shows a concise one-line summary for quick scanning
 - 🔄 **Replacement reasons** - Resources being replaced show which attributes forced the replacement
 - 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps variable groups)
+- 📚 **Azure API documentation links** - Reliable links to Microsoft Learn REST API documentation for 92 Azure resource types (AzAPI provider)
 
 ## Installation
 
@@ -368,7 +369,7 @@ See [Scriban documentation](https://github.com/scriban/scriban) for template syn
 For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes. The default renderer (used by the CLI) applies resource-specific templates automatically when a matching template is available; the global default template is used as a fallback.
 
 **Currently supported:**
-- `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates
+- `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates; includes reliable documentation links to Microsoft Learn for 92 Azure resource types across 37 services
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
 - `azurerm_network_security_group` - Shows security rule changes with semantic diffing
 - `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information

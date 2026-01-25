@@ -346,6 +346,103 @@ If your commit is rejected:
 2. **Build errors**: Fix the build errors before committing
 3. **Commit message**: Ensure your message follows the format `type: description`
 
+## Maintaining Azure API Documentation Mappings
+
+The AzAPI provider includes curated mappings between Azure resource types and their official REST API documentation URLs. These mappings ensure users get reliable documentation links instead of broken heuristic guesses.
+
+### When to Update Mappings
+
+Update the mappings when:
+- A user reports a broken or missing documentation link
+- Microsoft launches a new Azure service or resource type
+- Microsoft restructures documentation URLs (rare but possible)
+- Regular maintenance (maintainer's discretion based on Azure releases)
+
+### Update Process
+
+**Prerequisites:**
+- Python 3.7 or later
+- Internet connection (script scrapes Microsoft Learn)
+
+**Steps:**
+
+1. **Run the discovery script:**
+   ```bash
+   python3 scripts/update-azure-api-mappings.py
+   ```
+   This generates updated mappings by scraping the Azure SDK Specs Inventory page and saves them to `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`.
+
+2. **Spot-check the output:**
+   - Review the generated JSON file
+   - Check the `totalMappings` count in metadata (should be 90+)
+   - Verify a few sample URLs manually:
+     ```bash
+     # Example: Check a few URLs
+     cat src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json | \
+       jq '.mappings | to_entries | .[0:3] | .[] | .key + " -> " + .value.url'
+     ```
+
+3. **Validate URLs (optional):**
+   ```bash
+   # Warning: This is slow (makes HTTP requests for each URL)
+   python3 scripts/update-azure-api-mappings.py --validate
+   ```
+   Only use `--validate` when you need to verify URL correctness. It's not recommended for routine updates.
+
+4. **Test the changes:**
+   ```bash
+   dotnet build
+   dotnet test
+   ```
+
+5. **Commit the updated mappings:**
+   ```bash
+   git add src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json
+   git commit -m "chore: update Azure API documentation mappings"
+   ```
+
+### Script Options
+
+The `update-azure-api-mappings.py` script supports the following options:
+
+- `--output PATH` - Custom output file path (default: `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`)
+- `--validate` - Validate all URLs by making HTTP HEAD requests (slow, not recommended for routine use)
+- `--help` - Show help message
+
+### Mapping File Format
+
+The mappings are stored in JSON format:
+
+```json
+{
+  "mappings": {
+    "Microsoft.Compute/virtualMachines": {
+      "url": "https://learn.microsoft.com/rest/api/compute/virtual-machines"
+    },
+    "Microsoft.Storage/storageAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/storage-accounts"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "YYYY-MM-DD",
+    "source": "Microsoft Learn REST API Documentation (manually curated)",
+    "generatedBy": "scripts/update-azure-api-mappings.py",
+    "totalMappings": 92
+  }
+}
+```
+
+**Key points:**
+- Resource types are **version-agnostic** (no `@YYYY-MM-DD` suffix)
+- Nested resources have individual mappings (e.g., `Microsoft.Storage/storageAccounts/blobServices`)
+- URLs point to Microsoft Learn REST API documentation
+
+### Related Documentation
+
+- Feature specification: [docs/features/048-azure-api-doc-mapping/specification.md](docs/features/048-azure-api-doc-mapping/specification.md)
+- Architecture design: [docs/features/048-azure-api-doc-mapping/architecture.md](docs/features/048-azure-api-doc-mapping/architecture.md)
+
 ## Release Process
 
 Releases are automated via GitHub Actions:

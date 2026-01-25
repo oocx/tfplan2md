@@ -47,7 +47,7 @@ jobs:
       - name: Versionize
         id: versionize
         run: |
-          versionize --exit-insignificant-commits --skip-dirty --pre-release alpha
+          versionize --exit-insignificant-commits --skip-dirty
           echo "version_bumped=true" >> $GITHUB_OUTPUT
         continue-on-error: true
 

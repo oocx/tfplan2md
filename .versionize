@@ -49,6 +49,5 @@
       "versionTagLink": "https://github.com/oocx/tfplan2md/compare/{previousTag}...{currentTag}"
     }
   },
-  "tagPrefix": "v",
-  "preReleasePrefix": "alpha"
+  "tagPrefix": "v"
 }

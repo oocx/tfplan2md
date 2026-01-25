@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.0.0"></a>
+## [1.0.0](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.46...v1.0.0) (2026-01-25)
+
+### ✨ Features
+
+* remove alpha pre-release configuration to enable stable releases ([ea5f347](https://github.com/oocx/tfplan2md/commit/ea5f347c76fe75522b2a57dd04aec67adba4436f))
+
+### 🐛 Bug Fixes
+
+* keep original markdown link format in changelog header ([5edb38e](https://github.com/oocx/tfplan2md/commit/5edb38e19f68ae593e7613edb6b4dbb627573df8))
+
+### 📚 Documentation
+
+* add prominent link to official website in README ([7709c78](https://github.com/oocx/tfplan2md/commit/7709c787274d91413a5fa1f0fca53b5a62235ba9))
+* add retrospective and metrics for feature 047 ([9971ca3](https://github.com/oocx/tfplan2md/commit/9971ca3065b697bf0c61c8652f9b0129fb49561a))
+* add workflow tasks for GPT-5.2-Codex update ([ec4db93](https://github.com/oocx/tfplan2md/commit/ec4db93b9dfc607e7f9079b4d414432e5df8cddd))
+* switch to GPT-5.2-Codex ([50d8f38](https://github.com/oocx/tfplan2md/commit/50d8f38c00d1a25012444a680c61a161092c100c))
+* update coverage badge and history ([fc824cd](https://github.com/oocx/tfplan2md/commit/fc824cdc9433b18f031b72a3c08c6ff98c40106f))
+* update GPT-5.2-Codex model reference ([9a44ee7](https://github.com/oocx/tfplan2md/commit/9a44ee705e73cccdd1c30f9e1c868e378b55a2d7))
+* **website:** fix navigation anchor links for render targets ([9723336](https://github.com/oocx/tfplan2md/commit/972333619871df88bda1a35867076e38b2aedcba))
+* **website:** update CLI docs to use --render-target flag ([c8b4722](https://github.com/oocx/tfplan2md/commit/c8b47224d47b6804c8173699ffe87daabfa3d13e))
+
 <a name="1.0.0-alpha.46"></a>
 ## [1.0.0-alpha.46](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.45...v1.0.0-alpha.46) (2026-01-24)
 

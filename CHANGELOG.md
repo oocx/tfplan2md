@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.1.0"></a>
+## [1.1.0](https://github.com/oocx/tfplan2md/compare/v1.0.2...v1.1.0) (2026-01-25)
+
+### ✨ Features
+
+* add discovery script for Azure API documentation mappings ([836ede8](https://github.com/oocx/tfplan2md/commit/836ede815de0de8644adc8d8d0084f3fd03c7dc8))
+* create AzureApiDocumentationMapper with JSON loading ([f8ee198](https://github.com/oocx/tfplan2md/commit/f8ee19808e8b741af226f87e9d79b4f82fca235b))
+* create comprehensive unit tests for AzureApiDocumentationMapper ([c4dc82b](https://github.com/oocx/tfplan2md/commit/c4dc82be131937163195bfcd4f1a5090d9fb8abe))
+* generate initial Azure API documentation mappings ([43eb0fb](https://github.com/oocx/tfplan2md/commit/43eb0fbc58f097118ae05c7cff7673da0c9728d3))
+* remove '(best-effort)' disclaimer from API documentation links ([2a50688](https://github.com/oocx/tfplan2md/commit/2a5068839f036aefee6a846335925e77b26cac84))
+* replace Azure API doc URL guessing with official mappings ([87596f9](https://github.com/oocx/tfplan2md/commit/87596f94a1271a421c8407fdf3646ce261647887))
+* update AzureApiDocLink helper to use mapper ([55adb0a](https://github.com/oocx/tfplan2md/commit/55adb0ac54c53ef78c65011666e594893da288ad))
+* update existing Scriban helper tests for mapping-based behavior ([4d411cd](https://github.com/oocx/tfplan2md/commit/4d411cd2715932184d49fd98c4e9e145abae31a6))
+
+### ♻️ Refactoring
+
+* move ADR-005 into feature folder per new requirement ([6942132](https://github.com/oocx/tfplan2md/commit/6942132601a548574410c6c7aa14c74dade89618))
+
+### 📚 Documentation
+
+* add code review report for feature 048 - APPROVED ([e156323](https://github.com/oocx/tfplan2md/commit/e156323179b0ae2e1191c65277594de1d2b127ba))
+* add feature specification for 048-azure-api-doc-mapping ([8bc0f25](https://github.com/oocx/tfplan2md/commit/8bc0f257c7eea1ae309e687557cbe78a64d2bbce))
+* add implementation tasks for feature 048 ([cf57a4f](https://github.com/oocx/tfplan2md/commit/cf57a4f9ca81a0b8dbddd6c297b7a477d36be78e))
+* add test plan and UAT test plan for feature 048 (Azure API documentation mapping) ([a5a5c55](https://github.com/oocx/tfplan2md/commit/a5a5c55d5b764234fee174aabf25246a6614dd19))
+* add UAT report for feature 048 ([f48f60e](https://github.com/oocx/tfplan2md/commit/f48f60e09e824f285aa002b13ee9d0090b2a452a))
+* update architecture per maintainer feedback ([e10f63a](https://github.com/oocx/tfplan2md/commit/e10f63ab73f432da2238f7d7f5c2a50f90bb86cd))
+* update coverage badge and history ([43a798c](https://github.com/oocx/tfplan2md/commit/43a798c6db83e49ab7aa4618fd021aa5ef1d6830))
+* update coverage badge and history ([d969129](https://github.com/oocx/tfplan2md/commit/d969129513a1734adf3f4882c81317138a227af0))
+* update documentation for Azure API documentation mapping feature ([9279576](https://github.com/oocx/tfplan2md/commit/927957695add12304b073f5ba2eddca06625d36f))
+* update GitHub instructions to prioritize MCP tools over CLI ([f220447](https://github.com/oocx/tfplan2md/commit/f22044706ea55696ea53c3befbdbfec30429ef22))
+* update terminology from "GitHub chat tools" to "GitHub MCP tools" ([78c2445](https://github.com/oocx/tfplan2md/commit/78c2445acd373cc12a3a16d3b9230cfe2f6dc51b))
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/oocx/tfplan2md/compare/v1.0.1...v1.0.2) (2026-01-25)
 

@@ -119,7 +119,7 @@ This project uses:
 - Do NOT edit `CHANGELOG.md` manually - Versionize generates it automatically
 - Version bumping is handled by Versionize based on conventional commits
 - The CI pipeline builds and publishes the Docker image
-- **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
+- **CRITICAL**: Prefer GitHub MCP tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 - **Workflow Status**: Use `scripts/check-workflow-status.sh` for all workflow operations (list, watch, trigger) instead of raw `gh run` commands to reduce approval friction.
 - **Agent-Friendly Output**: Use `--quiet` flag with `watch` command (e.g., `scripts/check-workflow-status.sh watch <run-id> --quiet`) to get minimal, parseable output (`WORKFLOW: SUCCESS|FAILURE|CANCELLED`) that reduces token usage and makes status checks faster.
 
@@ -183,8 +183,8 @@ Before releasing, verify:
    # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
     ```
     - **Preferred (create & merge):** Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them — this script is the authoritative, repo-standard tool for PR lifecycle operations.
-    - **Fallback:** When the script does not support a required or advanced task (rare), use GitHub chat tools (`github/*`) in VS Code for creation/inspection and ad-hoc actions.
-    - Use GitHub chat tools to fetch PR status checks and to inspect checks; re-check until all required checks show success.
+    - **Fallback:** When the script does not support a required or advanced task (rare), use GitHub MCP tools (`github/*`) in VS Code for creation/inspection and ad-hoc actions.
+    - Use GitHub MCP tools to fetch PR status checks and to inspect checks; re-check until all required checks show success.
    - **CRITICAL**: Do NOT merge until "PR Validation" shows ✅ success
    - All checks must pass: format, build, test, markdownlint, vulnerability scan
    - If checks fail, hand off to Developer agent to fix issues and return to step 1
@@ -193,7 +193,7 @@ Before releasing, verify:
    - Inform maintainer that PR validation passed and PR is ready to merge
     - **Merge using: Rebase and merge.**
        - **Preferred (for merges):** Use `scripts/pr-github.sh create-and-merge` — this script is the authoritative, repo-standard merge tool and will perform a `rebase` merge and delete the branch. Abort if the script/CLI reports rebase is unavailable; fix repository settings before merging.
-       - **Preferred (for PR creation/inspection):** Use GitHub chat tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation. Do not click squash/merge-commit buttons.
+       - **Preferred (for PR creation/inspection):** Use GitHub MCP tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation. Do not click squash/merge-commit buttons.
    - Wait for maintainer to approve and merge (or merge if authorized)
 
 ### Phase 2: Post-Merge Release
@@ -252,7 +252,7 @@ Before releasing, verify:
    head -n 20 CHANGELOG.md
    
    # Verify GitHub Release created (fallback to raw gh if no script available)
-   # Preferred: Use GitHub chat tools in VS Code
+   # Preferred: Use GitHub MCP tools in VS Code
    # Fallback only:
    PAGER=cat gh release view <tag>
    ```

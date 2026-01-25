@@ -164,7 +164,7 @@ Collect relevant data:
 **Commands to use:**
 ```bash
 # Preferred in VS Code chat:
-# - Use GitHub chat tools to inspect PR status checks, PR details, and PR comments.
+# - Use GitHub MCP tools to inspect PR status checks, PR details, and PR comments.
 #
 # Preferred: Use repository wrapper scripts for workflow operations
 scripts/check-workflow-status.sh list --branch main --limit 5

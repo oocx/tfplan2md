@@ -175,10 +175,6 @@ scripts/check-workflow-status.sh view <run-id>
 # Watch a run until completion (use wrapper script)
 scripts/check-workflow-status.sh watch <run-id>
 
-# Fallback only (if script doesn't support the operation):
-PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
-PAGER=cat gh run view <run-id> --log-failed
-
 # Check git history
 scripts/git-log.sh --oneline --since="1 week ago" -- <relevant-path>
 
@@ -192,7 +188,7 @@ scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --verb
 # Use the 'problems' tool to see diagnostics
 ```
 
-**Important:** Prefer GitHub chat tools when available. If you must use `gh`, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging (`PAGER=cat` / `GH_PAGER=cat`) to prevent blocking.
+**Important:** GitHub MCP tools (`github-mcp-server-*`) can be permanently allowed in VS Code. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for complete guidance on all available GitHub MCP tools. Prefer MCP tools over wrapper scripts when available.
 
 ### Step 3: Analyze the Issue
 

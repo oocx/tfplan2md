@@ -44,7 +44,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Review commit messages follow conventional commit format
 - Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
 - **Conflict Check (REQUIRED):** Before finalizing a merge, manually verify that critical documentation files (like `docs/architecture.md` or `docs/spec.md`) have not been accidentally reverted or corrupted by the merge process, even if the CLI reports success.
-- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`) or `gh pr merge --rebase --delete-branch`.
+- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`). Only use raw `gh pr merge --rebase --delete-branch` as a final fallback if the wrapper is unavailable.
 - Wait for PR Validation workflow to complete successfully before merging PR
 - Wait for CI on main to complete before triggering release workflow
 - Detect and use the version tag created by Versionize

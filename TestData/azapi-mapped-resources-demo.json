@@ -1,0 +1,48 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.vm",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Compute/virtualMachines@2023-03-01",
+          "location": "eastus",
+          "name": "example-vm",
+          "body": "{\"properties\":{\"hardwareProfile\":{\"vmSize\":\"Standard_DS2_v2\"},\"storageProfile\":{\"imageReference\":{\"publisher\":\"Canonical\",\"offer\":\"UbuntuServer\",\"sku\":\"18.04-LTS\",\"version\":\"latest\"}}}}"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.storage",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Storage/storageAccounts@2021-06-01",
+          "location": "eastus",
+          "name": "examplestorageacct",
+          "body": "{\"sku\":{\"name\":\"Standard_LRS\"},\"kind\":\"StorageV2\",\"properties\":{}}"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.vnet",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Network/virtualNetworks@2020-11-01",
+          "location": "eastus",
+          "name": "example-vnet",
+          "body": "{\"properties\":{\"addressSpace\":{\"addressPrefixes\":[\"10.0.0.0/16\"]}}}"
+        }
+      }
+    }
+  ]
+}

@@ -159,14 +159,14 @@ jobs:
 
       - name: Upload coverage report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: ./TestResults/coverage-report
 
       - name: Upload Cobertura report
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-cobertura
           path: ./TestResults/**/coverage.cobertura.xml

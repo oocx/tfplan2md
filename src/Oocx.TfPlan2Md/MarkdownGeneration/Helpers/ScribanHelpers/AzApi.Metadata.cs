@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -14,18 +15,22 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 public static partial class ScribanHelpers
 {
     /// <summary>
-    /// Extracts and formats key azapi_resource attributes for display in templates.
+    /// Extracts key azapi_resource attributes for display in templates.
     /// </summary>
     /// <param name="change">The ResourceChangeModel or mapped ScriptObject containing azapi_resource data.</param>
     /// <returns>
-    /// ScriptObject with formatted properties: name, type, parent_id, location, tags.
-    /// Values are formatted with appropriate emoji and inline code formatting.
+    /// ScriptObject with properties: name, type, parent_id, location, tags.
+    /// Values are returned in raw form so templates can apply consistent semantic formatting.
     /// </returns>
     /// <remarks>
-    /// Extracts standard azapi_resource attributes and formats them for table display.
-    /// Uses globe emoji for location, formats parent_id as "Resource Group `{name}`" when
-    /// applicable, and wraps names in inline code. Handles missing optional attributes gracefully.
+    /// Extracts standard azapi_resource attributes for table display.
+    /// Formats parent_id into a human-readable scope summary when applicable, while leaving
+    /// other values unformatted so templates can apply consistent semantic formatting.
     /// </remarks>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Keep metadata extraction flow readable while minimizing template complexity.")]
     public static ScriptObject ExtractAzapiMetadata(object? change)
     {
         var result = new ScriptObject();
@@ -65,13 +70,13 @@ public static partial class ScribanHelpers
         // Extract type
         if (stateDict.TryGetValue("type", out var typeValue))
         {
-            result["type"] = $"`{typeValue}`";
+            result["type"] = typeValue?.ToString();
         }
 
-        // Extract name with inline code
+        // Extract name
         if (stateDict.TryGetValue("name", out var nameValue))
         {
-            result["name"] = $"`{nameValue}`";
+            result["name"] = nameValue?.ToString();
         }
 
         // Extract parent_id and format
@@ -86,10 +91,10 @@ public static partial class ScribanHelpers
             }
         }
 
-        // Extract location with globe emoji
+        // Extract location
         if (stateDict.TryGetValue("location", out var locationValue) && locationValue != null)
         {
-            result["location"] = $"🌍 `{locationValue}`";
+            result["location"] = locationValue.ToString();
         }
 
         // Extract tags (will be handled separately by template)

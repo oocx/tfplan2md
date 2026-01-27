@@ -522,10 +522,10 @@ public class ScribanHelpersAzApiTests
         var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
-        result["type"].Should().Be("`Microsoft.Automation/automationAccounts@2021-06-22`");
-        result["name"].Should().Be("`myAccount`");
+        result["type"].Should().Be("Microsoft.Automation/automationAccounts@2021-06-22");
+        result["name"].Should().Be("myAccount");
         result["parent_id"].Should().Be("example-resources"); // Resource group summary format
-        result["location"].Should().Be("🌍 `westeurope`");
+        result["location"].Should().Be("westeurope");
         result["tags"].Should().NotBeNull();
 
         await Task.CompletedTask;
@@ -557,10 +557,10 @@ public class ScribanHelpersAzApiTests
         var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
-        result["type"].Should().Be("`Microsoft.Storage/storageAccounts@2023-01-01`");
-        result["name"].Should().Be("`myStorageAccount`");
+        result["type"].Should().Be("Microsoft.Storage/storageAccounts@2023-01-01");
+        result["name"].Should().Be("myStorageAccount");
         result["parent_id"].Should().Be("storage-rg"); // Resource group summary format
-        result["location"].Should().Be("🌍 `eastus`");
+        result["location"].Should().Be("eastus");
 
         await Task.CompletedTask;
     }
@@ -590,10 +590,10 @@ public class ScribanHelpersAzApiTests
         var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
-        result["type"].Should().Be("`Microsoft.Automation/automationAccounts@2021-06-22`");
-        result["name"].Should().Be("`myAccount`");
+        result["type"].Should().Be("Microsoft.Automation/automationAccounts@2021-06-22");
+        result["name"].Should().Be("myAccount");
         result["parent_id"].Should().Be("example-resources");
-        result["location"].Should().Be("🌍 `westeurope`");
+        result["location"].Should().Be("westeurope");
         result["tags"].Should().NotBeNull();
 
         await Task.CompletedTask;
@@ -624,8 +624,8 @@ public class ScribanHelpersAzApiTests
         var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
         // Assert
-        result["type"].Should().Be("`Microsoft.Resources/resourceGroups@2021-04-01`");
-        result["name"].Should().Be("`minimal-rg`");
+        result["type"].Should().Be("Microsoft.Resources/resourceGroups@2021-04-01");
+        result["name"].Should().Be("minimal-rg");
         result.ContainsKey("parent_id").Should().BeFalse();
         result.ContainsKey("location").Should().BeFalse();
         result.ContainsKey("tags").Should().BeFalse();

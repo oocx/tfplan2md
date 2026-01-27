@@ -12,11 +12,12 @@ This test plan covers the four display improvements introduced in [051-display-e
 | Large XML values detected and pretty-printed with ```xml | TC-02 | Unit |
 | Already-formatted JSON/XML values are preserved | TC-03 | Unit |
 | Pretty-printing works for updates (simple-diff/inline-diff) | TC-04 | Unit |
-| APIM operations display all required context in summary | TC-05 | Unit |
-| APIM subresources display `api_management_name` generically | TC-06 | Unit |
-| Named values with `secret=false` show actual values | TC-07 | Unit |
-| Named values with `secret=true` remain masked | TC-08 | Unit |
+| APIM operations (AzureRM) display all required context in summary | TC-05 | Unit |
+| APIM named values (AzureRM) display `api_management_name` in summary | TC-06 | Unit |
+| Named values (AzureRM) with `secret=false` show actual values | TC-07 | Unit |
+| Named values (AzureRM) with `secret=true` remain masked | TC-08 | Unit |
 | `subscription_id` and `subscription` attributes get 🔑 emoji | TC-09 | Unit |
+| `ReportModelBuilder` respects factory-provided `SummaryHtml` | TC-11 | Unit |
 | Existing features and snapshots remain consistent | TC-10 | Integration |
 
 ## User Acceptance Scenarios
@@ -118,43 +119,43 @@ The diff (inline or simple) operates on pretty-printed lines.
 
 ---
 
-### TC-05: BuildSummaryHtml_ApimOperation_FullContext
+### TC-05: AzureRMApimOperationFactory_ApplyViewModel_SetsRichSummary
 
 **Type:** Unit
-**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Summaries/ResourceSummaryBuilderTests.cs`
+**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/AzureRMApimOperationFactoryTests.cs`
 
 **Description:**
-Verifies that `azurerm_api_management_api_operation` includes `display_name`, `operation_id`, `api_name`, and `api_management_name`.
+Verifies that the factory for `azurerm_api_management_api_operation` includes `display_name`, `operation_id`, `api_name`, and `api_management_name` in `SummaryHtml`.
 
 **Test Data:**
-A `ResourceChangeModel` for an APIM operation.
+A `ResourceChange` for an APIM operation.
 
 ---
 
-### TC-06: BuildSummaryHtml_ApimSubresource_GenericApimName
+### TC-06: AzureRMApimSubresourceFactories_ApplyViewModel_IncludeApimName
 
 **Type:** Unit
-**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/Summaries/ResourceSummaryBuilderTests.cs`
+**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/AzureRMApimSummaryTests.cs`
 
 **Description:**
-Verifies that any resource having `api_management_name` attribute gets it included in the summary.
+Verifies that various APIM subresources (e.g., `azurerm_api_management_api_policy`, `azurerm_api_management_product`) include `api_management_name` in their `SummaryHtml` when the factory is applied.
 
 ---
 
-### TC-07: BuildAttributeChanges_NamedValueFix_ShowValueWhenNotSecret
+### TC-07: AzureRMApimNamedValueFactory_ApplyViewModel_OverridesSensitivityWhenNotSecret
 
 **Type:** Unit
-**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderTests.cs`
+**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/AzureRMApimNamedValueFactoryTests.cs`
 
 **Description:**
 Verifies that `azurerm_api_management_named_value.value` is NOT masked when `secret=false` even if the plan marks it as sensitive.
 
 ---
 
-### TC-08: BuildAttributeChanges_NamedValue_MaskValueWhenSecret
+### TC-08: AzureRMApimNamedValueFactory_ApplyViewModel_RespectsTerraformMaskingWhenSecret
 
 **Type:** Unit
-**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderTests.cs`
+**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/AzureRMApimNamedValueFactoryTests.cs`
 
 **Description:**
 Verifies that `azurerm_api_management_named_value.value` IS masked when `secret=true`.
@@ -168,6 +169,16 @@ Verifies that `azurerm_api_management_named_value.value` IS masked when `secret=
 
 **Description:**
 Verifies that `subscription_id` and `subscription` attributes are prefixed with 🔑 in all formatting contexts (Table, Summary, Plain).
+
+---
+
+### TC-11: ReportModelBuilder_BuildResourceChange_RespectsFactorySummaryHtml
+
+**Type:** Unit
+**Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderTests.cs`
+
+**Description:**
+Verifies that if a `IResourceViewModelFactory` sets `SummaryHtml` on the model, `ReportModelBuilder` does not overwrite it with its default summary logic.
 
 ---
 

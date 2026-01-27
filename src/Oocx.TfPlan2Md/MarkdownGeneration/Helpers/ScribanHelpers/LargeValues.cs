@@ -1,4 +1,8 @@
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -29,20 +33,162 @@ public static partial class ScribanHelpers
         if (normalizedAfter is null)
         {
             // At this point, normalizedBefore is guaranteed non-null
-            return CodeFence(normalizedBefore!);
+            var formattedBefore = NormalizeStructuredValue(normalizedBefore!, out var language);
+            return CodeFence(formattedBefore, language);
         }
 
         if (normalizedBefore is null)
         {
             // At this point, normalizedAfter is guaranteed non-null
-            return CodeFence(normalizedAfter);
+            var formattedAfter = NormalizeStructuredValue(normalizedAfter, out var language);
+            return CodeFence(formattedAfter, language);
         }
+
+        var diffBefore = NormalizeStructuredValue(normalizedBefore, out _);
+        var diffAfter = NormalizeStructuredValue(normalizedAfter, out _);
 
         return parsedFormat switch
         {
-            LargeValueFormat.SimpleDiff => BuildSimpleDiff(normalizedBefore, normalizedAfter),
-            _ => BuildInlineDiff(normalizedBefore, normalizedAfter)
+            LargeValueFormat.SimpleDiff => BuildSimpleDiff(diffBefore, diffAfter),
+            _ => BuildInlineDiff(diffBefore, diffAfter)
         };
+    }
+
+    /// <summary>
+    /// Normalizes structured JSON or XML content for rendering, returning the formatted content and language.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="language">The detected language for syntax highlighting.</param>
+    /// <returns>Formatted content suitable for rendering.</returns>
+    private static string NormalizeStructuredValue(string value, out string? language)
+    {
+        if (TryFormatStructuredContent(value, out var formatted, out language))
+        {
+            return formatted;
+        }
+
+        language = null;
+        return value;
+    }
+
+    /// <summary>
+    /// Attempts to parse JSON or XML content and return a formatted version and language marker.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="value">Raw input content.</param>
+    /// <param name="formatted">Formatted output when parsing succeeds.</param>
+    /// <param name="language">Language identifier for syntax highlighting.</param>
+    /// <returns>True when the content was parsed as JSON or XML; otherwise false.</returns>
+    private static bool TryFormatStructuredContent(string value, out string formatted, out string? language)
+    {
+        if (TryFormatJson(value, out formatted))
+        {
+            language = "json";
+            return true;
+        }
+
+        if (TryFormatXml(value, out formatted))
+        {
+            language = "xml";
+            return true;
+        }
+
+        language = null;
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to pretty-print JSON while preserving existing formatting when detected.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="value">Raw JSON content.</param>
+    /// <param name="formatted">Formatted JSON output.</param>
+    /// <returns>True when JSON parsing succeeds.</returns>
+    private static bool TryFormatJson(string value, out string formatted)
+    {
+        var trimmed = value.Trim();
+        try
+        {
+            using var document = JsonDocument.Parse(trimmed);
+            var pretty = FormatJson(document.RootElement);
+            formatted = IsAlreadyFormatted(trimmed) ? trimmed : pretty;
+            return true;
+        }
+        catch (JsonException)
+        {
+            formatted = string.Empty;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to pretty-print XML while preserving existing formatting when detected.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="value">Raw XML content.</param>
+    /// <param name="formatted">Formatted XML output.</param>
+    /// <returns>True when XML parsing succeeds.</returns>
+    private static bool TryFormatXml(string value, out string formatted)
+    {
+        var trimmed = value.Trim();
+        try
+        {
+            var document = XDocument.Parse(trimmed);
+            var pretty = document.ToString();
+            formatted = IsAlreadyFormatted(trimmed) ? trimmed : pretty;
+            return true;
+        }
+        catch (Exception)
+        {
+            formatted = string.Empty;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether structured content already appears formatted with line breaks and indentation.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="content">Content to inspect.</param>
+    /// <returns>True when the content appears already formatted.</returns>
+    private static bool IsAlreadyFormatted(string content)
+    {
+        var normalized = NormalizeLineEndings(content);
+        var lines = normalized.Split('\n', StringSplitOptions.None);
+        if (lines.Length < 2)
+        {
+            return false;
+        }
+
+        return lines.Skip(1).Any(line => line.StartsWith(' ') || line.StartsWith('\t'));
+    }
+
+    /// <summary>
+    /// Formats JSON using a writer to avoid serializer trimming warnings.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="element">The JSON element to format.</param>
+    /// <returns>Indented JSON string.</returns>
+    private static string FormatJson(JsonElement element)
+    {
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
+        element.WriteTo(writer);
+        writer.Flush();
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    /// <summary>
+    /// Normalizes line endings to simplify formatting heuristics.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="value">Raw content.</param>
+    /// <returns>Content with normalized line endings.</returns>
+    private static string NormalizeLineEndings(string value)
+    {
+        return value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
     }
 
     /// <summary>

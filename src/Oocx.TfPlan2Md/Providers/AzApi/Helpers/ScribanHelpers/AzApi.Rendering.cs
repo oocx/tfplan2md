@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Oocx.TfPlan2Md.Providers.AzApi;
@@ -32,6 +33,10 @@ public static partial class ScribanHelpers
     /// Large properties are rendered outside of tables to avoid markdown parsing issues with newlines.
     /// Related feature: docs/features/040-azapi-resource-template/specification.md.
     /// </remarks>
+    [SuppressMessage(
+        "Major Code Smell",
+        "S107:Methods should not have too many parameters",
+        Justification = "Scriban entrypoint; optional parameters keep template usage concise.")]
     public static string RenderAzapiBody(
         object? bodyJson,
         string heading,
@@ -54,7 +59,15 @@ public static partial class ScribanHelpers
 
         if (mode == "update" && beforeJson is not null)
         {
-            RenderUpdateBody(sb, heading, bodyJson, beforeJson, beforeSensitive, afterSensitive, showUnchanged, largeValueFormat);
+            var updateInput = new UpdateBodyRenderInput(
+                bodyJson,
+                beforeJson,
+                beforeSensitive,
+                afterSensitive,
+                showUnchanged,
+                largeValueFormat);
+
+            RenderUpdateBody(sb, updateInput);
         }
         else
         {

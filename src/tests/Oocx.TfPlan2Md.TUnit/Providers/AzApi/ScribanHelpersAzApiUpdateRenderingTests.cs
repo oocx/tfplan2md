@@ -32,7 +32,7 @@ public class ScribanHelpersAzApiUpdateRenderingTests
 
         markdown.Should().Contain("#### Body Changes");
         markdown.Should().Contain("| Property | Before | After |");
-        markdown.Should().Contain("###### Body Changes - `settings`");
+        markdown.Should().Contain("###### `settings`");
         markdown.Should().Contain("Large body property changes");
         markdown.Should().Contain("**large:**");
     }

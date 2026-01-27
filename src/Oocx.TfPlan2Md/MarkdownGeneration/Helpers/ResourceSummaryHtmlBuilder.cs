@@ -34,66 +34,23 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("resource_group_name", out var resourceGroup);
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
-        flatState.TryGetValue("api_management_name", out var apiManagementName);
-        flatState.TryGetValue("display_name", out var displayName);
-        flatState.TryGetValue("operation_id", out var operationId);
-        flatState.TryGetValue("api_name", out var apiName);
-
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
-        var isApiOperation = model.Type.Equals("azurerm_api_management_api_operation", StringComparison.OrdinalIgnoreCase);
-        if (isApiOperation && !string.IsNullOrWhiteSpace(displayName))
-        {
-            prefix = $"{prefix} {FormatAttributeValueSummary("display_name", displayName!, null)}";
-        }
-
         var detailParts = new List<string>();
 
-        string? primaryContext = null;
-        if (!isApiOperation)
+        var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
+            ? FormatAttributeValueSummary("name", nameValue!, null)
+            : null;
+
+        if (!string.IsNullOrWhiteSpace(resourceGroup))
         {
-            primaryContext = !string.IsNullOrWhiteSpace(nameValue)
-                ? FormatAttributeValueSummary("name", nameValue!, null)
-                : null;
-
-            if (!string.IsNullOrWhiteSpace(apiManagementName))
-            {
-                var apiManagementText = FormatAttributeValueSummary("api_management_name", apiManagementName!, null);
-                primaryContext = primaryContext != null ? $"{primaryContext} {apiManagementText}" : apiManagementText;
-            }
-
-            if (!string.IsNullOrWhiteSpace(resourceGroup))
-            {
-                var groupText = FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
-                primaryContext = primaryContext != null ? $"{primaryContext} in {groupText}" : groupText;
-            }
-
-            if (!string.IsNullOrWhiteSpace(location))
-            {
-                var locationText = FormatAttributeValueSummary("location", location!, null);
-                primaryContext = primaryContext != null ? $"{primaryContext} {locationText}" : locationText;
-            }
+            var groupText = FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
+            primaryContext = primaryContext != null ? $"{primaryContext} in {groupText}" : groupText;
         }
-        else
+
+        if (!string.IsNullOrWhiteSpace(location))
         {
-            if (!string.IsNullOrWhiteSpace(operationId))
-            {
-                detailParts.Add(FormatAttributeValueSummary("operation_id", operationId!, null));
-            }
-
-            if (!string.IsNullOrWhiteSpace(apiName))
-            {
-                detailParts.Add(FormatAttributeValueSummary("api_name", apiName!, null));
-            }
-
-            if (!string.IsNullOrWhiteSpace(apiManagementName))
-            {
-                detailParts.Add(FormatAttributeValueSummary("api_management_name", apiManagementName!, null));
-            }
-
-            if (!string.IsNullOrWhiteSpace(resourceGroup))
-            {
-                detailParts.Add($"in {FormatAttributeValueSummary("resource_group_name", resourceGroup!, null)}");
-            }
+            var locationText = FormatAttributeValueSummary("location", location!, null);
+            primaryContext = primaryContext != null ? $"{primaryContext} {locationText}" : locationText;
         }
 
         if (primaryContext != null)

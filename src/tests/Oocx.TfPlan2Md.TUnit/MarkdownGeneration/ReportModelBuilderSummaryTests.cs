@@ -3,10 +3,12 @@ using System.Linq;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzureRM;
+using Scriban.Runtime;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -130,9 +132,9 @@ public class ReportModelBuilderSummaryTests
     }
 
     [Test]
-    public void Build_SummaryHtml_ApimOperation_IncludesContext()
+    public void Build_SummaryHtml_RespectsFactoryOverride()
     {
-        var afterDocument = JsonDocument.Parse("{\"display_name\":\"Get Profile\",\"operation_id\":\"get-profile\",\"api_name\":\"user-api\",\"api_management_name\":\"example-apim\",\"resource_group_name\":\"rg-apim\"}");
+        var afterDocument = JsonDocument.Parse("{\"name\":\"example\"}");
         var change = new Change(
             ["create"],
             null,
@@ -146,54 +148,51 @@ public class ReportModelBuilderSummaryTests
             new[]
             {
                 new ResourceChange(
-                    "azurerm_api_management_api_operation.this",
+                    "custom_resource.example",
                     null,
                     "managed",
-                    "azurerm_api_management_api_operation",
-                    "this",
-                    "azurerm",
+                    "custom_resource",
+                    "example",
+                    "custom",
                     change)
             });
-        var builder = new ReportModelBuilder();
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new SummaryOverrideProviderModule());
+        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
 
         var model = builder.Build(plan);
 
         model.Changes.Should().ContainSingle();
-        model.Changes.Single().SummaryHtml.Should().Be(
-            $"➕{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>get-profile</code> <code>user-api</code> <code>example-apim</code> in <code>📁{Nbsp}rg-apim</code>");
+        model.Changes.Single().SummaryHtml.Should().Be(SummaryOverrideFactory.OverrideSummaryHtml);
     }
 
-    [Test]
-    public void Build_SummaryHtml_ApimNamedValue_IncludesApiManagementName()
+    private sealed class SummaryOverrideProviderModule : IProviderModule
     {
-        var afterDocument = JsonDocument.Parse("{\"name\":\"IDP-WEB-CLIENT-ID\",\"api_management_name\":\"example-apim\",\"resource_group_name\":\"rg-apim\"}");
-        var change = new Change(
-            ["create"],
-            null,
-            afterDocument.RootElement,
-            null,
-            null,
-            null);
-        var plan = new TerraformPlan(
-            "1.0",
-            "1.0",
-            new[]
-            {
-                new ResourceChange(
-                    "azurerm_api_management_named_value.this",
-                    null,
-                    "managed",
-                    "azurerm_api_management_named_value",
-                    "this",
-                    "azurerm",
-                    change)
-            });
-        var builder = new ReportModelBuilder();
+        public string ProviderName => "custom";
 
-        var model = builder.Build(plan);
+        public string TemplateResourcePrefix => "";
 
-        model.Changes.Should().ContainSingle();
-        model.Changes.Single().SummaryHtml.Should().Be(
-            $"➕{Nbsp}azurerm_api_management_named_value <b><code>this</code></b> — <code>🆔{Nbsp}IDP-WEB-CLIENT-ID</code> <code>example-apim</code> in <code>📁{Nbsp}rg-apim</code>");
+        public void RegisterHelpers(ScriptObject scriptObject)
+        {
+        }
+
+        public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
+        {
+            registry.RegisterFactory("custom_resource", new SummaryOverrideFactory());
+        }
+    }
+
+    private sealed class SummaryOverrideFactory : IResourceViewModelFactory
+    {
+        public const string OverrideSummaryHtml = "<code>factory-summary</code>";
+
+        public void ApplyViewModel(
+            ResourceChangeModel model,
+            ResourceChange resourceChange,
+            string action,
+            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
+        {
+            model.SummaryHtml = OverrideSummaryHtml;
+        }
     }
 }

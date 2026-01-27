@@ -79,20 +79,4 @@
 {{~ end ~}}
 {{~ end ~}}
 
-{{~ # Show any non-body attribute changes (filter out body.* since body is rendered separately) ~}}
-{{~ non_body_changes = change.attribute_changes | array.filter @(do; ret !string.starts_with $0.name "body."; end) ~}}
-{{~ if non_body_changes && non_body_changes.size > 0 ~}}
-
-<details>
-<summary>Other Attribute Changes</summary>
-
-| Attribute | Before | After |
-| ----------- | -------- | ------- |
-{{~ for attr in non_body_changes ~}}
-| {{ attr.name | escape_markdown }} | {{ format_attribute_value_table attr.name (attr.before ?? "(null)") "azurerm" }} | {{ format_attribute_value_table attr.name (attr.after ?? "(null)") "azurerm" }} |
-{{~ end ~}}
-
-</details>
-{{~ end ~}}
-
 </details>

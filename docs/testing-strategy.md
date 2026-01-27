@@ -231,16 +231,17 @@ For user-facing changes (especially markdown rendering), run UAT in real environ
 - GitHub PRs in `oocx/tfplan2md`
 - Azure DevOps PRs in `https://dev.azure.com/oocx` (project `test`, repository `test`)
 
-The UAT loop is **comment-driven**:
+The UAT loop is **comment-driven** and supports both approval and failure detection:
 
 1. Create a UAT PR and post the generated markdown as a PR **comment**.
 2. Maintainer reviews in the real PR UI and leaves feedback as PR comments/threads.
-3. Apply fixes, push updates, and post an updated PR comment.
-4. Repeat until Maintainer explicitly says **approve** or **abort**.
+3. **Approval**: Maintainer comments with keywords like `approved`, `passed`, `lgtm`. The script detects this and exits successfully.
+4. **Failure**: Maintainer comments with keywords like `fail`, `reject`, `error`, `bug`, `issue`, `regression`. The script detects this, stops polling, and exits with an error.
+5. If failure is detected, apply fixes on the feature branch and re-run UAT (the script will create a new unique UAT branch and PR).
 
 **Rules**:
-- Do not close/abandon UAT PRs unless the Maintainer explicitly says **approve** or **abort**.
-- Poll for new feedback until explicit approval/abort.
+- Do not close/abandon UAT PRs manually unless the script is stuck or Maintainer explicitly says **abort**.
+- The script polls for new feedback until explicit approval or failure detection.
 
 **Preferred: repo wrapper scripts (recommended)**
 

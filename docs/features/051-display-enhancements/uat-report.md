@@ -6,10 +6,10 @@
 
 ## Environment
 - **GitHub PR:** N/A (not executed)
-- **Azure DevOps PR:** [#40](https://dev.azure.com/oocx/test/_git/test/pullrequest/40) (Status: Abandoned - Approved)
+- **Azure DevOps PR:** [#41](https://dev.azure.com/oocx/test/_git/test/pullrequest/41) (Status: Abandoned - Approved)
 
 ## Test Summary
-UAT was executed on Azure DevOps using the APIM-specific demo artifact to validate summary formatting, named value masking, and large value rendering. Feedback about inline-diff syntax highlighting was reviewed and accepted as a tradeoff.
+UAT was executed on Azure DevOps using the APIM-specific demo artifact to validate summary formatting, named value masking, and large value rendering.
 
 ## Validation Results
 
@@ -29,7 +29,7 @@ UAT was executed on Azure DevOps using the APIM-specific demo artifact to valida
 - ⚠️ **Note**: No summary line in this artifact includes subscription attributes, so summary context could not be verified.
 
 ## Conclusion
-All requested behavior is validated on Azure DevOps with the APIM demo artifact. The inline-diff + syntax highlighting limitation is documented and accepted for this release.
+All requested behavior is validated on Azure DevOps with the APIM demo artifact.
 
 ## Artifacts Used
 - `artifacts/apim-display-enhancements-demo.md` (Generated from `examples/apim-display-enhancements.json`)

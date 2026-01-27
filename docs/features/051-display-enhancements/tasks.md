@@ -62,11 +62,11 @@ Implement JSON/XML detection and pretty-printing for large values, adding langua
 Remove provider-specific resource type checks and attribute semantics (`azurerm_api_management_*`) from `MarkdownGeneration` and fix the core pipeline to respect provider overrides.
 
 **Acceptance Criteria:**
-- [ ] No `azurerm` resource type logic remains in `ResourceSummaryHtmlBuilder.cs`.
-- [ ] `BuildAttributeChanges` and `IsNamedValueNonSecret` are removed from `ReportModelBuilder.ResourceChanges.cs`.
-- [ ] `ReportModelBuilder.BuildResourceChangeModel` is updated to check if `SummaryHtml` is already set (non-null/non-empty) before calling `BuildSummaryHtml(model)`.
-- [ ] Unit test TC-11 verifies that provider-set summaries are preserved.
-- [ ] Existing generic tests continue to pass.
+- [x] No `azurerm` resource type logic remains in `ResourceSummaryHtmlBuilder.cs`.
+- [x] `BuildAttributeChanges` and `IsNamedValueNonSecret` are removed from `ReportModelBuilder.ResourceChanges.cs`.
+- [x] `ReportModelBuilder.BuildResourceChangeModel` is updated to check if `SummaryHtml` is already set (non-null/non-empty) before calling `BuildSummaryHtml(model)`.
+- [x] Unit test TC-11 verifies that provider-set summaries are preserved.
+- [x] Existing generic tests continue to pass.
 
 **Dependencies:** None
 
@@ -80,10 +80,10 @@ Remove provider-specific resource type checks and attribute semantics (`azurerm_
 Implement provider-specific summary enrichment for APIM subresources using `IResourceViewModelFactory` and register them in `AzureRMModule.cs`.
 
 **Acceptance Criteria:**
-- [ ] `AzureRMApimApiOperationFactory` created and registered in `AzureRMModule.cs` for `azurerm_api_management_api_operation`.
-- [ ] `AzureRMApimSubresourceFactory` created and registered for common APIM subresources (e.g., policy, product, etc.).
-- [ ] Summaries include `display_name`, `operation_id`, `api_name`, and `api_management_name` as per spec.
-- [ ] Unit tests (TC-05, TC-06) verify the enriched summary at the provider layer.
+- [x] `AzureRMApimApiOperationFactory` created and registered in `AzureRMModule.cs` for `azurerm_api_management_api_operation`.
+- [x] `AzureRMApimSubresourceFactory` created and registered for common APIM subresources (e.g., policy, product, etc.).
+- [x] Summaries include `display_name`, `operation_id`, `api_name`, and `api_management_name` as per spec.
+- [x] Unit tests (TC-05, TC-06) verify the enriched summary at the provider layer.
 
 **Dependencies:** Task 3
 
@@ -97,9 +97,9 @@ Implement provider-specific summary enrichment for APIM subresources using `IRes
 Implement provider-specific sensitivity override for `azurerm_api_management_named_value.value` when `secret` is `false`.
 
 **Acceptance Criteria:**
-- [ ] `AzureRMApimNamedValueFactory` created and registered.
-- [ ] Factory overrides `model.AttributeChanges` for the `value` key when the resource's `secret` attribute is `false`.
-- [ ] Unit tests (TC-07, TC-08) verify behavior at the provider layer.
+- [x] `AzureRMApimNamedValueFactory` created and registered.
+- [x] Factory overrides `model.AttributeChanges` for the `value` key when the resource's `secret` attribute is `false`.
+- [x] Unit tests (TC-07, TC-08) verify behavior at the provider layer.
 
 **Dependencies:** Task 3
 
@@ -113,8 +113,8 @@ Implement provider-specific sensitivity override for `azurerm_api_management_nam
 Create integrated test data and run the UAT workflow to verify rendering on GitHub and Azure DevOps.
 
 **Acceptance Criteria:**
-- [ ] `examples/apim-display-enhancements.json` is completed with test data for all improvements.
-- [ ] `artifacts/apim-display-enhancements-demo.md` is generated and committed.
+- [x] `examples/apim-display-enhancements.json` is completed with test data for all improvements.
+- [x] `artifacts/apim-display-enhancements-demo.md` is generated and committed.
 - [ ] UAT simulation is run and passes (TC-10).
 - [ ] Documentation is updated if necessary.
 

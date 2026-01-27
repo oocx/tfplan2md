@@ -1,46 +1,37 @@
 # UAT Report: Display Enhancements
 
-**Status:** ❌ Failed
-**Date:** 2026-01-27
-**Build:** b7d5c62
+**Status:** ✅ Passed
+**Date: 2026-01-28**
+**Build: ebf974e7**
 
 ## Summary
-UAT was performed on GitHub and Azure DevOps using the `artifacts/apim-display-enhancements-demo.md` artifact. The Maintainer rejected the PR due to regressions and incomplete implementation of the feature within this branch.
+UAT was performed on GitHub and Azure DevOps using the `artifacts/apim-display-enhancements-demo.md` artifact. All display enhancements, including syntax highlighting, APIM summaries, named values sensitivity overrides, and subscription emojis, were verified and approved by the Maintainer.
 
 ## Test Environment
-- **GitHub PR:** [#31](https://github.com/oocx/tfplan2md-uat/pull/31)
-- **Azure DevOps PR:** [#42](https://dev.azure.com/oocx/test/_git/test/pullrequest/42)
+- **GitHub PR:** [#32](https://github.com/oocx/tfplan2md-uat/pull/32)
+- **Azure DevOps PR:** [#43](https://dev.azure.com/oocx/test/_git/test/pullrequest/43)
 
 ## Detailed Findings
 
-### 1. Regressions within Branch (CRITICAL)
-- **Missing Subscription Summaries:** Summary attributes for `azurerm_subscription`, which are part of this feature's implementation, are missing from the generated report. The Maintainer noted they seem to have "gone away" compared to previous iterations in this branch.
-- **Outdated APIM Summaries:** The formatting for APIM operation summaries does not match the latest specification expected for this feature.
-  - *Example found:* `azurerm_api_management_api_operation get_profile Get Profile — get-profile users apim-demo in 📁 rg-tfplan2md-demo`
+### 1. Syntax Highlighting (PASSED)
+- XML and JSON code blocks (e.g., in APIM policies) are correctly identified and pretty-printed.
+- Language labels (`xml`, `json`) are correctly applied to the blocks.
+- Highlighted text is clearly visible in both GitHub and Azure DevOps PR interfaces.
 
-### 2. Icon Consistency (FAILED)
-The subscription icon (🔑) is missing in several contexts where it was expected as part of this feature:
-- Key Vault resources: `Key Vault kv-tfplan2md in resource group rg-tfplan2md-demo of subscription 12345678-1234-1234-1234-123456789012`
-- Resource Group summary: `📁 rg-old in subscription 12345678-1234-1234-1234-123456789012`
-- Resource Group summary: `📁 rg-tfplan2md-demo in subscription 12345678-1234-1234-1234-123456789012`
+### 2. API Management Summaries (PASSED)
+- APIM operation summaries follow the new format: `azurerm_api_management_api_operation` `this` `Get User` — `get-user` `apim-hello` in `📁 rg-hello`.
+- Summaries correctly include the APIM service name (`@ apim-demo`) and resource group context.
 
-### 3. Missing Emoji (Unrelated/Cleanup)
-- **Firewall Rules:** Rule name attributes in firewall network rule collections lack the `🆔` emoji.
+### 3. Named Values Sensitivity Override (PASSED)
+- Configuration for `azurerm_api_management_named_value` where `secret=false` correctly displays the literal value instead of `(sensitive)`.
+- Verified using `api_url` example in the demo artifact.
 
-### 4. Syntax Highlighting (PASSED)
-- Syntax highlighting for XML/JSON blocks worked correctly.
+### 4. Subscription Attributes Emoji (PASSED)
+- All `subscription_id` attributes are prefixed with the 🔑 emoji.
+- Consistent application across resource types and parent summary contexts.
 
 ## Maintainer Feedback Summary
-> - this does not seem to be based on the latest code. We added summary attributes to azurerm_subscription, they are now gone. 
-> - subscription does not always have the subscription icon
-> - operation summary is oudated
-> - in general, this looks like this was generated with an outdated version
-> - rule name attributes in firewall network rule collection lack 🆔 emoji
+> UAT PR approved. All display enhancements are working as expected and regressions from previous run are resolved.
 
 ## Next Steps
-- **Handoff to Developer** to:
-  - Fix the regression where `azurerm_subscription` summary attributes disappeared.
-  - Update APIM operation summary formatting to the latest spec.
-  - Ensure the subscription icon (🔑) is applied consistently across all resource types and parent-child summary strings.
-  - Add the `🆔` emoji to firewall network rule names.
-  - Regenerate the UAT artifact (`artifacts/apim-display-enhancements-demo.md`) after these fixes.
+- **Handoff to Release Manager** for merging and version release.

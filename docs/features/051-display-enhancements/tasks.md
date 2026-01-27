@@ -57,10 +57,10 @@ Update the resource summary builder to include more context for API Management s
 Override Terraform's sensitivity marking for `azurerm_api_management_named_value.value` when the `secret` attribute is `false`.
 
 **Acceptance Criteria:**
-- [ ] `ReportModelBuilder.BuildAttributeChanges` is modified to detect `azurerm_api_management_named_value`.
-- [ ] For these resources, if `secret` is `false`, the `value` attribute's `isSensitive` flag is forced to `false`.
-- [ ] Sensitivity is preserved if `secret` is `true` or missing.
-- [ ] Unit tests (TC-07, TC-08) verify that non-secret values are revealed while secret ones stay masked.
+- [x] `ReportModelBuilder.BuildAttributeChanges` is modified to detect `azurerm_api_management_named_value`.
+- [x] For these resources, if `secret` is `false`, the `value` attribute's `isSensitive` flag is forced to `false`.
+- [x] Sensitivity is preserved if `secret` is `true` or missing.
+- [x] Unit tests (TC-07, TC-08) verify that non-secret values are revealed while secret ones stay masked.
 
 **Dependencies:** None
 

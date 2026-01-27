@@ -10,6 +10,11 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class ScribanHelpersLargeValueTests
 {
+    private const string SimpleDiffFormat = "simple-diff";
+    private const string ValueText = "value";
+    private const string BeforeText = "before";
+    private const string AfterText = "after";
+
     [Test]
     public void IsLargeValue_WithNewlines_ReturnsTrue()
     {
@@ -45,7 +50,7 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void FormatLargeValue_Create_ShowsSingleCodeBlock()
     {
-        var result = FormatLargeValue(null, "value", "simple-diff");
+        var result = FormatLargeValue(null, ValueText, SimpleDiffFormat);
 
         result.Should().StartWith("```\n");
         result.Should().Contain("value");
@@ -57,7 +62,7 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void FormatLargeValue_Create_JsonContent_UsesJsonFenceAndPrettyPrint()
     {
-        var result = FormatLargeValue(null, "{\"a\":1,\"b\":[1,2]}", "simple-diff");
+        var result = FormatLargeValue(null, "{\"a\":1,\"b\":[1,2]}", SimpleDiffFormat);
 
         result.Should().StartWith("```json\n");
         result.Should().Contain("\n  \"a\": 1");
@@ -68,7 +73,7 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void FormatLargeValue_Create_XmlContent_UsesXmlFenceAndPrettyPrint()
     {
-        var result = FormatLargeValue(null, "<root><child>value</child></root>", "simple-diff");
+        var result = FormatLargeValue(null, "<root><child>value</child></root>", SimpleDiffFormat);
 
         result.Should().StartWith("```xml\n");
         result.Should().Contain("\n  <child>value</child>");
@@ -80,7 +85,7 @@ public class ScribanHelpersLargeValueTests
     {
         var formatted = "{\n  \"a\": 1\n}";
 
-        var result = FormatLargeValue(null, formatted, "simple-diff");
+        var result = FormatLargeValue(null, formatted, SimpleDiffFormat);
 
         result.Should().Be($"```json\n{formatted}\n```");
     }
@@ -88,7 +93,7 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void FormatLargeValue_Delete_ShowsSingleCodeBlock()
     {
-        var result = FormatLargeValue("value", null, "simple-diff");
+        var result = FormatLargeValue(ValueText, null, SimpleDiffFormat);
 
         result.Should().StartWith("```\n");
         result.Should().Contain("value");
@@ -100,7 +105,7 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void FormatLargeValue_Update_UsesDiffFence()
     {
-        var result = FormatLargeValue("old", "new", "simple-diff");
+        var result = FormatLargeValue("old", "new", SimpleDiffFormat);
 
         result.Should().StartWith("```diff\n");
         result.Should().Contain("- old");
@@ -111,7 +116,7 @@ public class ScribanHelpersLargeValueTests
     [Test]
     public void FormatLargeValue_Update_JsonSimpleDiff_UsesPrettyPrintedLines()
     {
-        var result = FormatLargeValue("{\"a\":1}", "{\"a\":2}", "simple-diff");
+        var result = FormatLargeValue("{\"a\":1}", "{\"a\":2}", SimpleDiffFormat);
 
         result.Should().StartWith("```diff\n");
         result.Should().Contain("-   \"a\": 1");
@@ -172,14 +177,14 @@ public class ScribanHelpersLargeValueTests
             new ScriptObject
             {
                 ["name"] = "policy",
-                ["before"] = "a\nb",
-                ["after"] = "a\nc"
+                [BeforeText] = "a\nb",
+                [AfterText] = "a\nc"
             },
             new ScriptObject
             {
                 ["name"] = "data",
-                ["before"] = "x",
-                ["after"] = "x"
+                [BeforeText] = "x",
+                [AfterText] = "x"
             }
         };
 
@@ -210,8 +215,8 @@ public class ScribanHelpersLargeValueTests
         var scriptObject = new ScriptObject
         {
             ["name"] = "script",
-            ["before"] = "line1",
-            ["after"] = "line2"
+            [BeforeText] = "line1",
+            [AfterText] = "line2"
         };
 
         var model = new AttributeChangeModel
@@ -231,15 +236,15 @@ public class ScribanHelpersLargeValueTests
         IReadOnlyDictionary<string, object?> readOnlyDictionary = new Dictionary<string, object?>
         {
             ["name"] = "readonly",
-            ["before"] = "first",
-            ["after"] = "second"
+            [BeforeText] = "first",
+            [AfterText] = "second"
         };
 
         var dictionary = new Dictionary<string, object?>
         {
             ["name"] = "dictionary",
-            ["before"] = "alpha",
-            ["after"] = "beta"
+            [BeforeText] = "alpha",
+            [AfterText] = "beta"
         };
 
         var attrs = new List<object?>

@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class AzApiMetadataExtractionTests
 {
     [Test]
-    public async Task ExtractAzapiMetadata_WithCompleteChange_FormatsExpectedFields()
+    public async Task ExtractAzapiMetadata_WithCompleteChange_ExtractsExpectedFields()
     {
         var afterState = JsonDocument.Parse("""
             {
@@ -40,10 +40,10 @@ public class AzApiMetadataExtractionTests
 
         var result = AzApiHelpers.ExtractAzapiMetadata(change);
 
-        result.Should().ContainKey("type").WhoseValue.Should().Be("`Microsoft.Sql/servers@2023-01-01`");
-        result.Should().ContainKey("name").WhoseValue.Should().Be("`sql-primary`");
+        result.Should().ContainKey("type").WhoseValue.Should().Be("Microsoft.Sql/servers@2023-01-01");
+        result.Should().ContainKey("name").WhoseValue.Should().Be("sql-primary");
         result.Should().ContainKey("parent_id").WhoseValue.Should().NotBeNull();
-        result.Should().ContainKey("location").WhoseValue.Should().Be("🌍 `westeurope`");
+        result.Should().ContainKey("location").WhoseValue.Should().Be("westeurope");
         result.Should().ContainKey("tags").WhoseValue.Should().NotBeNull();
 
         await Task.CompletedTask;

@@ -12,7 +12,7 @@
 {{~ metadata = extract_azapi_metadata change ~}}
 
 {{~ if metadata.type ~}}
-**Type:** {{ metadata.type | escape_markdown }}
+**Type:** {{ format_attribute_value_table "type" metadata.type "azapi" }}
 {{~ end ~}}
 
 {{~ # Generate documentation link if available ~}}

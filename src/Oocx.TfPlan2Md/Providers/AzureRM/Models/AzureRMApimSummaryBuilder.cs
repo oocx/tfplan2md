@@ -95,17 +95,29 @@ internal static class AzureRMApimSummaryBuilder
 
         var detailParts = new List<string>();
 
-        if (!string.IsNullOrWhiteSpace(operationId))
+        var hasApiName = !string.IsNullOrWhiteSpace(apiName);
+        var hasOperationId = !string.IsNullOrWhiteSpace(operationId);
+        var hasApimName = !string.IsNullOrWhiteSpace(apiManagementName);
+
+        if (hasApiName && hasOperationId)
+        {
+            var apiNameText = FormatAttributeValueSummary("api_name", apiName!, null);
+            var operationText = FormatAttributeValueSummary("operation_id", operationId!, null);
+            var combined = $"{apiNameText}/{operationText}";
+            detailParts.Add(hasApimName
+                ? $"{combined} @ {FormatAttributeValueSummary(ApiManagementNameAttribute, apiManagementName!, null)}"
+                : combined);
+        }
+        else if (hasApiName)
+        {
+            detailParts.Add(FormatAttributeValueSummary("api_name", apiName!, null));
+        }
+        else if (hasOperationId)
         {
             detailParts.Add(FormatAttributeValueSummary("operation_id", operationId!, null));
         }
 
-        if (!string.IsNullOrWhiteSpace(apiName))
-        {
-            detailParts.Add(FormatAttributeValueSummary("api_name", apiName!, null));
-        }
-
-        if (!string.IsNullOrWhiteSpace(apiManagementName))
+        if ((!hasApiName || !hasOperationId) && hasApimName)
         {
             detailParts.Add(FormatAttributeValueSummary(ApiManagementNameAttribute, apiManagementName!, null));
         }

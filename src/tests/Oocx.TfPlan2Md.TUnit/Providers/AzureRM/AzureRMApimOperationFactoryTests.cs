@@ -52,6 +52,6 @@ public class AzureRMApimOperationFactoryTests
         factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges);
 
         model.SummaryHtml.Should().Be(
-            $"➕{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>get-profile</code> <code>users</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim-demo</code>");
+            $"➕{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁{Nbsp}rg-apim-demo</code>");
     }
 }

@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.3.0"></a>
+## [1.3.0](https://github.com/oocx/tfplan2md/compare/v1.2.0...v1.3.0) (2026-01-27)
+
+### ✨ Features
+
+* add subscription attribute emoji formatting ([db0d5f3](https://github.com/oocx/tfplan2md/commit/db0d5f38877073bf40d3042e5f35aadaae1dd751))
+* enrich apim summary html ([82797ac](https://github.com/oocx/tfplan2md/commit/82797ac53a92dde746e92661b89a0d12d2b7541e))
+* fix display enhancements regressions ([25755c2](https://github.com/oocx/tfplan2md/commit/25755c2e3535037c9b5cbebb141860d8313a5c7d))
+* highlight large json and xml values ([a0f0d07](https://github.com/oocx/tfplan2md/commit/a0f0d0704a4852046bf9319c0ff338785c71b153))
+* honor apim named value secret flag ([15e8afb](https://github.com/oocx/tfplan2md/commit/15e8afba33c2f31e5bfdad03d5750eff7f34cdb6))
+* move apim summaries to azurerm factories ([6cf9e3f](https://github.com/oocx/tfplan2md/commit/6cf9e3f49dc8510ee6f550ed310e87937adeba1b))
+
+### 🐛 Bug Fixes
+
+* **test:** remove invalid returns tag to fix CI blocker ([af51057](https://github.com/oocx/tfplan2md/commit/af51057025edba93db6509dec70c94da16fc79b5))
+
+### ♻️ Refactoring
+
+* reduce semantic formatting complexity ([4e35912](https://github.com/oocx/tfplan2md/commit/4e35912093d28adc6718e2442d5d03d7152345b8))
+
+### 📚 Documentation
+
+* add architecture for 051-display-enhancements ([df387a6](https://github.com/oocx/tfplan2md/commit/df387a6796241cfd5e5f3a356545391a05d14d70))
+* add code review for display-enhancements (Changes Requested) ([815f700](https://github.com/oocx/tfplan2md/commit/815f700f5d1cb5594ca251b07010eb408dac70b8))
+* add feature specification for 051-display-enhancements ([aabf933](https://github.com/oocx/tfplan2md/commit/aabf93343d8caebce69532a7d18b6a45e335d97b))
+* add retrospective and metrics for azapi-attribute-grouping ([0e8928f](https://github.com/oocx/tfplan2md/commit/0e8928fa96f644fcb7ef4ce84e152acaf57e7e48))
+* add tasks for display-enhancements ([b370153](https://github.com/oocx/tfplan2md/commit/b37015347df7ed8b084b04ac2f5402fbcb171c95))
+* add test plan and UAT test plan for 051-display-enhancements ([c91f9ed](https://github.com/oocx/tfplan2md/commit/c91f9ede929753032816d0c050405820b58e6c73))
+* add UAT report for display-enhancements (Failed) ([6316d7b](https://github.com/oocx/tfplan2md/commit/6316d7b494f21bd2d7b667c7768e481c65a3117e))
+* add UAT report for display-enhancements (Passed) ([d252837](https://github.com/oocx/tfplan2md/commit/d252837038aa412f1bb2a154106be9b5beae4ba8))
+* add updated test plan and UAT test plan for 051-display-enhancements ([dafe752](https://github.com/oocx/tfplan2md/commit/dafe752a07e18e33c8f3338a3488b12e4a676885))
+* clarify UAT handling for display enhancements ([e1e35d2](https://github.com/oocx/tfplan2md/commit/e1e35d2d340305d4f165c6962664ca598b9b40fe))
+* mark task 1 as complete ([912a523](https://github.com/oocx/tfplan2md/commit/912a52362c0fa1b701b1df1beaad4ab0f9501144))
+* mark task 2 as complete ([52ca0b2](https://github.com/oocx/tfplan2md/commit/52ca0b252a06bdea50ed58af7b462480cd5a3347))
+* mark task 3 as complete ([6cc9d45](https://github.com/oocx/tfplan2md/commit/6cc9d45317de1d6f302dacfbe889b0d1a58f7c51))
+* mark task 4 as complete ([3d2c7bc](https://github.com/oocx/tfplan2md/commit/3d2c7bc5c6f453ade0910b1e56a382587826f1e8))
+* regenerate demo artifacts for display enhancements ([3396c10](https://github.com/oocx/tfplan2md/commit/3396c10119d386297991b08e501dcfa7f5fe0caa))
+* update coverage badge and history ([e2fea93](https://github.com/oocx/tfplan2md/commit/e2fea932c640e400ff25f1c354f7c50320cb9f1b))
+* update demo artifacts for display enhancements ([2b24e77](https://github.com/oocx/tfplan2md/commit/2b24e77d5af247458430559d41b7b2832a08d774))
+* update display enhancements demo artifacts ([8c6e401](https://github.com/oocx/tfplan2md/commit/8c6e4019a25402864df2ebcaad73f299490259dd))
+* update tasks for display-enhancements based on architecture revision ([9d01dd6](https://github.com/oocx/tfplan2md/commit/9d01dd62710ae7be28c17b676e6aaa6581315c72))
+* update UAT report for display-enhancements (fix branch regression details) ([f288b57](https://github.com/oocx/tfplan2md/commit/f288b574873a1c867275869fecfa8055c473b7ff))
+* update UAT report for display-enhancements with full maintainer feedback ([2d36e8f](https://github.com/oocx/tfplan2md/commit/2d36e8fa06b811eee8159dff4083779c5225c7f1))
+
 <a name="1.2.0"></a>
 ## [1.2.0](https://github.com/oocx/tfplan2md/compare/v1.1.0...v1.2.0) (2026-01-27)
 

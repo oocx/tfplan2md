@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "source": "developer.chat.json",
+    "analysis_date": "2026-01-27",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 6,
+    "start_timestamp": 1769295733970,
+    "end_timestamp": 1769493890890,
+    "session_duration_sec": 198156.92,
+    "user_wait_time_sec": 881.826,
+    "agent_work_time_sec": 1694.873
+  },
+  "model_usage": [
+    {
+      "model": "gpt-5.2",
+      "count": 6
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "applyPatch",
+      "count": 30
+    },
+    {
+      "tool": "readFile",
+      "count": 30
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 30
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 23
+    },
+    {
+      "tool": "findFiles",
+      "count": 14
+    },
+    {
+      "tool": "getErrors",
+      "count": 9
+    },
+    {
+      "tool": "listDirectory",
+      "count": 8
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 8
+    },
+    {
+      "tool": "sonarqube_analyze_file",
+      "count": 5
+    },
+    {
+      "tool": "sonarqube_list_potential_security_issues",
+      "count": 5
+    },
+    {
+      "tool": "createFile",
+      "count": 2
+    },
+    {
+      "tool": "searchCodebase",
+      "count": 2
+    },
+    {
+      "tool": "getChangedFiles",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 155
+      },
+      {
+        "type": 4,
+        "count": 7
+      },
+      {
+        "type": 3,
+        "count": 4
+      },
+      {
+        "type": null,
+        "count": 1
+      }
+    ],
+    "total_invocations": 167,
+    "auto_approved": 159,
+    "manual_approved": 7,
+    "automation_rate_pct": 95
+  },
+  "model_success": [
+    {
+      "model": "gpt-5.2",
+      "total": 6,
+      "complete": 6,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gpt-5.2",
+      "total_requests": 6,
+      "cancelled": 1,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 16
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 4
+    },
+    {
+      "status": "modified",
+      "count": 4
+    }
+  ],
+  "response_times": [
+    {
+      "model": "gpt-5.2",
+      "count": 5,
+      "avg_sec": 338,
+      "total_sec": 1694
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

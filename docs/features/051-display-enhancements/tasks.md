@@ -40,10 +40,10 @@ Add the 🔑 emoji prefix to `subscription_id` and `subscription` attribute valu
 Update the resource summary builder to include more context for API Management subresources.
 
 **Acceptance Criteria:**
-- [ ] `ResourceSummaryHtmlBuilder.BuildSummaryHtml` is updated to include `api_management_name` generically for any resource that has it.
-- [ ] Special handling for `azurerm_api_management_api_operation` to include `display_name`, `operation_id`, and `api_name`.
-- [ ] Output format matches: `azurerm_api_management_api_operation \`this\` \`display_name\` — \`operation_id\` \`api_name\` \`api_management_name\` in \`📁 resource-group\``.
-- [ ] Unit tests (TC-05, TC-06) verify the enriched summary for various APIM resources.
+- [x] `ResourceSummaryHtmlBuilder.BuildSummaryHtml` is updated to include `api_management_name` generically for any resource that has it.
+- [x] Special handling for `azurerm_api_management_api_operation` to include `display_name`, `operation_id`, and `api_name`.
+- [x] Output format matches: `azurerm_api_management_api_operation \`this\` \`display_name\` — \`operation_id\` \`api_name\` \`api_management_name\` in \`📁 resource-group\``.
+- [x] Unit tests (TC-05, TC-06) verify the enriched summary for various APIM resources.
 
 **Dependencies:** None
 

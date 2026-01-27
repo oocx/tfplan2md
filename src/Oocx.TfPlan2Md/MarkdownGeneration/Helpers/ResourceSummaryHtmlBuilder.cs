@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
@@ -20,6 +21,10 @@ internal static class ResourceSummaryHtmlBuilder
     /// </summary>
     /// <param name="model">Resource change model containing the source data.</param>
     /// <returns>HTML string safe for use inside a summary element.</returns>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Feature formatting logic for docs/features/051-display-enhancements/specification.md.")]
     public static string BuildSummaryHtml(ResourceChangeModel model)
     {
         var state = model.AfterJson ?? model.BeforeJson;
@@ -29,25 +34,66 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("resource_group_name", out var resourceGroup);
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
+        flatState.TryGetValue("api_management_name", out var apiManagementName);
+        flatState.TryGetValue("display_name", out var displayName);
+        flatState.TryGetValue("operation_id", out var operationId);
+        flatState.TryGetValue("api_name", out var apiName);
 
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+        var isApiOperation = model.Type.Equals("azurerm_api_management_api_operation", StringComparison.OrdinalIgnoreCase);
+        if (isApiOperation && !string.IsNullOrWhiteSpace(displayName))
+        {
+            prefix = $"{prefix} {FormatAttributeValueSummary("display_name", displayName!, null)}";
+        }
 
         var detailParts = new List<string>();
 
-        var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
-            ? FormatAttributeValueSummary("name", nameValue!, null)
-            : null;
-
-        if (!string.IsNullOrWhiteSpace(resourceGroup))
+        string? primaryContext = null;
+        if (!isApiOperation)
         {
-            var groupText = FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
-            primaryContext = primaryContext != null ? $"{primaryContext} in {groupText}" : groupText;
+            primaryContext = !string.IsNullOrWhiteSpace(nameValue)
+                ? FormatAttributeValueSummary("name", nameValue!, null)
+                : null;
+
+            if (!string.IsNullOrWhiteSpace(apiManagementName))
+            {
+                var apiManagementText = FormatAttributeValueSummary("api_management_name", apiManagementName!, null);
+                primaryContext = primaryContext != null ? $"{primaryContext} {apiManagementText}" : apiManagementText;
+            }
+
+            if (!string.IsNullOrWhiteSpace(resourceGroup))
+            {
+                var groupText = FormatAttributeValueSummary("resource_group_name", resourceGroup!, null);
+                primaryContext = primaryContext != null ? $"{primaryContext} in {groupText}" : groupText;
+            }
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                var locationText = FormatAttributeValueSummary("location", location!, null);
+                primaryContext = primaryContext != null ? $"{primaryContext} {locationText}" : locationText;
+            }
         }
-
-        if (!string.IsNullOrWhiteSpace(location))
+        else
         {
-            var locationText = FormatAttributeValueSummary("location", location!, null);
-            primaryContext = primaryContext != null ? $"{primaryContext} {locationText}" : locationText;
+            if (!string.IsNullOrWhiteSpace(operationId))
+            {
+                detailParts.Add(FormatAttributeValueSummary("operation_id", operationId!, null));
+            }
+
+            if (!string.IsNullOrWhiteSpace(apiName))
+            {
+                detailParts.Add(FormatAttributeValueSummary("api_name", apiName!, null));
+            }
+
+            if (!string.IsNullOrWhiteSpace(apiManagementName))
+            {
+                detailParts.Add(FormatAttributeValueSummary("api_management_name", apiManagementName!, null));
+            }
+
+            if (!string.IsNullOrWhiteSpace(resourceGroup))
+            {
+                detailParts.Add($"in {FormatAttributeValueSummary("resource_group_name", resourceGroup!, null)}");
+            }
         }
 
         if (primaryContext != null)

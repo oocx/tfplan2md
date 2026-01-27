@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -126,5 +127,73 @@ public class ReportModelBuilderSummaryTests
         var vnetDelete = model.Changes.First(c => c.Type == "azurerm_virtual_network" && c.Action == "delete");
         vnetDelete.SummaryHtml.Should().Contain("<code>🌍 westeurope</code>");
         vnetDelete.SummaryHtml.Should().Contain("<code>🌐 10.0.0.0/16</code>");
+    }
+
+    [Test]
+    public void Build_SummaryHtml_ApimOperation_IncludesContext()
+    {
+        var afterDocument = JsonDocument.Parse("{\"display_name\":\"Get Profile\",\"operation_id\":\"get-profile\",\"api_name\":\"user-api\",\"api_management_name\":\"example-apim\",\"resource_group_name\":\"rg-apim\"}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "azurerm_api_management_api_operation.this",
+                    null,
+                    "managed",
+                    "azurerm_api_management_api_operation",
+                    "this",
+                    "azurerm",
+                    change)
+            });
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        model.Changes.Should().ContainSingle();
+        model.Changes.Single().SummaryHtml.Should().Be(
+            $"➕{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>get-profile</code> <code>user-api</code> <code>example-apim</code> in <code>📁{Nbsp}rg-apim</code>");
+    }
+
+    [Test]
+    public void Build_SummaryHtml_ApimNamedValue_IncludesApiManagementName()
+    {
+        var afterDocument = JsonDocument.Parse("{\"name\":\"IDP-WEB-CLIENT-ID\",\"api_management_name\":\"example-apim\",\"resource_group_name\":\"rg-apim\"}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "azurerm_api_management_named_value.this",
+                    null,
+                    "managed",
+                    "azurerm_api_management_named_value",
+                    "this",
+                    "azurerm",
+                    change)
+            });
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        model.Changes.Should().ContainSingle();
+        model.Changes.Single().SummaryHtml.Should().Be(
+            $"➕{Nbsp}azurerm_api_management_named_value <b><code>this</code></b> — <code>🆔{Nbsp}IDP-WEB-CLIENT-ID</code> <code>example-apim</code> in <code>📁{Nbsp}rg-apim</code>");
     }
 }

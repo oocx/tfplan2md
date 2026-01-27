@@ -111,6 +111,11 @@ public static partial class ScribanHelpers
             return roleFormatted.Trim('`');
         }
 
+        if (TryFormatSubscriptionAttributePlain(normalizedName, normalizedValue, out var subscriptionFormatted))
+        {
+            return subscriptionFormatted;
+        }
+
         if (TryFormatNameAttributePlain(normalizedName, normalizedValue, out var nameFormatted))
         {
             return nameFormatted;
@@ -190,6 +195,11 @@ public static partial class ScribanHelpers
         if (TryFormatRoleDefinition(normalizedName, normalizedValue, context, out var roleFormatted))
         {
             return roleFormatted;
+        }
+
+        if (TryFormatSubscriptionAttribute(normalizedName, normalizedValue, context, out var subscriptionFormatted))
+        {
+            return subscriptionFormatted;
         }
 
         if (TryFormatNameAttribute(normalizedName, normalizedValue, context, out var nameFormatted))

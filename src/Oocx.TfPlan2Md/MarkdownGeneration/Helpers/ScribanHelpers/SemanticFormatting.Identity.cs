@@ -75,6 +75,28 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Determines whether an attribute represents a subscription value and formats it with the key icon.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a subscription identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatSubscriptionAttribute(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("subscription_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("subscription", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValue($"🔑 {value}", context, false);
+        return true;
+    }
+
+    /// <summary>
     /// Formats icon-bearing values with context-aware code wrapping and optional parentheses.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
@@ -145,6 +167,27 @@ public static partial class ScribanHelpers
 
         formatted = string.Empty;
         return false;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a subscription value and formats it with the key icon.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="formatted">Formatted result when the attribute is a subscription identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatSubscriptionAttributePlain(string attributeName, string value, out string formatted)
+    {
+        if (!attributeName.Equals("subscription_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("subscription", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValuePlain($"🔑 {value}");
+        return true;
     }
 
     /// <summary>

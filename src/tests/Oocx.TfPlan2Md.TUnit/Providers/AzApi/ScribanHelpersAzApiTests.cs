@@ -566,6 +566,40 @@ public class ScribanHelpersAzApiTests
     }
 
     [Test]
+    public async Task ExtractAzapiMetadata_ScriptObjectChange_ExtractsFromMappedState()
+    {
+        // Arrange - TC-02: Extract standard attributes from Scriban-mapped change object
+        var change = new ScriptObject
+        {
+            ["action"] = "create",
+            ["after_json"] = new ScriptObject
+            {
+                ["type"] = "Microsoft.Automation/automationAccounts@2021-06-22",
+                ["name"] = "myAccount",
+                ["parent_id"] = "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+                ["location"] = "westeurope",
+                ["tags"] = new ScriptObject
+                {
+                    ["environment"] = "dev",
+                    ["project"] = "demo"
+                }
+            }
+        };
+
+        // Act
+        var result = AzApiHelpers.ExtractAzapiMetadata(change);
+
+        // Assert
+        result["type"].Should().Be("`Microsoft.Automation/automationAccounts@2021-06-22`");
+        result["name"].Should().Be("`myAccount`");
+        result["parent_id"].Should().Be("example-resources");
+        result["location"].Should().Be("🌍 `westeurope`");
+        result["tags"].Should().NotBeNull();
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
     public async Task ExtractAzapiMetadata_MissingOptionalAttributes_HandlesGracefully()
     {
         // Arrange - TC-04: Missing optional attributes

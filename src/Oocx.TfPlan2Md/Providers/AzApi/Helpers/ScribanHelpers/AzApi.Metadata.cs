@@ -19,7 +19,7 @@ public static partial class ScribanHelpers
     /// <summary>
     /// Extracts and formats key azapi_resource attributes for display in templates.
     /// </summary>
-    /// <param name="change">The ResourceChangeModel containing azapi_resource data.</param>
+    /// <param name="change">The ResourceChangeModel or mapped ScriptObject containing azapi_resource data.</param>
     /// <returns>
     /// ScriptObject with formatted properties: name, type, parent_id, location, tags.
     /// Values are formatted with appropriate emoji and inline code formatting.
@@ -33,13 +33,29 @@ public static partial class ScribanHelpers
     {
         var result = new ScriptObject();
 
-        if (change is not ResourceChangeModel resourceChange)
+        string? action;
+        object? beforeState;
+        object? afterState;
+
+        if (change is ResourceChangeModel resourceChange)
+        {
+            action = resourceChange.Action;
+            beforeState = resourceChange.BeforeJson;
+            afterState = resourceChange.AfterJson;
+        }
+        else if (change is ScriptObject scriptChange)
+        {
+            action = scriptChange["action"]?.ToString();
+            beforeState = scriptChange["before_json"];
+            afterState = scriptChange["after_json"];
+        }
+        else
         {
             return result;
         }
 
         // Determine which state to extract from (after for create, before for delete)
-        var state = resourceChange.Action == "delete" ? resourceChange.BeforeJson : resourceChange.AfterJson;
+        var state = action == "delete" ? beforeState : afterState;
 
         if (state is null)
         {

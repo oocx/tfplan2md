@@ -135,7 +135,6 @@ public class ReportModelBuilderSummaryTests
     /// Verifies that subscription resources surface subscription attributes in the summary HTML.
     /// Related feature: docs/features/051-display-enhancements/specification.md.
     /// </summary>
-    /// <returns>None.</returns>
     [Test]
     public void Build_SummaryHtml_IncludesSubscriptionAttributes()
     {

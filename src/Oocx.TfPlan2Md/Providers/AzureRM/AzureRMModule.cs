@@ -12,6 +12,39 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM;
 /// </summary>
 internal sealed class AzureRMModule : IProviderModule
 {
+    /// <summary>
+    /// API Management subresource types that include api_management_name in their summaries.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    private static readonly string[] ApimSubresourceTypes =
+    [
+        "azurerm_api_management_api",
+        "azurerm_api_management_api_policy",
+        "azurerm_api_management_api_operation_policy",
+        "azurerm_api_management_api_schema",
+        "azurerm_api_management_api_version_set",
+        "azurerm_api_management_api_release",
+        "azurerm_api_management_api_diagnostic",
+        "azurerm_api_management_backend",
+        "azurerm_api_management_product",
+        "azurerm_api_management_product_api",
+        "azurerm_api_management_product_group",
+        "azurerm_api_management_subscription",
+        "azurerm_api_management_user",
+        "azurerm_api_management_group",
+        "azurerm_api_management_tag",
+        "azurerm_api_management_tag_api",
+        "azurerm_api_management_tag_operation",
+        "azurerm_api_management_tag_product",
+        "azurerm_api_management_gateway",
+        "azurerm_api_management_gateway_api",
+        "azurerm_api_management_gateway_host",
+        "azurerm_api_management_logger",
+        "azurerm_api_management_identity_provider",
+        "azurerm_api_management_openid_connect_provider",
+        "azurerm_api_management_policy"
+    ];
+
     private readonly LargeValueFormat _largeValueFormat;
     private readonly IPrincipalMapper _principalMapper;
 
@@ -55,5 +88,13 @@ internal sealed class AzureRMModule : IProviderModule
         registry.RegisterFactory("azurerm_network_security_group", new NetworkSecurityGroupFactory(_largeValueFormat));
         registry.RegisterFactory("azurerm_firewall_network_rule_collection", new FirewallNetworkRuleCollectionFactory(_largeValueFormat));
         registry.RegisterFactory("azurerm_role_assignment", new RoleAssignmentFactory(_principalMapper));
+        registry.RegisterFactory("azurerm_api_management_api_operation", new AzureRMApimApiOperationFactory());
+        registry.RegisterFactory("azurerm_api_management_named_value", new AzureRMApimNamedValueFactory());
+
+        var apimSubresourceFactory = new AzureRMApimSubresourceFactory(ApimSubresourceTypes);
+        foreach (var resourceType in ApimSubresourceTypes)
+        {
+            registry.RegisterFactory(resourceType, apimSubresourceFactory);
+        }
     }
 }

@@ -56,6 +56,7 @@ internal static class ResourceSummaryMappings
         ["azurerm_firewall"] = ["name", "resource_group_name", "location", "sku_name"],
         ["azurerm_express_route_circuit"] = ["name", "resource_group_name", "location", "service_provider_name"],
         ["azurerm_api_management"] = ["name", "resource_group_name", "location", "sku_name"],
+        ["azurerm_subscription"] = ["subscription", "subscription_id"],
         ["azurerm_databricks_workspace"] = ["name", "resource_group_name", "location", "sku"],
         ["azurerm_automation_account"] = ["name", "resource_group_name", "location", "sku_name"],
         ["azurerm_recovery_services_vault"] = ["name", "resource_group_name", "location", "sku"],

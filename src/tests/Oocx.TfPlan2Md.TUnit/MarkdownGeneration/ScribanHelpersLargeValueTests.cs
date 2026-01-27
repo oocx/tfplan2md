@@ -55,6 +55,37 @@ public class ScribanHelpersLargeValueTests
     }
 
     [Test]
+    public void FormatLargeValue_Create_JsonContent_UsesJsonFenceAndPrettyPrint()
+    {
+        var result = FormatLargeValue(null, "{\"a\":1,\"b\":[1,2]}", "simple-diff");
+
+        result.Should().StartWith("```json\n");
+        result.Should().Contain("\n  \"a\": 1");
+        result.Should().Contain("\n  \"b\": [");
+        result.Should().EndWith("```");
+    }
+
+    [Test]
+    public void FormatLargeValue_Create_XmlContent_UsesXmlFenceAndPrettyPrint()
+    {
+        var result = FormatLargeValue(null, "<root><child>value</child></root>", "simple-diff");
+
+        result.Should().StartWith("```xml\n");
+        result.Should().Contain("\n  <child>value</child>");
+        result.Should().EndWith("```");
+    }
+
+    [Test]
+    public void FormatLargeValue_Create_AlreadyFormattedJson_PreservesFormatting()
+    {
+        var formatted = "{\n  \"a\": 1\n}";
+
+        var result = FormatLargeValue(null, formatted, "simple-diff");
+
+        result.Should().Be($"```json\n{formatted}\n```");
+    }
+
+    [Test]
     public void FormatLargeValue_Delete_ShowsSingleCodeBlock()
     {
         var result = FormatLargeValue("value", null, "simple-diff");
@@ -75,6 +106,28 @@ public class ScribanHelpersLargeValueTests
         result.Should().Contain("- old");
         result.Should().Contain("+ new");
         result.Should().EndWith("```");
+    }
+
+    [Test]
+    public void FormatLargeValue_Update_JsonSimpleDiff_UsesPrettyPrintedLines()
+    {
+        var result = FormatLargeValue("{\"a\":1}", "{\"a\":2}", "simple-diff");
+
+        result.Should().StartWith("```diff\n");
+        result.Should().Contain("-   \"a\": 1");
+        result.Should().Contain("+   \"a\": 2");
+    }
+
+    [Test]
+    public void FormatLargeValue_Update_JsonInlineDiff_UsesPrettyPrintedLines()
+    {
+        var result = FormatLargeValue("{\"a\":1}", "{\"a\":2}", "inline-diff");
+
+        result.Should().StartWith("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>");
+        result.Should().Contain("&quot;a&quot;:");
+        result.Should().Contain("background-color: #ffc0c0");
+        result.Should().Contain("background-color: #acf2bd");
+        result.Should().EndWith("</code></pre>");
     }
 
     [Test]

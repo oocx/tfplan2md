@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.2.0"></a>
+## [1.2.0](https://github.com/oocx/tfplan2md/compare/v1.1.0...v1.2.0) (2026-01-27)
+
+### ✨ Features
+
+* improve azapi body grouping and array rendering ([cb0caca](https://github.com/oocx/tfplan2md/commit/cb0caca69b1bd6dd38fef454ba5f4d49f2a71322))
+* **uat:** add automated failure detection in UAT polling scripts ([684ca4f](https://github.com/oocx/tfplan2md/commit/684ca4f4cde05c80de797bec4a25baa0704ad67d))
+
+### 🐛 Bug Fixes
+
+* **azapi:** normalize metadata formatting ([e264337](https://github.com/oocx/tfplan2md/commit/e2643372f0fa8f9f82b001e9f66d0e3ab6707725))
+
+### 📚 Documentation
+
+* add architecture for azapi attribute grouping ([ad23faf](https://github.com/oocx/tfplan2md/commit/ad23faf3c9ba685b807b18a4c16c1b8521bd78ea))
+* add code review for azapi-attribute-grouping ([61542ac](https://github.com/oocx/tfplan2md/commit/61542ac1ffaf12bc316e8c890ac1ca95990295b5))
+* add comprehensive test plan and UAT scenarios for feature 050 ([80318ea](https://github.com/oocx/tfplan2md/commit/80318ea518eca423f6653e742428cf5094464338))
+* add feature specification for azapi attribute grouping ([24491c0](https://github.com/oocx/tfplan2md/commit/24491c023ccc6b29b92ea9162540651c1f4132f4))
+* add tasks for improved azapi attribute grouping and array rendering ([a730f89](https://github.com/oocx/tfplan2md/commit/a730f89f4e4dec8464941a238d53602a36dabcfe))
+* add UAT report for azapi-attribute-grouping (Passed) ([ca3e30f](https://github.com/oocx/tfplan2md/commit/ca3e30f9fcfb11067c000eed5070d8a92ab116e4))
+* add UAT report for azapi-attribute-grouping showing failures ([89c7fe6](https://github.com/oocx/tfplan2md/commit/89c7fe6d23b0885f8a126743b34cc37cdd8b108e))
+* approve code review for azapi-attribute-grouping after rework ([14b7051](https://github.com/oocx/tfplan2md/commit/14b70517f56a495506fbc333fcb28fe7362124cf))
+* refresh azapi UAT artifact ([0e8116c](https://github.com/oocx/tfplan2md/commit/0e8116c4b8a3dab55d476159f1e727d1312d6d92))
+* update coverage badge and history ([654d36d](https://github.com/oocx/tfplan2md/commit/654d36dbf2965d0a680a5a26907394e3a3d849b4))
+* update UAT artifacts for azapi-attribute-grouping ([16d78bf](https://github.com/oocx/tfplan2md/commit/16d78bfb495ffe1985be9d865c6cfc8c2be1f439))
+
 <a name="1.1.0"></a>
 ## [1.1.0](https://github.com/oocx/tfplan2md/compare/v1.0.2...v1.1.0) (2026-01-25)
 

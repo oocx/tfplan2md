@@ -74,13 +74,13 @@ Override Terraform's sensitivity marking for `azurerm_api_management_named_value
 Implement JSON/XML detection and pretty-printing for large values, adding language-specific code fences.
 
 **Acceptance Criteria:**
-- [ ] `ScribanHelpers.FormatLargeValue` handles JSON/XML detection and formatting.
-- [ ] JSON is detected via `System.Text.Json` and pretty-printed.
-- [ ] XML is detected via `System.Xml.Linq` and pretty-printed.
-- [ ] Large values are wrapped in fenced code blocks with language markers (```json, ```xml).
-- [ ] Resource updates (simple-diff/inline-diff) pretty-print the content *before* diffing to ensure the diff is readable.
-- [ ] Already-formatted content is preserved (TC-03).
-- [ ] Unit tests (TC-01, TC-02, TC-03, TC-04) pass.
+- [x] `ScribanHelpers.FormatLargeValue` handles JSON/XML detection and formatting.
+- [x] JSON is detected via `System.Text.Json` and pretty-printed.
+- [x] XML is detected via `System.Xml.Linq` and pretty-printed.
+- [x] Large values are wrapped in fenced code blocks with language markers (```json, ```xml).
+- [x] Resource updates (simple-diff/inline-diff) pretty-print the content *before* diffing to ensure the diff is readable.
+- [x] Already-formatted content is preserved (TC-03).
+- [x] Unit tests (TC-01, TC-02, TC-03, TC-04) pass.
 
 **Dependencies:** None
 

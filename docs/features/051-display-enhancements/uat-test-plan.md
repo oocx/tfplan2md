@@ -31,10 +31,12 @@ Verify that the display enhancements (syntax highlighting, APIM summaries, named
 **Specific Resources/Sections:**
 - `azurerm_api_management_api_operation.get_user`
 - `azurerm_api_management_named_value.api_url`
+- `azurerm_api_management_api_policy.example`
 
 **Expected Outcome:**
 - Operation summary should look like: `azurerm_api_management_api_operation` `this` `Get User` — `get-user` `apim-hello` in `📁 rg-hello`
 - Named value summary should look like: `azurerm_api_management_named_value` `this` — `🆔 api_url` `apim-hello` in `📁 rg-hello`
+- Policy summary should include `apim-hello`.
 
 ### 3. Named Values Sensitivity Override
 **Specific Resources/Sections:**

@@ -196,6 +196,54 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     [Test]
+    public void FormatAttributeValueTable_SubscriptionId_UsesKeyEmojiAndCode()
+    {
+        var result = FormatAttributeValueTable("subscription_id", "00000000-0000-0000-0000-000000000000", null);
+
+        result.Should().Be("`🔑\u00A000000000-0000-0000-0000-000000000000`");
+    }
+
+    [Test]
+    public void FormatAttributeValueSummary_SubscriptionId_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValueSummary("subscription_id", "00000000-0000-0000-0000-000000000000", null);
+
+        result.Should().Be("<code>🔑\u00A000000000-0000-0000-0000-000000000000</code>");
+    }
+
+    [Test]
+    public void FormatAttributeValuePlain_SubscriptionId_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValuePlain("subscription_id", "00000000-0000-0000-0000-000000000000", null);
+
+        result.Should().Be("🔑\u00A000000000-0000-0000-0000-000000000000");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_SubscriptionName_UsesKeyEmojiAndCode()
+    {
+        var result = FormatAttributeValueTable("subscription", "Production", null);
+
+        result.Should().Be("`🔑\u00A0Production`");
+    }
+
+    [Test]
+    public void FormatAttributeValueSummary_SubscriptionName_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValueSummary("subscription", "Production", null);
+
+        result.Should().Be("<code>🔑\u00A0Production</code>");
+    }
+
+    [Test]
+    public void FormatAttributeValuePlain_SubscriptionName_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValuePlain("subscription", "Production", null);
+
+        result.Should().Be("🔑\u00A0Production");
+    }
+
+    [Test]
     public void FormatAttributeValuePlain_IpValue_UsesNonBreakingSpace()
     {
         var result = FormatAttributeValuePlain("source_address_prefix", "10.0.0.0/16", null);

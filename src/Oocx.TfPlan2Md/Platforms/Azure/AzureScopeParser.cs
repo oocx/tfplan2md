@@ -10,6 +10,23 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 public static class AzureScopeParser
 {
     /// <summary>
+    /// Non-breaking space for keeping the subscription icon attached to its identifier.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    private const string NonBreakingSpace = "\u00A0";
+
+    /// <summary>
+    /// Formats a subscription identifier with the key icon.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <returns>Icon-prefixed subscription identifier.</returns>
+    private static string FormatSubscriptionId(string subscriptionId)
+    {
+        return $"🔑{NonBreakingSpace}{subscriptionId}";
+    }
+
+    /// <summary>
     /// Determines whether the provided scope string is a valid Azure resource identifier.
     /// Related feature: docs/features/019-azure-resource-id-formatting/specification.md.
     /// </summary>
@@ -65,10 +82,10 @@ public static class AzureScopeParser
                 subscriptionId,
                 null,
                 ScopeLevel.Subscription,
-                $"subscription {subscriptionId}",
+                $"subscription {FormatSubscriptionId(subscriptionId)}",
                 "subscription ",
                 subscriptionId,
-                $"subscription {subscriptionId}");
+                $"subscription {FormatSubscriptionId(subscriptionId)}");
         }
 
         if (IsResourceScope(parts))
@@ -77,6 +94,7 @@ public static class AzureScopeParser
             var resourceGroup = parts[3];
             var resourceType = GetResourceType(parts, providerIndex: 5);
             var resourceName = parts[^1];
+            var formattedSubscriptionId = FormatSubscriptionId(subscriptionId);
             return new ScopeInfo(
                 resourceName,
                 resourceType,
@@ -86,7 +104,7 @@ public static class AzureScopeParser
                 $"{resourceType} {resourceName}",
                 $"{resourceType} ",
                 resourceName,
-                $"{resourceType} {resourceName} in resource group {resourceGroup} of subscription {subscriptionId}");
+                $"{resourceType} {resourceName} in resource group {resourceGroup} of subscription {formattedSubscriptionId}");
         }
 
         if (IsSubscriptionProviderScope(parts))
@@ -94,6 +112,7 @@ public static class AzureScopeParser
             var subscriptionId = parts[1];
             var resourceType = GetResourceType(parts, providerIndex: 3);
             var resourceName = parts[^1];
+            var formattedSubscriptionId = FormatSubscriptionId(subscriptionId);
             return new ScopeInfo(
                 resourceName,
                 resourceType,
@@ -103,13 +122,14 @@ public static class AzureScopeParser
                 $"{resourceType} {resourceName}",
                 $"{resourceType} ",
                 resourceName,
-                $"{resourceType} {resourceName} in subscription {subscriptionId}");
+                $"{resourceType} {resourceName} in subscription {formattedSubscriptionId}");
         }
 
         if (IsResourceGroupScope(parts))
         {
             var subscriptionId = parts[1];
             var resourceGroup = parts[3];
+            var formattedSubscriptionId = FormatSubscriptionId(subscriptionId);
             return new ScopeInfo(
                 resourceGroup,
                 "Resource Group",
@@ -119,7 +139,7 @@ public static class AzureScopeParser
                 resourceGroup,
                 string.Empty,
                 resourceGroup,
-                $"{resourceGroup} in subscription {subscriptionId}");
+                $"{resourceGroup} in subscription {formattedSubscriptionId}");
         }
 
         return new ScopeInfo(scope, string.Empty, string.Empty, string.Empty, ScopeLevel.Unknown, scope, string.Empty, scope, scope);
@@ -138,10 +158,11 @@ public static class AzureScopeParser
         return parsed.Level switch
         {
             ScopeLevel.ManagementGroup => $"`{parsed.Name}` (Management Group)",
-            ScopeLevel.Subscription => $"subscription `{parsed.SubscriptionId}`",
-            ScopeLevel.Resource when !string.IsNullOrWhiteSpace(parsed.ResourceGroup) => $"{parsed.Type} `{parsed.Name}` in resource group `{parsed.ResourceGroup}` of subscription `{parsed.SubscriptionId}`",
-            ScopeLevel.Resource => $"{parsed.Type} `{parsed.Name}` in subscription `{parsed.SubscriptionId}`",
-            ScopeLevel.ResourceGroup => $"`{parsed.ResourceGroup}` in subscription `{parsed.SubscriptionId}`",
+            ScopeLevel.Subscription => $"subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
+            ScopeLevel.Resource when !string.IsNullOrWhiteSpace(parsed.ResourceGroup) =>
+                $"{parsed.Type} `{parsed.Name}` in resource group `{parsed.ResourceGroup}` of subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
+            ScopeLevel.Resource => $"{parsed.Type} `{parsed.Name}` in subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
+            ScopeLevel.ResourceGroup => $"`{parsed.ResourceGroup}` in subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
             _ => parsed.Details
         };
     }

@@ -48,7 +48,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("subscription `12345678-1234-1234-1234-123456789012`");
+        result.Should().Be("subscription `🔑 12345678-1234-1234-1234-123456789012`");
     }
 
     [Test]
@@ -61,7 +61,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("`my-rg` in subscription `12345678-1234-1234-1234-123456789012`");
+        result.Should().Be("`my-rg` in subscription `🔑 12345678-1234-1234-1234-123456789012`");
     }
 
     [Test]
@@ -74,7 +74,7 @@ public class AzureScopeParserTests
         var result = AzureScopeParser.ParseScope(scope);
 
         // Assert
-        result.Should().Be("Key Vault `my-kv` in resource group `my-rg` of subscription `sub-id`");
+        result.Should().Be("Key Vault `my-kv` in resource group `my-rg` of subscription `🔑 sub-id`");
     }
 
     [Test]
@@ -84,7 +84,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("Storage Account `st1` in subscription `sub-id`");
+        result.Should().Be("Storage Account `st1` in subscription `🔑 sub-id`");
     }
 
     [Test]
@@ -134,7 +134,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("App Service `myapp` in resource group `app-rg` of subscription `sub-id`");
+        result.Should().Be("App Service `myapp` in resource group `app-rg` of subscription `🔑 sub-id`");
     }
 
     [Test]
@@ -144,7 +144,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("SQL Database `mydb` in resource group `db-rg` of subscription `sub-id`");
+        result.Should().Be("SQL Database `mydb` in resource group `db-rg` of subscription `🔑 sub-id`");
     }
 
     [Test]
@@ -154,7 +154,7 @@ public class AzureScopeParserTests
 
         var result = AzureScopeParser.ParseScope(scope);
 
-        result.Should().Be("AKS Cluster `aks1` in resource group `aks-rg` of subscription `sub-id`");
+        result.Should().Be("AKS Cluster `aks1` in resource group `aks-rg` of subscription `🔑 sub-id`");
     }
 
     [Test]
@@ -183,7 +183,7 @@ public class AzureScopeParserTests
         result.ResourceGroup.Should().Be("my-rg");
         result.Level.Should().Be(ScopeLevel.ResourceGroup);
         result.Summary.Should().Be("my-rg");
-        result.Details.Should().Be("my-rg in subscription 12345678-1234-1234-1234-123456789012");
+        result.Details.Should().Be("my-rg in subscription 🔑 12345678-1234-1234-1234-123456789012");
     }
 
     [Test]
@@ -199,7 +199,7 @@ public class AzureScopeParserTests
         result.ResourceGroup.Should().Be("my-rg");
         result.Level.Should().Be(ScopeLevel.Resource);
         result.Summary.Should().Be("Storage Account sttfplan2mddata");
-        result.Details.Should().Be("Storage Account sttfplan2mddata in resource group my-rg of subscription sub-id");
+        result.Details.Should().Be("Storage Account sttfplan2mddata in resource group my-rg of subscription 🔑 sub-id");
     }
 
     [Test]

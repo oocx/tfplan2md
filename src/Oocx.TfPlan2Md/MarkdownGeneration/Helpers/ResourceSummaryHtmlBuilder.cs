@@ -34,6 +34,8 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("resource_group_name", out var resourceGroup);
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
+        flatState.TryGetValue("subscription", out var subscriptionName);
+        flatState.TryGetValue("subscription_id", out var subscriptionId);
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
         var detailParts = new List<string>();
 
@@ -61,6 +63,16 @@ internal static class ResourceSummaryHtmlBuilder
         if (!string.IsNullOrWhiteSpace(addressSpace))
         {
             detailParts.Add(FormatAttributeValueSummary("address_space[0]", addressSpace!, null));
+        }
+
+        if (!string.IsNullOrWhiteSpace(subscriptionName))
+        {
+            detailParts.Add(FormatAttributeValueSummary("subscription", subscriptionName!, null));
+        }
+
+        if (!string.IsNullOrWhiteSpace(subscriptionId))
+        {
+            detailParts.Add(FormatAttributeValueSummary("subscription_id", subscriptionId!, null));
         }
 
         if (!string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))

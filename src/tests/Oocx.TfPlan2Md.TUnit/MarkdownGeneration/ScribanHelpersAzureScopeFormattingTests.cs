@@ -19,6 +19,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         result.Should().Contain("rg1");
         result.Should().Contain("subscription");
+        result.Should().Contain("🔑");
         result.Should().Contain("sub1");
 
         await Task.CompletedTask;
@@ -34,6 +35,7 @@ public class ScribanHelpersAzureScopeFormattingTests
         result.Should().Contain("Microsoft.KeyVault/vaults");
         result.Should().Contain("kv1");
         result.Should().Contain("rg1");
+        result.Should().Contain("🔑");
         result.Should().Contain("sub1");
 
         await Task.CompletedTask;
@@ -48,6 +50,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         result.Should().Contain("vault");
         result.Should().Contain("Microsoft.KeyVault/vaults");
+        result.Should().Contain("🔑");
         result.Should().Contain("sub-only");
 
         await Task.CompletedTask;
@@ -61,6 +64,7 @@ public class ScribanHelpersAzureScopeFormattingTests
         var result = ScribanHelpers.FormatAzureScopeForTable(scope);
 
         result.Should().Contain("subscription");
+        result.Should().Contain("🔑");
         result.Should().Contain("sub-123");
 
         await Task.CompletedTask;

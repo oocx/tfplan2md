@@ -26,7 +26,7 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain($"<summary>➕{Nbsp}azurerm_role_assignment <b><code>create_no_description</code></b> — ");
         section.Should().Contain("Jane Doe");
         section.Should().Contain("| Attribute | Value |");
-        section.Should().Contain($"| scope | `📁{Nbsp}rg-tfplan2md-demo` in subscription `sub-one` |");
+        section.Should().Contain($"| scope | `📁{Nbsp}rg-tfplan2md-demo` in subscription `🔑{Nbsp}sub-one` |");
         section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) |");
         section.Should().Contain($"| principal_id | `👤{Nbsp}Jane Doe (User)` [`11111111-1111-1111-1111-111111111111`] |");
     }
@@ -40,7 +40,7 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain($"<summary>➕{Nbsp}azurerm_role_assignment <b><code>create_with_description</code></b> — ");
         section.Should().Contain("DevOps Team");
         section.Should().Contain("Allow DevOps team to read logs from the storage account");
-        section.Should().Contain($"| scope | Storage Account `🆔{Nbsp}sttfplan2mdlogs-with-extended-name-1234567890` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `sub-one` |");
+        section.Should().Contain($"| scope | Storage Account `🆔{Nbsp}sttfplan2mdlogs-with-extended-name-1234567890` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `🔑{Nbsp}sub-one` |");
         section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) |");
         section.Should().Contain($"| principal_id | `👥{Nbsp}DevOps Team (Group)` [`22222222-2222-2222-2222-222222222222`] |");
     }
@@ -54,7 +54,7 @@ public class RoleAssignmentTemplateTests
         section.Should().Contain($"<summary>🔄{Nbsp}azurerm_role_assignment <b><code>update_assignment</code></b> — ");
         section.Should().Contain("Security Team");
         section.Should().Contain("| Attribute | Before | After |");
-        section.Should().Contain($"| scope | Storage Account `🆔{Nbsp}sttfplan2mdlogs` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `sub-one` | Storage Account `🆔{Nbsp}sttfplan2mddata` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `sub-one` |");
+        section.Should().Contain($"| scope | Storage Account `🆔{Nbsp}sttfplan2mdlogs` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `🔑{Nbsp}sub-one` | Storage Account `🆔{Nbsp}sttfplan2mddata` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `🔑{Nbsp}sub-one` |");
         section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Storage Blob Data Reader` (`2a2b9908-6ea1-4ae2-8e65-a410df84e7d1`) | `🛡️{Nbsp}Storage Blob Data Contributor` (`ba92f5b4-2d11-453d-a403-e96b0029c9fe`) |");
         section.Should().Contain($"| principal_id | `👥{Nbsp}DevOps Team (Group)` [`22222222-2222-2222-2222-222222222222`] | `👥{Nbsp}Security Team (Group)` [`33333333-3333-3333-3333-333333333333`] |");
         section.Should().Contain("| description | `Allow team to read storage data` | `Upgraded permissions for security auditing` |");

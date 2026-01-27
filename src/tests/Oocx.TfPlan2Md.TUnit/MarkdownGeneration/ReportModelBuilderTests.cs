@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -70,6 +71,76 @@ public class ReportModelBuilderTests
         sensitiveAttr.Should().NotBeNull();
         sensitiveAttr!.IsSensitive.Should().BeTrue();
         sensitiveAttr.After.Should().Be("(sensitive)");
+    }
+
+    [Test]
+    public void Build_NamedValueSecretFalse_ShowsActualValue()
+    {
+        var afterDocument = JsonDocument.Parse("{\"secret\":false,\"value\":\"https://example.com\"}");
+        var afterSensitiveDocument = JsonDocument.Parse("{\"value\":true}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            afterSensitiveDocument.RootElement);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_api_management_named_value.example",
+                    null,
+                    "managed",
+                    "azurerm_api_management_named_value",
+                    "example",
+                    "azurerm",
+                    change)
+            });
+        var builder = new ReportModelBuilder(showSensitive: false);
+
+        var model = builder.Build(plan);
+
+        var valueChange = model.Changes.Single().AttributeChanges.Single(a => a.Name == "value");
+        valueChange.IsSensitive.Should().BeFalse();
+        valueChange.After.Should().Be("https://example.com");
+    }
+
+    [Test]
+    public void Build_NamedValueSecretTrue_MasksValue()
+    {
+        var afterDocument = JsonDocument.Parse("{\"secret\":true,\"value\":\"super-secret\"}");
+        var afterSensitiveDocument = JsonDocument.Parse("{\"value\":true}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            afterSensitiveDocument.RootElement);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_api_management_named_value.secret",
+                    null,
+                    "managed",
+                    "azurerm_api_management_named_value",
+                    "secret",
+                    "azurerm",
+                    change)
+            });
+        var builder = new ReportModelBuilder(showSensitive: false);
+
+        var model = builder.Build(plan);
+
+        var valueChange = model.Changes.Single().AttributeChanges.Single(a => a.Name == "value");
+        valueChange.IsSensitive.Should().BeTrue();
+        valueChange.After.Should().Be("(sensitive)");
     }
 
     [Test]

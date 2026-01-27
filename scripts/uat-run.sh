@@ -212,7 +212,7 @@ while true; do
     scripts/uat-github.sh poll "$gh_pr" && gh_ok=1 || {
       rc=$?
       if [[ $rc -eq 2 ]]; then
-        log_error "GitHub polling failed with a fatal error (exit code 2)."
+        log_error "UAT FAILED: Negative feedback or rejection detected on GitHub (PR #$gh_pr)."
         exit 1
       fi
       gh_ok=0
@@ -225,7 +225,7 @@ while true; do
     scripts/uat-azdo.sh poll "$azdo_pr" && azdo_ok=1 || {
       rc=$?
       if [[ $rc -eq 2 ]]; then
-        log_error "Azure DevOps polling failed with a fatal error (exit code 2)."
+        log_error "UAT FAILED: Negative feedback or rejection detected on Azure DevOps (PR #$azdo_pr)."
         exit 1
       fi
       azdo_ok=0

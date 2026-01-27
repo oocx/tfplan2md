@@ -31,6 +31,8 @@ internal static class ResourceSummaryHtmlBuilder
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
 
         flatState.TryGetValue("name", out var nameValue);
+        flatState.TryGetValue("subscription_id", out var subscriptionId);
+        flatState.TryGetValue("subscription", out var subscriptionName);
         flatState.TryGetValue("resource_group_name", out var resourceGroup);
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
@@ -40,6 +42,16 @@ internal static class ResourceSummaryHtmlBuilder
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
             ? FormatAttributeValueSummary("name", nameValue!, null)
             : null;
+
+        if (primaryContext is null && !string.IsNullOrWhiteSpace(subscriptionId))
+        {
+            primaryContext = FormatAttributeValueSummary("subscription_id", subscriptionId!, null);
+        }
+
+        if (primaryContext is null && !string.IsNullOrWhiteSpace(subscriptionName))
+        {
+            primaryContext = FormatAttributeValueSummary("subscription", subscriptionName!, null);
+        }
 
         if (!string.IsNullOrWhiteSpace(resourceGroup))
         {

@@ -16,6 +16,9 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class ReportModelBuilderSummaryTests
 {
     private const string Nbsp = "\u00A0";
+    private const string CreateAction = "create";
+    private const string ManagedMode = "managed";
+    private const string DefaultProviderName = "azurerm";
 
     [Test]
     public void Build_PopulatesSummaryAndReplacePaths()
@@ -52,7 +55,7 @@ public class ReportModelBuilderSummaryTests
         update.ChangedAttributesSummary.Should().Contain("🔧");
         update.SummaryHtml.Should().StartWith($"{update.ActionSymbol}{Nbsp}{update.Type} <b><code>{update.Name}</code></b>");
 
-        var createWithTags = model.Changes.First(c => c.Action == "create" && c.TagsBadges is not null);
+        var createWithTags = model.Changes.First(c => c.Action == CreateAction && c.TagsBadges is not null);
         createWithTags.TagsBadges.Should().Contain("🏷️");
         createWithTags.TagsBadges.Should().Contain("environment: production");
     }
@@ -132,11 +135,44 @@ public class ReportModelBuilderSummaryTests
     }
 
     [Test]
+    public void Build_SummaryHtml_SubscriptionFallback_IncludesKeyIcon()
+    {
+        var afterDocument = JsonDocument.Parse("{\"subscription_id\":\"11111111-2222-3333-4444-555555555555\",\"subscription\":\"Production\"}");
+        var change = new Change(
+            [CreateAction],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "azurerm_subscription.demo",
+                    null,
+                    ManagedMode,
+                    "azurerm_subscription",
+                    "demo",
+                    DefaultProviderName,
+                    change)
+            });
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        model.Changes.Should().ContainSingle();
+        model.Changes.Single().SummaryHtml.Should().Contain("🔑");
+    }
+
+    [Test]
     public void Build_SummaryHtml_RespectsFactoryOverride()
     {
         var afterDocument = JsonDocument.Parse("{\"name\":\"example\"}");
         var change = new Change(
-            ["create"],
+            [CreateAction],
             null,
             afterDocument.RootElement,
             null,
@@ -150,7 +186,7 @@ public class ReportModelBuilderSummaryTests
                 new ResourceChange(
                     "custom_resource.example",
                     null,
-                    "managed",
+                    ManagedMode,
                     "custom_resource",
                     "example",
                     "custom",

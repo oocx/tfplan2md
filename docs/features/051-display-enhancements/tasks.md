@@ -115,8 +115,8 @@ Create integrated test data and run the UAT workflow to verify rendering on GitH
 **Acceptance Criteria:**
 - [x] `examples/apim-display-enhancements.json` is completed with test data for all improvements.
 - [x] `artifacts/apim-display-enhancements-demo.md` is generated and committed.
-- [ ] UAT simulation is run and passes (TC-10).
-- [ ] Documentation is updated if necessary.
+- [x] UAT simulation is run and passes (TC-10).
+- [x] Documentation is updated if necessary.
 
 **Dependencies:** Task 1, Task 2, Task 4, Task 5
 

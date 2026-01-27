@@ -24,9 +24,9 @@ Reference documents:
 Add the 🔑 emoji prefix to `subscription_id` and `subscription` attribute values globally.
 
 **Acceptance Criteria:**
-- [ ] `ScribanHelpers.FormatAttributeValueTable`, `FormatAttributeValueSummary`, and `FormatAttributeValuePlain` are updated to detect `subscription_id` and `subscription` (case-insensitive).
-- [ ] Detected attributes are prefixed with `🔑` and a non-breaking space.
-- [ ] Unit tests (TC-09) verify the emoji prefix in all three formatting contexts.
+- [x] `ScribanHelpers.FormatAttributeValueTable`, `FormatAttributeValueSummary`, and `FormatAttributeValuePlain` are updated to detect `subscription_id` and `subscription` (case-insensitive).
+- [x] Detected attributes are prefixed with `🔑` and a non-breaking space.
+- [x] Unit tests (TC-09) verify the emoji prefix in all three formatting contexts.
 
 **Dependencies:** None
 

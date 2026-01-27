@@ -124,22 +124,22 @@ public static partial class ScribanHelpers
         {
             case ScopeLevel.ResourceGroup:
                 var rgName = FormatAttributeValueTable("resource_group_name", scope.ResourceGroup, null);
-                var subId = FormatCodeTable(scope.SubscriptionId ?? string.Empty);
+                var subId = FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null);
                 return $"{rgName} in subscription {subId}";
 
             case ScopeLevel.Resource when !string.IsNullOrEmpty(scope.ResourceGroup):
                 var resourceName = FormatAttributeValueTable("name", scope.Name, null);
                 var resourceRgName = FormatAttributeValueTable("resource_group_name", scope.ResourceGroup, null);
-                var resourceSubId = FormatCodeTable(scope.SubscriptionId ?? string.Empty);
+                var resourceSubId = FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null);
                 return $"{scope.Type} {resourceName} in resource group {resourceRgName} of subscription {resourceSubId}";
 
             case ScopeLevel.Resource:
                 var resourceNameOnly = FormatAttributeValueTable("name", scope.Name, null);
-                var subscriptionIdOnly = FormatCodeTable(scope.SubscriptionId ?? string.Empty);
+                var subscriptionIdOnly = FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null);
                 return $"{scope.Type} {resourceNameOnly} in subscription {subscriptionIdOnly}";
 
             case ScopeLevel.Subscription:
-                return $"subscription {FormatCodeTable(scope.SubscriptionId ?? string.Empty)}";
+                return $"subscription {FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null)}";
 
             case ScopeLevel.ManagementGroup:
                 return $"{FormatCodeTable(scope.Name)} (Management Group)";

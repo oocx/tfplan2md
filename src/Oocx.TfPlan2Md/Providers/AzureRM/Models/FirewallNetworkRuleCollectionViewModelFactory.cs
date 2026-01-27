@@ -236,7 +236,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return rules
             .Select(rule => new FirewallRuleRowViewModel
             {
-                Name = $"`{EscapeMarkdown(rule.Name)}`",
+                Name = FormatAttributeValueTable("name", rule.Name, providerName),
                 Protocols = FormatList("protocol", rule.Protocols, providerName),
                 SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
                 DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
@@ -254,7 +254,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "➕",
-            Name = $"`{EscapeMarkdown(rule.Name)}`",
+            Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
@@ -271,7 +271,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "❌",
-            Name = $"`{EscapeMarkdown(rule.Name)}`",
+            Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
@@ -288,7 +288,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "⏺️",
-            Name = $"`{EscapeMarkdown(rule.Name)}`",
+            Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
             DestinationAddresses = FormatList("destination_addresses", rule.DestinationAddresses, providerName),
@@ -311,7 +311,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         return new FirewallRuleChangeRowViewModel
         {
             Change = "🔄",
-            Name = $"`{EscapeMarkdown(after.Name)}`",
+            Name = FormatAttributeValueTable("name", after.Name, providerName),
             Protocols = FormatListDiff("protocol", before.Protocols, after.Protocols, providerName, format),
             SourceAddresses = FormatListDiff("source_addresses", before.SourceAddresses, after.SourceAddresses, providerName, format),
             DestinationAddresses = FormatListDiff("destination_addresses", before.DestinationAddresses, after.DestinationAddresses, providerName, format),

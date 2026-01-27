@@ -95,7 +95,7 @@ public class ReportModelBuilderSummaryTests
             .First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
 
         update.ChangedAttributesSummary.Should().Be(
-            $"3🔧{Nbsp}➕{Nbsp}<code>allow-dns</code>, 🔄{Nbsp}<code>allow-http</code>, ❌{Nbsp}<code>allow-ssh-old</code>");
+            $"3🔧{Nbsp}➕{Nbsp}<code>🆔{Nbsp}allow-dns</code>, 🔄{Nbsp}<code>🆔{Nbsp}allow-http</code>, ❌{Nbsp}<code>🆔{Nbsp}allow-ssh-old</code>");
     }
 
     [Test]
@@ -129,6 +129,45 @@ public class ReportModelBuilderSummaryTests
         var vnetDelete = model.Changes.First(c => c.Type == "azurerm_virtual_network" && c.Action == "delete");
         vnetDelete.SummaryHtml.Should().Contain("<code>🌍 westeurope</code>");
         vnetDelete.SummaryHtml.Should().Contain("<code>🌐 10.0.0.0/16</code>");
+    }
+
+    /// <summary>
+    /// Verifies that subscription resources surface subscription attributes in the summary HTML.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <returns>None.</returns>
+    [Test]
+    public void Build_SummaryHtml_IncludesSubscriptionAttributes()
+    {
+        var afterDocument = JsonDocument.Parse("{\"subscription_id\":\"sub-123\",\"subscription\":\"Production\"}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "azurerm_subscription.demo",
+                    null,
+                    "managed",
+                    "azurerm_subscription",
+                    "demo",
+                    "registry.terraform.io/hashicorp/azurerm",
+                    change)
+            });
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        var summary = model.Changes.Single().SummaryHtml;
+        summary.Should().Contain($"<code>🔑{Nbsp}sub-123</code>");
+        summary.Should().Contain($"<code>🔑{Nbsp}Production</code>");
     }
 
     [Test]

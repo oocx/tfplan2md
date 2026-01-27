@@ -54,7 +54,9 @@ public class AzapiResourceTemplateTests
         // Assert - Should contain key elements
         normalized.Should().Contain("azapi_resource");
         normalized.Should().Contain("Body");
-        normalized.Should().Contain("properties.");
+        // Body properties should be de-prefixed; other sections may still contain `properties.` paths.
+        result.Should().Contain("| disableLocalAuth |");
+        result.Should().NotContain("properties.disableLocalAuth");
 
         await Task.CompletedTask;
     }
@@ -184,16 +186,17 @@ public class AzapiResourceTemplateTests
         result.Should().NotContain("properties.enabled");
         result.Should().NotContain("properties.siteConfig");
 
-        // Should create separate table for siteConfig (has >3 attributes)
-        result.Should().Contain("Body - `siteConfig`");
+        // Arrays should be rendered as dedicated sections
+        result.Should().Contain("###### `siteConfig.appSettings` Array");
+        result.Should().Contain("###### `siteConfig.connectionStrings` Array");
+        result.Should().Contain("###### `siteConfig.cors.allowedOrigins` Array");
 
-        // Should show simplified paths
-        result.Should().Contain("| enabled |");
-        result.Should().Contain("| httpsOnly |");
+        // Matrix tables should use Index column
+        result.Should().Contain("| Index | name | value |");
 
-        // Should handle arrays with simplified paths in nested table
-        result.Should().Contain("appSettings[0].name");
-        result.Should().Contain("connectionStrings[0].name");
+        // Array members should not be rendered as flattened indexed paths
+        result.Should().NotContain("appSettings[0].name");
+        result.Should().NotContain("connectionStrings[0].name");
 
         await Task.CompletedTask;
     }

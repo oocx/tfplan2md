@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.4.0"></a>
+## [1.4.0](https://github.com/oocx/tfplan2md/compare/v1.3.0...v1.4.0) (2026-01-28)
+
+### ✨ Features
+
+* simplify interactive UAT flow ([4a63f7b](https://github.com/oocx/tfplan2md/commit/4a63f7b243c4911fa8a7123d669a5e9a02578001))
+
+### 📚 Documentation
+
+* **retro:** add metrics and evidence for feature 051 retrospective ([34ab7d0](https://github.com/oocx/tfplan2md/commit/34ab7d0400373db6fd395363b6a96cff60ec0c65))
+* **retro:** finalize movement of technical writer chat log ([278908d](https://github.com/oocx/tfplan2md/commit/278908dea12b5c6c8d8195ba6c989f00f69a9b5a))
+* **retro:** finalize retrospective for feature 051 with linked issues ([2fea46e](https://github.com/oocx/tfplan2md/commit/2fea46efa2ec4bafe691733749b514b993001cd9))
+* **retro:** move and stage technical writer chat log (forced) ([a1c392c](https://github.com/oocx/tfplan2md/commit/a1c392c55f33a3cf7eb2d59581ce004a822b99af))
+
 <a name="1.3.0"></a>
 ## [1.3.0](https://github.com/oocx/tfplan2md/compare/v1.2.0...v1.3.0) (2026-01-27)
 

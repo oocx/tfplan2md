@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "source": "developer 2.chat.json",
+    "analysis_date": "2026-01-28",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 10,
+    "start_timestamp": 1769548361232,
+    "end_timestamp": 1769550371345,
+    "session_duration_sec": 2010.113,
+    "user_wait_time_sec": 2200.374,
+    "agent_work_time_sec": 1197.841
+  },
+  "model_usage": [
+    {
+      "model": "gpt-5.2-codex",
+      "count": 10
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 35
+    },
+    {
+      "tool": "readFile",
+      "count": 15
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 5
+    },
+    {
+      "tool": "findFiles",
+      "count": 4
+    },
+    {
+      "tool": "listDirectory",
+      "count": 4
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 4
+    },
+    {
+      "tool": "applyPatch",
+      "count": 3
+    },
+    {
+      "tool": "fetchWebPage",
+      "count": 1
+    },
+    {
+      "tool": "vscode_fetchWebPage_internal",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 71
+      },
+      {
+        "type": 4,
+        "count": 1
+      }
+    ],
+    "total_invocations": 72,
+    "auto_approved": 71,
+    "manual_approved": 1,
+    "automation_rate_pct": 98
+  },
+  "model_success": [
+    {
+      "model": "gpt-5.2-codex",
+      "total": 10,
+      "complete": 7,
+      "failed": 3
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gpt-5.2-codex",
+      "total_requests": 10,
+      "cancelled": 3,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [
+        {
+          "code": "canceled",
+          "count": 3
+        }
+      ],
+      "rejection_rate": 30
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 3
+    }
+  ],
+  "response_times": [
+    {
+      "model": "gpt-5.2-codex",
+      "count": 10,
+      "avg_sec": 119,
+      "total_sec": 1197
+    }
+  ],
+  "errors": [
+    {
+      "message": "Canceled",
+      "count": 3
+    }
+  ],
+  "user_feedback": []
+}

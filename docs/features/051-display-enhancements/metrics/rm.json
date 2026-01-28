@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "source": "rm.chat.json",
+    "analysis_date": "2026-01-28",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 4,
+    "start_timestamp": 1769554924088,
+    "end_timestamp": 1769556948560,
+    "session_duration_sec": 2024.472,
+    "user_wait_time_sec": 4671.454,
+    "agent_work_time_sec": 1940.207
+  },
+  "model_usage": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 4
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 79
+    },
+    {
+      "tool": "readFile",
+      "count": 9
+    },
+    {
+      "tool": "listDirectory",
+      "count": 5
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 5
+    },
+    {
+      "tool": "mcp_github_get_pull_request",
+      "count": 2
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 1
+    },
+    {
+      "tool": "mcp_github_get_file_contents",
+      "count": 1
+    },
+    {
+      "tool": "mcp_github_get_pull_request_status",
+      "count": 1
+    },
+    {
+      "tool": "mcp_github_list_pull_requests",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 87
+      },
+      {
+        "type": 4,
+        "count": 14
+      },
+      {
+        "type": 3,
+        "count": 3
+      }
+    ],
+    "total_invocations": 104,
+    "auto_approved": 90,
+    "manual_approved": 14,
+    "automation_rate_pct": 86
+  },
+  "model_success": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total": 4,
+      "complete": 4,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total_requests": 4,
+      "cancelled": 1,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 25
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 3,
+      "avg_sec": 646,
+      "total_sec": 1940
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

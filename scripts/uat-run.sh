@@ -51,16 +51,142 @@ log_info() { echo -e "${GREEN}[INFO]${NC} $*"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
+state_file_default=".tmp/uat-run/last-run.json"
+uat_submodule_github_default="uat-repos/github"
+uat_submodule_azdo_default="uat-repos/azdo"
+
+get_submodule_head() {
+  local path="$1"
+  if [[ -e "$path/.git" ]]; then
+    git -C "$path" rev-parse HEAD 2>/dev/null || echo ""
+    return 0
+  fi
+  echo ""
+}
+
+restore_submodule_head() {
+  local path="$1"
+  local head="$2"
+  if [[ -z "$path" || -z "$head" ]]; then
+    return 0
+  fi
+  if [[ ! -e "$path/.git" ]]; then
+    return 0
+  fi
+  git -C "$path" checkout --detach "$head" >/dev/null 2>&1 || true
+  git -C "$path" reset --hard "$head" >/dev/null 2>&1 || true
+  git -C "$path" clean -fd >/dev/null 2>&1 || true
+}
+
 die_usage() {
-  log_error "Usage: $0 [artifact-path] <test-description> [--platform both|github|azdo]"
+  log_error "Usage: $0 [artifact-path] <test-description> [--platform both|github|azdo] [--create-only]"
+  log_error "       $0 --cleanup-last [--state-file <path>]"
   log_error "Test description must be detailed and resource-specific:"
   log_error "Example: $0 'In module.security.azurerm_key_vault_secret.audit_policy, verify key_vault_id displays as \"Key Vault \\\`kv-name\\\` in resource group \\\`rg-name\\\`\" instead of full /subscriptions/ path'"
   log_error "Example: $0 artifacts/custom.md 'In azurerm_firewall_network_rule_collection.rules, verify attribute values use code blocks instead of bold'"
   exit 2
 }
 
+cmd_cleanup_last() {
+  local state_file="$1"
+
+  if [[ ! -f "$state_file" ]]; then
+    log_error "State file not found: $state_file"
+    log_error "Run with --create-only first (or pass --state-file)."
+    exit 1
+  fi
+
+  local original_branch
+  original_branch="$(jq -r '.original_branch // ""' "$state_file" 2>/dev/null || echo "")"
+  local uat_branch
+  uat_branch="$(jq -r '.uat_branch // ""' "$state_file" 2>/dev/null || echo "")"
+  local gh_pr
+  gh_pr="$(jq -r '.github.pr // ""' "$state_file" 2>/dev/null || echo "")"
+  local azdo_pr
+  azdo_pr="$(jq -r '.azdo.pr // ""' "$state_file" 2>/dev/null || echo "")"
+
+  if [[ -z "$uat_branch" ]]; then
+    log_error "Invalid state file (missing uat_branch): $state_file"
+    exit 1
+  fi
+
+  if [[ -n "$original_branch" && "$(git branch --show-current)" != "$original_branch" ]]; then
+    log_warn "Not on original branch '$original_branch' (current: $(git branch --show-current))."
+  fi
+
+  log_info "Cleaning up UAT PRs from state: $state_file"
+  if [[ -n "$gh_pr" && "$gh_pr" != "null" ]]; then
+    scripts/uat-github.sh cleanup "$gh_pr" || true
+  fi
+  if [[ -n "$azdo_pr" && "$azdo_pr" != "null" ]]; then
+    scripts/uat-azdo.sh cleanup "$azdo_pr" || true
+  fi
+
+  local uat_submodule_github
+  uat_submodule_github="$(jq -r '.submodules.github.path // .submodules.github // ""' "$state_file" 2>/dev/null || echo "")"
+  local uat_submodule_github_head
+  uat_submodule_github_head="$(jq -r '.submodules.github.head // ""' "$state_file" 2>/dev/null || echo "")"
+  local uat_submodule_azdo
+  uat_submodule_azdo="$(jq -r '.submodules.azdo.path // .submodules.azdo // ""' "$state_file" 2>/dev/null || echo "")"
+  local uat_submodule_azdo_head
+  uat_submodule_azdo_head="$(jq -r '.submodules.azdo.head // ""' "$state_file" 2>/dev/null || echo "")"
+
+  log_info "Deleting remote branches: $uat_branch"
+  if [[ -n "$uat_submodule_github" && -e "$uat_submodule_github/.git" ]]; then
+    git -C "$uat_submodule_github" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete GitHub UAT branch '$uat_branch' (may already be deleted)."
+  fi
+  if [[ -n "$uat_submodule_azdo" && -e "$uat_submodule_azdo/.git" ]]; then
+    git -C "$uat_submodule_azdo" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete AzDO UAT branch '$uat_branch' (may already be deleted)."
+  fi
+
+  # Restore submodules to their original HEADs so the parent repo stays clean.
+  restore_submodule_head "$uat_submodule_github" "$uat_submodule_github_head"
+  restore_submodule_head "$uat_submodule_azdo" "$uat_submodule_azdo_head"
+
+  if [[ -n "$original_branch" ]] && git rev-parse --verify "$original_branch" >/dev/null 2>&1; then
+    log_info "Restoring original branch: $original_branch"
+    git switch "$original_branch" >/dev/null 2>&1 || true
+  fi
+
+  log_info "Cleanup complete."
+}
+
 artifact_arg=""
 test_description=""
+
+create_only=false
+cleanup_last=false
+state_file="$state_file_default"
+
+if [[ "${1:-}" == "--cleanup-last" ]]; then
+  cleanup_last=true
+  shift || true
+fi
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --state-file)
+      state_file="${2:-}"
+      shift 2
+      ;;
+    --cleanup-last)
+      cleanup_last=true
+      shift
+      ;;
+    --create-only)
+      create_only=true
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [[ "$cleanup_last" == "true" ]]; then
+  cmd_cleanup_last "$state_file"
+  exit 0
+fi
 
 # Parse positional arguments
 if [[ "${1:-}" != "" && "${1:-}" != --* ]]; then
@@ -83,6 +209,10 @@ while [[ $# -gt 0 ]]; do
     --platform)
       platform="${2:-}"
       shift 2
+      ;;
+    --create-only)
+      create_only=true
+      shift
       ;;
     *)
       die_usage
@@ -138,30 +268,36 @@ fi
 # which will enforce simulation blocking and apply platform-specific smart defaults
 
 timestamp="$(date -u +%Y%m%d%H%M%S)"
-# Create a unique, safe UAT branch name.
-# Example: uat/feature-foo-uat-20251225205901
+# Create a unique, safe UAT branch name in the UAT repositories (not this repo).
 safe_original="${original_branch//\//-}"
 uat_branch="uat/${safe_original}-uat-${timestamp}"
 
-cleanup_on_exit() {
-  # Best-effort restore if something fails.
-  if git rev-parse --verify "$original_branch" >/dev/null 2>&1; then
-    git switch "$original_branch" >/dev/null 2>&1 || true
-  fi
-}
-trap cleanup_on_exit EXIT
-
-log_info "Creating UAT branch: $uat_branch"
-git switch -c "$uat_branch" >/dev/null
-
 gh_pr=""
 azdo_pr=""
+gh_url=""
+azdo_url=""
 
-simulate="${UAT_SIMULATE:-false}"
+print_pr_links_block() {
+  echo ""
+  echo "UAT PR links (copy/paste):"
+  if [[ -n "${gh_url:-}" ]]; then
+    echo "  GitHub: ${gh_url}"
+  fi
+  if [[ -n "${azdo_url:-}" ]]; then
+    echo "  Azure DevOps: ${azdo_url}"
+  fi
+  echo ""
+}
+
+uat_submodule_github="${UAT_GITHUB_SUBMODULE_PATH:-$uat_submodule_github_default}"
+uat_submodule_azdo="${AZDO_SUBMODULE_PATH:-$uat_submodule_azdo_default}"
+
+uat_submodule_github_head_before="$(get_submodule_head "$uat_submodule_github")"
+uat_submodule_azdo_head_before="$(get_submodule_head "$uat_submodule_azdo")"
 
 if [[ "$platform" == "both" || "$platform" == "github" ]]; then
   log_info "Creating GitHub UAT PR..."
-  gh_out="$(scripts/uat-github.sh create "$artifact_github" "$test_description" | cat)"
+  gh_out="$(scripts/uat-github.sh create "$artifact_github" "$test_description" --branch "$uat_branch" | cat)"
   gh_pr="$(echo "$gh_out" | grep -oE 'PR created: #[0-9]+' | grep -oE '[0-9]+' | tail -n 1)"
   gh_url="$(echo "$gh_out" | grep -oE 'PR created: #[0-9]+ \((.*)\)' | sed -E 's/.*PR created: #[0-9]+ \((.*)\)/\1/' | tail -n 1)"
   if [[ -z "$gh_pr" ]]; then
@@ -176,7 +312,7 @@ if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
   scripts/uat-azdo.sh setup
 
   log_info "Creating Azure DevOps UAT PR..."
-  azdo_out="$(scripts/uat-azdo.sh create "$artifact_azdo" "$test_description" | cat)"
+  azdo_out="$(scripts/uat-azdo.sh create "$artifact_azdo" "$test_description" --branch "$uat_branch" | cat)"
   azdo_pr="$(echo "$azdo_out" | grep -oE 'PR created: #[0-9]+' | grep -oE '[0-9]+' | tail -n 1)"
   azdo_url="$(echo "$azdo_out" | grep -oE 'PR created: #[0-9]+ \((.*)\)' | sed -E 's/.*PR created: #[0-9]+ \((.*)\)/\1/' | tail -n 1)"
   if [[ -z "$azdo_pr" ]]; then
@@ -186,15 +322,49 @@ if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
   log_info "Azure DevOps PR: #$azdo_pr ($azdo_url)"
 fi
 
+print_pr_links_block
+
+if [[ "$create_only" == "true" ]]; then
+  mkdir -p "$(dirname "$state_file")"
+  jq -n \
+    --arg original_branch "$original_branch" \
+    --arg uat_branch "$uat_branch" \
+    --arg platform "$platform" \
+    --arg uat_submodule_github "$uat_submodule_github" \
+    --arg uat_submodule_github_head_before "$uat_submodule_github_head_before" \
+    --arg uat_submodule_azdo "$uat_submodule_azdo" \
+    --arg uat_submodule_azdo_head_before "$uat_submodule_azdo_head_before" \
+    --arg artifact_github "$artifact_github" \
+    --arg artifact_azdo "$artifact_azdo" \
+    --arg gh_pr "$gh_pr" \
+    --arg gh_url "${gh_url:-}" \
+    --arg azdo_pr "$azdo_pr" \
+    --arg azdo_url "${azdo_url:-}" \
+    '{
+      original_branch: $original_branch,
+      uat_branch: $uat_branch,
+      platform: $platform,
+      submodules: {
+        github: { path: $uat_submodule_github, head: $uat_submodule_github_head_before },
+        azdo: { path: $uat_submodule_azdo, head: $uat_submodule_azdo_head_before }
+      },
+      artifacts: { github: $artifact_github, azdo: $artifact_azdo },
+      github: { pr: $gh_pr, url: $gh_url },
+      azdo: { pr: $azdo_pr, url: $azdo_url }
+    }' > "$state_file"
+
+  log_info "Create-only complete. State saved to: $state_file"
+  echo ""
+  echo "Next steps:"
+  echo "  1. Review the PR(s) in the browser"
+  echo "  2. Decide PASS/FAIL (record decision in chat)"
+  echo "  3. Cleanup when ready: $0 --cleanup-last"
+  exit 0
+fi
+
 poll_interval_seconds=15
 timeout_seconds=$((60 * 60))
 start_epoch="$(date +%s)"
-
-if [[ "$simulate" == "true" ]]; then
-  log_warn "SIMULATION MODE enabled (UAT_SIMULATE=true): PRs created with [SIMULATION] prefix."
-  log_warn "The script will now POLL for approval just like a real run."
-  log_warn "Approve the PRs to test the detection logic, or use Ctrl+C to abort."
-fi
 
 while true; do
   now_epoch="$(date +%s)"
@@ -252,17 +422,15 @@ if [[ -n "$azdo_pr" ]]; then
 fi
 
 log_info "Deleting remote branch: $uat_branch"
-if git remote get-url uat-github >/dev/null 2>&1; then
-  git push uat-github --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete uat-github/$uat_branch (may already be deleted)."
+if [[ "$platform" == "both" || "$platform" == "github" ]]; then
+  if [[ -e "$uat_submodule_github/.git" ]]; then
+    git -C "$uat_submodule_github" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete GitHub UAT branch '$uat_branch' (may already be deleted)."
+  fi
 fi
-if git remote get-url origin >/dev/null 2>&1; then
-  git push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete origin/$uat_branch (may already be deleted)."
+if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
+  if [[ -e "$uat_submodule_azdo/.git" ]]; then
+    git -C "$uat_submodule_azdo" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete AzDO UAT branch '$uat_branch' (may already be deleted)."
+  fi
 fi
-
-log_info "Restoring original branch: $original_branch"
-git switch "$original_branch" >/dev/null
-
-log_info "Deleting local UAT branch: $uat_branch"
-git branch -D "$uat_branch" >/dev/null 2>&1 || true
 
 log_info "UAT run complete."

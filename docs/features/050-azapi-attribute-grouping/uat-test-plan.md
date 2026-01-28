@@ -22,7 +22,7 @@ Verify that complex AzAPI resources render with improved structure and readabili
 - **Rationale:** Validates non-array prefix grouping for nested objects.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

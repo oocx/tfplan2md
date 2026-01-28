@@ -12,7 +12,7 @@ Verify that the display enhancements (syntax highlighting, APIM summaries, named
 - **Rationale:** Need a focused artifact that exercises all four improvements in a single report.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

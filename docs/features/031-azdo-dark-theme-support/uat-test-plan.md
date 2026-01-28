@@ -14,8 +14,8 @@ Verify that Terraform plan reports in Azure DevOps render with theme-appropriate
 The `comprehensive-demo.md` includes various resource types and triggers multiple templates (both default and resource-specific), providing a complete overview of the styling changes.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent for **Azure DevOps**.
-2. Run the UAT simulation using the `UAT Tester` agent for **GitHub** (to ensure no regressions).
+1. Run UAT using the `UAT Tester` agent for **Azure DevOps**.
+2. Run UAT using the `UAT Tester` agent for **GitHub** (to ensure no regressions).
 3. Verify the generated PR comments.
 
 ## Validation Instructions (Test Description)

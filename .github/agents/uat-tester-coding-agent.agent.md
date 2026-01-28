@@ -1,7 +1,6 @@
 ---
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester (coding agent)
-model: Gemini 3 Flash (Preview)
 target: github-copilot
 ---
 
@@ -68,7 +67,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - **Validate artifact before running**: Verify the specified artifact exercises the changed code paths. If using a default artifact (e.g., comprehensive-demo.md), confirm it will test the new feature. If not, generate a feature-specific artifact first.
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
-- For simulations: Set `UAT_SIMULATE=true` environment variable
+- Run real UAT only (GitHub/Azure DevOps)
 - Report the PR numbers and final status from the script output
 - **Update UAT report immediately after every run** - document results in `docs/features/NNN-<feature-slug>/uat-report.md` (mandatory, not optional)
 
@@ -83,7 +82,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ## Workflow
 
-When the user asks to run UAT (simulation or real):
+When the user asks to run UAT:
 
 1. **Check for Test Plan** (optional)
    - Look for `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` files
@@ -102,11 +101,6 @@ When the user asks to run UAT (simulation or real):
    
    Run exactly ONE command. No compound commands, no pipes, no redirects.
    
-   **For Simulations:**
-   ```bash
-   UAT_SIMULATE=true scripts/uat-run.sh "<validation-description>"
-   ```
-   
    **For Real UAT:**
    ```bash
    scripts/uat-run.sh "<validation-description>"
@@ -114,15 +108,26 @@ When the user asks to run UAT (simulation or real):
    
    **CRITICAL:**
    - Use `isBackground: false` — the script must run in foreground
-   - The user will see PR URLs directly in the terminal output
+   - The script writes `.tmp/uat-run/last-run.json` containing the created PR URLs
    - The script polls for approval automatically — do NOT run any other commands
 
-4. **Wait for Completion**
+4. **Post the Exact PR Links in Chat (Mandatory)**
+
+   Immediately after the script prints the PR information, paste the created PR links directly into chat (not only the overview pages and not only “see terminal output”).
+
+   If you missed the terminal output, extract the URLs from the state file:
+   ```bash
+   jq -r '"GitHub PR: " + (.github.url // "") + "\nAzure DevOps PR: " + (.azdo.url // "")' .tmp/uat-run/last-run.json
+   ```
+
+   If `jq` is not available, open `.tmp/uat-run/last-run.json` and copy the `github.url` and `azdo.url` values.
+
+5. **Wait for Completion**
    - The script runs until approval is detected or timeout
    - Do NOT run any monitoring commands (no `ps`, no `get_terminal_output`, nothing)
    - The user will approve the PRs in their browser while the script polls
 
-5. **Report Results**
+6. **Report Results**
    - When the script exits, report the final status based on what you saw in the output
 
 ## Context to Read
@@ -142,6 +147,9 @@ After UAT completes, report:
 **GitHub PR:** #<number> (<status>)
 **Azure DevOps PR:** #<number> (<status>)
 
+**GitHub URL:** <url>
+**Azure DevOps URL:** <url>
+
 <Any relevant notes from the script output>
 ```
 
@@ -149,6 +157,14 @@ After UAT completes, report:
 
 - If **UAT Passed**: Create a PR comment recommending **Release Manager**
 - If **UAT Failed**: Create a PR comment recommending **Developer** with feedback
+
+## Notes on GitHub Approval
+
+In this workflow, the agent pushes using the Maintainer’s GitHub account. GitHub may not allow that same account to submit a formal PR review (Approve/Request changes) on its own PR.
+
+For GitHub UAT, approval/rejection is therefore indicated via PR labels on the UAT repo:
+- Apply label **`uat-approved`** to approve
+- Apply label **`uat-rejected`** to reject
 
 
 

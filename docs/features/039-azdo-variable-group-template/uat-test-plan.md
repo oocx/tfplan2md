@@ -23,7 +23,7 @@ dotnet run --project src/Oocx.TfPlan2Md -- examples/azuredevops/terraform_plan2.
 
 ## Test Steps
 
-1. Run the UAT simulation using the `UAT Tester` agent or manual scripts.
+1. Run UAT using the `UAT Tester` agent or manual scripts.
 2. Create temporary PRs on GitHub and Azure DevOps test repositories.
 3. Post the generated markdown as PR comments.
 4. Verify the rendering on both platforms.

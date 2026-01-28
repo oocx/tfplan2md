@@ -138,7 +138,6 @@ Format:
 | `next-issue-number` | Determine the next available issue number across all change types (feature, fix, workflow) by checking both local docs and remote branches, then reserve it by pushing an empty branch. |
 | `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
 | `run-uat` | Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. |
-| `simulate-uat` | Simulate the UAT workflow (create PR, comment, poll) on GitHub or Azure DevOps using a minimal test artifact and simulated fixes. |
 | `update-workflow-diagram` | Convert the mermaid diagram in docs/agents.md to a blueprint-styled SVG for the website. Use when the workflow diagram is updated. |
 | `view-pr-github` | View a GitHub PR (prefer GitHub chat tools; gh is fallback with pager disabled). |
 | `watch-uat-github-pr` | Watch a GitHub UAT PR for maintainer feedback or approval by polling comments until approved/passed. |
@@ -480,10 +479,10 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 - **Definition of Done:** Code is reviewed and approved or sent back for rework.
 
 ### 9. UAT Tester
-- **Goal:** Validate user-facing features in real-world environments by running the `uat-run.sh` script.
+- **Goal:** Validate user-facing features in real-world environments via GitHub and Azure DevOps PR UIs.
 - **Deliverables:** User Acceptance PRs in GitHub and Azure DevOps with rendering verification.
-- **Definition of Done:** Maintainer approves rendering in both platforms, or aborts with documented issues. For Azure DevOps, approval is based on an approval comment or a reviewer vote (not thread resolution alone).
-- **Implementation:** Executes `scripts/uat-run.sh` which handles PR creation, polling, and cleanup.
+- **Definition of Done:** Maintainer approves rendering in both platforms, or aborts with documented issues. Approval signals are either (a) explicit PASS/FAIL in interactive chat, or (b) platform-native signals used by polling scripts (GitHub labels; Azure DevOps votes).
+- **Implementation:** Uses `scripts/uat-*.sh` helpers (and optionally `scripts/uat-run.sh` for automated polling/cleanup).
 
 ### 10. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
@@ -545,7 +544,7 @@ When multiple branches are created in parallel, they may independently pick the 
 | **Architecture Decision Records (ADRs)** | Captures significant design decisions, alternatives considered, and rationale. Provides context for future maintainers. | Markdown following the ADR format: Context, Decision, Consequences. | `docs/adr-<number>-<short-title>.md` (high level / general decisions) and `docs/features/NNN-<feature-slug>/architecture.md` (feature-specific decisions) |
 | **User Stories / Tasks** | Actionable work items with clear acceptance criteria. Used to track implementation progress (features) or workflow improvement work (workflow). | Markdown. For workflow improvements, use a table with a Status column (icon + text) and a short rationale per item. | `docs/features/NNN-<feature-slug>/tasks.md` and `docs/workflow/NNN-<topic-slug>/tasks.md` |
 | **Test Plan & Test Cases** | Defines how the feature will be verified. Maps test cases to acceptance criteria. For user-facing features, includes user acceptance scenarios for manual review. | Markdown document with: Test Objectives, Test Cases (ID, Description, Steps, Expected Result), Coverage Matrix, User Acceptance Scenarios (for user-facing features). | `docs/features/NNN-<feature-slug>/test-plan.md` |
-| **User Acceptance PRs** | Real-environment verification for user-facing features (especially markdown rendering). Used to catch rendering bugs and validate real-world usage. Managed by UAT Tester agent. | Temporary PRs in GitHub and Azure DevOps. Markdown report is posted as **PR comment** (not description). Fixes posted as new comments. Agent polls automatically; approved when Maintainer comments "approved"/"passed" or (Azure DevOps) marks thread "Resolved" or (GitHub) closes PR. PRs cleaned up after approval. | GitHub + Azure DevOps (via `scripts/uat-*.sh`) |
+| **User Acceptance PRs** | Real-environment verification for user-facing features (especially markdown rendering). Used to catch rendering bugs and validate real-world usage. Managed by UAT Tester agent. | Temporary PRs in GitHub and Azure DevOps. Markdown report is posted as **PR comment** (not description). Fixes posted as new comments. Approval is either **interactive** (Maintainer replies PASS/FAIL in chat) or **automated polling** (GitHub: `uat-approved` / `uat-rejected` labels; Azure DevOps: reviewer votes). For interactive runs, `scripts/uat-run.sh --create-only` + `--cleanup-last` provides a one-command create/cleanup workflow, and prints a copy/paste-friendly “UAT PR links” block for the Maintainer to paste into chat. UAT branches are created in **dedicated UAT repositories via git submodules** (`uat-repos/github` and `uat-repos/azdo`) so the UAT repos remain completely separate from this repo’s history. | GitHub + Azure DevOps (via `scripts/uat-*.sh`) |
 | **Code & Tests** | Implementation of the feature including unit tests, integration tests, and any necessary refactoring. | Source code files following project conventions. Tests in `src/tests/` directory. | `src/` and `src/tests/` directories |
 | **Documentation** | Updated user-facing and developer documentation reflecting the new feature. | Markdown files following existing documentation structure. | `docs/`, `README.md` |
 | **Code Review Report** | Feedback on code quality, adherence to standards, and approval status. May request rework. | Markdown document with: Summary, Issues Found, Recommendations, Approval Status. | `docs/features/NNN-<feature-slug>/code-review.md` |

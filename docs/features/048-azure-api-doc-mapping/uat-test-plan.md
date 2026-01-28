@@ -224,7 +224,7 @@ Run the commands above to generate the three test artifacts:
 2. `artifacts/azapi-unmapped-resources-demo.md`
 3. `artifacts/azapi-mixed-mappings-demo.md`
 
-### Step 2: Run UAT Simulation
+### Step 2: Run UAT
 
 Use the `UAT Tester` agent or manual UAT workflow:
 

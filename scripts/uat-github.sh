@@ -6,8 +6,12 @@
 #   create <file> <test-description>   - Create a UAT PR with initial comment from <file>
 #                                         test-description: Detailed, resource-specific validation instructions
 #   comment <pr-number> <file> - Add a comment to PR from <file>
-#   poll <pr-number> [--quiet] - Poll for new comments and check for approval
-#                                 --quiet: Output only STATUS: APPROVED|WAITING|CLOSED|ERROR (agent-friendly)
+#   poll <pr-number> [--quiet] [--json] - Poll for new feedback and check for approval
+#                                 Approval is determined by PR labels:
+#                                   - uat-approved => APPROVED
+#                                   - uat-rejected => REJECTED
+#                                 --quiet: Output only STATUS: APPROVED|WAITING|REJECTED|CLOSED|ERROR (agent-friendly)
+#                                 --json: Output raw PR JSON (comments + reviews + labels) for agent analysis
 #   cleanup <pr-number> - Close the PR after UAT completion
 #
 # Example:
@@ -30,6 +34,7 @@ export PAGER=cat
 UAT_GITHUB_REPO="${UAT_GITHUB_REPO:-oocx/tfplan2md-uat}"
 UAT_OWNER="$(echo "$UAT_GITHUB_REPO" | cut -d/ -f1)"
 UAT_REPO="$(echo "$UAT_GITHUB_REPO" | cut -d/ -f2)"
+UAT_GITHUB_SUBMODULE_PATH="${UAT_GITHUB_SUBMODULE_PATH:-uat-repos/github}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -46,15 +51,44 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 source "$script_dir/uat-helpers.sh"
 
+ensure_git_submodule() {
+    local path="$1"
+    if [[ -e "$path/.git" ]]; then
+        return 0
+    fi
+
+    log_info "Initializing git submodule: $path"
+    git submodule update --init --recursive "$path" >/dev/null
+}
+
 
 cmd_create() {
     local file="${1:-}"
     local test_description="${2:-}"
-    local simulate="${UAT_SIMULATE:-false}"
+    local branch_override=""
     local force="${UAT_FORCE:-false}"
+
+    if [[ $# -lt 2 ]]; then
+        log_error "Usage: $0 create <file> <test-description> [--branch <name>]"
+        exit 1
+    fi
+
+    shift 2
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --branch)
+                branch_override="${2:-}"
+                shift 2
+                ;;
+            *)
+                log_error "Unknown argument: $1"
+                exit 1
+                ;;
+        esac
+    done
     
     # Validate and potentially set default artifact (platform-aware)
-    file="$(validate_artifact github "$file" "$simulate" "$force")"
+    file="$(validate_artifact github "$file" "$force")"
     
     if [[ -z "$test_description" ]]; then
         log_error "Test description is required. Usage: $0 create <file> <test-description>"
@@ -63,18 +97,16 @@ cmd_create() {
     fi
     
     local branch
-    branch=$(git branch --show-current)
-    local title="UAT: $(basename "$file" .md)"
-    
-    local simulation_header=""
-    if [[ "$simulate" == "true" ]]; then
-        title="[SIMULATION] $title"
-        simulation_header="> ⚠️ **SIMULATION MODE**\n> This is a test of the UAT process using standard artifacts. Reported issues are likely expected or already known.\n\n"
+    if [[ -n "$branch_override" ]]; then
+        branch="$branch_override"
+    else
+        branch=$(git branch --show-current)
     fi
+    local title="UAT: $(basename "$file" .md)"
 
     local body
-    body=$(cat <<EOF
-${simulation_header}## Problem
+    body=$(cat <<'EOF'
+## Problem
 Validate markdown rendering in real PR UIs.
 
 ## Change
@@ -83,7 +115,7 @@ Create a UAT PR and post the test markdown as PR comments.
 ## Test Instructions
 
 **Feature-Specific Validation:**
-${test_description}
+__TEST_DESCRIPTION__
 
 **General Verification:**
 1. **Read the test artifact** posted as the first comment below
@@ -97,24 +129,38 @@ ${test_description}
    - Missing or malformed table borders
    - Broken links or incorrect formatting
 4. **Approve or provide feedback**:
-   - Comment "approved" or "lgtm" if rendering is correct
-   - Report specific issues if rendering problems are found
+    - Apply label **`uat-approved`** if rendering is correct
+    - Apply label **`uat-rejected`** (or comment with details) if rendering problems are found
 
 ## Verification
 Maintainer visually reviews the PR comment rendering in GitHub.
 EOF
 )
+
+    body="${body/__TEST_DESCRIPTION__/$test_description}"
     
     log_info "Using artifact: $file"
-    
-    # Ensure UAT remote exists
-    if ! git remote get-url uat-github >/dev/null 2>&1; then
-        log_info "Adding uat-github remote for $UAT_GITHUB_REPO..."
-        git remote add uat-github "https://github.com/$UAT_GITHUB_REPO.git"
-    fi
-    
-    log_info "Pushing branch to UAT repository ($UAT_GITHUB_REPO)..."
-    git push -u uat-github HEAD --force
+
+    # The UAT repo is intentionally separate from this repo.
+    # We use a dedicated git submodule checkout to create a lightweight branch for the PR.
+    ensure_git_submodule "$UAT_GITHUB_SUBMODULE_PATH"
+
+    log_info "Preparing UAT branch '$branch' in submodule repo ($UAT_GITHUB_SUBMODULE_PATH)..."
+    git -C "$UAT_GITHUB_SUBMODULE_PATH" fetch origin main >/dev/null 2>&1 || true
+
+    local timestamp
+    timestamp="$(date -u +%Y%m%d%H%M%S)"
+
+    git -C "$UAT_GITHUB_SUBMODULE_PATH" checkout -B "$branch" origin/main >/dev/null 2>&1
+    mkdir -p "$UAT_GITHUB_SUBMODULE_PATH/.uat"
+    {
+        echo "UAT marker commit (GitHub)"
+        echo "Timestamp: $timestamp"
+        echo "Artifact: $file"
+    } > "$UAT_GITHUB_SUBMODULE_PATH/.uat/uat-run.txt"
+    git -C "$UAT_GITHUB_SUBMODULE_PATH" add .uat/uat-run.txt
+    git -C "$UAT_GITHUB_SUBMODULE_PATH" -c user.name="tfplan2md uat" -c user.email="uat@tfplan2md.invalid" commit -m "chore(uat): marker ${timestamp}" >/dev/null 2>&1 || true
+    git -C "$UAT_GITHUB_SUBMODULE_PATH" push origin HEAD:"$branch" --force >/dev/null 2>&1
     
     log_info "Creating PR in $UAT_GITHUB_REPO..."
     local pr_url
@@ -171,12 +217,17 @@ cmd_comment() {
 cmd_poll() {
     local pr_number=""
     local quiet=false
+    local json=false
     
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --quiet)
                 quiet=true
+                shift
+                ;;
+            --json)
+                json=true
                 shift
                 ;;
             *)
@@ -193,88 +244,122 @@ cmd_poll() {
     done
     
     if [[ -z "$pr_number" ]]; then
-        log_error "Usage: $0 poll <pr-number> [--quiet]"
+        log_error "Usage: $0 poll <pr-number> [--quiet] [--json]"
         exit 1
     fi
-    
-    if [[ "$quiet" != "true" ]]; then
-        log_info "Polling comments for PR #$pr_number in $UAT_GITHUB_REPO..."
+
+    # JSON output is intended for machine/agent consumption; keep it JSON-only.
+    if [[ "$json" == "true" ]]; then
+        quiet=false
     fi
     
-    # Get PR state (structured)
+    if [[ "$quiet" != "true" && "$json" != "true" ]]; then
+        log_info "Polling PR status for #$pr_number in $UAT_GITHUB_REPO..."
+    fi
+
+    # Read full PR JSON so agents can analyze raw comments and review state.
+    # We intentionally do NOT attempt brittle keyword matching on comment text.
+    local pr_json
+    pr_json=$(PAGER=cat gh pr view "$pr_number" \
+        --repo "$UAT_GITHUB_REPO" \
+        --json state,url,title,comments,reviews,labels \
+        2>/dev/null || echo "")
+    if [[ -z "$pr_json" ]]; then
+        if [[ "$quiet" == "true" ]]; then
+            echo "STATUS: ERROR"
+        else
+            log_error "Failed to read PR JSON. Ensure gh is authenticated and the PR exists."
+        fi
+        return 2
+    fi
+
     local pr_state
-    pr_state=$(PAGER=cat gh pr view "$pr_number" --repo "$UAT_GITHUB_REPO" --json state -q '.state' 2>/dev/null || echo "")
-    if [[ -z "$pr_state" ]]; then
-        log_error "Failed to read PR state. Ensure gh is authenticated and the PR exists."
-        return 2
-    fi
-    
-    if [[ "$pr_state" == "CLOSED" || "$pr_state" == "MERGED" ]]; then
-        if [[ "$quiet" == "true" ]]; then
-            echo "STATUS: CLOSED"
-        else
-            echo -e "${GREEN}✓ PR CLOSED${NC}"
-            echo "PR has been closed by Maintainer. UAT passed."
-        fi
-        return 0
-    fi
-    
-    # Get comments (structured) and check for approval keywords in NON-agent comments.
-    # Agent comments include the marker line: "This comment was generated by an AI agent."
-    local approval_found
-    approval_found=$(PAGER=cat gh pr view "$pr_number" --repo "$UAT_GITHUB_REPO" --json comments -q '.comments[]
-            | select((.body // "") | contains("This comment was generated by an AI agent.") | not)
-            | select((.body // "") | test("(?i)(approved|passed|accept|lgtm)"))
-            | .body' 2>/dev/null || true)
+    pr_state=$(echo "$pr_json" | jq -r '.state // ""' 2>/dev/null || echo "")
+    local pr_url
+    pr_url=$(echo "$pr_json" | jq -r '.url // ""' 2>/dev/null || echo "")
 
-    # Check for failure keywords in NON-agent comments.
-    local failure_found
-    failure_found=$(PAGER=cat gh pr view "$pr_number" --repo "$UAT_GITHUB_REPO" --json comments -q '.comments[]
-            | select((.body // "") | contains("This comment was generated by an AI agent.") | not)
-            | select((.body // "") | test("(?i)(fail|reject|regression|issue|bug|error)"))
-            | .body' 2>/dev/null || true)
+    # GitHub reviews are often unavailable when the PR author is the same account
+    # (e.g., agent pushes using the Maintainer account). Therefore, use labels as
+    # the platform-native approval/rejection signal.
+    local has_label_approved
+    has_label_approved=$(echo "$pr_json" | jq -r '[.labels[]?.name] | any(. == "uat-approved")' 2>/dev/null || echo "false")
 
-    if [[ "$quiet" != "true" ]]; then
-        echo ""
-        echo "=== Recent Comments (JSON) ==="
-        # Show up to the last 3 comments (author + truncated body). Avoid parsing formatted text output.
-        PAGER=cat gh pr view "$pr_number" --repo "$UAT_GITHUB_REPO" --json comments -q '(
-                if (.comments | length) == 0 then
-                    "(no comments)"
-                else
-                    .comments[-3:][]
-                    | "[\(.author.login // "unknown")]: \((.body // "") | gsub("\r"; "") | .[0:200])"
-                end
-            )' 2>/dev/null || echo "(failed to load comments)"
-        echo ""
-    fi
-    
-    if [[ -n "$failure_found" ]]; then
-        if [[ "$quiet" == "true" ]]; then
-            echo "STATUS: FAILED"
-        else
-            echo -e "${RED}✗ FAILURE DETECTED IN COMMENTS${NC}"
-            echo "Failure keyword found in comments (e.g. \"fail\", \"reject\", \"error\"). Stopping UAT."
-        fi
-        return 2
+    local has_label_rejected
+    has_label_rejected=$(echo "$pr_json" | jq -r '[.labels[]?.name] | any(. == "uat-rejected")' 2>/dev/null || echo "false")
+
+    # Still compute latest review state (best-effort) for informational output.
+    local latest_review_state
+    latest_review_state=$(echo "$pr_json" | jq -r '[.reviews[]? | select(.submittedAt != null)] | sort_by(.submittedAt) | last | .state // ""' 2>/dev/null || echo "")
+
+    # If requested, emit raw JSON (full comment/review bodies) for agent analysis.
+    if [[ "$json" == "true" ]]; then
+        echo "$pr_json"
     fi
 
-    if [[ -n "$approval_found" ]]; then
+    if [[ "$pr_state" == "MERGED" ]]; then
         if [[ "$quiet" == "true" ]]; then
             echo "STATUS: APPROVED"
-        else
-            echo -e "${GREEN}✓ APPROVAL DETECTED${NC}"
-            echo "Approval keyword found in comments. UAT passed."
+        elif [[ "$json" != "true" ]]; then
+            echo -e "${GREEN}✓ PR MERGED${NC}"
+            echo "PR has been merged."
+            [[ -n "$pr_url" ]] && echo "URL: $pr_url"
         fi
         return 0
     fi
-    
+
+    if [[ "$pr_state" == "CLOSED" ]]; then
+        if [[ "$quiet" == "true" ]]; then
+            echo "STATUS: CLOSED"
+        elif [[ "$json" != "true" ]]; then
+            echo -e "${RED}✗ PR CLOSED${NC}"
+            echo "PR has been closed."
+            [[ -n "$pr_url" ]] && echo "URL: $pr_url"
+        fi
+        return 2
+    fi
+
+    if [[ "$has_label_rejected" == "true" ]]; then
+        if [[ "$quiet" == "true" ]]; then
+            echo "STATUS: REJECTED"
+        elif [[ "$json" != "true" ]]; then
+            echo -e "${RED}✗ REJECTED${NC}"
+            echo "Label 'uat-rejected' is present."
+            [[ -n "$pr_url" ]] && echo "URL: $pr_url"
+        fi
+        return 2
+    fi
+
+    if [[ "$has_label_approved" == "true" ]]; then
+        if [[ "$quiet" == "true" ]]; then
+            echo "STATUS: APPROVED"
+        elif [[ "$json" != "true" ]]; then
+            echo -e "${GREEN}✓ APPROVED${NC}"
+            echo "Label 'uat-approved' is present."
+            [[ -n "$pr_url" ]] && echo "URL: $pr_url"
+        fi
+        return 0
+    fi
+
     if [[ "$quiet" == "true" ]]; then
         echo "STATUS: WAITING"
-    else
-        echo -e "${YELLOW}⏳ AWAITING FEEDBACK${NC}"
-        echo "No approval detected yet. Continue polling or check GitHub UI."
+        return 1
     fi
+
+    if [[ "$json" != "true" ]]; then
+        echo -e "${YELLOW}⏳ AWAITING REVIEW${NC}"
+        [[ -n "$pr_url" ]] && echo "URL: $pr_url"
+        echo "Approval labels: uat-approved=$has_label_approved, uat-rejected=$has_label_rejected"
+        echo "Latest review state (best-effort): ${latest_review_state:-none}"
+        echo ""
+        echo "=== Non-agent comments (raw) ==="
+        echo "$pr_json" | jq -r '.comments[]?
+            | select((.body // "") | contains("This comment was generated by an AI agent.") | not)
+            | "[\(.author.login // "unknown")]:\n\(.body // "")\n---"' || true
+        echo ""
+        echo "=== Reviews (raw) ==="
+        echo "$pr_json" | jq -r '.reviews[]? | "[\(.author.login // "unknown")] \(.state // ""): \(.body // "")"' || true
+    fi
+
     return 1
 }
 
@@ -287,12 +372,12 @@ cmd_cleanup() {
     fi
     
     log_info "Closing PR #$pr_number in $UAT_GITHUB_REPO..."
-    # Note: Do NOT use --delete-branch here. Branch deletion causes immediate
-    # checkout to main, which breaks subsequent commands that need scripts.
-    # Delete branches manually after both cleanups complete.
+    # Note: Do NOT use --delete-branch here. Branch deletion can switch the UAT repo
+    # to main unexpectedly. When using scripts/uat-run.sh, branch deletion is handled
+    # centrally via the UAT submodules during --cleanup-last.
     PAGER=cat gh pr close "$pr_number" --repo "$UAT_GITHUB_REPO" || log_warn "PR may already be closed"
-    
-    log_info "Cleanup complete. Remember to delete the remote branch manually."
+
+    log_info "Cleanup complete."
 }
 
 # Main dispatch
@@ -312,8 +397,9 @@ case "$action" in
         echo "Actions:"
         echo "  create <file> <test-description>  - Create a UAT PR with initial comment from <file>"
         echo "  comment <pr-number> <file>        - Add a comment to PR from <file>"
-        echo "  poll <pr-number> [--quiet]        - Poll for new comments and check for approval"
-        echo "                                       --quiet: Output only STATUS: APPROVED|WAITING|CLOSED|ERROR"
+        echo "  poll <pr-number> [--quiet] [--json] - Poll for new feedback and check for approval"
+        echo "                                       --quiet: Output only STATUS: APPROVED|WAITING|REJECTED|CLOSED|ERROR"
+        echo "                                       --json: Output raw PR JSON (comments + reviews + labels) for agent analysis"
         echo "  cleanup <pr-number>               - Close the PR after UAT completion"
         exit 1
         ;;

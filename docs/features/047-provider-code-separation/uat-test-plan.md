@@ -16,7 +16,7 @@ Verify that the restructuring of provider-specific code and templates doesn't br
 - **Rationale:** This plan contains resources from multiple providers (`azurerm`, `azuredevops`) and uses custom templates that were moved. Using the new `--render-target` flag verifies both the flag itself and the underlying platform-specific formatting.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify `artifacts/comprehensive-demo-github.md` on GitHub.
 3. Verify `artifacts/comprehensive-demo-azdo.md` on Azure DevOps.
 

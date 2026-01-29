@@ -47,9 +47,9 @@ Add the necessary C# helpers to Scriban to support principal type inference from
 Implement the resource-specific template for `azuread_user`.
 
 **Acceptance Criteria:**
-- [ ] Summary shows `👤 Display Name`, `🆔 UPN`, and `📧 Email` (if present).
-- [ ] Summary values are wrapped in `<code>`.
-- [ ] Table attributes `display_name`, `user_principal_name`, and `mail` use correct icons.
+- [x] Summary shows `👤 Display Name`, `🆔 UPN`, and `📧 Email` (if present).
+- [x] Summary values are wrapped in `<code>`.
+- [x] Table attributes `display_name`, `user_principal_name`, and `mail` use correct icons.
 
 **Dependencies:** Task 2
 

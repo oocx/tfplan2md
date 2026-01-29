@@ -2,7 +2,7 @@
 
 ![tfplan2md](website/assets/images/logo-full.svg)
 
-[![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![Coverage](assets/coverage-badge.svg)](docs/coverage/history.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![Coverage](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/assets/coverage-badge.svg)](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/docs/coverage/history.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 **📘 [Official Website](https://oocx.github.io/tfplan2md/)**
 
@@ -488,6 +488,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 | Workflow | Trigger | Purpose |
 |----------|---------|----------|
 | **PR Validation** | Pull requests to `main` | Format check, build, test, coverage enforcement, vulnerability scan |
+| **Coverage Data** | Push to `main` | Publish coverage badge + history to `coverage-data` branch |
 | **CI** | Push to `main` | Build, test, auto-version with [Versionize](https://github.com/versionize/versionize) |
 | **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
 
@@ -495,9 +496,9 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 Code coverage is automatically collected and enforced on every pull request:
 
-- **Coverage badge**: The [![Coverage](assets/coverage-badge.svg)](docs/coverage/history.json) badge in the README shows current line coverage percentage
+- **Coverage badge**: The [![Coverage](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/assets/coverage-badge.svg)](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/docs/coverage/history.json) badge in the README shows current line coverage percentage
 - **Coverage thresholds**: PRs must maintain or improve code coverage (currently 84.48% line coverage and 72.80% branch coverage)
-- **Coverage history**: Historical coverage data is tracked in [docs/coverage/history.json](docs/coverage/history.json)
+- **Coverage history**: Historical coverage data is published to the `coverage-data` branch at [docs/coverage/history.json](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/docs/coverage/history.json)
 - **Coverage reports**: Detailed HTML coverage reports are available as workflow artifacts
 - **Maintainer override**: PRs can bypass coverage requirements using the `coverage-override` label when justified
 

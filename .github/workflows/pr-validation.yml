@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
   checks: write
 
@@ -212,25 +212,20 @@ jobs:
             --report ./TestResults/coverage.cobertura.xml \
             --line-threshold 84.48 \
             --branch-threshold 72.80 \
-            --badge-output ./assets/coverage-badge.svg \
-            --history-output ./docs/coverage/history.json \
+            --badge-output ./TestResults/coverage-badge.svg \
+            --history-output ./TestResults/coverage-history.json \
             --commit-sha "${{ github.event.pull_request.head.sha }}" \
             --timestamp "${{ github.event.pull_request.updated_at }}" \
             --override-active "${{ steps.coverage_override.outputs.active }}"
 
-      - name: Commit coverage badge and history
-        if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && steps.coverage_badge_history.outcome == 'success'
-        run: |
-          if [ -n "$(git status --porcelain assets/coverage-badge.svg docs/coverage/history.json)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add assets/coverage-badge.svg docs/coverage/history.json
-            git commit -m "docs: update coverage badge and history"
-            git check-ref-format "refs/heads/${GITHUB_HEAD_REF}"
-            git push origin "HEAD:refs/heads/${GITHUB_HEAD_REF}"
-          else
-            echo "No coverage badge or history changes to commit."
-          fi
+      - name: Upload coverage badge and history
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-badge-history
+          path: |
+            ./TestResults/coverage-badge.svg
+            ./TestResults/coverage-history.json
 
       - name: Post coverage summary comment
         if: steps.filter.outputs.changed == 'true' && (success() || failure()) && github.event.pull_request.head.repo.full_name == github.repository

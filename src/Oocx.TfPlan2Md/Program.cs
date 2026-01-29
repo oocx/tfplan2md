@@ -10,6 +10,7 @@ using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureAD;
 using Oocx.TfPlan2Md.Providers.AzApi;
 using Oocx.TfPlan2Md.Providers.AzureDevOps;
 using Oocx.TfPlan2Md.Providers.AzureRM;
@@ -100,6 +101,7 @@ static async Task<int> RunAsync(CliOptions options)
     // Create and configure provider registry
     var providerRegistry = new ProviderRegistry();
     providerRegistry.RegisterProvider(new AzApiModule());
+    providerRegistry.RegisterProvider(new AzureADModule());
     providerRegistry.RegisterProvider(new AzureRMModule(
         largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget),
         principalMapper: principalMapper));

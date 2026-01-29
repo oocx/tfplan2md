@@ -74,6 +74,32 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Attempts to resolve a principal type from the mapping metadata.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="principalId">Principal identifier.</param>
+    /// <param name="principalMapper">Mapper used to infer principal types.</param>
+    /// <returns>ScriptObject indicating whether a type was found and the resolved type.</returns>
+    private static ScriptObject TryGetPrincipalType(string? principalId, IPrincipalMapper principalMapper)
+    {
+        if (string.IsNullOrWhiteSpace(principalId))
+        {
+            return new ScriptObject
+            {
+                ["found"] = false,
+                ["type"] = string.Empty
+            };
+        }
+
+        var found = principalMapper.TryGetPrincipalType(principalId, out var principalType);
+        return new ScriptObject
+        {
+            ["found"] = found,
+            ["type"] = principalType ?? string.Empty
+        };
+    }
+
+    /// <summary>
     /// Resolves a principal name from an identifier using the configured mapper.
     /// </summary>
     /// <param name="principalId">Principal identifier.</param>

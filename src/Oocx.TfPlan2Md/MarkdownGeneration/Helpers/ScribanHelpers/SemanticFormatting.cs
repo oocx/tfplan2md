@@ -64,6 +64,10 @@ public static partial class ScribanHelpers
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <returns>Plain text value with semantic icons, no markdown or HTML wrapping.</returns>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     public static string FormatAttributeValuePlain(string? attributeName, string? value, string? providerName)
     {
         _ = providerName;
@@ -109,6 +113,11 @@ public static partial class ScribanHelpers
         if (TryFormatRoleDefinition(normalizedName, normalizedValue, ValueFormatContext.Table, out var roleFormatted))
         {
             return roleFormatted.Trim('`');
+        }
+
+        if (TryFormatIdentityAttributePlain(normalizedName, normalizedValue, out var identityFormatted))
+        {
+            return identityFormatted;
         }
 
         if (TryFormatSubscriptionAttributePlain(normalizedName, normalizedValue, out var subscriptionFormatted))
@@ -193,6 +202,12 @@ public static partial class ScribanHelpers
         if (TryFormatRoleDefinition(attributeName, value, context, out var roleFormatted))
         {
             formattedValue = roleFormatted;
+            return true;
+        }
+
+        if (TryFormatIdentityAttribute(attributeName, value, context, out var identityFormatted))
+        {
+            formattedValue = identityFormatted;
             return true;
         }
 

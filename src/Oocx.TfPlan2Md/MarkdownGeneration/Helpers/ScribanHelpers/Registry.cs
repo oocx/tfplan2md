@@ -27,6 +27,8 @@ public static partial class ScribanHelpers
         scriptObject.Import("format_value", new Func<string?, string?, string>(FormatValue));
         scriptObject.Import("format_code_summary", new Func<string?, string>(FormatCodeSummary));
         scriptObject.Import("format_code_table", new Func<string?, string>(FormatCodeTable));
+        scriptObject.Import("format_icon_value_summary", new Func<string?, string>(FormatIconValueSummary));
+        scriptObject.Import("format_icon_value_table", new Func<string?, string>(FormatIconValueTable));
         scriptObject.Import("format_attribute_value_summary", new Func<string?, string?, string?, string>(FormatAttributeValueSummary));
         scriptObject.Import("format_attribute_value_table", new Func<string?, string?, string?, string>(FormatAttributeValueTable));
         scriptObject.Import("format_attribute_value_plain", new Func<string?, string?, string?, string>(FormatAttributeValuePlain));
@@ -38,6 +40,7 @@ public static partial class ScribanHelpers
         scriptObject.Import("azure_scope_info", new Func<string?, ScriptObject>(GetScopeInfo));
         scriptObject.Import("azure_role_info", new Func<string?, string?, ScriptObject>(GetRoleInfo));
         scriptObject.Import("azure_principal_info", new Func<string?, string?, string?, ScriptObject>((id, type, addr) => GetPrincipalInfo(id, type, principalMapper, addr)));
+        scriptObject.Import("try_get_principal_type", new Func<string?, ScriptObject>(id => TryGetPrincipalType(id, principalMapper)));
         scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
     }
 }

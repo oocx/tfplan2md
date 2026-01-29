@@ -10,8 +10,8 @@ using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
-using Oocx.TfPlan2Md.Providers.AzureAD;
 using Oocx.TfPlan2Md.Providers.AzApi;
+using Oocx.TfPlan2Md.Providers.AzureAD;
 using Oocx.TfPlan2Md.Providers.AzureDevOps;
 using Oocx.TfPlan2Md.Providers.AzureRM;
 

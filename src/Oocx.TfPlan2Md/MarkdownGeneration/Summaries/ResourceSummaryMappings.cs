@@ -66,11 +66,6 @@ internal static class ResourceSummaryMappings
         // azuredevops
         ["azuredevops_project"] = ["name", "visibility"],
 
-        // azuread
-        ["azuread_group"] = ["display_name", "security_enabled"],
-        ["azuread_user"] = ["display_name", "user_principal_name"],
-        ["azuread_service_principal"] = ["display_name", "application_id"],
-
         // azapi
         ["azapi_resource"] = ["name", "type", "parent_id"],
         ["azapi_resource_action"] = ["action", "resource_id"],
@@ -89,7 +84,6 @@ internal static class ResourceSummaryMappings
     {
         ["azurerm"] = ["name", "resource_group_name", "location"],
         ["azuredevops"] = ["name", "project_id"],
-        ["azuread"] = ["display_name"],
         ["azapi"] = ["name", "type"],
         ["msgraph"] = ["url", "body.displayName"]
     };

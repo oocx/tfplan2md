@@ -92,8 +92,8 @@ Implement the resource-specific template for `azuread_service_principal`.
 Implement the resource-specific template for `azuread_group_without_members`.
 
 **Acceptance Criteria:**
-- [ ] Summary shows `👥 Group Name`, `🆔 Display Name`, and Description (if present).
-- [ ] No member counts are displayed.
+- [x] Summary shows `👥 Group Name`, `🆔 Display Name`, and Description (if present).
+- [x] No member counts are displayed.
 
 **Dependencies:** Task 2
 

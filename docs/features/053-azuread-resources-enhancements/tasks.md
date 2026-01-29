@@ -31,9 +31,9 @@ Establish the foundation for Azure AD resource-specific rendering by creating th
 Add the necessary C# helpers to Scriban to support principal type inference from the mapping file and consistent icon+value formatting.
 
 **Acceptance Criteria:**
-- [ ] `TryGetPrincipalType` added to Scriban helpers (via `IPrincipalMapper`).
-- [ ] `FormatIconValue` or similar helper ensures non-breaking space (U+00A0) and `<code>` wrapping.
-- [ ] Semantic formatting rules added for `user_principal_name` (🆔), `mail` (📧), and `user_email_address` (📧).
+- [x] `TryGetPrincipalType` added to Scriban helpers (via `IPrincipalMapper`).
+- [x] `FormatIconValue` or similar helper ensures non-breaking space (U+00A0) and `<code>` wrapping.
+- [x] Semantic formatting rules added for `user_principal_name` (🆔), `mail` (📧), and `user_email_address` (📧).
 
 **Dependencies:** Task 1
 

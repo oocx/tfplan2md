@@ -6,6 +6,12 @@ on:
     paths-ignore:
       - 'docs/**'
       - '.github/**'
+      - 'scripts/**'
+      - 'website/**'
+      - 'uat-repos/**'
+      - 'TestData/**'
+      - 'assets/**'
+      - 'artifacts/**'
 
 concurrency:
   group: versioning-${{ github.ref }}
@@ -44,8 +50,47 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Detect release-worthy changes
+        id: release_needed
+        run: |
+          set -euo pipefail
+
+          # We only want to create a new version/tag when the published Docker image
+          # would actually change. The final image contains the NativeAOT binary and
+          # some example files (see src/Dockerfile).
+          #
+          # This check is intentionally conservative and focuses on files that can
+          # affect the final runtime image contents.
+          last_tag=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)
+          if [ -z "$last_tag" ]; then
+            echo "No previous v* tag found; allowing versionize to run."
+            echo "release_needed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Last tag: $last_tag"
+          changed=$(git diff --name-only "$last_tag"..HEAD || true)
+          if [ -z "$changed" ]; then
+            echo "No changes detected since $last_tag; skipping versionize."
+            echo "release_needed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Paths that can affect the published Docker image
+          releasable=$(echo "$changed" | grep -E '^(src/|examples/|dotnet-tools\.json$|\.dockerignore$)' || true)
+          if [ -z "$releasable" ]; then
+            echo "Only non-release-impacting files changed since $last_tag; skipping versionize."
+            echo "release_needed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Release-impacting changes detected:"
+          echo "$releasable"
+          echo "release_needed=true" >> "$GITHUB_OUTPUT"
+
       - name: Versionize
         id: versionize
+        if: steps.release_needed.outputs.release_needed == 'true'
         run: |
           versionize --exit-insignificant-commits --skip-dirty
           echo "version_bumped=true" >> $GITHUB_OUTPUT

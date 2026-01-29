@@ -20,6 +20,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// takes significant time.
 /// </remarks>
 [Timeout(120_000)] // 2 minutes - accounts for Docker container startup
+[Category("Docker")]
 public class MarkdownLintIntegrationTests
 {
     private static readonly Lazy<MarkdownLintFixture> s_tunitFixture = new(

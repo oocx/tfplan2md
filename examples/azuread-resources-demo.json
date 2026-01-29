@@ -1,0 +1,131 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_user.jane",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_user",
+      "name": "jane",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Jane Doe",
+          "user_principal_name": "jane.doe@example.com",
+          "mail": "jane.doe@example.com"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_invitation.external_user",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_invitation",
+      "name": "external_user",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "user_email_address": "contractor@external.com",
+          "user_type": "Guest"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.devops_jane",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "devops_jane",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": "group-100",
+          "member_object_id": "user-100"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.platform_team",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "platform_team",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Platform Team",
+          "mail_nickname": "Platform Engineering",
+          "description": "Core platform engineering team",
+          "members": [
+            "user-100",
+            "user-101",
+            "group-100",
+            "spn-200",
+            "unknown-999"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_service_principal.terraform_spn",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_service_principal",
+      "name": "terraform_spn",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "terraform-spn",
+          "application_id": "app-123-456",
+          "description": "Terraform automation service principal"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_without_members.external_group",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_without_members",
+      "name": "external_group",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "External Partners",
+          "mail_nickname": "External Partners Group",
+          "description": "External partner access"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

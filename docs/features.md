@@ -592,7 +592,7 @@ Each resource change displays a concise one-line summary above the `<details>` s
 
 - **CREATE**: Shows resource name and key identifying attributes based on resource type
   - Example: `` `sttfplan2mdlogs` in `rg-tfplan2md-demo` (eastus) | Standard LRS ``
-  - Uses resource-specific attribute mappings for 43 azurerm resources, plus fallbacks for azuredevops, azuread, azapi, and msgraph providers
+  - Uses resource-specific attribute mappings for 43 azurerm resources, plus fallbacks for azuredevops, azapi, and msgraph providers (Azure AD summaries are handled by provider templates)
 
 ### Large Attribute Value Display
 
@@ -634,7 +634,7 @@ tfplan2md plan.json --render-target github
 The summary builder includes intelligent attribute selection for multiple providers:
 - **azurerm**: 43 resource types with specific mappings (storage accounts, VMs, networks, databases, etc.)
 - **azuredevops**: Projects and pipelines
-- **azuread**: Groups, users, service principals
+- **azuread**: Users, invitations, groups (with and without members), group membership, service principals
 - **azapi**: Generic resources and actions
 - **msgraph**: Microsoft Graph API resources
 

@@ -78,6 +78,10 @@ jobs:
 
           # Paths that can affect the published Docker image
           releasable=$(echo "$changed" | grep -E '^(src/|examples/|dotnet-tools\.json$|\.dockerignore$)' || true)
+
+          # Exclude paths that do not change the published runtime image (but may still affect build/test).
+          # We intentionally do NOT create new tags/releases for test-only or generated test output changes.
+          releasable=$(echo "$releasable" | grep -Ev '^(src/tests/|src/tools/|src/TestResults/|src/src/TestResults/)' || true)
           if [ -z "$releasable" ]; then
             echo "Only non-release-impacting files changed since $last_tag; skipping versionize."
             echo "release_needed=false" >> "$GITHUB_OUTPUT"

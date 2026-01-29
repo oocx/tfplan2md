@@ -107,9 +107,9 @@ Implement the resource-specific template for `azuread_group_without_members`.
 Implement the resource-specific template for `azuread_group_member` with relationship visualization.
 
 **Acceptance Criteria:**
-- [ ] Summary shows `👥 Group` → `[Icon] Member`.
-- [ ] Member icon adapts based on inferred type (User, Group, ServicePrincipal).
-- [ ] Gracefully handles missing `member_object_id`.
+- [x] Summary shows `👥 Group` → `[Icon] Member`.
+- [x] Member icon adapts based on inferred type (User, Group, ServicePrincipal).
+- [x] Gracefully handles missing `member_object_id`.
 
 **Dependencies:** Task 2
 

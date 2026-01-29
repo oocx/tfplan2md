@@ -139,8 +139,8 @@ Implement the resource-specific template for `azuread_group` with member counts.
 Remove legacy hardcoded Azure AD mappings and verify the new provider takes over.
 
 **Acceptance Criteria:**
-- [ ] Hardcoded `azuread_*` entries removed from `ResourceSummaryMappings.cs`.
-- [ ] Verify that Azure AD resources now use the new resource-specific templates for summaries.
+- [x] Hardcoded `azuread_*` entries removed from `ResourceSummaryMappings.cs`.
+- [x] Verify that Azure AD resources now use the new resource-specific templates for summaries.
 
 **Dependencies:** Tasks 3-8
 

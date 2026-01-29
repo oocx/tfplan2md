@@ -46,7 +46,7 @@ jobs:
             --configuration Release \
             --results-directory ${{ github.workspace }}/TestResults \
             -- \
-            --treenode-filter "/**[Category!=Docker]&[Category!=MarkdownLint]" \
+            --treenode-filter "/**[Category!=Docker]" \
             --report-trx \
             --coverage \
             --coverage-output coverage.cobertura.xml \

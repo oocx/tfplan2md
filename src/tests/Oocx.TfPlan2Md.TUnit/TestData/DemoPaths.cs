@@ -46,6 +46,11 @@ public static class DemoPaths
     public static string AzureAdGroupPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-plan.json");
 
     /// <summary>
+    /// Gets the path to the Azure AD user test plan JSON file.
+    /// </summary>
+    public static string AzureAdUserPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-user-plan.json");
+
+    /// <summary>
     /// Gets the path to the Azure AD principal mapping file for tests.
     /// </summary>
     public static string AzureAdPrincipalMappingPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "principal-mapping-azuread.json");

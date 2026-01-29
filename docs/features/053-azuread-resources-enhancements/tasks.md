@@ -154,11 +154,11 @@ Remove legacy hardcoded Azure AD mappings and verify the new provider takes over
 Finalize the feature with tests, UAT artifacts, and documentation updates.
 
 **Acceptance Criteria:**
-- [ ] Unit tests for each new template in `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/`.
-- [ ] `examples/azuread-resources-demo.json` and `examples/principal-mapping-azuread.json` created.
-- [ ] `artifacts/azuread-enhancements-demo.md` generated.
-- [ ] Existing snapshot tests updated (`SNAPSHOT_UPDATE_OK`).
-- [ ] Documentation updated to reflect Azure AD provider support.
+- [x] Unit tests for each new template in `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/`.
+- [x] `examples/azuread-resources-demo.json` and `examples/principal-mapping-azuread.json` created.
+- [x] `artifacts/azuread-enhancements-demo.md` generated.
+- [x] Existing snapshot tests updated (`SNAPSHOT_UPDATE_OK`).
+- [x] Documentation updated to reflect Azure AD provider support.
 
 **Dependencies:** Task 9
 

@@ -1,0 +1,110 @@
+{{~## Template for azuread_group_member
+     Provides group-to-member summaries with identity icons.
+     Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+~}}
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+{{~ state = change.after_json ? change.after_json : change.before_json ~}}
+{{~ group_id = state && state.group_object_id ? state.group_object_id : "" ~}}
+{{~ member_id = state && state.member_object_id ? state.member_object_id : "" ~}}
+{{~ group_info = azure_principal_info group_id "Group" change.address ~}}
+{{~ group_name = group_info.name ~}}
+{{~ group_is_mapped = group_name != "" && group_name != group_id ~}}
+{{~ if group_is_mapped ~}}
+{{~ group_summary = format_icon_value_summary "👥 " + group_name ~}}
+{{~ group_summary = group_summary + " (" + format_code_summary(group_id) + ")" ~}}
+{{~ else ~}}
+{{~ group_summary = format_code_summary(group_id) ~}}
+{{~ end ~}}
+{{~ if member_id != "" ~}}
+{{~ member_type_info = try_get_principal_type member_id ~}}
+{{~ member_type = member_type_info.found ? member_type_info.type : "" ~}}
+{{~ member_info = azure_principal_info member_id member_type change.address ~}}
+{{~ member_name = member_info.name ~}}
+{{~ member_is_mapped = member_name != "" && member_name != member_id ~}}
+{{~ member_icon = member_type == "Group" ? "👥" : member_type == "ServicePrincipal" ? "💻" : member_type == "User" ? "👤" : "" ~}}
+{{~ if member_is_mapped && member_icon != "" ~}}
+{{~ member_summary = format_icon_value_summary member_icon + " " + member_name ~}}
+{{~ member_summary = member_summary + " (" + format_code_summary(member_id) + ")" ~}}
+{{~ else if member_is_mapped ~}}
+{{~ member_summary = format_code_summary(member_name) + " (" + format_code_summary(member_id) + ")" ~}}
+{{~ else ~}}
+{{~ member_summary = format_code_summary(member_id) ~}}
+{{~ end ~}}
+{{~ end ~}}
+<summary>{{ change.action_symbol }} azuread_group_member <b>{{ format_code_summary(change.name) }}</b> — {{ group_summary }}{{ if member_id != "" }} → {{ member_summary }}{{ end }}</summary>
+<br>
+
+{{ small_attrs = [] }}
+{{ large_attrs = [] }}
+{{ for attr in change.attribute_changes }}
+{{ if attr.is_large }}
+{{ large_attrs = large_attrs + [attr] }}
+{{ else }}
+{{ small_attrs = small_attrs + [attr] }}
+{{ end }}
+{{ end }}
+
+{{ if small_attrs.size > 0 }}
+{{ if change.action == "create" }}
+| Attribute | Value |
+| ----------- | ------- |
+{{ for attr in small_attrs -}}
+{{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
+{{ value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
+{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
+{{ end -}}
+{{ end -}}
+{{ end -}}
+
+{{ else if change.action == "delete" }}
+| Attribute | Value |
+| ----------- | ------- |
+{{ for attr in small_attrs -}}
+{{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
+{{ value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
+{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
+{{ end -}}
+{{ end -}}
+{{ end -}}
+
+{{ else }}
+| Attribute | Before | After |
+| ----------- | -------- | ------- |
+{{ for attr in small_attrs -}}
+{{ before_value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
+{{ after_value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
+| {{ attr.name | escape_markdown }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
+{{ end -}}
+{{ end }}
+{{ end }}
+
+{{ if change.tags_badges }}
+{{ change.tags_badges }}
+{{ end }}
+
+{{ if large_attrs.size > 0 }}
+{{ if small_attrs.size > 0 || change.tags_badges }}<br/>
+<details>
+<summary>{{ large_attributes_summary(large_attrs) }}</summary>
+
+{{ for attr in large_attrs }}
+##### **{{ attr.name | escape_markdown }}:**
+
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
+
+{{ end }}
+
+</details>
+{{ else }}
+{{ large_attributes_summary(large_attrs) }}
+
+{{ for attr in large_attrs }}
+##### **{{ attr.name | escape_markdown }}:**
+
+{{ format_large_value(attr.before, attr.after, large_value_format) }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+
+</details>

@@ -1,0 +1,10 @@
+{
+  "users": {
+    "user-001": "Jane Doe"
+  },
+  "groups": {
+    "group-001": "DevOps Team",
+    "group-002": "Platform Team"
+  },
+  "servicePrincipals": {}
+}

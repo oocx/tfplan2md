@@ -46,8 +46,9 @@
   <ItemGroup>
     <EmbeddedResource Include="MarkdownGeneration/Templates/**/*.sbn" Exclude="MarkdownGeneration/Templates/azapi/**/*.sbn;MarkdownGeneration/Templates/azurerm/**/*.sbn;MarkdownGeneration/Templates/azuredevops/**/*.sbn" />
     <EmbeddedResource Include="Providers/AzApi/Templates/**/*.sbn" />
-    <EmbeddedResource Include="Providers/AzureRM/Templates/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzureAD/Templates/**/*.sbn" />
     <EmbeddedResource Include="Providers/AzureDevOps/Templates/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzureRM/Templates/**/*.sbn" />
     <EmbeddedResource Include="Platforms/Azure/AzureRoleDefinitions.json" />
     <EmbeddedResource Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" />
   </ItemGroup>

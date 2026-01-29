@@ -14,7 +14,7 @@ Verify that the NativeAOT-compiled version of `tfplan2md` renders reports correc
 ## Test Steps
 1. Build the AOT-compiled Docker image locally.
 2. Generate the `artifacts/comprehensive-demo.md` using the AOT-built container.
-3. Run the UAT simulation using the `UAT Tester` agent with this artifact.
+3. Run UAT using the `UAT Tester` agent with this artifact.
 4. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

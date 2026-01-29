@@ -12,7 +12,7 @@ Verify that the visual enhancements (borders, icons, metadata) render correctly 
 - **Rationale:** Need a plan with multiple resource types (including Firewall/NSG) and various naming attributes to verify all visual changes.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 3. Manually run the screenshot tool on the generated HTML to verify partial capture.
 

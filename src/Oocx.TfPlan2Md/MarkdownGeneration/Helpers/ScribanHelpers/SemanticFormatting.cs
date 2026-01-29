@@ -64,6 +64,10 @@ public static partial class ScribanHelpers
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <returns>Plain text value with semantic icons, no markdown or HTML wrapping.</returns>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     public static string FormatAttributeValuePlain(string? attributeName, string? value, string? providerName)
     {
         _ = providerName;
@@ -111,6 +115,16 @@ public static partial class ScribanHelpers
             return roleFormatted.Trim('`');
         }
 
+        if (TryFormatIdentityAttributePlain(normalizedName, normalizedValue, out var identityFormatted))
+        {
+            return identityFormatted;
+        }
+
+        if (TryFormatSubscriptionAttributePlain(normalizedName, normalizedValue, out var subscriptionFormatted))
+        {
+            return subscriptionFormatted;
+        }
+
         if (TryFormatNameAttributePlain(normalizedName, normalizedValue, out var nameFormatted))
         {
             return nameFormatted;
@@ -132,6 +146,85 @@ public static partial class ScribanHelpers
         }
 
         return normalizedValue;
+    }
+
+    /// <summary>
+    /// Attempts to apply semantic formatting rules for known attribute patterns.
+    /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context (table or summary).</param>
+    /// <param name="formattedValue">The formatted value when a semantic match is found.</param>
+    /// <returns><c>true</c> when a semantic formatter applied; otherwise <c>false</c>.</returns>
+    private static bool TryFormatSemanticValue(
+        string attributeName,
+        string value,
+        ValueFormatContext context,
+        [NotNullWhen(true)] out string? formattedValue)
+    {
+        if (TryFormatBoolean(value, context, out var booleanFormatted))
+        {
+            formattedValue = booleanFormatted;
+            return true;
+        }
+
+        if (TryFormatAccess(attributeName, value, context, out var accessFormatted))
+        {
+            formattedValue = accessFormatted;
+            return true;
+        }
+
+        if (TryFormatDirection(attributeName, value, context, out var directionFormatted))
+        {
+            formattedValue = directionFormatted;
+            return true;
+        }
+
+        if (TryFormatProtocol(attributeName, value, context, out var protocolFormatted))
+        {
+            formattedValue = protocolFormatted;
+            return true;
+        }
+
+        if (TryFormatPort(attributeName, value, context, out var portFormatted))
+        {
+            formattedValue = portFormatted;
+            return true;
+        }
+
+        if (TryFormatPrincipalType(attributeName, value, context, out var principalTypeFormatted))
+        {
+            formattedValue = principalTypeFormatted;
+            return true;
+        }
+
+        if (TryFormatRoleDefinition(attributeName, value, context, out var roleFormatted))
+        {
+            formattedValue = roleFormatted;
+            return true;
+        }
+
+        if (TryFormatIdentityAttribute(attributeName, value, context, out var identityFormatted))
+        {
+            formattedValue = identityFormatted;
+            return true;
+        }
+
+        if (TryFormatSubscriptionAttribute(attributeName, value, context, out var subscriptionFormatted))
+        {
+            formattedValue = subscriptionFormatted;
+            return true;
+        }
+
+        if (TryFormatNameAttribute(attributeName, value, context, out var nameFormatted))
+        {
+            formattedValue = nameFormatted;
+            return true;
+        }
+
+        formattedValue = null;
+        return false;
     }
 
     /// <summary>
@@ -157,44 +250,9 @@ public static partial class ScribanHelpers
         var normalizedValue = value.Trim();
         var normalizedName = attributeName ?? string.Empty;
 
-        if (TryFormatBoolean(normalizedValue, context, out var booleanFormatted))
+        if (TryFormatSemanticValue(normalizedName, normalizedValue, context, out var semanticFormatted))
         {
-            return booleanFormatted;
-        }
-
-        if (TryFormatAccess(normalizedName, normalizedValue, context, out var accessFormatted))
-        {
-            return accessFormatted;
-        }
-
-        if (TryFormatDirection(normalizedName, normalizedValue, context, out var directionFormatted))
-        {
-            return directionFormatted;
-        }
-
-        if (TryFormatProtocol(normalizedName, normalizedValue, context, out var protocolFormatted))
-        {
-            return protocolFormatted;
-        }
-
-        if (TryFormatPort(normalizedName, normalizedValue, context, out var portFormatted))
-        {
-            return portFormatted;
-        }
-
-        if (TryFormatPrincipalType(normalizedName, normalizedValue, context, out var principalTypeFormatted))
-        {
-            return principalTypeFormatted;
-        }
-
-        if (TryFormatRoleDefinition(normalizedName, normalizedValue, context, out var roleFormatted))
-        {
-            return roleFormatted;
-        }
-
-        if (TryFormatNameAttribute(normalizedName, normalizedValue, context, out var nameFormatted))
-        {
-            return nameFormatted;
+            return semanticFormatted;
         }
 
         if (value.Equals("*", StringComparison.OrdinalIgnoreCase))

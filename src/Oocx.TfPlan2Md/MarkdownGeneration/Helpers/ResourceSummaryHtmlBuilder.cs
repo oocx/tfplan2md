@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
@@ -20,6 +21,10 @@ internal static class ResourceSummaryHtmlBuilder
     /// </summary>
     /// <param name="model">Resource change model containing the source data.</param>
     /// <returns>HTML string safe for use inside a summary element.</returns>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Feature formatting logic for docs/features/051-display-enhancements/specification.md.")]
     public static string BuildSummaryHtml(ResourceChangeModel model)
     {
         var state = model.AfterJson ?? model.BeforeJson;
@@ -29,9 +34,9 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("resource_group_name", out var resourceGroup);
         flatState.TryGetValue("location", out var location);
         flatState.TryGetValue("address_space[0]", out var addressSpace);
-
+        flatState.TryGetValue("subscription", out var subscriptionName);
+        flatState.TryGetValue("subscription_id", out var subscriptionId);
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
-
         var detailParts = new List<string>();
 
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
@@ -58,6 +63,16 @@ internal static class ResourceSummaryHtmlBuilder
         if (!string.IsNullOrWhiteSpace(addressSpace))
         {
             detailParts.Add(FormatAttributeValueSummary("address_space[0]", addressSpace!, null));
+        }
+
+        if (!string.IsNullOrWhiteSpace(subscriptionName))
+        {
+            detailParts.Add(FormatAttributeValueSummary("subscription", subscriptionName!, null));
+        }
+
+        if (!string.IsNullOrWhiteSpace(subscriptionId))
+        {
+            detailParts.Add(FormatAttributeValueSummary("subscription_id", subscriptionId!, null));
         }
 
         if (!string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))

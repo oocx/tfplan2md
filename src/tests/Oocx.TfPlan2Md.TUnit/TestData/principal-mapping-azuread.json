@@ -1,0 +1,16 @@
+{
+  "users": {
+    "user-001": "Jane Doe",
+    "user-002": "John Smith",
+    "user-003": "Priya Patel"
+  },
+  "groups": {
+    "group-001": "DevOps Team",
+    "group-002": "Platform Team",
+    "group-010": "Security Team",
+    "group-011": "Operations Team"
+  },
+  "servicePrincipals": {
+    "spn-100": "Terraform Automation"
+  }
+}

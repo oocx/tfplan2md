@@ -56,6 +56,7 @@ internal static class ResourceSummaryMappings
         ["azurerm_firewall"] = ["name", "resource_group_name", "location", "sku_name"],
         ["azurerm_express_route_circuit"] = ["name", "resource_group_name", "location", "service_provider_name"],
         ["azurerm_api_management"] = ["name", "resource_group_name", "location", "sku_name"],
+        ["azurerm_subscription"] = ["subscription", "subscription_id"],
         ["azurerm_databricks_workspace"] = ["name", "resource_group_name", "location", "sku"],
         ["azurerm_automation_account"] = ["name", "resource_group_name", "location", "sku_name"],
         ["azurerm_recovery_services_vault"] = ["name", "resource_group_name", "location", "sku"],
@@ -64,11 +65,6 @@ internal static class ResourceSummaryMappings
 
         // azuredevops
         ["azuredevops_project"] = ["name", "visibility"],
-
-        // azuread
-        ["azuread_group"] = ["display_name", "security_enabled"],
-        ["azuread_user"] = ["display_name", "user_principal_name"],
-        ["azuread_service_principal"] = ["display_name", "application_id"],
 
         // azapi
         ["azapi_resource"] = ["name", "type", "parent_id"],
@@ -88,7 +84,6 @@ internal static class ResourceSummaryMappings
     {
         ["azurerm"] = ["name", "resource_group_name", "location"],
         ["azuredevops"] = ["name", "project_id"],
-        ["azuread"] = ["display_name"],
         ["azapi"] = ["name", "type"],
         ["msgraph"] = ["url", "body.displayName"]
     };

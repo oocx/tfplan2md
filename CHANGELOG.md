@@ -5,6 +5,131 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.5.0"></a>
+## [1.5.0](https://github.com/oocx/tfplan2md/compare/v1.4.0...v1.5.0) (2026-01-29)
+
+### ✨ Features
+
+* add azure ad helper formatting ([7bbfa94](https://github.com/oocx/tfplan2md/commit/7bbfa9474d8b932878876b2bafb61a844b031ca8))
+* add Azure AD provider module ([d9b5364](https://github.com/oocx/tfplan2md/commit/d9b53644a5f1a1dfab093cbba2a6c236b5a69153))
+* add azuread group member counts ([14ebe9b](https://github.com/oocx/tfplan2md/commit/14ebe9b61426d0d680d27a231974b8d1f80bcf03))
+* add azuread group member template ([bcdab29](https://github.com/oocx/tfplan2md/commit/bcdab293b96bd2e24b3d3b26df91bc9d1d66d5a8))
+* add azuread group without members template ([82ce0ff](https://github.com/oocx/tfplan2md/commit/82ce0fff3d14ab61bba8bd7256b283b4d5cb197d))
+* add azuread invitation template ([988ee14](https://github.com/oocx/tfplan2md/commit/988ee1452dd3410db05dc089db97227fbaa92360))
+* add azuread service principal template ([b897ea1](https://github.com/oocx/tfplan2md/commit/b897ea10cb302f2b7b479a91685a831d71f855a4))
+* add azuread user template ([8ef0836](https://github.com/oocx/tfplan2md/commit/8ef08365d903477a3e731dffd3f8704435e21cc0))
+
+### ♻️ Refactoring
+
+* remove azuread summary mappings ([0cb99f5](https://github.com/oocx/tfplan2md/commit/0cb99f5e989e92658799adc1a5022ce18c259a79))
+
+### 📚 Documentation
+
+* add architecture for 053-azuread-resources-enhancements ([cafe892](https://github.com/oocx/tfplan2md/commit/cafe892dc024135a7c8628ae890ecf8f4a07326c))
+* add azuread demo assets ([96f7dec](https://github.com/oocx/tfplan2md/commit/96f7decb4635b68ebcf62ab8b127ff09f3f33267))
+* add code review for azuread-resources-enhancements ([581fa39](https://github.com/oocx/tfplan2md/commit/581fa3998ac5448f3c2798636ef94ee68044b4af))
+* add feature specification for 053-azuread-resources-enhancements ([839ee24](https://github.com/oocx/tfplan2md/commit/839ee24492410f370eaf133fb1ac9083abdcab1e))
+* add tasks for enhanced azure ad resource display ([2782afe](https://github.com/oocx/tfplan2md/commit/2782afec4a8f5e87e6ac639f015ab31f662e9102))
+* add test plans for azuread-resources-enhancements ([fe247a2](https://github.com/oocx/tfplan2md/commit/fe247a28f375558eb4a69675f65e5825764908e3))
+* add UAT report for Azure AD resource enhancements ([86f17d0](https://github.com/oocx/tfplan2md/commit/86f17d01016f153817f52dbd9282d4ab03904e6c))
+* mark task 1 complete ([e33413e](https://github.com/oocx/tfplan2md/commit/e33413ef231f773ed77e323ba3bea81a2c5662a9))
+* mark task 10 complete ([1f9f96a](https://github.com/oocx/tfplan2md/commit/1f9f96a96164245517015b851a8d60ee3f018516))
+* mark task 2 complete ([b3474c1](https://github.com/oocx/tfplan2md/commit/b3474c100f623d4c8bdd45d654c4e45597bad7d5))
+* mark task 3 complete ([38e5ec4](https://github.com/oocx/tfplan2md/commit/38e5ec4665aa783723579af148aca5ea833c3dca))
+* mark task 4 complete ([6746c44](https://github.com/oocx/tfplan2md/commit/6746c446d9669eda06ce75a9a49a542bbb001111))
+* mark task 5 complete ([924aa59](https://github.com/oocx/tfplan2md/commit/924aa599532c866b2b03b767b4f693711a5be4ff))
+* mark task 6 complete ([09a4b88](https://github.com/oocx/tfplan2md/commit/09a4b88272b1ab1917a26030498cdde9ff74a9d3))
+* mark task 7 complete ([9a48106](https://github.com/oocx/tfplan2md/commit/9a48106af43fcaef379b84e98d4e94da93e887cd))
+* mark task 8 complete ([554472f](https://github.com/oocx/tfplan2md/commit/554472f9da704baa318f558cbba002962aa9a878))
+* mark task 9 complete ([93ad460](https://github.com/oocx/tfplan2md/commit/93ad460b2c0f511b15f2fa5ca7ea0c12331f4b0f))
+* update coverage badge and history ([7e8f412](https://github.com/oocx/tfplan2md/commit/7e8f41292adc14dc2353ea1839890754c9f6bd32))
+* update demo artifacts for azuread enhancements ([1444994](https://github.com/oocx/tfplan2md/commit/1444994e94ffb7eda277ee78b222badefeaed72a))
+* update documentation for azuread enhancements ([338291d](https://github.com/oocx/tfplan2md/commit/338291d8d9cb4d2db7ffcb9a6d089d213ea58e04))
+
+<a name="1.4.0"></a>
+## [1.4.0](https://github.com/oocx/tfplan2md/compare/v1.3.0...v1.4.0) (2026-01-28)
+
+### ✨ Features
+
+* simplify interactive UAT flow ([4a63f7b](https://github.com/oocx/tfplan2md/commit/4a63f7b243c4911fa8a7123d669a5e9a02578001))
+
+### 📚 Documentation
+
+* **retro:** add metrics and evidence for feature 051 retrospective ([34ab7d0](https://github.com/oocx/tfplan2md/commit/34ab7d0400373db6fd395363b6a96cff60ec0c65))
+* **retro:** finalize movement of technical writer chat log ([278908d](https://github.com/oocx/tfplan2md/commit/278908dea12b5c6c8d8195ba6c989f00f69a9b5a))
+* **retro:** finalize retrospective for feature 051 with linked issues ([2fea46e](https://github.com/oocx/tfplan2md/commit/2fea46efa2ec4bafe691733749b514b993001cd9))
+* **retro:** move and stage technical writer chat log (forced) ([a1c392c](https://github.com/oocx/tfplan2md/commit/a1c392c55f33a3cf7eb2d59581ce004a822b99af))
+
+<a name="1.3.0"></a>
+## [1.3.0](https://github.com/oocx/tfplan2md/compare/v1.2.0...v1.3.0) (2026-01-27)
+
+### ✨ Features
+
+* add subscription attribute emoji formatting ([db0d5f3](https://github.com/oocx/tfplan2md/commit/db0d5f38877073bf40d3042e5f35aadaae1dd751))
+* enrich apim summary html ([82797ac](https://github.com/oocx/tfplan2md/commit/82797ac53a92dde746e92661b89a0d12d2b7541e))
+* fix display enhancements regressions ([25755c2](https://github.com/oocx/tfplan2md/commit/25755c2e3535037c9b5cbebb141860d8313a5c7d))
+* highlight large json and xml values ([a0f0d07](https://github.com/oocx/tfplan2md/commit/a0f0d0704a4852046bf9319c0ff338785c71b153))
+* honor apim named value secret flag ([15e8afb](https://github.com/oocx/tfplan2md/commit/15e8afba33c2f31e5bfdad03d5750eff7f34cdb6))
+* move apim summaries to azurerm factories ([6cf9e3f](https://github.com/oocx/tfplan2md/commit/6cf9e3f49dc8510ee6f550ed310e87937adeba1b))
+
+### 🐛 Bug Fixes
+
+* **test:** remove invalid returns tag to fix CI blocker ([af51057](https://github.com/oocx/tfplan2md/commit/af51057025edba93db6509dec70c94da16fc79b5))
+
+### ♻️ Refactoring
+
+* reduce semantic formatting complexity ([4e35912](https://github.com/oocx/tfplan2md/commit/4e35912093d28adc6718e2442d5d03d7152345b8))
+
+### 📚 Documentation
+
+* add architecture for 051-display-enhancements ([df387a6](https://github.com/oocx/tfplan2md/commit/df387a6796241cfd5e5f3a356545391a05d14d70))
+* add code review for display-enhancements (Changes Requested) ([815f700](https://github.com/oocx/tfplan2md/commit/815f700f5d1cb5594ca251b07010eb408dac70b8))
+* add feature specification for 051-display-enhancements ([aabf933](https://github.com/oocx/tfplan2md/commit/aabf93343d8caebce69532a7d18b6a45e335d97b))
+* add retrospective and metrics for azapi-attribute-grouping ([0e8928f](https://github.com/oocx/tfplan2md/commit/0e8928fa96f644fcb7ef4ce84e152acaf57e7e48))
+* add tasks for display-enhancements ([b370153](https://github.com/oocx/tfplan2md/commit/b37015347df7ed8b084b04ac2f5402fbcb171c95))
+* add test plan and UAT test plan for 051-display-enhancements ([c91f9ed](https://github.com/oocx/tfplan2md/commit/c91f9ede929753032816d0c050405820b58e6c73))
+* add UAT report for display-enhancements (Failed) ([6316d7b](https://github.com/oocx/tfplan2md/commit/6316d7b494f21bd2d7b667c7768e481c65a3117e))
+* add UAT report for display-enhancements (Passed) ([d252837](https://github.com/oocx/tfplan2md/commit/d252837038aa412f1bb2a154106be9b5beae4ba8))
+* add updated test plan and UAT test plan for 051-display-enhancements ([dafe752](https://github.com/oocx/tfplan2md/commit/dafe752a07e18e33c8f3338a3488b12e4a676885))
+* clarify UAT handling for display enhancements ([e1e35d2](https://github.com/oocx/tfplan2md/commit/e1e35d2d340305d4f165c6962664ca598b9b40fe))
+* mark task 1 as complete ([912a523](https://github.com/oocx/tfplan2md/commit/912a52362c0fa1b701b1df1beaad4ab0f9501144))
+* mark task 2 as complete ([52ca0b2](https://github.com/oocx/tfplan2md/commit/52ca0b252a06bdea50ed58af7b462480cd5a3347))
+* mark task 3 as complete ([6cc9d45](https://github.com/oocx/tfplan2md/commit/6cc9d45317de1d6f302dacfbe889b0d1a58f7c51))
+* mark task 4 as complete ([3d2c7bc](https://github.com/oocx/tfplan2md/commit/3d2c7bc5c6f453ade0910b1e56a382587826f1e8))
+* regenerate demo artifacts for display enhancements ([3396c10](https://github.com/oocx/tfplan2md/commit/3396c10119d386297991b08e501dcfa7f5fe0caa))
+* update coverage badge and history ([e2fea93](https://github.com/oocx/tfplan2md/commit/e2fea932c640e400ff25f1c354f7c50320cb9f1b))
+* update demo artifacts for display enhancements ([2b24e77](https://github.com/oocx/tfplan2md/commit/2b24e77d5af247458430559d41b7b2832a08d774))
+* update display enhancements demo artifacts ([8c6e401](https://github.com/oocx/tfplan2md/commit/8c6e4019a25402864df2ebcaad73f299490259dd))
+* update tasks for display-enhancements based on architecture revision ([9d01dd6](https://github.com/oocx/tfplan2md/commit/9d01dd62710ae7be28c17b676e6aaa6581315c72))
+* update UAT report for display-enhancements (fix branch regression details) ([f288b57](https://github.com/oocx/tfplan2md/commit/f288b574873a1c867275869fecfa8055c473b7ff))
+* update UAT report for display-enhancements with full maintainer feedback ([2d36e8f](https://github.com/oocx/tfplan2md/commit/2d36e8fa06b811eee8159dff4083779c5225c7f1))
+
+<a name="1.2.0"></a>
+## [1.2.0](https://github.com/oocx/tfplan2md/compare/v1.1.0...v1.2.0) (2026-01-27)
+
+### ✨ Features
+
+* improve azapi body grouping and array rendering ([cb0caca](https://github.com/oocx/tfplan2md/commit/cb0caca69b1bd6dd38fef454ba5f4d49f2a71322))
+* **uat:** add automated failure detection in UAT polling scripts ([684ca4f](https://github.com/oocx/tfplan2md/commit/684ca4f4cde05c80de797bec4a25baa0704ad67d))
+
+### 🐛 Bug Fixes
+
+* **azapi:** normalize metadata formatting ([e264337](https://github.com/oocx/tfplan2md/commit/e2643372f0fa8f9f82b001e9f66d0e3ab6707725))
+
+### 📚 Documentation
+
+* add architecture for azapi attribute grouping ([ad23faf](https://github.com/oocx/tfplan2md/commit/ad23faf3c9ba685b807b18a4c16c1b8521bd78ea))
+* add code review for azapi-attribute-grouping ([61542ac](https://github.com/oocx/tfplan2md/commit/61542ac1ffaf12bc316e8c890ac1ca95990295b5))
+* add comprehensive test plan and UAT scenarios for feature 050 ([80318ea](https://github.com/oocx/tfplan2md/commit/80318ea518eca423f6653e742428cf5094464338))
+* add feature specification for azapi attribute grouping ([24491c0](https://github.com/oocx/tfplan2md/commit/24491c023ccc6b29b92ea9162540651c1f4132f4))
+* add tasks for improved azapi attribute grouping and array rendering ([a730f89](https://github.com/oocx/tfplan2md/commit/a730f89f4e4dec8464941a238d53602a36dabcfe))
+* add UAT report for azapi-attribute-grouping (Passed) ([ca3e30f](https://github.com/oocx/tfplan2md/commit/ca3e30f9fcfb11067c000eed5070d8a92ab116e4))
+* add UAT report for azapi-attribute-grouping showing failures ([89c7fe6](https://github.com/oocx/tfplan2md/commit/89c7fe6d23b0885f8a126743b34cc37cdd8b108e))
+* approve code review for azapi-attribute-grouping after rework ([14b7051](https://github.com/oocx/tfplan2md/commit/14b70517f56a495506fbc333fcb28fe7362124cf))
+* refresh azapi UAT artifact ([0e8116c](https://github.com/oocx/tfplan2md/commit/0e8116c4b8a3dab55d476159f1e727d1312d6d92))
+* update coverage badge and history ([654d36d](https://github.com/oocx/tfplan2md/commit/654d36dbf2965d0a680a5a26907394e3a3d849b4))
+* update UAT artifacts for azapi-attribute-grouping ([16d78bf](https://github.com/oocx/tfplan2md/commit/16d78bfb495ffe1985be9d865c6cfc8c2be1f439))
+
 <a name="1.1.0"></a>
 ## [1.1.0](https://github.com/oocx/tfplan2md/compare/v1.0.2...v1.1.0) (2026-01-25)
 

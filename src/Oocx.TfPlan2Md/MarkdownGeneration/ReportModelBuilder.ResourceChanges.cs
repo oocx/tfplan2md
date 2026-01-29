@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using Oocx.TfPlan2Md.Parsing;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
@@ -15,6 +14,12 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// </remarks>
 internal partial class ReportModelBuilder
 {
+    private const string CreateAction = "create";
+    private const string DeleteAction = "delete";
+    private const string UpdateAction = "update";
+    private const string ReplaceAction = "replace";
+    private const string NoOpAction = "no-op";
+
     private ResourceChangeModel BuildResourceChangeModel(ResourceChange rc)
     {
         var action = DetermineAction(rc.Change.Actions);
@@ -48,7 +53,10 @@ internal partial class ReportModelBuilder
             model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);
         }
         model.TagsBadges = BuildTagsBadges(model.AfterJson, model.BeforeJson, model.Action);
-        model.SummaryHtml = BuildSummaryHtml(model);
+        if (string.IsNullOrWhiteSpace(model.SummaryHtml))
+        {
+            model.SummaryHtml = BuildSummaryHtml(model);
+        }
 
         return model;
     }
@@ -117,40 +125,41 @@ internal partial class ReportModelBuilder
             || (afterSensitive.TryGetValue(key, out var av) && av == "true");
     }
 
+
     private static Dictionary<string, string?> ConvertToFlatDictionary(object? obj, string prefix = "") =>
         Helpers.JsonFlattener.ConvertToFlatDictionary(obj, prefix);
 
     private static string DetermineAction(IReadOnlyList<string> actions)
     {
-        if (actions.Contains("create") && actions.Contains("delete"))
+        if (actions.Contains(CreateAction) && actions.Contains(DeleteAction))
         {
-            return "replace";
+            return ReplaceAction;
         }
 
-        if (actions.Contains("create"))
+        if (actions.Contains(CreateAction))
         {
-            return "create";
+            return CreateAction;
         }
 
-        if (actions.Contains("delete"))
+        if (actions.Contains(DeleteAction))
         {
-            return "delete";
+            return DeleteAction;
         }
 
-        if (actions.Contains("update"))
+        if (actions.Contains(UpdateAction))
         {
-            return "update";
+            return UpdateAction;
         }
 
-        return "no-op";
+        return NoOpAction;
     }
 
     private static string GetActionSymbol(string action) => action switch
     {
-        "create" => "➕",
-        "delete" => "❌",
-        "update" => "🔄",
-        "replace" => "♻️",
+        CreateAction => "➕",
+        DeleteAction => "❌",
+        UpdateAction => "🔄",
+        ReplaceAction => "♻️",
         _ => " "
     };
 }

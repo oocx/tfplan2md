@@ -75,6 +75,56 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Determines whether an attribute represents a subscription value and formats it with the key icon.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a subscription identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatSubscriptionAttribute(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("subscription_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("subscription", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValue($"🔑 {value}", context, false);
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents Azure AD identity values and formats them with icons.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatIdentityAttribute(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (attributeName.Equals("user_principal_name", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValue($"🆔 {value}", context, false);
+            return true;
+        }
+
+        if (attributeName.Equals("mail", StringComparison.OrdinalIgnoreCase)
+            || attributeName.Equals("user_email_address", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValue($"📧 {value}", context, false);
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
     /// Formats icon-bearing values with context-aware code wrapping and optional parentheses.
     /// Related feature: docs/features/024-visual-report-enhancements/specification.md.
     /// </summary>
@@ -92,6 +142,38 @@ public static partial class ScribanHelpers
         }
 
         return formatted;
+    }
+
+    /// <summary>
+    /// Formats icon-prefixed values for summary rendering with code spans and non-breaking spacing.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="iconValue">The icon-prefixed value to format.</param>
+    /// <returns>Formatted value suitable for summary contexts.</returns>
+    public static string FormatIconValueSummary(string? iconValue)
+    {
+        if (string.IsNullOrWhiteSpace(iconValue))
+        {
+            return string.Empty;
+        }
+
+        return FormatIconValue(iconValue, ValueFormatContext.Summary, false);
+    }
+
+    /// <summary>
+    /// Formats icon-prefixed values for table rendering with code spans and non-breaking spacing.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="iconValue">The icon-prefixed value to format.</param>
+    /// <returns>Formatted value suitable for table contexts.</returns>
+    public static string FormatIconValueTable(string? iconValue)
+    {
+        if (string.IsNullOrWhiteSpace(iconValue))
+        {
+            return string.Empty;
+        }
+
+        return FormatIconValue(iconValue, ValueFormatContext.Table, false);
     }
 
     /// <summary>
@@ -145,6 +227,54 @@ public static partial class ScribanHelpers
 
         formatted = string.Empty;
         return false;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents Azure AD identity values and formats them without code wrapping.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="formatted">Formatted output when matched.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatIdentityAttributePlain(string attributeName, string value, out string formatted)
+    {
+        if (attributeName.Equals("user_principal_name", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValuePlain($"🆔 {value}");
+            return true;
+        }
+
+        if (attributeName.Equals("mail", StringComparison.OrdinalIgnoreCase)
+            || attributeName.Equals("user_email_address", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = FormatIconValuePlain($"📧 {value}");
+            return true;
+        }
+
+        formatted = string.Empty;
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a subscription value and formats it with the key icon.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="formatted">Formatted result when the attribute is a subscription identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatSubscriptionAttributePlain(string attributeName, string value, out string formatted)
+    {
+        if (!attributeName.Equals("subscription_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("subscription", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValuePlain($"🔑 {value}");
+        return true;
     }
 
     /// <summary>

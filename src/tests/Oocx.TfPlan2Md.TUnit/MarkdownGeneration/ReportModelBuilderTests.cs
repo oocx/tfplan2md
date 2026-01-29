@@ -7,13 +7,24 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class ReportModelBuilderTests
 {
+    private const string AzurermAzureDevopsPlanPath = "TestData/azurerm-azuredevops-plan.json";
+    private const string CreateAction = "create";
+    private const string UpdateAction = "update";
+    private const string DeleteAction = "delete";
+    private const string ReplaceAction = "replace";
+    private const string ManagedMode = "managed";
+    private const string ProviderName = "provider";
+    private const string TypeA = "type_a";
+    private const string TypeB = "type_b";
+    private const string TypeC = "type_c";
+
     private readonly TerraformPlanParser _parser = new();
 
     [Test]
     public void Build_ValidPlan_ReturnsCorrectSummary()
     {
         // Arrange
-        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
         var builder = new ReportModelBuilder();
 
@@ -32,7 +43,7 @@ public class ReportModelBuilderTests
     public void Build_ValidPlan_ReturnsCorrectActionSymbols()
     {
         // Arrange
-        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
         var builder = new ReportModelBuilder();
 
@@ -40,16 +51,16 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        var createChange = model.Changes.First(c => c.Action == "create");
+        var createChange = model.Changes.First(c => c.Action == CreateAction);
         createChange.ActionSymbol.Should().Be("➕");
 
-        var updateChange = model.Changes.First(c => c.Action == "update");
+        var updateChange = model.Changes.First(c => c.Action == UpdateAction);
         updateChange.ActionSymbol.Should().Be("🔄");
 
-        var deleteChange = model.Changes.First(c => c.Action == "delete");
+        var deleteChange = model.Changes.First(c => c.Action == DeleteAction);
         deleteChange.ActionSymbol.Should().Be("❌");
 
-        var replaceChange = model.Changes.First(c => c.Action == "replace");
+        var replaceChange = model.Changes.First(c => c.Action == ReplaceAction);
         replaceChange.ActionSymbol.Should().Be("♻️");
     }
 
@@ -57,7 +68,7 @@ public class ReportModelBuilderTests
     public void Build_WithSensitiveValues_MasksByDefault()
     {
         // Arrange
-        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
         var builder = new ReportModelBuilder(showSensitive: false);
 
@@ -77,7 +88,7 @@ public class ReportModelBuilderTests
     {
         // Arrange - need a plan with actual sensitive values to test this properly
         // For now, we verify the flag is being used
-        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
         var builder = new ReportModelBuilder(showSensitive: true);
 
@@ -97,7 +108,7 @@ public class ReportModelBuilderTests
     public void Build_ValidPlan_PreservesTerraformVersion()
     {
         // Arrange
-        var json = File.ReadAllText("TestData/azurerm-azuredevops-plan.json");
+        var json = File.ReadAllText(AzurermAzureDevopsPlanPath);
         var plan = _parser.Parse(json);
         var builder = new ReportModelBuilder();
 
@@ -181,7 +192,7 @@ public class ReportModelBuilderTests
         // Assert
         model.Summary.ToAdd.Count.Should().Be(1);
         var change = model.Changes.Should().ContainSingle().Subject;
-        change.Action.Should().Be("create");
+        change.Action.Should().Be(CreateAction);
         // With null before and after, there should be no attribute changes
         change.AttributeChanges.Should().BeEmpty();
     }
@@ -202,7 +213,7 @@ public class ReportModelBuilderTests
         model.Summary.ToChange.Count.Should().Be(0);
         model.Summary.ToDestroy.Count.Should().Be(0);
         model.Summary.Total.Should().Be(2);
-        model.Changes.Should().OnlyContain(c => c.Action == "create");
+        model.Changes.Should().OnlyContain(c => c.Action == CreateAction);
     }
 
     [Test]
@@ -214,9 +225,9 @@ public class ReportModelBuilderTests
             "1.0",
             new List<ResourceChange>
             {
-                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"])),
-                new("type_a.two", null, "managed", "type_a", "two", "provider", new Change(["create"])),
-                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["create"]))
+                new("type_a.one", null, ManagedMode, TypeA, "one", ProviderName, new Change([CreateAction])),
+                new("type_a.two", null, ManagedMode, TypeA, "two", ProviderName, new Change([CreateAction])),
+                new("type_b.one", null, ManagedMode, TypeB, "one", ProviderName, new Change([CreateAction]))
             });
 
         var builder = new ReportModelBuilder();
@@ -227,8 +238,8 @@ public class ReportModelBuilderTests
         // Assert
         model.Summary.ToAdd.Count.Should().Be(3);
         model.Summary.ToAdd.Breakdown.Should().HaveCount(2);
-        model.Summary.ToAdd.Breakdown.First(b => b.Type == "type_a").Count.Should().Be(2);
-        model.Summary.ToAdd.Breakdown.First(b => b.Type == "type_b").Count.Should().Be(1);
+        model.Summary.ToAdd.Breakdown.First(b => b.Type == TypeA).Count.Should().Be(2);
+        model.Summary.ToAdd.Breakdown.First(b => b.Type == TypeB).Count.Should().Be(1);
     }
 
     [Test]
@@ -270,9 +281,9 @@ public class ReportModelBuilderTests
             "1.0",
             new List<ResourceChange>
             {
-                new("type_b.one", null, "managed", "type_b", "one", "provider", new Change(["update"])),
-                new("type_c.one", null, "managed", "type_c", "one", "provider", new Change(["update"])),
-                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["update"]))
+                new("type_b.one", null, ManagedMode, TypeB, "one", ProviderName, new Change([UpdateAction])),
+                new("type_c.one", null, ManagedMode, TypeC, "one", ProviderName, new Change([UpdateAction])),
+                new("type_a.one", null, ManagedMode, TypeA, "one", ProviderName, new Change([UpdateAction]))
             });
 
         var builder = new ReportModelBuilder();
@@ -281,7 +292,7 @@ public class ReportModelBuilderTests
         var model = builder.Build(plan);
 
         // Assert
-        model.Summary.ToChange.Breakdown.Select(b => b.Type).Should().Equal("type_a", "type_b", "type_c");
+        model.Summary.ToChange.Breakdown.Select(b => b.Type).Should().Equal(TypeA, TypeB, TypeC);
     }
 
     [Test]
@@ -293,7 +304,7 @@ public class ReportModelBuilderTests
             "1.0",
             new List<ResourceChange>
             {
-                new("type_a.one", null, "managed", "type_a", "one", "provider", new Change(["create"]))
+                new("type_a.one", null, ManagedMode, TypeA, "one", ProviderName, new Change([CreateAction]))
             });
 
         var builder = new ReportModelBuilder();
@@ -322,6 +333,6 @@ public class ReportModelBuilderTests
         model.Summary.ToChange.Count.Should().Be(0);
         model.Summary.ToDestroy.Count.Should().Be(2);
         model.Summary.Total.Should().Be(2);
-        model.Changes.Should().OnlyContain(c => c.Action == "delete");
+        model.Changes.Should().OnlyContain(c => c.Action == DeleteAction);
     }
 }

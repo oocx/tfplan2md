@@ -172,6 +172,30 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     [Test]
+    public void FormatAttributeValueTable_UserPrincipalName_UsesIdIcon()
+    {
+        var result = FormatAttributeValueTable("user_principal_name", "jane.doe@contoso.com", null);
+
+        result.Should().Be("`🆔\u00A0jane.doe@contoso.com`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_Mail_UsesEmailIcon()
+    {
+        var result = FormatAttributeValueTable("mail", "jane.doe@contoso.com", null);
+
+        result.Should().Be("`📧\u00A0jane.doe@contoso.com`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_UserEmailAddress_UsesEmailIcon()
+    {
+        var result = FormatAttributeValueTable("user_email_address", "contractor@external.com", null);
+
+        result.Should().Be("`📧\u00A0contractor@external.com`");
+    }
+
+    [Test]
     public void FormatAttributeValueSummary_BooleanFalse_UsesIconWithoutCode()
     {
         var result = FormatAttributeValueSummary("enabled", "false", null);
@@ -196,6 +220,62 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     [Test]
+    public void FormatAttributeValueSummary_UserPrincipalName_UsesIdIcon()
+    {
+        var result = FormatAttributeValueSummary("user_principal_name", "jane.doe@contoso.com", null);
+
+        result.Should().Be("<code>🆔\u00A0jane.doe@contoso.com</code>");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_SubscriptionId_UsesKeyEmojiAndCode()
+    {
+        var result = FormatAttributeValueTable("subscription_id", "00000000-0000-0000-0000-000000000000", null);
+
+        result.Should().Be("`🔑\u00A000000000-0000-0000-0000-000000000000`");
+    }
+
+    [Test]
+    public void FormatAttributeValueSummary_SubscriptionId_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValueSummary("subscription_id", "00000000-0000-0000-0000-000000000000", null);
+
+        result.Should().Be("<code>🔑\u00A000000000-0000-0000-0000-000000000000</code>");
+    }
+
+    [Test]
+    public void FormatAttributeValuePlain_SubscriptionId_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValuePlain("subscription_id", "00000000-0000-0000-0000-000000000000", null);
+
+        result.Should().Be("🔑\u00A000000000-0000-0000-0000-000000000000");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_SubscriptionName_UsesKeyEmojiAndCode()
+    {
+        var result = FormatAttributeValueTable("subscription", "Production", null);
+
+        result.Should().Be("`🔑\u00A0Production`");
+    }
+
+    [Test]
+    public void FormatAttributeValueSummary_SubscriptionName_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValueSummary("subscription", "Production", null);
+
+        result.Should().Be("<code>🔑\u00A0Production</code>");
+    }
+
+    [Test]
+    public void FormatAttributeValuePlain_SubscriptionName_UsesKeyEmoji()
+    {
+        var result = FormatAttributeValuePlain("subscription", "Production", null);
+
+        result.Should().Be("🔑\u00A0Production");
+    }
+
+    [Test]
     public void FormatAttributeValuePlain_IpValue_UsesNonBreakingSpace()
     {
         var result = FormatAttributeValuePlain("source_address_prefix", "10.0.0.0/16", null);
@@ -209,5 +289,21 @@ public class ScribanHelpersSemanticFormattingTests
         var result = FormatAttributeValueSummary("name", "hub", null);
 
         result.Should().Be("<code>🆔\u00A0hub</code>");
+    }
+
+    [Test]
+    public void FormatIconValueSummary_UsesNonBreakingSpaceAndCode()
+    {
+        var result = FormatIconValueSummary("👤 Jane Doe");
+
+        result.Should().Be("<code>👤\u00A0Jane Doe</code>");
+    }
+
+    [Test]
+    public void FormatIconValueTable_UsesNonBreakingSpaceAndCode()
+    {
+        var result = FormatIconValueTable("👤 Jane Doe");
+
+        result.Should().Be("`👤\u00A0Jane Doe`");
     }
 }

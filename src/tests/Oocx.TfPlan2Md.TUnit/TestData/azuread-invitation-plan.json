@@ -1,0 +1,25 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_invitation.external_user",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_invitation",
+      "name": "external_user",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "user_email_address": "contractor@external.com",
+          "user_type": "Guest"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

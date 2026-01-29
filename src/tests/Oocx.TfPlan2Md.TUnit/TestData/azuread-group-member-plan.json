@@ -1,0 +1,43 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group_member.group_to_user",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "group_to_user",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": "group-001",
+          "member_object_id": "user-001"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.group_missing_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "group_missing_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": "group-002"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

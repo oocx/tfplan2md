@@ -63,8 +63,8 @@ Implement the resource-specific template for `azuread_user`.
 Implement the resource-specific template for `azuread_invitation`.
 
 **Acceptance Criteria:**
-- [ ] Summary shows `📧 Email` and User Type.
-- [ ] Table attribute `user_email_address` uses 📧 icon.
+- [x] Summary shows `📧 Email` and User Type.
+- [x] Table attribute `user_email_address` uses 📧 icon.
 
 **Dependencies:** Task 2
 

@@ -40,7 +40,17 @@ jobs:
       - name: Test (with coverage)
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 180 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory ${{ github.workspace }}/TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+          # Keep the post-merge coverage job fast and stable: exclude Docker-based tests.
+          scripts/test-with-timeout.sh --timeout-seconds 180 -- dotnet test \
+            --project src/tests/Oocx.TfPlan2Md.TUnit/ \
+            --configuration Release \
+            --results-directory ${{ github.workspace }}/TestResults \
+            --filter "FullyQualifiedName!~Oocx.TfPlan2Md.TUnit.Docker&FullyQualifiedName!~MarkdownLint" \
+            -- \
+            --report-trx \
+            --coverage \
+            --coverage-output coverage.cobertura.xml \
+            --coverage-output-format cobertura
 
       - name: Generate badge and history (staging)
         run: |

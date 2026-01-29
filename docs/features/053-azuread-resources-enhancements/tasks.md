@@ -14,10 +14,10 @@ Improve the markdown output for Azure AD resources by adding semantic icons and 
 Establish the foundation for Azure AD resource-specific rendering by creating the provider module and registering it in the application.
 
 **Acceptance Criteria:**
-- [ ] New class `AzureADModule` created in `src/Oocx.TfPlan2Md/Providers/AzureAD/`.
-- [ ] `AzureADModule` implements `IProviderModule` with `TemplateResourcePrefix = "azuread"`.
-- [ ] `AzureADModule` is registered in `src/Oocx.TfPlan2Md/Program.cs`.
-- [ ] Empty template directory `src/Oocx.TfPlan2Md/Providers/AzureAD/Templates/azuread/` created.
+- [x] New class `AzureADModule` created in `src/Oocx.TfPlan2Md/Providers/AzureAD/`.
+- [x] `AzureADModule` implements `IProviderModule` with `TemplateResourcePrefix = "azuread"`.
+- [x] `AzureADModule` is registered in `src/Oocx.TfPlan2Md/Program.cs`.
+- [x] Empty template directory `src/Oocx.TfPlan2Md/Providers/AzureAD/Templates/azuread/` created.
 
 **Dependencies:** None
 

@@ -14,6 +14,7 @@ namespace Oocx.TfPlan2Md.TUnit.Docker;
 /// </remarks>
 [NotInParallel("Docker")]
 [Timeout(60_000)] // 60 seconds - image should be pre-built
+[Category("Docker")]
 public class DockerIntegrationTests
 {
     private readonly DockerFixture _fixture = DockerFixture.Instance;

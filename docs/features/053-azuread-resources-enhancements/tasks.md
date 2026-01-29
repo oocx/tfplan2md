@@ -123,9 +123,9 @@ Implement the resource-specific template for `azuread_group_member` with relatio
 Implement the resource-specific template for `azuread_group` with member counts.
 
 **Acceptance Criteria:**
-- [ ] Summary shows `👥 Group Name`, `🆔 Display Name`, Description (if present).
-- [|] Member counts displayed as `N 👤 N 👥 N 💻`.
-- [ ] Unknown member types displayed as `N ❓`.
+- [x] Summary shows `👥 Group Name`, `🆔 Display Name`, Description (if present).
+- [x] Member counts displayed as `N 👤 N 👥 N 💻`.
+- [x] Unknown member types displayed as `N ❓`.
 
 **Dependencies:** Task 2
 

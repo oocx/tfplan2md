@@ -71,6 +71,22 @@ public class ScribanHelpersPrincipalInfoTests
     }
 
     /// <summary>
+    /// Ensures principal type lookup returns the resolved type when available.
+    /// </summary>
+    [Test]
+    public async Task TryGetPrincipalType_WithResolvedType_ReturnsTypeInfo()
+    {
+        var method = GetHelperMethod("TryGetPrincipalType");
+
+        var result = (ScriptObject?)method.Invoke(null, new object?[] { "abc", new StubPrincipalTypeMapper(true, "User") });
+
+        result.Should().NotBeNull();
+        result!["found"].Should().Be(true);
+        result!["type"].Should().Be("User");
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Gets a private Scriban helper method for reflection-based tests.
     /// </summary>
     /// <param name="name">Method name.</param>
@@ -91,5 +107,21 @@ public class ScribanHelpersPrincipalInfoTests
         public string GetPrincipalName(string principalId) => principalId;
 
         public string? GetName(string principalId) => name;
+    }
+
+    /// <summary>
+    /// Stub principal mapper that controls type resolution outcomes.
+    /// </summary>
+    private sealed class StubPrincipalTypeMapper(bool found, string? type) : IPrincipalMapper
+    {
+        public string GetPrincipalName(string principalId) => principalId;
+
+        public string? GetName(string principalId) => null;
+
+        public bool TryGetPrincipalType(string principalId, out string? principalType)
+        {
+            principalType = type;
+            return found;
+        }
     }
 }

@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group_without_members.external_group",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_without_members",
+      "name": "external_group",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "External Partners",
+          "mail_nickname": "External Partners Group",
+          "description": "External partner access"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_without_members.no_description",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_without_members",
+      "name": "no_description",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Vendors",
+          "mail_nickname": "Vendors Group"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

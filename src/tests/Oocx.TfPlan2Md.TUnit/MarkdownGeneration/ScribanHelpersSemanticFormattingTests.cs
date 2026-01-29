@@ -172,6 +172,30 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     [Test]
+    public void FormatAttributeValueTable_UserPrincipalName_UsesIdIcon()
+    {
+        var result = FormatAttributeValueTable("user_principal_name", "jane.doe@contoso.com", null);
+
+        result.Should().Be("`🆔\u00A0jane.doe@contoso.com`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_Mail_UsesEmailIcon()
+    {
+        var result = FormatAttributeValueTable("mail", "jane.doe@contoso.com", null);
+
+        result.Should().Be("`📧\u00A0jane.doe@contoso.com`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_UserEmailAddress_UsesEmailIcon()
+    {
+        var result = FormatAttributeValueTable("user_email_address", "contractor@external.com", null);
+
+        result.Should().Be("`📧\u00A0contractor@external.com`");
+    }
+
+    [Test]
     public void FormatAttributeValueSummary_BooleanFalse_UsesIconWithoutCode()
     {
         var result = FormatAttributeValueSummary("enabled", "false", null);
@@ -193,6 +217,14 @@ public class ScribanHelpersSemanticFormattingTests
         var result = FormatAttributeValueSummary("location", "westeurope", null);
 
         result.Should().Be("<code>🌍\u00A0westeurope</code>");
+    }
+
+    [Test]
+    public void FormatAttributeValueSummary_UserPrincipalName_UsesIdIcon()
+    {
+        var result = FormatAttributeValueSummary("user_principal_name", "jane.doe@contoso.com", null);
+
+        result.Should().Be("<code>🆔\u00A0jane.doe@contoso.com</code>");
     }
 
     [Test]
@@ -257,5 +289,21 @@ public class ScribanHelpersSemanticFormattingTests
         var result = FormatAttributeValueSummary("name", "hub", null);
 
         result.Should().Be("<code>🆔\u00A0hub</code>");
+    }
+
+    [Test]
+    public void FormatIconValueSummary_UsesNonBreakingSpaceAndCode()
+    {
+        var result = FormatIconValueSummary("👤 Jane Doe");
+
+        result.Should().Be("<code>👤\u00A0Jane Doe</code>");
+    }
+
+    [Test]
+    public void FormatIconValueTable_UsesNonBreakingSpaceAndCode()
+    {
+        var result = FormatIconValueTable("👤 Jane Doe");
+
+        result.Should().Be("`👤\u00A0Jane Doe`");
     }
 }

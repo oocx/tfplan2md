@@ -592,7 +592,7 @@ Each resource change displays a concise one-line summary above the `<details>` s
 
 - **CREATE**: Shows resource name and key identifying attributes based on resource type
   - Example: `` `sttfplan2mdlogs` in `rg-tfplan2md-demo` (eastus) | Standard LRS ``
-  - Uses resource-specific attribute mappings for 43 azurerm resources, plus fallbacks for azuredevops, azuread, azapi, and msgraph providers
+  - Uses resource-specific attribute mappings for 43 azurerm resources, plus fallbacks for azuredevops, azapi, and msgraph providers (Azure AD summaries are handled by provider templates)
 
 ### Large Attribute Value Display
 
@@ -634,7 +634,7 @@ tfplan2md plan.json --render-target github
 The summary builder includes intelligent attribute selection for multiple providers:
 - **azurerm**: 43 resource types with specific mappings (storage accounts, VMs, networks, databases, etc.)
 - **azuredevops**: Projects and pipelines
-- **azuread**: Groups, users, service principals
+- **azuread**: Users, invitations, groups (with and without members), group membership, service principals
 - **azapi**: Generic resources and actions
 - **msgraph**: Microsoft Graph API resources
 
@@ -925,6 +925,152 @@ The principal mapping JSON format:
 ```
 
 The type (User, Group, ServicePrincipal) is automatically read from the Terraform plan's `principal_type` attribute and displayed as: `Display Name (Type) [guid]`.
+
+## Enhanced Azure AD Resource Display
+
+**Status:** ✅ Implemented  
+**Related specification:** [docs/features/053-azuread-resources-enhancements/specification.md](features/053-azuread-resources-enhancements/specification.md)
+
+Azure AD resources now use specialized templates with semantic icons and informative summaries that make identity infrastructure changes easier to review at a glance. Resource summaries display key identity attributes with visual icons, enabling quick scanning without expanding details.
+
+**Supported resources:**
+- `azuread_user` - Users with display name, UPN, and email
+- `azuread_invitation` - Guest user invitations
+- `azuread_group_member` - Group membership relationships
+- `azuread_group` - Groups with member count by type
+- `azuread_service_principal` - Service principals with application ID
+- `azuread_group_without_members` - Groups without member tracking
+
+**Icon mapping:**
+
+| Icon | Meaning | Used For |
+|------|---------|----------|
+| 👤 | User | User principals, user display names |
+| 👥 | Group | Group principals, group display names |
+| 💻 | Service Principal | Service principal display names |
+| 🆔 | Identifier | User principal names, application IDs, group names |
+| 📧 | Email | Email addresses (mail, user_email_address) |
+| ❓ | Unknown | Principals with unresolvable type |
+
+**Key features:**
+- **Semantic icons**: Visual indicators for principal types, identifiers, and emails
+- **Concise summaries**: Key attributes visible without expanding details
+- **Member counting**: Groups show member counts by type (users, groups, service principals)
+- **Type-adaptive icons**: Group member icons adapt based on member type
+- **Principal mapping support**: Resolves principal IDs to names when mapping file is provided
+- **Graceful degradation**: Missing optional attributes (description, mail) are omitted cleanly
+
+**Example: azuread_user**
+
+```markdown
+<details>
+<summary>➕ azuread_user <b><code>jane</code></b> — <code>👤 Jane Doe</code> (<code>🆔 jane.doe@example.com</code>) <code>📧 jane.doe@example.com</code></summary>
+<br>
+
+| Attribute | Value |
+| ----------- | ------- |
+| display_name | `👤 Jane Doe` |
+| user_principal_name | `🆔 jane.doe@example.com` |
+| mail | `📧 jane.doe@example.com` |
+
+</details>
+```
+
+**Example: azuread_group with member counts**
+
+```markdown
+<details>
+<summary>➕ azuread_group <b><code>platform_team</code></b> — <code>👥 Platform Team</code> (<code>🆔 Platform Engineering</code>) Core platform engineering team | <code>3 👤 2 👥 1 💻 1 ❓</code></summary>
+<br>
+
+| Attribute | Value |
+| ----------- | ------- |
+| display_name | `Platform Team` |
+| mail_nickname | `Platform Engineering` |
+| description | `Core platform engineering team` |
+| members[0] | `user-100` |
+| members[1] | `user-101` |
+| members[2] | `group-100` |
+| members[3] | `spn-200` |
+| members[4] | `unknown-999` |
+
+</details>
+```
+
+The member count `3 👤 2 👥 1 💻 1 ❓` shows:
+- 3 Users (👤)
+- 2 Groups (👥)
+- 1 Service Principal (💻)
+- 1 Unknown principal type (❓)
+
+**Example: azuread_group_member with principal mapping**
+
+```markdown
+<details>
+<summary>➕ azuread_group_member <b><code>devops_jane</code></b> — <code>👥 DevOps Team</code> (<code>group-100</code>) → <code>👤 Jane Doe</code> (<code>user-100</code>)</summary>
+<br>
+
+| Attribute | Value |
+| ----------- | ------- |
+| group_object_id | `group-100` |
+| member_object_id | `user-100` |
+
+</details>
+```
+
+When principal mapping is provided (`--principal-mapping principals.json`), group and member IDs are resolved to friendly names with appropriate icons. The arrow (`→`) clearly shows the membership relationship: group → member.
+
+**Example: azuread_service_principal**
+
+```markdown
+<details>
+<summary>➕ azuread_service_principal <b><code>terraform_spn</code></b> — <code>💻 terraform-spn</code> (<code>🆔 app-123-456</code>) Terraform automation service principal</summary>
+<br>
+
+| Attribute | Value |
+| ----------- | ------- |
+| display_name | `terraform-spn` |
+| application_id | `app-123-456` |
+| description | `Terraform automation service principal` |
+
+</details>
+```
+
+**Usage:**
+
+```bash
+# Without principal mapping (shows IDs)
+tfplan2md plan.json
+
+# With principal mapping (resolves names)
+tfplan2md --principal-mapping principals.json plan.json
+
+# Docker with principal mapping
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json /data/plan.json
+```
+
+**Principal mapping file format:**
+
+The nested format organizes principals by type:
+
+```json
+{
+  "users": {
+    "user-guid-1": "Jane Doe",
+    "user-guid-2": "John Smith"
+  },
+  "groups": {
+    "group-guid-1": "DevOps Team",
+    "group-guid-2": "Platform Team"
+  },
+  "servicePrincipals": {
+    "spn-guid-1": "Terraform Automation"
+  }
+}
+```
+
+The legacy flat format (all principals in one dictionary) is also supported for backwards compatibility.
 
 ## Azure API Documentation Mapping
 

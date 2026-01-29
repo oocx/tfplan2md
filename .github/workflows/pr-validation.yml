@@ -24,6 +24,39 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "Guardrail: internal/workflow PRs must not bump versions"
+        run: |
+          set -euo pipefail
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          changed_files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || true)
+          if [ -z "$changed_files" ]; then
+            echo "No changed files detected; skipping internal commit guardrail."
+            exit 0
+          fi
+
+          # If anything outside these paths changed, this is not an internal-only PR.
+          non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|scripts/|docs/|website/|uat-repos/|TestData/|artifacts/|assets/)' || true)
+          if [ -n "$non_internal" ]; then
+            echo "Non-internal files changed; internal commit guardrail not applicable."
+            exit 0
+          fi
+
+          echo "Internal-only PR detected; enforcing non-version-bumping commit types."
+
+          # Versionize bumps on conventional commits like feat/fix (and breaking changes).
+          messages=$(git log --format=%B "$BASE_SHA".."$HEAD_SHA" || true)
+
+          if echo "$messages" | grep -Eqi '^(feat|fix|perf)(\([^)]*\))?:|BREAKING CHANGE:'; then
+            echo "❌ ERROR: This PR only changes internal/workflow/tooling files, but includes version-bumping commits (feat/fix/perf or BREAKING CHANGE)."
+            echo "Please use non-bumping types like chore:, ci:, docs:, style:, refactor: for internal changes."
+            exit 1
+          fi
+
+          echo "✓ Commit messages OK for internal-only PR."
+
       - name: Check if validation is needed
         id: filter
         run: |
@@ -193,7 +226,8 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add assets/coverage-badge.svg docs/coverage/history.json
             git commit -m "docs: update coverage badge and history"
-            git push origin HEAD:"${{ github.event.pull_request.head.ref }}"
+            git check-ref-format "refs/heads/${GITHUB_HEAD_REF}"
+            git push origin "HEAD:refs/heads/${GITHUB_HEAD_REF}"
           else
             echo "No coverage badge or history changes to commit."
           fi

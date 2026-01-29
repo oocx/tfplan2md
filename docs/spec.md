@@ -76,10 +76,14 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 | Workflow | File | Trigger | Purpose |
 |----------|------|---------|----------|
 | PR Validation | `pr-validation.yml` | Pull requests to `main` | Format check, build, test, markdown lint, vulnerability scan |
-| CI | `ci.yml` | Push to `main` | Run Versionize to bump version and create tag (tests run in PR Validation) |
+| CI | `ci.yml` | Push to `main` | Run Versionize to bump version and create tag **only when Docker-relevant files changed** (tests run in PR Validation) |
 | Release | `release.yml` | Version tags (`v*`) | Create GitHub Release with cumulative changelog, build and push Docker image |
 
 **Test Optimization:** Tests only run in PR Validation workflow to eliminate redundancy. CI workflow focuses solely on versioning after merge, significantly reducing CI time. All quality gates (format, build, test, lint, vulnerability scan) must pass in PR validation before merge.
+
+**Release Gating:** The CI workflow only creates a new version tag when the published Docker image would change (e.g., changes under `src/` or `examples/`). Workflow/internal-tooling changes are not supposed to create new releases.
+
+**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `scripts/`, docs/website) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`.
 
 **Release Notes:** The release workflow generates cumulative release notes that include all changes since the last GitHub release. This ensures Docker deployments contain complete change history even when intermediate versions are not released.
 

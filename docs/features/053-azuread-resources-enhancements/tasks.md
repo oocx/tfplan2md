@@ -78,7 +78,7 @@ Implement the resource-specific template for `azuread_invitation`.
 Implement the resource-specific template for `azuread_service_principal`.
 
 **Acceptance Criteria:**
-- [ ] Summary shows `💻 Display Name`, `🆔 App ID`, and Description (if present).
+- [x] Summary shows `💻 Display Name`, `🆔 App ID`, and Description (if present).
 
 **Dependencies:** Task 2
 

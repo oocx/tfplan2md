@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/oocx/tfplan2md/compare/v1.5.0...v1.5.1) (2026-01-29)
+
+### 🐛 Bug Fixes
+
+* **ci:** publish coverage history outside PRs ([97b691e](https://github.com/oocx/tfplan2md/commit/97b691e88ec7c40ee9b844d18508dcbff8591a1f))
+
+### 📚 Documentation
+
+* update coverage badge and history ([636a446](https://github.com/oocx/tfplan2md/commit/636a446b5ddeca385a49937319079bfe803efc28))
+
 <a name="1.5.0"></a>
 ## [1.5.0](https://github.com/oocx/tfplan2md/compare/v1.4.0...v1.5.0) (2026-01-29)
 

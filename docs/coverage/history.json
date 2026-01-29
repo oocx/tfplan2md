@@ -1,0 +1,10 @@
+{
+  "Entries": [
+    {
+      "Timestamp": "2026-01-29T22:00:51+00:00",
+      "CommitSha": "65384b8fb861550b23a29cd378af5776c3d3cabd",
+      "LineCoverage": 88.52,
+      "BranchCoverage": 79.26
+    }
+  ]
+}

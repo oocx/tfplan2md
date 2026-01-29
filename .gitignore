@@ -33,7 +33,8 @@ coverage/
 CoverletSourceRootsMapping_*
 .msCoverageSourceRootsMapping_*
 !docs/coverage/
-!docs/coverage/history.json
+docs/coverage/history.json
+assets/coverage-badge.svg
 
 # OS generated files
 .DS_Store

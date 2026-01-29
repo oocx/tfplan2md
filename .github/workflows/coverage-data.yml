@@ -1,0 +1,92 @@
+name: Coverage Data
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: coverage-data-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Update coverage badge/history branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: src/global.json
+
+      - name: Restore dependencies
+        run: dotnet restore src/tfplan2md.slnx
+
+      - name: Restore .NET tools
+        run: dotnet tool restore
+
+      - name: Build
+        run: dotnet build src/tfplan2md.slnx --no-restore --configuration Release
+
+      - name: Test (with coverage)
+        run: |
+          chmod +x scripts/test-with-timeout.sh
+          scripts/test-with-timeout.sh --timeout-seconds 180 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory ${{ github.workspace }}/TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+
+      - name: Generate badge and history (staging)
+        run: |
+          mkdir -p .tmp/coverage
+          timestamp="${{ github.event.head_commit.timestamp }}"
+          if [ -z "$timestamp" ]; then
+            timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report ./TestResults/coverage.cobertura.xml \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80 \
+            --badge-output ./.tmp/coverage/coverage-badge.svg \
+            --history-output ./.tmp/coverage/history.json \
+            --commit-sha "${{ github.sha }}" \
+            --timestamp "$timestamp"
+
+      - name: Publish to coverage-data branch
+        env:
+          TARGET_BRANCH: coverage-data
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin "$TARGET_BRANCH" || true
+
+          if git show-ref --verify --quiet "refs/remotes/origin/$TARGET_BRANCH"; then
+            git checkout -B "$TARGET_BRANCH" "origin/$TARGET_BRANCH"
+          else
+            git checkout --orphan "$TARGET_BRANCH"
+            git rm -rf . || true
+          fi
+
+          mkdir -p assets docs/coverage
+          cp ./.tmp/coverage/coverage-badge.svg ./assets/coverage-badge.svg
+          cp ./.tmp/coverage/history.json ./docs/coverage/history.json
+
+          git add assets/coverage-badge.svg docs/coverage/history.json
+
+          if git diff --cached --quiet; then
+            echo "No coverage changes to publish."
+            exit 0
+          fi
+
+          git commit -m "docs: update coverage badge and history"
+          git push origin "$TARGET_BRANCH"

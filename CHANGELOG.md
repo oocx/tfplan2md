@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.5.0"></a>
+## [1.5.0](https://github.com/oocx/tfplan2md/compare/v1.4.0...v1.5.0) (2026-01-29)
+
+### ✨ Features
+
+* add azure ad helper formatting ([7bbfa94](https://github.com/oocx/tfplan2md/commit/7bbfa9474d8b932878876b2bafb61a844b031ca8))
+* add Azure AD provider module ([d9b5364](https://github.com/oocx/tfplan2md/commit/d9b53644a5f1a1dfab093cbba2a6c236b5a69153))
+* add azuread group member counts ([14ebe9b](https://github.com/oocx/tfplan2md/commit/14ebe9b61426d0d680d27a231974b8d1f80bcf03))
+* add azuread group member template ([bcdab29](https://github.com/oocx/tfplan2md/commit/bcdab293b96bd2e24b3d3b26df91bc9d1d66d5a8))
+* add azuread group without members template ([82ce0ff](https://github.com/oocx/tfplan2md/commit/82ce0fff3d14ab61bba8bd7256b283b4d5cb197d))
+* add azuread invitation template ([988ee14](https://github.com/oocx/tfplan2md/commit/988ee1452dd3410db05dc089db97227fbaa92360))
+* add azuread service principal template ([b897ea1](https://github.com/oocx/tfplan2md/commit/b897ea10cb302f2b7b479a91685a831d71f855a4))
+* add azuread user template ([8ef0836](https://github.com/oocx/tfplan2md/commit/8ef08365d903477a3e731dffd3f8704435e21cc0))
+
+### ♻️ Refactoring
+
+* remove azuread summary mappings ([0cb99f5](https://github.com/oocx/tfplan2md/commit/0cb99f5e989e92658799adc1a5022ce18c259a79))
+
+### 📚 Documentation
+
+* add architecture for 053-azuread-resources-enhancements ([cafe892](https://github.com/oocx/tfplan2md/commit/cafe892dc024135a7c8628ae890ecf8f4a07326c))
+* add azuread demo assets ([96f7dec](https://github.com/oocx/tfplan2md/commit/96f7decb4635b68ebcf62ab8b127ff09f3f33267))
+* add code review for azuread-resources-enhancements ([581fa39](https://github.com/oocx/tfplan2md/commit/581fa3998ac5448f3c2798636ef94ee68044b4af))
+* add feature specification for 053-azuread-resources-enhancements ([839ee24](https://github.com/oocx/tfplan2md/commit/839ee24492410f370eaf133fb1ac9083abdcab1e))
+* add tasks for enhanced azure ad resource display ([2782afe](https://github.com/oocx/tfplan2md/commit/2782afec4a8f5e87e6ac639f015ab31f662e9102))
+* add test plans for azuread-resources-enhancements ([fe247a2](https://github.com/oocx/tfplan2md/commit/fe247a28f375558eb4a69675f65e5825764908e3))
+* add UAT report for Azure AD resource enhancements ([86f17d0](https://github.com/oocx/tfplan2md/commit/86f17d01016f153817f52dbd9282d4ab03904e6c))
+* mark task 1 complete ([e33413e](https://github.com/oocx/tfplan2md/commit/e33413ef231f773ed77e323ba3bea81a2c5662a9))
+* mark task 10 complete ([1f9f96a](https://github.com/oocx/tfplan2md/commit/1f9f96a96164245517015b851a8d60ee3f018516))
+* mark task 2 complete ([b3474c1](https://github.com/oocx/tfplan2md/commit/b3474c100f623d4c8bdd45d654c4e45597bad7d5))
+* mark task 3 complete ([38e5ec4](https://github.com/oocx/tfplan2md/commit/38e5ec4665aa783723579af148aca5ea833c3dca))
+* mark task 4 complete ([6746c44](https://github.com/oocx/tfplan2md/commit/6746c446d9669eda06ce75a9a49a542bbb001111))
+* mark task 5 complete ([924aa59](https://github.com/oocx/tfplan2md/commit/924aa599532c866b2b03b767b4f693711a5be4ff))
+* mark task 6 complete ([09a4b88](https://github.com/oocx/tfplan2md/commit/09a4b88272b1ab1917a26030498cdde9ff74a9d3))
+* mark task 7 complete ([9a48106](https://github.com/oocx/tfplan2md/commit/9a48106af43fcaef379b84e98d4e94da93e887cd))
+* mark task 8 complete ([554472f](https://github.com/oocx/tfplan2md/commit/554472f9da704baa318f558cbba002962aa9a878))
+* mark task 9 complete ([93ad460](https://github.com/oocx/tfplan2md/commit/93ad460b2c0f511b15f2fa5ca7ea0c12331f4b0f))
+* update coverage badge and history ([7e8f412](https://github.com/oocx/tfplan2md/commit/7e8f41292adc14dc2353ea1839890754c9f6bd32))
+* update demo artifacts for azuread enhancements ([1444994](https://github.com/oocx/tfplan2md/commit/1444994e94ffb7eda277ee78b222badefeaed72a))
+* update documentation for azuread enhancements ([338291d](https://github.com/oocx/tfplan2md/commit/338291d8d9cb4d2db7ffcb9a6d089d213ea58e04))
+
 <a name="1.4.0"></a>
 ## [1.4.0](https://github.com/oocx/tfplan2md/compare/v1.3.0...v1.4.0) (2026-01-28)
 

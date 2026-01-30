@@ -44,6 +44,11 @@ internal static class AotScriptObjectMapper
         // Summary
         scriptObject["summary"] = MapSummary(model.Summary);
 
+        // Code analysis
+        scriptObject["code_analysis"] = model.CodeAnalysis is null
+            ? null
+            : MapCodeAnalysisReport(model.CodeAnalysis);
+
         // Changes and module changes
         scriptObject["changes"] = MapChanges(model.Changes);
         scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges);
@@ -174,6 +179,9 @@ internal static class AotScriptObjectMapper
 
         obj["attribute_changes"] = attrChanges;
 
+        // Code analysis findings
+        obj["code_analysis_findings"] = MapCodeAnalysisFindings(change.CodeAnalysisFindings);
+
         // View models for specialized templates
         if (change.NetworkSecurityGroup != null)
         {
@@ -196,6 +204,79 @@ internal static class AotScriptObjectMapper
         }
 
         return obj;
+    }
+
+    private static ScriptObject MapCodeAnalysisReport(CodeAnalysisReportModel report)
+    {
+        var obj = new ScriptObject();
+        obj["summary"] = MapCodeAnalysisSummary(report.Summary);
+        obj["tools"] = MapCodeAnalysisTools(report.Tools);
+        obj["warnings"] = MapCodeAnalysisWarnings(report.Warnings);
+        obj["findings"] = MapCodeAnalysisFindings(report.Findings);
+        return obj;
+    }
+
+    private static ScriptObject MapCodeAnalysisSummary(CodeAnalysisSummaryModel summary)
+    {
+        var obj = new ScriptObject();
+        obj["critical_count"] = summary.CriticalCount;
+        obj["high_count"] = summary.HighCount;
+        obj["medium_count"] = summary.MediumCount;
+        obj["low_count"] = summary.LowCount;
+        obj["informational_count"] = summary.InformationalCount;
+        obj["total_count"] = summary.TotalCount;
+        return obj;
+    }
+
+    private static ScriptArray MapCodeAnalysisTools(IReadOnlyList<CodeAnalysisToolModel> tools)
+    {
+        var arr = new ScriptArray();
+        foreach (var tool in tools)
+        {
+            var obj = new ScriptObject();
+            obj["name"] = tool.Name;
+            obj["version"] = tool.Version;
+            obj["display_name"] = tool.DisplayName;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    private static ScriptArray MapCodeAnalysisWarnings(IReadOnlyList<CodeAnalysisWarningModel> warnings)
+    {
+        var arr = new ScriptArray();
+        foreach (var warning in warnings)
+        {
+            var obj = new ScriptObject();
+            obj["file_path"] = warning.FilePath;
+            obj["message"] = warning.Message;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    private static ScriptArray MapCodeAnalysisFindings(IReadOnlyList<CodeAnalysisFindingModel> findings)
+    {
+        var arr = new ScriptArray();
+        foreach (var finding in findings)
+        {
+            var obj = new ScriptObject();
+            obj["severity"] = finding.Severity;
+            obj["severity_icon"] = finding.SeverityIcon;
+            obj["severity_rank"] = finding.SeverityRank;
+            obj["message"] = finding.Message;
+            obj["rule_id"] = finding.RuleId;
+            obj["help_uri"] = finding.HelpUri;
+            obj["tool_name"] = finding.ToolName;
+            obj["resource_address"] = finding.ResourceAddress;
+            obj["module_address"] = finding.ModuleAddress;
+            obj["attribute_path"] = finding.AttributePath;
+            arr.Add(obj);
+        }
+
+        return arr;
     }
 
     private static ScriptObject MapAttributeChange(AttributeChangeModel attr)

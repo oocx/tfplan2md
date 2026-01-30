@@ -24,11 +24,13 @@ internal partial class ReportModelBuilder
             .Select(BuildResourceChangeModel)
             .ToList();
 
+        var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
+
         // Filter out no-op resources from the changes list passed to the template
         // No-op resources have no meaningful changes to display and including them
         // can cause the template to exceed Scriban's iteration limit of 1000
         var displayChanges = allChanges
-            .Where(c => c.Action != "no-op")
+            .Where(c => c.Action != "no-op" || c.CodeAnalysisFindings.Count > 0)
             .ToList();
 
         // SonarAnalyzer S3267: Cannot simplify with LINQ - this loop mutates existing objects
@@ -97,6 +99,7 @@ internal partial class ReportModelBuilder
             Changes = displayChanges,
             ModuleChanges = moduleGroups,
             Summary = summary,
+            CodeAnalysis = codeAnalysisReport,
             ShowUnchangedValues = _showUnchangedValues,
             RenderTarget = renderTarget
         };

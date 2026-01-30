@@ -5,6 +5,7 @@
 
 using System.Reflection;
 using Oocx.TfPlan2Md.CLI;
+using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
@@ -95,6 +96,23 @@ static async Task<int> RunAsync(CliOptions options)
     var parser = new TerraformPlanParser();
     var plan = parser.Parse(json);
 
+    CodeAnalysisInput? codeAnalysisInput = null;
+    if (options.CodeAnalysisResultsPatterns.Count > 0)
+    {
+        var loader = new CodeAnalysisLoader(new SarifParser());
+        var loadResult = loader.Load(options.CodeAnalysisResultsPatterns);
+        var minimumLevel = CodeAnalysisSeverityParser.ParseOptional(options.CodeAnalysisMinimumLevel);
+        var failOnLevel = CodeAnalysisSeverityParser.ParseOptional(options.FailOnStaticCodeAnalysisErrorsLevel);
+
+        codeAnalysisInput = new CodeAnalysisInput
+        {
+            Model = loadResult.Model,
+            Warnings = loadResult.Warnings,
+            MinimumLevel = minimumLevel,
+            FailOnLevel = failOnLevel
+        };
+    }
+
     // Create principal mapper for resolving principal names in role assignments
     var principalMapper = new PrincipalMapper(options.PrincipalMappingFile, diagnosticContext);
 
@@ -116,7 +134,8 @@ static async Task<int> RunAsync(CliOptions options)
         reportTitle: options.ReportTitle,
         principalMapper: principalMapper,
         hideMetadata: options.HideMetadata,
-        providerRegistry: providerRegistry);
+        providerRegistry: providerRegistry,
+        codeAnalysisInput: codeAnalysisInput);
     var model = modelBuilder.Build(plan);
 
     // Render to Markdown

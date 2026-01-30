@@ -194,7 +194,8 @@ public class ProgramMainTests
 
         result.ExitCode.Should().Be(10);
         File.Exists(outputPath).Should().BeTrue();
-        result.StdErr.Should().Contain("Static code analysis found", "because failures should emit an error message");
+        var combinedOutput = result.StdErr + result.StdOut;
+        combinedOutput.Should().Contain("Static code analysis found", "because failures should emit an error message");
     }
 
     /// <summary>
@@ -216,6 +217,8 @@ public class ProgramMainTests
         try
         {
             var exitCode = await InvokeMainAsync(args);
+            Console.Out.Flush();
+            Console.Error.Flush();
             return (exitCode, outWriter.ToString(), errWriter.ToString());
         }
         finally

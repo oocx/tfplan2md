@@ -102,10 +102,10 @@ Update the Scriban templates to render the "Code Analysis Summary" and the per-r
 Implement the sections for findings that could not be mapped to specific resources and the warning display for invalid SARIF files.
 
 **Acceptance Criteria:**
-- [ ] "Other Findings" section appears at the end of the report (TC-16).
-- [ ] Module-level findings are grouped under their respective module headers (TC-17).
-- [ ] Malformed SARIF files trigger a non-fatal warning section in the report with error details (TC-18, AC-18).
-- [ ] Empty findings/warnings sections are suppressed.
+- [x] "Other Findings" section appears at the end of the report (TC-16).
+- [x] Module-level findings are grouped under their respective module headers (TC-17).
+- [x] Malformed SARIF files trigger a non-fatal warning section in the report with error details (TC-18, AC-18).
+- [x] Empty findings/warnings sections are suppressed.
 
 **Dependencies:** Task 5
 
@@ -119,9 +119,9 @@ Implement the sections for findings that could not be mapped to specific resourc
 Ensure that custom provider templates (e.g., Azure AD, API Management) correctly render code analysis findings by using shared partials.
 
 **Acceptance Criteria:**
-- [ ] Core resource rendering for findings is extracted into a shared partial (e.g., `_code_analysis_findings.sbn`).
-- [ ] Provider-specific templates include this shared partial.
-- [ ] Findings render correctly for specialized resource views (API Management policy changes, etc.).
+- [x] Core resource rendering for findings is extracted into a shared partial (e.g., `_code_analysis_findings.sbn`).
+- [x] Provider-specific templates include this shared partial.
+- [x] Findings render correctly for specialized resource views (API Management policy changes, etc.).
 
 **Dependencies:** Task 5
 

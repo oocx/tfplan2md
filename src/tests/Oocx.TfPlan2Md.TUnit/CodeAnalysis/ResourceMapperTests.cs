@@ -44,6 +44,25 @@ public class ResourceMapperTests
     }
 
     [Test]
+    public void TryMapLogicalLocation_ModuleOnly_ReturnsModuleAddress()
+    {
+        // Arrange
+        const string location = "module.network.module.subnet";
+
+        // Act
+        var mapped = ResourceMapper.MapFinding(new CodeAnalysisFinding
+        {
+            Message = "Finding message",
+            Locations = [new CodeAnalysisLocation { FullyQualifiedName = location }]
+        }, CodeAnalysisSeverity.Medium);
+
+        // Assert
+        mapped.Should().ContainSingle();
+        mapped[0].ResourceAddress.Should().BeNull();
+        mapped[0].ModuleAddress.Should().Be(location);
+    }
+
+    [Test]
     public void MapFinding_MultipleLocations_CreatesMultipleFindings()
     {
         // Arrange

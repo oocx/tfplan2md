@@ -14,6 +14,13 @@
                 "text": ""
               },
               "helpUri": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.13.0/docs/rules/terraform_required_version.md"
+            },
+            {
+              "id": "terraform_unused_declarations",
+              "shortDescription": {
+                "text": ""
+              },
+              "helpUri": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.13.0/docs/rules/terraform_unused_declarations.md"
             }
           ],
           "version": "0.60.0"
@@ -31,7 +38,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "examples/firewall-rules-demo/main.tf"
+                  "uri": "examples/comprehensive-demo/main.tf"
                 },
                 "region": {
                   "startLine": 1,
@@ -39,9 +46,22 @@
                   "endLine": 1,
                   "endColumn": 10
                 }
-              }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.network"
+                }
+              ]
             }
           ]
+        },
+        {
+          "ruleId": "terraform_unused_declarations",
+          "ruleIndex": 1,
+          "level": "warning",
+          "message": {
+            "text": "Unused declaration detected in root module"
+          }
         }
       ]
     },

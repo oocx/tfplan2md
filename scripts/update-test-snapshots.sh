@@ -32,11 +32,18 @@ log_info "✓ Deleted $(find "$SNAPSHOTS_DIR" -maxdepth 1 -type f -name '*.md' |
 log_info "Running snapshot tests to regenerate files..."
 log_info "(Tests will fail on first run, but will create new snapshots)"
 
-# Run only the snapshot tests (MarkdownSnapshotTests class)
+# Run snapshot tests (MarkdownSnapshotTests and AzapiSnapshotTests)
 (
   cd "$REPO_ROOT/src"
   dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
     --treenode-filter "/*/*/MarkdownSnapshotTests/*" \
+    --output Normal || true
+)
+
+(
+  cd "$REPO_ROOT/src"
+  dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
+    --treenode-filter "/*/*/AzapiSnapshotTests/*" \
     --output Normal || true
 )
 
@@ -62,6 +69,11 @@ if (
   cd "$REPO_ROOT/src"
   dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
     --treenode-filter "/*/*/MarkdownSnapshotTests/*" \
+    --output Normal
+) && (
+  cd "$REPO_ROOT/src"
+  dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
+    --treenode-filter "/*/*/AzapiSnapshotTests/*" \
     --output Normal
 ); then
   log_info "✅ All snapshot tests pass!"

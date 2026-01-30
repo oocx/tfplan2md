@@ -110,4 +110,34 @@ internal sealed record CodeAnalysisLocation
     /// </summary>
     /// <value>The fully qualified name, or <c>null</c> when unavailable.</value>
     public string? FullyQualifiedName { get; init; }
+
+    /// <summary>
+    /// Gets the artifact URI associated with the finding location when available.
+    /// </summary>
+    /// <value>The artifact URI, or <c>null</c> when unavailable.</value>
+    public string? ArtifactUri { get; init; }
+
+    /// <summary>
+    /// Gets the start line for the finding location when available.
+    /// </summary>
+    /// <value>The 1-based start line, or <c>null</c> when unavailable.</value>
+    public int? StartLine { get; init; }
+
+    /// <summary>
+    /// Gets the start column for the finding location when available.
+    /// </summary>
+    /// <value>The 1-based start column, or <c>null</c> when unavailable.</value>
+    public int? StartColumn { get; init; }
+
+    /// <summary>
+    /// Gets the end line for the finding location when available.
+    /// </summary>
+    /// <value>The 1-based end line, or <c>null</c> when unavailable.</value>
+    public int? EndLine { get; init; }
+
+    /// <summary>
+    /// Gets the end column for the finding location when available.
+    /// </summary>
+    /// <value>The 1-based end column, or <c>null</c> when unavailable.</value>
+    public int? EndColumn { get; init; }
 }

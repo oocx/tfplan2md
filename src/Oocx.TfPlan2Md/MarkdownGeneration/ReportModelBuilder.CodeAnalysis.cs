@@ -159,7 +159,7 @@ internal partial class ReportModelBuilder
             Severity = GetSeverityLabel(severity),
             SeverityIcon = GetSeverityIcon(severity),
             SeverityRank = GetSeverityRank(severity),
-            Message = finding.Message,
+            Message = BuildFindingMessage(finding, mappedFinding),
             RuleId = finding.RuleId,
             HelpUri = finding.HelpUri,
             ToolName = finding.ToolName,
@@ -167,6 +167,96 @@ internal partial class ReportModelBuilder
             ModuleAddress = mappedFinding.ModuleAddress,
             AttributePath = mappedFinding.AttributePath
         };
+    }
+
+    /// <summary>
+    /// Builds a finding message with optional location context for unmatched findings.
+    /// </summary>
+    /// <param name="finding">The source finding.</param>
+    /// <param name="mappedFinding">The mapped location data.</param>
+    /// <returns>The formatted message text.</returns>
+    private static string BuildFindingMessage(CodeAnalysisFinding finding, CodeAnalysisMappedFinding mappedFinding)
+    {
+        if (mappedFinding.ResourceAddress is not null)
+        {
+            return finding.Message;
+        }
+
+        var locationHint = BuildLocationHint(finding.Locations);
+        if (string.IsNullOrWhiteSpace(locationHint))
+        {
+            return finding.Message;
+        }
+
+        if (string.IsNullOrWhiteSpace(finding.Message))
+        {
+            return locationHint;
+        }
+
+        return $"{finding.Message}\n{locationHint}";
+    }
+
+    /// <summary>
+    /// Builds a compact location hint from the first available physical location.
+    /// </summary>
+    /// <param name="locations">The parsed location entries.</param>
+    /// <returns>The formatted location hint, or <c>null</c> when unavailable.</returns>
+    private static string? BuildLocationHint(IReadOnlyList<CodeAnalysisLocation> locations)
+    {
+        if (locations.Count == 0)
+        {
+            return null;
+        }
+
+        var location = locations.FirstOrDefault(candidate =>
+            !string.IsNullOrWhiteSpace(candidate.ArtifactUri)
+            || candidate.StartLine is not null
+            || candidate.StartColumn is not null);
+
+        if (location is null)
+        {
+            return null;
+        }
+
+        var hint = string.Empty;
+        if (!string.IsNullOrWhiteSpace(location.ArtifactUri))
+        {
+            hint = $"Artifact: {location.ArtifactUri}";
+        }
+
+        var lineInfo = BuildLineInfo(location.StartLine, location.StartColumn);
+        if (!string.IsNullOrWhiteSpace(lineInfo))
+        {
+            hint = string.IsNullOrWhiteSpace(hint) ? lineInfo : $"{hint} ({lineInfo})";
+        }
+
+        return string.IsNullOrWhiteSpace(hint) ? null : hint;
+    }
+
+    /// <summary>
+    /// Formats line and column data into a readable label.
+    /// </summary>
+    /// <param name="line">The start line.</param>
+    /// <param name="column">The start column.</param>
+    /// <returns>The formatted line/column label, or <c>null</c> when unavailable.</returns>
+    private static string? BuildLineInfo(int? line, int? column)
+    {
+        if (line is null && column is null)
+        {
+            return null;
+        }
+
+        if (line is not null && column is not null)
+        {
+            return $"Line: {line}, Column: {column}";
+        }
+
+        if (line is not null)
+        {
+            return $"Line: {line}";
+        }
+
+        return $"Column: {column}";
     }
 
     /// <summary>

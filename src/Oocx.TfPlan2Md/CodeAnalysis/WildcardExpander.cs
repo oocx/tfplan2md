@@ -41,11 +41,10 @@ internal static class WildcardExpander
             yield break;
         }
 
-        var directory = Path.GetDirectoryName(pattern);
-        var filePattern = Path.GetFileName(pattern);
         if (pattern.Contains("**"))
         {
-            var root = directory ?? Directory.GetCurrentDirectory();
+            var root = ResolveRecursiveRoot(pattern);
+            var filePattern = Path.GetFileName(pattern);
             foreach (var file in Directory.EnumerateFiles(root, filePattern, SearchOption.AllDirectories))
             {
                 yield return file;
@@ -53,11 +52,32 @@ internal static class WildcardExpander
         }
         else
         {
+            var directory = Path.GetDirectoryName(pattern);
+            var filePattern = Path.GetFileName(pattern);
             var root = directory ?? Directory.GetCurrentDirectory();
             foreach (var file in Directory.EnumerateFiles(root, filePattern, SearchOption.TopDirectoryOnly))
             {
                 yield return file;
             }
         }
+    }
+
+    /// <summary>
+    /// Resolves the root directory for recursive patterns containing **.
+    /// </summary>
+    /// <param name="pattern">The pattern containing a recursive segment.</param>
+    /// <returns>The resolved root directory.</returns>
+    private static string ResolveRecursiveRoot(string pattern)
+    {
+        var recursiveIndex = pattern.IndexOf("**", StringComparison.Ordinal);
+        if (recursiveIndex <= 0)
+        {
+            return Directory.GetCurrentDirectory();
+        }
+
+        var rootCandidate = pattern[..recursiveIndex].TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        return string.IsNullOrWhiteSpace(rootCandidate)
+            ? Directory.GetCurrentDirectory()
+            : rootCandidate;
     }
 }

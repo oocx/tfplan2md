@@ -8,19 +8,31 @@ namespace Oocx.TfPlan2Md.Tests.CLI;
 
 public class CliParserTests
 {
+    private const string PlanJson = "plan.json";
+    private const string OutputMd = "output.md";
+    private const string OutputFlag = "--output";
+    private const string CustomSbn = "custom.sbn";
+    private const string TemplateFlag = "--template";
+    private const string ReportTitleFlag = "--report-title";
+    private const string PrincipalsJson = "principals.json";
+    private const string PrincipalMappingFlag = "--principal-mapping";
     [Test]
     public void Parse_NoArgs_ReturnsDefaultOptions()
     {
-        // Arrange
-        var args = Array.Empty<string>();
-
         // Act
-        var options = CliParser.Parse(args);
+        var options = CliParser.Parse(Array.Empty<string>());
 
-        // Assert
+        // Assert (grouped by BeNull and BeFalse)
+
         options.InputFile.Should().BeNull();
         options.OutputFile.Should().BeNull();
         options.TemplatePath.Should().BeNull();
+        options.ReportTitle.Should().BeNull();
+        options.PrincipalMappingFile.Should().BeNull();
+        options.CodeAnalysisResultsPatterns.Should().BeEmpty();
+        options.CodeAnalysisMinimumLevel.Should().BeNull();
+        options.FailOnStaticCodeAnalysisErrorsLevel.Should().BeNull();
+
         options.ShowSensitive.Should().BeFalse();
         options.ShowUnchangedValues.Should().BeFalse();
         options.ShowHelp.Should().BeFalse();
@@ -32,7 +44,7 @@ public class CliParserTests
     public void Parse_InputFileArg_SetsInputFile()
     {
         // Arrange
-        var args = new[] { "plan.json" };
+        var args = new[] { PlanJson };
 
         // Act
         var options = CliParser.Parse(args);
@@ -45,7 +57,7 @@ public class CliParserTests
     public void Parse_OutputFlag_SetsOutputFile()
     {
         // Arrange
-        var args = new[] { "--output", "output.md" };
+        var args = new[] { OutputFlag, OutputMd };
 
         // Act
         var options = CliParser.Parse(args);
@@ -58,7 +70,7 @@ public class CliParserTests
     public void Parse_ShortOutputFlag_SetsOutputFile()
     {
         // Arrange
-        var args = new[] { "-o", "output.md" };
+        var args = new[] { "-o", OutputMd };
 
         // Act
         var options = CliParser.Parse(args);
@@ -71,7 +83,7 @@ public class CliParserTests
     public void Parse_TemplateFlag_SetsTemplatePath()
     {
         // Arrange
-        var args = new[] { "--template", "custom.sbn" };
+        var args = new[] { TemplateFlag, CustomSbn };
 
         // Act
         var options = CliParser.Parse(args);
@@ -84,7 +96,7 @@ public class CliParserTests
     public void Parse_ShortTemplateFlag_SetsTemplatePath()
     {
         // Arrange
-        var args = new[] { "-t", "custom.sbn" };
+        var args = new[] { "-t", CustomSbn };
 
         // Act
         var options = CliParser.Parse(args);
@@ -97,7 +109,7 @@ public class CliParserTests
     public void Parse_ReportTitleFlag_SetsReportTitle()
     {
         // Arrange
-        var args = new[] { "--report-title", "Custom Title" };
+        var args = new[] { ReportTitleFlag, "Custom Title" };
 
         // Act
         var options = CliParser.Parse(args);
@@ -110,7 +122,7 @@ public class CliParserTests
     public void Parse_ReportTitleEmpty_ThrowsCliParseException()
     {
         // Arrange
-        var args = new[] { "--report-title", string.Empty };
+        var args = new[] { ReportTitleFlag, string.Empty };
 
         // Act
         var act = () => CliParser.Parse(args);
@@ -123,7 +135,7 @@ public class CliParserTests
     public void Parse_ReportTitleWithNewlines_ThrowsCliParseException()
     {
         // Arrange
-        var args = new[] { "--report-title", "Line 1\nLine 2" };
+        var args = new[] { ReportTitleFlag, "Line 1\nLine 2" };
 
         // Act
         var act = () => CliParser.Parse(args);
@@ -136,7 +148,7 @@ public class CliParserTests
     public void Parse_ReportTitleWithoutValue_ThrowsCliParseException()
     {
         // Arrange
-        var args = new[] { "--report-title" };
+        var args = new[] { ReportTitleFlag };
 
         // Act
         var act = () => CliParser.Parse(args);
@@ -303,7 +315,7 @@ public class CliParserTests
     public void Parse_PrincipalMappingFlag_SetsPrincipalMappingFile()
     {
         // Arrange
-        var args = new[] { "--principal-mapping", "principals.json" };
+        var args = new[] { PrincipalMappingFlag, PrincipalsJson };
 
         // Act
         var options = CliParser.Parse(args);

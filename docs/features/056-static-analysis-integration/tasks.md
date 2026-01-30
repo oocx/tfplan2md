@@ -25,6 +25,7 @@ Create the internal data structures for code analysis findings and implement a l
 
 ---
 
+
 ### Task 2: CLI Flags and Wildcard Expansion
 
 **Priority:** High
@@ -33,10 +34,10 @@ Create the internal data structures for code analysis findings and implement a l
 Implement the new CLI arguments and the logic to find and expand SARIF files from patterns.
 
 **Acceptance Criteria:**
-- [ ] `--code-analysis-results <pattern>`, `--code-analysis-minimum-level <level>`, and `--fail-on-static-code-analysis-errors <level>` flags added to CLI.
-- [ ] Custom wildcard expansion logic (TC-02, TC-03) supports `*.sarif` and `**/*.sarif`.
-- [ ] Multiple flags are correctly aggregated.
-- [ ] File paths are sorted ordinally for deterministic output.
+- [x] `--code-analysis-results <pattern>`, `--code-analysis-minimum-level <level>`, and `--fail-on-static-code-analysis-errors <level>` flags added to CLI.
+- [x] Custom wildcard expansion logic (TC-02, TC-03) supports `*.sarif` and `**/*.sarif`.
+- [x] Multiple flags are correctly aggregated.
+- [x] File paths are sorted ordinally for deterministic output.
 
 **Dependencies:** None
 

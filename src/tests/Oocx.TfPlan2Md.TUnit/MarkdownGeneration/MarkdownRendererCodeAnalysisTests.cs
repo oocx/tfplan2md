@@ -127,6 +127,60 @@ public class MarkdownRendererCodeAnalysisTests
         markdown.Should().Contain("Orphaned finding");
     }
 
+    [Test]
+    public void Render_UnmatchedFindingsTable_EscapesMultilineMessages()
+    {
+        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var unmatchedFinding = new CodeAnalysisFinding
+        {
+            Message = "Artifact: main.tf\n| ⚠️ High | Something broke",
+            HelpUri = "https://example.com/unmatched",
+            Locations = []
+        };
+
+        var codeAnalysisInput = BuildInput([unmatchedFinding]);
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+
+        var markdown = _renderer.Render(model);
+        var lines = markdown.Split('\n');
+        var headerIndex = Array.FindIndex(lines, line => line.StartsWith("| Severity | Finding | Remediation |", StringComparison.Ordinal));
+        headerIndex.Should().BeGreaterThan(-1, "because the unmatched findings table header should be present");
+        lines.Length.Should().BeGreaterThan(headerIndex + 2, "because the unmatched findings table should have rows");
+        lines[headerIndex + 1].Should().StartWith("| -------- |", "because the header separator should follow the header");
+        lines[headerIndex + 2].Should().StartWith("| ", "because the first unmatched finding row should immediately follow the header");
+        markdown.Should().Contain("Artifact: main.tf<br/>\\| ⚠️ High \\| Something broke");
+    }
+
+    [Test]
+    public void Render_UnmatchedFindingsTable_IncludesLocationHints()
+    {
+        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var unmatchedFinding = new CodeAnalysisFinding
+        {
+            Message = "Orphaned finding",
+            HelpUri = "https://example.com/unmatched",
+            Locations =
+            [
+                new CodeAnalysisLocation
+                {
+                    FullyQualifiedName = null,
+                    ArtifactUri = "main.tf",
+                    StartLine = 12,
+                    StartColumn = 4
+                }
+            ]
+        };
+
+        var codeAnalysisInput = BuildInput([unmatchedFinding]);
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("Orphaned finding<br/>Artifact: main.tf (Line: 12, Column: 4)");
+    }
+
     private static CodeAnalysisInput BuildInput(IReadOnlyList<CodeAnalysisFinding> findings)
     {
         return new CodeAnalysisInput

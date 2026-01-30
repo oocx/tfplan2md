@@ -55,8 +55,22 @@ internal static class SarifResultReader
         var locations = new List<CodeAnalysisLocation>();
         foreach (var location in locationsElement.EnumerateArray())
         {
+            var (artifactUri, startLine, startColumn, endLine, endColumn) = ReadPhysicalLocation(location);
             if (!location.TryGetProperty("logicalLocations", out var logicalLocations) || logicalLocations.ValueKind != JsonValueKind.Array)
             {
+                if (!string.IsNullOrWhiteSpace(artifactUri) || startLine is not null || startColumn is not null)
+                {
+                    locations.Add(new CodeAnalysisLocation
+                    {
+                        FullyQualifiedName = null,
+                        ArtifactUri = artifactUri,
+                        StartLine = startLine,
+                        StartColumn = startColumn,
+                        EndLine = endLine,
+                        EndColumn = endColumn
+                    });
+                }
+
                 continue;
             }
 
@@ -68,11 +82,54 @@ internal static class SarifResultReader
                     continue;
                 }
 
-                locations.Add(new CodeAnalysisLocation { FullyQualifiedName = fullyQualifiedName });
+                locations.Add(new CodeAnalysisLocation
+                {
+                    FullyQualifiedName = fullyQualifiedName,
+                    ArtifactUri = artifactUri,
+                    StartLine = startLine,
+                    StartColumn = startColumn,
+                    EndLine = endLine,
+                    EndColumn = endColumn
+                });
             }
         }
 
         return locations;
+    }
+
+    /// <summary>
+    /// Reads physical location metadata from a SARIF location.
+    /// </summary>
+    /// <param name="location">The SARIF location element.</param>
+    /// <returns>The parsed artifact URI and region coordinates.</returns>
+    private static (string? ArtifactUri, int? StartLine, int? StartColumn, int? EndLine, int? EndColumn) ReadPhysicalLocation(
+        JsonElement location)
+    {
+        if (!location.TryGetProperty("physicalLocation", out var physicalLocation) || physicalLocation.ValueKind != JsonValueKind.Object)
+        {
+            return (null, null, null, null, null);
+        }
+
+        string? artifactUri = null;
+        if (physicalLocation.TryGetProperty("artifactLocation", out var artifactLocation)
+            && artifactLocation.ValueKind == JsonValueKind.Object)
+        {
+            artifactUri = SarifJsonReader.GetString(artifactLocation, "uri");
+        }
+
+        int? startLine = null;
+        int? startColumn = null;
+        int? endLine = null;
+        int? endColumn = null;
+        if (physicalLocation.TryGetProperty("region", out var region) && region.ValueKind == JsonValueKind.Object)
+        {
+            startLine = SarifJsonReader.GetOptionalInt(region, "startLine");
+            startColumn = SarifJsonReader.GetOptionalInt(region, "startColumn");
+            endLine = SarifJsonReader.GetOptionalInt(region, "endLine");
+            endColumn = SarifJsonReader.GetOptionalInt(region, "endColumn");
+        }
+
+        return (artifactUri, startLine, startColumn, endLine, endColumn);
     }
 
     /// <summary>

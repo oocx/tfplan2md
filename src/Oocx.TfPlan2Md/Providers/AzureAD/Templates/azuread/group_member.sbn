@@ -2,7 +2,7 @@
      Provides group-to-member summaries with identity icons.
      Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 ~}}
-<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 {{~ state = change.after_json ? change.after_json : change.before_json ~}}
 {{~ group_id = state && state.group_object_id ? state.group_object_id : "" ~}}
 {{~ member_id = state && state.member_object_id ? state.member_object_id : "" ~}}

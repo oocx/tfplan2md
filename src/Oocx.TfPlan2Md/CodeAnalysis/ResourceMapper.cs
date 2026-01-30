@@ -57,6 +57,18 @@ internal static class ResourceMapper
             };
         }
 
+        if (TryMapModuleOnly(location.FullyQualifiedName, out var moduleAddress))
+        {
+            return new CodeAnalysisMappedFinding
+            {
+                Source = finding,
+                Severity = severity,
+                ResourceAddress = null,
+                ModuleAddress = moduleAddress,
+                AttributePath = null
+            };
+        }
+
         return CreateUnmappedFinding(finding, severity);
     }
 
@@ -142,6 +154,33 @@ internal static class ResourceMapper
     private static bool IsResourceTypeToken(string token)
     {
         return token.Contains('_', StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Attempts to map a logical location that references only a module path.
+    /// </summary>
+    /// <param name="fullyQualifiedName">The logical location value.</param>
+    /// <param name="moduleAddress">The parsed module address when successful.</param>
+    /// <returns><c>true</c> when the value represents a module path.</returns>
+    private static bool TryMapModuleOnly(string fullyQualifiedName, out string moduleAddress)
+    {
+        moduleAddress = string.Empty;
+        var tokens = fullyQualifiedName.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (tokens.Length < 2 || tokens.Length % 2 != 0)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < tokens.Length; index += 2)
+        {
+            if (!IsModuleToken(tokens[index]))
+            {
+                return false;
+            }
+        }
+
+        moduleAddress = string.Join('.', tokens);
+        return true;
     }
 
     /// <summary>

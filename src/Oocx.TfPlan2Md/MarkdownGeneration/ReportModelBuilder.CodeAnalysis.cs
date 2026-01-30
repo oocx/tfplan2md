@@ -31,6 +31,8 @@ internal partial class ReportModelBuilder
         var effectiveMinimumLevel = GetEffectiveMinimumLevel(_codeAnalysisInput.MinimumLevel, _codeAnalysisInput.FailOnLevel);
 
         var findings = new List<CodeAnalysisFindingModel>();
+        var moduleFindings = new Dictionary<string, List<CodeAnalysisFindingModel>>(StringComparer.Ordinal);
+        var unmatchedFindings = new List<CodeAnalysisFindingModel>();
         var resourceLookup = allChanges.ToDictionary(c => c.Address, StringComparer.Ordinal);
 
         foreach (var finding in _codeAnalysisInput.Model.Findings)
@@ -52,10 +54,27 @@ internal partial class ReportModelBuilder
                     var resourceModel = GetOrCreateResourceChange(allChanges, resourceLookup, mappedFinding);
                     AppendFinding(resourceModel, findingModel);
                 }
+                else if (!string.IsNullOrWhiteSpace(mappedFinding.ModuleAddress))
+                {
+                    AddModuleFinding(moduleFindings, mappedFinding.ModuleAddress!, findingModel);
+                }
+                else
+                {
+                    unmatchedFindings.Add(findingModel);
+                }
             }
         }
 
         SortFindings(findings, allChanges);
+        var orderedUnmatched = OrderFindings(unmatchedFindings).ToList();
+        var orderedModules = moduleFindings
+            .OrderBy(entry => entry.Key, StringComparer.Ordinal)
+            .Select(entry => new CodeAnalysisModuleFindingsModel
+            {
+                ModuleAddress = entry.Key,
+                Findings = OrderFindings(entry.Value).ToList()
+            })
+            .ToList();
 
         if (tools.Count == 0 && warnings.Count == 0 && findings.Count == 0)
         {
@@ -68,7 +87,9 @@ internal partial class ReportModelBuilder
             Summary = summary,
             Tools = tools,
             Warnings = warnings,
-            Findings = findings
+            Findings = findings,
+            ModuleFindings = orderedModules,
+            UnmatchedFindings = orderedUnmatched
         };
     }
 
@@ -257,6 +278,26 @@ internal partial class ReportModelBuilder
         var updated = resource.CodeAnalysisFindings.ToList();
         updated.Add(finding);
         resource.CodeAnalysisFindings = updated;
+    }
+
+    /// <summary>
+    /// Adds a finding to the module-level grouping dictionary.
+    /// </summary>
+    /// <param name="moduleFindings">The module findings dictionary to update.</param>
+    /// <param name="moduleAddress">The module address to group by.</param>
+    /// <param name="finding">The finding to add.</param>
+    private static void AddModuleFinding(
+        Dictionary<string, List<CodeAnalysisFindingModel>> moduleFindings,
+        string moduleAddress,
+        CodeAnalysisFindingModel finding)
+    {
+        if (!moduleFindings.TryGetValue(moduleAddress, out var findings))
+        {
+            findings = [];
+            moduleFindings[moduleAddress] = findings;
+        }
+
+        findings.Add(finding);
     }
 
     /// <summary>

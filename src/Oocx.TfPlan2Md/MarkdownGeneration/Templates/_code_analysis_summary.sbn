@@ -24,4 +24,13 @@ No code analysis findings were reported.
 {{ if code_analysis.tools.size > 0 }}
 **Tools Used:** {{ for tool in code_analysis.tools }}{{ tool.display_name | escape_markdown }}{{ if !for.last }}, {{ end }}{{ end }}
 {{ end }}
+
+{{ if code_analysis.warnings.size > 0 }}
+### Code Analysis Warnings
+
+{{ for warning in code_analysis.warnings }}
+⚠️ **Warning:** Unable to process code analysis file {{ format_code_table(warning.file_path) }}
+- Error: {{ warning.message | escape_markdown }}
+{{ end }}
+{{ end }}
 {{ end }}

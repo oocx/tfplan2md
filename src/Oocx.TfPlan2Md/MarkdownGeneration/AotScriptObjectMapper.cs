@@ -213,6 +213,8 @@ internal static class AotScriptObjectMapper
         obj["tools"] = MapCodeAnalysisTools(report.Tools);
         obj["warnings"] = MapCodeAnalysisWarnings(report.Warnings);
         obj["findings"] = MapCodeAnalysisFindings(report.Findings);
+        obj["module_findings"] = MapCodeAnalysisModuleFindings(report.ModuleFindings);
+        obj["unmatched_findings"] = MapCodeAnalysisFindings(report.UnmatchedFindings);
         return obj;
     }
 
@@ -273,6 +275,20 @@ internal static class AotScriptObjectMapper
             obj["resource_address"] = finding.ResourceAddress;
             obj["module_address"] = finding.ModuleAddress;
             obj["attribute_path"] = finding.AttributePath;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    private static ScriptArray MapCodeAnalysisModuleFindings(IReadOnlyList<CodeAnalysisModuleFindingsModel> modules)
+    {
+        var arr = new ScriptArray();
+        foreach (var module in modules)
+        {
+            var obj = new ScriptObject();
+            obj["module_address"] = module.ModuleAddress;
+            obj["findings"] = MapCodeAnalysisFindings(module.Findings);
             arr.Add(obj);
         }
 

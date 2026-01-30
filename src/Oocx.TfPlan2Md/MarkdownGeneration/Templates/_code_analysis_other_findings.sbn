@@ -1,0 +1,31 @@
+{{ if code_analysis && (code_analysis.module_findings.size > 0 || code_analysis.unmatched_findings.size > 0) }}
+## Other Findings
+
+{{ for module in code_analysis.module_findings }}
+### Module: {{ if module.module_address && module.module_address != "" }}{{ format_code_table(module.module_address) }}{{ else }}root{{ end }}
+
+| Severity | Finding | Remediation |
+| -------- | ------- | ----------- |
+{{ for finding in module.findings }}
+{{ message = finding.message | escape_markdown | string.replace "\n" "<br/>" }}
+{{ if finding.rule_id }}
+{{ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) }}
+{{ end }}
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+{{ end }}
+{{ end }}
+
+{{ if code_analysis.unmatched_findings.size > 0 }}
+### Unmatched Findings
+
+| Severity | Finding | Remediation |
+| -------- | ------- | ----------- |
+{{ for finding in code_analysis.unmatched_findings }}
+{{ message = finding.message | escape_markdown | string.replace "\n" "<br/>" }}
+{{ if finding.rule_id }}
+{{ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) }}
+{{ end }}
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+{{ end }}
+{{ end }}
+{{ end }}

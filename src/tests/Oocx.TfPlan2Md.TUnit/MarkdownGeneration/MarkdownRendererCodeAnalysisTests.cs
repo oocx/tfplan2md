@@ -49,6 +49,64 @@ public class MarkdownRendererCodeAnalysisTests
         criticalIndex.Should().BeLessThan(lowIndex, "because findings should be ordered by severity");
     }
 
+    [Test]
+    public void Render_CodeAnalysisWarnings_RendersWarningSection()
+    {
+        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var codeAnalysisInput = new CodeAnalysisInput
+        {
+            Model = new CodeAnalysisModel
+            {
+                Tools = [],
+                Findings = []
+            },
+            Warnings =
+            [
+                new CodeAnalysisWarning
+                {
+                    FilePath = "invalid.sarif",
+                    Message = "Invalid JSON"
+                }
+            ],
+            MinimumLevel = null,
+            FailOnLevel = null
+        };
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("### Code Analysis Warnings");
+        markdown.Should().Contain("invalid.sarif");
+        markdown.Should().Contain("Invalid JSON");
+    }
+
+    [Test]
+    public void Render_OtherFindingsSection_RendersModuleAndUnmatched()
+    {
+        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var moduleFinding = CreateFinding("module.network", "https://example.com/module", 7.2);
+        var unmatchedFinding = new CodeAnalysisFinding
+        {
+            Message = "Orphaned finding",
+            HelpUri = "https://example.com/unmatched",
+            Locations = []
+        };
+
+        var codeAnalysisInput = BuildInput([moduleFinding, unmatchedFinding]);
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("## Other Findings");
+        markdown.Should().Contain("### Module:");
+        markdown.Should().Contain("module.network");
+        markdown.Should().Contain("### Unmatched Findings");
+        markdown.Should().Contain("Orphaned finding");
+    }
+
     private static CodeAnalysisInput BuildInput(IReadOnlyList<CodeAnalysisFinding> findings)
     {
         return new CodeAnalysisInput

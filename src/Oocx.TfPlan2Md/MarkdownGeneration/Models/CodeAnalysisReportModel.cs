@@ -27,4 +27,14 @@ public sealed class CodeAnalysisReportModel
     /// Gets the list of findings after filtering and mapping.
     /// </summary>
     public required IReadOnlyList<CodeAnalysisFindingModel> Findings { get; init; }
+
+    /// <summary>
+    /// Gets the findings grouped by module for unmatched module-level entries.
+    /// </summary>
+    public required IReadOnlyList<CodeAnalysisModuleFindingsModel> ModuleFindings { get; init; }
+
+    /// <summary>
+    /// Gets the findings that could not be mapped to a resource or module.
+    /// </summary>
+    public required IReadOnlyList<CodeAnalysisFindingModel> UnmatchedFindings { get; init; }
 }

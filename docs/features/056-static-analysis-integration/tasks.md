@@ -84,11 +84,11 @@ Extend the existing `ReportModelBuilder` to integrate code analysis data and ens
 Update the Scriban templates to render the "Code Analysis Summary" and the per-resource "Security & Quality Findings" tables following Variant C.
 
 **Acceptance Criteria:**
-- [ ] `Summary` section in markdown includes tool list and severity counts (TC-13, TC-14).
-- [ ] Resource entries show the count/indicator metadata line and the findings table (TC-08).
-- [ ] Findings are ordered from most severe to least severe (AC-9).
-- [ ] Remediation links are correctly formatted as clickable markdown links (AC-11).
-- [ ] Critical findings use 🚨 icon and are visually emphasized (AC-12).
+- [x] `Summary` section in markdown includes tool list and severity counts (TC-13, TC-14).
+- [x] Resource entries show the count/indicator metadata line and the findings table (TC-08).
+- [x] Findings are ordered from most severe to least severe (AC-9).
+- [x] Remediation links are correctly formatted as clickable markdown links (AC-11).
+- [x] Critical findings use 🚨 icon and are visually emphasized (AC-12).
 
 **Dependencies:** Task 4
 

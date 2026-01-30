@@ -99,4 +99,6 @@
 {{ end }}
 {{ end }}
 
+{{ include "_code_analysis_findings.sbn" }}
+
 </details>

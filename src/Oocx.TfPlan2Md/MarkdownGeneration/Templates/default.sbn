@@ -10,6 +10,8 @@
 | ❌ Destroy | {{ summary.to_destroy.count }} | {{ for type in summary.to_destroy.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 | **Total** | **{{ summary.total }}** | |
 
+{{ include "_code_analysis_summary.sbn" }}
+
 ## Resource Changes
 
 {{ if module_changes.size == 0 }}

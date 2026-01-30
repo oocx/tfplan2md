@@ -1,0 +1,27 @@
+{{ if code_analysis }}
+## Code Analysis Summary
+
+{{ if code_analysis.summary.total_count == 0 }}
+No code analysis findings were reported.
+{{ else }}
+{{ if code_analysis.summary.critical_count > 0 }}
+**Status:** 🚨 {{ code_analysis.summary.critical_count }} critical findings require attention
+{{ else if code_analysis.summary.high_count > 0 }}
+**Status:** ⚠️ {{ code_analysis.summary.high_count }} high findings require attention
+{{ else }}
+**Status:** ✅ No critical or high findings
+{{ end }}
+
+| Severity | Count |
+| -------- | ----- |
+| 🚨 Critical | {{ code_analysis.summary.critical_count }} |
+| ⚠️ High | {{ code_analysis.summary.high_count }} |
+| ⚠️ Medium | {{ code_analysis.summary.medium_count }} |
+| ℹ️ Low | {{ code_analysis.summary.low_count }} |
+| ℹ️ Informational | {{ code_analysis.summary.informational_count }} |
+{{ end }}
+
+{{ if code_analysis.tools.size > 0 }}
+**Tools Used:** {{ for tool in code_analysis.tools }}{{ tool.display_name | escape_markdown }}{{ if !for.last }}, {{ end }}{{ end }}
+{{ end }}
+{{ end }}

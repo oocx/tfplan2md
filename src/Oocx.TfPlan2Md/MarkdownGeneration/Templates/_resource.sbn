@@ -55,6 +55,8 @@
 {{ change.tags_badges }}
 {{ end }}
 
+{{ include "_code_analysis_findings.sbn" }}
+
 {{ if large_attrs.size > 0 }}
 {{ if small_attrs.size > 0 || change.tags_badges }}<br/>
 <details>

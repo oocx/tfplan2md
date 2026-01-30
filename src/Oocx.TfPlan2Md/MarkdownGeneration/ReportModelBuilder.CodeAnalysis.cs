@@ -55,6 +55,8 @@ internal partial class ReportModelBuilder
             }
         }
 
+        SortFindings(findings, allChanges);
+
         if (tools.Count == 0 && warnings.Count == 0 && findings.Count == 0)
         {
             return null;
@@ -168,6 +170,40 @@ internal partial class ReportModelBuilder
             InformationalCount = informational,
             TotalCount = findings.Count
         };
+    }
+
+    /// <summary>
+    /// Sorts findings globally and per resource by severity.
+    /// </summary>
+    /// <param name="findings">The global findings list.</param>
+    /// <param name="changes">The resource changes containing findings.</param>
+    private static void SortFindings(List<CodeAnalysisFindingModel> findings, IEnumerable<ResourceChangeModel> changes)
+    {
+        var ordered = OrderFindings(findings).ToList();
+        findings.Clear();
+        findings.AddRange(ordered);
+
+        foreach (var change in changes)
+        {
+            if (change.CodeAnalysisFindings.Count == 0)
+            {
+                continue;
+            }
+
+            change.CodeAnalysisFindings = OrderFindings(change.CodeAnalysisFindings).ToList();
+        }
+    }
+
+    /// <summary>
+    /// Orders findings by severity and message for deterministic output.
+    /// </summary>
+    /// <param name="findings">The findings to order.</param>
+    /// <returns>The ordered findings.</returns>
+    private static IOrderedEnumerable<CodeAnalysisFindingModel> OrderFindings(IEnumerable<CodeAnalysisFindingModel> findings)
+    {
+        return findings
+            .OrderByDescending(finding => finding.SeverityRank)
+            .ThenBy(finding => finding.Message, StringComparer.Ordinal);
     }
 
     /// <summary>

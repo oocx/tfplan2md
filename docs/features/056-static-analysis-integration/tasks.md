@@ -68,9 +68,9 @@ Implement the logic to map SARIF results to Terraform addresses and calculate th
 Extend the existing `ReportModelBuilder` to integrate code analysis data and ensure resources with findings appear in the report even if they have no plan changes.
 
 **Acceptance Criteria:**
-- [ ] `ReportModel` includes the aggregated findings and summary metrics.
-- [ ] Resources only appearing in SARIF findings are injected into the model for rendering (AC-15, TC-15).
-- [ ] Common `effectiveMinimumLevel` logic is applied to filter displayed findings.
+- [x] `ReportModel` includes the aggregated findings and summary metrics.
+- [x] Resources only appearing in SARIF findings are injected into the model for rendering (AC-15, TC-15).
+- [x] Common `effectiveMinimumLevel` logic is applied to filter displayed findings.
 
 **Dependencies:** Task 1, Task 3
 

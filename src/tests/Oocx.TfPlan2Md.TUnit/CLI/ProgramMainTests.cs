@@ -168,6 +168,36 @@ public class ProgramMainTests
     }
 
     /// <summary>
+    /// Verifies the CLI returns exit code 10 when fail-on severity is met.
+    /// </summary>
+    [Test]
+    public async Task Main_WithFailOnSeverity_ReturnsExitCode10()
+    {
+        var inputPath = GetTestDataPath("minimal-plan.json");
+        var sarifPath = GetTestDataPath("valid-sarif.sarif");
+        var outputPath = GetTempPath("code-analysis-output.md");
+
+        if (File.Exists(outputPath))
+        {
+            File.Delete(outputPath);
+        }
+
+        var result = await RunMainAsync([
+            inputPath,
+            "--code-analysis-results",
+            sarifPath,
+            "--fail-on-static-code-analysis-errors",
+            "high",
+            "--output",
+            outputPath
+        ]);
+
+        result.ExitCode.Should().Be(10);
+        File.Exists(outputPath).Should().BeTrue();
+        result.StdErr.Should().Contain("Static code analysis found", "because failures should emit an error message");
+    }
+
+    /// <summary>
     /// Invokes the program entry point while capturing stdout/stderr.
     /// </summary>
     /// <param name="args">Command-line arguments.</param>

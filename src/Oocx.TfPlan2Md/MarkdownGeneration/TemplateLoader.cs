@@ -46,6 +46,11 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
     /// <inheritdoc />
     public string GetPath(TemplateContext context, SourceSpan callerSpan, string templateName)
     {
+        if (templateName.StartsWith('/'))
+        {
+            return EnsureExtension(NormalizePath(templateName));
+        }
+
         var callerPath = callerSpan.FileName ?? string.Empty;
         var combined = CombinePath(callerPath, templateName);
         return EnsureExtension(combined);

@@ -13,6 +13,24 @@ internal record CliOptions
     public string? InputFile { get; init; }
 
     /// <summary>
+    /// Gets the list of code analysis SARIF file patterns provided via CLI.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    public IReadOnlyList<string> CodeAnalysisResultsPatterns { get; init; } = Array.Empty<string>();
+
+    /// <summary>
+    /// Gets the minimum severity level for code analysis findings to include.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    public string? CodeAnalysisMinimumLevel { get; init; }
+
+    /// <summary>
+    /// Gets the severity level at which to fail on code analysis findings.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    public string? FailOnStaticCodeAnalysisErrorsLevel { get; init; }
+
+    /// <summary>
     /// Gets the output file path. If null, write to stdout.
     /// </summary>
     public string? OutputFile { get; init; }
@@ -110,12 +128,45 @@ internal static class CliParser
         var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
         var debug = false;
 
+        var codeAnalysisResultsPatterns = new List<string>();
+        string? codeAnalysisMinimumLevel = null;
+        string? failOnStaticCodeAnalysisErrorsLevel = null;
+
         for (var i = 0; i < args.Length; i++)
         {
             var arg = args[i];
-
             switch (arg)
             {
+                case "--code-analysis-results":
+                    if (i + 1 < args.Length)
+                    {
+                        codeAnalysisResultsPatterns.Add(args[++i]);
+                    }
+                    else
+                    {
+                        throw new CliParseException("--code-analysis-results requires a file pattern argument.");
+                    }
+                    break;
+                case "--code-analysis-minimum-level":
+                    if (i + 1 < args.Length)
+                    {
+                        codeAnalysisMinimumLevel = args[++i];
+                    }
+                    else
+                    {
+                        throw new CliParseException("--code-analysis-minimum-level requires a severity level argument.");
+                    }
+                    break;
+                case "--fail-on-static-code-analysis-errors":
+                    if (i + 1 < args.Length)
+                    {
+                        failOnStaticCodeAnalysisErrorsLevel = args[++i];
+                    }
+                    else
+                    {
+                        throw new CliParseException("--fail-on-static-code-analysis-errors requires a severity level argument.");
+                    }
+                    break;
                 case "--help" or "-h":
                     showHelp = true;
                     break;
@@ -223,6 +274,10 @@ internal static class CliParser
             RenderTarget = renderTarget,
             ReportTitle = reportTitle,
             Debug = debug
+            ,
+            CodeAnalysisResultsPatterns = codeAnalysisResultsPatterns,
+            CodeAnalysisMinimumLevel = codeAnalysisMinimumLevel,
+            FailOnStaticCodeAnalysisErrorsLevel = failOnStaticCodeAnalysisErrorsLevel
         };
     }
 

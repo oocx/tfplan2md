@@ -42,6 +42,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 ## Features
 
 - 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output
+- 🔍 **Static analysis integration** - Display security and quality findings from Checkov, Trivy, TFLint, and Semgrep (SARIF 2.1.0 format) directly in reports
 - ✅ **Validated markdown output** - Comprehensive testing ensures GitHub/Azure DevOps compatibility
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
@@ -113,6 +114,9 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--report-title <text>` | Override the level-1 heading in the generated report |
 | `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
+| `--code-analysis-results <pattern>` | SARIF file pattern for static analysis findings (can be specified multiple times) |
+| `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |
+| `--fail-on-static-code-analysis-errors <level>` | Exit with code 10 when findings at or above this level exist |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
@@ -489,7 +493,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 |----------|---------|----------|
 | **PR Validation** | Pull requests to `main` | Format check, build, test, coverage enforcement, vulnerability scan |
 | **Coverage Data** | Push to `main` | Publish coverage badge + history to `coverage-data` branch |
-| **CI** | Push to `main` | Build, test, auto-version with [Versionize](https://github.com/versionize/versionize) |
+| **CI** | Push to `main` | Auto-version with [Versionize](https://github.com/versionize/versionize) when Docker-relevant files change |
 | **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
 
 ### Code Coverage

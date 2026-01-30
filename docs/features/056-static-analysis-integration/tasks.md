@@ -151,10 +151,10 @@ Implement the logic to exit with code 10 when findings at or above the threshold
 Final validation using real tool outputs and updating test snapshots.
 
 **Acceptance Criteria:**
-- [ ] Integration tests pass with real Checkov, Trivy, and TFLint SARIF outputs (TC-21, TC-24, TC-27).
-- [ ] Multi-tool aggregation is verified (TC-30).
-- [ ] All test data requirements from `test-plan.md` are met.
-- [ ] Snapshots for standard and provider-specific outputs are updated (`SNAPSHOT_UPDATE_OK`).
+- [x] Integration tests pass with real Checkov, Trivy, and TFLint SARIF outputs (TC-21, TC-24, TC-27).
+- [x] Multi-tool aggregation is verified (TC-30).
+- [x] All test data requirements from `test-plan.md` are met.
+- [x] Snapshots for standard and provider-specific outputs are updated (`SNAPSHOT_UPDATE_OK`).
 
 **Dependencies:** Task 6, Task 7, Task 8
 

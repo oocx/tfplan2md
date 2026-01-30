@@ -50,6 +50,26 @@ public class MarkdownRendererCodeAnalysisTests
     }
 
     [Test]
+    public void Render_CodeAnalysisFindingsTable_DoesNotInsertBlankLines()
+    {
+        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var finding = CreateFinding("null_resource.test", "https://example.com/rule", 9.5);
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        var lines = markdown.Split('\n');
+        var headerIndex = Array.FindIndex(lines, line => line.StartsWith("| Severity | Attribute | Finding | Remediation |", StringComparison.Ordinal));
+        headerIndex.Should().BeGreaterThan(-1, "because the findings table header should be present");
+        lines.Length.Should().BeGreaterThan(headerIndex + 2, "because the findings table should have rows");
+        lines[headerIndex + 1].Should().StartWith("| -------- |", "because the header separator should follow the header");
+        lines[headerIndex + 2].Should().StartWith("| ", "because the first finding row should immediately follow the header");
+        lines[headerIndex + 2].Should().Contain("Critical", "because the example finding should render in the first row");
+    }
+
+    [Test]
     public void Render_CodeAnalysisWarnings_RendersWarningSection()
     {
         var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));

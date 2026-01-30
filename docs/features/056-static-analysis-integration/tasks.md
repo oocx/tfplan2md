@@ -135,9 +135,9 @@ Ensure that custom provider templates (e.g., Azure AD, API Management) correctly
 Implement the logic to exit with code 10 when findings at or above the threshold are found, ensuring the report is still completely written.
 
 **Acceptance Criteria:**
-- [ ] Application returns exit code 10 if `--fail-on-static-code-analysis-errors` threshold is met (TC-19).
-- [ ] Exit code logic runs AFTER the report has been successfully written to the output file/stdout.
-- [ ] Standard error message reflects the count of findings causing the failure.
+- [x] Application returns exit code 10 if `--fail-on-static-code-analysis-errors` threshold is met (TC-19).
+- [x] Exit code logic runs AFTER the report has been successfully written to the output file/stdout.
+- [x] Standard error message reflects the count of findings causing the failure.
 
 **Dependencies:** Task 4
 

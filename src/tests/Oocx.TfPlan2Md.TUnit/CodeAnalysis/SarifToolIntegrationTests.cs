@@ -20,6 +20,20 @@ public class SarifToolIntegrationTests
         model.Findings.Should().NotBeEmpty();
     }
 
+    /// <summary>
+    /// Verifies plan-based Checkov SARIF inputs are parsed successfully.
+    /// Related feature: docs/features/056-static-analysis-integration/test-plan.md.
+    /// </summary>
+    [Test]
+    public void Parse_CheckovPlanSarif_ReturnsToolAndFindings()
+    {
+        var model = _parser.ParseFile("TestData/code-analysis/checkov-plan.sarif");
+
+        model.Tools.Should().NotBeEmpty();
+        model.Tools.Select(t => t.Name).Should().Contain(name => name.Contains("checkov", StringComparison.OrdinalIgnoreCase));
+        model.Findings.Should().NotBeEmpty();
+    }
+
     [Test]
     public void Parse_TrivySarif_ReturnsToolAndFindings()
     {

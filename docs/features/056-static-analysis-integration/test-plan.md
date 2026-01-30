@@ -235,6 +235,24 @@ Report accurately reflects Checkov findings with correct severity, resource mapp
 
 ---
 
+#### TC-21a: Checkov_SourceCodeSarif_ParsesSuccessfully
+
+**Type:** Integration
+
+**Description:**
+Verifies that Checkov SARIF generated from Terraform source files is parsed and rendered successfully.
+
+**Test Steps:**
+1. Create a Terraform configuration with known security issues (e.g., insecure security group).
+2. Run `checkov -d . --output sarif --output-file-path checkov-source.sarif`.
+3. Run `tfplan2md tfplan.json --code-analysis-results checkov-source.sarif --out report.md`.
+4. Verify report contains Checkov tool metadata and findings mapped to affected resources.
+
+**Expected Result:**
+Report includes findings derived from source-based SARIF without errors.
+
+---
+
 #### TC-22: Checkov_ModuleLevelFindings_GroupsCorrectly
 
 **Type:** Integration

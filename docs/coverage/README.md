@@ -44,8 +44,8 @@ To avoid merge conflicts (and PR required-check oddities) this file is published
 
 The PR validation workflow enforces minimum coverage thresholds:
 
-- **Line coverage threshold**: 84.48%
-- **Branch coverage threshold**: 72.80%
+- **Line coverage threshold**: 90%
+- **Branch coverage threshold**: 80%
 
 If a PR reduces coverage below these thresholds, the coverage check will fail and block the merge.
 

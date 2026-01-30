@@ -6,6 +6,63 @@ namespace Oocx.TfPlan2Md.Tests.CodeAnalysis;
 
 public class ResourceMapperTests
 {
+    /// <summary>
+    /// Verifies findings without locations are treated as unmapped.
+    /// </summary>
+    [Test]
+    public void MapFinding_NoLocations_ReturnsUnmapped()
+    {
+        var finding = new CodeAnalysisFinding
+        {
+            Message = "Finding message",
+            Locations = []
+        };
+
+        var mapped = ResourceMapper.MapFinding(finding, CodeAnalysisSeverity.Low);
+
+        mapped.Should().ContainSingle();
+        mapped[0].ResourceAddress.Should().BeNull();
+        mapped[0].ModuleAddress.Should().BeNull();
+    }
+
+    /// <summary>
+    /// Verifies null location names are treated as unmapped.
+    /// </summary>
+    [Test]
+    public void MapFinding_NullLocation_ReturnsUnmapped()
+    {
+        var finding = new CodeAnalysisFinding
+        {
+            Message = "Finding message",
+            Locations = [new CodeAnalysisLocation { FullyQualifiedName = null }]
+        };
+
+        var mapped = ResourceMapper.MapFinding(finding, CodeAnalysisSeverity.Low);
+
+        mapped.Should().ContainSingle();
+        mapped[0].ResourceAddress.Should().BeNull();
+        mapped[0].ModuleAddress.Should().BeNull();
+    }
+
+    /// <summary>
+    /// Verifies invalid or whitespace logical locations return false.
+    /// </summary>
+    [Test]
+    public void TryMapLogicalLocation_InvalidValue_ReturnsFalse()
+    {
+        ResourceMapper.TryMapLogicalLocation(" ", out _).Should().BeFalse();
+        ResourceMapper.TryMapLogicalLocation("invalid", out _).Should().BeFalse();
+    }
+
+    /// <summary>
+    /// Verifies module-only tokens that lack resources do not map as resource locations.
+    /// </summary>
+    [Test]
+    public void TryMapLogicalLocation_ModuleWithoutResource_ReturnsFalse()
+    {
+        ResourceMapper.TryMapLogicalLocation("module.only", out _).Should().BeFalse();
+    }
+
     [Test]
     public void TryMapLogicalLocation_StandardAndModuleAddress_ReturnsResourceAddress()
     {

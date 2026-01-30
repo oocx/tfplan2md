@@ -39,4 +39,28 @@ public class SarifToolIntegrationTests
         model.Tools.Select(t => t.Name).Should().Contain(name => name.Contains("tflint", StringComparison.OrdinalIgnoreCase));
         model.Findings.Should().NotBeEmpty();
     }
+
+    /// <summary>
+    /// Verifies aggregated loading across multiple SARIF files.
+    /// Related feature: docs/features/056-static-analysis-integration/test-plan.md.
+    /// </summary>
+    [Test]
+    public void Load_MultipleSarifFiles_AggregatesToolsAndFindings()
+    {
+        var loader = new CodeAnalysisLoader(new SarifParser());
+
+        var result = loader.Load([
+            "TestData/code-analysis/checkov.sarif",
+            "TestData/code-analysis/trivy.sarif",
+            "TestData/code-analysis/tflint.sarif"
+        ]);
+
+        result.Model.Tools.Should().NotBeEmpty();
+        result.Model.Findings.Should().NotBeEmpty();
+
+        var toolNames = result.Model.Tools.Select(t => t.Name).ToArray();
+        toolNames.Should().Contain(name => name.Contains("checkov", StringComparison.OrdinalIgnoreCase));
+        toolNames.Should().Contain(name => name.Contains("trivy", StringComparison.OrdinalIgnoreCase));
+        toolNames.Should().Contain(name => name.Contains("tflint", StringComparison.OrdinalIgnoreCase));
+    }
 }

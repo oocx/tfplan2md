@@ -51,10 +51,10 @@ Implement the new CLI arguments and the logic to find and expand SARIF files fro
 Implement the logic to map SARIF results to Terraform addresses and calculate the unified severity level.
 
 **Acceptance Criteria:**
-- [ ] `SeverityMapper` implements the hybrid mapping: `security-severity` (0-10) -> `rank` -> `level` (TC-09).
-- [ ] `ResourceMapper` extracts resource addresses from `logicalLocations[].fullyQualifiedName` for standard and module-nested resources (TC-04).
-- [ ] Attribute-level mapping is implemented as best-effort (TC-10).
-- [ ] Findings with multiple locations result in multiple mapped findings (TC-20).
+- [x] `SeverityMapper` implements the hybrid mapping: `security-severity` (0-10) -> `rank` -> `level` (TC-09).
+- [x] `ResourceMapper` extracts resource addresses from `logicalLocations[].fullyQualifiedName` for standard and module-nested resources (TC-04).
+- [x] Attribute-level mapping is implemented as best-effort (TC-10).
+- [x] Findings with multiple locations result in multiple mapped findings (TC-20).
 
 **Dependencies:** Task 1
 

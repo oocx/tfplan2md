@@ -16,10 +16,10 @@ Reference: [Specification](specification.md), [Architecture](architecture.md)
 Create the internal data structures for code analysis findings and implement a lightweight, defensive SARIF 2.1.0 parser using `System.Text.Json`.
 
 **Acceptance Criteria:**
-- [ ] Internal `CodeAnalysisModel` and `Finding` models created (immutable, following project patterns).
-- [ ] `SarifParser` correctly extracts tool name/version, results, locations, severities, and remediation links from valid SARIF 2.1.0.
-- [ ] Parser is defensive and handles missing optional SARIF fields gracefully.
-- [ ] Basic unit tests (TC-01) passing for valid SARIF files.
+- [x] Internal `CodeAnalysisModel` and `Finding` models created (immutable, following project patterns).
+- [x] `SarifParser` correctly extracts tool name/version, results, locations, severities, and remediation links from valid SARIF 2.1.0.
+- [x] Parser is defensive and handles missing optional SARIF fields gracefully.
+- [x] Basic unit tests (TC-01) passing for valid SARIF files.
 
 **Dependencies:** None
 

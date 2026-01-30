@@ -115,4 +115,10 @@ public class ResourceChangeModel
     /// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
     /// </summary>
     public VariableGroupViewModel? VariableGroup { get; set; }
+
+    /// <summary>
+    /// Gets or sets the code analysis findings associated with this resource.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    public IReadOnlyList<CodeAnalysisFindingModel> CodeAnalysisFindings { get; set; } = [];
 }

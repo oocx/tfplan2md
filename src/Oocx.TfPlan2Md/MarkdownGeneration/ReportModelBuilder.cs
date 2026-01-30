@@ -1,3 +1,4 @@
+using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 
@@ -15,6 +16,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <param name="metadataProvider">Provider for tfplan2md version, commit, and generation timestamp metadata.</param>
 /// <param name="hideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
 /// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
+/// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
@@ -27,7 +29,8 @@ internal partial class ReportModelBuilder(
     Platforms.Azure.IPrincipalMapper? principalMapper = null,
     IMetadataProvider? metadataProvider = null,
     bool hideMetadata = false,
-    Providers.ProviderRegistry? providerRegistry = null)
+    Providers.ProviderRegistry? providerRegistry = null,
+    CodeAnalysisInput? codeAnalysisInput = null)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -58,6 +61,11 @@ internal partial class ReportModelBuilder(
     /// Indicates whether metadata should be hidden from the rendered report.
     /// </summary>
     private readonly bool _hideMetadata = hideMetadata;
+
+    /// <summary>
+    /// Optional code analysis inputs to integrate into the report.
+    /// </summary>
+    private readonly CodeAnalysisInput? _codeAnalysisInput = codeAnalysisInput;
 
     /// <summary>
     /// Registry for resource-specific view model factories.

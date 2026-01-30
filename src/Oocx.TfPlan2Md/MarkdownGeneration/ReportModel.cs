@@ -76,6 +76,12 @@ internal class ReportModel
     public required SummaryModel Summary { get; init; }
 
     /// <summary>
+    /// Gets the code analysis report data when SARIF inputs are provided.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    public CodeAnalysisReportModel? CodeAnalysis { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether unchanged attribute values are included in attribute change tables.
     /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// </summary>

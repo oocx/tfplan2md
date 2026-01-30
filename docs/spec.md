@@ -81,9 +81,9 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 
 **Test Optimization:** Tests only run in PR Validation workflow to eliminate redundancy. CI workflow focuses solely on versioning after merge, significantly reducing CI time. All quality gates (format, build, test, lint, vulnerability scan) must pass in PR validation before merge.
 
-**Release Gating:** The CI workflow only creates a new version tag when the published Docker image would change (e.g., changes under `src/` or `examples/`). Workflow/internal-tooling changes are not supposed to create new releases.
+**Release Gating:** The CI workflow only creates a new version tag when the published Docker image would change. This includes changes to runtime code (`src/` excluding test directories), example files (`examples/`), and Docker build configuration. Test-only changes (under `src/tests/`, `src/tools/`, test results) and workflow/internal-tooling changes (`.github/`, `scripts/`, `docs/`, `website/`) intentionally do not trigger releases.
 
-**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `scripts/`, docs/website) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`.
+**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `scripts/`, `docs/`, `website/`) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`.
 
 **Release Notes:** The release workflow generates cumulative release notes that include all changes since the last GitHub release. This ensures Docker deployments contain complete change history even when intermediate versions are not released.
 

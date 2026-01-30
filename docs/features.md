@@ -1529,6 +1529,113 @@ tfplan2md plan.json --render-target azuredevops
 
 See [docs/features/047-provider-code-separation/](features/047-provider-code-separation/) for technical details and the [Provider Development Guide](../src/Oocx.TfPlan2Md/Providers/README.md) for adding new providers.
 
+## Static Code Analysis Integration
+
+**Status:** ✅ Implemented
+
+Integrate security and quality findings from static analysis tools (Checkov, Trivy, TFLint, Semgrep) directly into Terraform plan reports. Findings are displayed inline with affected resources, creating a unified view for PR reviews.
+
+### Features
+
+- **SARIF 2.1.0 format support**: Accept code analysis results in standard SARIF format
+- **Multiple file support**: Load findings from multiple SARIF files with wildcard patterns
+- **Resource mapping**: Findings are automatically mapped to Terraform resources and attributes
+- **Severity levels**: Critical, High, Medium, Low, and Informational with visual indicators
+- **Remediation links**: Clickable links to fix guides and best practices
+- **Summary metrics**: Count of findings by severity and list of tools used
+- **Unmatched findings**: Findings that can't be mapped to resources appear in a separate section
+- **Severity filtering**: Display only findings at or above specified severity level
+- **CI/CD integration**: Exit with error code when critical/high findings are detected
+- **Provider support**: Works with specialized templates (Azure AD, API Management, etc.)
+- **Error handling**: Invalid SARIF files are skipped with detailed warnings in report
+
+### Usage
+
+```bash
+# Basic usage
+tfplan2md plan.json --code-analysis-results checkov-results.sarif
+
+# Multiple files with wildcards
+tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --code-analysis-results "security/*.sarif"
+
+# Filter by severity
+tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --code-analysis-minimum-level high
+
+# Fail on critical/high findings (for CI/CD)
+tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --fail-on-static-code-analysis-errors high
+```
+
+### CLI Flags
+
+| Flag | Description |
+|------|-------------|
+| `--code-analysis-results <pattern>` | SARIF file pattern (can be specified multiple times) |
+| `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |
+| `--fail-on-static-code-analysis-errors <level>` | Exit with code 10 when findings at or above this level exist |
+
+### Report Output
+
+**Code Analysis Summary** (at top of report):
+```markdown
+## Code Analysis Summary
+
+**Status:** ⚠️ 5 critical findings require attention
+
+| Severity | Count |
+|----------|-------|
+| 🚨 Critical | 5 |
+| ⚠️ High | 12 |
+| ⚠️ Medium | 23 |
+| ℹ️ Low | 8 |
+| ℹ️ Informational | 15 |
+
+**Tools Used:** Checkov, Trivy, TFLint
+```
+
+**Per-Resource Findings**:
+```markdown
+### aws_security_group.allow_tls (update)
+
+**Security & Quality:** 🚨 2 critical, ⚠️ 1 high
+
+| Severity | Attribute | Finding | Remediation |
+|----------|-----------|---------|-------------|
+| 🚨 Critical | ingress.0.cidr_blocks | Public ingress rule detected | [Fix Guide](link) |
+| ℹ️ Low | description | Missing security group description | [Best Practices](link) |
+```
+
+**Unmatched Findings** (at end of report):
+```markdown
+## Other Findings
+
+### Module: network-module
+| Severity | Finding | Remediation |
+|----------|---------|-------------|
+| ⚠️ High | Module uses deprecated provider version | [Upgrade Guide](link) |
+```
+
+### Tool Compatibility
+
+Tested with current versions of:
+- Checkov (IaC security scanner)
+- Trivy (vulnerability scanner)
+- TFLint (linting)
+- Semgrep (pattern-based analysis)
+
+Any tool that outputs SARIF 2.1.0 format is supported.
+
+### Example
+
+See [examples/code-analysis/](../examples/code-analysis/) for a complete example with sample SARIF file and generated report.
+
+See [docs/features/056-static-analysis-integration/](features/056-static-analysis-integration/) for specification, architecture, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

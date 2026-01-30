@@ -448,13 +448,16 @@ The mappings are stored in JSON format:
 Releases are automated via GitHub Actions:
 
 1. When commits are pushed to `main`, the CI workflow runs Versionize
-2. If there are `feat:`, `fix:`, or `BREAKING CHANGE` commits, Versionize:
+2. Versionize only runs when Docker-relevant files changed (runtime code, examples, build config)
+3. If there are `feat:`, `fix:`, or `BREAKING CHANGE` commits, Versionize:
    - Bumps the version in `.csproj`
    - Updates `CHANGELOG.md`
    - Creates a git tag (e.g., `v0.2.0`)
-3. The tag push triggers the Release workflow which:
+4. The tag push triggers the Release workflow which:
    - Creates a GitHub Release with changelog notes
    - Builds and pushes the Docker image to Docker Hub
+
+**Note:** Changes to tests, documentation, website, scripts, or GitHub workflows do not trigger releases, as they don't affect the published Docker image.
 
 ## Questions?
 

@@ -11,6 +11,7 @@ namespace Oocx.TfPlan2Md.Tests.CLI;
 /// <summary>
 /// End-to-end tests for the top-level program entry point to validate CLI behavior.
 /// </summary>
+[NotInParallel("CLI")]
 public class ProgramMainTests
 {
     /// <summary>

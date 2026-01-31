@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Code Analysis Integration - tfplan2md</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html" class="brand-link">
+                    <img src="../assets/images/logo-full.svg" alt="tfplan2md" height="64" class="brand-logo-full">
+                </a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+                <span class="hamburger-icon"></span>
+            </button>
+                        <div class="nav-menu">
+                <a href="../features/index.html" class="nav-item">Features</a>
+                <a href="../getting-started.html" class="nav-item">Install</a>
+                <a href="../docs.html" class="nav-item">Docs</a>
+                <a href="../examples.html" class="nav-item">Examples</a>
+                <a href="../providers/index.html" class="nav-item">Providers</a>
+                <a href="../architecture.html" class="nav-item">Architecture</a>
+                <a href="../ai-workflow.html" class="nav-item">AI Workflow</a>
+                <a href="../contributing.html" class="nav-item">Contributing</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <img src="../assets/icons/dark-light-mode.svg" alt="Toggle theme" class="theme-icon">
+                </button>
+                <a href="https://github.com/oocx/tfplan2md" class="nav-item nav-cta">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero hero-secondary">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Static Code Analysis Integration</h1>
+                <p class="hero-subtitle">
+                    Combine Terraform plan changes with security findings from Checkov, TfLint, and Trivy in one unified report.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-container">
+            <div class="feature-detail">
+                <div class="feature-detail-header">
+                    <span class="feature-badge">SARIF 2.1.0</span>
+                    <span class="feature-badge">Checkov</span>
+                    <span class="feature-badge">TfLint</span>
+                    <span class="feature-badge">Trivy</span>
+                </div>
+                <p class="feature-detail-description">
+                    tfplan2md natively supports SARIF 2.1.0 format, allowing you to integrate security findings from multiple tools directly into your infrastructure change reports. Findings are automatically mapped to specific resources and attributes, creating a unified view of both changes and security issues.
+                </p>
+                
+                <h3 style="margin-top: 40px;">How It Works</h3>
+                <ol style="margin-left: 20px; font-size: 16px; line-height: 1.8;">
+                    <li><strong>Run your security tools</strong> — Generate SARIF output from Checkov, TfLint, Trivy, or any SARIF-compatible tool</li>
+                    <li><strong>Pass SARIF files to tfplan2md</strong> — Use <code>--code-analysis-results</code> with file paths or wildcards</li>
+                    <li><strong>Get a unified report</strong> — Findings are mapped to resources and displayed alongside plan changes</li>
+                </ol>
+
+                <h3 style="margin-top: 40px;">Example: Unified Security & Plan Report</h3>
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Storage Account with Security Findings</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>🆔 sttfplan2mdlogs</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<br>
+
+🔒 <strong>Security & Quality:</strong> ⚠️ 1 High, ⚠️ 1 Medium
+
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Rule</th>
+<th>Tool</th>
+<th>Message</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠️ High</td>
+<td><code>CKV_AZURE_33</code></td>
+<td>Checkov</td>
+<td>Ensure Storage logging is enabled for Queue service for read, write and delete requests</td>
+<td><code>queue_properties</code></td>
+</tr>
+<tr>
+<td>⚠️ Medium</td>
+<td><code>CKV2_AZURE_38</code></td>
+<td>Checkov</td>
+<td>Ensure soft-delete is enabled on Azure storage account</td>
+<td><code>blob_properties.delete_retention_policy</code></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code>Standard</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍 eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔 sttfplan2mdlogs</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁 rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>🏷️ Tags:</strong> <code>environment: production</code> <code>managed-by: terraform</code></p>
+
+</details>
+                        </div>
+                        <div class="view-pane source-view">
+<pre><code>&lt;details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;"&gt;
+&lt;summary&gt;➕ azurerm_storage_account &lt;b&gt;&lt;code&gt;logs&lt;/code&gt;&lt;/b&gt; — &lt;code&gt;🆔 sttfplan2mdlogs&lt;/code&gt; in &lt;code&gt;📁 rg-tfplan2md-demo&lt;/code&gt; &lt;code&gt;🌍 eastus&lt;/code&gt;&lt;/summary&gt;
+&lt;br&gt;
+
+🔒 &lt;strong&gt;Security & Quality:&lt;/strong&gt; ⚠️ 1 High, ⚠️ 1 Medium
+
+| Severity | Rule | Tool | Message | Attribute |
+| -------- | ---- | ---- | ------- | --------- |
+| ⚠️ High | `CKV_AZURE_33` | Checkov | Ensure Storage logging is enabled for Queue service for read, write and delete requests | `queue_properties` |
+| ⚠️ Medium | `CKV2_AZURE_38` | Checkov | Ensure soft-delete is enabled on Azure storage account | `blob_properties.delete_retention_policy` |
+
+| Attribute | Value |
+| ----------- | ------- |
+| account_replication_type | `LRS` |
+| account_tier | `Standard` |
+| location | `🌍 eastus` |
+| name | `🆔 sttfplan2mdlogs` |
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+
+**🏷️ Tags:** `environment: production` `managed-by: terraform`
+
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">CLI Usage</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Basic Usage</span>
+                    </div>
+                    <pre><code># Generate Terraform plan
+terraform show -json plan.tfplan > plan.json
+
+# Run security tools
+checkov -d terraform --framework terraform --output sarif -o checkov.sarif
+tflint --format sarif > tflint.sarif
+trivy config terraform --format sarif --output trivy.sarif
+
+# Generate unified report
+docker run -v $(pwd):/data -i oocx/tfplan2md \
+  /data/plan.json \
+  --code-analysis-results "/data/*.sarif" \
+  --output /data/report.md</code></pre>
+                </div>
+
+                <h3 style="margin-top: 40px;">CLI Options</h3>
+                <table style="width: 100%; margin-top: 16px;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border);">Option</th>
+                            <th style="text-align: left; padding: 12px; border-bottom: 2px solid var(--color-border);">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);"><code>--code-analysis-results &lt;pattern&gt;</code></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);">File path or wildcard pattern for SARIF files (e.g., <code>*.sarif</code> or <code>**/*.sarif</code>)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);"><code>--code-analysis-minimum-level &lt;level&gt;</code></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--color-border);">Minimum severity to include (none, note, warning, error). Default: <code>note</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;"><code>--fail-on-static-code-analysis-errors</code></td>
+                            <td style="padding: 12px;">Exit with non-zero status if high or critical findings are present</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 40px;">Supported Tools</h3>
+                <div class="features-grid" style="margin-top: 24px;">
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">Checkov</h4>
+                        <p style="font-size: 14px; margin: 0;">Infrastructure security scanning for Terraform, CloudFormation, Kubernetes, and more</p>
+                    </div>
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">TfLint</h4>
+                        <p style="font-size: 14px; margin: 0;">Terraform linter with pluggable rule support for AWS, Azure, and GCP</p>
+                    </div>
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">Trivy</h4>
+                        <p style="font-size: 14px; margin: 0;">Comprehensive security scanner for IaC misconfigurations and vulnerabilities</p>
+                    </div>
+                    <div class="feature-category-card compact">
+                        <div style="font-size: 32px; margin-bottom: 12px;">✓</div>
+                        <h4 style="margin: 0 0 8px 0;">Any SARIF Tool</h4>
+                        <p style="font-size: 14px; margin: 0;">Works with any tool that outputs SARIF 2.1.0 format</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Summary View</h3>
+                <p>The report includes a high-level summary showing the overall security posture:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Code Analysis Summary</span>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view">
+<h2>Code Analysis Summary</h2>
+<p><strong>Status:</strong> ⚠️ 2 high findings require attention</p>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🚨 Critical</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td>⚠️ High</td>
+<td>2</td>
+<td>1 azurerm_key_vault<br>1 azurerm_storage_account</td>
+</tr>
+<tr>
+<td>⚠️ Medium</td>
+<td>4</td>
+<td>1 azurerm_key_vault<br>1 azurerm_storage_account</td>
+</tr>
+<tr>
+<td>ℹ️ Low</td>
+<td>1</td>
+<td>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>ℹ️ Informational</td>
+<td>0</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tools Used:</strong> Checkov 3.2.490, tflint 0.60.0, Trivy 0.50.0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Benefits</h3>
+                <ul style="margin-left: 20px; font-size: 16px; line-height: 1.8;">
+                    <li><strong>Unified View</strong> — See infrastructure changes and security findings in one report</li>
+                    <li><strong>Resource Mapping</strong> — Findings are automatically mapped to specific resources and attributes</li>
+                    <li><strong>Multi-Tool Support</strong> — Combine results from multiple security tools</li>
+                    <li><strong>PR Integration</strong> — Perfect for posting as PR comments alongside plan changes</li>
+                    <li><strong>Fail-Fast Option</strong> — Use <code>--fail-on-static-code-analysis-errors</code> to block PRs with critical issues</li>
+                </ul>
+
+                <div style="margin-top: 40px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-primary); border-radius: 4px;">
+                    <p style="margin: 0; font-size: 16px;"><strong>💡 Tip:</strong> Use wildcard patterns like <code>**/*.sarif</code> to automatically include SARIF files from subdirectories.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 class="footer-heading">Product</h4>
+                    <a href="../features/index.html" class="footer-link">Features</a>
+                    <a href="../getting-started.html" class="footer-link">Get Started</a>
+                    <a href="../docs.html" class="footer-link">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Resources</h4>
+                    <a href="https://github.com/oocx/tfplan2md" class="footer-link">GitHub</a>
+                    <a href="https://hub.docker.com/r/oocx/tfplan2md" class="footer-link">Docker Hub</a>
+                    <a href="../examples.html" class="footer-link">Examples</a>
+                    <a href="../architecture.html" class="footer-link">Architecture</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Community</h4>
+                    <a href="https://github.com/oocx/tfplan2md/issues" class="footer-link">Issues</a>
+                    <a href="../contributing.html" class="footer-link">Contributing</a>
+                    <a href="https://github.com/oocx/tfplan2md/blob/main/LICENSE" class="footer-link">License</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 tfplan2md • MIT License</p>
+                <p class="footer-note">Built 100% with GitHub Copilot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+        
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeButton(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+        
+        function updateThemeButton(theme) {
+            const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+        }
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('active');
+            });
+        }
+
+        // Example toggle functionality
+        document.querySelectorAll('.view-toggle').forEach(toggleGroup => {
+            const buttons = toggleGroup.querySelectorAll('.toggle-btn');
+            const exampleContent = toggleGroup.closest('.interactive-example').querySelector('.example-content');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const view = button.dataset.view;
+                    
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    exampleContent.querySelectorAll('.view-pane').forEach(pane => {
+                        pane.classList.remove('active');
+                    });
+                    exampleContent.querySelector(`.${view}-view`).classList.add('active');
+                });
+            });
+        });
+
+        // Fullscreen functionality
+        document.querySelectorAll('.fullscreen-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const exampleContent = btn.closest('.interactive-example');
+                if (exampleContent.classList.contains('fullscreen')) {
+                    exampleContent.classList.remove('fullscreen');
+                    btn.textContent = '⛶';
+                } else {
+                    exampleContent.classList.add('fullscreen');
+                    btn.textContent = '⛶';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

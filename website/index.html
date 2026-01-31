@@ -159,6 +159,13 @@
                         <li>
                             <span class="check-icon">✓</span>
                             <div>
+                                <strong>Unified Security & Plan Report</strong>
+                                <p>Combines Terraform changes with security findings from Checkov, TfLint, and Trivy in one view</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
                                 <strong>Friendly Names, Not GUIDs</strong>
                                 <p>Principal IDs, role names, and scopes resolved to readable text</p>
                             </div>
@@ -280,7 +287,7 @@
                         </div>
                         <h3 class="feature-title">Role Assignments</h3>
                         <p class="feature-description">
-                            Resolves cryptic Principal IDs, role names, and scopes to human-readable names.
+                            Resolves cryptic Principal IDs, role names, scopes, and Azure AD Groups, Service Principals, and App Roles to human-readable names.
                         </p>
                         <a href="features/azure-optimizations.html" class="feature-link-btn">Learn more →</a>
                     </div>
@@ -295,6 +302,18 @@
                             Multi-line values like JSON policies show computed diffs with inline highlighting.
                         </p>
                         <a href="features/large-values.html" class="feature-link-btn">Learn more →</a>
+                    </div>
+
+                    <!-- Static Code Analysis -->
+                    <div class="feature-card elevated">
+                        <div class="feature-header">
+                            <img src="assets/icons/static-analysis.svg" alt="Static Code Analysis" class="feature-icon-lg">
+                        </div>
+                        <h3 class="feature-title">Static Code Analysis</h3>
+                        <p class="feature-description">
+                            Integrates security findings from Checkov, TfLint, and Trivy, mapping them to specific resources.
+                        </p>
+                        <a href="features/static-analysis.html" class="feature-link-btn">Learn more →</a>
                     </div>
 
                     <!-- Optimized for PR Comments -->
@@ -343,6 +362,7 @@
                         <div class="code-tabs">
                             <button class="code-tab active" data-tab="github-actions">GitHub Actions</button>
                             <button class="code-tab" data-tab="azure-pipelines">Azure Pipelines</button>
+                            <button class="code-tab" data-tab="security-tools">Security Tools</button>
                         </div>
                         <div class="code-tab-content active" id="github-actions">
 <pre><code class="language-yaml">- name: Generate markdown report
@@ -388,6 +408,39 @@
       -H "Authorization: Bearer $(System.AccessToken)" \
       -d "$BODY"
   displayName: 'Post PR comment'</code></pre>
+                        </div>
+                        <div class="code-tab-content" id="security-tools">
+<pre><code class="language-yaml">- name: Run security scans
+  run: |
+    # Run Checkov
+    checkov -d terraform --framework terraform \
+      --output sarif --output-file-path . --compact
+
+    # Run TfLint  
+    cd terraform && tflint --format sarif > ../tflint.sarif && cd ..
+
+    # Run Trivy
+    trivy config terraform --format sarif --output trivy.sarif
+
+- name: Generate unified report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i -v $(pwd):/data oocx/tfplan2md \
+        --code-analysis-results "/data/**/*.sarif" > plan.md
+
+- name: Post PR comment
+  uses: actions/github-script@v7
+  with:
+    script: |
+      const fs = require('fs');
+      const plan = fs.readFileSync('plan.md', 'utf8');
+      
+      github.rest.issues.createComment({
+        issue_number: context.issue.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: plan
+      });</code></pre>
                         </div>
                     </div>
                 </div>

@@ -141,22 +141,25 @@
                             <div class="feature-icon" style="margin: 0; font-size: 32px;">🔐</div>
                             <div>
                                 <h3 style="margin: 0;">Azure AD (azuread)</h3>
-                                <span style="display: inline-block; padding: 4px 12px; background: var(--color-text-secondary); color: white; border-radius: 12px; font-size: 12px; font-weight: 600; margin-top: 4px;">Planned</span>
+                                <span style="display: inline-block; padding: 4px 12px; background: var(--color-success); color: white; border-radius: 12px; font-size: 12px; font-weight: 600; margin-top: 4px;">Implemented</span>
                             </div>
                         </div>
-                        <p>Planned support for Azure Active Directory resources with emphasis on group memberships and application configurations.</p>
+                        <p>Enhanced support for Azure Active Directory resources with specialized rendering for Groups, Service Principals, Invitations, and App Roles.</p>
                         
-                        <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px;">Planned Resources</h4>
+                        <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px;">Specialized Resources</h4>
                         <ul style="margin-left: 20px; font-size: 14px;">
-                            <li style="margin-bottom: 8px;">Groups and group memberships</li>
-                            <li style="margin-bottom: 8px;">Applications and service principals</li>
-                            <li style="margin-bottom: 8px;">Conditional access policies</li>
-                            <li style="margin-bottom: 8px;">Directory roles</li>
+                            <li style="margin-bottom: 8px;"><strong>Groups</strong> — Member counts, group memberships with readable names</li>
+                            <li style="margin-bottom: 8px;"><strong>Service Principals</strong> — App roles and OAuth2 permissions</li>
+                            <li style="margin-bottom: 8px;"><strong>Invitations</strong> — Guest user invitation details</li>
+                            <li style="margin-bottom: 8px;"><strong>Users</strong> — User profiles with attributes</li>
                         </ul>
                         
-                        <p style="margin-top: 24px; padding: 12px; background: var(--color-surface); border-left: 3px solid var(--color-primary); font-size: 14px;">
-                            <strong>Status:</strong> In planning phase. Contributions welcome!
-                        </p>
+                        <h4 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px;">Global Enhancements</h4>
+                        <ul style="margin-left: 20px; font-size: 14px;">
+                            <li style="margin-bottom: 8px;"><strong>Principal Mapping</strong> — Resolves Object IDs to readable names in role assignments</li>
+                            <li style="margin-bottom: 8px;"><strong>Group Hierarchies</strong> — Clear display of nested group memberships</li>
+                            <li style="margin-bottom: 8px;"><strong>Application Integration</strong> — Links between applications and service principals</li>
+                        </ul>
                         
                         <div style="margin-top: 24px;">
                             <a href="azuread.html" class="btn btn-secondary" style="width: 100%; text-align: center;">View Documentation</a>

@@ -37,6 +37,23 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Escapes markdown characters for table cell content while preserving multi-line readability.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    /// <param name="input">The raw table cell content to escape.</param>
+    /// <returns>A markdown-safe string with table separators encoded.</returns>
+    public static string EscapeMarkdownTableCell(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
+        var value = EscapeMarkdown(input);
+        return value.Replace("\\|", "&#124;", StringComparison.Ordinal);
+    }
+
+    /// <summary>
     /// Escapes markdown characters specifically for headings so literal text renders correctly.
     /// Related feature: docs/features/020-custom-report-title/specification.md.
     /// </summary>

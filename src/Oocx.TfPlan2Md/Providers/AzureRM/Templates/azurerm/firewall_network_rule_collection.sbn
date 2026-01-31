@@ -5,7 +5,7 @@
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>{{ change.summary_html }}</summary>
 <br>
-{{ include "/_code_analysis_metadata.sbn" }}
+{{~ include "/_code_analysis_metadata.sbn" ~}}
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.firewall_network_rule_collection && change.firewall_network_rule_collection.name ~}}

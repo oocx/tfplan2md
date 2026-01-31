@@ -33,7 +33,7 @@
 
 <summary>{{ change.action_symbol }} azuread_group_without_members <b>{{ format_code_summary(change.name) }}</b> — {{ summary_text }}</summary>
 <br>
-{{ include "/_code_analysis_metadata.sbn" }}
+{{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}
 {{ for attr in change.attribute_changes }}

@@ -34,6 +34,19 @@ public class ScribanHelpersMarkdownTests
     }
 
     /// <summary>
+    /// Verifies table cell escaping replaces pipe separators with HTML entities.
+    /// </summary>
+    [Test]
+    public void EscapeMarkdownTableCell_ReplacesPipeSeparators()
+    {
+        var input = "column|value";
+
+        var escaped = ScribanHelpers.EscapeMarkdownTableCell(input);
+
+        escaped.Should().Be("column&#124;value");
+    }
+
+    /// <summary>
     /// Verifies heading-specific escapes are applied after markdown escaping.
     /// </summary>
     [Test]

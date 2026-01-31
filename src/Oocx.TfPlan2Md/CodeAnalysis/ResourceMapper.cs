@@ -106,6 +106,17 @@ internal static class ResourceMapper
                 continue;
             }
 
+            if (IsDataToken(tokens[start]))
+            {
+                if (TryParseDataAddress(tokens, start, out var dataLocation))
+                {
+                    location = dataLocation;
+                    return true;
+                }
+
+                continue;
+            }
+
             if (!IsResourceTypeToken(tokens[start]))
             {
                 continue;
@@ -144,6 +155,16 @@ internal static class ResourceMapper
     private static bool IsModuleToken(string token)
     {
         return token.Equals("module", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Determines whether a token represents the data source prefix in a Terraform address.
+    /// </summary>
+    /// <param name="token">The token to evaluate.</param>
+    /// <returns><c>true</c> when the token is <c>data</c>; otherwise <c>false</c>.</returns>
+    private static bool IsDataToken(string token)
+    {
+        return token.Equals("data", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -204,14 +225,52 @@ internal static class ResourceMapper
             return false;
         }
 
+        var moduleAddress = string.Join('.', tokens[start..index]);
+
+        if (IsDataToken(tokens[index]))
+        {
+            if (!TryParseDataAddress(tokens, index, out _))
+            {
+                location = new CodeAnalysisResourceLocation { ResourceAddress = string.Empty };
+                return false;
+            }
+
+            location = BuildLocation(tokens, start, index + 3, moduleAddress);
+            return true;
+        }
+
         if (!IsResourceTypeToken(tokens[index]))
         {
             location = new CodeAnalysisResourceLocation { ResourceAddress = string.Empty };
             return false;
         }
 
-        var moduleAddress = string.Join('.', tokens[start..index]);
         location = BuildLocation(tokens, start, index + 2, moduleAddress);
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to parse a data source address from the tokenized logical location.
+    /// </summary>
+    /// <param name="tokens">The tokenized fully qualified name.</param>
+    /// <param name="start">The index where the data prefix starts.</param>
+    /// <param name="location">The parsed resource location when successful.</param>
+    /// <returns><c>true</c> when a data source address was parsed; otherwise <c>false</c>.</returns>
+    private static bool TryParseDataAddress(string[] tokens, int start, out CodeAnalysisResourceLocation location)
+    {
+        location = new CodeAnalysisResourceLocation { ResourceAddress = string.Empty };
+
+        if (start + 2 >= tokens.Length)
+        {
+            return false;
+        }
+
+        if (!IsResourceTypeToken(tokens[start + 1]))
+        {
+            return false;
+        }
+
+        location = BuildLocation(tokens, start, start + 3, null);
         return true;
     }
 

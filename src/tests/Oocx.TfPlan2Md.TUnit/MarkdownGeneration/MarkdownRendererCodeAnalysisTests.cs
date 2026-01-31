@@ -31,7 +31,9 @@ public class MarkdownRendererCodeAnalysisTests
         var markdown = _renderer.Render(model);
 
         markdown.Should().Contain("## Code Analysis Summary");
+        markdown.Should().Contain("| Severity | Count | Resource Types |");
         markdown.Should().Contain("| 🚨 Critical | 1 |");
+        markdown.Should().Contain("| 🚨 Critical | 1 | 1 null_resource |");
         markdown.Should().Contain("**Tools Used:** Checkov 3.2.10");
     }
 

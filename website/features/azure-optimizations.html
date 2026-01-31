@@ -39,7 +39,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">Azure Optimizations</h1>
                 <p class="hero-subtitle">
-                    Purpose-built features for Azure that format resource IDs, map principal names, and show role assignments clearly.
+                    Purpose-built features for Azure that format resource IDs, map principal names (including Azure AD Groups, Service Principals, and App Roles), and show role assignments clearly.
                 </p>
             </div>
         </div>
@@ -152,9 +152,10 @@
                 <div class="feature-detail-header">
                     <h2 class="feature-detail-title">Azure Role Assignment Display</h2>
                     <span class="feature-badge">azurerm</span>
+                    <span class="feature-badge">azuread</span>
                 </div>
                 <p class="feature-detail-description">
-                    Role assignments show human-readable role names, scopes, and principal information in a clear table format.
+                    Role assignments (both Azure RBAC and Azure AD) show human-readable role names, scopes, and principal information in a clear table format.
                 </p>
                 
                 <div class="feature-comparison">
@@ -233,9 +234,188 @@
 | role_definition_name | `🛡️ Reader` |
 | principal_type | `👤 User` |
 | principal_id | `00000000-0000-0000-0000-000000000001` |</code></pre>
+                                </div>
+                            </div>
                         </div>
                         <p class="comparison-note">Clear summary at the top, formatted scope, and visual icons.</p>
                     </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Azure AD Examples</h3>
+                <p style="margin-top: 16px;">Role assignments also work beautifully for Azure AD resources like groups, service principals, and users:</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 24px;">
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Azure AD Group with Members</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <h3>➕ azuread_group <b>platform_team</b> — 👥 Platform Team (🆔 Platform Engineering) Core platform engineering team | <code>2 👤 1 👥 1 💻 1 ❓</code></h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Attribute</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>description</td>
+                                        <td>Core platform engineering team</td>
+                                    </tr>
+                                    <tr>
+                                        <td>display_name</td>
+                                        <td>Platform Team</td>
+                                    </tr>
+                                    <tr>
+                                        <td>mail_nickname</td>
+                                        <td>Platform Engineering</td>
+                                    </tr>
+                                    <tr>
+                                        <td>members[0]</td>
+                                        <td><code>user-100</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>members[1]</td>
+                                        <td><code>user-101</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>members[2]</td>
+                                        <td><code>group-100</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>members[3]</td>
+                                        <td><code>spn-200</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>members[4]</td>
+                                        <td><code>unknown-999</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>### ➕ azuread_group platform_team — 👥 Platform Team (🆔 Platform Engineering) Core platform engineering team | 2 👤 1 👥 1 💻 1 ❓
+
+| Attribute | Value |
+| ----------- | ------- |
+| description | Core platform engineering team |
+| display_name | Platform Team |
+| mail_nickname | Platform Engineering |
+| members[0] | user-100 |
+| members[1] | user-101 |
+| members[2] | group-100 |
+| members[3] | spn-200 |
+| members[4] | unknown-999 |</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Azure AD Service Principal</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <h3>➕ azuread_service_principal <b>terraform_spn</b> — 💻 terraform-spn (🆔 app-123-456) Terraform automation service principal</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Attribute</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>application_id</td>
+                                        <td><code>app-123-456</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>description</td>
+                                        <td>Terraform automation service principal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>display_name</td>
+                                        <td><code>terraform-spn</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>### ➕ azuread_service_principal terraform_spn — 💻 terraform-spn (🆔 app-123-456) Terraform automation service principal
+
+| Attribute | Value |
+| ----------- | ------- |
+| application_id | app-123-456 |
+| description | Terraform automation service principal |
+| display_name | terraform-spn |</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block interactive-example">
+                    <div class="code-header">
+                        <span class="code-title">Azure AD User</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                    <div class="example-content">
+                        <div class="view-pane rendered-view active">
+                            <h3>➕ azuread_user <b>jane</b> — 👤 Jane Doe (🆔 jane.doe@example.com) 📧 jane.doe@example.com</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Attribute</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>display_name</td>
+                                        <td>👤 Jane Doe</td>
+                                    </tr>
+                                    <tr>
+                                        <td>mail</td>
+                                        <td>📧 jane.doe@example.com</td>
+                                    </tr>
+                                    <tr>
+                                        <td>user_principal_name</td>
+                                        <td>🆔 jane.doe@example.com</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="view-pane source-view">
+                            <pre><code>### ➕ azuread_user jane — 👤 Jane Doe (🆔 jane.doe@example.com) 📧 jane.doe@example.com
+
+| Attribute | Value |
+| ----------- | ------- |
+| display_name | 👤 Jane Doe |
+| mail | 📧 jane.doe@example.com |
+| user_principal_name | 🆔 jane.doe@example.com |</code></pre>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>

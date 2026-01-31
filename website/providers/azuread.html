@@ -39,7 +39,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">Azure AD Provider</h1>
                 <p class="hero-subtitle">
-                    Planned support for Azure Active Directory resources including users, groups, and applications.
+                    Enhanced support for Azure Active Directory resources with specialized rendering for Groups, Service Principals, Invitations, and Users.
                 </p>
             </div>
         </div>
@@ -49,19 +49,35 @@
         <div class="section-container">
             <div class="feature-detail">
                 <div class="feature-detail-header">
-                    <span class="feature-badge" style="background: #6e7681;">Planned</span>
+                    <span class="feature-badge" style="background: var(--color-success);">Implemented</span>
                 </div>
                 <p class="feature-detail-description">
-                    Managing identity resources with Terraform is common, but diffs can be opaque. We plan to add specialized templates for Azure AD resources to make identity changes transparent.
+                    Azure Active Directory resources are now supported with specialized templates that make identity changes transparent and easy to review.
                 </p>
                 
                 <div class="feature-highlights">
-                    <h3 class="highlights-title">Planned Resources</h3>
+                    <h3 class="highlights-title">Supported Resources</h3>
                     <ul class="highlights-list">
-                        <li><strong>Users & Groups:</strong> Clear display of membership changes</li>
-                        <li><strong>App Registrations:</strong> Readable manifest changes and permission grants</li>
-                        <li><strong>Service Principals:</strong> Simplified view of credentials and assignments</li>
+                        <li><strong>Groups (azuread_group):</strong> Member counts and group memberships with readable names</li>
+                        <li><strong>Group Members (azuread_group_member):</strong> Clear display of membership changes with principal mapping</li>
+                        <li><strong>Service Principals (azuread_service_principal):</strong> App roles and OAuth2 permissions</li>
+                        <li><strong>Invitations (azuread_invitation):</strong> Guest user invitation details with email and redirect URLs</li>
+                        <li><strong>Users (azuread_user):</strong> User profiles with attributes like display name, UPN, and mail</li>
                     </ul>
+                </div>
+                
+                <div class="feature-highlights" style="margin-top: 40px;">
+                    <h3 class="highlights-title">Global Enhancements</h3>
+                    <ul class="highlights-list">
+                        <li><strong>Principal Mapping:</strong> Resolves Object IDs to readable names in role assignments (works with <code>--principal-mapping</code> JSON files)</li>
+                        <li><strong>Group Hierarchies:</strong> Clear display of nested group memberships</li>
+                        <li><strong>Application Integration:</strong> Links between applications and service principals are clearly shown</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 40px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-success); border-radius: 4px;">
+                    <h4 style="margin: 0 0 12px 0;">✅ Status</h4>
+                    <p style="margin: 0;">Azure AD resources are fully implemented with specialized templates. For examples, see the <a href="../examples.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">Examples page</a> or the <a href="https://github.com/oocx/tfplan2md/tree/main/examples" style="color: var(--color-primary); font-weight: 600; text-decoration: none;" target="_blank" rel="noopener">GitHub repository</a>.</p>
                 </div>
             </div>
         </div>

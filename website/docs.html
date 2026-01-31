@@ -99,6 +99,14 @@
                         </ul>
                     </li>
                     <li>
+                        <a href="#code-analysis" class="docs-nav-link">Static Code Analysis</a>
+                        <ul class="docs-nav-sublist">
+                            <li><a href="#code-analysis-overview" class="docs-nav-sublink">Overview</a></li>
+                            <li><a href="#code-analysis-options" class="docs-nav-sublink">CLI Options</a></li>
+                            <li><a href="#code-analysis-tools" class="docs-nav-sublink">Supported Tools</a></li>
+                        </ul>
+                    </li>
+                    <li>
                         <a href="#render-targets" class="docs-nav-link">Render Targets</a>
                         <ul class="docs-nav-sublist">
                             <li><a href="#azuredevops" class="docs-nav-sublink">azuredevops</a></li>
@@ -195,6 +203,30 @@ terraform show -json plan.tfplan | tfplan2md</code></pre>
                         </div>
                         <div class="option-desc">
                             Include unchanged attribute values in tables. By default, only changed attributes are shown.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--code-analysis-results &lt;pattern&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Path or wildcard pattern for SARIF 2.1.0 files containing static analysis results (e.g., <code>*.sarif</code> or <code>**/*.sarif</code>). Security findings are mapped to resources and included in the report.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--code-analysis-minimum-level &lt;level&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Minimum severity level to include in the report. Options: <code>none</code>, <code>note</code>, <code>warning</code>, <code>error</code>. Default: <code>note</code>.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--fail-on-static-code-analysis-errors</code>
+                        </div>
+                        <div class="option-desc">
+                            Exit with non-zero status code if high or critical severity findings are present. Useful for blocking CI/CD pipelines.
                         </div>
                     </div>
                     <div class="option-row">
@@ -611,6 +643,205 @@ done | jq -s 'reduce .[] as $item ({}; . * $item)' > principals.json</code></pre
                     <pre><code>docker run -v $(pwd):/data oocx/tfplan2md --debug \
   --principal-mapping /data/principals.json \
   /data/plan.json --output /data/plan.md</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Static Code Analysis -->
+    <section class="section" id="code-analysis">
+        <div class="section-container">
+            <h2 class="section-title">Static Code Analysis</h2>
+            <p class="section-description">
+                Integrate security findings from Checkov, TfLint, Trivy, and other SARIF-compatible tools directly into your Terraform plan reports.
+            </p>
+
+            <div class="doc-section" id="code-analysis-overview">
+                <h3 class="doc-subtitle">Overview</h3>
+                <p class="doc-text">
+                    tfplan2md natively supports SARIF 2.1.0 format, enabling you to combine infrastructure changes with security findings in a single unified report. Findings are automatically mapped to specific resources and attributes, creating a cohesive view of both changes and security issues.
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Basic Usage</span>
+                    </div>
+                    <pre><code># Generate Terraform plan
+terraform show -json plan.tfplan > plan.json
+
+# Run security tools
+checkov -d terraform --framework terraform --output sarif -o checkov.sarif
+tflint --format sarif > tflint.sarif
+trivy config terraform --format sarif --output trivy.sarif
+
+# Generate unified report
+tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --output report.md</code></pre>
+                </div>
+
+                <h4 style="margin-top: 32px; font-size: 18px; margin-bottom: 16px;">What You Get</h4>
+                <ul class="doc-list">
+                    <li><strong>Summary Table:</strong> High-level overview of findings by severity (Critical, High, Medium, Low, Informational)</li>
+                    <li><strong>Resource Mapping:</strong> Findings automatically linked to affected resources and attributes</li>
+                    <li><strong>Multi-Tool Support:</strong> Combine results from multiple security tools in one report</li>
+                    <li><strong>Severity Badges:</strong> Visual indicators on resources showing security status</li>
+                </ul>
+            </div>
+
+            <div class="doc-section" id="code-analysis-options">
+                <h3 class="doc-subtitle">CLI Options</h3>
+                
+                <div class="options-table">
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--code-analysis-results &lt;pattern&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Path or wildcard pattern for SARIF files. Supports both simple wildcards (<code>*.sarif</code>) and recursive patterns (<code>**/*.sarif</code>).
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--code-analysis-minimum-level &lt;level&gt;</code>
+                        </div>
+                        <div class="option-desc">
+                            Minimum severity level to include. Options: <code>none</code>, <code>note</code>, <code>warning</code>, <code>error</code>. Default: <code>note</code>.
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option-name">
+                            <code>--fail-on-static-code-analysis-errors</code>
+                        </div>
+                        <div class="option-desc">
+                            Exit with non-zero status if high or critical findings are present. Useful for blocking CI/CD pipelines with security issues.
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 32px; font-size: 18px; margin-bottom: 16px;">Usage Examples</h4>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Single tool</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --code-analysis-results checkov.sarif</code></pre>
+                </div>
+
+                <div class="code-block" style="margin-top: 16px;">
+                    <div class="code-header">
+                        <span class="code-title">Multiple files with wildcard</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --code-analysis-results "*.sarif"</code></pre>
+                </div>
+
+                <div class="code-block" style="margin-top: 16px;">
+                    <div class="code-header">
+                        <span class="code-title">Recursive search</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json --code-analysis-results "**/*.sarif"</code></pre>
+                </div>
+
+                <div class="code-block" style="margin-top: 16px;">
+                    <div class="code-header">
+                        <span class="code-title">Filter severity and fail on errors</span>
+                    </div>
+                    <pre><code>tfplan2md plan.json \
+  --code-analysis-results "*.sarif" \
+  --code-analysis-minimum-level warning \
+  --fail-on-static-code-analysis-errors</code></pre>
+                </div>
+
+                <h4 style="margin-top: 32px; font-size: 18px; margin-bottom: 16px;">Docker Usage</h4>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">Mount directory with SARIF files</span>
+                    </div>
+                    <pre><code>docker run -v $(pwd):/data oocx/tfplan2md \
+  /data/plan.json \
+  --code-analysis-results "/data/**/*.sarif" \
+  --output /data/report.md</code></pre>
+                </div>
+            </div>
+
+            <div class="doc-section" id="code-analysis-tools">
+                <h3 class="doc-subtitle">Supported Tools</h3>
+                <p class="doc-text">
+                    tfplan2md works with any tool that outputs SARIF 2.1.0 format. Here are some popular options:
+                </p>
+
+                <div class="features-grid" style="margin-top: 24px;">
+                    <div class="feature-category-card compact">
+                        <h4 style="margin-top: 0;">Checkov</h4>
+                        <p style="font-size: 14px; margin-bottom: 12px;">
+                            Infrastructure security scanning with 1000+ built-in policies for Terraform, CloudFormation, Kubernetes, and more.
+                        </p>
+                        <div class="code-block" style="margin-top: 12px;">
+                            <pre><code>checkov -d terraform \
+  --framework terraform \
+  --output sarif \
+  -o checkov.sarif</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card compact">
+                        <h4 style="margin-top: 0;">TfLint</h4>
+                        <p style="font-size: 14px; margin-bottom: 12px;">
+                            Terraform linter with pluggable rules for AWS, Azure, and GCP. Catches errors before apply.
+                        </p>
+                        <div class="code-block" style="margin-top: 12px;">
+                            <pre><code>tflint \
+  --format sarif \
+  > tflint.sarif</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-category-card compact">
+                        <h4 style="margin-top: 0;">Trivy</h4>
+                        <p style="font-size: 14px; margin-bottom: 12px;">
+                            Comprehensive security scanner for IaC misconfigurations, vulnerabilities, and secrets.
+                        </p>
+                        <div class="code-block" style="margin-top: 12px;">
+                            <pre><code>trivy config terraform \
+  --format sarif \
+  --output trivy.sarif</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 32px; font-size: 18px; margin-bottom: 16px;">CI/CD Integration Example</h4>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">GitHub Actions Workflow</span>
+                    </div>
+                    <pre><code>- name: Run security scans
+  run: |
+    checkov -d terraform --framework terraform \
+      --output sarif -o checkov.sarif --compact
+    
+    cd terraform && tflint --format sarif > ../tflint.sarif && cd ..
+    
+    trivy config terraform --format sarif --output trivy.sarif
+
+- name: Generate unified report
+  run: |
+    terraform show -json plan.tfplan | \
+      docker run -i -v $(pwd):/data oocx/tfplan2md \
+        --code-analysis-results "/data/**/*.sarif" \
+        --fail-on-static-code-analysis-errors \
+        > plan.md</code></pre>
+                </div>
+
+                <div style="margin-top: 32px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-primary); border-radius: 4px;">
+                    <h4 style="margin: 0 0 12px 0;">💡 Tips</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li style="margin-bottom: 8px;">Use <code>**/*.sarif</code> for recursive search across subdirectories</li>
+                        <li style="margin-bottom: 8px;">Set <code>--code-analysis-minimum-level warning</code> to reduce noise from low-severity findings</li>
+                        <li style="margin-bottom: 8px;">Combine <code>--fail-on-static-code-analysis-errors</code> with CI/CD to block deployments with critical issues</li>
+                        <li style="margin-bottom: 8px;">Security findings persist in the report even if resources haven't changed, providing continuous security visibility</li>
+                    </ul>
                 </div>
             </div>
         </div>

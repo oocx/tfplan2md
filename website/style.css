@@ -3649,20 +3649,19 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     z-index: 10000;
-    align-items: center;
-    justify-content: center;
+    overflow: auto;
     cursor: zoom-out;
 }
 
 .lightbox-modal.active {
-    display: flex;
+    display: block;
 }
 
 .lightbox-content {
-    max-width: 95%;
-    max-height: 95%;
-    object-fit: contain;
+    display: block;
+    margin: 20px auto;
     cursor: default;
+    /* No max-width/max-height - let the image be its natural size and allow scrolling */
 }
 
 .lightbox-close {

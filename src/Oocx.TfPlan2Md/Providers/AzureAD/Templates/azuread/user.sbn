@@ -34,7 +34,7 @@
 
 <summary>{{ change.action_symbol }} azuread_user <b>{{ format_code_summary(change.name) }}</b> — {{ summary_text }}</summary>
 <br>
-
+{{ include "/_code_analysis_metadata.sbn" }}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}
 {{ for attr in change.attribute_changes }}
@@ -56,7 +56,8 @@
 {{ else ~}}
 {{ value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
 {{ end ~}}
-{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+{{ if value != "" }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ value }} |
 {{ end -}}
 {{ end -}}
 {{ end -}}
@@ -71,7 +72,8 @@
 {{ else ~}}
 {{ value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
 {{ end ~}}
-{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+{{ if value != "" }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ value }} |
 {{ end -}}
 {{ end -}}
 {{ end -}}
@@ -87,7 +89,8 @@
 {{ before_value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
 {{ after_value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
 {{ end ~}}
-| {{ attr.name | escape_markdown }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
 {{ end }}

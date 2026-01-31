@@ -1,27 +1,10 @@
+{{~## Per-resource code analysis findings table (Variant C)
+     Renders the detailed findings table with heading.
+     Related feature: docs/features/056-static-analysis-integration/specification.md
+~}}
 {{ if change.code_analysis_findings.size > 0 }}
-{{ critical_count = 0 }}
-{{ high_count = 0 }}
-{{ medium_count = 0 }}
-{{ low_count = 0 }}
-{{ info_count = 0 }}
-{{ for finding in change.code_analysis_findings }}
-{{ if finding.severity == "Critical" }}{{ critical_count = critical_count + 1 }}{{ end }}
-{{ if finding.severity == "High" }}{{ high_count = high_count + 1 }}{{ end }}
-{{ if finding.severity == "Medium" }}{{ medium_count = medium_count + 1 }}{{ end }}
-{{ if finding.severity == "Low" }}{{ low_count = low_count + 1 }}{{ end }}
-{{ if finding.severity == "Informational" }}{{ info_count = info_count + 1 }}{{ end }}
-{{ end }}
 
-{{ summary_parts = [] }}
-{{ if critical_count > 0 }}{{ summary_parts = summary_parts + ["🚨 " + critical_count + " Critical"] }}{{ end }}
-{{ if high_count > 0 }}{{ summary_parts = summary_parts + ["⚠️ " + high_count + " High"] }}{{ end }}
-{{ if medium_count > 0 }}{{ summary_parts = summary_parts + ["⚠️ " + medium_count + " Medium"] }}{{ end }}
-{{ if low_count > 0 }}{{ summary_parts = summary_parts + ["ℹ️ " + low_count + " Low"] }}{{ end }}
-{{ if info_count > 0 }}{{ summary_parts = summary_parts + ["ℹ️ " + info_count + " Informational"] }}{{ end }}
-
-{{ if summary_parts.size > 0 }}
-**Security & Quality Findings:** {{ for part in summary_parts }}{{ part }}{{ if !for.last }}, {{ end }}{{ end }}
-{{ end }}
+#### 🔒 Security & Quality Findings
 
 | Severity | Attribute | Finding | Remediation |
 | -------- | --------- | ------- | ----------- |
@@ -30,6 +13,7 @@
 {{~ if finding.rule_id ~}}
 {{~ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) ~}}
 {{~ end ~}}
-| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.attribute_path }}{{ finding.attribute_path | escape_markdown }}{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.attribute_path }}`{{ finding.attribute_path | escape_markdown }}`{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
 {{~ end ~}}
 {{ end }}
+

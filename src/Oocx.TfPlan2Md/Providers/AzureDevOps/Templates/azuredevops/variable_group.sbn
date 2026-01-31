@@ -6,6 +6,8 @@
 <summary>{{ change.summary_html }}</summary>
 <br>
 
+{{ include "/_code_analysis_metadata.sbn" }}
+
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{ if change.variable_group && change.variable_group.name ~}}

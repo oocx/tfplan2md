@@ -42,5 +42,6 @@ public static partial class ScribanHelpers
         scriptObject.Import("azure_principal_info", new Func<string?, string?, string?, ScriptObject>((id, type, addr) => GetPrincipalInfo(id, type, principalMapper, addr)));
         scriptObject.Import("try_get_principal_type", new Func<string?, ScriptObject>(id => TryGetPrincipalType(id, principalMapper)));
         scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
+        scriptObject.Import("get_attribute_finding_indicator", new Func<string?, ScriptArray?, string>(GetAttributeFindingIndicator));
     }
 }

@@ -6,6 +6,8 @@
 <summary>{{ change.summary_html }}</summary>
 <br>
 
+{{ include "/_code_analysis_metadata.sbn" }}
+
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ # Extract azapi metadata (type, name, parent_id, location, tags) ~}}
@@ -32,13 +34,16 @@
 | Attribute | Value |
 |-----------|-------|
 {{~ if metadata.name ~}}
-| name | {{ format_attribute_value_table "name" metadata.name "azapi" }} |
+{{~ name_indicator = get_attribute_finding_indicator "name" change.code_analysis_findings ~}}
+| name{{ name_indicator }} | {{ format_attribute_value_table "name" metadata.name "azapi" }} |
 {{~ end ~}}
 {{~ if metadata.parent_id ~}}
-| parent_id | {{ format_attribute_value_table "parent_id" metadata.parent_id "azurerm" }} |
+{{~ parent_id_indicator = get_attribute_finding_indicator "parent_id" change.code_analysis_findings ~}}
+| parent_id{{ parent_id_indicator }} | {{ format_attribute_value_table "parent_id" metadata.parent_id "azurerm" }} |
 {{~ end ~}}
 {{~ if metadata.location ~}}
-| location | {{ format_attribute_value_table "location" metadata.location "azapi" }} |
+{{~ location_indicator = get_attribute_finding_indicator "location" change.code_analysis_findings ~}}
+| location{{ location_indicator }} | {{ format_attribute_value_table "location" metadata.location "azapi" }} |
 {{~ end ~}}
 
 {{~ # Tags badges (if present) ~}}

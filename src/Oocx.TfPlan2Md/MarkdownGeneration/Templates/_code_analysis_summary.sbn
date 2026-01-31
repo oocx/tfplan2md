@@ -12,13 +12,13 @@ No code analysis findings were reported.
 **Status:** ✅ No critical or high findings
 {{ end }}
 
-| Severity | Count |
-| -------- | ----- |
-| 🚨 Critical | {{ code_analysis.summary.critical_count }} |
-| ⚠️ High | {{ code_analysis.summary.high_count }} |
-| ⚠️ Medium | {{ code_analysis.summary.medium_count }} |
-| ℹ️ Low | {{ code_analysis.summary.low_count }} |
-| ℹ️ Informational | {{ code_analysis.summary.informational_count }} |
+| Severity | Count | Resource Types |
+| -------- | ----- | -------------- |
+| 🚨 Critical | {{ code_analysis.summary.critical_count }} | {{ for type in code_analysis.summary.critical_breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ⚠️ High | {{ code_analysis.summary.high_count }} | {{ for type in code_analysis.summary.high_breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ⚠️ Medium | {{ code_analysis.summary.medium_count }} | {{ for type in code_analysis.summary.medium_breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ℹ️ Low | {{ code_analysis.summary.low_count }} | {{ for type in code_analysis.summary.low_breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
+| ℹ️ Informational | {{ code_analysis.summary.informational_count }} | {{ for type in code_analysis.summary.informational_breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 {{ end }}
 
 {{ if code_analysis.tools.size > 0 }}

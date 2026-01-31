@@ -17,6 +17,30 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 internal static class AotScriptObjectMapper
 {
     /// <summary>
+    /// The Scriban key used for module address fields.
+    /// </summary>
+    private const string ModuleAddressKey = "module_address";
+
+    /// <summary>
+    /// The Scriban key used for source addresses fields.
+    /// </summary>
+    private const string SourceAddressesKey = "source_addresses";
+
+    /// <summary>
+    /// The Scriban key used for destination addresses fields.
+    /// </summary>
+    private const string DestinationAddressesKey = "destination_addresses";
+
+    /// <summary>
+    /// The Scriban key used for destination ports fields.
+    /// </summary>
+    private const string DestinationPortsKey = "destination_ports";
+
+    /// <summary>
+    /// The Scriban key used for description fields.
+    /// </summary>
+    private const string DescriptionKey = "description";
+    /// <summary>
     /// Maps a ReportModel to a ScriptObject without using reflection.
     /// </summary>
     /// <param name="model">The report model to map.</param>
@@ -91,17 +115,27 @@ internal static class AotScriptObjectMapper
         var obj = new ScriptObject();
         obj["count"] = action.Count;
 
-        var breakdown = new ScriptArray();
-        foreach (var b in action.Breakdown)
+        obj["breakdown"] = MapResourceTypeBreakdown(action.Breakdown);
+        return obj;
+    }
+
+    /// <summary>
+    /// Maps resource type breakdown entries to a Scriban array.
+    /// </summary>
+    /// <param name="breakdown">The breakdown entries to map.</param>
+    /// <returns>The mapped Scriban array.</returns>
+    private static ScriptArray MapResourceTypeBreakdown(IReadOnlyList<ResourceTypeBreakdown> breakdown)
+    {
+        var arr = new ScriptArray();
+        foreach (var item in breakdown)
         {
-            var bObj = new ScriptObject();
-            bObj["type"] = b.Type;
-            bObj["count"] = b.Count;
-            breakdown.Add(bObj);
+            var obj = new ScriptObject();
+            obj["type"] = item.Type;
+            obj["count"] = item.Count;
+            arr.Add(obj);
         }
 
-        obj["breakdown"] = breakdown;
-        return obj;
+        return arr;
     }
 
     private static ScriptArray MapChanges(IReadOnlyList<ResourceChangeModel> changes)
@@ -121,7 +155,7 @@ internal static class AotScriptObjectMapper
         foreach (var group in moduleChanges)
         {
             var obj = new ScriptObject();
-            obj["module_address"] = group.ModuleAddress;
+            obj[ModuleAddressKey] = group.ModuleAddress;
             obj["changes"] = MapChanges(group.Changes);
             arr.Add(obj);
         }
@@ -133,7 +167,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["address"] = change.Address;
-        obj["module_address"] = change.ModuleAddress;
+        obj[ModuleAddressKey] = change.ModuleAddress;
         obj["type"] = change.Type;
         obj["name"] = change.Name;
         obj["provider_name"] = change.ProviderName;
@@ -222,10 +256,15 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["critical_count"] = summary.CriticalCount;
+        obj["critical_breakdown"] = MapResourceTypeBreakdown(summary.CriticalResourceTypes);
         obj["high_count"] = summary.HighCount;
+        obj["high_breakdown"] = MapResourceTypeBreakdown(summary.HighResourceTypes);
         obj["medium_count"] = summary.MediumCount;
+        obj["medium_breakdown"] = MapResourceTypeBreakdown(summary.MediumResourceTypes);
         obj["low_count"] = summary.LowCount;
+        obj["low_breakdown"] = MapResourceTypeBreakdown(summary.LowResourceTypes);
         obj["informational_count"] = summary.InformationalCount;
+        obj["informational_breakdown"] = MapResourceTypeBreakdown(summary.InformationalResourceTypes);
         obj["total_count"] = summary.TotalCount;
         return obj;
     }
@@ -273,7 +312,7 @@ internal static class AotScriptObjectMapper
             obj["help_uri"] = finding.HelpUri;
             obj["tool_name"] = finding.ToolName;
             obj["resource_address"] = finding.ResourceAddress;
-            obj["module_address"] = finding.ModuleAddress;
+            obj[ModuleAddressKey] = finding.ModuleAddress;
             obj["attribute_path"] = finding.AttributePath;
             arr.Add(obj);
         }
@@ -287,7 +326,7 @@ internal static class AotScriptObjectMapper
         foreach (var module in modules)
         {
             var obj = new ScriptObject();
-            obj["module_address"] = module.ModuleAddress;
+            obj[ModuleAddressKey] = module.ModuleAddress;
             obj["findings"] = MapCodeAnalysisFindings(module.Findings);
             arr.Add(obj);
         }
@@ -322,11 +361,11 @@ internal static class AotScriptObjectMapper
             ruleObj["direction"] = rule.Direction;
             ruleObj["access"] = rule.Access;
             ruleObj["protocol"] = rule.Protocol;
-            ruleObj["source_addresses"] = rule.SourceAddresses;
+            ruleObj[SourceAddressesKey] = rule.SourceAddresses;
             ruleObj["source_ports"] = rule.SourcePorts;
-            ruleObj["destination_addresses"] = rule.DestinationAddresses;
-            ruleObj["destination_ports"] = rule.DestinationPorts;
-            ruleObj["description"] = rule.Description;
+            ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+            ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+            ruleObj[DescriptionKey] = rule.Description;
             ruleChanges.Add(ruleObj);
         }
 
@@ -361,11 +400,11 @@ internal static class AotScriptObjectMapper
         ruleObj["direction"] = rule.Direction;
         ruleObj["access"] = rule.Access;
         ruleObj["protocol"] = rule.Protocol;
-        ruleObj["source_addresses"] = rule.SourceAddresses;
+        ruleObj[SourceAddressesKey] = rule.SourceAddresses;
         ruleObj["source_ports"] = rule.SourcePorts;
-        ruleObj["destination_addresses"] = rule.DestinationAddresses;
-        ruleObj["destination_ports"] = rule.DestinationPorts;
-        ruleObj["description"] = rule.Description;
+        ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+        ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+        ruleObj[DescriptionKey] = rule.Description;
         return ruleObj;
     }
 
@@ -384,10 +423,10 @@ internal static class AotScriptObjectMapper
             ruleObj["change"] = rule.Change;
             ruleObj["name"] = rule.Name;
             ruleObj["protocols"] = rule.Protocols;
-            ruleObj["source_addresses"] = rule.SourceAddresses;
-            ruleObj["destination_addresses"] = rule.DestinationAddresses;
-            ruleObj["destination_ports"] = rule.DestinationPorts;
-            ruleObj["description"] = rule.Description;
+            ruleObj[SourceAddressesKey] = rule.SourceAddresses;
+            ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+            ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+            ruleObj[DescriptionKey] = rule.Description;
             ruleChanges.Add(ruleObj);
         }
 
@@ -419,10 +458,10 @@ internal static class AotScriptObjectMapper
         var ruleObj = new ScriptObject();
         ruleObj["name"] = rule.Name;
         ruleObj["protocols"] = rule.Protocols;
-        ruleObj["source_addresses"] = rule.SourceAddresses;
-        ruleObj["destination_addresses"] = rule.DestinationAddresses;
-        ruleObj["destination_ports"] = rule.DestinationPorts;
-        ruleObj["description"] = rule.Description;
+        ruleObj[SourceAddressesKey] = rule.SourceAddresses;
+        ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+        ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+        ruleObj[DescriptionKey] = rule.Description;
         return ruleObj;
     }
 
@@ -430,7 +469,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["resource_name"] = ra.ResourceName;
-        obj["description"] = ra.Description;
+        obj[DescriptionKey] = ra.Description;
         obj["summary_text"] = ra.SummaryText;
 
         // Small attributes for table display
@@ -467,7 +506,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["name"] = vg.Name;
-        obj["description"] = vg.Description;
+        obj[DescriptionKey] = vg.Description;
 
         // Variable changes for update scenarios
         var variableChanges = new ScriptArray();

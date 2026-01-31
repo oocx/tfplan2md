@@ -266,21 +266,85 @@ internal partial class ReportModelBuilder
     /// <returns>The summary model.</returns>
     private static CodeAnalysisSummaryModel BuildSummaryModel(List<CodeAnalysisFindingModel> findings)
     {
-        var critical = findings.Count(f => f.Severity == "Critical");
-        var high = findings.Count(f => f.Severity == "High");
-        var medium = findings.Count(f => f.Severity == "Medium");
-        var low = findings.Count(f => f.Severity == "Low");
-        var informational = findings.Count(f => f.Severity == "Informational");
+        var criticalFindings = findings.Where(f => f.Severity == "Critical").ToList();
+        var highFindings = findings.Where(f => f.Severity == "High").ToList();
+        var mediumFindings = findings.Where(f => f.Severity == "Medium").ToList();
+        var lowFindings = findings.Where(f => f.Severity == "Low").ToList();
+        var informationalFindings = findings.Where(f => f.Severity == "Informational").ToList();
 
         return new CodeAnalysisSummaryModel
         {
-            CriticalCount = critical,
-            HighCount = high,
-            MediumCount = medium,
-            LowCount = low,
-            InformationalCount = informational,
+            CriticalCount = criticalFindings.Count,
+            CriticalResourceTypes = BuildResourceTypeBreakdown(criticalFindings),
+            HighCount = highFindings.Count,
+            HighResourceTypes = BuildResourceTypeBreakdown(highFindings),
+            MediumCount = mediumFindings.Count,
+            MediumResourceTypes = BuildResourceTypeBreakdown(mediumFindings),
+            LowCount = lowFindings.Count,
+            LowResourceTypes = BuildResourceTypeBreakdown(lowFindings),
+            InformationalCount = informationalFindings.Count,
+            InformationalResourceTypes = BuildResourceTypeBreakdown(informationalFindings),
             TotalCount = findings.Count
         };
+    }
+
+    /// <summary>
+    /// Builds resource type breakdowns for a set of findings.
+    /// </summary>
+    /// <param name="findings">The findings to group by resource type.</param>
+    /// <returns>The ordered resource type breakdown list.</returns>
+    private static List<ResourceTypeBreakdown> BuildResourceTypeBreakdown(
+        IEnumerable<CodeAnalysisFindingModel> findings)
+    {
+        return findings
+            .Select(finding => GetResourceTypeForSummary(finding.ResourceAddress))
+            .Where(type => !string.IsNullOrWhiteSpace(type))
+            .GroupBy(type => type!, StringComparer.Ordinal)
+            .Select(group => new ResourceTypeBreakdown(group.Key, group.Count()))
+            .OrderBy(b => b.Type, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Extracts the resource type label from a mapped resource address for summary display.
+    /// </summary>
+    /// <param name="resourceAddress">The resource address to inspect.</param>
+    /// <returns>The resource type label, or <c>null</c> when unavailable.</returns>
+    private static string? GetResourceTypeForSummary(string? resourceAddress)
+    {
+        if (string.IsNullOrWhiteSpace(resourceAddress))
+        {
+            return null;
+        }
+
+        var tokens = resourceAddress.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (tokens.Length < 2)
+        {
+            return null;
+        }
+
+        var index = 0;
+        while (index + 1 < tokens.Length && tokens[index].Equals("module", StringComparison.OrdinalIgnoreCase))
+        {
+            index += 2;
+        }
+
+        if (index >= tokens.Length)
+        {
+            return null;
+        }
+
+        if (tokens[index].Equals("data", StringComparison.OrdinalIgnoreCase))
+        {
+            if (index + 1 >= tokens.Length)
+            {
+                return null;
+            }
+
+            return $"data.{tokens[index + 1]}";
+        }
+
+        return tokens[index];
     }
 
     /// <summary>

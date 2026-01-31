@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.6.0"></a>
+## [1.6.0](https://github.com/oocx/tfplan2md/compare/v1.5.1...v1.6.0) (2026-01-31)
+
+### ✨ Features
+
+* add fail-on code analysis exit codes ([b3a2c95](https://github.com/oocx/tfplan2md/commit/b3a2c95d169278e996e6a48f7065241e22b9d83a))
+* add module-level and global static analysis findings support ([00f8748](https://github.com/oocx/tfplan2md/commit/00f8748a0392a0551ce71dc206aed7d9b5b4901e))
+* add SARIF parser foundation ([7ab5373](https://github.com/oocx/tfplan2md/commit/7ab5373040c6eee784f6f80cb4064270099d7e5c))
+* add static analysis UAT artifact and example SARIF files ([36de4dc](https://github.com/oocx/tfplan2md/commit/36de4dc506836ca095f03ed3dc3cbcce173c4e1d))
+* include code analysis findings in all comprehensive demo artifacts ([168e997](https://github.com/oocx/tfplan2md/commit/168e9976d267b980bcf670a1ac08a81626c87b4a))
+* integrate code analysis into report model ([8688e63](https://github.com/oocx/tfplan2md/commit/8688e639ead101bcd8c36f35273fe5ec2092d379))
+* integrate static analysis tools and update release process documentation ([c38a5c8](https://github.com/oocx/tfplan2md/commit/c38a5c89f7fabc11025fd68d24adf9b1d0bc7813))
+* map code analysis severity and resources ([88335bd](https://github.com/oocx/tfplan2md/commit/88335bdca42da856ec8717ee54562f390bfc7ab2))
+* refine code analysis findings layout ([5b5ffc4](https://github.com/oocx/tfplan2md/commit/5b5ffc49c9d305917eca196539bd37113f75d456))
+* regenerate static analysis comprehensive demo artifact ([5c7fd57](https://github.com/oocx/tfplan2md/commit/5c7fd5741ecb9519a9ea7b2501b34ea9b2089501))
+* render code analysis findings ([f276ff8](https://github.com/oocx/tfplan2md/commit/f276ff806d1cb56d2c7002107e6179a405ce95f7))
+* render other findings and warnings ([ab40cda](https://github.com/oocx/tfplan2md/commit/ab40cdab8c34e1c099f7259eadefc29b3c3ea03f))
+* update all artifacts after regeneration ([62d0d08](https://github.com/oocx/tfplan2md/commit/62d0d0868161b4eb3ce34c36a7288bbbd36b2004))
+* update artifacts and code analysis models ([4ddc8f7](https://github.com/oocx/tfplan2md/commit/4ddc8f74b5c4ff4cb02a8e9b58834b410455f88e))
+* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/056-static-analysis-integration/specification.md ([8a9f5f4](https://github.com/oocx/tfplan2md/commit/8a9f5f40c2a3f7664706dfa712654ad568765ca6))
+
+### 🐛 Bug Fixes
+
+* address static analysis rendering issues ([f5a5bcb](https://github.com/oocx/tfplan2md/commit/f5a5bcb40f16c9bacca5584e3dca3bddfb029fd3))
+* clean corrupted SARIF files (remove concatenated AWS content) ([8af7277](https://github.com/oocx/tfplan2md/commit/8af7277d98e43f4c276f28abf14fa8ff2efb3fae))
+* handle recursive wildcard patterns ([fb7642e](https://github.com/oocx/tfplan2md/commit/fb7642ec52bb0b8022d52067162b20a158035cef))
+* remove blank line in findings table ([23e4ae7](https://github.com/oocx/tfplan2md/commit/23e4ae734dbce832d71e95070291349aa3b509c4))
+
+### 📚 Documentation
+
+* add architecture for static analysis integration ([61bf904](https://github.com/oocx/tfplan2md/commit/61bf90461ce906d4c2126efd4b97fafb6bf4aab2))
+* add code analysis example ([782b17c](https://github.com/oocx/tfplan2md/commit/782b17c5502974f5eae99b7530da211b789f785e))
+* add code review for static-analysis-integration ([bc8b014](https://github.com/oocx/tfplan2md/commit/bc8b014defad5b795f9de17680362b1d61ff2f4c))
+* add feature specification for 056-static-analysis-integration ([28a17cd](https://github.com/oocx/tfplan2md/commit/28a17cd9e16131558d9234932ac22f8af098d80d))
+* add tasks for static-analysis-integration ([f0d4023](https://github.com/oocx/tfplan2md/commit/f0d40238975bb611f561fbda7eba2408822dc3f7))
+* add test plans for 056-static-analysis-integration ([ac223b6](https://github.com/oocx/tfplan2md/commit/ac223b6db86d9e4fd203a045fb13374ec7919b74))
+* add UAT report for static-analysis-integration (FAILED) ([a910b82](https://github.com/oocx/tfplan2md/commit/a910b82f06d0d947ad18f27f3c032fb61b4af4a6))
+* add UAT report for static-analysis-integration (FAILED) ([5ddd2ed](https://github.com/oocx/tfplan2md/commit/5ddd2edd8023ef36977f4b0dfc4e33fb356199a5))
+* add UAT report for static-analysis-integration (FAILED) ([4e948c8](https://github.com/oocx/tfplan2md/commit/4e948c8ae2f28592d9a780689a58c9a1f6e3e510))
+* add UAT report for static-analysis-integration (PASSED) SNAPSHOT_UPDATE_OK ([7a07bc2](https://github.com/oocx/tfplan2md/commit/7a07bc2ccd1bb78fc10dfbf1e66601ee38a3310f))
+* mark Task 1 complete ([b6b4aa3](https://github.com/oocx/tfplan2md/commit/b6b4aa3e6fc52f540666449b44d335e73a92ab47))
+* mark task 3 as complete ([d2c8532](https://github.com/oocx/tfplan2md/commit/d2c853225bfd361f6ce539588c3e715b80078cfd))
+* mark task 4 as complete ([b68b48c](https://github.com/oocx/tfplan2md/commit/b68b48c7bbd11afe642aac0b184adbf67c528212))
+* mark task 5 as complete ([2342995](https://github.com/oocx/tfplan2md/commit/2342995bdd964b940c60946de297e3859bab6a3b))
+* mark task 8 as complete ([8f0a7cc](https://github.com/oocx/tfplan2md/commit/8f0a7cce1fa430924507c99a06da7ed8a5353464))
+* mark task 9 as complete ([bd32b17](https://github.com/oocx/tfplan2md/commit/bd32b17396c8a3f73e40daa6fbfe1c069b191503))
+* mark tasks 6 and 7 as complete ([0615fae](https://github.com/oocx/tfplan2md/commit/0615fae6a280ea48d23bb008db811d2d2dbb1673))
+* regenerate all demo artifacts ([f3e63cf](https://github.com/oocx/tfplan2md/commit/f3e63cf22d5c4775b914b741eef8d9abfa2af062))
+
 <a name="1.5.1"></a>
 ## [1.5.1](https://github.com/oocx/tfplan2md/compare/v1.5.0...v1.5.1) (2026-01-29)
 

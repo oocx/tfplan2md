@@ -5,7 +5,7 @@
 <details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>{{ change.action_symbol }} azurerm_role_assignment <b>{{ format_code_summary(change.role_assignment.resource_name) }}</b> — {{ change.role_assignment.summary_text }}</summary>
 <br>
-
+{{ include "/_code_analysis_metadata.sbn" }}
 {{ if change.role_assignment.description && change.role_assignment.description != "" }}
 {{ change.role_assignment.description | escape_markdown }}
 
@@ -16,7 +16,8 @@
 | Attribute | Value |
 | ----------- | ------- |
 {{ for attr in change.role_assignment.small_attributes -}}
-{{ if attr.after }}| {{ attr.name | escape_markdown }} | {{ attr.after }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+{{ if attr.after }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ attr.after }} |
 {{ end -}}
 {{ end -}}
 
@@ -24,7 +25,8 @@
 | Attribute | Value |
 | ----------- | ------- |
 {{ for attr in change.role_assignment.small_attributes -}}
-{{ if attr.before }}| {{ attr.name | escape_markdown }} | {{ attr.before }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+{{ if attr.before }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ attr.before }} |
 {{ end -}}
 {{ end -}}
 
@@ -32,7 +34,8 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{ for attr in change.role_assignment.small_attributes -}}
-| {{ attr.name | escape_markdown }} | {{ if attr.before != null && attr.before != "" }}{{ attr.before }}{{ else }}-{{ end }} | {{ if attr.after != null && attr.after != "" }}{{ attr.after }}{{ else }}-{{ end }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ if attr.before != null && attr.before != "" }}{{ attr.before }}{{ else }}-{{ end }} | {{ if attr.after != null && attr.after != "" }}{{ attr.after }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
 {{ end }}

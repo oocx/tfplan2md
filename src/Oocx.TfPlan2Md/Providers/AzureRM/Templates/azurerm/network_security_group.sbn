@@ -5,7 +5,7 @@
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>{{ change.summary_html }}</summary>
 <br>
-
+{{ include "/_code_analysis_metadata.sbn" }}
 ### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.network_security_group && change.network_security_group.name ~}}
@@ -49,7 +49,8 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{~ for attr in change.attribute_changes ~}}
-| {{ attr.name | escape_markdown }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+{{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
 {{~ end ~}}
 
 </details>

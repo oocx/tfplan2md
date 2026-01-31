@@ -1,32 +1,30 @@
 # UAT Report: Static Code Analysis Integration
 
-**Status:** ❌ FAILED
-**Date:** 2026-01-31
-**UAT PR (GitHub):** #38 (Closed)
-**UAT PR (AzDO):** #48 (Abandoned)
+**Status:** FAILED ❌
 
-## Summary
-The UAT session for Feature #056 failed because the summary output layout does not match the requirements.
+**Date:** 2026-01-31 01:37:36 UTC
+**Artifact Used:** [artifacts/static-analysis-comprehensive-demo.md](artifacts/static-analysis-comprehensive-demo.md)
 
-## Detailed Findings
+## PRs Reviewed
 
-### 1. Summary Layout Regression
-The security & quality summary line is not positioned immediately after the main resource summary line. 
-**Expectation:** The summary line (e.g., "Code Analysis: 🚨 2 Critical, 1 High...") should follow the resource plan summary ("Plan: 3 to add, 0 to change...") directly to provide an integrated overview.
+- **GitHub:** [#39](https://github.com/oocx/tfplan2md-uat/pull/39) (Failed)
+- **Azure DevOps:** [#49](https://dev.azure.com/oocx/test/_git/test/pullrequest/49) (Failed)
 
-### 2. Previous Findings (Still Unresolved)
-The following issues from previous UAT runs remain:
-- **Broken Markdown Tables (Unmatched Findings):** Multi-line messages in "Unmatched Findings" cause table breakage.
-- **Resource alignment:** The test artifact alignment issues persist, leading to findings appearing in "Unmatched Findings" instead of their respective resources.
+## Issues Found
 
-## Repro Steps
-1. Generate the problematic artifact:
-   ```bash
-   scripts/generate-demo-artifacts.sh
-   ```
-   (Or run the specific command for static analysis demo)
-2. Create UAT PR using `artifacts/static-analysis-comprehensive-demo.md`.
-3. Observe the summary section layout in the PR comment.
+### 1. Missing 'Resource Types' column in Code Analysis Summary
+- **Description:** The "Code Analysis Summary" table only contains "Severity" and "Count" columns. It should consistently include a "Resource Types" column, just like the main Terraform plan summary table at the top of the report.
+- **Expected:**
+  `| Severity | Count | Resource Types |`
+- **Actual:**
+  `| Severity | Count |`
+- **Evidence:** See [artifacts/static-analysis-comprehensive-demo.md](artifacts/static-analysis-comprehensive-demo.md#L20-L28)
 
-## Next Steps
-- Handoff to **Developer** to adjust the summary line placement and address previous rendering/mapping issues.
+## Validation results
+
+- [x] **Summary counts:** Correct counts rendered.
+- [x] **Tool List:** Checkov, tflint, and Trivy versions correctly displayed.
+- [x] **Resource Mapping:** Findings for resources correctly shown in separate tables.
+- [x] **Attribute Highlighting:** Attributes marked with severity icons in change tables.
+- [x] **Remediation Links:** Verified clickable links lead to correct documentation.
+- [x] **Visual Consistency:** Rendering is clear across both platforms.

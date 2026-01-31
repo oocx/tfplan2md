@@ -2,7 +2,7 @@
      Renders "🔒 **Security & Quality:** 🚨 1 Critical, ⚠️ 1 High" immediately after resource summary.
      Related feature: docs/features/056-static-analysis-integration/specification.md
 ~}}
-{{ if change.code_analysis_findings.size > 0 }}
+{{~ if change.code_analysis_findings.size > 0 ~}}
 {{~ critical_count = 0 ~}}
 {{~ high_count = 0 ~}}
 {{~ medium_count = 0 ~}}
@@ -27,4 +27,4 @@
 🔒 **Security & Quality:** {{ for part in summary_parts }}{{ part }}{{ if !for.last }}, {{ end }}{{ end }}
 
 {{ end ~}}
-{{ end }}
+{{ end ~}}

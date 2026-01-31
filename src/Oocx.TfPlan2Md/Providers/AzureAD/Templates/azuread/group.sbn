@@ -41,7 +41,7 @@
 
 <summary>{{ change.action_symbol }} azuread_group <b>{{ format_code_summary(change.name) }}</b> — {{ name_summary }} | {{ format_code_summary(summary_counts) }}</summary>
 <br>
-{{ include "/_code_analysis_metadata.sbn" }}
+{{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}
 {{ for attr in change.attribute_changes }}

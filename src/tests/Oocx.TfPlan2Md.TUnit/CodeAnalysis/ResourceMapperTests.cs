@@ -6,6 +6,10 @@ namespace Oocx.TfPlan2Md.Tests.CodeAnalysis;
 
 public class ResourceMapperTests
 {
+    private const string FindingMessage = "Finding message";
+    private const string StandardLocation = "aws_s3_bucket.example";
+    private const string ModuleLocation = "module.vpc.aws_vpc.main";
+
     /// <summary>
     /// Verifies findings without locations are treated as unmapped.
     /// </summary>
@@ -14,7 +18,7 @@ public class ResourceMapperTests
     {
         var finding = new CodeAnalysisFinding
         {
-            Message = "Finding message",
+            Message = FindingMessage,
             Locations = []
         };
 
@@ -33,7 +37,7 @@ public class ResourceMapperTests
     {
         var finding = new CodeAnalysisFinding
         {
-            Message = "Finding message",
+            Message = FindingMessage,
             Locations = [new CodeAnalysisLocation { FullyQualifiedName = null }]
         };
 
@@ -67,21 +71,18 @@ public class ResourceMapperTests
     public void TryMapLogicalLocation_StandardAndModuleAddress_ReturnsResourceAddress()
     {
         // Arrange
-        const string standardLocation = "aws_s3_bucket.example";
-        const string moduleLocation = "module.vpc.aws_vpc.main";
-
         // Act
-        var standardMapped = ResourceMapper.TryMapLogicalLocation(standardLocation, out var standard);
-        var moduleMapped = ResourceMapper.TryMapLogicalLocation(moduleLocation, out var module);
+        var standardMapped = ResourceMapper.TryMapLogicalLocation(StandardLocation, out var standard);
+        var moduleMapped = ResourceMapper.TryMapLogicalLocation(ModuleLocation, out var module);
 
         // Assert
         standardMapped.Should().BeTrue();
-        standard.ResourceAddress.Should().Be("aws_s3_bucket.example");
+        standard.ResourceAddress.Should().Be(StandardLocation);
         standard.AttributePath.Should().BeNull();
         standard.ModuleAddress.Should().BeNull();
 
         moduleMapped.Should().BeTrue();
-        module.ResourceAddress.Should().Be("module.vpc.aws_vpc.main");
+        module.ResourceAddress.Should().Be(ModuleLocation);
         module.ModuleAddress.Should().Be("module.vpc");
     }
 
@@ -96,8 +97,38 @@ public class ResourceMapperTests
 
         // Assert
         mapped.Should().BeTrue();
-        result.ResourceAddress.Should().Be("aws_s3_bucket.example");
+        result.ResourceAddress.Should().Be(StandardLocation);
         result.AttributePath.Should().Be("versioning.enabled");
+    }
+
+    /// <summary>
+    /// Verifies data source addresses are mapped with the data prefix intact.
+    /// </summary>
+    [Test]
+    public void TryMapLogicalLocation_DataSource_ReturnsResourceAddress()
+    {
+        const string location = "data.azurerm_subscription.current";
+
+        var mapped = ResourceMapper.TryMapLogicalLocation(location, out var result);
+
+        mapped.Should().BeTrue();
+        result.ResourceAddress.Should().Be("data.azurerm_subscription.current");
+        result.ModuleAddress.Should().BeNull();
+    }
+
+    /// <summary>
+    /// Verifies module-prefixed data sources are mapped with the module address retained.
+    /// </summary>
+    [Test]
+    public void TryMapLogicalLocation_ModuleDataSource_ReturnsResourceAddress()
+    {
+        const string location = "module.network.data.azurerm_subscription.current";
+
+        var mapped = ResourceMapper.TryMapLogicalLocation(location, out var result);
+
+        mapped.Should().BeTrue();
+        result.ResourceAddress.Should().Be("module.network.data.azurerm_subscription.current");
+        result.ModuleAddress.Should().Be("module.network");
     }
 
     [Test]
@@ -109,7 +140,7 @@ public class ResourceMapperTests
         // Act
         var mapped = ResourceMapper.MapFinding(new CodeAnalysisFinding
         {
-            Message = "Finding message",
+            Message = FindingMessage,
             Locations = [new CodeAnalysisLocation { FullyQualifiedName = location }]
         }, CodeAnalysisSeverity.Medium);
 
@@ -125,11 +156,11 @@ public class ResourceMapperTests
         // Arrange
         var finding = new CodeAnalysisFinding
         {
-            Message = "Finding message",
+            Message = FindingMessage,
             Locations =
             [
-                new CodeAnalysisLocation { FullyQualifiedName = "aws_s3_bucket.example" },
-                new CodeAnalysisLocation { FullyQualifiedName = "module.vpc.aws_vpc.main" }
+                new CodeAnalysisLocation { FullyQualifiedName = StandardLocation },
+                new CodeAnalysisLocation { FullyQualifiedName = ModuleLocation }
             ]
         };
 
@@ -138,7 +169,7 @@ public class ResourceMapperTests
 
         // Assert
         mapped.Should().HaveCount(2);
-        mapped[0].ResourceAddress.Should().Be("aws_s3_bucket.example");
-        mapped[1].ResourceAddress.Should().Be("module.vpc.aws_vpc.main");
+        mapped[0].ResourceAddress.Should().Be(StandardLocation);
+        mapped[1].ResourceAddress.Should().Be(ModuleLocation);
     }
 }

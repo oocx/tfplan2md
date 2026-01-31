@@ -89,4 +89,34 @@ public class SarifResultReaderTests
         finding.Locations.Should().ContainSingle();
         finding.Locations[0].FullyQualifiedName.Should().Be("module.vpc.aws_vpc.main");
     }
+
+    /// <summary>
+    /// Verifies logical location name values are used when fully qualified names are missing.
+    /// </summary>
+    [Test]
+    public void ParseFinding_UsesLogicalLocationNameWhenFullyQualifiedNameMissing()
+    {
+        using var document = JsonDocument.Parse("""
+        {
+          "ruleId": "CKV_3",
+          "message": {
+            "text": "Finding message"
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "name": "aws_s3_bucket.example"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var finding = SarifResultReader.ParseFinding(document.RootElement, "Checkov", [], new Dictionary<string, string?>());
+
+        finding.Locations.Should().ContainSingle();
+        finding.Locations[0].FullyQualifiedName.Should().Be("aws_s3_bucket.example");
+    }
 }

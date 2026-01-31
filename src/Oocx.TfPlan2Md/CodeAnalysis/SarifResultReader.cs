@@ -76,7 +76,8 @@ internal static class SarifResultReader
 
             foreach (var logicalLocation in logicalLocations.EnumerateArray())
             {
-                var fullyQualifiedName = SarifJsonReader.GetString(logicalLocation, "fullyQualifiedName");
+                var fullyQualifiedName = SarifJsonReader.GetString(logicalLocation, "fullyQualifiedName")
+                    ?? SarifJsonReader.GetString(logicalLocation, "name");
                 if (string.IsNullOrWhiteSpace(fullyQualifiedName))
                 {
                     continue;

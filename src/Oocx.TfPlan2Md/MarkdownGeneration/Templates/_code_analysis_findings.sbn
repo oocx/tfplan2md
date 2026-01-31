@@ -9,7 +9,7 @@
 | Severity | Attribute | Finding | Remediation |
 | -------- | --------- | ------- | ----------- |
 {{~ for finding in change.code_analysis_findings ~}}
-{{~ message = finding.message | escape_markdown | string.replace "\n" "<br/>" ~}}
+{{~ message = finding.message | escape_markdown_table_cell | string.replace "\n" "<br/>" ~}}
 {{~ if finding.rule_id ~}}
 {{~ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) ~}}
 {{~ end ~}}

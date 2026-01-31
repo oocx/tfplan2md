@@ -8,14 +8,21 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 public class MarkdownRendererCodeAnalysisTests
 {
+    private const string MinimalPlanPath = "TestData/minimal-plan.json";
+    private const string RuleHelpUri = "rules/rule";
+    private const string CriticalHelpUri = "rules/critical";
+    private const string LowHelpUri = "rules/low";
+    private const string ModuleHelpUri = "rules/module";
+    private const string UnmatchedHelpUri = "rules/unmatched";
+
     private readonly TerraformPlanParser _parser = new();
     private readonly MarkdownRenderer _renderer = new();
 
     [Test]
     public void Render_CodeAnalysisSummary_RendersCountsAndTools()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
-        var finding = CreateFinding("null_resource.test", "https://example.com/rule", 9.8);
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var finding = CreateFinding("null_resource.test", RuleHelpUri, 9.8);
         var codeAnalysisInput = BuildInput([finding]);
 
         var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
@@ -31,9 +38,9 @@ public class MarkdownRendererCodeAnalysisTests
     [Test]
     public void Render_CodeAnalysisFindingsTable_RendersRemediationAndOrdering()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
-        var criticalFinding = CreateFinding("null_resource.test.triggers.endpoint", "https://example.com/critical", 9.5);
-        var lowFinding = CreateFinding("null_resource.test.triggers.endpoint", "https://example.com/low", 1.5);
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var criticalFinding = CreateFinding("null_resource.test.triggers.endpoint", CriticalHelpUri, 9.5);
+        var lowFinding = CreateFinding("null_resource.test.triggers.endpoint", LowHelpUri, 1.5);
         var codeAnalysisInput = BuildInput([lowFinding, criticalFinding]);
 
         var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
@@ -43,7 +50,7 @@ public class MarkdownRendererCodeAnalysisTests
         markdown.Should().Contain("🔒 **Security & Quality:**", "because the metadata line should appear with lock icon");
         markdown.Should().Contain("#### 🔒 Security & Quality Findings", "because the findings table heading should have lock icon");
         markdown.Should().Contain("| 🚨 Critical | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
-        markdown.Should().Contain("[Details](https://example.com/critical)");
+        markdown.Should().Contain($"[Details]({CriticalHelpUri})");
 
         var criticalIndex = markdown.IndexOf("🚨 Critical", StringComparison.Ordinal);
         var lowIndex = markdown.IndexOf("ℹ️ Low", StringComparison.Ordinal);
@@ -53,8 +60,8 @@ public class MarkdownRendererCodeAnalysisTests
     [Test]
     public void Render_CodeAnalysisFindingsTable_DoesNotInsertBlankLines()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
-        var finding = CreateFinding("null_resource.test", "https://example.com/rule", 9.5);
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var finding = CreateFinding("null_resource.test", RuleHelpUri, 9.5);
         var codeAnalysisInput = BuildInput([finding]);
 
         var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
@@ -73,7 +80,7 @@ public class MarkdownRendererCodeAnalysisTests
     [Test]
     public void Render_CodeAnalysisWarnings_RendersWarningSection()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
         var codeAnalysisInput = new CodeAnalysisInput
         {
             Model = new CodeAnalysisModel
@@ -106,12 +113,12 @@ public class MarkdownRendererCodeAnalysisTests
     [Test]
     public void Render_OtherFindingsSection_RendersModuleAndUnmatched()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
-        var moduleFinding = CreateFinding("module.network", "https://example.com/module", 7.2);
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var moduleFinding = CreateFinding("module.network", ModuleHelpUri, 7.2);
         var unmatchedFinding = new CodeAnalysisFinding
         {
             Message = "Orphaned finding",
-            HelpUri = "https://example.com/unmatched",
+            HelpUri = UnmatchedHelpUri,
             Locations = []
         };
 
@@ -131,11 +138,11 @@ public class MarkdownRendererCodeAnalysisTests
     [Test]
     public void Render_UnmatchedFindingsTable_EscapesMultilineMessages()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
         var unmatchedFinding = new CodeAnalysisFinding
         {
             Message = "Artifact: main.tf\n| ⚠️ High | Something broke",
-            HelpUri = "https://example.com/unmatched",
+            HelpUri = UnmatchedHelpUri,
             Locations = []
         };
 
@@ -150,17 +157,17 @@ public class MarkdownRendererCodeAnalysisTests
         lines.Length.Should().BeGreaterThan(headerIndex + 2, "because the unmatched findings table should have rows");
         lines[headerIndex + 1].Should().StartWith("| -------- |", "because the header separator should follow the header");
         lines[headerIndex + 2].Should().StartWith("| ", "because the first unmatched finding row should immediately follow the header");
-        markdown.Should().Contain("Artifact: main.tf<br/>\\| ⚠️ High \\| Something broke");
+        markdown.Should().Contain("Artifact: main.tf<br/>&#124; ⚠️ High &#124; Something broke");
     }
 
     [Test]
     public void Render_UnmatchedFindingsTable_IncludesLocationHints()
     {
-        var plan = _parser.Parse(File.ReadAllText("TestData/minimal-plan.json"));
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
         var unmatchedFinding = new CodeAnalysisFinding
         {
             Message = "Orphaned finding",
-            HelpUri = "https://example.com/unmatched",
+            HelpUri = UnmatchedHelpUri,
             Locations =
             [
                 new CodeAnalysisLocation

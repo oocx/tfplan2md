@@ -51,12 +51,12 @@ Increase the Scriban template loop limit to 10000 to improve reliability for lar
 Update the report models to store refactoring metadata and implement logic to populate it.
 
 **Acceptance Criteria:**
-- [ ] `ResourceChangeModel` has `ImportId`, `MovedFromAddress`, and `IsRefactoringAlreadyApplied`.
-- [ ] `ReportModel` has a `RefactoringOperations` list.
-- [ ] `ReportModelBuilder` correctly identifies refactoring resources.
-- [ ] `no-op` resources are selectively RETAINED if they contain refactoring metadata.
-- [ ] `RefactoringOperations` list is sorted correctly: Imports first, then Moves. Within groups: AlreadyApplied first, then alphabetical by address.
-- [ ] Unit tests (TC-03, TC-06) verify model building.
+- [x] `ResourceChangeModel` has `ImportId`, `MovedFromAddress`, and `IsRefactoringAlreadyApplied`.
+- [x] `ReportModel` has a `RefactoringOperations` list.
+- [x] `ReportModelBuilder` correctly identifies refactoring resources.
+- [x] `no-op` resources are selectively RETAINED if they contain refactoring metadata.
+- [x] `RefactoringOperations` list is sorted correctly: Imports first, then Moves. Within groups: AlreadyApplied first, then alphabetical by address.
+- [x] Unit tests (TC-03, TC-06) verify model building.
 
 **Dependencies:** Task 1
 

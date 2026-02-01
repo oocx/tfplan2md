@@ -84,7 +84,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
         var summary = ResourceSummaryHtmlBuilder.BuildSummaryHtml(model);
 
         // Assert
-        summary.Should().Contain($"(⚠️{NonBreakingSpace}<i>already applied</i>)");
+        summary.Should().Contain($"(⚠️{NonBreakingSpace}<i>already imported</i>)");
     }
 
     [Test]
@@ -113,6 +113,7 @@ public class ResourceSummaryHtmlBuilderRefactoringTests
         // Assert
         summary.Should().Contain($"📥{NonBreakingSpace}<i>Imported</i>")
             .And.Contain($"🔀{NonBreakingSpace}<i>Moved from</i>")
-            .And.Contain($"⚠️{NonBreakingSpace}<i>already applied</i>");
+            .And.Contain($"⚠️{NonBreakingSpace}<i>already imported</i>")
+            .And.Contain($"⚠️{NonBreakingSpace}<i>already moved</i>");
     }
 }

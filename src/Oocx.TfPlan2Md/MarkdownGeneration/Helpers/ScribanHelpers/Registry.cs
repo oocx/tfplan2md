@@ -26,6 +26,7 @@ public static partial class ScribanHelpers
         scriptObject.Import("escape_heading", new Func<string?, string>(EscapeMarkdownHeading));
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
         scriptObject.Import("format_value", new Func<string?, string?, string>(FormatValue));
+        scriptObject.Import("format_import_id_details", new Func<string?, string>(FormatImportIdDetails));
         scriptObject.Import("format_code_summary", new Func<string?, string>(FormatCodeSummary));
         scriptObject.Import("format_code_table", new Func<string?, string>(FormatCodeTable));
         scriptObject.Import("format_icon_value_summary", new Func<string?, string>(FormatIconValueSummary));

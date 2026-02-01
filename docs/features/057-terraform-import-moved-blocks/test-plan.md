@@ -54,7 +54,7 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 
 **Expected Output**:
 - Refactoring Summary table shows ⚠️ status for no-op refactoring resources.
-- Resource summary line shows 📥 *Imported* (⚠️ *already applied*).
+- Resource summary line shows 📥 *Imported* (⚠️ *already imported*) for no-op imports.
 
 **Success Criteria**:
 - [ ] Warnings are clearly visible.
@@ -169,7 +169,7 @@ The output HTML contains `🔀&nbsp;<i>Moved from</i> <code>old.address</code>`.
 **Type:** Unit / Integration
 
 **Description:**
-Verify that no-op resources are included in the report if they have refactoring metadata, and they are marked as "Already applied".
+Verify that no-op resources are included in the report if they have refactoring metadata, and they are marked as "Already imported" (imports) or "Already moved" (moves).
 
 **Preconditions:**
 - Plan JSON where a resource has `importing` metadata BUT `actions = ["no-op"]`.
@@ -180,7 +180,7 @@ Verify that no-op resources are included in the report if they have refactoring 
 3. Verify `ResourceChangeModel.IsRefactoringAlreadyApplied` is true.
 
 **Expected Result:**
-The resource is not filtered out and is correctly classified as already applied.
+The resource is not filtered out and is correctly classified as already imported/moved.
 
 **Test Data:**
 `no-op-import.json`
@@ -244,7 +244,7 @@ Zero diff.
 List any new test data files needed:
 - `import-resource.json` - Plan with a simple resource import.
 - `moved-resource.json` - Plan with a resource move.
-- `no-op-import.json` - Plan with an import that is already applied (no-op).
+- `no-op-import.json` - Plan with an import that is already imported (no-op).
 - `refactoring-comprehensive.json` - Plan with multiple imports and moves, including ready and already-applied statuses.
 
 ## Edge Cases

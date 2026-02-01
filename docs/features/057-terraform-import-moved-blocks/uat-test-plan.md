@@ -34,7 +34,9 @@ Verify that Terraform `import` and `moved` block metadata renders correctly and 
 **Specific Resources to check:**
 - **Imported Resource:** Should show `📥 Imported | 🆔 <id>` (e.g., `azurerm_resource_group.existing`).
 - **Moved Resource:** Should show `🔀 Moved from <old-address>` (e.g., `azurerm_virtual_network.hub`).
-- **Already Applied:** Should show `📥 Imported (⚠️ already applied)` or similar for no-op moves.
+- **Already imported/moved:** Should show `📥 Imported (⚠️ already imported)` for no-op imports, or `🔀 Moved from … (⚠️ already moved)` for no-op moves.
+
+  Note: Wording should be consistent with the refactoring summary table.
 
 **Expected Outcome:**
 - Annotations are placed after the resource type/name and before other context (like location or ID).

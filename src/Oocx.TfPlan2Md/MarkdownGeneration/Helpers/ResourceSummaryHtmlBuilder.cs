@@ -113,13 +113,13 @@ internal static class ResourceSummaryHtmlBuilder
 
         if (model.ImportId is not null)
         {
-            parts.Add($"📥{NonBreakingSpace}<i>Imported</i>{BuildAlreadyAppliedSuffix(model)}");
+            parts.Add($"📥{NonBreakingSpace}<i>Imported</i>{BuildAlreadyAppliedSuffix(model, "Import")}");
         }
 
         if (model.MovedFromAddress is not null)
         {
             var movedFrom = FormatCodeSummary(model.MovedFromAddress);
-            parts.Add($"🔀{NonBreakingSpace}<i>Moved from</i> {movedFrom}{BuildAlreadyAppliedSuffix(model)}");
+            parts.Add($"🔀{NonBreakingSpace}<i>Moved from</i> {movedFrom}{BuildAlreadyAppliedSuffix(model, "Move")}");
         }
 
         return string.Join(" | ", parts);
@@ -130,12 +130,26 @@ internal static class ResourceSummaryHtmlBuilder
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>
     /// <param name="model">Resource change model indicating already-applied status.</param>
+    /// <param name="operation">The refactoring operation name (Import or Move) used to pick consistent warning wording.</param>
     /// <returns>Warning suffix or empty string when not applicable.</returns>
-    private static string BuildAlreadyAppliedSuffix(ResourceChangeModel model)
+    private static string BuildAlreadyAppliedSuffix(ResourceChangeModel model, string operation)
     {
-        return model.IsRefactoringAlreadyApplied
-            ? $" (⚠️{NonBreakingSpace}<i>already applied</i>)"
-            : string.Empty;
+        if (!model.IsRefactoringAlreadyApplied)
+        {
+            return string.Empty;
+        }
+
+        var warning = "already applied";
+        if (operation.Equals("Import", StringComparison.OrdinalIgnoreCase))
+        {
+            warning = "already imported";
+        }
+        else if (operation.Equals("Move", StringComparison.OrdinalIgnoreCase))
+        {
+            warning = "already moved";
+        }
+
+        return $" (⚠️{NonBreakingSpace}<i>{warning}</i>)";
     }
 
     /// <summary>

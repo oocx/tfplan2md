@@ -26,7 +26,7 @@ Add visibility for Terraform `import` and `moved` blocks in generated reports. T
    - Annotations appear in the `<summary>` element alongside other resource context
 
 3. **Unnecessary Block Detection**
-   - Detect import/moved blocks that reference resources with no-op actions (already applied)
+   - Detect import/moved blocks that reference resources with no-op actions (already imported/moved)
    - Display warnings in the Refactoring Summary table
 
 ### Out of Scope
@@ -77,7 +77,7 @@ Each resource's summary line includes import/moved context:
 
 **Unnecessary Import (no-op):**
 ```html
-<summary>⚪ azurerm_storage_account <b><code>legacy-storage</code></b> — 📥 <i>Imported</i> (⚠️ <i>already applied</i>)</summary>
+<summary>⚪ azurerm_storage_account <b><code>legacy-storage</code></b> — 📥 <i>Imported</i> (⚠️ <i>already imported</i>)</summary>
 ```
 
 ### 3. Refactoring Summary Section Behavior
@@ -121,4 +121,4 @@ Based on Terraform plan JSON format (format_version 1.0+):
 
 **Unnecessary block detection:**
 - Import/moved blocks with `resource_changes[].change.actions = ["no-op"]`
-- These indicate the import/move was already applied in a previous run
+- These indicate the import/move was already imported/moved in a previous run

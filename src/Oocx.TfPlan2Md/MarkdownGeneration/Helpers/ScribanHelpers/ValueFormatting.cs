@@ -57,6 +57,27 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Formats Terraform import IDs for the refactoring summary table.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="importId">The raw import ID from the plan.</param>
+    /// <returns>A markdown string suitable for rendering inside a table cell.</returns>
+    public static string FormatImportIdDetails(string? importId)
+    {
+        if (string.IsNullOrWhiteSpace(importId))
+        {
+            return string.Empty;
+        }
+
+        if (AzureScopeParser.IsAzureResourceId(importId))
+        {
+            return AzureScopeParser.ParseScope(importId);
+        }
+
+        return $"`{EscapeMarkdown(importId)}`";
+    }
+
+    /// <summary>
     /// Determines whether the provided Terraform provider name represents the azurerm provider.
     /// </summary>
     /// <param name="providerName">The provider name.</param>

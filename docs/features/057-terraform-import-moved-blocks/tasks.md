@@ -72,7 +72,7 @@ Update `ResourceSummaryHtmlBuilder` to prepend refactoring icons and labels to t
 **Acceptance Criteria:**
 - [x] Summary HTML includes 📥 *Imported* for imports.
 - [x] Summary HTML includes 🔀 *Moved from* `address` for moves.
-- [x] Unnecessary refactorings include (⚠️ *already applied*) warning.
+- [x] Unnecessary refactorings include (⚠️ *already imported/moved*) warning.
 - [x] Non-breaking spaces used for icon+label (TC-08).
 - [x] Formatting uses `<code>` and `<i>` per style guide.
 - [x] Unit tests (TC-04, TC-05) verify output.

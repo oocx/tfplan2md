@@ -10,13 +10,21 @@ This document lists the screenshots used on the website and how to generate them
 
 ## Current State
 
-**Status:** Homepage uses firewall rules crop with lightbox.
+**Status:** Homepage uses firewall rules with static analysis findings.
 
-The homepage (`/index.html`) displays a 580×400px cropped screenshot showing firewall rule semantic diffs. Clicking opens a lightbox modal showing a 1200×800px detailed view.
+The homepage (`/index.html`) displays a 580×400px cropped screenshot showing firewall rule changes with a static analysis security warning. Clicking opens a lightbox modal showing a 1200×900px detailed view.
 
 Screenshots currently in use:
-- **firewall-example-crop.png** (580×400): Firewall rules section for homepage
-- **firewall-example-lightbox.png** (1200×800): Detailed firewall view for lightbox
+- **firewall-example-crop-azdo.png** (580×400, 1x): Firewall rules thumbnail for homepage (light mode)
+- **firewall-example-crop-azdo@2x.png** (1160×800, 2x): Firewall rules thumbnail (light mode, high-DPI)
+- **firewall-example-crop-azdo-dark.png** (580×400, 1x): Firewall rules thumbnail (dark mode)
+- **firewall-example-crop-azdo-dark@2x.png** (1160×800, 2x): Firewall rules thumbnail (dark mode, high-DPI)
+- **firewall-example-lightbox-azdo.png** (1200×900, 1x): Firewall rules lightbox view (light mode)
+- **firewall-example-lightbox-azdo@2x.png** (2400×1800, 2x): Firewall rules lightbox view (light mode, high-DPI)
+- **firewall-example-lightbox-azdo-dark.png** (1200×900, 1x): Firewall rules lightbox view (dark mode)
+- **firewall-example-lightbox-azdo-dark@2x.png** (2400×1800, 2x): Firewall rules lightbox view (dark mode, high-DPI)
+
+Source: `examples/firewall-with-static-analysis/` (firewall rule changes with tfsec security finding)
 
 The `/examples.html` page includes:
 - **Firewall Rule Semantic Diffing**: Real output from `examples/firewall-rules-demo/` (generated via HtmlRenderer)
@@ -64,83 +72,37 @@ Screenshots are generated using the tools in `src/tools/Oocx.TfPlan2Md.Screensho
 pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
 
-### Generate Firewall Section Screenshots
+### Generate Homepage Firewall Screenshots
 
 ```bash
-# First generate the HTML with Azure DevOps styling (for more authentic screenshot appearance)
-dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
-  --input artifacts/comprehensive-demo.md \
-  --flavor azdo \
-  --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
-  --output artifacts/comprehensive-demo.azdo.html
-
-# Create dark mode version by changing data-theme attribute
-sed 's/data-theme="light"/data-theme="dark"/' artifacts/comprehensive-demo.azdo.html > artifacts/comprehensive-demo.azdo-dark.html
-
-# Generate full-page screenshots at 1x and 2x DPI for both themes
-dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
-  --input artifacts/comprehensive-demo.azdo.html \
-  --output website/assets/screenshots/comprehensive-demo-full.png \
-  --full-page --width 1920
-
-dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
-  --input artifacts/comprehensive-demo.azdo.html \
-  --output website/assets/screenshots/comprehensive-demo-full@2x.png \
-  --full-page --width 1920 --device-scale-factor 2
-
-dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
-  --input artifacts/comprehensive-demo.azdo-dark.html \
-  --output website/assets/screenshots/comprehensive-demo-full-dark.png \
-  --full-page --width 1920
-
-dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
-  --input artifacts/comprehensive-demo.azdo-dark.html \
-  --output website/assets/screenshots/comprehensive-demo-full-dark@2x.png \
-  --full-page --width 1920 --device-scale-factor 2
-
-# Crop light mode screenshots
-magick website/assets/screenshots/comprehensive-demo-full.png \
-  -crop 580x400+400+1300 \
-  website/assets/screenshots/firewall-example-crop.png
-
-magick website/assets/screenshots/comprehensive-demo-full@2x.png \
-  -crop 1160x800+800+2600 \
-  website/assets/screenshots/firewall-example-crop@2x.png
-
-magick website/assets/screenshots/comprehensive-demo-full.png \
-  -crop 1200x800+370+1200 \
-  website/assets/screenshots/firewall-example-lightbox.png
-
-magick website/assets/screenshots/comprehensive-demo-full@2x.png \
-  -crop 2400x1600+740+2400 \
-  website/assets/screenshots/firewall-example-lightbox@2x.png
-
-# Crop dark mode screenshots
-magick website/assets/screenshots/comprehensive-demo-full-dark.png \
-  -crop 580x400+400+1300 \
-  website/assets/screenshots/firewall-example-crop-dark.png
-
-magick website/assets/screenshots/comprehensive-demo-full-dark@2x.png \
-  -crop 1160x800+800+2600 \
-  website/assets/screenshots/firewall-example-crop-dark@2x.png
-
-magick website/assets/screenshots/comprehensive-demo-full-dark.png \
-  -crop 1200x800+370+1200 \
-  website/assets/screenshots/firewall-example-lightbox-dark.png
-
-magick website/assets/screenshots/comprehensive-demo-full-dark@2x.png \
-  -crop 2400x1600+740+2400 \
-  website/assets/screenshots/firewall-example-lightbox-dark@2x.png
+# Using the generate-screenshot.sh script
+scripts/generate-screenshot.sh \
+  --plan examples/firewall-with-static-analysis/plan.json \
+  --output-prefix firewall-example \
+  --selector "details:has(summary:has-text('azurerm_firewall_network_rule_collection'))" \
+  --thumbnail-width 580 --thumbnail-height 400 \
+  --thumbnail-offset-x 0 --thumbnail-offset-y 0 \
+  --lightbox-width 1200 --lightbox-height 900 \
+  --lightbox-offset-x 0 --lightbox-offset-y 0 \
+  --full-page-width 1920 \
+  --render-target azdo \
+  --open-details-selector "details"
 ```
 
 **Result:** Creates firewall rule screenshots with native high-DPI versions for both light and dark themes:
-- Light mode: `firewall-example-crop.png` (580×400, 1x) and `firewall-example-crop@2x.png` (1160×800, 2x)
-- Dark mode: `firewall-example-crop-dark.png` (580×400, 1x) and `firewall-example-crop-dark@2x.png` (1160×800, 2x)
-- Light mode lightbox: `firewall-example-lightbox.png` (1200×800, 1x) and `firewall-example-lightbox@2x.png` (2400×1600, 2x)
-- Dark mode lightbox: `firewall-example-lightbox-dark.png` (1200×800, 1x) and `firewall-example-lightbox-dark@2x.png` (2400×1600, 2x)
-- All 2x versions generated natively at high resolution, not scaled
-- Crops start at x=400 (small) and x=370 (large) with minimal left margin
-- Browser automatically selects appropriate DPI version based on screen
+- Thumbnail: 580×400 (1x) and 1160×800 (2x)
+- Lightbox: 1200×900 (1x) and 2400×1800 (2x)
+- Both light and dark modes
+- Azure DevOps rendering style
+- Shows firewall rules with a security analysis warning (tfsec finding on wildcard destination)
+- All files prefixed with `firewall-example-*-azdo`
+- All `<details>` elements expanded before capture
+
+**Options:**
+- `--open-details-selector "details"`: Open all details elements (default)
+- `--open-details-selector "details:has(summary:has-text('firewall'))"`: Open only firewall-related details
+- `--open-details-selector "details.specific-class"`: Open only details with a specific CSS class
+- Omit the parameter to keep details elements in their default state (collapsed unless marked with `open` attribute)
 
 ### Generate Full Report Screenshot (Azure DevOps flavor)
 
@@ -189,3 +151,4 @@ magick website/assets/screenshots/comprehensive-demo-full.png \
 - 2026-01-03: Initial inventory created. No screenshots exist yet.
 - 2026-01-03: Documented planned screenshots and generation commands.
 - 2026-01-10: Regenerated all firewall screenshots to show feature 031 improvements (Azure DevOps dark theme border colors). Screenshots now use `--palette-neutral-10` CSS variable that adapts to light/dark themes.
+- 2026-02-01: Created new `examples/firewall-with-static-analysis/` with firewall rules + tfsec security finding. Created `scripts/generate-screenshot.sh` to automate screenshot generation with all variants (light/dark, 1x/2x, azdo/github, thumbnail/lightbox). Updated homepage to use these new screenshots showing both semantic diffs and static analysis warnings. Added `--open-details` argument to ScreenshotGenerator CLI to control which `<details>` elements should be expanded before capture (uses Playwright selector syntax). Updated `generate-screenshot.sh` to support `--open-details-selector` parameter for granular control.

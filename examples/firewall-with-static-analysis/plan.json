@@ -1,0 +1,101 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "timestamp": "2026-02-01T10:00:00Z",
+  "resource_changes": [
+    {
+      "address": "azurerm_firewall_network_rule_collection.network_rules",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_network_rule_collection",
+      "name": "network_rules",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "production-network-rules",
+          "priority": 100,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-prod",
+          "azure_firewall_name": "fw-production",
+          "rule": [
+            {
+              "name": "allow-http",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.0.0/24"],
+              "destination_addresses": ["0.0.0.0/0"],
+              "destination_ports": ["80"],
+              "description": "Allow HTTP traffic"
+            },
+            {
+              "name": "allow-ssh",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.0.0.0/16"],
+              "destination_addresses": ["10.1.0.0/24"],
+              "destination_ports": ["22"],
+              "description": "SSH access"
+            },
+            {
+              "name": "allow-https",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.0.0/24"],
+              "destination_addresses": ["0.0.0.0/0"],
+              "destination_ports": ["443"],
+              "description": "Allow HTTPS traffic"
+            }
+          ]
+        },
+        "after": {
+          "name": "production-network-rules",
+          "priority": 150,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-prod",
+          "azure_firewall_name": "fw-production",
+          "rule": [
+            {
+              "name": "allow-dns",
+              "protocols": ["TCP", "UDP"],
+              "source_addresses": ["10.1.0.0/24"],
+              "destination_addresses": ["168.63.129.16"],
+              "destination_ports": ["53"],
+              "description": "DNS to Azure DNS"
+            },
+            {
+              "name": "allow-http",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.0.0.0/8"],
+              "destination_addresses": ["*"],
+              "destination_ports": ["80"],
+              "description": "Allow HTTP traffic to any destination"
+            },
+            {
+              "name": "allow-https",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.0.0/24"],
+              "destination_addresses": ["0.0.0.0/0"],
+              "destination_ports": ["443"],
+              "description": "Allow HTTPS traffic"
+            },
+            {
+              "name": "allow-monitoring",
+              "protocols": ["TCP"],
+              "source_addresses": ["10.1.0.0/24"],
+              "destination_addresses": ["10.2.0.0/24"],
+              "destination_ports": ["8080", "9090"],
+              "description": "Monitoring endpoints"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {},
+    "root_module": {
+      "resources": []
+    }
+  }
+}

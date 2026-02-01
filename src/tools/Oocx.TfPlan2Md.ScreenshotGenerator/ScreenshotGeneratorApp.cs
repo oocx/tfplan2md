@@ -82,7 +82,8 @@ internal sealed class ScreenshotGeneratorApp
             quality: quality,
             deviceScaleFactor: options.DeviceScaleFactor,
             targetTerraformResourceId: options.TargetTerraformResourceId,
-            targetSelector: options.TargetSelector);
+            targetSelector: options.TargetSelector,
+            openDetailsSelector: options.OpenDetailsSelector);
 
         try
         {

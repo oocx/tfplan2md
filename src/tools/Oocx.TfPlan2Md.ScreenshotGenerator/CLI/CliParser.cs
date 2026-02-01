@@ -32,6 +32,7 @@ internal static class CliParser
         double? deviceScaleFactor = null;
         string? targetTerraformResourceId = null;
         string? targetSelector = null;
+        string? openDetailsSelector = null;
         var showHelp = false;
         var showVersion = false;
 
@@ -67,6 +68,9 @@ internal static class CliParser
                     break;
                 case "--target-selector":
                     targetSelector = ReadNextValue(args, ref index, "--target-selector");
+                    break;
+                case "--open-details":
+                    openDetailsSelector = ReadNextValue(args, ref index, "--open-details");
                     break;
                 case "--format":
                     format = ParseFormat(ReadNextValue(args, ref index, "--format"));
@@ -118,6 +122,7 @@ internal static class CliParser
             deviceScaleFactor: deviceScaleFactor.Value,
             targetTerraformResourceId: targetTerraformResourceId,
             targetSelector: targetSelector,
+            openDetailsSelector: openDetailsSelector,
             showHelp: showHelp,
             showVersion: showVersion);
     }

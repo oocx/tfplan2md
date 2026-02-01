@@ -56,11 +56,25 @@ internal sealed class HtmlScreenshotCapturer
             var fileUri = new Uri(Path.GetFullPath(settings.InputPath)).AbsoluteUri;
             await page.GotoAsync(fileUri, new PageGotoOptions
             {
-                WaitUntil = WaitUntilState.Load,
+                WaitUntil = WaitUntilState.NetworkIdle,
                 Timeout = 30000,
             }).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
+
+            // Open specified <details> elements if a selector was provided
+            if (!string.IsNullOrWhiteSpace(settings.OpenDetailsSelector))
+            {
+                await page.EvaluateAsync(@"
+                    (selector) => {
+                        const details = document.querySelectorAll(selector);
+                        details.forEach(d => d.setAttribute('open', ''));
+                    }
+                ", settings.OpenDetailsSelector).ConfigureAwait(false);
+
+                // Wait for layout to stabilize after opening details elements
+                await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
+            }
 
             var clip = await ResolveClipAsync(page, settings, cancellationToken).ConfigureAwait(false);
 
@@ -187,6 +201,18 @@ internal sealed class HtmlScreenshotCapturer
     private static async Task<ClipBox> ResolveSelectorClipAsync(IPage page, string selector, CancellationToken cancellationToken)
     {
         var locator = page.Locator(selector);
+
+        // Wait for the selector to be visible and scroll it into view
+        await locator.First.ScrollIntoViewIfNeededAsync().ConfigureAwait(false);
+        await locator.First.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = 5000,
+        }).ConfigureAwait(false);
+
+        // Force one more layout pass to ensure the element is fully rendered
+        await page.EvaluateAsync("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))").ConfigureAwait(false);
+
         var handles = await locator.ElementHandlesAsync().ConfigureAwait(false);
 
         cancellationToken.ThrowIfCancellationRequested();

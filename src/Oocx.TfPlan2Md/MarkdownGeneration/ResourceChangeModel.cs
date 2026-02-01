@@ -121,4 +121,22 @@ public class ResourceChangeModel
     /// Related feature: docs/features/056-static-analysis-integration/specification.md.
     /// </summary>
     public IReadOnlyList<CodeAnalysisFindingModel> CodeAnalysisFindings { get; set; } = [];
+
+    /// <summary>
+    /// Gets the import identifier when this resource is managed via an import block.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    public string? ImportId { get; init; }
+
+    /// <summary>
+    /// Gets the previous address when this resource is moved by a refactoring block.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    public string? MovedFromAddress { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the refactoring operation has already been applied.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    public bool IsRefactoringAlreadyApplied { get; init; }
 }

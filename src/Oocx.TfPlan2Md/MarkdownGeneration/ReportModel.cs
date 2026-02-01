@@ -92,4 +92,10 @@ internal class ReportModel
     /// Related feature: docs/features/047-provider-code-separation/specification.md.
     /// </summary>
     public required RenderTargets.RenderTarget RenderTarget { get; init; }
+
+    /// <summary>
+    /// Gets the refactoring operations (imports and moves) included in the plan.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    public required IReadOnlyList<RefactoringOperationModel> RefactoringOperations { get; init; }
 }

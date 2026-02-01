@@ -76,6 +76,7 @@ internal static class AotScriptObjectMapper
         // Changes and module changes
         scriptObject["changes"] = MapChanges(model.Changes);
         scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges);
+        scriptObject["refactoring_operations"] = MapRefactoringOperations(model.RefactoringOperations);
 
         return scriptObject;
     }
@@ -163,6 +164,30 @@ internal static class AotScriptObjectMapper
         return arr;
     }
 
+    /// <summary>
+    /// Maps refactoring operations to a Scriban array for template rendering.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="operations">The refactoring operations to map.</param>
+    /// <returns>A Scriban array of refactoring operation objects.</returns>
+    private static ScriptArray MapRefactoringOperations(IReadOnlyList<RefactoringOperationModel> operations)
+    {
+        var arr = new ScriptArray();
+        foreach (var operation in operations)
+        {
+            var obj = new ScriptObject();
+            obj["operation"] = operation.Operation;
+            obj["address"] = operation.Address;
+            obj["resource_display"] = operation.ResourceDisplay;
+            obj["details"] = operation.Details;
+            obj["status"] = operation.Status;
+            obj["is_already_applied"] = operation.IsAlreadyApplied;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
     private static ScriptObject MapResourceChange(ResourceChangeModel change)
     {
         var obj = new ScriptObject();
@@ -177,6 +202,9 @@ internal static class AotScriptObjectMapper
         obj["summary_html"] = change.SummaryHtml;
         obj["changed_attributes_summary"] = change.ChangedAttributesSummary;
         obj["tags_badges"] = change.TagsBadges;
+        obj["import_id"] = change.ImportId;
+        obj["moved_from_address"] = change.MovedFromAddress;
+        obj["is_refactoring_already_applied"] = change.IsRefactoringAlreadyApplied;
 
         // JSON values
         obj["before_json"] = change.BeforeJson is JsonElement jsonBefore

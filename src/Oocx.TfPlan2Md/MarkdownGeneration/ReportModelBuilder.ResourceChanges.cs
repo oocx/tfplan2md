@@ -25,6 +25,9 @@ internal partial class ReportModelBuilder
         var action = DetermineAction(rc.Change.Actions);
         var actionSymbol = GetActionSymbol(action);
         var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName);
+        var importId = string.IsNullOrWhiteSpace(rc.Change.Importing?.Id) ? null : rc.Change.Importing?.Id;
+        var movedFromAddress = string.IsNullOrWhiteSpace(rc.PreviousAddress) ? null : rc.PreviousAddress;
+        var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null || movedFromAddress is not null);
 
         var model = new ResourceChangeModel
         {
@@ -38,7 +41,10 @@ internal partial class ReportModelBuilder
             AttributeChanges = attributeChanges,
             BeforeJson = rc.Change.Before,
             AfterJson = rc.Change.After,
-            ReplacePaths = rc.Change.ReplacePaths
+            ReplacePaths = rc.Change.ReplacePaths,
+            ImportId = importId,
+            MovedFromAddress = movedFromAddress,
+            IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied
         };
 
         // Apply resource-specific view model if a factory is registered for this type

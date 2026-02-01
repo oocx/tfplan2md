@@ -841,7 +841,8 @@ public class MarkdownRendererTests
                 Total = 0
             },
             ShowUnchangedValues = false,
-            RenderTarget = RenderTarget.AzureDevOps
+            RenderTarget = RenderTarget.AzureDevOps,
+            RefactoringOperations = []
         };
         var tempFile = Path.GetTempFileName();
         File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");

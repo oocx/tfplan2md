@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Oocx.TfPlan2Md.Parsing;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
@@ -30,7 +31,7 @@ internal partial class ReportModelBuilder
         // No-op resources have no meaningful changes to display and including them
         // can cause the template to exceed Scriban's iteration limit of 1000
         var displayChanges = allChanges
-            .Where(c => c.Action != "no-op" || c.CodeAnalysisFindings.Count > 0)
+            .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null)
             .ToList();
 
         // SonarAnalyzer S3267: Cannot simplify with LINQ - this loop mutates existing objects
@@ -85,6 +86,7 @@ internal partial class ReportModelBuilder
 
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
+        var refactoringOperations = BuildRefactoringOperations(allChanges);
 
         return new ReportModel
         {
@@ -101,8 +103,56 @@ internal partial class ReportModelBuilder
             Summary = summary,
             CodeAnalysis = codeAnalysisReport,
             ShowUnchangedValues = _showUnchangedValues,
-            RenderTarget = renderTarget
+            RenderTarget = renderTarget,
+            RefactoringOperations = refactoringOperations
         };
+    }
+
+    /// <summary>
+    /// Builds the list of refactoring operations (imports and moves) for the report summary.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="changes">Resource changes to inspect for refactoring metadata.</param>
+    /// <returns>Sorted list of refactoring operations for rendering.</returns>
+    private static List<Models.RefactoringOperationModel> BuildRefactoringOperations(
+        IEnumerable<ResourceChangeModel> changes)
+    {
+        var operations = new List<Models.RefactoringOperationModel>();
+
+        foreach (var change in changes)
+        {
+            if (change.ImportId is not null)
+            {
+                operations.Add(new Models.RefactoringOperationModel
+                {
+                    Operation = "Import",
+                    Address = change.Address,
+                    ResourceDisplay = $"{change.Type} {change.Name}",
+                    Details = change.ImportId,
+                    Status = change.IsRefactoringAlreadyApplied ? "AlreadyApplied" : "Ready",
+                    IsAlreadyApplied = change.IsRefactoringAlreadyApplied
+                });
+            }
+
+            if (change.MovedFromAddress is not null)
+            {
+                operations.Add(new Models.RefactoringOperationModel
+                {
+                    Operation = "Move",
+                    Address = change.Address,
+                    ResourceDisplay = $"{change.Type} {change.Name}",
+                    Details = change.MovedFromAddress,
+                    Status = change.IsRefactoringAlreadyApplied ? "AlreadyApplied" : "Ready",
+                    IsAlreadyApplied = change.IsRefactoringAlreadyApplied
+                });
+            }
+        }
+
+        return operations
+            .OrderBy(o => o.Operation == "Import" ? 0 : 1)
+            .ThenBy(o => o.IsAlreadyApplied ? 0 : 1)
+            .ThenBy(o => o.Address, StringComparer.Ordinal)
+            .ToList();
     }
 
     private static ActionSummary BuildActionSummary(IEnumerable<ResourceChangeModel> changes)

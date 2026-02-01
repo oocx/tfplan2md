@@ -106,9 +106,9 @@ Update the Scriban templates to render the "Refactoring Summary" table and verif
 Generate comprehensive test data and run UAT to verify visual rendering on GitHub and Azure DevOps.
 
 **Acceptance Criteria:**
-- [ ] `refactoring-comprehensive.json` test data created.
-- [ ] UAT scenarios 1 & 2 pass.
-- [ ] Documentation (if any) is updated to reflect the new report section.
+- [x] `refactoring-comprehensive.json` test data created.
+- [x] UAT scenarios 1 & 2 pass.
+- [x] Documentation (if any) is updated to reflect the new report section.
 
 **Dependencies:** Task 5
 

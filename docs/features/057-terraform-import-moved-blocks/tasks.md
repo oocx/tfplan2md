@@ -36,8 +36,8 @@ Update the Terraform plan parsing models to capture `previous_address` and `impo
 Increase the Scriban template loop limit to 10000 to improve reliability for large plans and refactoring sections.
 
 **Acceptance Criteria:**
-- [ ] `MarkdownRenderer.cs` sets `TemplateContext.LoopLimit = 10000`.
-- [ ] Existing filtering for `no-op` resources is maintained (except for refactoring resources).
+- [x] `MarkdownRenderer.cs` sets `TemplateContext.LoopLimit = 10000`.
+- [x] Existing filtering for `no-op` resources is maintained (except for refactoring resources).
 
 **Dependencies:** None
 

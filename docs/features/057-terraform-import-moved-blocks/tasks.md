@@ -19,10 +19,10 @@ Reference:
 Update the Terraform plan parsing models to capture `previous_address` and `importing.id` from the plan JSON.
 
 **Acceptance Criteria:**
-- [ ] `TerraformPlan.cs` includes `PreviousAddress` (string?) and `Importing` (with `Id` string?).
-- [ ] Properties are correctly mapped from `previous_address` and `change.importing.id`.
-- [ ] Unit tests (TC-01, TC-02) verify parsing with sample JSON.
-- [ ] Source generation (`TfPlanJsonContext`) is updated/verified to support new fields.
+- [x] `TerraformPlan.cs` includes `PreviousAddress` (string?) and `Importing` (with `Id` string?).
+- [x] Properties are correctly mapped from `previous_address` and `change.importing.id`.
+- [x] Unit tests (TC-01, TC-02) verify parsing with sample JSON.
+- [x] Source generation (`TfPlanJsonContext`) is updated/verified to support new fields.
 
 **Dependencies:** None
 

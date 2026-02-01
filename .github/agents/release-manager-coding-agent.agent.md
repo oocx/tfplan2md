@@ -118,6 +118,7 @@ This project uses:
 ### Important Notes
 - Do NOT edit `CHANGELOG.md` manually - Versionize generates it automatically
 - Version bumping is handled by Versionize based on conventional commits
+- **Release Notes**: The release workflow will use your user-focused `release-notes.md` file if present; otherwise falls back to changelog extraction
 - The CI pipeline builds and publishes the Docker image
 - **CRITICAL**: Prefer GitHub MCP tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 - **Workflow Status**: Use `scripts/check-workflow-status.sh` for all workflow operations (list, watch, trigger) instead of raw `gh run` commands to reduce approval friction.
@@ -126,11 +127,12 @@ This project uses:
 ## Workflow Completion Checklist
 
 Before recommending Retrospective agent, verify:
+- [ ] ✅ User-focused release notes created
 - [ ] ✅ PR merged successfully
 - [ ] ✅ CI pipeline on main completed successfully
 - [ ] ✅ Release workflow completed successfully
 - [ ] ✅ Docker image published to Docker Hub
-- [ ] ✅ GitHub release created with changelog
+- [ ] ✅ GitHub release created with user-focused release notes
 
 **Do NOT suggest Retrospective agent until ALL items above are complete.**
 
@@ -176,7 +178,67 @@ Before releasing, verify:
    scripts/git-log.sh --oneline origin/main..HEAD
    ```
 
-3. **Create or Update Pull Request**:
+3. **Generate User-Focused Release Notes** - Create release notes for end users:
+   
+   **Read Context:**
+   - Feature Specification: `docs/features/NNN-<feature-slug>/specification.md`
+   - Code Review Report: `docs/features/NNN-<feature-slug>/code-review.md`
+   - UAT Report (if exists): `docs/features/NNN-<feature-slug>/uat-report.md`
+   - Demo artifacts: `docs/features/NNN-<feature-slug>/demo/`
+   - Commit history: `scripts/git-log.sh --oneline origin/main..HEAD`
+   
+   **Filter Commits:** EXCLUDE internal commits that are not user-facing:
+   - Documentation updates (task.md, specification.md updates, "mark task N complete")
+   - Workflow/agent changes
+   - Build/CI configuration (unless user-visible impact)
+   - Demo artifact regeneration (unless explaining what changed)
+   - Retrospective work
+   
+   **Include Only:** User-facing changes:
+   - New features and capabilities
+   - Bug fixes that affected users
+   - Performance improvements
+   - CLI flag changes
+   - Output format enhancements
+   - New terraform feature support
+   
+   **Write in Blog-Post Style:**
+   - Start with compelling overview (1-2 paragraphs on "why this matters")
+   - Focus on user benefits, not implementation details
+   - Use active voice ("You can now..." not "It is now possible to...")
+   - Include practical code examples showing new functionality
+   - Reference demo artifacts and screenshots
+   - Keep paragraphs short (2-4 sentences)
+   - Use clear headings for scanning
+   
+   **Structure:**
+   ```markdown
+   # [Feature Name]
+   
+   ## Overview
+   [User-focused description of what this release enables]
+   
+   ## What's New
+   ### [Feature Title]
+   [Description with code example]
+   
+   ## Improvements
+   - [User-visible improvement]
+   
+   ## Bug Fixes
+   - [User-visible fix]
+   
+   ## Breaking Changes
+   ⚠️ [If any, with migration steps]
+   
+   ## Getting Started
+   [Quick usage example]
+   ```
+   
+   **Save:** Create `docs/features/NNN-<feature-slug>/release-notes.md`
+   **Commit:** `docs: add user-focused release notes for <feature-name>`
+
+4. **Create or Update Pull Request**:
    ```bash
    git push -u origin HEAD
 
@@ -309,13 +371,14 @@ After the release pipeline completes, verify:
 
 Your work is complete when:
 - [ ] All pre-release checks pass
+- [ ] User-focused release notes generated and committed to `docs/features/NNN-<feature-slug>/release-notes.md`
 - [ ] PR created and merged to main
 - [ ] CI pipeline on main completes successfully
 - [ ] Version tag detected (created by Versionize)
 - [ ] Release workflow triggered with correct tag
 - [ ] Release workflow completes successfully
 - [ ] Release artifacts verified:
-  - [ ] GitHub Release created with correct notes
+  - [ ] GitHub Release created with user-focused notes (from release-notes.md)
   - [ ] CHANGELOG.md updated on main
   - [ ] Docker image tags mentioned in release
 - [ ] Release summary provided to maintainer

@@ -51,11 +51,12 @@ internal sealed class CliOptions
     /// <param name="quality">Optional quality setting for lossy formats.</param>
     /// <param name="targetTerraformResourceId">Optional Terraform resource address for partial capture.</param>
     /// <param name="targetSelector">Optional selector for partial capture.</param>
+    /// <param name="openDetailsSelector">Optional selector for details elements to open before capture.</param>
     /// <param name="deviceScaleFactor">Device scale factor for high-DPI rendering (1 = normal, 2 = 2x DPI).</param>
     /// <param name="showHelp">Indicates whether help text should be displayed.</param>
     /// <param name="showVersion">Indicates whether version information should be displayed.</param>
-    public CliOptions(string? inputPath, int width, int height, bool fullPage, ScreenshotFormat? format = null, int? quality = null, string? targetTerraformResourceId = null, string? targetSelector = null, double deviceScaleFactor = 1.0, bool showHelp = false, bool showVersion = false)
-        : this(inputPath, null, width, height, fullPage, format, quality, targetTerraformResourceId, targetSelector, deviceScaleFactor, showHelp, showVersion)
+    public CliOptions(string? inputPath, int width, int height, bool fullPage, ScreenshotFormat? format = null, int? quality = null, string? targetTerraformResourceId = null, string? targetSelector = null, string? openDetailsSelector = null, double deviceScaleFactor = 1.0, bool showHelp = false, bool showVersion = false)
+        : this(inputPath, null, width, height, fullPage, format, quality, targetTerraformResourceId, targetSelector, openDetailsSelector, deviceScaleFactor, showHelp, showVersion)
     {
     }
 
@@ -103,6 +104,11 @@ internal sealed class CliOptions
     /// Gets the selector used for partial capture when specified.
     /// </summary>
     public string? TargetSelector { get; }
+
+    /// <summary>
+    /// Gets the selector used to open details elements before capture.
+    /// </summary>
+    public string? OpenDetailsSelector { get; }
 
     /// <summary>
     /// Gets the device scale factor for high-DPI rendering.

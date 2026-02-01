@@ -245,12 +245,19 @@ docker run -v $(pwd):/data -i oocx/tfplan2md \
 
                 <h3 style="margin-top: 40px;">Summary View</h3>
                 <p>The report includes a high-level summary showing the overall security posture:</p>
-                <div class="code-block">
+                <div class="code-block interactive-example">
                     <div class="code-header">
                         <span class="code-title">Code Analysis Summary</span>
+                        <div class="example-controls">
+                            <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="rendered">Rendered</button>
+                                <button class="toggle-btn" data-view="source">Source</button>
+                            </div>
+                            <button class="fullscreen-btn" aria-label="Toggle Fullscreen">⛶</button>
+                        </div>
                     </div>
                     <div class="example-content">
-                        <div class="view-pane rendered-view">
+                        <div class="view-pane rendered-view active">
 <h2>Code Analysis Summary</h2>
 <p><strong>Status:</strong> ⚠️ 2 high findings require attention</p>
 <table>
@@ -290,6 +297,21 @@ docker run -v $(pwd):/data -i oocx/tfplan2md \
 </tbody>
 </table>
 <p><strong>Tools Used:</strong> Checkov 3.2.490, tflint 0.60.0, Trivy 0.50.0</p>
+                        </div>
+                        <div class="view-pane source-view">
+<pre><code>## Code Analysis Summary
+
+**Status:** ⚠️ 2 high findings require attention
+
+| Severity | Count | Resource Types |
+| -------- | ----- | -------------- |
+| 🚨 Critical | 0 | |
+| ⚠️ High | 2 | 1 azurerm_key_vault&lt;br&gt;1 azurerm_storage_account |
+| ⚠️ Medium | 4 | 1 azurerm_key_vault&lt;br&gt;1 azurerm_storage_account |
+| ℹ️ Low | 1 | 1 azurerm_virtual_network |
+| ℹ️ Informational | 0 | |
+
+**Tools Used:** Checkov 3.2.490, tflint 0.60.0, Trivy 0.50.0</code></pre>
                         </div>
                     </div>
                 </div>

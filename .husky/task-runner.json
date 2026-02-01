@@ -5,13 +5,13 @@
       "name": "dotnet-format",
       "group": "pre-commit",
       "command": "dotnet",
-      "args": ["format", "--verify-no-changes", "--verbosity", "minimal"]
+      "args": ["format", "src/tfplan2md.slnx", "--verify-no-changes", "--verbosity", "minimal"]
     },
     {
       "name": "dotnet-build",
       "group": "pre-commit",
       "command": "dotnet",
-      "args": ["build", "--configuration", "Release", "--no-restore"]
+      "args": ["build", "src/tfplan2md.slnx", "--configuration", "Release", "--no-restore"]
     },
     {
       "name": "commit-message-linter",

@@ -15,7 +15,7 @@ Reviewed the implementation of feature 057: Terraform Import and Moved Blocks. T
 
 ## Review Decision
 
-**Status:** Approved
+**Status:** Changes Requested
 
 ## Snapshot Changes
 
@@ -33,7 +33,15 @@ Reviewed the implementation of feature 057: Terraform Import and Moved Blocks. T
 
 ### Blockers
 
-None
+1. **Missing Code Analysis in Comprehensive Demo Artifact** ([artifacts/comprehensive-demo.md](../../../artifacts/comprehensive-demo.md))
+   - The comprehensive demo artifact is missing static code analysis results
+   - Current size: 437 lines (expected: 491 lines to match main branch)
+   - The generation script `scripts/generate-demo-artifacts.sh` includes `--code-analysis-results "examples/static-analysis/*.sarif"` flag, but the artifact doesn't contain any "Code Analysis Summary" section
+   - **Root cause:** The glob pattern `"examples/static-analysis/*.sarif"` was not properly expanded during artifact regeneration (likely shell quoting or execution context issue)
+   - **Evidence:** Manual regeneration with the same command produces 491 lines with Code Analysis section included
+   - **Impact:** High - The comprehensive demo is used for UAT and should demonstrate all features including static analysis integration (feature 056)
+   - **Fix required:** Regenerate all demo artifacts using `scripts/generate-demo-artifacts.sh` ensuring the code analysis files are properly included
+   - **Verification:** After regeneration, confirm `artifacts/comprehensive-demo.md` contains "## Code Analysis Summary" section and has approximately 491 lines
 
 ### Major Issues
 
@@ -65,7 +73,7 @@ None
 | Code Quality | ✅ |
 | Architecture | ✅ |
 | Testing | ✅ |
-| Documentation | ✅ |
+| Documentation | ❌ |
 
 ### Detailed Checklist
 
@@ -124,7 +132,7 @@ None
   - ✅ Spec examples match actual implementation behavior
   - ✅ No conflicting requirements between documents
   - ✅ Feature descriptions are consistent across all docs
-- ✅ Comprehensive demo output passes markdownlint (0 errors)
+- ❌ Comprehensive demo output incomplete (missing code analysis section - **BLOCKER**)
 - ✅ Refactoring demo output passes markdownlint (0 errors)
 - ✅ ADR-005 created for Scriban loop limit increase
 - ✅ For user-facing features: UAT required (this is a user-facing feature)
@@ -140,12 +148,17 @@ None
 
 ## Next Steps
 
-This implementation is ready for UAT (User Acceptance Testing). The UAT Tester agent should:
-1. Create UAT PRs on GitHub and Azure DevOps using `artifacts/refactoring-demo.md`
-2. Verify rendering of:
-   - Refactoring Summary table formatting
-   - Resource-level annotations with icons and non-breaking spaces
-   - Warning indicators for already-applied operations
-3. Confirm visual consistency across both platforms
+**Changes Required:**
 
-After successful UAT, the Release Manager can proceed with release preparation.
+1. **Fix Blocker:** Regenerate demo artifacts with code analysis included
+   - Run `scripts/generate-demo-artifacts.sh` from repository root
+   - Ensure shell properly expands the glob pattern for SARIF files
+   - Verify `artifacts/comprehensive-demo.md` contains "## Code Analysis Summary" section
+   - Verify file size is approximately 491 lines (matching main branch)
+   - Commit the regenerated artifacts with message indicating code analysis restoration
+
+2. **Re-review:** After fixing the blocker, return to Code Reviewer for verification
+
+**After approval:** Proceed to UAT Tester agent for user acceptance testing with both:
+- `artifacts/refactoring-demo.md` (refactoring feature)
+- `artifacts/comprehensive-demo.md` (all features including code analysis)

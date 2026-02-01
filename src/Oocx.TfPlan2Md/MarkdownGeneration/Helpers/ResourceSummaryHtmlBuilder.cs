@@ -38,6 +38,7 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("subscription_id", out var subscriptionId);
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
         var detailParts = new List<string>();
+        var refactoringContext = BuildRefactoringContext(model);
 
         var primaryContext = !string.IsNullOrWhiteSpace(nameValue)
             ? FormatAttributeValueSummary("name", nameValue!, null)
@@ -80,9 +81,61 @@ internal static class ResourceSummaryHtmlBuilder
             detailParts.Add($"| {model.ChangedAttributesSummary!}");
         }
 
+        if (!string.IsNullOrWhiteSpace(refactoringContext))
+        {
+            if (detailParts.Count > 0 && !detailParts[0].StartsWith('|'))
+            {
+                detailParts[0] = $"| {detailParts[0]}";
+            }
+
+            detailParts.Insert(0, refactoringContext);
+        }
+
         return detailParts.Count == 0
             ? prefix
             : $"{prefix} — {string.Join(" ", detailParts)}";
+    }
+
+    /// <summary>
+    /// Builds the refactoring annotation for summary lines when import or moved metadata is present.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="model">Resource change model containing refactoring metadata.</param>
+    /// <returns>Formatted refactoring annotation or empty string when not applicable.</returns>
+    private static string BuildRefactoringContext(ResourceChangeModel model)
+    {
+        if (model.ImportId is null && model.MovedFromAddress is null)
+        {
+            return string.Empty;
+        }
+
+        var parts = new List<string>();
+
+        if (model.ImportId is not null)
+        {
+            parts.Add($"📥{NonBreakingSpace}<i>Imported</i>{BuildAlreadyAppliedSuffix(model)}");
+        }
+
+        if (model.MovedFromAddress is not null)
+        {
+            var movedFrom = FormatCodeSummary(model.MovedFromAddress);
+            parts.Add($"🔀{NonBreakingSpace}<i>Moved from</i> {movedFrom}{BuildAlreadyAppliedSuffix(model)}");
+        }
+
+        return string.Join(" | ", parts);
+    }
+
+    /// <summary>
+    /// Builds the suffix for already-applied refactoring warnings.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="model">Resource change model indicating already-applied status.</param>
+    /// <returns>Warning suffix or empty string when not applicable.</returns>
+    private static string BuildAlreadyAppliedSuffix(ResourceChangeModel model)
+    {
+        return model.IsRefactoringAlreadyApplied
+            ? $" (⚠️{NonBreakingSpace}<i>already applied</i>)"
+            : string.Empty;
     }
 
     /// <summary>

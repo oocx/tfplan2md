@@ -121,13 +121,16 @@ internal partial class ReportModelBuilder
 
         foreach (var change in changes)
         {
+            var resourceName = ResolveRefactoringResourceName(change);
+
             if (change.ImportId is not null)
             {
                 operations.Add(new Models.RefactoringOperationModel
                 {
                     Operation = "Import",
                     Address = change.Address,
-                    ResourceDisplay = $"{change.Type} {change.Name}",
+                    ResourceType = change.Type,
+                    ResourceName = resourceName,
                     Details = change.ImportId,
                     Status = change.IsRefactoringAlreadyApplied ? "AlreadyApplied" : "Ready",
                     IsAlreadyApplied = change.IsRefactoringAlreadyApplied
@@ -140,7 +143,8 @@ internal partial class ReportModelBuilder
                 {
                     Operation = "Move",
                     Address = change.Address,
-                    ResourceDisplay = $"{change.Type} {change.Name}",
+                    ResourceType = change.Type,
+                    ResourceName = resourceName,
                     Details = change.MovedFromAddress,
                     Status = change.IsRefactoringAlreadyApplied ? "AlreadyApplied" : "Ready",
                     IsAlreadyApplied = change.IsRefactoringAlreadyApplied
@@ -153,6 +157,40 @@ internal partial class ReportModelBuilder
             .ThenBy(o => o.IsAlreadyApplied ? 0 : 1)
             .ThenBy(o => o.Address, StringComparer.Ordinal)
             .ToList();
+    }
+
+    /// <summary>
+    /// Resolves a human-friendly resource name for use in the Refactoring Summary table.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="change">Resource change containing before/after state.</param>
+    /// <returns>The best available display name for the resource.</returns>
+    private static string ResolveRefactoringResourceName(ResourceChangeModel change)
+    {
+        var state = change.AfterJson ?? change.BeforeJson;
+        var flatState = Helpers.JsonFlattener.ConvertToFlatDictionary(state);
+
+        static string? GetValue(Dictionary<string, string?> values, string key)
+        {
+            return values.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value)
+                ? value
+                : null;
+        }
+
+        var fromState = GetValue(flatState, "name")
+            ?? GetValue(flatState, "display_name")
+            ?? GetValue(flatState, "body.displayName")
+            ?? GetValue(flatState, "displayName")
+            ?? GetValue(flatState, "url");
+
+        if (fromState is not null)
+        {
+            return fromState;
+        }
+
+        return !string.IsNullOrWhiteSpace(change.Name)
+            ? change.Name
+            : change.Address;
     }
 
     private static ActionSummary BuildActionSummary(IEnumerable<ResourceChangeModel> changes)

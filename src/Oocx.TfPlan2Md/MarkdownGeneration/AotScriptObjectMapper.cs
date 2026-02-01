@@ -178,7 +178,8 @@ internal static class AotScriptObjectMapper
             var obj = new ScriptObject();
             obj["operation"] = operation.Operation;
             obj["address"] = operation.Address;
-            obj["resource_display"] = operation.ResourceDisplay;
+            obj["resource_type"] = operation.ResourceType;
+            obj["resource_name"] = operation.ResourceName;
             obj["details"] = operation.Details;
             obj["status"] = operation.Status;
             obj["is_already_applied"] = operation.IsAlreadyApplied;

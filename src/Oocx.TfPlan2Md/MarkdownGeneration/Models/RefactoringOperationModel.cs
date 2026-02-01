@@ -18,10 +18,16 @@ internal sealed class RefactoringOperationModel
     public required string Address { get; init; }
 
     /// <summary>
-    /// Gets the resource display text (type and name) used in the summary table.
+    /// Gets the resource type shown in the summary table.
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>
-    public required string ResourceDisplay { get; init; }
+    public required string ResourceType { get; init; }
+
+    /// <summary>
+    /// Gets the resource name shown in the summary table.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    public required string ResourceName { get; init; }
 
     /// <summary>
     /// Gets the details column value (import ID or previous address).

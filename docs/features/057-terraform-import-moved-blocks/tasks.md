@@ -89,10 +89,10 @@ Update `ResourceSummaryHtmlBuilder` to prepend refactoring icons and labels to t
 Update the Scriban templates to render the "Refactoring Summary" table and verify rendering with snapshot tests.
 
 **Acceptance Criteria:**
-- [ ] `default.sbn` renders the Refactoring Summary table at the end (if operations exist).
-- [ ] Table follows formatting from spec (icons, labels, code formatting).
-- [ ] `summary.sbn` is reviewed/updated if necessary.
-- [ ] Snapshot tests (TC-07, TC-09) verify rendering and ensure no regressions for standard plans.
+- [x] `default.sbn` renders the Refactoring Summary table at the end (if operations exist).
+- [x] Table follows formatting from spec (icons, labels, code formatting).
+- [x] `summary.sbn` is reviewed/updated if necessary.
+- [x] Snapshot tests (TC-07, TC-09) verify rendering and ensure no regressions for standard plans.
 
 **Dependencies:** Task 3, Task 4
 

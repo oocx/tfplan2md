@@ -214,6 +214,8 @@ Borders are not visible (styles stripped), but the semantic structure and conten
 | `--full-page`, `-f` | Capture full scrollable page height (default: false) |
 | `--target-terraform-resource-id <address>` | Capture only the resource matching the Terraform address |
 | `--target-selector <selector>` | Capture only elements matching a Playwright selector |
+| `--open-details <selector>` | Open `<details>` elements matching selector before capture (Playwright syntax) |
+| `--device-scale-factor <factor>` | Device scale factor for high-DPI screenshots (e.g., 2 for @2x) |
 | `--format <png\|jpeg>` | Image format (auto-detected from output filename if omitted) |
 | `--quality`, `-q <0-100>` | JPEG quality setting (default: 90) |
 | `--help`, `-h` | Display help information |
@@ -269,11 +271,52 @@ dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --target-selector "details:has(summary:has-text('azurerm_firewall'))"
 ```
 
+**Capture with expanded details elements:**
+```bash
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/firewall-expanded.png \
+  --target-selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --open-details "details"
+```
+
+**High-DPI screenshot (2x):**
+```bash
+dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
+  --input artifacts/comprehensive-demo.github.html \
+  --output artifacts/firewall@2x.png \
+  --target-selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --device-scale-factor 2
+```
+
 **Notes:**
 - Terraform resource targeting matches resources by locating the module heading and resource summary text
 - Selector targeting supports full Playwright selector syntax (not limited to CSS)
 - When multiple elements match, a single screenshot of their union bounding box is captured
+- The `--open-details` option expands `<details>` elements before capture, ensuring proper bounding box calculation
 - The tool fails with a clear error if the target is not found
+
+### Automated Screenshot Generation
+
+For website screenshots, use the `scripts/generate-screenshot.sh` wrapper script that automates the complete workflow:
+
+```bash
+scripts/generate-screenshot.sh \
+  --plan examples/firewall-with-static-analysis/plan.json \
+  --output-prefix firewall-example \
+  --selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --thumbnail-width 580 --thumbnail-height 400 \
+  --lightbox-width 1200 --lightbox-height 900 \
+  --render-target azdo \
+  --open-details-selector "details"
+```
+
+This script automatically:
+- Generates markdown from the plan file
+- Renders HTML for both light and dark themes
+- Creates screenshots at 1x and 2x DPI
+- Generates both thumbnail and lightbox crops
+- Handles all ImageMagick cropping operations
 
 ### Prerequisites
 

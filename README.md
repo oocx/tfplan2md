@@ -209,7 +209,24 @@ Generate PNG or JPEG screenshots from HTML using Playwright in [src/tools/Oocx.T
 pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
 
-Usage examples (formats: png default, jpeg; WebP deferred):
+**Automated screenshot generation (recommended for website):**
+
+Use `scripts/generate-screenshot.sh` to automate the full workflow (plan → markdown → HTML → screenshots with all variants):
+
+```bash
+scripts/generate-screenshot.sh \
+  --plan examples/firewall-with-static-analysis/plan.json \
+  --output-prefix firewall-example \
+  --selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --thumbnail-width 580 --thumbnail-height 400 \
+  --lightbox-width 1200 --lightbox-height 900 \
+  --render-target azdo \
+  --open-details-selector "details"
+```
+
+This generates 12 screenshot files (thumbnail/lightbox × light/dark × 1x/2x DPI).
+
+**Manual usage examples** (formats: png default, jpeg; WebP deferred):
 
 ```bash
 # Default viewport (1920x1080), output derived from input name
@@ -241,11 +258,12 @@ dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --output artifacts/resource.png \
   --target-terraform-resource-id "azurerm_storage_account.example"
 
-# Capture by selector (Playwright syntax)
+# Capture by selector with expanded details
 dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/firewall.png \
-  --target-selector "details:has(summary:has-text('azurerm_firewall'))"
+  --target-selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --open-details "details"
 ```
 
 ### Terraform show renderer (development tool)

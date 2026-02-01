@@ -21,22 +21,35 @@ Provide a repeatable workflow to generate HTML exports and screenshots for the w
 ## Golden Example
 
 ```bash
-# 1) Generate HTML (GitHub flavor)
-dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
-  --input artifacts/comprehensive-demo.md \
-  --flavor github
+# Preferred Method: Use the automated script
+scripts/generate-screenshot.sh \
+  --plan examples/firewall-with-static-analysis/plan.json \
+  --output-prefix firewall-example \
+  --selector "details:has(summary:has-text('azurerm_firewall_network_rule_collection'))" \
+  --thumbnail-width 580 --thumbnail-height 400 \
+  --lightbox-width 1200 --lightbox-height 900 \
+  --render-target azdo \
+  --open-details-selector "details"
 
-# 2) Generate HTML (Azure DevOps flavor, wrapped)
+# This generates 12 screenshot variants automatically:
+# - Thumbnail and lightbox crops
+# - Light and dark themes
+# - 1x and 2x DPI versions
+# - Azure DevOps rendering style
+
+# Manual Method (for advanced use cases):
+# 1) Generate HTML (Azure DevOps flavor, wrapped)
 dotnet run --project src/tools/Oocx.TfPlan2Md.HtmlRenderer -- \
   --input artifacts/comprehensive-demo.md \
   --flavor azdo \
   --template src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html \
   --output artifacts/comprehensive-demo.azdo.html
 
-# 3) Capture a screenshot
+# 2) Capture a screenshot with details expanded
 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.azdo.html \
   --output website/assets/screenshots/full-report-azdo.png \
+  --open-details "details" \
   --full-page
 ```
 

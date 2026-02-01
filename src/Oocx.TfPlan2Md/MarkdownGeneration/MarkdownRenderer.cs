@@ -389,7 +389,8 @@ internal class MarkdownRenderer
         var context = new TemplateContext
         {
             TemplateLoader = _templateLoader,
-            MemberRenamer = member => ToSnakeCase(member.Name)
+            MemberRenamer = member => ToSnakeCase(member.Name),
+            LoopLimit = 10000
         };
 
         context.PushGlobal(scriptObject);

@@ -23,7 +23,8 @@ public record ResourceChange(
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("provider_name")] string ProviderName,
     [property: JsonPropertyName("change")] Change Change,
-    [property: JsonPropertyName("action_reason")] string? ActionReason = null
+    [property: JsonPropertyName("action_reason")] string? ActionReason = null,
+    [property: JsonPropertyName("previous_address")] string? PreviousAddress = null
 );
 
 /// <summary>
@@ -82,6 +83,13 @@ public record Change
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; init; }
 
     /// <summary>
+    /// Gets the import metadata when a resource is being imported.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    [JsonPropertyName("importing")]
+    public Importing? Importing { get; init; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Change"/> class for deserialization.
     /// Related feature: docs/spec.md.
     /// </summary>
@@ -92,6 +100,7 @@ public record Change
     /// <param name="beforeSensitive">Sensitive values before the change.</param>
     /// <param name="afterSensitive">Sensitive values after the change.</param>
     /// <param name="replacePaths">Paths that require replacement due to the change.</param>
+    /// <param name="importing">Import metadata for resources managed via import blocks.</param>
     [JsonConstructor]
     public Change(
         IReadOnlyList<string> actions,
@@ -100,7 +109,8 @@ public record Change
         object? afterUnknown,
         object? beforeSensitive,
         object? afterSensitive,
-        IReadOnlyList<IReadOnlyList<object>>? replacePaths = null)
+        IReadOnlyList<IReadOnlyList<object>>? replacePaths = null,
+        Importing? importing = null)
     {
         Actions = actions;
         Before = before;
@@ -109,6 +119,7 @@ public record Change
         BeforeSensitive = beforeSensitive;
         AfterSensitive = afterSensitive;
         ReplacePaths = replacePaths;
+        Importing = importing;
     }
 
     /// <summary>
@@ -117,7 +128,7 @@ public record Change
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
     public Change(IReadOnlyList<string> actions)
-        : this(actions, null, null, null, null, null, null)
+        : this(actions, null, null, null, null, null, null, null)
     {
     }
 
@@ -129,7 +140,20 @@ public record Change
     /// <param name="before">Optional state before the change.</param>
     /// <param name="after">Optional state after the change.</param>
     public Change(IReadOnlyList<string> actions, object? before, object? after)
-        : this(actions, before, after, null, null, null, null)
+        : this(actions, before, after, null, null, null, null, null)
     {
     }
+}
+
+/// <summary>
+/// Represents import metadata for a resource change.
+/// </summary>
+public record Importing
+{
+    /// <summary>
+    /// Gets the import identifier used by Terraform.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; init; }
 }

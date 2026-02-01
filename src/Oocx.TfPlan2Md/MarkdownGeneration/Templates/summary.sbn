@@ -12,3 +12,14 @@
 | Total | {{ summary.total }} | |
 
 {{ include "_code_analysis_summary.sbn" }}
+
+{{ if refactoring_operations.size > 0 }}
+
+## Refactoring Summary
+
+| Operation | Resource | Details | Status |
+| --------- | -------- | ------- | ------ |
+{{~ for operation in refactoring_operations ~}}
+| {{ if operation.operation == "Import" }}📥 Import{{ else }}🔀 Move{{ end }} | {{ format_code_table(operation.resource_display) }} | {{ format_code_table(operation.details) }} | {{ if operation.is_already_applied }}⚠️ Already applied{{ else }}✅ Ready{{ end }} |
+{{~ end ~}}
+{{ end }}

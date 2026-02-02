@@ -26,7 +26,6 @@ public static partial class ScribanHelpers
         value = value.Replace("|", "\\|");
         value = value.Replace("`", "\\`");
         value = value.Replace("<", "\\<");
-        value = value.Replace(">", "\\>");
         value = value.Replace("&", "&amp;");
 
         value = value.Replace("\r\n", "<br/>");

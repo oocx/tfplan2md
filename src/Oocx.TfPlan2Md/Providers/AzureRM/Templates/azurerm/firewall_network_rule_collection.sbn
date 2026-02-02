@@ -46,11 +46,27 @@
 <details>
 <summary>Attribute Changes</summary>
 
+{{~ if change.action == "create" ~}}
+| Attribute | Value |
+| ----------- | ------- |
+{{~ for attr in change.attribute_changes ~}}
+{{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
+{{~ else if change.action == "delete" ~}}
+| Attribute | Value |
+| ----------- | ------- |
+{{~ for attr in change.attribute_changes ~}}
+{{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.before ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
+{{~ else ~}}
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{~ for attr in change.attribute_changes ~}}
 {{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
 | {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
 {{~ end ~}}
 
 </details>

@@ -454,8 +454,19 @@ Releases are automated via GitHub Actions:
    - Updates `CHANGELOG.md`
    - Creates a git tag (e.g., `v0.2.0`)
 4. The tag push triggers the Release workflow which:
-   - Creates a GitHub Release with changelog notes
+   - Looks for user-focused release notes in `docs/features/NNN-<feature-slug>/release-notes.md`
+   - If found, uses those notes for the GitHub Release (blog-post style, user-facing)
+   - Otherwise, falls back to extracting notes from `CHANGELOG.md`
    - Builds and pushes the Docker image to Docker Hub
+
+### Release Notes
+
+The Release Manager agent creates user-focused release notes in blog-post style:
+- **Location**: `docs/features/NNN-<feature-slug>/release-notes.md`
+- **Style**: Written for end-users, not developers
+- **Content**: Features and improvements users can see, excluding internal commits
+- **Format**: Compelling overview, code examples, practical use cases
+- **Filters out**: Task tracking commits, documentation updates, workflow changes
 
 **Note:** Changes to tests, documentation, website, scripts, or GitHub workflows do not trigger releases, as they don't affect the published Docker image.
 

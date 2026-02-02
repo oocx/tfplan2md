@@ -98,6 +98,31 @@ else
   exit 1
 fi
 
+log_info "Generating artifacts/refactoring-demo.md (inline-diff, for Azure DevOps UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/refactoring-demo.md \
+  examples/refactoring-demo.json
+
+if [[ -s artifacts/refactoring-demo.md ]]; then
+  log_info "✓ artifacts/refactoring-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/refactoring-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/refactoring-demo-simple-diff.md (for GitHub UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --render-target github \
+  --output artifacts/refactoring-demo-simple-diff.md \
+  examples/refactoring-demo.json
+
+if [[ -s artifacts/refactoring-demo-simple-diff.md ]]; then
+  log_info "✓ artifacts/refactoring-demo-simple-diff.md generated successfully"
+else
+  log_error "Failed to generate artifacts/refactoring-demo-simple-diff.md"
+  exit 1
+fi
+
 # Note: uat-minimal.md is a static handcrafted file, not generated
 
 # ============================================================================

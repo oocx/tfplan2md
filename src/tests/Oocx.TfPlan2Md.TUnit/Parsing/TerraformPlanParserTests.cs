@@ -111,6 +111,35 @@ public class TerraformPlanParserTests
     }
 
     [Test]
+    public void Parse_ImportPlan_ParsesImportId()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/import-resource.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        var resource = plan.ResourceChanges.Should().ContainSingle().Subject;
+        resource.Change.Importing.Should().NotBeNull();
+        resource.Change.Importing!.Id.Should().Be("rg-existing");
+    }
+
+    [Test]
+    public void Parse_MovedPlan_ParsesPreviousAddress()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/moved-resource.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert
+        var resource = plan.ResourceChanges.Should().ContainSingle().Subject;
+        resource.PreviousAddress.Should().Be("module.old.azurerm_virtual_network.hub");
+    }
+
+    [Test]
     public void Parse_InvalidJson_ThrowsTerraformPlanParseException()
     {
         // Arrange

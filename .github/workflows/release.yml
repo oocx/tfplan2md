@@ -59,14 +59,37 @@ jobs:
           last=${last#v}
           echo "last=${last}" >> $GITHUB_OUTPUT
 
+      - name: Find user-focused release notes
+        id: find_release_notes
+        run: |
+          # Try to find release notes file in feature/fix/workflow directories
+          # Search for most recent release-notes.md
+          RELEASE_NOTES_FILE=$(find docs/features docs/issues docs/workflow -name "release-notes.md" -type f 2>/dev/null | sort -r | head -n 1)
+          if [ -n "$RELEASE_NOTES_FILE" ] && [ -f "$RELEASE_NOTES_FILE" ]; then
+            echo "found=true" >> $GITHUB_OUTPUT
+            echo "path=$RELEASE_NOTES_FILE" >> $GITHUB_OUTPUT
+            echo "Found user-focused release notes: $RELEASE_NOTES_FILE"
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo "No user-focused release notes found, will use changelog extraction"
+          fi
+
       - name: Extract changelog range
         id: changelog
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           LAST="${{ steps.previous_release.outputs.last }}"
-          bash scripts/extract-changelog.sh CHANGELOG.md "$VERSION" "$LAST" > release-notes.md
-          if [ ! -s release-notes.md ]; then
-            echo "Release v${VERSION}" > release-notes.md
+          
+          # Use user-focused release notes if available
+          if [ "${{ steps.find_release_notes.outputs.found }}" = "true" ]; then
+            echo "Using user-focused release notes from ${{ steps.find_release_notes.outputs.path }}"
+            cp "${{ steps.find_release_notes.outputs.path }}" release-notes.md
+          else
+            echo "Extracting changelog for version $VERSION"
+            bash scripts/extract-changelog.sh CHANGELOG.md "$VERSION" "$LAST" > release-notes.md
+            if [ ! -s release-notes.md ]; then
+              echo "Release v${VERSION}" > release-notes.md
+            fi
           fi
 
       - name: Create GitHub Release

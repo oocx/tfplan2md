@@ -157,6 +157,26 @@ public class MarkdownSnapshotTests
     }
 
     /// <summary>
+    /// Verifies refactoring summary rendering matches the approved snapshot.
+    /// </summary>
+    [Test]
+    public void Snapshot_RefactoringSummary_MatchesBaseline()
+    {
+        var json = File.ReadAllText("TestData/refactoring-comprehensive.json");
+        var plan = _parser.Parse(json);
+        var providerRegistry = CreateProviderRegistry();
+        var model = new ReportModelBuilder(
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
+
+        var markdown = renderer.Render(model);
+
+        SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, "refactoring-comprehensive.md");
+        SnapshotTestAssertions.AssertMatchesSnapshot("refactoring-comprehensive.md", markdown);
+    }
+
+    /// <summary>
     /// Creates a ProviderRegistry with AzureRM module for testing.
     /// </summary>
     private static ProviderRegistry CreateProviderRegistry(IPrincipalMapper? principalMapper = null)

@@ -6,7 +6,6 @@
 <summary>{{ change.summary_html }}</summary>
 <br>
 {{~ include "/_code_analysis_metadata.sbn" ~}}
-### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.firewall_network_rule_collection && change.firewall_network_rule_collection.name ~}}
 **Collection:** `{{ change.firewall_network_rule_collection.name | escape_markdown }}` | **Priority:** `{{ change.firewall_network_rule_collection.priority | escape_markdown }}` | **Action:** {{ change.firewall_network_rule_collection.action }}

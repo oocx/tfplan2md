@@ -61,7 +61,7 @@ public class MarkdownRendererNsgTemplateTests
         var result = RenderNsgPlan();
         var normalized = Normalize(result);
 
-        normalized.Should().Contain("azurerm_network_security_group.new");
+        normalized.Should().Contain("azurerm_network_security_group new");
         normalized.Should().Contain("| 🆔 allow-web-out | 200 | ⬆️ Outbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow outbound HTTPS |");
         normalized.Should().Contain("| 🆔 allow-health | 210 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 🌐 10.0.20.0/24 | ✳️ | ✳️ | 🔌 15000 | Health probes |");
     }
@@ -72,7 +72,7 @@ public class MarkdownRendererNsgTemplateTests
         var result = RenderNsgPlan();
         var normalized = Normalize(result);
 
-        normalized.Should().Contain("azurerm_network_security_group.legacy");
+        normalized.Should().Contain("azurerm_network_security_group legacy");
         normalized.Should().Contain("Security Rules (being deleted)");
         normalized.Should().Contain("| 🆔 allow-ftp | 300 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🌐 10.10.5.0/24 | 🔌 21 | Deprecated FTP |");
     }

@@ -57,7 +57,7 @@ public class ScribanHelpersFormatDiffTests
     public void FormatDiff_EscapesValuesAndPreservesLineBreakTags()
     {
         FormatDiff("<before>", "<after>", "simple-diff")
-            .Should().Be("- `\\<before>`<br>+ `\\<after>`");
+            .Should().Be("- `<before>`<br>+ `<after>`");
     }
 
     [Test]

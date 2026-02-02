@@ -6,7 +6,6 @@
 <summary>{{ change.summary_html }}</summary>
 <br>
 {{~ include "/_code_analysis_metadata.sbn" ~}}
-### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.before_json && change.after_json && change.network_security_group && change.network_security_group.rule_changes.size > 0 ~}}
 

@@ -14,7 +14,7 @@ public static partial class ScribanHelpers
     /// <param name="input">The raw value to escape.</param>
     /// <returns>A markdown-safe string with newlines replaced by &lt;br/&gt;.</returns>
     /// <remarks>
-    /// The helper intentionally avoids escaping '&gt;' so inline code spans do not render visible backslashes.
+    /// The helper intentionally avoids escaping '&gt;' and '&lt;' so inline code spans do not render visible backslashes.
     /// Related issue: docs/issues/058-nsg-rendering-issues/analysis.md.
     /// </remarks>
     public static string EscapeMarkdown(string? input)
@@ -29,7 +29,6 @@ public static partial class ScribanHelpers
         value = value.Replace("\\", "\\\\");
         value = value.Replace("|", "\\|");
         value = value.Replace("`", "\\`");
-        value = value.Replace("<", "\\<");
         value = value.Replace("&", "&amp;");
 
         value = value.Replace("\r\n", "<br/>");

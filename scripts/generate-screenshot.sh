@@ -236,7 +236,7 @@ for TARGET in "${TARGETS[@]}"; do
     if [[ "$TARGET" == "azdo" ]]; then
         TEMPLATE="$REPO_ROOT/src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/azdo-wrapper.html"
     else
-        TEMPLATE="$REPO_ROOT/src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html"
+        TEMPLATE="$REPO_ROOT/src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper-light.html"
     fi
     
     dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.HtmlRenderer" -- \
@@ -247,18 +247,27 @@ for TARGET in "${TARGETS[@]}"; do
     
     # Create dark mode version
     echo "  Creating dark mode HTML..."
-    sed 's/data-theme="light"/data-theme="dark"/' "$HTML_LIGHT" > "$HTML_DARK"
-    
-    # Build target arguments for ScreenshotGenerator
-    TARGET_ARGS=""
-    if [[ -n "$SELECTOR" ]]; then
-        TARGET_ARGS="--target-selector $SELECTOR"
-    elif [[ -n "$TARGET_RESOURCE_ID" ]]; then
-        TARGET_ARGS="--target-terraform-resource-id $TARGET_RESOURCE_ID"
+    if [[ "$TARGET" == "azdo" ]]; then
+        sed 's/data-theme="light"/data-theme="dark"/' "$HTML_LIGHT" > "$HTML_DARK"
+    else
+        dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.HtmlRenderer" -- \
+            --input "$MARKDOWN_FILE" \
+            --flavor "$TARGET" \
+            --template "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.HtmlRenderer/templates/github-wrapper.html" \
+            --output "$HTML_DARK"
     fi
     
-    # Open details elements based on selector parameter
-    OPEN_DETAILS_ARGS="--open-details $OPEN_DETAILS_SELECTOR"
+    # Build target arguments for ScreenshotGenerator.
+    # Use arrays to avoid word-splitting (selectors often contain spaces).
+    TARGET_ARGS=()
+    if [[ -n "$SELECTOR" ]]; then
+        TARGET_ARGS+=(--target-selector "$SELECTOR")
+    elif [[ -n "$TARGET_RESOURCE_ID" ]]; then
+        TARGET_ARGS+=(--target-terraform-resource-id "$TARGET_RESOURCE_ID")
+    fi
+
+    # Open details elements based on selector parameter.
+    OPEN_DETAILS_ARGS=(--open-details "$OPEN_DETAILS_SELECTOR")
     
     # Generate targeted screenshots
     FULL_LIGHT="$REPO_ROOT/website/assets/screenshots/${OUTPUT_PREFIX}-full-${TARGET}.png"
@@ -270,25 +279,25 @@ for TARGET in "${TARGETS[@]}"; do
     dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_LIGHT" \
         --output "$FULL_LIGHT" \
-        --width "$WIDTH" $TARGET_ARGS $OPEN_DETAILS_ARGS
+        --width "$WIDTH" "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     echo "  Generating targeted screenshot (light, 2x)..."
     dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_LIGHT" \
         --output "$FULL_LIGHT_2X" \
-        --width "$WIDTH" --device-scale-factor 2 $TARGET_ARGS $OPEN_DETAILS_ARGS
+        --width "$WIDTH" --device-scale-factor 2 "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     echo "  Generating targeted screenshot (dark, 1x)..."
     dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_DARK" \
         --output "$FULL_DARK" \
-        --width "$WIDTH" $TARGET_ARGS $OPEN_DETAILS_ARGS
+        --width "$WIDTH" "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     echo "  Generating targeted screenshot (dark, 2x)..."
     dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_DARK" \
         --output "$FULL_DARK_2X" \
-        --width "$WIDTH" --device-scale-factor 2 $TARGET_ARGS $OPEN_DETAILS_ARGS
+        --width "$WIDTH" --device-scale-factor 2 "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     # Crop thumbnails
     CROP_LIGHT="$REPO_ROOT/website/assets/screenshots/${OUTPUT_PREFIX}-crop-${TARGET}.png"
@@ -305,21 +314,33 @@ for TARGET in "${TARGETS[@]}"; do
     echo "  Cropping thumbnail (light, 1x)..."
     magick "$FULL_LIGHT" \
         -crop "${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}+${THUMBNAIL_OFFSET_X}+${THUMBNAIL_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}" \
         "$CROP_LIGHT"
     
     echo "  Cropping thumbnail (light, 2x)..."
     magick "$FULL_LIGHT_2X" \
         -crop "${THUMBNAIL_2X_WIDTH}x${THUMBNAIL_2X_HEIGHT}+${THUMBNAIL_2X_OFFSET_X}+${THUMBNAIL_2X_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${THUMBNAIL_2X_WIDTH}x${THUMBNAIL_2X_HEIGHT}" \
         "$CROP_LIGHT_2X"
     
     echo "  Cropping thumbnail (dark, 1x)..."
     magick "$FULL_DARK" \
         -crop "${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}+${THUMBNAIL_OFFSET_X}+${THUMBNAIL_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}" \
         "$CROP_DARK"
     
     echo "  Cropping thumbnail (dark, 2x)..."
     magick "$FULL_DARK_2X" \
         -crop "${THUMBNAIL_2X_WIDTH}x${THUMBNAIL_2X_HEIGHT}+${THUMBNAIL_2X_OFFSET_X}+${THUMBNAIL_2X_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${THUMBNAIL_2X_WIDTH}x${THUMBNAIL_2X_HEIGHT}" \
         "$CROP_DARK_2X"
     
     # Crop lightbox views
@@ -337,21 +358,33 @@ for TARGET in "${TARGETS[@]}"; do
     echo "  Cropping lightbox (light, 1x)..."
     magick "$FULL_LIGHT" \
         -crop "${LIGHTBOX_WIDTH}x${LIGHTBOX_HEIGHT}+${LIGHTBOX_OFFSET_X}+${LIGHTBOX_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${LIGHTBOX_WIDTH}x${LIGHTBOX_HEIGHT}" \
         "$LIGHTBOX_LIGHT"
     
     echo "  Cropping lightbox (light, 2x)..."
     magick "$FULL_LIGHT_2X" \
         -crop "${LIGHTBOX_2X_WIDTH}x${LIGHTBOX_2X_HEIGHT}+${LIGHTBOX_2X_OFFSET_X}+${LIGHTBOX_2X_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${LIGHTBOX_2X_WIDTH}x${LIGHTBOX_2X_HEIGHT}" \
         "$LIGHTBOX_LIGHT_2X"
     
     echo "  Cropping lightbox (dark, 1x)..."
     magick "$FULL_DARK" \
         -crop "${LIGHTBOX_WIDTH}x${LIGHTBOX_HEIGHT}+${LIGHTBOX_OFFSET_X}+${LIGHTBOX_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${LIGHTBOX_WIDTH}x${LIGHTBOX_HEIGHT}" \
         "$LIGHTBOX_DARK"
     
     echo "  Cropping lightbox (dark, 2x)..."
     magick "$FULL_DARK_2X" \
         -crop "${LIGHTBOX_2X_WIDTH}x${LIGHTBOX_2X_HEIGHT}+${LIGHTBOX_2X_OFFSET_X}+${LIGHTBOX_2X_OFFSET_Y}" \
+        +repage \
+        -background none \
+        -extent "${LIGHTBOX_2X_WIDTH}x${LIGHTBOX_2X_HEIGHT}" \
         "$LIGHTBOX_DARK_2X"
 done
 

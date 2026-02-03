@@ -1,26 +1,23 @@
-# Improved Network Security Group Rendering and Markdown Escaping
+# NSG rendering and markdown escaping bug fixes
 
-## Overview
-This release improves the clarity and readability of Terraform plan reports, specifically for Azure Network Security Groups (NSG) and Firewall Rule Collections. We've polished the visual layout and fixed an escaping issue that made some configuration values hard to read.
+This release is a small set of fixes for AzureRM Network Security Group (NSG) and Firewall rule rendering. No new features, just correctness + output cleanup.
 
-## What's New
-### Polished NSG and Firewall Reports
-We've streamlined the reports for Azure Network Security Groups and Firewall Network Rule Collections by removing redundant header information. This makes the generated markdown more concise and focuses your attention on the actual security rules being changed.
+## 🐛 Bug fixes
 
-### Smarter Column Layouts for New Resources
-When creating new NSGs or Firewall rules, the report now correctly displays a single "Value" column instead of an empty "Before" column. This aligns specialized security templates with the clean layout used by other resources in `tfplan2md`.
+- Inline code escaping: values containing `>` are no longer rendered with a visible escape (`\>`) inside code spans.
+- NSG / Firewall create output: create/add actions now render a single `Value` column instead of an empty `Before` column.
+- NSG template output: removes duplicate resource identification lines in the NSG semantic template.
 
-## Improvements
-- **Cleaner Markdown Escaping**: We've refined how special characters are handled in markdown output. Values containing sequences like `->` (common in NSG rule descriptions) now render cleanly without unnecessary backslashes when viewed in tools that support inline code spans.
-- **Reduced Redundancy**: Removed duplicate resource identification lines in NSG semantic templates.
+## 📸 Screenshots
 
-## Bug Fixes
-- Fixed an issue where `>` was being over-escaped to `\>`, which was visible inside inline code blocks.
-- Fixed a layout bug where create/add actions in NSG templates still showed a the "Before" column.
+### Create output uses a single `Value` column
 
-## Getting Started
-No configuration changes are required. Simply run `tfplan2md` as usual to see the improved rendering for your AzureRM plans:
+![NSG create output (light)](../../../website/assets/screenshots/issue-058-nsg-create-crop-github.png)
 
-```bash
-tfplan2md plan.json > plan.md
-```
+### Inline code no longer shows escape backslashes
+
+![Inline code escaping (light)](../../../website/assets/screenshots/issue-058-escaping-crop-github.png)
+
+## 🔗 Commits
+
+- [`ca27b9b`](https://github.com/oocx/tfplan2md/commit/ca27b9b1116230c431b727765fab108308d71438) fix: address NSG rendering and escaping issues found in UAT

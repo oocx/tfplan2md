@@ -228,6 +228,11 @@ Follow the project's coding conventions strictly:
    
    b. **Verify markdown quality (REQUIRED)**:
       - Use `generate-demo-artifacts` skill to regenerate all demo artifacts
+      - **If UAT test plan defines a feature-specific artifact**, generate it:
+        ```bash
+        # Read the UAT test plan to find the source plan and command
+        # Example: tfplan2md examples/feature-slug.json > artifacts/feature-slug-uat.md
+        ```
       - Verify comprehensive-demo.md passes markdownlint with 0 errors:
         ```bash
         docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
@@ -248,7 +253,8 @@ Follow the project's coding conventions strictly:
    
    e. **Commit demo artifacts** (if updated):
       ```bash
-      git add artifacts/ examples/comprehensive-demo/
+      # Commit both comprehensive demo and feature-specific artifacts
+      git add artifacts/ examples/comprehensive-demo/ examples/<feature-slug>.json
       git commit -m "docs: update demo artifacts for <feature-name>"
       ```
 

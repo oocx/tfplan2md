@@ -126,18 +126,40 @@ For user-facing features (especially markdown rendering changes), you must creat
 Verify that <feature description> renders correctly in GitHub and Azure DevOps PR comments.
 
 ## Artifacts
-**Artifact to use:** `<path/to/artifact.md>` (e.g., `artifacts/comprehensive-demo.md`)
 
-**Creation Instructions (if new artifact needed):**
-- **Source Plan:** `<path/to/plan.json>`
-- **Command:** `tfplan2md <arguments>`
-- **Rationale:** <Why this specific plan/configuration is needed>
+### Feature-Specific Test Artifact (Required)
+**Purpose:** Focus testing on the specific changes in this feature.
+
+**Artifact Path:** `artifacts/<feature-slug>-uat.md`
+
+**Creation Instructions:**
+- **Source Plan:** `examples/<feature-slug>.json` (create a minimal plan that exercises the feature)
+- **Command:** `tfplan2md examples/<feature-slug>.json > artifacts/<feature-slug>-uat.md`
+- **Rationale:** <Why this specific plan/configuration tests the feature>
+- **Key Resources:** List the 2-3 specific resources that demonstrate the feature
+
+### Comprehensive Demo (Regression Test)
+**Purpose:** Ensure no unintended side effects in other areas.
+
+**Artifact Path:** 
+- GitHub: `artifacts/comprehensive-demo-simple-diff.md`
+- Azure DevOps: `artifacts/comprehensive-demo.md`
+
+**Note:** This artifact is generated automatically by the Developer using `generate-demo-artifacts` skill.
 
 ## Test Steps
 1. Run UAT using the `UAT Tester` agent.
-2. Verify the generated PRs on GitHub and Azure DevOps.
+2. UAT will post TWO separate PR comments:
+   - **Feature-Specific Report**: Tests the specific changes
+   - **Comprehensive Demo**: Regression test for side effects
+3. Verify both reports on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)
+
+**Feature-Specific Validation:**
+
+In the **feature-specific report** (first comment, labeled "🎯 Feature Test"):
+
 **Specific Resources/Sections:**
 - <Resource 1> (e.g., `module.security.azurerm_key_vault_secret.audit_policy`)
 - <Resource 2>
@@ -150,6 +172,17 @@ Verify that <feature description> renders correctly in GitHub and Azure DevOps P
 
 **Before/After Context:**
 - <Explanation of improvement>
+
+---
+
+**Regression Validation:**
+
+In the **comprehensive demo** (second comment, labeled "🔄 Regression Test"):
+
+**Verify:**
+- No unintended changes to existing resources
+- Feature changes appear correctly in comprehensive context
+- All sections render correctly (summaries, details, static analysis)
 ```
 
 ### Writing Effective Validation Instructions

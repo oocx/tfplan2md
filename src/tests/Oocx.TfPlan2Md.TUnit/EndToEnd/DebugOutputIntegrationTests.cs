@@ -1,14 +1,15 @@
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.TUnit.EndToEnd;
 
 /// <summary>
 /// End-to-end integration tests for the debug output feature.
 /// Related feature: docs/features/038-debug-output/
-/// Test cases: TC-10, TC-11
+/// Test cases: TC-10, TC-11.
 /// </summary>
 [Category("Integration")]
 public class DebugOutputIntegrationTests
@@ -16,6 +17,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-10: Without --debug flag, no debug section appears in output.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WithoutDebugFlag_NoDebugSection()
     {
@@ -29,7 +31,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -49,6 +51,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-11: With --debug flag, debug section is appended to report.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WithDebugFlag_DebugSectionAppended()
     {
@@ -65,7 +68,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -99,6 +102,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-11 (extended): Verify debug section contains template resolution details.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WithDebugFlag_TemplateResolutionRecorded()
     {
@@ -112,7 +116,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -138,6 +142,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-11 (extended): Verify debug section contains failed principal resolution details.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WithDebugFlag_FailedPrincipalResolutionsRecorded()
     {
@@ -154,7 +159,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);
@@ -179,6 +184,7 @@ public class DebugOutputIntegrationTests
     /// <summary>
     /// TC-10 (regression): Verify existing tests still pass - main report unchanged without debug.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task WithoutDebugFlag_ReportContentUnchanged()
     {
@@ -192,7 +198,7 @@ public class DebugOutputIntegrationTests
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
-            largeValueFormat: LargeValueFormat.InlineDiff,
+            renderTarget: RenderTarget.AzureDevOps,
             reportTitle: null,
             principalMapper: principalMapper,
             hideMetadata: false);

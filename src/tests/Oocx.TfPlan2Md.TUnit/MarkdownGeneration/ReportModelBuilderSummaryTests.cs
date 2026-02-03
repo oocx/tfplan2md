@@ -1,8 +1,14 @@
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
+using Scriban.Runtime;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
@@ -68,6 +74,31 @@ public class ReportModelBuilderSummaryTests
     }
 
     [Test]
+    public void Build_ChangedAttributesSummary_UsesFirewallRuleChanges()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/firewall-rule-changes.json");
+        var plan = new TerraformPlanParser().Parse(json);
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        var builder = new ReportModelBuilder(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var update = model.Changes
+            .First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
+
+        update.ChangedAttributesSummary.Should().Be(
+            $"3🔧{Nbsp}➕{Nbsp}<code>🆔{Nbsp}allow-dns</code>, 🔄{Nbsp}<code>🆔{Nbsp}allow-http</code>, ❌{Nbsp}<code>🆔{Nbsp}allow-ssh-old</code>");
+    }
+
+    [Test]
     public void Build_TagsBadges_AreNullWhenNoTags()
     {
         // Arrange
@@ -98,5 +129,108 @@ public class ReportModelBuilderSummaryTests
         var vnetDelete = model.Changes.First(c => c.Type == "azurerm_virtual_network" && c.Action == "delete");
         vnetDelete.SummaryHtml.Should().Contain("<code>🌍 westeurope</code>");
         vnetDelete.SummaryHtml.Should().Contain("<code>🌐 10.0.0.0/16</code>");
+    }
+
+    /// <summary>
+    /// Verifies that subscription resources surface subscription attributes in the summary HTML.
+    /// Related feature: docs/features/051-display-enhancements/specification.md.
+    /// </summary>
+    [Test]
+    public void Build_SummaryHtml_IncludesSubscriptionAttributes()
+    {
+        var afterDocument = JsonDocument.Parse("{\"subscription_id\":\"sub-123\",\"subscription\":\"Production\"}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "azurerm_subscription.demo",
+                    null,
+                    "managed",
+                    "azurerm_subscription",
+                    "demo",
+                    "registry.terraform.io/hashicorp/azurerm",
+                    change)
+            });
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        var summary = model.Changes.Single().SummaryHtml;
+        summary.Should().Contain($"<code>🔑{Nbsp}sub-123</code>");
+        summary.Should().Contain($"<code>🔑{Nbsp}Production</code>");
+    }
+
+    [Test]
+    public void Build_SummaryHtml_RespectsFactoryOverride()
+    {
+        var afterDocument = JsonDocument.Parse("{\"name\":\"example\"}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "custom_resource.example",
+                    null,
+                    "managed",
+                    "custom_resource",
+                    "example",
+                    "custom",
+                    change)
+            });
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new SummaryOverrideProviderModule());
+        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+
+        var model = builder.Build(plan);
+
+        model.Changes.Should().ContainSingle();
+        model.Changes.Single().SummaryHtml.Should().Be(SummaryOverrideFactory.OverrideSummaryHtml);
+    }
+
+    private sealed class SummaryOverrideProviderModule : IProviderModule
+    {
+        public string ProviderName => "custom";
+
+        public string TemplateResourcePrefix => "";
+
+        public void RegisterHelpers(ScriptObject scriptObject)
+        {
+        }
+
+        public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
+        {
+            registry.RegisterFactory("custom_resource", new SummaryOverrideFactory());
+        }
+    }
+
+    private sealed class SummaryOverrideFactory : IResourceViewModelFactory
+    {
+        public const string OverrideSummaryHtml = "<code>factory-summary</code>";
+
+        public void ApplyViewModel(
+            ResourceChangeModel model,
+            ResourceChange resourceChange,
+            string action,
+            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
+        {
+            model.SummaryHtml = OverrideSummaryHtml;
+        }
     }
 }

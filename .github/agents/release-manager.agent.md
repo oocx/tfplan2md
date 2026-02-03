@@ -44,7 +44,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Review commit messages follow conventional commit format
 - Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
 - **Conflict Check (REQUIRED):** Before finalizing a merge, manually verify that critical documentation files (like `docs/architecture.md` or `docs/spec.md`) have not been accidentally reverted or corrupted by the merge process, even if the CLI reports success.
-- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`) or `gh pr merge --rebase --delete-branch`.
+- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`). Only use raw `gh pr merge --rebase --delete-branch` as a final fallback if the wrapper is unavailable.
 - Wait for PR Validation workflow to complete successfully before merging PR
 - Wait for CI on main to complete before triggering release workflow
 - Detect and use the version tag created by Versionize
@@ -109,18 +109,20 @@ This project uses:
 ### Important Notes
 - Do NOT edit `CHANGELOG.md` manually - Versionize generates it automatically
 - Version bumping is handled by Versionize based on conventional commits
+- **Release Notes**: The release workflow will use your user-focused `release-notes.md` file if present; otherwise falls back to changelog extraction
 - The CI pipeline builds and publishes the Docker image
-- **CRITICAL**: Prefer GitHub chat tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
+- **CRITICAL**: Prefer GitHub MCP tools for PR inspection in VS Code chat. Use `gh` only as a fallback; when you do, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging to prevent blocking execution.
 - **Workflow Status**: Use `scripts/check-workflow-status.sh` for all workflow operations (list, watch, trigger) instead of raw `gh run` commands to reduce approval friction.
 
 ## Workflow Completion Checklist
 
 Before suggesting handoff to Retrospective, verify:
+- [ ] ✅ User-focused release notes created
 - [ ] ✅ PR merged successfully
 - [ ] ✅ CI pipeline on main completed successfully
 - [ ] ✅ Release workflow completed successfully
 - [ ] ✅ Docker image published to Docker Hub
-- [ ] ✅ GitHub release created with changelog
+- [ ] ✅ GitHub release created with user-focused release notes
 
 **Do NOT suggest retrospective handoff until ALL items above are complete.**
 
@@ -166,15 +168,75 @@ Before releasing, verify:
    scripts/git-log.sh --oneline origin/main..HEAD
    ```
 
-3. **Create or Update Pull Request**:
+3. **Generate User-Focused Release Notes** - Create release notes for end users:
+   
+   **Read Context:**
+   - Feature Specification: `docs/features/NNN-<feature-slug>/specification.md`
+   - Code Review Report: `docs/features/NNN-<feature-slug>/code-review.md`
+   - UAT Report (if exists): `docs/features/NNN-<feature-slug>/uat-report.md`
+   - Demo artifacts: `docs/features/NNN-<feature-slug>/demo/`
+   - Commit history: `scripts/git-log.sh --oneline origin/main..HEAD`
+   
+   **Filter Commits:** EXCLUDE internal commits that are not user-facing:
+   - Documentation updates (task.md, specification.md updates, "mark task N complete")
+   - Workflow/agent changes
+   - Build/CI configuration (unless user-visible impact)
+   - Demo artifact regeneration (unless explaining what changed)
+   - Retrospective work
+   
+   **Include Only:** User-facing changes:
+   - New features and capabilities
+   - Bug fixes that affected users
+   - Performance improvements
+   - CLI flag changes
+   - Output format enhancements
+   - New terraform feature support
+   
+   **Write in Blog-Post Style:**
+   - Start with compelling overview (1-2 paragraphs on "why this matters")
+   - Focus on user benefits, not implementation details
+   - Use active voice ("You can now..." not "It is now possible to...")
+   - Include practical code examples showing new functionality
+   - Reference demo artifacts and screenshots
+   - Keep paragraphs short (2-4 sentences)
+   - Use clear headings for scanning
+   
+   **Structure:**
+   ```markdown
+   # [Feature Name]
+   
+   ## Overview
+   [User-focused description of what this release enables]
+   
+   ## What's New
+   ### [Feature Title]
+   [Description with code example]
+   
+   ## Improvements
+   - [User-visible improvement]
+   
+   ## Bug Fixes
+   - [User-visible fix]
+   
+   ## Breaking Changes
+   ⚠️ [If any, with migration steps]
+   
+   ## Getting Started
+   [Quick usage example]
+   ```
+   
+   **Save:** Create `docs/features/NNN-<feature-slug>/release-notes.md`
+   **Commit:** `docs: add user-focused release notes for <feature-name>`
+
+4. **Create or Update Pull Request**:
    ```bash
    git push -u origin HEAD
 
    # CRITICAL: Before creating the PR, post the exact Title + Description in chat (use the standard template).
     ```
     - **Preferred (create & merge):** Use `scripts/pr-github.sh create` to create PRs and `scripts/pr-github.sh create-and-merge` to merge them — this script is the authoritative, repo-standard tool for PR lifecycle operations.
-    - **Fallback:** When the script does not support a required or advanced task (rare), use GitHub chat tools (`github/*`) in VS Code for creation/inspection and ad-hoc actions.
-    - Use GitHub chat tools to fetch PR status checks and to inspect checks; re-check until all required checks show success.
+    - **Fallback:** When the script does not support a required or advanced task (rare), use GitHub MCP tools (`github/*`) in VS Code for creation/inspection and ad-hoc actions.
+    - Use GitHub MCP tools to fetch PR status checks and to inspect checks; re-check until all required checks show success.
    - **CRITICAL**: Do NOT merge until "PR Validation" shows ✅ success
    - All checks must pass: format, build, test, markdownlint, vulnerability scan
    - If checks fail, hand off to Developer agent to fix issues and return to step 1
@@ -183,7 +245,7 @@ Before releasing, verify:
    - Inform maintainer that PR validation passed and PR is ready to merge
     - **Merge using: Rebase and merge.**
        - **Preferred (for merges):** Use `scripts/pr-github.sh create-and-merge` — this script is the authoritative, repo-standard merge tool and will perform a `rebase` merge and delete the branch. Abort if the script/CLI reports rebase is unavailable; fix repository settings before merging.
-       - **Preferred (for PR creation/inspection):** Use GitHub chat tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation. Do not click squash/merge-commit buttons.
+       - **Preferred (for PR creation/inspection):** Use GitHub MCP tools (`github/*`) from VS Code to create and inspect PRs; the script remains the authoritative merge implementation. Do not click squash/merge-commit buttons.
    - Wait for maintainer to approve and merge (or merge if authorized)
 
 ### Phase 2: Post-Merge Release
@@ -233,7 +295,9 @@ Before releasing, verify:
    # Check CHANGELOG.md was updated
    head -n 20 CHANGELOG.md
    
-   # Verify GitHub Release created
+   # Verify GitHub Release created (fallback to raw gh if no script available)
+   # Preferred: Use GitHub MCP tools in VS Code
+   # Fallback only:
    PAGER=cat gh release view <tag>
    ```
    - [ ] CHANGELOG.md updated with new version and commits
@@ -289,13 +353,14 @@ After the release pipeline completes, verify:
 
 Your work is complete when:
 - [ ] All pre-release checks pass
+- [ ] User-focused release notes generated and committed to `docs/features/NNN-<feature-slug>/release-notes.md`
 - [ ] PR created and merged to main
 - [ ] CI pipeline on main completes successfully
 - [ ] Version tag detected (created by Versionize)
 - [ ] Release workflow triggered with correct tag
 - [ ] Release workflow completes successfully
 - [ ] Release artifacts verified:
-  - [ ] GitHub Release created with correct notes
+  - [ ] GitHub Release created with user-focused notes (from release-notes.md)
   - [ ] CHANGELOG.md updated on main
   - [ ] Docker image tags mentioned in release
 - [ ] Release summary provided to maintainer

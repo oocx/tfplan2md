@@ -12,7 +12,7 @@ Verify that the new visual enhancements (icons, spacing, layout, semantic format
 - **Rationale:** This plan contains a wide variety of resources (VNet, Storage, NSG, Firewall, Role Assignments) and change types (Create, Update, Delete, Replace), making it ideal for verifying all visual enhancements.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent: `scripts/uat-run.sh run artifacts/comprehensive-demo.md`
+1. Run UAT using the `UAT Tester` agent: `scripts/uat-run.sh artifacts/comprehensive-demo.md "<validation-description>"`
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

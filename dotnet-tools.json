@@ -8,6 +8,18 @@
         "husky"
       ],
       "rollForward": false
+    },
+    "dotnet-reportgenerator-globaltool": {
+      "version": "5.5.1",
+      "commands": [
+        "reportgenerator"
+      ]
+    },
+    "dotnet-coverage": {
+      "version": "18.3.2",
+      "commands": [
+        "dotnet-coverage"
+      ]
     }
   }
 }

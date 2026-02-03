@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Builds Markdig pipelines tailored for HTML rendering flavors.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal sealed class MarkdigPipelineFactory
 {

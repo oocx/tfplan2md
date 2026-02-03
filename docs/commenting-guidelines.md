@@ -305,6 +305,34 @@ This helps trace code back to requirements and makes impact analysis easier duri
 
 ## Comment Maintenance
 
+## Quality Metric Suppressions
+
+Use suppressions sparingly to keep the codebase maintainable. Prefer refactoring over suppressing.
+
+### Required Suppression Practices
+
+1. **Use `SuppressMessage`** for most cases.
+    - Place the attribute on the narrowest possible scope (method, property, or type).
+    - Include a clear justification in the `Justification` named argument.
+    - Reference the related feature or task in the justification when applicable.
+
+2. **Document the why** directly above the suppressed member.
+    - Add a short comment explaining the rationale and trade-offs.
+    - Note any follow-up work if the suppression is temporary.
+
+3. **Maintainer approval is required** for new suppressions.
+    - Call out suppressions explicitly in the PR description or review summary.
+
+### Line Length Exceptions
+
+Line length suppressions are acceptable only for content that cannot be reasonably wrapped:
+
+- Long URLs that must remain intact.
+- Error messages or user-facing text where wrapping changes meaning.
+- Serialized JSON or embedded data where formatting is required by the consumer.
+
+If you must exceed the line length limit, add a brief comment explaining why the line cannot be split.
+
 ### During Code Reviews
 
 Code reviewers must verify:

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Trivy",
+          "version": "0.50.0",
+          "informationUri": "https://trivy.dev"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "AVD-AZU-0013",
+          "level": "warning",
+          "message": {
+            "text": "Key Vault should have public network access disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/comprehensive-demo/main.tf"
+                },
+                "region": {
+                  "startLine": 150,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.security.azurerm_key_vault.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AZU-0047",
+          "level": "note",
+          "message": {
+            "text": "Virtual Network should have custom DNS servers configured"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/comprehensive-demo/main.tf"
+                },
+                "region": {
+                  "startLine": 200,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.network.azurerm_virtual_network.hub",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

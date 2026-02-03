@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "source": "developer 2.chat-redacted.json",
+    "analysis_date": "2026-01-24",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 12,
+    "start_timestamp": 1769273881205,
+    "end_timestamp": 1769290404017,
+    "session_duration_sec": 16522.812,
+    "user_wait_time_sec": 61915.757,
+    "agent_work_time_sec": 11447.642
+  },
+  "model_usage": [
+    {
+      "model": "gpt-5.2-codex",
+      "count": 11
+    },
+    {
+      "model": "gpt-5.1-codex-max",
+      "count": 1
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 113
+    },
+    {
+      "tool": "readFile",
+      "count": 112
+    },
+    {
+      "tool": "applyPatch",
+      "count": 60
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 35
+    },
+    {
+      "tool": "createFile",
+      "count": 17
+    },
+    {
+      "tool": "listDirectory",
+      "count": 15
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 12
+    },
+    {
+      "tool": "findFiles",
+      "count": 6
+    },
+    {
+      "tool": "createDirectory",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 333
+      },
+      {
+        "type": 4,
+        "count": 37
+      },
+      {
+        "type": 0,
+        "count": 1
+      }
+    ],
+    "total_invocations": 371,
+    "auto_approved": 333,
+    "manual_approved": 37,
+    "automation_rate_pct": 89
+  },
+  "model_success": [
+    {
+      "model": "gpt-5.2-codex",
+      "total": 11,
+      "complete": 11,
+      "failed": 0
+    },
+    {
+      "model": "gpt-5.1-codex-max",
+      "total": 1,
+      "complete": 1,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gpt-5.2-codex",
+      "total_requests": 11,
+      "cancelled": 1,
+      "failed": 0,
+      "tool_rejections": 1,
+      "error_codes": [],
+      "rejection_rate": 18
+    },
+    {
+      "model": "gpt-5.1-codex-max",
+      "total_requests": 1,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 33
+    },
+    {
+      "status": "modified",
+      "count": 6
+    }
+  ],
+  "response_times": [
+    {
+      "model": "gpt-5.2-codex",
+      "count": 11,
+      "avg_sec": 956,
+      "total_sec": 10522
+    },
+    {
+      "model": "gpt-5.1-codex-max",
+      "count": 1,
+      "avg_sec": 924,
+      "total_sec": 924
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

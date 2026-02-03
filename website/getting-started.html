@@ -493,6 +493,99 @@ steps:
         </div>
     </section>
 
+    <section id="security" class="section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Security Integration</h2>
+                <p class="section-description">Combine Terraform plans with security findings from SARIF-compatible tools</p>
+            </div>
+
+            <p style="max-width: 800px; margin: 0 auto 40px auto; text-align: center; font-size: 16px;">
+                tfplan2md natively supports SARIF 2.1.0 format, enabling you to integrate security findings from tools like Checkov, TfLint, and Trivy directly into your Terraform plan reports.
+            </p>
+
+            <div class="code-block" style="margin-bottom: 40px;">
+                <div class="code-header">
+                    <span class="code-title">Basic Security Integration</span>
+                    <button class="copy-button" data-copy="# Generate plan
+terraform show -json plan.tfplan > plan.json
+
+# Run security scans
+checkov -d terraform --framework terraform --output sarif -o checkov.sarif
+tflint --format sarif > tflint.sarif  
+trivy config terraform --format sarif --output trivy.sarif
+
+# Generate unified report
+docker run -v $(pwd):/data -i oocx/tfplan2md \
+  /data/plan.json \
+  --code-analysis-results '/data/*.sarif' \
+  --output /data/report.md" aria-label="Copy command"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 3.5C5 2.67157 5.67157 2 6.5 2H12.5C13.3284 2 14 2.67157 14 3.5V9.5C14 10.3284 13.3284 11 12.5 11H11V12.5C11 13.3284 10.3284 14 9.5 14H3.5C2.67157 14 2 13.3284 2 12.5V6.5C2 5.67157 2.67157 5 3.5 5H5V3.5ZM6 5H9.5C10.3284 5 11 5.67157 11 6.5V10H12.5C12.7761 10 13 9.77614 13 9.5V3.5C13 3.22386 12.7761 3 12.5 3H6.5C6.22386 3 6 3.22386 6 3.5V5ZM3.5 6C3.22386 6 3 6.22386 3 6.5V12.5C3 12.7761 3.22386 13 3.5 13H9.5C9.77614 13 10 12.7761 10 12.5V6.5C10 6.22386 9.77614 6 9.5 6H3.5Z" fill="currentColor"/></svg></button>
+                </div>
+                <pre><code># Generate plan
+terraform show -json plan.tfplan > plan.json
+
+# Run security scans
+checkov -d terraform --framework terraform --output sarif -o checkov.sarif
+tflint --format sarif > tflint.sarif  
+trivy config terraform --format sarif --output trivy.sarif
+
+# Generate unified report
+docker run -v $(pwd):/data -i oocx/tfplan2md \
+  /data/plan.json \
+  --code-analysis-results "/data/*.sarif" \
+  --output /data/report.md</code></pre>
+            </div>
+
+            <h3 class="section-subtitle" style="margin-top: 40px; margin-bottom: 24px;">CLI Options</h3>
+            
+            <div class="features-grid" style="margin-top: 24px;">
+                <div class="feature-category-card">
+                    <h4 style="margin-top: 0;"><code>--code-analysis-results</code></h4>
+                    <p style="font-size: 14px; margin-bottom: 12px;">
+                        File path or wildcard pattern for SARIF files. Supports wildcards like <code>*.sarif</code> or <code>**/*.sarif</code> for recursive search.
+                    </p>
+                    <div class="code-block" style="margin-top: 12px;">
+                        <pre><code>--code-analysis-results "/data/**/*.sarif"</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-category-card">
+                    <h4 style="margin-top: 0;"><code>--code-analysis-minimum-level</code></h4>
+                    <p style="font-size: 14px; margin-bottom: 12px;">
+                        Minimum severity level to include in the report. Options: <code>none</code>, <code>note</code>, <code>warning</code>, <code>error</code>. Default is <code>note</code>.
+                    </p>
+                    <div class="code-block" style="margin-top: 12px;">
+                        <pre><code>--code-analysis-minimum-level warning</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-category-card">
+                    <h4 style="margin-top: 0;"><code>--fail-on-static-code-analysis-errors</code></h4>
+                    <p style="font-size: 14px; margin-bottom: 12px;">
+                        Exit with non-zero status if high or critical security findings are detected. Useful for blocking PRs with critical issues.
+                    </p>
+                    <div class="code-block" style="margin-top: 12px;">
+                        <pre><code>--fail-on-static-code-analysis-errors</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; padding: 20px; background: var(--color-surface); border-left: 4px solid var(--color-success); border-radius: 4px;">
+                <h4 style="margin: 0 0 12px 0;">✨ Benefits</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li style="margin-bottom: 8px;">Security findings mapped to specific resources and attributes</li>
+                    <li style="margin-bottom: 8px;">Unified view of infrastructure changes and security issues</li>
+                    <li style="margin-bottom: 8px;">Support for multiple security tools in one report</li>
+                    <li style="margin-bottom: 8px;">Summary view showing overall security posture</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="features/static-analysis.html" class="btn btn-primary">Learn More About Security Integration</a>
+            </div>
+        </div>
+    </section>
+
     <section class="section" style="background: var(--color-surface);">
         <div class="section-container">
             <div class="section-header">

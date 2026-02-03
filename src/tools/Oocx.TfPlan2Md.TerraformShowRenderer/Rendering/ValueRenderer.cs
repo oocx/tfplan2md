@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
 /// <summary>
 /// Formats JSON values in a Terraform show-like style.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal sealed class ValueRenderer
 {

@@ -24,6 +24,39 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "Guardrail: internal/workflow PRs must not bump versions"
+        run: |
+          set -euo pipefail
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          changed_files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || true)
+          if [ -z "$changed_files" ]; then
+            echo "No changed files detected; skipping internal commit guardrail."
+            exit 0
+          fi
+
+          # If anything outside these paths changed, this is not an internal-only PR.
+          non_internal=$(echo "$changed_files" | grep -Ev '^(\.github/|scripts/|docs/|website/|uat-repos/|TestData/|artifacts/|assets/)' || true)
+          if [ -n "$non_internal" ]; then
+            echo "Non-internal files changed; internal commit guardrail not applicable."
+            exit 0
+          fi
+
+          echo "Internal-only PR detected; enforcing non-version-bumping commit types."
+
+          # Versionize bumps on conventional commits like feat/fix (and breaking changes).
+          messages=$(git log --format=%B "$BASE_SHA".."$HEAD_SHA" || true)
+
+          if echo "$messages" | grep -Eqi '^(feat|fix|perf)(\([^)]*\))?:|BREAKING CHANGE:'; then
+            echo "❌ ERROR: This PR only changes internal/workflow/tooling files, but includes version-bumping commits (feat/fix/perf or BREAKING CHANGE)."
+            echo "Please use non-bumping types like chore:, ci:, docs:, style:, refactor: for internal changes."
+            exit 1
+          fi
+
+          echo "✓ Commit messages OK for internal-only PR."
+
       - name: Check if validation is needed
         id: filter
         run: |
@@ -69,6 +102,10 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: dotnet restore src/tfplan2md.slnx
 
+      - name: Restore .NET tools
+        if: steps.filter.outputs.changed == 'true'
+        run: dotnet tool restore
+
       - name: Check formatting
         if: steps.filter.outputs.changed == 'true'
         run: dotnet format src/tfplan2md.slnx --verify-no-changes --verbosity diagnostic
@@ -88,19 +125,57 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
-          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --report-trx --results-directory ./TestResults
+          scripts/test-with-timeout.sh --timeout-seconds 120 -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release --results-directory ${{ github.workspace }}/TestResults -- --report-trx --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+
+      - name: Generate coverage report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: |
+          dotnet tool run reportgenerator \
+            -reports:"./TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"./TestResults/coverage-report" \
+            -reporttypes:Html
+
+      - name: Check coverage override label
+        id: coverage_override
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels?.map(label => label.name) ?? [];
+            core.setOutput('active', labels.includes('coverage-override'));
+
+      - name: Enforce coverage thresholds
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: |
+          report_path="./TestResults/coverage.cobertura.xml"
+          if [ ! -f "$report_path" ]; then
+            echo "❌ ERROR: Cobertura report not found for coverage enforcement."
+            exit 1
+          fi
+
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report "$report_path" \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80 \
+            --summary-output ./TestResults/coverage-summary.md \
+            --report-link "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --override-active "${{ steps.coverage_override.outputs.active }}"
+
+      - name: Publish coverage summary
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        run: cat ./TestResults/coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify tests ran
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         run: |
           # Check if TestResults directory exists and contains .trx files
-          if [ ! -d "./src/TestResults" ] || [ -z "$(ls -A ./src/TestResults/*.trx 2>/dev/null)" ]; then
+          if [ ! -d "./TestResults" ] || [ -z "$(ls -A ./TestResults/*.trx 2>/dev/null)" ]; then
             echo "❌ ERROR: No test results found! Tests may not have run."
             exit 1
           fi
           
           # Count the test results (safe because we verified .trx files exist above)
-          test_count=$(grep -r "outcome" ./src/TestResults/*.trx | wc -l)
+          test_count=$(grep -r "outcome" ./TestResults/*.trx | wc -l)
           echo "✓ Test results found: $test_count test(s) executed"
           
           if [ "$test_count" -eq 0 ]; then
@@ -112,8 +187,80 @@ jobs:
         if: steps.filter.outputs.changed == 'true' && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: ./src/TestResults/*.trx
+          files: ./TestResults/*.trx
           check_name: 'Test Results'
+
+      - name: Upload coverage report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./TestResults/coverage-report
+
+      - name: Upload Cobertura report
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cobertura
+          path: ./TestResults/**/coverage.cobertura.xml
+
+      - name: Update coverage badge and history
+        id: coverage_badge_history
+        if: steps.filter.outputs.changed == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (success() || steps.coverage_override.outputs.active == 'true')
+        run: |
+          dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- \
+            --report ./TestResults/coverage.cobertura.xml \
+            --line-threshold 84.48 \
+            --branch-threshold 72.80 \
+            --badge-output ./TestResults/coverage-badge.svg \
+            --history-output ./TestResults/coverage-history.json \
+            --commit-sha "${{ github.event.pull_request.head.sha }}" \
+            --timestamp "${{ github.event.pull_request.updated_at }}" \
+            --override-active "${{ steps.coverage_override.outputs.active }}"
+
+      - name: Upload coverage badge and history
+        if: steps.filter.outputs.changed == 'true' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-badge-history
+          path: |
+            ./TestResults/coverage-badge.svg
+            ./TestResults/coverage-history.json
+
+      - name: Post coverage summary comment
+        if: steps.filter.outputs.changed == 'true' && (success() || failure()) && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- coverage-summary -->';
+            const body = fs.readFileSync('./TestResults/coverage-summary.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number,
+            });
+
+            const existing = comments.find(comment => comment.body && comment.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
 
       - name: Setup Node
         if: steps.filter.outputs.changed == 'true'

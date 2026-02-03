@@ -4,13 +4,13 @@ namespace Oocx.TfPlan2Md.HtmlRenderer.Rendering;
 
 /// <summary>
 /// Converts Markdown content into HTML fragments using Markdig.
-/// Related feature: docs/features/027-markdown-html-rendering/specification.md
+/// Related feature: docs/features/027-markdown-html-rendering/specification.md.
 /// </summary>
 internal sealed class MarkdownToHtmlRenderer
 {
     /// <summary>
     /// Provides the Markdig pipeline instances for rendering.
-    /// Related feature: docs/features/027-markdown-html-rendering/specification.md
+    /// Related feature: docs/features/027-markdown-html-rendering/specification.md.
     /// </summary>
     private readonly MarkdigPipelineFactory _pipelineFactory;
 

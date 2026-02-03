@@ -21,7 +21,8 @@ internal sealed class CaptureSettings
     /// <param name="deviceScaleFactor">Device scale factor for high-DPI rendering (default: 1.0).</param>
     /// <param name="targetTerraformResourceId">Optional Terraform address for partial capture.</param>
     /// <param name="targetSelector">Optional selector for partial capture.</param>
-    public CaptureSettings(string inputPath, string outputPath, int width, int height, bool fullPage, ScreenshotFormat format, int? quality = null, double deviceScaleFactor = 1.0, string? targetTerraformResourceId = null, string? targetSelector = null)
+    /// <param name="openDetailsSelector">Optional selector for details elements to open before capture.</param>
+    public CaptureSettings(string inputPath, string outputPath, int width, int height, bool fullPage, ScreenshotFormat format, int? quality = null, double deviceScaleFactor = 1.0, string? targetTerraformResourceId = null, string? targetSelector = null, string? openDetailsSelector = null)
     {
         InputPath = inputPath;
         OutputPath = outputPath;
@@ -33,6 +34,7 @@ internal sealed class CaptureSettings
         DeviceScaleFactor = deviceScaleFactor;
         TargetTerraformResourceId = targetTerraformResourceId;
         TargetSelector = targetSelector;
+        OpenDetailsSelector = openDetailsSelector;
     }
 
     /// <summary>
@@ -84,4 +86,9 @@ internal sealed class CaptureSettings
     /// Gets the selector used for partial capture when specified.
     /// </summary>
     public string? TargetSelector { get; }
+
+    /// <summary>
+    /// Gets the optional selector for details elements to open before capture.
+    /// </summary>
+    public string? OpenDetailsSelector { get; }
 }

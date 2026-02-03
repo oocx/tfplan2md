@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "source": "developer 3.chat.json",
+    "analysis_date": "2026-01-27",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 5,
+    "start_timestamp": 1769501041287,
+    "end_timestamp": 1769502359755,
+    "session_duration_sec": 1318.468,
+    "user_wait_time_sec": 952.473,
+    "agent_work_time_sec": 830.893
+  },
+  "model_usage": [
+    {
+      "model": "gpt-5.2-codex",
+      "count": 5
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 26
+    },
+    {
+      "tool": "readFile",
+      "count": 25
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 15
+    },
+    {
+      "tool": "applyPatch",
+      "count": 6
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 4
+    },
+    {
+      "tool": "findFiles",
+      "count": 1
+    },
+    {
+      "tool": "listDirectory",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 77
+      },
+      {
+        "type": 4,
+        "count": 1
+      }
+    ],
+    "total_invocations": 78,
+    "auto_approved": 77,
+    "manual_approved": 1,
+    "automation_rate_pct": 98
+  },
+  "model_success": [
+    {
+      "model": "gpt-5.2-codex",
+      "total": 5,
+      "complete": 5,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gpt-5.2-codex",
+      "total_requests": 5,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 5
+    }
+  ],
+  "response_times": [
+    {
+      "model": "gpt-5.2-codex",
+      "count": 5,
+      "avg_sec": 166,
+      "total_sec": 830
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

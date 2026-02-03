@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Checkov",
+          "version": "3.2.490",
+          "informationUri": "https://checkov.io",
+          "organization": "bridgecrew",
+          "rules": [
+            {
+              "id": "CKV_AWS_20",
+              "name": "Ensure S3 bucket has MFA delete enabled",
+              "shortDescription": {
+                "text": "Ensure S3 bucket has MFA delete enabled"
+              },
+              "fullDescription": {
+                "text": "Ensure S3 bucket has MFA delete enabled"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-mfa-delete-enabled"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CKV_AWS_20",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Ensure S3 bucket has MFA delete enabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "plan.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

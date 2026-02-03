@@ -2,7 +2,9 @@
 
 ![tfplan2md](website/assets/images/logo-full.svg)
 
-[![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![CI](https://github.com/oocx/tfplan2md/workflows/CI/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/ci.yml) [![Release](https://github.com/oocx/tfplan2md/workflows/Release/badge.svg)](https://github.com/oocx/tfplan2md/actions/workflows/release.yml) [![Coverage](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/assets/coverage-badge.svg)](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/docs/coverage/history.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Docker Pulls](https://img.shields.io/docker/pulls/oocx/tfplan2md)](https://hub.docker.com/r/oocx/tfplan2md) [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/) [![Docker](https://img.shields.io/badge/docker-recommended-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/oocx/tfplan2md) [![Terraform](https://img.shields.io/badge/Terraform-1.0+-844FBA?logo=terraform)](https://www.terraform.io/) [![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-100%25-blue?logo=github)](https://github.com/features/copilot) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+
+**📘 [Official Website](https://oocx.github.io/tfplan2md/)**
 
 Convert Terraform plan JSON files into human-readable Markdown reports.
 
@@ -40,16 +42,18 @@ Terraform plans are notoriously difficult to review in pull requests:
 ## Features
 
 - 📄 **Convert Terraform plans to Markdown** - Generate clean, readable reports from `terraform show -json` output
+- 🔍 **Static analysis integration** - Display security and quality findings from Checkov, Trivy, TFLint, and Semgrep (SARIF 2.1.0 format) directly in reports
 - ✅ **Validated markdown output** - Comprehensive testing ensures GitHub/Azure DevOps compatibility
 - 🔒 **Sensitive value masking** - Sensitive values are masked by default for security
 - 📝 **Customizable templates** - Use Scriban templates for custom report formats
 - 🐳 **Minimal Docker image** - 14.7MB AOT-compiled native binary for fast deployments and minimal attack surface
 - 📁 **Module grouping** - Resource changes are grouped by module and rendered as module sections
 - 🆔 **Readable Azure Resource IDs** - Long Azure IDs are automatically formatted as readable scopes with values in code (e.g., Key Vault `kv` in resource group `rg`)
-- 🎨 **Semantic icons** - Visual icons for values: 🌐 for IPs, 🔌 for ports, 📨/🔗 for protocols, ✅/❌ for booleans, 👤/👥/💻 for principals, 🛡️ for roles
+- 🎨 **Semantic icons** - Visual icons for values: 🌐 for IPs, 🔌 for ports, 📨/🔗 for protocols, ✅/❌ for booleans, 👤/👥/💻 for principals, 🛡️ for roles, 🆔 for identifiers, 📧 for emails
 - 📝 **Resource summaries** - Each resource change shows a concise one-line summary for quick scanning
 - 🔄 **Replacement reasons** - Resources being replaced show which attributes forced the replacement
-- 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps variable groups)
+- 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps variable groups, Azure AD resources)
+- 📚 **Azure API documentation links** - Reliable links to Microsoft Learn REST API documentation for 92 Azure resource types (AzAPI provider)
 
 ## Installation
 
@@ -108,8 +112,11 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--output`, `-o <file>` | Write output to a file instead of stdout |
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
-| `--large-value-format <format>` | Format for multi-line/long attributes: `inline-diff` (default, styled HTML) or `simple-diff` (cross-platform) |
+| `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
+| `--code-analysis-results <pattern>` | SARIF file pattern for static analysis findings (can be specified multiple times) |
+| `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |
+| `--fail-on-static-code-analysis-errors <level>` | Exit with code 10 when findings at or above this level exist |
 | `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
@@ -117,17 +124,19 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--help`, `-h` | Display help information |
 | `--version`, `-v` | Display version information |
 
-#### Large Value Formatting
+#### Render Target Selection
 
-Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
+The `--render-target` flag controls platform-specific rendering behavior. Attributes with newlines or over 100 characters are automatically moved to a collapsible `<details>` section below the main attribute table:
 
-- **`inline-diff`** (default): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps (GitHub strips styles but content remains readable).
-- **`simple-diff`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
+- **`azuredevops`** (default, alias: `azdo`): Styled HTML with line-by-line and character-level diff highlighting. Optimized for Azure DevOps PR comments (GitHub strips styles but content remains readable).
+- **`github`**: Traditional diff format with `+`/`-` markers. Fully portable and works on both GitHub and Azure DevOps.
 
 Example:
 ```bash
-terraform show -json plan.tfplan | tfplan2md --large-value-format simple-diff
+terraform show -json plan.tfplan | tfplan2md --render-target github
 ```
+
+**Migration note:** The `--large-value-format` flag has been deprecated and replaced by `--render-target`. Use `--render-target azuredevops` for `inline-diff` behavior or `--render-target github` for `simple-diff` behavior.
 
 #### Debug Output
 
@@ -200,7 +209,24 @@ Generate PNG or JPEG screenshots from HTML using Playwright in [src/tools/Oocx.T
 pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
 
-Usage examples (formats: png default, jpeg; WebP deferred):
+**Automated screenshot generation (recommended for website):**
+
+Use `scripts/generate-screenshot.sh` to automate the full workflow (plan → markdown → HTML → screenshots with all variants):
+
+```bash
+scripts/generate-screenshot.sh \
+  --plan examples/firewall-with-static-analysis/plan.json \
+  --output-prefix firewall-example \
+  --selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --thumbnail-width 580 --thumbnail-height 400 \
+  --lightbox-width 1200 --lightbox-height 900 \
+  --render-target azdo \
+  --open-details-selector "details"
+```
+
+This generates 12 screenshot files (thumbnail/lightbox × light/dark × 1x/2x DPI).
+
+**Manual usage examples** (formats: png default, jpeg; WebP deferred):
 
 ```bash
 # Default viewport (1920x1080), output derived from input name
@@ -232,11 +258,12 @@ dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --output artifacts/resource.png \
   --target-terraform-resource-id "azurerm_storage_account.example"
 
-# Capture by selector (Playwright syntax)
+# Capture by selector with expanded details
 dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
   --input artifacts/comprehensive-demo.github.html \
   --output artifacts/firewall.png \
-  --target-selector "details:has(summary:has-text('azurerm_firewall'))"
+  --target-selector "details:has(summary:has-text('azurerm_firewall'))" \
+  --open-details "details"
 ```
 
 ### Terraform show renderer (development tool)
@@ -364,7 +391,7 @@ See [Scriban documentation](https://github.com/scriban/scriban) for template syn
 For complex resources like firewall rule collections, tfplan2md provides resource-specific templates that show semantic diffs instead of confusing index-based changes. The default renderer (used by the CLI) applies resource-specific templates automatically when a matching template is available; the global default template is used as a fallback.
 
 **Currently supported:**
-- `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates
+- `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates; includes reliable documentation links to Microsoft Learn for 92 Azure resource types across 37 services
 - `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
 - `azurerm_network_security_group` - Shows security rule changes with semantic diffing
 - `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information
@@ -438,14 +465,28 @@ dotnet build
 dotnet test
 
 Tests use **TUnit** with **AwesomeAssertions** for fluent, readable assertions.
+
+### Coverage Helpers
+
+Use the helper scripts to summarize coverage from Cobertura output:
+
+```bash
+# Print overall line/branch coverage
+scripts/coverage-summary.sh
+
+# List lowest branch coverage classes (default 30, can pass a count)
+scripts/coverage-low-branches.sh 20
+```
 ```
 
 ### Pre-commit Hooks
 
 This project uses [Husky.Net](https://github.com/alirezanet/Husky.Net) for git hooks:
 
-- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build`
+- **pre-commit**: Runs `dotnet format --verify-no-changes` and `dotnet build` (enforces code style and quality metrics)
 - **commit-msg**: Validates commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) format
+
+**Code quality checks:** The build enforces cyclomatic complexity (≤15), maintainability index (≥20), and line length (≤160 characters). See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ### Docker Build
 
@@ -468,9 +509,20 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 | Workflow | Trigger | Purpose |
 |----------|---------|----------|
-| **PR Validation** | Pull requests to `main` | Format check, build, test, vulnerability scan |
-| **CI** | Push to `main` | Build, test, auto-version with [Versionize](https://github.com/versionize/versionize) |
+| **PR Validation** | Pull requests to `main` | Format check, build, test, coverage enforcement, vulnerability scan |
+| **Coverage Data** | Push to `main` | Publish coverage badge + history to `coverage-data` branch |
+| **CI** | Push to `main` | Auto-version with [Versionize](https://github.com/versionize/versionize) when Docker-relevant files change |
 | **Release** | Version tags (`v*`) | Create GitHub Release, build and push Docker image |
+
+### Code Coverage
+
+Code coverage is automatically collected and enforced on every pull request:
+
+- **Coverage badge**: The [![Coverage](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/assets/coverage-badge.svg)](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/docs/coverage/history.json) badge in the README shows current line coverage percentage
+- **Coverage thresholds**: PRs must maintain or improve code coverage (currently 84.48% line coverage and 72.80% branch coverage)
+- **Coverage history**: Historical coverage data is published to the `coverage-data` branch at [docs/coverage/history.json](https://raw.githubusercontent.com/oocx/tfplan2md/coverage-data/docs/coverage/history.json)
+- **Coverage reports**: Detailed HTML coverage reports are available as workflow artifacts
+- **Maintainer override**: PRs can bypass coverage requirements using the `coverage-override` label when justified
 
 ### Versioning
 
@@ -499,7 +551,7 @@ I'm GitHub Copilot, the AI pair programmer that helped write 100% of this projec
 For this project, we use a multi-model approach to leverage different AI strengths:
 
 - **Claude Sonnet 4.5** - Primary model for requirements engineering, code review, and technical writing
-- **GPT-5.1 Codex Max** - Specialized for C# code generation, .NET patterns, and development tasks
+- **GPT-5.2-Codex** - Latest Codex model for C# code generation, .NET patterns, and development tasks
 - **Claude Opus 4.5** - Reserved for difficult problems and edge cases where other models struggled
 - **GPT-5.2** - General-purpose reasoning, architectural decisions, and complex problem-solving
 - **Gemini 3 Flash** - Fast iteration for task planning, release management, and UAT testing

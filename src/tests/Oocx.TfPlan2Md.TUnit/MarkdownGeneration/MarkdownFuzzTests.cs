@@ -34,6 +34,7 @@ public class MarkdownFuzzTests
     private readonly Random _random = new(42); // Fixed seed for reproducibility
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="MarkdownFuzzTests"/> class.
     /// Initializes the test class with a Markdig pipeline.
     /// </summary>
     public MarkdownFuzzTests()
@@ -178,14 +179,11 @@ public class MarkdownFuzzTests
             .Where(l => l.TrimStart().StartsWith('|') && !l.Contains("---"))
             .ToList();
 
-        foreach (var line in tableLines)
+        foreach (var line in tableLines.Where(line => line.TrimStart().StartsWith('|')))
         {
             // Each table row should start and end with |
-            if (line.TrimStart().StartsWith('|'))
-            {
-                line.TrimEnd().Should().EndWith("|",
-                    "because table rows must be complete on one line");
-            }
+            line.TrimEnd().Should().EndWith("|",
+                "because table rows must be complete on one line");
         }
 
         AssertValidTables(markdown);

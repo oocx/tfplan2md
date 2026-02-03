@@ -3,9 +3,10 @@
      - Include path from default.sbn (change is loop variable)
      - Direct render path via RenderResourceChange (change is set by renderer)
 ~}}
-<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>{{ change.summary_html }}</summary>
 <br>
+{{~ include "_code_analysis_metadata.sbn" ~}}
 
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}
@@ -24,7 +25,8 @@
 {{ for attr in small_attrs -}}
 {{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
 {{ value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
-{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+{{ if value != "" }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ value }} |
 {{ end -}}
 {{ end -}}
 {{ end -}}
@@ -35,7 +37,8 @@
 {{ for attr in small_attrs -}}
 {{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
 {{ value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
-{{ if value != "" }}| {{ attr.name | escape_markdown }} | {{ value }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+{{ if value != "" }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ value }} |
 {{ end -}}
 {{ end -}}
 {{ end -}}
@@ -46,7 +49,8 @@
 {{ for attr in small_attrs -}}
 {{ before_value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
 {{ after_value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
-| {{ attr.name | escape_markdown }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
+{{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
 {{ end -}}
 {{ end }}
 {{ end }}
@@ -54,6 +58,8 @@
 {{ if change.tags_badges }}
 {{ change.tags_badges }}
 {{ end }}
+
+{{ include "_code_analysis_findings.sbn" }}
 
 {{ if large_attrs.size > 0 }}
 {{ if small_attrs.size > 0 || change.tags_badges }}<br/>

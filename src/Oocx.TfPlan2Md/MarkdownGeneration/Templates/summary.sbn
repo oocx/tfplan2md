@@ -10,3 +10,16 @@
 | ♻️ Replace | {{ summary.to_replace.count }} | {{ for type in summary.to_replace.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 | ❌ Destroy | {{ summary.to_destroy.count }} | {{ for type in summary.to_destroy.breakdown }}{{ type.count }} {{ type.type | escape_markdown }}{{ if !for.last }}<br/>{{ end }}{{ end }} |
 | Total | {{ summary.total }} | |
+
+{{ include "_code_analysis_summary.sbn" }}
+
+{{ if refactoring_operations.size > 0 }}
+
+## Refactoring Summary
+
+| Operation | Resource | Details | Status |
+| --------- | -------- | ------- | ------ |
+{{~ for operation in refactoring_operations ~}}
+| {{ if operation.operation == "Import" }}📥 Import{{ else }}🔀 Move{{ end }} | {{ operation.resource_type | escape_markdown }} {{ format_code_table(operation.resource_name) }} | {{ if operation.operation == "Import" }}ID: {{ format_import_id_details(operation.details) }}{{ else }}From: {{ format_code_table(operation.details) }}{{ end }} | {{ if operation.is_already_applied }}{{ if operation.operation == "Import" }}⚠️ Already imported{{ else }}⚠️ Already moved{{ end }}{{ else }}✅ Ready{{ end }} |
+{{~ end ~}}
+{{ end }}

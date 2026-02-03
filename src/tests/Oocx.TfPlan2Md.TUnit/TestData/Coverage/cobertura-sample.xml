@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coverage line-rate="0.855" branch-rate="0.702" version="1.0">
+  <packages>
+    <package name="Oocx.TfPlan2Md" line-rate="0.855" branch-rate="0.702">
+      <classes>
+        <class name="Sample" filename="Sample.cs" line-rate="0.855" branch-rate="0.702">
+          <methods />
+          <lines>
+            <line number="1" hits="1" branch="false" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

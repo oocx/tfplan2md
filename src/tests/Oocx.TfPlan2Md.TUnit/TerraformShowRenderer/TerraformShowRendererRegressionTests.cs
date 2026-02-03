@@ -15,6 +15,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan1 rendering matches the recorded terraform show output.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan1_MatchesBaselineAsync()
     {
@@ -30,6 +31,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan2 rendering matches the recorded terraform show output including replacement markers.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan2_MatchesBaselineAsync()
     {
@@ -64,6 +66,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan1 rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan1_MatchesBaselineContent()
     {
@@ -79,6 +82,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan2 rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan2_MatchesBaselineContent()
     {
@@ -94,6 +98,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan1 no-color rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan1_NoColor_MatchesBaselineContent()
     {
@@ -106,6 +111,10 @@ public sealed class TerraformShowRendererRegressionTests
         TextDiffAssert.EqualIgnoringLeadingWhitespace(expected, output);
     }
 
+    /// <summary>
+    /// Verifies that the rendered output does not contain consecutive empty lines.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan1_NoColor_HasNoConsecutiveEmptyLines()
     {
@@ -131,6 +140,7 @@ public sealed class TerraformShowRendererRegressionTests
     /// <summary>
     /// Ensures plan2 no-color rendering contains the same content as baseline, ignoring leading whitespace.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Render_Plan2_NoColor_MatchesBaselineContent()
     {

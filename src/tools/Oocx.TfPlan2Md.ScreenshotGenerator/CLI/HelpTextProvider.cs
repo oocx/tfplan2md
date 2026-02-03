@@ -10,7 +10,11 @@ internal static class HelpTextProvider
     /// Generates help text that describes usage and available options.
     /// </summary>
     /// <returns>A formatted help string.</returns>
+    // SonarAnalyzer S3400: Method returning constant is intentional
+    // Justification: Keeping help text in a method (not const field) improves readability and follows CLI tool conventions
+#pragma warning disable S3400 // Methods should not return constants
     public static string GetHelpText()
+#pragma warning restore S3400
     {
         return """
         tfplan2md-screenshot - Capture screenshots from HTML reports
@@ -28,6 +32,8 @@ internal static class HelpTextProvider
                                      Capture only the resource block matching the Terraform address
             --target-selector <selector>
                                      Capture only elements matching a selector (Playwright syntax)
+            --open-details <selector>
+                                     Open <details> elements matching selector before capture (Playwright syntax)
             --format <png|jpeg>      Image format (default: png)
             -q, --quality <0-100>    Quality for JPEG (default: 90)
             --device-scale-factor <n>
@@ -43,6 +49,7 @@ internal static class HelpTextProvider
             tfplan2md-screenshot --input report.html --device-scale-factor 2 --output report@2x.png
             tfplan2md-screenshot --input report.html --target-terraform-resource-id "azurerm_firewall.example"
             tfplan2md-screenshot --input report.html --target-selector "summary:has-text('azurerm_firewall')"
+            tfplan2md-screenshot --input report.html --open-details "details" --target-selector "details:first-of-type"
         """;
     }
 }

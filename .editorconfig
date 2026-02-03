@@ -20,6 +20,88 @@ indent_size = 2
 [*.json]
 indent_size = 2
 
+# Test files - Relax some analyzer rules  
+[{src/tests/**/*.cs,tests/**/*.cs}]
+# SA1600: XML documentation not required for test methods
+dotnet_diagnostic.SA1600.severity = none
+# SA1601: XML documentation not required for test partial elements
+dotnet_diagnostic.SA1601.severity = none
+# SA1602: XML documentation not required for test enumerations
+dotnet_diagnostic.SA1602.severity = none
+# SA1611: XML documentation parameters not required for test methods
+dotnet_diagnostic.SA1611.severity = none
+# SA1615: XML documentation return values not required for test methods
+dotnet_diagnostic.SA1615.severity = none
+# SA1616: XML documentation return values not required for test methods
+dotnet_diagnostic.SA1616.severity = none
+# SA1618: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1618.severity = none
+# SA1619: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1619.severity = none
+# SA1620: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1620.severity = none
+# SA1621: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1621.severity = none
+# SA1622: XML documentation generic type parameters not required for test methods
+dotnet_diagnostic.SA1622.severity = none
+# SA1623: Property documentation not required for tests
+dotnet_diagnostic.SA1623.severity = none
+# SA1624: Property documentation not required for tests
+dotnet_diagnostic.SA1624.severity = none
+# SA1625: Documentation not required for copy-paste test variations
+dotnet_diagnostic.SA1625.severity = none
+# SA1626: Documentation not required for copy-paste test variations
+dotnet_diagnostic.SA1626.severity = none
+# SA1627: Documentation not required for test code
+dotnet_diagnostic.SA1627.severity = none
+# SA1629: Documentation not required for test code
+dotnet_diagnostic.SA1629.severity = none
+# SA1633: File headers not required for test files
+dotnet_diagnostic.SA1633.severity = none
+# SA1648: Documentation value not required for tests
+dotnet_diagnostic.SA1648.severity = none
+# SA1649: File name/type mismatch acceptable in tests
+dotnet_diagnostic.SA1649.severity = none
+# SA1651: Placeholder elements not allowed (but tests may use them for brevity)
+dotnet_diagnostic.SA1651.severity = none
+# S112: Generic exceptions acceptable in test code
+dotnet_diagnostic.S112.severity = suggestion
+# S1066: Nested if statements acceptable in test assertions
+dotnet_diagnostic.S1066.severity = suggestion
+# S1075: Hardcoded paths acceptable in test data
+dotnet_diagnostic.S1075.severity = suggestion
+# S1144: Test helper methods may appear unused (used via reflection/dynamic)
+dotnet_diagnostic.S1144.severity = suggestion
+# S1481: Unused variables acceptable for test readability
+dotnet_diagnostic.S1481.severity = suggestion
+# S2589: Always-true conditions acceptable in defensive test code
+dotnet_diagnostic.S2589.severity = suggestion
+# S3236: Caller information attributes acceptable in test helpers
+dotnet_diagnostic.S3236.severity = suggestion
+# S3267: LINQ simplification not required in test code (readability over conciseness)
+dotnet_diagnostic.S3267.severity = suggestion
+# S3878: Array creation syntax acceptable for test clarity
+dotnet_diagnostic.S3878.severity = suggestion
+# S4144: Identical methods acceptable in tests (test isolation over DRY)
+dotnet_diagnostic.S4144.severity = suggestion
+# S5445: Path.GetTempFileName acceptable in tests
+dotnet_diagnostic.S5445.severity = suggestion
+# S6603: Collection-specific methods not required in tests
+dotnet_diagnostic.S6603.severity = suggestion
+# S6605: Collection-specific methods not required in tests
+dotnet_diagnostic.S6605.severity = suggestion
+
+# CA1502: Avoid excessive complexity not enforced in tests
+dotnet_diagnostic.CA1502.severity = none
+# CA1505: Avoid unmaintainable code not enforced in tests
+dotnet_diagnostic.CA1505.severity = none
+# CA1506: Avoid excessive class coupling not enforced in tests
+dotnet_diagnostic.CA1506.severity = none
+
+# Markdown files
+[*.md]
+indent_size = 2
+
 # Markdown files
 [*.md]
 trim_trailing_whitespace = false
@@ -30,6 +112,8 @@ indent_size = 2
 
 # C# files
 [*.cs]
+# Line length enforcement
+max_line_length = 160
 # Organize usings
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
@@ -159,7 +243,7 @@ csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
 
 # IDE0055: Fix formatting - enforces all formatting rules
-dotnet_diagnostic.IDE0055.severity = warning
+dotnet_diagnostic.IDE0055.severity = error
 
 # IDE0052: Remove unread private member
 dotnet_diagnostic.IDE0052.severity = warning
@@ -172,6 +256,15 @@ dotnet_diagnostic.IDE0060.severity = warning
 
 # CA1822: Mark members as static - suppress for public members (design choice for DI/testability)
 dotnet_diagnostic.CA1822.severity = suggestion
+
+# CA1502: Avoid excessive complexity
+dotnet_diagnostic.CA1502.severity = error
+
+# CA1505: Avoid unmaintainable code
+dotnet_diagnostic.CA1505.severity = error
+
+# CA1506: Avoid excessive class coupling
+dotnet_diagnostic.CA1506.severity = error
 
 # IDE1006: Naming rule violations
 dotnet_diagnostic.IDE1006.severity = warning
@@ -244,3 +337,385 @@ dotnet_naming_style.camel_case.capitalization = camel_case
 
 dotnet_naming_style.underscore_camel_case.required_prefix = _
 dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+
+# ========================================
+# StyleCop.Analyzers Rules
+# ========================================
+# Phase 1: Documentation and code consistency
+# Start all rules as warnings, promote critical rules to errors after violations fixed
+# Reference: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/
+
+# SA0001: XML comment analysis disabled - Enable XML documentation
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1101: Prefix local calls with this
+# Disabled - conflicts with project convention (dotnet_style_qualification_for_* = false)
+dotnet_diagnostic.SA1101.severity = none
+
+# SA1108: Block statements should not contain embedded comments
+dotnet_diagnostic.SA1108.severity = suggestion
+
+# SA1117: Parameters should be on same line or separate lines
+dotnet_diagnostic.SA1117.severity = suggestion
+
+# SA1122: Use string.Empty for empty strings
+dotnet_diagnostic.SA1122.severity = suggestion
+
+# SA1111: Closing parenthesis should be on line of last parameter
+dotnet_diagnostic.SA1111.severity = suggestion
+
+# SA1116: The parameters should begin on the line after declaration when spanning multiple lines
+dotnet_diagnostic.SA1116.severity = suggestion
+
+# SA1118: The parameter spans multiple lines
+dotnet_diagnostic.SA1118.severity = suggestion
+
+# SA1124: Do not use regions
+dotnet_diagnostic.SA1124.severity = none
+
+# SA1128: Put constructor initializers on their own line
+dotnet_diagnostic.SA1128.severity = suggestion
+
+# SA1201: Element ordering (constructor, property, method)
+dotnet_diagnostic.SA1201.severity = suggestion
+
+# SA1202: Public members should come before private members
+dotnet_diagnostic.SA1202.severity = suggestion
+
+# SA1203: Constant fields should appear before non-constant fields
+dotnet_diagnostic.SA1203.severity = suggestion
+
+# SA1204: Static members should appear before non-static members
+dotnet_diagnostic.SA1204.severity = suggestion
+
+# SA1316: Tuple element names should use correct casing
+dotnet_diagnostic.SA1316.severity = warning
+
+# SA1311: Static readonly fields should begin with upper-case letter
+# Relaxed - static readonly field naming varies by context (test fixtures, etc.)
+dotnet_diagnostic.SA1311.severity = suggestion
+
+# SA1312: Variable names should begin with lower-case letter
+# Relaxed - C# discard pattern uses '_' which is intentional
+dotnet_diagnostic.SA1312.severity = none
+
+# SA1402: File may only contain a single type
+# Relaxed - project uses multiple related types per file (records, enums)
+dotnet_diagnostic.SA1402.severity = suggestion
+
+# SA1649: File name should match first type name
+# Relaxed due to SA1402 - multiple types per file is intentional
+dotnet_diagnostic.SA1649.severity = suggestion
+
+# SA1308: Field names should not begin with prefix 's_'
+# Relaxed - static field naming convention varies
+dotnet_diagnostic.SA1308.severity = none
+
+# SA1309: Field names should not begin with underscore
+# Disabled - project convention uses _camelCase for private fields
+dotnet_diagnostic.SA1309.severity = none
+
+# SA1413: Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion
+
+# SA1600: Elements should be documented
+# Primary documentation rule - promoted to error after all violations fixed
+dotnet_diagnostic.SA1600.severity = error
+
+# SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1601.severity = error
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = error
+
+# SA1633: File should have header
+# Disabled - project doesn't use file headers
+dotnet_diagnostic.SA1633.severity = none
+
+# Documentation Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = warning
+
+# Ordering Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.OrderingRules.severity = warning
+
+# Naming Rules - Default to warning (except SA1309 disabled above)
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.NamingRules.severity = warning
+
+# Maintainability Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.MaintainabilityRules.severity = warning
+
+# Layout Rules - Default to suggestion (formatting not critical)
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.LayoutRules.severity = suggestion
+
+# Readability Rules - Default to warning
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.ReadabilityRules.severity = warning
+
+# Spacing Rules - Default to suggestion (formatting not critical)
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.SpacingRules.severity = suggestion
+
+################################################################################
+# SonarAnalyzer.CSharp Rules (Phase 2)
+################################################################################
+
+# Reference: https://rules.sonarsource.com/csharp/
+# Strategy: Start all rules as suggestions/warnings, promote critical rules to errors after fixes
+# Note: TreatWarningsAsErrors=true in Directory.Build.props means warnings fail builds
+
+# Global default for SonarAnalyzer rules - set to suggestion initially
+# This allows build to pass while we triage and fix violations
+dotnet_analyzer_diagnostic.category-SonarAnalyzer.CSharp.severity = suggestion
+
+# Critical rules that will be promoted to 'error' after violations are fixed (P2-T6)
+
+# S1006: Method overloads with default parameter values should not overlap
+# Critical: Can cause unexpected behavior with method overloads
+dotnet_diagnostic.S1006.severity = warning
+
+# S1066: Mergeable if statements should be combined
+# Medium: Code readability - keep as warning for now
+dotnet_diagnostic.S1066.severity = warning
+
+# S1144: Unused private types or members should be removed
+# Medium: Dead code detection - keep as warning
+dotnet_diagnostic.S1144.severity = warning
+
+# S1481: Unused local variables should be removed
+# Critical: Indicates potential logic error - promoted to error (P2-T6)
+dotnet_diagnostic.S1481.severity = error
+
+# S2583: Conditionally executed code should be reachable
+# Critical: Logic error - unreachable code paths - promote to error later
+dotnet_diagnostic.S2583.severity = warning
+
+# S2259: Null pointers should not be dereferenced
+# Critical: Null reference errors - promoted to error (P2-T6)
+# Note: Monitor for false positives with nullable reference types
+dotnet_diagnostic.S2259.severity = error
+
+# S3267: Loops should be simplified with LINQ
+# Medium: Code simplification - keep as warning
+dotnet_diagnostic.S3267.severity = warning
+
+# S3358: Ternary operators should not be nested
+# Medium: Code readability - keep as warning
+dotnet_diagnostic.S3358.severity = warning
+
+# S3400: Methods should not return constants
+# Medium: Code design - keep as warning
+dotnet_diagnostic.S3400.severity = warning
+
+# S3459: Unassigned members should be removed
+# Medium: Dead code detection - keep as warning
+dotnet_diagnostic.S3459.severity = warning
+
+# S3626: Jump statements should not be redundant
+# Medium: Code simplification - keep as warning
+dotnet_diagnostic.S3626.severity = warning
+
+# S3871: Exception types should be "public"
+# Medium: API design - keep as warning
+dotnet_diagnostic.S3871.severity = warning
+
+# S3923: Conditional operations should not always return the same value
+# Critical: Logic error - promote to error later
+dotnet_diagnostic.S3923.severity = warning
+
+# S6602: "Find" method should be used instead of "FirstOrDefault"
+# Medium: Performance - keep as warning
+dotnet_diagnostic.S6602.severity = warning
+
+# S6618: "string.Create" should be used instead of "FormattableString"
+# Medium: Performance micro-optimization - set to suggestion for CLI tool
+# Justification: string.Create is a performance micro-optimization that reduces readability
+# For a CLI reporting tool, code clarity is more important than microsecond string allocation savings
+dotnet_diagnostic.S6618.severity = suggestion
+
+################################################################################
+# Meziantou.Analyzer Rules (Phase 3)
+################################################################################
+
+# Reference: https://github.com/meziantou/Meziantou.Analyzer/blob/main/docs/README.md
+# Strategy: Start all rules as warnings, promote critical rules to errors after violations fixed
+# Focus: Best practices, performance patterns, StringComparison enforcement
+
+# Global default for Meziantou.Analyzer rules - set to suggestion initially
+# This prevents build failures while we triage and fix violations
+# Will promote specific rules to warning/error after fixes complete (P3-T4, P3-T5, P3-T6)
+dotnet_analyzer_diagnostic.category-Meziantou.Analyzer.severity = suggestion
+
+# MA0002: IEqualityComparer<string> or IComparer<string> is missing
+# Disabled: Application runs in Docker container with consistent culture (Invariant)
+# Justification: tfplan2md is a console tool that runs in Docker without locale configuration.
+# The container environment ensures consistent Invariant culture across all deployments.
+# Culture-specific string operations would add code complexity without benefit.
+# String comparisons in this codebase are for identifiers, not user-facing text.
+dotnet_diagnostic.MA0002.severity = none
+
+# MA0004: Use ConfigureAwait(false)
+# Suggestion for console applications (no UI synchronization context)
+# Justification: This is a console application with no synchronization context
+# ConfigureAwait(false) adds no value and reduces readability in console apps
+dotnet_diagnostic.MA0004.severity = suggestion
+
+# MA0006: Use String.Equals instead of equality operator
+# Disabled: Related to MA0002 - culture-specific behavior not applicable
+# Justification: Same rationale as MA0002. Using == for string comparison is acceptable
+# and more readable when culture-specific behavior is not required.
+dotnet_diagnostic.MA0006.severity = none
+
+# MA0008: Add StructLayoutAttribute
+# Suggestion: Struct layout is a low-level optimization rarely needed
+dotnet_diagnostic.MA0008.severity = suggestion
+
+# MA0009: Add regex timeout
+# Critical: Prevents ReDoS (Regular Expression Denial of Service) attacks
+# PROMOTED TO ERROR: Security-critical - prevents ReDoS attacks
+dotnet_diagnostic.MA0009.severity = error
+
+# MA0011: IFormatProvider is missing
+# Disabled: Application runs in Docker with consistent Invariant culture
+# Justification: This application generates markdown/text output for technical use,
+# not localized user-facing content. The Docker environment provides consistent
+# Invariant culture. Adding IFormatProvider to every ToString/Format call would
+# reduce readability without providing value in our deployment model.
+dotnet_diagnostic.MA0011.severity = none
+
+# MA0013: Types should not extend System.ApplicationException
+# ApplicationException is obsolete design pattern
+# PROMOTED TO WARNING: Framework best practice
+# Set to suggestion initially - will promote to warning in P3-T6
+dotnet_diagnostic.MA0013.severity = warning
+
+# MA0023: Add RegexOptions.ExplicitCapture
+# Performance optimization for regex
+# Set to suggestion initially - will promote to warning after fixes
+dotnet_diagnostic.MA0023.severity = suggestion
+
+# MA0048: File name must match type name
+# Suggestion: Relaxed due to project convention of multiple types per file
+# Conflicts with SA1402 (multiple types per file) which is intentional
+dotnet_diagnostic.MA0048.severity = suggestion
+
+# MA0051: Method is too long
+# Enforces method length <60 lines for maintainability
+# Set to suggestion initially - will suppress specific complex methods with justification
+dotnet_diagnostic.MA0051.severity = suggestion
+
+# MA0140: Both if and else branch have identical code
+# Logic error - dead code or copy-paste mistake
+# Set to suggestion initially - will fix or suppress with justification
+dotnet_diagnostic.MA0140.severity = suggestion
+
+################################################################################
+# Roslynator.Analyzers Rules (Phase 4)
+################################################################################
+
+# Reference: https://github.com/dotnet/roslynator
+# Strategy: Selective enabling - Roslynator has 200+ rules, many overlap with other analyzers
+# Start with all rules disabled globally, enable high-value rules incrementally
+
+# Global default - DISABLE all Roslynator rules initially
+dotnet_analyzer_diagnostic.category-Roslynator.severity = none
+
+# ========================================
+# Selectively Enabled Rules (High Value)
+# ========================================
+
+# RCS1194: Implement exception constructors
+# Critical: Design consistency - custom exceptions should follow standard patterns
+# Default severity: error (built-in) - keeping as error after fixing violations
+dotnet_diagnostic.RCS1194.severity = error
+
+# RCS1018: Add accessibility modifiers (or remove 'this' qualifier)
+# Medium: Code consistency - explicit accessibility improves clarity
+# Note: May overlap with StyleCop SA1400, evaluate during fixing
+dotnet_diagnostic.RCS1018.severity = warning
+
+# RCS1033: Remove redundant boolean literal
+# High: Code simplification - removes unnecessary true/false in expressions
+dotnet_diagnostic.RCS1033.severity = warning
+
+# RCS1077: Optimize LINQ method call
+# High: Performance - suggests more efficient LINQ patterns
+dotnet_diagnostic.RCS1077.severity = warning
+
+# RCS1146: Use conditional access
+# High: Null handling - use ?. instead of if-not-null checks
+dotnet_diagnostic.RCS1146.severity = warning
+
+# RCS1175: Unused 'this' parameter (extension method)
+# Medium: Dead code detection
+dotnet_diagnostic.RCS1175.severity = warning
+
+# RCS1197: Optimize StringBuilder.Append/AppendLine call
+# Medium: Performance - StringBuilder optimization
+dotnet_diagnostic.RCS1197.severity = warning
+
+# RCS1214: Unnecessary interpolated string
+# Medium: Code simplification - removes unnecessary $"..." when no interpolation
+dotnet_diagnostic.RCS1214.severity = warning
+
+# ========================================
+# Rules Set to Suggestion (Lower Priority)
+# ========================================
+
+# RCS1036: Remove unnecessary blank line
+# Low priority: Formatting preference handled by .editorconfig
+dotnet_diagnostic.RCS1036.severity = suggestion
+
+# RCS1037: Remove trailing whitespace
+# Low priority: Handled by editor/formatter
+dotnet_diagnostic.RCS1037.severity = suggestion
+
+# RCS1124: Inline local variable
+# Low priority: Refactoring suggestion, not always desirable
+dotnet_diagnostic.RCS1124.severity = suggestion
+
+# ========================================
+# Rules Explicitly Disabled (Overlap/Not Applicable)
+# ========================================
+
+# RCS1001: Add braces to if-else
+# Disabled: Conflicts with existing code style (single-line if statements allowed)
+dotnet_diagnostic.RCS1001.severity = none
+
+# RCS1003: Add braces to if-else (when expression spans over multiple lines)
+# Disabled: Same rationale as RCS1001
+dotnet_diagnostic.RCS1003.severity = none
+
+# RCS1032: Remove redundant parentheses
+# Disabled: Parentheses often improve readability even when technically redundant
+dotnet_diagnostic.RCS1032.severity = none
+
+# RCS1089: Use --/++ operator instead of assignment
+# Disabled: Stylistic preference, both forms are equally clear
+dotnet_diagnostic.RCS1089.severity = none
+
+# RCS1097: Remove redundant 'ToString' call
+# Disabled: Overlaps with other analyzers and can reduce clarity
+dotnet_diagnostic.RCS1097.severity = none
+
+# RCS1158: Static member in generic type should use a type parameter
+# Disabled: Specific design scenario, not broadly applicable
+dotnet_diagnostic.RCS1158.severity = none
+
+# RCS1199: Simplify Boolean expression
+# Disabled: Overlaps with SonarAnalyzer rules
+dotnet_diagnostic.RCS1199.severity = none
+
+# RCS1235: Optimize method call
+# Disabled: May conflict with readability goals
+dotnet_diagnostic.RCS1235.severity = none
+
+################################################################################
+# End of Roslynator.Analyzers Configuration
+################################################################################
+
+# Test files - Code metrics exemptions (override general C# rules)
+[{src/tests/**/*.cs,tests/**/*.cs}]
+# CA1502: Avoid excessive complexity not enforced in tests
+dotnet_diagnostic.CA1502.severity = none
+# CA1505: Avoid unmaintainable code not enforced in tests
+dotnet_diagnostic.CA1505.severity = none
+# CA1506: Avoid excessive class coupling not enforced in tests
+dotnet_diagnostic.CA1506.severity = none

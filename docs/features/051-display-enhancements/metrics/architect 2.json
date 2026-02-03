@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "source": "architect 2.chat.json",
+    "analysis_date": "2026-01-28",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 7,
+    "start_timestamp": 1769523732483,
+    "end_timestamp": 1769532982126,
+    "session_duration_sec": 9249.643,
+    "user_wait_time_sec": 0,
+    "agent_work_time_sec": 826.025
+  },
+  "model_usage": [
+    {
+      "model": "gpt-5.2",
+      "count": 7
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "readFile",
+      "count": 24
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 16
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 11
+    },
+    {
+      "tool": "searchCodebase",
+      "count": 9
+    },
+    {
+      "tool": "applyPatch",
+      "count": 5
+    },
+    {
+      "tool": "findFiles",
+      "count": 4
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 4
+    },
+    {
+      "tool": "createFile",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 74
+      }
+    ],
+    "total_invocations": 74,
+    "auto_approved": 74,
+    "manual_approved": 0,
+    "automation_rate_pct": 100
+  },
+  "model_success": [
+    {
+      "model": "gpt-5.2",
+      "total": 7,
+      "complete": 7,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gpt-5.2",
+      "total_requests": 7,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "gpt-5.2",
+      "count": 7,
+      "avg_sec": 118,
+      "total_sec": 826
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

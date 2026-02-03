@@ -1,0 +1,594 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Oocx.TfPlan2Md.CodeAnalysis;
+using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+
+namespace Oocx.TfPlan2Md.MarkdownGeneration;
+
+/// <summary>
+/// Builds a ReportModel from a TerraformPlan.
+/// </summary>
+/// <remarks>
+/// Related feature: docs/features/056-static-analysis-integration/specification.md.
+/// </remarks>
+internal partial class ReportModelBuilder
+{
+    /// <summary>
+    /// Builds the code analysis report model and attaches findings to resources.
+    /// </summary>
+    /// <param name="allChanges">The full list of resource changes to update.</param>
+    /// <returns>The code analysis report model when inputs are provided; otherwise <c>null</c>.</returns>
+    private CodeAnalysisReportModel? BuildCodeAnalysisReport(List<ResourceChangeModel> allChanges)
+    {
+        if (_codeAnalysisInput is null)
+        {
+            return null;
+        }
+
+        var tools = BuildToolModels(_codeAnalysisInput.Model.Tools);
+        var warnings = BuildWarningModels(_codeAnalysisInput.Warnings);
+        var effectiveMinimumLevel = GetEffectiveMinimumLevel(_codeAnalysisInput.MinimumLevel, _codeAnalysisInput.FailOnLevel);
+
+        var findings = new List<CodeAnalysisFindingModel>();
+        var moduleFindings = new Dictionary<string, List<CodeAnalysisFindingModel>>(StringComparer.Ordinal);
+        var unmatchedFindings = new List<CodeAnalysisFindingModel>();
+        var resourceLookup = allChanges.ToDictionary(c => c.Address, StringComparer.Ordinal);
+
+        foreach (var finding in _codeAnalysisInput.Model.Findings)
+        {
+            var severity = SeverityMapper.DeriveSeverity(finding);
+            if (!MeetsMinimumLevel(severity, effectiveMinimumLevel))
+            {
+                continue;
+            }
+
+            var mappedFindings = ResourceMapper.MapFinding(finding, severity);
+            foreach (var mappedFinding in mappedFindings)
+            {
+                var findingModel = BuildFindingModel(finding, mappedFinding, severity);
+                findings.Add(findingModel);
+
+                if (mappedFinding.ResourceAddress is not null)
+                {
+                    var resourceModel = GetOrCreateResourceChange(allChanges, resourceLookup, mappedFinding);
+                    AppendFinding(resourceModel, findingModel);
+                }
+                else if (!string.IsNullOrWhiteSpace(mappedFinding.ModuleAddress))
+                {
+                    AddModuleFinding(moduleFindings, mappedFinding.ModuleAddress!, findingModel);
+                }
+                else
+                {
+                    unmatchedFindings.Add(findingModel);
+                }
+            }
+        }
+
+        SortFindings(findings, allChanges);
+        var orderedUnmatched = OrderFindings(unmatchedFindings).ToList();
+        var orderedModules = moduleFindings
+            .OrderBy(entry => entry.Key, StringComparer.Ordinal)
+            .Select(entry => new CodeAnalysisModuleFindingsModel
+            {
+                ModuleAddress = entry.Key,
+                Findings = OrderFindings(entry.Value).ToList()
+            })
+            .ToList();
+
+        if (tools.Count == 0 && warnings.Count == 0 && findings.Count == 0)
+        {
+            return null;
+        }
+
+        var summary = BuildSummaryModel(findings);
+        return new CodeAnalysisReportModel
+        {
+            Summary = summary,
+            Tools = tools,
+            Warnings = warnings,
+            Findings = findings,
+            ModuleFindings = orderedModules,
+            UnmatchedFindings = orderedUnmatched
+        };
+    }
+
+    /// <summary>
+    /// Builds code analysis tool view models for rendering.
+    /// </summary>
+    /// <param name="tools">The parsed tool metadata.</param>
+    /// <returns>The list of tool models.</returns>
+    private static List<CodeAnalysisToolModel> BuildToolModels(IReadOnlyList<CodeAnalysisTool> tools)
+    {
+        return tools
+            .Where(tool => !string.IsNullOrWhiteSpace(tool.Name))
+            .Select(tool => new CodeAnalysisToolModel
+            {
+                Name = tool.Name,
+                Version = tool.Version,
+                DisplayName = BuildToolDisplayName(tool.Name, tool.Version)
+            })
+            .GroupBy(tool => tool.DisplayName, StringComparer.Ordinal)
+            .Select(group => group.First())
+            .ToList();
+    }
+
+    /// <summary>
+    /// Builds code analysis warning view models for rendering.
+    /// </summary>
+    /// <param name="warnings">The warnings encountered during parsing.</param>
+    /// <returns>The list of warning models.</returns>
+    private static List<CodeAnalysisWarningModel> BuildWarningModels(IReadOnlyList<CodeAnalysisWarning> warnings)
+    {
+        return warnings
+            .Select(warning => new CodeAnalysisWarningModel
+            {
+                FilePath = warning.FilePath,
+                Message = warning.Message
+            })
+            .ToList();
+    }
+
+    /// <summary>
+    /// Builds a formatted display name for a code analysis tool.
+    /// </summary>
+    /// <param name="name">The tool name.</param>
+    /// <param name="version">The tool version, if available.</param>
+    /// <returns>The formatted display name.</returns>
+    private static string BuildToolDisplayName(string name, string? version)
+    {
+        return string.IsNullOrWhiteSpace(version)
+            ? name
+            : $"{name} {version}";
+    }
+
+    /// <summary>
+    /// Builds a code analysis finding view model from mapped data.
+    /// </summary>
+    /// <param name="finding">The source SARIF finding.</param>
+    /// <param name="mappedFinding">The mapped location data.</param>
+    /// <param name="severity">The derived severity.</param>
+    /// <returns>The finding view model.</returns>
+    private static CodeAnalysisFindingModel BuildFindingModel(
+        CodeAnalysisFinding finding,
+        CodeAnalysisMappedFinding mappedFinding,
+        CodeAnalysisSeverity severity)
+    {
+        return new CodeAnalysisFindingModel
+        {
+            Severity = GetSeverityLabel(severity),
+            SeverityIcon = GetSeverityIcon(severity),
+            SeverityRank = GetSeverityRank(severity),
+            Message = BuildFindingMessage(finding, mappedFinding),
+            RuleId = finding.RuleId,
+            HelpUri = finding.HelpUri,
+            ToolName = finding.ToolName,
+            ResourceAddress = mappedFinding.ResourceAddress,
+            ModuleAddress = mappedFinding.ModuleAddress,
+            AttributePath = mappedFinding.AttributePath
+        };
+    }
+
+    /// <summary>
+    /// Builds a finding message with optional location context for unmatched findings.
+    /// </summary>
+    /// <param name="finding">The source finding.</param>
+    /// <param name="mappedFinding">The mapped location data.</param>
+    /// <returns>The formatted message text.</returns>
+    private static string BuildFindingMessage(CodeAnalysisFinding finding, CodeAnalysisMappedFinding mappedFinding)
+    {
+        if (mappedFinding.ResourceAddress is not null)
+        {
+            return finding.Message;
+        }
+
+        var locationHint = BuildLocationHint(finding.Locations);
+        if (string.IsNullOrWhiteSpace(locationHint))
+        {
+            return finding.Message;
+        }
+
+        if (string.IsNullOrWhiteSpace(finding.Message))
+        {
+            return locationHint;
+        }
+
+        return $"{finding.Message}\n{locationHint}";
+    }
+
+    /// <summary>
+    /// Builds a compact location hint from the first available physical location.
+    /// </summary>
+    /// <param name="locations">The parsed location entries.</param>
+    /// <returns>The formatted location hint, or <c>null</c> when unavailable.</returns>
+    private static string? BuildLocationHint(IReadOnlyList<CodeAnalysisLocation> locations)
+    {
+        if (locations.Count == 0)
+        {
+            return null;
+        }
+
+        var location = locations.FirstOrDefault(candidate =>
+            !string.IsNullOrWhiteSpace(candidate.ArtifactUri)
+            || candidate.StartLine is not null
+            || candidate.StartColumn is not null);
+
+        if (location is null)
+        {
+            return null;
+        }
+
+        var hint = string.Empty;
+        if (!string.IsNullOrWhiteSpace(location.ArtifactUri))
+        {
+            hint = $"Artifact: {location.ArtifactUri}";
+        }
+
+        var lineInfo = BuildLineInfo(location.StartLine, location.StartColumn);
+        if (!string.IsNullOrWhiteSpace(lineInfo))
+        {
+            hint = string.IsNullOrWhiteSpace(hint) ? lineInfo : $"{hint} ({lineInfo})";
+        }
+
+        return string.IsNullOrWhiteSpace(hint) ? null : hint;
+    }
+
+    /// <summary>
+    /// Formats line and column data into a readable label.
+    /// </summary>
+    /// <param name="line">The start line.</param>
+    /// <param name="column">The start column.</param>
+    /// <returns>The formatted line/column label, or <c>null</c> when unavailable.</returns>
+    private static string? BuildLineInfo(int? line, int? column)
+    {
+        if (line is null && column is null)
+        {
+            return null;
+        }
+
+        if (line is not null && column is not null)
+        {
+            return $"Line: {line}, Column: {column}";
+        }
+
+        if (line is not null)
+        {
+            return $"Line: {line}";
+        }
+
+        return $"Column: {column}";
+    }
+
+    /// <summary>
+    /// Builds summary counts for the provided findings.
+    /// </summary>
+    /// <param name="findings">The findings to summarize.</param>
+    /// <returns>The summary model.</returns>
+    private static CodeAnalysisSummaryModel BuildSummaryModel(List<CodeAnalysisFindingModel> findings)
+    {
+        var criticalFindings = findings.Where(f => f.Severity == "Critical").ToList();
+        var highFindings = findings.Where(f => f.Severity == "High").ToList();
+        var mediumFindings = findings.Where(f => f.Severity == "Medium").ToList();
+        var lowFindings = findings.Where(f => f.Severity == "Low").ToList();
+        var informationalFindings = findings.Where(f => f.Severity == "Informational").ToList();
+
+        return new CodeAnalysisSummaryModel
+        {
+            CriticalCount = criticalFindings.Count,
+            CriticalResourceTypes = BuildResourceTypeBreakdown(criticalFindings),
+            HighCount = highFindings.Count,
+            HighResourceTypes = BuildResourceTypeBreakdown(highFindings),
+            MediumCount = mediumFindings.Count,
+            MediumResourceTypes = BuildResourceTypeBreakdown(mediumFindings),
+            LowCount = lowFindings.Count,
+            LowResourceTypes = BuildResourceTypeBreakdown(lowFindings),
+            InformationalCount = informationalFindings.Count,
+            InformationalResourceTypes = BuildResourceTypeBreakdown(informationalFindings),
+            TotalCount = findings.Count
+        };
+    }
+
+    /// <summary>
+    /// Builds resource type breakdowns for a set of findings.
+    /// </summary>
+    /// <param name="findings">The findings to group by resource type.</param>
+    /// <returns>The ordered resource type breakdown list.</returns>
+    private static List<ResourceTypeBreakdown> BuildResourceTypeBreakdown(
+        IEnumerable<CodeAnalysisFindingModel> findings)
+    {
+        return findings
+            .Select(finding => GetResourceTypeForSummary(finding.ResourceAddress))
+            .Where(type => !string.IsNullOrWhiteSpace(type))
+            .GroupBy(type => type!, StringComparer.Ordinal)
+            .Select(group => new ResourceTypeBreakdown(group.Key, group.Count()))
+            .OrderBy(b => b.Type, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Extracts the resource type label from a mapped resource address for summary display.
+    /// </summary>
+    /// <param name="resourceAddress">The resource address to inspect.</param>
+    /// <returns>The resource type label, or <c>null</c> when unavailable.</returns>
+    private static string? GetResourceTypeForSummary(string? resourceAddress)
+    {
+        if (string.IsNullOrWhiteSpace(resourceAddress))
+        {
+            return null;
+        }
+
+        var tokens = resourceAddress.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (tokens.Length < 2)
+        {
+            return null;
+        }
+
+        var index = 0;
+        while (index + 1 < tokens.Length && tokens[index].Equals("module", StringComparison.OrdinalIgnoreCase))
+        {
+            index += 2;
+        }
+
+        if (index >= tokens.Length)
+        {
+            return null;
+        }
+
+        if (tokens[index].Equals("data", StringComparison.OrdinalIgnoreCase))
+        {
+            if (index + 1 >= tokens.Length)
+            {
+                return null;
+            }
+
+            return $"data.{tokens[index + 1]}";
+        }
+
+        return tokens[index];
+    }
+
+    /// <summary>
+    /// Sorts findings globally and per resource by severity.
+    /// </summary>
+    /// <param name="findings">The global findings list.</param>
+    /// <param name="changes">The resource changes containing findings.</param>
+    private static void SortFindings(List<CodeAnalysisFindingModel> findings, IEnumerable<ResourceChangeModel> changes)
+    {
+        var ordered = OrderFindings(findings).ToList();
+        findings.Clear();
+        findings.AddRange(ordered);
+
+        foreach (var change in changes)
+        {
+            if (change.CodeAnalysisFindings.Count == 0)
+            {
+                continue;
+            }
+
+            change.CodeAnalysisFindings = OrderFindings(change.CodeAnalysisFindings).ToList();
+        }
+    }
+
+    /// <summary>
+    /// Orders findings by severity and message for deterministic output.
+    /// </summary>
+    /// <param name="findings">The findings to order.</param>
+    /// <returns>The ordered findings.</returns>
+    private static IOrderedEnumerable<CodeAnalysisFindingModel> OrderFindings(IEnumerable<CodeAnalysisFindingModel> findings)
+    {
+        return findings
+            .OrderByDescending(finding => finding.SeverityRank)
+            .ThenBy(finding => finding.Message, StringComparer.Ordinal);
+    }
+
+    /// <summary>
+    /// Determines the effective minimum severity level for filtering.
+    /// </summary>
+    /// <param name="minimumLevel">The minimum display level.</param>
+    /// <param name="failOnLevel">The failure threshold level.</param>
+    /// <returns>The effective minimum level, or <c>null</c> when not specified.</returns>
+    private static CodeAnalysisSeverity? GetEffectiveMinimumLevel(
+        CodeAnalysisSeverity? minimumLevel,
+        CodeAnalysisSeverity? failOnLevel)
+    {
+        if (minimumLevel is null)
+        {
+            return failOnLevel;
+        }
+
+        if (failOnLevel is null)
+        {
+            return minimumLevel;
+        }
+
+        var minimumRank = GetSeverityRank(minimumLevel.Value);
+        var failOnRank = GetSeverityRank(failOnLevel.Value);
+        return minimumRank <= failOnRank ? minimumLevel : failOnLevel;
+    }
+
+    /// <summary>
+    /// Determines whether a severity meets the configured minimum level.
+    /// </summary>
+    /// <param name="severity">The severity to evaluate.</param>
+    /// <param name="minimumLevel">The minimum severity to include.</param>
+    /// <returns><c>true</c> when the severity meets the minimum level; otherwise <c>false</c>.</returns>
+    private static bool MeetsMinimumLevel(CodeAnalysisSeverity severity, CodeAnalysisSeverity? minimumLevel)
+    {
+        if (minimumLevel is null)
+        {
+            return true;
+        }
+
+        return GetSeverityRank(severity) >= GetSeverityRank(minimumLevel.Value);
+    }
+
+    /// <summary>
+    /// Appends a code analysis finding to a resource change.
+    /// </summary>
+    /// <param name="resource">The resource change to update.</param>
+    /// <param name="finding">The finding to append.</param>
+    private static void AppendFinding(ResourceChangeModel resource, CodeAnalysisFindingModel finding)
+    {
+        var updated = resource.CodeAnalysisFindings.ToList();
+        updated.Add(finding);
+        resource.CodeAnalysisFindings = updated;
+    }
+
+    /// <summary>
+    /// Adds a finding to the module-level grouping dictionary.
+    /// </summary>
+    /// <param name="moduleFindings">The module findings dictionary to update.</param>
+    /// <param name="moduleAddress">The module address to group by.</param>
+    /// <param name="finding">The finding to add.</param>
+    private static void AddModuleFinding(
+        Dictionary<string, List<CodeAnalysisFindingModel>> moduleFindings,
+        string moduleAddress,
+        CodeAnalysisFindingModel finding)
+    {
+        if (!moduleFindings.TryGetValue(moduleAddress, out var findings))
+        {
+            findings = [];
+            moduleFindings[moduleAddress] = findings;
+        }
+
+        findings.Add(finding);
+    }
+
+    /// <summary>
+    /// Retrieves an existing resource change or creates a findings-only entry when missing.
+    /// </summary>
+    /// <param name="allChanges">The list of existing changes.</param>
+    /// <param name="lookup">Lookup dictionary by resource address.</param>
+    /// <param name="mappedFinding">The mapped finding data.</param>
+    /// <returns>The existing or newly created resource change.</returns>
+    private ResourceChangeModel GetOrCreateResourceChange(
+        List<ResourceChangeModel> allChanges,
+        Dictionary<string, ResourceChangeModel> lookup,
+        CodeAnalysisMappedFinding mappedFinding)
+    {
+        var address = mappedFinding.ResourceAddress!;
+        if (lookup.TryGetValue(address, out var existing))
+        {
+            return existing;
+        }
+
+        var (type, name) = ParseResourceTypeAndName(address);
+        var providerName = ParseProviderName(type);
+        var model = new ResourceChangeModel
+        {
+            Address = address,
+            ModuleAddress = mappedFinding.ModuleAddress,
+            Type = type,
+            Name = name,
+            ProviderName = providerName,
+            Action = "no-op",
+            ActionSymbol = GetActionSymbol("no-op"),
+            AttributeChanges = [],
+            BeforeJson = null,
+            AfterJson = null,
+            ReplacePaths = null
+        };
+
+        FinalizeResourceChangeModel(model);
+        allChanges.Add(model);
+        lookup[address] = model;
+        return model;
+    }
+
+    /// <summary>
+    /// Finalizes summary-related fields for a resource change model.
+    /// </summary>
+    /// <param name="model">The resource change model to finalize.</param>
+    private void FinalizeResourceChangeModel(ResourceChangeModel model)
+    {
+        model.Summary = _summaryBuilder.BuildSummary(model);
+        if (string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
+        {
+            model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);
+        }
+
+        model.TagsBadges = BuildTagsBadges(model.AfterJson, model.BeforeJson, model.Action);
+        if (string.IsNullOrWhiteSpace(model.SummaryHtml))
+        {
+            model.SummaryHtml = BuildSummaryHtml(model);
+        }
+    }
+
+    /// <summary>
+    /// Parses a Terraform resource address into its type and name components.
+    /// </summary>
+    /// <param name="resourceAddress">The Terraform resource address.</param>
+    /// <returns>The resource type and name.</returns>
+    private static (string Type, string Name) ParseResourceTypeAndName(string resourceAddress)
+    {
+        var tokens = resourceAddress.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (tokens.Length >= 2)
+        {
+            return (tokens[^2], tokens[^1]);
+        }
+
+        return (resourceAddress, resourceAddress);
+    }
+
+    /// <summary>
+    /// Determines the provider name from a Terraform resource type.
+    /// </summary>
+    /// <param name="resourceType">The Terraform resource type.</param>
+    /// <returns>The provider name.</returns>
+    private static string ParseProviderName(string resourceType)
+    {
+        var underscoreIndex = resourceType.IndexOf('_', StringComparison.Ordinal);
+        return underscoreIndex > 0 ? resourceType[..underscoreIndex] : resourceType;
+    }
+
+    /// <summary>
+    /// Gets the display label for a normalized severity.
+    /// </summary>
+    /// <param name="severity">The severity value.</param>
+    /// <returns>The display label.</returns>
+    private static string GetSeverityLabel(CodeAnalysisSeverity severity)
+    {
+        return severity switch
+        {
+            CodeAnalysisSeverity.Critical => "Critical",
+            CodeAnalysisSeverity.High => "High",
+            CodeAnalysisSeverity.Medium => "Medium",
+            CodeAnalysisSeverity.Low => "Low",
+            _ => "Informational"
+        };
+    }
+
+    /// <summary>
+    /// Gets the icon for a normalized severity.
+    /// </summary>
+    /// <param name="severity">The severity value.</param>
+    /// <returns>The severity icon.</returns>
+    private static string GetSeverityIcon(CodeAnalysisSeverity severity)
+    {
+        return severity switch
+        {
+            CodeAnalysisSeverity.Critical => "🚨",
+            CodeAnalysisSeverity.High => "⚠️",
+            CodeAnalysisSeverity.Medium => "⚠️",
+            CodeAnalysisSeverity.Low => "ℹ️",
+            _ => "ℹ️"
+        };
+    }
+
+    /// <summary>
+    /// Gets the severity rank used for ordering (higher means more severe).
+    /// </summary>
+    /// <param name="severity">The severity value.</param>
+    /// <returns>The severity rank.</returns>
+    private static int GetSeverityRank(CodeAnalysisSeverity severity)
+    {
+        return severity switch
+        {
+            CodeAnalysisSeverity.Critical => 5,
+            CodeAnalysisSeverity.High => 4,
+            CodeAnalysisSeverity.Medium => 3,
+            CodeAnalysisSeverity.Low => 2,
+            _ => 1
+        };
+    }
+}

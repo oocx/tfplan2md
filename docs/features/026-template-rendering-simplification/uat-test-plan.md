@@ -12,7 +12,7 @@ Verify that the refactored template rendering system produces output that is vis
 - **Rationale:** This plan exercises all resource-specific templates (NSG, Firewall, Role Assignment) and the default rendering logic, making it the best candidate for regression testing.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

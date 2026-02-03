@@ -14,12 +14,11 @@ namespace Oocx.TfPlan2Md.TUnit.Docker;
 /// </remarks>
 [NotInParallel("Docker")]
 [Timeout(60_000)] // 60 seconds - image should be pre-built
+[Category("Docker")]
 public class DockerIntegrationTests
 {
     private readonly DockerFixture _fixture = DockerFixture.Instance;
     private const string TestDataPath = "TestData/azurerm-azuredevops-plan.json";
-
-    private static string Escape(string value) => ScribanHelpers.EscapeMarkdown(value);
 
     private async Task<bool> SkipIfDockerNotAvailableAsync()
     {

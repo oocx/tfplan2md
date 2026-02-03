@@ -5,6 +5,599 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.9.0"></a>
+## [1.9.0](https://github.com/oocx/tfplan2md/compare/v1.8.0...v1.9.0) (2026-02-03)
+
+### ✨ Features
+
+* enhance Release Manager to generate user-focused release notes ([94c28f4](https://github.com/oocx/tfplan2md/commit/94c28f40e0120858493fcb18a6405f667b6604ad))
+
+### 🐛 Bug Fixes
+
+* address NSG rendering and escaping issues found in UAT - SNAPSHOT_UPDATE_OK ([ca27b9b](https://github.com/oocx/tfplan2md/commit/ca27b9b1116230c431b727765fab108308d71438))
+* align azurerm template fallbacks ([bed8e64](https://github.com/oocx/tfplan2md/commit/bed8e64f945b02f384d73208ce0ba890ca5081d1))
+
+### 📚 Documentation
+
+* add code review for NSG rendering issues ([0cc4c2c](https://github.com/oocx/tfplan2md/commit/0cc4c2cdd44d1ac9713617fa1b387e3e1e2895b8))
+* add example user-focused release notes for feature 057 ([c682e36](https://github.com/oocx/tfplan2md/commit/c682e36291e198f9ec65093eef76c8c436962457))
+* add focused UAT artifacts for 058 - SNAPSHOT_UPDATE_OK ([29dca9d](https://github.com/oocx/tfplan2md/commit/29dca9dee9ed926b51a6d76ce2a61e578d7532cb))
+* add issue analysis for NSG rendering issues ([14a973a](https://github.com/oocx/tfplan2md/commit/14a973aa33124914ba4ef0aa56367a0a8dc9d3b5))
+* add UAT report for issue 058 (FALIED) ([6d80d58](https://github.com/oocx/tfplan2md/commit/6d80d58c48334b1f501c3e9093495e9ba2c8de30))
+* add user-focused release notes for NSG rendering improvements ([dc03e6c](https://github.com/oocx/tfplan2md/commit/dc03e6c28c0e26f068bc191cb8f1150976c4cb69))
+* regenerate artifacts for 058 UAT - SNAPSHOT_UPDATE_OK ([9b8ef5a](https://github.com/oocx/tfplan2md/commit/9b8ef5a12c6c067554942d512e3ff09342a32422))
+* update code review for NSG rendering issues - approved ([af085f4](https://github.com/oocx/tfplan2md/commit/af085f40fd9bdd761bf4f0688362ccec04061e00))
+* update CONTRIBUTING.md to explain release notes process ([e7c6038](https://github.com/oocx/tfplan2md/commit/e7c6038b87dfaa61d54eb89547c5e046509ba72f))
+* update UAT report for issue 058 (PASSED) ([57aff0a](https://github.com/oocx/tfplan2md/commit/57aff0a864f8f27f916327b4b95f2920cef6822a))
+
+<a name="1.8.0"></a>
+## [1.8.0](https://github.com/oocx/tfplan2md/compare/v1.7.0...v1.8.0) (2026-02-01)
+
+### ✨ Features
+
+* add refactoring metadata to report model ([dce7095](https://github.com/oocx/tfplan2md/commit/dce7095890bc45fcc2ea5a12ebdb25a6780867ab))
+* annotate summary lines for refactoring ([d20ec23](https://github.com/oocx/tfplan2md/commit/d20ec23c02e9f6bb903e0b3aa3d6645603658a97))
+* improve refactoring summary details ([5e8f0e0](https://github.com/oocx/tfplan2md/commit/5e8f0e043f04a8219fa55fce75953f76a6beec49))
+* parse import and moved metadata ([83fb1a1](https://github.com/oocx/tfplan2md/commit/83fb1a139fe7f946b1d8ce7318e31768cc6feb9c))
+* raise Scriban loop limit ([7c38c1b](https://github.com/oocx/tfplan2md/commit/7c38c1b6257430275086c5d55e53184b2750575a))
+* render refactoring summary section ([2c2c4a4](https://github.com/oocx/tfplan2md/commit/2c2c4a40940caba0be708999bc08db6f5a570ad7))
+
+### 🐛 Bug Fixes
+
+* align refactoring summary table formatting ([1b21e8f](https://github.com/oocx/tfplan2md/commit/1b21e8fc64c4742fccdf94d5c36baa4de700dd5f))
+
+### 📚 Documentation
+
+* add architecture for terraform refactoring visibility ([7aef9f7](https://github.com/oocx/tfplan2md/commit/7aef9f7154da039dc3b2ed5a07be8891d4e1876d))
+* add code review for terraform-import-moved-blocks ([95bc614](https://github.com/oocx/tfplan2md/commit/95bc61414bd6634ce8b3ca5707b3be39e5625be9))
+* add feature specification for 057-terraform-import-moved-blocks ([b3d3ceb](https://github.com/oocx/tfplan2md/commit/b3d3cebaef54d3264ace258509a4ac7b053a1e51))
+* add tasks for terraform import and moved blocks ([eb1353f](https://github.com/oocx/tfplan2md/commit/eb1353f25452c4dbe41348600517b3a3fecb35a7))
+* add test plan for 057-terraform-import-moved-blocks ([add57ed](https://github.com/oocx/tfplan2md/commit/add57ed5ee27250d98e455f410a49aafbac4b2f5))
+* add UAT report for Terraform import and moved blocks ([2e2479b](https://github.com/oocx/tfplan2md/commit/2e2479bd6c2782fdb53313fc18eca356f8cb7fdf))
+* mark task 1 parsing complete ([2c0f8b9](https://github.com/oocx/tfplan2md/commit/2c0f8b98e720f46fe609eab0d8a8baf450cd269b))
+* mark task 2 loop limit complete ([edd21e8](https://github.com/oocx/tfplan2md/commit/edd21e891c16954f0686fd56db04c3b864f54336))
+* mark task 3 report model complete ([3cbf291](https://github.com/oocx/tfplan2md/commit/3cbf291bbf9732772230762204014cfa92cd90a6))
+* mark task 4 summary html complete ([4a97353](https://github.com/oocx/tfplan2md/commit/4a973531acfba707317328e2ffce95dede3b0767))
+* mark task 5 templates complete ([c732351](https://github.com/oocx/tfplan2md/commit/c73235153d149a9061d90d0f8cac1556235c6a00))
+* mark UAT task complete ([58d56bc](https://github.com/oocx/tfplan2md/commit/58d56bc6fdc313a7e9c7ad9d1cae7cda3b69d24e))
+* regenerate demo artifacts ([e339e9c](https://github.com/oocx/tfplan2md/commit/e339e9c60f60f0006c7114cebf7e1368a4608686))
+* regenerate demo artifacts for refactoring ([967fdd6](https://github.com/oocx/tfplan2md/commit/967fdd687430cb1fe5c266a054d20ad07c1c34a5))
+* regenerate demo artifacts for refactoring ([ca87097](https://github.com/oocx/tfplan2md/commit/ca87097ef125cfc5b51a850f42098bb38a6c3590))
+* update code review with blocker for missing code analysis ([5ab8c32](https://github.com/oocx/tfplan2md/commit/5ab8c324f800f3450440ddbfb33be528512605e1))
+* update demo artifacts for refactoring summary ([3fce43c](https://github.com/oocx/tfplan2md/commit/3fce43cb10ed569bf5d357167431de6b0baee247))
+
+<a name="1.7.0"></a>
+## [1.7.0](https://github.com/oocx/tfplan2md/compare/v1.6.0...v1.7.0) (2026-02-01)
+
+### ✨ Features
+
+* add --open-details argument to screenshot generator ([9acc96b](https://github.com/oocx/tfplan2md/commit/9acc96b70ec3611f7f39a8da5c12001bbf383cde))
+* add fail-on code analysis exit codes ([bc233c1](https://github.com/oocx/tfplan2md/commit/bc233c193a565dfa90fe76b81c8d0ddaba141140))
+* add module-level and global static analysis findings support ([cd2d35a](https://github.com/oocx/tfplan2md/commit/cd2d35aa4647c3c9395b87448b5fca7a28001473))
+* add retrospective documentation for static code analysis integration ([6d9eb52](https://github.com/oocx/tfplan2md/commit/6d9eb5294a3c539d540e08fd9d64c9f82032db9b))
+* add SARIF parser foundation ([37eb4cc](https://github.com/oocx/tfplan2md/commit/37eb4cc3bed86f533915cb203b84621695c7fd6f))
+* add static analysis UAT artifact and example SARIF files ([9a54a44](https://github.com/oocx/tfplan2md/commit/9a54a44326c534ab18b4f582426ecf9c8c5d9f8a))
+* include code analysis findings in all comprehensive demo artifacts ([57e73e0](https://github.com/oocx/tfplan2md/commit/57e73e00ae9fc6542cda21751280c99b0898a780))
+* integrate code analysis into report model ([fab2ece](https://github.com/oocx/tfplan2md/commit/fab2ece72caff3926c3125c7c7a13afb08fa3a45))
+* integrate static analysis tools and update release process documentation ([e99e52a](https://github.com/oocx/tfplan2md/commit/e99e52a0ebe1602602b3c290b5ae36137f489705))
+* map code analysis severity and resources ([982a4cd](https://github.com/oocx/tfplan2md/commit/982a4cd88ddc95d1a8351295f3848714deb99d1c))
+* refine code analysis findings layout ([301e913](https://github.com/oocx/tfplan2md/commit/301e91350d1df01e556cff6bf051052475192768))
+* regenerate static analysis comprehensive demo artifact ([c956017](https://github.com/oocx/tfplan2md/commit/c956017c1a6ce0fe6a85c08e4175ea95f6e0a07d))
+* render code analysis findings ([3333a8c](https://github.com/oocx/tfplan2md/commit/3333a8c04e76e72291ba71afd9a5e44771108ab4))
+* render other findings and warnings ([8b6cb9d](https://github.com/oocx/tfplan2md/commit/8b6cb9dd51c7052f8e13ea0fc5929bbde96fdb82))
+* update all artifacts after regeneration ([fe7e179](https://github.com/oocx/tfplan2md/commit/fe7e179512aea270228bfb88201eaf67cbe02518))
+* update artifacts and code analysis models ([edca9f1](https://github.com/oocx/tfplan2md/commit/edca9f15f2371c9cfa2b49c48f4e8522cb0b0dbe))
+* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/056-static-analysis-integration/specification.md ([123641d](https://github.com/oocx/tfplan2md/commit/123641d75df326c9980e776bc7b5abaaed70eee6))
+* **website:** add v1.6.0 static code analysis feature and Azure AD enhancements ([d99a690](https://github.com/oocx/tfplan2md/commit/d99a6908f5b8a0b056b0c0fd1eac1dbafcba9386))
+
+### 🐛 Bug Fixes
+
+* address static analysis rendering issues ([d68e1c3](https://github.com/oocx/tfplan2md/commit/d68e1c381a036bc992ed7a7ce1f9cf6cb3c9a4e4))
+* clean corrupted SARIF files (remove concatenated AWS content) ([df0d3c3](https://github.com/oocx/tfplan2md/commit/df0d3c3899ff148d1aa2bdaf1832e358d4d8d12c))
+* handle recursive wildcard patterns ([daf19a9](https://github.com/oocx/tfplan2md/commit/daf19a99ba0865798bfabe36affdafa10b26a74d))
+* remove blank line in findings table ([ad6daea](https://github.com/oocx/tfplan2md/commit/ad6daea7f3f0a8a851012331d5daf6d017d0023e))
+* restore interactive example controls for static-analysis summary view ([fd8d40d](https://github.com/oocx/tfplan2md/commit/fd8d40dcb94b4fae28285c3b90a1acda8fd512af))
+* **hooks:** add solution path to pre-commit format and build tasks ([0323102](https://github.com/oocx/tfplan2md/commit/0323102dd4f1f76cb81f841f3a2e194400733ab6))
+* **website:** address 6 issues identified in website v1.6.0 updates ([9b28c80](https://github.com/oocx/tfplan2md/commit/9b28c80bf1ae017ce89d95b5cf53e21b391baed8))
+
+### 📚 Documentation
+
+* add architecture for static analysis integration ([2eeedf7](https://github.com/oocx/tfplan2md/commit/2eeedf7021fd188fd75d73555b8b9699cd2e6a68))
+* add code analysis example ([f589f17](https://github.com/oocx/tfplan2md/commit/f589f1783ac40cdc0cd4755e018b195ee7ffb787))
+* add code review for static-analysis-integration ([7ffb2d4](https://github.com/oocx/tfplan2md/commit/7ffb2d4eb89d825e6526b6f855ced755debbbd38))
+* add feature specification for 056-static-analysis-integration ([d0a7766](https://github.com/oocx/tfplan2md/commit/d0a77668f889c583119282058f3d671288f4fc33))
+* add tasks for static-analysis-integration ([250b06a](https://github.com/oocx/tfplan2md/commit/250b06a43458d10698a2e508ef4f92197c32c78d))
+* add test plans for 056-static-analysis-integration ([720db74](https://github.com/oocx/tfplan2md/commit/720db74c0b89060eddf48bfd799edb51a04645cc))
+* add UAT report for static-analysis-integration (FAILED) ([aba356b](https://github.com/oocx/tfplan2md/commit/aba356b5e6a7f77661e1c6f8d3fc7b01d0c4bd4e))
+* add UAT report for static-analysis-integration (FAILED) ([2282ab5](https://github.com/oocx/tfplan2md/commit/2282ab5f77ad3254ba9ace7723922183b70fb352))
+* add UAT report for static-analysis-integration (FAILED) ([d9dc5f4](https://github.com/oocx/tfplan2md/commit/d9dc5f43b2f96dbc91258a6cd3967624f90f3d89))
+* add UAT report for static-analysis-integration (PASSED) SNAPSHOT_UPDATE_OK ([be002fe](https://github.com/oocx/tfplan2md/commit/be002fe48a03fe5ad43f8e19c2416ac18dc70f35))
+* mark Task 1 complete ([c9b0b24](https://github.com/oocx/tfplan2md/commit/c9b0b243cdf8c8c380267534dfb127ed37ecbdca))
+* mark task 3 as complete ([c9710a4](https://github.com/oocx/tfplan2md/commit/c9710a4985292df671e4ddd3a0b1afbc9e9bf937))
+* mark task 4 as complete ([615de7a](https://github.com/oocx/tfplan2md/commit/615de7a1aec39f37d43926760c8f959853a20171))
+* mark task 5 as complete ([44c3bcb](https://github.com/oocx/tfplan2md/commit/44c3bcbee35286103962cd0100770fc7de550650))
+* mark task 8 as complete ([8ecccc1](https://github.com/oocx/tfplan2md/commit/8ecccc19081208d67561824addfdf5addfdf7aa0))
+* mark task 9 as complete ([0a80a35](https://github.com/oocx/tfplan2md/commit/0a80a3533fa19bd430028c59994f1f26006ec592))
+* mark tasks 6 and 7 as complete ([1e0aad0](https://github.com/oocx/tfplan2md/commit/1e0aad0cb1dfdd16b998d3fb850be5978789b414))
+* regenerate all demo artifacts ([9af23f2](https://github.com/oocx/tfplan2md/commit/9af23f29a0ac0c1320bd9eeffc9a3dcd16ba14e3))
+* update screenshot generation documentation ([cf85c75](https://github.com/oocx/tfplan2md/commit/cf85c75b108e7486dcb408d5aabdeea29cae83da))
+
+<a name="1.6.0"></a>
+## [1.6.0](https://github.com/oocx/tfplan2md/compare/v1.5.1...v1.6.0) (2026-01-31)
+
+### ✨ Features
+
+* add fail-on code analysis exit codes ([b3a2c95](https://github.com/oocx/tfplan2md/commit/b3a2c95d169278e996e6a48f7065241e22b9d83a))
+* add module-level and global static analysis findings support ([00f8748](https://github.com/oocx/tfplan2md/commit/00f8748a0392a0551ce71dc206aed7d9b5b4901e))
+* add SARIF parser foundation ([7ab5373](https://github.com/oocx/tfplan2md/commit/7ab5373040c6eee784f6f80cb4064270099d7e5c))
+* add static analysis UAT artifact and example SARIF files ([36de4dc](https://github.com/oocx/tfplan2md/commit/36de4dc506836ca095f03ed3dc3cbcce173c4e1d))
+* include code analysis findings in all comprehensive demo artifacts ([168e997](https://github.com/oocx/tfplan2md/commit/168e9976d267b980bcf670a1ac08a81626c87b4a))
+* integrate code analysis into report model ([8688e63](https://github.com/oocx/tfplan2md/commit/8688e639ead101bcd8c36f35273fe5ec2092d379))
+* integrate static analysis tools and update release process documentation ([c38a5c8](https://github.com/oocx/tfplan2md/commit/c38a5c89f7fabc11025fd68d24adf9b1d0bc7813))
+* map code analysis severity and resources ([88335bd](https://github.com/oocx/tfplan2md/commit/88335bdca42da856ec8717ee54562f390bfc7ab2))
+* refine code analysis findings layout ([5b5ffc4](https://github.com/oocx/tfplan2md/commit/5b5ffc49c9d305917eca196539bd37113f75d456))
+* regenerate static analysis comprehensive demo artifact ([5c7fd57](https://github.com/oocx/tfplan2md/commit/5c7fd5741ecb9519a9ea7b2501b34ea9b2089501))
+* render code analysis findings ([f276ff8](https://github.com/oocx/tfplan2md/commit/f276ff806d1cb56d2c7002107e6179a405ce95f7))
+* render other findings and warnings ([ab40cda](https://github.com/oocx/tfplan2md/commit/ab40cdab8c34e1c099f7259eadefc29b3c3ea03f))
+* update all artifacts after regeneration ([62d0d08](https://github.com/oocx/tfplan2md/commit/62d0d0868161b4eb3ce34c36a7288bbbd36b2004))
+* update artifacts and code analysis models ([4ddc8f7](https://github.com/oocx/tfplan2md/commit/4ddc8f74b5c4ff4cb02a8e9b58834b410455f88e))
+* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/056-static-analysis-integration/specification.md ([8a9f5f4](https://github.com/oocx/tfplan2md/commit/8a9f5f40c2a3f7664706dfa712654ad568765ca6))
+
+### 🐛 Bug Fixes
+
+* address static analysis rendering issues ([f5a5bcb](https://github.com/oocx/tfplan2md/commit/f5a5bcb40f16c9bacca5584e3dca3bddfb029fd3))
+* clean corrupted SARIF files (remove concatenated AWS content) ([8af7277](https://github.com/oocx/tfplan2md/commit/8af7277d98e43f4c276f28abf14fa8ff2efb3fae))
+* handle recursive wildcard patterns ([fb7642e](https://github.com/oocx/tfplan2md/commit/fb7642ec52bb0b8022d52067162b20a158035cef))
+* remove blank line in findings table ([23e4ae7](https://github.com/oocx/tfplan2md/commit/23e4ae734dbce832d71e95070291349aa3b509c4))
+
+### 📚 Documentation
+
+* add architecture for static analysis integration ([61bf904](https://github.com/oocx/tfplan2md/commit/61bf90461ce906d4c2126efd4b97fafb6bf4aab2))
+* add code analysis example ([782b17c](https://github.com/oocx/tfplan2md/commit/782b17c5502974f5eae99b7530da211b789f785e))
+* add code review for static-analysis-integration ([bc8b014](https://github.com/oocx/tfplan2md/commit/bc8b014defad5b795f9de17680362b1d61ff2f4c))
+* add feature specification for 056-static-analysis-integration ([28a17cd](https://github.com/oocx/tfplan2md/commit/28a17cd9e16131558d9234932ac22f8af098d80d))
+* add tasks for static-analysis-integration ([f0d4023](https://github.com/oocx/tfplan2md/commit/f0d40238975bb611f561fbda7eba2408822dc3f7))
+* add test plans for 056-static-analysis-integration ([ac223b6](https://github.com/oocx/tfplan2md/commit/ac223b6db86d9e4fd203a045fb13374ec7919b74))
+* add UAT report for static-analysis-integration (FAILED) ([a910b82](https://github.com/oocx/tfplan2md/commit/a910b82f06d0d947ad18f27f3c032fb61b4af4a6))
+* add UAT report for static-analysis-integration (FAILED) ([5ddd2ed](https://github.com/oocx/tfplan2md/commit/5ddd2edd8023ef36977f4b0dfc4e33fb356199a5))
+* add UAT report for static-analysis-integration (FAILED) ([4e948c8](https://github.com/oocx/tfplan2md/commit/4e948c8ae2f28592d9a780689a58c9a1f6e3e510))
+* add UAT report for static-analysis-integration (PASSED) SNAPSHOT_UPDATE_OK ([7a07bc2](https://github.com/oocx/tfplan2md/commit/7a07bc2ccd1bb78fc10dfbf1e66601ee38a3310f))
+* mark Task 1 complete ([b6b4aa3](https://github.com/oocx/tfplan2md/commit/b6b4aa3e6fc52f540666449b44d335e73a92ab47))
+* mark task 3 as complete ([d2c8532](https://github.com/oocx/tfplan2md/commit/d2c853225bfd361f6ce539588c3e715b80078cfd))
+* mark task 4 as complete ([b68b48c](https://github.com/oocx/tfplan2md/commit/b68b48c7bbd11afe642aac0b184adbf67c528212))
+* mark task 5 as complete ([2342995](https://github.com/oocx/tfplan2md/commit/2342995bdd964b940c60946de297e3859bab6a3b))
+* mark task 8 as complete ([8f0a7cc](https://github.com/oocx/tfplan2md/commit/8f0a7cce1fa430924507c99a06da7ed8a5353464))
+* mark task 9 as complete ([bd32b17](https://github.com/oocx/tfplan2md/commit/bd32b17396c8a3f73e40daa6fbfe1c069b191503))
+* mark tasks 6 and 7 as complete ([0615fae](https://github.com/oocx/tfplan2md/commit/0615fae6a280ea48d23bb008db811d2d2dbb1673))
+* regenerate all demo artifacts ([f3e63cf](https://github.com/oocx/tfplan2md/commit/f3e63cf22d5c4775b914b741eef8d9abfa2af062))
+
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/oocx/tfplan2md/compare/v1.5.0...v1.5.1) (2026-01-29)
+
+### 🐛 Bug Fixes
+
+* **ci:** publish coverage history outside PRs ([97b691e](https://github.com/oocx/tfplan2md/commit/97b691e88ec7c40ee9b844d18508dcbff8591a1f))
+
+### 📚 Documentation
+
+* update coverage badge and history ([636a446](https://github.com/oocx/tfplan2md/commit/636a446b5ddeca385a49937319079bfe803efc28))
+
+<a name="1.5.0"></a>
+## [1.5.0](https://github.com/oocx/tfplan2md/compare/v1.4.0...v1.5.0) (2026-01-29)
+
+### ✨ Features
+
+* add azure ad helper formatting ([7bbfa94](https://github.com/oocx/tfplan2md/commit/7bbfa9474d8b932878876b2bafb61a844b031ca8))
+* add Azure AD provider module ([d9b5364](https://github.com/oocx/tfplan2md/commit/d9b53644a5f1a1dfab093cbba2a6c236b5a69153))
+* add azuread group member counts ([14ebe9b](https://github.com/oocx/tfplan2md/commit/14ebe9b61426d0d680d27a231974b8d1f80bcf03))
+* add azuread group member template ([bcdab29](https://github.com/oocx/tfplan2md/commit/bcdab293b96bd2e24b3d3b26df91bc9d1d66d5a8))
+* add azuread group without members template ([82ce0ff](https://github.com/oocx/tfplan2md/commit/82ce0fff3d14ab61bba8bd7256b283b4d5cb197d))
+* add azuread invitation template ([988ee14](https://github.com/oocx/tfplan2md/commit/988ee1452dd3410db05dc089db97227fbaa92360))
+* add azuread service principal template ([b897ea1](https://github.com/oocx/tfplan2md/commit/b897ea10cb302f2b7b479a91685a831d71f855a4))
+* add azuread user template ([8ef0836](https://github.com/oocx/tfplan2md/commit/8ef08365d903477a3e731dffd3f8704435e21cc0))
+
+### ♻️ Refactoring
+
+* remove azuread summary mappings ([0cb99f5](https://github.com/oocx/tfplan2md/commit/0cb99f5e989e92658799adc1a5022ce18c259a79))
+
+### 📚 Documentation
+
+* add architecture for 053-azuread-resources-enhancements ([cafe892](https://github.com/oocx/tfplan2md/commit/cafe892dc024135a7c8628ae890ecf8f4a07326c))
+* add azuread demo assets ([96f7dec](https://github.com/oocx/tfplan2md/commit/96f7decb4635b68ebcf62ab8b127ff09f3f33267))
+* add code review for azuread-resources-enhancements ([581fa39](https://github.com/oocx/tfplan2md/commit/581fa3998ac5448f3c2798636ef94ee68044b4af))
+* add feature specification for 053-azuread-resources-enhancements ([839ee24](https://github.com/oocx/tfplan2md/commit/839ee24492410f370eaf133fb1ac9083abdcab1e))
+* add tasks for enhanced azure ad resource display ([2782afe](https://github.com/oocx/tfplan2md/commit/2782afec4a8f5e87e6ac639f015ab31f662e9102))
+* add test plans for azuread-resources-enhancements ([fe247a2](https://github.com/oocx/tfplan2md/commit/fe247a28f375558eb4a69675f65e5825764908e3))
+* add UAT report for Azure AD resource enhancements ([86f17d0](https://github.com/oocx/tfplan2md/commit/86f17d01016f153817f52dbd9282d4ab03904e6c))
+* mark task 1 complete ([e33413e](https://github.com/oocx/tfplan2md/commit/e33413ef231f773ed77e323ba3bea81a2c5662a9))
+* mark task 10 complete ([1f9f96a](https://github.com/oocx/tfplan2md/commit/1f9f96a96164245517015b851a8d60ee3f018516))
+* mark task 2 complete ([b3474c1](https://github.com/oocx/tfplan2md/commit/b3474c100f623d4c8bdd45d654c4e45597bad7d5))
+* mark task 3 complete ([38e5ec4](https://github.com/oocx/tfplan2md/commit/38e5ec4665aa783723579af148aca5ea833c3dca))
+* mark task 4 complete ([6746c44](https://github.com/oocx/tfplan2md/commit/6746c446d9669eda06ce75a9a49a542bbb001111))
+* mark task 5 complete ([924aa59](https://github.com/oocx/tfplan2md/commit/924aa599532c866b2b03b767b4f693711a5be4ff))
+* mark task 6 complete ([09a4b88](https://github.com/oocx/tfplan2md/commit/09a4b88272b1ab1917a26030498cdde9ff74a9d3))
+* mark task 7 complete ([9a48106](https://github.com/oocx/tfplan2md/commit/9a48106af43fcaef379b84e98d4e94da93e887cd))
+* mark task 8 complete ([554472f](https://github.com/oocx/tfplan2md/commit/554472f9da704baa318f558cbba002962aa9a878))
+* mark task 9 complete ([93ad460](https://github.com/oocx/tfplan2md/commit/93ad460b2c0f511b15f2fa5ca7ea0c12331f4b0f))
+* update coverage badge and history ([7e8f412](https://github.com/oocx/tfplan2md/commit/7e8f41292adc14dc2353ea1839890754c9f6bd32))
+* update demo artifacts for azuread enhancements ([1444994](https://github.com/oocx/tfplan2md/commit/1444994e94ffb7eda277ee78b222badefeaed72a))
+* update documentation for azuread enhancements ([338291d](https://github.com/oocx/tfplan2md/commit/338291d8d9cb4d2db7ffcb9a6d089d213ea58e04))
+
+<a name="1.4.0"></a>
+## [1.4.0](https://github.com/oocx/tfplan2md/compare/v1.3.0...v1.4.0) (2026-01-28)
+
+### ✨ Features
+
+* simplify interactive UAT flow ([4a63f7b](https://github.com/oocx/tfplan2md/commit/4a63f7b243c4911fa8a7123d669a5e9a02578001))
+
+### 📚 Documentation
+
+* **retro:** add metrics and evidence for feature 051 retrospective ([34ab7d0](https://github.com/oocx/tfplan2md/commit/34ab7d0400373db6fd395363b6a96cff60ec0c65))
+* **retro:** finalize movement of technical writer chat log ([278908d](https://github.com/oocx/tfplan2md/commit/278908dea12b5c6c8d8195ba6c989f00f69a9b5a))
+* **retro:** finalize retrospective for feature 051 with linked issues ([2fea46e](https://github.com/oocx/tfplan2md/commit/2fea46efa2ec4bafe691733749b514b993001cd9))
+* **retro:** move and stage technical writer chat log (forced) ([a1c392c](https://github.com/oocx/tfplan2md/commit/a1c392c55f33a3cf7eb2d59581ce004a822b99af))
+
+<a name="1.3.0"></a>
+## [1.3.0](https://github.com/oocx/tfplan2md/compare/v1.2.0...v1.3.0) (2026-01-27)
+
+### ✨ Features
+
+* add subscription attribute emoji formatting ([db0d5f3](https://github.com/oocx/tfplan2md/commit/db0d5f38877073bf40d3042e5f35aadaae1dd751))
+* enrich apim summary html ([82797ac](https://github.com/oocx/tfplan2md/commit/82797ac53a92dde746e92661b89a0d12d2b7541e))
+* fix display enhancements regressions ([25755c2](https://github.com/oocx/tfplan2md/commit/25755c2e3535037c9b5cbebb141860d8313a5c7d))
+* highlight large json and xml values ([a0f0d07](https://github.com/oocx/tfplan2md/commit/a0f0d0704a4852046bf9319c0ff338785c71b153))
+* honor apim named value secret flag ([15e8afb](https://github.com/oocx/tfplan2md/commit/15e8afba33c2f31e5bfdad03d5750eff7f34cdb6))
+* move apim summaries to azurerm factories ([6cf9e3f](https://github.com/oocx/tfplan2md/commit/6cf9e3f49dc8510ee6f550ed310e87937adeba1b))
+
+### 🐛 Bug Fixes
+
+* **test:** remove invalid returns tag to fix CI blocker ([af51057](https://github.com/oocx/tfplan2md/commit/af51057025edba93db6509dec70c94da16fc79b5))
+
+### ♻️ Refactoring
+
+* reduce semantic formatting complexity ([4e35912](https://github.com/oocx/tfplan2md/commit/4e35912093d28adc6718e2442d5d03d7152345b8))
+
+### 📚 Documentation
+
+* add architecture for 051-display-enhancements ([df387a6](https://github.com/oocx/tfplan2md/commit/df387a6796241cfd5e5f3a356545391a05d14d70))
+* add code review for display-enhancements (Changes Requested) ([815f700](https://github.com/oocx/tfplan2md/commit/815f700f5d1cb5594ca251b07010eb408dac70b8))
+* add feature specification for 051-display-enhancements ([aabf933](https://github.com/oocx/tfplan2md/commit/aabf93343d8caebce69532a7d18b6a45e335d97b))
+* add retrospective and metrics for azapi-attribute-grouping ([0e8928f](https://github.com/oocx/tfplan2md/commit/0e8928fa96f644fcb7ef4ce84e152acaf57e7e48))
+* add tasks for display-enhancements ([b370153](https://github.com/oocx/tfplan2md/commit/b37015347df7ed8b084b04ac2f5402fbcb171c95))
+* add test plan and UAT test plan for 051-display-enhancements ([c91f9ed](https://github.com/oocx/tfplan2md/commit/c91f9ede929753032816d0c050405820b58e6c73))
+* add UAT report for display-enhancements (Failed) ([6316d7b](https://github.com/oocx/tfplan2md/commit/6316d7b494f21bd2d7b667c7768e481c65a3117e))
+* add UAT report for display-enhancements (Passed) ([d252837](https://github.com/oocx/tfplan2md/commit/d252837038aa412f1bb2a154106be9b5beae4ba8))
+* add updated test plan and UAT test plan for 051-display-enhancements ([dafe752](https://github.com/oocx/tfplan2md/commit/dafe752a07e18e33c8f3338a3488b12e4a676885))
+* clarify UAT handling for display enhancements ([e1e35d2](https://github.com/oocx/tfplan2md/commit/e1e35d2d340305d4f165c6962664ca598b9b40fe))
+* mark task 1 as complete ([912a523](https://github.com/oocx/tfplan2md/commit/912a52362c0fa1b701b1df1beaad4ab0f9501144))
+* mark task 2 as complete ([52ca0b2](https://github.com/oocx/tfplan2md/commit/52ca0b252a06bdea50ed58af7b462480cd5a3347))
+* mark task 3 as complete ([6cc9d45](https://github.com/oocx/tfplan2md/commit/6cc9d45317de1d6f302dacfbe889b0d1a58f7c51))
+* mark task 4 as complete ([3d2c7bc](https://github.com/oocx/tfplan2md/commit/3d2c7bc5c6f453ade0910b1e56a382587826f1e8))
+* regenerate demo artifacts for display enhancements ([3396c10](https://github.com/oocx/tfplan2md/commit/3396c10119d386297991b08e501dcfa7f5fe0caa))
+* update coverage badge and history ([e2fea93](https://github.com/oocx/tfplan2md/commit/e2fea932c640e400ff25f1c354f7c50320cb9f1b))
+* update demo artifacts for display enhancements ([2b24e77](https://github.com/oocx/tfplan2md/commit/2b24e77d5af247458430559d41b7b2832a08d774))
+* update display enhancements demo artifacts ([8c6e401](https://github.com/oocx/tfplan2md/commit/8c6e4019a25402864df2ebcaad73f299490259dd))
+* update tasks for display-enhancements based on architecture revision ([9d01dd6](https://github.com/oocx/tfplan2md/commit/9d01dd62710ae7be28c17b676e6aaa6581315c72))
+* update UAT report for display-enhancements (fix branch regression details) ([f288b57](https://github.com/oocx/tfplan2md/commit/f288b574873a1c867275869fecfa8055c473b7ff))
+* update UAT report for display-enhancements with full maintainer feedback ([2d36e8f](https://github.com/oocx/tfplan2md/commit/2d36e8fa06b811eee8159dff4083779c5225c7f1))
+
+<a name="1.2.0"></a>
+## [1.2.0](https://github.com/oocx/tfplan2md/compare/v1.1.0...v1.2.0) (2026-01-27)
+
+### ✨ Features
+
+* improve azapi body grouping and array rendering ([cb0caca](https://github.com/oocx/tfplan2md/commit/cb0caca69b1bd6dd38fef454ba5f4d49f2a71322))
+* **uat:** add automated failure detection in UAT polling scripts ([684ca4f](https://github.com/oocx/tfplan2md/commit/684ca4f4cde05c80de797bec4a25baa0704ad67d))
+
+### 🐛 Bug Fixes
+
+* **azapi:** normalize metadata formatting ([e264337](https://github.com/oocx/tfplan2md/commit/e2643372f0fa8f9f82b001e9f66d0e3ab6707725))
+
+### 📚 Documentation
+
+* add architecture for azapi attribute grouping ([ad23faf](https://github.com/oocx/tfplan2md/commit/ad23faf3c9ba685b807b18a4c16c1b8521bd78ea))
+* add code review for azapi-attribute-grouping ([61542ac](https://github.com/oocx/tfplan2md/commit/61542ac1ffaf12bc316e8c890ac1ca95990295b5))
+* add comprehensive test plan and UAT scenarios for feature 050 ([80318ea](https://github.com/oocx/tfplan2md/commit/80318ea518eca423f6653e742428cf5094464338))
+* add feature specification for azapi attribute grouping ([24491c0](https://github.com/oocx/tfplan2md/commit/24491c023ccc6b29b92ea9162540651c1f4132f4))
+* add tasks for improved azapi attribute grouping and array rendering ([a730f89](https://github.com/oocx/tfplan2md/commit/a730f89f4e4dec8464941a238d53602a36dabcfe))
+* add UAT report for azapi-attribute-grouping (Passed) ([ca3e30f](https://github.com/oocx/tfplan2md/commit/ca3e30f9fcfb11067c000eed5070d8a92ab116e4))
+* add UAT report for azapi-attribute-grouping showing failures ([89c7fe6](https://github.com/oocx/tfplan2md/commit/89c7fe6d23b0885f8a126743b34cc37cdd8b108e))
+* approve code review for azapi-attribute-grouping after rework ([14b7051](https://github.com/oocx/tfplan2md/commit/14b70517f56a495506fbc333fcb28fe7362124cf))
+* refresh azapi UAT artifact ([0e8116c](https://github.com/oocx/tfplan2md/commit/0e8116c4b8a3dab55d476159f1e727d1312d6d92))
+* update coverage badge and history ([654d36d](https://github.com/oocx/tfplan2md/commit/654d36dbf2965d0a680a5a26907394e3a3d849b4))
+* update UAT artifacts for azapi-attribute-grouping ([16d78bf](https://github.com/oocx/tfplan2md/commit/16d78bfb495ffe1985be9d865c6cfc8c2be1f439))
+
+<a name="1.1.0"></a>
+## [1.1.0](https://github.com/oocx/tfplan2md/compare/v1.0.2...v1.1.0) (2026-01-25)
+
+### ✨ Features
+
+* add discovery script for Azure API documentation mappings ([836ede8](https://github.com/oocx/tfplan2md/commit/836ede815de0de8644adc8d8d0084f3fd03c7dc8))
+* create AzureApiDocumentationMapper with JSON loading ([f8ee198](https://github.com/oocx/tfplan2md/commit/f8ee19808e8b741af226f87e9d79b4f82fca235b))
+* create comprehensive unit tests for AzureApiDocumentationMapper ([c4dc82b](https://github.com/oocx/tfplan2md/commit/c4dc82be131937163195bfcd4f1a5090d9fb8abe))
+* generate initial Azure API documentation mappings ([43eb0fb](https://github.com/oocx/tfplan2md/commit/43eb0fbc58f097118ae05c7cff7673da0c9728d3))
+* remove '(best-effort)' disclaimer from API documentation links ([2a50688](https://github.com/oocx/tfplan2md/commit/2a5068839f036aefee6a846335925e77b26cac84))
+* replace Azure API doc URL guessing with official mappings ([87596f9](https://github.com/oocx/tfplan2md/commit/87596f94a1271a421c8407fdf3646ce261647887))
+* update AzureApiDocLink helper to use mapper ([55adb0a](https://github.com/oocx/tfplan2md/commit/55adb0ac54c53ef78c65011666e594893da288ad))
+* update existing Scriban helper tests for mapping-based behavior ([4d411cd](https://github.com/oocx/tfplan2md/commit/4d411cd2715932184d49fd98c4e9e145abae31a6))
+
+### ♻️ Refactoring
+
+* move ADR-005 into feature folder per new requirement ([6942132](https://github.com/oocx/tfplan2md/commit/6942132601a548574410c6c7aa14c74dade89618))
+
+### 📚 Documentation
+
+* add code review report for feature 048 - APPROVED ([e156323](https://github.com/oocx/tfplan2md/commit/e156323179b0ae2e1191c65277594de1d2b127ba))
+* add feature specification for 048-azure-api-doc-mapping ([8bc0f25](https://github.com/oocx/tfplan2md/commit/8bc0f257c7eea1ae309e687557cbe78a64d2bbce))
+* add implementation tasks for feature 048 ([cf57a4f](https://github.com/oocx/tfplan2md/commit/cf57a4f9ca81a0b8dbddd6c297b7a477d36be78e))
+* add test plan and UAT test plan for feature 048 (Azure API documentation mapping) ([a5a5c55](https://github.com/oocx/tfplan2md/commit/a5a5c55d5b764234fee174aabf25246a6614dd19))
+* add UAT report for feature 048 ([f48f60e](https://github.com/oocx/tfplan2md/commit/f48f60e09e824f285aa002b13ee9d0090b2a452a))
+* update architecture per maintainer feedback ([e10f63a](https://github.com/oocx/tfplan2md/commit/e10f63ab73f432da2238f7d7f5c2a50f90bb86cd))
+* update coverage badge and history ([43a798c](https://github.com/oocx/tfplan2md/commit/43a798c6db83e49ab7aa4618fd021aa5ef1d6830))
+* update coverage badge and history ([d969129](https://github.com/oocx/tfplan2md/commit/d969129513a1734adf3f4882c81317138a227af0))
+* update documentation for Azure API documentation mapping feature ([9279576](https://github.com/oocx/tfplan2md/commit/927957695add12304b073f5ba2eddca06625d36f))
+* update GitHub instructions to prioritize MCP tools over CLI ([f220447](https://github.com/oocx/tfplan2md/commit/f22044706ea55696ea53c3befbdbfec30429ef22))
+* update terminology from "GitHub chat tools" to "GitHub MCP tools" ([78c2445](https://github.com/oocx/tfplan2md/commit/78c2445acd373cc12a3a16d3b9230cfe2f6dc51b))
+
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/oocx/tfplan2md/compare/v1.0.1...v1.0.2) (2026-01-25)
+
+### 🐛 Bug Fixes
+
+* summarize firewall rule changes in updates ([11627d7](https://github.com/oocx/tfplan2md/commit/11627d7f7e25b12fb1513c521d3c8e5e04a170d0))
+* update comprehensive-demo artifact with semantic firewall summary ([76e46f2](https://github.com/oocx/tfplan2md/commit/76e46f226f39aabbf7298c71932507f5d6c1fc91))
+
+### 📚 Documentation
+
+* add code review for firewall summary fix ([5cb6faa](https://github.com/oocx/tfplan2md/commit/5cb6faa7f64c8726a02ffa93d7510739f6aa9f79))
+* add issue analysis for firewall summary ([535dc26](https://github.com/oocx/tfplan2md/commit/535dc26b4483b606b58e06a9864e3447ec3ce421))
+* add UAT report for firewall summary fix ([4606144](https://github.com/oocx/tfplan2md/commit/46061449c8a32418dee3e0d0c66a6e25c651f985))
+* update coverage badge and history ([5b4191f](https://github.com/oocx/tfplan2md/commit/5b4191fc55fca47de6eeddb8591b0a92a5b8711c))
+
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/oocx/tfplan2md/compare/v1.0.0...v1.0.1) (2026-01-25)
+
+### 🐛 Bug Fixes
+
+* infer principal type from mappings ([0bce648](https://github.com/oocx/tfplan2md/commit/0bce64887c6a532d2af3aa86600abae4b5989b3b))
+
+### 📚 Documentation
+
+* add issue analysis for principal type inference ([193141f](https://github.com/oocx/tfplan2md/commit/193141fe071f5e7c32bdf5630556de8c12f1e614))
+* update coverage badge and history ([13057ce](https://github.com/oocx/tfplan2md/commit/13057ced571f3bb383a631b4a68946553fce8bb5))
+
+<a name="1.0.0"></a>
+## [1.0.0](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.46...v1.0.0) (2026-01-25)
+
+### ✨ Features
+
+* remove alpha pre-release configuration to enable stable releases ([ea5f347](https://github.com/oocx/tfplan2md/commit/ea5f347c76fe75522b2a57dd04aec67adba4436f))
+
+### 🐛 Bug Fixes
+
+* keep original markdown link format in changelog header ([5edb38e](https://github.com/oocx/tfplan2md/commit/5edb38e19f68ae593e7613edb6b4dbb627573df8))
+
+### 📚 Documentation
+
+* add prominent link to official website in README ([7709c78](https://github.com/oocx/tfplan2md/commit/7709c787274d91413a5fa1f0fca53b5a62235ba9))
+* add retrospective and metrics for feature 047 ([9971ca3](https://github.com/oocx/tfplan2md/commit/9971ca3065b697bf0c61c8652f9b0129fb49561a))
+* add workflow tasks for GPT-5.2-Codex update ([ec4db93](https://github.com/oocx/tfplan2md/commit/ec4db93b9dfc607e7f9079b4d414432e5df8cddd))
+* switch to GPT-5.2-Codex ([50d8f38](https://github.com/oocx/tfplan2md/commit/50d8f38c00d1a25012444a680c61a161092c100c))
+* update coverage badge and history ([fc824cd](https://github.com/oocx/tfplan2md/commit/fc824cdc9433b18f031b72a3c08c6ff98c40106f))
+* update GPT-5.2-Codex model reference ([9a44ee7](https://github.com/oocx/tfplan2md/commit/9a44ee705e73cccdd1c30f9e1c868e378b55a2d7))
+* **website:** fix navigation anchor links for render targets ([9723336](https://github.com/oocx/tfplan2md/commit/972333619871df88bda1a35867076e38b2aedcba))
+* **website:** update CLI docs to use --render-target flag ([c8b4722](https://github.com/oocx/tfplan2md/commit/c8b47224d47b6804c8173699ffe87daabfa3d13e))
+
+<a name="1.0.0-alpha.46"></a>
+## [1.0.0-alpha.46](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.45...v1.0.0-alpha.46) (2026-01-24)
+
+### ✨ Features
+
+* add provider registration infrastructure ([068398f](https://github.com/oocx/tfplan2md/commit/068398f8c93621e5f6abf2cea91f958e532d0b7c))
+* add provider registration infrastructure ([ce27324](https://github.com/oocx/tfplan2md/commit/ce2732496c226feef45091665155968426115f44))
+* implement RenderTargets and diff formatter dispatching ([6696c32](https://github.com/oocx/tfplan2md/commit/6696c32f698b1d2335eb902813f908f4f51b2aa6))
+* migrate AzApi provider to Providers/AzApi namespace ([13f91c2](https://github.com/oocx/tfplan2md/commit/13f91c253aeace5f233c7a210d68411d7028c151))
+* migrate AzureDevOps provider to pluggable architecture ([1c45c4c](https://github.com/oocx/tfplan2md/commit/1c45c4c99ddbc486a10edd9b68a7b5386e6e5cfb))
+* migrate AzureRM provider to pluggable architecture ([4c77762](https://github.com/oocx/tfplan2md/commit/4c77762e0f1f81642843b08926c8947a2c2b0714))
+* **cli:** add --render-target flag to replace --large-value-format ([e0bf38a](https://github.com/oocx/tfplan2md/commit/e0bf38a581b7f02bd715e706c692412f33e0bd1a))
+
+### 🐛 Bug Fixes
+
+* correct AzApi template path structure and test setup ([c92d1c9](https://github.com/oocx/tfplan2md/commit/c92d1c912bf6bae367f8e6e3628319db9a0e37c6))
+* **ci:** resolve path mismatch and formatting issues in PR validation ([561b9dc](https://github.com/oocx/tfplan2md/commit/561b9dc89363b48754df8bd61951d5e9c0370dd2))
+* **ci:** use absolute path for results-directory to ensure root placement ([9164927](https://github.com/oocx/tfplan2md/commit/91649272b1ca9de5d1e34561c72bdd57d994db32))
+* **ci:** use root-level TestResults for better path consistency ([8213d23](https://github.com/oocx/tfplan2md/commit/8213d2353f372040fee033fb7bbecbe7ee8428a6))
+
+### ♻️ Refactoring
+
+* move configuration files from root to src/ ([aed6deb](https://github.com/oocx/tfplan2md/commit/aed6debc31147be51a09c2c1ca28344a4389569f))
+* move remaining 3 ScribanHelpers files to subdirectory ([24279ab](https://github.com/oocx/tfplan2md/commit/24279abb95722ebe8964e3bcaf0eddc304baa5bd))
+* move ViewModelFactory classes to AzureRM provider ([659e246](https://github.com/oocx/tfplan2md/commit/659e246c54fde4acf67cfba5040695d63828627e))
+* reorganize ScribanHelpers into subdirectories and simplify calls ([031a7c4](https://github.com/oocx/tfplan2md/commit/031a7c46638a524644c5c736edc68c011f9f471a))
+* **platforms:** restructure Azure utilities into Platforms/Azure namespace ([f759260](https://github.com/oocx/tfplan2md/commit/f759260a8fdb0ba0a5d6d00cbd009837890fa499))
+
+### 📚 Documentation
+
+* add architecture for provider code separation ([1a75d55](https://github.com/oocx/tfplan2md/commit/1a75d55c38349becf170a7a53790a891b35a7fe7))
+* add code review for provider code separation ([a4d9273](https://github.com/oocx/tfplan2md/commit/a4d92730d795ada4c619aa8bb6173577cb176f0e))
+* add coverage threshold validation to developer and code reviewer agents ([7e2e81e](https://github.com/oocx/tfplan2md/commit/7e2e81ecff60388073b38adb0908605bfb5c7e58))
+* add feature specification for 047-provider-code-separation ([7aa0dcb](https://github.com/oocx/tfplan2md/commit/7aa0dcb9f3be372627494999137a79129dd6f147))
+* add Project Structure section to CONTRIBUTING.md ([819d006](https://github.com/oocx/tfplan2md/commit/819d006028065b94d15e0b9316ef47cd9d373b37))
+* add tasks for provider code separation ([eabcd29](https://github.com/oocx/tfplan2md/commit/eabcd29739ef8a67cd1eb70b18ac2bacb0362ed9))
+* add test and UAT plans for 047-provider-code-separation ([6645842](https://github.com/oocx/tfplan2md/commit/6645842f9e965bb1c73ea9e3ae1aafe78f3b91c1))
+* add test and UAT plans for 047-provider-code-separation ([db2ca6d](https://github.com/oocx/tfplan2md/commit/db2ca6d33cca5ebc3e8ae0ccb35fb16cbe219262))
+* create Providers/README.md with comprehensive guide ([8273d67](https://github.com/oocx/tfplan2md/commit/8273d6705c3c05e2ff46603b34cd370ee862e8c0))
+* mark task 2 as complete ([5f90e93](https://github.com/oocx/tfplan2md/commit/5f90e93629f1c0e269201b3ea3ec69059b2d27b5))
+* mark task 3 (CLI --render-target) as complete ([1e9876d](https://github.com/oocx/tfplan2md/commit/1e9876d58305e93a98286d4abe0cdbadb6e25605))
+* mark task 4 (Platform utilities restructure) as complete ([84e03df](https://github.com/oocx/tfplan2md/commit/84e03dffbbbb3e3737c56d8cf81600040bef387d))
+* mark task 5 (Migrate AzApi Provider) as complete ([de1f43f](https://github.com/oocx/tfplan2md/commit/de1f43f94b5957638191462f3312000dccc90691))
+* mark Task 8 (Cleanup and Test Suite Alignment) as complete ([4675b22](https://github.com/oocx/tfplan2md/commit/4675b2213a7d2ade843f6e9322f8ea19d7fe07e1))
+* mark Task 9 as complete in tasks.md ([cfdae43](https://github.com/oocx/tfplan2md/commit/cfdae430ab44e97ce2f8e005d75a57fd90bbfc64))
+* mark tasks 6 and 7 as complete ([62f539f](https://github.com/oocx/tfplan2md/commit/62f539fca06badd3c98442f49fe50cd580930d35))
+* refresh demo artifact metadata ([aec5d49](https://github.com/oocx/tfplan2md/commit/aec5d49c3a83856de4799e4d98bd06b6b169747b))
+* update architecture.md with provider structure ([338603b](https://github.com/oocx/tfplan2md/commit/338603be3042a321cb4fd66b38e9acee6bea13b7))
+* update code review status ([f9546f7](https://github.com/oocx/tfplan2md/commit/f9546f7ce29d3ff8a736db04143c4f9af96ab2bc))
+* update code review with coverage blocker ([0522c7d](https://github.com/oocx/tfplan2md/commit/0522c7dd31d66be39935b25db10f9989dad8148d))
+* update coverage badge and history ([78b820c](https://github.com/oocx/tfplan2md/commit/78b820ccd7ea863be1158e9e674cce18ac8ebbc9))
+
+<a name="1.0.0-alpha.45"></a>
+## [1.0.0-alpha.45](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.44...v1.0.0-alpha.45) (2026-01-23)
+
+### ✨ Features
+
+* baseline code metrics violations ([5a87bdb](https://github.com/oocx/tfplan2md/commit/5a87bdb55dccb2e5229a30b279fdd890aa8121a6))
+* configure code metrics enforcement ([9dbf38e](https://github.com/oocx/tfplan2md/commit/9dbf38e014fc9154fd060d3bd5eb00d5266b4ad6))
+* refactor Azure role definitions to data-driven approach ([f1109e7](https://github.com/oocx/tfplan2md/commit/f1109e7d078cd6f1567b84f6825343bbeccd4185))
+* refactor ResourceSummaryBuilder to reduce file size and class coupling ([61a7c96](https://github.com/oocx/tfplan2md/commit/61a7c962eabfa414bcd297f8dd5962312e6fae2e))
+
+### 🐛 Bug Fixes
+
+* restore CA1506 suppression for ReportModelBuilder ([49249d2](https://github.com/oocx/tfplan2md/commit/49249d2802d0fea15b785ceaf90747c20465e939))
+
+### ♻️ Refactoring
+
+* extract summary and JSON helpers to reduce ReportModelBuilder coupling ([9cc9e6f](https://github.com/oocx/tfplan2md/commit/9cc9e6f05d2ef7bbc54a289ad992fef68fdea6db))
+* introduce factory registry to reduce ReportModelBuilder coupling ([fccc201](https://github.com/oocx/tfplan2md/commit/fccc2015feef2f510439d47bf3f2fe1c6f87b618))
+* split azapi scriban helpers ([b537d21](https://github.com/oocx/tfplan2md/commit/b537d2190888739b22ab6372a52a5f67119b44ab))
+* split VariableGroupViewModelFactory into focused helpers ([8885219](https://github.com/oocx/tfplan2md/commit/8885219f2fd935b309c239af6020548e4b693ac8))
+
+### 📚 Documentation
+
+* add architecture for 046-code-quality-metrics-enforcement ([b49125e](https://github.com/oocx/tfplan2md/commit/b49125e764cbf6e56c70e1f6a193f7dc7b6f2326))
+* add code review for code-quality-metrics-enforcement ([9d03e35](https://github.com/oocx/tfplan2md/commit/9d03e351a89afd5157d8af9d724a5d20cf69120d))
+* add feature specification for 046-code-quality-metrics-enforcement ([fab1a4c](https://github.com/oocx/tfplan2md/commit/fab1a4ced46f04e8947d50e75ec4b78b7d2ff052))
+* add retrospective and redacted chat logs for feature 043 ([58a47c8](https://github.com/oocx/tfplan2md/commit/58a47c8ae2774819ada2e302d61b8928308cbb49))
+* add tasks for 046-code-quality-metrics-enforcement ([fdbf5a3](https://github.com/oocx/tfplan2md/commit/fdbf5a3ca22bbc68ba4ae7b03e923df85d6fe0c2))
+* add test plan and UAT test plan for 046-code-quality-metrics-enforcement ([6849f14](https://github.com/oocx/tfplan2md/commit/6849f14e608edddf3140e3b18c7f63b694aea888))
+* document quality metric suppressions ([d29545d](https://github.com/oocx/tfplan2md/commit/d29545dd419c751559918a01855191c0b4eded8e))
+* link improvement opportunities to github issues in retrospective ([a55e7b1](https://github.com/oocx/tfplan2md/commit/a55e7b10e1301f78f57fe5e8666da27f54c36e81))
+* mark Task 6 complete - VariableGroupViewModelFactory refactored ([8fec3b1](https://github.com/oocx/tfplan2md/commit/8fec3b1355c9e212beff5127c4371b1de2dfeb1f))
+* mark Task 7 as complete ([43b9a6e](https://github.com/oocx/tfplan2md/commit/43b9a6eb229bfd225560d896257a60367b29e79c))
+* mark Task 8 as complete ([25b8af1](https://github.com/oocx/tfplan2md/commit/25b8af1d5590dd366de65d8c304c267789b29f08))
+* mark Task 9 as complete with audit results ([2a253cc](https://github.com/oocx/tfplan2md/commit/2a253cc7f4a2121978be9af1f14b5797b78b6698))
+* update coverage badge and history ([3083f4f](https://github.com/oocx/tfplan2md/commit/3083f4fa14b71491c308de1923ce93ab656b71bc))
+* update documentation for code quality metrics enforcement ([5546664](https://github.com/oocx/tfplan2md/commit/55466642490bfbe723d74a51b6178b024d77b7e3))
+* update Task 5 progress - coupling reduced 24% (50→38 types) ([0baa651](https://github.com/oocx/tfplan2md/commit/0baa6511c3d847a5aaddc13cdeac7a6779395940))
+* update Task 5 status to reflect partial completion ([a7d0051](https://github.com/oocx/tfplan2md/commit/a7d005105cbb919d7680ff2066ffca55ae1e52a5))
+
+<a name="1.0.0-alpha.44"></a>
+## [1.0.0-alpha.44](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.43...v1.0.0-alpha.44) (2026-01-23)
+
+### ✨ Features
+
+* add quiet mode to CI polling scripts for agent consumption ([#346](https://github.com/oocx/tfplan2md/issues/346)) ([a00b829](https://github.com/oocx/tfplan2md/commit/a00b829a4611017cf97904101eac4317ce966014))
+
+<a name="1.0.0-alpha.43"></a>
+## [1.0.0-alpha.43](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.42...v1.0.0-alpha.43) (2026-01-23)
+
+### ✨ Features
+
+* add Meziantou.Analyzer v2.0.127 (Phase 3) ([b2b8533](https://github.com/oocx/tfplan2md/commit/b2b8533badf69f9eb017e565ba213bb228069bdb))
+* add SonarAnalyzer.CSharp v9.16.0.82469 for code quality analysis ([92b3ad5](https://github.com/oocx/tfplan2md/commit/92b3ad58f50f2c1afbb9833753fe22b0af75dd65))
+* add StyleCop.Analyzers v1.2.0-beta.556 package ([49962e4](https://github.com/oocx/tfplan2md/commit/49962e4ecc7935defab2501e4a4c14473ebc4479))
+* configure Meziantou.Analyzer rules in .editorconfig (Phase 3) ([af21724](https://github.com/oocx/tfplan2md/commit/af217248b9df04a403cb50f9c324f6f231911460))
+* configure SonarAnalyzer.CSharp rules in .editorconfig ([704178b](https://github.com/oocx/tfplan2md/commit/704178bfbd941a43c7bff42afde9aa16a726449d))
+* configure StyleCop rules and fix violations ([418422a](https://github.com/oocx/tfplan2md/commit/418422a8a8f83698e9875abb76303f1925b6e11a))
+* enable XML documentation generation for main project ([d556140](https://github.com/oocx/tfplan2md/commit/d556140ca3b850749e26f47e06397431d0bfb911))
+* promote critical SonarAnalyzer rules to error severity ([8d5c106](https://github.com/oocx/tfplan2md/commit/8d5c1064a38dfe9f9e4f62a1f37a1649f4b5d238))
+* suppress 7 SonarAnalyzer violations in TerraformShowRenderer with documented justifications ([773ca36](https://github.com/oocx/tfplan2md/commit/773ca3668a3b07e11086e3912b433851be2b7684))
+* **analyzer:** add Roslynator.Analyzers v4.12.11 (P4-T1) ([46a350b](https://github.com/oocx/tfplan2md/commit/46a350bf7e6e2f8162a41802deb17dee6c56806c))
+* **analyzer:** configure Roslynator rules with selective enabling (P4-T3) ([54158d9](https://github.com/oocx/tfplan2md/commit/54158d93ce4f5c2a2649a3ef96e76f9ed098790b))
+* **analyzer:** promote MA0009 to error, MA0013 to warning (P3-T6) ([ce3c8ed](https://github.com/oocx/tfplan2md/commit/ce3c8ed199ae9dd0452e64873028a45a4779b994))
+* **workflow:** orchestrator must forward agent questions to maintainer ([2cc9f8c](https://github.com/oocx/tfplan2md/commit/2cc9f8cdb6552152f4906b81e485283a90f7b841))
+
+### 🐛 Bug Fixes
+
+* disable SA documentation rules for test project ([f2e3da0](https://github.com/oocx/tfplan2md/commit/f2e3da0c70108cc8ad9431cee8d6a7137df99b6f))
+* resolve critical SonarAnalyzer violations (logic errors and bugs) ([dd5f01b](https://github.com/oocx/tfplan2md/commit/dd5f01b3fc829e29a420b22f31c63facafe3424f))
+* resolve inherited SonarAnalyzer violations in test code (Phase 2 cleanup) ([525cba3](https://github.com/oocx/tfplan2md/commit/525cba3eded58b5be6515a193bba2992b758c4c2))
+* resolve remaining SonarAnalyzer violations (except S6618) ([816e769](https://github.com/oocx/tfplan2md/commit/816e769ea434a8728b63463cf541e597d6604417))
+* resolve S6618 performance warnings and fix syntax error ([557f037](https://github.com/oocx/tfplan2md/commit/557f037bab2951d44f76e589df2e128e86351a00))
+* resolve SonarAnalyzer code readability violations (S3267, S3358) ([7e045cd](https://github.com/oocx/tfplan2md/commit/7e045cdfb05acc1de576fad942887e90aa1e6163))
+* suppress remaining TerraformShowRenderer SonarAnalyzer violations ([051a97e](https://github.com/oocx/tfplan2md/commit/051a97ee73e50bd95d7522ec771016aad3e7b215))
+* **analyzer:** add regex timeouts to prevent ReDoS attacks (MA0009) ([97defe2](https://github.com/oocx/tfplan2md/commit/97defe265a9e158d54c2312ba47e917f04b56392))
+* **analyzer:** replace ApplicationException with Exception (MA0013) ([f60fc7d](https://github.com/oocx/tfplan2md/commit/f60fc7d53e6cf4d503ec8e0f3ad45868f2f0b886))
+* **analyzer:** resolve Roslynator violations in source code (P4-T4) ([b6c8206](https://github.com/oocx/tfplan2md/commit/b6c820674867aa1c08eca8011005f966528fb2f7))
+* **analyzer:** resolve Roslynator violations in tests (P4-T5) ([1dccc87](https://github.com/oocx/tfplan2md/commit/1dccc87489ae0987459825bb2b407cb3fb5fa502))
+* **workflow:** prohibit raw gh commands when repository scripts exist ([0b5dbdb](https://github.com/oocx/tfplan2md/commit/0b5dbdbf31809c89cd58303b6fb4e34af8c58de4))
+
+### 🚀 Performance
+
+* **analyzer:** add RegexOptions.ExplicitCapture where applicable (MA0023) ([42705a0](https://github.com/oocx/tfplan2md/commit/42705a0467f10cf41cd9c22a47ceb11d8d9d08a4))
+
+### ♻️ Refactoring
+
+* disable culture-specific Meziantou rules for Docker deployment ([52e9a7d](https://github.com/oocx/tfplan2md/commit/52e9a7d3d09046541e298abf9c3f747d2e7d5300))
+
+### 📚 Documentation
+
+* add architecture design for 044-enhanced-static-analysis ([7f81281](https://github.com/oocx/tfplan2md/commit/7f812819099dd3434bde1723fdfb6af6189b8285))
+* add implementation tasks for 044-enhanced-static-analysis ([8960b45](https://github.com/oocx/tfplan2md/commit/8960b452ec658a1e1a328bff4305d9af206da95d))
+* add missing XML documentation to fix SA1600 violations ([ec4e5e9](https://github.com/oocx/tfplan2md/commit/ec4e5e9902a3031c29ae1a0389a8e0a2f0e6c622))
+* add Phase 1 code review for feature [#044](https://github.com/oocx/tfplan2md/issues/044) ([1f74fa4](https://github.com/oocx/tfplan2md/commit/1f74fa4f53eba477b4dccd6635f658b538f422a9))
+* add Phase 1 code review report ([052f820](https://github.com/oocx/tfplan2md/commit/052f8206529a6c96b3e57d1f0c8861eb88811572))
+* add Phase 2 code review report ([559d3b2](https://github.com/oocx/tfplan2md/commit/559d3b233c0d73a187274a9dea59d0623c856d5f))
+* add Phase 2 code review report - APPROVED ([f3d5e08](https://github.com/oocx/tfplan2md/commit/f3d5e08ce02ad4c16b8f54cef179a9d6f39cecb4))
+* add Phase 2 completion summary for SonarAnalyzer integration ([2f950c2](https://github.com/oocx/tfplan2md/commit/2f950c2cb8ec450b6d3777c1593848f32c7c2abb))
+* add Phase 3 code review report - APPROVED ([c05ba0d](https://github.com/oocx/tfplan2md/commit/c05ba0d112ca072d7c68c8c1a5488f88d7d00814))
+* add Phase 3 code review report - APPROVED ([1bc13a4](https://github.com/oocx/tfplan2md/commit/1bc13a4b9c351a49c29bc669d3165c6ac8241288))
+* add Phase 4 code review - CHANGES REQUIRED ([118312a](https://github.com/oocx/tfplan2md/commit/118312ac3afd8d3745727fea5af18133ba96f134))
+* add test plan for feature 044 (enhanced static analysis) ([c3f6721](https://github.com/oocx/tfplan2md/commit/c3f6721d17df38fe7eab3b5e5b0dd9fd02f4ceb4))
+* add XML documentation to Azure and CLI classes ([559003b](https://github.com/oocx/tfplan2md/commit/559003bd33e8fde23aee9e96454b79f0fef71990))
+* add XML documentation to remaining classes ([aea9a10](https://github.com/oocx/tfplan2md/commit/aea9a10ac70a9f5c98c8ae9a7c9f18c1aedc4c32))
+* complete Phase 4 with test validation and performance analysis (P4-T6 through P4-T9) ([0a8416c](https://github.com/oocx/tfplan2md/commit/0a8416c6cf414f1396802dff3aaf0af084ed6a48))
+* document architecture decision for culture invariance ([90be154](https://github.com/oocx/tfplan2md/commit/90be1542e718b130b29525a8be0699859867cdab))
+* document Phase 3 Meziantou.Analyzer baseline violations ([cbdeeb4](https://github.com/oocx/tfplan2md/commit/cbdeeb4c39360e7184122d488162f6ef44b191f0))
+* enforce mandatory commit before agent handoff ([ae50cec](https://github.com/oocx/tfplan2md/commit/ae50cecd4034d3e1b07548b884bdafbdfb8f19b0))
+* fix duplicate and malformed XML documentation tags ([d108709](https://github.com/oocx/tfplan2md/commit/d1087098469dd0b95df80c79567312564a44fd7c))
+* fix XML documentation parameter and constructor errors ([206b80a](https://github.com/oocx/tfplan2md/commit/206b80a8b3dcf8f99160fe1e5840d4ffaf4dc25d))
+* Phase 4 re-review - APPROVED after test regression fix ([94b1983](https://github.com/oocx/tfplan2md/commit/94b1983214bd2f1e87066841410b5ca06f8508ab))
+* update coverage badge and history ([5ba73f3](https://github.com/oocx/tfplan2md/commit/5ba73f3b3e44a1ede3dae1c5339a74e07314334a))
+
+<a name="1.0.0-alpha.42"></a>
+## [1.0.0-alpha.42](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.41...v1.0.0-alpha.42) (2026-01-21)
+
+### ✨ Features
+
+* trigger release after ci workflow fix ([399d40c](https://github.com/oocx/tfplan2md/commit/399d40c069c31327d1d3d6b8da81add4526e382e))
+
+### 🐛 Bug Fixes
+
+* update Dockerfile path in release workflow ([bae9fc5](https://github.com/oocx/tfplan2md/commit/bae9fc5b56e8cf90157187be2c26e68259e1e528))
+
+<a name="1.0.0-alpha.41"></a>
+## [1.0.0-alpha.41](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.40...v1.0.0-alpha.41) (2026-01-21)
+
+### ✨ Features
+
+* add coverage badge and history ([26bf292](https://github.com/oocx/tfplan2md/commit/26bf292ff9ec6f79cec51a0d71e3034ede0962dd))
+* add coverage enforcement tool ([f3453b2](https://github.com/oocx/tfplan2md/commit/f3453b297f665d916356c8058ea74c1cc403ebe2))
+* add coverage override support ([d7f7cbd](https://github.com/oocx/tfplan2md/commit/d7f7cbd65d6b78d925e65292aea52dd98aa861a0))
+* publish coverage summary ([8df9f2e](https://github.com/oocx/tfplan2md/commit/8df9f2e5d43df5ce6284e031d56b37362dd44a9f))
+
+### 🐛 Bug Fixes
+
+* correct demo artifact paths ([b7810c3](https://github.com/oocx/tfplan2md/commit/b7810c33974237c0ef6ab698308786da17b36266))
+* stabilize coverage history update in ci ([0ad7672](https://github.com/oocx/tfplan2md/commit/0ad7672c26305bde76b9b7da265a5d58884106cb))
+
+### ♻️ Refactoring
+
+* use raw string literals in badge generator ([298c276](https://github.com/oocx/tfplan2md/commit/298c2768d49ff7e728d6a35d8cd137d52a90e264))
+
+### 📚 Documentation
+
+* add architecture for code coverage CI ([ec15b4f](https://github.com/oocx/tfplan2md/commit/ec15b4f089c743a0c04ca3f4978713860bd690bf))
+* add coverage documentation updates ([9726773](https://github.com/oocx/tfplan2md/commit/9726773c881b6d486dbe39fd8df5ec4188671af9))
+* add feature specification for 043-code-coverage-ci ([0787bf5](https://github.com/oocx/tfplan2md/commit/0787bf5573294515a4d4c3fe0dd84309e9452356))
+* add tasks for code coverage ci ([7457311](https://github.com/oocx/tfplan2md/commit/745731172d0bc9488d0928e6d788497f63d09d71))
+* add test plan and uat test plan for 043-code-coverage-ci ([01de8c4](https://github.com/oocx/tfplan2md/commit/01de8c4c571a8f6667965198ebcfba81a4e6f867))
+* approve code coverage implementation after fixes ([10bda7a](https://github.com/oocx/tfplan2md/commit/10bda7ab59634bbf3d91136226b5b400333039de))
+* finalize coverage task checklist ([092fd1d](https://github.com/oocx/tfplan2md/commit/092fd1dd8a93f503d32acb70549281bd1c62226a))
+* update coverage badge and history ([38b1138](https://github.com/oocx/tfplan2md/commit/38b1138926367a0c7575d8f5474034588aa5cd31))
+* update coverage badge and history ([875c00a](https://github.com/oocx/tfplan2md/commit/875c00a65db6ebc70c87f172bf69c4de57deccab))
+* update demo artifacts for coverage ([db4dc87](https://github.com/oocx/tfplan2md/commit/db4dc878d8d38733a51754ea5e8297ab1c0d7996))
+* update uat status for coverage ([129b4e0](https://github.com/oocx/tfplan2md/commit/129b4e00d1eacc4be1e83ab03388847635cd0ad4))
+
 <a name="1.0.0-alpha.40"></a>
 ## [1.0.0-alpha.40](https://github.com/oocx/tfplan2md/compare/v1.0.0-alpha.39...v1.0.0-alpha.40) (2026-01-18)
 

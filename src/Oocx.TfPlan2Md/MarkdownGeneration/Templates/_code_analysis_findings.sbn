@@ -1,0 +1,19 @@
+{{~## Per-resource code analysis findings table (Variant C)
+     Renders the detailed findings table with heading.
+     Related feature: docs/features/056-static-analysis-integration/specification.md
+~}}
+{{ if change.code_analysis_findings.size > 0 }}
+
+#### 🔒 Security & Quality Findings
+
+| Severity | Attribute | Finding | Remediation |
+| -------- | --------- | ------- | ----------- |
+{{~ for finding in change.code_analysis_findings ~}}
+{{~ message = finding.message | escape_markdown_table_cell | string.replace "\n" "<br/>" ~}}
+{{~ if finding.rule_id ~}}
+{{~ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) ~}}
+{{~ end ~}}
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.attribute_path }}`{{ finding.attribute_path | escape_markdown }}`{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+{{~ end ~}}
+{{ end }}
+

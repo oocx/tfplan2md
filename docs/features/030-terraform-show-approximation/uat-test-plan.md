@@ -12,7 +12,7 @@ Verify that the `TerraformShowRenderer` tool generates output that is visually i
 - **Rationale:** This plan includes a replacement (`-/+`) operation, which is one of the most complex visual elements to render correctly with ANSI colors.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

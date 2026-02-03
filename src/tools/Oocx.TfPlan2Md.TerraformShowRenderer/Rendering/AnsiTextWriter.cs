@@ -5,25 +5,25 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
 /// <summary>
 /// Writes text with optional ANSI styling while supporting a no-color mode.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal sealed class AnsiTextWriter : IDisposable
 {
     /// <summary>
     /// Underlying writer that receives rendered content.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     private readonly TextWriter _writer;
 
     /// <summary>
     /// Indicates whether ANSI escape sequences should be emitted.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     private readonly bool _useColor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AnsiTextWriter"/> class.
-    /// Related feature: docs/features/030-terraform-show-approximation/specification.md
+    /// Related feature: docs/features/030-terraform-show-approximation/specification.md.
     /// </summary>
     /// <param name="writer">Destination writer for output.</param>
     /// <param name="useColor">Determines whether ANSI escape codes are emitted.</param>
@@ -45,6 +45,10 @@ internal sealed class AnsiTextWriter : IDisposable
     // This allows WriteLine() (no-arg) to correctly determine whether the terminated line was empty.
     private bool _currentLineHasContent;
 
+    /// <summary>
+    /// Writes the specified text to the underlying writer.
+    /// </summary>
+    /// <param name="text">The text to write.</param>
     public void Write(string text)
     {
         _writer.Write(text);

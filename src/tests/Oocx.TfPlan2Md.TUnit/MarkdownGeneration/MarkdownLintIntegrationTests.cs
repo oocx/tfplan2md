@@ -1,8 +1,8 @@
 using System.IO;
 using System.Linq;
-using Oocx.TfPlan2Md.Azure;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Assertions;
 using TUnit.Assertions.Extensions;
@@ -20,6 +20,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// takes significant time.
 /// </remarks>
 [Timeout(120_000)] // 2 minutes - accounts for Docker container startup
+[Category("Docker")]
 public class MarkdownLintIntegrationTests
 {
     private static readonly Lazy<MarkdownLintFixture> s_tunitFixture = new(
@@ -37,6 +38,7 @@ public class MarkdownLintIntegrationTests
     /// Verifies that the comprehensive demo output passes all markdownlint rules.
     /// This is the primary integration test for markdown quality.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_ComprehensiveDemo_PassesAllRules(CancellationToken cancellationToken)
     {
@@ -66,6 +68,7 @@ public class MarkdownLintIntegrationTests
     /// <summary>
     /// Verifies that all test plans in TestData produce valid markdown.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_AllTestPlans_PassAllRules(CancellationToken cancellationToken)
     {
@@ -126,6 +129,7 @@ public class MarkdownLintIntegrationTests
     /// <summary>
     /// Verifies that the summary template produces valid markdown.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_SummaryTemplate_PassesAllRules(CancellationToken cancellationToken)
     {
@@ -143,7 +147,7 @@ public class MarkdownLintIntegrationTests
 
         if (!result.IsValid)
         {
-            var errorMsg = $"Summary template produced invalid markdown:\n" +
+            var errorMsg = "Summary template produced invalid markdown:\n" +
                 string.Join("\n", result.Violations.Select(v => $"  Line {v.Line}: {v.RuleId} - {v.Message}"));
             throw new Exception(errorMsg);
         }
@@ -154,6 +158,7 @@ public class MarkdownLintIntegrationTests
     /// <summary>
     /// Verifies that markdown with special characters in resource names passes linting.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Lint_BreakingPlan_PassesAllRules(CancellationToken cancellationToken)
     {
@@ -172,7 +177,7 @@ public class MarkdownLintIntegrationTests
 
         if (!result.IsValid)
         {
-            var errorMsg = $"Breaking plan produced invalid markdown:\n" +
+            var errorMsg = "Breaking plan produced invalid markdown:\n" +
                 string.Join("\n", result.Violations.Select(v => $"  Line {v.Line}: {v.RuleId} - {v.Message}"));
             throw new Exception(errorMsg);
         }

@@ -411,6 +411,7 @@ dotnet test</code></pre>
                 <p>Releases are automated via GitHub Actions:</p>
                 <ol>
                     <li>When commits are pushed to <code>main</code>, the CI workflow runs Versionize</li>
+                    <li>Versionize only runs when Docker-relevant files changed (runtime code, examples, build config)</li>
                     <li>If there are <code>feat:</code>, <code>fix:</code>, or <code>BREAKING CHANGE</code> commits, Versionize:
                         <ul>
                             <li>Bumps the version in <code>.csproj</code></li>
@@ -425,6 +426,7 @@ dotnet test</code></pre>
                         </ul>
                     </li>
                 </ol>
+                <p><strong>Note:</strong> Changes to tests, documentation, website, scripts, or GitHub workflows do not trigger releases, as they don't affect the published Docker image.</p>
             </div>
         </section>
 

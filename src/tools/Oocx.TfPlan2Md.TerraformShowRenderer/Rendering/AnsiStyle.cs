@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.TerraformShowRenderer.Rendering;
 
 /// <summary>
 /// Represents ANSI styling options used by the Terraform show renderer.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 internal enum AnsiStyle
 {

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Checkov",
+          "version": "3.2.490",
+          "informationUri": "https://checkov.io",
+          "organization": "bridgecrew",
+          "rules": [
+            {
+              "id": "CKV_AZURE_3",
+              "name": "Ensure storage account uses secure transfer",
+              "shortDescription": {
+                "text": "Ensure storage account uses secure transfer"
+              },
+              "fullDescription": {
+                "text": "Ensure storage account uses secure transfer"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/azure-policies/azure-storage-policies/ensure-azure-storage-accounts-use-secure-transfer"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CKV_AZURE_3",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Ensure storage account uses secure transfer"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "plan.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_storage_account.logs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

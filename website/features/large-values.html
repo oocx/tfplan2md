@@ -188,18 +188,21 @@ Large values: xml_content (112 lines, 57 changed)
                 <div class="feature-example">
                     <h3 class="example-title">Configuration</h3>
                     <p class="feature-detail-description">
-                        Control the diff format for large values using the <code>--large-value-format</code> CLI option:
+                        Control the diff format for large values using the <code>--render-target</code> CLI option:
                     </p>
                     <div class="code-window">
                         <div class="code-header">
                             <span class="code-title">Command</span>
                         </div>
-                        <pre><code># Default: inline-diff (HTML with character-level highlighting)
+                        <pre><code># Default: azuredevops (HTML with character-level highlighting)
 tfplan2md plan.json
 
-# Simple diff format (markdown code blocks)
-tfplan2md plan.json --large-value-format simple-diff</code></pre>
+# GitHub-compatible diff format (markdown code blocks)
+tfplan2md plan.json --render-target github</code></pre>
                     </div>
+                    <p class="feature-detail-description" style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                        <em>Note: The <code>--large-value-format</code> flag has been deprecated. Use <code>--render-target azuredevops</code> instead of <code>inline-diff</code>, or <code>--render-target github</code> instead of <code>standard-diff</code>.</em>
+                    </p>
                 </div>
             </div>
         </div>

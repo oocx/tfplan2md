@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.Tests.TerraformShowRenderer;
 
 /// <summary>
 /// Validates parsing behavior for the Terraform show approximation CLI.
-/// Related feature: docs/features/030-terraform-show-approximation/specification.md
+/// Related feature: docs/features/030-terraform-show-approximation/specification.md.
 /// </summary>
 public sealed class TerraformShowCliParserTests
 {
@@ -38,6 +38,7 @@ public sealed class TerraformShowCliParserTests
     /// Ensures required arguments populate the expected options.
     /// Related acceptance: TC-01.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parse_WithInputAndOutput_SetsPaths()
     {
@@ -54,6 +55,7 @@ public sealed class TerraformShowCliParserTests
     /// Ensures short option names are accepted and boolean flags are handled.
     /// Related acceptance: TC-01.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parse_WithShortOptions_SetsValues()
     {
@@ -68,6 +70,7 @@ public sealed class TerraformShowCliParserTests
     /// Ensures help flag bypasses required input validation.
     /// Related acceptance: TC-02.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parse_WithHelpFlag_AllowsMissingInput()
     {
@@ -81,6 +84,7 @@ public sealed class TerraformShowCliParserTests
     /// Ensures version flag bypasses required input validation.
     /// Related acceptance: TC-03.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parse_WithVersionFlag_AllowsMissingInput()
     {
@@ -94,6 +98,7 @@ public sealed class TerraformShowCliParserTests
     /// Ensures omitting input while not requesting help or version fails.
     /// Related acceptance: TC-12.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parse_MissingInput_Throws()
     {
@@ -107,6 +112,7 @@ public sealed class TerraformShowCliParserTests
     /// Ensures unknown flags produce a helpful error.
     /// Related acceptance: TC-01.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task Parse_UnknownOption_Throws()
     {

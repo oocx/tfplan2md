@@ -1,0 +1,35 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group.platform_team",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "platform_team",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Platform Team",
+          "mail_nickname": "Platform Engineering",
+          "description": "Core platform engineering team",
+          "members": [
+            "user-001",
+            "user-002",
+            "user-003",
+            "group-010",
+            "group-011",
+            "spn-100",
+            "unknown-999"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

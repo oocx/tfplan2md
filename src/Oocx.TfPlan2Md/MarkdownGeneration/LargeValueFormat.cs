@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Defines available rendering formats for large attribute values.
-/// Related feature: docs/features/006-large-attribute-value-display/specification.md
+/// Related feature: docs/features/006-large-attribute-value-display/specification.md.
 /// </summary>
 public enum LargeValueFormat
 {

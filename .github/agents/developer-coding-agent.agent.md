@@ -1,7 +1,7 @@
 ---
 description: Implement features and tests according to specifications
 name: Developer (coding agent)
-model: GPT-5.1-Codex-Max
+model: GPT-5.2-Codex
 target: github-copilot
 ---
 
@@ -23,14 +23,14 @@ Produce clean, well-tested code that meets all acceptance criteria and follows p
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -330,22 +330,24 @@ docker run --rm -v $(pwd):/data tfplan2md:local /data/plan.json
 
 When fixing PR/CI failures, check workflow logs:
 
-Preferred in VS Code chat:
-- Use GitHub chat tools to fetch PR status checks.
-- If you do not have repo context (owner/repo) or a tool is missing, fall back to `gh`.
+**Priority order:**
+1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-actions_list`, `github-mcp-server-get_job_logs`)
+2. **SECOND**: Use `scripts/check-workflow-status.sh` wrapper
+3. **LAST**: Raw `gh` commands (avoid)
 
-```bash
-# List recent workflow runs (non-blocking)
-PAGER=cat gh run list --limit 5
+**Examples:**
+```
+# Preferred: GitHub MCP tools
+github-mcp-server-actions_list with method="list_workflow_runs", owner="oocx", repo="tfplan2md", perPage=5
+github-mcp-server-get_job_logs with owner="oocx", repo="tfplan2md", job_id=<job-id>
 
-# View specific failed run
-PAGER=cat gh run view <run-id> --log-failed
-
-# PR validation status (fallback)
-PAGER=cat gh pr checks <pr-number>
+# Fallback: Wrapper script
+scripts/check-workflow-status.sh list --branch main --limit 5
+scripts/check-workflow-status.sh view <run-id>
+scripts/check-workflow-status.sh watch <run-id>
 ```
 
-**Important**: If you run `gh`, always use `PAGER=cat` (or `GH_PAGER=cat`) to prevent interactive pagers from blocking. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for details.
+**Important**: GitHub MCP tools can be permanently allowed in VS Code, eliminating approval friction. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for complete guidance on the priority order and all available GitHub MCP tools.
 
 ## Definition of Done
 

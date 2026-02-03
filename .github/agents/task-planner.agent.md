@@ -238,7 +238,7 @@ Your work is complete when:
 
 ## Handoff
 
-After the tasks are approved, use the handoff button to transition to the **Developer** agent.
+After the tasks are approved **and committed** (see "Committing Your Work" above), use the handoff button to transition to the **Developer** agent.
 
 ## Communication Guidelines
 

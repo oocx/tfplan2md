@@ -1,0 +1,12 @@
+{
+  "users": {
+    "user-100": "Jane Doe",
+    "user-101": "Alex Rivera"
+  },
+  "groups": {
+    "group-100": "DevOps Team"
+  },
+  "servicePrincipals": {
+    "spn-200": "Terraform Automation"
+  }
+}

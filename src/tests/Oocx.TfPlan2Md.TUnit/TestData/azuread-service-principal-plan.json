@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_service_principal.terraform_spn",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_service_principal",
+      "name": "terraform_spn",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "terraform-spn",
+          "application_id": "app-123-456",
+          "description": "Terraform automation service principal"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_service_principal.no_description",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_service_principal",
+      "name": "no_description",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "automation-spn",
+          "application_id": "app-789-000"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

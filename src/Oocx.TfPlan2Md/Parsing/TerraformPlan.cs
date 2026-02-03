@@ -23,7 +23,8 @@ public record ResourceChange(
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("provider_name")] string ProviderName,
     [property: JsonPropertyName("change")] Change Change,
-    [property: JsonPropertyName("action_reason")] string? ActionReason = null
+    [property: JsonPropertyName("action_reason")] string? ActionReason = null,
+    [property: JsonPropertyName("previous_address")] string? PreviousAddress = null
 );
 
 /// <summary>
@@ -32,49 +33,49 @@ public record ResourceChange(
 public record Change
 {
     /// <summary>
-    /// The ordered list of actions applied to the resource.
+    /// Gets the the ordered list of actions applied to the resource.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("actions")]
     public IReadOnlyList<string> Actions { get; init; }
 
     /// <summary>
-    /// Optional state before the change.
+    /// Gets the optional state before the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("before")]
     public object? Before { get; init; }
 
     /// <summary>
-    /// Optional state after the change.
+    /// Gets the optional state after the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("after")]
     public object? After { get; init; }
 
     /// <summary>
-    /// Attributes with unknown values after the change.
+    /// Gets the Attributes with unknown values after the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("after_unknown")]
     public object? AfterUnknown { get; init; }
 
     /// <summary>
-    /// Sensitive values before the change.
+    /// Gets the Sensitive values before the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("before_sensitive")]
     public object? BeforeSensitive { get; init; }
 
     /// <summary>
-    /// Sensitive values after the change.
+    /// Gets the Sensitive values after the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("after_sensitive")]
     public object? AfterSensitive { get; init; }
 
     /// <summary>
-    /// Paths that require replacement due to the change.
+    /// Gets the Paths that require replacement due to the change.
     /// Related feature: docs/spec.md.
     /// </summary>
     [JsonPropertyName("replace_paths")]
@@ -82,7 +83,14 @@ public record Change
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; init; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record for deserialization.
+    /// Gets the import metadata when a resource is being imported.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    [JsonPropertyName("importing")]
+    public Importing? Importing { get; init; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Change"/> class for deserialization.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
@@ -92,6 +100,7 @@ public record Change
     /// <param name="beforeSensitive">Sensitive values before the change.</param>
     /// <param name="afterSensitive">Sensitive values after the change.</param>
     /// <param name="replacePaths">Paths that require replacement due to the change.</param>
+    /// <param name="importing">Import metadata for resources managed via import blocks.</param>
     [JsonConstructor]
     public Change(
         IReadOnlyList<string> actions,
@@ -100,7 +109,8 @@ public record Change
         object? afterUnknown,
         object? beforeSensitive,
         object? afterSensitive,
-        IReadOnlyList<IReadOnlyList<object>>? replacePaths = null)
+        IReadOnlyList<IReadOnlyList<object>>? replacePaths = null,
+        Importing? importing = null)
     {
         Actions = actions;
         Before = before;
@@ -109,27 +119,41 @@ public record Change
         BeforeSensitive = beforeSensitive;
         AfterSensitive = afterSensitive;
         ReplacePaths = replacePaths;
+        Importing = importing;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record with only actions specified.
+    /// Initializes a new instance of the <see cref="Change"/> class with only actions specified.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
     public Change(IReadOnlyList<string> actions)
-        : this(actions, null, null, null, null, null, null)
+        : this(actions, null, null, null, null, null, null, null)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Change"/> record with before/after state.
+    /// Initializes a new instance of the <see cref="Change"/> class with before/after state.
     /// Related feature: docs/spec.md.
     /// </summary>
     /// <param name="actions">The ordered list of actions applied to the resource.</param>
     /// <param name="before">Optional state before the change.</param>
     /// <param name="after">Optional state after the change.</param>
     public Change(IReadOnlyList<string> actions, object? before, object? after)
-        : this(actions, before, after, null, null, null, null)
+        : this(actions, before, after, null, null, null, null, null)
     {
     }
+}
+
+/// <summary>
+/// Represents import metadata for a resource change.
+/// </summary>
+public record Importing
+{
+    /// <summary>
+    /// Gets the import identifier used by Terraform.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; init; }
 }

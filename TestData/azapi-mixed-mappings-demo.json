@@ -1,0 +1,67 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.vm",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Compute/virtualMachines@2023-03-01",
+          "location": "eastus",
+          "name": "example-vm",
+          "body": "{\"properties\":{\"hardwareProfile\":{\"vmSize\":\"Standard_DS2_v2\"}}}"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.unknown",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.UnknownService/unknownResource@2023-01-01",
+          "location": "eastus",
+          "name": "example-unknown",
+          "body": "{\"properties\":{}}"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.storage",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "type": "Microsoft.Storage/storageAccounts@2021-06-01",
+          "location": "eastus",
+          "name": "examplestorageacct",
+          "body": "{\"sku\":{\"name\":\"Standard_LRS\"}}"
+        },
+        "after": {
+          "type": "Microsoft.Storage/storageAccounts@2021-06-01",
+          "location": "eastus",
+          "name": "examplestorageacct",
+          "body": "{\"sku\":{\"name\":\"Standard_GRS\"}}"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.nested_blob_service",
+      "type": "azapi_resource",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Storage/storageAccounts/blobServices@2021-06-01",
+          "name": "default",
+          "parent_id": "azapi_resource.storage.id",
+          "body": "{\"properties\":{}}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "source": "technical-writer-redacted.json",
+    "analysis_date": "2026-01-24",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 2,
+    "start_timestamp": 1769272547342,
+    "end_timestamp": 1769273063509,
+    "session_duration_sec": 516.167,
+    "user_wait_time_sec": 0,
+    "agent_work_time_sec": 229.801
+  },
+  "model_usage": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 2
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "readFile",
+      "count": 18
+    },
+    {
+      "tool": "findTextInFiles",
+      "count": 8
+    },
+    {
+      "tool": "replaceString",
+      "count": 8
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 6
+    },
+    {
+      "tool": "listDirectory",
+      "count": 3
+    },
+    {
+      "tool": "findFiles",
+      "count": 1
+    },
+    {
+      "tool": "getChangedFiles",
+      "count": 1
+    },
+    {
+      "tool": "getErrors",
+      "count": 1
+    },
+    {
+      "tool": "multiReplaceString",
+      "count": 1
+    },
+    {
+      "tool": "searchCodebase",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 48
+      }
+    ],
+    "total_invocations": 48,
+    "auto_approved": 48,
+    "manual_approved": 0,
+    "automation_rate_pct": 100
+  },
+  "model_success": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total": 2,
+      "complete": 2,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "claude-sonnet-4.5",
+      "total_requests": 2,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [
+    {
+      "status": "kept",
+      "count": 3
+    }
+  ],
+  "response_times": [
+    {
+      "model": "claude-sonnet-4.5",
+      "count": 2,
+      "avg_sec": 114,
+      "total_sec": 229
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

@@ -1,0 +1,92 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_api_management_api_operation.this",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_api_management_api_operation",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Get Profile",
+          "operation_id": "get-profile",
+          "api_name": "users",
+          "api_management_name": "apim-demo",
+          "resource_group_name": "rg-apim-demo",
+          "policy_content": "{\"properties\":{\"displayName\":\"Example Policy\",\"mode\":\"All\",\"description\":\"A long description that exceeds the large-value threshold for formatting\",\"settings\":{\"foo\":\"bar\",\"baz\":[1,2,3]}}}",
+          "policy_xml": "<policies><inbound><base /><set-header name='x-test' exists-action='override' value='true' /></inbound><backend><base /></backend></policies>"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_api_management_named_value.client_id",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_api_management_named_value",
+      "name": "client_id",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "IDP-WEB-CLIENT-ID",
+          "api_management_name": "apim-demo",
+          "resource_group_name": "rg-apim-demo",
+          "secret": false,
+          "value": "https://example.com/api"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": { "value": true }
+      }
+    },
+    {
+      "address": "azurerm_api_management_product.starter",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_api_management_product",
+      "name": "starter",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "starter",
+          "api_management_name": "apim-demo",
+          "resource_group_name": "rg-apim-demo",
+          "display_name": "Starter"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subscription.demo",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subscription",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "subscription_id": "11111111-2222-3333-4444-555555555555",
+          "subscription": "Production"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

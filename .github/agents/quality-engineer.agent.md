@@ -121,7 +121,7 @@ Verify that <feature description> renders correctly in GitHub and Azure DevOps P
 - **Rationale:** <Why this specific plan/configuration is needed>
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)
@@ -306,7 +306,7 @@ Your work is complete when:
 
 ## Handoff
 
-After the test plan is approved, use the handoff button to transition to the **Task Planner** agent.
+After the test plan is approved **and committed** (see "Committing Your Work" above), use the handoff button to transition to the **Task Planner** agent.
 
 ## Communication Guidelines
 

@@ -23,14 +23,14 @@ Gather diagnostic information, perform initial analysis, and document the proble
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch.
+3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
    ```bash
    git add <files>
    git commit -m "<type>: <description>"
    git push origin HEAD
    ```
 
-4. **Create Summary Comment**: Post a PR comment with:
+4. **Create Summary Comment (After Committing)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
@@ -177,13 +177,16 @@ Collect relevant data:
 **Commands to use:**
 ```bash
 # Preferred in VS Code chat:
-# - Use GitHub chat tools to inspect PR status checks, PR details, and PR comments.
+# - Use GitHub MCP tools to inspect PR status checks, PR details, and PR comments.
 #
-# Fallback: check workflow runs via gh (non-blocking)
-PAGER=cat gh run list --limit 5 --json conclusion,status,name,createdAt
+# Preferred: Use repository wrapper scripts for workflow operations
+scripts/check-workflow-status.sh list --branch main --limit 5
 
-# View specific workflow run (non-blocking)
-PAGER=cat gh run view <run-id> --log-failed
+# View specific workflow run (use wrapper script)
+scripts/check-workflow-status.sh view <run-id>
+
+# Watch a run until completion (use wrapper script)
+scripts/check-workflow-status.sh watch <run-id>
 
 # Check git history
 scripts/git-log.sh --oneline --since="1 week ago" -- <relevant-path>
@@ -198,7 +201,7 @@ scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --verb
 # Use the 'problems' tool to see diagnostics
 ```
 
-**Important:** Prefer GitHub chat tools when available. If you must use `gh`, follow [.github/gh-cli-instructions.md](../gh-cli-instructions.md) and always disable paging (`PAGER=cat` / `GH_PAGER=cat`) to prevent blocking.
+**Important:** GitHub MCP tools (`github-mcp-server-*`) can be permanently allowed in VS Code. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for complete guidance on all available GitHub MCP tools. Prefer MCP tools over wrapper scripts when available.
 
 ### Step 3: Analyze the Issue
 

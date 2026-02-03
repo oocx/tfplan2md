@@ -12,7 +12,7 @@ Verify that the custom report title renders correctly in GitHub and Azure DevOps
 - **Rationale:** This command exercises the `--report-title` flag with a title containing characters that require escaping (`#`, `[`, `]`) to ensure they render literally in the H1 heading.
 
 ## Test Steps
-1. Run the UAT simulation using the `UAT Tester` agent.
+1. Run UAT using the `UAT Tester` agent.
 2. Verify the generated PRs on GitHub and Azure DevOps.
 
 ## Validation Instructions (Test Description)

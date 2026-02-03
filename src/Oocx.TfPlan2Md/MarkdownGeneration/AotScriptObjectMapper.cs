@@ -2,17 +2,44 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
 /// <summary>
 /// Provides explicit mapping of ReportModel to ScriptObject for NativeAOT compatibility.
 /// Reflection-based Scriban Import does not work reliably under AOT trimming.
-/// Related feature: docs/features/037-aot-trimmed-image/specification.md
+/// Related feature: docs/features/037-aot-trimmed-image/specification.md.
 /// </summary>
 internal static class AotScriptObjectMapper
 {
+    /// <summary>
+    /// The Scriban key used for module address fields.
+    /// </summary>
+    private const string ModuleAddressKey = "module_address";
+
+    /// <summary>
+    /// The Scriban key used for source addresses fields.
+    /// </summary>
+    private const string SourceAddressesKey = "source_addresses";
+
+    /// <summary>
+    /// The Scriban key used for destination addresses fields.
+    /// </summary>
+    private const string DestinationAddressesKey = "destination_addresses";
+
+    /// <summary>
+    /// The Scriban key used for destination ports fields.
+    /// </summary>
+    private const string DestinationPortsKey = "destination_ports";
+
+    /// <summary>
+    /// The Scriban key used for description fields.
+    /// </summary>
+    private const string DescriptionKey = "description";
     /// <summary>
     /// Maps a ReportModel to a ScriptObject without using reflection.
     /// </summary>
@@ -31,7 +58,7 @@ internal static class AotScriptObjectMapper
         scriptObject["timestamp"] = model.Timestamp;
         scriptObject["report_title"] = model.ReportTitle;
         scriptObject["show_unchanged_values"] = model.ShowUnchangedValues;
-        scriptObject["large_value_format"] = model.LargeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        scriptObject["large_value_format"] = model.RenderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
 
         // Generated timestamp as nested object with DateTime for Scriban date functions
         var generatedAtUtcObj = new ScriptObject();
@@ -41,9 +68,15 @@ internal static class AotScriptObjectMapper
         // Summary
         scriptObject["summary"] = MapSummary(model.Summary);
 
+        // Code analysis
+        scriptObject["code_analysis"] = model.CodeAnalysis is null
+            ? null
+            : MapCodeAnalysisReport(model.CodeAnalysis);
+
         // Changes and module changes
         scriptObject["changes"] = MapChanges(model.Changes);
         scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges);
+        scriptObject["refactoring_operations"] = MapRefactoringOperations(model.RefactoringOperations);
 
         return scriptObject;
     }
@@ -53,14 +86,14 @@ internal static class AotScriptObjectMapper
     /// Includes large_value_format from the provided parameter.
     /// </summary>
     /// <param name="change">The resource change to map.</param>
-    /// <param name="largeValueFormat">The format for large values.</param>
+    /// <param name="renderTarget">The target platform for rendering.</param>
     /// <returns>A ScriptObject containing the change data.</returns>
-    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, LargeValueFormat largeValueFormat)
+    internal static ScriptObject MapResourceChangeWithFormat(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget)
     {
         var changeObject = MapResourceChange(change);
 
         // Add large_value_format to change context for template access
-        var formatString = largeValueFormat == LargeValueFormat.SimpleDiff ? "simple-diff" : "inline-diff";
+        var formatString = renderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
         changeObject["large_value_format"] = formatString;
 
         return changeObject;
@@ -83,17 +116,27 @@ internal static class AotScriptObjectMapper
         var obj = new ScriptObject();
         obj["count"] = action.Count;
 
-        var breakdown = new ScriptArray();
-        foreach (var b in action.Breakdown)
+        obj["breakdown"] = MapResourceTypeBreakdown(action.Breakdown);
+        return obj;
+    }
+
+    /// <summary>
+    /// Maps resource type breakdown entries to a Scriban array.
+    /// </summary>
+    /// <param name="breakdown">The breakdown entries to map.</param>
+    /// <returns>The mapped Scriban array.</returns>
+    private static ScriptArray MapResourceTypeBreakdown(IReadOnlyList<ResourceTypeBreakdown> breakdown)
+    {
+        var arr = new ScriptArray();
+        foreach (var item in breakdown)
         {
-            var bObj = new ScriptObject();
-            bObj["type"] = b.Type;
-            bObj["count"] = b.Count;
-            breakdown.Add(bObj);
+            var obj = new ScriptObject();
+            obj["type"] = item.Type;
+            obj["count"] = item.Count;
+            arr.Add(obj);
         }
 
-        obj["breakdown"] = breakdown;
-        return obj;
+        return arr;
     }
 
     private static ScriptArray MapChanges(IReadOnlyList<ResourceChangeModel> changes)
@@ -113,8 +156,33 @@ internal static class AotScriptObjectMapper
         foreach (var group in moduleChanges)
         {
             var obj = new ScriptObject();
-            obj["module_address"] = group.ModuleAddress;
+            obj[ModuleAddressKey] = group.ModuleAddress;
             obj["changes"] = MapChanges(group.Changes);
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    /// <summary>
+    /// Maps refactoring operations to a Scriban array for template rendering.
+    /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
+    /// </summary>
+    /// <param name="operations">The refactoring operations to map.</param>
+    /// <returns>A Scriban array of refactoring operation objects.</returns>
+    private static ScriptArray MapRefactoringOperations(IReadOnlyList<RefactoringOperationModel> operations)
+    {
+        var arr = new ScriptArray();
+        foreach (var operation in operations)
+        {
+            var obj = new ScriptObject();
+            obj["operation"] = operation.Operation;
+            obj["address"] = operation.Address;
+            obj["resource_type"] = operation.ResourceType;
+            obj["resource_name"] = operation.ResourceName;
+            obj["details"] = operation.Details;
+            obj["status"] = operation.Status;
+            obj["is_already_applied"] = operation.IsAlreadyApplied;
             arr.Add(obj);
         }
 
@@ -125,7 +193,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["address"] = change.Address;
-        obj["module_address"] = change.ModuleAddress;
+        obj[ModuleAddressKey] = change.ModuleAddress;
         obj["type"] = change.Type;
         obj["name"] = change.Name;
         obj["provider_name"] = change.ProviderName;
@@ -135,13 +203,16 @@ internal static class AotScriptObjectMapper
         obj["summary_html"] = change.SummaryHtml;
         obj["changed_attributes_summary"] = change.ChangedAttributesSummary;
         obj["tags_badges"] = change.TagsBadges;
+        obj["import_id"] = change.ImportId;
+        obj["moved_from_address"] = change.MovedFromAddress;
+        obj["is_refactoring_already_applied"] = change.IsRefactoringAlreadyApplied;
 
         // JSON values
         obj["before_json"] = change.BeforeJson is JsonElement jsonBefore
-            ? ScribanHelpers.ConvertToScriptObject(jsonBefore)
+            ? ConvertToScriptObject(jsonBefore)
             : null;
         obj["after_json"] = change.AfterJson is JsonElement jsonAfter
-            ? ScribanHelpers.ConvertToScriptObject(jsonAfter)
+            ? ConvertToScriptObject(jsonAfter)
             : null;
 
         // Replace paths
@@ -171,6 +242,9 @@ internal static class AotScriptObjectMapper
 
         obj["attribute_changes"] = attrChanges;
 
+        // Code analysis findings
+        obj["code_analysis_findings"] = MapCodeAnalysisFindings(change.CodeAnalysisFindings);
+
         // View models for specialized templates
         if (change.NetworkSecurityGroup != null)
         {
@@ -193,6 +267,100 @@ internal static class AotScriptObjectMapper
         }
 
         return obj;
+    }
+
+    private static ScriptObject MapCodeAnalysisReport(CodeAnalysisReportModel report)
+    {
+        var obj = new ScriptObject();
+        obj["summary"] = MapCodeAnalysisSummary(report.Summary);
+        obj["tools"] = MapCodeAnalysisTools(report.Tools);
+        obj["warnings"] = MapCodeAnalysisWarnings(report.Warnings);
+        obj["findings"] = MapCodeAnalysisFindings(report.Findings);
+        obj["module_findings"] = MapCodeAnalysisModuleFindings(report.ModuleFindings);
+        obj["unmatched_findings"] = MapCodeAnalysisFindings(report.UnmatchedFindings);
+        return obj;
+    }
+
+    private static ScriptObject MapCodeAnalysisSummary(CodeAnalysisSummaryModel summary)
+    {
+        var obj = new ScriptObject();
+        obj["critical_count"] = summary.CriticalCount;
+        obj["critical_breakdown"] = MapResourceTypeBreakdown(summary.CriticalResourceTypes);
+        obj["high_count"] = summary.HighCount;
+        obj["high_breakdown"] = MapResourceTypeBreakdown(summary.HighResourceTypes);
+        obj["medium_count"] = summary.MediumCount;
+        obj["medium_breakdown"] = MapResourceTypeBreakdown(summary.MediumResourceTypes);
+        obj["low_count"] = summary.LowCount;
+        obj["low_breakdown"] = MapResourceTypeBreakdown(summary.LowResourceTypes);
+        obj["informational_count"] = summary.InformationalCount;
+        obj["informational_breakdown"] = MapResourceTypeBreakdown(summary.InformationalResourceTypes);
+        obj["total_count"] = summary.TotalCount;
+        return obj;
+    }
+
+    private static ScriptArray MapCodeAnalysisTools(IReadOnlyList<CodeAnalysisToolModel> tools)
+    {
+        var arr = new ScriptArray();
+        foreach (var tool in tools)
+        {
+            var obj = new ScriptObject();
+            obj["name"] = tool.Name;
+            obj["version"] = tool.Version;
+            obj["display_name"] = tool.DisplayName;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    private static ScriptArray MapCodeAnalysisWarnings(IReadOnlyList<CodeAnalysisWarningModel> warnings)
+    {
+        var arr = new ScriptArray();
+        foreach (var warning in warnings)
+        {
+            var obj = new ScriptObject();
+            obj["file_path"] = warning.FilePath;
+            obj["message"] = warning.Message;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    private static ScriptArray MapCodeAnalysisFindings(IReadOnlyList<CodeAnalysisFindingModel> findings)
+    {
+        var arr = new ScriptArray();
+        foreach (var finding in findings)
+        {
+            var obj = new ScriptObject();
+            obj["severity"] = finding.Severity;
+            obj["severity_icon"] = finding.SeverityIcon;
+            obj["severity_rank"] = finding.SeverityRank;
+            obj["message"] = finding.Message;
+            obj["rule_id"] = finding.RuleId;
+            obj["help_uri"] = finding.HelpUri;
+            obj["tool_name"] = finding.ToolName;
+            obj["resource_address"] = finding.ResourceAddress;
+            obj[ModuleAddressKey] = finding.ModuleAddress;
+            obj["attribute_path"] = finding.AttributePath;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    private static ScriptArray MapCodeAnalysisModuleFindings(IReadOnlyList<CodeAnalysisModuleFindingsModel> modules)
+    {
+        var arr = new ScriptArray();
+        foreach (var module in modules)
+        {
+            var obj = new ScriptObject();
+            obj[ModuleAddressKey] = module.ModuleAddress;
+            obj["findings"] = MapCodeAnalysisFindings(module.Findings);
+            arr.Add(obj);
+        }
+
+        return arr;
     }
 
     private static ScriptObject MapAttributeChange(AttributeChangeModel attr)
@@ -222,11 +390,11 @@ internal static class AotScriptObjectMapper
             ruleObj["direction"] = rule.Direction;
             ruleObj["access"] = rule.Access;
             ruleObj["protocol"] = rule.Protocol;
-            ruleObj["source_addresses"] = rule.SourceAddresses;
+            ruleObj[SourceAddressesKey] = rule.SourceAddresses;
             ruleObj["source_ports"] = rule.SourcePorts;
-            ruleObj["destination_addresses"] = rule.DestinationAddresses;
-            ruleObj["destination_ports"] = rule.DestinationPorts;
-            ruleObj["description"] = rule.Description;
+            ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+            ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+            ruleObj[DescriptionKey] = rule.Description;
             ruleChanges.Add(ruleObj);
         }
 
@@ -261,11 +429,11 @@ internal static class AotScriptObjectMapper
         ruleObj["direction"] = rule.Direction;
         ruleObj["access"] = rule.Access;
         ruleObj["protocol"] = rule.Protocol;
-        ruleObj["source_addresses"] = rule.SourceAddresses;
+        ruleObj[SourceAddressesKey] = rule.SourceAddresses;
         ruleObj["source_ports"] = rule.SourcePorts;
-        ruleObj["destination_addresses"] = rule.DestinationAddresses;
-        ruleObj["destination_ports"] = rule.DestinationPorts;
-        ruleObj["description"] = rule.Description;
+        ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+        ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+        ruleObj[DescriptionKey] = rule.Description;
         return ruleObj;
     }
 
@@ -284,10 +452,10 @@ internal static class AotScriptObjectMapper
             ruleObj["change"] = rule.Change;
             ruleObj["name"] = rule.Name;
             ruleObj["protocols"] = rule.Protocols;
-            ruleObj["source_addresses"] = rule.SourceAddresses;
-            ruleObj["destination_addresses"] = rule.DestinationAddresses;
-            ruleObj["destination_ports"] = rule.DestinationPorts;
-            ruleObj["description"] = rule.Description;
+            ruleObj[SourceAddressesKey] = rule.SourceAddresses;
+            ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+            ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+            ruleObj[DescriptionKey] = rule.Description;
             ruleChanges.Add(ruleObj);
         }
 
@@ -319,10 +487,10 @@ internal static class AotScriptObjectMapper
         var ruleObj = new ScriptObject();
         ruleObj["name"] = rule.Name;
         ruleObj["protocols"] = rule.Protocols;
-        ruleObj["source_addresses"] = rule.SourceAddresses;
-        ruleObj["destination_addresses"] = rule.DestinationAddresses;
-        ruleObj["destination_ports"] = rule.DestinationPorts;
-        ruleObj["description"] = rule.Description;
+        ruleObj[SourceAddressesKey] = rule.SourceAddresses;
+        ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
+        ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+        ruleObj[DescriptionKey] = rule.Description;
         return ruleObj;
     }
 
@@ -330,7 +498,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["resource_name"] = ra.ResourceName;
-        obj["description"] = ra.Description;
+        obj[DescriptionKey] = ra.Description;
         obj["summary_text"] = ra.SummaryText;
 
         // Small attributes for table display
@@ -367,7 +535,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["name"] = vg.Name;
-        obj["description"] = vg.Description;
+        obj[DescriptionKey] = vg.Description;
 
         // Variable changes for update scenarios
         var variableChanges = new ScriptArray();

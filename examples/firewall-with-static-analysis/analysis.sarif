@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tfsec",
+          "version": "1.28.0",
+          "informationUri": "https://tfsec.dev",
+          "rules": [
+            {
+              "id": "azure-network-no-public-egress",
+              "name": "Firewall rule allows traffic to any destination",
+              "shortDescription": {
+                "text": "Firewall rule allows unrestricted egress to the internet"
+              },
+              "fullDescription": {
+                "text": "Firewall rules should restrict destination addresses to specific, required targets rather than allowing traffic to any destination. Using wildcards (*) or 0.0.0.0/0 increases the attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://tfsec.dev/docs/azure/network/no-public-egress/"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "azure-network-no-public-egress",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Firewall rule 'allow-http' uses wildcard destination address '*', allowing unrestricted egress."
+          },
+          "properties": {
+            "security-severity": "5.5"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/firewall-with-static-analysis/main.tf"
+                },
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 5,
+                  "endLine": 25,
+                  "endColumn": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_firewall_network_rule_collection.network_rules.rule[1].destination_addresses"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

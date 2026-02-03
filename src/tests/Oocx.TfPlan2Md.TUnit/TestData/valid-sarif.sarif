@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Checkov",
+          "semanticVersion": "3.2.10",
+          "rules": [
+            {
+              "id": "CKV_AWS_1",
+              "helpUri": "https://example.com/rule"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CKV_AWS_1",
+          "level": "error",
+          "message": {
+            "text": "Bucket is public"
+          },
+          "properties": {
+            "security-severity": "9.5"
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.example"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

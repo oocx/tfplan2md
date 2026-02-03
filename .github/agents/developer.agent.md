@@ -1,7 +1,7 @@
 ---
 description: Implement features and tests according to specifications
 name: Developer
-model: GPT-5.1-Codex-Max
+model: GPT-5.2-Codex
 target: vscode
 tools: ['execute/testFailure', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/problems', 'read/readFile', 'read/terminalLastCommand', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'todo']
 handoffs:
@@ -345,22 +345,24 @@ docker run --rm -v $(pwd):/data tfplan2md:local /data/plan.json
 
 When fixing PR/CI failures, check workflow logs:
 
-Preferred in VS Code chat:
-- Use GitHub chat tools to fetch PR status checks.
-- If you do not have repo context (owner/repo) or a tool is missing, fall back to `gh`.
+**Priority order:**
+1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-actions_list`, `github-mcp-server-get_job_logs`)
+2. **SECOND**: Use `scripts/check-workflow-status.sh` wrapper
+3. **LAST**: Raw `gh` commands (avoid)
 
-```bash
-# List recent workflow runs (non-blocking)
-PAGER=cat gh run list --limit 5
+**Examples:**
+```
+# Preferred: GitHub MCP tools
+github-mcp-server-actions_list with method="list_workflow_runs", owner="oocx", repo="tfplan2md", perPage=5
+github-mcp-server-get_job_logs with owner="oocx", repo="tfplan2md", job_id=<job-id>
 
-# View specific failed run
-PAGER=cat gh run view <run-id> --log-failed
-
-# PR validation status (fallback)
-PAGER=cat gh pr checks <pr-number>
+# Fallback: Wrapper script
+scripts/check-workflow-status.sh list --branch main --limit 5
+scripts/check-workflow-status.sh view <run-id>
+scripts/check-workflow-status.sh watch <run-id>
 ```
 
-**Important**: If you run `gh`, always use `PAGER=cat` (or `GH_PAGER=cat`) to prevent interactive pagers from blocking. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for details.
+**Important**: GitHub MCP tools can be permanently allowed in VS Code, eliminating approval friction. See [.github/gh-cli-instructions.md](../gh-cli-instructions.md) for complete guidance on the priority order and all available GitHub MCP tools.
 
 ## Definition of Done
 
@@ -381,6 +383,13 @@ Verify:
 Verify:
 - [ ] All tasks are complete and marked as done in tasks.md
 - [ ] Full test suite passes with ZERO skipped tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
+- [ ] **Coverage thresholds met** (line ≥84.48%, branch ≥72.80%):
+  ```bash
+  # Run tests with coverage
+  dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --configuration Release -- --coverage --coverage-output coverage.cobertura.xml --coverage-output-format cobertura
+  # Verify thresholds
+  dotnet run --project src/tools/Oocx.TfPlan2Md.CoverageEnforcer/Oocx.TfPlan2Md.CoverageEnforcer.csproj -- --report ./src/TestResults/coverage.cobertura.xml --line-threshold 84.48 --branch-threshold 72.80
+  ```
 - [ ] Docker image builds successfully (`docker build`)
 - [ ] Feature works correctly when running in the Docker container
 - [ ] Demo artifacts regenerated using `generate-demo-artifacts` skill (REQUIRED)
@@ -391,7 +400,9 @@ Verify:
 
 ## Handoff
 
-After implementation is complete:
+**Before handoff:** Ensure all changes are committed and pushed (use the checklist above to verify).
+
+After all work is committed:
 - For new features: Hand off to **Technical Writer** to update docs
 - For rework or if docs are complete: Hand off to **Code Reviewer** for review
 - **Never create a pull request** - that's the Release Manager's responsibility after code review approval

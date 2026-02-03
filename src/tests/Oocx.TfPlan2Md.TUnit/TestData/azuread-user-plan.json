@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_user.jane",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_user",
+      "name": "jane",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Jane Doe",
+          "user_principal_name": "jane.doe@example.com",
+          "mail": "jane.doe@example.com"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_user.no_mail",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_user",
+      "name": "no_mail",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Alex Rivera",
+          "user_principal_name": "alex.rivera@example.com"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

@@ -5,13 +5,13 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
 /// <summary>
 /// Wraps a value with its pre-computed formatted representation for template consumption.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 /// <typeparam name="T">The type of the raw value.</typeparam>
 public sealed record FormattedValue<T>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FormattedValue{T}"/> record.
+    /// Initializes a new instance of the <see cref="FormattedValue{T}"/> class.
     /// </summary>
     /// <param name="raw">The raw underlying value.</param>
     /// <param name="formatted">The pre-computed formatted representation.</param>
@@ -35,13 +35,13 @@ public sealed record FormattedValue<T>
 
 /// <summary>
 /// Wraps a list of values with a pre-computed formatted representation for template consumption.
-/// Related feature: docs/features/026-template-rendering-simplification/specification.md
+/// Related feature: docs/features/026-template-rendering-simplification/specification.md.
 /// </summary>
 /// <typeparam name="T">The type of the raw list elements.</typeparam>
 public sealed record FormattedList<T>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FormattedList{T}"/> record.
+    /// Initializes a new instance of the <see cref="FormattedList{T}"/> class.
     /// </summary>
     /// <param name="raw">The raw values.</param>
     /// <param name="formatted">The pre-computed formatted representation.</param>

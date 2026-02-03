@@ -1,8 +1,8 @@
 namespace Oocx.TfPlan2Md.Diagnostics;
 
 /// <summary>
-/// Represents the type of error that occurred when loading a principal mapping file.
-/// Related feature: docs/issues/042-principal-loading-debug-context/
+/// Defines the types of errors that can occur when loading a principal mapping file.
+/// Related feature: docs/features/038-debug-output/specification.md.
 /// </summary>
 /// <remarks>
 /// This enum provides specific error categorization for principal mapping load failures,

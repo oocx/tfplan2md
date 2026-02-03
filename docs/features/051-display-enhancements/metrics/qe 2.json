@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "source": "qe 2.chat.json",
+    "analysis_date": "2026-01-28",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 1,
+    "start_timestamp": 1769533098852,
+    "end_timestamp": 1769533098852,
+    "session_duration_sec": 0,
+    "user_wait_time_sec": 0,
+    "agent_work_time_sec": 84.349
+  },
+  "model_usage": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 1
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "replaceString",
+      "count": 6
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 6
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 2
+    },
+    {
+      "tool": "listDirectory",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 15
+      }
+    ],
+    "total_invocations": 15,
+    "auto_approved": 15,
+    "manual_approved": 0,
+    "automation_rate_pct": 100
+  },
+  "model_success": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total": 1,
+      "complete": 1,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total_requests": 1,
+      "cancelled": 0,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 0
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 1,
+      "avg_sec": 84,
+      "total_sec": 84
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

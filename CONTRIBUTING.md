@@ -180,6 +180,40 @@ git commit -m "feat(api)!: rename TerraformPlan to PlanResult"
 
 ## Coding Standards
 
+### Code Quality Metrics
+
+This project enforces automated code quality metrics to ensure maintainable, readable code:
+
+- **Cyclomatic Complexity** (CA1502): Maximum 15 per method
+- **Maintainability Index** (CA1505/CA1506): Minimum 20 per method/class (on 0-100 scale)
+- **Line Length** (IDE0055): Maximum 160 characters
+- **File Length**: Target ~300 lines per file (guideline, not enforced)
+
+These metrics are enforced at build time and will cause build failures if violated. Thresholds are defined in [CodeMetricsConfig.txt](../src/CodeMetricsConfig.txt) and [.editorconfig](../.editorconfig).
+
+**Suppression Policy:**
+
+Suppressions are allowed only when refactoring would harm readability or maintainability. Requirements:
+
+1. Use `[SuppressMessage]` attribute with clear `Justification` parameter
+2. Add a comment above the suppressed member explaining why the suppression is necessary
+3. Reference related feature/task documentation if applicable
+4. Obtain maintainer approval in the PR review
+
+Example:
+```csharp
+// Complex state machine requires 18 branches for RFC compliance
+// Approved by maintainer in PR #346
+[SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", 
+    Justification = "State machine for RFC 9110 HTTP semantics requires explicit branch handling")]
+public HttpStatus ProcessRequest(HttpRequest request)
+{
+    // Implementation
+}
+```
+
+See [docs/commenting-guidelines.md](docs/commenting-guidelines.md) for complete suppression guidelines.
+
 ### Access Modifiers
 
 tfplan2md is a standalone CLI tool, not a class library. Use the most restrictive access modifier that works:
@@ -222,6 +256,57 @@ internal async Task<IReadOnlyList<ResourceChange>> ParseAsync(string planFilePat
 
 See [docs/commenting-guidelines.md](docs/commenting-guidelines.md) for complete guidelines.
 
+## Project Structure
+
+Understanding the codebase organization will help you navigate and contribute effectively.
+
+### High-Level Organization
+
+```
+tfplan2md/
+├── src/Oocx.TfPlan2Md/              # Main application
+│   ├── CLI/                         # Command-line interface
+│   ├── Parsing/                     # Terraform plan JSON parsing
+│   ├── MarkdownGeneration/          # Core rendering logic
+│   ├── Providers/                   # Provider-specific implementations
+│   ├── RenderTargets/               # Platform-specific rendering (GitHub vs Azure DevOps)
+│   └── Platforms/                   # Cloud platform utilities (Azure)
+├── src/tests/                       # Test projects
+└── docs/                            # Documentation
+```
+
+### Provider Architecture
+
+Terraform provider-specific code (azurerm, azapi, azuredevops) is organized into modular provider implementations:
+
+**Location:** `src/Oocx.TfPlan2Md/Providers/`
+
+Each provider is self-contained:
+- **Templates** (`.sbn` files): Provider-specific Scriban templates
+- **Models**: Resource view models and factories for complex resources
+- **Helpers**: Provider-specific Scriban helper functions
+- **Module**: `IProviderModule` implementation for registration
+
+**Adding a new provider?** See [src/Oocx.TfPlan2Md/Providers/README.md](src/Oocx.TfPlan2Md/Providers/README.md) for a comprehensive guide.
+
+### Core Components
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| **CLI** | `CLI/` | Command-line parsing and orchestration |
+| **Parsing** | `Parsing/` | Terraform plan JSON deserialization |
+| **MarkdownGeneration** | `MarkdownGeneration/` | Core report building and rendering |
+| **Providers** | `Providers/{Provider}/` | Provider-specific logic (azurerm, azapi, azuredevops) |
+| **RenderTargets** | `RenderTargets/` | Platform-specific diff formatting (GitHub, Azure DevOps) |
+| **Platforms** | `Platforms/Azure/` | Azure-specific utilities (principal mapping, role names) |
+
+### Architecture Documentation
+
+For comprehensive architecture details, see:
+- [docs/architecture.md](docs/architecture.md) - Full arc42 architecture documentation
+- [docs/spec.md](docs/spec.md) - Project specification and technical details
+- [src/Oocx.TfPlan2Md/Providers/README.md](src/Oocx.TfPlan2Md/Providers/README.md) - Provider development guide
+
 ## Local Development Setup
 
 ### Prerequisites
@@ -261,18 +346,129 @@ If your commit is rejected:
 2. **Build errors**: Fix the build errors before committing
 3. **Commit message**: Ensure your message follows the format `type: description`
 
+## Maintaining Azure API Documentation Mappings
+
+The AzAPI provider includes curated mappings between Azure resource types and their official REST API documentation URLs. These mappings ensure users get reliable documentation links instead of broken heuristic guesses.
+
+### When to Update Mappings
+
+Update the mappings when:
+- A user reports a broken or missing documentation link
+- Microsoft launches a new Azure service or resource type
+- Microsoft restructures documentation URLs (rare but possible)
+- Regular maintenance (maintainer's discretion based on Azure releases)
+
+### Update Process
+
+**Prerequisites:**
+- Python 3.7 or later
+- Internet connection (script scrapes Microsoft Learn)
+
+**Steps:**
+
+1. **Run the discovery script:**
+   ```bash
+   python3 scripts/update-azure-api-mappings.py
+   ```
+   This generates updated mappings by scraping the Azure SDK Specs Inventory page and saves them to `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`.
+
+2. **Spot-check the output:**
+   - Review the generated JSON file
+   - Check the `totalMappings` count in metadata (should be 90+)
+   - Verify a few sample URLs manually:
+     ```bash
+     # Example: Check a few URLs
+     cat src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json | \
+       jq '.mappings | to_entries | .[0:3] | .[] | .key + " -> " + .value.url'
+     ```
+
+3. **Validate URLs (optional):**
+   ```bash
+   # Warning: This is slow (makes HTTP requests for each URL)
+   python3 scripts/update-azure-api-mappings.py --validate
+   ```
+   Only use `--validate` when you need to verify URL correctness. It's not recommended for routine updates.
+
+4. **Test the changes:**
+   ```bash
+   dotnet build
+   dotnet test
+   ```
+
+5. **Commit the updated mappings:**
+   ```bash
+   git add src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json
+   git commit -m "chore: update Azure API documentation mappings"
+   ```
+
+### Script Options
+
+The `update-azure-api-mappings.py` script supports the following options:
+
+- `--output PATH` - Custom output file path (default: `src/Oocx.TfPlan2Md/Providers/AzApi/Data/AzureApiDocumentationMappings.json`)
+- `--validate` - Validate all URLs by making HTTP HEAD requests (slow, not recommended for routine use)
+- `--help` - Show help message
+
+### Mapping File Format
+
+The mappings are stored in JSON format:
+
+```json
+{
+  "mappings": {
+    "Microsoft.Compute/virtualMachines": {
+      "url": "https://learn.microsoft.com/rest/api/compute/virtual-machines"
+    },
+    "Microsoft.Storage/storageAccounts": {
+      "url": "https://learn.microsoft.com/rest/api/storagerp/storage-accounts"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "YYYY-MM-DD",
+    "source": "Microsoft Learn REST API Documentation (manually curated)",
+    "generatedBy": "scripts/update-azure-api-mappings.py",
+    "totalMappings": 92
+  }
+}
+```
+
+**Key points:**
+- Resource types are **version-agnostic** (no `@YYYY-MM-DD` suffix)
+- Nested resources have individual mappings (e.g., `Microsoft.Storage/storageAccounts/blobServices`)
+- URLs point to Microsoft Learn REST API documentation
+
+### Related Documentation
+
+- Feature specification: [docs/features/048-azure-api-doc-mapping/specification.md](docs/features/048-azure-api-doc-mapping/specification.md)
+- Architecture design: [docs/features/048-azure-api-doc-mapping/architecture.md](docs/features/048-azure-api-doc-mapping/architecture.md)
+
 ## Release Process
 
 Releases are automated via GitHub Actions:
 
 1. When commits are pushed to `main`, the CI workflow runs Versionize
-2. If there are `feat:`, `fix:`, or `BREAKING CHANGE` commits, Versionize:
+2. Versionize only runs when Docker-relevant files changed (runtime code, examples, build config)
+3. If there are `feat:`, `fix:`, or `BREAKING CHANGE` commits, Versionize:
    - Bumps the version in `.csproj`
    - Updates `CHANGELOG.md`
    - Creates a git tag (e.g., `v0.2.0`)
-3. The tag push triggers the Release workflow which:
-   - Creates a GitHub Release with changelog notes
+4. The tag push triggers the Release workflow which:
+   - Looks for user-focused release notes in `docs/features/NNN-<feature-slug>/release-notes.md`
+   - If found, uses those notes for the GitHub Release (blog-post style, user-facing)
+   - Otherwise, falls back to extracting notes from `CHANGELOG.md`
    - Builds and pushes the Docker image to Docker Hub
+
+### Release Notes
+
+The Release Manager agent creates user-focused release notes in blog-post style:
+- **Location**: `docs/features/NNN-<feature-slug>/release-notes.md`
+- **Style**: Written for end-users, not developers
+- **Content**: Features and improvements users can see, excluding internal commits
+- **Format**: Compelling overview, code examples, practical use cases
+- **Filters out**: Task tracking commits, documentation updates, workflow changes
+
+**Note:** Changes to tests, documentation, website, scripts, or GitHub workflows do not trigger releases, as they don't affect the published Docker image.
 
 ## Questions?
 

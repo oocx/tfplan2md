@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "source": "uat.chat.json",
+    "analysis_date": "2026-01-27",
+    "generator": "extract-metrics.sh"
+  },
+  "session": {
+    "total_requests": 4,
+    "start_timestamp": 1769499361841,
+    "end_timestamp": 1769502892290,
+    "session_duration_sec": 3530.449,
+    "user_wait_time_sec": 4362.076,
+    "agent_work_time_sec": 2029.558
+  },
+  "model_usage": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 4
+    }
+  ],
+  "tool_usage": [
+    {
+      "tool": "run_in_terminal",
+      "count": 50
+    },
+    {
+      "tool": "readFile",
+      "count": 21
+    },
+    {
+      "tool": "listDirectory",
+      "count": 10
+    },
+    {
+      "tool": "replaceString",
+      "count": 6
+    },
+    {
+      "tool": "mcp_github_get_issue",
+      "count": 1
+    },
+    {
+      "tool": "mcp_github_get_pull_request",
+      "count": 1
+    },
+    {
+      "tool": "mcp_github_get_pull_request_comments",
+      "count": 1
+    },
+    {
+      "tool": "mcp_github_list_issues",
+      "count": 1
+    }
+  ],
+  "automation": {
+    "approval_types": [
+      {
+        "type": 1,
+        "count": 79
+      },
+      {
+        "type": 4,
+        "count": 9
+      },
+      {
+        "type": 3,
+        "count": 3
+      }
+    ],
+    "total_invocations": 91,
+    "auto_approved": 82,
+    "manual_approved": 9,
+    "automation_rate_pct": 90
+  },
+  "model_success": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total": 4,
+      "complete": 4,
+      "failed": 0
+    }
+  ],
+  "rejection_analysis": [
+    {
+      "model": "gemini-3-flash-preview",
+      "total_requests": 4,
+      "cancelled": 1,
+      "failed": 0,
+      "tool_rejections": 0,
+      "error_codes": [],
+      "rejection_rate": 25
+    }
+  ],
+  "file_edits": [],
+  "response_times": [
+    {
+      "model": "gemini-3-flash-preview",
+      "count": 4,
+      "avg_sec": 507,
+      "total_sec": 2029
+    }
+  ],
+  "errors": [],
+  "user_feedback": []
+}

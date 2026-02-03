@@ -30,6 +30,7 @@ dotnet build src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release
 log_info "Generating artifacts/comprehensive-demo.md (inline-diff, for Azure DevOps UAT)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
+  --code-analysis-results "examples/static-analysis/*.sarif" \
   --output artifacts/comprehensive-demo.md \
   examples/comprehensive-demo/plan.json
 
@@ -48,7 +49,8 @@ log_info "✓ artifacts/comprehensive-demo.md generated successfully (inline-dif
 log_info "Generating artifacts/comprehensive-demo-simple-diff.md (for GitHub UAT)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
-  --large-value-format simple-diff \
+  --code-analysis-results "examples/static-analysis/*.sarif" \
+  --render-target github \
   --output artifacts/comprehensive-demo-simple-diff.md \
   examples/comprehensive-demo/plan.json
 
@@ -63,7 +65,7 @@ log_info "Generating artifacts/role.md (role assignments with principal mapping)
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
   --output artifacts/role.md \
-  src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/role-assignments.json
 
 if [[ -s artifacts/role.md ]]; then
   log_info "✓ artifacts/role.md generated successfully"
@@ -75,12 +77,49 @@ fi
 log_info "Generating artifacts/role-default.md (role assignments without principal mapping)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --output artifacts/role-default.md \
-  src/tests/Oocx.TfPlan2Md.Tests/TestData/role-assignments.json
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/role-assignments.json
 
 if [[ -s artifacts/role-default.md ]]; then
   log_info "✓ artifacts/role-default.md generated successfully"
 else
   log_error "Failed to generate artifacts/role-default.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/apim-display-enhancements-demo.md (APIM display enhancements demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/apim-display-enhancements-demo.md \
+  examples/apim-display-enhancements.json
+
+if [[ -s artifacts/apim-display-enhancements-demo.md ]]; then
+  log_info "✓ artifacts/apim-display-enhancements-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/apim-display-enhancements-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/refactoring-demo.md (inline-diff, for Azure DevOps UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/refactoring-demo.md \
+  examples/refactoring-demo.json
+
+if [[ -s artifacts/refactoring-demo.md ]]; then
+  log_info "✓ artifacts/refactoring-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/refactoring-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/refactoring-demo-simple-diff.md (for GitHub UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --render-target github \
+  --output artifacts/refactoring-demo-simple-diff.md \
+  examples/refactoring-demo.json
+
+if [[ -s artifacts/refactoring-demo-simple-diff.md ]]; then
+  log_info "✓ artifacts/refactoring-demo-simple-diff.md generated successfully"
+else
+  log_error "Failed to generate artifacts/refactoring-demo-simple-diff.md"
   exit 1
 fi
 
@@ -93,6 +132,7 @@ fi
 log_info "Generating examples/comprehensive-demo/report.md (default template)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
+  --code-analysis-results "examples/static-analysis/*.sarif" \
   --output examples/comprehensive-demo/report.md \
   examples/comprehensive-demo/plan.json
 
@@ -106,6 +146,7 @@ fi
 log_info "Generating examples/comprehensive-demo/report-with-sensitive.md (with --show-sensitive)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
   --principal-mapping examples/comprehensive-demo/demo-principals.json \
+  --code-analysis-results "examples/static-analysis/*.sarif" \
   --show-sensitive \
   --output examples/comprehensive-demo/report-with-sensitive.md \
   examples/comprehensive-demo/plan.json

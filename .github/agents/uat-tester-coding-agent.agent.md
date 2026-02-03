@@ -65,7 +65,10 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 ### ✅ Always Do
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
-- **Validate artifact before running**: Verify the specified artifact exercises the changed code paths. If using a default artifact (e.g., comprehensive-demo.md), confirm it will test the new feature. If not, generate a feature-specific artifact first.
+- **Post TWO artifacts as separate PR comments**:
+  1. **Feature-Specific Report** (from UAT test plan): Label with "🎯 Feature Test"
+  2. **Comprehensive Demo** (regression test): Label with "🔄 Regression Test"
+- **Validate artifacts before running**: Verify both artifacts exist and exercise the changed code paths
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
 - Run real UAT only (GitHub/Azure DevOps)
 - Report the PR numbers and final status from the script output
@@ -84,12 +87,20 @@ If it's not clear, ask the Maintainer for the exact folder path.
 
 When the user asks to run UAT:
 
-1. **Check for Test Plan** (optional)
-   - Look for `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` files
-   - If found, read the validation steps to use as the test description
-   - If not found, use a generic description or ask user
+1. **Check for Test Plan** (required)
+   - Read `docs/features/*/uat-test-plan.md` to find:
+     - **Feature-specific artifact path** (e.g., `artifacts/feature-slug-uat.md`)
+     - **Validation instructions** to use as test description
+   - If test plan doesn't exist or doesn't define artifacts, ask user
 
-2. **Post PR Overview Links**
+2. **Validate Artifacts**
+   - Verify feature-specific artifact exists
+   - Verify comprehensive demo artifacts exist:
+     - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
+     - Azure DevOps: `artifacts/comprehensive-demo.md`
+   - If missing, use `generate-demo-artifacts` skill first
+
+3. **Post PR Overview Links**
    
    Before running the script, post links to the PR overview pages so the user can easily find the UAT PRs:
    
@@ -97,47 +108,67 @@ When the user asks to run UAT:
    > - GitHub: https://github.com/oocx/tfplan2md-uat/pulls
    > - Azure DevOps: https://dev.azure.com/oocx/test/_git/test/pullrequests?_a=mine
 
-3. **Run UAT Script**
+4. **Run UAT for Feature-Specific Report**
    
-   Run exactly ONE command. No compound commands, no pipes, no redirects.
-   
-   **For Real UAT:**
    ```bash
-   scripts/uat-run.sh "<validation-description>"
+   scripts/uat-run.sh artifacts/<feature-slug>-uat.md "<validation-description>" --create-only
    ```
    
    **CRITICAL:**
-   - Use `isBackground: false` — the script must run in foreground
-   - The script writes `.tmp/uat-run/last-run.json` containing the created PR URLs
-   - The script polls for approval automatically — do NOT run any other commands
+   - Use `--create-only` flag to create PRs without polling
+   - This creates the PRs and saves state to `.tmp/uat-run/last-run.json`
+   - The script will output the PR URLs
 
-4. **Post the Exact PR Links in Chat (Mandatory)**
+5. **Post Comprehensive Demo as Additional Comment**
+   
+   After the feature-specific report is posted, add the comprehensive demo as a second comment:
+   
+   ```bash
+   # Extract PR numbers from state file
+   gh_pr=$(jq -r '.github.pr // ""' .tmp/uat-run/last-run.json)
+   azdo_pr=$(jq -r '.azdo.pr // ""' .tmp/uat-run/last-run.json)
+   
+   # Post comprehensive demo as additional comment to GitHub
+   if [[ -n "$gh_pr" ]]; then
+     scripts/uat-github.sh comment "$gh_pr" artifacts/comprehensive-demo-simple-diff.md
+   fi
+   
+   # Post comprehensive demo as additional comment to Azure DevOps
+   if [[ -n "$azdo_pr" ]]; then
+     scripts/uat-azdo.sh comment "$azdo_pr" artifacts/comprehensive-demo.md
+   fi
+   ```
 
-   Immediately after the script prints the PR information, paste the created PR links directly into chat (not only the overview pages and not only “see terminal output”).
+6. **Post the Exact PR Links in Chat (Mandatory)**
 
-   If you missed the terminal output, extract the URLs from the state file:
+   Immediately paste the created PR links directly into chat:
    ```bash
    jq -r '"GitHub PR: " + (.github.url // "") + "\nAzure DevOps PR: " + (.azdo.url // "")' .tmp/uat-run/last-run.json
    ```
 
-   If `jq` is not available, open `.tmp/uat-run/last-run.json` and copy the `github.url` and `azdo.url` values.
+7. **Ask User to Review and Approve**
+   
+   > **Action Required:**
+   > 
+   > Please review both reports in each PR:
+   > 1. **🎯 Feature Test** (first comment) - Validates specific changes
+   > 2. **🔄 Regression Test** (second comment) - Ensures no side effects
+   > 
+   > **To approve:**
+   > - GitHub: Apply label `uat-approved` to the PR
+   > - Azure DevOps: Approve the PR
+   > 
+   > Once approved, I'll clean up the UAT PRs.
 
-5. **Wait for Completion**
-   - The script runs until approval is detected or timeout
-   - Do NOT run any monitoring commands (no `ps`, no `get_terminal_output`, nothing)
-   - The user will approve the PRs in their browser while the script polls
+8. **Poll for Approval and Clean Up**
+   
+   After user has reviewed and approved, clean up:
+   ```bash
+   scripts/uat-run.sh --cleanup-last
+   ```
 
-6. **Report Results**
-   - When the script exits, report the final status based on what you saw in the output
-
-## Context to Read
-
-- Test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` (if they exist)
-- [docs/testing-strategy.md](../../docs/testing-strategy.md) - UAT overview
-
-## Output
-
-After UAT completes, report:
+9. **Report Results**
+   - When cleanup completes, report the final status
 
 ```
 ## UAT Result

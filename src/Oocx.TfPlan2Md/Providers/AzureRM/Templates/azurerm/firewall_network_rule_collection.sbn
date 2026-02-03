@@ -6,7 +6,6 @@
 <summary>{{ change.summary_html }}</summary>
 <br>
 {{~ include "/_code_analysis_metadata.sbn" ~}}
-### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ if change.firewall_network_rule_collection && change.firewall_network_rule_collection.name ~}}
 **Collection:** `{{ change.firewall_network_rule_collection.name | escape_markdown }}` | **Priority:** `{{ change.firewall_network_rule_collection.priority | escape_markdown }}` | **Action:** {{ change.firewall_network_rule_collection.action }}
@@ -46,11 +45,27 @@
 <details>
 <summary>Attribute Changes</summary>
 
+{{~ if change.action == "create" ~}}
+| Attribute | Value |
+| ----------- | ------- |
+{{~ for attr in change.attribute_changes ~}}
+{{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
+{{~ else if change.action == "delete" ~}}
+| Attribute | Value |
+| ----------- | ------- |
+{{~ for attr in change.attribute_changes ~}}
+{{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
+| {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.before ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
+{{~ else ~}}
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{~ for attr in change.attribute_changes ~}}
 {{~ indicator = get_attribute_finding_indicator attr.name change.code_analysis_findings ~}}
 | {{ attr.name | escape_markdown }}{{ indicator }} | {{ (attr.before ?? "(null)") | escape_markdown }} | {{ (attr.after ?? "(null)") | escape_markdown }} |
+{{~ end ~}}
 {{~ end ~}}
 
 </details>

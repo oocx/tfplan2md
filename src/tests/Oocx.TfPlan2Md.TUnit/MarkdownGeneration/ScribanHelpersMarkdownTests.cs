@@ -30,7 +30,33 @@ public class ScribanHelpersMarkdownTests
 
         var escaped = ScribanHelpers.EscapeMarkdown(input);
 
-        escaped.Should().Be("value\\|\\`test\\`\\\\<br/>line\\<end\\>&amp;");
+        escaped.Should().Be("value\\|\\`test\\`\\\\<br/>line<end>&amp;");
+    }
+
+    /// <summary>
+    /// Verifies greater-than characters are preserved so inline code values remain readable.
+    /// </summary>
+    [Test]
+    public void EscapeMarkdown_DoesNotEscapeGreaterThan()
+    {
+        var input = "before->after";
+
+        var escaped = ScribanHelpers.EscapeMarkdown(input);
+
+        escaped.Should().Be("before->after");
+    }
+
+    /// <summary>
+    /// Verifies less-than characters are preserved so inline code values remain readable.
+    /// </summary>
+    [Test]
+    public void EscapeMarkdown_DoesNotEscapeLessThan()
+    {
+        var input = "html: <div>";
+
+        var escaped = ScribanHelpers.EscapeMarkdown(input);
+
+        escaped.Should().Be("html: <div>");
     }
 
     /// <summary>

@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.9.0"></a>
+## [1.9.0](https://github.com/oocx/tfplan2md/compare/v1.8.0...v1.9.0) (2026-02-03)
+
+### ✨ Features
+
+* enhance Release Manager to generate user-focused release notes ([94c28f4](https://github.com/oocx/tfplan2md/commit/94c28f40e0120858493fcb18a6405f667b6604ad))
+
+### 🐛 Bug Fixes
+
+* address NSG rendering and escaping issues found in UAT - SNAPSHOT_UPDATE_OK ([ca27b9b](https://github.com/oocx/tfplan2md/commit/ca27b9b1116230c431b727765fab108308d71438))
+* align azurerm template fallbacks ([bed8e64](https://github.com/oocx/tfplan2md/commit/bed8e64f945b02f384d73208ce0ba890ca5081d1))
+
+### 📚 Documentation
+
+* add code review for NSG rendering issues ([0cc4c2c](https://github.com/oocx/tfplan2md/commit/0cc4c2cdd44d1ac9713617fa1b387e3e1e2895b8))
+* add example user-focused release notes for feature 057 ([c682e36](https://github.com/oocx/tfplan2md/commit/c682e36291e198f9ec65093eef76c8c436962457))
+* add focused UAT artifacts for 058 - SNAPSHOT_UPDATE_OK ([29dca9d](https://github.com/oocx/tfplan2md/commit/29dca9dee9ed926b51a6d76ce2a61e578d7532cb))
+* add issue analysis for NSG rendering issues ([14a973a](https://github.com/oocx/tfplan2md/commit/14a973aa33124914ba4ef0aa56367a0a8dc9d3b5))
+* add UAT report for issue 058 (FALIED) ([6d80d58](https://github.com/oocx/tfplan2md/commit/6d80d58c48334b1f501c3e9093495e9ba2c8de30))
+* add user-focused release notes for NSG rendering improvements ([dc03e6c](https://github.com/oocx/tfplan2md/commit/dc03e6c28c0e26f068bc191cb8f1150976c4cb69))
+* regenerate artifacts for 058 UAT - SNAPSHOT_UPDATE_OK ([9b8ef5a](https://github.com/oocx/tfplan2md/commit/9b8ef5a12c6c067554942d512e3ff09342a32422))
+* update code review for NSG rendering issues - approved ([af085f4](https://github.com/oocx/tfplan2md/commit/af085f40fd9bdd761bf4f0688362ccec04061e00))
+* update CONTRIBUTING.md to explain release notes process ([e7c6038](https://github.com/oocx/tfplan2md/commit/e7c6038b87dfaa61d54eb89547c5e046509ba72f))
+* update UAT report for issue 058 (PASSED) ([57aff0a](https://github.com/oocx/tfplan2md/commit/57aff0a864f8f27f916327b4b95f2920cef6822a))
+
 <a name="1.8.0"></a>
 ## [1.8.0](https://github.com/oocx/tfplan2md/compare/v1.7.0...v1.8.0) (2026-02-01)
 

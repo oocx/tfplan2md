@@ -1,0 +1,50 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_network_security_group.no_rules",
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "no_rules",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "location": "eastus",
+          "name": "nsg-no-rules"
+        }
+      }
+    },
+    {
+      "address": "azurerm_firewall_network_rule_collection.no_rules",
+      "mode": "managed",
+      "type": "azurerm_firewall_network_rule_collection",
+      "name": "no_rules",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "name": "fw-no-rules",
+          "priority": 100,
+          "action": "Allow"
+        }
+      }
+    },
+    {
+      "address": "azurerm_resource_group.special_chars",
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "special_chars",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "location": "eastus",
+          "name": "rg-special",
+          "tags": {
+            "arrow": "A -> B",
+            "html": "<div>"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -46,7 +46,7 @@ A thorough review typically identifies:
 - **Questions about design decisions** if the rationale isn't documented
 - **Verification of edge cases** — explicitly confirm they were tested
 
-If your review finds zero issues of any severity, **re-review with increased scrutiny**. A "perfect" review often indicates insufficient depth.
+If your review finds zero issues of any severity, **verify you have thoroughly examined all critical areas** before approving. Consider whether you may have missed something.
 
 ### Red Flags Requiring Extra Scrutiny
 
@@ -159,7 +159,7 @@ Before approving any code, systematically answer these questions:
 4. **Does the implementation add behavior not specified?** Flag scope creep.
 
 ### Code Quality Deep Dive
-5. **What could make this code fail?** Identify at least 2 potential failure scenarios.
+5. **What could make this code fail?** Identify potential failure scenarios if any exist.
 6. **What inputs would cause unexpected behavior?** Consider null, empty, very large, special characters.
 7. **Is error handling complete?** Trace each error path to ensure it's handled.
 8. **Are there any code smells?** Long methods, deep nesting, unclear naming.
@@ -352,11 +352,11 @@ None | List of minor issues
 
 ### Suggestions
 
-None | Optional improvements (expect at least 1-3 for thorough reviews)
+None | Optional improvements
 
 ## Critical Questions Answered
 
-- **What could make this code fail?** <answer with 2+ scenarios>
+- **What could make this code fail?** <answer>
 - **What edge cases might not be handled?** <answer>
 - **Are all error paths tested?** <answer>
 

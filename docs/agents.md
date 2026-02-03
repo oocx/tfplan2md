@@ -489,6 +489,7 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 ### 10. Release Manager
 - **Goal:** Plan, coordinate, and execute releases.
 - **Deliverables:** Pull request, release notes, versioning, deployment plan, and post-release checklist.
+- **Key Behavior:** Write release notes as honest, technical notes for Terraform practitioners (not marketing), include ✨/🐛/📚 icons, include a 🔗 Commits section with user-facing commits, and only include ▶️ Getting started / 📸 Screenshots when applicable (screenshots required for user-visible output changes).
 - **Definition of Done:** PR is created and merged, release is published, documented, and verified.
 
 ### 10. Retrospective

@@ -178,7 +178,7 @@ Before releasing, verify:
    scripts/git-log.sh --oneline origin/main..HEAD
    ```
 
-3. **Generate User-Focused Release Notes** - Create release notes for end users:
+3. **Generate release notes (user-facing, developer audience)**
    
    **Read Context:**
    - Feature Specification: `docs/features/NNN-<feature-slug>/specification.md`
@@ -186,6 +186,8 @@ Before releasing, verify:
    - UAT Report (if exists): `docs/features/NNN-<feature-slug>/uat-report.md`
    - Demo artifacts: `docs/features/NNN-<feature-slug>/demo/`
    - Commit history: `scripts/git-log.sh --oneline origin/main..HEAD`
+
+    **Template:** Start from `docs/release-notes-template.md` and adapt it.
    
    **Filter Commits:** EXCLUDE internal commits that are not user-facing:
    - Documentation updates (task.md, specification.md updates, "mark task N complete")
@@ -201,42 +203,29 @@ Before releasing, verify:
    - CLI flag changes
    - Output format enhancements
    - New terraform feature support
+
+    **Required Sections and Style:**
+    - Technical blog-post style written by a developer for Terraform practitioners (not marketing copy)
+    - Be honest about scope (what changed / what didn’t)
+    - Use icons consistently:
+       - ✨ Features
+       - 🐛 Bug fixes
+       - 📚 Documentation (only if applicable)
+       - 🔗 Commits (REQUIRED)
+    - **🔗 Commits is mandatory**: list relevant user-facing commits for the release (short SHA + link + summary)
+    - **▶️ Getting started**: include only if usage changed (new flags, env vars, required steps, migration notes)
+    - **📸 Screenshots**:
+       - Only include a screenshots section if you actually have screenshots to show.
+       - If the release changes rendered output / review experience, screenshots are required; generate them if missing.
+       - Release notes screenshots must be focused and small: **max 580×400**.
+       - Use only `*-crop*.png` files in release notes.
+       - Generate screenshots with a selector or Terraform resource target so the crop shows the relevant area:
+          - `scripts/generate-screenshot.sh --markdown-file <md> --output-prefix <name> --selector "..."`
+          - or `scripts/generate-screenshot.sh --plan <plan.json> --output-prefix <name> --target-resource-id "..."`
+       - Prefer showing a single “after” screenshot for features; for bug fixes, include before/after when feasible.
    
-   **Write in Blog-Post Style:**
-   - Start with compelling overview (1-2 paragraphs on "why this matters")
-   - Focus on user benefits, not implementation details
-   - Use active voice ("You can now..." not "It is now possible to...")
-   - Include practical code examples showing new functionality
-   - Reference demo artifacts and screenshots
-   - Keep paragraphs short (2-4 sentences)
-   - Use clear headings for scanning
-   
-   **Structure:**
-   ```markdown
-   # [Feature Name]
-   
-   ## Overview
-   [User-focused description of what this release enables]
-   
-   ## What's New
-   ### [Feature Title]
-   [Description with code example]
-   
-   ## Improvements
-   - [User-visible improvement]
-   
-   ## Bug Fixes
-   - [User-visible fix]
-   
-   ## Breaking Changes
-   ⚠️ [If any, with migration steps]
-   
-   ## Getting Started
-   [Quick usage example]
-   ```
-   
-   **Save:** Create `docs/features/NNN-<feature-slug>/release-notes.md`
-   **Commit:** `docs: add user-focused release notes for <feature-name>`
+    **Save:** Create `release-notes.md` in the current work item folder (`docs/features/.../`, `docs/issues/.../`, or `docs/workflow/.../`).
+    **Commit:** `docs: add release notes for <work-item>`
 
 4. **Create or Update Pull Request**:
    ```bash

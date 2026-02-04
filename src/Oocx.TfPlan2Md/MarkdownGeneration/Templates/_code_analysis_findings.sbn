@@ -6,14 +6,14 @@
 
 #### 🔒 Security & Quality Findings
 
-| Severity | Attribute | Finding | Remediation |
-| -------- | --------- | ------- | ----------- |
+| Severity | Tool | Attribute | Finding | Remediation |
+| -------- | ---- | --------- | ------- | ----------- |
 {{~ for finding in change.code_analysis_findings ~}}
 {{~ message = finding.message | escape_markdown_table_cell | string.replace "\n" "<br/>" ~}}
 {{~ if finding.rule_id ~}}
 {{~ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) ~}}
 {{~ end ~}}
-| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.attribute_path }}`{{ finding.attribute_path | escape_markdown }}`{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name }}{{ finding.tool_name }}{{ else }}-{{ end }} | {{ if finding.attribute_path }}`{{ finding.attribute_path | escape_markdown }}`{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
 {{~ end ~}}
 {{ end }}
 

@@ -1584,6 +1584,7 @@ Integrate security and quality findings from static analysis tools (Checkov, Tri
 - **Multiple file support**: Load findings from multiple SARIF files with wildcard patterns
 - **Resource mapping**: Findings are automatically mapped to Terraform resources and attributes
 - **Severity levels**: Critical, High, Medium, Low, and Informational with visual indicators
+- **Tool identification**: Each finding displays the source tool name (Checkov, Trivy, tflint, Semgrep, etc.) in a dedicated column
 - **Remediation links**: Clickable links to fix guides and best practices
 - **Summary metrics**: Count of findings by severity and list of tools used
 - **Unmatched findings**: Findings that can't be mapped to resources appear in a separate section
@@ -1647,10 +1648,10 @@ tfplan2md plan.json \
 
 **Security & Quality:** 🚨 2 critical, ⚠️ 1 high
 
-| Severity | Attribute | Finding | Remediation |
-|----------|-----------|---------|-------------|
-| 🚨 Critical | ingress.0.cidr_blocks | Public ingress rule detected | [Fix Guide](link) |
-| ℹ️ Low | description | Missing security group description | [Best Practices](link) |
+| Severity | Tool | Attribute | Finding | Remediation |
+|----------|------|-----------|---------|-------------|
+| 🚨 Critical | Checkov | ingress.0.cidr_blocks | Public ingress rule detected | [Fix Guide](link) |
+| ℹ️ Low | tflint | description | Missing security group description | [Best Practices](link) |
 ```
 
 **Unmatched Findings** (at end of report):
@@ -1658,9 +1659,9 @@ tfplan2md plan.json \
 ## Other Findings
 
 ### Module: network-module
-| Severity | Finding | Remediation |
-|----------|---------|-------------|
-| ⚠️ High | Module uses deprecated provider version | [Upgrade Guide](link) |
+| Severity | Tool | Finding | Remediation |
+|----------|------|---------|-------------|
+| ⚠️ High | Trivy | Module uses deprecated provider version | [Upgrade Guide](link) |
 ```
 
 ### Tool Compatibility
@@ -1678,6 +1679,53 @@ Any tool that outputs SARIF 2.1.0 format is supported.
 See [examples/code-analysis/](../examples/code-analysis/) for a complete example with sample SARIF file and generated report.
 
 See [docs/features/056-static-analysis-integration/](features/056-static-analysis-integration/) for specification, architecture, and implementation details.
+
+## Tool Column in Findings Tables
+
+**Status:** ✅ Implemented
+
+Findings tables now include a "Tool" column that displays the name of the security or quality tool that generated each finding. This enhancement improves clarity when reviewing findings from multiple analysis tools in a single report.
+
+### Overview
+
+When using multiple static analysis tools (Checkov, Trivy, tflint, Semgrep, etc.), it's essential to know which tool produced each finding to assess its relevance and credibility. The Tool column makes this information immediately visible in all findings tables.
+
+### Column Structure
+
+**Security & Quality Findings Table** (per-resource):
+- Column order: `Severity | Tool | Attribute | Finding | Remediation`
+- The Tool column appears between Severity and Attribute columns
+
+**Other Findings Tables** (module-level and unmatched):
+- Column order: `Severity | Tool | Finding | Remediation`
+- The Tool column appears between Severity and Finding columns
+
+### Tool Name Display
+
+- **Tool names**: Displayed exactly as provided in SARIF files (e.g., "Checkov", "Trivy", "tflint", "Semgrep")
+- **Missing tool names**: Displayed as "-" when tool information is not available in the SARIF file
+- **Name only**: Only the tool name is shown (not version), keeping tables compact and readable
+
+### Example
+
+```markdown
+#### 🔒 Security & Quality Findings
+
+| Severity | Tool | Attribute | Finding | Remediation |
+| -------- | ---- | --------- | ------- | ----------- |
+| ⚠️ High | Checkov | - | Ensure storage account uses secure transfer<br/>Rule: `CKV_AZURE_3` | [Details](link) |
+| ⚠️ Medium | Trivy | `public_network_access_enabled` | Key Vault should have public network access disabled<br/>Rule: `AVD-AZU-0013` | - |
+| ℹ️ Low | tflint | - | Virtual Network should have custom DNS servers configured<br/>Rule: `AVD-AZU-0047` | - |
+```
+
+### Benefits
+
+- **Multi-tool clarity**: Immediately identify which scanner found each issue
+- **Tool credibility**: Assess findings based on the tool's focus area (e.g., Checkov for cloud security, tflint for Terraform-specific checks)
+- **Better triage**: Prioritize findings based on tool specialization and your trust in each tool
+- **Professional appearance**: Follows common security report patterns
+
+See [docs/features/059-tool-column-findings-tables/](features/059-tool-column-findings-tables/) for architecture and implementation details.
 
 ## Future Considerations
 

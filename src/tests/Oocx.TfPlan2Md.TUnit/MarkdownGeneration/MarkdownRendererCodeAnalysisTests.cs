@@ -51,7 +51,7 @@ public class MarkdownRendererCodeAnalysisTests
 
         markdown.Should().Contain("🔒 **Security & Quality:**", "because the metadata line should appear with lock icon");
         markdown.Should().Contain("#### 🔒 Security & Quality Findings", "because the findings table heading should have lock icon");
-        markdown.Should().Contain("| 🚨 Critical | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
+        markdown.Should().Contain("| 🚨 Critical | - | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
         markdown.Should().Contain($"[Details]({CriticalHelpUri})");
 
         var criticalIndex = markdown.IndexOf("🚨 Critical", StringComparison.Ordinal);
@@ -255,6 +255,7 @@ public class MarkdownRendererCodeAnalysisTests
         {
             Message = "Orphaned security finding",
             HelpUri = UnmatchedHelpUri,
+            SecuritySeverity = 5.0,  // Medium severity
             ToolName = "Trivy",
             Locations = []
         };
@@ -314,6 +315,7 @@ public class MarkdownRendererCodeAnalysisTests
         {
             Message = "Vulnerability found",
             HelpUri = UnmatchedHelpUri,
+            SecuritySeverity = 5.0,  // Medium severity
             ToolName = "Trivy",
             Locations = []
         };

@@ -131,9 +131,18 @@ jobs:
             tail -n +2 "$RUNNER_TEMP/commit-msg.txt" >> "$RUNNER_TEMP/commit-msg-amended.txt"
           fi
           
+          # Store the tag name before amending (versionize creates tag like v1.11.0)
+          TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
+          
           # Amend the commit with the modified message
           git commit --amend -F "$RUNNER_TEMP/commit-msg-amended.txt"
           echo "Amended commit message to include [skip ci]"
+          
+          # Move the tag to the amended commit if a tag was present
+          if [ -n "$TAG_NAME" ]; then
+            echo "Moving tag $TAG_NAME to amended commit"
+            git tag -f "$TAG_NAME"
+          fi
 
       - name: Push changes
         if: steps.versionize.outcome == 'success'

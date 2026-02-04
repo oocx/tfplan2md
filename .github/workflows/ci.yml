@@ -37,21 +37,36 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.RELEASE_TOKEN }}
 
+      - name: Skip if version bump commit
+        id: check_skip
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if echo "$COMMIT_MSG" | grep -q "^chore(release):"; then
+            echo "Skipping CI for version bump commit"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup .NET
+        if: steps.check_skip.outputs.skip != 'true'
         uses: actions/setup-dotnet@v5
         with:
           global-json-file: src/global.json
 
       - name: Install Versionize
+        if: steps.check_skip.outputs.skip != 'true'
         run: dotnet tool install --global Versionize
 
       - name: Configure Git
+        if: steps.check_skip.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Detect release-worthy changes
         id: release_needed
+        if: steps.check_skip.outputs.skip != 'true'
         run: |
           set -euo pipefail
 
@@ -94,14 +109,14 @@ jobs:
 
       - name: Versionize
         id: versionize
-        if: steps.release_needed.outputs.release_needed == 'true'
+        if: steps.check_skip.outputs.skip != 'true' && steps.release_needed.outputs.release_needed == 'true'
         run: |
           versionize --exit-insignificant-commits --skip-dirty
           echo "version_bumped=true" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Push changes
-        if: steps.versionize.outcome == 'success'
+        if: steps.check_skip.outputs.skip != 'true' && steps.versionize.outcome == 'success'
         env:
           GIT_TERMINAL_PROMPT: '0'
         run: |

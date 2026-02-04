@@ -63,8 +63,20 @@ jobs:
         id: find_release_notes
         run: |
           # Try to find release notes file in feature/fix/workflow directories
-          # Search for most recent release-notes.md
-          RELEASE_NOTES_FILE=$(find docs/features docs/issues docs/workflow -name "release-notes.md" -type f 2>/dev/null | sort -r | head -n 1)
+          # Search for most recent release-notes.md by extracting numeric prefixes and sorting
+          RELEASE_NOTES_FILE=$(find docs/features docs/issues docs/workflow -name "release-notes.md" -type f 2>/dev/null | \
+            awk -F'/' '{
+              # Extract directory name (e.g., "059-tool-column-findings-tables")
+              dir = $(NF-1);
+              # Extract leading numeric prefix
+              match(dir, /^[0-9]+/);
+              num = substr(dir, RSTART, RLENGTH);
+              # Print numeric prefix (padded) and full path for sorting
+              printf "%05d %s\n", num, $0;
+            }' | \
+            sort -rn | \
+            head -n 1 | \
+            cut -d' ' -f2-)
           if [ -n "$RELEASE_NOTES_FILE" ] && [ -f "$RELEASE_NOTES_FILE" ]; then
             echo "found=true" >> $GITHUB_OUTPUT
             echo "path=$RELEASE_NOTES_FILE" >> $GITHUB_OUTPUT

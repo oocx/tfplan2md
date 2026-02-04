@@ -23,21 +23,37 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Skip if version bump commit
+        id: check_skip
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if echo "$COMMIT_MSG" | grep -q "^chore(release):"; then
+            echo "Skipping coverage update for version bump commit"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup .NET
+        if: steps.check_skip.outputs.skip != 'true'
         uses: actions/setup-dotnet@v5
         with:
           global-json-file: src/global.json
 
       - name: Restore dependencies
+        if: steps.check_skip.outputs.skip != 'true'
         run: dotnet restore src/tfplan2md.slnx
 
       - name: Restore .NET tools
+        if: steps.check_skip.outputs.skip != 'true'
         run: dotnet tool restore
 
       - name: Build
+        if: steps.check_skip.outputs.skip != 'true'
         run: dotnet build src/tfplan2md.slnx --no-restore --configuration Release
 
       - name: Test (with coverage)
+        if: steps.check_skip.outputs.skip != 'true'
         run: |
           chmod +x scripts/test-with-timeout.sh
           # Keep the post-merge coverage job fast and stable: exclude Docker-based tests.
@@ -53,6 +69,7 @@ jobs:
             --coverage-output-format cobertura
 
       - name: Generate badge and history (staging)
+        if: steps.check_skip.outputs.skip != 'true'
         run: |
           mkdir -p .tmp/coverage
           timestamp="${{ github.event.head_commit.timestamp }}"
@@ -70,6 +87,7 @@ jobs:
             --timestamp "$timestamp"
 
       - name: Publish to coverage-data branch
+        if: steps.check_skip.outputs.skip != 'true'
         env:
           TARGET_BRANCH: coverage-data
         run: |

@@ -103,10 +103,18 @@ jobs:
       - name: Amend commit message with [skip ci]
         if: steps.versionize.outcome == 'success'
         run: |
-          # Get the current commit message
-          CURRENT_MSG=$(git log -1 --pretty=%B)
-          # Amend the commit to add [skip ci] which prevents workflows from triggering
-          git commit --amend -m "$CURRENT_MSG [skip ci]"
+          # Get the current commit message (preserving multi-line format)
+          git log -1 --pretty=%B > /tmp/commit-msg.txt
+          # Append [skip ci] to the first line to prevent workflows from triggering
+          # GitHub Actions checks the first line or commit title for skip ci markers
+          FIRST_LINE=$(head -n1 /tmp/commit-msg.txt)
+          REMAINING=$(tail -n +2 /tmp/commit-msg.txt)
+          {
+            echo "$FIRST_LINE [skip ci]"
+            echo "$REMAINING"
+          } > /tmp/commit-msg-amended.txt
+          # Amend the commit with the modified message
+          git commit --amend -F /tmp/commit-msg-amended.txt
           echo "Amended commit message to include [skip ci]"
 
       - name: Push changes

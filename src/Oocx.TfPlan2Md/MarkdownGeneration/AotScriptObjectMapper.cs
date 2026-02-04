@@ -256,6 +256,11 @@ internal static class AotScriptObjectMapper
             obj["firewall_network_rule_collection"] = MapFirewallNetworkRuleCollection(change.FirewallNetworkRuleCollection);
         }
 
+        if (change.FirewallApplicationRuleCollection != null)
+        {
+            obj["firewall_application_rule_collection"] = MapFirewallApplicationRuleCollection(change.FirewallApplicationRuleCollection);
+        }
+
         if (change.RoleAssignment != null)
         {
             obj["role_assignment"] = MapRoleAssignment(change.RoleAssignment);
@@ -490,6 +495,65 @@ internal static class AotScriptObjectMapper
         ruleObj[SourceAddressesKey] = rule.SourceAddresses;
         ruleObj[DestinationAddressesKey] = rule.DestinationAddresses;
         ruleObj[DestinationPortsKey] = rule.DestinationPorts;
+        ruleObj[DescriptionKey] = rule.Description;
+        return ruleObj;
+    }
+
+    private static ScriptObject MapFirewallApplicationRuleCollection(FirewallApplicationRuleCollectionViewModel farc)
+    {
+        var obj = new ScriptObject();
+        obj["name"] = farc.Name;
+        obj["priority"] = farc.Priority;
+        obj["action"] = farc.Action;
+
+        // Rule changes for update scenarios
+        var ruleChanges = new ScriptArray();
+        foreach (var rule in farc.RuleChanges)
+        {
+            var ruleObj = new ScriptObject();
+            ruleObj["change"] = rule.Change;
+            ruleObj["name"] = rule.Name;
+            ruleObj["protocols"] = rule.Protocols;
+            ruleObj[SourceAddressesKey] = rule.SourceAddresses;
+            ruleObj["source_ip_groups"] = rule.SourceIpGroups;
+            ruleObj["target_fqdns"] = rule.TargetFqdns;
+            ruleObj["fqdn_tags"] = rule.FqdnTags;
+            ruleObj[DescriptionKey] = rule.Description;
+            ruleChanges.Add(ruleObj);
+        }
+
+        obj["rule_changes"] = ruleChanges;
+
+        // After rules for create scenarios
+        var afterRules = new ScriptArray();
+        foreach (var rule in farc.AfterRules)
+        {
+            afterRules.Add(MapFirewallApplicationRuleRow(rule));
+        }
+
+        obj["after_rules"] = afterRules;
+
+        // Before rules for delete scenarios
+        var beforeRules = new ScriptArray();
+        foreach (var rule in farc.BeforeRules)
+        {
+            beforeRules.Add(MapFirewallApplicationRuleRow(rule));
+        }
+
+        obj["before_rules"] = beforeRules;
+
+        return obj;
+    }
+
+    private static ScriptObject MapFirewallApplicationRuleRow(FirewallApplicationRuleRowViewModel rule)
+    {
+        var ruleObj = new ScriptObject();
+        ruleObj["name"] = rule.Name;
+        ruleObj["protocols"] = rule.Protocols;
+        ruleObj[SourceAddressesKey] = rule.SourceAddresses;
+        ruleObj["source_ip_groups"] = rule.SourceIpGroups;
+        ruleObj["target_fqdns"] = rule.TargetFqdns;
+        ruleObj["fqdn_tags"] = rule.FqdnTags;
         ruleObj[DescriptionKey] = rule.Description;
         return ruleObj;
     }

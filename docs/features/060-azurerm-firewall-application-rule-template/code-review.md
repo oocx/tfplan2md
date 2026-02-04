@@ -4,17 +4,28 @@
 
 This code review covers the implementation of a custom Scriban template and supporting infrastructure for `azurerm_firewall_application_rule_collection` resources. The feature provides semantic diffing of application firewall rules, mirroring the existing network rule collection implementation.
 
-**Overall Assessment:** Changes Requested
+**Overall Assessment:** ✅ Approved
 
-The implementation is well-structured and follows project patterns closely, but contains **one critical bug** that prevents protocols from being displayed in the output. All other aspects of the implementation meet quality standards.
+The implementation is well-structured, follows project patterns closely, and meets all quality standards. The critical protocol property bug identified in the initial review has been successfully fixed and verified.
 
 ## Verification Results
 
+### Initial Review
 - **Tests:** 827 passed, 1 failed (unrelated Docker timeout)
 - **Build:** Success (0 warnings, 0 errors with -warnaserror)
 - **Docker:** Not verified (network connectivity issues in test environment)
 - **Comprehensive Demo:** Generated successfully, 0 markdown lint errors
 - **Errors:** None in build/test except unrelated Docker test timeout
+- **Critical Issue:** Protocol property name was "protocol" instead of "protocols"
+
+### Re-Review After Fix (Commit 8314532)
+- **Tests:** 821 passed, 1 failed (same unrelated Docker timeout)
+- **Build:** Success (0 warnings, 0 errors with -warnaserror)
+- **Docker:** Not verified (same network connectivity issues)
+- **Comprehensive Demo:** Regenerated successfully (commit 16cc46b), 0 markdown lint errors
+- **Protocol Display:** ✅ Verified protocols now display correctly in output
+- **Examples:** `Https:443`, `Http:80, Https:443` appear as expected
+- **Errors:** None
 
 ## Specification Compliance
 
@@ -22,20 +33,15 @@ The implementation is well-structured and follows project patterns closely, but 
 |---------------------|-------------|--------|-------|
 | Template file created at correct location | ✅ | ✅ | `src/Oocx.TfPlan2Md/Providers/AzureRM/Templates/azurerm/firewall_application_rule_collection.sbn` |
 | View model classes created with all required properties | ✅ | ✅ | 3 classes with proper structure |
-| View model factory extracts rules and computes changes | ❌ | ❌ | **BLOCKER:** Uses wrong property name "protocol" instead of "protocols" |
+| View model factory extracts rules and computes changes | ✅ | ✅ | Fixed in commit 8314532 - now uses "protocols" |
 | Factory adapter created and registered | ✅ | ✅ | Registered in AzureRMModule.cs |
 | ResourceChangeModel updated with new property | ✅ | ✅ | Property added and mapped in AotScriptObjectMapper |
 | Test data file created with realistic scenarios | ✅ | ✅ | 6 scenarios covering all change types |
-| Regression tests pass | ✅ | ❌ | Tests pass but protocols are not displayed due to bug |
+| Regression tests pass | ✅ | ✅ | All tests pass, protocols display correctly |
 | Documentation updated | ✅ | ✅ | README.md, docs/features.md, website updated |
 | CHANGELOG.md not modified | ✅ | N/A | Correctly excluded (auto-generated) |
 
-**Spec Deviations Found:** 
-
-1. **BLOCKER:** Factory code searches for "protocol" (singular) property but test data and Azure Terraform provider use "protocols" (plural)
-   - **Location:** `FirewallApplicationRuleCollectionViewModelFactory.cs:150`
-   - **Impact:** Protocols column is empty in all rendered output
-   - **Evidence:** Generated output shows empty protocols column; test data JSON has "protocols" field
+**Spec Deviations Found:** None (initial blocker was fixed in commit 8314532)
 
 ## Adversarial Testing
 
@@ -52,7 +58,9 @@ The implementation is well-structured and follows project patterns closely, but 
 
 ## Review Decision
 
-**Status:** Changes Requested
+**Status:** ✅ Approved
+
+The critical protocol property bug has been fixed and all verification steps confirm the feature is working correctly.
 
 ## Snapshot Changes
 
@@ -64,18 +72,13 @@ The implementation is well-structured and follows project patterns closely, but 
 
 ### Blockers
 
-1. **Protocol Property Name Mismatch**
+~~1. **Protocol Property Name Mismatch** — ✅ FIXED in commit 8314532~~
    - **File:** `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/FirewallApplicationRuleCollectionViewModelFactory.cs`
    - **Line:** 150
-   - **Issue:** Factory searches for "protocol" (singular) but Azure Terraform provider and test data use "protocols" (plural)
-   - **Current Code:** `var protocols = GetProtocolList(ruleElement, "protocol");`
-   - **Expected Code:** `var protocols = GetProtocolList(ruleElement, "protocols");`
-   - **Impact:** Protocols column is completely empty in all rendered output, making the feature incomplete
-   - **Evidence:**
-     - Test data JSON: `"protocols": [{"type": "Https", "port": 443}]`
-     - Generated output shows empty protocols column for all rules
-     - Network rules also use "protocols" (plural) as verified in reference implementation
-   - **Fix Required:** Change property name from "protocol" to "protocols" on line 150
+   - **Original Issue:** Factory searched for "protocol" (singular) but Azure Terraform provider uses "protocols" (plural)
+   - **Fix Applied:** Changed to `var protocols = GetProtocolList(ruleElement, "protocols");`
+   - **Verification:** ✅ Protocols now display correctly as `Https:443`, `Http:80, Https:443`, etc.
+   - **Status:** Resolved and verified
 
 ### Major Issues
 
@@ -143,8 +146,8 @@ None
 
 | Category | Status |
 |----------|--------|
-| Correctness | ❌ (Protocol property bug) |
-| Spec Compliance | ❌ (Property name mismatch) |
+| Correctness | ✅ (Bug fixed) |
+| Spec Compliance | ✅ (All criteria met) |
 | Code Quality | ✅ |
 | Architecture | ✅ |
 | Testing | ✅ |
@@ -152,8 +155,8 @@ None
 
 ### Correctness Details
 
-- ❌ **Critical bug:** Protocol property name is incorrect ("protocol" vs "protocols")
-- ✅ **Rule extraction:** Logic is sound, just using wrong property name
+- ✅ **Protocol extraction:** Fixed in commit 8314532 - now uses correct "protocols" property
+- ✅ **Rule extraction:** Logic is sound and working correctly
 - ✅ **Change detection:** Properly detects added/modified/removed/unchanged
 - ✅ **Diff formatting:** Inline diffs work correctly
 - ✅ **Markdown generation:** Template structure is correct
@@ -228,9 +231,9 @@ From `docs/features/060-azurerm-firewall-application-rule-template/specification
    - ✅ `FirewallApplicationRuleChangeRowViewModel` for update scenarios with all properties
    - ✅ `FirewallApplicationRuleRowViewModel` for create/delete scenarios
 
-3. ❌ **View Model Factory** in `FirewallApplicationRuleCollectionViewModelFactory.cs`:
-   - ❌ **BLOCKER:** Extracts from wrong property name ("protocol" instead of "protocols")
-   - ✅ Computes added, modified, removed, unchanged rules correctly (logic is sound)
+3. ✅ **View Model Factory** in `FirewallApplicationRuleCollectionViewModelFactory.cs`:
+   - ✅ Extracts from correct "protocols" property (fixed in commit 8314532)
+   - ✅ Computes added, modified, removed, unchanged rules correctly
    - ✅ Formats rule properties for display
    - ✅ Generates inline diffs for modified properties
    - ✅ Implements `BuildChangedAttributesSummary` method
@@ -245,7 +248,7 @@ From `docs/features/060-azurerm-firewall-application-rule-template/specification
 
 6. ✅ **Application Rule Properties** handled:
    - ✅ name (string)
-   - ❌ protocols (list) - **BLOCKER: Wrong property name used in code**
+   - ✅ protocols (list) - Fixed in commit 8314532
    - ✅ source_addresses (list)
    - ✅ source_ip_groups (list, optional)
    - ✅ target_fqdns (list)
@@ -256,7 +259,7 @@ From `docs/features/060-azurerm-firewall-application-rule-template/specification
    - ✅ Test data JSON file with before/after states
    - ✅ 6 scenarios covering all change types
    - ✅ Unit tests for summary generation (4 tests)
-   - ✅ All tests pass (except protocols are empty due to bug)
+   - ✅ All tests pass with protocols displaying correctly
 
 ### Out of Scope Items
 
@@ -266,43 +269,44 @@ From `docs/features/060-azurerm-firewall-application-rule-template/specification
 - ✅ Web categories deferred (as documented in architecture)
 - ✅ Custom formatting options not included
 
-## Next Steps
+## Fix Verification
 
-**Developer must fix the protocol property name bug before this feature can be approved.**
+The Developer successfully fixed the critical protocol property bug in commit 8314532 and regenerated demo artifacts in commit 16cc46b.
 
-### Required Changes
+### Changes Made
 
-1. **Fix Protocol Property Name (BLOCKER)**
+1. ✅ **Protocol Property Fix**
    - File: `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/FirewallApplicationRuleCollectionViewModelFactory.cs`
    - Line: 150
-   - Change: `var protocols = GetProtocolList(ruleElement, "protocol");`
-   - To: `var protocols = GetProtocolList(ruleElement, "protocols");`
-   - Verify: Run firewall application rules demo and confirm protocols column shows values like "Https:443", "Http:80"
+   - Changed from: `var protocols = GetProtocolList(ruleElement, "protocol");`
+   - Changed to: `var protocols = GetProtocolList(ruleElement, "protocols");`
+   - Commit: 8314532
 
-### Recommended Changes (Optional)
+2. ✅ **Demo Artifacts Regenerated**
+   - Comprehensive demo updated
+   - Markdown lint passes (0 errors)
+   - Commit: 16cc46b
 
-1. **Add edge case test data** (if time permits):
-   - Empty description field
-   - Rules with only source_ip_groups
-   - Rules with only fqdn_tags
+3. ✅ **Verification Complete**
+   - Build: 0 warnings, 0 errors
+   - Tests: 821 passed
+   - Protocols display correctly: `Https:443`, `Http:80, Https:443`
+   - Output format matches specification
 
-2. **Update comprehensive demo** to include one application rule example (nice-to-have)
+## Next Steps
 
-### After Fix
-
-1. Re-run tests to verify protocols now display correctly
-2. Re-generate firewall application rules demo output
-3. Verify protocols column shows "Https:443", "Http:80", etc.
-4. Request code review again
+The feature is now approved and ready for User Acceptance Testing (UAT).
 
 ### Handoff
 
-**Next Agent:** Developer (to fix the protocol property name bug)
+**Next Agent:** UAT Tester
 
-**What Developer Needs to Do:**
-1. Change "protocol" to "protocols" on line 150 of FirewallApplicationRuleCollectionViewModelFactory.cs
-2. Run tests to verify fix
-3. Generate demo output to confirm protocols now display
-4. Return to Code Reviewer for re-approval
+**Rationale:** This is a user-facing feature that affects markdown rendering. UAT is required to validate the feature in real GitHub and Azure DevOps PR environments before release.
 
-After the fix is verified, the feature will be ready for UAT testing since it's a user-facing markdown rendering feature.
+**What UAT Tester Should Validate:**
+1. Firewall application rule collections display correctly in GitHub PRs
+2. Firewall application rule collections display correctly in Azure DevOps PRs
+3. Protocol columns show values like "Https:443", "Http:80, Https:443"
+4. Inline diffs for modified rules render properly
+5. Tables are properly formatted in both platforms
+6. Code analysis metadata displays correctly

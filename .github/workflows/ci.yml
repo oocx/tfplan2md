@@ -104,17 +104,28 @@ jobs:
         if: steps.versionize.outcome == 'success'
         run: |
           # Get the current commit message (preserving multi-line format)
-          git log -1 --pretty=%B > /tmp/commit-msg.txt
+          # Use RUNNER_TEMP for reliable temporary directory in GitHub Actions
+          git log -1 --pretty=%B > "$RUNNER_TEMP/commit-msg.txt"
           # Append [skip ci] to the first line to prevent workflows from triggering
           # GitHub Actions checks the first line or commit title for skip ci markers
-          FIRST_LINE=$(head -n1 /tmp/commit-msg.txt)
-          REMAINING=$(tail -n +2 /tmp/commit-msg.txt)
-          {
-            echo "$FIRST_LINE [skip ci]"
-            echo "$REMAINING"
-          } > /tmp/commit-msg-amended.txt
+          FIRST_LINE=$(head -n1 "$RUNNER_TEMP/commit-msg.txt")
+          
+          # Check if there are additional lines beyond the first
+          LINE_COUNT=$(wc -l < "$RUNNER_TEMP/commit-msg.txt")
+          if [ "$LINE_COUNT" -gt 1 ]; then
+            # Multi-line message: preserve remaining lines
+            REMAINING=$(tail -n +2 "$RUNNER_TEMP/commit-msg.txt")
+            {
+              echo "$FIRST_LINE [skip ci]"
+              echo "$REMAINING"
+            } > "$RUNNER_TEMP/commit-msg-amended.txt"
+          else
+            # Single-line message: just add [skip ci]
+            echo "$FIRST_LINE [skip ci]" > "$RUNNER_TEMP/commit-msg-amended.txt"
+          fi
+          
           # Amend the commit with the modified message
-          git commit --amend -F /tmp/commit-msg-amended.txt
+          git commit --amend -F "$RUNNER_TEMP/commit-msg-amended.txt"
           echo "Amended commit message to include [skip ci]"
 
       - name: Push changes

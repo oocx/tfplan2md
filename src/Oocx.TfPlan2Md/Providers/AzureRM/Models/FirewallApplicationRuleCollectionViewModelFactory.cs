@@ -398,6 +398,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
 
     /// <summary>
     /// Retrieves a string property value.
+    /// Handles both string and number values.
     /// </summary>
     private static string GetString(JsonElement element, string propertyName)
     {
@@ -406,7 +407,12 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
             return string.Empty;
         }
 
-        return property.ValueKind == JsonValueKind.String ? property.GetString() ?? string.Empty : string.Empty;
+        return property.ValueKind switch
+        {
+            JsonValueKind.String => property.GetString() ?? string.Empty,
+            JsonValueKind.Number => property.GetRawText(),
+            _ => string.Empty
+        };
     }
 
     /// <summary>

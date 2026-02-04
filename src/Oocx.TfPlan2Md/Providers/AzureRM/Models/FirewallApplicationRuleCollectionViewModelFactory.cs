@@ -147,7 +147,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
             }
 
             var name = GetString(ruleElement, "name");
-            var protocols = GetProtocolList(ruleElement, "protocol");
+            var protocols = GetProtocolList(ruleElement, "protocols");
             var sourceAddresses = GetStringList(ruleElement, "source_addresses");
             var sourceIpGroups = GetStringList(ruleElement, "source_ip_groups");
             var targetFqdns = GetStringList(ruleElement, "target_fqdns");

@@ -71,7 +71,7 @@ public class MarkdownRendererCodeAnalysisTests
         var markdown = _renderer.Render(model);
 
         var lines = markdown.Split('\n');
-        var headerIndex = Array.FindIndex(lines, line => line.StartsWith("| Severity | Attribute | Finding | Remediation |", StringComparison.Ordinal));
+        var headerIndex = Array.FindIndex(lines, line => line.StartsWith("| Severity | Tool | Attribute | Finding | Remediation |", StringComparison.Ordinal));
         headerIndex.Should().BeGreaterThan(-1, "because the findings table header should be present");
         lines.Length.Should().BeGreaterThan(headerIndex + 2, "because the findings table should have rows");
         lines[headerIndex + 1].Should().StartWith("| -------- |", "because the header separator should follow the header");
@@ -154,7 +154,7 @@ public class MarkdownRendererCodeAnalysisTests
 
         var markdown = _renderer.Render(model);
         var lines = markdown.Split('\n');
-        var headerIndex = Array.FindIndex(lines, line => line.StartsWith("| Severity | Finding | Remediation |", StringComparison.Ordinal));
+        var headerIndex = Array.FindIndex(lines, line => line.StartsWith("| Severity | Tool | Finding | Remediation |", StringComparison.Ordinal));
         headerIndex.Should().BeGreaterThan(-1, "because the unmatched findings table header should be present");
         lines.Length.Should().BeGreaterThan(headerIndex + 2, "because the unmatched findings table should have rows");
         lines[headerIndex + 1].Should().StartWith("| -------- |", "because the header separator should follow the header");
@@ -211,6 +211,162 @@ public class MarkdownRendererCodeAnalysisTests
             MinimumLevel = null,
             FailOnLevel = null
         };
+    }
+
+    [Test]
+    public void Render_SecurityFindingsTable_IncludesToolColumn()
+    {
+        // TC-01: Verify Tool column appears between Severity and Attribute columns
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var finding = CreateFinding("null_resource.test.triggers.endpoint", RuleHelpUri, 9.5) with { ToolName = "Checkov" };
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("| Severity | Tool | Attribute | Finding | Remediation |", "because the header should include Tool column");
+        markdown.Should().Contain("| 🚨 Critical | Checkov | `triggers.endpoint` |", "because the Tool column should display the tool name between Severity and Attribute");
+    }
+
+    [Test]
+    public void Render_ModuleFindingsTable_IncludesToolColumn()
+    {
+        // TC-02: Verify Tool column in module findings table
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var moduleFinding = CreateFinding("module.network", ModuleHelpUri, 7.2) with { ToolName = "tfsec" };
+        var codeAnalysisInput = BuildInput([moduleFinding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("## Other Findings");
+        markdown.Should().Contain("| Severity | Tool | Finding | Remediation |", "because the module findings table should include Tool column");
+        markdown.Should().Contain("| ⚠️ High | tfsec |", "because the Tool column should display the tool name");
+    }
+
+    [Test]
+    public void Render_UnmatchedFindingsTable_IncludesToolColumn()
+    {
+        // TC-03: Verify Tool column in unmatched findings table
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var unmatchedFinding = new CodeAnalysisFinding
+        {
+            Message = "Orphaned security finding",
+            HelpUri = UnmatchedHelpUri,
+            ToolName = "Trivy",
+            Locations = []
+        };
+        var codeAnalysisInput = BuildInput([unmatchedFinding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("### Unmatched Findings");
+        markdown.Should().Contain("| Severity | Tool | Finding | Remediation |", "because the unmatched findings table should include Tool column");
+        markdown.Should().Contain("| ⚠️ Medium | Trivy | Orphaned security finding |", "because the Tool column should display the tool name");
+    }
+
+    [Test]
+    public void Render_FindingsTable_HandlesNullToolName()
+    {
+        // TC-05: Verify null tool name displays "-"
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var finding = CreateFinding("null_resource.test", RuleHelpUri, 9.5);
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        finding.ToolName.Should().BeNull("because the test is specifically for null tool names");
+        markdown.Should().Contain("| 🚨 Critical | - |", "because null tool names should display as '-'");
+    }
+
+    [Test]
+    public void Render_FindingsTable_HandlesEmptyToolName()
+    {
+        // TC-06: Verify empty string tool name displays "-"
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var finding = CreateFinding("null_resource.test", RuleHelpUri, 9.5) with { ToolName = "" };
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("| 🚨 Critical | - |", "because empty string tool names should display as '-'");
+    }
+
+    [Test]
+    public void Render_FindingsTable_HandlesMultipleTools()
+    {
+        // TC-04: Verify multiple different tools in one report
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+
+        var checkovFinding = CreateFinding("null_resource.test.triggers.endpoint", RuleHelpUri, 9.5) with { ToolName = "Checkov" };
+
+        var tfsecFinding = CreateFinding("module.network", ModuleHelpUri, 7.2) with { ToolName = "tfsec" };
+
+        var trivyFinding = new CodeAnalysisFinding
+        {
+            Message = "Vulnerability found",
+            HelpUri = UnmatchedHelpUri,
+            ToolName = "Trivy",
+            Locations = []
+        };
+
+        var codeAnalysisInput = BuildInput([checkovFinding, tfsecFinding, trivyFinding]);
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("| 🚨 Critical | Checkov |", "because Checkov finding should show correct tool name");
+        markdown.Should().Contain("| ⚠️ High | tfsec |", "because tfsec finding should show correct tool name");
+        markdown.Should().Contain("| ⚠️ Medium | Trivy |", "because Trivy finding should show correct tool name");
+    }
+
+    [Test]
+    public void Render_FindingsTable_HandlesSpecialCharsInToolName()
+    {
+        // TC-07: Verify tool names with special characters render correctly
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+
+        var finding1 = CreateFinding("null_resource.test", RuleHelpUri, 9.5) with { ToolName = "tool-name" };
+
+        var finding2 = CreateFinding("null_resource.test", RuleHelpUri + "2", 7.0) with { ToolName = "tool_name" };
+
+        var finding3 = CreateFinding("null_resource.test", RuleHelpUri + "3", 5.0) with { ToolName = "tool.name" };
+
+        var finding4 = CreateFinding("null_resource.test", RuleHelpUri + "4", 3.0) with { ToolName = "Tool-Name 2.0" };
+
+        var codeAnalysisInput = BuildInput([finding1, finding2, finding3, finding4]);
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("| tool-name |", "because hyphen should display correctly");
+        markdown.Should().Contain("| tool_name |", "because underscore should display correctly");
+        markdown.Should().Contain("| tool.name |", "because dot should display correctly");
+        markdown.Should().Contain("| Tool-Name 2.0 |", "because mixed special characters should display correctly");
+    }
+
+    [Test]
+    public void Render_FindingsTable_HandlesLongToolName()
+    {
+        // TC-08: Verify very long tool names don't break table structure
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var finding = CreateFinding("null_resource.test", RuleHelpUri, 9.5) with { ToolName = "VeryLongSecurityScannerToolNameThatExceedsTypicalLength" };
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("| VeryLongSecurityScannerToolNameThatExceedsTypicalLength |",
+            "because long tool names should display in full without truncation");
     }
 
     private static CodeAnalysisFinding CreateFinding(string location, string helpUri, double? securitySeverity)

@@ -106,22 +106,17 @@ jobs:
           # Get the current commit message (preserving multi-line format)
           # Use RUNNER_TEMP for reliable temporary directory in GitHub Actions
           git log -1 --pretty=%B > "$RUNNER_TEMP/commit-msg.txt"
+          
           # Append [skip ci] to the first line to prevent workflows from triggering
           # GitHub Actions checks the first line or commit title for skip ci markers
           FIRST_LINE=$(head -n1 "$RUNNER_TEMP/commit-msg.txt")
           
-          # Check if there are additional lines beyond the first
-          LINE_COUNT=$(wc -l < "$RUNNER_TEMP/commit-msg.txt")
-          if [ "$LINE_COUNT" -gt 1 ]; then
-            # Multi-line message: preserve remaining lines
-            REMAINING=$(tail -n +2 "$RUNNER_TEMP/commit-msg.txt")
-            {
-              echo "$FIRST_LINE [skip ci]"
-              echo "$REMAINING"
-            } > "$RUNNER_TEMP/commit-msg-amended.txt"
-          else
-            # Single-line message: just add [skip ci]
-            echo "$FIRST_LINE [skip ci]" > "$RUNNER_TEMP/commit-msg-amended.txt"
+          # Write the amended first line
+          echo "$FIRST_LINE [skip ci]" > "$RUNNER_TEMP/commit-msg-amended.txt"
+          
+          # Append remaining lines if they exist (preserving multi-line structure)
+          if [ "$(wc -l < "$RUNNER_TEMP/commit-msg.txt")" -gt 1 ]; then
+            tail -n +2 "$RUNNER_TEMP/commit-msg.txt" >> "$RUNNER_TEMP/commit-msg-amended.txt"
           fi
           
           # Amend the commit with the modified message

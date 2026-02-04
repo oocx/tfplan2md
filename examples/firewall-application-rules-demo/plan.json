@@ -1,0 +1,290 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "timestamp": "2026-01-15T10:00:00Z",
+  "resource_changes": [
+    {
+      "address": "azurerm_firewall_application_rule_collection.app_rules_create",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "app_rules_create",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "app-rules",
+          "priority": 100,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": [
+            {
+              "name": "allow-github",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.1.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["github.com", "*.github.io"],
+              "fqdn_tags": [],
+              "description": "GitHub access"
+            },
+            {
+              "name": "allow-azure",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.azure.com", "*.azurewebsites.net"],
+              "fqdn_tags": [],
+              "description": "Azure services"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_firewall_application_rule_collection.app_rules_update",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "app_rules_update",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "web-rules",
+          "priority": 200,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": [
+            {
+              "name": "allow-microsoft",
+              "protocols": [{"type": "Http", "port": 80}, {"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.microsoft.com"],
+              "fqdn_tags": [],
+              "description": "Microsoft services"
+            },
+            {
+              "name": "allow-old-site",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.2.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["old-site.example.com"],
+              "fqdn_tags": [],
+              "description": "Legacy site (removed)"
+            },
+            {
+              "name": "allow-azure",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.azure.com"],
+              "fqdn_tags": [],
+              "description": "Azure services"
+            }
+          ]
+        },
+        "after": {
+          "name": "web-rules",
+          "priority": 200,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": [
+            {
+              "name": "allow-github",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.1.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["github.com", "*.github.io"],
+              "fqdn_tags": [],
+              "description": "GitHub access"
+            },
+            {
+              "name": "allow-microsoft",
+              "protocols": [{"type": "Http", "port": 80}, {"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/16"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.microsoft.com"],
+              "fqdn_tags": [],
+              "description": "Microsoft services"
+            },
+            {
+              "name": "allow-azure",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.azure.com"],
+              "fqdn_tags": [],
+              "description": "Azure services"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_firewall_application_rule_collection.app_rules_delete",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "app_rules_delete",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "old-rules",
+          "priority": 300,
+          "action": "Deny",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": [
+            {
+              "name": "block-social",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["*"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.facebook.com", "*.twitter.com"],
+              "fqdn_tags": [],
+              "description": "Block social media"
+            }
+          ]
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_firewall_application_rule_collection.app_rules_with_fqdn_tags",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "app_rules_with_fqdn_tags",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "windows-update-rules",
+          "priority": 150,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": [
+            {
+              "name": "allow-windows-updates",
+              "protocols": [{"type": "Http", "port": 80}, {"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/16"],
+              "source_ip_groups": [],
+              "target_fqdns": [],
+              "fqdn_tags": ["WindowsUpdate"],
+              "description": "Windows Update service"
+            },
+            {
+              "name": "allow-app-service",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": [],
+              "source_ip_groups": ["/subscriptions/12345/resourceGroups/rg-demo/providers/Microsoft.Network/ipGroups/app-tier"],
+              "target_fqdns": [],
+              "fqdn_tags": ["AppServiceEnvironment"],
+              "description": "App Service Environment dependencies"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_firewall_application_rule_collection.app_rules_long_fqdn_list",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "app_rules_long_fqdn_list",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "cdn-rules",
+          "priority": 250,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": [
+            {
+              "name": "allow-cdn-endpoints",
+              "protocols": [{"type": "Https", "port": 443}],
+              "source_addresses": ["10.0.0.0/8"],
+              "source_ip_groups": [],
+              "target_fqdns": [
+                "cdn1.example.com",
+                "cdn2.example.com",
+                "cdn3.example.com",
+                "cdn4.example.com",
+                "cdn5.example.com",
+                "cdn6.example.com",
+                "cdn7.example.com",
+                "cdn8.example.com"
+              ],
+              "fqdn_tags": [],
+              "description": ""
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_firewall_application_rule_collection.app_rules_fallback",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "app_rules_fallback",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "computed-rules",
+          "priority": 150,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": null
+        },
+        "after": {
+          "name": "computed-rules",
+          "priority": 200,
+          "action": "Allow",
+          "resource_group_name": "rg-firewall-demo",
+          "azure_firewall_name": "demo-firewall",
+          "rule": null
+        },
+        "after_unknown": {
+          "rule": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {},
+    "root_module": {
+      "resources": []
+    }
+  }
+}

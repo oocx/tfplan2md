@@ -20,15 +20,15 @@ This feature adds a "Tool" column to all code analysis findings tables to displa
 Create comprehensive unit tests in `MarkdownRendererCodeAnalysisTests.cs` to verify that the Tool column displays correctly in all three findings table types (per-resource, module, and unmatched), and handles null/empty tool names gracefully.
 
 **Acceptance Criteria:**
-- [ ] Test `Render_SecurityFindingsTable_IncludesToolColumn()` verifies Tool column appears between Severity and Attribute columns in per-resource findings table
-- [ ] Test verifies table header is `| Severity | Tool | Attribute | Finding | Remediation |`
-- [ ] Test `Render_ModuleFindingsTable_IncludesToolColumn()` verifies Tool column in module findings table with header `| Severity | Tool | Finding | Remediation |`
-- [ ] Test `Render_UnmatchedFindingsTable_IncludesToolColumn()` verifies Tool column in unmatched findings table
-- [ ] Test `Render_FindingsTable_HandlesNullToolName()` creates finding with `ToolName = null` and verifies Tool column displays "-"
-- [ ] Test `Render_FindingsTable_HandlesEmptyToolName()` creates finding with `ToolName = ""` and verifies Tool column displays "-"
-- [ ] Test `Render_FindingsTable_HandlesMultipleTools()` creates findings from different tools (Checkov, tfsec, Trivy) and verifies each shows correct tool name
-- [ ] Test `Render_FindingsTable_HandlesSpecialCharsInToolName()` verifies tool names with hyphens, underscores, dots render correctly
-- [ ] All new tests pass (tests will fail initially until templates are updated)
+- [x] Test `Render_SecurityFindingsTable_IncludesToolColumn()` verifies Tool column appears between Severity and Attribute columns in per-resource findings table
+- [x] Test verifies table header is `| Severity | Tool | Attribute | Finding | Remediation |`
+- [x] Test `Render_ModuleFindingsTable_IncludesToolColumn()` verifies Tool column in module findings table with header `| Severity | Tool | Finding | Remediation |`
+- [x] Test `Render_UnmatchedFindingsTable_IncludesToolColumn()` verifies Tool column in unmatched findings table
+- [x] Test `Render_FindingsTable_HandlesNullToolName()` creates finding with `ToolName = null` and verifies Tool column displays "-"
+- [x] Test `Render_FindingsTable_HandlesEmptyToolName()` creates finding with `ToolName = ""` and verifies Tool column displays "-"
+- [x] Test `Render_FindingsTable_HandlesMultipleTools()` creates findings from different tools (Checkov, tfsec, Trivy) and verifies each shows correct tool name
+- [x] Test `Render_FindingsTable_HandlesSpecialCharsInToolName()` verifies tool names with hyphens, underscores, dots render correctly
+- [x] All new tests pass (tests will fail initially until templates are updated)
 
 **Dependencies:** None (tests are created first following test-first approach)
 
@@ -41,6 +41,8 @@ Create comprehensive unit tests in `MarkdownRendererCodeAnalysisTests.cs` to ver
 
 **Estimated Complexity:** Medium
 
+**Status:** ✅ Complete
+
 ---
 
 ### Task 2: Update Existing Test Assertions
@@ -51,11 +53,11 @@ Create comprehensive unit tests in `MarkdownRendererCodeAnalysisTests.cs` to ver
 Update existing test assertions in `MarkdownRendererCodeAnalysisTests.cs` that check for table headers to include the new "Tool" column. This prevents false negatives when snapshots are regenerated.
 
 **Acceptance Criteria:**
-- [ ] Update line 74 assertion from `"| Severity | Attribute | Finding | Remediation |"` to `"| Severity | Tool | Attribute | Finding | Remediation |"`
-- [ ] Update line 157 assertion from `"| Severity | Finding | Remediation |"` to `"| Severity | Tool | Finding | Remediation |"`
-- [ ] Search for all hardcoded header strings in the test file and update to include "Tool" column
-- [ ] Verify separator line checks include the Tool column separator `| -------- |`
-- [ ] All existing tests compile without errors (may fail until templates updated)
+- [x] Update line 74 assertion from `"| Severity | Attribute | Finding | Remediation |"` to `"| Severity | Tool | Attribute | Finding | Remediation |"`
+- [x] Update line 157 assertion from `"| Severity | Finding | Remediation |"` to `"| Severity | Tool | Finding | Remediation |"`
+- [x] Search for all hardcoded header strings in the test file and update to include "Tool" column
+- [x] Verify separator line checks include the Tool column separator `| -------- |`
+- [x] All existing tests compile without errors (may fail until templates updated)
 
 **Dependencies:** None (can be done in parallel with Task 1)
 
@@ -77,12 +79,12 @@ Update existing test assertions in `MarkdownRendererCodeAnalysisTests.cs` that c
 Update the `_code_analysis_findings.sbn` template to add the Tool column between Severity and Attribute columns in the per-resource Security & Quality findings table.
 
 **Acceptance Criteria:**
-- [ ] Table header line changed to: `| Severity | Tool | Attribute | Finding | Remediation |`
-- [ ] Separator line updated to: `| -------- | ---- | --------- | ------- | ----------- |`
-- [ ] Tool column added to data row after severity column: `| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name }}{{ finding.tool_name }}{{ else }}-{{ end }} | ...`
-- [ ] Tool column positioned immediately after Severity, before Attribute
-- [ ] Template compiles without errors
-- [ ] Null/empty tool names render as "-"
+- [x] Table header line changed to: `| Severity | Tool | Attribute | Finding | Remediation |`
+- [x] Separator line updated to: `| -------- | ---- | --------- | ------- | ----------- |`
+- [x] Tool column added to data row after severity column: `| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name }}{{ finding.tool_name }}{{ else }}-{{ end }} | ...`
+- [x] Tool column positioned immediately after Severity, before Attribute
+- [x] Template compiles without errors
+- [x] Null/empty tool names render as "-"
 
 **Dependencies:** Task 1 (tests should exist to validate changes)
 
@@ -105,14 +107,14 @@ Update the `_code_analysis_findings.sbn` template to add the Tool column between
 Update the `_code_analysis_other_findings.sbn` template to add the Tool column to both the module findings table and unmatched findings table.
 
 **Acceptance Criteria:**
-- [ ] Module findings table header (line ~7) changed to: `| Severity | Tool | Finding | Remediation |`
-- [ ] Module findings separator line updated to: `| -------- | ---- | ------- | ----------- |`
-- [ ] Module findings data row (line ~14) includes Tool column after severity
-- [ ] Unmatched findings table header (line ~21) changed to: `| Severity | Tool | Finding | Remediation |`
-- [ ] Unmatched findings separator line updated to: `| -------- | ---- | ------- | ----------- |`
-- [ ] Unmatched findings data row (line ~28) includes Tool column after severity
-- [ ] Template compiles without errors
-- [ ] Both tables use same null-handling pattern: `{{ if finding.tool_name }}{{ finding.tool_name }}{{ else }}-{{ end }}`
+- [x] Module findings table header (line ~7) changed to: `| Severity | Tool | Finding | Remediation |`
+- [x] Module findings separator line updated to: `| -------- | ---- | ------- | ----------- |`
+- [x] Module findings data row (line ~14) includes Tool column after severity
+- [x] Unmatched findings table header (line ~21) changed to: `| Severity | Tool | Finding | Remediation |`
+- [x] Unmatched findings separator line updated to: `| -------- | ---- | ------- | ----------- |`
+- [x] Unmatched findings data row (line ~28) includes Tool column after severity
+- [x] Template compiles without errors
+- [x] Both tables use same null-handling pattern: `{{ if finding.tool_name }}{{ finding.tool_name }}{{ else }}-{{ end }}`
 
 **Dependencies:** Task 1 (tests should exist to validate changes)
 
@@ -134,12 +136,12 @@ Update the `_code_analysis_other_findings.sbn` template to add the Tool column t
 Run the full test suite to verify that new tests fail as expected (templates not yet updated) and identify all snapshot tests that need regeneration.
 
 **Acceptance Criteria:**
-- [ ] Command `dotnet test --solution src/tfplan2md.slnx` executes successfully
-- [ ] New tests from Task 1 fail with expected error messages (table header mismatch)
-- [ ] Existing snapshot tests fail due to missing Tool column
-- [ ] List of failing snapshot tests is captured for reference
-- [ ] No compilation errors or unexpected test failures
-- [ ] Test execution completes within timeout limits
+- [x] Command `dotnet test --solution src/tfplan2md.slnx` executes successfully
+- [x] New tests from Task 1 fail with expected error messages (table header mismatch)
+- [x] Existing snapshot tests fail due to missing Tool column
+- [x] List of failing snapshot tests is captured for reference
+- [x] No compilation errors or unexpected test failures
+- [x] Test execution completes within timeout limits
 
 **Dependencies:** Task 1, Task 2 (tests must be written)
 
@@ -161,13 +163,13 @@ Run the full test suite to verify that new tests fail as expected (templates not
 Use the `update-test-snapshots` skill to regenerate all snapshot files after template modifications, ensuring they reflect the new Tool column in findings tables.
 
 **Acceptance Criteria:**
-- [ ] `update-test-snapshots` skill executed successfully
-- [ ] All snapshot files in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/` updated with Tool column
-- [ ] Manually reviewed 2-3 snapshot files to verify Tool column appears correctly
-- [ ] Verified snapshot table headers show: `| Severity | Tool | Attribute/Finding | ...`
-- [ ] Verified snapshot data rows show tool names or "-" in Tool column
-- [ ] Verified table structure remains valid markdown
-- [ ] No snapshots show empty cells or malformed tables
+- [x] `update-test-snapshots` skill executed successfully
+- [x] All snapshot files in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/` updated with Tool column
+- [x] Manually reviewed 2-3 snapshot files to verify Tool column appears correctly
+- [x] Verified snapshot table headers show: `| Severity | Tool | Attribute/Finding | ...`
+- [x] Verified snapshot data rows show tool names or "-" in Tool column
+- [x] Verified table structure remains valid markdown
+- [x] No snapshots show empty cells or malformed tables
 
 **Dependencies:** Task 3, Task 4 (templates must be updated first)
 
@@ -190,13 +192,13 @@ Use the `update-test-snapshots` skill to regenerate all snapshot files after tem
 Run the complete test suite to verify that all tests (new, updated, and snapshot) pass with the new Tool column implementation.
 
 **Acceptance Criteria:**
-- [ ] Command `dotnet test --solution src/tfplan2md.slnx` completes with exit code 0
-- [ ] All 8 new unit tests from Task 1 pass
-- [ ] All updated test assertions from Task 2 pass
-- [ ] All snapshot tests pass with regenerated snapshots
-- [ ] No test failures, compilation errors, or warnings
-- [ ] Test execution completes within timeout limits
-- [ ] Test output shows expected test count (370+ tests)
+- [x] Command `dotnet test --solution src/tfplan2md.slnx` completes with exit code 0
+- [x] All 8 new unit tests from Task 1 pass
+- [x] All updated test assertions from Task 2 pass
+- [x] All snapshot tests pass with regenerated snapshots
+- [x] No test failures, compilation errors, or warnings
+- [x] Test execution completes within timeout limits
+- [x] Test output shows expected test count (370+ tests)
 
 **Dependencies:** Task 6 (snapshots must be regenerated)
 
@@ -218,13 +220,13 @@ Run the complete test suite to verify that all tests (new, updated, and snapshot
 Generate comprehensive demo markdown artifacts that demonstrate the Tool column in action with real SARIF files from multiple tools, preparing for UAT validation.
 
 **Acceptance Criteria:**
-- [ ] `generate-demo-artifacts` skill executed successfully
-- [ ] Artifacts generated in `artifacts/` directory
-- [ ] Artifacts include code analysis findings from Checkov, tfsec, and Trivy
-- [ ] Tool column visible in all findings tables in generated artifacts
-- [ ] Tool names display correctly (Checkov, tfsec, Trivy)
-- [ ] Tables render with proper markdown structure
-- [ ] Both per-resource and Other Findings sections show Tool column
+- [x] `generate-demo-artifacts` skill executed successfully
+- [x] Artifacts generated in `artifacts/` directory
+- [x] Artifacts include code analysis findings from Checkov, tfsec, and Trivy
+- [x] Tool column visible in all findings tables in generated artifacts
+- [x] Tool names display correctly (Checkov, tfsec, Trivy)
+- [x] Tables render with proper markdown structure
+- [x] Both per-resource and Other Findings sections show Tool column
 
 **Dependencies:** Task 7 (all tests must pass)
 
@@ -246,14 +248,14 @@ Generate comprehensive demo markdown artifacts that demonstrate the Tool column 
 Generate a focused UAT artifact specifically for testing the Tool column feature, using multiple SARIF files to demonstrate tool name differentiation.
 
 **Acceptance Criteria:**
-- [ ] Artifact created at `artifacts/tool-column-uat.md`
-- [ ] Artifact generated using `examples/comprehensive-demo.tfplan.json`
-- [ ] Multiple SARIF files included: Checkov, tfsec, and Trivy
-- [ ] Command used: `tfplan2md examples/comprehensive-demo.tfplan.json --sarif <paths> > artifacts/tool-column-uat.md`
-- [ ] Artifact contains Security & Quality findings table with Tool column
-- [ ] Artifact contains Other Findings section with Tool column
-- [ ] Tool names (Checkov, tfsec, Trivy) clearly visible in Tool column
-- [ ] Table structure is valid markdown
+- [x] Artifact created at `artifacts/tool-column-uat.md`
+- [x] Artifact generated using `examples/comprehensive-demo.tfplan.json`
+- [x] Multiple SARIF files included: Checkov, tfsec, and Trivy
+- [x] Command used: `tfplan2md examples/comprehensive-demo.tfplan.json --sarif <paths> > artifacts/tool-column-uat.md`
+- [x] Artifact contains Security & Quality findings table with Tool column
+- [x] Artifact contains Other Findings section with Tool column
+- [x] Tool names (Checkov, tfsec, Trivy) clearly visible in Tool column
+- [x] Table structure is valid markdown
 
 **Dependencies:** Task 7 (all tests must pass)
 
@@ -297,15 +299,15 @@ None - all requirements are clearly defined in the architecture and test plan do
 
 Implementation is complete when:
 
-- [ ] All 8 new unit tests pass (Task 1)
-- [ ] All existing test assertions updated (Task 2)
-- [ ] Both template files modified correctly (Tasks 3-4)
-- [ ] All snapshot tests pass with regenerated snapshots (Task 6)
-- [ ] Full test suite passes (370+ tests) (Task 7)
-- [ ] Demo artifacts generated successfully (Task 8)
-- [ ] Feature-specific UAT artifact created (Task 9)
-- [ ] No compilation errors, warnings, or test failures
-- [ ] Code committed to feature branch with descriptive commit message
+- [x] All 8 new unit tests pass (Task 1)
+- [x] All existing test assertions updated (Task 2)
+- [x] Both template files modified correctly (Tasks 3-4)
+- [x] All snapshot tests pass with regenerated snapshots (Task 6)
+- [x] Full test suite passes (370+ tests) (Task 7)
+- [x] Demo artifacts generated successfully (Task 8)
+- [x] Feature-specific UAT artifact created (Task 9)
+- [x] No compilation errors, warnings, or test failures
+- [x] Code committed to feature branch with descriptive commit message
 
 **Next Steps After Implementation:**
 1. Hand off to UAT Tester for visual validation in GitHub and Azure DevOps

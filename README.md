@@ -392,7 +392,8 @@ For complex resources like firewall rule collections, tfplan2md provides resourc
 
 **Currently supported:**
 - `azapi_resource` - Flattens JSON body into dot-notation tables with before/after comparison for updates; includes reliable documentation links to Microsoft Learn for 92 Azure resource types across 37 services
-- `azurerm_firewall_network_rule_collection` - Shows which rules were added, modified, removed, or unchanged
+- `azurerm_firewall_application_rule_collection` - Shows application firewall rules with FQDNs, protocols (HTTP/HTTPS/MSSQL), and source addresses
+- `azurerm_firewall_network_rule_collection` - Shows network firewall rules with protocols, ports, and IP addresses
 - `azurerm_network_security_group` - Shows security rule changes with semantic diffing
 - `azurerm_role_assignment` - Displays human-readable role names, scopes, and principal information
 - `azuredevops_variable_group` - Shows all variables (regular and secret) with metadata, hiding only secret values

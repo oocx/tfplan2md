@@ -629,8 +629,9 @@ Providers/AzureRM/
 ├── Helpers/                  # AzureRM-specific Scriban helpers
 │   └── ScribanHelpers.AzureRM.*.cs
 └── Templates/                # .sbn templates for azurerm_* resources
-    ├── azurerm_network_security_group.sbn
+    ├── azurerm_firewall_application_rule_collection.sbn
     ├── azurerm_firewall_network_rule_collection.sbn
+    ├── azurerm_network_security_group.sbn
     └── azurerm_role_assignment.sbn
 ```
 
@@ -1107,6 +1108,7 @@ Global Report Templates:
 Per-Resource Templates:
   ├── _resource.sbn     (Default fallback for all resources)
   └── azurerm/          (Provider-specific overrides)
+      ├── firewall_application_rule_collection.sbn
       ├── firewall_network_rule_collection.sbn
       ├── network_security_group.sbn
       └── role_assignment.sbn

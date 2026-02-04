@@ -1248,7 +1248,8 @@ When rendering the full report, the default renderer applies resource-specific t
 | Provider | Resource Type | Template |
 |----------|--------------|----------|
 | azapi | `azapi_resource` | Flattened body representation with dot notation |
-| azurerm | `azurerm_firewall_network_rule_collection` | Semantic rule diffing with `diff_array` |
+| azurerm | `azurerm_firewall_application_rule_collection` | Application firewall rule diffing with FQDN targets |
+| azurerm | `azurerm_firewall_network_rule_collection` | Network firewall rule diffing with IP/port targets |
 | azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
 | azuredevops | `azuredevops_variable_group` | Variable changes with secret value protection |
 
@@ -1330,19 +1331,38 @@ Properties with values exceeding 200 characters are automatically moved to a col
 
 #### Firewall Rule Collections
 
-For `azurerm_firewall_network_rule_collection`, rules are rendered in a single table to provide a concise overview. Each rule is displayed as a row with standard attributes: Name, Protocols, Source, Destination, Destination Ports, and Description.
+Azure Firewall supports both network rules (IP/port-based filtering) and application rules (FQDN-based filtering). tfplan2md provides specialized templates for both resource types.
+
+##### Network Rule Collections
+
+For `azurerm_firewall_network_rule_collection`, network rules are rendered in a single table showing IP-based filtering rules. Each rule displays: Name, Protocols, Source Addresses, Destination Addresses, Destination Ports, and Description.
 
 - **Added rules**: Shown with ➕ icon and the new values.
 - **Removed rules**: Shown with ❌ icon and the old values.
 - **Modified rules**: Shown with 🔄 icon. Changed attributes display both before and after values in the same cell, prefixed with `-` and `+` respectively, separated by `<br>` for visual clarity. Unchanged attributes show the single value without any prefix.
 - **Unchanged rules**: Shown with ⏺️ icon for completeness.
 
-Example of a modified rule with changed source addresses and description:
+Example of a modified network rule with changed source addresses:
 ```markdown
 | 🔄 | allow-http | TCP | - 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24 | * | 80 | - Allow HTTP traffic<br>+ Allow HTTP traffic from web and API tiers |
 ```
 
-This layout makes it easy to inspect per-rule changes without index-shift noise from array diffs, and the diff-style formatting clearly shows what changed.
+##### Application Rule Collections
+
+For `azurerm_firewall_application_rule_collection`, application rules are rendered in a single table showing FQDN-based filtering rules. Each rule displays: Name, Protocols (HTTP/HTTPS/MSSQL with ports), Source Addresses, Target FQDNs, and Description.
+
+Application rules use protocol+port format (e.g., `Https:443`, `Http:80,8080`) instead of separate protocol and port columns. Long FQDN lists (>5 items) are truncated to the first 3 items with "... +N more" to maintain table readability.
+
+- **Change indicators**: Same as network rules (➕, 🔄, ❌, ⏺️)
+- **Optional properties**: Source IP Groups and FQDN Tags are shown when present
+- **Inline diffs**: Modified properties show before/after values with `-` and `+` prefixes
+
+Example of a modified application rule with changed FQDNs:
+```markdown
+| 🔄 | allow-microsoft | Https:443 | 10.0.1.0/24 | - *.microsoft.com<br>+ *.microsoft.com, *.azure.com | Microsoft services |
+```
+
+Both templates make it easy to inspect per-rule changes without index-shift noise from array diffs, clearly showing which rules were added, modified, or removed.
 
 #### Network Security Groups
 

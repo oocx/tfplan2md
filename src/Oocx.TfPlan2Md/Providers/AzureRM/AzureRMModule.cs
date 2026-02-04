@@ -87,6 +87,7 @@ internal sealed class AzureRMModule : IProviderModule
     {
         registry.RegisterFactory("azurerm_network_security_group", new NetworkSecurityGroupFactory(_largeValueFormat));
         registry.RegisterFactory("azurerm_firewall_network_rule_collection", new FirewallNetworkRuleCollectionFactory(_largeValueFormat));
+        registry.RegisterFactory("azurerm_firewall_application_rule_collection", new FirewallApplicationRuleCollectionFactory(_largeValueFormat));
         registry.RegisterFactory("azurerm_role_assignment", new RoleAssignmentFactory(_principalMapper));
         registry.RegisterFactory("azurerm_api_management_api_operation", new AzureRMApimApiOperationFactory());
         registry.RegisterFactory("azurerm_api_management_named_value", new AzureRMApimNamedValueFactory());

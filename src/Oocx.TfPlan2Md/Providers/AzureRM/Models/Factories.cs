@@ -71,6 +71,41 @@ internal sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelF
 }
 
 /// <summary>
+/// Adapter for <see cref="FirewallApplicationRuleCollectionViewModelFactory"/>.
+/// </summary>
+internal sealed class FirewallApplicationRuleCollectionFactory : IResourceViewModelFactory
+{
+    private readonly LargeValueFormat _largeValueFormat;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FirewallApplicationRuleCollectionFactory"/> class.
+    /// </summary>
+    /// <param name="largeValueFormat">The format to use for large values.</param>
+    internal FirewallApplicationRuleCollectionFactory(LargeValueFormat largeValueFormat)
+    {
+        _largeValueFormat = largeValueFormat;
+    }
+
+    /// <inheritdoc/>
+    public void ApplyViewModel(
+        ResourceChangeModel model,
+        Parsing.ResourceChange resourceChange,
+        string action,
+        IReadOnlyList<AttributeChangeModel> attributeChanges)
+    {
+        var viewModel = FirewallApplicationRuleCollectionViewModelFactory.Build(
+            resourceChange,
+            resourceChange.ProviderName,
+            _largeValueFormat);
+
+        model.FirewallApplicationRuleCollection = viewModel;
+        model.ChangedAttributesSummary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(
+            viewModel,
+            action);
+    }
+}
+
+/// <summary>
 /// Adapter for <see cref="RoleAssignmentViewModelFactory"/>.
 /// </summary>
 internal sealed class RoleAssignmentFactory : IResourceViewModelFactory

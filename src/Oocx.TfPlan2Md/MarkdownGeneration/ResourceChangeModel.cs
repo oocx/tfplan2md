@@ -105,6 +105,12 @@ public class ResourceChangeModel
     public FirewallNetworkRuleCollectionViewModel? FirewallNetworkRuleCollection { get; set; }
 
     /// <summary>
+    /// Gets or sets the precomputed view model for azurerm_firewall_application_rule_collection resources.
+    /// Related feature: docs/features/060-azurerm-firewall-application-rule-template/specification.md.
+    /// </summary>
+    public FirewallApplicationRuleCollectionViewModel? FirewallApplicationRuleCollection { get; set; }
+
+    /// <summary>
     /// Gets or sets the precomputed view model for azurerm_role_assignment resources.
     /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
     /// </summary>

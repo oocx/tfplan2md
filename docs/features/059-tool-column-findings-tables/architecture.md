@@ -2,111 +2,48 @@
 
 ## Status
 
-Proposed - Awaiting maintainer decision on open questions
+Approved
 
-## Open Questions for Maintainer
+## Final Design Decisions
 
-Before proceeding with implementation, the following design decisions require maintainer input:
+The following design decisions have been approved by the Maintainer:
 
-### 1. Tool Name Format
+### 1. Tool Name Format: Name Only
 
-**Question:** Should the Tool column display tool names with version information or just the tool name?
+**Decision:** Display tool name only (e.g., "Checkov"), NOT name + version.
 
-**Option A: Name Only** (Recommended)
-- Display: "Checkov"
-- **Pros:**
-  - Cleaner, more compact table
-  - Tool name is most relevant for identifying which scanner found the issue
-  - Version info is available in the Code Analysis Summary section
-  - Reduces table width concerns
-- **Cons:**
-  - Version information not visible per-finding
-  - If different versions produce different findings in the same report, can't distinguish
-
-**Option B: Name + Version**
-- Display: "Checkov 3.2.10"
-- **Pros:**
-  - Complete information per finding
-  - Useful if different tool versions are used
-- **Cons:**
-  - Wider column
-  - More visual clutter
-  - Redundant when all findings from same tool version
-
-**Recommendation:** Option A (Name Only) because:
-- Version information is already shown in the Code Analysis Summary
+**Rationale:**
+- Cleaner, more compact table
+- Tool name is most relevant for identifying which scanner found the issue
+- Version info is already available in the Code Analysis Summary section
+- Reduces table width concerns
 - Multiple tool versions in a single report is a rare edge case
-- Table width is a concern given the information density
-- Users can cross-reference summary if version matters
 
-### 2. Tool Name Capitalization
+### 2. Tool Name Capitalization: Use Exact SARIF Format
 
-**Question:** Should we normalize tool name capitalization (e.g., "Checkov") or use the exact format from SARIF files?
+**Decision:** Display tool names exactly as provided in SARIF files (no normalization).
 
-**Option A: Use Exact SARIF Format** (Recommended)
-- Display whatever the SARIF file provides (e.g., "checkov", "Checkov", "CHECKOV")
-- **Pros:**
-  - No logic needed - pass through ToolName as-is
-  - Respects the tool's own branding/casing choice
-  - Simpler implementation
-  - No risk of "correcting" intentional formatting
-- **Cons:**
-  - Potential inconsistency if tools change their casing
-  - Mixed casing if combining multiple SARIF sources
-
-**Option B: Normalize Capitalization**
-- Apply consistent casing rules (e.g., title case first letter)
-- **Pros:**
-  - Visual consistency across all findings
-  - Professional appearance
-- **Cons:**
-  - Requires mapping logic/dictionary
-  - May incorrectly change intentional branding (e.g., "tfsec" vs "TFsec")
-  - Maintenance burden as new tools are added
-
-**Recommendation:** Option A (Exact SARIF Format) because:
-- Simpler and more maintainable
-- Respects tool authors' branding decisions
+**Rationale:**
+- No additional logic needed - pass through ToolName as-is
+- Respects the tool's own branding/casing choice
+- Simpler implementation and more maintainable
+- No risk of "correcting" intentional formatting
 - Most tools already use consistent casing in their SARIF output
-- Edge case risk is low (inconsistent casing rarely matters)
 
-### 3. Column Name Optimization
+### 3. Column Names: Keep Descriptive Names
 
-**Question:** Should we rename other columns to optimize table width?
+**Decision:** Keep current descriptive column names (Severity, Attribute, Finding, Remediation).
 
-**Context:** Current columns are:
-- Security & Quality table: `Severity | Attribute | Finding | Remediation`
-- Other Findings table: `Severity | Finding | Remediation`
-
-With Tool added:
-- Security & Quality: `Severity | Tool | Attribute | Finding | Remediation`
-- Other Findings: `Severity | Tool | Finding | Remediation`
-
-**Option A: Keep Current Names**
-- Columns: `Severity | Tool | Attribute | Finding | Remediation`
-- **Pros:**
-  - Clear, descriptive column names
-  - No confusion for existing users
-  - Self-documenting
-- **Cons:**
-  - Wider table (5 columns for Security & Quality)
-  - May wrap on narrow displays
-
-**Option B: Shorten Column Names**
-- Examples: `Sev | Tool | Attr | Finding | Remediation` or `Severity | Tool | Attribute | Finding | Link`
-- **Pros:**
-  - More compact
-  - May prevent wrapping
-- **Cons:**
-  - Less clear, especially for new users
-  - "Link" vs "Remediation" loses semantic meaning
-  - Abbreviations feel less professional
-
-**Recommendation:** Option A (Keep Current Names) because:
+**Rationale:**
+- Clear, self-documenting column names
+- No confusion for existing users
 - Markdown tables in GitHub/Azure DevOps PRs have reasonable horizontal space
 - Clarity is more important than compactness
-- Tool names are typically short (5-10 chars)
-- If width becomes an actual problem (needs validation), we can address it later with data, not speculation
+- Tool names are typically short (5-10 characters)
+
+**Final Column Structure:**
+- Security & Quality table: `Severity | Tool | Attribute | Finding | Remediation`
+- Other Findings table: `Severity | Tool | Finding | Remediation`
 
 ## Context
 
@@ -205,10 +142,7 @@ Use the existing Scriban null-handling pattern seen in the codebase:
 - Consistent with how other optional fields are handled in existing templates
 - Displays `-` for missing tool names (matches Remediation column pattern)
 - Gracefully handles null/empty without breaking table structure
-
-**Version Handling (pending decision):**
-- If maintainer chooses name only: `{{ finding.tool_name }}`
-- If maintainer chooses name + version: Requires new property or template logic (see Alternatives section)
+- Simple name-only format as per approved design decision
 
 ### Test Impact
 
@@ -394,13 +328,19 @@ After implementation, the Technical Writer should update:
 
 ## Decision Summary
 
-**Pending Maintainer Input:**
-- Tool name format: Name only vs. Name + Version (recommend name only)
-- Capitalization: Exact SARIF vs. Normalized (recommend exact SARIF)
-- Column names: Keep current vs. Shorten (recommend keep current)
+**Approved Design Decisions:**
 
-**Once maintainer decides:**
-- Implement template changes as specified above
-- Regenerate all test snapshots
-- Add test for null tool name handling
-- Proceed to Quality Engineer for test plan review
+1. **Tool Name Format:** Display name only (e.g., "Checkov") - version information excluded
+2. **Capitalization:** Use exact format from SARIF files - no normalization applied
+3. **Column Names:** Keep current descriptive names - no shortening
+
+**Implementation Approach:**
+- Add Tool column to both findings table templates
+- Position Tool column after Severity, before Attribute/Finding
+- Use simple pass-through of `tool_name` property from SARIF
+- Display `-` for missing/null tool names
+
+**Next Steps:**
+- Quality Engineer: Define test plan and test cases
+- Developer: Implement template changes per specifications above
+- Technical Writer: Update documentation to reflect new Tool column

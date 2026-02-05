@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g., v1.11.0)'
+        required: true
+        type: string
 
 concurrency:
   group: release-${{ github.ref }}
@@ -29,12 +35,17 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Extract version from tag
         id: version
         run: |
-          TAG="${{ github.ref }}"
+          # Get tag from workflow_dispatch input or from push event
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${{ github.ref }}"
+          fi
           VERSION=${TAG#refs/tags/v}
           VERSION=${VERSION#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT

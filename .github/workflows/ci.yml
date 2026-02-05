@@ -100,50 +100,6 @@ jobs:
           echo "version_bumped=true" >> $GITHUB_OUTPUT
         continue-on-error: true
 
-      - name: Amend commit message with [skip ci]
-        if: steps.versionize.outcome == 'success'
-        run: |
-          # Get the current commit message (preserving multi-line format)
-          # Use RUNNER_TEMP for reliable temporary directory in GitHub Actions
-          git log -1 --pretty=%B > "$RUNNER_TEMP/commit-msg.txt"
-          
-          # Validate that we got a commit message
-          if [ ! -s "$RUNNER_TEMP/commit-msg.txt" ]; then
-            echo "Error: Failed to read commit message"
-            exit 1
-          fi
-          
-          # Append [skip ci] to the first line to prevent workflows from triggering
-          # GitHub Actions checks the first line or commit title for skip ci markers
-          FIRST_LINE=$(head -n1 "$RUNNER_TEMP/commit-msg.txt")
-          
-          # Validate first line is not empty
-          if [ -z "$FIRST_LINE" ]; then
-            echo "Error: Commit message first line is empty"
-            exit 1
-          fi
-          
-          # Write the amended first line
-          echo "$FIRST_LINE [skip ci]" > "$RUNNER_TEMP/commit-msg-amended.txt"
-          
-          # Append remaining lines if they exist (preserving multi-line structure)
-          if [ "$(wc -l < "$RUNNER_TEMP/commit-msg.txt")" -gt 1 ]; then
-            tail -n +2 "$RUNNER_TEMP/commit-msg.txt" >> "$RUNNER_TEMP/commit-msg-amended.txt"
-          fi
-          
-          # Store the tag name before amending (versionize creates tag like v1.11.0)
-          TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
-          
-          # Amend the commit with the modified message
-          git commit --amend -F "$RUNNER_TEMP/commit-msg-amended.txt"
-          echo "Amended commit message to include [skip ci]"
-          
-          # Move the tag to the amended commit if a tag was present
-          if [ -n "$TAG_NAME" ]; then
-            echo "Moving tag $TAG_NAME to amended commit"
-            git tag -f "$TAG_NAME"
-          fi
-
       - name: Push changes
         if: steps.versionize.outcome == 'success'
         env:

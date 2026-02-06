@@ -56,10 +56,10 @@ Define the interfaces for value formatting and icon provision, and create the ty
 Implement the `FileBasedIconProvider` that loads rules from a JSON file, enabling declarative icon management.
 
 **Acceptance Criteria:**
-- [ ] `IconRule` model and `IconRulesJsonContext` (AOT source generator) implemented.
-- [ ] `FileBasedIconProvider` implemented, reading JSON and populating an internal registry.
-- [ ] `ServiceRegistrationException` thrown for invalid regex patterns in JSON.
-- [ ] Unit tests verify correct parsing of various JSON rule combinations.
+- [x] `IconRule` model and `IconRulesJsonContext` (AOT source generator) implemented.
+- [x] `FileBasedIconProvider` implemented, reading JSON and populating an internal registry.
+- [x] `ServiceRegistrationException` thrown for invalid regex patterns in JSON.
+- [x] Unit tests verify correct parsing of various JSON rule combinations.
 
 **Dependencies:** Task 2
 

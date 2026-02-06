@@ -16,15 +16,15 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Implement the foundational pattern-matching engine and its supporting data structures as defined in the architecture.
 
 **Acceptance Criteria:**
-- [ ] `MatchPattern` value object correctly compiles Regex for the 4 dimensions and calculates specificity score.
-- [ ] `ServiceResolutionContext` record created for passing resolution data.
-- [ ] `ServiceRegistration<T>` record created to pair services with patterns.
-- [ ] `PatternMatchingRegistry<T>` generic class implemented with `Register(MatchPattern, T)` and `ResolveAll(ServiceResolutionContext)` methods.
-- [ ] Resolution algorithm correctly sorts by:
+- [x] `MatchPattern` value object correctly compiles Regex for the 4 dimensions and calculates specificity score.
+- [x] `ServiceResolutionContext` record created for passing resolution data.
+- [x] `ServiceRegistration<T>` record created to pair services with patterns.
+- [x] `PatternMatchingRegistry<T>` generic class implemented with `Register(MatchPattern, T)` and `ResolveAll(ServiceResolutionContext)` methods.
+- [x] Resolution algorithm correctly sorts by:
     1. Specificity score (descending)
     2. Dimension priority: Value (8) > Attribute (4) > Resource Type (2) > Provider (1)
     3. Registration order (ascending) for tie-breaking.
-- [ ] Unit tests cover regex matching, wildcard support, and specificity sorting.
+- [x] Unit tests cover regex matching, wildcard support, and specificity sorting.
 
 **Dependencies:** None
 

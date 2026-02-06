@@ -73,10 +73,10 @@ Implement the `FileBasedIconProvider` that loads rules from a JSON file, enablin
 Wire the new registry system into the existing provider module infrastructure and application startup.
 
 **Acceptance Criteria:**
-- [ ] `IProviderModule` extended with `RegisterValueFormatters()` and `RegisterIconProviders()` (default empty implementations).
-- [ ] `ProviderRegistry` updated to support `RegisterAllValueFormatters()` and `RegisterAllIconProviders()`.
-- [ ] `ProgramEntry.cs` updated to initialize registries and populate them from the provider modules.
-- [ ] Registries passed to `ReportModelBuilder` and `MarkdownRenderer`.
+- [x] `IProviderModule` extended with `RegisterValueFormatters()` and `RegisterIconProviders()` (default empty implementations).
+- [x] `ProviderRegistry` updated to support `RegisterAllValueFormatters()` and `RegisterAllIconProviders()`.
+- [x] `ProgramEntry.cs` updated to initialize registries and populate them from the provider modules.
+- [x] Registries passed to `ReportModelBuilder` and `MarkdownRenderer`.
 
 **Dependencies:** Task 2, Task 3
 

@@ -9,7 +9,8 @@
 
 {{~ summary_text = "" ~}}
 {{~ if email != "" ~}}
-{{~ summary_text = format_icon_value_summary ("📧 " + email) ~}}
+{{~ email_icon = get_icon(change.provider_name, change.type, "user_email_address", email) ~}}
+{{~ summary_text = email_icon != "" ? format_icon_value_summary (email_icon + " " + email) : format_code_summary(email) ~}}
 {{~ end ~}}
 {{~ if user_type != "" ~}}
 {{~ type_text = "(" + format_code_summary(user_type) + ")" ~}}

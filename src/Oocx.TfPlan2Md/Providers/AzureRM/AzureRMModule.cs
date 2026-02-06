@@ -1,5 +1,6 @@
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
@@ -97,5 +98,23 @@ internal sealed class AzureRMModule : IProviderModule
         {
             registry.RegisterFactory(resourceType, apimSubresourceFactory);
         }
+    }
+
+    /// <summary>
+    /// Registers AzureRM-specific value formatters.
+    /// </summary>
+    /// <param name="registry">The value formatter registry to register with.</param>
+    public void RegisterValueFormatters(ValueFormatterRegistry registry)
+    {
+        AzureRmValueFormatterRegistration.Register(registry);
+    }
+
+    /// <summary>
+    /// Registers AzureRM-specific icon providers.
+    /// </summary>
+    /// <param name="registry">The icon provider registry to register with.</param>
+    public void RegisterIconProviders(IconProviderRegistry registry)
+    {
+        AzureRmIconProviderRegistration.Register(registry);
     }
 }

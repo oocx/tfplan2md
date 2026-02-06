@@ -1,5 +1,6 @@
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 using Scriban.Runtime;
 
@@ -49,5 +50,14 @@ internal sealed class AzureDevOpsModule : IProviderModule
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
         registry.RegisterFactory("azuredevops_variable_group", new VariableGroupFactory(_largeValueFormat));
+    }
+
+    /// <summary>
+    /// Registers Azure DevOps-specific icon providers.
+    /// </summary>
+    /// <param name="registry">The icon provider registry to register with.</param>
+    public void RegisterIconProviders(IconProviderRegistry registry)
+    {
+        AzureDevOpsIconProviderRegistration.Register(registry);
     }
 }

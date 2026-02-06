@@ -26,14 +26,24 @@
 {{~ end ~}}
 {{~ end ~}}
 
-{{~ summary_counts = user_count + " 👤 " + group_count + " 👥 " + sp_count + " 💻" ~}}
+{{~ user_icon = get_icon(change.provider_name, change.type, "member_type", "User") ~}}
+{{~ group_icon = get_icon(change.provider_name, change.type, "member_type", "Group") ~}}
+{{~ sp_icon = get_icon(change.provider_name, change.type, "member_type", "ServicePrincipal") ~}}
+{{~ unknown_icon = get_icon(change.provider_name, change.type, "member_type", "Unknown") ~}}
+{{~ summary_counts = user_count + " " + user_icon + " " + group_count + " " + group_icon + " " + sp_count + " " + sp_icon ~}}
 {{~ if unknown_count > 0 ~}}
-{{~ summary_counts = summary_counts + " " + unknown_count + " ❓" ~}}
+{{~ summary_counts = summary_counts + " " + unknown_count + " " + unknown_icon ~}}
 {{~ end ~}}
 
-{{~ name_summary = display_name != "" ? format_icon_value_summary ("👥 " + display_name) : "" ~}}
+{{~ name_summary = "" ~}}
+{{~ if display_name != "" ~}}
+{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
+{{~ name_summary = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
+{{~ end ~}}
 {{~ if mail_nickname != "" ~}}
-{{~ name_summary = name_summary + " (" + format_icon_value_summary ("🆔 " + mail_nickname) + ")" ~}}
+{{~ nickname_icon = get_icon(change.provider_name, change.type, "mail_nickname", mail_nickname) ~}}
+{{~ nickname_value = nickname_icon != "" ? format_icon_value_summary (nickname_icon + " " + mail_nickname) : format_code_summary(mail_nickname) ~}}
+{{~ name_summary = name_summary + " (" + nickname_value + ")" ~}}
 {{~ end ~}}
 {{~ if description != "" ~}}
 {{~ name_summary = name_summary + " " + escape_markdown description ~}}

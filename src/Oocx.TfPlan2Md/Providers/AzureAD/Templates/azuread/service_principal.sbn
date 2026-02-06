@@ -10,10 +10,12 @@
 
 {{~ summary_text = "" ~}}
 {{~ if display_name != "" ~}}
-{{~ summary_text = format_icon_value_summary ("💻 " + display_name) ~}}
+{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
+{{~ summary_text = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
 {{~ end ~}}
 {{~ if app_id != "" ~}}
-{{~ app_text = "(" + format_icon_value_summary ("🆔 " + app_id) + ")" ~}}
+{{~ app_icon = get_icon(change.provider_name, change.type, "application_id", app_id) ~}}
+{{~ app_text = app_icon != "" ? "(" + format_icon_value_summary (app_icon + " " + app_id) + ")" : "(" + format_code_summary(app_id) + ")" ~}}
 {{~ if summary_text != "" ~}}
 {{~ summary_text = summary_text + " " + app_text ~}}
 {{~ else ~}}

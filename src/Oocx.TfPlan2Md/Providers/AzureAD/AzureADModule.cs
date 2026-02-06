@@ -1,4 +1,5 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.Providers.AzureAD;
@@ -37,5 +38,14 @@ internal sealed class AzureADModule : IProviderModule
     {
         // Azure AD provider currently uses templates for rendering
         // Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    }
+
+    /// <summary>
+    /// Registers Azure AD-specific icon providers.
+    /// </summary>
+    /// <param name="registry">The icon provider registry to register with.</param>
+    public void RegisterIconProviders(IconProviderRegistry registry)
+    {
+        AzureAdIconProviderRegistration.Register(registry);
     }
 }

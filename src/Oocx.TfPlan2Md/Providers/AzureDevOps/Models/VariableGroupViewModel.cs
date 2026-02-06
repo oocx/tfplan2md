@@ -50,7 +50,7 @@ public sealed class VariableGroupViewModel
 public sealed class VariableChangeRowViewModel
 {
     /// <summary>
-    /// Gets the change symbol (➕/🔄/❌/⏺️).
+    /// Gets the change label used to resolve icons (add/update/remove/unchanged).
     /// </summary>
     public required string Change { get; init; }
 

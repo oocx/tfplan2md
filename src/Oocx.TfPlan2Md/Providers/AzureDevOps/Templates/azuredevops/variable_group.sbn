@@ -53,7 +53,9 @@
 | Change | Name | Value | Enabled | Content Type | Expires |
 | ------ | ---- | ----- | ------- | ------------ | ------- |
 {{ for var in change.variable_group.variable_changes ~}}
-| {{ var.change }} | {{ var.name }} | {{ var.value }} | {{ var.enabled }} | {{ var.content_type }} | {{ var.expires }} |
+{{~ change_icon = get_icon(change.provider_name, change.type, "change", var.change) ~}}
+{{~ change_text = change_icon != "" ? change_icon : var.change ~}}
+| {{ change_text }} | {{ var.name }} | {{ var.value }} | {{ var.enabled }} | {{ var.content_type }} | {{ var.expires }} |
 {{ end ~}}
 
 {{ end ~}}

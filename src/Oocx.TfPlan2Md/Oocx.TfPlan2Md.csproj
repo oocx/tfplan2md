@@ -53,4 +53,23 @@
     <EmbeddedResource Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Providers/AzureRM/Icons/*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
+    </Content>
+    <Content Include="Providers/AzApi/Icons/*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
+    </Content>
+    <Content Include="Providers/AzureAD/Icons/*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
+    </Content>
+    <Content Include="Providers/AzureDevOps/Icons/*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
+    </Content>
+  </ItemGroup>
+
 </Project>

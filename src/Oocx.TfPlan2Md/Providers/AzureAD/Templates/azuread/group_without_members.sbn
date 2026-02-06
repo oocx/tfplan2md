@@ -10,10 +10,12 @@
 
 {{~ summary_text = "" ~}}
 {{~ if display_name != "" ~}}
-{{~ summary_text = format_icon_value_summary ("👥 " + display_name) ~}}
+{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
+{{~ summary_text = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
 {{~ end ~}}
 {{~ if mail_nickname != "" ~}}
-{{~ nickname_text = "(" + format_icon_value_summary ("🆔 " + mail_nickname) + ")" ~}}
+{{~ nickname_icon = get_icon(change.provider_name, change.type, "mail_nickname", mail_nickname) ~}}
+{{~ nickname_text = nickname_icon != "" ? "(" + format_icon_value_summary (nickname_icon + " " + mail_nickname) + ")" : "(" + format_code_summary(mail_nickname) + ")" ~}}
 {{~ if summary_text != "" ~}}
 {{~ summary_text = summary_text + " " + nickname_text ~}}
 {{~ else ~}}

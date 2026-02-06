@@ -1,0 +1,65 @@
+{
+  "rules": [
+    {
+      "attributeNamePattern": "(?i)^user_principal_name$",
+      "icon": "🆔"
+    },
+    {
+      "attributeNamePattern": "(?i)^(mail|user_email_address)$",
+      "icon": "📧"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_user$",
+      "attributeNamePattern": "(?i)^display_name$",
+      "icon": "👤"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_group(_without_members)?$",
+      "attributeNamePattern": "(?i)^display_name$",
+      "icon": "👥"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_service_principal$",
+      "attributeNamePattern": "(?i)^display_name$",
+      "icon": "💻"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_service_principal$",
+      "attributeNamePattern": "(?i)^application_id$",
+      "icon": "🆔"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_group(_without_members)?$",
+      "attributeNamePattern": "(?i)^mail_nickname$",
+      "icon": "🆔"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_group_member$",
+      "attributeNamePattern": "(?i)^group_name$",
+      "icon": "👥"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_group_member$",
+      "attributeNamePattern": "(?i)^member_type$",
+      "valuePattern": "(?i)^user$",
+      "icon": "👤"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_group_member$",
+      "attributeNamePattern": "(?i)^member_type$",
+      "valuePattern": "(?i)^group$",
+      "icon": "👥"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuread_group_member$",
+      "attributeNamePattern": "(?i)^member_type$",
+      "valuePattern": "(?i)^serviceprincipal$",
+      "icon": "💻"
+    },
+    {
+      "attributeNamePattern": "(?i)^member_type$",
+      "valuePattern": "(?i)^unknown$",
+      "icon": "❓"
+    }
+  ]
+}

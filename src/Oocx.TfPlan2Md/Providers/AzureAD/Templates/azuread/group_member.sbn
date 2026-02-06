@@ -10,7 +10,8 @@
 {{~ group_name = group_info.name ~}}
 {{~ group_is_mapped = group_name != "" && group_name != group_id ~}}
 {{~ if group_is_mapped ~}}
-{{~ group_summary = format_icon_value_summary ("👥 " + group_name) ~}}
+{{~ group_icon = get_icon(change.provider_name, change.type, "group_name", group_name) ~}}
+{{~ group_summary = group_icon != "" ? format_icon_value_summary (group_icon + " " + group_name) : format_code_summary(group_name) ~}}
 {{~ group_summary = group_summary + " (" + format_code_summary(group_id) + ")" ~}}
 {{~ else ~}}
 {{~ group_summary = format_code_summary(group_id) ~}}
@@ -21,7 +22,7 @@
 {{~ member_info = azure_principal_info member_id member_type change.address ~}}
 {{~ member_name = member_info.name ~}}
 {{~ member_is_mapped = member_name != "" && member_name != member_id ~}}
-{{~ member_icon = member_type == "Group" ? "👥" : member_type == "ServicePrincipal" ? "💻" : member_type == "User" ? "👤" : "" ~}}
+{{~ member_icon = get_icon(change.provider_name, change.type, "member_type", member_type) ~}}
 {{~ if member_is_mapped && member_icon != "" ~}}
 {{~ member_summary = format_icon_value_summary (member_icon + " " + member_name) ~}}
 {{~ member_summary = member_summary + " (" + format_code_summary(member_id) + ")" ~}}

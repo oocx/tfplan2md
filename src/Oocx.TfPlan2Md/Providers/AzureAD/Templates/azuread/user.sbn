@@ -10,10 +10,12 @@
 
 {{~ summary_text = "" ~}}
 {{~ if display_name != "" ~}}
-{{~ summary_text = format_icon_value_summary ("👤 " + display_name) ~}}
+{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
+{{~ summary_text = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
 {{~ end ~}}
 {{~ if upn != "" ~}}
-{{~ upn_text = "(" + format_icon_value_summary ("🆔 " + upn) + ")" ~}}
+{{~ upn_icon = get_icon(change.provider_name, change.type, "user_principal_name", upn) ~}}
+{{~ upn_text = upn_icon != "" ? "(" + format_icon_value_summary (upn_icon + " " + upn) + ")" : "(" + format_code_summary(upn) + ")" ~}}
 {{~ if summary_text != "" ~}}
 {{~ summary_text = summary_text + " " + upn_text ~}}
 {{~ else ~}}
@@ -21,7 +23,8 @@
 {{~ end ~}}
 {{~ end ~}}
 {{~ if mail != "" ~}}
-{{~ mail_text = format_icon_value_summary ("📧 " + mail) ~}}
+{{~ mail_icon = get_icon(change.provider_name, change.type, "mail", mail) ~}}
+{{~ mail_text = mail_icon != "" ? format_icon_value_summary (mail_icon + " " + mail) : format_code_summary(mail) ~}}
 {{~ if summary_text != "" ~}}
 {{~ summary_text = summary_text + " " + mail_text ~}}
 {{~ else ~}}
@@ -52,7 +55,8 @@
 {{ for attr in small_attrs -}}
 {{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
 {{ if attr.name == "display_name" ~}}
-{{ value = attr.after && attr.after != "" ? format_icon_value_table ("👤 " + attr.after) : "" ~}}
+{{ icon = get_icon(change.provider_name, change.type, "display_name", attr.after) ~}}
+{{ value = attr.after && attr.after != "" ? (icon != "" ? format_icon_value_table (icon + " " + attr.after) : format_attribute_value_table(attr.name, attr.after, change.provider_name)) : "" ~}}
 {{ else ~}}
 {{ value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
 {{ end ~}}
@@ -68,7 +72,8 @@
 {{ for attr in small_attrs -}}
 {{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
 {{ if attr.name == "display_name" ~}}
-{{ value = attr.before && attr.before != "" ? format_icon_value_table ("👤 " + attr.before) : "" ~}}
+{{ icon = get_icon(change.provider_name, change.type, "display_name", attr.before) ~}}
+{{ value = attr.before && attr.before != "" ? (icon != "" ? format_icon_value_table (icon + " " + attr.before) : format_attribute_value_table(attr.name, attr.before, change.provider_name)) : "" ~}}
 {{ else ~}}
 {{ value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
 {{ end ~}}
@@ -83,8 +88,10 @@
 | ----------- | -------- | ------- |
 {{ for attr in small_attrs -}}
 {{ if attr.name == "display_name" ~}}
-{{ before_value = attr.before && attr.before != "" ? format_icon_value_table ("👤 " + attr.before) : "" ~}}
-{{ after_value = attr.after && attr.after != "" ? format_icon_value_table ("👤 " + attr.after) : "" ~}}
+{{ before_icon = get_icon(change.provider_name, change.type, "display_name", attr.before) ~}}
+{{ after_icon = get_icon(change.provider_name, change.type, "display_name", attr.after) ~}}
+{{ before_value = attr.before && attr.before != "" ? (before_icon != "" ? format_icon_value_table (before_icon + " " + attr.before) : format_attribute_value_table(attr.name, attr.before, change.provider_name)) : "" ~}}
+{{ after_value = attr.after && attr.after != "" ? (after_icon != "" ? format_icon_value_table (after_icon + " " + attr.after) : format_attribute_value_table(attr.name, attr.after, change.provider_name)) : "" ~}}
 {{ else ~}}
 {{ before_value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
 {{ after_value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}

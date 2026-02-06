@@ -1,4 +1,6 @@
+using System.IO;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
@@ -37,5 +39,26 @@ internal sealed class AzApiModule : IProviderModule
     {
         // AzApi provider currently uses generic resource handling
         // No custom factories needed at this time
+    }
+
+    /// <summary>
+    /// Registers AzApi-specific value formatters.
+    /// </summary>
+    /// <param name="registry">The value formatter registry to register with.</param>
+    public void RegisterValueFormatters(ValueFormatterRegistry registry)
+    {
+        registry.Register(
+            new MatchPattern("^azapi$", null, null, "^/subscriptions/[^/]+/.*"),
+            new AzureResourceIdFormatter());
+    }
+
+    /// <summary>
+    /// Registers AzApi-specific icon providers.
+    /// </summary>
+    /// <param name="registry">The icon provider registry to register with.</param>
+    public void RegisterIconProviders(IconProviderRegistry registry)
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "icons", "azapi-icons.json");
+        registry.Register(new MatchPattern("^azapi$", null, null, null), new FileBasedIconProvider(filePath));
     }
 }

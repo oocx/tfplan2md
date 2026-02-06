@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "resourceTypePattern": "(?i)^azuredevops_variable_group$",
+      "attributeNamePattern": "(?i)^change$",
+      "valuePattern": "(?i)^add$",
+      "icon": "➕"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuredevops_variable_group$",
+      "attributeNamePattern": "(?i)^change$",
+      "valuePattern": "(?i)^update$",
+      "icon": "🔄"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuredevops_variable_group$",
+      "attributeNamePattern": "(?i)^change$",
+      "valuePattern": "(?i)^remove$",
+      "icon": "❌"
+    },
+    {
+      "resourceTypePattern": "(?i)^azuredevops_variable_group$",
+      "attributeNamePattern": "(?i)^change$",
+      "valuePattern": "(?i)^unchanged$",
+      "icon": "⏺️"
+    }
+  ]
+}

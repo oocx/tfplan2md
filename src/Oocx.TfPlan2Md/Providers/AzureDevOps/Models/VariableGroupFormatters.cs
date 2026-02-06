@@ -16,6 +16,26 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 internal static class VariableGroupFormatters
 {
     /// <summary>
+    /// Change label used for added variables.
+    /// </summary>
+    private const string AddedChange = "add";
+
+    /// <summary>
+    /// Change label used for removed variables.
+    /// </summary>
+    private const string RemovedChange = "remove";
+
+    /// <summary>
+    /// Change label used for unchanged variables.
+    /// </summary>
+    private const string UnchangedChange = "unchanged";
+
+    /// <summary>
+    /// Change label used for modified variables.
+    /// </summary>
+    private const string ModifiedChange = "update";
+
+    /// <summary>
     /// Formats variable values for create/delete tables.
     /// </summary>
     /// <param name="variables">Raw variable values.</param>
@@ -46,7 +66,7 @@ internal static class VariableGroupFormatters
     {
         return new VariableChangeRowViewModel
         {
-            Change = "➕",
+            Change = AddedChange,
             Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
@@ -65,7 +85,7 @@ internal static class VariableGroupFormatters
     {
         return new VariableChangeRowViewModel
         {
-            Change = "❌",
+            Change = RemovedChange,
             Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
@@ -84,7 +104,7 @@ internal static class VariableGroupFormatters
     {
         return new VariableChangeRowViewModel
         {
-            Change = "⏺️",
+            Change = UnchangedChange,
             Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
@@ -115,7 +135,7 @@ internal static class VariableGroupFormatters
 
         return new VariableChangeRowViewModel
         {
-            Change = "🔄",
+            Change = ModifiedChange,
             Name = $"`{EscapeMarkdown(after.Name)}`",
             Value = valueDisplay,
             Enabled = FormatEnabledDiff(before.Enabled, after.Enabled, format),

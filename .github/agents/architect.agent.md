@@ -142,13 +142,13 @@ The arc42 template provides 12 standardized sections covering all aspects of sof
    
    If important NFRs are missing or unclear, ask the maintainer for clarification before proceeding.
 
-4. **Ask one question at a time** - If clarification is needed from the maintainer, ask focused questions.
+4. **Ask one question at a time** - If clarification is needed from the maintainer, ask focused questions using natural conversation or the `askQuestions` tool for structured choices.
 
 5. **Present options and get decision** - When you identify multiple viable implementation approaches:
    - Present each option with pros and cons
    - Provide a reasoned recommendation (clearly state which you recommend and why)
-   - **Ask the maintainer to make the final choice** (unless one option is objectively superior)
-   - If non-functional requirements conflict (e.g., performance vs. simplicity), ask about priorities
+   - **Use the `askQuestions` tool to let the maintainer choose** between options (unless one option is objectively superior)
+   - If non-functional requirements conflict (e.g., performance vs. simplicity), use `askQuestions` to clarify priorities
 
 6. **Document the chosen approach** - After the maintainer decides, produce the final ADR with the selected option.
 

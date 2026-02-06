@@ -391,12 +391,12 @@ Use this template in `tasks.md`:
 - **Option 3 (Highest impact):** **<ID>** — Lowest-effort item among High Impact candidates.
 
 ## Decision
-Which item should I implement first? (Reply with the Option number, or reply with "work on task <task id>")
+Ask the Maintainer via PR comment which option to implement.
 ```
 
-After writing `tasks.md` and presenting the options, wait for the Maintainer's selection before changing any files.
+After writing `tasks.md` and presenting the options, create a PR comment asking the Maintainer to select an option. Wait for their response before changing any files.
 
-**Important:** When asking the Maintainer to choose an ID, always include the three recommended options (Option 1/2/3) in the chat message immediately before the question, even though they are also written to `tasks.md`.
+**Important:** When creating the PR comment to ask the Maintainer to choose, include the three recommended options (Option 1/2/3) with their descriptions so they can reply with the option number or a custom task ID.
 
 When implementing an improvement:
 - Update the **Status** column in `tasks.md` whenever task state changes.

@@ -101,9 +101,10 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 - **Snapshot updates**: Snapshot diffs (files under `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
   - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
   - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.
-- **Option selection**: If you present the user with an option list and the user replies with a number (e.g., `1`), that number always refers to the **most recent** option list you presented.
-  - Never apply a numeric answer to an older option list.
-  - If there is any ambiguity (e.g., multiple option lists were presented, the numbering changed, or the user response doesn’t map cleanly), ask for confirmation instead of guessing.
+- **Asking questions**: Use the `askQuestions` tool when you need clarification from the user, especially when presenting options or choices.
+  - The tool provides an interactive UI for single-select, multi-select, or free-text responses.
+  - Use this instead of presenting numbered lists and waiting for the user to type a number.
+  - Example: Instead of "Option 1: X, Option 2: Y - Please reply with 1 or 2", use askQuestions with interactive choices.
 - **Directly-invokable scripts**: Always run repository scripts directly (e.g., `scripts/uat-run.sh`, `scripts/pr-github.sh`, `scripts/validate-agents.py`) instead of via an interpreter/runner (e.g., `bash scripts/<script>.sh`, `python3 scripts/<script>.py`, `dotnet <runner> scripts/<script>`).
   - This enables per-script permanent allow rules in VS Code approvals.
   - If a script is not directly invokable, fix it instead of working around it (add a proper shebang and make it executable).

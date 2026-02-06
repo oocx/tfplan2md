@@ -307,7 +307,7 @@ _Agents produce and consume artifacts. Arrows show artifact creation and consump
 
 **Meta-Agent:**
 - **Workflow Engineer** improves and maintains the agent workflow itself (operates outside the normal feature flow).
-- When requesting a Maintainer decision on a `tasks.md` item, the Workflow Engineer presents the 3 recommended options (Option 1/2/3) in chat immediately before asking for the selected ID.
+- When requesting a Maintainer decision on a `tasks.md` item, the Workflow Engineer uses the `askQuestions` tool (in VS Code) or PR comments (in GitHub coding context) to present the 3 recommended options interactively.
 
 ---
 
@@ -450,7 +450,7 @@ For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analy
 ### 3. Architect
 - **Goal:** Design the technical solution and document decisions.
 - **Deliverables:** Architecture overview, ADRs, technology choices.
-- **Key Behavior:** When multiple viable options exist, presents pros/cons with a recommendation and asks maintainer to choose the final approach.
+- **Key Behavior:** When multiple viable options exist, presents pros/cons with a recommendation and uses the `askQuestions` tool to let the maintainer choose the final approach interactively.
 - **Definition of Done:** Architecture is documented and approved.
 
 ### 4. Quality Engineer

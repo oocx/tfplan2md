@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -40,7 +41,7 @@ public static partial class ScribanHelpers
     /// <returns>Formatted value suitable for use inside &lt;summary&gt; tags.</returns>
     public static string FormatAttributeValueSummary(string? attributeName, string? value, string? providerName)
     {
-        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Summary);
+        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Summary, null);
     }
 
     /// <summary>
@@ -53,7 +54,7 @@ public static partial class ScribanHelpers
     /// <returns>Formatted value suitable for markdown tables.</returns>
     public static string FormatAttributeValueTable(string? attributeName, string? value, string? providerName)
     {
-        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table);
+        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table, null);
     }
 
     /// <summary>
@@ -70,8 +71,6 @@ public static partial class ScribanHelpers
         Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
     public static string FormatAttributeValuePlain(string? attributeName, string? value, string? providerName)
     {
-        _ = providerName;
-
         if (string.IsNullOrWhiteSpace(value))
         {
             return string.Empty;
@@ -79,6 +78,12 @@ public static partial class ScribanHelpers
 
         var normalizedValue = value.Trim();
         var normalizedName = attributeName ?? string.Empty;
+
+        var registryIcon = TryGetRegistryIcon(providerName, attributeName, value, null);
+        if (!string.IsNullOrWhiteSpace(registryIcon))
+        {
+            return $"{registryIcon}{NonBreakingSpace}{normalizedValue}";
+        }
 
         if (TryFormatBoolean(normalizedValue, ValueFormatContext.Table, out var booleanFormatted))
         {
@@ -235,12 +240,18 @@ public static partial class ScribanHelpers
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <param name="context">The rendering context (table or summary).</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Formatted value respecting semantic icon rules and context-specific code wrapping.</returns>
     [SuppressMessage(
         "Maintainability",
         "CA1502:Avoid excessive complexity",
         Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
-    private static string FormatAttributeValue(string? attributeName, string? value, string? providerName, ValueFormatContext context)
+    private static string FormatAttributeValue(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        ValueFormatContext context,
+        IconProviderRegistry? iconProviderRegistry)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -249,6 +260,13 @@ public static partial class ScribanHelpers
 
         var normalizedValue = value.Trim();
         var normalizedName = attributeName ?? string.Empty;
+
+        var registryIcon = TryGetRegistryIcon(providerName, attributeName, value, iconProviderRegistry);
+        if (!string.IsNullOrWhiteSpace(registryIcon))
+        {
+            var iconText = $"{registryIcon}{NonBreakingSpace}{normalizedValue}";
+            return context == ValueFormatContext.Table ? FormatCodeTable(iconText) : FormatCodeSummary(iconText);
+        }
 
         if (TryFormatSemanticValue(normalizedName, normalizedValue, context, out var semanticFormatted))
         {
@@ -273,5 +291,129 @@ public static partial class ScribanHelpers
         return context == ValueFormatContext.Table
             ? FormatValue(normalizedValue, providerName)
             : FormatCodeSummary(normalizedValue);
+    }
+
+    /// <summary>
+    /// Formats attribute values for summary context using icon registry overrides when supplied.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Formatted value suitable for use inside &lt;summary&gt; tags.</returns>
+    private static string FormatAttributeValueSummaryWithRegistry(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Summary, iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Formats attribute values for table context using icon registry overrides when supplied.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Formatted value suitable for markdown tables.</returns>
+    private static string FormatAttributeValueTableWithRegistry(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table, iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Formats attribute values without wrapping using icon registry overrides when supplied.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Plain text value with semantic icons, no markdown or HTML wrapping.</returns>
+    private static string FormatAttributeValuePlainWithRegistry(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalizedValue = value.Trim();
+        var registryIcon = TryGetRegistryIcon(providerName, attributeName, value, iconProviderRegistry);
+        if (!string.IsNullOrWhiteSpace(registryIcon))
+        {
+            return $"{registryIcon}{NonBreakingSpace}{normalizedValue}";
+        }
+
+        return FormatAttributeValuePlain(attributeName, value, providerName);
+    }
+
+    /// <summary>
+    /// Resolves an icon from the registry for the given context.
+    /// </summary>
+    /// <param name="providerName">The provider name.</param>
+    /// <param name="resourceType">The resource type.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <param name="value">The raw value.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>The icon string or an empty string if none.</returns>
+    private static string GetIconWithRegistry(
+        string? providerName,
+        string? resourceType,
+        string? attributeName,
+        string? value,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (iconProviderRegistry is null)
+        {
+            return string.Empty;
+        }
+
+        var context = new ServiceResolutionContext(providerName, resourceType, attributeName, value);
+        return iconProviderRegistry.TryGetIcon(context) ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Attempts to resolve an icon from the registry for attribute formatting.
+    /// </summary>
+    /// <param name="providerName">The provider name.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <param name="value">The raw value.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>The icon string when available; otherwise null.</returns>
+    private static string? TryGetRegistryIcon(
+        string? providerName,
+        string? attributeName,
+        string? value,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (iconProviderRegistry is null)
+        {
+            return null;
+        }
+
+        var context = new ServiceResolutionContext(providerName, null, attributeName, value);
+        return iconProviderRegistry.TryGetIcon(context);
+    }
+
+    /// <summary>
+    /// Resolves a registry icon for use in templates.
+    /// </summary>
+    /// <param name="providerName">The provider name.</param>
+    /// <param name="resourceType">The resource type.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <param name="value">The raw value.</param>
+    /// <returns>The icon string or an empty string if none.</returns>
+    public static string GetIcon(string? providerName, string? resourceType, string? attributeName, string? value)
+    {
+        return GetIconWithRegistry(providerName, resourceType, attributeName, value, null);
     }
 }

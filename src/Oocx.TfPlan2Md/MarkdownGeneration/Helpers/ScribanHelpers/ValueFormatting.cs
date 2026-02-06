@@ -1,3 +1,4 @@
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -43,9 +44,34 @@ public static partial class ScribanHelpers
     /// <returns>Formatted markdown string for table rendering.</returns>
     public static string FormatValue(string? value, string? providerName)
     {
+        return FormatValueWithRegistry(value, providerName, null);
+    }
+
+    /// <summary>
+    /// Formats attribute values using registry-provided formatters before default logic.
+    /// </summary>
+    /// <param name="value">The raw value.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <returns>Formatted markdown string for table rendering.</returns>
+    private static string FormatValueWithRegistry(
+        string? value,
+        string? providerName,
+        ValueFormatterRegistry? valueFormatterRegistry)
+    {
         if (string.IsNullOrEmpty(value))
         {
             return string.Empty;
+        }
+
+        if (valueFormatterRegistry is not null)
+        {
+            var context = new ServiceResolutionContext(providerName, null, null, value);
+            var formatted = valueFormatterRegistry.TryFormat(context);
+            if (!string.IsNullOrEmpty(formatted))
+            {
+                return formatted;
+            }
         }
 
         if (IsAzurermProvider(providerName) && AzureScopeParser.IsAzureResourceId(value))

@@ -124,8 +124,8 @@ Migrate existing hardcoded icon and formatting logic for AzureRM, AzApi, AzureAD
 Create new snapshot tests for Azure AD and Azure DevOps.
 
 **Acceptance Criteria:**
-- [ ] `AzureAdSnapshotTests.cs` created with a comprehensive plan covering users, groups, and service principals.
-- [ ] `AzureDevOpsSnapshotTests.cs` created covering variable groups and projects.
+- [x] `AzureAdSnapshotTests.cs` created with a comprehensive plan covering users, groups, and service principals.
+- [x] `AzureDevOpsSnapshotTests.cs` created covering variable groups and projects.
 - [ ] UAT is performed after code review (out of scope for this task).
 
 **Dependencies:** Task 6

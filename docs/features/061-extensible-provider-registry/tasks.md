@@ -38,11 +38,11 @@ Implement the foundational pattern-matching engine and its supporting data struc
 Define the interfaces for value formatting and icon provision, and create the typed registry wrappers.
 
 **Acceptance Criteria:**
-- [ ] `IValueFormatter` interface with `TryFormat(ServiceResolutionContext)` method.
-- [ ] `IIconProvider` interface with `TryGetIcon(ServiceResolutionContext)` method.
-- [ ] `ValueFormatterRegistry` wrapper implemented.
-- [ ] `IconProviderRegistry` wrapper implemented.
-- [ ] Unit tests for `ValueFormatterRegistry` and `IconProviderRegistry` verifying they correctly delegate to the generic registry and handle fallback (iterator over resolved services).
+- [x] `IValueFormatter` interface with `TryFormat(ServiceResolutionContext)` method.
+- [x] `IIconProvider` interface with `TryGetIcon(ServiceResolutionContext)` method.
+- [x] `ValueFormatterRegistry` wrapper implemented.
+- [x] `IconProviderRegistry` wrapper implemented.
+- [x] Unit tests for `ValueFormatterRegistry` and `IconProviderRegistry` verifying they correctly delegate to the generic registry and handle fallback (iterator over resolved services).
 
 **Dependencies:** Task 1
 

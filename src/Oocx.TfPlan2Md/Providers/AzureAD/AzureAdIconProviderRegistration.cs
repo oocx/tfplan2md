@@ -21,6 +21,6 @@ internal static class AzureAdIconProviderRegistration
         ArgumentNullException.ThrowIfNull(registry);
 
         var filePath = Path.Combine(AppContext.BaseDirectory, "icons", "azuread-icons.json");
-        registry.Register(new MatchPattern("^azuread$", null, null, null), new FileBasedIconProvider(filePath));
+        registry.Register(new MatchPattern("(^azuread$|.*/azuread$)", null, null, null), new FileBasedIconProvider(filePath));
     }
 }

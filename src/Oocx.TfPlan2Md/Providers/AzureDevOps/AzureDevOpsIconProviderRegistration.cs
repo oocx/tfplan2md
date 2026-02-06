@@ -21,6 +21,6 @@ internal static class AzureDevOpsIconProviderRegistration
         ArgumentNullException.ThrowIfNull(registry);
 
         var filePath = Path.Combine(AppContext.BaseDirectory, "icons", "azuredevops-icons.json");
-        registry.Register(new MatchPattern("^azuredevops$", null, null, null), new FileBasedIconProvider(filePath));
+        registry.Register(new MatchPattern("(^azuredevops$|.*/azuredevops$)", null, null, null), new FileBasedIconProvider(filePath));
     }
 }

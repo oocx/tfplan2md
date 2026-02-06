@@ -121,12 +121,12 @@ Migrate existing hardcoded icon and formatting logic for AzureRM, AzApi, AzureAD
 **Priority:** Medium
 
 **Description:**
-Create new snapshot tests for Azure AD and Azure DevOps, and perform UAT.
+Create new snapshot tests for Azure AD and Azure DevOps.
 
 **Acceptance Criteria:**
 - [ ] `AzureAdSnapshotTests.cs` created with a comprehensive plan covering users, groups, and service principals.
 - [ ] `AzureDevOpsSnapshotTests.cs` created covering variable groups and projects.
-- [ ] UAT artifact `extensible-registry-uat.md` generated and validated using the `uat-run.sh` script.
+- [ ] UAT is performed after code review (out of scope for this task).
 
 **Dependencies:** Task 6
 

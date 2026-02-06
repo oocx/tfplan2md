@@ -21,6 +21,6 @@ internal static class AzureRmIconProviderRegistration
         ArgumentNullException.ThrowIfNull(registry);
 
         var filePath = Path.Combine(AppContext.BaseDirectory, "icons", "azurerm-icons.json");
-        registry.Register(new MatchPattern("^azurerm$", null, null, null), new FileBasedIconProvider(filePath));
+        registry.Register(new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, null), new FileBasedIconProvider(filePath));
     }
 }

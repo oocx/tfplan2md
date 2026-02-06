@@ -48,7 +48,7 @@ internal sealed class AzApiModule : IProviderModule
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
         registry.Register(
-            new MatchPattern("^azapi$", null, null, "^/subscriptions/[^/]+/.*"),
+            new MatchPattern("(^azapi$|.*/azapi$)", null, null, "^/subscriptions/[^/]+/.*"),
             new AzureResourceIdFormatter());
     }
 
@@ -59,6 +59,6 @@ internal sealed class AzApiModule : IProviderModule
     public void RegisterIconProviders(IconProviderRegistry registry)
     {
         var filePath = Path.Combine(AppContext.BaseDirectory, "icons", "azapi-icons.json");
-        registry.Register(new MatchPattern("^azapi$", null, null, null), new FileBasedIconProvider(filePath));
+        registry.Register(new MatchPattern("(^azapi$|.*/azapi$)", null, null, null), new FileBasedIconProvider(filePath));
     }
 }

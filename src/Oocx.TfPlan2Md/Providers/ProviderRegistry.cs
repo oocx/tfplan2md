@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.Providers;
@@ -64,6 +65,30 @@ internal sealed class ProviderRegistry
         foreach (var provider in _providers)
         {
             provider.RegisterFactories(registry);
+        }
+    }
+
+    /// <summary>
+    /// Registers all provider-specific value formatters.
+    /// </summary>
+    /// <param name="registry">The value formatter registry to register into.</param>
+    public void RegisterAllValueFormatters(ValueFormatterRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterValueFormatters(registry);
+        }
+    }
+
+    /// <summary>
+    /// Registers all provider-specific icon providers.
+    /// </summary>
+    /// <param name="registry">The icon provider registry to register into.</param>
+    public void RegisterAllIconProviders(IconProviderRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterIconProviders(registry);
         }
     }
 }

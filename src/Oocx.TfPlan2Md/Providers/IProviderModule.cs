@@ -1,3 +1,4 @@
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.Providers;
@@ -40,4 +41,22 @@ internal interface IProviderModule
     /// </summary>
     /// <param name="registry">The factory registry to register into.</param>
     void RegisterFactories(MarkdownGeneration.Models.IResourceViewModelFactoryRegistry registry);
+
+    /// <summary>
+    /// Registers provider-specific value formatters.
+    /// </summary>
+    /// <param name="registry">The value formatter registry to register into.</param>
+    void RegisterValueFormatters(ValueFormatterRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
+
+    /// <summary>
+    /// Registers provider-specific icon providers.
+    /// </summary>
+    /// <param name="registry">The icon provider registry to register into.</param>
+    void RegisterIconProviders(IconProviderRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
 }

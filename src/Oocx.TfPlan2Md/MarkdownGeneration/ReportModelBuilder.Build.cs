@@ -20,6 +20,8 @@ internal partial class ReportModelBuilder
     /// <returns>A model containing change details, summaries, and optional custom title.</returns>
     public ReportModel Build(TerraformPlan plan)
     {
+        EnsureServiceRegistriesInitialized();
+
         // Build all resource change models first (for summary counting)
         var allChanges = plan.ResourceChanges
             .Select(BuildResourceChangeModel)

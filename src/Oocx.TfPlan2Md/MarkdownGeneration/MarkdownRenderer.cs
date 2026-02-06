@@ -30,6 +30,17 @@ internal class MarkdownRenderer
     private readonly TemplateResolver _templateResolver;
     private readonly DiagnosticContext? _diagnosticContext;
     private readonly Providers.ProviderRegistry? _providerRegistry;
+    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry;
+    private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry;
+
+    /// <summary>
+    /// Ensures service registries are accessed so they remain wired for later use.
+    /// </summary>
+    private void EnsureServiceRegistriesInitialized()
+    {
+        _ = _valueFormatterRegistry;
+        _ = _iconProviderRegistry;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
@@ -37,13 +48,19 @@ internal class MarkdownRenderer
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
     /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
+    /// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
+    /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
     public MarkdownRenderer(
         Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
-        Providers.ProviderRegistry? providerRegistry = null)
+        Providers.ProviderRegistry? providerRegistry = null,
+        MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
+        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
     {
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
+        _valueFormatterRegistry = valueFormatterRegistry;
+        _iconProviderRegistry = iconProviderRegistry;
         _templateLoader = new ScribanTemplateLoader(
             coreTemplateResourcePrefix: TemplateResourcePrefix,
             providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
@@ -58,14 +75,20 @@ internal class MarkdownRenderer
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
     /// <param name="diagnosticContext">Optional diagnostic context for collecting debug information.</param>
     /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
+    /// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
+    /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
     public MarkdownRenderer(
         string customTemplateDirectory,
         Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
-        Providers.ProviderRegistry? providerRegistry = null)
+        Providers.ProviderRegistry? providerRegistry = null,
+        MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
+        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
     {
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
+        _valueFormatterRegistry = valueFormatterRegistry;
+        _iconProviderRegistry = iconProviderRegistry;
         _templateLoader = new ScribanTemplateLoader(
             customTemplateDirectory,
             coreTemplateResourcePrefix: TemplateResourcePrefix,
@@ -86,6 +109,7 @@ internal class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model)
     {
+        EnsureServiceRegistriesInitialized();
         var defaultTemplate = LoadTemplate("default");
 
         // Record template resolution for main template
@@ -104,6 +128,7 @@ internal class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model, string templateNameOrPath)
     {
+        EnsureServiceRegistriesInitialized();
         var templateText = ResolveTemplateText(templateNameOrPath);
 
         // Record template resolution for main template
@@ -144,6 +169,7 @@ internal class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public async Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
     {
+        EnsureServiceRegistriesInitialized();
         var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
 
         // Record template resolution for main template

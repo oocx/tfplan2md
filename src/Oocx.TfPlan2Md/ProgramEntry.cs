@@ -8,6 +8,7 @@ using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
@@ -160,6 +161,12 @@ internal static class ProgramEntry
         providerRegistry.RegisterProvider(new AzureDevOpsModule(
             largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget)));
 
+        var valueFormatterRegistry = new ValueFormatterRegistry();
+        providerRegistry.RegisterAllValueFormatters(valueFormatterRegistry);
+
+        var iconProviderRegistry = new IconProviderRegistry();
+        providerRegistry.RegisterAllIconProviders(iconProviderRegistry);
+
         // Build the report model
         var modelBuilder = new ReportModelBuilder(
             showSensitive: options.ShowSensitive,
@@ -169,11 +176,13 @@ internal static class ProgramEntry
             principalMapper: principalMapper,
             hideMetadata: options.HideMetadata,
             providerRegistry: providerRegistry,
-            codeAnalysisInput: codeAnalysisInput);
+            codeAnalysisInput: codeAnalysisInput,
+            valueFormatterRegistry: valueFormatterRegistry,
+            iconProviderRegistry: iconProviderRegistry);
         var model = modelBuilder.Build(plan);
 
         // Render to Markdown
-        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext, providerRegistry);
+        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext, providerRegistry, valueFormatterRegistry, iconProviderRegistry);
         string markdown;
         if (options.TemplatePath is not null)
         {

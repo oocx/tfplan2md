@@ -107,10 +107,10 @@ Update `ScribanHelpers` to use the new registries before falling back to existin
 Migrate existing hardcoded icon and formatting logic for AzureRM, AzApi, AzureAD, and AzureDevOps to the new registry system.
 
 **Acceptance Criteria:**
-- [ ] AzureRM icons (locations, NSG protocols, etc.) migrated to JSON or code registrations.
-- [ ] Azure AD and Azure DevOps icons (users, groups, etc.) implemented.
-- [ ] Azure resource ID formatting migrated to `AzureResourceIdFormatter`.
-- [ ] Existing functionality confirmed via regression tests.
+- [x] AzureRM icons (locations, NSG protocols, etc.) migrated to JSON or code registrations.
+- [x] Azure AD and Azure DevOps icons (users, groups, etc.) implemented.
+- [x] Azure resource ID formatting migrated to `AzureResourceIdFormatter`.
+- [x] Existing functionality confirmed via regression tests.
 
 **Dependencies:** Task 5
 

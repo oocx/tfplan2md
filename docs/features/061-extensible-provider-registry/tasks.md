@@ -90,10 +90,10 @@ Wire the new registry system into the existing provider module infrastructure an
 Update `ScribanHelpers` to use the new registries before falling back to existing hardcoded logic.
 
 **Acceptance Criteria:**
-- [ ] `ScribanHelpers.Registry` updated to accept and store the new registries.
-- [ ] `format_value` helper updated to try `ValueFormatterRegistry` first.
-- [ ] `format_attribute_value_*` and related icon helpers updated to try `IconProviderRegistry` first.
-- [ ] New `get_icon` helper introduced for explicit icon resolution in templates.
+- [x] `ScribanHelpers.Registry` updated to accept and store the new registries.
+- [x] `format_value` helper updated to try `ValueFormatterRegistry` first.
+- [x] `format_attribute_value_*` and related icon helpers updated to try `IconProviderRegistry` first.
+- [x] New `get_icon` helper introduced for explicit icon resolution in templates.
 
 **Dependencies:** Task 4
 

@@ -124,3 +124,22 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
   - PR creation/merge: Use `scripts/pr-github.sh` instead of `gh pr create` or `gh pr merge`
   - UAT execution: Use `scripts/uat-run.sh` instead of manual commands
   - The scripts handle repository-specific policies and conventions
+
+## Remote Debugging with Chrome DevTools
+
+- To troubleshoot complicated layout and css issues, you can use Chrome DevTools to inspect the rendered HTML and CSS of the generated markdown files
+- If you are unable to start chrome devtools, don't just use alternate debugging methods. Instead, help the user fix the issue with starting chrome devtools, so you can use it for debugging. Chrome DevTools is a critical skill for debugging complex rendering issues, and it's worth the effort to get it working.
+- The mcp server config should look like this:
+```json
+"io.github.ChromeDevTools/chrome-devtools-mcp": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"chrome-devtools-mcp@latest",
+				"--isolated",
+				"--headless"
+			],
+			"env": {},
+			"type": "stdio"
+		}
+```

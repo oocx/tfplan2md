@@ -50,6 +50,10 @@ NC='\033[0m'
 log_info() { echo -e "${GREEN}[INFO]${NC} $*"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+# Source shared helpers (credential helper setup, artifact validation, etc.)
+_uat_run_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+source "$_uat_run_script_dir/uat-helpers.sh"
 
 state_file_default=".tmp/uat-run/last-run.json"
 uat_submodule_github_default="uat-repos/github"
@@ -136,6 +140,7 @@ cmd_cleanup_last() {
     git -C "$uat_submodule_github" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete GitHub UAT branch '$uat_branch' (may already be deleted)."
   fi
   if [[ -n "$uat_submodule_azdo" && -e "$uat_submodule_azdo/.git" ]]; then
+    ensure_azdo_credential_helper "$uat_submodule_azdo"
     git -C "$uat_submodule_azdo" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete AzDO UAT branch '$uat_branch' (may already be deleted)."
   fi
 
@@ -429,6 +434,7 @@ if [[ "$platform" == "both" || "$platform" == "github" ]]; then
 fi
 if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
   if [[ -e "$uat_submodule_azdo/.git" ]]; then
+    ensure_azdo_credential_helper "$uat_submodule_azdo"
     git -C "$uat_submodule_azdo" push origin --delete "$uat_branch" >/dev/null 2>&1 || log_warn "Failed to delete AzDO UAT branch '$uat_branch' (may already be deleted)."
   fi
 fi

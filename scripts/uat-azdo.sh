@@ -159,6 +159,7 @@ EOF
     # The UAT repo is intentionally separate from this repo.
     # We use a dedicated git submodule checkout to create a lightweight branch for the PR.
     ensure_git_submodule "$AZDO_SUBMODULE_PATH"
+    ensure_azdo_credential_helper "$AZDO_SUBMODULE_PATH"
 
     log_info "Preparing UAT branch '$branch' in submodule repo ($AZDO_SUBMODULE_PATH)..."
     git -C "$AZDO_SUBMODULE_PATH" fetch origin main >/dev/null 2>&1 || true

@@ -132,6 +132,83 @@ Create new snapshot tests for Azure AD and Azure DevOps.
 
 ---
 
+### Task 8: Eliminate `get_icon` from All Templates
+
+**Priority:** High
+
+**Description:**
+Remove all 21 `get_icon` calls from templates by pre-computing icons in C# view models. This simplifies template authoring, prevents forgotten icon calls, and makes icon resolution testable in C#. After this task, the `get_icon` Scriban helper can be removed entirely.
+
+#### Task 8a: Pre-compute Azure AD Summary Lines
+
+**Description:**
+Six Azure AD templates currently build their `<summary>` line in Scriban by extracting values from raw `after_json`/`before_json` and calling `get_icon` to prepend icons. Move this logic into C# view model factories that produce a pre-computed `summary_html`, following the pattern already established by `variable_group.sbn`.
+
+**Affected templates (15 `get_icon` calls):**
+- `user.sbn` — display_name (👤), user_principal_name (🆔), mail (📧) in summary
+- `group.sbn` — member type legend icons (👤👥💻❓) + display_name (👥), mail_nickname (🆔) in summary
+- `group_without_members.sbn` — display_name (👥), mail_nickname (🆔) in summary
+- `group_member.sbn` — group_name (👥), member_type (👤/👥/💻) in summary
+- `service_principal.sbn` — display_name (💻), application_id (🆔) in summary
+- `invitation.sbn` — user_email_address (📧) in summary
+
+**Acceptance Criteria:**
+- [x] Azure AD resource view model factories pre-compute `summary_html` with icon-decorated values resolved via `IconProviderRegistry`.
+- [x] All six Azure AD templates use `change.summary_html` instead of manual `get_icon` + `format_icon_value_summary` chains.
+- [x] Summary output is identical to current output (verified by snapshot tests).
+
+**Dependencies:** Task 7
+
+---
+
+#### Task 8b: Remove Redundant Table Icon Branching from user.sbn
+
+**Description:**
+`user.sbn` special-cases `display_name` in table cells: it calls `get_icon` and then `format_icon_value_table`, but `format_attribute_value_table` already resolves icons via the `IconProviderRegistry` for all attributes. The special branching is redundant and produces identical output.
+
+**Affected template (4 `get_icon` calls):**
+- `user.sbn` — `display_name` icon in create table (line 58), delete table (line 75), update table before/after (lines 91-92)
+
+**Acceptance Criteria:**
+- [x] `user.sbn` table sections use `format_attribute_value_table_resource` uniformly for all attributes, with no `display_name` special-case.
+- [x] Table output is identical to current output (verified by snapshot tests).
+
+**Dependencies:** Task 7
+
+---
+
+#### Task 8c: Add `ChangeIcon` to `VariableChangeRowViewModel`
+
+**Description:**
+`variable_group.sbn` calls `get_icon` to resolve the change column icon (➕/🔄/❌/⏺️). The `Change` property is a fixed string set at factory construction time, so the icon can be pre-resolved alongside it.
+
+**Affected template (1 `get_icon` call):**
+- `variable_group.sbn` — change column icon (line 56)
+
+**Acceptance Criteria:**
+- [x] `VariableChangeRowViewModel` has a new `ChangeIcon` property pre-populated by the factory methods.
+- [x] `variable_group.sbn` uses `var.change_icon` directly instead of calling `get_icon`.
+- [x] Table output is identical to current output (verified by snapshot tests).
+
+**Dependencies:** Task 7
+
+---
+
+#### Task 8d: Remove `get_icon` Scriban Helper
+
+**Description:**
+After Tasks 8a-8c eliminate all template usages, remove the `get_icon` helper registration from `ScribanHelpers` and the integration test. Regenerate all snapshot baselines to confirm output is unchanged.
+
+**Acceptance Criteria:**
+- [x] `get_icon` helper removed from `ScribanHelpers` registration.
+- [x] `ScribanHelpersRegistryIntegrationTests` updated to remove the `get_icon` test case.
+- [x] Snapshot tests pass with unchanged output.
+- [x] Zero `get_icon` occurrences remain in any `.sbn` template file.
+
+**Dependencies:** Task 8a, 8b, 8c
+
+---
+
 ## Implementation Order
 
 Recommended sequence for implementation:
@@ -140,6 +217,7 @@ Recommended sequence for implementation:
 3. **Task 4 & 5**: Integration and wiring.
 4. **Task 6**: Migration (core value delivery).
 5. **Task 7**: Quality assurance and verification.
+6. **Task 8b → 8c → 8a → 8d**: Eliminate `get_icon` (simplest changes first, summary pre-computation last, then cleanup).
 
 ## Open Questions
 

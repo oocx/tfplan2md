@@ -58,7 +58,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The factory registry to register with.</param>
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
-        AzureRmFactoryRegistration.Register(registry, _largeValueFormat, _principalMapper);
+        AzureRmFactoryRegistration.Register(registry, _largeValueFormat, _principalMapper, _scopeFormatter);
     }
 
     /// <summary>

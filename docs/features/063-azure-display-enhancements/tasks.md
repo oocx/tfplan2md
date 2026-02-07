@@ -86,10 +86,10 @@ Implement the enhanced summary for `azurerm_private_dns_a_record`.
 Implement `ViewModelFactory` classes for PIM assignments and role management policies.
 
 **Acceptance Criteria:**
-- [ ] `PimEligibleRoleAssignmentFactory` implemented for `azurerm_pim_eligible_role_assignment` (TC-10).
-- [ ] `RoleManagementPolicyFactory` implemented for `azurerm_role_management_policy` (TC-11).
-- [ ] `AzureRMModule` registers the new factories.
-- [ ] Summaries correctly resolve principal names, role names, and enriched scopes.
+- [x] `PimEligibleRoleAssignmentFactory` implemented for `azurerm_pim_eligible_role_assignment` (TC-10).
+- [x] `RoleManagementPolicyFactory` implemented for `azurerm_role_management_policy` (TC-11).
+- [x] `AzureRMModule` registers the new factories.
+- [x] Summaries correctly resolve principal names, role names, and enriched scopes.
 
 **Dependencies:** Tasks 1, 2, 3
 

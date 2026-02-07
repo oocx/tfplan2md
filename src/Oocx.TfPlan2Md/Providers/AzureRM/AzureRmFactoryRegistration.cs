@@ -53,10 +53,12 @@ internal static class AzureRmFactoryRegistration
     /// <param name="registry">The registry to populate.</param>
     /// <param name="largeValueFormat">The preferred large value format.</param>
     /// <param name="principalMapper">The mapper used for resolving principal names.</param>
+    /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
     public static void Register(
         IResourceViewModelFactoryRegistry registry,
         LargeValueFormat largeValueFormat,
-        IPrincipalMapper principalMapper)
+        IPrincipalMapper principalMapper,
+        EnrichedAzureScopeFormatter? scopeFormatter)
     {
         ArgumentNullException.ThrowIfNull(registry);
         ArgumentNullException.ThrowIfNull(principalMapper);
@@ -66,6 +68,8 @@ internal static class AzureRmFactoryRegistration
         registry.RegisterFactory("azurerm_firewall_application_rule_collection", new FirewallApplicationRuleCollectionFactory(largeValueFormat));
         registry.RegisterFactory("azurerm_role_assignment", new RoleAssignmentFactory(principalMapper));
         registry.RegisterFactory("azurerm_private_dns_a_record", new AzureRMPrivateDnsARecordFactory());
+        registry.RegisterFactory("azurerm_pim_eligible_role_assignment", new PimEligibleRoleAssignmentFactory(principalMapper));
+        registry.RegisterFactory("azurerm_role_management_policy", new RoleManagementPolicyFactory(scopeFormatter));
         registry.RegisterFactory("azurerm_api_management_api_operation", new AzureRMApimApiOperationFactory());
         registry.RegisterFactory("azurerm_api_management_named_value", new AzureRMApimNamedValueFactory());
 

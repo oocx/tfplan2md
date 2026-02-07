@@ -1,15 +1,18 @@
 # UAT Test Plan: Azure Display Enhancements
 
 ## Goal
-Verify that Azure subscriptions, management groups, roles, and resource-specific summaries (DNS/PIM/Policies) render correctly in GitHub and Azure DevOps PR comments with human-readable names.
+Validate Azure display enhancements (role and scope enrichment, DNS/PIM/Policy summaries) in GitHub and Azure DevOps PR comments.
 
 ## Artifacts
-**Artifact to use:** `artifacts/azure-display-enhancements-demo.md`
+**Artifact to use:**
+- Azure DevOps: `artifacts/comprehensive-demo.md`
+- GitHub: `artifacts/comprehensive-demo-simple-diff.md`
 
 **Creation Instructions (if new artifact needed):**
-- **Source Plan:** `examples/azure-display-enhancements.json`
-- **Command:** `tfplan2md examples/azure-display-enhancements.json --principal-mapping examples/azure-mappings-extended.json --output artifacts/azure-display-enhancements-demo.md`
-- **Rationale:** This plan contains all resources targeted by the enhancements (DNS, PIM, Role Policies, Subscriptions).
+- **Source Plan:** `examples/comprehensive-demo/plan.json`
+- **Principal Mapping:** `examples/comprehensive-demo/demo-principals.json`
+- **Command:** `scripts/generate-demo-artifacts.sh`
+- **Rationale:** The comprehensive demo includes the DNS, PIM, and role policy resources needed for validation.
 
 ## Test Steps
 1. Run UAT using the `UAT Tester` agent.
@@ -18,18 +21,15 @@ Verify that Azure subscriptions, management groups, roles, and resource-specific
 ## Validation Instructions (Test Description)
 
 **Specific Resources/Sections:**
-- **Subscription Display**: In any `azurerm` resource (e.g., `azurerm_resource_group.example`), verify that the subscription in the title or attribute table renders as `Production (d1828a48-fced-4ea2-b2ec-4b9623f327fd)` instead of just the GUID.
-- **PIM Assignments**: The `azurerm_pim_eligible_role_assignment` resource should have a summary like: `### ➕ azurerm_pim_eligible_role_assignment "example": Assign "Owner" to "Jane Doe"`.
-- **Private DNS**: The `azurerm_private_dns_a_record` resource should show the FQDN in the summary: `### ➕ azurerm_private_dns_a_record "example": record1.contoso.local`.
-- **Role Management Policies**: Verify `azurerm_role_management_policy` renders as `"Contributor" in resource group "foo" of subscription "Production (...)"`.
-- **Management Groups**: Verify that `azurerm_management_group` references show the Display Name (e.g., `Corporate IT`) instead of the ID (e.g., `mg-corp-it`).
+- `module.network.azurerm_private_dns_a_record.app`: Summary shows the FQDN `api.contoso.local`.
+- `module.security.azurerm_pim_eligible_role_assignment.ops`: Summary shows "Assign `Owner` to `Jane Doe (User)`".
+- `module.security.azurerm_role_management_policy.ops`: Summary shows "`Reader` in management group `mg-root`".
 
 **Exact Attributes:**
-- `role_definition_id`: Should show names like `Reader`, `Contributor`, or custom role names.
-- `subscription_id`: Should show `Name (GUID)`.
+- `role_definition_id`: Shows role names (e.g., `Reader`, `Owner`) instead of GUIDs.
 
 **Expected Outcome:**
-The report should be significantly more readable, with most hex strings and GUIDs replaced by names provided in the mapping file.
+Summaries are concise and readable, with role names resolved and scope strings formatted consistently.
 
 **Before/After Context:**
-Previously, these resources only showed GUIDs or truncated paths. Now, they provide rich contextual names, making it immediate to understand which environment and permissions are being changed.
+Previously, these resources used generic summaries with raw IDs. Now, summaries show FQDNs, role names, and readable scope text.

@@ -1,0 +1,23 @@
+{
+  "users": {
+    "00000000-0000-0000-0000-000000000001": "Jane Doe"
+  },
+  "groups": {
+    "00000000-0000-0000-0000-000000000002": "DevOps Team"
+  },
+  "servicePrincipals": {
+    "00000000-0000-0000-0000-000000000003": "Deployment Pipeline"
+  },
+  "subscriptions": [
+    { "id": "sub-123", "displayName": "Production" }
+  ],
+  "managementGroups": [
+    { "id": "mg-root", "displayName": "Root Management Group" }
+  ],
+  "tenants": [
+    { "id": "mg-root", "displayName": "Contoso Corp" }
+  ],
+  "roles": [
+    { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }
+  ]
+}

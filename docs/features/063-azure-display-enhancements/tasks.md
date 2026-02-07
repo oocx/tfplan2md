@@ -35,11 +35,11 @@ Update the mapping file models to support the new sections (subscriptions, manag
 Create the `AzureEntityMapper` to resolve subscription, management group, and tenant IDs. Create the `EnrichedAzureScopeFormatter` to inject these names into resource scope strings.
 
 **Acceptance Criteria:**
-- [ ] `AzureEntityMapper` implemented and tested with TC-02 and TC-04.
-- [ ] `EnrichedAzureScopeFormatter` implemented to post-process `ScopeInfo` from `AzureScopeParser`.
-- [ ] Root management group formatted as "Tenant `<name>` root" when IDs match (TC-05).
-- [ ] Subscription names injected as `DisplayName (ID)` (TC-03).
-- [ ] Integration: `AzureResourceIdFormatter` uses `EnrichedAzureScopeFormatter`.
+- [x] `AzureEntityMapper` implemented and tested with TC-02 and TC-04.
+- [x] `EnrichedAzureScopeFormatter` implemented to post-process `ScopeInfo` from `AzureScopeParser`.
+- [x] Root management group formatted as "Tenant `<name>` root" when IDs match (TC-05).
+- [x] Subscription names injected as `DisplayName (ID)` (TC-03).
+- [x] Integration: `AzureResourceIdFormatter` uses `EnrichedAzureScopeFormatter`.
 
 **Dependencies:** Task 1
 

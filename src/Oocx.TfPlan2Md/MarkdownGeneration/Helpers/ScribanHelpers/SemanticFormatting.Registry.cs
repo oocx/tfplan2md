@@ -82,14 +82,31 @@ public static partial class ScribanHelpers
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Formatted value suitable for markdown tables.</returns>
     private static string FormatAttributeValueTableWithRegistry(
         string? attributeName,
         string? value,
         string? providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
         IconProviderRegistry? iconProviderRegistry)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        if (valueFormatterRegistry is not null)
+        {
+            var context = new ServiceResolutionContext(providerName, null, attributeName, value);
+            var formatted = valueFormatterRegistry.TryFormat(context);
+            if (!string.IsNullOrWhiteSpace(formatted))
+            {
+                return formatted;
+            }
+        }
+
         return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table, iconProviderRegistry);
     }
 
@@ -100,6 +117,7 @@ public static partial class ScribanHelpers
     /// <param name="value">The raw attribute value.</param>
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <param name="resourceType">The resource type for icon resolution.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Formatted value suitable for markdown tables.</returns>
     private static string FormatAttributeValueTableWithRegistryResource(
@@ -107,8 +125,24 @@ public static partial class ScribanHelpers
         string? value,
         string? providerName,
         string? resourceType,
+        ValueFormatterRegistry? valueFormatterRegistry,
         IconProviderRegistry? iconProviderRegistry)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        if (valueFormatterRegistry is not null)
+        {
+            var context = new ServiceResolutionContext(providerName, resourceType, attributeName, value);
+            var formatted = valueFormatterRegistry.TryFormat(context);
+            if (!string.IsNullOrWhiteSpace(formatted))
+            {
+                return formatted;
+            }
+        }
+
         return FormatAttributeValueWithResource(
             attributeName,
             value,

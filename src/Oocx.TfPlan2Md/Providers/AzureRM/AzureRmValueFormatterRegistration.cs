@@ -24,5 +24,13 @@ internal static class AzureRmValueFormatterRegistration
         registry.Register(
             new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, "^/subscriptions/[^/]+/.*"),
             new AzureResourceIdFormatter(scopeFormatter));
+
+        registry.Register(
+            new MatchPattern(
+                "(^azurerm$|.*/azurerm$)",
+                null,
+                "^role_definition_id$|^role_definition_resource_id$",
+                "(?i)^(?:/subscriptions/[^/]+/providers/Microsoft.Authorization/roleDefinitions/[^/]+|/providers/Microsoft.Authorization/roleDefinitions/[^/]+|[0-9a-f-]{36})$"),
+            new RoleDefinitionFormatter());
     }
 }

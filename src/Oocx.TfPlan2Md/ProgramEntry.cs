@@ -150,6 +150,7 @@ internal static class ProgramEntry
 
         // Load Azure mapping file once and create principal mapper for role assignment resolution
         var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
+        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles);
         var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
         var entityMapper = new AzureEntityMapper(
             mappingResult.Subscriptions,

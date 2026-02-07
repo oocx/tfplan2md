@@ -56,4 +56,27 @@ public class ProviderValueFormatterRegistryTests
 
         formatted.Should().Contain("Storage Account");
     }
+
+    /// <summary>
+    /// Ensures AzureRM registers the role definition formatter.
+    /// </summary>
+    [Test]
+    public void AzureRmModule_RegisterValueFormatters_FormatsRoleDefinitionIds()
+    {
+        var registry = new ValueFormatterRegistry();
+        var module = new AzureRMModule(LargeValueFormat.SimpleDiff, new NullPrincipalMapper());
+
+        module.RegisterValueFormatters(registry);
+
+        var context = new ServiceResolutionContext(
+            "azurerm",
+            null,
+            "role_definition_id",
+            "/subscriptions/sub-one/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7");
+
+        var formatted = registry.TryFormat(context);
+
+        formatted.Should().Contain("Reader");
+        formatted.Should().Contain("acdd72a7-3385-48ef-bd42-f606fba81ae7");
+    }
 }

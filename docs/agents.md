@@ -719,6 +719,56 @@ This keeps all decisions traceable through the conversation history and artifact
 
 ---
 
+## Sub-Agent Strategy
+
+Agents can delegate focused tasks to **sub-agents** (via the `task` tool) to reduce context rot and improve output quality. Sub-agents run in their own context window, so the parent agent's context stays clean.
+
+### When to Use Sub-Agents
+
+| Scenario | Sub-Agent Type | Benefit |
+|----------|---------------|---------|
+| Quick codebase lookup (find files, search patterns, answer questions) | `explore` | Keeps search results out of parent context; fast Haiku model |
+| Run builds, tests, lints where only pass/fail matters | `task` | Only returns summary on success, full output on failure |
+| Complex multi-step research or implementation in isolation | `general-purpose` | Full toolset in separate context; preserves parent focus |
+| Specialized domain work (review, architecture, testing) | Custom agent (e.g., `code-reviewer-coding-agent`) | Domain expertise with clean context boundary |
+
+### When NOT to Use Sub-Agents
+
+- **Single file reads** — use `view` directly (faster, no overhead)
+- **Simple single grep/glob** — use the tool directly
+- **When you need the result in your working context** — sub-agent results are summarized, not raw
+- **Trivial operations** — the overhead of spawning a sub-agent isn't justified for one-line commands
+
+### Context Rot Mitigation
+
+Sub-agents help combat context rot (degraded output quality as conversation grows) by:
+
+1. **Isolating research** — Searching, reading, and analyzing files in a sub-agent keeps those tokens out of your main context
+2. **Summarizing results** — Sub-agents return concise answers, not raw file contents
+3. **Parallel investigation** — Multiple `explore` sub-agents can search different aspects simultaneously
+4. **Preserving focus** — The parent agent maintains a clean context focused on its primary task
+
+**Rule of thumb**: If a task requires reading more than 3 files or involves multi-step investigation, delegate it to a sub-agent.
+
+### Cost and Billing
+
+Sub-agent costs vary by execution context:
+
+| Context | Billing Model | Sub-Agent Cost Impact |
+|---------|--------------|----------------------|
+| **Coding Agent** (GitHub cloud) | 1 premium request per session | Sub-agent calls are **included** in the parent session — no additional premium requests |
+| **VS Code Chat** (local) | Per-message billing | Each sub-agent invocation counts as additional message(s) based on the sub-agent's model multiplier |
+
+**Model override implications**: When a sub-agent uses a different model (via the `model` parameter on the `task` tool), the cost is determined by that model's premium multiplier. Use cheaper models (`explore` defaults to Haiku) for research and expensive models only when quality demands it.
+
+**Cost optimization tips**:
+- Use `explore` (Haiku model, low cost) for codebase questions before using heavier agents
+- Use `task` (Haiku model) for build/test runs where you only need pass/fail
+- Reserve `general-purpose` (Sonnet model) for complex multi-step work
+- In VS Code Chat, be mindful that sub-agents add to your message count
+
+---
+
 ## References
 - [GitHub Copilot: How to write a great agents.md](https://github.blog/ai-and-ml/github-copilot/how-to-write-a-great-agents-md-lessons-from-over-2500-repositories/)
 - [VS Code Copilot Custom Agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)

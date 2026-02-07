@@ -319,6 +319,23 @@ Context window size determines how much conversation history and documentation t
 - Comprehensive feature: ~120K tokens (spec + implementation + tests)
 - Full workflow review: ~150-180K tokens (all agent files + documentation)
 
+## Sub-Agent Billing and Cost
+
+Sub-agents (invoked via the `task` tool) run in their own context window. How they affect billing depends on the execution context:
+
+| Context | Parent Billing | Sub-Agent Billing | Net Effect |
+|---------|---------------|-------------------|------------|
+| **Coding Agent** (GitHub cloud) | 1 premium request/session | Included in parent session | No additional cost |
+| **VS Code Chat** (local) | Per message | Per message (sub-agent's model multiplier) | Adds to message count |
+
+**Key points**:
+- In **Coding Agent sessions**, sub-agent calls are free — use them liberally for research and isolated tasks
+- In **VS Code Chat**, each sub-agent invocation is billed separately. Prefer low-cost models for sub-agents:
+  - `explore` agent uses Haiku (0.33x) — ideal for codebase research
+  - `task` agent uses Haiku (0.33x) — ideal for build/test runs
+  - `general-purpose` agent uses Sonnet (1x) — use only when needed
+- **Model override**: The `task` tool's `model` parameter lets you override the sub-agent's default model. The overridden model's multiplier applies to billing.
+
 ## Model Selection Guidelines
 
 ### By Agent Type

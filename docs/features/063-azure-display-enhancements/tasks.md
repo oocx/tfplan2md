@@ -53,11 +53,11 @@ Create the `AzureEntityMapper` to resolve subscription, management group, and te
 Extend `AzureRoleDefinitionMapper` to support custom role overrides and implement `RoleDefinitionFormatter` to display role names for role attributes.
 
 **Acceptance Criteria:**
-- [ ] `AzureRoleDefinitionMapper.MergeCustomRoles` implemented to merge mappings from the JSON file.
-- [ ] Custom roles can override built-in roles (TC-08).
-- [ ] `RoleDefinitionFormatter` implemented to match `role_definition_id` and `role_definition_resource_id` attributes.
-- [ ] `AzureRMModule` registers `RoleDefinitionFormatter` in `RegisterValueFormatters`.
-- [ ] TC-06, TC-07, and TC-12 pass.
+- [x] `AzureRoleDefinitionMapper.MergeCustomRoles` implemented to merge mappings from the JSON file.
+- [x] Custom roles can override built-in roles (TC-08).
+- [x] `RoleDefinitionFormatter` implemented to match `role_definition_id` and `role_definition_resource_id` attributes.
+- [x] `AzureRMModule` registers `RoleDefinitionFormatter` in `RegisterValueFormatters`.
+- [x] TC-06, TC-07, and TC-12 pass.
 
 **Dependencies:** Task 1
 

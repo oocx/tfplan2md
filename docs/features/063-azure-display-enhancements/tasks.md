@@ -16,12 +16,12 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Update the mapping file models to support the new sections (subscriptions, managementGroups, tenants, roles) using the array-of-objects format. Implement `AzureMappingFileLoader` and refactor `PrincipalMapper` to accept pre-parsed data.
 
 **Acceptance Criteria:**
-- [ ] `MappingEntry` record created for `id`/`displayName` pairs.
-- [ ] `PrincipalMappingFile` model updated with new sections (backward compatible).
-- [ ] `AzureMappingFileLoader` implemented to load and parse the unified JSON file.
-- [ ] `PrincipalMapper` refactored to take `IReadOnlyDictionary<string, string>` principals and `IReadOnlyDictionary<string, string>` types.
-- [ ] TC-15 and TC-16 (Unit tests for backward compatibility and new section parsing) pass.
-- [ ] `DiagnosticContext` updated with new counters for mapping statistics.
+- [x] `MappingEntry` record created for `id`/`displayName` pairs.
+- [x] `PrincipalMappingFile` model updated with new sections (backward compatible).
+- [x] `AzureMappingFileLoader` implemented to load and parse the unified JSON file.
+- [x] `PrincipalMapper` refactored to take `IReadOnlyDictionary<string, string>` principals and `IReadOnlyDictionary<string, string>` types.
+- [x] TC-15 and TC-16 (Unit tests for backward compatibility and new section parsing) pass.
+- [x] `DiagnosticContext` updated with new counters for mapping statistics.
 
 **Dependencies:** None
 

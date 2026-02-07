@@ -1,0 +1,8 @@
+{
+  "rules": [
+    {
+      "attributeNamePattern": "^name$",
+      "icon": "X"
+    }
+  ]
+}

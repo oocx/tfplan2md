@@ -492,16 +492,4 @@ public static partial class ScribanHelpers
         return iconProviderRegistry.TryGetIcon(context);
     }
 
-    /// <summary>
-    /// Resolves a registry icon for use in templates.
-    /// </summary>
-    /// <param name="providerName">The provider name.</param>
-    /// <param name="resourceType">The resource type.</param>
-    /// <param name="attributeName">The attribute name.</param>
-    /// <param name="value">The raw value.</param>
-    /// <returns>The icon string or an empty string if none.</returns>
-    public static string GetIcon(string? providerName, string? resourceType, string? attributeName, string? value)
-    {
-        return GetIconWithRegistry(providerName, resourceType, attributeName, value, null);
-    }
 }

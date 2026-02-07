@@ -49,27 +49,12 @@
     <EmbeddedResource Include="Providers/AzureAD/Templates/**/*.sbn" />
     <EmbeddedResource Include="Providers/AzureDevOps/Templates/**/*.sbn" />
     <EmbeddedResource Include="Providers/AzureRM/Templates/**/*.sbn" />
+    <EmbeddedResource Include="Providers/AzApi/Icons/*.json" />
+    <EmbeddedResource Include="Providers/AzureAD/Icons/*.json" />
+    <EmbeddedResource Include="Providers/AzureDevOps/Icons/*.json" />
+    <EmbeddedResource Include="Providers/AzureRM/Icons/*.json" />
     <EmbeddedResource Include="Platforms/Azure/AzureRoleDefinitions.json" />
     <EmbeddedResource Include="Providers/AzApi/Data/AzureApiDocumentationMappings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Providers/AzureRM/Icons/*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="Providers/AzApi/Icons/*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="Providers/AzureAD/Icons/*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="Providers/AzureDevOps/Icons/*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>icons/%(Filename)%(Extension)</TargetPath>
-    </Content>
   </ItemGroup>
 
 </Project>

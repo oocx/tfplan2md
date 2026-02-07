@@ -29,4 +29,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\IconRules\*.json" LogicalName="Oocx.TfPlan2Md.TUnit.TestData.IconRules.%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

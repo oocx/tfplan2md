@@ -1,5 +1,4 @@
-using System;
-using System.IO;
+using System.Reflection;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using TUnit.Core;
@@ -18,22 +17,12 @@ public class FileBasedIconProviderTests
     [Test]
     public void FileBasedIconProvider_LoadsRulesAndResolvesIcon()
     {
-        var json = "{\"rules\":[{\"attributeNamePattern\":\"^name$\",\"icon\":\"X\"}]}";
-        var filePath = WriteTempFile(json);
+        var provider = CreateProvider("valid-icons.json");
+        var context = new ServiceResolutionContext("provider", "resource", "name", "value");
 
-        try
-        {
-            var provider = new FileBasedIconProvider(filePath);
-            var context = new ServiceResolutionContext("provider", "resource", "name", "value");
+        var icon = provider.TryGetIcon(context);
 
-            var icon = provider.TryGetIcon(context);
-
-            icon.Should().Be("X");
-        }
-        finally
-        {
-            File.Delete(filePath);
-        }
+        icon.Should().Be("X");
     }
 
     /// <summary>
@@ -42,20 +31,10 @@ public class FileBasedIconProviderTests
     [Test]
     public void FileBasedIconProvider_InvalidJson_ThrowsServiceRegistrationException()
     {
-        var json = "not-json";
-        var filePath = WriteTempFile(json);
+        var action = () => CreateProvider("invalid-json.json");
 
-        try
-        {
-            var action = () => new FileBasedIconProvider(filePath);
-
-            action.Should().Throw<ServiceRegistrationException>()
-                .WithMessage("*Failed to load icon rules*");
-        }
-        finally
-        {
-            File.Delete(filePath);
-        }
+        action.Should().Throw<ServiceRegistrationException>()
+            .WithMessage("*Failed to load icon rules from embedded resource*");
     }
 
     /// <summary>
@@ -64,34 +43,34 @@ public class FileBasedIconProviderTests
     [Test]
     public void FileBasedIconProvider_InvalidRegex_ThrowsServiceRegistrationException()
     {
-        var json = "{\"rules\":[{\"attributeNamePattern\":\"[[\",\"icon\":\"X\"}]}";
-        var filePath = WriteTempFile(json);
+        var action = () => CreateProvider("invalid-regex.json");
 
-        try
-        {
-            var action = () => new FileBasedIconProvider(filePath);
-
-            action.Should().Throw<ServiceRegistrationException>()
-                .WithMessage("*Invalid attribute name regex pattern*");
-        }
-        finally
-        {
-            File.Delete(filePath);
-        }
+        action.Should().Throw<ServiceRegistrationException>()
+            .WithMessage("*Invalid attribute name regex pattern*");
     }
 
     /// <summary>
-    /// Writes JSON to a temporary file for testing.
+    /// Creates an icon provider backed by a test embedded resource.
     /// </summary>
-    /// <param name="content">The JSON content to write.</param>
-    /// <returns>The temporary file path.</returns>
-    private static string WriteTempFile(string content)
+    /// <param name="resourceFileName">The file name of the embedded resource.</param>
+    /// <returns>The initialized icon provider.</returns>
+    private static FileBasedIconProvider CreateProvider(string resourceFileName)
     {
-        var baseDirectory = Path.Combine(AppContext.BaseDirectory, "tmp");
-        Directory.CreateDirectory(baseDirectory);
+        var assembly = typeof(FileBasedIconProviderTests).Assembly;
+        var resourceName = BuildResourceName(assembly, resourceFileName);
 
-        var filePath = Path.Combine(baseDirectory, $"icon-rules-{Guid.NewGuid():N}.json");
-        File.WriteAllText(filePath, content);
-        return filePath;
+        return new FileBasedIconProvider(resourceName, assembly);
+    }
+
+    /// <summary>
+    /// Builds the embedded resource name for icon rule test data.
+    /// </summary>
+    /// <param name="assembly">The assembly containing the resources.</param>
+    /// <param name="resourceFileName">The resource file name.</param>
+    /// <returns>The fully qualified resource name.</returns>
+    private static string BuildResourceName(Assembly assembly, string resourceFileName)
+    {
+        var baseName = assembly.GetName().Name ?? "Oocx.TfPlan2Md.TUnit";
+        return $"{baseName}.TestData.IconRules.{resourceFileName}";
     }
 }

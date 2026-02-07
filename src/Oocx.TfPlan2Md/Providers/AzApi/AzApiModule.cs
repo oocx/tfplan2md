@@ -1,4 +1,3 @@
-using System.IO;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
@@ -58,7 +57,7 @@ internal sealed class AzApiModule : IProviderModule
     /// <param name="registry">The icon provider registry to register with.</param>
     public void RegisterIconProviders(IconProviderRegistry registry)
     {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "icons", "azapi-icons.json");
-        registry.Register(new MatchPattern("(^azapi$|.*/azapi$)", null, null, null), new FileBasedIconProvider(filePath));
+        var resourceName = "Oocx.TfPlan2Md.Providers.AzApi.Icons.azapi-icons.json";
+        registry.Register(new MatchPattern("(^azapi$|.*/azapi$)", null, null, null), new FileBasedIconProvider(resourceName));
     }
 }

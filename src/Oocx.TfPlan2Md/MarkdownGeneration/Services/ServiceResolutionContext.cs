@@ -6,7 +6,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 /// <remarks>
 /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
 /// </remarks>
-internal sealed class ServiceResolutionContext
+internal sealed record ServiceResolutionContext
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ServiceResolutionContext"/> class.

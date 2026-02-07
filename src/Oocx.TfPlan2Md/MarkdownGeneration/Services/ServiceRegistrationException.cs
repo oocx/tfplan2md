@@ -8,7 +8,11 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 /// <remarks>
 /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
 /// </remarks>
-public sealed class ServiceRegistrationException : Exception
+// SonarAnalyzer S3871: Exception is intentionally internal
+// Justification: registration errors are internal to the rendering pipeline
+#pragma warning disable S3871 // Exception types should be "public"
+internal sealed class ServiceRegistrationException : Exception
+#pragma warning restore S3871
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ServiceRegistrationException"/> class.

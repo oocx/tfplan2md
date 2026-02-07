@@ -117,6 +117,41 @@ public class MarkdownSnapshotTests
     }
 
     /// <summary>
+    /// Verifies Azure display enhancements rendering matches the approved snapshot.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureDisplayEnhancements_MatchesBaseline()
+    {
+        var json = File.ReadAllText("TestData/azure-display-enhancements.json");
+        var plan = _parser.Parse(json);
+
+        var mappingResult = AzureMappingFileLoader.Load("TestData/azure-mappings-extended.json", diagnosticContext: null);
+        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles, diagnosticContext: null);
+
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext: null);
+        var entityMapper = new AzureEntityMapper(
+            mappingResult.Subscriptions,
+            mappingResult.ManagementGroups,
+            mappingResult.Tenants,
+            diagnosticContext: null);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
+
+        var model = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+
+        var markdown = renderer.Render(model);
+
+        SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, "azure-display-enhancements.md");
+        SnapshotTestAssertions.AssertMatchesSnapshot("azure-display-enhancements.md", markdown);
+    }
+
+    /// <summary>
     /// Verifies firewall rule rendering matches the approved snapshot.
     /// </summary>
     [Test]
@@ -179,12 +214,15 @@ public class MarkdownSnapshotTests
     /// <summary>
     /// Creates a ProviderRegistry with AzureRM module for testing.
     /// </summary>
-    private static ProviderRegistry CreateProviderRegistry(IPrincipalMapper? principalMapper = null)
+    private static ProviderRegistry CreateProviderRegistry(
+        IPrincipalMapper? principalMapper = null,
+        EnrichedAzureScopeFormatter? scopeFormatter = null)
     {
         var registry = new ProviderRegistry();
         registry.RegisterProvider(new AzureRMModule(
             largeValueFormat: LargeValueFormat.InlineDiff,
-            principalMapper: principalMapper ?? new NullPrincipalMapper()));
+            principalMapper: principalMapper ?? new NullPrincipalMapper(),
+            scopeFormatter: scopeFormatter));
         return registry;
     }
 }

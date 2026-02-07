@@ -150,8 +150,8 @@ Update project documentation with the new mapping format and provide Azure CLI c
 Create snapshots and demo artifacts for the new rendering.
 
 **Acceptance Criteria:**
-- [ ] New test data `azure-display-enhancements.json` and `azure-mappings-extended.json` created.
-- [ ] Snapshots updated to reflect new formatting.
+- [x] New test data `azure-display-enhancements.json` and `azure-mappings-extended.json` created.
+- [x] Snapshots updated to reflect new formatting.
 - [ ] `uat-test-plan.md` scenarios verified via `scripts/uat-run.sh` (or manual PR review if scripts not yet available for these resources).
 
 **Dependencies:** All implementation tasks

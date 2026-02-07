@@ -1,0 +1,70 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_private_dns_a_record.demo",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_private_dns_a_record",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "record1",
+          "zone_name": "contoso.local",
+          "ttl": 3600,
+          "records": ["10.0.0.4"]
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_pim_eligible_role_assignment.demo",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_pim_eligible_role_assignment",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "scope": "/subscriptions/sub-123/resourceGroups/rg-app",
+          "role_definition_id": "/subscriptions/sub-123/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principal_id": "00000000-0000-0000-0000-000000000001",
+          "principal_type": "User"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_role_management_policy.demo",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_role_management_policy",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "scope": "/providers/Microsoft.Management/managementGroups/mg-root",
+          "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+        },
+        "after": {
+          "scope": "/providers/Microsoft.Management/managementGroups/mg-root",
+          "role_definition_id": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

@@ -103,9 +103,9 @@ Implement `ViewModelFactory` classes for PIM assignments and role management pol
 Improve failure tracking in `DiagnosticContext` and ensure raw ID fallback works correctly.
 
 **Acceptance Criteria:**
-- [ ] `DiagnosticContext` tracks failed resolutions with context (referencing resource) (TC-14).
-- [ ] All mappers correctly fall back to raw IDs when no mapping is found (TC-13).
-- [ ] Debug output reflects the new mapping stats and failure details.
+- [x] `DiagnosticContext` tracks failed resolutions with context (referencing resource) (TC-14).
+- [x] All mappers correctly fall back to raw IDs when no mapping is found (TC-13).
+- [x] Debug output reflects the new mapping stats and failure details.
 
 **Dependencies:** Tasks 1, 2, 3
 

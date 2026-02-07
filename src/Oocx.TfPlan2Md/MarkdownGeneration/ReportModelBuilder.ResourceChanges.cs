@@ -53,7 +53,10 @@ internal partial class ReportModelBuilder
             factory.ApplyViewModel(model, rc, action, attributeChanges, _principalMapper, _iconProviderRegistry);
         }
 
-        model.Summary = _summaryBuilder.BuildSummary(model);
+        if (string.IsNullOrWhiteSpace(model.Summary))
+        {
+            model.Summary = _summaryBuilder.BuildSummary(model);
+        }
         if (string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))
         {
             model.ChangedAttributesSummary = BuildChangedAttributesSummary(model.AttributeChanges, model.Action);

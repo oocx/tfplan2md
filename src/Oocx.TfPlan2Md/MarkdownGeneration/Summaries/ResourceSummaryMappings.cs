@@ -51,7 +51,6 @@ internal static class ResourceSummaryMappings
         ["azurerm_service_plan"] = ["name", "resource_group_name", "location", "os_type", "sku_name"],
         ["azurerm_dns_zone"] = ["name", "resource_group_name"],
         ["azurerm_private_dns_zone"] = ["name", "resource_group_name"],
-        ["azurerm_private_dns_a_record"] = ["name", "zone_name"],
         ["azurerm_lb"] = ["name", "resource_group_name", "location", "sku"],
         ["azurerm_application_gateway"] = ["name", "resource_group_name", "location", "sku"],
         ["azurerm_firewall"] = ["name", "resource_group_name", "location", "sku_name"],

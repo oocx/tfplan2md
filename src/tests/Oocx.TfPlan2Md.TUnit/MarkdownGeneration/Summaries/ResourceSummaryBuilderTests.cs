@@ -53,20 +53,6 @@ public class ResourceSummaryBuilderTests
     }
 
     [Test]
-    public void BuildSummary_Create_PrivateDnsARecord_ShowsFqdn()
-    {
-        var change = CreateChange(
-            type: "azurerm_private_dns_a_record",
-            action: "create",
-            afterJson: "{ \"name\": \"record1\", \"zone_name\": \"contoso.local\" }"
-        );
-
-        var summary = _builder.BuildSummary(change);
-
-        summary.Should().Be("`record1.contoso.local`");
-    }
-
-    [Test]
     public void BuildSummary_Update_WithFewChanges_ListsAll()
     {
         var change = CreateChange(

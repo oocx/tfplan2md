@@ -16,6 +16,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class ReportModelBuilderSummaryTests
 {
     private const string Nbsp = "\u00A0";
+    private const string CreateAction = "create";
 
     [Test]
     public void Build_PopulatesSummaryAndReplacePaths()
@@ -52,7 +53,7 @@ public class ReportModelBuilderSummaryTests
         update.ChangedAttributesSummary.Should().Contain("🔧");
         update.SummaryHtml.Should().StartWith($"{update.ActionSymbol}{Nbsp}{update.Type} <b><code>{update.Name}</code></b>");
 
-        var createWithTags = model.Changes.First(c => c.Action == "create" && c.TagsBadges is not null);
+        var createWithTags = model.Changes.First(c => c.Action == CreateAction && c.TagsBadges is not null);
         createWithTags.TagsBadges.Should().Contain("🏷️");
         createWithTags.TagsBadges.Should().Contain("environment: production");
     }
@@ -110,7 +111,7 @@ public class ReportModelBuilderSummaryTests
         var model = builder.Build(plan);
 
         // Assert
-        var createWithoutTags = model.Changes.First(c => c.Action == "create" && c.TagsBadges is null && c.Type == "azuredevops_project");
+        var createWithoutTags = model.Changes.First(c => c.Action == CreateAction && c.TagsBadges is null && c.Type == "azuredevops_project");
         createWithoutTags.TagsBadges.Should().BeNull();
     }
 
@@ -140,7 +141,7 @@ public class ReportModelBuilderSummaryTests
     {
         var afterDocument = JsonDocument.Parse("{\"subscription_id\":\"sub-123\",\"subscription\":\"Production\"}");
         var change = new Change(
-            ["create"],
+            [CreateAction],
             null,
             afterDocument.RootElement,
             null,
@@ -174,7 +175,7 @@ public class ReportModelBuilderSummaryTests
     {
         var afterDocument = JsonDocument.Parse("{\"name\":\"example\"}");
         var change = new Change(
-            ["create"],
+            [CreateAction],
             null,
             afterDocument.RootElement,
             null,
@@ -204,6 +205,44 @@ public class ReportModelBuilderSummaryTests
         model.Changes.Single().SummaryHtml.Should().Be(SummaryOverrideFactory.OverrideSummaryHtml);
     }
 
+    /// <summary>
+    /// Verifies that provider factories can override Summary before the generic builder runs.
+    /// </summary>
+    [Test]
+    public void Build_Summary_RespectsFactoryOverride()
+    {
+        var afterDocument = JsonDocument.Parse("{\"name\":\"example\"}");
+        var change = new Change(
+            ["create"],
+            null,
+            afterDocument.RootElement,
+            null,
+            null,
+            null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "custom_resource.example",
+                    null,
+                    "managed",
+                    "custom_resource",
+                    "example",
+                    "custom",
+                    change)
+            });
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new SummaryOverrideProviderModule());
+        var builder = new ReportModelBuilder(providerRegistry: providerRegistry);
+
+        var model = builder.Build(plan);
+
+        model.Changes.Should().ContainSingle();
+        model.Changes.Single().Summary.Should().Be(SummaryOverrideFactory.OverrideSummary);
+    }
+
     private sealed class SummaryOverrideProviderModule : IProviderModule
     {
         public string ProviderName => "custom";
@@ -222,6 +261,11 @@ public class ReportModelBuilderSummaryTests
 
     private sealed class SummaryOverrideFactory : IResourceViewModelFactory
     {
+        /// <summary>
+        /// Summary text override used by tests.
+        /// </summary>
+        public const string OverrideSummary = "`factory-summary`";
+
         public const string OverrideSummaryHtml = "<code>factory-summary</code>";
 
         public void ApplyViewModel(
@@ -234,6 +278,10 @@ public class ReportModelBuilderSummaryTests
         {
             _ = principalMapper;
             _ = iconProviderRegistry;
+            _ = resourceChange;
+            _ = action;
+            _ = attributeChanges;
+            model.Summary = OverrideSummary;
             model.SummaryHtml = OverrideSummaryHtml;
         }
     }

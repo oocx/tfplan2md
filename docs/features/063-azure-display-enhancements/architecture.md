@@ -87,19 +87,19 @@ Reference: [specification.md](specification.md)
    - Pros: Centralized, simple for DNS records
    - Cons: Summary builder grows with external dependencies (mappers); PIM and role management policy need role/principal/scope resolution
 
-2. **Use the ViewModelFactory pattern** (like `RoleAssignmentFactory`) for PIM and role management policy; extend `ResourceSummaryMappings` for DNS records.
-   - Pros: DNS records fit the simple mapping pattern; PIM and role management policy get dedicated factories with pre-resolved data, matching the established `RoleAssignmentFactory` precedent
-   - Cons: Two mechanisms for different resource types
+2. **Use the ViewModelFactory pattern** (like `RoleAssignmentFactory`) for all three resource types.
+   - Pros: Keeps provider-specific summary logic out of the generic builder; matches the established `RoleAssignmentFactory` precedent for Azure-specific summaries
+   - Cons: One more factory registration to maintain
 
 3. **Create per-resource summary builders** implementing `IResourceSummaryBuilder`.
    - Pros: Maximum flexibility
    - Cons: Departure from existing patterns; more interfaces to manage
 
-**Decision:** Option 2 — mixed approach.
+**Decision:** Option 2 — ViewModelFactory approach for all resource-specific summaries.
 
 **Rationale:**
-- **`azurerm_private_dns_a_record`**: Simple attribute concatenation (`name` + `zone_name`). Add to `ResourceSummaryMappings` and add a custom `GetDisplayName` override in `ResourceSummaryBuilder` that concatenates them as `{name}.{zone_name}`.
-- **`azurerm_pim_eligible_role_assignment`** and **`azurerm_role_management_policy`**: These need external dependencies (role mapper, principal mapper, scope formatter) to produce summaries like "Assign `Contributor` to `Jane Doe`". Following the `RoleAssignmentFactory` pattern, create `ViewModelFactory` classes registered in `AzureRMModule.RegisterFactories()` that pre-resolve display data and set the summary on the view model. This is the established pattern for complex Azure resources.
+- **`azurerm_private_dns_a_record`**: Still a simple attribute concatenation (`name` + `zone_name`), but keeping it in a provider-specific factory avoids provider logic in the generic summary builder. The factory sets the summary text and summary HTML to the fully qualified name (`{name}.{zone_name}`).
+- **`azurerm_pim_eligible_role_assignment`** and **`azurerm_role_management_policy`**: These need external dependencies (role mapper, principal mapper, scope formatter) to produce summaries like "Assign `Contributor` to `Jane Doe`". Following the `RoleAssignmentFactory` pattern, create `ViewModelFactory` classes registered in `AzureRMModule.RegisterFactories()` that pre-resolve display data and set the summary on the view model. This is the established pattern for Azure-specific summaries.
 
 ## Implementation Notes
 
@@ -121,9 +121,8 @@ Reference: [specification.md](specification.md)
 | `PrincipalMapper` | Extract file-loading logic to `AzureMappingFileLoader`. Constructor accepts pre-parsed principal data instead of a file path. |
 | `AzureRoleDefinitionMapper` | Add a method to merge custom role definitions from the mapping file. Custom roles override built-in names when both exist for the same GUID. |
 | `AzureResourceIdFormatter` | Use `EnrichedAzureScopeFormatter` (when available) instead of calling `AzureScopeParser.ParseScope()` directly. |
-| `AzureRMModule` | Register new `ViewModelFactory` instances for `azurerm_pim_eligible_role_assignment` and `azurerm_role_management_policy`. Register the `RoleDefinitionFormatter` as a value formatter. |
-| `ResourceSummaryMappings` | Add entry for `azurerm_private_dns_a_record` with keys `["name", "zone_name"]`. |
-| `ResourceSummaryBuilder` | Add special-case display name logic for `azurerm_private_dns_a_record` that joins name + zone_name with `.` separator. |
+| `AzureRMModule` | Register new `ViewModelFactory` instances for `azurerm_private_dns_a_record`, `azurerm_pim_eligible_role_assignment`, and `azurerm_role_management_policy`. Register the `RoleDefinitionFormatter` as a value formatter. |
+| `ReportModelBuilder` | Respect provider factory overrides for `Summary` before falling back to `ResourceSummaryBuilder`. |
 | `DiagnosticContext` | Add counters for subscriptions, management groups, tenants, and custom roles. Extend `FailedResolution` tracking to cover all entity types (not just principals). |
 | `ProgramEntry` | Wire up `AzureMappingFileLoader` → individual mappers → pass to modules. |
 
@@ -132,6 +131,7 @@ Reference: [specification.md](specification.md)
 | Class | Purpose |
 |-------|---------|
 | `RoleDefinitionFormatter` | `IValueFormatter` matching attribute names `role_definition_id` (and `role_definition_resource_id`). Calls `AzureRoleDefinitionMapper.GetRoleDefinition()` to produce readable names. |
+| `AzureRMPrivateDnsARecordFactory` | `IResourceViewModelFactory` for `azurerm_private_dns_a_record`. Builds the FQDN summary (`name.zone_name`) and sets Summary/SummaryHtml. |
 | `PimEligibleRoleAssignmentFactory` | `IResourceViewModelFactory` for `azurerm_pim_eligible_role_assignment`. Resolves role name and principal name to produce "Assign `<role>` to `<principal>`" summary. |
 | `RoleManagementPolicyFactory` | `IResourceViewModelFactory` for `azurerm_role_management_policy`. Resolves role name and scope display name to produce "`<role>` in `<scope>`" summary. |
 

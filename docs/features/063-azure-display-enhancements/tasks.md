@@ -71,8 +71,8 @@ Extend `AzureRoleDefinitionMapper` to support custom role overrides and implemen
 Implement the enhanced summary for `azurerm_private_dns_a_record`.
 
 **Acceptance Criteria:**
-- [x] `ResourceSummaryMappings` updated with `azurerm_private_dns_a_record` keys (`name`, `zone_name`).
-- [x] `ResourceSummaryBuilder` updated with special-case logic to join names with `.` (TC-09).
+- [x] `AzureRMPrivateDnsARecordFactory` implemented to build the FQDN summary (`name.zone_name`).
+- [x] `AzureRMModule` registers the new factory for `azurerm_private_dns_a_record` (TC-09).
 
 **Dependencies:** None
 

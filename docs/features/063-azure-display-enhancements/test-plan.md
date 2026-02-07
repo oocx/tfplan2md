@@ -18,7 +18,7 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 | Built-in Azure Role recognition by GUID | TC-06 | Unit |
 | Custom Role resolution from mapping | TC-07 | Unit |
 | Custom Role override of built-in roles | TC-08 | Unit |
-| `azurerm_private_dns_a_record` summary (`name.zone`) | TC-09 | Snapshot |
+| `azurerm_private_dns_a_record` summary (`name.zone`) | TC-09 | Unit |
 | `azurerm_pim_eligible_role_assignment` summary | TC-10 | Snapshot |
 | `azurerm_role_management_policy` summary | TC-11 | Snapshot |
 | `role_definition_id` attribute display | TC-12 | Unit |
@@ -158,12 +158,12 @@ Verify that if the `Owner` GUID is provided in the `roles` mapping with a differ
 
 ---
 
-### TC-09: ResourceSummaryBuilder_PrivateDnsARecord_ShowsFqdn
+### TC-09: AzureRMPrivateDnsARecordFactory_Summary_ShowsFqdn
 
-**Type:** Snapshot
+**Type:** Unit
 
 **Description:**
-Verify `azurerm_private_dns_a_record` summary shows `name.zone_name`.
+Verify the AzureRM private DNS A record factory produces summaries using `name.zone_name`.
 
 ---
 

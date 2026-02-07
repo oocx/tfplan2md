@@ -21,9 +21,19 @@ internal static class VariableGroupFormatters
     private const string AddedChange = "add";
 
     /// <summary>
+    /// Icon used for added variables.
+    /// </summary>
+    private const string AddedIcon = "➕";
+
+    /// <summary>
     /// Change label used for removed variables.
     /// </summary>
     private const string RemovedChange = "remove";
+
+    /// <summary>
+    /// Icon used for removed variables.
+    /// </summary>
+    private const string RemovedIcon = "❌";
 
     /// <summary>
     /// Change label used for unchanged variables.
@@ -31,9 +41,19 @@ internal static class VariableGroupFormatters
     private const string UnchangedChange = "unchanged";
 
     /// <summary>
+    /// Icon used for unchanged variables.
+    /// </summary>
+    private const string UnchangedIcon = "⏺️";
+
+    /// <summary>
     /// Change label used for modified variables.
     /// </summary>
     private const string ModifiedChange = "update";
+
+    /// <summary>
+    /// Icon used for modified variables.
+    /// </summary>
+    private const string ModifiedIcon = "🔄";
 
     /// <summary>
     /// Formats variable values for create/delete tables.
@@ -67,6 +87,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = AddedChange,
+            ChangeIcon = AddedIcon,
             Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
@@ -86,6 +107,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = RemovedChange,
+            ChangeIcon = RemovedIcon,
             Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
@@ -105,6 +127,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = UnchangedChange,
+            ChangeIcon = UnchangedIcon,
             Name = $"`{EscapeMarkdown(variable.Name)}`",
             Value = FormatVariableValue(variable),
             Enabled = FormatEnabled(variable.Enabled),
@@ -136,6 +159,7 @@ internal static class VariableGroupFormatters
         return new VariableChangeRowViewModel
         {
             Change = ModifiedChange,
+            ChangeIcon = ModifiedIcon,
             Name = $"`{EscapeMarkdown(after.Name)}`",
             Value = valueDisplay,
             Enabled = FormatEnabledDiff(before.Enabled, after.Enabled, format),

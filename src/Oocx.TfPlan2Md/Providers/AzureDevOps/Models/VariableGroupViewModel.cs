@@ -55,6 +55,11 @@ public sealed class VariableChangeRowViewModel
     public required string Change { get; init; }
 
     /// <summary>
+    /// Gets the icon representing the change type.
+    /// </summary>
+    public required string ChangeIcon { get; init; }
+
+    /// <summary>
     /// Gets the formatted variable name.
     /// </summary>
     public required string Name { get; init; }

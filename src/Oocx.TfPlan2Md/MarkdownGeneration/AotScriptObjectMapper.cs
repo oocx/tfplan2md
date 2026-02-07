@@ -644,6 +644,7 @@ internal static class AotScriptObjectMapper
     {
         var obj = new ScriptObject();
         obj["change"] = variable.Change;
+        obj["change_icon"] = variable.ChangeIcon;
         obj["name"] = variable.Name;
         obj["value"] = variable.Value;
         obj["enabled"] = variable.Enabled;

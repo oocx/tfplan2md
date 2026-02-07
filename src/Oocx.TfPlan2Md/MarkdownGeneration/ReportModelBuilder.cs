@@ -18,7 +18,6 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <param name="hideMetadata">Whether the metadata line should be suppressed in the rendered report.</param>
 /// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
 /// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
-/// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
 /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
@@ -34,7 +33,6 @@ internal partial class ReportModelBuilder(
     bool hideMetadata = false,
     Providers.ProviderRegistry? providerRegistry = null,
     CodeAnalysisInput? codeAnalysisInput = null,
-    MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
     MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
 {
     /// <summary>
@@ -73,11 +71,6 @@ internal partial class ReportModelBuilder(
     private readonly CodeAnalysisInput? _codeAnalysisInput = codeAnalysisInput;
 
     /// <summary>
-    /// Registry for value formatter services.
-    /// </summary>
-    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry = valueFormatterRegistry;
-
-    /// <summary>
     /// Registry for icon provider services.
     /// </summary>
     private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry =
@@ -87,15 +80,6 @@ internal partial class ReportModelBuilder(
     /// Mapper for resolving Azure principal names.
     /// </summary>
     private readonly IPrincipalMapper _principalMapper = principalMapper ?? new NullPrincipalMapper();
-
-    /// <summary>
-    /// Ensures service registries are accessed so they remain wired for later use.
-    /// </summary>
-    private void EnsureServiceRegistriesInitialized()
-    {
-        _ = _valueFormatterRegistry;
-        _ = _iconProviderRegistry;
-    }
 
     /// <summary>
     /// Registry for resource-specific view model factories.

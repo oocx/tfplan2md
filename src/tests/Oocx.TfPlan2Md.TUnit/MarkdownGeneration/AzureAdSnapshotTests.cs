@@ -50,7 +50,6 @@ public class AzureAdSnapshotTests
             principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
-            valueFormatterRegistry: valueFormatterRegistry,
             iconProviderRegistry: iconProviderRegistry).Build(plan);
         var renderer = new MarkdownRenderer(
             principalMapper: principalMapper,

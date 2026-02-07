@@ -93,7 +93,7 @@ Update `ScribanHelpers` to use the new registries before falling back to existin
 - [x] `ScribanHelpers.Registry` updated to accept and store the new registries.
 - [x] `format_value` helper updated to try `ValueFormatterRegistry` first.
 - [x] `format_attribute_value_*` and related icon helpers updated to try `IconProviderRegistry` first.
-- [x] New `get_icon` helper introduced for explicit icon resolution in templates.
+- [x] New `get_icon` helper introduced for explicit icon resolution in templates (removed in Task 8d).
 
 **Dependencies:** Task 4
 

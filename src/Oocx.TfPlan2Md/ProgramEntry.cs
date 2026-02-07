@@ -177,7 +177,6 @@ internal static class ProgramEntry
             hideMetadata: options.HideMetadata,
             providerRegistry: providerRegistry,
             codeAnalysisInput: codeAnalysisInput,
-            valueFormatterRegistry: valueFormatterRegistry,
             iconProviderRegistry: iconProviderRegistry);
         var model = modelBuilder.Build(plan);
 

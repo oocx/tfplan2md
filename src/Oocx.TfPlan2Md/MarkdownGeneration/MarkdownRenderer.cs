@@ -34,15 +34,6 @@ internal class MarkdownRenderer
     private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry;
 
     /// <summary>
-    /// Ensures service registries are accessed so they remain wired for later use.
-    /// </summary>
-    private void EnsureServiceRegistriesInitialized()
-    {
-        _ = _valueFormatterRegistry;
-        _ = _iconProviderRegistry;
-    }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
     /// </summary>
     /// <param name="principalMapper">Optional principal mapper for resolving principal names.</param>
@@ -109,7 +100,6 @@ internal class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model)
     {
-        EnsureServiceRegistriesInitialized();
         var defaultTemplate = LoadTemplate("default");
 
         // Record template resolution for main template
@@ -128,7 +118,6 @@ internal class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public string Render(ReportModel model, string templateNameOrPath)
     {
-        EnsureServiceRegistriesInitialized();
         var templateText = ResolveTemplateText(templateNameOrPath);
 
         // Record template resolution for main template
@@ -188,7 +177,6 @@ internal class MarkdownRenderer
     /// <returns>The rendered Markdown string.</returns>
     public async Task<string> RenderAsync(ReportModel model, string templatePath, CancellationToken cancellationToken = default)
     {
-        EnsureServiceRegistriesInitialized();
         var templateText = await ResolveTemplateTextAsync(templatePath, cancellationToken);
 
         // Record template resolution for main template

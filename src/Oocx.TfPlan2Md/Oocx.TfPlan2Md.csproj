@@ -50,6 +50,7 @@
     <EmbeddedResource Include="Providers/AzureDevOps/Templates/**/*.sbn" />
     <EmbeddedResource Include="Providers/AzureRM/Templates/**/*.sbn" />
     <EmbeddedResource Include="Providers/AzApi/Icons/*.json" />
+    <EmbeddedResource Include="Providers/Shared/Icons/*.json" />
     <EmbeddedResource Include="Providers/AzureAD/Icons/*.json" />
     <EmbeddedResource Include="Providers/AzureDevOps/Icons/*.json" />
     <EmbeddedResource Include="Providers/AzureRM/Icons/*.json" />

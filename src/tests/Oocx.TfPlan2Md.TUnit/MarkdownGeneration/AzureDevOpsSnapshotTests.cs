@@ -47,7 +47,6 @@ public class AzureDevOpsSnapshotTests
         var model = new ReportModelBuilder(
             metadataProvider: TestMetadataProvider.Instance,
             providerRegistry: providerRegistry,
-            valueFormatterRegistry: valueFormatterRegistry,
             iconProviderRegistry: iconProviderRegistry).Build(plan);
         var renderer = new MarkdownRenderer(
             providerRegistry: providerRegistry,

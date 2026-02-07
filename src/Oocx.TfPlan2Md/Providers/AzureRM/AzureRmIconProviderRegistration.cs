@@ -19,7 +19,7 @@ internal static class AzureRmIconProviderRegistration
     {
         ArgumentNullException.ThrowIfNull(registry);
 
-        var resourceName = "Oocx.TfPlan2Md.Providers.AzureRM.Icons.azurerm-icons.json";
+        var resourceName = "Oocx.TfPlan2Md.Providers.Shared.Icons.azure-common-icons.json";
         registry.Register(new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, null), new FileBasedIconProvider(resourceName));
     }
 }

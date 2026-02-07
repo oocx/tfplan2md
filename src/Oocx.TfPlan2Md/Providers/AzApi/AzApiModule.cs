@@ -57,7 +57,7 @@ internal sealed class AzApiModule : IProviderModule
     /// <param name="registry">The icon provider registry to register with.</param>
     public void RegisterIconProviders(IconProviderRegistry registry)
     {
-        var resourceName = "Oocx.TfPlan2Md.Providers.AzApi.Icons.azapi-icons.json";
+        var resourceName = "Oocx.TfPlan2Md.Providers.Shared.Icons.azure-common-icons.json";
         registry.Register(new MatchPattern("(^azapi$|.*/azapi$)", null, null, null), new FileBasedIconProvider(resourceName));
     }
 }

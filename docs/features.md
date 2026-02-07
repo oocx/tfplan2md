@@ -945,25 +945,52 @@ docker run -v $(pwd):/data oocx/tfplan2md \
 ```
 
 **Creating a principal mapping file:**
+
+The mapping file supports principals plus Azure metadata (subscriptions, management groups, tenants, and custom roles). The new sections use an array-of-objects format; existing principal-only files remain supported.
+
 ```bash
-# Generate mapping for all Azure AD principals
-{
-  echo "{"
-  az ad user list --query "[].{id:id,name:displayName}" -o tsv | \
-    awk '{printf "  \"%s\": \"%s\",\n", $1, $2}'
-  az ad group list --query "[].{id:id,name:displayName}" -o tsv | \
-    awk '{printf "  \"%s\": \"%s\",\n", $1, $2}'
-  az ad sp list --all --query "[].{id:id,name:displayName}" -o tsv | \
-    awk '{printf "  \"%s\": \"%s\",\n", $1, $2}' | \
-    sed '$ s/,$//'
-  echo "}"
-} > principals.json
+# Principals (Azure AD)
+az ad user list --all --query "[].{id:id,displayName:displayName}" -o json
+az ad group list --query "[].{id:id,displayName:displayName}" -o json
+az ad sp list --all --query "[].{id:id,displayName:displayName}" -o json
+
+# Subscriptions
+az account list --query "[].{id:id,displayName:name}" -o json
+
+# Management groups
+az account management-group list --query "[].{id:name,displayName:displayName}" -o json
+
+# Tenants
+az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o json
+
+# Custom roles
+az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
 ```
 
-The principal mapping JSON format:
+The extended mapping JSON format:
 ```json
 {
-  "principal-guid": "Display Name"
+  "users": [
+    { "id": "user-guid", "displayName": "Jane Doe" }
+  ],
+  "groups": [
+    { "id": "group-guid", "displayName": "DevOps Team" }
+  ],
+  "servicePrincipals": [
+    { "id": "sp-guid", "displayName": "CI/CD Pipeline" }
+  ],
+  "subscriptions": [
+    { "id": "d1828a48-fced-4ea2-b2ec-4b9623f327fd", "displayName": "Production" }
+  ],
+  "managementGroups": [
+    { "id": "mg-production", "displayName": "Production Workloads" }
+  ],
+  "tenants": [
+    { "id": "tenant-guid", "displayName": "Contoso Corp" }
+  ],
+  "roles": [
+    { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }
+  ]
 }
 ```
 

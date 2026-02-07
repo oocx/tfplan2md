@@ -163,6 +163,62 @@ Debug information is added as a "Debug Information" section at the end of the re
 
 This helps diagnose principal mapping failures, Docker volume mount issues, and understand template selection behavior.
 
+#### Principal Mapping File Format
+
+The `--principal-mapping` file can include principals plus Azure metadata (subscriptions, management groups, tenants, roles).
+The new sections use an array-of-objects format; existing principal-only files remain supported.
+
+```json
+{
+  "users": [
+    { "id": "user-guid", "displayName": "Jane Doe" }
+  ],
+  "groups": [
+    { "id": "group-guid", "displayName": "DevOps Team" }
+  ],
+  "servicePrincipals": [
+    { "id": "sp-guid", "displayName": "CI/CD Pipeline" }
+  ],
+  "subscriptions": [
+    { "id": "d1828a48-fced-4ea2-b2ec-4b9623f327fd", "displayName": "Production" }
+  ],
+  "managementGroups": [
+    { "id": "mg-production", "displayName": "Production Workloads" }
+  ],
+  "tenants": [
+    { "id": "tenant-guid", "displayName": "Contoso Corp" }
+  ],
+  "roles": [
+    { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }
+  ]
+}
+```
+
+#### Azure CLI Export Commands
+
+Use the Azure CLI to export the new mapping sections (each command returns the array-of-objects format):
+
+```bash
+# Principals
+az ad user list --all --query "[].{id:id,displayName:displayName}" -o json
+az ad group list --query "[].{id:id,displayName:displayName}" -o json
+az ad sp list --all --query "[].{id:id,displayName:displayName}" -o json
+
+# Subscriptions
+az account list --query "[].{id:id,displayName:name}" -o json
+
+# Management groups
+az account management-group list --query "[].{id:name,displayName:displayName}" -o json
+
+# Tenants
+az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o json
+
+# Custom roles
+az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
+```
+
+Use `scripts/validate-azure-cli-commands.sh` to validate the commands in your environment.
+
 #### Principal Mapping with Docker
 
 When using Docker, you need to mount the `principals.json` file into the container:

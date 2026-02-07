@@ -134,8 +134,8 @@ Ensure any attribute containing an Azure resource ID gets formatted.
 Update project documentation with the new mapping format and provide Azure CLI commands for population.
 
 **Acceptance Criteria:**
-- [ ] `README.md` or `docs/` updated with the extended mapping file schema.
-- [ ] Azure CLI snippets provided for exporting subscriptions, management groups, tenants, and roles.
+- [x] `README.md` or `docs/` updated with the extended mapping file schema.
+- [x] Azure CLI snippets provided for exporting subscriptions, management groups, tenants, and roles.
 - [ ] `scripts/validate-azure-cli-commands.sh` created and TC-17 passes.
 
 **Dependencies:** None

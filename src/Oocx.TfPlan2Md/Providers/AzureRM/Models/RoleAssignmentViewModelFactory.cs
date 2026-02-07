@@ -18,12 +18,57 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 /// </summary>
 internal static class RoleAssignmentViewModelFactory
 {
+    /// <summary>
+    /// Terraform action name for delete operations.
+    /// </summary>
+    private const string DeleteAction = "delete";
+
+    /// <summary>
+    /// Attribute name for scope values.
+    /// </summary>
+    private const string ScopeAttribute = "scope";
+
+    /// <summary>
+    /// Attribute name for role definition IDs.
+    /// </summary>
+    private const string RoleDefinitionIdAttribute = "role_definition_id";
+
+    /// <summary>
+    /// Attribute name for role definition names.
+    /// </summary>
+    private const string RoleDefinitionNameAttribute = "role_definition_name";
+
+    /// <summary>
+    /// Attribute name for principal IDs.
+    /// </summary>
+    private const string PrincipalIdAttribute = "principal_id";
+
+    /// <summary>
+    /// Attribute name for principal types.
+    /// </summary>
+    private const string PrincipalTypeAttribute = "principal_type";
+
+    /// <summary>
+    /// Principal type label for users.
+    /// </summary>
+    private const string UserPrincipalType = "User";
+
+    /// <summary>
+    /// Principal type label for groups.
+    /// </summary>
+    private const string GroupPrincipalType = "Group";
+
+    /// <summary>
+    /// Principal type label for service principals.
+    /// </summary>
+    private const string ServicePrincipalType = "ServicePrincipal";
+
     private static readonly string[] DesiredOrder =
     [
-        "scope",
-        "role_definition_id",
-        "principal_id",
-        "principal_type",
+        ScopeAttribute,
+        RoleDefinitionIdAttribute,
+        PrincipalIdAttribute,
+        PrincipalTypeAttribute,
         "name",
         "description",
         "condition",
@@ -48,19 +93,19 @@ internal static class RoleAssignmentViewModelFactory
         var beforeState = change.Change.Before as JsonElement?;
         var afterState = change.Change.After as JsonElement?;
 
-        var activeState = action == "delete" ? beforeState : afterState;
+        var activeState = action == DeleteAction ? beforeState : afterState;
         var description = ExtractDescription(activeState);
 
         var beforeScope = GetScopeInfo(beforeState);
         var afterScope = GetScopeInfo(afterState);
-        var beforeRole = GetRoleInfo(beforeState);
-        var afterRole = GetRoleInfo(afterState);
+        var beforeRole = GetRoleInfo(beforeState, change.Address);
+        var afterRole = GetRoleInfo(afterState, change.Address);
         var beforePrincipal = GetPrincipalInfo(beforeState, principalMapper, change.Address);
         var afterPrincipal = GetPrincipalInfo(afterState, principalMapper, change.Address);
 
-        var activeScope = action == "delete" ? beforeScope : afterScope;
-        var activeRole = action == "delete" ? beforeRole : afterRole;
-        var activePrincipal = action == "delete" ? beforePrincipal : afterPrincipal;
+        var activeScope = action == DeleteAction ? beforeScope : afterScope;
+        var activeRole = action == DeleteAction ? beforeRole : afterRole;
+        var activePrincipal = action == DeleteAction ? beforePrincipal : afterPrincipal;
 
         var summaryText = BuildSummaryText(action, activeScope, activeRole, activePrincipal);
 
@@ -154,9 +199,9 @@ internal static class RoleAssignmentViewModelFactory
         var roleSummary = $"<code>🛡️{NonBreakingSpace}{EscapeMarkdown(role.Name)}</code>";
         var principalIcon = principal.Type switch
         {
-            "User" => $"👤{NonBreakingSpace}",
-            "Group" => $"👥{NonBreakingSpace}",
-            "ServicePrincipal" => $"💻{NonBreakingSpace}",
+            UserPrincipalType => $"👤{NonBreakingSpace}",
+            GroupPrincipalType => $"👥{NonBreakingSpace}",
+            ServicePrincipalType => $"💻{NonBreakingSpace}",
             _ => string.Empty
         };
         var principalSummary = $"<code>{principalIcon}{EscapeMarkdown(principal.Name)}</code>";
@@ -164,7 +209,7 @@ internal static class RoleAssignmentViewModelFactory
         return action switch
         {
             "replace" => $"recreate as {principalSummary} → {roleSummary} on {scopeSummary}",
-            "delete" => $"remove {roleSummary} on {scopeSummary} from {principalSummary}",
+            DeleteAction => $"remove {roleSummary} on {scopeSummary} from {principalSummary}",
             _ => $"{principalSummary} → {roleSummary} on {scopeSummary}"
         };
     }
@@ -188,132 +233,201 @@ internal static class RoleAssignmentViewModelFactory
             return null;
         }
 
-        switch (attrName)
+        return attrName switch
         {
-            case "scope":
-                return FormatAzureScopeForTable(scope);
+            ScopeAttribute => FormatScopeValue(scope),
+            RoleDefinitionIdAttribute => FormatRoleDefinitionIdValue(role),
+            PrincipalIdAttribute => FormatPrincipalIdValue(principal),
+            PrincipalTypeAttribute => FormatPrincipalTypeValue(element),
+            RoleDefinitionNameAttribute => FormatRoleDefinitionNameValue(element),
+            _ => FormatDefaultValue(element, attrName)
+        };
+    }
 
-            case "role_definition_id":
-                var roleName = !string.IsNullOrEmpty(role.Name)
-                    ? FormatAttributeValueTable("role_definition_name", role.Name, null)
-                    : string.Empty;
-                var roleId = !string.IsNullOrEmpty(role.Id)
-                    ? FormatCodeTable(role.Id)
-                    : string.Empty;
+    /// <summary>
+    /// Formats the scope attribute for table display.
+    /// </summary>
+    /// <param name="scope">The parsed scope information.</param>
+    /// <returns>Formatted scope string.</returns>
+    private static string? FormatScopeValue(ScopeInfo scope)
+    {
+        return FormatAzureScopeForTable(scope);
+    }
 
-                if (string.IsNullOrEmpty(roleName) && string.IsNullOrEmpty(roleId))
-                {
-                    return null;
-                }
-                if (string.IsNullOrEmpty(roleId))
-                {
-                    return roleName;
-                }
-                if (string.IsNullOrEmpty(roleName))
-                {
-                    return roleId;
-                }
-                return $"{roleName} ({roleId})";
+    /// <summary>
+    /// Formats the role definition attribute using resolved role info.
+    /// </summary>
+    /// <param name="role">The resolved role information.</param>
+    /// <returns>Formatted role definition string.</returns>
+    private static string? FormatRoleDefinitionIdValue(RoleInfo role)
+    {
+        var roleName = !string.IsNullOrEmpty(role.Name)
+            ? FormatAttributeValueTable(RoleDefinitionNameAttribute, role.Name, null)
+            : string.Empty;
+        var roleId = !string.IsNullOrEmpty(role.Id)
+            ? FormatCodeTable(role.Id)
+            : string.Empty;
 
-            case "principal_id":
-                var principalIcon = principal.Type switch
-                {
-                    "User" => "👤",
-                    "Group" => "👥",
-                    "ServicePrincipal" => "💻",
-                    _ => string.Empty
-                };
-                var typeLabel = principal.Type switch
-                {
-                    "User" => "User",
-                    "Group" => "Group",
-                    "ServicePrincipal" => "Service Principal",
-                    _ => principal.Type
-                };
-
-                var namePart = principal.Name;
-                var hasTypeAlready = !string.IsNullOrEmpty(namePart)
-                    && !string.IsNullOrEmpty(typeLabel)
-                    && namePart.TrimEnd().EndsWith($"({typeLabel})", StringComparison.Ordinal);
-
-                var decoratedName = !string.IsNullOrEmpty(namePart) && !string.IsNullOrEmpty(typeLabel) && !hasTypeAlready
-                    ? $"{namePart} ({typeLabel})"
-                    : namePart;
-
-                var needsIconPrefix = !string.IsNullOrEmpty(principalIcon)
-                    && !string.IsNullOrEmpty(decoratedName)
-                    && !decoratedName.StartsWith(principalIcon, StringComparison.Ordinal);
-
-                string nameAndType;
-                if (string.IsNullOrEmpty(decoratedName))
-                {
-                    nameAndType = string.Empty;
-                }
-                else if (needsIconPrefix)
-                {
-                    nameAndType = $"{principalIcon}{NonBreakingSpace}{decoratedName}";
-                }
-                else
-                {
-                    nameAndType = decoratedName;
-                }
-
-                var nameValue = !string.IsNullOrEmpty(nameAndType)
-                    ? FormatCodeTable(nameAndType)
-                    : string.Empty;
-
-                var idValue = !string.IsNullOrEmpty(principal.Id)
-                    ? $"[{FormatCodeTable(principal.Id)}]"
-                    : string.Empty;
-
-                var text = nameValue;
-                if (!string.IsNullOrEmpty(idValue))
-                {
-                    text = string.IsNullOrEmpty(text) ? idValue : $"{text} {idValue}";
-                }
-
-                return !string.IsNullOrEmpty(text) ? text : null;
-
-            case "principal_type":
-                if (element.TryGetProperty(attrName, out var propType) && propType.ValueKind == JsonValueKind.String)
-                {
-                    var value = propType.GetString();
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        return FormatAttributeValueTable("principal_type", value, null);
-                    }
-                }
-                return null;
-
-            case "role_definition_name":
-                if (element.TryGetProperty(attrName, out var propRole) && propRole.ValueKind == JsonValueKind.String)
-                {
-                    var value = propRole.GetString();
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        return FormatAttributeValueTable("role_definition_name", value, null);
-                    }
-                }
-                return null;
-
-            default:
-                if (element.TryGetProperty(attrName, out var prop))
-                {
-                    // Convert JsonElement to string with proper casing (lowercase for booleans)
-                    var value = prop.ValueKind switch
-                    {
-                        JsonValueKind.String => prop.GetString(),
-                        JsonValueKind.True => "true",
-                        JsonValueKind.False => "false",
-                        _ => prop.ToString()
-                    };
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        return FormatAttributeValueTable(attrName, value, null);
-                    }
-                }
-                return null;
+        if (string.IsNullOrEmpty(roleName) && string.IsNullOrEmpty(roleId))
+        {
+            return null;
         }
+        if (string.IsNullOrEmpty(roleId))
+        {
+            return roleName;
+        }
+        if (string.IsNullOrEmpty(roleName))
+        {
+            return roleId;
+        }
+
+        return $"{roleName} ({roleId})";
+    }
+
+    /// <summary>
+    /// Formats the principal ID attribute with icons and type information.
+    /// </summary>
+    /// <param name="principal">The resolved principal information.</param>
+    /// <returns>Formatted principal string.</returns>
+    private static string? FormatPrincipalIdValue(PrincipalInfo principal)
+    {
+        var principalIcon = principal.Type switch
+        {
+            UserPrincipalType => "👤",
+            GroupPrincipalType => "👥",
+            ServicePrincipalType => "💻",
+            _ => string.Empty
+        };
+        var typeLabel = principal.Type switch
+        {
+            UserPrincipalType => UserPrincipalType,
+            GroupPrincipalType => GroupPrincipalType,
+            ServicePrincipalType => "Service Principal",
+            _ => principal.Type
+        };
+
+        var namePart = principal.Name;
+        var hasTypeAlready = !string.IsNullOrEmpty(namePart)
+            && !string.IsNullOrEmpty(typeLabel)
+            && namePart.TrimEnd().EndsWith($"({typeLabel})", StringComparison.Ordinal);
+
+        var decoratedName = !string.IsNullOrEmpty(namePart) && !string.IsNullOrEmpty(typeLabel) && !hasTypeAlready
+            ? $"{namePart} ({typeLabel})"
+            : namePart;
+
+        var needsIconPrefix = !string.IsNullOrEmpty(principalIcon)
+            && !string.IsNullOrEmpty(decoratedName)
+            && !decoratedName.StartsWith(principalIcon, StringComparison.Ordinal);
+
+        string nameAndType;
+        if (string.IsNullOrEmpty(decoratedName))
+        {
+            nameAndType = string.Empty;
+        }
+        else if (needsIconPrefix)
+        {
+            nameAndType = $"{principalIcon}{NonBreakingSpace}{decoratedName}";
+        }
+        else
+        {
+            nameAndType = decoratedName;
+        }
+
+        var nameValue = !string.IsNullOrEmpty(nameAndType)
+            ? FormatCodeTable(nameAndType)
+            : string.Empty;
+
+        var idValue = !string.IsNullOrEmpty(principal.Id)
+            ? $"[{FormatCodeTable(principal.Id)}]"
+            : string.Empty;
+
+        var text = nameValue;
+        if (!string.IsNullOrEmpty(idValue))
+        {
+            text = string.IsNullOrEmpty(text) ? idValue : $"{text} {idValue}";
+        }
+
+        return !string.IsNullOrEmpty(text) ? text : null;
+    }
+
+    /// <summary>
+    /// Formats the principal type attribute.
+    /// </summary>
+    /// <param name="element">The JSON element to read from.</param>
+    /// <returns>Formatted principal type value.</returns>
+    private static string? FormatPrincipalTypeValue(JsonElement element)
+    {
+        if (!TryGetStringProperty(element, PrincipalTypeAttribute, out var value))
+        {
+            return null;
+        }
+
+        return FormatAttributeValueTable(PrincipalTypeAttribute, value, null);
+    }
+
+    /// <summary>
+    /// Formats the role definition name attribute.
+    /// </summary>
+    /// <param name="element">The JSON element to read from.</param>
+    /// <returns>Formatted role definition name value.</returns>
+    private static string? FormatRoleDefinitionNameValue(JsonElement element)
+    {
+        if (!TryGetStringProperty(element, RoleDefinitionNameAttribute, out var value))
+        {
+            return null;
+        }
+
+        return FormatAttributeValueTable(RoleDefinitionNameAttribute, value, null);
+    }
+
+    /// <summary>
+    /// Formats a default attribute when no special handling exists.
+    /// </summary>
+    /// <param name="element">The JSON element to read from.</param>
+    /// <param name="attrName">The attribute name to format.</param>
+    /// <returns>Formatted attribute value.</returns>
+    private static string? FormatDefaultValue(JsonElement element, string attrName)
+    {
+        if (!element.TryGetProperty(attrName, out var prop))
+        {
+            return null;
+        }
+
+        var value = prop.ValueKind switch
+        {
+            JsonValueKind.String => prop.GetString(),
+            JsonValueKind.True => "true",
+            JsonValueKind.False => "false",
+            _ => prop.ToString()
+        };
+
+        return string.IsNullOrEmpty(value) ? null : FormatAttributeValueTable(attrName, value, null);
+    }
+
+    /// <summary>
+    /// Attempts to read a string property from a JSON element.
+    /// </summary>
+    /// <param name="element">The JSON element to read from.</param>
+    /// <param name="propertyName">The property name to read.</param>
+    /// <param name="value">The extracted string value.</param>
+    /// <returns>True when the property was found and non-empty.</returns>
+    private static bool TryGetStringProperty(JsonElement element, string propertyName, out string value)
+    {
+        value = string.Empty;
+
+        if (!element.TryGetProperty(propertyName, out var prop) || prop.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        var rawValue = prop.GetString();
+        if (string.IsNullOrEmpty(rawValue))
+        {
+            return false;
+        }
+
+        value = rawValue;
+        return true;
     }
 
     /// <summary>
@@ -323,10 +437,10 @@ internal static class RoleAssignmentViewModelFactory
     {
         return new[]
         {
-            new AttributeChangeModel { Name = "scope", Before = null, After = null, IsSensitive = false, IsLarge = false },
-            new AttributeChangeModel { Name = "role_definition_id", Before = null, After = null, IsSensitive = false, IsLarge = false },
-            new AttributeChangeModel { Name = "principal_id", Before = null, After = null, IsSensitive = false, IsLarge = false },
-            new AttributeChangeModel { Name = "principal_type", Before = null, After = null, IsSensitive = false, IsLarge = false },
+            new AttributeChangeModel { Name = ScopeAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
+            new AttributeChangeModel { Name = RoleDefinitionIdAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
+            new AttributeChangeModel { Name = PrincipalIdAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
+            new AttributeChangeModel { Name = PrincipalTypeAttribute, Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = "name", Before = null, After = null, IsSensitive = false, IsLarge = false },
             new AttributeChangeModel { Name = "description", Before = null, After = null, IsSensitive = false, IsLarge = false }
         };
@@ -364,7 +478,7 @@ internal static class RoleAssignmentViewModelFactory
             return Platforms.Azure.ScopeInfo.Empty;
         }
 
-        if (!element.TryGetProperty("scope", out var scopeProp) || scopeProp.ValueKind != JsonValueKind.String)
+        if (!element.TryGetProperty(ScopeAttribute, out var scopeProp) || scopeProp.ValueKind != JsonValueKind.String)
         {
             return Platforms.Azure.ScopeInfo.Empty;
         }
@@ -376,23 +490,23 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Extracts role information from the state.
     /// </summary>
-    private static RoleInfo GetRoleInfo(JsonElement? state)
+    private static RoleInfo GetRoleInfo(JsonElement? state, string resourceAddress)
     {
         if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
         {
             return new RoleInfo(string.Empty, string.Empty);
         }
 
-        var roleDefId = element.TryGetProperty("role_definition_id", out var idProp) && idProp.ValueKind == JsonValueKind.String
+        var roleDefId = element.TryGetProperty(RoleDefinitionIdAttribute, out var idProp) && idProp.ValueKind == JsonValueKind.String
             ? idProp.GetString() ?? string.Empty
             : string.Empty;
 
-        var roleDefName = element.TryGetProperty("role_definition_name", out var nameProp) && nameProp.ValueKind == JsonValueKind.String
+        var roleDefName = element.TryGetProperty(RoleDefinitionNameAttribute, out var nameProp) && nameProp.ValueKind == JsonValueKind.String
             ? nameProp.GetString() ?? string.Empty
             : string.Empty;
 
         // Use the same logic as the template helper to get consistent output
-        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(roleDefId, roleDefName);
+        var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(roleDefId, roleDefName, resourceAddress);
 
         return new RoleInfo(roleInfo.Name, roleInfo.Id);
     }
@@ -411,11 +525,11 @@ internal static class RoleAssignmentViewModelFactory
             return new PrincipalInfo(string.Empty, string.Empty, string.Empty);
         }
 
-        var principalId = element.TryGetProperty("principal_id", out var idProp) && idProp.ValueKind == JsonValueKind.String
+        var principalId = element.TryGetProperty(PrincipalIdAttribute, out var idProp) && idProp.ValueKind == JsonValueKind.String
             ? idProp.GetString() ?? string.Empty
             : string.Empty;
 
-        var principalType = element.TryGetProperty("principal_type", out var typeProp) && typeProp.ValueKind == JsonValueKind.String
+        var principalType = element.TryGetProperty(PrincipalTypeAttribute, out var typeProp) && typeProp.ValueKind == JsonValueKind.String
             ? typeProp.GetString() ?? string.Empty
             : string.Empty;
 

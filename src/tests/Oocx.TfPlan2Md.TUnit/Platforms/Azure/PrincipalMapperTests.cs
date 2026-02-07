@@ -196,7 +196,8 @@ public class PrincipalMapperTests
             mapper.GetName("missing", "User", "azurerm_role_assignment.example").Should().BeNull();
 
             diagnostics.FailedResolutions.Should().ContainSingle();
-            diagnostics.FailedResolutions[0].PrincipalId.Should().Be("missing");
+            diagnostics.FailedResolutions[0].Type.Should().Be(FailedResolutionType.Principal);
+            diagnostics.FailedResolutions[0].Id.Should().Be("missing");
         }
         finally
         {

@@ -74,13 +74,14 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
 
         var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(
             GetValue(flatState, RoleDefinitionIdAttribute),
-            GetValue(flatState, RoleDefinitionNameAttribute));
+            GetValue(flatState, RoleDefinitionNameAttribute),
+            resourceChange.Address);
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;
 
         var scopeValue = GetValue(flatState, ScopeAttribute);
-        var scopeText = FormatScopeMarkdown(scopeValue);
+        var scopeText = FormatScopeMarkdown(scopeValue, resourceChange.Address);
 
         if (string.IsNullOrWhiteSpace(roleName) || string.IsNullOrWhiteSpace(scopeText))
         {
@@ -107,8 +108,9 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
     /// Formats a scope string using enrichment when available.
     /// </summary>
     /// <param name="scope">The raw scope value.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
     /// <returns>Markdown scope text with code spans.</returns>
-    private string FormatScopeMarkdown(string? scope)
+    private string FormatScopeMarkdown(string? scope, string resourceAddress)
     {
         if (string.IsNullOrWhiteSpace(scope))
         {
@@ -117,7 +119,7 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
 
         return _scopeFormatter is null
             ? AzureScopeParser.ParseScope(scope)
-            : _scopeFormatter.FormatScope(scope);
+            : _scopeFormatter.FormatScope(scope, resourceAddress);
     }
 
     /// <summary>

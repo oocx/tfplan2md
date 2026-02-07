@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using Oocx.TfPlan2Md.Diagnostics;
 
 namespace Oocx.TfPlan2Md.Platforms.Azure;
 
@@ -29,19 +30,27 @@ internal sealed class AzureEntityMapper
     private readonly FrozenDictionary<string, string> _tenants;
 
     /// <summary>
+    /// Optional diagnostics for recording failed resolutions.
+    /// </summary>
+    private readonly DiagnosticContext? _diagnosticContext;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureEntityMapper"/> class.
     /// </summary>
     /// <param name="subscriptions">Subscription mappings for display name resolution.</param>
     /// <param name="managementGroups">Management group mappings for display name resolution.</param>
     /// <param name="tenants">Tenant mappings for display name resolution.</param>
+    /// <param name="diagnosticContext">Optional diagnostics used to record missing mappings.</param>
     /// <remarks>
     /// The mappings are cached in case-insensitive dictionaries for fast lookups.
     /// </remarks>
     internal AzureEntityMapper(
         IReadOnlyList<MappingEntry> subscriptions,
         IReadOnlyList<MappingEntry> managementGroups,
-        IReadOnlyList<MappingEntry> tenants)
+        IReadOnlyList<MappingEntry> tenants,
+        DiagnosticContext? diagnosticContext = null)
     {
+        _diagnosticContext = diagnosticContext;
         _subscriptions = CreateLookup(subscriptions);
         _managementGroups = CreateLookup(managementGroups);
         _tenants = CreateLookup(tenants);
@@ -51,51 +60,86 @@ internal sealed class AzureEntityMapper
     /// Gets the subscription display name formatted as "DisplayName (Id)" when available.
     /// </summary>
     /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the subscription.</param>
     /// <returns>The formatted display name, or the raw ID when no mapping exists.</returns>
-    internal string GetSubscriptionDisplayName(string? subscriptionId)
+    internal string GetSubscriptionDisplayName(string? subscriptionId, string? resourceAddress = null)
     {
         if (string.IsNullOrWhiteSpace(subscriptionId))
         {
             return string.Empty;
         }
 
-        return _subscriptions.TryGetValue(subscriptionId, out var displayName)
-            ? $"{displayName} ({subscriptionId})"
-            : subscriptionId;
+        if (_subscriptions.TryGetValue(subscriptionId, out var displayName))
+        {
+            return $"{displayName} ({subscriptionId})";
+        }
+
+        RecordFailure(FailedResolutionType.Subscription, subscriptionId, resourceAddress);
+        return subscriptionId;
     }
 
     /// <summary>
     /// Gets the management group display name when available.
     /// </summary>
     /// <param name="managementGroupId">The management group identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the management group.</param>
     /// <returns>The display name, or the raw ID when no mapping exists.</returns>
-    internal string GetManagementGroupDisplayName(string? managementGroupId)
+    internal string GetManagementGroupDisplayName(string? managementGroupId, string? resourceAddress = null)
     {
         if (string.IsNullOrWhiteSpace(managementGroupId))
         {
             return string.Empty;
         }
 
-        return _managementGroups.TryGetValue(managementGroupId, out var displayName)
-            ? displayName
-            : managementGroupId;
+        if (_managementGroups.TryGetValue(managementGroupId, out var displayName))
+        {
+            return displayName;
+        }
+
+        RecordFailure(FailedResolutionType.ManagementGroup, managementGroupId, resourceAddress);
+        return managementGroupId;
     }
 
     /// <summary>
     /// Gets the tenant display name when available.
     /// </summary>
     /// <param name="tenantId">The tenant identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the tenant.</param>
     /// <returns>The display name, or the raw ID when no mapping exists.</returns>
-    internal string GetTenantDisplayName(string? tenantId)
+    internal string GetTenantDisplayName(string? tenantId, string? resourceAddress = null)
     {
         if (string.IsNullOrWhiteSpace(tenantId))
         {
             return string.Empty;
         }
 
-        return _tenants.TryGetValue(tenantId, out var displayName)
-            ? displayName
-            : tenantId;
+        if (_tenants.TryGetValue(tenantId, out var displayName))
+        {
+            return displayName;
+        }
+
+        RecordFailure(FailedResolutionType.Tenant, tenantId, resourceAddress);
+        return tenantId;
+    }
+
+    /// <summary>
+    /// Records a failed resolution when diagnostics are enabled.
+    /// </summary>
+    /// <param name="type">The resolution type that failed.</param>
+    /// <param name="id">The identifier that could not be resolved.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the ID.</param>
+    private void RecordFailure(FailedResolutionType type, string id, string? resourceAddress)
+    {
+        if (_diagnosticContext == null || string.IsNullOrWhiteSpace(resourceAddress))
+        {
+            return;
+        }
+
+        _diagnosticContext.FailedResolutions.Add(new FailedResolution(
+            type,
+            id,
+            resourceAddress,
+            "not found in mapping file"));
     }
 
     /// <summary>

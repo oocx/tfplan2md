@@ -98,7 +98,8 @@ public class PrincipalMapperDiagnosticsTests
         // Assert
         name.Should().BeNull(); // Principal not found
         context.FailedResolutions.Should().HaveCount(1);
-        context.FailedResolutions[0].PrincipalId.Should().Be(missingPrincipalId);
+        context.FailedResolutions[0].Type.Should().Be(FailedResolutionType.Principal);
+        context.FailedResolutions[0].Id.Should().Be(missingPrincipalId);
         context.FailedResolutions[0].ResourceAddress.Should().Be(resourceAddress);
     }
 
@@ -138,7 +139,11 @@ public class PrincipalMapperDiagnosticsTests
 
         // Assert - Should have 3 entries for the same principal ID
         context.FailedResolutions.Should().HaveCount(3);
-        context.FailedResolutions.Should().AllSatisfy(f => f.PrincipalId.Should().Be(missingPrincipalId));
+        context.FailedResolutions.Should().AllSatisfy(f =>
+        {
+            f.Type.Should().Be(FailedResolutionType.Principal);
+            f.Id.Should().Be(missingPrincipalId);
+        });
         context.FailedResolutions.Select(f => f.ResourceAddress).Should().BeEquivalentTo(
             RoleAssignmentExample,
             "azurerm_role_assignment.reader",
@@ -237,7 +242,8 @@ public class PrincipalMapperDiagnosticsTests
         // Assert
         displayName.Should().Be(missingPrincipalId); // Returns ID unchanged when not found
         context.FailedResolutions.Should().HaveCount(1);
-        context.FailedResolutions[0].PrincipalId.Should().Be(missingPrincipalId);
+        context.FailedResolutions[0].Type.Should().Be(FailedResolutionType.Principal);
+        context.FailedResolutions[0].Id.Should().Be(missingPrincipalId);
     }
 
     /// <summary>

@@ -13,6 +13,11 @@ namespace Oocx.TfPlan2Md.TUnit.Diagnostics;
 [Category("Unit")]
 public class DiagnosticContextTests
 {
+    private const string PrincipalMappingHeader = "### Principal Mapping";
+    private const string PrincipalsFileName = "principals.json";
+    private const string PrincipalsFilePath = "/data/principals.json";
+    private const string VirtualNetworkResourceType = "azurerm_virtual_network";
+
     /// <summary>
     /// TC-03: Empty diagnostic context generates appropriate output.
     /// </summary>
@@ -43,22 +48,26 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = true,
-            PrincipalMappingFilePath = "principals.json"
+            PrincipalMappingFilePath = PrincipalsFileName
         };
         context.PrincipalTypeCount["users"] = 45;
         context.PrincipalTypeCount["groups"] = 12;
         context.PrincipalTypeCount["service principals"] = 8;
-        context.FailedResolutions.Add(new FailedPrincipalResolution(
+        context.FailedResolutions.Add(new FailedResolution(
+            FailedResolutionType.Principal,
             "12345678-1234-1234-1234-123456789012",
-            "azurerm_role_assignment.example"));
-        context.FailedResolutions.Add(new FailedPrincipalResolution(
+            "azurerm_role_assignment.example",
+            "not found in mapping file"));
+        context.FailedResolutions.Add(new FailedResolution(
+            FailedResolutionType.RoleDefinition,
             "87654321-4321-4321-4321-210987654321",
-            "azurerm_role_assignment.reader"));
+            "azurerm_role_assignment.reader",
+            "not found in mapping file or built-in roles"));
         context.TemplateResolutions.Add(new TemplateResolution(
             "azurerm_firewall_network_rule_collection",
             "Built-in resource-specific template"));
         context.TemplateResolutions.Add(new TemplateResolution(
-            "azurerm_virtual_network",
+            VirtualNetworkResourceType,
             "Default template"));
         context.TemplateResolutions.Add(new TemplateResolution(
             "azurerm_custom_resource",
@@ -69,17 +78,17 @@ public class DiagnosticContextTests
 
         // Assert
         await Assert.That(markdown).Contains("## Debug Information");
-        await Assert.That(markdown).Contains("### Principal Mapping");
-        await Assert.That(markdown).Contains("Loaded successfully from 'principals.json'");
+        await Assert.That(markdown).Contains(PrincipalMappingHeader);
+        await Assert.That(markdown).Contains($"Loaded successfully from '{PrincipalsFileName}'");
         await Assert.That(markdown).Contains("45 users");
         await Assert.That(markdown).Contains("12 groups");
         await Assert.That(markdown).Contains("8 service principals");
-        await Assert.That(markdown).Contains("Failed to resolve 2 principal IDs:");
+        await Assert.That(markdown).Contains("Failed to resolve 2 mappings:");
         await Assert.That(markdown).Contains("`12345678-1234-1234-1234-123456789012`");
         await Assert.That(markdown).Contains("`azurerm_role_assignment.example`");
         await Assert.That(markdown).Contains("### Template Resolution");
         await Assert.That(markdown).Contains("`azurerm_firewall_network_rule_collection`: Built-in resource-specific template");
-        await Assert.That(markdown).Contains("`azurerm_virtual_network`: Default template");
+        await Assert.That(markdown).Contains($"`{VirtualNetworkResourceType}`: Default template");
         await Assert.That(markdown).Contains("`azurerm_custom_resource`: Custom template");
     }
 
@@ -95,21 +104,25 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = true,
-            PrincipalMappingFilePath = "principals.json"
+            PrincipalMappingFilePath = PrincipalsFileName
         };
-        context.FailedResolutions.Add(new FailedPrincipalResolution(
+        context.FailedResolutions.Add(new FailedResolution(
+            FailedResolutionType.Principal,
             "12345678-1234-1234-1234-123456789012",
-            "azurerm_role_assignment.example"));
-        context.FailedResolutions.Add(new FailedPrincipalResolution(
+            "azurerm_role_assignment.example",
+            "not found in mapping file"));
+        context.FailedResolutions.Add(new FailedResolution(
+            FailedResolutionType.RoleDefinition,
             "87654321-4321-4321-4321-210987654321",
-            "azurerm_role_assignment.reader"));
+            "azurerm_role_assignment.reader",
+            "not found in mapping file or built-in roles"));
 
         // Act
         var markdown = context.GenerateMarkdownSection();
 
         // Assert - Verify formatting with backticks
-        await Assert.That(markdown).Contains("- `12345678-1234-1234-1234-123456789012` (referenced in `azurerm_role_assignment.example`)");
-        await Assert.That(markdown).Contains("- `87654321-4321-4321-4321-210987654321` (referenced in `azurerm_role_assignment.reader`)");
+        await Assert.That(markdown).Contains("- Principal `12345678-1234-1234-1234-123456789012` (referenced in `azurerm_role_assignment.example`)");
+        await Assert.That(markdown).Contains("- Role definition `87654321-4321-4321-4321-210987654321` (referenced in `azurerm_role_assignment.reader`)");
     }
 
     /// <summary>
@@ -125,7 +138,7 @@ public class DiagnosticContextTests
             "azurerm_firewall_network_rule_collection",
             "Built-in resource-specific template"));
         context.TemplateResolutions.Add(new TemplateResolution(
-            "azurerm_virtual_network",
+            VirtualNetworkResourceType,
             "Default template"));
         context.TemplateResolutions.Add(new TemplateResolution(
             "azurerm_custom_resource",
@@ -136,7 +149,7 @@ public class DiagnosticContextTests
 
         // Assert - Verify list formatting with resource types in backticks
         await Assert.That(markdown).Contains("- `azurerm_firewall_network_rule_collection`: Built-in resource-specific template");
-        await Assert.That(markdown).Contains("- `azurerm_virtual_network`: Default template");
+        await Assert.That(markdown).Contains($"- `{VirtualNetworkResourceType}`: Default template");
         await Assert.That(markdown).Contains("- `azurerm_custom_resource`: Custom template: /templates/azurerm/custom_resource.sbn");
     }
 
@@ -157,7 +170,7 @@ public class DiagnosticContextTests
         var markdown = context.GenerateMarkdownSection();
 
         // Assert - Principal Mapping section should not appear
-        await Assert.That(markdown).DoesNotContain("### Principal Mapping");
+        await Assert.That(markdown).DoesNotContain(PrincipalMappingHeader);
         await Assert.That(markdown).Contains("## Debug Information");
     }
 
@@ -180,7 +193,7 @@ public class DiagnosticContextTests
         var markdown = context.GenerateMarkdownSection();
 
         // Assert
-        await Assert.That(markdown).Contains("### Principal Mapping");
+        await Assert.That(markdown).Contains(PrincipalMappingHeader);
         await Assert.That(markdown).Contains("Failed to load from 'missing.json'");
     }
 
@@ -194,17 +207,17 @@ public class DiagnosticContextTests
         // Arrange
         var context = new DiagnosticContext();
         context.TemplateResolutions.Add(new TemplateResolution(
-            "azurerm_virtual_network",
+            VirtualNetworkResourceType,
             "Built-in template"));
         context.TemplateResolutions.Add(new TemplateResolution(
-            "azurerm_virtual_network",
+            VirtualNetworkResourceType,
             "Custom template"));  // Duplicate - should be ignored
 
         // Act
         var markdown = context.GenerateMarkdownSection();
 
         // Assert - Should only show first resolution for the resource type
-        var lines = markdown.Split('\n').Where(l => l.Contains("azurerm_virtual_network")).ToList();
+        var lines = markdown.Split('\n').Where(l => l.Contains(VirtualNetworkResourceType)).ToList();
         lines.Should().HaveCount(1);
         await Assert.That(lines[0]).Contains("Built-in template");
     }
@@ -221,7 +234,7 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = true,
-            PrincipalMappingFilePath = "principals.json"
+            PrincipalMappingFilePath = PrincipalsFileName
         };
         context.PrincipalTypeCount["users"] = 45;
         context.PrincipalTypeCount["groups"] = 12;
@@ -252,18 +265,20 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = true,
-            PrincipalMappingFilePath = "principals.json"
+            PrincipalMappingFilePath = PrincipalsFileName
         };
-        context.FailedResolutions.Add(new FailedPrincipalResolution(
+        context.FailedResolutions.Add(new FailedResolution(
+            FailedResolutionType.Principal,
             "12345678-1234-1234-1234-123456789012",
-            "azurerm_role_assignment.example"));
+            "azurerm_role_assignment.example",
+            "not found in mapping file"));
 
         // Act
         var markdown = context.GenerateMarkdownSection();
 
-        // Assert - Should say "1 principal ID" not "1 principal IDs"
-        await Assert.That(markdown).Contains("Failed to resolve 1 principal ID:");
-        await Assert.That(markdown).DoesNotContain("1 principal IDs");
+        // Assert - Should say "1 mapping" not "1 mappings"
+        await Assert.That(markdown).Contains("Failed to resolve 1 mapping:");
+        await Assert.That(markdown).DoesNotContain("1 mappings");
     }
 
     /// <summary>
@@ -279,20 +294,20 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = false,
-            PrincipalMappingFilePath = "/data/principals.json",
+            PrincipalMappingFilePath = PrincipalsFilePath,
             PrincipalMappingFileExists = false,
             PrincipalMappingDirectoryExists = true,
             PrincipalMappingErrorType = PrincipalLoadError.FileNotFound,
             PrincipalMappingErrorMessage = "File not found",
-            PrincipalMappingErrorDetails = "Could not find file '/data/principals.json'"
+            PrincipalMappingErrorDetails = $"Could not find file '{PrincipalsFilePath}'"
         };
 
         // Act
         var markdown = context.GenerateMarkdownSection();
 
         // Assert - Should show detailed diagnostics
-        await Assert.That(markdown).Contains("### Principal Mapping");
-        await Assert.That(markdown).Contains("Failed to load from '/data/principals.json'");
+        await Assert.That(markdown).Contains(PrincipalMappingHeader);
+        await Assert.That(markdown).Contains($"Failed to load from '{PrincipalsFilePath}'");
         await Assert.That(markdown).Contains("**Diagnostic Details:**");
         await Assert.That(markdown).Contains("File exists: ❌");
         await Assert.That(markdown).Contains("Directory exists: ✅");
@@ -313,7 +328,7 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = false,
-            PrincipalMappingFilePath = "/data/principals.json",
+            PrincipalMappingFilePath = PrincipalsFilePath,
             PrincipalMappingFileExists = true,
             PrincipalMappingDirectoryExists = true,
             PrincipalMappingErrorType = PrincipalLoadError.JsonParseError,
@@ -373,7 +388,7 @@ public class DiagnosticContextTests
         {
             PrincipalMappingFileProvided = true,
             PrincipalMappingLoadedSuccessfully = false,
-            PrincipalMappingFilePath = "/data/principals.json",
+            PrincipalMappingFilePath = PrincipalsFilePath,
             PrincipalMappingFileExists = false,
             PrincipalMappingDirectoryExists = true,
             PrincipalMappingErrorType = PrincipalLoadError.FileNotFound

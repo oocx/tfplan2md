@@ -79,7 +79,8 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
 
         var roleInfo = AzureRoleDefinitionMapper.GetRoleDefinition(
             GetValue(flatState, RoleDefinitionIdAttribute),
-            GetValue(flatState, RoleDefinitionNameAttribute));
+            GetValue(flatState, RoleDefinitionNameAttribute),
+            resourceChange.Address);
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;

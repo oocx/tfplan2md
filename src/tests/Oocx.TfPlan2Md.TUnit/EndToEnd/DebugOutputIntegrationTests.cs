@@ -178,7 +178,6 @@ public class DebugOutputIntegrationTests
         if (diagnosticContext.FailedResolutions.Count > 0)
         {
             await Assert.That(markdown).Contains("Failed to resolve");
-            await Assert.That(markdown).Contains("principal ID");
             // Should show resource context
             await Assert.That(markdown).Contains("referenced in");
         }

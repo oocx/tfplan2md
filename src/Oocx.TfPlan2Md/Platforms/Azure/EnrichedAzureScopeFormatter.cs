@@ -31,33 +31,35 @@ internal sealed class EnrichedAzureScopeFormatter
     /// Formats an Azure resource scope string with display name enrichment.
     /// </summary>
     /// <param name="scope">The Azure scope string to format.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
     /// <returns>The formatted scope description.</returns>
-    internal string FormatScope(string? scope)
+    internal string FormatScope(string? scope, string? resourceAddress = null)
     {
         var parsed = AzureScopeParser.Parse(scope);
-        return Format(parsed);
+        return Format(parsed, resourceAddress);
     }
 
     /// <summary>
     /// Formats an already-parsed scope with display name enrichment.
     /// </summary>
     /// <param name="scopeInfo">The parsed scope information.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
     /// <returns>The formatted scope description.</returns>
-    internal string Format(ScopeInfo scopeInfo)
+    internal string Format(ScopeInfo scopeInfo, string? resourceAddress = null)
     {
         if (scopeInfo.Level == ScopeLevel.Unknown)
         {
             return scopeInfo.Details;
         }
 
-        var subscriptionDisplay = _entityMapper.GetSubscriptionDisplayName(scopeInfo.SubscriptionId);
+        var subscriptionDisplay = _entityMapper.GetSubscriptionDisplayName(scopeInfo.SubscriptionId, resourceAddress);
         var subscriptionLabel = string.IsNullOrWhiteSpace(subscriptionDisplay)
             ? scopeInfo.SubscriptionId ?? string.Empty
             : subscriptionDisplay;
 
         return scopeInfo.Level switch
         {
-            ScopeLevel.ManagementGroup => FormatManagementGroup(scopeInfo.Name),
+            ScopeLevel.ManagementGroup => FormatManagementGroup(scopeInfo.Name, resourceAddress),
             ScopeLevel.Subscription => $"subscription `{subscriptionLabel}`",
             ScopeLevel.ResourceGroup => $"`{scopeInfo.ResourceGroup}` in subscription `{subscriptionLabel}`",
             ScopeLevel.Resource when !string.IsNullOrWhiteSpace(scopeInfo.ResourceGroup) =>
@@ -71,16 +73,17 @@ internal sealed class EnrichedAzureScopeFormatter
     /// Formats management group scopes with tenant-root detection.
     /// </summary>
     /// <param name="managementGroupId">The management group identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the management group.</param>
     /// <returns>The formatted management group scope description.</returns>
-    private string FormatManagementGroup(string managementGroupId)
+    private string FormatManagementGroup(string managementGroupId, string? resourceAddress)
     {
-        var tenantName = _entityMapper.GetTenantDisplayName(managementGroupId);
+        var tenantName = _entityMapper.GetTenantDisplayName(managementGroupId, resourceAddress);
         if (!string.IsNullOrWhiteSpace(tenantName) && !tenantName.Equals(managementGroupId, StringComparison.OrdinalIgnoreCase))
         {
             return $"Tenant `{tenantName}` root";
         }
 
-        var managementGroupName = _entityMapper.GetManagementGroupDisplayName(managementGroupId);
+        var managementGroupName = _entityMapper.GetManagementGroupDisplayName(managementGroupId, resourceAddress);
         var label = string.IsNullOrWhiteSpace(managementGroupName) ? managementGroupId : managementGroupName;
         return $"management group `{label}`";
     }

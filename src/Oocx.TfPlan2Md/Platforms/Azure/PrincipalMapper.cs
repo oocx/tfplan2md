@@ -142,7 +142,11 @@ internal class PrincipalMapper : IPrincipalMapper
         if (!found && _diagnosticContext != null && resourceAddress != null)
         {
             _diagnosticContext.FailedResolutions.Add(
-                new FailedPrincipalResolution(principalId, resourceAddress));
+                new FailedResolution(
+                    FailedResolutionType.Principal,
+                    principalId,
+                    resourceAddress,
+                    "not found in mapping file"));
         }
 
         return found ? name : null;

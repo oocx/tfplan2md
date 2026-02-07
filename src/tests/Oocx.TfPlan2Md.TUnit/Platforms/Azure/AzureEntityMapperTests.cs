@@ -11,15 +11,18 @@ namespace Oocx.TfPlan2Md.Tests.Azure;
 /// </summary>
 public class AzureEntityMapperTests
 {
+    private const string SubscriptionId = "sub-1";
+    private const string ManagementGroupId = "mg-1";
+
     [Test]
     public void AzureEntityMapper_SubscriptionId_ResolvesToDisplayName()
     {
         var mapper = CreateMapper(
-            subscriptions: [new MappingEntry("sub-1", "Production")],
+            subscriptions: [new MappingEntry(SubscriptionId, "Production")],
             managementGroups: [],
             tenants: []);
 
-        mapper.GetSubscriptionDisplayName("sub-1").Should().Be("Production (sub-1)");
+        mapper.GetSubscriptionDisplayName(SubscriptionId).Should().Be("Production (sub-1)");
     }
 
     [Test]
@@ -27,10 +30,21 @@ public class AzureEntityMapperTests
     {
         var mapper = CreateMapper(
             subscriptions: [],
-            managementGroups: [new MappingEntry("mg-1", "Core")],
+            managementGroups: [new MappingEntry(ManagementGroupId, "Core")],
             tenants: []);
 
-        mapper.GetManagementGroupDisplayName("mg-1").Should().Be("Core");
+        mapper.GetManagementGroupDisplayName(ManagementGroupId).Should().Be("Core");
+    }
+
+    [Test]
+    public void AzureEntityMapper_SubscriptionId_FallsBackToRawId()
+    {
+        var mapper = CreateMapper(
+            subscriptions: [],
+            managementGroups: [],
+            tenants: []);
+
+        mapper.GetSubscriptionDisplayName(SubscriptionId).Should().Be(SubscriptionId);
     }
 
     [Test]

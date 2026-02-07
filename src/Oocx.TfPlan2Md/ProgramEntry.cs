@@ -110,52 +110,27 @@ internal static class ProgramEntry
         var diagnosticContext = options.Debug ? new DiagnosticContext() : null;
 
         // Read input
-        string json;
-        if (options.InputFile is not null)
+        var json = await ReadInputAsync(options);
+        if (json is null)
         {
-            if (!File.Exists(options.InputFile))
-            {
-                await Console.Error.WriteLineAsync($"Error: Input file not found: {options.InputFile}");
-                return 1;
-            }
-            json = await File.ReadAllTextAsync(options.InputFile);
-        }
-        else
-        {
-            // Read from stdin
-            using var reader = new StreamReader(Console.OpenStandardInput());
-            json = await reader.ReadToEndAsync();
+            return 1;
         }
 
         // Parse the Terraform plan
         var parser = new TerraformPlanParser();
         var plan = parser.Parse(json);
 
-        CodeAnalysisInput? codeAnalysisInput = null;
-        if (options.CodeAnalysisResultsPatterns.Count > 0)
-        {
-            var loader = new CodeAnalysisLoader(new SarifParser());
-            var loadResult = loader.Load(options.CodeAnalysisResultsPatterns);
-            var minimumLevel = CodeAnalysisSeverityParser.ParseOptional(options.CodeAnalysisMinimumLevel);
-            var failOnLevel = CodeAnalysisSeverityParser.ParseOptional(options.FailOnStaticCodeAnalysisErrorsLevel);
-
-            codeAnalysisInput = new CodeAnalysisInput
-            {
-                Model = loadResult.Model,
-                Warnings = loadResult.Warnings,
-                MinimumLevel = minimumLevel,
-                FailOnLevel = failOnLevel
-            };
-        }
+        var codeAnalysisInput = CreateCodeAnalysisInput(options);
 
         // Load Azure mapping file once and create principal mapper for role assignment resolution
         var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
-        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles);
+        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles, diagnosticContext);
         var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
         var entityMapper = new AzureEntityMapper(
             mappingResult.Subscriptions,
             mappingResult.ManagementGroups,
-            mappingResult.Tenants);
+            mappingResult.Tenants,
+            diagnosticContext);
         var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
 
         // Create and configure provider registry
@@ -216,22 +191,61 @@ internal static class ProgramEntry
             Console.WriteLine(markdown);
         }
 
-        if (codeAnalysisInput?.FailOnLevel is not null)
+        if (codeAnalysisInput?.FailOnLevel is not null
+            && await HandleCodeAnalysisFailureAsync(codeAnalysisInput))
         {
-            var failureCount = CodeAnalysisFailureEvaluator.CountFindingsAtOrAbove(
-                codeAnalysisInput.Model,
-                codeAnalysisInput.FailOnLevel.Value);
-            if (failureCount > 0)
-            {
-                var severityLabel = CodeAnalysisFailureEvaluator.FormatSeverityLabel(codeAnalysisInput.FailOnLevel.Value);
-                Console.Error.WriteLine(
-                    $"Static code analysis found {failureCount} {severityLabel} or higher findings");
-                Console.Error.Flush();
-                return 10;
-            }
+            return 10;
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Reads the Terraform plan input from a file or standard input.
+    /// </summary>
+    /// <param name="options">The parsed CLI options.</param>
+    /// <returns>The input content, or <c>null</c> when the input cannot be read.</returns>
+    private static async Task<string?> ReadInputAsync(CliOptions options)
+    {
+        if (options.InputFile is null)
+        {
+            using var reader = new StreamReader(Console.OpenStandardInput());
+            return await reader.ReadToEndAsync();
+        }
+
+        if (!File.Exists(options.InputFile))
+        {
+            await Console.Error.WriteLineAsync($"Error: Input file not found: {options.InputFile}");
+            return null;
+        }
+
+        return await File.ReadAllTextAsync(options.InputFile);
+    }
+
+    /// <summary>
+    /// Loads optional code analysis results based on CLI options.
+    /// </summary>
+    /// <param name="options">The parsed CLI options.</param>
+    /// <returns>The code analysis input model when provided; otherwise <c>null</c>.</returns>
+    private static CodeAnalysisInput? CreateCodeAnalysisInput(CliOptions options)
+    {
+        if (options.CodeAnalysisResultsPatterns.Count == 0)
+        {
+            return null;
+        }
+
+        var loader = new CodeAnalysisLoader(new SarifParser());
+        var loadResult = loader.Load(options.CodeAnalysisResultsPatterns);
+        var minimumLevel = CodeAnalysisSeverityParser.ParseOptional(options.CodeAnalysisMinimumLevel);
+        var failOnLevel = CodeAnalysisSeverityParser.ParseOptional(options.FailOnStaticCodeAnalysisErrorsLevel);
+
+        return new CodeAnalysisInput
+        {
+            Model = loadResult.Model,
+            Warnings = loadResult.Warnings,
+            MinimumLevel = minimumLevel,
+            FailOnLevel = failOnLevel
+        };
     }
 
     /// <summary>
@@ -251,6 +265,28 @@ internal static class ProgramEntry
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion ?? "0.0.0";
         Console.WriteLine($"tfplan2md {version}");
+    }
+
+    /// <summary>
+    /// Evaluates code analysis results and writes failure output when thresholds are exceeded.
+    /// </summary>
+    /// <param name="codeAnalysisInput">The code analysis input model.</param>
+    /// <returns>True when a failure should terminate execution; otherwise false.</returns>
+    private static async Task<bool> HandleCodeAnalysisFailureAsync(CodeAnalysisInput codeAnalysisInput)
+    {
+        var failureCount = CodeAnalysisFailureEvaluator.CountFindingsAtOrAbove(
+            codeAnalysisInput.Model,
+            codeAnalysisInput.FailOnLevel!.Value);
+        if (failureCount <= 0)
+        {
+            return false;
+        }
+
+        var severityLabel = CodeAnalysisFailureEvaluator.FormatSeverityLabel(codeAnalysisInput.FailOnLevel.Value);
+        await Console.Error.WriteLineAsync(
+            $"Static code analysis found {failureCount} {severityLabel} or higher findings");
+        await Console.Error.FlushAsync();
+        return true;
     }
 }
 

@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Oocx.TfPlan2Md.Diagnostics;
 
 namespace Oocx.TfPlan2Md.Platforms.Azure;
 
@@ -10,20 +11,30 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// </summary>
 public static partial class AzureRoleDefinitionMapper
 {
+    private static readonly FrozenDictionary<string, string> Roles = AzureRoleDefinitionsRegistry.Load();
+
     /// <summary>
     /// Stores custom role definitions loaded from the mapping file.
     /// </summary>
     private static FrozenDictionary<string, string> _customRoles = FrozenDictionary<string, string>.Empty;
 
     /// <summary>
+    /// Optional diagnostics for recording failed role resolutions.
+    /// </summary>
+    private static DiagnosticContext? _diagnosticContext;
+
+    /// <summary>
     /// Merges custom role definitions into the lookup table.
     /// </summary>
     /// <param name="roles">The custom role definitions to apply.</param>
+    /// <param name="diagnosticContext">Optional diagnostics used to record missing mappings.</param>
     /// <remarks>
     /// Related feature: docs/features/063-azure-display-enhancements/specification.md.
     /// </remarks>
-    internal static void MergeCustomRoles(IReadOnlyList<MappingEntry> roles)
+    internal static void MergeCustomRoles(IReadOnlyList<MappingEntry> roles, DiagnosticContext? diagnosticContext = null)
     {
+        _diagnosticContext = diagnosticContext;
+
         if (roles.Count == 0)
         {
             _customRoles = FrozenDictionary<string, string>.Empty;
@@ -67,12 +78,16 @@ public static partial class AzureRoleDefinitionMapper
     /// </summary>
     /// <param name="roleDefinitionId">The role definition ID to look up.</param>
     /// <param name="roleDefinitionName">Optional fallback role name if ID lookup fails.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the role definition.</param>
     /// <returns>A RoleDefinitionInfo object containing the role's name, ID, and full display name.</returns>
     [SuppressMessage(
         "Maintainability",
         "CA1502:Avoid excessive complexity",
         Justification = "Role resolution handles multiple nullable inputs and mapping fallbacks.")]
-    public static RoleDefinitionInfo GetRoleDefinition(string? roleDefinitionId, string? roleDefinitionName)
+    public static RoleDefinitionInfo GetRoleDefinition(
+        string? roleDefinitionId,
+        string? roleDefinitionName,
+        string? resourceAddress = null)
     {
         if (string.IsNullOrWhiteSpace(roleDefinitionId))
         {
@@ -108,7 +123,40 @@ public static partial class AzureRoleDefinitionMapper
 #pragma warning restore S3358
 #pragma warning restore S2583
 
+        RecordFailedResolution(hasMapping, roleGuid, roleDefinitionId, resourceAddress);
+
         return new RoleDefinitionInfo(safeName, safeId, fullName);
+    }
+
+    /// <summary>
+    /// Records a failed role definition lookup when diagnostics are enabled.
+    /// </summary>
+    /// <param name="hasMapping">Whether the role resolved successfully.</param>
+    /// <param name="roleGuid">The extracted role GUID, when available.</param>
+    /// <param name="roleDefinitionId">The raw role definition ID.</param>
+    /// <param name="resourceAddress">The referencing resource address.</param>
+    private static void RecordFailedResolution(
+        bool hasMapping,
+        string? roleGuid,
+        string? roleDefinitionId,
+        string? resourceAddress)
+    {
+        if (hasMapping || _diagnosticContext == null || string.IsNullOrWhiteSpace(resourceAddress))
+        {
+            return;
+        }
+
+        var id = string.IsNullOrWhiteSpace(roleGuid) ? roleDefinitionId : roleGuid;
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return;
+        }
+
+        _diagnosticContext.FailedResolutions.Add(new FailedResolution(
+            FailedResolutionType.RoleDefinition,
+            id,
+            resourceAddress,
+            "not found in mapping file or built-in roles"));
     }
 
     private static string ExtractGuid(string roleDefinitionId)

@@ -8,20 +8,16 @@ using System.Text.Json;
 namespace Oocx.TfPlan2Md.Platforms.Azure;
 
 /// <summary>
-/// Maps Azure role definition IDs to their human-readable role names.
-/// This partial class contains the role definitions lookup dictionary loaded from embedded JSON data.
-/// Related feature: docs/features/025-azure-role-definition-mapping/specification.md.
+/// Loads Azure role definitions from the embedded JSON resource file.
 /// </summary>
-public static partial class AzureRoleDefinitionMapper
+internal static class AzureRoleDefinitionsRegistry
 {
-    private static readonly FrozenDictionary<string, string> Roles = LoadRoleDefinitions();
-
     /// <summary>
     /// Loads Azure role definitions from the embedded JSON resource file.
     /// </summary>
     /// <returns>A frozen dictionary mapping role definition GUIDs to role names.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the embedded resource cannot be loaded or parsed.</exception>
-    private static FrozenDictionary<string, string> LoadRoleDefinitions()
+    internal static FrozenDictionary<string, string> Load()
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "Oocx.TfPlan2Md.Platforms.Azure.AzureRoleDefinitions.json";

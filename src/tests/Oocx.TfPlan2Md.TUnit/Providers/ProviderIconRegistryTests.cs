@@ -108,6 +108,6 @@ public class ProviderIconRegistryTests
 
         var icon = registry.TryGetIcon(new ServiceResolutionContext("azuredevops", "azuredevops_variable_group", "change", "add"));
 
-        icon.Should().Be("➕");
+        icon.Should().Be(ActionIcons.Add);
     }
 }

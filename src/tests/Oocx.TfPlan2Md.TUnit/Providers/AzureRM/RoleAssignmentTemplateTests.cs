@@ -23,7 +23,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.create_no_description");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azurerm_role_assignment <b><code>create_no_description</code></b> — ");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azurerm_role_assignment <b><code>create_no_description</code></b> — ");
         section.Should().Contain("Jane Doe");
         section.Should().Contain("| Attribute | Value |");
         section.Should().Contain($"| scope | `📁{Nbsp}rg-tfplan2md-demo` in subscription `🔑{Nbsp}sub-one` |");
@@ -37,7 +37,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.create_with_description");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azurerm_role_assignment <b><code>create_with_description</code></b> — ");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azurerm_role_assignment <b><code>create_with_description</code></b> — ");
         section.Should().Contain("DevOps Team");
         section.Should().Contain("Allow DevOps team to read logs from the storage account");
         section.Should().Contain($"| scope | Storage Account `🆔{Nbsp}sttfplan2mdlogs-with-extended-name-1234567890` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `🔑{Nbsp}sub-one` |");
@@ -51,7 +51,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.update_assignment");
 
-        section.Should().Contain($"<summary>🔄{Nbsp}azurerm_role_assignment <b><code>update_assignment</code></b> — ");
+        section.Should().Contain($"<summary>{ActionIcons.Update}{Nbsp}azurerm_role_assignment <b><code>update_assignment</code></b> — ");
         section.Should().Contain("Security Team");
         section.Should().Contain("| Attribute | Before | After |");
         section.Should().Contain($"| scope | Storage Account `🆔{Nbsp}sttfplan2mdlogs` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `🔑{Nbsp}sub-one` | Storage Account `🆔{Nbsp}sttfplan2mddata` in resource group `📁{Nbsp}rg-tfplan2md-demo` of subscription `🔑{Nbsp}sub-one` |");
@@ -78,7 +78,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.replace_assignment");
 
-        section.Should().Contain($"<summary>♻️{Nbsp}azurerm_role_assignment <b><code>replace_assignment</code></b> — ");
+        section.Should().Contain($"<summary>{ActionIcons.Replace}{Nbsp}azurerm_role_assignment <b><code>replace_assignment</code></b> — ");
         section.Should().Contain("Custom Contributor Long Name 1234567890");
         section.Should().Contain("| Attribute | Before | After |");
         section.Should().Contain($"| role_definition_id | `🛡️{Nbsp}Reader` (`acdd72a7-3385-48ef-bd42-f606fba81ae7`) | `🛡️{Nbsp}Custom Contributor Long Name 1234567890` |");
@@ -90,7 +90,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azurerm_role_assignment.delete_assignment");
 
-        section.Should().Contain($"<summary>❌{Nbsp}azurerm_role_assignment <b><code>delete_assignment</code></b> — ");
+        section.Should().Contain($"<summary>{ActionIcons.Delete}{Nbsp}azurerm_role_assignment <b><code>delete_assignment</code></b> — ");
         section.Should().Contain("Contributor");
         section.Should().Contain("| Attribute | Value |");
         section.Should().Contain($"| principal_id | `👤{Nbsp}John Doe (User)` [`33333333-3333-3333-3333-333333333333`] |");
@@ -102,7 +102,7 @@ public class RoleAssignmentTemplateTests
         var markdown = Render(new UnmappedPrincipalMapper());
         var section = ExtractSection(markdown, "azurerm_role_assignment.unmapped_principal");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azurerm_role_assignment <b><code>unmapped_principal</code></b> — ");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azurerm_role_assignment <b><code>unmapped_principal</code></b> — ");
         section.Should().Contain("Extremely Verbose Custom Role Name For Long Output Validation 1234567890");
         section.Should().Contain("Extremely Verbose Custom Role Name For Long Output Validation 1234567890");
     }

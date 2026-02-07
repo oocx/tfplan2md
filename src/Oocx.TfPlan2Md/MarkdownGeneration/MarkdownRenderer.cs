@@ -60,7 +60,7 @@ internal class MarkdownRenderer
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
-        _iconProviderRegistry = iconProviderRegistry;
+        _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
         _templateLoader = new ScribanTemplateLoader(
             coreTemplateResourcePrefix: TemplateResourcePrefix,
             providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
@@ -88,7 +88,7 @@ internal class MarkdownRenderer
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
-        _iconProviderRegistry = iconProviderRegistry;
+        _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
         _templateLoader = new ScribanTemplateLoader(
             customTemplateDirectory,
             coreTemplateResourcePrefix: TemplateResourcePrefix,
@@ -158,6 +158,25 @@ internal class MarkdownRenderer
         }
 
         return "Unknown template source";
+    }
+
+    /// <summary>
+    /// Builds an icon provider registry from the configured providers when not supplied explicitly.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
+    /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
+    private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
+        Providers.ProviderRegistry? providerRegistry)
+    {
+        if (providerRegistry is null)
+        {
+            return null;
+        }
+
+        var registry = new MarkdownGeneration.Services.IconProviderRegistry();
+        providerRegistry.RegisterAllIconProviders(registry);
+        return registry;
     }
 
     /// <summary>

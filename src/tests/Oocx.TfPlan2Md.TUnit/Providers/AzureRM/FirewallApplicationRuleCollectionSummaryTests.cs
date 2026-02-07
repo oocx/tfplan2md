@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using TUnit.Core;
 
@@ -22,7 +23,7 @@ public class FirewallApplicationRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("➕", "`allow-github`")
+                CreateChangeRow(ActionIcons.Add, "`allow-github`")
             ]
         };
 
@@ -41,7 +42,7 @@ public class FirewallApplicationRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("⏺️", "`allow-github`")
+                CreateChangeRow(ActionIcons.Unchanged, "`allow-github`")
             ]
         };
 
@@ -60,17 +61,17 @@ public class FirewallApplicationRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("➕", "`allow-github`"),
-                CreateChangeRow("🔄", "`allow-microsoft`"),
-                CreateChangeRow("❌", "`allow-old-site`"),
-                CreateChangeRow("➕", "`allow-azure`")
+                CreateChangeRow(ActionIcons.Add, "`allow-github`"),
+                CreateChangeRow(ActionIcons.Update, "`allow-microsoft`"),
+                CreateChangeRow(ActionIcons.Delete, "`allow-old-site`"),
+                CreateChangeRow(ActionIcons.Add, "`allow-azure`")
             ]
         };
 
         var summary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(model, "update");
 
         summary.Should().Be(
-            $"4🔧{Nbsp}➕{Nbsp}<code>allow-github</code>, 🔄{Nbsp}<code>allow-microsoft</code>, ❌{Nbsp}<code>allow-old-site</code>, +1 more");
+            $"4🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-github</code>, {ActionIcons.Update}{Nbsp}<code>allow-microsoft</code>, {ActionIcons.Delete}{Nbsp}<code>allow-old-site</code>, +1 more");
     }
 
     /// <summary>
@@ -83,13 +84,13 @@ public class FirewallApplicationRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("➕", "allow-github")
+                CreateChangeRow(ActionIcons.Add, "allow-github")
             ]
         };
 
         var summary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(model, "update");
 
-        summary.Should().Be($"1🔧{Nbsp}➕{Nbsp}<code>allow-github</code>");
+        summary.Should().Be($"1🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-github</code>");
     }
 
     /// <summary>

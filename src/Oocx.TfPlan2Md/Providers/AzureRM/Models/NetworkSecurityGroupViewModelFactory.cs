@@ -247,7 +247,7 @@ internal static class NetworkSecurityGroupViewModelFactory
     {
         return new SecurityRuleChangeRowViewModel
         {
-            Change = "➕",
+            Change = ActionIcons.Add,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
             Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
@@ -271,7 +271,7 @@ internal static class NetworkSecurityGroupViewModelFactory
     {
         return new SecurityRuleChangeRowViewModel
         {
-            Change = "❌",
+            Change = ActionIcons.Delete,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
             Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
@@ -295,7 +295,7 @@ internal static class NetworkSecurityGroupViewModelFactory
     {
         return new SecurityRuleChangeRowViewModel
         {
-            Change = "⏺️",
+            Change = ActionIcons.Unchanged,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Priority = FormatAttributeValueTable("priority", rule.Priority, providerName),
             Direction = FormatAttributeValueTable("direction", rule.Direction, providerName),
@@ -327,7 +327,7 @@ internal static class NetworkSecurityGroupViewModelFactory
 
         return new SecurityRuleChangeRowViewModel
         {
-            Change = "🔄",
+            Change = ActionIcons.Update,
             Name = FormatAttributeValueTable("name", after.Name, providerName),
             Priority = FormatDiff(before.Priority, after.Priority, format),
             Direction = FormatDiff(before.Direction, after.Direction, format),

@@ -95,7 +95,7 @@ public class ReportModelBuilderSummaryTests
             .First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
 
         update.ChangedAttributesSummary.Should().Be(
-            $"3🔧{Nbsp}➕{Nbsp}<code>🆔{Nbsp}allow-dns</code>, 🔄{Nbsp}<code>🆔{Nbsp}allow-http</code>, ❌{Nbsp}<code>🆔{Nbsp}allow-ssh-old</code>");
+            $"3🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>🆔{Nbsp}allow-dns</code>, {ActionIcons.Update}{Nbsp}<code>🆔{Nbsp}allow-http</code>, {ActionIcons.Delete}{Nbsp}<code>🆔{Nbsp}allow-ssh-old</code>");
     }
 
     [Test]

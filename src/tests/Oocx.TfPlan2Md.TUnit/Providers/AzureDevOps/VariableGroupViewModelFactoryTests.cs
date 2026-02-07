@@ -203,7 +203,8 @@ public class VariableGroupViewModelFactoryTests
 
         var addedVar = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`VAR_B`");
         addedVar.Should().NotBeNull();
-        addedVar!.Change.Should().Be("➕");
+        addedVar!.Change.Should().Be("add");
+        addedVar.ChangeIcon.Should().Be(ActionIcons.Add);
         addedVar.Value.Should().Be("`value-b`");
         addedVar.Enabled.Should().Be("`true`");
     }
@@ -253,7 +254,8 @@ public class VariableGroupViewModelFactoryTests
         // Find APP_VERSION (regular variable)
         var appVersion = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`APP_VERSION`");
         appVersion.Should().NotBeNull();
-        appVersion!.Change.Should().Be("🔄");
+        appVersion!.Change.Should().Be("update");
+        appVersion.ChangeIcon.Should().Be(ActionIcons.Update);
 
         // Value is unchanged - shows as single value
         appVersion.Value.Should().Contain("1.0.0");
@@ -276,7 +278,8 @@ public class VariableGroupViewModelFactoryTests
         // Find SECRET_KEY (secret variable)
         var secretKey = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`SECRET_KEY`");
         secretKey.Should().NotBeNull();
-        secretKey!.Change.Should().Be("🔄");
+        secretKey!.Change.Should().Be("update");
+        secretKey.ChangeIcon.Should().Be(ActionIcons.Update);
         secretKey.Value.Should().Be("`(sensitive / hidden)`"); // Secrets always masked
 
         // Enabled should show diff with placeholder for null

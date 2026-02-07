@@ -162,10 +162,10 @@ internal partial class ReportModelBuilder
 
     private static string GetActionSymbol(string action) => action switch
     {
-        CreateAction => "➕",
-        DeleteAction => "❌",
-        UpdateAction => "🔄",
-        ReplaceAction => "♻️",
-        _ => " "
+        CreateAction => ActionIcons.Add,
+        DeleteAction => ActionIcons.Delete,
+        UpdateAction => ActionIcons.Update,
+        ReplaceAction => ActionIcons.Replace,
+        _ => ActionIcons.NoOp
     };
 }

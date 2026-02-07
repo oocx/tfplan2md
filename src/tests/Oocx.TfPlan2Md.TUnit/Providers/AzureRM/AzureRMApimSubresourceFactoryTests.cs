@@ -54,13 +54,13 @@ public class AzureRMApimSubresourceFactoryTests
                 Name = resourceChange.Name,
                 ProviderName = resourceChange.ProviderName,
                 Action = "create",
-                ActionSymbol = "➕",
+                ActionSymbol = ActionIcons.Add,
                 AttributeChanges = []
             };
             factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null);
 
             model.SummaryHtml.Should().Be(
-                $"➕{Nbsp}{resourceType} <b><code>this</code></b> — <code>🆔{Nbsp}sample</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim</code>");
+                $"{ActionIcons.Add}{Nbsp}{resourceType} <b><code>this</code></b> — <code>🆔{Nbsp}sample</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim</code>");
         }
     }
 }

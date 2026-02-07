@@ -83,12 +83,12 @@ public class MarkdownRendererNsgTemplateTests
         var result = RenderNsgPlan();
         var normalized = Normalize(result);
 
-        normalized.Should().Contain("| ➕ | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow HTTPS traffic |");
+        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow HTTPS traffic |");
         normalized.Should().Contain("allow-http");
         normalized.Should().Contain("10.0.2.0/24");
         normalized.Should().Contain("alternate HTTP");
-        normalized.Should().Contain("| ❌ | 🆔 allow-ssh | 120");
-        normalized.Should().Contain("| ⏺️ | 🆔 allow-dns | 130 | ⬆️ Outbound | ✅ Allow | 📨 UDP | ✳️ | ✳️ | 🌐 168.63.129.16 | 🔌 53 | Azure DNS |");
+        normalized.Should().Contain($"| {ActionIcons.Delete} | 🆔 allow-ssh | 120");
+        normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-dns | 130 | ⬆️ Outbound | ✅ Allow | 📨 UDP | ✳️ | ✳️ | 🌐 168.63.129.16 | 🔌 53 | Azure DNS |");
     }
 
     [Test]
@@ -97,11 +97,11 @@ public class MarkdownRendererNsgTemplateTests
         var result = RenderNsgPlan();
         var normalized = Normalize(result);
 
-        var addedIndex = normalized.IndexOf("| ➕ | 🆔 allow-https | 100", StringComparison.Ordinal);
-        var modifiedIndex = normalized.IndexOf("| 🔄 | 🆔 allow-http | 110", StringComparison.Ordinal);
-        var removedIndex = normalized.IndexOf("| ❌ | 🆔 allow-ssh | 120", StringComparison.Ordinal);
-        var unchangedDnsIndex = normalized.IndexOf("| ⏺️ | 🆔 allow-dns | 130", StringComparison.Ordinal);
-        var unchangedMonitoringIndex = normalized.IndexOf("| ⏺️ | 🆔 allow-monitoring | 140", StringComparison.Ordinal);
+        var addedIndex = normalized.IndexOf($"| {ActionIcons.Add} | 🆔 allow-https | 100", StringComparison.Ordinal);
+        var modifiedIndex = normalized.IndexOf($"| {ActionIcons.Update} | 🆔 allow-http | 110", StringComparison.Ordinal);
+        var removedIndex = normalized.IndexOf($"| {ActionIcons.Delete} | 🆔 allow-ssh | 120", StringComparison.Ordinal);
+        var unchangedDnsIndex = normalized.IndexOf($"| {ActionIcons.Unchanged} | 🆔 allow-dns | 130", StringComparison.Ordinal);
+        var unchangedMonitoringIndex = normalized.IndexOf($"| {ActionIcons.Unchanged} | 🆔 allow-monitoring | 140", StringComparison.Ordinal);
 
         addedIndex.Should().BeGreaterThanOrEqualTo(0);
         modifiedIndex.Should().BeGreaterThan(addedIndex);
@@ -120,9 +120,9 @@ public class MarkdownRendererNsgTemplateTests
         normalized.Should().Contain("allow-http").And.Contain("10.0.2.0/24");
 
         // Unchanged rule with plural addresses should render the joined list
-        normalized.Should().Contain("| ⏺️ | 🆔 allow-monitoring | 140 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 10.0.3.0/24, 10.0.4.0/24 | ✳️ | 🌐 10.0.10.0/24 | 🔌 443 | Monitoring agents |");
+        normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-monitoring | 140 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 10.0.3.0/24, 10.0.4.0/24 | ✳️ | 🌐 10.0.10.0/24 | 🔌 443 | Monitoring agents |");
 
         // Wildcards remain visible
-        normalized.Should().Contain("| ➕ | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow HTTPS traffic |");
+        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow HTTPS traffic |");
     }
 }

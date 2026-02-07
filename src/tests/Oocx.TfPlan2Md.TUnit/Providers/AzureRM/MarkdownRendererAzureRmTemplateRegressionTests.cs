@@ -50,8 +50,8 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
             Type = "azurerm_network_security_group",
             ProviderName = "registry.terraform.io/hashicorp/azurerm",
             Action = "create",
-            ActionSymbol = "➕",
-            SummaryHtml = "➕ azurerm_network_security_group <b><code>empty</code></b>",
+            ActionSymbol = ActionIcons.Add,
+            SummaryHtml = $"{ActionIcons.Add} azurerm_network_security_group <b><code>empty</code></b>",
             AttributeChanges =
             [
                 new AttributeChangeModel
@@ -84,8 +84,8 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
             Type = "azurerm_firewall_network_rule_collection",
             ProviderName = "registry.terraform.io/hashicorp/azurerm",
             Action = "create",
-            ActionSymbol = "➕",
-            SummaryHtml = "➕ azurerm_firewall_network_rule_collection <b><code>empty</code></b>",
+            ActionSymbol = ActionIcons.Add,
+            SummaryHtml = $"{ActionIcons.Add} azurerm_firewall_network_rule_collection <b><code>empty</code></b>",
             AttributeChanges =
             [
                 new AttributeChangeModel

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using TUnit.Core;
 
@@ -22,7 +23,7 @@ public class FirewallNetworkRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("➕", "`allow-dns`")
+                CreateChangeRow(ActionIcons.Add, "`allow-dns`")
             ]
         };
 
@@ -41,7 +42,7 @@ public class FirewallNetworkRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("⏺️", "`allow-dns`")
+                CreateChangeRow(ActionIcons.Unchanged, "`allow-dns`")
             ]
         };
 
@@ -60,17 +61,17 @@ public class FirewallNetworkRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("➕", "`allow-dns`"),
-                CreateChangeRow("🔄", "`allow-http`"),
-                CreateChangeRow("❌", "`allow-ssh-old`"),
-                CreateChangeRow("➕", "`allow-redis`")
+                CreateChangeRow(ActionIcons.Add, "`allow-dns`"),
+                CreateChangeRow(ActionIcons.Update, "`allow-http`"),
+                CreateChangeRow(ActionIcons.Delete, "`allow-ssh-old`"),
+                CreateChangeRow(ActionIcons.Add, "`allow-redis`")
             ]
         };
 
         var summary = FirewallNetworkRuleCollectionViewModelFactory.BuildChangedAttributesSummary(model, "update");
 
         summary.Should().Be(
-            $"4🔧{Nbsp}➕{Nbsp}<code>allow-dns</code>, 🔄{Nbsp}<code>allow-http</code>, ❌{Nbsp}<code>allow-ssh-old</code>, +1 more");
+            $"4🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-dns</code>, {ActionIcons.Update}{Nbsp}<code>allow-http</code>, {ActionIcons.Delete}{Nbsp}<code>allow-ssh-old</code>, +1 more");
     }
 
     /// <summary>
@@ -83,13 +84,13 @@ public class FirewallNetworkRuleCollectionSummaryTests
         {
             RuleChanges =
             [
-                CreateChangeRow("➕", "allow-dns")
+                CreateChangeRow(ActionIcons.Add, "allow-dns")
             ]
         };
 
         var summary = FirewallNetworkRuleCollectionViewModelFactory.BuildChangedAttributesSummary(model, "update");
 
-        summary.Should().Be($"1🔧{Nbsp}➕{Nbsp}<code>allow-dns</code>");
+        summary.Should().Be($"1🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-dns</code>");
     }
 
     /// <summary>

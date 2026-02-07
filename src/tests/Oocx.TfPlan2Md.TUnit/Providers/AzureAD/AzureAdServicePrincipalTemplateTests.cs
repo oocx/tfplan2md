@@ -21,7 +21,7 @@ public class AzureAdServicePrincipalTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_service_principal.terraform_spn");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_service_principal <b><code>terraform_spn</code></b> — <code>💻{Nbsp}terraform-spn</code> (<code>🆔{Nbsp}app-123-456</code>) Terraform automation service principal</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_service_principal <b><code>terraform_spn</code></b> — <code>💻{Nbsp}terraform-spn</code> (<code>🆔{Nbsp}app-123-456</code>) Terraform automation service principal</summary>");
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class AzureAdServicePrincipalTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_service_principal.no_description");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_service_principal <b><code>no_description</code></b> — <code>💻{Nbsp}automation-spn</code> (<code>🆔{Nbsp}app-789-000</code>)</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_service_principal <b><code>no_description</code></b> — <code>💻{Nbsp}automation-spn</code> (<code>🆔{Nbsp}app-789-000</code>)</summary>");
         section.Should().NotContain("Terraform automation service principal");
     }
 

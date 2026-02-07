@@ -45,7 +45,7 @@ public class AzureRMApimOperationFactoryTests
             Name = resourceChange.Name,
             ProviderName = resourceChange.ProviderName,
             Action = "create",
-            ActionSymbol = "➕",
+            ActionSymbol = ActionIcons.Add,
             AttributeChanges = []
         };
         var factory = new AzureRMApimApiOperationFactory();
@@ -53,6 +53,6 @@ public class AzureRMApimOperationFactoryTests
         factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null);
 
         model.SummaryHtml.Should().Be(
-            $"➕{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁{Nbsp}rg-apim-demo</code>");
+            $"{ActionIcons.Add}{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁{Nbsp}rg-apim-demo</code>");
     }
 }

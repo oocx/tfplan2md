@@ -502,7 +502,7 @@ public class ScribanHelpersAzApiTests
             Name = "test",
             ProviderName = "azapi",
             Action = "create",
-            ActionSymbol = "➕",
+            ActionSymbol = ActionIcons.Add,
             AttributeChanges = [],
             AfterJson = new ScriptObject
             {
@@ -542,7 +542,7 @@ public class ScribanHelpersAzApiTests
             Name = "test",
             ProviderName = "azapi",
             Action = "delete",
-            ActionSymbol = "❌",
+            ActionSymbol = ActionIcons.Delete,
             AttributeChanges = [],
             BeforeJson = new ScriptObject
             {
@@ -610,7 +610,7 @@ public class ScribanHelpersAzApiTests
             Name = "test",
             ProviderName = "azapi",
             Action = "create",
-            ActionSymbol = "➕",
+            ActionSymbol = ActionIcons.Add,
             AttributeChanges = [],
             AfterJson = new ScriptObject
             {

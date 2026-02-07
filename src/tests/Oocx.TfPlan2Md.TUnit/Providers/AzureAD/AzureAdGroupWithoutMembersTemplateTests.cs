@@ -21,7 +21,7 @@ public class AzureAdGroupWithoutMembersTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_group_without_members.external_group");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_group_without_members <b><code>external_group</code></b> — <code>👥{Nbsp}External Partners</code> (<code>🆔{Nbsp}External Partners Group</code>) External partner access</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_group_without_members <b><code>external_group</code></b> — <code>👥{Nbsp}External Partners</code> (<code>🆔{Nbsp}External Partners Group</code>) External partner access</summary>");
         section.Should().NotContain("❓");
     }
 
@@ -31,7 +31,7 @@ public class AzureAdGroupWithoutMembersTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_group_without_members.no_description");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_group_without_members <b><code>no_description</code></b> — <code>👥{Nbsp}Vendors</code> (<code>🆔{Nbsp}Vendors Group</code>)</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_group_without_members <b><code>no_description</code></b> — <code>👥{Nbsp}Vendors</code> (<code>🆔{Nbsp}Vendors Group</code>)</summary>");
         section.Should().NotContain("External partner access");
     }
 

@@ -50,7 +50,7 @@ public class AzureRMApimNamedValueFactoryTests
             Name = resourceChange.Name,
             ProviderName = resourceChange.ProviderName,
             Action = CreateAction,
-            ActionSymbol = "➕",
+            ActionSymbol = ActionIcons.Add,
             AttributeChanges = []
         };
         var factory = new AzureRMApimNamedValueFactory();
@@ -58,7 +58,7 @@ public class AzureRMApimNamedValueFactoryTests
         factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null);
 
         model.SummaryHtml.Should().Be(
-            $"➕{Nbsp}azurerm_api_management_named_value <b><code>this</code></b> — <code>🆔{Nbsp}IDP-WEB-CLIENT-ID</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim</code>");
+            $"{ActionIcons.Add}{Nbsp}azurerm_api_management_named_value <b><code>this</code></b> — <code>🆔{Nbsp}IDP-WEB-CLIENT-ID</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim</code>");
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class AzureRMApimNamedValueFactoryTests
             Name = resourceChange.Name,
             ProviderName = resourceChange.ProviderName,
             Action = CreateAction,
-            ActionSymbol = "➕",
+            ActionSymbol = ActionIcons.Add,
             AttributeChanges = new List<AttributeChangeModel>
             {
                 new()
@@ -144,7 +144,7 @@ public class AzureRMApimNamedValueFactoryTests
             Name = resourceChange.Name,
             ProviderName = resourceChange.ProviderName,
             Action = CreateAction,
-            ActionSymbol = "➕",
+            ActionSymbol = ActionIcons.Add,
             AttributeChanges = new List<AttributeChangeModel>
             {
                 new()

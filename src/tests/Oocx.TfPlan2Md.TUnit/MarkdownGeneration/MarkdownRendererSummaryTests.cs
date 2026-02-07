@@ -22,7 +22,7 @@ public class MarkdownRendererSummaryTests
         var markdown = renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain($"♻️{Nbsp}azurerm_subnet <b><code>db</code></b>");
+        markdown.Should().Contain($"{ActionIcons.Replace}{Nbsp}azurerm_subnet <b><code>db</code></b>");
     }
 
     [Test]

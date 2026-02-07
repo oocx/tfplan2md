@@ -21,7 +21,7 @@ public class AzureAdGroupMemberTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_group_member.group_to_user");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_group_member <b><code>group_to_user</code></b> — <code>👥{Nbsp}DevOps Team</code> (<code>group-001</code>) → <code>👤{Nbsp}Jane Doe</code> (<code>user-001</code>)</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_group_member <b><code>group_to_user</code></b> — <code>👥{Nbsp}DevOps Team</code> (<code>group-001</code>) → <code>👤{Nbsp}Jane Doe</code> (<code>user-001</code>)</summary>");
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class AzureAdGroupMemberTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_group_member.group_missing_member");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_group_member <b><code>group_missing_member</code></b> — <code>👥{Nbsp}Platform Team</code> (<code>group-002</code>)</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_group_member <b><code>group_missing_member</code></b> — <code>👥{Nbsp}Platform Team</code> (<code>group-002</code>)</summary>");
         section.Should().NotContain("→");
     }
 

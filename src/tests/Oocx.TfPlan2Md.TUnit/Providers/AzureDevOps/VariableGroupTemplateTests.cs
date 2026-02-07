@@ -48,7 +48,7 @@ public class VariableGroupTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuredevops_variable_group.create_basic");
         // Verify summary line
-        section.Should().Contain($"<summary>➕{Nbsp}azuredevops_variable_group <b><code>create_basic</code></b>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuredevops_variable_group <b><code>create_basic</code></b>");
         // Verify variable group name and description
         section.Should().Contain("**Variable Group:** <code>basic-vars</code>");
         section.Should().Contain("**Description:** <code>Basic variable group for testing</code>");
@@ -68,19 +68,19 @@ public class VariableGroupTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuredevops_variable_group.update_mixed");
         // Verify summary line
-        section.Should().Contain($"<summary>♻️{Nbsp}azuredevops_variable_group <b><code>update_mixed</code></b>");
+        section.Should().Contain($"<summary>{ActionIcons.Replace}{Nbsp}azuredevops_variable_group <b><code>update_mixed</code></b>");
         // Verify table structure (WITH Change column for update)
         section.Should().Contain("| Change | Name | Value | Enabled | Content Type | Expires |");
         section.Should().Contain("| ------ | ---- | ----- | ------- | ------------ | ------- |");
         // Verify added variable (➕)
-        section.Should().Contain("| ➕ | `NEW_VAR` |");
+        section.Should().Contain($"| {ActionIcons.Add} | `NEW_VAR` |");
         // Verify modified variable with diff (🔄)
-        section.Should().Contain("| 🔄 | `APP_VERSION` |");
+        section.Should().Contain($"| {ActionIcons.Update} | `APP_VERSION` |");
         // Should contain before/after diff with HTML styling
         section.Should().Contain("<span style=\"background-color: #fff5f5");
         section.Should().Contain("<span style=\"background-color: #f0fff4");
         // Verify removed variable (❌)
-        section.Should().Contain("| ❌ | `OLD_VAR` |");
+        section.Should().Contain($"| {ActionIcons.Delete} | `OLD_VAR` |");
     }
 
     [Test]
@@ -90,7 +90,7 @@ public class VariableGroupTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuredevops_variable_group.update_secret_metadata");
         // Verify secret variable row exists
-        section.Should().Contain("| 🔄 | `SECRET_KEY` |");
+        section.Should().Contain($"| {ActionIcons.Update} | `SECRET_KEY` |");
         // Verify value is masked (no diff shown for secret value)
         section.Should().Contain("`(sensitive / hidden)`");
         // Verify metadata changes are shown (enabled changed from false to true)
@@ -106,7 +106,7 @@ public class VariableGroupTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuredevops_variable_group.delete_basic");
         // Verify summary line
-        section.Should().Contain($"<summary>❌{Nbsp}azuredevops_variable_group <b><code>delete_basic</code></b>");
+        section.Should().Contain($"<summary>{ActionIcons.Delete}{Nbsp}azuredevops_variable_group <b><code>delete_basic</code></b>");
         // Verify section header for delete
         section.Should().Contain("#### Variables (being deleted)");
         // Verify table structure (NO Change column for delete)
@@ -158,7 +158,7 @@ public class VariableGroupTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuredevops_variable_group.empty_variables");
         // Verify summary still renders
-        section.Should().Contain($"<summary>➕{Nbsp}azuredevops_variable_group <b><code>empty_variables</code></b>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuredevops_variable_group <b><code>empty_variables</code></b>");
         // Verify variable group name renders
         section.Should().Contain("**Variable Group:** <code>empty-vars</code>");
         // Should not have variable table section (no variables to display)

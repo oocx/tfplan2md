@@ -80,7 +80,8 @@ internal partial class ReportModelBuilder(
     /// <summary>
     /// Registry for icon provider services.
     /// </summary>
-    private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry = iconProviderRegistry;
+    private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry =
+        iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
 
     /// <summary>
     /// Mapper for resolving Azure principal names.
@@ -132,6 +133,25 @@ internal partial class ReportModelBuilder(
         // Register provider-specific factories if a provider registry is available
         providerRegistry?.RegisterAllFactories(registry);
 
+        return registry;
+    }
+
+    /// <summary>
+    /// Builds an icon provider registry from the configured providers when not supplied explicitly.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
+    /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
+    private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
+        Providers.ProviderRegistry? providerRegistry)
+    {
+        if (providerRegistry is null)
+        {
+            return null;
+        }
+
+        var registry = new MarkdownGeneration.Services.IconProviderRegistry();
+        providerRegistry.RegisterAllIconProviders(registry);
         return registry;
     }
 }

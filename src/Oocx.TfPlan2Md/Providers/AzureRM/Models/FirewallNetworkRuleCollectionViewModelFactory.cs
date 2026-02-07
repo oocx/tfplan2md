@@ -73,7 +73,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
         }
 
         var changes = model.RuleChanges
-            .Where(change => !string.Equals(change.Change, "⏺️", StringComparison.Ordinal))
+            .Where(change => !string.Equals(change.Change, ActionIcons.Unchanged, StringComparison.Ordinal))
             .ToList();
 
         if (changes.Count == 0)
@@ -253,7 +253,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     {
         return new FirewallRuleChangeRowViewModel
         {
-            Change = "➕",
+            Change = ActionIcons.Add,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
@@ -270,7 +270,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     {
         return new FirewallRuleChangeRowViewModel
         {
-            Change = "❌",
+            Change = ActionIcons.Delete,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
@@ -287,7 +287,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
     {
         return new FirewallRuleChangeRowViewModel
         {
-            Change = "⏺️",
+            Change = ActionIcons.Unchanged,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList("protocol", rule.Protocols, providerName),
             SourceAddresses = FormatList("source_addresses", rule.SourceAddresses, providerName),
@@ -310,7 +310,7 @@ internal static class FirewallNetworkRuleCollectionViewModelFactory
 
         return new FirewallRuleChangeRowViewModel
         {
-            Change = "🔄",
+            Change = ActionIcons.Update,
             Name = FormatAttributeValueTable("name", after.Name, providerName),
             Protocols = FormatListDiff("protocol", before.Protocols, after.Protocols, providerName, format),
             SourceAddresses = FormatListDiff("source_addresses", before.SourceAddresses, after.SourceAddresses, providerName, format),

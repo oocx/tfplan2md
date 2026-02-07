@@ -54,10 +54,10 @@ public class ComprehensiveDemoTests
             .And.Contain("Module: `module.security`")
             .And.Contain("Module: `module.network.module.monitoring`");
 
-        markdown.Should().Contain("➕")
-            .And.Contain("🔄")
-            .And.Contain("♻️")
-            .And.Contain("❌");
+        markdown.Should().Contain(ActionIcons.Add)
+            .And.Contain(ActionIcons.Update)
+            .And.Contain(ActionIcons.Replace)
+            .And.Contain(ActionIcons.Delete);
 
         // Verify firewall rules are rendered with semantic diffing
         markdown.Should().Contain("azurerm_firewall_network_rule_collection")
@@ -91,10 +91,10 @@ public class ComprehensiveDemoTests
         var summary = _renderer.Render(model, "summary");
 
         summary.Should().Contain("Terraform Plan Summary")
-            .And.Contain("➕\u00A0Add | 15")
-            .And.Contain("🔄\u00A0Change | 6")
-            .And.Contain("♻️\u00A0Replace | 2")
-            .And.Contain("❌\u00A0Destroy | 3")
+            .And.Contain($"{ActionIcons.Add}\u00A0Add | 15")
+            .And.Contain($"{ActionIcons.Update}\u00A0Change | 6")
+            .And.Contain($"{ActionIcons.Replace}\u00A0Replace | 2")
+            .And.Contain($"{ActionIcons.Delete}\u00A0Destroy | 3")
             .And.Contain("Total | 26");
     }
 

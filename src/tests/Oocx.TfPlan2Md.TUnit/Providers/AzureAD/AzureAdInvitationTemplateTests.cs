@@ -21,7 +21,7 @@ public class AzureAdInvitationTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_invitation.external_user");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_invitation <b><code>external_user</code></b> — <code>📧{Nbsp}contractor@external.com</code> (<code>Guest</code>)</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_invitation <b><code>external_user</code></b> — <code>📧{Nbsp}contractor@external.com</code> (<code>Guest</code>)</summary>");
         section.Should().Contain($"| user_email_address | `📧{Nbsp}contractor@external.com` |");
     }
 

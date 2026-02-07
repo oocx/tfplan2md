@@ -75,7 +75,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
         }
 
         var changes = model.RuleChanges
-            .Where(change => !string.Equals(change.Change, "⏺️", StringComparison.Ordinal))
+            .Where(change => !string.Equals(change.Change, ActionIcons.Unchanged, StringComparison.Ordinal))
             .ToList();
 
         if (changes.Count == 0)
@@ -258,7 +258,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
     {
         return new FirewallApplicationRuleChangeRowViewModel
         {
-            Change = "➕",
+            Change = ActionIcons.Add,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList(rule.Protocols),
             SourceAddresses = FormatList(rule.SourceAddresses),
@@ -276,7 +276,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
     {
         return new FirewallApplicationRuleChangeRowViewModel
         {
-            Change = "❌",
+            Change = ActionIcons.Delete,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList(rule.Protocols),
             SourceAddresses = FormatList(rule.SourceAddresses),
@@ -294,7 +294,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
     {
         return new FirewallApplicationRuleChangeRowViewModel
         {
-            Change = "⏺️",
+            Change = ActionIcons.Unchanged,
             Name = FormatAttributeValueTable("name", rule.Name, providerName),
             Protocols = FormatList(rule.Protocols),
             SourceAddresses = FormatList(rule.SourceAddresses),
@@ -318,7 +318,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
 
         return new FirewallApplicationRuleChangeRowViewModel
         {
-            Change = "🔄",
+            Change = ActionIcons.Update,
             Name = FormatAttributeValueTable("name", after.Name, providerName),
             Protocols = FormatListDiff(before.Protocols, after.Protocols, format),
             SourceAddresses = FormatListDiff(before.SourceAddresses, after.SourceAddresses, format),

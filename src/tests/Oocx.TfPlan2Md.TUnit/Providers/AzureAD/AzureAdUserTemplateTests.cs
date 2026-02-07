@@ -21,7 +21,7 @@ public class AzureAdUserTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_user.jane");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_user <b><code>jane</code></b> — <code>👤{Nbsp}Jane Doe</code> (<code>🆔{Nbsp}jane.doe@example.com</code>) <code>📧{Nbsp}jane.doe@example.com</code></summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_user <b><code>jane</code></b> — <code>👤{Nbsp}Jane Doe</code> (<code>🆔{Nbsp}jane.doe@example.com</code>) <code>📧{Nbsp}jane.doe@example.com</code></summary>");
         section.Should().Contain($"| display_name | `👤{Nbsp}Jane Doe` |");
         section.Should().Contain($"| user_principal_name | `🆔{Nbsp}jane.doe@example.com` |");
         section.Should().Contain($"| mail | `📧{Nbsp}jane.doe@example.com` |");
@@ -33,7 +33,7 @@ public class AzureAdUserTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_user.no_mail");
 
-        section.Should().Contain($"<summary>➕{Nbsp}azuread_user <b><code>no_mail</code></b> — <code>👤{Nbsp}Alex Rivera</code> (<code>🆔{Nbsp}alex.rivera@example.com</code>)</summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_user <b><code>no_mail</code></b> — <code>👤{Nbsp}Alex Rivera</code> (<code>🆔{Nbsp}alex.rivera@example.com</code>)</summary>");
         section.Should().NotContain("📧");
     }
 

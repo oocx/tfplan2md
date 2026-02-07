@@ -228,16 +228,20 @@ internal static class AzureAdSummaryBuilder
             }
         }
 
-        var userIcon = ResolveIcon(model, "member_type", UserMemberType, iconProviderRegistry);
-        var groupIcon = ResolveIcon(model, "member_type", GroupMemberType, iconProviderRegistry);
-        var spIcon = ResolveIcon(model, "member_type", ServicePrincipalMemberType, iconProviderRegistry);
-        var unknownIcon = ResolveIcon(model, "member_type", UnknownMemberType, iconProviderRegistry);
+        var userIcon = ResolveMemberTypeIcon(model, UserMemberType, iconProviderRegistry);
+        var groupIcon = ResolveMemberTypeIcon(model, GroupMemberType, iconProviderRegistry);
+        var spIcon = ResolveMemberTypeIcon(model, ServicePrincipalMemberType, iconProviderRegistry);
+        var unknownIcon = ResolveMemberTypeIcon(model, UnknownMemberType, iconProviderRegistry);
 
-        var summaryCounts = $"{userCount} {userIcon} {groupCount} {groupIcon} {spCount} {spIcon}";
-        if (unknownCount > 0)
-        {
-            summaryCounts = $"{summaryCounts} {unknownCount} {unknownIcon}";
-        }
+        var summaryCounts = BuildMemberCountSummary(
+            userCount,
+            userIcon,
+            groupCount,
+            groupIcon,
+            spCount,
+            spIcon,
+            unknownCount,
+            unknownIcon);
 
         var nameSummary = string.Empty;
         if (!string.IsNullOrWhiteSpace(displayName))
@@ -510,6 +514,78 @@ internal static class AzureAdSummaryBuilder
 
         var context = new ServiceResolutionContext(model.ProviderName, model.Type, attributeName, value);
         return iconProviderRegistry.TryGetIcon(context) ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Resolves member type icons using the group member resource type rules.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="model">The resource change model.</param>
+    /// <param name="memberType">The member type label.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>The resolved icon or an empty string.</returns>
+    private static string ResolveMemberTypeIcon(
+        ResourceChangeModel model,
+        string memberType,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (iconProviderRegistry is null)
+        {
+            return string.Empty;
+        }
+
+        var context = new ServiceResolutionContext(model.ProviderName, GroupMemberResourceType, "member_type", memberType);
+        return iconProviderRegistry.TryGetIcon(context) ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Builds a member count summary string that uses non-breaking spaces after icons.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="userCount">Count of user members.</param>
+    /// <param name="userIcon">Icon for users.</param>
+    /// <param name="groupCount">Count of group members.</param>
+    /// <param name="groupIcon">Icon for groups.</param>
+    /// <param name="servicePrincipalCount">Count of service principal members.</param>
+    /// <param name="servicePrincipalIcon">Icon for service principals.</param>
+    /// <param name="unknownCount">Count of unknown members.</param>
+    /// <param name="unknownIcon">Icon for unknown members.</param>
+    /// <returns>Formatted summary string.</returns>
+    private static string BuildMemberCountSummary(
+        int userCount,
+        string userIcon,
+        int groupCount,
+        string groupIcon,
+        int servicePrincipalCount,
+        string servicePrincipalIcon,
+        int unknownCount,
+        string unknownIcon)
+    {
+        var summary = string.Concat(
+            FormatMemberCountSegment(userCount, userIcon),
+            FormatMemberCountSegment(groupCount, groupIcon),
+            FormatMemberCountSegment(servicePrincipalCount, servicePrincipalIcon));
+
+        if (unknownCount > 0)
+        {
+            summary = string.Concat(summary, FormatMemberCountSegment(unknownCount, unknownIcon));
+        }
+
+        return summary.TrimEnd(NonBreakingSpace[0]);
+    }
+
+    /// <summary>
+    /// Formats a single count segment with a non-breaking space after the icon.
+    /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+    /// </summary>
+    /// <param name="count">The member count.</param>
+    /// <param name="icon">The icon to render.</param>
+    /// <returns>Formatted segment.</returns>
+    private static string FormatMemberCountSegment(int count, string icon)
+    {
+        return string.IsNullOrWhiteSpace(icon)
+            ? count.ToString()
+            : $"{count} {icon}{NonBreakingSpace}";
     }
 
     /// <summary>

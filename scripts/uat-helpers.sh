@@ -19,12 +19,23 @@ if ! declare -F log_error >/dev/null 2>&1; then
   log_error() { echo "$*" >&2; }
 fi
 
-# validate_artifact <platform> <artifact-path-or-empty> <force:false|true>
+# validate_artifact <platform> <artifact-path-or-empty> [simulate:false|true] [force:false|true]
 # Returns: echoes the resolved artifact path on success; returns non-zero on failure
 validate_artifact() {
     local platform="${1:-}"
     local artifact="${2:-}"
-    local force="${3:-false}"
+    local simulate="false"
+    local force="false"
+
+    # Handle variable number of arguments (backwards compatibility)
+    if [[ $# -eq 3 ]]; then
+        # Called as: validate_artifact <platform> <artifact> <force>
+        force="$3"
+    elif [[ $# -ge 4 ]]; then
+        # Called as: validate_artifact <platform> <artifact> <simulate> <force>
+        simulate="$3"
+        force="$4"
+    fi
 
     if [[ -z "$platform" ]]; then
         log_error "validate_artifact: missing platform argument (github|azdo)"
@@ -57,8 +68,8 @@ validate_artifact() {
         return 1
     fi
 
-    # Block known minimal artifacts unless force is set
-    if [[ "$artifact" =~ (simulation|uat-simulation|minimal|uat-minimal) ]] && [[ "$force" != "true" ]]; then
+    # Block known minimal artifacts unless simulate or force is set
+    if [[ "$artifact" =~ (simulation|uat-simulation|minimal|uat-minimal) ]] && [[ "$simulate" != "true" ]] && [[ "$force" != "true" ]]; then
         log_error "Artifact appears to be a minimal/test artifact and should not be used for UAT: $artifact"
         log_error "Pick a real feature/comprehensive artifact, or override with UAT_FORCE=true."
         return 1

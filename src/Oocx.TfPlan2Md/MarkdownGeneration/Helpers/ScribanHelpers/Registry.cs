@@ -41,8 +41,8 @@ public static partial class ScribanHelpers
         scriptObject.Import("format_icon_value_table", new Func<string?, string>(FormatIconValueTable));
         scriptObject.Import("format_attribute_value_summary", new Func<string?, string?, string?, string>((name, value, provider) => FormatAttributeValueSummaryWithRegistry(name, value, provider, iconProviderRegistry)));
         scriptObject.Import("format_attribute_value_table", new Func<string?, string?, string?, string>((name, value, provider) => FormatAttributeValueTableWithRegistry(name, value, provider, iconProviderRegistry)));
+        scriptObject.Import("format_attribute_value_table_resource", new Func<string?, string?, string?, string?, string>((name, value, provider, resource) => FormatAttributeValueTableWithRegistryResource(name, value, provider, resource, iconProviderRegistry)));
         scriptObject.Import("format_attribute_value_plain", new Func<string?, string?, string?, string>((name, value, provider) => FormatAttributeValuePlainWithRegistry(name, value, provider, iconProviderRegistry)));
-        scriptObject.Import("get_icon", new Func<string?, string?, string?, string?, string>((provider, resource, name, value) => GetIconWithRegistry(provider, resource, name, value, iconProviderRegistry)));
         scriptObject.Import("large_attributes_summary", new Func<object?, string>(LargeAttributesSummary));
         scriptObject.Import("is_large_value", new Func<string?, string?, bool>(IsLargeValue));
         scriptObject.Import("azure_role_name", new Func<string?, string>(AzureRoleDefinitionMapper.GetRoleName));

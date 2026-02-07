@@ -3,38 +3,10 @@
      Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 ~}}
 <details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-{{~ state = change.after_json ? change.after_json : change.before_json ~}}
-{{~ display_name = state && state.display_name ? state.display_name : "" ~}}
-{{~ mail_nickname = state && state.mail_nickname ? state.mail_nickname : "" ~}}
-{{~ description = state && state.description ? state.description : "" ~}}
 
-{{~ summary_text = "" ~}}
-{{~ if display_name != "" ~}}
-{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
-{{~ summary_text = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
-{{~ end ~}}
-{{~ if mail_nickname != "" ~}}
-{{~ nickname_icon = get_icon(change.provider_name, change.type, "mail_nickname", mail_nickname) ~}}
-{{~ nickname_text = nickname_icon != "" ? "(" + format_icon_value_summary (nickname_icon + " " + mail_nickname) + ")" : "(" + format_code_summary(mail_nickname) + ")" ~}}
-{{~ if summary_text != "" ~}}
-{{~ summary_text = summary_text + " " + nickname_text ~}}
-{{~ else ~}}
-{{~ summary_text = nickname_text ~}}
-{{~ end ~}}
-{{~ end ~}}
-{{~ if description != "" ~}}
-{{~ if summary_text != "" ~}}
-{{~ summary_text = summary_text + " " + escape_markdown description ~}}
-{{~ else ~}}
-{{~ summary_text = escape_markdown description ~}}
-{{~ end ~}}
-{{~ end ~}}
-{{~ if summary_text == "" ~}}
-{{~ summary_text = format_code_summary(change.name) ~}}
-{{~ end ~}}
-
-<summary>{{ change.action_symbol }} azuread_group_without_members <b>{{ format_code_summary(change.name) }}</b> — {{ summary_text }}</summary>
+<summary>{{ change.summary_html }}</summary>
 <br>
+
 {{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}

@@ -3,37 +3,10 @@
      Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 ~}}
 <details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-{{~ state = change.after_json ? change.after_json : change.before_json ~}}
-{{~ group_id = state && state.group_object_id ? state.group_object_id : "" ~}}
-{{~ member_id = state && state.member_object_id ? state.member_object_id : "" ~}}
-{{~ group_info = azure_principal_info group_id "Group" change.address ~}}
-{{~ group_name = group_info.name ~}}
-{{~ group_is_mapped = group_name != "" && group_name != group_id ~}}
-{{~ if group_is_mapped ~}}
-{{~ group_icon = get_icon(change.provider_name, change.type, "group_name", group_name) ~}}
-{{~ group_summary = group_icon != "" ? format_icon_value_summary (group_icon + " " + group_name) : format_code_summary(group_name) ~}}
-{{~ group_summary = group_summary + " (" + format_code_summary(group_id) + ")" ~}}
-{{~ else ~}}
-{{~ group_summary = format_code_summary(group_id) ~}}
-{{~ end ~}}
-{{~ if member_id != "" ~}}
-{{~ member_type_info = try_get_principal_type member_id ~}}
-{{~ member_type = member_type_info.found ? member_type_info.type : "" ~}}
-{{~ member_info = azure_principal_info member_id member_type change.address ~}}
-{{~ member_name = member_info.name ~}}
-{{~ member_is_mapped = member_name != "" && member_name != member_id ~}}
-{{~ member_icon = get_icon(change.provider_name, change.type, "member_type", member_type) ~}}
-{{~ if member_is_mapped && member_icon != "" ~}}
-{{~ member_summary = format_icon_value_summary (member_icon + " " + member_name) ~}}
-{{~ member_summary = member_summary + " (" + format_code_summary(member_id) + ")" ~}}
-{{~ else if member_is_mapped ~}}
-{{~ member_summary = format_code_summary(member_name) + " (" + format_code_summary(member_id) + ")" ~}}
-{{~ else ~}}
-{{~ member_summary = format_code_summary(member_id) ~}}
-{{~ end ~}}
-{{~ end ~}}
-<summary>{{ change.action_symbol }} azuread_group_member <b>{{ format_code_summary(change.name) }}</b> — {{ group_summary }}{{ if member_id != "" }} → {{ member_summary }}{{ end }}</summary>
+
+<summary>{{ change.summary_html }}</summary>
 <br>
+
 {{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}

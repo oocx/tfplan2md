@@ -4,6 +4,7 @@ using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using TUnit.Core;
 
@@ -54,7 +55,7 @@ public class AzureRMApimNamedValueFactoryTests
         };
         var factory = new AzureRMApimNamedValueFactory();
 
-        factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges);
+        factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null);
 
         model.SummaryHtml.Should().Be(
             $"➕{Nbsp}azurerm_api_management_named_value <b><code>this</code></b> — <code>🆔{Nbsp}IDP-WEB-CLIENT-ID</code> <code>apim-demo</code> in <code>📁{Nbsp}rg-apim</code>");
@@ -105,7 +106,7 @@ public class AzureRMApimNamedValueFactoryTests
         };
         var factory = new AzureRMApimNamedValueFactory();
 
-        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges);
+        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null);
 
         var valueChange = model.AttributeChanges.Single(item => item.Name == ValueAttributeName);
         valueChange.IsSensitive.Should().BeFalse();
@@ -158,7 +159,7 @@ public class AzureRMApimNamedValueFactoryTests
         };
         var factory = new AzureRMApimNamedValueFactory();
 
-        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges);
+        factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null);
 
         var valueChange = model.AttributeChanges.Single(item => item.Name == ValueAttributeName);
         valueChange.IsSensitive.Should().BeTrue();

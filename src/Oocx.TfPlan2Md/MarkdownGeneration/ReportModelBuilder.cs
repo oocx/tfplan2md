@@ -1,6 +1,7 @@
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -82,6 +83,11 @@ internal partial class ReportModelBuilder(
     private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry = iconProviderRegistry;
 
     /// <summary>
+    /// Mapper for resolving Azure principal names.
+    /// </summary>
+    private readonly IPrincipalMapper _principalMapper = principalMapper ?? new NullPrincipalMapper();
+
+    /// <summary>
     /// Ensures service registries are accessed so they remain wired for later use.
     /// </summary>
     private void EnsureServiceRegistriesInitialized()
@@ -94,7 +100,7 @@ internal partial class ReportModelBuilder(
     /// Registry for resource-specific view model factories.
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
-        CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new Platforms.Azure.NullPrincipalMapper(), providerRegistry);
+        CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new NullPrincipalMapper(), providerRegistry);
 
     /// <summary>
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.

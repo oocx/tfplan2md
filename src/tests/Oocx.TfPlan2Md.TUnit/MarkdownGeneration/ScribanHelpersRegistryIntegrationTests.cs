@@ -50,27 +50,6 @@ public class ScribanHelpersRegistryIntegrationTests
         output.Should().Be("`⭐\u00A0value`");
     }
 
-    [Test]
-    public void RegisterHelpers_GetIcon_UsesIconProviderRegistry()
-    {
-        var registry = new IconProviderRegistry();
-        registry.Register(new MatchPattern(null, null, null, null), new FixedIconProvider("⭐"));
-
-        var output = RenderTemplate(
-            "{{ get_icon provider resource name value }}",
-            new ScriptObject
-            {
-                ["provider"] = "test",
-                ["resource"] = "resource",
-                ["name"] = "name",
-                ["value"] = "value"
-            },
-            null,
-            registry);
-
-        output.Should().Be("⭐");
-    }
-
     private static string RenderTemplate(
         string templateText,
         ScriptObject scriptObject,

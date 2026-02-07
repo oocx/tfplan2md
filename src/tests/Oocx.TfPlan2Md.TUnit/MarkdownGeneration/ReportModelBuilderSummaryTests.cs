@@ -228,8 +228,12 @@ public class ReportModelBuilderSummaryTests
             ResourceChangeModel model,
             ResourceChange resourceChange,
             string action,
-            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges)
+            System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges,
+            Oocx.TfPlan2Md.Platforms.Azure.IPrincipalMapper principalMapper,
+            Oocx.TfPlan2Md.MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry)
         {
+            _ = principalMapper;
+            _ = iconProviderRegistry;
             model.SummaryHtml = OverrideSummaryHtml;
         }
     }

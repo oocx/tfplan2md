@@ -1,5 +1,6 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Providers.AzureAD.Models;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.Providers.AzureAD;
@@ -36,8 +37,14 @@ internal sealed class AzureADModule : IProviderModule
     /// <param name="registry">The factory registry to register with.</param>
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
-        // Azure AD provider currently uses templates for rendering
-        // Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
+        var summaryFactory = new AzureAdSummaryFactory();
+
+        registry.RegisterFactory("azuread_user", summaryFactory);
+        registry.RegisterFactory("azuread_group", summaryFactory);
+        registry.RegisterFactory("azuread_group_without_members", summaryFactory);
+        registry.RegisterFactory("azuread_group_member", summaryFactory);
+        registry.RegisterFactory("azuread_service_principal", summaryFactory);
+        registry.RegisterFactory("azuread_invitation", summaryFactory);
     }
 
     /// <summary>

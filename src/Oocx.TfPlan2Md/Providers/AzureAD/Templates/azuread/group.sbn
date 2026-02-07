@@ -3,54 +3,10 @@
      Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 ~}}
 <details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-{{~ state = change.after_json ? change.after_json : change.before_json ~}}
-{{~ display_name = state && state.display_name ? state.display_name : "" ~}}
-{{~ mail_nickname = state && state.mail_nickname ? state.mail_nickname : "" ~}}
-{{~ description = state && state.description ? state.description : "" ~}}
-{{~ members = state && state.members ? state.members : [] ~}}
 
-{{~ user_count = 0 ~}}
-{{~ group_count = 0 ~}}
-{{~ sp_count = 0 ~}}
-{{~ unknown_count = 0 ~}}
-{{~ for member_id in members ~}}
-{{~ member_type_info = try_get_principal_type member_id ~}}
-{{~ if member_type_info.found && member_type_info.type == "User" ~}}
-{{~ user_count = user_count + 1 ~}}
-{{~ else if member_type_info.found && member_type_info.type == "Group" ~}}
-{{~ group_count = group_count + 1 ~}}
-{{~ else if member_type_info.found && member_type_info.type == "ServicePrincipal" ~}}
-{{~ sp_count = sp_count + 1 ~}}
-{{~ else ~}}
-{{~ unknown_count = unknown_count + 1 ~}}
-{{~ end ~}}
-{{~ end ~}}
-
-{{~ user_icon = get_icon(change.provider_name, change.type, "member_type", "User") ~}}
-{{~ group_icon = get_icon(change.provider_name, change.type, "member_type", "Group") ~}}
-{{~ sp_icon = get_icon(change.provider_name, change.type, "member_type", "ServicePrincipal") ~}}
-{{~ unknown_icon = get_icon(change.provider_name, change.type, "member_type", "Unknown") ~}}
-{{~ summary_counts = user_count + " " + user_icon + " " + group_count + " " + group_icon + " " + sp_count + " " + sp_icon ~}}
-{{~ if unknown_count > 0 ~}}
-{{~ summary_counts = summary_counts + " " + unknown_count + " " + unknown_icon ~}}
-{{~ end ~}}
-
-{{~ name_summary = "" ~}}
-{{~ if display_name != "" ~}}
-{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
-{{~ name_summary = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
-{{~ end ~}}
-{{~ if mail_nickname != "" ~}}
-{{~ nickname_icon = get_icon(change.provider_name, change.type, "mail_nickname", mail_nickname) ~}}
-{{~ nickname_value = nickname_icon != "" ? format_icon_value_summary (nickname_icon + " " + mail_nickname) : format_code_summary(mail_nickname) ~}}
-{{~ name_summary = name_summary + " (" + nickname_value + ")" ~}}
-{{~ end ~}}
-{{~ if description != "" ~}}
-{{~ name_summary = name_summary + " " + escape_markdown description ~}}
-{{~ end ~}}
-
-<summary>{{ change.action_symbol }} azuread_group <b>{{ format_code_summary(change.name) }}</b> — {{ name_summary }} | {{ format_code_summary(summary_counts) }}</summary>
+<summary>{{ change.summary_html }}</summary>
 <br>
+
 {{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}

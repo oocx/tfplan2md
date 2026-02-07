@@ -1,4 +1,6 @@
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Models;
 
@@ -19,9 +21,13 @@ internal interface IResourceViewModelFactory
     /// <param name="resourceChange">The resource change data from the Terraform plan.</param>
     /// <param name="action">The determined action for this resource (create, update, delete, replace).</param>
     /// <param name="attributeChanges">Pre-computed attribute changes for the resource.</param>
+    /// <param name="principalMapper">Mapper used for Azure principal resolution.</param>
+    /// <param name="iconProviderRegistry">Optional registry of icon providers for summary rendering.</param>
     void ApplyViewModel(
         ResourceChangeModel model,
         ResourceChange resourceChange,
         string action,
-        System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges);
+        System.Collections.Generic.IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry);
 }

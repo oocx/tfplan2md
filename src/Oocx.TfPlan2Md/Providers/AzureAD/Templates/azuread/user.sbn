@@ -3,40 +3,10 @@
      Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 ~}}
 <details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-{{~ state = change.after_json ? change.after_json : change.before_json ~}}
-{{~ display_name = state && state.display_name ? state.display_name : "" ~}}
-{{~ upn = state && state.user_principal_name ? state.user_principal_name : "" ~}}
-{{~ mail = state && state.mail ? state.mail : "" ~}}
 
-{{~ summary_text = "" ~}}
-{{~ if display_name != "" ~}}
-{{~ display_icon = get_icon(change.provider_name, change.type, "display_name", display_name) ~}}
-{{~ summary_text = display_icon != "" ? format_icon_value_summary (display_icon + " " + display_name) : format_code_summary(display_name) ~}}
-{{~ end ~}}
-{{~ if upn != "" ~}}
-{{~ upn_icon = get_icon(change.provider_name, change.type, "user_principal_name", upn) ~}}
-{{~ upn_text = upn_icon != "" ? "(" + format_icon_value_summary (upn_icon + " " + upn) + ")" : "(" + format_code_summary(upn) + ")" ~}}
-{{~ if summary_text != "" ~}}
-{{~ summary_text = summary_text + " " + upn_text ~}}
-{{~ else ~}}
-{{~ summary_text = upn_text ~}}
-{{~ end ~}}
-{{~ end ~}}
-{{~ if mail != "" ~}}
-{{~ mail_icon = get_icon(change.provider_name, change.type, "mail", mail) ~}}
-{{~ mail_text = mail_icon != "" ? format_icon_value_summary (mail_icon + " " + mail) : format_code_summary(mail) ~}}
-{{~ if summary_text != "" ~}}
-{{~ summary_text = summary_text + " " + mail_text ~}}
-{{~ else ~}}
-{{~ summary_text = mail_text ~}}
-{{~ end ~}}
-{{~ end ~}}
-{{~ if summary_text == "" ~}}
-{{~ summary_text = format_code_summary(change.name) ~}}
-{{~ end ~}}
-
-<summary>{{ change.action_symbol }} azuread_user <b>{{ format_code_summary(change.name) }}</b> — {{ summary_text }}</summary>
+<summary>{{ change.summary_html }}</summary>
 <br>
+
 {{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}
@@ -54,12 +24,7 @@
 | ----------- | ------- |
 {{ for attr in small_attrs -}}
 {{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
-{{ if attr.name == "display_name" ~}}
-{{ icon = get_icon(change.provider_name, change.type, "display_name", attr.after) ~}}
-{{ value = attr.after && attr.after != "" ? (icon != "" ? format_icon_value_table (icon + " " + attr.after) : format_attribute_value_table(attr.name, attr.after, change.provider_name)) : "" ~}}
-{{ else ~}}
-{{ value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
-{{ end ~}}
+{{ value = format_attribute_value_table_resource(attr.name, attr.after, change.provider_name, change.type) -}}
 {{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
 {{ if value != "" }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ value }} |
 {{ end -}}
@@ -71,12 +36,7 @@
 | ----------- | ------- |
 {{ for attr in small_attrs -}}
 {{ if !(change.tags_badges && string.starts_with attr.name "tags.") -}}
-{{ if attr.name == "display_name" ~}}
-{{ icon = get_icon(change.provider_name, change.type, "display_name", attr.before) ~}}
-{{ value = attr.before && attr.before != "" ? (icon != "" ? format_icon_value_table (icon + " " + attr.before) : format_attribute_value_table(attr.name, attr.before, change.provider_name)) : "" ~}}
-{{ else ~}}
-{{ value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
-{{ end ~}}
+{{ value = format_attribute_value_table_resource(attr.name, attr.before, change.provider_name, change.type) -}}
 {{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
 {{ if value != "" }}| {{ attr.name | escape_markdown }}{{ indicator }} | {{ value }} |
 {{ end -}}
@@ -87,15 +47,8 @@
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
 {{ for attr in small_attrs -}}
-{{ if attr.name == "display_name" ~}}
-{{ before_icon = get_icon(change.provider_name, change.type, "display_name", attr.before) ~}}
-{{ after_icon = get_icon(change.provider_name, change.type, "display_name", attr.after) ~}}
-{{ before_value = attr.before && attr.before != "" ? (before_icon != "" ? format_icon_value_table (before_icon + " " + attr.before) : format_attribute_value_table(attr.name, attr.before, change.provider_name)) : "" ~}}
-{{ after_value = attr.after && attr.after != "" ? (after_icon != "" ? format_icon_value_table (after_icon + " " + attr.after) : format_attribute_value_table(attr.name, attr.after, change.provider_name)) : "" ~}}
-{{ else ~}}
-{{ before_value = format_attribute_value_table(attr.name, attr.before, change.provider_name) -}}
-{{ after_value = format_attribute_value_table(attr.name, attr.after, change.provider_name) -}}
-{{ end ~}}
+{{ before_value = format_attribute_value_table_resource(attr.name, attr.before, change.provider_name, change.type) -}}
+{{ after_value = format_attribute_value_table_resource(attr.name, attr.after, change.provider_name, change.type) -}}
 {{ indicator = get_attribute_finding_indicator(attr.name, change.code_analysis_findings) -}}
 | {{ attr.name | escape_markdown }}{{ indicator }} | {{ if before_value != "" }}{{ before_value }}{{ else }}-{{ end }} | {{ if after_value != "" }}{{ after_value }}{{ else }}-{{ end }} |
 {{ end -}}

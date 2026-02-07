@@ -50,7 +50,7 @@ internal partial class ReportModelBuilder
         // Apply resource-specific view model if a factory is registered for this type
         if (_viewModelFactoryRegistry.TryGetFactory(rc.Type, out var factory) && factory is not null)
         {
-            factory.ApplyViewModel(model, rc, action, attributeChanges);
+            factory.ApplyViewModel(model, rc, action, attributeChanges, _principalMapper, _iconProviderRegistry);
         }
 
         model.Summary = _summaryBuilder.BuildSummary(model);

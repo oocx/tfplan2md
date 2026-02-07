@@ -2,6 +2,7 @@ using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using TUnit.Core;
 
@@ -49,7 +50,7 @@ public class AzureRMApimOperationFactoryTests
         };
         var factory = new AzureRMApimApiOperationFactory();
 
-        factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges);
+        factory.ApplyViewModel(model, resourceChange, "create", model.AttributeChanges, new NullPrincipalMapper(), null);
 
         model.SummaryHtml.Should().Be(
             $"➕{Nbsp}azurerm_api_management_api_operation <b><code>this</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁{Nbsp}rg-apim-demo</code>");

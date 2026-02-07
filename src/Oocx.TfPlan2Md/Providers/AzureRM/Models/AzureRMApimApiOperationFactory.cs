@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
@@ -28,9 +30,13 @@ internal sealed class AzureRMApimApiOperationFactory : IResourceViewModelFactory
         ResourceChangeModel model,
         ResourceChange resourceChange,
         string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges)
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
     {
         _ = attributeChanges;
+        _ = principalMapper;
+        _ = iconProviderRegistry;
 
         if (!string.Equals(model.Type, _resourceType, StringComparison.OrdinalIgnoreCase))
         {

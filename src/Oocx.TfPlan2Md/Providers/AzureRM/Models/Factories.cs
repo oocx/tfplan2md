@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
@@ -26,8 +27,13 @@ internal sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
         ResourceChangeModel model,
         Parsing.ResourceChange resourceChange,
         string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges)
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
     {
+        _ = principalMapper;
+        _ = iconProviderRegistry;
+
         model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
@@ -56,8 +62,13 @@ internal sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelF
         ResourceChangeModel model,
         Parsing.ResourceChange resourceChange,
         string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges)
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
     {
+        _ = principalMapper;
+        _ = iconProviderRegistry;
+
         var viewModel = FirewallNetworkRuleCollectionViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
@@ -91,8 +102,13 @@ internal sealed class FirewallApplicationRuleCollectionFactory : IResourceViewMo
         ResourceChangeModel model,
         Parsing.ResourceChange resourceChange,
         string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges)
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
     {
+        _ = principalMapper;
+        _ = iconProviderRegistry;
+
         var viewModel = FirewallApplicationRuleCollectionViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
@@ -126,8 +142,13 @@ internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
         ResourceChangeModel model,
         Parsing.ResourceChange resourceChange,
         string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges)
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
     {
+        _ = principalMapper;
+        _ = iconProviderRegistry;
+
         model.RoleAssignment = RoleAssignmentViewModelFactory.Build(
             resourceChange,
             action,

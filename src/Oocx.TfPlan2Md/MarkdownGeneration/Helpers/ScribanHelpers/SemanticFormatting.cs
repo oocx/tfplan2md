@@ -294,6 +294,69 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Formats attribute values with semantic icons, including resource-specific icon rules when available.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="resourceType">The resource type for resource-scoped icon resolution.</param>
+    /// <param name="context">The rendering context (table or summary).</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Formatted value respecting semantic icon rules and context-specific code wrapping.</returns>
+    [SuppressMessage(
+        "Maintainability",
+        "CA1502:Avoid excessive complexity",
+        Justification = "Baseline for docs/features/046-code-quality-metrics-enforcement/.")]
+    private static string FormatAttributeValueWithResource(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        string? resourceType,
+        ValueFormatContext context,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalizedValue = value.Trim();
+        var normalizedName = attributeName ?? string.Empty;
+
+        var registryIcon = GetIconWithRegistry(providerName, resourceType, attributeName, value, iconProviderRegistry);
+        if (!string.IsNullOrWhiteSpace(registryIcon))
+        {
+            var iconText = $"{registryIcon}{NonBreakingSpace}{normalizedValue}";
+            return context == ValueFormatContext.Table ? FormatCodeTable(iconText) : FormatCodeSummary(iconText);
+        }
+
+        if (TryFormatSemanticValue(normalizedName, normalizedValue, context, out var semanticFormatted))
+        {
+            return semanticFormatted;
+        }
+
+        if (value.Equals("*", StringComparison.OrdinalIgnoreCase))
+        {
+            return context == ValueFormatContext.Table ? FormatCodeTable("✳️") : "✳️";
+        }
+
+        if (IsIpAddressOrCidr(normalizedValue))
+        {
+            return FormatIconValue($"🌐 {normalizedValue}", context, false);
+        }
+
+        if (IsLocationAttribute(normalizedName))
+        {
+            return FormatIconValue($"🌍 {normalizedValue}", context, false);
+        }
+
+        return context == ValueFormatContext.Table
+            ? FormatValue(normalizedValue, providerName)
+            : FormatCodeSummary(normalizedValue);
+    }
+
+    /// <summary>
     /// Formats attribute values for summary context using icon registry overrides when supplied.
     /// </summary>
     /// <param name="attributeName">The attribute name driving semantic formatting.</param>
@@ -325,6 +388,31 @@ public static partial class ScribanHelpers
         IconProviderRegistry? iconProviderRegistry)
     {
         return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table, iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Formats attribute values for table context using resource-aware icon registry overrides when supplied.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="resourceType">The resource type for icon resolution.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Formatted value suitable for markdown tables.</returns>
+    private static string FormatAttributeValueTableWithRegistryResource(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        string? resourceType,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        return FormatAttributeValueWithResource(
+            attributeName,
+            value,
+            providerName,
+            resourceType,
+            ValueFormatContext.Table,
+            iconProviderRegistry);
     }
 
     /// <summary>

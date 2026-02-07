@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 
@@ -28,8 +30,13 @@ internal sealed class VariableGroupFactory : IResourceViewModelFactory
         ResourceChangeModel model,
         ResourceChange resourceChange,
         string action,
-        IReadOnlyList<AttributeChangeModel> attributeChanges)
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
     {
+        _ = principalMapper;
+        _ = iconProviderRegistry;
+
         model.VariableGroup = VariableGroupViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,

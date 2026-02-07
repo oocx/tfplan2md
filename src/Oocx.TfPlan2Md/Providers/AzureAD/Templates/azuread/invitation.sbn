@@ -3,29 +3,10 @@
      Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
 ~}}
 <details{{ if change.code_analysis_findings.size > 0 }} open{{ end }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-{{~ state = change.after_json ? change.after_json : change.before_json ~}}
-{{~ email = state && state.user_email_address ? state.user_email_address : "" ~}}
-{{~ user_type = state && state.user_type ? state.user_type : "" ~}}
 
-{{~ summary_text = "" ~}}
-{{~ if email != "" ~}}
-{{~ email_icon = get_icon(change.provider_name, change.type, "user_email_address", email) ~}}
-{{~ summary_text = email_icon != "" ? format_icon_value_summary (email_icon + " " + email) : format_code_summary(email) ~}}
-{{~ end ~}}
-{{~ if user_type != "" ~}}
-{{~ type_text = "(" + format_code_summary(user_type) + ")" ~}}
-{{~ if summary_text != "" ~}}
-{{~ summary_text = summary_text + " " + type_text ~}}
-{{~ else ~}}
-{{~ summary_text = type_text ~}}
-{{~ end ~}}
-{{~ end ~}}
-{{~ if summary_text == "" ~}}
-{{~ summary_text = format_code_summary(change.name) ~}}
-{{~ end ~}}
-
-<summary>{{ change.action_symbol }} azuread_invitation <b>{{ format_code_summary(change.name) }}</b> — {{ summary_text }}</summary>
+<summary>{{ change.summary_html }}</summary>
 <br>
+
 {{~ include "/_code_analysis_metadata.sbn" ~}}
 {{ small_attrs = [] }}
 {{ large_attrs = [] }}

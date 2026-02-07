@@ -31,6 +31,9 @@ The UAT failed due to missing display names for subscriptions and management gro
 ### 3. Workflow Issues
 - The UAT PR should contain **two separate comments**: one for the specific test case and one for regression testing (Comprehensive Demo).
 
+### 4. Inconsistency in Artifacts
+- **Comprehensive Demo Inconsistency:** The `comprehensive-demo.md` sometimes contains a code analysis summary and sometimes doesn't. Needs investigation into whether there are multiple sources generating this report with different contents.
+
 ## Requested Enhancements
 - **DNS A Record Summary:**
     - Format: `➕ azurerm_private_dns_a_record `🆔 record1` — `record1.contoso.local` `🌐 10.0.0.4``

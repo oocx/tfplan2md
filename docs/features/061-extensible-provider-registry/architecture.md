@@ -106,7 +106,7 @@ This follows the existing architecture's principle of typed registries (`Resourc
 ```
 MarkdownGeneration/
   Models/
-    IResourceViewModelFactory.cs          # existing, unchanged
+    IResourceViewModelFactory.cs          # existing, updated: ApplyViewModel accepts optional IconProviderRegistry
     IResourceViewModelFactoryRegistry.cs  # existing, unchanged
     ResourceViewModelFactoryRegistry.cs   # existing, unchanged
   Services/
@@ -120,7 +120,11 @@ MarkdownGeneration/
     ServiceResolutionContext.cs           # Record: (providerName, resourceType, attributeName, value)
     FileBasedIconProvider.cs              # IIconProvider loading rules from embedded JSON
     IconRule.cs                           # Model for JSON deserialization of icon rules
+    IconRulesModel.cs                     # Wrapper class for JSON deserialization of icon rules array
     IconRulesJsonContext.cs               # AOT-compatible JSON source generator
+    StaticIconProvider.cs                 # IIconProvider returning a fixed icon string
+    AzureResourceIdFormatter.cs           # IValueFormatter for Azure resource ID → readable name
+    ServiceRegistrationException.cs       # Exception for invalid patterns/configuration at startup
 ```
 
 ### Key Interfaces
@@ -168,6 +172,8 @@ internal interface IIconProvider
 internal sealed class MatchPattern
 {
     // Pre-compiled Regex? for each dimension (null = wildcard)
+    // Compiled with RegexOptions.Compiled | CultureInvariant | ExplicitCapture
+    // and a 1-second timeout to guard against catastrophic backtracking.
     public Regex? ProviderPattern { get; }
     public Regex? ResourceTypePattern { get; }
     public Regex? AttributeNamePattern { get; }
@@ -310,7 +316,8 @@ The `ValueFormatterRegistry` and `IconProviderRegistry` are passed alongside the
 
 - `format_value(value, providerName)` → updated to try `ValueFormatterRegistry.TryFormat()` first, falling back to the existing hardcoded logic
 - `format_attribute_value_*()` → updated to try `IconProviderRegistry.TryGetIcon()` first, falling back to existing `TryFormatSemanticValue()` chain
-- New helper `get_icon(providerName, resourceType, attributeName, value)` → directly exposes icon resolution to templates
+
+> **Note:** An initial `get_icon` Scriban helper was introduced and later removed in Task 8. Icons are now pre-computed in C# view models instead of resolved at template render time. See the "Design Evolution: Pre-Computed Icons" section below.
 
 ### Startup Wiring (ProgramEntry.cs)
 
@@ -370,6 +377,37 @@ Processing (per attribute):
 - **Dual code paths during transition:** Existing hardcoded logic remains alongside new registry-based resolution until the stretch goal migration is complete
 - **Pattern complexity:** Regex patterns require careful authoring; invalid patterns fail at startup (mitigated by fail-fast)
 
+## Design Evolution: Pre-Computed Icons (Task 8)
+
+During implementation, the original `get_icon` Scriban helper (which exposed icon resolution directly to templates) was eliminated in favour of pre-computing icons in C# view models. This simplifies template authoring, prevents forgotten `get_icon` calls, and makes icon resolution testable in C# rather than Scriban.
+
+### New Components from Task 8
+
+| File | Purpose |
+|------|--------|
+| `MarkdownGeneration/ActionIcons.cs` | Centralised action icon constants (➕🔄❌⏺️♻️) used by summaries, view models, and tests |
+| `Providers/AzureAD/Models/AzureAdSummaryFactory.cs` | `IResourceViewModelFactory` that pre-computes `SummaryHtml` with icon-decorated values for Azure AD resources |
+| `Providers/AzureAD/Models/AzureAdSummaryBuilder.cs` | Builds icon-decorated summary strings for each Azure AD resource type (users, groups, service principals, invitations) |
+| `Providers/AzureAD/AzureAdIconProviderRegistration.cs` | Registers the Azure AD `FileBasedIconProvider` backed by `azuread-icons.json` |
+
+### Design Changes from Task 8
+
+- **`IResourceViewModelFactory.ApplyViewModel()`** gained an optional `IconProviderRegistry?` parameter so factories can resolve icons during model building.
+- **`VariableChangeRowViewModel.ChangeIcon`** property pre-populated by factory methods, replacing the `get_icon` call in `variable_group.sbn`.
+- **`ResourceChangeModel.SummaryHtml`** set by `AzureAdSummaryFactory` for all six Azure AD templates.
+- **Zero `get_icon` references** remain in any `.sbn` template file or Scriban helper registration.
+
+### Icon Rule Files
+
+Each provider supplies a JSON icon rule file as an embedded resource:
+
+| Provider | File |
+|----------|------|
+| azurerm | `Providers/AzureRM/Icons/azurerm-icons.json` |
+| azapi | `Providers/AzApi/Icons/azapi-icons.json` |
+| azuread | `Providers/AzureAD/Icons/azuread-icons.json` |
+| azuredevops | `Providers/AzureDevOps/Icons/azuredevops-icons.json` |
+
 ## Implementation Notes
 
 ### Components to Create
@@ -386,7 +424,11 @@ Processing (per attribute):
 | `MarkdownGeneration/Services/IconProviderRegistry.cs` | Typed wrapper for icon providers |
 | `MarkdownGeneration/Services/FileBasedIconProvider.cs` | JSON-driven icon provider |
 | `MarkdownGeneration/Services/IconRule.cs` | JSON model for icon rules |
+| `MarkdownGeneration/Services/IconRulesModel.cs` | Wrapper class for JSON deserialization of icon rules array |
 | `MarkdownGeneration/Services/IconRulesJsonContext.cs` | AOT JSON source generator |
+| `MarkdownGeneration/Services/StaticIconProvider.cs` | `IIconProvider` returning a fixed icon for convenience registrations |
+| `MarkdownGeneration/Services/AzureResourceIdFormatter.cs` | `IValueFormatter` for Azure resource ID → readable scope summary |
+| `MarkdownGeneration/Services/ServiceRegistrationException.cs` | Exception for invalid regex patterns or malformed icon files |
 
 ### Components to Modify
 
@@ -395,6 +437,7 @@ Processing (per attribute):
 | `Providers/IProviderModule.cs` | Add `RegisterValueFormatters()` and `RegisterIconProviders()` with default implementations |
 | `Providers/ProviderRegistry.cs` | Add `RegisterAllValueFormatters()` and `RegisterAllIconProviders()` |
 | `ProgramEntry.cs` | Create and wire new registries at startup |
+| `MarkdownGeneration/Models/IResourceViewModelFactory.cs` | Add optional `IconProviderRegistry?` parameter to `ApplyViewModel()` |
 | `MarkdownGeneration/Helpers/ScribanHelpers/Registry.cs` | Accept and pass new registries |
 | `MarkdownGeneration/Helpers/ScribanHelpers/ValueFormatting.cs` | Try `ValueFormatterRegistry` before hardcoded logic |
 | `MarkdownGeneration/Helpers/ScribanHelpers/SemanticFormatting.cs` | Try `IconProviderRegistry` before hardcoded chain |
@@ -419,12 +462,29 @@ When migrating existing functionality:
 ## Components Affected
 
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/` — new directory with all registry infrastructure
+- `src/Oocx.TfPlan2Md/MarkdownGeneration/Models/IResourceViewModelFactory.cs` — added `IconProviderRegistry?` parameter
+- `src/Oocx.TfPlan2Md/MarkdownGeneration/ActionIcons.cs` — centralised action icon constants
 - `src/Oocx.TfPlan2Md/Providers/IProviderModule.cs` — extended interface
 - `src/Oocx.TfPlan2Md/Providers/ProviderRegistry.cs` — new registration methods
+- `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryFactory.cs` — pre-computed summaries
+- `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.cs` — icon-decorated summary builder
+- `src/Oocx.TfPlan2Md/Providers/AzureAD/AzureAdIconProviderRegistration.cs` — Azure AD icon registration
 - `src/Oocx.TfPlan2Md/ProgramEntry.cs` — startup wiring
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/Registry.cs` — helper registration
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/ValueFormatting.cs` — formatter integration
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/SemanticFormatting.cs` — icon integration
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/MarkdownRenderer.cs` — pass registries
 - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs` — pass registries
-- `src/tests/Oocx.TfPlan2Md.TUnit/` — new unit tests for pattern matching, specificity, fallback, file-based icons
+- `src/tests/Oocx.TfPlan2Md.TUnit/` — unit tests for pattern matching, specificity, fallback, file-based icons, Azure AD snapshots
+
+## Pending Implementation Fixes
+
+The following code changes were identified during architecture review and approved by the maintainer.
+They should be applied by the Developer agent:
+
+| # | Fix | Details |
+|---|-----|---------|
+| 1 | `ServiceResolutionContext` class → record | Change from `sealed class` to `sealed record` to match project conventions for immutable data carriers |
+| 3 | Icon files: disk → embedded resources | Change `FileBasedIconProvider` to load from embedded resources instead of `AppContext.BaseDirectory/icons/` files; update provider registrations accordingly |
+| 5 | `ServiceRegistrationException` public → internal | Change access modifier to `internal`; tests access via `InternalsVisibleTo` |
+| 6 | Remove dead `GetIcon` method | Remove `ScribanHelpers.GetIcon()` static method from `SemanticFormatting.cs`; it always returns empty string because it passes `null` registry |

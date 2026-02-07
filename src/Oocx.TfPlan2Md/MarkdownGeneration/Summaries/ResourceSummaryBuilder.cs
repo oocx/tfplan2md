@@ -42,6 +42,13 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var keys = ResolveKeys(change.Type);
         var values = ExtractValues(keys, state);
 
+        var privateDnsName = TryGetPrivateDnsARecordName(values, change.Type);
+        if (!string.IsNullOrEmpty(privateDnsName))
+        {
+            values.Remove("zone_name");
+            values.Remove("name");
+        }
+
         var name = FormatSummaryValue(GetDisplayName(values, state, change), change.ProviderName);
         var resourceGroup = FormatSummaryValue(TryGet(values, "resource_group_name"), change.ProviderName);
         var location = FormatSummaryValue(TryGet(values, "location"), change.ProviderName);
@@ -180,6 +187,13 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
 
     private static string? GetDisplayName(Dictionary<string, string?>? values, Dictionary<string, string?>? fallbackState, ResourceChangeModel change)
     {
+        var privateDnsName = TryGetPrivateDnsARecordName(values, change.Type)
+            ?? TryGetPrivateDnsARecordName(fallbackState, change.Type);
+        if (!string.IsNullOrEmpty(privateDnsName))
+        {
+            return privateDnsName;
+        }
+
         var dictionary = values ?? fallbackState ?? new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         var name = TryGet(dictionary, "name")
                    ?? TryGet(dictionary, "display_name")
@@ -206,6 +220,29 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
 
         // Final fallback: Terraform address
         return change.Address;
+    }
+
+    /// <summary>
+    /// Builds a private DNS A record display name using name and zone_name when available.
+    /// </summary>
+    /// <param name="state">The flattened resource state.</param>
+    /// <param name="resourceType">The Terraform resource type.</param>
+    /// <returns>The combined name when applicable; otherwise null.</returns>
+    private static string? TryGetPrivateDnsARecordName(Dictionary<string, string?>? state, string resourceType)
+    {
+        if (!resourceType.Equals("azurerm_private_dns_a_record", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var name = TryGet(state, "name");
+        var zoneName = TryGet(state, "zone_name");
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(zoneName))
+        {
+            return null;
+        }
+
+        return $"{name}.{zoneName}";
     }
 
     private static string? TryGet(Dictionary<string, string?>? values, string key)

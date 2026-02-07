@@ -723,13 +723,15 @@ This keeps all decisions traceable through the conversation history and artifact
 
 Agents can delegate focused tasks to **sub-agents** (via the `task` tool) to reduce context rot and improve output quality. Sub-agents run in their own context window, so the parent agent's context stays clean.
 
+> **Terminology**: The `task` tool is used to invoke sub-agents. It accepts an `agent_type` parameter specifying which built-in agent type (`explore`, `task`, `general-purpose`) or custom agent to run. Note that `task` is both the tool name and one of the built-in agent types (specialized for running commands).
+
 ### When to Use Sub-Agents
 
-| Scenario | Sub-Agent Type | Benefit |
-|----------|---------------|---------|
+| Scenario | Agent Type (via `task` tool) | Benefit |
+|----------|----------------------------|---------|
 | Quick codebase lookup (find files, search patterns, answer questions) | `explore` | Keeps search results out of parent context; fast Haiku model |
-| Run builds, tests, lints where only pass/fail matters | `task` | Only returns summary on success, full output on failure |
-| Complex multi-step research or implementation in isolation | `general-purpose` | Full toolset in separate context; preserves parent focus |
+| Run builds, tests, lints where only pass/fail matters | `task` (built-in) | Only returns summary on success, full output on failure; Haiku model |
+| Complex multi-step research or implementation in isolation | `general-purpose` | Full toolset in separate context; Sonnet model |
 | Specialized domain work (review, architecture, testing) | Custom agent (e.g., `code-reviewer-coding-agent`) | Domain expertise with clean context boundary |
 
 ### When NOT to Use Sub-Agents
@@ -762,10 +764,10 @@ Sub-agent costs vary by execution context:
 **Model override implications**: When a sub-agent uses a different model (via the `model` parameter on the `task` tool), the cost is determined by that model's premium multiplier. Use cheaper models (`explore` defaults to Haiku) for research and expensive models only when quality demands it.
 
 **Cost optimization tips**:
-- Use `explore` (Haiku model, low cost) for codebase questions before using heavier agents
-- Use `task` (Haiku model) for build/test runs where you only need pass/fail
+- Use the `explore` agent type (Haiku model, low cost) for codebase questions before using heavier agents
+- Use the `task` agent type (Haiku model) for build/test runs where you only need pass/fail
 - Reserve `general-purpose` (Sonnet model) for complex multi-step work
-- In VS Code Chat, be mindful that sub-agents add to your message count
+- In VS Code Chat, be mindful that each sub-agent invocation adds to your message count
 
 ---
 

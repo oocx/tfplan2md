@@ -331,9 +331,9 @@ Sub-agents (invoked via the `task` tool) run in their own context window. How th
 **Key points**:
 - In **Coding Agent sessions**, sub-agent calls are free — use them liberally for research and isolated tasks
 - In **VS Code Chat**, each sub-agent invocation is billed separately. Prefer low-cost models for sub-agents:
-  - `explore` agent uses Haiku (0.33x) — ideal for codebase research
-  - `task` agent uses Haiku (0.33x) — ideal for build/test runs
-  - `general-purpose` agent uses Sonnet (1x) — use only when needed
+  - `explore` agent type uses Haiku (0.33x) — ideal for codebase research
+  - `task` agent type (built-in) uses Haiku (0.33x) — ideal for build/test runs
+  - `general-purpose` agent type uses Sonnet (1x) — use only when needed
 - **Model override**: The `task` tool's `model` parameter lets you override the sub-agent's default model. The overridden model's multiplier applies to billing.
 
 ## Model Selection Guidelines

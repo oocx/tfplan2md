@@ -22,7 +22,7 @@ internal static class AzureRmValueFormatterRegistration
         ArgumentNullException.ThrowIfNull(registry);
 
         registry.Register(
-            new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, "^/subscriptions/[^/]+/.*"),
+            new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, null),
             new AzureResourceIdFormatter(scopeFormatter));
 
         registry.Register(

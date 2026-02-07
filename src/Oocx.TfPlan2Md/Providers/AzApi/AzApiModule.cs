@@ -62,7 +62,7 @@ internal sealed class AzApiModule : IProviderModule
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
         registry.Register(
-            new MatchPattern("(^azapi$|.*/azapi$)", null, null, "^/subscriptions/[^/]+/.*"),
+            new MatchPattern("(^azapi$|.*/azapi$)", null, null, null),
             new AzureResourceIdFormatter(_scopeFormatter));
     }
 

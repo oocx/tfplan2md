@@ -119,8 +119,8 @@ Improve failure tracking in `DiagnosticContext` and ensure raw ID fallback works
 Ensure any attribute containing an Azure resource ID gets formatted.
 
 **Acceptance Criteria:**
-- [ ] `AzureRMModule` (and other Azure modules) registers the `AzureResourceIdFormatter` with a value pattern match instead of just attribute name match if necessary, or verify current regex-based detector handles any attribute value.
-- [ ] TC-01 (Integration test with unknown attribute name) passes.
+- [x] `AzureRMModule` (and other Azure modules) registers the `AzureResourceIdFormatter` with a value pattern match instead of just attribute name match if necessary, or verify current regex-based detector handles any attribute value.
+- [x] TC-01 (Integration test with unknown attribute name) passes.
 
 **Dependencies:** Task 2
 

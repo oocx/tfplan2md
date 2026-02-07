@@ -58,6 +58,28 @@ public class ProviderValueFormatterRegistryTests
     }
 
     /// <summary>
+    /// Ensures Azure resource IDs are formatted even when the attribute name is unknown.
+    /// </summary>
+    [Test]
+    public void AzureRmModule_RegisterValueFormatters_FormatsUnknownAttributeAzureIds()
+    {
+        var registry = new ValueFormatterRegistry();
+        var module = new AzureRMModule(LargeValueFormat.SimpleDiff, new NullPrincipalMapper());
+
+        module.RegisterValueFormatters(registry);
+
+        var context = new ServiceResolutionContext(
+            "azurerm",
+            null,
+            "some_custom_prop",
+            "/providers/Microsoft.Management/managementGroups/mg-contoso");
+
+        var formatted = registry.TryFormat(context);
+
+        formatted.Should().Contain("Management Group");
+    }
+
+    /// <summary>
     /// Ensures AzureRM registers the role definition formatter.
     /// </summary>
     [Test]

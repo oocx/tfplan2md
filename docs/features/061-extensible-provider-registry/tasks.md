@@ -161,6 +161,20 @@ Six Azure AD templates currently build their `<summary>` line in Scriban by extr
 
 ---
 
+#### Task 8e: Centralize Action Icons in C#
+
+**Description:**
+Action icons (➕/🔄/❌/⏺️/♻️) are now defined once in C# so templates and tests reference a single source of truth. This prevents drift across view models, summaries, and tests.
+
+**Acceptance Criteria:**
+- [x] `ActionIcons` centralizes all action symbols in C#.
+- [x] Action icon usage updated to reference `ActionIcons` in code and tests.
+- [x] Icon registry is auto-wired when a provider registry is supplied, so Azure AD summaries keep their icons.
+
+**Dependencies:** Task 8d
+
+---
+
 #### Task 8b: Remove Redundant Table Icon Branching from user.sbn
 
 **Description:**

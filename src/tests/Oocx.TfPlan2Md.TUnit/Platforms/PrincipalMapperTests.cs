@@ -2,25 +2,29 @@ using System;
 using System.IO;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Tests.TestData;
 
 namespace Oocx.TfPlan2Md.Tests.Azure;
 
 public class PrincipalMapperTests
 {
+    private const string MappedPrincipalId = "abc-123";
+    private const string MappedPrincipalName = "John Doe (User)";
+
     [Test]
     public void GetPrincipalName_MappedId_ReturnsNameAndType()
     {
         // Arrange
-        var mappingPath = CreateTempMapping("{\"abc-123\": \"John Doe (User)\"}");
+        var mappingPath = CreateTempMapping($"{{\"{MappedPrincipalId}\": \"{MappedPrincipalName}\"}}");
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
-            var result = mapper.GetPrincipalName("abc-123");
+            var result = mapper.GetPrincipalName(MappedPrincipalId);
 
             // Assert
-            result.Should().Be("John Doe (User) [abc-123]");
+            result.Should().Be($"{MappedPrincipalName} [{MappedPrincipalId}]");
         }
         finally
         {
@@ -32,10 +36,10 @@ public class PrincipalMapperTests
     public void GetPrincipalName_UnmappedId_ReturnsOriginalId()
     {
         // Arrange
-        var mappingPath = CreateTempMapping("{\"abc-123\": \"John Doe (User)\"}");
+        var mappingPath = CreateTempMapping($"{{\"{MappedPrincipalId}\": \"{MappedPrincipalName}\"}}");
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var result = mapper.GetPrincipalName("unmapped-id");
@@ -60,13 +64,13 @@ public class PrincipalMapperTests
             using var capture = new StringWriter();
             Console.SetError(capture);
 
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
-            var result = mapper.GetPrincipalName("abc-123");
+            var result = mapper.GetPrincipalName(MappedPrincipalId);
 
             // Assert
-            result.Should().Be("abc-123");
+            result.Should().Be(MappedPrincipalId);
 
             var stderr = capture.ToString();
             stderr.Should().Contain("Could not read principal mapping file")
@@ -93,7 +97,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var result = mapper.GetPrincipalName("user-123");
@@ -120,7 +124,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var result = mapper.GetPrincipalName("group-456");
@@ -147,7 +151,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var result = mapper.GetPrincipalName("spn-789");
@@ -183,7 +187,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act & Assert
             mapper.GetPrincipalName("12345678-1234-1234-1234-123456789012")
@@ -205,22 +209,17 @@ public class PrincipalMapperTests
     public void GetPrincipalName_NestedFormatCaseInsensitive_ReturnsName()
     {
         // Arrange
-        var mappingPath = CreateTempMapping("""
-        {
-          "users": {
-            "ABC-123": "Jane Doe"
-          }
-        }
-        """);
+        var uppercaseId = MappedPrincipalId.ToUpperInvariant();
+        var mappingPath = CreateTempMapping($"{{\"users\":{{\"{uppercaseId}\":\"Jane Doe\"}}}}");
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
-            var result = mapper.GetPrincipalName("abc-123"); // lowercase query
+            var result = mapper.GetPrincipalName(MappedPrincipalId); // lowercase query
 
             // Assert
-            result.Should().Be("Jane Doe [abc-123]");
+            result.Should().Be($"Jane Doe [{MappedPrincipalId}]");
         }
         finally
         {
@@ -240,7 +239,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act & Assert
             mapper.GetPrincipalName("00000000-0000-0000-0000-000000000001")
@@ -274,7 +273,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var userFound = mapper.TryGetPrincipalType("user-123", out var userType);
@@ -306,7 +305,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var found = mapper.TryGetPrincipalType("00000000-0000-0000-0000-000000000001", out var principalType);
@@ -334,7 +333,7 @@ public class PrincipalMapperTests
         """);
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
 
             // Act
             var found = mapper.TryGetPrincipalType(" ", out var principalType);
@@ -351,8 +350,33 @@ public class PrincipalMapperTests
 
     private static string CreateTempMapping(string content)
     {
-        var path = Path.GetTempFileName();
+        var tempRoot = GetTempRoot();
+        var fileName = Path.GetRandomFileName();
+        var path = Path.Combine(tempRoot, fileName);
         File.WriteAllText(path, content);
         return path;
+    }
+
+    private static string GetTempRoot()
+    {
+        var tempRoot = Path.Combine(GetRepoRoot(), ".tmp", "principal-mapper-tests");
+        Directory.CreateDirectory(tempRoot);
+        return tempRoot;
+    }
+
+    private static string GetRepoRoot()
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        while (directory is not null)
+        {
+            if (Directory.Exists(Path.Combine(directory.FullName, ".git")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return Directory.GetCurrentDirectory();
     }
 }

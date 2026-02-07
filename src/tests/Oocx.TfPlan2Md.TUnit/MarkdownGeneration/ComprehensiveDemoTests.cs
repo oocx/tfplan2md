@@ -19,7 +19,7 @@ public class ComprehensiveDemoTests
 
     public ComprehensiveDemoTests()
     {
-        _principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
+        _principalMapper = PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath);
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new AzureRMModule(
             largeValueFormat: LargeValueFormat.InlineDiff,

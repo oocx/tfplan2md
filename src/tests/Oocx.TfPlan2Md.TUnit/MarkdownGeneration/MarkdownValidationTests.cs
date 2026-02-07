@@ -116,7 +116,7 @@ public class MarkdownValidationTests
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
         var builder = new ReportModelBuilder();
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
 
         var markdown = renderer.Render(model);
 
@@ -138,7 +138,7 @@ public class MarkdownValidationTests
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
         var builder = new ReportModelBuilder();
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
 
         var markdown = renderer.Render(model);
 
@@ -173,7 +173,7 @@ public class MarkdownValidationTests
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
         var builder = new ReportModelBuilder();
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
 
         var markdown = renderer.Render(model);
 
@@ -195,7 +195,7 @@ public class MarkdownValidationTests
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
         var builder = new ReportModelBuilder();
         var model = builder.Build(plan);
-        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
 
         var markdown = renderer.Render(model);
 

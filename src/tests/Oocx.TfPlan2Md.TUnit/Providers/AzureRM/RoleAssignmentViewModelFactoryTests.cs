@@ -175,7 +175,8 @@ public class RoleAssignmentViewModelFactoryTests
 
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mappingResult = AzureMappingFileLoader.Load(mappingPath, diagnosticContext: null);
+            var mapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
             var change = CreateChange(before: null, after: after, actions: ["create"]);
 
             var viewModel = RoleAssignmentViewModelFactory.Build(
@@ -221,7 +222,8 @@ public class RoleAssignmentViewModelFactoryTests
 
         try
         {
-            var mapper = new PrincipalMapper(mappingPath);
+            var mappingResult = AzureMappingFileLoader.Load(mappingPath, diagnosticContext: null);
+            var mapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
             var change = CreateChange(before: null, after: after, actions: ["create"]);
 
             var viewModel = RoleAssignmentViewModelFactory.Build(

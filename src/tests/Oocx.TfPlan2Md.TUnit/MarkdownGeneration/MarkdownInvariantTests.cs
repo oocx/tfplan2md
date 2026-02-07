@@ -55,7 +55,7 @@ public class MarkdownInvariantTests
         var plan = _parser.Parse(json);
         var model = new ReportModelBuilder().Build(plan);
         var renderer = principalsPath != null
-            ? new MarkdownRenderer(new PrincipalMapper(principalsPath))
+            ? new MarkdownRenderer(PrincipalMapperFactory.Create(principalsPath))
             : new MarkdownRenderer();
         return renderer.Render(model);
     }

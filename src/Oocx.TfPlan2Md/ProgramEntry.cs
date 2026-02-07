@@ -148,8 +148,9 @@ internal static class ProgramEntry
             };
         }
 
-        // Create principal mapper for resolving principal names in role assignments
-        var principalMapper = new PrincipalMapper(options.PrincipalMappingFile, diagnosticContext);
+        // Load Azure mapping file once and create principal mapper for role assignment resolution
+        var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
 
         // Create and configure provider registry
         var providerRegistry = new ProviderRegistry();

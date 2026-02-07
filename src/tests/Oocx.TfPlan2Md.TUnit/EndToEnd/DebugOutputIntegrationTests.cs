@@ -27,7 +27,8 @@ public class DebugOutputIntegrationTests
         var plan = parser.Parse(planJson);
 
         // Create components WITHOUT diagnostic context (simulating no --debug flag)
-        var principalMapper = new PrincipalMapper(mappingFile: null, diagnosticContext: null);
+        var mappingResult = AzureMappingFileLoader.Load(mappingFile: null, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
@@ -62,9 +63,10 @@ public class DebugOutputIntegrationTests
 
         // Create components WITH diagnostic context (simulating --debug flag)
         var diagnosticContext = new DiagnosticContext();
-        var principalMapper = new PrincipalMapper(
+        var mappingResult = AzureMappingFileLoader.Load(
             mappingFile: "TestData/principal-mapping.json",
             diagnosticContext: diagnosticContext);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,
@@ -153,9 +155,10 @@ public class DebugOutputIntegrationTests
 
         var diagnosticContext = new DiagnosticContext();
         // Use partial mapping file that's missing some principal IDs
-        var principalMapper = new PrincipalMapper(
+        var mappingResult = AzureMappingFileLoader.Load(
             mappingFile: "TestData/partial-principal-mapping.json",
             diagnosticContext: diagnosticContext);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
         var modelBuilder = new ReportModelBuilder(
             showSensitive: false,
             showUnchangedValues: false,

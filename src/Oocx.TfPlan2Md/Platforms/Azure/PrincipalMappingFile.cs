@@ -40,4 +40,44 @@ internal sealed class PrincipalMappingFile
     /// </example>
     [JsonPropertyName("servicePrincipals")]
     public Dictionary<string, string>? ServicePrincipals { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of subscription ID mappings with display names.
+    /// </summary>
+    /// <remarks>
+    /// Each entry uses the array-of-objects format required by feature 063.
+    /// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+    /// </remarks>
+    [JsonPropertyName("subscriptions")]
+    public List<MappingEntry>? Subscriptions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of management group ID mappings with display names.
+    /// </summary>
+    /// <remarks>
+    /// Each entry uses the array-of-objects format required by feature 063.
+    /// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+    /// </remarks>
+    [JsonPropertyName("managementGroups")]
+    public List<MappingEntry>? ManagementGroups { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of tenant ID mappings with display names.
+    /// </summary>
+    /// <remarks>
+    /// Each entry uses the array-of-objects format required by feature 063.
+    /// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+    /// </remarks>
+    [JsonPropertyName("tenants")]
+    public List<MappingEntry>? Tenants { get; set; }
+
+    /// <summary>
+    /// Gets or sets the list of custom role definition ID mappings with display names.
+    /// </summary>
+    /// <remarks>
+    /// Each entry uses the array-of-objects format required by feature 063.
+    /// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+    /// </remarks>
+    [JsonPropertyName("roles")]
+    public List<MappingEntry>? Roles { get; set; }
 }

@@ -127,7 +127,7 @@ public class TemplateIsolationTests
         var json = File.ReadAllText("TestData/role-assignments.json");
         var plan = _parser.Parse(json);
         var model = new ReportModelBuilder().Build(plan);
-        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
 
         var markdown = renderer.Render(model);
 
@@ -163,7 +163,7 @@ public class TemplateIsolationTests
         var json = File.ReadAllText("TestData/role-assignments.json");
         var plan = _parser.Parse(json);
         var model = new ReportModelBuilder().Build(plan);
-        var renderer = new MarkdownRenderer(new PrincipalMapper(DemoPaths.DemoPrincipalsPath));
+        var renderer = new MarkdownRenderer(PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath));
 
         var markdown = renderer.Render(model);
 

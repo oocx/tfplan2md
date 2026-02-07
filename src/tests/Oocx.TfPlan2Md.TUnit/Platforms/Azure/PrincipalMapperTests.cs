@@ -19,7 +19,7 @@ public class PrincipalMapperTests
     [Test]
     public void GetPrincipalName_NoMappingFile_ReturnsRawId()
     {
-        var mapper = new PrincipalMapper(null);
+        var mapper = CreateMapper(mappingFile: null, diagnostics: null);
 
         var result = mapper.GetPrincipalName("00000000-0000-0000-0000-000000000000");
 
@@ -50,7 +50,7 @@ public class PrincipalMapperTests
 
         try
         {
-            var mapper = new PrincipalMapper(filePath, diagnostics);
+            var mapper = CreateMapper(filePath, diagnostics);
 
             mapper.GetPrincipalName("11111111-1111-1111-1111-111111111111")
                 .Should().Be("jane.doe@contoso.com [11111111-1111-1111-1111-111111111111]");
@@ -86,7 +86,7 @@ public class PrincipalMapperTests
 
         try
         {
-            var mapper = new PrincipalMapper(filePath, diagnostics);
+            var mapper = CreateMapper(filePath, diagnostics);
 
             mapper.GetName("44444444-4444-4444-4444-444444444444").Should().Be("flat-user");
             diagnostics.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
@@ -107,7 +107,7 @@ public class PrincipalMapperTests
         var missingPath = Path.Combine(GetTempRoot(), "missing", "principals.json");
         var diagnostics = new DiagnosticContext();
 
-        var mapper = new PrincipalMapper(missingPath, diagnostics);
+        var mapper = CreateMapper(missingPath, diagnostics);
 
         mapper.GetName("99999999-9999-9999-9999-999999999999").Should().BeNull();
         diagnostics.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
@@ -125,7 +125,7 @@ public class PrincipalMapperTests
         var missingPath = Path.Combine(directory, "principals.json");
         var diagnostics = new DiagnosticContext();
 
-        var mapper = new PrincipalMapper(missingPath, diagnostics);
+        var mapper = CreateMapper(missingPath, diagnostics);
 
         mapper.GetName("missing").Should().BeNull();
         diagnostics.PrincipalMappingErrorType.Should().Be(PrincipalLoadError.FileNotFound);
@@ -143,7 +143,7 @@ public class PrincipalMapperTests
 
         try
         {
-            var mapper = new PrincipalMapper(filePath, diagnostics);
+            var mapper = CreateMapper(filePath, diagnostics);
 
             mapper.GetName("missing").Should().BeNull();
             diagnostics.PrincipalMappingLoadedSuccessfully.Should().BeFalse();
@@ -168,7 +168,7 @@ public class PrincipalMapperTests
 
         try
         {
-            var mapper = new PrincipalMapper(filePath, diagnostics);
+            var mapper = CreateMapper(filePath, diagnostics);
 
             mapper.GetName("missing").Should().BeNull();
             diagnostics.PrincipalMappingErrorType.Should().Be(PrincipalLoadError.EmptyFile);
@@ -191,7 +191,7 @@ public class PrincipalMapperTests
 
         try
         {
-            var mapper = new PrincipalMapper(filePath, diagnostics);
+            var mapper = CreateMapper(filePath, diagnostics);
 
             mapper.GetName("missing", "User", "azurerm_role_assignment.example").Should().BeNull();
 
@@ -245,5 +245,16 @@ public class PrincipalMapperTests
         }
 
         return Directory.GetCurrentDirectory();
+    }
+    /// <summary>
+    /// Creates a principal mapper using the shared Azure mapping file loader.
+    /// </summary>
+    /// <param name="mappingFile">Path to the mapping file, or null when none is used.</param>
+    /// <param name="diagnostics">Optional diagnostic context to populate.</param>
+    /// <returns>The configured <see cref="PrincipalMapper"/> instance.</returns>
+    private static PrincipalMapper CreateMapper(string? mappingFile, DiagnosticContext? diagnostics)
+    {
+        var mappingResult = AzureMappingFileLoader.Load(mappingFile, diagnostics);
+        return new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnostics);
     }
 }

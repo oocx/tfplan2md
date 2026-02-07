@@ -109,6 +109,26 @@ internal class DiagnosticContext
     public Dictionary<string, int> PrincipalTypeCount { get; } = new();
 
     /// <summary>
+    /// Gets or sets the number of subscription mappings loaded from the mapping file.
+    /// </summary>
+    public int SubscriptionCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of management group mappings loaded from the mapping file.
+    /// </summary>
+    public int ManagementGroupCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of tenant mappings loaded from the mapping file.
+    /// </summary>
+    public int TenantCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of custom role mappings loaded from the mapping file.
+    /// </summary>
+    public int RoleCount { get; set; }
+
+    /// <summary>
     /// Gets the list of principal IDs that failed to resolve, along with the resource that referenced them.
     /// </summary>
     /// <remarks>
@@ -172,6 +192,54 @@ internal class DiagnosticContext
                         .OrderBy(kvp => kvp.Key)
                         .Select(kvp => $"{kvp.Value} {kvp.Key}");
                     sb.AppendJoin(", ", typeCountStrings);
+                    sb.AppendLine();
+                }
+
+                if (SubscriptionCount > 0)
+                {
+                    sb.Append("- Found ");
+                    sb.Append(SubscriptionCount);
+                    sb.Append(" subscription");
+                    if (SubscriptionCount != 1)
+                    {
+                        sb.Append('s');
+                    }
+                    sb.AppendLine();
+                }
+
+                if (ManagementGroupCount > 0)
+                {
+                    sb.Append("- Found ");
+                    sb.Append(ManagementGroupCount);
+                    sb.Append(" management group");
+                    if (ManagementGroupCount != 1)
+                    {
+                        sb.Append('s');
+                    }
+                    sb.AppendLine();
+                }
+
+                if (TenantCount > 0)
+                {
+                    sb.Append("- Found ");
+                    sb.Append(TenantCount);
+                    sb.Append(" tenant");
+                    if (TenantCount != 1)
+                    {
+                        sb.Append('s');
+                    }
+                    sb.AppendLine();
+                }
+
+                if (RoleCount > 0)
+                {
+                    sb.Append("- Found ");
+                    sb.Append(RoleCount);
+                    sb.Append(" custom role");
+                    if (RoleCount != 1)
+                    {
+                        sb.Append('s');
+                    }
                     sb.AppendLine();
                 }
 

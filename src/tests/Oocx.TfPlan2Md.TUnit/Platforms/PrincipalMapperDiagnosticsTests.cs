@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
 namespace Oocx.TfPlan2Md.TUnit.Azure;
@@ -12,6 +13,13 @@ namespace Oocx.TfPlan2Md.TUnit.Azure;
 [Category("Integration")]
 public class PrincipalMapperDiagnosticsTests
 {
+    private const string PrincipalMappingPath = "TestData/principal-mapping.json";
+    private const string PartialMappingPath = "TestData/partial-principal-mapping.json";
+    private const string MissingMappingPath = "TestData/nonexistent.json";
+    private const string PrincipalsKey = "principals";
+    private const string MissingPrincipalId = "00000000-0000-0000-0000-000000000099";
+    private const string RoleAssignmentExample = "azurerm_role_assignment.example";
+    private const string TestDataDirectory = "TestData";
     /// <summary>
     /// TC-05: Successful principal mapping file load records diagnostics.
     /// </summary>
@@ -20,17 +28,17 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/principal-mapping.json";
+        var mappingFile = PrincipalMappingPath;
 
         // Act
-        _ = new PrincipalMapper(mappingFile, context);
+        _ = PrincipalMapperFactory.Create(mappingFile, context);
 
         // Assert
         context.PrincipalMappingFileProvided.Should().BeTrue();
         context.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
         context.PrincipalMappingFilePath.Should().Be(mappingFile);
-        context.PrincipalTypeCount.Should().ContainKey("principals");
-        context.PrincipalTypeCount["principals"].Should().Be(3);
+        context.PrincipalTypeCount.Should().ContainKey(PrincipalsKey);
+        context.PrincipalTypeCount[PrincipalsKey].Should().Be(3);
     }
 
     /// <summary>
@@ -41,10 +49,10 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/nonexistent.json";
+        var mappingFile = MissingMappingPath;
 
         // Act
-        _ = new PrincipalMapper(mappingFile, context);
+        _ = PrincipalMapperFactory.Create(mappingFile, context);
 
         // Assert
         context.PrincipalMappingFileProvided.Should().BeTrue();
@@ -61,14 +69,14 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/principal-mapping.json";
+        var mappingFile = PrincipalMappingPath;
 
         // Act
-        _ = new PrincipalMapper(mappingFile, context);
+        _ = PrincipalMapperFactory.Create(mappingFile, context);
 
         // Assert
         // The mapping file has 3 principals, so count should be 3
-        context.PrincipalTypeCount["principals"].Should().Be(3);
+        context.PrincipalTypeCount[PrincipalsKey].Should().Be(3);
     }
 
     /// <summary>
@@ -79,10 +87,10 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/partial-principal-mapping.json";
-        var mapper = new PrincipalMapper(mappingFile, context);
-        var missingPrincipalId = "00000000-0000-0000-0000-000000000099";
-        var resourceAddress = "azurerm_role_assignment.example";
+        var mappingFile = PartialMappingPath;
+        var mapper = PrincipalMapperFactory.Create(mappingFile, context);
+        var missingPrincipalId = MissingPrincipalId;
+        var resourceAddress = RoleAssignmentExample;
 
         // Act
         var name = mapper.GetName(missingPrincipalId, principalType: null, resourceAddress);
@@ -101,10 +109,10 @@ public class PrincipalMapperDiagnosticsTests
     public void PrincipalMapper_WithNullContext_WorksNormally()
     {
         // Arrange
-        var mappingFile = "TestData/principal-mapping.json";
+        var mappingFile = PrincipalMappingPath;
 
         // Act
-        var mapper = new PrincipalMapper(mappingFile, diagnosticContext: null);
+        var mapper = PrincipalMapperFactory.Create(mappingFile, diagnosticContext: null);
         var name = mapper.GetName("00000000-0000-0000-0000-000000000001");
 
         // Assert - Should work normally without diagnostic context
@@ -119,12 +127,12 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/partial-principal-mapping.json";
-        var mapper = new PrincipalMapper(mappingFile, context);
-        var missingPrincipalId = "00000000-0000-0000-0000-000000000099";
+        var mappingFile = PartialMappingPath;
+        var mapper = PrincipalMapperFactory.Create(mappingFile, context);
+        var missingPrincipalId = MissingPrincipalId;
 
         // Act - Same principal ID referenced by multiple resources
-        mapper.GetName(missingPrincipalId, null, "azurerm_role_assignment.example");
+        mapper.GetName(missingPrincipalId, null, RoleAssignmentExample);
         mapper.GetName(missingPrincipalId, null, "azurerm_role_assignment.reader");
         mapper.GetName(missingPrincipalId, null, "azurerm_role_assignment.contributor");
 
@@ -132,7 +140,9 @@ public class PrincipalMapperDiagnosticsTests
         context.FailedResolutions.Should().HaveCount(3);
         context.FailedResolutions.Should().AllSatisfy(f => f.PrincipalId.Should().Be(missingPrincipalId));
         context.FailedResolutions.Select(f => f.ResourceAddress).Should().BeEquivalentTo(
-            ["azurerm_role_assignment.example", "azurerm_role_assignment.reader", "azurerm_role_assignment.contributor"]);
+            RoleAssignmentExample,
+            "azurerm_role_assignment.reader",
+            "azurerm_role_assignment.contributor");
     }
 
     /// <summary>
@@ -143,11 +153,11 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/principal-mapping.json";
-        var mapper = new PrincipalMapper(mappingFile, context);
+        var mappingFile = PrincipalMappingPath;
+        var mapper = PrincipalMapperFactory.Create(mappingFile, context);
 
         // Act
-        var name = mapper.GetName("00000000-0000-0000-0000-000000000001", null, "azurerm_role_assignment.example");
+        var name = mapper.GetName("00000000-0000-0000-0000-000000000001", null, RoleAssignmentExample);
 
         // Assert
         name.Should().Be("Jane Doe");
@@ -162,9 +172,9 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/partial-principal-mapping.json";
-        var mapper = new PrincipalMapper(mappingFile, context);
-        var missingPrincipalId = "00000000-0000-0000-0000-000000000099";
+        var mappingFile = PartialMappingPath;
+        var mapper = PrincipalMapperFactory.Create(mappingFile, context);
+        var missingPrincipalId = MissingPrincipalId;
 
         // Act - No resource address provided (resourceAddress parameter is null)
         var name = mapper.GetName(missingPrincipalId, principalType: null, resourceAddress: null);
@@ -184,7 +194,7 @@ public class PrincipalMapperDiagnosticsTests
         var context = new DiagnosticContext();
 
         // Act
-        _ = new PrincipalMapper(mappingFile: null, context);
+        _ = PrincipalMapperFactory.Create(mappingFile: null, diagnosticContext: context);
 
         // Assert
         context.PrincipalMappingFileProvided.Should().BeFalse();
@@ -201,7 +211,7 @@ public class PrincipalMapperDiagnosticsTests
         var context = new DiagnosticContext();
 
         // Act
-        _ = new PrincipalMapper(mappingFile: string.Empty, context);
+        _ = PrincipalMapperFactory.Create(mappingFile: string.Empty, diagnosticContext: context);
 
         // Assert
         context.PrincipalMappingFileProvided.Should().BeFalse();
@@ -216,10 +226,10 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/partial-principal-mapping.json";
-        var mapper = new PrincipalMapper(mappingFile, context);
-        var missingPrincipalId = "00000000-0000-0000-0000-000000000099";
-        var resourceAddress = "azurerm_role_assignment.example";
+        var mappingFile = PartialMappingPath;
+        var mapper = PrincipalMapperFactory.Create(mappingFile, context);
+        var missingPrincipalId = MissingPrincipalId;
+        var resourceAddress = RoleAssignmentExample;
 
         // Act
         var displayName = mapper.GetPrincipalName(missingPrincipalId, principalType: null, resourceAddress);
@@ -239,10 +249,10 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/nonexistent.json";
+        var mappingFile = MissingMappingPath;
 
         // Act
-        _ = new PrincipalMapper(mappingFile, context);
+        _ = PrincipalMapperFactory.Create(mappingFile, context);
 
         // Assert
         context.PrincipalMappingFileProvided.Should().BeTrue();
@@ -266,7 +276,7 @@ public class PrincipalMapperDiagnosticsTests
         var mappingFile = "/nonexistent/directory/principals.json";
 
         // Act
-        _ = new PrincipalMapper(mappingFile, context);
+        _ = PrincipalMapperFactory.Create(mappingFile, context);
 
         // Assert
         context.PrincipalMappingFileProvided.Should().BeTrue();
@@ -287,17 +297,17 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/invalid-json-principal-mapping.json";
+        var mappingFile = Path.Combine(TestDataDirectory, "invalid-json-principal-mapping.json");
 
         // Create a temporary invalid JSON file for testing
         var invalidJson = "{ \"key1\": \"value1\", invalid }";
-        Directory.CreateDirectory("TestData");
+        Directory.CreateDirectory(TestDataDirectory);
         File.WriteAllText(mappingFile, invalidJson);
 
         try
         {
             // Act
-            _ = new PrincipalMapper(mappingFile, context);
+            _ = PrincipalMapperFactory.Create(mappingFile, context);
 
             // Assert
             context.PrincipalMappingFileProvided.Should().BeTrue();
@@ -328,23 +338,23 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/empty-principal-mapping.json";
+        var mappingFile = Path.Combine(TestDataDirectory, "empty-principal-mapping.json");
 
         // Create a temporary empty JSON file for testing
         var emptyJson = "{}";
-        Directory.CreateDirectory("TestData");
+        Directory.CreateDirectory(TestDataDirectory);
         File.WriteAllText(mappingFile, emptyJson);
 
         try
         {
             // Act
-            _ = new PrincipalMapper(mappingFile, context);
+            _ = PrincipalMapperFactory.Create(mappingFile, context);
 
             // Assert
             context.PrincipalMappingFileProvided.Should().BeTrue();
             context.PrincipalMappingLoadedSuccessfully.Should().BeTrue(); // Empty is technically successful
             context.PrincipalMappingFilePath.Should().Be(mappingFile);
-            context.PrincipalTypeCount["principals"].Should().Be(0); // But count is 0
+            context.PrincipalTypeCount[PrincipalsKey].Should().Be(0); // But count is 0
         }
         finally
         {
@@ -364,7 +374,7 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/nested-principal-mapping.json";
+        var mappingFile = Path.Combine(TestDataDirectory, "nested-principal-mapping.json");
 
         // Create a nested format JSON file
         var nestedJson = """
@@ -383,13 +393,13 @@ public class PrincipalMapperDiagnosticsTests
           }
         }
         """;
-        Directory.CreateDirectory("TestData");
+        Directory.CreateDirectory(TestDataDirectory);
         File.WriteAllText(mappingFile, nestedJson);
 
         try
         {
             // Act
-            _ = new PrincipalMapper(mappingFile, context);
+            _ = PrincipalMapperFactory.Create(mappingFile, context);
 
             // Assert
             context.PrincipalMappingFileProvided.Should().BeTrue();
@@ -417,7 +427,7 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/nested-users-only.json";
+        var mappingFile = Path.Combine(TestDataDirectory, "nested-users-only.json");
 
         // Create a nested format JSON file with only users
         var nestedJson = """
@@ -428,13 +438,13 @@ public class PrincipalMapperDiagnosticsTests
           }
         }
         """;
-        Directory.CreateDirectory("TestData");
+        Directory.CreateDirectory(TestDataDirectory);
         File.WriteAllText(mappingFile, nestedJson);
 
         try
         {
             // Act
-            _ = new PrincipalMapper(mappingFile, context);
+            _ = PrincipalMapperFactory.Create(mappingFile, context);
 
             // Assert
             context.PrincipalMappingFileProvided.Should().BeTrue();
@@ -461,7 +471,7 @@ public class PrincipalMapperDiagnosticsTests
     {
         // Arrange
         var context = new DiagnosticContext();
-        var mappingFile = "TestData/flat-principal-mapping.json";
+        var mappingFile = Path.Combine(TestDataDirectory, "flat-principal-mapping.json");
 
         // Create a flat format JSON file
         var flatJson = """
@@ -471,18 +481,18 @@ public class PrincipalMapperDiagnosticsTests
           "00000000-0000-0000-0000-000000000003": "terraform-spn (Service Principal)"
         }
         """;
-        Directory.CreateDirectory("TestData");
+        Directory.CreateDirectory(TestDataDirectory);
         File.WriteAllText(mappingFile, flatJson);
 
         try
         {
             // Act
-            _ = new PrincipalMapper(mappingFile, context);
+            _ = PrincipalMapperFactory.Create(mappingFile, context);
 
             // Assert
             context.PrincipalMappingFileProvided.Should().BeTrue();
             context.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
-            context.PrincipalTypeCount["principals"].Should().Be(3);
+            context.PrincipalTypeCount[PrincipalsKey].Should().Be(3);
             context.PrincipalTypeCount.Should().NotContainKey("users");
             context.PrincipalTypeCount.Should().NotContainKey("groups");
             context.PrincipalTypeCount.Should().NotContainKey("servicePrincipals");

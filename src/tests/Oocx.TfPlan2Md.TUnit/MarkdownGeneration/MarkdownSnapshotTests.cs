@@ -36,7 +36,7 @@ public class MarkdownSnapshotTests
     public void Snapshot_ComprehensiveDemo_MatchesBaseline()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
+        var principalMapper = PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath);
         var providerRegistry = CreateProviderRegistry(principalMapper);
         var model = new ReportModelBuilder(
             principalMapper: principalMapper,
@@ -100,7 +100,7 @@ public class MarkdownSnapshotTests
     {
         var json = File.ReadAllText("TestData/role-assignments.json");
         var plan = _parser.Parse(json);
-        var principalMapper = new PrincipalMapper(DemoPaths.DemoPrincipalsPath);
+        var principalMapper = PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath);
         var providerRegistry = CreateProviderRegistry(principalMapper);
         var model = new ReportModelBuilder(
             principalMapper: principalMapper,

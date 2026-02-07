@@ -12,6 +12,7 @@ namespace Oocx.TfPlan2Md.Parsing;
 [JsonSerializable(typeof(TerraformPlan))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(PrincipalMappingFile))]
+[JsonSerializable(typeof(MappingEntry))]
 internal partial class TfPlanJsonContext : JsonSerializerContext
 {
 }

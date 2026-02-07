@@ -42,7 +42,7 @@ public class AzureAdSnapshotTests
     {
         var json = File.ReadAllText(Path.Combine("TestData", testDataFile));
         var plan = _parser.Parse(json);
-        var principalMapper = new PrincipalMapper(DemoPaths.AzureAdPrincipalMappingPath);
+        var principalMapper = PrincipalMapperFactory.Create(DemoPaths.AzureAdPrincipalMappingPath);
         var providerRegistry = CreateProviderRegistry();
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);

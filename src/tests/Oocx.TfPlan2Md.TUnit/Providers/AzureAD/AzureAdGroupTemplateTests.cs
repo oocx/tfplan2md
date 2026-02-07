@@ -26,7 +26,8 @@ public class AzureAdGroupTemplateTests
 
     private string Render()
     {
-        var principalMapper = new PrincipalMapper(DemoPaths.AzureAdPrincipalMappingPath);
+        var mappingResult = AzureMappingFileLoader.Load(DemoPaths.AzureAdPrincipalMappingPath, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdGroupPlanPath));
 
         var providerRegistry = new ProviderRegistry();

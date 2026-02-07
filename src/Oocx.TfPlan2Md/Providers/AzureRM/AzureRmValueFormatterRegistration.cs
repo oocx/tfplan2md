@@ -1,5 +1,6 @@
 using System;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM;
 
@@ -15,12 +16,13 @@ internal static class AzureRmValueFormatterRegistration
     /// Registers AzureRM value formatters in the provided registry.
     /// </summary>
     /// <param name="registry">The value formatter registry to register with.</param>
-    public static void Register(ValueFormatterRegistry registry)
+    /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
+    public static void Register(ValueFormatterRegistry registry, EnrichedAzureScopeFormatter? scopeFormatter = null)
     {
         ArgumentNullException.ThrowIfNull(registry);
 
         registry.Register(
             new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, "^/subscriptions/[^/]+/.*"),
-            new AzureResourceIdFormatter());
+            new AzureResourceIdFormatter(scopeFormatter));
     }
 }

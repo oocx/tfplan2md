@@ -1,5 +1,6 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Scriban.Runtime;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
@@ -11,6 +12,20 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 /// </summary>
 internal sealed class AzApiModule : IProviderModule
 {
+    /// <summary>
+    /// Optional formatter for enriched Azure scope display.
+    /// </summary>
+    private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzApiModule"/> class.
+    /// </summary>
+    /// <param name="scopeFormatter">Optional formatter for enriched Azure scope display.</param>
+    public AzApiModule(EnrichedAzureScopeFormatter? scopeFormatter = null)
+    {
+        _scopeFormatter = scopeFormatter;
+    }
+
     /// <summary>
     /// Gets the unique name of this Terraform provider.
     /// </summary>
@@ -48,7 +63,7 @@ internal sealed class AzApiModule : IProviderModule
     {
         registry.Register(
             new MatchPattern("(^azapi$|.*/azapi$)", null, null, "^/subscriptions/[^/]+/.*"),
-            new AzureResourceIdFormatter());
+            new AzureResourceIdFormatter(_scopeFormatter));
     }
 
     /// <summary>

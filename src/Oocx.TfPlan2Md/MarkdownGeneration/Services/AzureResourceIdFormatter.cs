@@ -12,6 +12,20 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 internal sealed class AzureResourceIdFormatter : IValueFormatter
 {
     /// <summary>
+    /// Optional scope formatter for display name enrichment.
+    /// </summary>
+    private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureResourceIdFormatter"/> class.
+    /// </summary>
+    /// <param name="scopeFormatter">Optional formatter for display name enrichment.</param>
+    internal AzureResourceIdFormatter(EnrichedAzureScopeFormatter? scopeFormatter = null)
+    {
+        _scopeFormatter = scopeFormatter;
+    }
+
+    /// <summary>
     /// Attempts to format Azure resource IDs into readable summaries.
     /// </summary>
     /// <param name="context">The resolution context to evaluate.</param>
@@ -25,8 +39,13 @@ internal sealed class AzureResourceIdFormatter : IValueFormatter
             return null;
         }
 
-        return AzureScopeParser.IsAzureResourceId(context.Value)
-            ? AzureScopeParser.ParseScope(context.Value)
-            : null;
+        if (!AzureScopeParser.IsAzureResourceId(context.Value))
+        {
+            return null;
+        }
+
+        return _scopeFormatter != null
+            ? _scopeFormatter.FormatScope(context.Value)
+            : AzureScopeParser.ParseScope(context.Value);
     }
 }

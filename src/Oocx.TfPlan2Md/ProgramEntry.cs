@@ -151,14 +151,20 @@ internal static class ProgramEntry
         // Load Azure mapping file once and create principal mapper for role assignment resolution
         var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
         var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
+        var entityMapper = new AzureEntityMapper(
+            mappingResult.Subscriptions,
+            mappingResult.ManagementGroups,
+            mappingResult.Tenants);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
 
         // Create and configure provider registry
         var providerRegistry = new ProviderRegistry();
-        providerRegistry.RegisterProvider(new AzApiModule());
+        providerRegistry.RegisterProvider(new AzApiModule(scopeFormatter));
         providerRegistry.RegisterProvider(new AzureADModule());
         providerRegistry.RegisterProvider(new AzureRMModule(
             largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget),
-            principalMapper: principalMapper));
+            principalMapper: principalMapper,
+            scopeFormatter: scopeFormatter));
         providerRegistry.RegisterProvider(new AzureDevOpsModule(
             largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget)));
 

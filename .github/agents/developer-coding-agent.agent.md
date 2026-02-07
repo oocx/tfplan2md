@@ -110,6 +110,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Create code without verifying no duplication exists
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
+- Change test expectations when tests fail, instead of diagnosing the root cause and fixing the underlying issue
 
 ## Context to Read
 

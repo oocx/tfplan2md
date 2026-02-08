@@ -222,51 +222,51 @@ Before starting orchestration:
 ### Feature Development Workflow
 
 ```
-Requirements Engineer → Feature Specification
+Requirements Engineer → Feature Specification + Work Protocol (creates)
         ↓
-Architect → Architecture Decision Records (ADRs)
+Architect → Architecture Decision Records (ADRs) + Work Protocol (appends)
         ↓
-Quality Engineer → Test Plan & Test Cases
+Quality Engineer → Test Plan & Test Cases + Work Protocol (appends)
         ↓
-Task Planner → User Stories / Tasks
+Task Planner → User Stories / Tasks + Work Protocol (appends)
         ↓
-Developer → Code & Tests
+Developer → Code & Tests + Work Protocol (appends)
         ↓
-Technical Writer → Updated Documentation
+Technical Writer → Updated Documentation + Work Protocol (appends)
         ↓
-Code Reviewer → Code Review Report
+Code Reviewer → Code Review Report + Work Protocol (verifies & appends)
         ↓
-[If user-facing] UAT Tester → User Acceptance Validation
+[If user-facing] UAT Tester → User Acceptance Validation + Work Protocol (appends)
         ↓
-Release Manager → Pull Request & Release
+Release Manager → Pull Request & Release + Work Protocol (verifies & appends)
         ↓
-Retrospective → Retrospective Report
+Retrospective → Retrospective Report + Work Protocol (analyzes & appends)
 ```
 
 ### Bug Fix Workflow
 
 ```
-Issue Analyst → Issue Analysis
+Issue Analyst → Issue Analysis + Work Protocol (creates)
         ↓
-Developer → Code & Tests (fix)
+Developer → Code & Tests (fix) + Work Protocol (appends)
         ↓
-Technical Writer → Updated Documentation
+Technical Writer → Updated Documentation + Work Protocol (appends)
         ↓
-Code Reviewer → Code Review Report
+Code Reviewer → Code Review Report + Work Protocol (verifies & appends)
         ↓
-[If needed] UAT Tester → Validation
+[If needed] UAT Tester → Validation + Work Protocol (appends)
         ↓
-Release Manager → Pull Request & Release
+Release Manager → Pull Request & Release + Work Protocol (verifies & appends)
         ↓
-Retrospective → Retrospective Report
+Retrospective → Retrospective Report + Work Protocol (analyzes & appends)
 ```
 
 ### Workflow Improvement
 
 ```
-Workflow Engineer → Workflow Changes & Documentation
+Workflow Engineer → Workflow Changes & Documentation + Work Protocol (creates & appends)
         ↓
-Release Manager → Pull Request
+Release Manager → Pull Request + Work Protocol (verifies & appends)
 ```
 
 ## Orchestration Approach

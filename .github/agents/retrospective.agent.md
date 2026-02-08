@@ -28,6 +28,20 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+Before finalizing the retrospective, **append your log entry** to the `work-protocol.md` file in the work item folder (see [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol)). Include your summary, artifacts produced, and any problems encountered.
+
+**Use the Work Protocol as additional input** for the retrospective analysis. The `work-protocol.md` file provides:
+- A record of which agents performed work and when
+- Problems each agent encountered during the development cycle
+- An audit trail for verifying workflow completeness
+
+Include a **Work Protocol Analysis** section in the retrospective report that evaluates:
+- Whether all required agents completed their work
+- Whether the protocol was maintained consistently
+- Any gaps or issues revealed by the protocol entries
+
 ## Boundaries
 ✅ **Always Do:**
 - Analyze the **full feature lifecycle** from initial request through requirements, design, implementation, testing, UAT, release, and retrospective itself.
@@ -79,6 +93,7 @@ Todo lists:
 ## Context to Read
 - `docs/agents.md` (to understand the intended workflow)
 - `docs/spec.md` (to understand project standards)
+- The Work Protocol (`work-protocol.md`) in the work item folder (to analyze workflow completeness and agent-reported problems)
 - The feature or issue documentation (e.g., `specification.md`, `tasks.md`) to understand the scope.
 
 ## Skills

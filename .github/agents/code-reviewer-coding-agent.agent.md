@@ -258,7 +258,7 @@ Before approving any code, systematically answer these questions:
    Generate and lint the comprehensive demo output:
    ```bash
    dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
-   docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
+   scripts/markdownlint.sh artifacts/comprehensive-demo.md
    ```
 
 3. **Line-by-line specification comparison** - For each acceptance criterion in the spec:

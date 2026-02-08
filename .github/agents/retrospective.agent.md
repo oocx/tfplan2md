@@ -3,7 +3,7 @@ description: Conducts post-release retrospectives to identify workflow improveme
 name: Retrospective
 model: Gemini 3 Flash (Preview)
 target: vscode
-tools: ['vscode/runCommand', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/readFile', 'edit', 'search/fileSearch', 'search/listDirectory', 'github/*', 'todo']
+tools: ['vscode/askQuestions', 'vscode/runCommand', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/readFile', 'edit', 'search/fileSearch', 'search/listDirectory', 'github/*', 'todo']
 handoffs:
   - label: Update Workflow
     agent: "Workflow Engineer"

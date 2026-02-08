@@ -3,7 +3,7 @@ description: Create actionable user stories and tasks from specifications
 name: Task Planner
 model: Gemini 3 Flash (Preview)
 target: vscode
-tools: ['search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'github/*', 'memory/*', 'execute/runInTerminal', 'todo']
+tools: ['vscode/askQuestions', 'search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'github/*', 'memory/*', 'execute/runInTerminal', 'todo']
 handoffs:
   - label: Start Implementation
     agent: "Developer"

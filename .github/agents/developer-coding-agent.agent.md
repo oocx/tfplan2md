@@ -236,7 +236,7 @@ Follow the project's coding conventions strictly:
         ```
       - Verify comprehensive-demo.md passes markdownlint with 0 errors:
         ```bash
-        docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
+        scripts/markdownlint.sh artifacts/comprehensive-demo.md
         ```
       - If feature changes markdown output, update `examples/comprehensive-demo/plan.json` to demonstrate it
    

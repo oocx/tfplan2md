@@ -3,7 +3,7 @@ description: Implement features and tests according to specifications
 name: Developer
 model: GPT-5.2-Codex
 target: vscode
-tools: ['execute/testFailure', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/problems', 'read/readFile', 'read/terminalLastCommand', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'todo']
+tools: ['vscode/askQuestions', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/problems', 'read/readFile', 'read/terminalLastCommand', 'edit', 'search', 'web', 'copilot-container-tools/*', 'github/*', 'io.github.hashicorp/terraform-mcp-server/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'todo']
 handoffs:
   - label: Update Documentation
     agent: "Technical Writer"
@@ -246,7 +246,7 @@ Follow the project's coding conventions strictly:
       - Use `generate-demo-artifacts` skill to regenerate all demo artifacts
       - Verify comprehensive-demo.md passes markdownlint with 0 errors:
         ```bash
-        docker run --rm -i davidanson/markdownlint-cli2:v0.20.0 --stdin < artifacts/comprehensive-demo.md
+        scripts/markdownlint.sh artifacts/comprehensive-demo.md
         ```
       - If feature changes markdown output, update `examples/comprehensive-demo/plan.json` to demonstrate it
    

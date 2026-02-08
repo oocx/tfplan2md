@@ -4,41 +4,30 @@
 **Date:** 2026-02-08
 
 ## Summary
-The UAT failed due to missing display names for subscriptions and management groups, rendering issues with icons, and empty details blocks for certain resources.
+The UAT failed due to minor formatting and icon issues in both the feature-specific report and the comprehensive demo.
 
 ## Tested PRs
-- **GitHub:** #57 (FAILED)
-- **Azure DevOps:** #62 (FAILED)
+- **GitHub:** #59 (FAILED)
+- **Azure DevOps:** #64 (FAILED)
 
 ## Findings
 
-### 1. Missing Features/Coverage
-- Specific demo does not cover:
-    - Subscription name mapping.
-    - Management group name mapping (including root group special case).
-    - Custom role mapping.
+### 1. Rendering Issues (Bugs)
 
-### 2. Rendering Issues (Bugs)
-- **Missing Subscription Display Names:**
-    - Comprehensive demo: `rg-tfplan2md-demo in subscription 🔑 12345678-1234-1234-1234-123456789012` (expected display name).
-    - `azurerm_pim_eligible_role_assignment`: Principal ID is raw GUID, scope is missing subscription name.
-    - Key Vault scope: `Key Vault kv-tfplan2md in resource group rg-tfplan2md-demo of subscription 12345678-1234-1234-1234-123456789012` (missing display name).
-- **Missing Icons:**
-    - `rg-app in subscription Production (sub-123)` is missing icons for subscription and resource group.
-- **Empty Detail Blocks:**
-    - `azurerm_role_management_policy` details block is empty/has no content when opened.
+#### Feature-specific Report: `azurerm_pim_eligible_role_assignment`
+- **Actual:** `➕ azurerm_pim_eligible_role_assignment example — Assign `Owner` to `Jane Doe``
+- **Expected:** `➕ azurerm_pim_eligible_role_assignment example — Assign `🛡️ Owner` to `👤 Jane Doe``
+- **Issue:** Missing `🛡️` (security/role) and `👤` (user/principal) icons.
 
-### 3. Workflow Issues
-- The UAT PR should contain **two separate comments**: one for the specific test case and one for regression testing (Comprehensive Demo).
+#### Comprehensive Demo: `azurerm_subscription`
+- **Actual:** `➕ azurerm_subscription demo — `🔑 Production` `🔑 12345678-1234-1234-1234-123456789012``
+- **Expected:** `➕ azurerm_subscription demo — `🔑 Production (12345678-1234-1234-1234-123456789012)``
+- **Issue:** Excessive list of keys and missing parentheses for the ID.
 
-### 4. Inconsistency in Artifacts
-- **Comprehensive Demo Inconsistency:** The `comprehensive-demo.md` sometimes contains a code analysis summary and sometimes doesn't. Needs investigation into whether there are multiple sources generating this report with different contents.
-
-## Requested Enhancements
-- **DNS A Record Summary:**
-    - Format: `➕ azurerm_private_dns_a_record `🆔 record1` — `record1.contoso.local` `🌐 10.0.0.4``
-    - Should show the name and up to 3 records.
+### 2. Retrospective / Workflow Improvements
+- **Issue:** UAT required manual instructions and multiple tool calls to create PRs containing both the feature-specific report and the regression testing report (comprehensive-demo.md).
+- **Recommendation:** Improve UAT instructions (test plan templates) or `scripts/uat-run.sh` tooling to ensure that both reports are always included by default to prevent regressions.
 
 ## Next Steps
-- Handoff to Developer to fix the reported bugs and implement the DNS A record enhancement.
-- Update test artifacts to better cover the missing mapping scenarios.
+- Handoff to Developer to fix the icon and formatting bugs.
+- Incorporate the retrospective feedback into the UAT workflow documentation.

@@ -12,14 +12,26 @@
 
 ### 1. Resource Summary Formatting
 - **Description:** Verify that summary lines include correct backticks and icons.
-- **Actual:** `➕ azurerm_role_assignment mg_scope — 👤 Jane Doe → 🛡️ Reader on management group mg-root` (Missing backticks and icons)
-- **Expected:** `➕ azurerm_role_assignment `mg_scope` — `👤 Jane Doe` → `🛡️ Reader` on management group `🗂️ mg-root``
+- **Actual:**
+  ```
+  ➕ azurerm_role_assignment mg_scope — 👤 Jane Doe → 🛡️ Reader on management group mg-root
+  ```
+- **Expected:**
+  ```
+  ➕ azurerm_role_assignment `mg_scope` — `👤 Jane Doe` → `🛡️ Reader` on management group `🗂️ mg-root`
+  ```
 - **Result:** ❌ FAILED
 
 ### 2. Attribute Table Icons
 - **Description:** Verify that management group icons are present in attribute tables inside backticks.
-- **Actual:** `scope`mg-root (Management Group)` ` (Missing 🗂️ icon)
-- **Expected:** `scope`🗂️ mg-root (Management Group)` `
+- **Actual:**
+  ```
+  scope `mg-root (Management Group)`
+  ```
+- **Expected:**
+  ```
+  scope `🗂️ mg-root (Management Group)`
+  ```
 - **Result:** ❌ FAILED
 
 ### 3. Icon Placement Policy

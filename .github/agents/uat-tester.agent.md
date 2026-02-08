@@ -44,6 +44,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 ### ✅ Always Do
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - **Validate artifact before running**: Verify the specified artifact exercises the changed code paths. If using a default artifact (e.g., comprehensive-demo.md), confirm it will test the new feature. If not, generate a feature-specific artifact first.
+- **Always include both feature-specific AND regression artifacts**: UAT PRs must include both the feature-specific artifact (tests new changes) and the comprehensive demo (tests for regressions). The `scripts/uat-run.sh` script automatically adds both when you provide a feature-specific artifact.
 - Use repository scripts directly (NOT `bash ...`) for permanent allow rules
 - Run real UAT only (GitHub/Azure DevOps)
 - Report the PR numbers/URLs and the Maintainer’s pass/fail decision

@@ -78,6 +78,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Wait for CI on main to complete before triggering release workflow
 - Detect and use the version tag created by Versionize
 - Verify all release artifacts after pipeline completes
+- **Use wrapper scripts instead of raw `gh` commands** — always prefer repository wrapper scripts and GitHub MCP tools over direct `gh` CLI usage to minimize approval friction (see GitHub Operations table below)
 
 ### ⚠️ Ask First
 - Proceeding with release if any check fails
@@ -96,6 +97,47 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
 - Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
+- **Use raw `gh` commands directly** — never use `gh pr`, `gh run`, `gh workflow`, `gh release`, or other `gh` subcommands directly; always use wrapper scripts or GitHub MCP tools instead (see alternatives table below)
+
+## GitHub Operations: Approved Alternatives
+
+**CRITICAL: Never use raw `gh` commands. Always use this priority order:**
+
+1. **GitHub MCP Tools** (preferred for VS Code — can be permanently allowed)
+2. **Repository Wrapper Scripts** (permanent approval for automation)
+3. **Raw `gh` CLI** (❌ NEVER — requires manual approval every time)
+
+### GitHub CLI Alternatives Table
+
+| Operation | ❌ Raw `gh` (NEVER) | ✅ Use Instead | Example |
+|-----------|---------------------|----------------|---------|
+| **Pull Requests** |
+| Create PR | `gh pr create` | `scripts/pr-github.sh create` | `scripts/pr-github.sh create --title "feat: ..." --body-from-stdin <<< "..."` |
+| Merge PR | `gh pr merge` | `scripts/pr-github.sh create-and-merge` | `scripts/pr-github.sh create-and-merge --title "..." --body-from-stdin <<< "..."` |
+| View PR | `gh pr view` | GitHub MCP: `github-mcp-server-pull_request_read` | `method="get", owner="oocx", repo="tfplan2md", pullNumber=123` |
+| List PRs | `gh pr list` | GitHub MCP: `github-mcp-server-list_pull_requests` | `owner="oocx", repo="tfplan2md", state="open"` |
+| **Workflow Runs** |
+| List runs | `gh run list` | `scripts/check-workflow-status.sh list` | `scripts/check-workflow-status.sh list --branch main --limit 5` |
+| Watch run | `gh run watch` | `scripts/check-workflow-status.sh watch` | `scripts/check-workflow-status.sh watch <run-id>` |
+| View run | `gh run view` | `scripts/check-workflow-status.sh view` | `scripts/check-workflow-status.sh view <run-id>` |
+| View logs | `gh run view --log` | `scripts/check-workflow-status.sh logs` | `scripts/check-workflow-status.sh logs <run-id> --step "Build"` |
+| **Workflows** |
+| Trigger workflow | `gh workflow run` | `scripts/check-workflow-status.sh trigger` | `scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0` |
+| List workflows | `gh workflow list` | GitHub MCP: `github-mcp-server-actions_list` | `method="list_workflows", owner="oocx", repo="tfplan2md"` |
+| **Releases** |
+| View release | `gh release view` | `scripts/gh-release-view.sh` | `scripts/gh-release-view.sh v1.0.0` |
+| View latest | `gh release view --latest` | `scripts/gh-release-view.sh --latest` | `scripts/gh-release-view.sh --latest` |
+| List releases | `gh release list` | GitHub MCP: `github-mcp-server-list_releases` | `owner="oocx", repo="tfplan2md"` |
+| **Repository** |
+| View file | `gh api repos/.../contents/...` | GitHub MCP: `github-mcp-server-get_file_contents` | `owner="oocx", repo="tfplan2md", path="README.md"` |
+| List commits | `gh api repos/.../commits` | GitHub MCP: `github-mcp-server-list_commits` | `owner="oocx", repo="tfplan2md", sha="main"` |
+| View commit | `gh api repos/.../commits/...` | GitHub MCP: `github-mcp-server-get_commit` | `owner="oocx", repo="tfplan2md", sha="abc123"` |
+
+**Why This Matters:**
+- Each raw `gh` command requires **manual user approval** every time
+- Wrapper scripts can be **permanently approved** in VS Code
+- GitHub MCP tools are **always allowed** without friction
+- Reduces workflow interruptions and improves automation
 
 ## Context to Read
 
@@ -302,10 +344,10 @@ Before releasing, verify:
    # Check CHANGELOG.md was updated
    head -n 20 CHANGELOG.md
    
-   # Verify GitHub Release created (fallback to raw gh if no script available)
-   # Preferred: Use GitHub MCP tools in VS Code
-   # Fallback only:
-   PAGER=cat gh release view <tag>
+   # Verify GitHub Release created
+   # Preferred: GitHub MCP tools (github-mcp-server-get_release_by_tag)
+   # Alternative: scripts/gh-release-view.sh <tag>
+   scripts/gh-release-view.sh <tag>
    ```
    - [ ] CHANGELOG.md updated with new version and commits
    - [ ] GitHub Release created with release notes

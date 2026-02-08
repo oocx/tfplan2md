@@ -241,6 +241,10 @@ fi
 artifact_github="${UAT_ARTIFACT_GITHUB:-}"
 artifact_azdo="${UAT_ARTIFACT_AZDO:-}"
 
+# Regression artifacts (always included for safety)
+regression_artifact_github="artifacts/comprehensive-demo-simple-diff.md"
+regression_artifact_azdo="artifacts/comprehensive-demo.md"
+
 if [[ -n "$artifact_arg" ]]; then
   artifact_github="$artifact_arg"
   artifact_azdo="$artifact_arg"
@@ -253,7 +257,15 @@ fi
 if [[ -z "$artifact_azdo" ]]; then
   artifact_azdo="artifacts/comprehensive-demo.md"
 fi
-log_info "Artifacts to be used: GitHub: $artifact_github, AzDO: $artifact_azdo"
+log_info "Feature artifacts to be used: GitHub: $artifact_github, AzDO: $artifact_azdo"
+
+# Always include regression artifacts unless they are the same as feature artifacts
+if [[ "$artifact_github" != "$regression_artifact_github" ]]; then
+  log_info "Regression artifact (GitHub): $regression_artifact_github"
+fi
+if [[ "$artifact_azdo" != "$regression_artifact_azdo" ]]; then
+  log_info "Regression artifact (AzDO): $regression_artifact_azdo"
+fi
 
 # Note: Artifact existence checks moved to individual scripts
 # which will also apply smart defaults if artifact is empty
@@ -310,6 +322,12 @@ if [[ "$platform" == "both" || "$platform" == "github" ]]; then
     exit 1
   fi
   log_info "GitHub PR: #$gh_pr ($gh_url)"
+  
+  # Add regression artifact if different from feature artifact
+  if [[ "$artifact_github" != "$regression_artifact_github" && -f "$regression_artifact_github" ]]; then
+    log_info "Adding regression artifact to GitHub PR..."
+    scripts/uat-github.sh comment "$gh_pr" "$regression_artifact_github"
+  fi
 fi
 
 if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
@@ -325,6 +343,12 @@ if [[ "$platform" == "both" || "$platform" == "azdo" ]]; then
     exit 1
   fi
   log_info "Azure DevOps PR: #$azdo_pr ($azdo_url)"
+  
+  # Add regression artifact if different from feature artifact
+  if [[ "$artifact_azdo" != "$regression_artifact_azdo" && -f "$regression_artifact_azdo" ]]; then
+    log_info "Adding regression artifact to Azure DevOps PR..."
+    scripts/uat-azdo.sh comment "$azdo_pr" "$regression_artifact_azdo"
+  fi
 fi
 
 print_pr_links_block

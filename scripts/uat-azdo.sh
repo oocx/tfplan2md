@@ -134,8 +134,13 @@ Create a UAT PR and post the test markdown as PR comments.
 **Feature-Specific Validation:**
 __TEST_DESCRIPTION__
 
+**Artifacts:**
+This PR includes two artifacts for comprehensive validation:
+1. **Feature-specific artifact** — Tests the specific changes in this feature
+2. **Regression artifact (comprehensive demo)** — Ensures no regressions in existing functionality
+
 **General Verification:**
-1. **Read the test artifact** posted as the first comment below
+1. **Read the test artifacts** posted as comments below
 2. **Verify markdown rendering**:
    - Tables render correctly with proper alignment
    - Code blocks display with syntax highlighting

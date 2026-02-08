@@ -81,6 +81,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - **Line-by-line specification comparison** — Read each acceptance criterion and verify it is implemented AND tested
 - **Cross-check examples** — If the spec includes examples, verify the implementation matches them exactly
+- **Verify feature-specific demo artifact coverage** — If a UAT test plan exists, confirm that the feature-specific demo artifact exercises EVERY acceptance criterion. For cross-cutting rendering features (icons, summaries, display names), verify all resource types and touch-points are covered.
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
 - Ensure tests follow naming convention and are meaningful

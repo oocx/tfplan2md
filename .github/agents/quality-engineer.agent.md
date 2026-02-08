@@ -35,6 +35,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Map every acceptance criterion to at least one test case
 - Ensure all automated tests are fully automated (no manual steps)
 - For user-facing features (CLI changes, rendering changes), define **UAT Test Plans** for Maintainer review via PRs in `docs/features/NNN-<feature-slug>/uat-test-plan.md`
+- **For cross-cutting rendering features** (icons, summaries, display names affecting multiple resource types): Explicitly enumerate ALL rendering touch-points in the UAT test plan and ensure the feature-specific demo artifact exercises each one. List specific resource types, attributes, and expected outputs.
 - Follow xUnit and AwesomeAssertions patterns
 - Use test naming convention: `MethodName_Scenario_ExpectedResult`
 - Verify tests can run via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` without human intervention

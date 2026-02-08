@@ -29,6 +29,17 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+Before handing off, **append your log entry** to the `work-protocol.md` file in the work item folder (see [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol)). Include your summary, artifacts produced, and any problems encountered.
+
+In addition to updating feature-specific documentation, ensure the following global documentation files are updated where the feature/fix impacts them:
+- `docs/architecture.md` — if new components, patterns, or architectural changes were introduced
+- `docs/features.md` — with new feature descriptions (required for all features)
+- `docs/testing-strategy.md` — if new test patterns, frameworks, or testing approaches were introduced
+- `README.md` — if the feature affects installation, usage, CLI options, or quick start
+- `docs/agents.md` — if the workflow or agent behavior changed
+
 ## Boundaries
 
 ### ✅ Always Do

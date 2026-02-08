@@ -52,6 +52,12 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 ```
 
 
+## Work Protocol
+
+For workflow improvements, you are typically the **first agent** in the workflow. If `work-protocol.md` does not exist in the work item folder, **create** it using the template from [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol). Set the Workflow Type to "Workflow".
+
+Before handing off, **append your log entry** to the `## Agent Work Log` section with your summary, artifacts produced, and any problems encountered.
+
 ## Boundaries
 
 ### ✅ Always Do

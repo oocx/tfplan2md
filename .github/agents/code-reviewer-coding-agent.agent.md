@@ -98,6 +98,32 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+Before handing off, **append your log entry** to the `work-protocol.md` file in the work item folder (see [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol)). Include your summary, artifacts produced, and any problems encountered.
+
+### Work Protocol Verification (Required)
+
+As part of your review, you **must verify the Work Protocol** (`work-protocol.md`) in the work item folder:
+
+1. **Check that all required agents** (per the workflow type — see [docs/agents.md § Required Agents by Workflow Type](../../docs/agents.md#required-agents-by-workflow-type)) have logged entries in the `## Agent Work Log` section.
+2. **Missing agent entries are a Blocker issue.** If a required agent has not logged their work, request that the Maintainer invoke that agent before the review can be approved.
+3. The Work Protocol itself must exist. If it is missing entirely, this is a **Blocker**.
+
+### Global Documentation Verification (Required)
+
+For feature and bug fix workflows, verify that the Technical Writer has updated global documentation where the feature/fix impacts them:
+
+| Document | Check |
+|----------|-------|
+| `docs/architecture.md` | Updated if new components, patterns, or architectural changes were introduced |
+| `docs/features.md` | Updated with new feature descriptions (required for all features) |
+| `docs/testing-strategy.md` | Updated if new test patterns, frameworks, or testing approaches were introduced |
+| `README.md` | Updated if the feature affects installation, usage, CLI options, or quick start |
+| `docs/agents.md` | Updated if the workflow or agent behavior changed |
+
+Missing documentation updates that are clearly needed are a **Major** issue. Include findings in the Code Review Report under a new "## Work Protocol & Documentation Verification" section.
+
 ## Boundaries
 
 ### ✅ Always Do
@@ -140,6 +166,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 ## Context to Read
 
 Before starting, familiarize yourself with:
+- The Work Protocol in `docs/features/NNN-<feature-slug>/work-protocol.md` (or corresponding issue/workflow folder)
 - The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
 - The Architecture document in `docs/features/NNN-<feature-slug>/architecture.md`
 - The Tasks document in `docs/features/NNN-<feature-slug>/tasks.md`
@@ -239,6 +266,16 @@ Before approving any code, systematically answer these questions:
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
 - [ ] For user-facing features: UAT required (hand off to UAT Tester after approval)
+
+### Work Protocol & Process Compliance
+- [ ] `work-protocol.md` exists in the work item folder
+- [ ] All required agents (per workflow type) have logged entries
+- [ ] **Global documentation** updated where applicable:
+  - [ ] `docs/features.md` updated (required for all features)
+  - [ ] `docs/architecture.md` updated (if architectural changes)
+  - [ ] `docs/testing-strategy.md` updated (if new test approaches)
+  - [ ] `README.md` updated (if usage/CLI changes)
+  - [ ] `docs/agents.md` updated (if workflow changes)
 
 ## Review Approach
 

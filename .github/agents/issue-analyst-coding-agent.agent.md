@@ -62,6 +62,12 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+As the **first agent** in the bug fix workflow, you must **create** the `work-protocol.md` file in the work item folder using the template from [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol). Set the Workflow Type to "Bug Fix".
+
+Before handing off, **append your log entry** to the `## Agent Work Log` section with your summary, artifacts produced, and any problems encountered.
+
 ## Important: Bug Fixes vs Feature Requests
 
 **Issue Analyst handles:**

@@ -556,6 +556,88 @@ When multiple branches are created in parallel, they may independently pick the 
 | **Retrospective Report** | Summary of the development cycle, highlighting successes, failures, and improvement opportunities. | Markdown document with sections: Summary, What Went Well, What Didn't Go Well, Improvement Opportunities; include action items with change location + verification method, CI/status-check summary when applicable, automation opportunities (including suggested skills/scripts), and a Retrospective DoD checklist. | `docs/features/NNN-<feature-slug>/retrospective.md` or `docs/issues/NNN-<issue-slug>/retrospective.md` |
 | **Workflow Documentation** | Updated agent definitions and workflow documentation reflecting process improvements. | Agent markdown files and workflow docs. | `.github/agents/*.agent.md`, `docs/agents.md` |
 | **Website** | Static website for tfplan2md hosted on GitHub Pages. Includes design, content, and implementation. | HTML/CSS files with responsive design and WCAG 2.1 AA accessibility. | `/website/` directory |
+| **Work Protocol** | Tracks which agents have performed work during a development cycle. Every agent appends a log entry summarizing their work and any problems encountered. Used by Code Reviewer and Release Manager to verify workflow completeness, and by Retrospective as additional input. | Markdown document with: Required Agents table (workflow-type dependent), Agent Work Log entries. See [Work Protocol](#work-protocol) section below for template. | `docs/features/NNN-<feature-slug>/work-protocol.md`, `docs/issues/NNN-<issue-slug>/work-protocol.md`, or `docs/workflow/NNN-<topic-slug>/work-protocol.md` |
+
+---
+
+## Work Protocol
+
+The Work Protocol is a mandatory artifact that tracks which agents have performed work during a development cycle. It serves as an audit trail ensuring all required workflow steps are completed.
+
+### Purpose
+
+- **Accountability**: Every agent logs their work, making it visible which steps were completed
+- **Verification**: Code Reviewer and Release Manager use it to verify workflow completeness before approval/release
+- **Retrospective Input**: The Retrospective agent uses it to analyze the development cycle
+- **Problem Tracking**: Agents log problems they encountered, feeding continuous improvement
+
+### Who Creates It
+
+The **first agent** in the workflow (Requirements Engineer for features, Issue Analyst for bug fixes, Workflow Engineer for workflow improvements) creates `work-protocol.md` in the work item folder.
+
+### Who Updates It
+
+**Every agent** appends a log entry to the Work Protocol after completing their work and before handing off. The entry must include a summary of the work performed and any problems encountered.
+
+### Required Agents by Workflow Type
+
+| Agent | Feature | Bug Fix | Workflow |
+|-------|---------|---------|----------|
+| Requirements Engineer | ✅ Required | — | — |
+| Issue Analyst | — | ✅ Required | — |
+| Architect | ✅ Required | — | — |
+| Quality Engineer | ✅ Required | — | — |
+| Task Planner | ✅ Required | — | — |
+| Developer | ✅ Required | ✅ Required | — |
+| Technical Writer | ✅ Required | ✅ Required | — |
+| Code Reviewer | ✅ Required | ✅ Required | — |
+| UAT Tester | ⚠️ If user-facing | ⚠️ If needed | — |
+| Release Manager | ✅ Required | ✅ Required | ✅ Required |
+| Retrospective | ✅ Required | ✅ Required | — |
+| Workflow Engineer | — | — | ✅ Required |
+
+### Template
+
+The first agent in the workflow creates `work-protocol.md` using this template:
+
+```markdown
+# Work Protocol: <Work Item Title>
+
+**Work Item:** `docs/<type>/NNN-<slug>/`
+**Branch:** `<type>/NNN-<slug>`
+**Workflow Type:** Feature / Bug Fix / Workflow
+**Created:** YYYY-MM-DD
+
+## Agent Work Log
+
+<!-- Each agent appends their entry below when they complete their work. -->
+
+### <Agent Name>
+- **Date:** YYYY-MM-DD
+- **Summary:** <Brief description of work performed>
+- **Artifacts Produced:** <List of files created or updated>
+- **Problems Encountered:** None | <Description of any issues relevant for retrospective>
+```
+
+### Verification
+
+- **Code Reviewer** must check the Work Protocol to verify that all required agents (per the workflow type) have logged their work before approving. Missing agent entries are a **Blocker** issue.
+- **Code Reviewer** must also verify that global documentation was updated where applicable (see [Global Documentation Checks](#global-documentation-checks)).
+- **Release Manager** must verify that all required agents have logged entries in the Work Protocol before creating a PR or proceeding with the release.
+
+### Global Documentation Checks
+
+For feature and bug fix workflows, the **Code Reviewer** must verify that the following global documentation files were considered and updated where the feature/fix impacts them:
+
+| Document | Check |
+|----------|-------|
+| `docs/architecture.md` | Updated if the feature introduces new components, patterns, or architectural changes |
+| `docs/features.md` | Updated with new feature descriptions (required for all features) |
+| `docs/testing-strategy.md` | Updated if new test patterns, frameworks, or testing approaches were introduced |
+| `README.md` | Updated if the feature affects installation, usage, CLI options, or quick start |
+| `docs/agents.md` | Updated if the workflow or agent behavior changed |
+
+The Technical Writer is responsible for making these updates; the Code Reviewer verifies they were done.
 
 ---
 

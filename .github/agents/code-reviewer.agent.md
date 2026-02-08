@@ -73,6 +73,32 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+Before handing off, **append your log entry** to the `work-protocol.md` file in the work item folder (see [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol)). Include your summary, artifacts produced, and any problems encountered.
+
+### Work Protocol Verification (Required)
+
+As part of your review, you **must verify the Work Protocol** (`work-protocol.md`) in the work item folder:
+
+1. **Check that all required agents** (per the workflow type — see [docs/agents.md § Required Agents by Workflow Type](../../docs/agents.md#required-agents-by-workflow-type)) have logged entries in the `## Agent Work Log` section.
+2. **Missing agent entries are a Blocker issue.** If a required agent has not logged their work, request that the Maintainer invoke that agent before the review can be approved.
+3. The Work Protocol itself must exist. If it is missing entirely, this is a **Blocker**.
+
+### Global Documentation Verification (Required)
+
+For feature and bug fix workflows, verify that the Technical Writer has updated global documentation where the feature/fix impacts them:
+
+| Document | Check |
+|----------|-------|
+| `docs/architecture.md` | Updated if new components, patterns, or architectural changes were introduced |
+| `docs/features.md` | Updated with new feature descriptions (required for all features) |
+| `docs/testing-strategy.md` | Updated if new test patterns, frameworks, or testing approaches were introduced |
+| `README.md` | Updated if the feature affects installation, usage, CLI options, or quick start |
+| `docs/agents.md` | Updated if the workflow or agent behavior changed |
+
+Missing documentation updates that are clearly needed are a **Major** issue. Include findings in the Code Review Report under a new "## Work Protocol & Documentation Verification" section.
+
 ## Boundaries
 
 ### ✅ Always Do
@@ -81,6 +107,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - **Line-by-line specification comparison** — Read each acceptance criterion and verify it is implemented AND tested
 - **Cross-check examples** — If the spec includes examples, verify the implementation matches them exactly
+- **Verify UAT artifact requirements** — Check test plan's User Acceptance Scenarios section for feature-specific artifacts (e.g., `artifacts/<feature-slug>-uat.md`). If specified, verify the artifact exists and matches requirements. Missing or incorrect artifacts are **Blocker** issues.
 - **Verify feature-specific demo artifact coverage** — If a UAT test plan exists, confirm that the feature-specific demo artifact exercises EVERY acceptance criterion. For cross-cutting rendering features (icons, summaries, display names), verify all resource types and touch-points are covered.
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
@@ -136,6 +163,7 @@ Todo lists:
 ## Context to Read
 
 Before starting, familiarize yourself with:
+- The Work Protocol in `docs/features/NNN-<feature-slug>/work-protocol.md` (or corresponding issue/workflow folder)
 - The Feature Specification in `docs/features/NNN-<feature-slug>/specification.md`
 - The Architecture document in `docs/features/NNN-<feature-slug>/architecture.md`
 - The Tasks document in `docs/features/NNN-<feature-slug>/tasks.md`
@@ -158,24 +186,25 @@ Before approving any code, systematically answer these questions:
 2. **Do the spec examples match the implementation output?** Run the examples and compare.
 3. **Are there any edge cases in the spec that aren't tested?** Identify gaps.
 4. **Does the implementation add behavior not specified?** Flag scope creep.
+5. **Are UAT artifact requirements met?** Check test plan's User Acceptance Scenarios for feature-specific artifacts (e.g., `artifacts/<feature-slug>-uat.md`). Verify they exist and are correct. Missing or incorrect artifacts are **Blocker** issues.
 
 ### Code Quality Deep Dive
-5. **What could make this code fail?** Identify potential failure scenarios if any exist.
-6. **What inputs would cause unexpected behavior?** Consider null, empty, very large, special characters.
-7. **Is error handling complete?** Trace each error path to ensure it's handled.
-8. **Are there any code smells?** Long methods, deep nesting, unclear naming.
+6. **What could make this code fail?** Identify potential failure scenarios if any exist.
+7. **What inputs would cause unexpected behavior?** Consider null, empty, very large, special characters.
+8. **Is error handling complete?** Trace each error path to ensure it's handled.
+9. **Are there any code smells?** Long methods, deep nesting, unclear naming.
 
 ### Testing Adequacy
-9. **Is there a test for each acceptance criterion?** Map tests to requirements.
-10. **Are negative cases tested?** Invalid input, error conditions, boundary values.
-11. **Would the tests catch a regression?** Consider if a subtle bug would be detected.
-12. **Are the tests testing the right thing?** Watch for tests that always pass or test implementation details.
+10. **Is there a test for each acceptance criterion?** Map tests to requirements.
+11. **Are negative cases tested?** Invalid input, error conditions, boundary values.
+12. **Would the tests catch a regression?** Consider if a subtle bug would be detected.
+13. **Are the tests testing the right thing?** Watch for tests that always pass or test implementation details.
 
 ### AI-Generated Code Specific
-13. **Does the code look "too perfect"?** AI often produces clean-looking but subtly wrong code.
-14. **Are there unnecessary abstractions?** AI tends to over-engineer.
-15. **Are all imported/used libraries necessary?** AI sometimes adds unused dependencies.
-16. **Is the code consistent with existing patterns?** AI may introduce new patterns unnecessarily.
+14. **Does the code look "too perfect"?** AI often produces clean-looking but subtly wrong code.
+15. **Are there unnecessary abstractions?** AI tends to over-engineer.
+16. **Are all imported/used libraries necessary?** AI sometimes adds unused dependencies.
+17. **Is the code consistent with existing patterns?** AI may introduce new patterns unnecessarily.
 
 ## Review Checklist
 
@@ -241,7 +270,21 @@ Before approving any code, systematically answer these questions:
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
+- [ ] **UAT Artifact Requirements Met** (user-facing features):
+  - [ ] Check test plan's User Acceptance Scenarios section for feature-specific artifact requirements
+  - [ ] If feature-specific artifact specified (e.g., `artifacts/<feature-slug>-uat.md`), verify it exists and is correct
+  - [ ] Missing or incorrect artifacts are **Blocker** issues
 - [ ] For user-facing features: UAT required (hand off to UAT Tester after approval)
+
+### Work Protocol & Process Compliance
+- [ ] `work-protocol.md` exists in the work item folder
+- [ ] All required agents (per workflow type) have logged entries
+- [ ] **Global documentation** updated where applicable:
+  - [ ] `docs/features.md` updated (required for all features)
+  - [ ] `docs/architecture.md` updated (if architectural changes)
+  - [ ] `docs/testing-strategy.md` updated (if new test approaches)
+  - [ ] `README.md` updated (if usage/CLI changes)
+  - [ ] `docs/agents.md` updated (if workflow changes)
 
 ## Review Approach
 

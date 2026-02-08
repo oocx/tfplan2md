@@ -33,6 +33,14 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+Before proceeding with the release, **verify the Work Protocol** (`work-protocol.md`) in the work item folder:
+
+1. **Check that all required agents** (per the workflow type — see [docs/agents.md § Required Agents by Workflow Type](../../docs/agents.md#required-agents-by-workflow-type)) have logged entries in the `## Agent Work Log` section.
+2. **Missing agent entries block the release.** If a required agent has not logged their work, stop and ask the Maintainer to invoke that agent first.
+3. After verification, **append your own log entry** to the Work Protocol with your summary, artifacts produced, and any problems encountered.
+
 ## Boundaries
 
 ### ✅ Always Do
@@ -198,6 +206,11 @@ Before releasing, verify:
    scripts/git-log.sh HEAD..origin/main --oneline
    ```
    - [ ] No missing commits from main
+
+6. **Work Protocol Complete**
+   - [ ] `work-protocol.md` exists in the work item folder
+   - [ ] All required agents (per workflow type) have logged entries
+   - [ ] No required agents are missing from the protocol
 
 ## Release Steps
 

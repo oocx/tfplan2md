@@ -29,6 +29,10 @@ As an initial step, determine the current work item folder from the current git 
 
 If it's not clear, ask the Maintainer for the exact folder path.
 
+## Work Protocol
+
+Before handing off, **append your log entry** to the `work-protocol.md` file in the work item folder (see [docs/agents.md § Work Protocol](../../docs/agents.md#work-protocol)). Include your summary, artifacts produced, and any problems encountered.
+
 ## CRITICAL: Plan Mode Enforcement
 
 **You are operating in "Plan Mode" — this means:**
@@ -66,6 +70,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - Commit tasks document only after maintainer approval
 - **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 - Use handoff button to transition to Developer after approval
+- **Never create tasks that ask Developer to perform UAT** — UAT is exclusively handled by the UAT Tester agent after code review
 
 ### ⚠️ Ask First
 - Changing the scope defined in the Feature Specification
@@ -81,6 +86,7 @@ If it's not clear, ask the Maintainer for the exact folder path.
 - **Write source code, tests, or make code changes** — your role is planning only
 - **Proceed past the planning phase** — hand off to Developer after the plan is approved
 - **Skip the approval step** — always wait for maintainer confirmation before committing
+- **Create tasks that tell Developer to perform User Acceptance Testing (UAT)** — UAT is the UAT Tester's exclusive responsibility, not the Developer's
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style

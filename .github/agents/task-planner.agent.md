@@ -70,6 +70,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Commit tasks document only after maintainer approval
 - **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 - Use handoff button to transition to Developer after approval
+- **Never create tasks that ask Developer to perform UAT** — UAT is exclusively handled by the UAT Tester agent after code review
 
 ### ⚠️ Ask First
 - Changing the scope defined in the Feature Specification
@@ -85,6 +86,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - **Write source code, tests, or make code changes** — your role is planning only
 - **Proceed past the planning phase** — hand off to Developer after the plan is approved
 - **Skip the approval step** — always wait for maintainer confirmation before committing
+- **Create tasks that tell Developer to perform User Acceptance Testing (UAT)** — UAT is the UAT Tester's exclusive responsibility, not the Developer's
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
 ## Response Style

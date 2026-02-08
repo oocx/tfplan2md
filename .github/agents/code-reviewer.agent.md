@@ -107,6 +107,7 @@ Missing documentation updates that are clearly needed are a **Major** issue. Inc
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - **Line-by-line specification comparison** — Read each acceptance criterion and verify it is implemented AND tested
 - **Cross-check examples** — If the spec includes examples, verify the implementation matches them exactly
+- **Verify UAT artifact requirements** — Check test plan's User Acceptance Scenarios section for feature-specific artifacts (e.g., `artifacts/<feature-slug>-uat.md`). If specified, verify the artifact exists and matches requirements. Missing or incorrect artifacts are **Blocker** issues.
 - **Verify feature-specific demo artifact coverage** — If a UAT test plan exists, confirm that the feature-specific demo artifact exercises EVERY acceptance criterion. For cross-cutting rendering features (icons, summaries, display names), verify all resource types and touch-points are covered.
 - Check that all acceptance criteria are met
 - Verify adherence to C# coding conventions
@@ -185,24 +186,25 @@ Before approving any code, systematically answer these questions:
 2. **Do the spec examples match the implementation output?** Run the examples and compare.
 3. **Are there any edge cases in the spec that aren't tested?** Identify gaps.
 4. **Does the implementation add behavior not specified?** Flag scope creep.
+5. **Are UAT artifact requirements met?** Check test plan's User Acceptance Scenarios for feature-specific artifacts (e.g., `artifacts/<feature-slug>-uat.md`). Verify they exist and are correct. Missing or incorrect artifacts are **Blocker** issues.
 
 ### Code Quality Deep Dive
-5. **What could make this code fail?** Identify potential failure scenarios if any exist.
-6. **What inputs would cause unexpected behavior?** Consider null, empty, very large, special characters.
-7. **Is error handling complete?** Trace each error path to ensure it's handled.
-8. **Are there any code smells?** Long methods, deep nesting, unclear naming.
+6. **What could make this code fail?** Identify potential failure scenarios if any exist.
+7. **What inputs would cause unexpected behavior?** Consider null, empty, very large, special characters.
+8. **Is error handling complete?** Trace each error path to ensure it's handled.
+9. **Are there any code smells?** Long methods, deep nesting, unclear naming.
 
 ### Testing Adequacy
-9. **Is there a test for each acceptance criterion?** Map tests to requirements.
-10. **Are negative cases tested?** Invalid input, error conditions, boundary values.
-11. **Would the tests catch a regression?** Consider if a subtle bug would be detected.
-12. **Are the tests testing the right thing?** Watch for tests that always pass or test implementation details.
+10. **Is there a test for each acceptance criterion?** Map tests to requirements.
+11. **Are negative cases tested?** Invalid input, error conditions, boundary values.
+12. **Would the tests catch a regression?** Consider if a subtle bug would be detected.
+13. **Are the tests testing the right thing?** Watch for tests that always pass or test implementation details.
 
 ### AI-Generated Code Specific
-13. **Does the code look "too perfect"?** AI often produces clean-looking but subtly wrong code.
-14. **Are there unnecessary abstractions?** AI tends to over-engineer.
-15. **Are all imported/used libraries necessary?** AI sometimes adds unused dependencies.
-16. **Is the code consistent with existing patterns?** AI may introduce new patterns unnecessarily.
+14. **Does the code look "too perfect"?** AI often produces clean-looking but subtly wrong code.
+15. **Are there unnecessary abstractions?** AI tends to over-engineer.
+16. **Are all imported/used libraries necessary?** AI sometimes adds unused dependencies.
+17. **Is the code consistent with existing patterns?** AI may introduce new patterns unnecessarily.
 
 ## Review Checklist
 
@@ -268,6 +270,10 @@ Before approving any code, systematically answer these questions:
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
   - [ ] examples/comprehensive-demo/plan.json updated if feature has visible markdown impact
+- [ ] **UAT Artifact Requirements Met** (user-facing features):
+  - [ ] Check test plan's User Acceptance Scenarios section for feature-specific artifact requirements
+  - [ ] If feature-specific artifact specified (e.g., `artifacts/<feature-slug>-uat.md`), verify it exists and is correct
+  - [ ] Missing or incorrect artifacts are **Blocker** issues
 - [ ] For user-facing features: UAT required (hand off to UAT Tester after approval)
 
 ### Work Protocol & Process Compliance

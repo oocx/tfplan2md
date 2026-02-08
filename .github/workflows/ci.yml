@@ -151,4 +151,19 @@ jobs:
         run: |
           # Use RELEASE_TOKEN to bypass branch protection
           git remote set-url origin "https://x-access-token:${{ secrets.RELEASE_TOKEN }}@github.com/${{ github.repository }}.git"
-          git push --follow-tags
+
+          # Detect the tag created by Versionize
+          TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
+
+          # Push the commit first (with [skip ci] in message to prevent CI re-trigger)
+          git push origin HEAD
+
+          # Push the tag separately so the Release workflow is triggered.
+          # The previous single `git push --follow-tags` caused both the commit
+          # and tag to be pushed in one operation. GitHub Actions applies the
+          # [skip ci] marker from the commit message to ALL refs in that push,
+          # which silently prevented the Release workflow from running on tag push.
+          if [ -n "$TAG_NAME" ]; then
+            echo "Pushing tag $TAG_NAME separately to trigger Release workflow"
+            git push origin "$TAG_NAME"
+          fi

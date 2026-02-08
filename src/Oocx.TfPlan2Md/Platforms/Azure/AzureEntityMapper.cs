@@ -10,7 +10,7 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// </summary>
 /// <remarks>
 /// This mapper is used to enrich scope output with human-friendly names.
-/// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+/// Related feature: docs/features/065-tenant-display-mapping/specification.md.
 /// </remarks>
 internal sealed class AzureEntityMapper
 {
@@ -101,11 +101,11 @@ internal sealed class AzureEntityMapper
     }
 
     /// <summary>
-    /// Gets the tenant display name when available.
+    /// Gets the tenant display name formatted as "DisplayName (Id)" when available.
     /// </summary>
     /// <param name="tenantId">The tenant identifier.</param>
     /// <param name="resourceAddress">The Terraform resource address referencing the tenant.</param>
-    /// <returns>The display name, or the raw ID when no mapping exists.</returns>
+    /// <returns>The formatted display name, or the raw ID when no mapping exists.</returns>
     internal string GetTenantDisplayName(string? tenantId, string? resourceAddress = null)
     {
         if (string.IsNullOrWhiteSpace(tenantId))
@@ -115,7 +115,7 @@ internal sealed class AzureEntityMapper
 
         if (_tenants.TryGetValue(tenantId, out var displayName))
         {
-            return displayName;
+            return $"{displayName} ({tenantId})";
         }
 
         RecordFailure(FailedResolutionType.Tenant, tenantId, resourceAddress);

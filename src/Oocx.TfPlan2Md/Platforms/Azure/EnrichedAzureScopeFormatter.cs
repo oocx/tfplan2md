@@ -8,15 +8,10 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// <remarks>
 /// This formatter composes <see cref="AzureScopeParser"/> output with mapped display names
 /// for subscriptions, management groups, and tenants.
-/// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+/// Related feature: docs/features/065-tenant-display-mapping/specification.md.
 /// </remarks>
 internal sealed class EnrichedAzureScopeFormatter
 {
-    /// <summary>
-    /// Non-breaking space used to keep icons attached to labels.
-    /// </summary>
-    private const string NonBreakingSpace = "\u00A0";
-
     /// <summary>
     /// Icon for subscription identifiers.
     /// </summary>
@@ -111,12 +106,13 @@ internal sealed class EnrichedAzureScopeFormatter
         var tenantName = _entityMapper.GetTenantDisplayName(managementGroupId, resourceAddress);
         if (!string.IsNullOrWhiteSpace(tenantName) && !tenantName.Equals(managementGroupId, StringComparison.OrdinalIgnoreCase))
         {
-            return $"Tenant `{tenantName}` root";
+            var tenantRootLabel = $"Tenant `{tenantName}` root";
+            return AzureLabelFormatter.FormatManagementGroupLabel(tenantRootLabel);
         }
 
         var managementGroupName = _entityMapper.GetManagementGroupDisplayName(managementGroupId, resourceAddress);
         var label = string.IsNullOrWhiteSpace(managementGroupName) ? managementGroupId : managementGroupName;
-        return $"management group `{label}`";
+        return AzureLabelFormatter.FormatManagementGroupLabel($"`{label}`");
     }
 
     /// <summary>
@@ -131,7 +127,7 @@ internal sealed class EnrichedAzureScopeFormatter
             return string.Empty;
         }
 
-        return $"{SubscriptionIcon}{NonBreakingSpace}{subscriptionLabel}";
+        return $"{SubscriptionIcon}{AzureLabelFormatter.NonBreakingSpace}{subscriptionLabel}";
     }
 
     /// <summary>
@@ -146,6 +142,6 @@ internal sealed class EnrichedAzureScopeFormatter
             return string.Empty;
         }
 
-        return $"{ResourceGroupIcon}{NonBreakingSpace}{resourceGroup}";
+        return $"{ResourceGroupIcon}{AzureLabelFormatter.NonBreakingSpace}{resourceGroup}";
     }
 }

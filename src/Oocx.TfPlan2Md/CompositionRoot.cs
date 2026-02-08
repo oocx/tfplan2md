@@ -92,21 +92,24 @@ internal sealed class CompositionRoot(CliOptions options)
     /// </summary>
     /// <param name="principalMapper">The principal mapper for role assignment resolution.</param>
     /// <param name="scopeFormatter">The scope formatter for Azure resource scopes.</param>
+    /// <param name="entityMapper">The mapper for tenant and management group display names.</param>
     /// <returns>A configured provider registry with all modules registered.</returns>
     internal ProviderRegistry CreateProviderRegistry(
         IPrincipalMapper principalMapper,
-        EnrichedAzureScopeFormatter scopeFormatter)
+        EnrichedAzureScopeFormatter scopeFormatter,
+        AzureEntityMapper entityMapper)
     {
         var registry = new ProviderRegistry();
         var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget);
 
-        registry.RegisterProvider(new AzApiModule(scopeFormatter));
-        registry.RegisterProvider(new AzureADModule());
+        registry.RegisterProvider(new AzApiModule(scopeFormatter, entityMapper));
+        registry.RegisterProvider(new AzureADModule(entityMapper));
         registry.RegisterProvider(new AzureRMModule(
             largeValueFormat: largeValueFormat,
             principalMapper: principalMapper,
-            scopeFormatter: scopeFormatter));
-        registry.RegisterProvider(new AzureDevOpsModule(largeValueFormat: largeValueFormat));
+            scopeFormatter: scopeFormatter,
+            entityMapper: entityMapper));
+        registry.RegisterProvider(new AzureDevOpsModule(largeValueFormat: largeValueFormat, entityMapper: entityMapper));
 
         return registry;
     }
@@ -240,7 +243,7 @@ internal sealed class CompositionRoot(CliOptions options)
         var scopeFormatter = CreateScopeFormatter(entityMapper);
 
         // Create provider registry and dependent registries
-        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
+        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter, entityMapper);
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
 

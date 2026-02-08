@@ -1,6 +1,7 @@
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
 using Scriban.Runtime;
 
@@ -15,12 +16,19 @@ internal sealed class AzureDevOpsModule : IProviderModule
     private readonly LargeValueFormat _largeValueFormat;
 
     /// <summary>
+    /// Optional mapper for tenant display name resolution.
+    /// </summary>
+    private readonly AzureEntityMapper? _entityMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureDevOpsModule"/> class.
     /// </summary>
     /// <param name="largeValueFormat">Format for rendering large values (inline-diff or simple-diff).</param>
-    public AzureDevOpsModule(LargeValueFormat largeValueFormat)
+    /// <param name="entityMapper">Optional mapper for tenant display names.</param>
+    public AzureDevOpsModule(LargeValueFormat largeValueFormat, AzureEntityMapper? entityMapper = null)
     {
         _largeValueFormat = largeValueFormat;
+        _entityMapper = entityMapper;
     }
 
     /// <summary>
@@ -50,6 +58,23 @@ internal sealed class AzureDevOpsModule : IProviderModule
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
         registry.RegisterFactory("azuredevops_variable_group", new VariableGroupFactory(_largeValueFormat));
+    }
+
+    /// <summary>
+    /// Registers Azure DevOps-specific value formatters.
+    /// </summary>
+    /// <param name="registry">The value formatter registry to register with.</param>
+    public void RegisterValueFormatters(ValueFormatterRegistry registry)
+    {
+        if (_entityMapper is null)
+        {
+            return;
+        }
+
+        AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
+            registry,
+            "(^azuredevops$|.*/azuredevops$)",
+            _entityMapper);
     }
 
     /// <summary>

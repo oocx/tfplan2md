@@ -17,19 +17,27 @@ internal sealed class AzureRMModule : IProviderModule
     private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
 
     /// <summary>
+    /// Optional mapper for tenant and management group display names.
+    /// </summary>
+    private readonly AzureEntityMapper? _entityMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureRMModule"/> class.
     /// </summary>
     /// <param name="largeValueFormat">Format for rendering large values (inline-diff or simple-diff).</param>
     /// <param name="principalMapper">Mapper for resolving principal names in role assignments.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched Azure scope display.</param>
+    /// <param name="entityMapper">Optional mapper for tenant and management group display names.</param>
     public AzureRMModule(
         LargeValueFormat largeValueFormat,
         IPrincipalMapper principalMapper,
-        EnrichedAzureScopeFormatter? scopeFormatter = null)
+        EnrichedAzureScopeFormatter? scopeFormatter = null,
+        AzureEntityMapper? entityMapper = null)
     {
         _largeValueFormat = largeValueFormat;
         _principalMapper = principalMapper;
         _scopeFormatter = scopeFormatter;
+        _entityMapper = entityMapper;
     }
 
     /// <summary>
@@ -67,7 +75,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
-        AzureRmValueFormatterRegistration.Register(registry, _scopeFormatter, _principalMapper);
+        AzureRmValueFormatterRegistration.Register(registry, _scopeFormatter, _principalMapper, _entityMapper);
     }
 
     /// <summary>

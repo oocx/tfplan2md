@@ -18,10 +18,12 @@ internal static class AzureRmValueFormatterRegistration
     /// <param name="registry">The value formatter registry to register with.</param>
     /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
     /// <param name="principalMapper">Optional mapper for enriching principal identifiers.</param>
+    /// <param name="entityMapper">Optional mapper for tenant and management group formatting.</param>
     public static void Register(
         ValueFormatterRegistry registry,
         EnrichedAzureScopeFormatter? scopeFormatter = null,
-        IPrincipalMapper? principalMapper = null)
+        IPrincipalMapper? principalMapper = null,
+        AzureEntityMapper? entityMapper = null)
     {
         ArgumentNullException.ThrowIfNull(registry);
 
@@ -42,6 +44,14 @@ internal static class AzureRmValueFormatterRegistration
             registry.Register(
                 new MatchPattern("(^azurerm$|.*/azurerm$)", null, "^principal_id$", null),
                 new PrincipalIdFormatter(principalMapper));
+        }
+
+        if (entityMapper is not null)
+        {
+            AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
+                registry,
+                "(^azurerm$|.*/azurerm$)",
+                entityMapper);
         }
     }
 }

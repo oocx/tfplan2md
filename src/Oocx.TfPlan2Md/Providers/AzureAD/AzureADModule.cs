@@ -1,5 +1,6 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureAD.Models;
 using Scriban.Runtime;
 
@@ -11,6 +12,20 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD;
 /// </summary>
 internal sealed class AzureADModule : IProviderModule
 {
+    /// <summary>
+    /// Optional mapper for tenant display name resolution.
+    /// </summary>
+    private readonly AzureEntityMapper? _entityMapper;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureADModule"/> class.
+    /// </summary>
+    /// <param name="entityMapper">Optional mapper for tenant display names.</param>
+    public AzureADModule(AzureEntityMapper? entityMapper = null)
+    {
+        _entityMapper = entityMapper;
+    }
+
     /// <summary>
     /// Gets the unique name of this Terraform provider.
     /// </summary>
@@ -45,6 +60,23 @@ internal sealed class AzureADModule : IProviderModule
         registry.RegisterFactory("azuread_group_member", summaryFactory);
         registry.RegisterFactory("azuread_service_principal", summaryFactory);
         registry.RegisterFactory("azuread_invitation", summaryFactory);
+    }
+
+    /// <summary>
+    /// Registers Azure AD-specific value formatters.
+    /// </summary>
+    /// <param name="registry">The value formatter registry to register with.</param>
+    public void RegisterValueFormatters(ValueFormatterRegistry registry)
+    {
+        if (_entityMapper is null)
+        {
+            return;
+        }
+
+        AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
+            registry,
+            "(^azuread$|.*/azuread$)",
+            _entityMapper);
     }
 
     /// <summary>

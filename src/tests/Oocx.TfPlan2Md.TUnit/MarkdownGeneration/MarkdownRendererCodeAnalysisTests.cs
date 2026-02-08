@@ -50,7 +50,7 @@ public class MarkdownRendererCodeAnalysisTests
         var markdown = _renderer.Render(model);
 
         markdown.Should().Contain("🔒 **Security & Quality:**", "because the metadata line should appear with lock icon");
-        markdown.Should().Contain("#### 🔒 Security & Quality Findings", "because the findings table heading should have lock icon");
+        markdown.Should().Contain("#### 🔒 Security & Quality Findings for", "because the findings table heading should have lock icon");
         markdown.Should().Contain("| 🚨 Critical | - | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
         markdown.Should().Contain($"[Details]({CriticalHelpUri})");
 

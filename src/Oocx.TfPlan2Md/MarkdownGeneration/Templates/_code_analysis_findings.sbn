@@ -4,7 +4,7 @@
 ~}}
 {{ if change.code_analysis_findings.size > 0 }}
 
-#### 🔒 Security & Quality Findings
+#### 🔒 Security & Quality Findings for {{ format_code_table(change.address) }}
 
 | Severity | Tool | Attribute | Finding | Remediation |
 | -------- | ---- | --------- | ------- | ----------- |

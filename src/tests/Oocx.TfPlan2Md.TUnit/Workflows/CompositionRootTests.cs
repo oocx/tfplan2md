@@ -73,7 +73,7 @@ public class CompositionRootTests
         var entityMapper = root.CreateEntityMapper(mappingResult, diagnostics: null);
         var scopeFormatter = root.CreateScopeFormatter(entityMapper);
 
-        var registry = root.CreateProviderRegistry(principalMapper, scopeFormatter);
+        var registry = root.CreateProviderRegistry(principalMapper, scopeFormatter, entityMapper);
 
         var providers = registry.GetProviders();
         var providerNames = providers.Select(p => p.ProviderName).ToList();

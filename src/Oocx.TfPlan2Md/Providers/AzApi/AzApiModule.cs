@@ -18,12 +18,19 @@ internal sealed class AzApiModule : IProviderModule
     private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
 
     /// <summary>
+    /// Optional mapper for tenant and management group display names.
+    /// </summary>
+    private readonly AzureEntityMapper? _entityMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzApiModule"/> class.
     /// </summary>
     /// <param name="scopeFormatter">Optional formatter for enriched Azure scope display.</param>
-    public AzApiModule(EnrichedAzureScopeFormatter? scopeFormatter = null)
+    /// <param name="entityMapper">Optional mapper for tenant and management group display names.</param>
+    public AzApiModule(EnrichedAzureScopeFormatter? scopeFormatter = null, AzureEntityMapper? entityMapper = null)
     {
         _scopeFormatter = scopeFormatter;
+        _entityMapper = entityMapper;
     }
 
     /// <summary>
@@ -64,6 +71,14 @@ internal sealed class AzApiModule : IProviderModule
         registry.Register(
             new MatchPattern("(^azapi$|.*/azapi$)", null, null, null),
             new AzureResourceIdFormatter(_scopeFormatter));
+
+        if (_entityMapper is not null)
+        {
+            AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
+                registry,
+                "(^azapi$|.*/azapi$)",
+                _entityMapper);
+        }
     }
 
     /// <summary>

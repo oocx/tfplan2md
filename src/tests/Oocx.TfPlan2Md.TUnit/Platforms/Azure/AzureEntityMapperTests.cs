@@ -7,12 +7,13 @@ namespace Oocx.TfPlan2Md.Tests.Azure;
 
 /// <summary>
 /// Tests for Azure entity mapping and scope enrichment.
-/// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+/// Related feature: docs/features/065-tenant-display-mapping/specification.md.
 /// </summary>
 public class AzureEntityMapperTests
 {
     private const string SubscriptionId = "sub-1";
     private const string ManagementGroupId = "mg-1";
+    private const string TenantId = "tenant-1";
 
     [Test]
     public void AzureEntityMapper_SubscriptionId_ResolvesToDisplayName()
@@ -37,6 +38,17 @@ public class AzureEntityMapperTests
     }
 
     [Test]
+    public void AzureEntityMapper_TenantId_ResolvesToDisplayName()
+    {
+        var mapper = CreateMapper(
+            subscriptions: [],
+            managementGroups: [],
+            tenants: [new MappingEntry(TenantId, "Contoso")]);
+
+        mapper.GetTenantDisplayName(TenantId).Should().Be("Contoso (tenant-1)");
+    }
+
+    [Test]
     public void AzureEntityMapper_SubscriptionId_FallsBackToRawId()
     {
         var mapper = CreateMapper(
@@ -45,6 +57,17 @@ public class AzureEntityMapperTests
             tenants: []);
 
         mapper.GetSubscriptionDisplayName(SubscriptionId).Should().Be(SubscriptionId);
+    }
+
+    [Test]
+    public void AzureEntityMapper_TenantId_FallsBackToRawId()
+    {
+        var mapper = CreateMapper(
+            subscriptions: [],
+            managementGroups: [],
+            tenants: []);
+
+        mapper.GetTenantDisplayName(TenantId).Should().Be(TenantId);
     }
 
     [Test]
@@ -74,7 +97,22 @@ public class AzureEntityMapperTests
 
         var result = formatter.FormatScope(scope);
 
-        result.Should().Be("Tenant `Contoso` root");
+        result.Should().Be("🗂️\u00A0Tenant `Contoso (tenant-1)` root");
+    }
+
+    [Test]
+    public void EnrichedAzureScopeFormatter_ManagementGroup_FormatsWithIcon()
+    {
+        var mapper = CreateMapper(
+            subscriptions: [],
+            managementGroups: [new MappingEntry(ManagementGroupId, "Core")],
+            tenants: []);
+        var formatter = new EnrichedAzureScopeFormatter(mapper);
+        const string scope = "/providers/Microsoft.Management/managementGroups/mg-1";
+
+        var result = formatter.FormatScope(scope);
+
+        result.Should().Be("🗂️\u00A0`Core`");
     }
 
     private static AzureEntityMapper CreateMapper(

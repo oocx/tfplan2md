@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.TUnit.Diagnostics;
 
 /// <summary>
 /// Tests for recording failed ID resolutions with diagnostic context.
-/// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+/// Related feature: docs/features/065-tenant-display-mapping/specification.md.
 /// </summary>
 public class ResolutionDiagnosticsTests
 {
@@ -39,6 +39,7 @@ public class ResolutionDiagnosticsTests
 
             principalMapper.GetName("principal-1", "User", RoleAssignmentAddress);
             entityMapper.GetSubscriptionDisplayName("sub-1", ResourceGroupAddress);
+            entityMapper.GetTenantDisplayName("tenant-1", ResourceGroupAddress);
             AzureRoleDefinitionMapper.GetRoleDefinition("unknown-role", null, RoleAssignmentAddress);
 
             diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
@@ -48,6 +49,10 @@ public class ResolutionDiagnosticsTests
             diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
                 failure.Type == FailedResolutionType.Subscription
                 && failure.Id == "sub-1"
+                && failure.ResourceAddress == ResourceGroupAddress);
+            diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
+                failure.Type == FailedResolutionType.Tenant
+                && failure.Id == "tenant-1"
                 && failure.ResourceAddress == ResourceGroupAddress);
             diagnosticContext.FailedResolutions.Should().ContainSingle(failure =>
                 failure.Type == FailedResolutionType.RoleDefinition

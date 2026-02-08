@@ -1,4 +1,3 @@
-// Triggering release after CI fix
 // Baseline suppression for code-quality metrics rollout.
 // Related feature: docs/features/046-code-quality-metrics-enforcement/.
 #pragma warning disable CA1506

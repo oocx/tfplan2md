@@ -2,12 +2,20 @@ using System.Collections.Generic;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
+using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration.Summaries;
 
 public class ResourceSummaryBuilderTests
 {
+    /// <summary>
+    /// Terraform action name for create operations.
+    /// </summary>
+    private const string CreateAction = "create";
+
     private readonly ResourceSummaryBuilder _builder = new();
 
     [Test]
@@ -15,7 +23,7 @@ public class ResourceSummaryBuilderTests
     {
         var change = CreateChange(
             type: "azurerm_storage_account",
-            action: "create",
+            action: CreateAction,
             afterJson: "{ \"name\": \"st1\", \"resource_group_name\": \"rg1\", \"location\": \"eastus\", \"account_tier\": \"Standard\", \"account_replication_type\": \"LRS\" }"
         );
 
@@ -29,7 +37,7 @@ public class ResourceSummaryBuilderTests
     {
         var change = CreateChange(
             type: "azurerm_unknown_resource",
-            action: "create",
+            action: CreateAction,
             afterJson: "{ \"name\": \"res1\", \"resource_group_name\": \"rg1\", \"location\": \"westeurope\" }"
         );
 
@@ -43,7 +51,7 @@ public class ResourceSummaryBuilderTests
     {
         var change = CreateChange(
             type: "random_string",
-            action: "create",
+            action: CreateAction,
             afterJson: "{ \"display_name\": \"token-name\" }"
         );
 
@@ -149,13 +157,38 @@ public class ResourceSummaryBuilderTests
     {
         var change = CreateChange(
             type: "msgraph_resource",
-            action: "create",
+            action: CreateAction,
             afterJson: "{ \"url\": \"applications\", \"body\": { \"displayName\": \"myapp\" } }"
         );
 
         var summary = _builder.BuildSummary(change);
 
         summary.Should().Be("`myapp` (applications)");
+    }
+
+    /// <summary>
+    /// Verifies Azure resource IDs are formatted with subscription display names when a formatter registry is supplied.
+    /// </summary>
+    [Test]
+    public void BuildSummary_Create_FormatsAzureResourceIdValuesWithMapping()
+    {
+        var entityMapper = new AzureEntityMapper(
+            new List<MappingEntry> { new("sub-123", "Production") },
+            new List<MappingEntry>(),
+            new List<MappingEntry>());
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+        var registry = new ValueFormatterRegistry();
+        AzureRmValueFormatterRegistration.Register(registry, scopeFormatter);
+        var builder = new ResourceSummaryBuilder(registry);
+
+        var change = CreateChange(
+            type: "azurerm_container_app",
+            action: CreateAction,
+            afterJson: "{ \"name\": \"app1\", \"resource_group_name\": \"rg1\", \"location\": \"eastus\", \"container_app_environment_id\": \"/subscriptions/sub-123/resourceGroups/rg-env/providers/Microsoft.App/managedEnvironments/env1\" }");
+
+        var summary = builder.BuildSummary(change);
+
+        summary.Should().Be("`app1` in `rg1` (`eastus`) | ManagedEnvironments `env1` in resource group `📁\u00A0rg-env` of subscription `🔑\u00A0Production (sub-123)`");
     }
 
     private static ResourceChangeModel CreateChange(

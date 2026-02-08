@@ -67,7 +67,7 @@ internal sealed class AzureRMModule : IProviderModule
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
-        AzureRmValueFormatterRegistration.Register(registry, _scopeFormatter);
+        AzureRmValueFormatterRegistration.Register(registry, _scopeFormatter, _principalMapper);
     }
 
     /// <summary>

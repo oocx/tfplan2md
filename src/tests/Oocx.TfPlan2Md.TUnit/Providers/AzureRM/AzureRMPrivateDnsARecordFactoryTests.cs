@@ -17,12 +17,12 @@ public class AzureRMPrivateDnsARecordFactoryTests
     private const string CreateAction = "create";
 
     /// <summary>
-    /// Verifies the factory sets Summary and SummaryHtml using the fully qualified name.
+    /// Verifies the factory sets Summary and SummaryHtml using the fully qualified name and record values.
     /// </summary>
     [Test]
     public void ApplyViewModel_SetsSummaryAndSummaryHtml()
     {
-        var afterDocument = JsonDocument.Parse("{\"name\":\"record1\",\"zone_name\":\"contoso.local\"}");
+        var afterDocument = JsonDocument.Parse("{\"name\":\"record1\",\"zone_name\":\"contoso.local\",\"records\":[\"10.0.0.4\",\"10.0.0.5\",\"10.0.0.6\",\"10.0.0.7\"]}");
         var change = new Change(
             [CreateAction],
             null,
@@ -53,8 +53,8 @@ public class AzureRMPrivateDnsARecordFactoryTests
 
         factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null);
 
-        model.Summary.Should().Be("`record1.contoso.local`");
+        model.Summary.Should().Be("`🆔\u00A0record1` — `record1.contoso.local` `🌐\u00A010.0.0.4` `🌐\u00A010.0.0.5` `🌐\u00A010.0.0.6`");
         model.SummaryHtml.Should().Be(
-            $"{ActionIcons.Add}{Nbsp}azurerm_private_dns_a_record <b><code>record1.contoso.local</code></b>");
+            $"{ActionIcons.Add}{Nbsp}azurerm_private_dns_a_record <b><code>🆔{Nbsp}record1</code></b> — <code>record1.contoso.local</code> <code>🌐{Nbsp}10.0.0.4</code> <code>🌐{Nbsp}10.0.0.5</code> <code>🌐{Nbsp}10.0.0.6</code>");
     }
 }

@@ -40,7 +40,8 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "delete",
             attributeChanges: [],
-            principalMapper: new NullPrincipalMapper());
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
 
         viewModel.SummaryText.Should().Contain("remove");
         viewModel.SummaryText.Should().Contain("🛡️");
@@ -73,7 +74,8 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "replace",
             attributeChanges: [],
-            principalMapper: new NullPrincipalMapper());
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
 
         viewModel.SummaryText.Should().Contain("recreate as");
         viewModel.SummaryText.Should().Contain("👥");
@@ -111,7 +113,8 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "create",
             attributeChanges: attributes,
-            principalMapper: new NullPrincipalMapper());
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
 
         viewModel.LargeAttributes.Should().ContainSingle(item => item.Name == "description");
         viewModel.SmallAttributes.Select(item => item.Name).First().Should().Be("scope");
@@ -141,7 +144,8 @@ public class RoleAssignmentViewModelFactoryTests
             change,
             action: "create",
             attributeChanges: [],
-            principalMapper: new NullPrincipalMapper());
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
 
         var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
         principal.After.Should().Contain("👤");
@@ -183,7 +187,8 @@ public class RoleAssignmentViewModelFactoryTests
                 change,
                 action: "create",
                 attributeChanges: [],
-                principalMapper: mapper);
+                principalMapper: mapper,
+                scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
             principal.After.Should().Contain("👤");
@@ -230,7 +235,8 @@ public class RoleAssignmentViewModelFactoryTests
                 change,
                 action: "create",
                 attributeChanges: [],
-                principalMapper: mapper);
+                principalMapper: mapper,
+                scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
             principal.After.Should().Contain("user@example.com");
@@ -243,6 +249,45 @@ public class RoleAssignmentViewModelFactoryTests
         {
             File.Delete(mappingPath);
         }
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies scope table formatting uses subscription display names when provided.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenScopeFormatterProvided_UsesSubscriptionDisplayName()
+    {
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-demo",
+                "role_definition_id": "role-id",
+                "role_definition_name": "Reader",
+                "principal_id": "principal-1",
+                "principal_type": "User"
+            }
+            """).RootElement;
+
+        var change = CreateChange(before: null, after: after, actions: ["create"]);
+        var subscriptions = new List<MappingEntry>
+        {
+            new("12345678-1234-1234-1234-123456789012", "Production")
+        };
+        var entityMapper = new AzureEntityMapper(subscriptions, [], []);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+
+        var viewModel = RoleAssignmentViewModelFactory.Build(
+            change,
+            action: "create",
+            attributeChanges: [],
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: scopeFormatter);
+
+        var scope = viewModel.SmallAttributes.Single(item => item.Name == "scope");
+        scope.After.Should().Contain("Production");
+        scope.After.Should().Contain("12345678-1234-1234-1234-123456789012");
+        scope.After.Should().Contain("🔑");
 
         await Task.CompletedTask;
     }

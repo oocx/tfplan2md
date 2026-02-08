@@ -36,8 +36,15 @@ public class MarkdownSnapshotTests
     public void Snapshot_ComprehensiveDemo_MatchesBaseline()
     {
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.DemoPlanPath));
-        var principalMapper = PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath);
-        var providerRegistry = CreateProviderRegistry(principalMapper);
+        var mappingResult = AzureMappingFileLoader.Load(DemoPaths.DemoPrincipalsPath, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext: null);
+        var entityMapper = new AzureEntityMapper(
+            mappingResult.Subscriptions,
+            mappingResult.ManagementGroups,
+            mappingResult.Tenants,
+            diagnosticContext: null);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
         var model = new ReportModelBuilder(
             principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,
@@ -100,8 +107,15 @@ public class MarkdownSnapshotTests
     {
         var json = File.ReadAllText("TestData/role-assignments.json");
         var plan = _parser.Parse(json);
-        var principalMapper = PrincipalMapperFactory.Create(DemoPaths.DemoPrincipalsPath);
-        var providerRegistry = CreateProviderRegistry(principalMapper);
+        var mappingResult = AzureMappingFileLoader.Load(DemoPaths.DemoPrincipalsPath, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext: null);
+        var entityMapper = new AzureEntityMapper(
+            mappingResult.Subscriptions,
+            mappingResult.ManagementGroups,
+            mappingResult.Tenants,
+            diagnosticContext: null);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter);
         var model = new ReportModelBuilder(
             principalMapper: principalMapper,
             metadataProvider: TestMetadataProvider.Instance,

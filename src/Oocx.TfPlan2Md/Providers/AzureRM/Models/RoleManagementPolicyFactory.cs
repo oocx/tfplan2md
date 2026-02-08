@@ -79,6 +79,8 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
         var roleName = !string.IsNullOrWhiteSpace(roleInfo.Name)
             ? roleInfo.Name
             : roleInfo.Id;
+        var roleSummary = FormatAttributeValueTable(RoleDefinitionNameAttribute, roleName, null);
+        var roleSummaryHtml = FormatAttributeValueSummary(RoleDefinitionNameAttribute, roleName, null);
 
         var scopeValue = GetValue(flatState, ScopeAttribute);
         var scopeText = FormatScopeMarkdown(scopeValue, resourceChange.Address);
@@ -88,8 +90,8 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
             return;
         }
 
-        model.Summary = $"{FormatCodeTable(roleName)} in {scopeText}";
-        model.SummaryHtml = BuildSummaryHtml(model, roleName, scopeText);
+        model.Summary = $"{roleSummary} in {scopeText}";
+        model.SummaryHtml = BuildSummaryHtml(model, roleSummaryHtml, scopeText);
     }
 
     /// <summary>
@@ -126,14 +128,14 @@ internal sealed class RoleManagementPolicyFactory : IResourceViewModelFactory
     /// Builds the summary HTML string using the role and scope values.
     /// </summary>
     /// <param name="model">The resource change model.</param>
-    /// <param name="roleName">The resolved role name.</param>
+    /// <param name="roleSummaryHtml">The resolved role summary HTML.</param>
     /// <param name="scopeMarkdown">The formatted scope text with markdown code spans.</param>
     /// <returns>Summary HTML string for the resource.</returns>
-    private static string BuildSummaryHtml(ResourceChangeModel model, string roleName, string scopeMarkdown)
+    private static string BuildSummaryHtml(ResourceChangeModel model, string roleSummaryHtml, string scopeMarkdown)
     {
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
         var scopeHtml = ConvertMarkdownCodeToSummaryHtml(scopeMarkdown);
-        return $"{prefix} — {FormatCodeSummary(roleName)} in {scopeHtml}";
+        return $"{prefix} — {roleSummaryHtml} in {scopeHtml}";
     }
 
     /// <summary>

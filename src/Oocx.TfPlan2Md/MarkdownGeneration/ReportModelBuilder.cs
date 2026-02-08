@@ -5,6 +5,9 @@ using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
+// Suppress parameter count warning to preserve existing constructor signature.
+#pragma warning disable S107
+
 /// <summary>
 /// Builds a ReportModel from a TerraformPlan.
 /// </summary>
@@ -139,3 +142,5 @@ internal partial class ReportModelBuilder(
         return registry;
     }
 }
+
+#pragma warning restore S107

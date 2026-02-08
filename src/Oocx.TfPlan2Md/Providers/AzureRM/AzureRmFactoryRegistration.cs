@@ -66,7 +66,7 @@ internal static class AzureRmFactoryRegistration
         registry.RegisterFactory("azurerm_network_security_group", new NetworkSecurityGroupFactory(largeValueFormat));
         registry.RegisterFactory("azurerm_firewall_network_rule_collection", new FirewallNetworkRuleCollectionFactory(largeValueFormat));
         registry.RegisterFactory("azurerm_firewall_application_rule_collection", new FirewallApplicationRuleCollectionFactory(largeValueFormat));
-        registry.RegisterFactory("azurerm_role_assignment", new RoleAssignmentFactory(principalMapper));
+        registry.RegisterFactory("azurerm_role_assignment", new RoleAssignmentFactory(principalMapper, scopeFormatter));
         registry.RegisterFactory("azurerm_private_dns_a_record", new AzureRMPrivateDnsARecordFactory());
         registry.RegisterFactory("azurerm_pim_eligible_role_assignment", new PimEligibleRoleAssignmentFactory(principalMapper));
         registry.RegisterFactory("azurerm_role_management_policy", new RoleManagementPolicyFactory(scopeFormatter));

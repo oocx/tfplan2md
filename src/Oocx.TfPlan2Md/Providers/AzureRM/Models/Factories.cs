@@ -126,15 +126,25 @@ internal sealed class FirewallApplicationRuleCollectionFactory : IResourceViewMo
 /// </summary>
 internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
 {
+    /// <summary>
+    /// Mapper used to resolve principal names.
+    /// </summary>
     private readonly IPrincipalMapper _principalMapper;
+
+    /// <summary>
+    /// Optional formatter for enriched scope display.
+    /// </summary>
+    private readonly EnrichedAzureScopeFormatter? _scopeFormatter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RoleAssignmentFactory"/> class.
     /// </summary>
     /// <param name="principalMapper">The mapper for resolving principal names.</param>
-    internal RoleAssignmentFactory(IPrincipalMapper principalMapper)
+    /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
+    internal RoleAssignmentFactory(IPrincipalMapper principalMapper, EnrichedAzureScopeFormatter? scopeFormatter)
     {
         _principalMapper = principalMapper;
+        _scopeFormatter = scopeFormatter;
     }
 
     /// <inheritdoc/>
@@ -153,6 +163,7 @@ internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
             resourceChange,
             action,
             attributeChanges,
-            _principalMapper);
+            _principalMapper,
+            _scopeFormatter);
     }
 }

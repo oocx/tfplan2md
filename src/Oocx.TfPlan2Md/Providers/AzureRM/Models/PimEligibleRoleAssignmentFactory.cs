@@ -143,4 +143,5 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     {
         return state.TryGetValue(key, out var value) ? value : null;
     }
+
 }

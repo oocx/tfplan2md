@@ -70,7 +70,7 @@ public static partial class ScribanHelpers
         }
 
         var roleText = $"🛡️{NonBreakingSpace}{value}";
-        formatted = context == ValueFormatContext.Table ? FormatCodeTable(roleText) : roleText;
+        formatted = FormatIconValue(roleText, context, false);
         return true;
     }
 

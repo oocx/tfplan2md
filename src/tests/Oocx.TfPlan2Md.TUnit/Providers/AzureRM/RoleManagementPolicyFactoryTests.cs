@@ -60,8 +60,8 @@ public class RoleManagementPolicyFactoryTests
 
         factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, new NullPrincipalMapper(), null);
 
-        model.Summary.Should().Be("`Owner` in `rg1` in subscription `Production (sub-123)`");
+        model.Summary.Should().Be("`🛡️\u00A0Owner` in `📁\u00A0rg1` in subscription `🔑\u00A0Production (sub-123)`");
         model.SummaryHtml.Should().Be(
-            $"{ActionIcons.Add}{Nbsp}azurerm_role_management_policy <b><code>example</code></b> — <code>Owner</code> in <code>rg1</code> in subscription <code>Production (sub-123)</code>");
+            $"{ActionIcons.Add}{Nbsp}azurerm_role_management_policy <b><code>example</code></b> — <code>🛡️{Nbsp}Owner</code> in <code>📁{Nbsp}rg1</code> in subscription <code>🔑{Nbsp}Production (sub-123)</code>");
     }
 }

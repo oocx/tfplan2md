@@ -9,6 +9,7 @@ using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
@@ -152,6 +153,7 @@ internal static class ProgramEntry
 
         // Build the report model
         var modelBuilder = new ReportModelBuilder(
+            summaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
             showSensitive: options.ShowSensitive,
             showUnchangedValues: options.ShowUnchangedValues,
             renderTarget: options.RenderTarget,

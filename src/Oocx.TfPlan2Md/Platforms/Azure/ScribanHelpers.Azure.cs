@@ -143,29 +143,32 @@ public static partial class ScribanHelpers
     /// Related feature: docs/features/029-report-presentation-enhancements/specification.md.
     /// </summary>
     /// <param name="scope">Parsed scope information.</param>
+    /// <param name="subscriptionLabel">Optional subscription label override for display name enrichment.</param>
     /// <returns>Formatted scope string with semantic icons.</returns>
-    internal static string FormatAzureScopeForTable(ScopeInfo scope)
+    internal static string FormatAzureScopeForTable(ScopeInfo scope, string? subscriptionLabel = null)
     {
+        var subscriptionValue = FormatAttributeValueTable(
+            "subscription_id",
+            subscriptionLabel ?? scope.SubscriptionId ?? string.Empty,
+            null);
+
         switch (scope.Level)
         {
             case ScopeLevel.ResourceGroup:
                 var rgName = FormatAttributeValueTable("resource_group_name", scope.ResourceGroup, null);
-                var subId = FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null);
-                return $"{rgName} in subscription {subId}";
+                return $"{rgName} in subscription {subscriptionValue}";
 
             case ScopeLevel.Resource when !string.IsNullOrEmpty(scope.ResourceGroup):
                 var resourceName = FormatAttributeValueTable("name", scope.Name, null);
                 var resourceRgName = FormatAttributeValueTable("resource_group_name", scope.ResourceGroup, null);
-                var resourceSubId = FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null);
-                return $"{scope.Type} {resourceName} in resource group {resourceRgName} of subscription {resourceSubId}";
+                return $"{scope.Type} {resourceName} in resource group {resourceRgName} of subscription {subscriptionValue}";
 
             case ScopeLevel.Resource:
                 var resourceNameOnly = FormatAttributeValueTable("name", scope.Name, null);
-                var subscriptionIdOnly = FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null);
-                return $"{scope.Type} {resourceNameOnly} in subscription {subscriptionIdOnly}";
+                return $"{scope.Type} {resourceNameOnly} in subscription {subscriptionValue}";
 
             case ScopeLevel.Subscription:
-                return $"subscription {FormatAttributeValueTable("subscription_id", scope.SubscriptionId ?? string.Empty, null)}";
+                return $"subscription {subscriptionValue}";
 
             case ScopeLevel.ManagementGroup:
                 return $"{FormatCodeTable(scope.Name)} (Management Group)";

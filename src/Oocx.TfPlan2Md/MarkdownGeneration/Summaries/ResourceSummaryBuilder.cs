@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
@@ -12,10 +13,50 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 /// </summary>
 public class ResourceSummaryBuilder : IResourceSummaryBuilder
 {
-    private static string? FormatSummaryValue(string? value, string providerName)
+    /// <summary>
+    /// Optional registry for formatting values in resource summaries.
+    /// </summary>
+    private readonly ValueFormatterRegistry? _valueFormatterRegistry;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResourceSummaryBuilder"/> class.
+    /// </summary>
+    /// <param name="valueFormatterRegistry">Optional registry used to format values in summaries.</param>
+    internal ResourceSummaryBuilder(ValueFormatterRegistry? valueFormatterRegistry = null)
     {
-        var formatted = FormatValue(value, providerName);
+        _valueFormatterRegistry = valueFormatterRegistry;
+    }
+
+    private string? FormatSummaryValue(string? value, string providerName)
+    {
+        var formatted = FormatSummaryValueWithRegistry(value, providerName);
         return string.IsNullOrEmpty(formatted) ? null : formatted;
+    }
+
+    /// <summary>
+    /// Formats a summary value using the registry when available.
+    /// </summary>
+    /// <param name="value">The raw value.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <returns>The formatted summary value, or an empty string when no value is available.</returns>
+    private string FormatSummaryValueWithRegistry(string? value, string providerName)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        if (_valueFormatterRegistry is not null)
+        {
+            var context = new ServiceResolutionContext(providerName, null, null, value);
+            var formatted = _valueFormatterRegistry.TryFormat(context);
+            if (!string.IsNullOrEmpty(formatted))
+            {
+                return formatted;
+            }
+        }
+
+        return FormatValue(value, providerName);
     }
 
     private static string? FormatPlainValue(string? value)
@@ -48,6 +89,24 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         var url = FormatPlainValue(TryGet(values, "url"));
 
         var parts = new List<string>();
+        var namePart = BuildNamePart(name, resourceGroup, location);
+        AppendSummaryPart(parts, namePart);
+        AppendUrlPart(parts, url, location);
+        AppendStorageTierPart(parts, values, change.ProviderName);
+        AppendRemainingParts(parts, values, change.ProviderName);
+
+        return string.Join(" | ", parts);
+    }
+
+    /// <summary>
+    /// Builds the primary summary part based on name, resource group, and location.
+    /// </summary>
+    /// <param name="name">The resolved resource name.</param>
+    /// <param name="resourceGroup">The resolved resource group name.</param>
+    /// <param name="location">The resolved location.</param>
+    /// <returns>The primary summary part when available.</returns>
+    private static string? BuildNamePart(string? name, string? resourceGroup, string? location)
+    {
         var namePart = name;
         if (!string.IsNullOrEmpty(resourceGroup))
         {
@@ -59,64 +118,90 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
             namePart = namePart is null ? location : $"{namePart} ({location})";
         }
 
-        if (!string.IsNullOrEmpty(namePart))
+        return string.IsNullOrEmpty(namePart) ? null : namePart;
+    }
+
+    /// <summary>
+    /// Appends a summary part when present.
+    /// </summary>
+    /// <param name="parts">The list of summary parts to update.</param>
+    /// <param name="value">The summary part value.</param>
+    private static void AppendSummaryPart(List<string> parts, string? value)
+    {
+        if (!string.IsNullOrEmpty(value))
         {
-            parts.Add(namePart);
+            parts.Add(value);
+        }
+    }
+
+    /// <summary>
+    /// Appends URL context when supplied, following existing summary rules.
+    /// </summary>
+    /// <param name="parts">The list of summary parts to update.</param>
+    /// <param name="url">The URL value.</param>
+    /// <param name="location">The resolved location value.</param>
+    private static void AppendUrlPart(List<string> parts, string? url, string? location)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            return;
         }
 
-        // If a URL is present (e.g., msgraph), include it alongside the name when no location is available
-        if (!string.IsNullOrEmpty(url))
+        if (parts.Count > 0 && !string.IsNullOrEmpty(location))
         {
-            if (parts.Count > 0 && !string.IsNullOrEmpty(location))
-            {
-                parts.Add(url);
-            }
-            else if (parts.Count > 0)
-            {
-                parts[0] = $"{parts[0]} ({url})";
-            }
-            else
-            {
-                parts.Add(url);
-            }
+            parts.Add(url);
+            return;
         }
 
-        // Combine storage tier + redundancy when both are present for a compact output
+        if (parts.Count > 0)
+        {
+            parts[0] = $"{parts[0]} ({url})";
+            return;
+        }
+
+        parts.Add(url);
+    }
+
+    /// <summary>
+    /// Appends the storage tier and replication details when available.
+    /// </summary>
+    /// <param name="parts">The list of summary parts to update.</param>
+    /// <param name="values">The remaining attribute values.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    private void AppendStorageTierPart(List<string> parts, Dictionary<string, string?> values, string providerName)
+    {
         var accountTier = TryGet(values, "account_tier");
         var accountReplication = TryGet(values, "account_replication_type");
-        if (!string.IsNullOrEmpty(accountTier) || !string.IsNullOrEmpty(accountReplication))
+        if (string.IsNullOrEmpty(accountTier) && string.IsNullOrEmpty(accountReplication))
         {
-            var combined = $"{accountTier} {accountReplication}".Trim();
-            var formattedCombined = FormatSummaryValue(combined, change.ProviderName);
-            if (!string.IsNullOrEmpty(formattedCombined))
-            {
-                parts.Add(formattedCombined);
-            }
-            values.Remove("account_tier");
-            values.Remove("account_replication_type");
+            return;
         }
 
-        // Add remaining values (excluding ones already used)
+        var combined = $"{accountTier} {accountReplication}".Trim();
+        var formattedCombined = FormatSummaryValue(combined, providerName);
+        AppendSummaryPart(parts, formattedCombined);
+        values.Remove("account_tier");
+        values.Remove("account_replication_type");
+    }
+
+    /// <summary>
+    /// Appends remaining formatted values excluding context keys.
+    /// </summary>
+    /// <param name="parts">The list of summary parts to update.</param>
+    /// <param name="values">The remaining attribute values.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    private void AppendRemainingParts(List<string> parts, Dictionary<string, string?> values, string providerName)
+    {
         foreach (var (key, value) in values.ToArray())
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || IsNameOrContextKey(key))
             {
                 continue;
             }
 
-            if (IsNameOrContextKey(key))
-            {
-                continue;
-            }
-
-            var formatted = FormatSummaryValue(value, change.ProviderName);
-            if (!string.IsNullOrEmpty(formatted))
-            {
-                parts.Add(formatted);
-            }
+            var formatted = FormatSummaryValue(value, providerName);
+            AppendSummaryPart(parts, formatted);
         }
-
-        return string.Join(" | ", parts);
     }
 
     private string? BuildUpdateSummary(ResourceChangeModel change)
@@ -218,7 +303,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
         return values.TryGetValue(key, out var value) ? value : null;
     }
 
-    private IReadOnlyList<string> ResolveKeys(string resourceType)
+    private static IReadOnlyList<string> ResolveKeys(string resourceType)
     {
         return ResourceSummaryMappings.ResolveKeys(resourceType);
     }

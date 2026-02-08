@@ -59,7 +59,7 @@ public class AzureEntityMapperTests
 
         var result = formatter.FormatScope(scope);
 
-        result.Should().Be("Key Vault `kv1` in resource group `rg1` of subscription `Prod (sub-1)`");
+        result.Should().Be("Key Vault `kv1` in resource group `📁 rg1` of subscription `🔑 Prod (sub-1)`");
     }
 
     [Test]

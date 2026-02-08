@@ -13,6 +13,21 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 internal sealed class EnrichedAzureScopeFormatter
 {
     /// <summary>
+    /// Non-breaking space used to keep icons attached to labels.
+    /// </summary>
+    private const string NonBreakingSpace = "\u00A0";
+
+    /// <summary>
+    /// Icon for subscription identifiers.
+    /// </summary>
+    private const string SubscriptionIcon = "🔑";
+
+    /// <summary>
+    /// Icon for resource group identifiers.
+    /// </summary>
+    private const string ResourceGroupIcon = "📁";
+
+    /// <summary>
     /// The entity mapper used to resolve display names.
     /// </summary>
     private readonly AzureEntityMapper _entityMapper;
@@ -40,6 +55,20 @@ internal sealed class EnrichedAzureScopeFormatter
     }
 
     /// <summary>
+    /// Resolves a subscription display label using the configured mappings.
+    /// </summary>
+    /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the subscription.</param>
+    /// <returns>The subscription label with display name enrichment when available.</returns>
+    /// <remarks>
+    /// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+    /// </remarks>
+    internal string GetSubscriptionDisplayName(string? subscriptionId, string? resourceAddress = null)
+    {
+        return _entityMapper.GetSubscriptionDisplayName(subscriptionId, resourceAddress);
+    }
+
+    /// <summary>
     /// Formats an already-parsed scope with display name enrichment.
     /// </summary>
     /// <param name="scopeInfo">The parsed scope information.</param>
@@ -56,15 +85,17 @@ internal sealed class EnrichedAzureScopeFormatter
         var subscriptionLabel = string.IsNullOrWhiteSpace(subscriptionDisplay)
             ? scopeInfo.SubscriptionId ?? string.Empty
             : subscriptionDisplay;
+        var subscriptionValue = FormatSubscriptionLabel(subscriptionLabel);
+        var resourceGroupValue = FormatResourceGroupLabel(scopeInfo.ResourceGroup);
 
         return scopeInfo.Level switch
         {
             ScopeLevel.ManagementGroup => FormatManagementGroup(scopeInfo.Name, resourceAddress),
-            ScopeLevel.Subscription => $"subscription `{subscriptionLabel}`",
-            ScopeLevel.ResourceGroup => $"`{scopeInfo.ResourceGroup}` in subscription `{subscriptionLabel}`",
+            ScopeLevel.Subscription => $"subscription `{subscriptionValue}`",
+            ScopeLevel.ResourceGroup => $"`{resourceGroupValue}` in subscription `{subscriptionValue}`",
             ScopeLevel.Resource when !string.IsNullOrWhiteSpace(scopeInfo.ResourceGroup) =>
-                $"{scopeInfo.Type} `{scopeInfo.Name}` in resource group `{scopeInfo.ResourceGroup}` of subscription `{subscriptionLabel}`",
-            ScopeLevel.Resource => $"{scopeInfo.Type} `{scopeInfo.Name}` in subscription `{subscriptionLabel}`",
+                $"{scopeInfo.Type} `{scopeInfo.Name}` in resource group `{resourceGroupValue}` of subscription `{subscriptionValue}`",
+            ScopeLevel.Resource => $"{scopeInfo.Type} `{scopeInfo.Name}` in subscription `{subscriptionValue}`",
             _ => scopeInfo.Details
         };
     }
@@ -86,5 +117,35 @@ internal sealed class EnrichedAzureScopeFormatter
         var managementGroupName = _entityMapper.GetManagementGroupDisplayName(managementGroupId, resourceAddress);
         var label = string.IsNullOrWhiteSpace(managementGroupName) ? managementGroupId : managementGroupName;
         return $"management group `{label}`";
+    }
+
+    /// <summary>
+    /// Formats a subscription label with the subscription icon when available.
+    /// </summary>
+    /// <param name="subscriptionLabel">The subscription label to format.</param>
+    /// <returns>Subscription label with icon prefix.</returns>
+    private static string FormatSubscriptionLabel(string subscriptionLabel)
+    {
+        if (string.IsNullOrWhiteSpace(subscriptionLabel))
+        {
+            return string.Empty;
+        }
+
+        return $"{SubscriptionIcon}{NonBreakingSpace}{subscriptionLabel}";
+    }
+
+    /// <summary>
+    /// Formats a resource group label with the resource group icon when available.
+    /// </summary>
+    /// <param name="resourceGroup">The resource group label to format.</param>
+    /// <returns>Resource group label with icon prefix.</returns>
+    private static string FormatResourceGroupLabel(string? resourceGroup)
+    {
+        if (string.IsNullOrWhiteSpace(resourceGroup))
+        {
+            return string.Empty;
+        }
+
+        return $"{ResourceGroupIcon}{NonBreakingSpace}{resourceGroup}";
     }
 }

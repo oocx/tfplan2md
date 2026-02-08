@@ -9,13 +9,16 @@
     "00000000-0000-0000-0000-000000000003": "Deployment Pipeline"
   },
   "subscriptions": [
-    { "id": "sub-123", "displayName": "Production" }
+    { "id": "sub-123", "displayName": "Production" },
+    { "id": "12345678-1234-1234-1234-123456789012", "displayName": "Production" },
+    { "id": "11111111-2222-3333-4444-555555555555", "displayName": "Sandbox" }
   ],
   "managementGroups": [
     { "id": "mg-root", "displayName": "Root Management Group" }
   ],
   "tenants": [
-    { "id": "mg-root", "displayName": "Contoso Corp" }
+    { "id": "mg-root", "displayName": "Contoso Corp" },
+    { "id": "11111111-2222-3333-4444-555555555555", "displayName": "Contoso Tenant" }
   ],
   "roles": [
     { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }

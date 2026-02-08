@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
@@ -16,6 +17,31 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM.Models;
 /// </summary>
 internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactory
 {
+    /// <summary>
+    /// Non-breaking space used to keep icons attached to labels.
+    /// </summary>
+    private const string NonBreakingSpace = "\u00A0";
+
+    /// <summary>
+    /// Icon used for record name display.
+    /// </summary>
+    private const string RecordNameIcon = "🆔";
+
+    /// <summary>
+    /// Icon used for record value display.
+    /// </summary>
+    private const string RecordValueIcon = "🌐";
+
+    /// <summary>
+    /// Attribute name for record values.
+    /// </summary>
+    private const string RecordsAttribute = "records";
+
+    /// <summary>
+    /// Maximum number of record values to include in the summary.
+    /// </summary>
+    private const int MaxRecordValues = 3;
+
     /// <summary>
     /// Terraform resource type handled by this factory.
     /// </summary>
@@ -50,13 +76,18 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
         }
 
         var state = ResolveActiveState(resourceChange, action);
-        if (!TryBuildFqdn(state, out var fqdn))
+        if (!TryBuildSummaryData(state, out var recordName, out var fqdn, out var recordValues))
         {
             return;
         }
 
-        model.Summary = FormatValue(fqdn, model.ProviderName);
-        model.SummaryHtml = BuildSummaryHtml(model, fqdn);
+        var recordNameToken = FormatCodeTable($"{RecordNameIcon}{NonBreakingSpace}{recordName}");
+        var fqdnToken = FormatCodeTable(fqdn);
+        var recordTokens = BuildRecordValueTokens(recordValues);
+        var recordSuffix = recordTokens.Count > 0 ? $" {string.Join(" ", recordTokens)}" : string.Empty;
+
+        model.Summary = $"{recordNameToken} — {fqdnToken}{recordSuffix}";
+        model.SummaryHtml = BuildSummaryHtml(model, recordName, fqdn, recordValues);
     }
 
     /// <summary>
@@ -72,35 +103,96 @@ internal sealed class AzureRMPrivateDnsARecordFactory : IResourceViewModelFactor
     }
 
     /// <summary>
-    /// Builds the summary HTML string using the fully qualified DNS name.
+    /// Builds the summary HTML string using the record name, FQDN, and record values.
     /// </summary>
     /// <param name="model">The resource change model.</param>
+    /// <param name="recordName">The DNS record name.</param>
     /// <param name="fqdn">The fully qualified DNS name.</param>
+    /// <param name="recordValues">The record values to include.</param>
     /// <returns>Summary HTML string for the resource.</returns>
-    private static string BuildSummaryHtml(ResourceChangeModel model, string fqdn)
+    private static string BuildSummaryHtml(
+        ResourceChangeModel model,
+        string recordName,
+        string fqdn,
+        IReadOnlyList<string> recordValues)
     {
-        return $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(fqdn)}</b>";
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary($"{RecordNameIcon}{NonBreakingSpace}{recordName}")}</b>";
+        var parts = new List<string> { FormatCodeSummary(fqdn) };
+        parts.AddRange(recordValues.Select(value => FormatCodeSummary($"{RecordValueIcon}{NonBreakingSpace}{value}")));
+
+        return $"{prefix} — {string.Join(" ", parts)}";
     }
 
     /// <summary>
-    /// Attempts to build the FQDN from the resource state.
+    /// Attempts to build summary data from the resource state.
     /// </summary>
     /// <param name="state">The active Terraform state.</param>
+    /// <param name="recordName">The resolved record name when available.</param>
     /// <param name="fqdn">The combined name and zone when available.</param>
+    /// <param name="recordValues">The resolved record values.</param>
     /// <returns>True when both name and zone are present; otherwise false.</returns>
-    private static bool TryBuildFqdn(object? state, out string fqdn)
+    private static bool TryBuildSummaryData(
+        object? state,
+        out string recordName,
+        out string fqdn,
+        out IReadOnlyList<string> recordValues)
     {
         var flatState = JsonFlattener.ConvertToFlatDictionary(state);
         flatState.TryGetValue(NameAttribute, out var name);
         flatState.TryGetValue(ZoneNameAttribute, out var zoneName);
+        recordValues = BuildRecordValues(flatState);
 
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(zoneName))
         {
+            recordName = string.Empty;
             fqdn = string.Empty;
             return false;
         }
 
+        recordName = name;
         fqdn = $"{name}.{zoneName}";
         return true;
+    }
+
+    /// <summary>
+    /// Builds the list of record values to include in the summary.
+    /// </summary>
+    /// <param name="flatState">The flattened Terraform state.</param>
+    /// <returns>Record values to include in the summary.</returns>
+    private static List<string> BuildRecordValues(Dictionary<string, string?> flatState)
+    {
+        var values = new List<string>();
+        for (var index = 0; index < MaxRecordValues; index++)
+        {
+            if (!flatState.TryGetValue($"{RecordsAttribute}[{index}]", out var value) || string.IsNullOrWhiteSpace(value))
+            {
+                continue;
+            }
+
+            values.Add(value);
+        }
+
+        return values;
+    }
+
+    /// <summary>
+    /// Builds formatted record value tokens for summary rendering.
+    /// </summary>
+    /// <param name="recordValues">Record values to format.</param>
+    /// <returns>Formatted record value tokens.</returns>
+    private static IReadOnlyList<string> BuildRecordValueTokens(IReadOnlyList<string> recordValues)
+    {
+        if (recordValues.Count == 0)
+        {
+            return Array.Empty<string>();
+        }
+
+        var tokens = new List<string>(recordValues.Count);
+        foreach (var value in recordValues)
+        {
+            tokens.Add(FormatCodeTable($"{RecordValueIcon}{NonBreakingSpace}{value}"));
+        }
+
+        return tokens;
     }
 }

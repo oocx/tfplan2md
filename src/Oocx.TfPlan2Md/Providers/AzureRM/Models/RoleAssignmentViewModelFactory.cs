@@ -83,12 +83,14 @@ internal static class RoleAssignmentViewModelFactory
     /// <param name="action">The Terraform action string.</param>
     /// <param name="attributeChanges">The attribute changes for this resource.</param>
     /// <param name="principalMapper">Mapper for principal name resolution.</param>
+    /// <param name="scopeFormatter">Optional formatter for enriched scope display.</param>
     /// <returns>Populated <see cref="RoleAssignmentViewModel"/>.</returns>
     public static RoleAssignmentViewModel Build(
         ResourceChange change,
         string action,
         IReadOnlyList<AttributeChangeModel> attributeChanges,
-        IPrincipalMapper principalMapper)
+        IPrincipalMapper principalMapper,
+        EnrichedAzureScopeFormatter? scopeFormatter = null)
     {
         var beforeState = change.Change.Before as JsonElement?;
         var afterState = change.Change.After as JsonElement?;
@@ -118,8 +120,22 @@ internal static class RoleAssignmentViewModelFactory
 
         foreach (var attr in allAttributes)
         {
-            var beforeValue = FormatRoleValue(attr.Name, beforeState, beforeScope, beforeRole, beforePrincipal);
-            var afterValue = FormatRoleValue(attr.Name, afterState, afterScope, afterRole, afterPrincipal);
+            var beforeValue = FormatRoleValue(
+                attr.Name,
+                beforeState,
+                beforeScope,
+                beforeRole,
+                beforePrincipal,
+                scopeFormatter,
+                change.Address);
+            var afterValue = FormatRoleValue(
+                attr.Name,
+                afterState,
+                afterScope,
+                afterRole,
+                afterPrincipal,
+                scopeFormatter,
+                change.Address);
 
             var attrViewModel = new RoleAssignmentAttributeViewModel
             {
@@ -195,7 +211,7 @@ internal static class RoleAssignmentViewModelFactory
         RoleInfo role,
         PrincipalInfo principal)
     {
-        var scopeSummary = scope.SummaryLabel + FormatCodeSummary(scope.SummaryName);
+        var scopeSummary = BuildScopeSummary(scope);
         var roleSummary = $"<code>🛡️{NonBreakingSpace}{EscapeMarkdown(role.Name)}</code>";
         var principalIcon = principal.Type switch
         {
@@ -215,8 +231,38 @@ internal static class RoleAssignmentViewModelFactory
     }
 
     /// <summary>
+    /// Builds scope summary text with icon formatting for resource group scopes.
+    /// </summary>
+    /// <param name="scope">The parsed scope information.</param>
+    /// <returns>Formatted scope summary text.</returns>
+    private static string BuildScopeSummary(Platforms.Azure.ScopeInfo scope)
+    {
+        if (scope.Level == ScopeLevel.ResourceGroup)
+        {
+            var resourceGroup = scope.ResourceGroup ?? scope.SummaryName;
+            return FormatAttributeValueSummary("resource_group_name", resourceGroup, null);
+        }
+
+        if (scope.Level == ScopeLevel.Subscription)
+        {
+            var subscriptionId = scope.SubscriptionId ?? scope.SummaryName;
+            return $"subscription {FormatAttributeValueSummary("subscription_id", subscriptionId, null)}";
+        }
+
+        return scope.SummaryLabel + FormatCodeSummary(scope.SummaryName);
+    }
+
+    /// <summary>
     /// Formats a role assignment attribute value for display.
     /// </summary>
+    /// <param name="attrName">The attribute name to format.</param>
+    /// <param name="state">The JSON element to read from.</param>
+    /// <param name="scope">The parsed scope information.</param>
+    /// <param name="role">The resolved role information.</param>
+    /// <param name="principal">The resolved principal information.</param>
+    /// <param name="scopeFormatter">Optional scope formatter for display name enrichment.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
+    /// <returns>Formatted value for the attribute, or null when unavailable.</returns>
     [SuppressMessage(
         "Maintainability",
         "CA1502:Avoid excessive complexity",
@@ -226,7 +272,9 @@ internal static class RoleAssignmentViewModelFactory
         JsonElement? state,
         ScopeInfo scope,
         RoleInfo role,
-        PrincipalInfo principal)
+        PrincipalInfo principal,
+        EnrichedAzureScopeFormatter? scopeFormatter,
+        string resourceAddress)
     {
         if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
         {
@@ -235,7 +283,7 @@ internal static class RoleAssignmentViewModelFactory
 
         return attrName switch
         {
-            ScopeAttribute => FormatScopeValue(scope),
+            ScopeAttribute => FormatScopeValue(scope, scopeFormatter, resourceAddress),
             RoleDefinitionIdAttribute => FormatRoleDefinitionIdValue(role),
             PrincipalIdAttribute => FormatPrincipalIdValue(principal),
             PrincipalTypeAttribute => FormatPrincipalTypeValue(element),
@@ -248,10 +296,16 @@ internal static class RoleAssignmentViewModelFactory
     /// Formats the scope attribute for table display.
     /// </summary>
     /// <param name="scope">The parsed scope information.</param>
+    /// <param name="scopeFormatter">Optional scope formatter for display name enrichment.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
     /// <returns>Formatted scope string.</returns>
-    private static string? FormatScopeValue(ScopeInfo scope)
+    private static string? FormatScopeValue(
+        ScopeInfo scope,
+        EnrichedAzureScopeFormatter? scopeFormatter,
+        string resourceAddress)
     {
-        return FormatAzureScopeForTable(scope);
+        var subscriptionLabel = scopeFormatter?.GetSubscriptionDisplayName(scope.SubscriptionId, resourceAddress);
+        return FormatAzureScopeForTable(scope, subscriptionLabel);
     }
 
     /// <summary>

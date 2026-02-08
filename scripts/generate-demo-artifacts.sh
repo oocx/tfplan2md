@@ -74,8 +74,9 @@ else
   exit 1
 fi
 
-log_info "Generating artifacts/role-default.md (role assignments without principal mapping)..."
+log_info "Generating artifacts/role-default.md (role assignments with demo principal mapping)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --principal-mapping examples/role-assignments-principals.json \
   --output artifacts/role-default.md \
   src/tests/Oocx.TfPlan2Md.TUnit/TestData/role-assignments.json
 

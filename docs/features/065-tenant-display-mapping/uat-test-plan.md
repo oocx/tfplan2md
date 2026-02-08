@@ -28,10 +28,10 @@ Verify that tenant display names and management group icons render correctly in 
 - `management_group_id`
 
 **Expected Outcome:**
-- **Tenants**: Verify they show 🏢 followed by the display name and then the GUID in backticks. Example: 🏢 `Contoso Corp (1234-5678)`.
-- **Management Groups**: Verify they show 🗂️ followed by the display name in backticks. Example: 🗂️ `Production Workloads`.
-- **Tenant Root**: Verify it shows 🗂️ Tenant `Contoso Corp` root.
-- **Icons**: Ensure icons are OUTSIDE the backticks and there is a non-breaking space between the icon and the name.
+- **Tenants**: Verify they show 🏢 followed by the display name and then the GUID inside backticks. Example: `🏢 Contoso Corp (1234-5678)`.
+- **Management Groups**: Verify they show 🗂️ followed by the display name inside backticks. Example: `🗂️ Production Workloads`.
+- **Tenant Root**: Verify it shows `🗂️ Tenant Contoso Corp root`.
+- **Icons**: Ensure icons are INSIDE the backticks and there is a non-breaking space between the icon and the name.
 
 **Before/After Context:**
 - Before: Tenants showed as raw GUIDs ``1234-5678``. Management groups showed as raw names/IDs ``mg-prod`` without icons.

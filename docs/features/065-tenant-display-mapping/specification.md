@@ -18,13 +18,13 @@ Add display name mapping for Entra ID tenants with visual icons, extending the e
 **Tenant Display Names:**
 - Format tenant IDs as `display_name (tenant_id)` everywhere they appear (consistent with subscription formatting)
 - Apply 🏢 icon to all tenant values in attributes and summaries
-- Icon format: `🏢 <display_name (tenant_id)>` (icon outside backticks, followed by display name and ID in backticks)
+- Icon format: `🏢 <display_name (tenant_id)>` (icon inside backticks, followed by display name and ID)
 - Apply to all Azure provider resources (azurerm, azapi, azuread, azdevops) that reference tenant IDs
 - Support tenant display in attribute tables and resource summaries
 
 **Management Group Icons:**
 - Apply 🗂️ icon to all management group values in attributes and summaries
-- Icon format: `🗂️ <display_name>` (icon outside backticks, followed by display name in backticks)
+- Icon format: `🗂️ <display_name>` (icon inside backticks, followed by display name)
 - Enhance existing management group display functionality from feature 063
 
 **Mapping File Extension:**
@@ -71,7 +71,7 @@ Before:
 
 After (with mapping):
 ```markdown
-| tenant_id | 🏢 `Contoso Corp (12345678-1234-1234-1234-123456789012)` |
+| tenant_id | `🏢 Contoso Corp (12345678-1234-1234-1234-123456789012)` |
 ```
 
 **Tenant in AzureAD Resources:**
@@ -85,7 +85,7 @@ Before:
 After (with mapping):
 ```markdown
 ### ➕ azuread_user `john.doe`
-| tenant_id | 🏢 `Contoso Corp (12345678-1234-1234-1234-123456789012)` |
+| tenant_id | `🏢 Contoso Corp (12345678-1234-1234-1234-123456789012)` |
 ```
 
 **Management Group Display (Enhanced):**
@@ -97,7 +97,7 @@ Before:
 
 After (with mapping and icon from feature 063):
 ```markdown
-| management_group_id | 🗂️ `Production Workloads` |
+| management_group_id | `🗂️ Production Workloads` |
 ```
 
 Root management group:

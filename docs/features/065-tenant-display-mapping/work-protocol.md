@@ -113,3 +113,10 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo-full.md`
   - `artifacts/comprehensive-demo.md`
 - **Problems Encountered:** None
+
+## 2026-02-08 - UAT Testing
+
+- Generated UAT artifact `artifacts/tenant-mapping-uat.md` using `azure-display-enhancements.json` and `azure-mappings-extended.json`.
+- Created UAT PRs on GitHub (#60) and Azure DevOps (#65).
+- Shared PR links with the Maintainer for review.
+- Initialized UAT report at `docs/features/065-tenant-display-mapping/uat-report.md`.

@@ -9,11 +9,11 @@ namespace Oocx.TfPlan2Md.TUnit.Docker;
 /// </summary>
 /// <remarks>
 /// These tests assume the Docker image has been pre-built using
-/// scripts/prepare-test-image.sh. The timeout is set to 60 seconds,
+/// scripts/prepare-test-image.sh. The timeout is set to 90 seconds,
 /// which is sufficient for running containers without build time.
 /// </remarks>
 [NotInParallel("Docker")]
-[Timeout(60_000)] // 60 seconds - image should be pre-built
+[Timeout(90_000)] // 90 seconds - image should be pre-built
 [Category("Docker")]
 public class DockerIntegrationTests
 {

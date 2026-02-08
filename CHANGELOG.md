@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.13.1"></a>
+## [1.13.1](https://github.com/oocx/tfplan2md/compare/v1.13.0...v1.13.1) (2026-02-08)
+
+### 🐛 Bug Fixes
+
+* use non-breaking space after emoji icons in Scriban templates ([37e7ca7](https://github.com/oocx/tfplan2md/commit/37e7ca7bb0745541231d581b6a32b51ec4f62d2f))
+
 <a name="1.13.0"></a>
 ## [1.13.0](https://github.com/oocx/tfplan2md/compare/v1.12.0...v1.13.0) (2026-02-08)
 

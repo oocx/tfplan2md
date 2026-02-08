@@ -1,5 +1,5 @@
 {{~## Per-resource code analysis metadata line (Variant C)
-     Renders "🔒 **Security & Quality:** 🚨 1 Critical, ⚠️ 1 High" immediately after resource summary.
+     Renders "🔒 **Security & Quality:** 🚨 1 Critical, ⚠️ 1 High" immediately after resource summary.
      Related feature: docs/features/056-static-analysis-integration/specification.md
 ~}}
 {{~ if change.code_analysis_findings.size > 0 ~}}
@@ -17,14 +17,14 @@
 {{~ end ~}}
 
 {{~ summary_parts = [] ~}}
-{{~ if critical_count > 0 }}{{ summary_parts = summary_parts + ["🚨 " + critical_count + " Critical"] }}{{ end ~}}
-{{~ if high_count > 0 }}{{ summary_parts = summary_parts + ["⚠️ " + high_count + " High"] }}{{ end ~}}
-{{~ if medium_count > 0 }}{{ summary_parts = summary_parts + ["⚠️ " + medium_count + " Medium"] }}{{ end ~}}
-{{~ if low_count > 0 }}{{ summary_parts = summary_parts + ["ℹ️ " + low_count + " Low"] }}{{ end ~}}
-{{~ if info_count > 0 }}{{ summary_parts = summary_parts + ["ℹ️ " + info_count + " Informational"] }}{{ end ~}}
+{{~ if critical_count > 0 }}{{ summary_parts = summary_parts + ["🚨 " + critical_count + " Critical"] }}{{ end ~}}
+{{~ if high_count > 0 }}{{ summary_parts = summary_parts + ["⚠️ " + high_count + " High"] }}{{ end ~}}
+{{~ if medium_count > 0 }}{{ summary_parts = summary_parts + ["⚠️ " + medium_count + " Medium"] }}{{ end ~}}
+{{~ if low_count > 0 }}{{ summary_parts = summary_parts + ["ℹ️ " + low_count + " Low"] }}{{ end ~}}
+{{~ if info_count > 0 }}{{ summary_parts = summary_parts + ["ℹ️ " + info_count + " Informational"] }}{{ end ~}}
 
 {{~ if summary_parts.size > 0 ~}}
-🔒 **Security & Quality:** {{ for part in summary_parts }}{{ part }}{{ if !for.last }}, {{ end }}{{ end }}
+🔒 **Security & Quality:** {{ for part in summary_parts }}{{ part }}{{ if !for.last }}, {{ end }}{{ end }}
 
 {{ end ~}}
 {{ end ~}}

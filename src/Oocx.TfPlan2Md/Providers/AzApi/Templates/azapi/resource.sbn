@@ -8,7 +8,7 @@
 
 {{ include "/_code_analysis_metadata.sbn" }}
 
-### {{ change.action_symbol }} {{ change.address | escape_markdown }}
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ # Extract azapi metadata (type, name, parent_id, location, tags) ~}}
 {{~ metadata = extract_azapi_metadata change ~}}
@@ -26,7 +26,7 @@
 
 {{~ if doc_link ~}}
 
-📚 [View API Documentation]({{ doc_link | escape_markdown }})
+📚 [View API Documentation]({{ doc_link | escape_markdown }})
 {{~ end ~}}
 
 {{~ # Standard attributes table with semantic formatting ~}}
@@ -51,9 +51,7 @@
 
 **Tags:**
 {{~ for tag in metadata.tags ~}}
-{{~ tag_key = tag[0] ~}}
-{{~ tag_value = tag[1] ~}}
- `{{ tag_key | escape_markdown }}: {{ tag_value | escape_markdown }}`
+ `{{ tag.key | escape_markdown }}: {{ tag.value | escape_markdown }}`
 {{~ end ~}}
 {{~ end ~}}
 

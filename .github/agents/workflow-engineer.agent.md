@@ -29,7 +29,7 @@ Before handing off, **append your log entry** to the `## Agent Work Log` section
 - Use valid VS Code Copilot tool IDs (lookup from available tools)
 - Verify handoff agent names exist before committing
 - Create feature branches following `workflow/<description>` naming convention
-- Use conventional commit messages (`feat:`, `refactor:`, `fix:`, `docs:`)
+- Use conventional commit messages — **but NOT `feat:` or `fix:`** for workflow/agent-only changes, as these trigger Versionize version bumps. Use `workflow:`, `docs:`, `chore:`, `ci:`, or `refactor:` instead.
 - Ensure Mermaid diagram reflects all agents and artifacts
 - Test proposed changes incrementally
 - Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; run tests via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` when C# code changes
@@ -81,7 +81,7 @@ When executing as a cloud agent from a GitHub issue assigned to `@copilot`:
 
 5. **Create PR:**
    - Branch: `workflow/<NNN>-<slug>` (e.g., workflow/032-cloud-agent-support)
-   - Commits: Use conventional format (feat:, refactor:, fix:, docs:)
+   - Commits: Use conventional format (`workflow:`, `docs:`, `chore:`, `ci:`, `refactor:`) — do NOT use `feat:` or `fix:` for workflow-only changes (these trigger Versionize version bumps)
    - Description: Follow standard template (Problem/Change/Verification)
    - Link to the originating issue
 
@@ -481,8 +481,8 @@ git push -u origin HEAD
 # Stage changes
 git add .github/agents/ docs/agents.md
 
-# Commit with conventional commit format
-git commit -m "feat: <clear description>"
+# Commit with conventional commit format (NOT feat: or fix: for workflow-only changes)
+git commit -m "workflow: <clear description>"
 
 # Push branch
 git push -u origin HEAD

@@ -27,11 +27,15 @@ Ensure the feature is ready for release, create the pull request (for both new f
 
 As an initial step, determine the current work item folder from the current git branch name (`git branch --show-current`):
 
-- `feature/<NNN>-...` -> `docs/features/<NNN>-.../`
-- `fix/<NNN>-...` -> `docs/issues/<NNN>-.../`
-- `workflow/<NNN>-...` -> `docs/workflow/<NNN>-.../`
+- `feature/<NNN>-...` → `docs/features/<NNN>-.../`
+- `fix/<NNN>-...` → `docs/issues/<NNN>-.../`
+- `workflow/<NNN>-...` → `docs/workflow/<NNN>-.../`
 
-If it's not clear, ask the Maintainer for the exact folder path.
+**If the branch name does not match any of these patterns** (e.g., `copilot/...`, `dependabot/...`, or any other non-standard prefix):
+1. **Create a new workflow folder** with the next available global number (check the highest number across `docs/features/`, `docs/issues/`, and `docs/workflow/`, then increment by 1).
+2. Name the folder `docs/workflow/<NNN>-<descriptive-slug>/`.
+3. Place all release artifacts (release notes, work protocol) in that folder.
+4. **Do NOT place release notes in a pre-existing work item folder** that belongs to a different issue or feature — each release must have its own dedicated folder.
 
 ## Work Protocol
 
@@ -50,6 +54,7 @@ Before proceeding with the release, **verify the Work Protocol** (`work-protocol
 - Check that working directory is clean
 - Verify branch is up to date with main
 - Review commit messages follow conventional commit format
+- **Enforce commit type guardrails:** Verify that PRs which only change workflow/internal tooling (`.github/`, `scripts/`, `docs/`, `website/`) do NOT use `feat:` or `fix:` commit types. These must use `workflow:`, `docs:`, `chore:`, or `ci:` instead. Using `feat:` or `fix:` for non-code changes causes incorrect Versionize version bumps.
 - Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
 - **Conflict Check (REQUIRED):** Before finalizing a merge, manually verify that critical documentation files (like `docs/architecture.md` or `docs/spec.md`) have not been accidentally reverted or corrupted by the merge process, even if the CLI reports success.
 - **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`). Only use raw `gh pr merge --rebase --delete-branch` as a final fallback if the wrapper is unavailable.
@@ -74,6 +79,8 @@ Before proceeding with the release, **verify the Work Protocol** (`work-protocol
 - Use the wrong tag or skip tag detection
 - Use squash merges or merge commits (UI buttons, API, or CLI)
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
+- Use `feat:` or `fix:` commit types for changes that only touch `.github/`, `scripts/`, `docs/`, or `website/` — these cause unintended version bumps
+- Place release notes in a pre-existing work item folder that belongs to a different issue or feature
 - Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
 - Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
 - **Use raw `gh` commands directly** — never use `gh pr`, `gh run`, `gh workflow`, `gh release`, or other `gh` subcommands directly; always use wrapper scripts or GitHub MCP tools instead (see alternatives table below)
@@ -397,7 +404,7 @@ After the release pipeline completes, verify:
 
 Your work is complete when:
 - [ ] All pre-release checks pass
-- [ ] User-focused release notes generated and committed to `docs/features/NNN-<feature-slug>/release-notes.md`
+- [ ] User-focused release notes generated and committed to the work item folder (`docs/features/NNN-.../release-notes.md`, `docs/issues/NNN-.../release-notes.md`, or `docs/workflow/NNN-.../release-notes.md`)
 - [ ] PR created and merged to main
 - [ ] CI pipeline on main completes successfully
 - [ ] Version tag detected (created by Versionize)

@@ -83,7 +83,7 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 
 **Release Gating:** The CI workflow only creates a new version tag when the published Docker image would change. This includes changes to runtime code (`src/` excluding test directories), example files (`examples/`), and Docker build configuration. Test-only changes (under `src/tests/`, `src/tools/`, test results) and workflow/internal-tooling changes (`.github/`, `scripts/`, `docs/`, `website/`) intentionally do not trigger releases.
 
-**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `scripts/`, `docs/`, `website/`) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`.
+**Commit Guardrails:** Pull requests that only change workflow/internal tooling (e.g., `.github/`, `scripts/`, `docs/`, `website/`) must not use version-bumping Conventional Commit types such as `feat:` or `fix:`. Use `workflow:`, `docs:`, `chore:`, or `ci:` instead. **Why:** Versionize treats `feat:` as a minor bump and `fix:` as a patch bump. Incorrect commit types cause unintended version increments (e.g., a minor bump instead of a patch, or a release for changes that don't affect the published Docker image). The Release Manager agent must verify commit types before merging.
 
 **Release Notes:** The release workflow generates cumulative release notes that include all changes since the last GitHub release. This ensures Docker deployments contain complete change history even when intermediate versions are not released.
 

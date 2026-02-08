@@ -13,6 +13,7 @@ Usage:
   scripts/check-workflow-status.sh [--repo <owner/repo>] watch <run-id> [--quiet]
   scripts/check-workflow-status.sh [--repo <owner/repo>] trigger <workflow-file> [--field key=value ...]
   scripts/check-workflow-status.sh [--repo <owner/repo>] view <run-id>
+  scripts/check-workflow-status.sh [--repo <owner/repo>] logs <run-id> [--step <step-name>]
 
 Commands:
   list      List workflow runs (default: all runs)
@@ -20,6 +21,8 @@ Commands:
             --quiet: Output only final status line: WORKFLOW: SUCCESS|FAILURE|CANCELLED (agent-friendly)
   trigger   Trigger a workflow with optional input fields
   view      View details of a specific workflow run
+  logs      View logs for a workflow run
+            --step: Optional step name to filter logs (uses gh run view --log for interactive selection if omitted)
 
 Options:
   --repo <owner/repo>       Target repository (overrides GH_REPO)
@@ -27,6 +30,7 @@ Options:
   --workflow <name>         Filter runs by workflow name/file (for list command)
   --limit <n>               Limit number of results (default: 1 for list)
   --field key=value         Workflow input field (for trigger command)
+  --step <step-name>        Filter logs to specific step (for logs command)
 
 Examples:
   # List latest run on main branch
@@ -43,6 +47,12 @@ Examples:
 
   # View run details
   scripts/check-workflow-status.sh --repo oocx/tfplan2md view 12345678
+
+  # View all logs for a run
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md logs 12345678
+
+  # View logs for a specific step
+  scripts/check-workflow-status.sh --repo oocx/tfplan2md logs 12345678 --step "Build"
 
   # Trigger release workflow with tag
   scripts/check-workflow-status.sh --repo oocx/tfplan2md trigger release.yml --field tag=v1.0.0
@@ -199,6 +209,44 @@ cmd_view() {
   gh_safe run view "$run_id" --json conclusion,status,jobs,workflowName,headBranch,createdAt,updatedAt
 }
 
+cmd_logs() {
+  local run_id=""
+  local step=""
+  
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --step)
+        step="$2"
+        shift 2
+        ;;
+      *)
+        if [[ -z "$run_id" ]]; then
+          run_id="$1"
+          shift
+        else
+          echo "Error: Unknown argument '$1' for logs command" >&2
+          usage
+          exit 1
+        fi
+        ;;
+    esac
+  done
+  
+  if [[ -z "$run_id" ]]; then
+    echo "Error: logs command requires exactly one argument (run-id)" >&2
+    usage
+    exit 1
+  fi
+  
+  if [[ -n "$step" ]]; then
+    # View logs for a specific step
+    gh_safe run view "$run_id" --log --log-failed="$step"
+  else
+    # View all logs (will use interactive selector if run in TTY, or display all if piped)
+    gh_safe run view "$run_id" --log
+  fi
+}
+
 main() {
   if [[ $# -eq 0 ]]; then
     usage
@@ -232,6 +280,9 @@ main() {
       ;;
     view)
       cmd_view "$@"
+      ;;
+    logs)
+      cmd_logs "$@"
       ;;
     -h|--help|help)
       usage

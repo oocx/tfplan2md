@@ -925,12 +925,12 @@ Management group IDs are resolved to display names when mappings are provided, d
 
 **Example with mapping:**
 ```markdown
-| management_group_id | 🗂️ `Production Workloads` |
+| management_group_id | `🗂️ Production Workloads` |
 ```
 
 **Root management group example:**
 ```markdown
-| management_group_id | 🗂️ Tenant `Contoso Corp` root |
+| management_group_id | `🗂️ Tenant Contoso Corp root` |
 ```
 
 ### Tenant Display Names
@@ -944,7 +944,7 @@ Tenant IDs are resolved to display names when mappings are provided, displayed w
 
 **After (with mapping):**
 ```markdown
-| tenant_id | 🏢 `Contoso Corp (12345678-1234-1234-1234-123456789012)` |
+| tenant_id | `🏢 Contoso Corp (12345678-1234-1234-1234-123456789012)` |
 ```
 
 ### Role Definition Names

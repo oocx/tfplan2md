@@ -16,3 +16,10 @@
   - `docs/features/065-tenant-display-mapping/specification.md`
   - `docs/features/065-tenant-display-mapping/work-protocol.md` (this file)
 - **Problems Encountered:** None
+
+### Architect
+- **Date:** 2026-02-08
+- **Summary:** Reviewed Feature 065 specification and existing Azure display enhancement architecture (Feature 063). Proposed an approach that reuses `AzureEntityMapper` + `ValueFormatterRegistry` and enhances `EnrichedAzureScopeFormatter` to apply 🏢/🗂️ icon formatting consistently across Azure providers without introducing runtime Azure calls or leaking provider-specific logic into core modules.
+- **Artifacts Produced:**
+  - `docs/features/065-tenant-display-mapping/architecture.md`
+- **Problems Encountered:** None

@@ -75,7 +75,6 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Design without reviewing existing codebase patterns
 - Skip documenting the rationale for decisions
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
-- **HARD STOP: Design provider-specific logic to leak into core modules** - All Terraform provider-specific code (e.g., azurerm, azapi, azuredevops resource enhancements, display name logic) MUST be isolated in `src/Oocx.TfPlan2Md/Providers/<ProviderName>/`. Provider-specific logic MUST NOT appear in `src/Oocx.TfPlan2Md/MarkdownGeneration/` or other core modules. See [docs/architecture.md § Building Block View](../../docs/architecture.md) for architectural boundaries.
 
 ## Response Style
 

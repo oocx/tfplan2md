@@ -84,8 +84,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
 - Use `generate-demo-artifacts` skill to regenerate all demo artifacts after ALL tasks complete
-- **MANDATE: Use `update-test-snapshots` skill for ALL intentional snapshot changes** - When markdown output logic changes, you MUST use the `update-test-snapshots` skill (which runs `scripts/update-test-snapshots.sh`) to regenerate snapshot baselines. Verify snapshots pass afterwards.
-- **Include `SNAPSHOT_UPDATE_OK` token in commit messages** - When committing snapshot changes, include `SNAPSHOT_UPDATE_OK` in the commit message to signal the change is intentional (example: `git commit -m "test: update snapshots for <feature-name>\n\nSNAPSHOT_UPDATE_OK"`).
+- Use `update-test-snapshots` skill when markdown output logic changes (verify snapshots pass afterwards)
 - Never update snapshots to "make tests pass" without first diagnosing what behavior changed and why the new output is correct
 - Follow C# coding conventions and use modern C# features
 - Keep files under 300 lines, refactor if larger
@@ -116,8 +115,6 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 - Change test expectations when tests fail, instead of diagnosing the root cause and fixing the underlying issue
-- **HARD STOP: Put provider-specific logic in core modules** - All Terraform provider-specific code (e.g., azurerm, azapi, azuredevops resource enhancements, display name logic) MUST be isolated in `src/Oocx.TfPlan2Md/Providers/<ProviderName>/`. Provider-specific logic MUST NOT appear in `src/Oocx.TfPlan2Md/MarkdownGeneration/` or other core modules. See [docs/architecture.md § Building Block View](../../docs/architecture.md) for architectural boundaries.
-- **HARD STOP: Manually update snapshot files** - NEVER use `cp` or manually edit files in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/` unless explicitly instructed for a specific reason beyond general updates. Always use the `update-test-snapshots` skill (which runs `scripts/update-test-snapshots.sh`) for snapshot regeneration.
 
 ## Context to Read
 

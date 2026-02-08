@@ -105,3 +105,13 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersAzureScopeFormattingTests.cs`
   - `docs/features/065-tenant-display-mapping/architecture.md`
 - **Problems Encountered:** None
+
+### UAT Tester (Rework)
+- **Date:** 2026-02-08
+- **Summary:** Conducted User Acceptance Testing for Feature 065 after discovering the initial artifact was stale. Regenerated `tenant-mapping-uat.md` with the latest code (commit 80f1320a) that includes management group scope formatting fix. Created fresh UAT PRs on GitHub (#64) and Azure DevOps (#69). Maintainer validated and confirmed PASS for both platforms. All acceptance criteria met: tenant display names with 🏢 icon, management group icons with 🗂️, icons correctly placed inside backticks, and no regressions.
+- **Artifacts Produced:**
+  - `artifacts/tenant-mapping-uat.md` (regenerated)
+  - `docs/features/065-tenant-display-mapping/uat-report.md` (PASSED)
+- **Problems Encountered:**
+  - Initial artifact was stale (generated before commit 80f1320a)
+  - Solution: Regenerated artifact using correct test data file with latest code

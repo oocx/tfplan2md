@@ -1,46 +1,56 @@
 # UAT Report: Tenant Display Name Mapping
 
-**Status:** ❌ FAILED
+**Status:** ✅ PASSED
 **Date:** 2026-02-08
 
 ## Test Environment
 - **Platform:** GitHub & Azure DevOps
 - **Artifacts:**
   - `artifacts/tenant-mapping-uat.md` (Feature-specific)
+  - `artifacts/comprehensive-demo-simple-diff.md` (Regression - GitHub)
+  - `artifacts/comprehensive-demo.md` (Regression - Azure DevOps)
 
 ## Test Results
 
-### 1. Resource Summary Formatting
-- **Description:** Verify that summary lines include correct backticks and icons.
-- **Actual:**
-  ```
-  ➕ azurerm_role_assignment mg_scope — 👤 Jane Doe → 🛡️ Reader on management group mg-root
-  ```
-- **Expected:**
-  ```
-  ➕ azurerm_role_assignment `mg_scope` — `👤 Jane Doe` → `🛡️ Reader` on management group `🗂️ mg-root`
-  ```
-- **Result:** ❌ FAILED
+### 1. Tenant Display Names
+- **Description:** Verify tenant IDs are enriched with display names and 🏢 icon.
+- **Expected:** `` `🏢 Contoso Corp (guid)` ``
+- **Actual:** Icons and display names render correctly in both platforms
+- **Result:** ✅ PASSED
 
-### 2. Attribute Table Icons
-- **Description:** Verify that management group icons are present in attribute tables inside backticks.
-- **Actual:**
-  ```
-  scope `mg-root (Management Group)`
-  ```
-- **Expected:**
-  ```
-  scope `🗂️ mg-root (Management Group)`
-  ```
-- **Result:** ❌ FAILED
+### 2. Management Group Icons - Summary
+- **Description:** Verify management group references in resource summaries include 🗂️ icon.
+- **Expected:** `on management group `🗂️ Tenant Contoso Corp (mg-root) root``
+- **Actual:** Management group icons render correctly in summary lines
+- **Result:** ✅ PASSED
 
-### 3. Icon Placement Policy
-- **Requirement:** Icons for Azure entities must be inside the backticks.
-- **Result:** ❌ FAILED (The UAT Tester incorrectly reported that icons should be outside backticks).
+### 3. Management Group Icons - Attribute Tables
+- **Description:** Verify management group scopes in attribute tables include 🗂️ icon.
+- **Expected:** `` `🗂️ Tenant Contoso Corp (mg-root) root (Management Group)` ``
+- **Actual:** Management group icons render correctly in attribute tables
+- **Result:** ✅ PASSED
+
+### 4. Icon Placement
+- **Description:** Verify icons are placed inside backticks per Azure display standards.
+- **Expected:** Icons inside backticks with non-breaking space
+- **Actual:** All icons correctly placed inside backticks
+- **Result:** ✅ PASSED
+
+### 5. Regression Testing
+- **Description:** Verify existing features still work correctly (comprehensive demo).
+- **Result:** ✅ PASSED (No regressions detected)
+
+## UAT PRs
+- **GitHub:** #64 (Closed after validation)
+- **Azure DevOps:** #69 (Abandoned after validation)
+
+## Notes
+- Initial UAT attempt used stale artifact (before commit 80f1320a)
+- Artifact was regenerated with latest code including management group scope formatting fix
+- Both platforms render the icons and formatting correctly
 
 ## Conclusion
-The implementation fails to provide the required icons and backtick formatting in resource summaries and attribute tables. The UAT Tester also misidentified the expected formatting policy in the previous report.
+All acceptance criteria met. Feature is ready for release.
 
 ## Next Steps
-- Hand off to Developer to fix the missing backticks and icons in the summary and attribute table outputs.
-- Ensure icons are correctly placed *inside* the backticks for all Azure-related formatters.
+- Hand off to Release Manager for version tagging and release preparation

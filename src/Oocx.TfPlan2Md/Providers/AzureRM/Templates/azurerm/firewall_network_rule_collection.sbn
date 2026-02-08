@@ -23,7 +23,7 @@
 
 
 {{~ else if change.action == "create" && change.firewall_network_rule_collection && change.firewall_network_rule_collection.after_rules.size > 0 ~}}
-#### Rules{{ "\n" }}
+#### Network Rules{{ "\n" }}
 
 | Rule Name | Protocols | Source Addresses | Destination Addresses | Destination Ports | Description |
 | ----------- | ----------- | ------------------ | ---------------------- | ------------------- | ------------- |

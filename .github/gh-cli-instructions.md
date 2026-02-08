@@ -151,11 +151,39 @@ scripts/check-workflow-status.sh watch <run-id>
 # View run details
 scripts/check-workflow-status.sh view <run-id>
 
+# View logs for a workflow run
+scripts/check-workflow-status.sh logs <run-id>
+
+# View logs for a specific step
+scripts/check-workflow-status.sh logs <run-id> --step "Build"
+
 # Trigger a workflow
 scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0
 ```
 
 **Why?** The wrapper script handles pager suppression and is designed for permanent approval in VS Code, reducing friction during long-running operations like CI polling.
+
+## Release Operations
+
+**Priority order:**
+1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-get_release_by_tag`, `github-mcp-server-get_latest_release`, `github-mcp-server-list_releases`)
+2. **SECOND**: Use `scripts/gh-release-view.sh` wrapper script
+3. **LAST**: Raw `gh release` commands (avoid)
+
+**Wrapper script usage:**
+
+```bash
+# View a specific release
+scripts/gh-release-view.sh v1.0.0
+
+# View latest release
+scripts/gh-release-view.sh --latest
+
+# View release in a specific repository
+scripts/gh-release-view.sh --repo oocx/tfplan2md v1.0.0
+```
+
+**Why?** The wrapper script handles pager suppression and is designed for permanent approval in VS Code, reducing friction.
 
 ## GitHub CLI Fallback Patterns (Last Resort)
 

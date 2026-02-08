@@ -117,11 +117,13 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 ## Tooling specific instructions
 - **GitHub Operations (CRITICAL - Follow Priority Order):**
   1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-*`) when available - these can be permanently allowed and avoid terminal approval friction
-  2. **SECOND**: Use repository wrapper scripts (`scripts/pr-github.sh`, `scripts/check-workflow-status.sh`, etc.)
+  2. **SECOND**: Use repository wrapper scripts (`scripts/pr-github.sh`, `scripts/check-workflow-status.sh`, `scripts/gh-release-view.sh`, etc.)
   3. **LAST**: Use `gh` CLI only as final fallback (see `.github/gh-cli-instructions.md`)
 - For detailed GitHub MCP tool reference and CLI fallback patterns, refer to the `.github/gh-cli-instructions.md` file
 - **Always use project scripts** instead of raw commands when available:
   - PR creation/merge: Use `scripts/pr-github.sh` instead of `gh pr create` or `gh pr merge`
+  - Workflow operations: Use `scripts/check-workflow-status.sh` instead of `gh run` or `gh workflow` commands
+  - Release viewing: Use `scripts/gh-release-view.sh` instead of `gh release view`
   - UAT execution: Use `scripts/uat-run.sh` instead of manual commands
   - The scripts handle repository-specific policies and conventions
 

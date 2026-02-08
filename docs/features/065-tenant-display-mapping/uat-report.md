@@ -1,24 +1,33 @@
 # UAT Report: Tenant Display Name Mapping
 
-**Status:** ⏳ Pending Review (Minimal Feature Plan)
-**Date:** 2026-02-08 21:29:05 UTC
+**Status:** ❌ FAILED
+**Date:** 2026-02-08
 
-## PRs
+## Test Environment
+- **Platform:** GitHub & Azure DevOps
+- **Artifacts:**
+  - `artifacts/tenant-mapping-uat.md` (Feature-specific)
+  - `artifacts/comprehensive-demo.md` (Regression)
 
-- **GitHub PR:** [#62](https://github.com/oocx/tfplan2md-uat/pull/62)
-- **Azure DevOps PR:** [#67](https://dev.azure.com/oocx/test/_git/test/pullrequest/67)
+## Test Results
 
-## Test Scenarios
+### 1. Tenant Mapping (Attribute Tables)
+- **Requirement:** `tenant_id` displayed as 🏢 `Name (GUID)`
+- **Result:** ❌ FAILED
+- **Issue:** Icon was wrapped inside the backticks (`🏢 Name (GUID)`).
 
-Verify tenant display name mapping and management group icons. This is a minimal plan focused on:
-- **Tenants**: `tenant_id` mapping for `azurerm_key_vault` and `azuread_user`. Should show 🏢 icon + mapped name + GUID.
-- **Management Groups**: `scope` mapping for `azurerm_role_assignment`. Should show 🗂️ icon + mapped name.
-- **Tenant Root**: `scope` of `/` for `azurerm_role_assignment`. Should show 🗂️ icon + 'Tenant <Name> root'.
+### 2. Management Group Icons
+- **Requirement:** 🗂️ icon outside backticks for MG IDs.
+- **Result:** ❌ FAILED
+- **Issue:** Icons were wrapped inside backticks or missing in summary context.
 
-## Results
+### 3. Registry Icons
+- **Requirement:** Icons resolved from the registry should follow the same "icon outside backticks" rule.
+- **Result:** ❌ FAILED
+- **Issue:** Registry-resolved icons were included in the code span.
 
-| Platform | Status | Notes |
-| -------- | ------ | ----- |
-| GitHub | ⏳ Pending | |
-| Azure DevOps | ⏳ Pending | |
+## Conclusion
+The mapping logic is working correctly (GUIDs are resolved to names), but the visual formatting violates the presentation specification.
 
+## Next Steps
+- Hand off to Developer to refactor `ScribanHelpers` and Azure-specific formatters to move icon concatenation outside of the `FormatCodeTable` and `FormatCodeSummary` calls.

@@ -1,13 +1,17 @@
 {
   "users": {
-    "00000000-0000-0000-0000-000000000001": "Jane Doe"
+    "00000000-0000-0000-0000-000000000001": "Jane Doe",
+    "user-100": "Platform Admin",
+    "user-101": "Alex Rivera"
   },
   "groups": {
-    "00000000-0000-0000-0000-000000000002": "DevOps Team"
+    "00000000-0000-0000-0000-000000000002": "DevOps Team",
+    "group-200": "Platform Engineers"
   },
   "servicePrincipals": {
     "00000000-0000-0000-0000-000000000003": "Deployment Pipeline",
-    "00000000-0000-0000-0000-000000000005": "Legacy App"
+    "00000000-0000-0000-0000-000000000005": "Legacy App",
+    "spn-300": "Terraform Automation"
   },
   "subscriptions": [
     { "id": "sub-123", "displayName": "Production" },

@@ -204,8 +204,10 @@ public class MarkdownValidationTests
         var tables = document.Descendants<Table>().ToList();
 
         // Expected: 1 summary table + 1 table for each resource change that has at least one small attribute
+        // + 1 refactoring summary table if there are import/moved operations
         var changesWithSmallAttributes = model.Changes.Count(change => change.AttributeChanges.Any(attr => !IsLargeValue(attr.Before) && !IsLargeValue(attr.After)));
-        var expectedTableCount = 1 + changesWithSmallAttributes;
+        var refactoringTableCount = model.RefactoringOperations.Count > 0 ? 1 : 0;
+        var expectedTableCount = 1 + changesWithSmallAttributes + refactoringTableCount;
 
         tables.Count.Should().Be(expectedTableCount, "because every resource change should render exactly one table, plus the summary table");
     }

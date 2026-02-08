@@ -665,7 +665,8 @@
         },
         "after_unknown": {},
         "before_sensitive": {},
-        "after_sensitive": {}
+        "after_sensitive": {},
+        "replace_paths": [["address_prefixes", 0]]
       }
     },
     {
@@ -739,7 +740,8 @@
         },
         "after_unknown": {},
         "before_sensitive": {},
-        "after_sensitive": {}
+        "after_sensitive": {},
+        "replace_paths": [["security_rule"]]
       }
     },
 
@@ -1313,6 +1315,414 @@
         "after_unknown": { "id": true },
         "before_sensitive": {},
         "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_resource_group.imported",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "imported",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "rg-imported-existing",
+          "location": "eastus",
+          "tags": {
+            "imported": "true"
+          }
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "importing": {
+          "id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-imported-existing"
+        }
+      }
+    },
+    {
+      "address": "azurerm_virtual_network.migrated",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "migrated",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "previous_address": "module.legacy.azurerm_virtual_network.main",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "name": "vnet-legacy",
+          "location": "eastus",
+          "address_space": ["10.50.0.0/16"],
+          "resource_group_name": "rg-tfplan2md-demo"
+        },
+        "after": {
+          "name": "vnet-legacy",
+          "location": "eastus",
+          "address_space": ["10.50.0.0/16"],
+          "resource_group_name": "rg-tfplan2md-demo"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azapi_resource.container_app",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "container_app",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.App/containerApps@2023-05-01",
+          "name": "ca-tfplan2md-demo",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo",
+          "location": "eastus",
+          "tags": {
+            "environment": "demo"
+          },
+          "body": {
+            "properties": {
+              "managedEnvironmentId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-tfplan2md-demo/providers/Microsoft.App/managedEnvironments/cae-demo",
+              "configuration": {
+                "ingress": {
+                  "external": true,
+                  "targetPort": 8080,
+                  "transport": "auto"
+                },
+                "secrets": [
+                  {
+                    "name": "registry-password",
+                    "value": "supersecret123"
+                  }
+                ]
+              },
+              "template": {
+                "containers": [
+                  {
+                    "name": "app",
+                    "image": "myregistry.azurecr.io/myapp:latest",
+                    "resources": {
+                      "cpu": 0.5,
+                      "memory": "1Gi"
+                    }
+                  }
+                ],
+                "scale": {
+                  "minReplicas": 1,
+                  "maxReplicas": 10
+                }
+              }
+            }
+          }
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "body": {
+            "properties": {
+              "configuration": {
+                "secrets": [
+                  {
+                    "value": true
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "address": "module.network.azurerm_firewall_application_rule_collection.web_access",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_firewall_application_rule_collection",
+      "name": "web_access",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "app-web-access",
+          "priority": 200,
+          "action": "Allow",
+          "resource_group_name": "rg-tfplan2md-demo",
+          "azure_firewall_name": "fw-hub",
+          "rule": [
+            {
+              "name": "allow-github",
+              "protocols": [{ "type": "Https", "port": 443 }],
+              "source_addresses": ["10.0.1.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["github.com", "*.github.io", "api.github.com"],
+              "fqdn_tags": [],
+              "description": "GitHub access for CI/CD"
+            },
+            {
+              "name": "allow-azure-services",
+              "protocols": [
+                { "type": "Https", "port": 443 },
+                { "type": "Http", "port": 80 }
+              ],
+              "source_addresses": ["10.0.0.0/16"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.azure.com", "*.azurewebsites.net", "*.windows.net", "*.microsoftonline.com", "*.azurecr.io", "*.blob.core.windows.net"],
+              "fqdn_tags": [],
+              "description": "Azure platform services"
+            },
+            {
+              "name": "allow-monitoring",
+              "protocols": [{ "type": "Https", "port": 443 }],
+              "source_addresses": ["10.0.2.0/24"],
+              "source_ip_groups": [],
+              "target_fqdns": ["*.applicationinsights.azure.com", "*.monitor.azure.com"],
+              "fqdn_tags": [],
+              "description": "Monitoring endpoints"
+            }
+          ]
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_user.platform_admin",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_user",
+      "name": "platform_admin",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Platform Admin",
+          "user_principal_name": "platform.admin@contoso.com",
+          "mail": "platform.admin@contoso.com"
+        },
+        "after_unknown": { "id": true, "object_id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.platform_engineers",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "platform_engineers",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Platform Engineers",
+          "mail_nickname": "platform-engineers",
+          "description": "Platform engineering team with infrastructure access",
+          "members": [
+            "user-100",
+            "user-101",
+            "group-200",
+            "spn-300"
+          ]
+        },
+        "after_unknown": { "id": true, "object_id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_admin_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_admin_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": "group-200",
+          "member_object_id": "user-100"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_service_principal.deployment_spn",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_service_principal",
+      "name": "deployment_spn",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "tfplan2md-deployment",
+          "application_id": "app-deploy-001",
+          "description": "Service principal for automated deployments"
+        },
+        "after_unknown": { "id": true, "object_id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_invitation.external_consultant",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_invitation",
+      "name": "external_consultant",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "user_email_address": "consultant@external-partner.com",
+          "user_type": "Guest"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_without_members.readonly_group",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_without_members",
+      "name": "readonly_group",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Read-Only Auditors",
+          "mail_nickname": "readonly-auditors",
+          "description": "Auditor group with read-only access"
+        },
+        "after_unknown": { "id": true, "object_id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.pipeline_vars",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "pipeline_vars",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "allow_access": true,
+          "description": "Pipeline variables for deployment",
+          "id": "42",
+          "key_vault": [],
+          "name": "deploy-pipeline-vars",
+          "project_id": "proj-tfplan2md-demo",
+          "secret_variable": [
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "DEPLOY_TOKEN",
+              "value": "old-secret-token"
+            }
+          ],
+          "timeouts": null,
+          "variable": [
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "ENVIRONMENT",
+              "value": "staging"
+            },
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "APP_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "DEPRECATED_VAR",
+              "value": "old-value"
+            }
+          ]
+        },
+        "after": {
+          "allow_access": true,
+          "description": "Pipeline variables for deployment",
+          "id": "42",
+          "key_vault": [],
+          "name": "deploy-pipeline-vars",
+          "project_id": "proj-tfplan2md-demo",
+          "secret_variable": [
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "DEPLOY_TOKEN",
+              "value": "new-secret-token"
+            }
+          ],
+          "timeouts": null,
+          "variable": [
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "ENVIRONMENT",
+              "value": "production"
+            },
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "APP_VERSION",
+              "value": "2.0.0"
+            },
+            {
+              "content_type": "",
+              "enabled": true,
+              "expires": "",
+              "name": "NEW_FEATURE_FLAG",
+              "value": "enabled"
+            }
+          ]
+        },
+        "after_unknown": {
+          "key_vault": [],
+          "secret_variable": [{}],
+          "variable": [{}, {}, {}]
+        },
+        "before_sensitive": {
+          "key_vault": [],
+          "secret_variable": [{ "value": true }],
+          "variable": [{}, {}, {}]
+        },
+        "after_sensitive": {
+          "key_vault": [],
+          "secret_variable": [{ "value": true }],
+          "variable": [{}, {}, {}]
+        }
       }
     }
   ]

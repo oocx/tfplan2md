@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using AwesomeAssertions;
 
@@ -26,6 +27,8 @@ public partial class TemplateArchitectureTests
     private const string TemplateResourcePrefix = "Oocx.TfPlan2Md.MarkdownGeneration.Templates.";
     private const string AzureRMTemplateResourcePrefix = "Oocx.TfPlan2Md.Providers.AzureRM.Templates.";
     private const string AzApiTemplateResourcePrefix = "Oocx.TfPlan2Md.Providers.AzApi.Templates.";
+    private const string AzureADTemplateResourcePrefix = "Oocx.TfPlan2Md.Providers.AzureAD.Templates.";
+    private const string AzureDevOpsTemplateResourcePrefix = "Oocx.TfPlan2Md.Providers.AzureDevOps.Templates.";
     private const int MaxTemplateLines = 100;
 
     private static readonly Assembly TemplateAssembly = typeof(Oocx.TfPlan2Md.MarkdownGeneration.MarkdownRenderer).Assembly;
@@ -38,7 +41,9 @@ public partial class TemplateArchitectureTests
         return TemplateAssembly.GetManifestResourceNames()
             .Where(name => (name.StartsWith(TemplateResourcePrefix, StringComparison.Ordinal) ||
                            name.StartsWith(AzureRMTemplateResourcePrefix, StringComparison.Ordinal) ||
-                           name.StartsWith(AzApiTemplateResourcePrefix, StringComparison.Ordinal))
+                           name.StartsWith(AzApiTemplateResourcePrefix, StringComparison.Ordinal) ||
+                           name.StartsWith(AzureADTemplateResourcePrefix, StringComparison.Ordinal) ||
+                           name.StartsWith(AzureDevOpsTemplateResourcePrefix, StringComparison.Ordinal))
                 && name.EndsWith(".sbn", StringComparison.Ordinal));
     }
 
@@ -71,6 +76,14 @@ public partial class TemplateArchitectureTests
         else if (name.StartsWith(AzApiTemplateResourcePrefix, StringComparison.Ordinal))
         {
             name = name[AzApiTemplateResourcePrefix.Length..];
+        }
+        else if (name.StartsWith(AzureADTemplateResourcePrefix, StringComparison.Ordinal))
+        {
+            name = name[AzureADTemplateResourcePrefix.Length..];
+        }
+        else if (name.StartsWith(AzureDevOpsTemplateResourcePrefix, StringComparison.Ordinal))
+        {
+            name = name[AzureDevOpsTemplateResourcePrefix.Length..];
         }
         else if (name.StartsWith(TemplateResourcePrefix, StringComparison.Ordinal))
         {
@@ -255,6 +268,111 @@ public partial class TemplateArchitectureTests
             actualTemplates.Should().Contain(expected,
                 $"core template '{expected}' should be embedded in the assembly");
         }
+    }
+
+    #endregion
+
+    #region Emoji Spacing Validation
+
+    /// <summary>
+    /// Verifies that no template contains emoji or icon characters followed by a regular space (U+0020).
+    /// Emojis must be followed by a non-breaking space (U+00A0) to prevent inconsistent rendering
+    /// across different markdown renderers and platforms.
+    /// </summary>
+    /// <remarks>
+    /// This test detects common emoji/icon Unicode ranges (OtherSymbol category with codepoint ≥ U+2600)
+    /// and ensures consistent spacing in all Scriban templates across all providers.
+    /// Presentation modifiers (variation selectors, joiners) are skipped when inspecting the character
+    /// following the emoji.
+    /// </remarks>
+    [Test]
+    public void Templates_ShouldNotContainEmojiFollowedByRegularSpace()
+    {
+        var violations = new List<(string Name, string Context)>();
+
+        foreach (var resourceName in GetAllTemplateResources())
+        {
+            var content = ReadTemplateContent(resourceName);
+            var templateName = GetTemplateName(resourceName);
+
+            FindEmojiSpacingViolations(content, templateName, violations);
+        }
+
+        violations.Should().BeEmpty(
+            "emojis in templates must be followed by a non-breaking space (U+00A0), not a regular space (U+0020). " +
+            "Violations found:\n  " + string.Join(
+                "\n  ",
+                violations.Select(v => $"{v.Name}: {v.Context}")));
+    }
+
+    /// <summary>
+    /// Scans template content for emoji characters followed by a regular space.
+    /// </summary>
+    /// <param name="content">The template content to scan.</param>
+    /// <param name="templateName">The template name for diagnostics.</param>
+    /// <param name="violations">The list to append violations to.</param>
+    private static void FindEmojiSpacingViolations(
+        string content,
+        string templateName,
+        List<(string Name, string Context)> violations)
+    {
+        var index = 0;
+        while (index < content.Length)
+        {
+            var rune = Rune.GetRuneAt(content, index);
+            var nextIndex = index + rune.Utf16SequenceLength;
+
+            if (SnapshotTestAssertions.IsEmojiLike(rune))
+            {
+                var lookahead = SkipPresentationModifiers(content, nextIndex);
+
+                if (lookahead < content.Length && content[lookahead] == ' ')
+                {
+                    var snippet = BuildContextSnippet(content, index);
+                    violations.Add((templateName, $"U+{rune.Value:X4} '{rune}' at position {index}: '{snippet}'"));
+                }
+            }
+
+            index = nextIndex;
+        }
+    }
+
+    /// <summary>
+    /// Advances past presentation modifiers (variation selectors, joiners) that are part of an emoji sequence.
+    /// </summary>
+    /// <param name="content">The content being scanned.</param>
+    /// <param name="startIndex">The index to start scanning from.</param>
+    /// <returns>The first index after any presentation modifiers.</returns>
+    private static int SkipPresentationModifiers(string content, int startIndex)
+    {
+        var lookahead = startIndex;
+        while (lookahead < content.Length)
+        {
+            var nextRune = Rune.GetRuneAt(content, lookahead);
+            if (!SnapshotTestAssertions.IsPresentationModifier(nextRune))
+            {
+                break;
+            }
+
+            lookahead += nextRune.Utf16SequenceLength;
+        }
+
+        return lookahead;
+    }
+
+    /// <summary>
+    /// Builds a small context snippet around the emoji for diagnostic output.
+    /// </summary>
+    /// <param name="content">The template content.</param>
+    /// <param name="index">The index of the emoji character.</param>
+    /// <returns>A short snippet with line breaks visualized.</returns>
+    private static string BuildContextSnippet(string content, int index)
+    {
+        var snippetStart = Math.Max(0, index - 5);
+        var snippetLength = Math.Min(30, content.Length - snippetStart);
+        return content.Substring(snippetStart, snippetLength)
+            .Replace("\n", "⏎")
+            .Replace("\r", "");
     }
 
     #endregion

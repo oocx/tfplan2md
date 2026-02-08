@@ -91,11 +91,11 @@ public class ComprehensiveDemoTests
         var summary = _renderer.Render(model, "summary");
 
         summary.Should().Contain("Terraform Plan Summary")
-            .And.Contain($"{ActionIcons.Add}\u00A0Add | 17")
-            .And.Contain($"{ActionIcons.Update}\u00A0Change | 7")
+            .And.Contain($"{ActionIcons.Add}\u00A0Add | 26")
+            .And.Contain($"{ActionIcons.Update}\u00A0Change | 8")
             .And.Contain($"{ActionIcons.Replace}\u00A0Replace | 2")
             .And.Contain($"{ActionIcons.Delete}\u00A0Destroy | 3")
-            .And.Contain("Total | 29");
+            .And.Contain("Total | 39");
     }
 
     [Test]

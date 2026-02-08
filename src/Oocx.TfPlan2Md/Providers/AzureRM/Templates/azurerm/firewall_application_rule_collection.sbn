@@ -23,7 +23,7 @@
 
 
 {{~ else if change.action == "create" && change.firewall_application_rule_collection && change.firewall_application_rule_collection.after_rules.size > 0 ~}}
-#### Rules{{ "\n" }}
+#### Application Rules{{ "\n" }}
 
 | Rule Name | Protocols | Source Addresses | Source IP Groups | Target FQDNs | FQDN Tags | Description |
 | ----------- | ----------- | ------------------ | ------------------ | ------------- | ----------- | ------------- |

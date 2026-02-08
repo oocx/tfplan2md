@@ -132,13 +132,13 @@ internal static class ResourceSummaryHtmlBuilder
 
         if (model.ImportId is not null)
         {
-            parts.Add($"📥{NonBreakingSpace}<i>Imported</i>{BuildAlreadyAppliedSuffix(model, "Import")}");
+            parts.Add($"📥{NonBreakingSpace}*Imported*{BuildAlreadyAppliedSuffix(model, "Import")}");
         }
 
         if (model.MovedFromAddress is not null)
         {
             var movedFrom = FormatCodeSummary(model.MovedFromAddress);
-            parts.Add($"🔀{NonBreakingSpace}<i>Moved from</i> {movedFrom}{BuildAlreadyAppliedSuffix(model, "Move")}");
+            parts.Add($"🔀{NonBreakingSpace}*Moved from* {movedFrom}{BuildAlreadyAppliedSuffix(model, "Move")}");
         }
 
         return string.Join(" | ", parts);
@@ -168,7 +168,7 @@ internal static class ResourceSummaryHtmlBuilder
             warning = "already moved";
         }
 
-        return $" (⚠️{NonBreakingSpace}<i>{warning}</i>)";
+        return $" (⚠️{NonBreakingSpace}*{warning}*)";
     }
 
     /// <summary>

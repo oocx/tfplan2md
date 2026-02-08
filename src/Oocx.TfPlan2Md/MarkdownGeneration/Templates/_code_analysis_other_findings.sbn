@@ -11,7 +11,7 @@
 {{~ if finding.rule_id ~}}
 {{~ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) ~}}
 {{~ end ~}}
-| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name && finding.tool_name != "" }}{{ finding.tool_name }}{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name && finding.tool_name != "" }}{{ finding.tool_name }}{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
 {{~ end ~}}
 {{ end }}
 
@@ -25,7 +25,7 @@
 {{~ if finding.rule_id ~}}
 {{~ message = message + "<br/>Rule: " + format_code_table(finding.rule_id) ~}}
 {{~ end ~}}
-| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name && finding.tool_name != "" }}{{ finding.tool_name }}{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
+| {{ finding.severity_icon }} {{ finding.severity }} | {{ if finding.tool_name && finding.tool_name != "" }}{{ finding.tool_name }}{{ else }}-{{ end }} | {{ message }} | {{ if finding.help_uri }}[Details]({{ finding.help_uri | escape_markdown }}){{ else }}-{{ end }} |
 {{~ end ~}}
 {{ end }}
 {{ end }}

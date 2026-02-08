@@ -104,8 +104,16 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
             return;
         }
 
-        model.Summary = $"Assign {FormatCodeTable(roleName)} to {FormatCodeTable(principalName)}";
-        model.SummaryHtml = BuildSummaryHtml(model, roleName, principalName);
+        var roleAttributeName = !string.IsNullOrWhiteSpace(roleInfo.Name)
+            ? RoleDefinitionNameAttribute
+            : RoleDefinitionIdAttribute;
+        var roleSummary = FormatAttributeValueTable(roleAttributeName, roleName, null);
+        var roleSummaryHtml = FormatAttributeValueSummary(roleAttributeName, roleName, null);
+        var principalSummary = FormatPrincipalSummary(principalType, principalName, isSummaryHtml: false);
+        var principalSummaryHtml = FormatPrincipalSummary(principalType, principalName, isSummaryHtml: true);
+
+        model.Summary = $"Assign {roleSummary} to {principalSummary}";
+        model.SummaryHtml = BuildSummaryHtml(model, roleSummaryHtml, principalSummaryHtml);
     }
 
     /// <summary>
@@ -121,16 +129,42 @@ internal sealed class PimEligibleRoleAssignmentFactory : IResourceViewModelFacto
     }
 
     /// <summary>
-    /// Builds the summary HTML string using the role and principal names.
+    /// Builds the summary HTML string using the role and principal summaries.
     /// </summary>
     /// <param name="model">The resource change model.</param>
-    /// <param name="roleName">The resolved role name.</param>
-    /// <param name="principalName">The resolved principal name.</param>
+    /// <param name="roleSummaryHtml">The formatted role summary HTML.</param>
+    /// <param name="principalSummaryHtml">The formatted principal summary HTML.</param>
     /// <returns>Summary HTML string for the resource.</returns>
-    private static string BuildSummaryHtml(ResourceChangeModel model, string roleName, string principalName)
+    private static string BuildSummaryHtml(ResourceChangeModel model, string roleSummaryHtml, string principalSummaryHtml)
     {
         var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
-        return $"{prefix} — Assign {FormatCodeSummary(roleName)} to {FormatCodeSummary(principalName)}";
+        return $"{prefix} — Assign {roleSummaryHtml} to {principalSummaryHtml}";
+    }
+
+    /// <summary>
+    /// Formats the principal summary with a type-aware icon when available.
+    /// </summary>
+    /// <param name="principalType">The resolved principal type.</param>
+    /// <param name="principalName">The resolved principal name.</param>
+    /// <param name="isSummaryHtml">Whether to format for summary HTML output.</param>
+    /// <returns>Formatted principal summary value.</returns>
+    private static string FormatPrincipalSummary(string? principalType, string principalName, bool isSummaryHtml)
+    {
+        var icon = principalType switch
+        {
+            "User" => "👤",
+            "Group" => "👥",
+            "ServicePrincipal" => "💻",
+            _ => string.Empty
+        };
+
+        if (string.IsNullOrWhiteSpace(icon))
+        {
+            return isSummaryHtml ? FormatCodeSummary(principalName) : FormatCodeTable(principalName);
+        }
+
+        var iconValue = $"{icon} {principalName}";
+        return isSummaryHtml ? FormatIconValueSummary(iconValue) : FormatIconValueTable(iconValue);
     }
 
     /// <summary>

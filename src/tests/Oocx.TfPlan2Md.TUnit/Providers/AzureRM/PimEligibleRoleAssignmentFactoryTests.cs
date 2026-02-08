@@ -24,7 +24,7 @@ public class PimEligibleRoleAssignmentFactoryTests
     [Test]
     public void ApplyViewModel_SetsSummaryAndSummaryHtml()
     {
-        var afterDocument = JsonDocument.Parse($"{{\"principal_id\":\"user-123\",\"role_definition_id\":\"{OwnerRoleId}\"}}");
+        var afterDocument = JsonDocument.Parse($"{{\"principal_id\":\"user-123\",\"principal_type\":\"User\",\"role_definition_id\":\"{OwnerRoleId}\"}}");
         var change = new Change(
             [CreateAction],
             null,
@@ -58,8 +58,8 @@ public class PimEligibleRoleAssignmentFactoryTests
 
         factory.ApplyViewModel(model, resourceChange, CreateAction, model.AttributeChanges, principalMapper, null);
 
-        model.Summary.Should().Be("Assign `Owner` to `Jane Doe`");
+        model.Summary.Should().Be($"Assign `🛡️{Nbsp}Owner` to `👤{Nbsp}Jane Doe`");
         model.SummaryHtml.Should().Be(
-            $"{ActionIcons.Add}{Nbsp}azurerm_pim_eligible_role_assignment <b><code>example</code></b> — Assign <code>Owner</code> to <code>Jane Doe</code>");
+            $"{ActionIcons.Add}{Nbsp}azurerm_pim_eligible_role_assignment <b><code>example</code></b> — Assign <code>🛡️{Nbsp}Owner</code> to <code>👤{Nbsp}Jane Doe</code>");
     }
 }

@@ -66,14 +66,33 @@ internal static class ResourceSummaryHtmlBuilder
             detailParts.Add(FormatAttributeValueSummary("address_space[0]", addressSpace!, null));
         }
 
-        if (!string.IsNullOrWhiteSpace(subscriptionName))
+        var isSubscriptionResource = model.Type.Equals("azurerm_subscription", StringComparison.OrdinalIgnoreCase);
+        if (isSubscriptionResource)
         {
-            detailParts.Add(FormatAttributeValueSummary("subscription", subscriptionName!, null));
+            if (!string.IsNullOrWhiteSpace(subscriptionName) && !string.IsNullOrWhiteSpace(subscriptionId))
+            {
+                detailParts.Add(FormatAttributeValueSummary("subscription", $"{subscriptionName} ({subscriptionId})", null));
+            }
+            else if (!string.IsNullOrWhiteSpace(subscriptionName))
+            {
+                detailParts.Add(FormatAttributeValueSummary("subscription", subscriptionName!, null));
+            }
+            else if (!string.IsNullOrWhiteSpace(subscriptionId))
+            {
+                detailParts.Add(FormatAttributeValueSummary("subscription_id", subscriptionId!, null));
+            }
         }
-
-        if (!string.IsNullOrWhiteSpace(subscriptionId))
+        else
         {
-            detailParts.Add(FormatAttributeValueSummary("subscription_id", subscriptionId!, null));
+            if (!string.IsNullOrWhiteSpace(subscriptionName))
+            {
+                detailParts.Add(FormatAttributeValueSummary("subscription", subscriptionName!, null));
+            }
+
+            if (!string.IsNullOrWhiteSpace(subscriptionId))
+            {
+                detailParts.Add(FormatAttributeValueSummary("subscription_id", subscriptionId!, null));
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(model.ChangedAttributesSummary))

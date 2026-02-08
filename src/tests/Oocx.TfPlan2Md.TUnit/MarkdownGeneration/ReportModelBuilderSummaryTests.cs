@@ -166,8 +166,7 @@ public class ReportModelBuilderSummaryTests
         var model = builder.Build(plan);
 
         var summary = model.Changes.Single().SummaryHtml;
-        summary.Should().Contain($"<code>🔑{Nbsp}sub-123</code>");
-        summary.Should().Contain($"<code>🔑{Nbsp}Production</code>");
+        summary.Should().Contain($"<code>🔑{Nbsp}Production (sub-123)</code>");
     }
 
     [Test]

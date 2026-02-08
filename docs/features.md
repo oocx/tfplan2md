@@ -967,6 +967,35 @@ az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o jso
 az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
 ```
 
+**Multi-tenant mapping (specific tenants only):**
+
+Use per-tenant queries when you're signed into multiple tenants but only want a subset. The simplest approach is to switch the active tenant and run the queries for each one.
+
+```bash
+# Pick a tenant ID from your allowed tenants
+az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o json
+
+# Repeat these commands per tenant
+TENANT_ID="12345678-1234-1234-1234-123456789012"
+az account set --tenant "$TENANT_ID"
+
+# Principals (Azure AD) for this tenant
+az ad user list --all --query "[].{id:id,displayName:displayName}" -o json
+az ad group list --query "[].{id:id,displayName:displayName}" -o json
+az ad sp list --all --query "[].{id:id,displayName:displayName}" -o json
+
+# Subscriptions for this tenant
+az account list --query "[?tenantId=='$TENANT_ID'].{id:id,displayName:name}" -o json
+
+# Management groups for this tenant
+az account management-group list --query "[].{id:name,displayName:displayName}" -o json
+
+# Custom roles for this tenant
+az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
+```
+
+If you're collecting data from multiple tenants, repeat the block for each tenant and merge the resulting JSON arrays (for example, using `jq -s 'add'`) before assembling the final mapping file.
+
 The extended mapping JSON format:
 ```json
 {

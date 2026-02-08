@@ -38,3 +38,33 @@
 - **Artifacts Produced:**
   - `docs/features/065-tenant-display-mapping/tasks.md`
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2026-02-08
+- **Summary:** Implemented tenant display formatting with 🏢 and management group icon formatting with 🗂️ across Azure providers. Added shared Azure label/formatter registration helpers, value formatters, scope formatting updates, and provider wiring. Updated unit tests, provider registration tests, snapshots, example outputs, and documentation for multi-tenant mapping. Regenerated demo artifacts and snapshots, fixed markdownlint by making findings headings unique per resource, and verified Docker build/run.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/AzureLabelFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/TenantIdFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/ManagementGroupIdFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/AzureValueFormatterRegistration.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRMModule.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRmValueFormatterRegistration.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/AzApiModule.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureAD/AzureADModule.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureDevOps/AzureDevOpsModule.cs`
+  - `src/Oocx.TfPlan2Md/CompositionRoot.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_code_analysis_findings.sbn`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureEntityMapperTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureValueFormatterTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/ResolutionDiagnosticsTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/ProviderValueFormatterRegistryTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererCodeAnalysisTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Workflows/CompositionRootTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/`
+  - `examples/comprehensive-demo/report.md`
+  - `examples/comprehensive-demo/report-with-sensitive.md`
+  - `examples/comprehensive-demo/report-summary.md`
+  - `examples/firewall-rules-demo/principals.json`
+  - `docs/features.md`
+- **Problems Encountered:** Markdownlint reported duplicate headings in generated artifacts; resolved by making code analysis findings headings resource-specific and regenerating snapshots.

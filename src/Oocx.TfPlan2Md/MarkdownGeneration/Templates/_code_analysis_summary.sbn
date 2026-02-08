@@ -1,3 +1,8 @@
+{{~## Code analysis summary section.
+     Renders the overall status, severity breakdown table, and tool list.
+     Emoji icons must use non-breaking space (U+00A0) to prevent wrapping.
+     Related feature: docs/features/056-static-analysis-integration/specification.md
+~}}
 {{ if code_analysis }}
 ## Code Analysis Summary
 

@@ -155,7 +155,7 @@ jobs:
           # Detect the tag created by Versionize
           TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
 
-          # Push the commit first (with [skip ci] in message to prevent CI re-trigger)
+          # Push the commit first (amended with [skip ci] by the previous step to prevent CI re-trigger)
           git push origin HEAD
 
           # Push the tag separately so the Release workflow is triggered.

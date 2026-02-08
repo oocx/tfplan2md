@@ -7,7 +7,7 @@
 
 ## Agent Work Log
 
-<!-- Each agent appends their entry below when they complete their work. -->
+<- Please provide feedback on rendering or formatting Each agent appends their entry below when they complete their work. -->
 
 ### Requirements Engineer
 - **Date:** 2026-02-08
@@ -51,21 +51,13 @@
   - Updated provider registration, unit tests, snapshots, examples
   - `README.md` and Azure CLI documentation updates
   - All demo artifacts regenerated
-- **Problems Encountered:** Markdownlint failures from duplicate findings section headings; resolved by making headings unique per resource.
+- **Problems Encountered:** Markdownlint reported duplicate headings in generated artifacts; resolved by making code analysis findings headings resource-specific and regenerating snapshots.
 
 ### Technical Writer
 - **Date:** 2026-02-08
 - **Summary:** Updated project documentation to reflect the Tenant Display Name Mapping feature implementation (Feature 065), which adds visual icons (🏢 for tenants, 🗂️ for management groups) and enhances multi-tenant documentation. Also completed bonus documentation for Feature 063 (Azure Display Enhancements) which was missing from prior sessions.
 - **Artifacts Produced:**
-  - Updated [docs/features.md](../../features.md):
-    - Added "Azure Display Enhancements" section (~200 lines) documenting Feature 063
-    - Enhanced existing Azure Display Enhancements section with Feature 065 additions:
-      - Added "Tenant Display Names" subsection with 🏢 icon examples
-      - Updated "Management Group Display Names" with 🗂️ icon examples
-      - Added "Visual Icons" reference table showing all Azure entity icons
-      - Enhanced "Azure CLI Export Commands" with multi-tenant filtering examples
-      - Updated "Debug Output" to show tenant mapping failures
-      - Updated "Fallback Behavior" to reference icons
+  - Updated [docs/features.md](../../features.md)
   - Updated [docs/features/063-azure-display-enhancements/work-protocol.md](../063-azure-display-enhancements/work-protocol.md) (created)
   - Updated this file (work-protocol.md)
 - **Problems Encountered:** Initially worked on feature 063 instead of 065 (user corrected), but documentation for both features was needed
@@ -79,28 +71,6 @@
   - Docker build failed with pre-existing issue (incorrect Dockerfile path), verified unrelated to Feature 065
   - Icon placement inconsistency discovered: icons prepended after backticks added (should be before)
 
----
-  - `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRMModule.cs`
-  - `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRmValueFormatterRegistration.cs`
-  - `src/Oocx.TfPlan2Md/Providers/AzApi/AzApiModule.cs`
-  - `src/Oocx.TfPlan2Md/Providers/AzureAD/AzureADModule.cs`
-  - `src/Oocx.TfPlan2Md/Providers/AzureDevOps/AzureDevOpsModule.cs`
-  - `src/Oocx.TfPlan2Md/CompositionRoot.cs`
-  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_code_analysis_findings.sbn`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureEntityMapperTests.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureValueFormatterTests.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/ResolutionDiagnosticsTests.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/ProviderValueFormatterRegistryTests.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererCodeAnalysisTests.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/Workflows/CompositionRootTests.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/`
-  - `examples/comprehensive-demo/report.md`
-  - `examples/comprehensive-demo/report-with-sensitive.md`
-  - `examples/comprehensive-demo/report-summary.md`
-  - `examples/firewall-rules-demo/principals.json`
-  - `docs/features.md`
-- **Problems Encountered:** Markdownlint reported duplicate headings in generated artifacts; resolved by making code analysis findings headings resource-specific and regenerating snapshots.
-
 ### Developer (Rework)
 - **Date:** 2026-02-08
 - **Summary:** Moved tenant and management group icons inside code spans by reordering icon + backtick formatting. Regenerated snapshot baselines and aligned the comprehensive demo artifact with the corrected icon placement.
@@ -108,15 +78,29 @@
   - `src/Oocx.TfPlan2Md/Platforms/Azure/TenantIdFormatter.cs`
   - `src/Oocx.TfPlan2Md/Platforms/Azure/ManagementGroupIdFormatter.cs`
   - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azure-display-enhancements.md`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo.md`
-  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo-full.md`
-  - `artifacts/comprehensive-demo.md`
+  - Updated snapshots and demo artifacts
 - **Problems Encountered:** None
 
-## 2026-02-08 - UAT Testing
+### UAT Tester
+- **Date:** 2026-02-08
+- **Summary:** Conducted User Acceptance Testing for Feature 065. Generated feature-specific UAT artifact and created PRs on GitHub and Azure DevOps. Verified that tenant and management group IDs are correctly mapped to display names. However, identified that icons were still positioned outside of backticks in the rendered output, which violates the presentation specification.
+- **Artifacts Produced:**
+  - `artifacts/tenant-mapping-uat.md`
+  - `docs/features/065-tenant-display-mapping/uat-report.md` (FAILED)
+- **Problems Encountered:** 
+  - UAT tester needed multiple attempts to generate PRs with the expected specific test cases
+  - UAT tester recorded incorrect test results. Instead of recording what the user reported, it reported something different
+  - UAT tester failed to update the work-protocol
+  - Recommendation: replace with different model
 
-- Generated UAT artifact `artifacts/tenant-mapping-uat.md` using `azure-display-enhancements.json` and `azure-mappings-extended.json`.
-- Created UAT PRs on GitHub (#60) and Azure DevOps (#65).
-- Shared PR links with the Maintainer for review.
-- Initialized UAT report at `docs/features/065-tenant-display-mapping/uat-report.md`.
+### UAT Tester
+- **Date:** 2026-02-08
+- **Summary:** Conducted User Acceptance Testing for Feature 065. Generated feature-specific UAT artifact and created PRs on GitHub and Azure DevOps. Verified that tenant and management group IDs are correctly mapped to display names. However, identified that icons were still positioned outside of backticks in the rendered output, which violates the presentation specification.
+- **Artifacts Produced:**
+  - `artifacts/tenant-mapping-uat.md`
+  - `docs/features/065-tenant-display-mapping/uat-report.md` (FAILED)
+- **Problems Encountered:** 
+  - UAT tester needed multiple attempts to generate PRs with the expected specific test cases
+  - UAT tester recorded incorrect test results. Instead of recording what the user reported, it reported something different
+  - UAT tester failed to update the work-protocol
+  - Recommendation: replace with different model

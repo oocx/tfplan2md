@@ -1,0 +1,61 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_key_vault.demo",
+      "type": "azurerm_key_vault",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "name": "kv-demo",
+          "tenant_id": "11111111-2222-3333-4444-555555555555",
+          "sku_name": "standard"
+        }
+      }
+    },
+    {
+      "address": "azuread_user.demo",
+      "type": "azuread_user",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "user_principal_name": "user@contoso.com",
+          "tenant_id": "11111111-2222-3333-4444-555555555555"
+        }
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.mg_scope",
+      "type": "azurerm_role_assignment",
+      "name": "mg_scope",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "scope": "/providers/Microsoft.Management/managementGroups/mg-root",
+          "role_definition_name": "Reader",
+          "principal_id": "00000000-0000-0000-0000-000000000001"
+        }
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.tenant_root",
+      "type": "azurerm_role_assignment",
+      "name": "tenant_root",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "scope": "/",
+          "role_definition_name": "Owner",
+          "principal_id": "00000000-0000-0000-0000-000000000001"
+        }
+      }
+    }
+  ]
+}

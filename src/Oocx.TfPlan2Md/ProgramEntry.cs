@@ -6,17 +6,8 @@
 using System.Reflection;
 using Oocx.TfPlan2Md.CLI;
 using Oocx.TfPlan2Md.CodeAnalysis;
-using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
-using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Parsing;
-using Oocx.TfPlan2Md.Platforms.Azure;
-using Oocx.TfPlan2Md.Providers;
-using Oocx.TfPlan2Md.Providers.AzApi;
-using Oocx.TfPlan2Md.Providers.AzureAD;
-using Oocx.TfPlan2Md.Providers.AzureDevOps;
-using Oocx.TfPlan2Md.Providers.AzureRM;
 
 namespace Oocx.TfPlan2Md;
 
@@ -107,8 +98,9 @@ internal static class ProgramEntry
             return 0;
         }
 
-        // Create diagnostic context if debug mode is enabled
-        var diagnosticContext = options.Debug ? new DiagnosticContext() : null;
+        // Compose application services using Pure DI
+        var compositionRoot = new CompositionRoot(options);
+        var services = compositionRoot.ComposeServices();
 
         // Read input
         var json = await ReadInputAsync(options);
@@ -118,69 +110,26 @@ internal static class ProgramEntry
         }
 
         // Parse the Terraform plan
-        var parser = new TerraformPlanParser();
-        var plan = parser.Parse(json);
-
-        var codeAnalysisInput = CreateCodeAnalysisInput(options);
-
-        // Load Azure mapping file once and create principal mapper for role assignment resolution
-        var mappingResult = AzureMappingFileLoader.Load(options.PrincipalMappingFile, diagnosticContext);
-        AzureRoleDefinitionMapper.MergeCustomRoles(mappingResult.Roles, diagnosticContext);
-        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes, diagnosticContext);
-        var entityMapper = new AzureEntityMapper(
-            mappingResult.Subscriptions,
-            mappingResult.ManagementGroups,
-            mappingResult.Tenants,
-            diagnosticContext);
-        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
-
-        // Create and configure provider registry
-        var providerRegistry = new ProviderRegistry();
-        providerRegistry.RegisterProvider(new AzApiModule(scopeFormatter));
-        providerRegistry.RegisterProvider(new AzureADModule());
-        providerRegistry.RegisterProvider(new AzureRMModule(
-            largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget),
-            principalMapper: principalMapper,
-            scopeFormatter: scopeFormatter));
-        providerRegistry.RegisterProvider(new AzureDevOpsModule(
-            largeValueFormat: ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget)));
-
-        var valueFormatterRegistry = new ValueFormatterRegistry();
-        providerRegistry.RegisterAllValueFormatters(valueFormatterRegistry);
-
-        var iconProviderRegistry = new IconProviderRegistry();
-        providerRegistry.RegisterAllIconProviders(iconProviderRegistry);
+        var plan = services.Parser.Parse(json);
 
         // Build the report model
-        var modelBuilder = new ReportModelBuilder(
-            summaryBuilder: new ResourceSummaryBuilder(valueFormatterRegistry),
-            showSensitive: options.ShowSensitive,
-            showUnchangedValues: options.ShowUnchangedValues,
-            renderTarget: options.RenderTarget,
-            reportTitle: options.ReportTitle,
-            principalMapper: principalMapper,
-            hideMetadata: options.HideMetadata,
-            providerRegistry: providerRegistry,
-            codeAnalysisInput: codeAnalysisInput,
-            iconProviderRegistry: iconProviderRegistry);
-        var model = modelBuilder.Build(plan);
+        var model = services.ModelBuilder.Build(plan);
 
         // Render to Markdown
-        var renderer = new MarkdownRenderer(principalMapper, diagnosticContext, providerRegistry, valueFormatterRegistry, iconProviderRegistry);
         string markdown;
         if (options.TemplatePath is not null)
         {
-            markdown = await renderer.RenderAsync(model, options.TemplatePath);
+            markdown = await services.Renderer.RenderAsync(model, options.TemplatePath);
         }
         else
         {
-            markdown = renderer.Render(model);
+            markdown = services.Renderer.Render(model);
         }
 
         // Append debug section if diagnostic context exists
-        if (diagnosticContext is not null)
+        if (services.DiagnosticContext is not null)
         {
-            markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
+            markdown += "\n\n" + services.DiagnosticContext.GenerateMarkdownSection();
         }
 
         // Write output
@@ -193,8 +142,9 @@ internal static class ProgramEntry
             Console.WriteLine(markdown);
         }
 
-        if (codeAnalysisInput?.FailOnLevel is not null
-            && await HandleCodeAnalysisFailureAsync(codeAnalysisInput))
+        // Handle code analysis failure threshold
+        if (services.CodeAnalysisInput?.FailOnLevel is not null
+            && await HandleCodeAnalysisFailureAsync(services.CodeAnalysisInput))
         {
             return 10;
         }
@@ -222,32 +172,6 @@ internal static class ProgramEntry
         }
 
         return await File.ReadAllTextAsync(options.InputFile);
-    }
-
-    /// <summary>
-    /// Loads optional code analysis results based on CLI options.
-    /// </summary>
-    /// <param name="options">The parsed CLI options.</param>
-    /// <returns>The code analysis input model when provided; otherwise <c>null</c>.</returns>
-    private static CodeAnalysisInput? CreateCodeAnalysisInput(CliOptions options)
-    {
-        if (options.CodeAnalysisResultsPatterns.Count == 0)
-        {
-            return null;
-        }
-
-        var loader = new CodeAnalysisLoader(new SarifParser());
-        var loadResult = loader.Load(options.CodeAnalysisResultsPatterns);
-        var minimumLevel = CodeAnalysisSeverityParser.ParseOptional(options.CodeAnalysisMinimumLevel);
-        var failOnLevel = CodeAnalysisSeverityParser.ParseOptional(options.FailOnStaticCodeAnalysisErrorsLevel);
-
-        return new CodeAnalysisInput
-        {
-            Model = loadResult.Model,
-            Warnings = loadResult.Warnings,
-            MinimumLevel = minimumLevel,
-            FailOnLevel = failOnLevel
-        };
     }
 
     /// <summary>

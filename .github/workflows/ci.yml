@@ -110,7 +110,12 @@ jobs:
           # (e.g., fixing an incorrect Versionize bump). In this case, skip
           # Versionize and create the tag directly from the pre-set version.
           if [ "$CSPROJ_VERSION" != "$LAST_TAG_VERSION" ]; then
-            if ! git rev-parse "v$CSPROJ_VERSION" >/dev/null 2>&1; then
+            # Verify the csproj version is HIGHER than the last tag (not a downgrade)
+            HIGHER=$(printf '%s\n%s' "$LAST_TAG_VERSION" "$CSPROJ_VERSION" | sort -V | tail -n1)
+            if [ "$HIGHER" != "$CSPROJ_VERSION" ]; then
+              echo "Warning: csproj version $CSPROJ_VERSION is not higher than tag $LAST_TAG; ignoring"
+              echo "pre_set=false" >> "$GITHUB_OUTPUT"
+            elif ! git rev-parse "v$CSPROJ_VERSION" >/dev/null 2>&1; then
               echo "Pre-set version detected: csproj=$CSPROJ_VERSION vs tag=$LAST_TAG"
               echo "pre_set=true" >> "$GITHUB_OUTPUT"
               echo "version=$CSPROJ_VERSION" >> "$GITHUB_OUTPUT"

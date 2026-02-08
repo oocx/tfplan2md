@@ -21,7 +21,7 @@ namespace Oocx.TfPlan2Md;
 /// <summary>
 /// Composes application services using Pure Dependency Injection.
 /// Centralizes object graph construction and eliminates constructor-based DI container coupling.
-/// Related ADR: docs/features/048-formalized-di-approach/adr-006-formalized-pure-di.md.
+/// Related ADR: docs/adr-006-dependency-injection.md.
 /// </summary>
 internal sealed class CompositionRoot(CliOptions options)
 {

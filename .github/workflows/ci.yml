@@ -92,9 +92,48 @@ jobs:
           echo "$releasable"
           echo "release_needed=true" >> "$GITHUB_OUTPUT"
 
+      - name: Check for pre-set version
+        id: version_check
+        if: steps.release_needed.outputs.release_needed == 'true'
+        run: |
+          set -euo pipefail
+
+          CSPROJ_VERSION=$(grep -oP '(?<=<Version>)[^<]+' src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj)
+          LAST_TAG=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || echo "v0.0.0")
+          LAST_TAG_VERSION=${LAST_TAG#v}
+
+          echo "csproj_version=$CSPROJ_VERSION"
+          echo "last_tag_version=$LAST_TAG_VERSION"
+
+          # If the csproj version is already ahead of the latest tag AND
+          # no tag exists for that version, the version was corrected manually
+          # (e.g., fixing an incorrect Versionize bump). In this case, skip
+          # Versionize and create the tag directly from the pre-set version.
+          if [ "$CSPROJ_VERSION" != "$LAST_TAG_VERSION" ]; then
+            if ! git rev-parse "v$CSPROJ_VERSION" >/dev/null 2>&1; then
+              echo "Pre-set version detected: csproj=$CSPROJ_VERSION vs tag=$LAST_TAG"
+              echo "pre_set=true" >> "$GITHUB_OUTPUT"
+              echo "version=$CSPROJ_VERSION" >> "$GITHUB_OUTPUT"
+            else
+              echo "Tag v$CSPROJ_VERSION already exists, skipping"
+              echo "pre_set=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Version matches latest tag, Versionize will determine next version"
+            echo "pre_set=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tag pre-set version
+        id: pre_set_tag
+        if: steps.version_check.outputs.pre_set == 'true'
+        run: |
+          VERSION="${{ steps.version_check.outputs.version }}"
+          git tag "v$VERSION"
+          echo "Created tag v$VERSION for pre-set version (manual version correction)"
+
       - name: Versionize
         id: versionize
-        if: steps.release_needed.outputs.release_needed == 'true'
+        if: steps.release_needed.outputs.release_needed == 'true' && steps.version_check.outputs.pre_set != 'true'
         run: |
           versionize --exit-insignificant-commits --skip-dirty
           echo "version_bumped=true" >> $GITHUB_OUTPUT
@@ -145,25 +184,25 @@ jobs:
           fi
 
       - name: Push changes
-        if: steps.versionize.outcome == 'success'
+        if: steps.versionize.outcome == 'success' || steps.pre_set_tag.outcome == 'success'
         env:
           GIT_TERMINAL_PROMPT: '0'
         run: |
           # Use RELEASE_TOKEN to bypass branch protection
           git remote set-url origin "https://x-access-token:${{ secrets.RELEASE_TOKEN }}@github.com/${{ github.repository }}.git"
 
-          # Detect the tag created by Versionize
-          TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
+          if [ "${{ steps.versionize.outcome }}" = "success" ]; then
+            # Versionize created a new commit + tag: push both (separately)
+            git push origin HEAD
 
-          # Push the commit first (amended with [skip ci] by the previous step to prevent CI re-trigger)
-          git push origin HEAD
-
-          # Push the tag separately so the Release workflow is triggered.
-          # The previous single `git push --follow-tags` caused both the commit
-          # and tag to be pushed in one operation. GitHub Actions applies the
-          # [skip ci] marker from the commit message to ALL refs in that push,
-          # which silently prevented the Release workflow from running on tag push.
-          if [ -n "$TAG_NAME" ]; then
-            echo "Pushing tag $TAG_NAME separately to trigger Release workflow"
+            TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
+            if [ -n "$TAG_NAME" ]; then
+              echo "Pushing tag $TAG_NAME separately to trigger Release workflow"
+              git push origin "$TAG_NAME"
+            fi
+          elif [ "${{ steps.pre_set_tag.outcome }}" = "success" ]; then
+            # Pre-set version: only push the tag (no new commit was created)
+            TAG_NAME="v${{ steps.version_check.outputs.version }}"
+            echo "Pushing pre-set tag $TAG_NAME to trigger Release workflow"
             git push origin "$TAG_NAME"
           fi

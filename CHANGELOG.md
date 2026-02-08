@@ -5,27 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<a name="1.14.0"></a>
-## [1.14.0](https://github.com/oocx/tfplan2md/compare/v1.13.0...v1.14.0) (2026-02-08)
-
-### ✨ Features
-
-* add askQuestions tool to all agents and update markdownlint usage ([84c2d5a](https://github.com/oocx/tfplan2md/commit/84c2d5aa308aef73fe82bc397b642218611e9905))
-* add gh CLI wrapper scripts and eliminate direct gh usage ([b2151b8](https://github.com/oocx/tfplan2md/commit/b2151b8913b3ddca968434c738d285b18c19280a))
-* add markdownlint wrapper script ([3815e37](https://github.com/oocx/tfplan2md/commit/3815e373edf4a34e3c909eb34ab8ce5c4951d240))
-* add Work Protocol artifact and update all agents with protocol logging ([8ffece2](https://github.com/oocx/tfplan2md/commit/8ffece21365cf40e9e8d4365cfcd2625f4e8513c))
-* always include regression artifact in UAT PRs ([6af479e](https://github.com/oocx/tfplan2md/commit/6af479e06840095c0b5ee86ceada19ccf7402ba7))
-* clarify that UAT is exclusively handled by UAT Tester agent ([68dbfd3](https://github.com/oocx/tfplan2md/commit/68dbfd3b9373249c0993475c13ad4fdbcde97821))
-* improve developer and code reviewer agent instructions ([adad4d1](https://github.com/oocx/tfplan2md/commit/adad4d1856a68da1ae92f81ccf818f6d68fcdcef))
+<a name="1.13.1"></a>
+## [1.13.1](https://github.com/oocx/tfplan2md/compare/v1.13.0...v1.13.1) (2026-02-08)
 
 ### 🐛 Bug Fixes
 
 * use non-breaking space after emoji icons in Scriban templates ([37e7ca7](https://github.com/oocx/tfplan2md/commit/37e7ca7bb0745541231d581b6a32b51ec4f62d2f))
-
-### 📚 Documentation
-
-* add release notes for emoji spacing bug fixes ([bb7d342](https://github.com/oocx/tfplan2md/commit/bb7d3429421a22c419b05d6978b8d70b988a27b2))
-* add retrospective for azure display enhancements ([5b77db9](https://github.com/oocx/tfplan2md/commit/5b77db9dab6e8bb7b967eb6acdba44240ded42cb))
 
 <a name="1.13.0"></a>
 ## [1.13.0](https://github.com/oocx/tfplan2md/compare/v1.12.0...v1.13.0) (2026-02-08)

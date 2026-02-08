@@ -885,6 +885,260 @@ Simple single-command interface with flags:
 - Supports Terraform **1.14 and later**
 - Lenient parsing approach—does not validate the full plan format, only the fields needed for report generation
 
+## Azure Display Enhancements
+
+**Status:** ✅ Implemented  
+**Related specification:** [docs/features/063-azure-display-enhancements/specification.md](features/063-azure-display-enhancements/specification.md)
+
+tfplan2md automatically enhances the display of Azure resources and identities across all Azure providers (azurerm, azapi, azuread, azdevops) by formatting Azure resource IDs, resolving human-readable names for subscriptions, management groups, tenants, and role definitions, and providing descriptive summaries for specific Azure resource types.
+
+### Universal Azure Resource ID Detection
+
+Any attribute value matching the Azure resource ID pattern is automatically detected and formatted with readable scope information, regardless of provider or attribute name. This extends the existing "Universal Azure Resource ID Formatting" feature to detect Azure IDs anywhere they appear in attribute values.
+
+**Example:**
+```markdown
+| key_vault_id | Key Vault `kv-demo` in resource group `rg-demo` of subscription `Production (d1828a48-fced-4ea2-b2ec-4b9623f327fd)` |
+```
+
+### Subscription Display Names
+
+When a mapping file is provided with the `--principal-mapping` flag, subscription IDs are automatically formatted as `DisplayName (ID)` everywhere they appear:
+
+- Within readable resource names
+- In standalone subscription ID attributes
+- In scope descriptions across all Azure resources
+
+**Before:**
+```markdown
+| subscription_id | `d1828a48-fced-4ea2-b2ec-4b9623f327fd` |
+```
+
+**After (with mapping):**
+```markdown
+| subscription_id | `Production (d1828a48-fced-4ea2-b2ec-4b9623f327fd)` |
+```
+
+### Management Group Display Names
+
+Management group IDs are resolved to display names when mappings are provided, displayed with the 🗂️ icon. Root management groups (where the management group ID matches the tenant ID) are formatted specially as "🗂️ Tenant `<tenant_name>` root" to clearly indicate the tenant root scope.
+
+**Example with mapping:**
+```markdown
+| management_group_id | 🗂️ `Production Workloads` |
+```
+
+**Root management group example:**
+```markdown
+| management_group_id | 🗂️ Tenant `Contoso Corp` root |
+```
+
+### Tenant Display Names
+
+Tenant IDs are resolved to display names when mappings are provided, displayed with the 🏢 icon in the format `DisplayName (ID)`:
+
+**Before:**
+```markdown
+| tenant_id | `12345678-1234-1234-1234-123456789012` |
+```
+
+**After (with mapping):**
+```markdown
+| tenant_id | 🏢 `Contoso Corp (12345678-1234-1234-1234-123456789012)` |
+```
+
+### Role Definition Names
+
+tfplan2md automatically recognizes all 473 built-in Azure role definition GUIDs and displays their friendly names. Custom role definitions can be mapped via the mapping file, and custom mappings can override built-in role names if needed.
+
+Role definitions are displayed across all Azure resources wherever they appear (not just in role assignments):
+
+**Before:**
+```markdown
+| role_definition_id | `/subscriptions/.../providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635` |
+```
+
+**After (with built-in role recognition):**
+```markdown
+| role_definition_id | `🛡️ Owner (8e3af657-a8ff-443c-a75c-2fe8c4bcb635)` |
+```
+
+### Enhanced Resource Summaries
+
+Three Azure resource types receive specialized summary formatting for improved readability:
+
+#### azurerm_private_dns_a_record
+
+Private DNS A records display as FQDN format (`name.zone_name`) in the resource summary line:
+
+**Before:**
+```markdown
+### ➕ azurerm_private_dns_a_record `example`
+```
+
+**After:**
+```markdown
+### ➕ azurerm_private_dns_a_record `record1.contoso.local`
+```
+
+#### azurerm_pim_eligible_role_assignment
+
+PIM (Privileged Identity Management) eligible role assignments display as "Assign `<role_name>` to `<principal_name>`" when mappings are available:
+
+**Before:**
+```markdown
+### ➕ azurerm_pim_eligible_role_assignment `example`
+```
+
+**After (with mappings):**
+```markdown
+### ➕ azurerm_pim_eligible_role_assignment `example`: Assign `Contributor` to `Jane Doe`
+```
+
+#### azurerm_role_management_policy
+
+Role management policies display as "`<role_name>` in `<scope_display_name>`" with resolved role names and enriched scope information:
+
+**Before:**
+```markdown
+### 🔁 azurerm_role_management_policy `this`
+```
+
+**After (with mappings):**
+```markdown
+### 🔁 azurerm_role_management_policy `this`: `Contributor` in resource group `foo` of subscription `Production (abc-123...)`
+```
+
+### Visual Icons
+
+Azure entities are displayed with distinctive icons for quick identification:
+
+| Icon | Entity Type | Format Example |
+|------|-------------|----------------|
+| 🏢 | Tenant | `🏢 Contoso Corp (tenant-guid)` |
+| 🗂️ | Management Group | `🗂️ Production Workloads` |
+| 🛡️ | Role Definition | `🛡️ Owner (role-guid` |
+
+### Extended Mapping File Format
+
+The mapping file used with `--principal-mapping` now supports Azure infrastructure metadata in addition to principals. The new sections use an array-of-objects format for consistency:
+
+```json
+{
+  "users": [
+    { "id": "user-guid", "displayName": "Jane Doe" }
+  ],
+  "groups": [
+    { "id": "group-guid", "displayName": "DevOps Team" }
+  ],
+  "servicePrincipals": [
+    { "id": "sp-guid", "displayName": "CI/CD Pipeline" }
+  ],
+  "subscriptions": [
+    { "id": "d1828a48-fced-4ea2-b2ec-4b9623f327fd", "displayName": "Production" }
+  ],
+  "managementGroups": [
+    { "id": "mg-production", "displayName": "Production Workloads" }
+  ],
+  "tenants": [
+    { "id": "tenant-guid", "displayName": "Contoso Corp" }
+  ],
+  "roles": [
+    { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }
+  ]
+}
+```
+
+**Backward compatibility:** Existing principal-only mapping files continue to work without modification. The new sections are optional.
+
+### Azure CLI Export Commands
+
+Use the Azure CLI to generate the mapping data for each section:
+
+```bash
+# Principals (Azure AD)
+az ad user list --all --query "[].{id:id,displayName:displayName}" -o json
+az ad group list --query "[].{id:id,displayName:displayName}" -o json
+az ad sp list --all --query "[].{id:id,displayName:displayName}" -o json
+
+# Subscriptions
+az account list --query "[].{id:id,displayName:name}" -o json
+
+# Management groups
+az account management-group list --query "[].{id:name,displayName:displayName}" -o json
+
+# Tenants
+az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o json
+
+# Custom roles
+az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
+```
+
+**Multi-tenant scenarios:** When authenticated to multiple tenants but only needing mappings for specific ones, filter by tenant ID:
+
+```bash
+# Get specific tenants only
+az account tenant list --query "[?tenantId=='12345678-...' || tenantId=='87654321-...'].{id:tenantId, displayName:displayName}" -o json
+
+# Get principals from specific tenant
+az ad user list --tenant 12345678-1234-1234-1234-123456789012 --query "[].{id:id, displayName:displayName}" -o json
+
+# Get subscriptions from specific tenants
+az account list --query "[?tenantId=='12345678-...' || tenantId=='87654321-...'].{id:id, displayName:name}" -o json
+```
+
+Use `scripts/validate-azure-cli-commands.sh` to validate these commands in your environment.
+
+### Debug Output
+
+When `--debug` is enabled, failed mapping resolutions are reported with context showing which resource referenced each unmapped ID:
+
+```markdown
+## Debug Information
+
+### Principal Mapping
+
+Principal Mapping: Loaded successfully from 'azure-mappings.json'
+- Found 45 principals
+- Found 3 subscriptions
+- Found 2 management groups
+- Found 1 tenant
+- Found 5 custom roles
+
+Failed to resolve 4 IDs:
+- Subscription `12345678-1234-1234-1234-123456789012` (referenced in `azurerm_resource_group.example`) - not found in mapping file
+- Management group `mg-unknown` (referenced in `azurerm_management_group_policy_assignment.test`) - not found in mapping file
+- Tenant `87654321-4321-4321-4321-210987654321` (referenced in `azuread_user.example`) - not found in mapping file
+- Role definition `abcdef12-3456-7890-abcd-ef1234567890` (referenced in `azurerm_role_assignment.reader`) - not found in mapping file or built-in roles
+```
+
+### Fallback Behavior
+
+When mappings are not available or an ID is not found:
+- Subscriptions display as raw GUID
+- Management groups display as raw ID (without 🗂️ icon)
+- Tenants display as raw GUID (without 🏢 icon)
+- Role definitions display as raw GUID or the `role_definition_name` attribute if available (without 🛡️ icon)
+- All Azure resource IDs continue to use readable formatting with the IDs they contain
+
+### Usage
+
+```bash
+# Without mapping (uses raw IDs and built-in roles)
+tfplan2md plan.json
+
+# With extended mapping
+tfplan2md --principal-mapping azure-mappings.json plan.json
+
+# Docker with extended mapping
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/azure-mappings.json \
+  /data/plan.json --output /data/plan.md
+
+# With debug output to see failed resolutions
+tfplan2md --debug --principal-mapping azure-mappings.json plan.json
+```
+
 ## Enhanced Azure Role Assignment Display
 
 The `azurerm_role_assignment` resource uses a table-based format with human-readable summaries, semantic icons, and clean resource naming instead of cryptic GUIDs and technical paths.

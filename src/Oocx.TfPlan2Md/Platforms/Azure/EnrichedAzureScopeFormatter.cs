@@ -103,18 +103,30 @@ internal sealed class EnrichedAzureScopeFormatter
     /// <returns>The formatted management group scope description.</returns>
     private string FormatManagementGroup(string managementGroupId, string? resourceAddress)
     {
+        var label = GetManagementGroupLabel(managementGroupId, resourceAddress);
+        var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
+        return $"`{formattedLabel}`";
+    }
+
+    /// <summary>
+    /// Resolves the display label for a management group, including tenant-root naming when applicable.
+    /// </summary>
+    /// <param name="managementGroupId">The management group identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the management group.</param>
+    /// <returns>The management group display label without icon formatting.</returns>
+    /// <remarks>
+    /// Related feature: docs/features/065-tenant-display-mapping/specification.md.
+    /// </remarks>
+    internal string GetManagementGroupLabel(string managementGroupId, string? resourceAddress = null)
+    {
         var tenantName = _entityMapper.GetTenantDisplayName(managementGroupId, resourceAddress);
         if (!string.IsNullOrWhiteSpace(tenantName) && !tenantName.Equals(managementGroupId, StringComparison.OrdinalIgnoreCase))
         {
-            var tenantRootLabel = $"Tenant {tenantName} root";
-            var formattedTenantRoot = AzureLabelFormatter.FormatManagementGroupLabel(tenantRootLabel);
-            return $"`{formattedTenantRoot}`";
+            return $"Tenant {tenantName} root";
         }
 
         var managementGroupName = _entityMapper.GetManagementGroupDisplayName(managementGroupId, resourceAddress);
-        var label = string.IsNullOrWhiteSpace(managementGroupName) ? managementGroupId : managementGroupName;
-        var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
-        return $"`{formattedLabel}`";
+        return string.IsNullOrWhiteSpace(managementGroupName) ? managementGroupId : managementGroupName;
     }
 
     /// <summary>

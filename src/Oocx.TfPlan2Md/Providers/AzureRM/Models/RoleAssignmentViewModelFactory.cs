@@ -109,7 +109,7 @@ internal static class RoleAssignmentViewModelFactory
         var activeRole = action == DeleteAction ? beforeRole : afterRole;
         var activePrincipal = action == DeleteAction ? beforePrincipal : afterPrincipal;
 
-        var summaryText = BuildSummaryText(action, activeScope, activeRole, activePrincipal);
+        var summaryText = BuildSummaryText(action, activeScope, activeRole, activePrincipal, scopeFormatter, change.Address);
 
         var allAttributes = attributeChanges.Count > 0
             ? attributeChanges
@@ -205,13 +205,22 @@ internal static class RoleAssignmentViewModelFactory
     /// <summary>
     /// Builds the summary text combining principal, role, and scope information.
     /// </summary>
+    /// <param name="action">The Terraform action string.</param>
+    /// <param name="scope">The parsed scope information.</param>
+    /// <param name="role">The resolved role information.</param>
+    /// <param name="principal">The resolved principal information.</param>
+    /// <param name="scopeFormatter">Optional formatter for display name enrichment.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
+    /// <returns>Formatted summary text for the role assignment.</returns>
     private static string BuildSummaryText(
         string action,
         Platforms.Azure.ScopeInfo scope,
         RoleInfo role,
-        PrincipalInfo principal)
+        PrincipalInfo principal,
+        EnrichedAzureScopeFormatter? scopeFormatter,
+        string resourceAddress)
     {
-        var scopeSummary = BuildScopeSummary(scope);
+        var scopeSummary = BuildScopeSummary(scope, scopeFormatter, resourceAddress);
         var roleSummary = $"<code>🛡️{NonBreakingSpace}{EscapeMarkdown(role.Name)}</code>";
         var principalIcon = principal.Type switch
         {
@@ -234,8 +243,13 @@ internal static class RoleAssignmentViewModelFactory
     /// Builds scope summary text with icon formatting for resource group scopes.
     /// </summary>
     /// <param name="scope">The parsed scope information.</param>
+    /// <param name="scopeFormatter">Optional formatter for display name enrichment.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the scope.</param>
     /// <returns>Formatted scope summary text.</returns>
-    private static string BuildScopeSummary(Platforms.Azure.ScopeInfo scope)
+    private static string BuildScopeSummary(
+        Platforms.Azure.ScopeInfo scope,
+        EnrichedAzureScopeFormatter? scopeFormatter,
+        string resourceAddress)
     {
         if (scope.Level == ScopeLevel.ResourceGroup)
         {
@@ -247,6 +261,13 @@ internal static class RoleAssignmentViewModelFactory
         {
             var subscriptionId = scope.SubscriptionId ?? scope.SummaryName;
             return $"subscription {FormatAttributeValueSummary("subscription_id", subscriptionId, null)}";
+        }
+
+        if (scope.Level == ScopeLevel.ManagementGroup)
+        {
+            var label = scopeFormatter?.GetManagementGroupLabel(scope.Name, resourceAddress) ?? scope.SummaryName;
+            var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
+            return $"{scope.SummaryLabel}{FormatCodeSummary(formattedLabel)}";
         }
 
         return scope.SummaryLabel + FormatCodeSummary(scope.SummaryName);
@@ -305,7 +326,10 @@ internal static class RoleAssignmentViewModelFactory
         string resourceAddress)
     {
         var subscriptionLabel = scopeFormatter?.GetSubscriptionDisplayName(scope.SubscriptionId, resourceAddress);
-        return FormatAzureScopeForTable(scope, subscriptionLabel);
+        var managementGroupLabel = scope.Level == ScopeLevel.ManagementGroup && scopeFormatter is not null
+            ? scopeFormatter.GetManagementGroupLabel(scope.Name, resourceAddress)
+            : null;
+        return FormatAzureScopeForTable(scope, subscriptionLabel, managementGroupLabel);
     }
 
     /// <summary>

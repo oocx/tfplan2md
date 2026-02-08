@@ -92,3 +92,16 @@
   - UAT tester recorded incorrect test results. Instead of recording what the user reported, it reported something different
   - UAT tester failed to update the work-protocol
   - Recommendation: replace with different model
+
+### Developer (UAT Rework)
+- **Date:** 2026-02-08
+- **Summary:** Added management group label resolution for scope summaries, ensured management group scope table values include 🗂️ inside code spans, and updated regression tests to match icon placement. Aligned architecture note with icon placement rule.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/ScribanHelpers.Azure.cs`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/RoleAssignmentViewModelFactory.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/RoleAssignmentManagementGroupFormattingTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureValueFormatterTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersAzureScopeFormattingTests.cs`
+  - `docs/features/065-tenant-display-mapping/architecture.md`
+- **Problems Encountered:** None

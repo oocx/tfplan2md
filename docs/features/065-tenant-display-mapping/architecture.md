@@ -109,7 +109,7 @@ High-level guidance for the Developer agent:
 - **Shared Azure formatting**
   - Add an Azure-specific label formatter in `src/Oocx.TfPlan2Md/Platforms/Azure/` (or a small pair of formatters in `MarkdownGeneration/Services`) that:
     - Resolves display names via `AzureEntityMapper`
-    - Produces the exact Markdown strings required (icon outside backticks)
+    - Produces the exact Markdown strings required (icon inside backticks)
     - Uses non-breaking space between icon and label to keep them together in GitHub/AzDO rendering
 
 - **Scope output**

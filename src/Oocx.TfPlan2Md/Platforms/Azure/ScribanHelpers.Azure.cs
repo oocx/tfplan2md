@@ -144,8 +144,12 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="scope">Parsed scope information.</param>
     /// <param name="subscriptionLabel">Optional subscription label override for display name enrichment.</param>
+    /// <param name="managementGroupLabel">Optional management group label override for display name enrichment.</param>
     /// <returns>Formatted scope string with semantic icons.</returns>
-    internal static string FormatAzureScopeForTable(ScopeInfo scope, string? subscriptionLabel = null)
+    internal static string FormatAzureScopeForTable(
+        ScopeInfo scope,
+        string? subscriptionLabel = null,
+        string? managementGroupLabel = null)
     {
         var subscriptionValue = FormatAttributeValueTable(
             "subscription_id",
@@ -171,7 +175,9 @@ public static partial class ScribanHelpers
                 return $"subscription {subscriptionValue}";
 
             case ScopeLevel.ManagementGroup:
-                return $"{FormatCodeTable(scope.Name)} (Management Group)";
+                var label = string.IsNullOrWhiteSpace(managementGroupLabel) ? scope.Name : managementGroupLabel;
+                var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
+                return FormatCodeTable($"{formattedLabel} (Management Group)");
 
             default:
                 return !string.IsNullOrEmpty(scope.Details) ? EscapeMarkdown(scope.Details) : string.Empty;

@@ -79,6 +79,8 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         result.Should().Contain("mgmt");
         result.Should().Contain("Management Group");
+        result.Should().Contain("🗂️");
+        result.Should().Contain("`");
 
         await Task.CompletedTask;
     }

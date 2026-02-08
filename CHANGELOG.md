@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.14.0"></a>
+## [1.14.0](https://github.com/oocx/tfplan2md/compare/v1.13.1...v1.14.0) (2026-02-08)
+
+### ✨ Features
+
+* extract CompositionRoot from ProgramEntry per ADR-006 ([b6c2291](https://github.com/oocx/tfplan2md/commit/b6c22913a621ad95ac2555e0839a6d2dfafb588b))
+
+### 🐛 Bug Fixes
+
+* correct ADR path reference in CompositionRoot documentation ([14ecfb6](https://github.com/oocx/tfplan2md/commit/14ecfb6091d7f281eb5df5661a210ab33098b36a))
+
+### ♻️ Refactoring
+
+* implement Pure DI with CompositionRoot class ([a1f1e20](https://github.com/oocx/tfplan2md/commit/a1f1e20e8441cf80c34eda33b92106d45f8d704b))
+
 <a name="1.13.1"></a>
 ## [1.13.1](https://github.com/oocx/tfplan2md/compare/v1.13.0...v1.13.1) (2026-02-08)
 

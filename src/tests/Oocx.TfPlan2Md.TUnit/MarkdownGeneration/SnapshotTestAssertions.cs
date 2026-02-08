@@ -289,7 +289,7 @@ internal static class SnapshotTestAssertions
     /// </summary>
     /// <param name="rune">The rune to inspect.</param>
     /// <returns><c>true</c> if the rune is emoji-like; otherwise <c>false</c>.</returns>
-    private static bool IsEmojiLike(Rune rune)
+    internal static bool IsEmojiLike(Rune rune)
     {
         var category = Rune.GetUnicodeCategory(rune);
         return category is UnicodeCategory.OtherSymbol && rune.Value >= 0x2600;
@@ -300,7 +300,7 @@ internal static class SnapshotTestAssertions
     /// </summary>
     /// <param name="rune">The rune to inspect.</param>
     /// <returns><c>true</c> if the rune is a presentation modifier; otherwise <c>false</c>.</returns>
-    private static bool IsPresentationModifier(Rune rune)
+    internal static bool IsPresentationModifier(Rune rune)
     {
         return rune.Value is 0xFE0F or 0xFE0E or 0x200D
             || Rune.GetUnicodeCategory(rune) is UnicodeCategory.NonSpacingMark

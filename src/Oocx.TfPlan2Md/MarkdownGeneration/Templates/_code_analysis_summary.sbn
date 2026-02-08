@@ -9,7 +9,7 @@ No code analysis findings were reported.
 {{ else if code_analysis.summary.high_count > 0 }}
 **Status:** ⚠️ {{ code_analysis.summary.high_count }} high findings require attention
 {{ else }}
-**Status:** ✅ No critical or high findings
+**Status:** ✅ No critical or high findings
 {{ end }}
 
 | Severity | Count | Resource Types |

@@ -4,7 +4,7 @@
 
 Feature 065 (Tenant Display Name Mapping) adds display name mapping for Entra ID tenants with visual icons (🏢), enhances management group display with icons (🗂️), and provides comprehensive multi-tenant documentation for selective mapping.
 
-**Overall Assessment:** **APPROVED** - Implementation meets all specification requirements with high code quality.
+**Overall Assessment:** **CHANGES REQUESTED** - Icon placement inconsistency identified (blocker). Icons should be placed inside backticks, consistent with existing Azure entity icon patterns.
 
 ## Verification Results
 
@@ -61,20 +61,21 @@ Docker build failed with a pre-existing issue (incorrect path in Dockerfile). Ve
 
 Examined `artifacts/comprehensive-demo.md` and confirmed:
 
-✅ **Tenant Icon and Format:**
+❌ **Tenant Icon and Format:**
 ```markdown
 | tenant_id | 🏢 `Contoso Tenant (11111111-2222-3333-4444-555555555555)` |
 ```
-- Icon (🏢) is outside backticks
-- Display name and ID in `DisplayName (ID)` format
-- ID is inside backticks with display name
+- ⚠️ **ISSUE:** Icon (🏢) is **outside** backticks
+- **Expected:** Icon should be **inside** backticks, matching subscription icon pattern
+- For comparison, subscription icons: `` `🔑 Production` `` (icon inside backticks)
+- This violates the established pattern from Feature 051 (Display Enhancements)
 
-✅ **Management Group Icon:**
+❌ **Management Group Icon:**
 ```markdown
 🗂️ Tenant <code>Contoso Corp (mg-root)</code> root
 ```
-- Icon (🗂️) is outside code tags
-- Tenant root management group properly formatted
+- ⚠️ **ISSUE:** Icon (🗂️) is **outside** code tags
+- Same inconsistency as tenant icon placement
 
 ## Adversarial Testing
 
@@ -215,7 +216,44 @@ Verified that the Technical Writer updated global documentation where applicable
 
 ### Blockers
 
-None.
+**B1: Icon Placement Inconsistency**
+
+**Severity:** Blocker  
+**Location:** [src/Oocx.TfPlan2Md/Platforms/Azure/TenantIdFormatter.cs](../../../src/Oocx.TfPlan2Md/Platforms/Azure/TenantIdFormatter.cs), [src/Oocx.TfPlan2Md/Platforms/Azure/ManagementGroupIdFormatter.cs](../../../src/Oocx.TfPlan2Md/Platforms/Azure/ManagementGroupIdFormatter.cs)
+
+**Description:**
+Tenant (🏢) and management group (🗂️) icons are placed **outside** backticks, while all other Azure entity icons are placed **inside** backticks. This violates the established semantic icon pattern.
+
+**Evidence:**
+- **Current output:** `🏢 'Contoso Tenant (...)'` (icon outside backticks)
+- **Expected output:** `` `🏢 Contoso Tenant (...)` `` (icon inside backticks)
+- **Existing patterns:** Location `🌍`, subscription `🔑`, resource group `📁`, identifier `🆔`, network `🌐` all follow the "icon inside backticks" pattern
+
+**Root Cause:**
+The formatting order is incorrect:
+1. `ScribanHelpers.FormatCodeTable(displayName)` wraps value in backticks
+2. `AzureLabelFormatter.FormatTenantLabel(label)` prepends icon **after** backticks are added
+
+This reverses the expected order.
+
+**References:**
+- Feature 024 test expectations: `` `🌍 eastus` `` (icon inside backticks)
+  - See: [docs/features/024-visual-report-enhancements/test-plan.md](../../024-visual-report-enhancements/test-plan.md#tc-04-locationformatting_summaryandtable_usesglobeicon)
+- Feature 051 subscription formatting: `` `🔑 Production` `` (icon inside backticks)
+  - See: [src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersSemanticFormattingTests.cs](../../../src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersSemanticFormattingTests.cs) lines 254-266
+- Architecture decision from Feature 024: "Location values are formatted as code with the icon inside the code span"
+  - See: [docs/features/024-visual-report-enhancements/architecture.md](../../024-visual-report-enhancements/architecture.md) line 199
+
+**Fix Required:**
+Change the order of operations:
+1. Prepend icon to the raw display name value first
+2. Then wrap the combined string (icon + value) in backticks
+
+This will produce the consistent pattern: `` `🏢 Contoso Tenant (...)` ``
+
+**Impact:**
+- All snapshot files will require updates (include `SNAPSHOT_UPDATE_OK` in commit message)
+- Must verify that all Azure entity icons follow the same pattern after the fix
 
 ### Major Issues
 
@@ -233,27 +271,29 @@ None.
 
 ## Review Decision
 
-**Status:** ✅ **APPROVED**
+**Status:** ❌ **CHANGES REQUESTED**
 
-**Justification:**
-- All acceptance criteria from the specification are met
+**Reason:**
+One blocker issue identified: **Icon placement inconsistency** (B1). Tenant (🏢) and management group (🗂️) icons are placed outside backticks, violating the established pattern where all Azure entity icons should be inside backticks.
+
+**What's Working Well:**
+- All acceptance criteria implemented correctly
 - All tests pass (895/895)
 - Code quality is excellent (proper comments, access modifiers, file sizes under 200 lines)
-- Architecture decisions implemented correctly
-- Documentation updated (docs/features.md, README.md) with tenant icons and multi-tenant examples
-- Tenant icons (🏢) and management group icons (🗂️) verified in generated output
-- Work protocol shows all required pre-review agents have logged their work
-- No blocking issues identified
+- Documentation updated comprehensively
+- Work protocol complete with all required agent entries
 
-**Next Steps:**
-This feature is ready for UAT (User Acceptance Testing) since it impacts markdown rendering. The UAT Tester should validate the rendering in real GitHub and Azure DevOps PRs to ensure:
-- 🏢 tenant icons render correctly
-- 🗂️ management group icons render correctly
-- Icon placement (outside backticks) displays properly
-- Tenant display format (`DisplayName (ID)`) is readable
+**What Needs Fixing:**
+- Change icon placement order: prepend icon to value **before** wrapping in backticks
+- Update snapshot files after fix (include `SNAPSHOT_UPDATE_OK` in commit message)
+- Verify all Azure entity icons follow consistent pattern
 
-## Next
+**Expected Result After Fix:**
+- `` `🏢 Contoso Tenant (...)` `` instead of `🏢 'Contoso Tenant (...)'`
+- `` `🗂️ Contoso Corp (mg-root)` `` instead of `🗂️ 'Contoso Corp (mg-root)'`
 
-- **Option 1:** Hand off to **UAT Tester** agent for user acceptance testing (RECOMMENDED)
+## Next Steps
 
-**Recommendation:** Option 1 - Proceed to UAT Tester, because this feature changes markdown output significantly (tenant icons, management group icons) and should be validated in real PR environments on both GitHub and Azure DevOps.
+1. **Developer** must fix the icon placement issue (B1)
+2. **Code Reviewer** must re-approve after fix
+3. **UAT Tester** will validate rendering after approval

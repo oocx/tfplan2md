@@ -72,10 +72,12 @@
 
 ### Code Reviewer
 - **Date:** 2026-02-08
-- **Summary:** Reviewed Feature 065 implementation and verified all acceptance criteria were met. Confirmed tenant icons (🏢) and management group icons (🗂️) display correctly in generated output. All tests pass (895/895), comprehensive demo passes markdownlint, code quality is excellent, and documentation is complete. Work protocol shows all required pre-review agents have logged their work. Approved for UAT.
+- **Summary:** Reviewed Feature 065 implementation and identified **icon placement inconsistency blocker**. Tenant (🏢) and management group (🗂️) icons are placed outside backticks, violating the established pattern where all Azure entity icons (🔑, 📁, 🌍) are inside backticks. All tests pass (895/895), code quality is excellent, but changes requested to fix icon placement order. After user question about consistency, verified the issue by examining existing patterns in Feature 024 and Feature 051.
 - **Artifacts Produced:**
-  - `docs/features/065-tenant-display-mapping/code-review.md`
-- **Problems Encountered:** Docker build failed with pre-existing issue (incorrect Dockerfile path), but verified this is unrelated to Feature 065 by checking changed files. Not blocking.
+  - `docs/features/065-tenant-display-mapping/code-review.md` (Changes Requested status)
+- **Problems Encountered:** 
+  - Docker build failed with pre-existing issue (incorrect Dockerfile path), verified unrelated to Feature 065
+  - Icon placement inconsistency discovered: icons prepended after backticks added (should be before)
 
 ---
   - `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRMModule.cs`
@@ -98,3 +100,16 @@
   - `examples/firewall-rules-demo/principals.json`
   - `docs/features.md`
 - **Problems Encountered:** Markdownlint reported duplicate headings in generated artifacts; resolved by making code analysis findings headings resource-specific and regenerating snapshots.
+
+### Developer (Rework)
+- **Date:** 2026-02-08
+- **Summary:** Moved tenant and management group icons inside code spans by reordering icon + backtick formatting. Regenerated snapshot baselines and aligned the comprehensive demo artifact with the corrected icon placement.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/TenantIdFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/ManagementGroupIdFormatter.cs`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azure-display-enhancements.md`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo.md`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo-full.md`
+  - `artifacts/comprehensive-demo.md`
+- **Problems Encountered:** None

@@ -49,7 +49,7 @@ internal sealed class TenantIdFormatter : IValueFormatter
             return null;
         }
 
-        var label = ScribanHelpers.FormatCodeTable(displayName);
-        return AzureLabelFormatter.FormatTenantLabel(label);
+        var label = AzureLabelFormatter.FormatTenantLabel(displayName);
+        return ScribanHelpers.FormatCodeTable(label);
     }
 }

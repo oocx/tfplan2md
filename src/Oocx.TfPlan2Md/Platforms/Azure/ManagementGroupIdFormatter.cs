@@ -49,7 +49,7 @@ internal sealed class ManagementGroupIdFormatter : IValueFormatter
             return null;
         }
 
-        var formattedLabel = ScribanHelpers.FormatCodeTable(label);
-        return AzureLabelFormatter.FormatManagementGroupLabel(formattedLabel);
+        var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
+        return ScribanHelpers.FormatCodeTable(formattedLabel);
     }
 }

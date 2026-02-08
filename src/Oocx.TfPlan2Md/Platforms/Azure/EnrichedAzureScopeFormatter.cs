@@ -106,13 +106,15 @@ internal sealed class EnrichedAzureScopeFormatter
         var tenantName = _entityMapper.GetTenantDisplayName(managementGroupId, resourceAddress);
         if (!string.IsNullOrWhiteSpace(tenantName) && !tenantName.Equals(managementGroupId, StringComparison.OrdinalIgnoreCase))
         {
-            var tenantRootLabel = $"Tenant `{tenantName}` root";
-            return AzureLabelFormatter.FormatManagementGroupLabel(tenantRootLabel);
+            var tenantRootLabel = $"Tenant {tenantName} root";
+            var formattedTenantRoot = AzureLabelFormatter.FormatManagementGroupLabel(tenantRootLabel);
+            return $"`{formattedTenantRoot}`";
         }
 
         var managementGroupName = _entityMapper.GetManagementGroupDisplayName(managementGroupId, resourceAddress);
         var label = string.IsNullOrWhiteSpace(managementGroupName) ? managementGroupId : managementGroupName;
-        return AzureLabelFormatter.FormatManagementGroupLabel($"`{label}`");
+        var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
+        return $"`{formattedLabel}`";
     }
 
     /// <summary>

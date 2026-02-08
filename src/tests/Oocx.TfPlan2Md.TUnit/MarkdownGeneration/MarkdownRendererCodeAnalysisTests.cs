@@ -32,8 +32,8 @@ public class MarkdownRendererCodeAnalysisTests
 
         markdown.Should().Contain("## Code Analysis Summary");
         markdown.Should().Contain("| Severity | Count | Resource Types |");
-        markdown.Should().Contain("| 🚨 Critical | 1 |");
-        markdown.Should().Contain("| 🚨 Critical | 1 | 1 null_resource |");
+        markdown.Should().Contain("| 🚨 Critical | 1 |");
+        markdown.Should().Contain("| 🚨 Critical | 1 | 1 null_resource |");
         markdown.Should().Contain("**Tools Used:** Checkov 3.2.10");
     }
 
@@ -49,13 +49,13 @@ public class MarkdownRendererCodeAnalysisTests
         var model = builder.Build(plan);
         var markdown = _renderer.Render(model);
 
-        markdown.Should().Contain("🔒 **Security & Quality:**", "because the metadata line should appear with lock icon");
-        markdown.Should().Contain("#### 🔒 Security & Quality Findings", "because the findings table heading should have lock icon");
-        markdown.Should().Contain("| 🚨 Critical | - | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
+        markdown.Should().Contain("🔒 **Security & Quality:**", "because the metadata line should appear with lock icon");
+        markdown.Should().Contain("#### 🔒 Security & Quality Findings", "because the findings table heading should have lock icon");
+        markdown.Should().Contain("| 🚨 Critical | - | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
         markdown.Should().Contain($"[Details]({CriticalHelpUri})");
 
-        var criticalIndex = markdown.IndexOf("🚨 Critical", StringComparison.Ordinal);
-        var lowIndex = markdown.IndexOf("ℹ️ Low", StringComparison.Ordinal);
+        var criticalIndex = markdown.IndexOf("🚨 Critical", StringComparison.Ordinal);
+        var lowIndex = markdown.IndexOf("ℹ️ Low", StringComparison.Ordinal);
         criticalIndex.Should().BeLessThan(lowIndex, "because findings should be ordered by severity");
     }
 
@@ -226,7 +226,7 @@ public class MarkdownRendererCodeAnalysisTests
         var markdown = _renderer.Render(model);
 
         markdown.Should().Contain("| Severity | Tool | Attribute | Finding | Remediation |", "because the header should include Tool column");
-        markdown.Should().Contain("| 🚨 Critical | Checkov | `triggers.endpoint` |", "because the Tool column should display the tool name between Severity and Attribute");
+        markdown.Should().Contain("| 🚨 Critical | Checkov | `triggers.endpoint` |", "because the Tool column should display the tool name between Severity and Attribute");
     }
 
     [Test]
@@ -243,7 +243,7 @@ public class MarkdownRendererCodeAnalysisTests
 
         markdown.Should().Contain("## Other Findings");
         markdown.Should().Contain("| Severity | Tool | Finding | Remediation |", "because the module findings table should include Tool column");
-        markdown.Should().Contain("| ⚠️ High | tfsec |", "because the Tool column should display the tool name");
+        markdown.Should().Contain("| ⚠️ High | tfsec |", "because the Tool column should display the tool name");
     }
 
     [Test]
@@ -267,7 +267,7 @@ public class MarkdownRendererCodeAnalysisTests
 
         markdown.Should().Contain("### Unmatched Findings");
         markdown.Should().Contain("| Severity | Tool | Finding | Remediation |", "because the unmatched findings table should include Tool column");
-        markdown.Should().Contain("| ⚠️ Medium | Trivy | Orphaned security finding |", "because the Tool column should display the tool name");
+        markdown.Should().Contain("| ⚠️ Medium | Trivy | Orphaned security finding |", "because the Tool column should display the tool name");
     }
 
     [Test]
@@ -283,7 +283,7 @@ public class MarkdownRendererCodeAnalysisTests
         var markdown = _renderer.Render(model);
 
         finding.ToolName.Should().BeNull("because the test is specifically for null tool names");
-        markdown.Should().Contain("| 🚨 Critical | - |", "because null tool names should display as '-'");
+        markdown.Should().Contain("| 🚨 Critical | - |", "because null tool names should display as '-'");
     }
 
     [Test]
@@ -298,7 +298,7 @@ public class MarkdownRendererCodeAnalysisTests
         var model = builder.Build(plan);
         var markdown = _renderer.Render(model);
 
-        markdown.Should().Contain("| 🚨 Critical | - |", "because empty string tool names should display as '-'");
+        markdown.Should().Contain("| 🚨 Critical | - |", "because empty string tool names should display as '-'");
     }
 
     [Test]
@@ -325,9 +325,9 @@ public class MarkdownRendererCodeAnalysisTests
         var model = builder.Build(plan);
         var markdown = _renderer.Render(model);
 
-        markdown.Should().Contain("| 🚨 Critical | Checkov |", "because Checkov finding should show correct tool name");
-        markdown.Should().Contain("| ⚠️ High | tfsec |", "because tfsec finding should show correct tool name");
-        markdown.Should().Contain("| ⚠️ Medium | Trivy |", "because Trivy finding should show correct tool name");
+        markdown.Should().Contain("| 🚨 Critical | Checkov |", "because Checkov finding should show correct tool name");
+        markdown.Should().Contain("| ⚠️ High | tfsec |", "because tfsec finding should show correct tool name");
+        markdown.Should().Contain("| ⚠️ Medium | Trivy |", "because Trivy finding should show correct tool name");
     }
 
     [Test]

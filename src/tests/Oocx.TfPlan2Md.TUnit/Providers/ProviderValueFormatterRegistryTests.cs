@@ -85,7 +85,7 @@ public class ProviderValueFormatterRegistryTests
 
         var formatted = registry.TryFormat(context);
 
-        formatted.Should().Be("🏢\u00A0`Contoso (12345678-1234-1234-1234-123456789012)`");
+        formatted.Should().Be("`🏢\u00A0Contoso (12345678-1234-1234-1234-123456789012)`");
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public class ProviderValueFormatterRegistryTests
 
         var formatted = registry.TryFormat(context);
 
-        formatted.Should().Be("🗂️\u00A0`Core Platform`");
+        formatted.Should().Be("`🗂️\u00A0Core Platform`");
     }
 
     /// <summary>
@@ -168,7 +168,7 @@ public class ProviderValueFormatterRegistryTests
 
         var formatted = registry.TryFormat(context);
 
-        formatted.Should().Be("🏢\u00A0`Contoso (12345678-1234-1234-1234-123456789012)`");
+        formatted.Should().Be("`🏢\u00A0Contoso (12345678-1234-1234-1234-123456789012)`");
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ public class ProviderValueFormatterRegistryTests
 
         var formatted = registry.TryFormat(context);
 
-        formatted.Should().Be("🏢\u00A0`Contoso (12345678-1234-1234-1234-123456789012)`");
+        formatted.Should().Be("`🏢\u00A0Contoso (12345678-1234-1234-1234-123456789012)`");
     }
 
     /// <summary>

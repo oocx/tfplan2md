@@ -123,3 +123,12 @@
   - `docs/features/065-tenant-display-mapping/release-notes.md`
 - **Problems Encountered:**
   - Playwright timeout during screenshot generation for visual icons.
+
+### Developer (Build Fix)
+- **Date:** 2026-02-08
+- **Summary:** Fixed CI test failures by aligning management group scope formatting with tenant-root expectations and syncing provider registry tests with icon-in-code-span formatting. Verified targeted tests pass.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/ProviderValueFormatterRegistryTests.cs`
+  - `docs/features/065-tenant-display-mapping/work-protocol.md`
+- **Problems Encountered:** None

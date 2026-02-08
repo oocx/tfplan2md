@@ -1,4 +1,5 @@
 using System;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 
 namespace Oocx.TfPlan2Md.Platforms.Azure;
 
@@ -21,6 +22,16 @@ internal sealed class EnrichedAzureScopeFormatter
     /// Icon for resource group identifiers.
     /// </summary>
     private const string ResourceGroupIcon = "📁";
+
+    /// <summary>
+    /// Prefix used to identify tenant root management group labels.
+    /// </summary>
+    private const string TenantRootPrefix = "Tenant ";
+
+    /// <summary>
+    /// Suffix used to identify tenant root management group labels.
+    /// </summary>
+    private const string TenantRootSuffix = " root";
 
     /// <summary>
     /// The entity mapper used to resolve display names.
@@ -104,8 +115,52 @@ internal sealed class EnrichedAzureScopeFormatter
     private string FormatManagementGroup(string managementGroupId, string? resourceAddress)
     {
         var label = GetManagementGroupLabel(managementGroupId, resourceAddress);
-        var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(label);
-        return $"`{formattedLabel}`";
+        return FormatManagementGroupScopeLabel(label);
+    }
+
+    /// <summary>
+    /// Formats management group labels for scope text with inline code around display names.
+    /// </summary>
+    /// <param name="label">The resolved management group label.</param>
+    /// <returns>Formatted scope label with icon and inline code where appropriate.</returns>
+    private static string FormatManagementGroupScopeLabel(string label)
+    {
+        if (string.IsNullOrWhiteSpace(label))
+        {
+            return string.Empty;
+        }
+
+        if (TryParseTenantRootLabel(label, out var tenantName))
+        {
+            var tenantValue = ScribanHelpers.FormatCodeTable(tenantName);
+            return $"{AzureLabelFormatter.ManagementGroupIcon}{AzureLabelFormatter.NonBreakingSpace}" +
+                $"{TenantRootPrefix}{tenantValue}{TenantRootSuffix}";
+        }
+
+        var labelValue = ScribanHelpers.FormatCodeTable(label);
+        return $"{AzureLabelFormatter.ManagementGroupIcon}{AzureLabelFormatter.NonBreakingSpace}{labelValue}";
+    }
+
+    /// <summary>
+    /// Attempts to parse the tenant display name from a tenant root management group label.
+    /// </summary>
+    /// <param name="label">The label to parse.</param>
+    /// <param name="tenantName">The extracted tenant display name when present.</param>
+    /// <returns>True when the label matches the tenant root pattern; otherwise false.</returns>
+    private static bool TryParseTenantRootLabel(string label, out string tenantName)
+    {
+        if (!label.StartsWith(TenantRootPrefix, StringComparison.Ordinal)
+            || !label.EndsWith(TenantRootSuffix, StringComparison.Ordinal)
+            || label.Length <= TenantRootPrefix.Length + TenantRootSuffix.Length)
+        {
+            tenantName = string.Empty;
+            return false;
+        }
+
+        tenantName = label.Substring(
+            TenantRootPrefix.Length,
+            label.Length - TenantRootPrefix.Length - TenantRootSuffix.Length);
+        return !string.IsNullOrWhiteSpace(tenantName);
     }
 
     /// <summary>

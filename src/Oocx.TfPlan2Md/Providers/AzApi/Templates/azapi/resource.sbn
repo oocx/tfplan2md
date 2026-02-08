@@ -8,7 +8,7 @@
 
 {{ include "/_code_analysis_metadata.sbn" }}
 
-### {{ change.action_symbol }} {{ change.address | escape_markdown }}
+### {{ change.action_symbol }} {{ change.address | escape_markdown }}
 
 {{~ # Extract azapi metadata (type, name, parent_id, location, tags) ~}}
 {{~ metadata = extract_azapi_metadata change ~}}

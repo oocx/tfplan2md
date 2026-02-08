@@ -70,6 +70,11 @@ public static class DemoPaths
     /// </summary>
     public static string AzureAdPrincipalMappingPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "principal-mapping-azuread.json");
 
+    /// <summary>
+    /// Gets the path to the static analysis SARIF directory used for code analysis integration.
+    /// </summary>
+    public static string StaticAnalysisDirectory => Path.Combine(RepositoryRoot, "examples", "static-analysis");
+
     private static string FindRepositoryRoot()
     {
         var directory = Directory.GetCurrentDirectory();

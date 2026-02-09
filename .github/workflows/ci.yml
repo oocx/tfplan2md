@@ -198,7 +198,8 @@ jobs:
 
           if [ "${{ steps.versionize.outcome }}" = "success" ]; then
             # Versionize created a new commit + tag: push both (separately)
-            git push origin HEAD
+            # Push commit without following tags to avoid pushing the tag prematurely
+            git push --no-follow-tags origin HEAD
 
             TAG_NAME=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
             if [ -n "$TAG_NAME" ]; then

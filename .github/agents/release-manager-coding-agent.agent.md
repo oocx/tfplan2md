@@ -280,11 +280,12 @@ Before releasing, verify:
        - Only include a screenshots section if you actually have screenshots to show.
        - If the release changes rendered output / review experience, screenshots are required; generate them if missing.
        - Release notes screenshots must be focused and small: **max 580×400**.
-       - Use only `*-crop*.png` files in release notes.
-       - Generate screenshots with a selector or Terraform resource target so the crop shows the relevant area:
-          - `scripts/generate-screenshot.sh --markdown-file <md> --output-prefix <name> --selector "..."`
-          - or `scripts/generate-screenshot.sh --plan <plan.json> --output-prefix <name> --target-resource-id "..."`
-       - Prefer showing a single “after” screenshot for features; for bug fixes, include before/after when feasible.
+       - Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
+       - **Recommended**: Use `scripts/generate-release-screenshots.sh` for release notes (optimized with sensible defaults):
+           - `scripts/generate-release-screenshots.sh --plan <plan.json> --output-prefix <name> --output-dir docs/features/NNN/ --selector "..."`
+           - or `scripts/generate-release-screenshots.sh --markdown-file <md> --output-prefix <name> --output-dir docs/features/NNN/ --target-resource-id "..."`
+        - **Alternative**: Use `scripts/generate-screenshot.sh` for full control (light/dark, 1x/2x, thumbnails, lightbox)
+       - Prefer showing a single "after" screenshot for features; for bug fixes, include before/after when feasible.
    
     **Save:** Create `release-notes.md` in the current work item folder (`docs/features/.../`, `docs/issues/.../`, or `docs/workflow/.../`).
     **Commit:** `docs: add release notes for <work-item>`

@@ -57,7 +57,7 @@ internal sealed class HtmlScreenshotCapturer
             await page.GotoAsync(fileUri, new PageGotoOptions
             {
                 WaitUntil = WaitUntilState.NetworkIdle,
-                Timeout = 30000,
+                Timeout = 60000, // Increased from 30s to 60s for large HTML documents
             }).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -207,7 +207,7 @@ internal sealed class HtmlScreenshotCapturer
         await locator.First.WaitForAsync(new LocatorWaitForOptions
         {
             State = WaitForSelectorState.Visible,
-            Timeout = 5000,
+            Timeout = 10000, // Increased from 5s to 10s for complex selectors
         }).ConfigureAwait(false);
 
         // Force one more layout pass to ensure the element is fully rendered

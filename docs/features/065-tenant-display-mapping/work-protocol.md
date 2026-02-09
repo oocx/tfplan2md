@@ -142,9 +142,10 @@
   - docs/features/065-tenant-display-mapping/release-notes.md
 - **Problems Encountered:** Found inconsistency in features.md documentation examples compared to implementation requirements; fixed it.
 
-### Developer (CI Snapshot Update)
+### Developer (CI Fix)
 - **Date:** 2026-02-09
-- **Summary:** Regenerated snapshot baselines to align with updated tenant and management group summary formatting, resolving PR validation snapshot failures.
+- **Summary:** Corrected management group scope formatting to keep the 🗂️ icon inside code spans and restored snapshot baselines to the intended output.
 - **Artifacts Produced:**
-  - Updated snapshots: azure-display-enhancements.md, comprehensive-demo.md, comprehensive-demo-full.md
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+  - Snapshot baselines restored for azure-display-enhancements.md, comprehensive-demo.md, comprehensive-demo-full.md
 - **Problems Encountered:** None

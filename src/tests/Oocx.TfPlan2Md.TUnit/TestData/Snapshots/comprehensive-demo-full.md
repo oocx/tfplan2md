@@ -201,8 +201,6 @@ _No attribute changes._
 <summary>➕ azapi_resource <b><code>container_app</code></b> — <code>🆔 ca-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
-### ➕ azapi_resource.container_app
-
 **Type:** `Microsoft.App/containerApps@2023-05-01`
 
 | Attribute | Value |
@@ -323,8 +321,6 @@ _No attribute changes._
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>🔄 azuredevops_variable_group <b><code>pipeline_vars</code></b> — <code>🆔 deploy-pipeline-vars</code> | 5🔧 secret_variable[0].value, variable[0].value, variable[1].value, +2 more</summary>
 <br>
-
-### 🔄 azuredevops_variable_group.pipeline_vars
 
 **Variable Group:** <code>deploy-pipeline-vars</code>
 

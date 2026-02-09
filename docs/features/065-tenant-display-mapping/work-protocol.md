@@ -141,3 +141,10 @@
   - Updated docs/features/065-tenant-display-mapping/code-review.md (Approved)
   - docs/features/065-tenant-display-mapping/release-notes.md
 - **Problems Encountered:** Found inconsistency in features.md documentation examples compared to implementation requirements; fixed it.
+
+### Developer (CI Snapshot Update)
+- **Date:** 2026-02-09
+- **Summary:** Regenerated snapshot baselines to align with updated tenant and management group summary formatting, resolving PR validation snapshot failures.
+- **Artifacts Produced:**
+  - Updated snapshots: azure-display-enhancements.md, comprehensive-demo.md, comprehensive-demo-full.md
+- **Problems Encountered:** None

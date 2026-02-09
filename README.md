@@ -267,6 +267,25 @@ pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.p
 
 **Automated screenshot generation (recommended for website):**
 
+### Screenshot Workflows
+
+#### For Release Notes (Simplified)
+
+Use `scripts/generate-release-screenshots.sh` for release notes - it generates a single 580×400 screenshot optimized for release documentation:
+
+```bash
+scripts/generate-release-screenshots.sh \
+  --plan examples/firewall-with-static-analysis/plan.json \
+  --output-prefix feature-065-icons \
+  --output-dir docs/features/065-tenant-display-mapping \
+  --selector "details:has(summary:has-text('azurerm_role_assignment'))" \
+  --render-target github
+```
+
+This generates a single PNG file at the specified size (default 580×400) in light mode.
+
+#### For Website (Full Control)
+
 Use `scripts/generate-screenshot.sh` to automate the full workflow (plan → markdown → HTML → screenshots with all variants):
 
 ```bash

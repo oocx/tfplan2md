@@ -298,6 +298,25 @@ dotnet run --project src/tools/Oocx.TfPlan2Md.ScreenshotGenerator -- \
 
 ### Automated Screenshot Generation
 
+### Screenshot Generation Workflows
+
+#### Quick Start: Release Notes Screenshots
+
+Use `scripts/generate-release-screenshots.sh` for release documentation - generates a single optimized screenshot:
+
+```bash
+scripts/generate-release-screenshots.sh \
+  --plan examples/comprehensive-demo/comprehensive-demo.json \
+  --output-prefix feature-example \
+  --output-dir docs/features/XXX-feature-name \
+  --selector "article:has(h2:has-text('azurerm_resource'))" \
+  --render-target github
+```
+
+Output: Single 580×400 PNG (light mode, 1x DPI) suitable for release notes.
+
+#### Advanced: Website Screenshots
+
 For website screenshots, use the `scripts/generate-screenshot.sh` wrapper script that automates the complete workflow:
 
 ```bash

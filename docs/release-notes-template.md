@@ -19,7 +19,19 @@
 Include this section only if you have screenshots.
 
 If you list anything under ✨ Features and it changes rendered output, you should include screenshots.
-If no suitable screenshots exist yet, generate them (see: scripts/generate-screenshot.sh).
+If no suitable screenshots exist yet, generate them using:
+
+```bash
+# For release notes (recommended - single 580×400 screenshot)
+scripts/generate-release-screenshots.sh \
+  --plan examples/example-demo/plan.json \
+  --output-prefix feature-name \
+  --output-dir docs/features/NNN-feature-name \
+  --selector "details:has(summary:has-text('resource'))"
+
+# For website (full control - all variants)
+scripts/generate-screenshot.sh --plan ... --output-prefix ... --selector ...
+```
 
 Constraints for release notes:
 - Max screenshot size: 580×400

@@ -502,7 +502,7 @@ _No attribute changes._
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_role_management_policy <b><code>ops</code></b> — <code>🛡️ Reader</code> in 🗂️ Tenant <code>Contoso Corp (mg-root)</code> root</summary>
+<summary>🔄 azurerm_role_management_policy <b><code>ops</code></b> — <code>🛡️ Reader</code> in <code>🗂️ Tenant Contoso Corp (mg-root) root</code></summary>
 <br>
 
 _No attribute changes._

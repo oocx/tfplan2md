@@ -132,13 +132,13 @@ internal sealed class EnrichedAzureScopeFormatter
 
         if (TryParseTenantRootLabel(label, out var tenantName))
         {
-            var tenantValue = ScribanHelpers.FormatCodeTable(tenantName);
-            return $"{AzureLabelFormatter.ManagementGroupIcon}{AzureLabelFormatter.NonBreakingSpace}" +
-                $"{TenantRootPrefix}{tenantValue}{TenantRootSuffix}";
+            var tenantLabel = $"{TenantRootPrefix}{tenantName}{TenantRootSuffix}";
+            var formattedLabel = AzureLabelFormatter.FormatManagementGroupLabel(tenantLabel);
+            return ScribanHelpers.FormatCodeTable(formattedLabel);
         }
 
-        var labelValue = ScribanHelpers.FormatCodeTable(label);
-        return $"{AzureLabelFormatter.ManagementGroupIcon}{AzureLabelFormatter.NonBreakingSpace}{labelValue}";
+        var formattedManagementGroup = AzureLabelFormatter.FormatManagementGroupLabel(label);
+        return ScribanHelpers.FormatCodeTable(formattedManagementGroup);
     }
 
     /// <summary>

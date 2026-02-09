@@ -1597,8 +1597,6 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 **Example output for create operation:**
 
 ```markdown
-### ➕ azapi_resource.automation_account
-
 **Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
 
 📚 [View API Documentation](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
@@ -1624,8 +1622,6 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 **Example output for update operation:**
 
 ```markdown
-### 🔄 azapi_resource.automation_account
-
 **Type:** `Microsoft.Automation/automationAccounts@2021-06-22`
 
 📚 [View API Documentation](https://learn.microsoft.com/rest/api/automation/automation-accounts/)
@@ -1730,8 +1726,6 @@ For `azuredevops_variable_group`, variables from both the `variable` and `secret
 **Example output for update operation:**
 
 ```markdown
-### 🔄 azuredevops_variable_group.example
-
 **Variable Group:** `example-variables`
 
 **Description:** `Variable group for example pipeline`

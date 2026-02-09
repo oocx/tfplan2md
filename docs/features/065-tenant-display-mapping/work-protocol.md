@@ -149,3 +149,10 @@
   - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
   - Snapshot baselines restored for azure-display-enhancements.md, comprehensive-demo.md, comprehensive-demo-full.md
 - **Problems Encountered:** None
+
+### Developer (CI Test Fix)
+- **Date:** 2026-02-09
+- **Summary:** Adjusted management group scope formatting to keep the icon outside the code span for scope summaries, matching existing tests and snapshots.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+- **Problems Encountered:** None

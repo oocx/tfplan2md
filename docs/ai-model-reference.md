@@ -521,10 +521,16 @@ This section captures actual performance data from completed feature development
 - **Recommendation**: Switch to **Claude Sonnet 4.5** (strong reasoning 76.07) or **Gemini 3 Flash** (fast, different vendor)
 
 #### UAT Tester Agent
-- **Current Model**: GPT-5.2
-- **Issues**: "Stopped mid-task multiple times" (Custom Report), "GPT-5.2 latency/context issues"
-- **Rating**: ⭐⭐⭐ across retrospectives
-- **Recommendation**: Consider **Gemini 3 Flash** (faster, 0.5s latency vs 32.3s, better instruction following 74.86 vs 61.77)
+- **Current Model**: Claude Sonnet 4.5 (switched from Gemini 3 Flash - February 2026)
+- **Previous Issues with Gemini 3 Flash**: 
+  - Recorded incorrect test results (Feature 065 retrospective)
+  - Failed to update work protocol properly
+  - Required multiple PR generation attempts
+- **Evidence for Switch**: Claude Sonnet 4.5 succeeded on first attempt when retried (Feature 065)
+- **Rating History**: 
+  - GPT-5.2: ⭐⭐⭐ across retrospectives (stopped mid-task, latency issues)
+  - Gemini 3 Flash: Failed in Feature 065 (incorrect results, protocol updates)
+- **Conclusion**: Use **Claude Sonnet 4.5** despite poor instruction following score (23.52) - real-world evidence shows better reliability for UAT tasks
 
 #### Task Planner Agent  
 - **Current Model**: Gemini 3 Flash
@@ -548,7 +554,7 @@ This section captures actual performance data from completed feature development
 | Requirements Engineer | Claude Sonnet 4.5 | ✅ **Keep** | User: "Excellent performance" |
 | Developer | GPT-5.2-Codex | ✅ **Keep** | Latest Codex model for coding |
 | Code Reviewer | GPT-5.2 | 🔄 **Switch to Claude Sonnet 4.5** | Diversity from Developer + strong reasoning |
-| UAT Tester | GPT-5.2 | 🔄 **Consider Gemini 3 Flash** | Faster (0.5s vs 32.3s), better IF (74.86 vs 61.77) |
+| UAT Tester | Claude Sonnet 4.5 | ✅ **Keep** | Evidence-based: succeeded in Feature 065 after Gemini 3 Flash failed |
 | Retrospective | Gemini 3 Pro | 🔄 **Switch to Gemini 3 Flash** | More stable + better IF (74.86 vs 65.85) |
 | Architect | Gemini 3 Pro | ⚠️ **Suspend - Use GPT-5.2** | Reliability issues |
 | Workflow Engineer | Gemini 3 Pro | ⚠️ **Suspend - Use GPT-5.2** | Reliability issues |
@@ -557,11 +563,10 @@ This section captures actual performance data from completed feature development
 | Release Manager | Gemini 3 Flash | ✅ **Keep** | Cost-effective, appropriate for checklist work |
 
 **Rationale Summary**:
-- ✅ Keep what works: Claude Sonnet 4.5 (Req Engineer), GPT-5.2-Codex (Developer), Gemini 3 Flash (Task/Release)
+- ✅ Keep what works: Claude Sonnet 4.5 (Req Engineer, UAT Tester), GPT-5.2-Codex (Developer), Gemini 3 Flash (Task/Release)
 - 🔄 Diversify Code Reviewer: Switch to Claude Sonnet 4.5 (different from Developer, strong reasoning)
 - 🔄 Fix Retrospective: Switch to Gemini 3 Flash (more stable, better instruction following)
 - ⚠️ Suspend Gemini 3 Pro: Replace in all roles until reliability improves
-- 🔄 Optimize UAT: Consider Gemini 3 Flash (faster, better instruction following)
 
 ## Update Process
 

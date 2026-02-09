@@ -156,3 +156,11 @@
 - **Artifacts Produced:**
   - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
 - **Problems Encountered:** None
+
+### Developer (CI Snapshot Alignment)
+- **Date:** 2026-02-09
+- **Summary:** Restored management group scope summaries to wrap the icon and label in a single code span, aligning with snapshot baselines and role management policy summaries. Updated scope formatter tests accordingly and verified the full test suite locally.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureEntityMapperTests.cs`
+- **Problems Encountered:** None

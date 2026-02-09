@@ -97,7 +97,7 @@ public class AzureEntityMapperTests
 
         var result = formatter.FormatScope(scope);
 
-        result.Should().Be("🗂️\u00A0Tenant `Contoso (tenant-1)` root");
+        result.Should().Be("`🗂️\u00A0Tenant Contoso (tenant-1) root`");
     }
 
     [Test]
@@ -112,7 +112,7 @@ public class AzureEntityMapperTests
 
         var result = formatter.FormatScope(scope);
 
-        result.Should().Be("🗂️\u00A0`Core`");
+        result.Should().Be("`🗂️\u00A0Core`");
     }
 
     private static AzureEntityMapper CreateMapper(

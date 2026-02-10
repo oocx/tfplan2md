@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches: [main]
   workflow_dispatch:
     inputs:
       tag:
@@ -22,6 +27,14 @@ jobs:
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
+    # Only run if:
+    # 1. Triggered by a tag push (manual or external), OR
+    # 2. Triggered by CI workflow completion that was successful, OR
+    # 3. Manually triggered via workflow_dispatch
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
 
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -35,14 +48,25 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-          ref: ${{ github.event.inputs.tag || github.ref }}
+          # For workflow_run trigger, checkout the head SHA of the CI workflow
+          # For tag push, checkout the tag ref
+          # For workflow_dispatch, checkout the specified tag
+          ref: ${{ github.event.inputs.tag || (github.event_name == 'workflow_run' && github.event.workflow_run.head_sha) || github.ref }}
 
       - name: Extract version from tag
         id: version
         run: |
-          # Get tag from workflow_dispatch input or from push event
+          # Get tag from workflow_dispatch input, tag push event, or find latest tag for workflow_run
           if [ -n "${{ github.event.inputs.tag }}" ]; then
             TAG="${{ github.event.inputs.tag }}"
+          elif [ "${{ github.event_name }}" = "workflow_run" ]; then
+            # Find the tag associated with the CI workflow's head commit
+            TAG=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
+            if [ -z "$TAG" ]; then
+              echo "Error: No tag found for CI workflow commit ${{ github.event.workflow_run.head_sha }}"
+              exit 1
+            fi
+            echo "Found tag $TAG for CI workflow run"
           else
             TAG="${{ github.ref }}"
           fi

@@ -91,4 +91,16 @@ internal sealed class ProviderRegistry
             provider.RegisterIconProviders(registry);
         }
     }
+
+    /// <summary>
+    /// Registers all provider-specific parent-child resource relationships.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register into.</param>
+    public void RegisterAllParentChildRelationships(MarkdownGeneration.Models.IParentChildRelationshipRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterParentChildRelationships(registry);
+        }
+    }
 }

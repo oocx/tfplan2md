@@ -16,11 +16,11 @@ Reference: [specification.md](specification.md), [architecture.md](architecture.
 Implement the basic data structures and registry required for the parent-child framework as defined in the architecture.
 
 **Acceptance Criteria:**
-- [ ] `ParentChildRelationship`, `ChildTableColumn`, and `IChildRowExtractor` defined in `MarkdownGeneration/Models/`.
-- [ ] `ChildResourceGroup` and `ChildResourceRow` added to `ResourceChangeModel`.
-- [ ] `IParentChildRelationshipRegistry` and its default implementation created.
-- [ ] Registry supports multiple relationships per parent type (required for `azuredevops_team` administrators + members).
-- [ ] Unit tests for `ParentChildRelationshipRegistry` (TC-01).
+- [x] `ParentChildRelationship`, `ChildTableColumn`, and `IChildRowExtractor` defined in `MarkdownGeneration/Models/`.
+- [x] `ChildResourceGroup` and `ChildResourceRow` added to `ResourceChangeModel`.
+- [x] `IParentChildRelationshipRegistry` and its default implementation created.
+- [x] Registry supports multiple relationships per parent type (required for `azuredevops_team` administrators + members).
+- [x] Unit tests for `ParentChildRelationshipRegistry` (TC-01).
 
 **Dependencies:** None
 
@@ -34,9 +34,9 @@ Implement the basic data structures and registry required for the parent-child f
 Add the necessary hooks to `IProviderModule` and `ProviderRegistry` to allow providers to register their relationships.
 
 **Acceptance Criteria:**
-- [ ] `IProviderModule` has `RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)` with default no-op.
-- [ ] `ProviderRegistry` has `RegisterAllParentChildRelationships` method updated/added to invoke provider registrations.
-- [ ] Existing providers updated to support the new method (via default implementation or explicit override).
+- [x] `IProviderModule` has `RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)` with default no-op.
+- [x] `ProviderRegistry` has `RegisterAllParentChildRelationships` method updated/added to invoke provider registrations.
+- [x] Existing providers updated to support the new method (via default implementation or explicit override).
 
 **Dependencies:** Task 1
 

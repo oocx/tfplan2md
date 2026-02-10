@@ -59,4 +59,13 @@ internal interface IProviderModule
     {
         // Default no-op keeps existing provider modules compatible.
     }
+
+    /// <summary>
+    /// Registers provider-specific parent-child resource relationships.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register into.</param>
+    void RegisterParentChildRelationships(MarkdownGeneration.Models.IParentChildRelationshipRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
 }

@@ -69,8 +69,8 @@ jobs:
             # Retry a few times to handle timing delays in tag propagation
             COMMIT_SHA="${{ github.event.workflow_run.head_sha }}"
 
-            # Validate SHA format (40 hex characters)
-            if ! echo "$COMMIT_SHA" | grep -qE '^[0-9a-f]{40}$'; then
+            # Validate SHA format (40 hex characters) using bash pattern matching
+            if [[ ! "$COMMIT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
               echo "Error: Invalid commit SHA format: $COMMIT_SHA"
               exit 1
             fi

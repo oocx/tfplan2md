@@ -7,12 +7,11 @@
 //
 // Baseline suppression for code-quality metrics rollout.
 // Related feature: docs/features/046-code-quality-metrics-enforcement/.
-#pragma warning disable CA1506
 #pragma warning disable SA1634 // File header copyright - not applicable to top-level statements
+#pragma warning disable CA1506
 
 using Oocx.TfPlan2Md;
 
 return await ProgramEntry.RunAsync(args);
 
-#pragma warning restore SA1634
 #pragma warning restore CA1506

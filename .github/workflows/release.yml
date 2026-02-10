@@ -67,9 +67,17 @@ jobs:
           elif [ "${{ github.event_name }}" = "workflow_run" ]; then
             # Find the tag associated with the CI workflow's head commit
             # Retry a few times to handle timing delays in tag propagation
+            COMMIT_SHA="${{ github.event.workflow_run.head_sha }}"
+
+            # Validate SHA format (40 hex characters)
+            if ! echo "$COMMIT_SHA" | grep -qE '^[0-9a-f]{40}$'; then
+              echo "Error: Invalid commit SHA format: $COMMIT_SHA"
+              exit 1
+            fi
+
             TAG=""
             for attempt in 1 2 3; do
-              TAG=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
+              TAG=$(git describe --tags --exact-match "$COMMIT_SHA" 2>/dev/null || echo "")
               if [ -n "$TAG" ]; then
                 break
               fi
@@ -82,7 +90,7 @@ jobs:
             done
 
             if [ -z "$TAG" ]; then
-              echo "Error: No tag found for CI workflow commit ${{ github.event.workflow_run.head_sha }}"
+              echo "Error: No tag found for CI workflow commit $COMMIT_SHA"
               echo "This indicates that the CI workflow completed without creating a tag."
               echo "Check the CI workflow logs to see if versionize was skipped due to:"
               echo "  - No release-worthy changes since last tag"

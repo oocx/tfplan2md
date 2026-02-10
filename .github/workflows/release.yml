@@ -53,7 +53,7 @@ jobs:
           # For workflow_dispatch: checkout the specified tag
           ref: |
             ${{
-              github.event.inputs.tag ||
+              (github.event.inputs.tag != '' && github.event.inputs.tag) ||
               (github.event_name == 'workflow_run' && github.event.workflow_run.head_sha) ||
               github.ref
             }}
@@ -66,6 +66,7 @@ jobs:
             TAG="${{ github.event.inputs.tag }}"
           elif [ "${{ github.event_name }}" = "workflow_run" ]; then
             # Find the tag associated with the CI workflow's head commit
+            # Note: There may be a brief delay before the tag is visible after CI push
             TAG=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
             if [ -z "$TAG" ]; then
               echo "Error: No tag found for CI workflow commit ${{ github.event.workflow_run.head_sha }}"
@@ -74,6 +75,9 @@ jobs:
               echo "  - No release-worthy changes since last tag"
               echo "  - Only insignificant commits (docs, tests, etc.)"
               echo "  - CI workflow failure before tag creation"
+              echo "Note: If the CI workflow just completed, there may be a brief delay before"
+              echo "the tag becomes visible. If this is a timing issue, manually trigger this"
+              echo "workflow after a few seconds using workflow_dispatch with the tag name."
               exit 1
             fi
             echo "Found tag $TAG for CI workflow run"

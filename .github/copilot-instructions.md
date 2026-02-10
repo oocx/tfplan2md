@@ -39,7 +39,7 @@ When you cannot proceed because you need Maintainer input (for example, ambiguou
 - State that you are **blocked** and why (1 sentence)
 - Summarize what you completed so far (2–5 bullets)
 - State what work remains (1–3 bullets)
-- Provide **Next** options (1–3 options) so the Maintainer knows how to unblock you
+- Use the `askQuestions` tool to present options or gather input (see Terminal Command Guidelines § Asking questions)
 - Ask **at most one** clarifying question at a time
 
 ## Agent Skills (Required)

@@ -147,10 +147,19 @@ When you claim completion, include these sections (short and factual):
 - **Shared components:** if any shared pattern/component was modified, state how you verified all usages were updated.
 - **Known limitations / follow-ups:** only if applicable.
 
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
+**When presenting options to the Maintainer:**
+Use the `askQuestions` tool with interactive choices instead of listing numbered options in chat.
+
+Example:
+```
+askQuestions(
+  prompt: "How would you like to proceed?",
+  choices: ["Option A: Clear next action", "Option B: Clear alternative"],
+  allowMultiple: false
+)
+```
+
+Include your recommendation in the prompt or as a follow-up message.
 
 ## Cloud Agent Workflow (GitHub Issues)
 

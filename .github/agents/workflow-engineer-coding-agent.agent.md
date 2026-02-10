@@ -400,9 +400,13 @@ Use this template in `tasks.md`:
 Ask the Maintainer via PR comment which option to implement.
 ```
 
-After writing `tasks.md` and presenting the options, create a PR comment asking the Maintainer to select an option. Wait for their response before changing any files.
+After writing `tasks.md` and presenting the options, ask the Maintainer to select an option. Wait for their response before changing any files.
 
-**Important:** When creating the PR comment to ask the Maintainer to choose, include the three recommended options (Option 1/2/3) with their descriptions so they can reply with the option number or a custom task ID.
+**For GitHub Copilot coding agents (PR context):** 
+Create a PR comment with the three recommended options (Option 1/2/3) with their descriptions. The Maintainer can reply with the option number or a custom task ID.
+
+**For VS Code chat agents:**
+Use the `askQuestions` tool instead of listing numbered options.
 
 When implementing an improvement:
 - Update the **Status** column in `tasks.md` whenever task state changes.

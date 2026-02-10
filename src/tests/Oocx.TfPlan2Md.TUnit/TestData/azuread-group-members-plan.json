@@ -1,0 +1,73 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group.platform_team",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "platform_team",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "id": "group-100",
+          "display_name": "Platform Team",
+          "members": [
+            "user-001"
+          ]
+        },
+        "after": {
+          "id": "group-100",
+          "display_name": "Platform Team",
+          "members": [
+            "user-001",
+            "user-002"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.member_create",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "member_create",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": "group-100",
+          "member_object_id": "user-003"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.member_delete",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "member_delete",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "group_object_id": "group-100",
+          "member_object_id": "user-004"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

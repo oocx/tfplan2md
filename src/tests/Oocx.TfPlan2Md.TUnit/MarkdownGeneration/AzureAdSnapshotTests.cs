@@ -33,6 +33,16 @@ public class AzureAdSnapshotTests
     }
 
     /// <summary>
+    /// Verifies the Azure AD group member snapshot output matches the approved baseline.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMembers_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-members-plan.json", "azuread-group-members.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure AD plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

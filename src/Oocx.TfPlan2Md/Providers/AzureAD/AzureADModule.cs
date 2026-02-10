@@ -87,4 +87,22 @@ internal sealed class AzureADModule : IProviderModule
     {
         AzureAdIconProviderRegistration.Register(registry);
     }
+
+    /// <summary>
+    /// Registers Azure AD parent-child relationships for inline rendering.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register with.</param>
+    public void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)
+    {
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azuread_group",
+            ChildResourceType = "azuread_group_member",
+            InlineAttributeName = "members",
+            ChildReferenceAttribute = "group_object_id",
+            ChildGroupLabel = "Members",
+            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            RowExtractor = new AzureAdGroupMemberRowExtractor()
+        });
+    }
 }

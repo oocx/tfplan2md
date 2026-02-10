@@ -64,3 +64,19 @@
 - **Artifacts Produced:**
   - tasks.md - Added explicit acceptance criteria for inline source labeling (TC-07), formatting pipeline (TC-09), findings address preservation, and the Test Plan edge cases (TC-E1..E5). Added a dedicated “Edge Cases and Performance Guardrails” task.
 - **Problems Encountered:** None.
+
+### Developer
+- **Date:** 2026-02-10
+- **Summary:** Implemented parent-child merging, rendering pipeline, and provider-specific registrations for Azure AD and Azure DevOps. Added edge case coverage, new test data, and snapshot baselines.
+- **Artifacts Produced:**
+  - src/Oocx.TfPlan2Md/MarkdownGeneration/Models/* (parent-child models)
+  - src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs (merge logic)
+  - src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_child_resources.sbn and template updates
+  - src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdGroupMemberRowExtractor.cs
+  - src/Oocx.TfPlan2Md/Providers/AzureDevOps/Models/AzureDevOpsDescriptorRowExtractor.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderParentChildEdgeCaseTests.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuread-group-members-plan.json
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-group-members-plan.json
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-team-members-plan.json
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/* (updated baselines, SNAPSHOT_UPDATE_OK)
+- **Problems Encountered:** Full test suite failed in architecture boundary tests (CLI/Platforms/Providers/MarkdownGeneration dependency checks). Snapshot regeneration succeeded after fixing `_child_resources.sbn` separator logic.

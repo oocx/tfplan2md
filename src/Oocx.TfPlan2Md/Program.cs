@@ -1,6 +1,6 @@
 // Top-level statements entry point for tfplan2md command-line application.
 // Delegates to ProgramEntry.RunAsync for all application logic.
-// Related documentation: docs/architecture.md § Building Block View (Program.cs).
+// Related documentation: docs/architecture.md - Building Block View (Program.cs).
 //
 // Note: Top-level statements don't support XML documentation comments.
 // This file serves as the minimal entry point, with all logic in ProgramEntry class.

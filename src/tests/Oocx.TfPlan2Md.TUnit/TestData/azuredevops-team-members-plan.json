@@ -1,0 +1,36 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_team.platform_team",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_team",
+      "name": "platform_team",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "id": "team-123",
+          "name": "Platform Engineering Team",
+          "project_id": "project-001",
+          "description": "Team responsible for platform infrastructure",
+          "administrators": [
+            "aadgp.Uy0.Admin1",
+            "aadgp.Uy0.Admin2"
+          ],
+          "members": [
+            "aadgp.Uy0.Member1",
+            "aadgp.Uy0.Member2",
+            "aadgp.Uy0.Member3"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

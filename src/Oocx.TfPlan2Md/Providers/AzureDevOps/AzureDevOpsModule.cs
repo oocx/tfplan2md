@@ -85,4 +85,54 @@ internal sealed class AzureDevOpsModule : IProviderModule
     {
         AzureDevOpsIconProviderRegistration.Register(registry);
     }
+
+    /// <summary>
+    /// Registers Azure DevOps parent-child relationships for inline rendering.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register with.</param>
+    public void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)
+    {
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azuredevops_group",
+            ChildResourceType = "azuredevops_group_membership",
+            InlineAttributeName = "members",
+            ChildReferenceAttribute = "group",
+            ParentIdAttribute = "descriptor",
+            ChildGroupLabel = "Members",
+            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            RowExtractor = new AzureDevOpsDescriptorRowExtractor(
+                columnKey: "member",
+                attributeName: "member",
+                propertyNames: ["member", "descriptor"])
+        });
+
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azuredevops_team",
+            ChildResourceType = "azuredevops_team_members",
+            InlineAttributeName = "members",
+            ChildReferenceAttribute = "team_id",
+            ChildGroupLabel = "Members",
+            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            RowExtractor = new AzureDevOpsDescriptorRowExtractor(
+                columnKey: "member",
+                attributeName: "member",
+                propertyNames: ["members", "member", "descriptor"])
+        });
+
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azuredevops_team",
+            ChildResourceType = "azuredevops_team_administrators",
+            InlineAttributeName = "administrators",
+            ChildReferenceAttribute = "team_id",
+            ChildGroupLabel = "Administrators",
+            TableColumns = [new ChildTableColumn { Header = "Administrator", PropertyName = "administrator" }],
+            RowExtractor = new AzureDevOpsDescriptorRowExtractor(
+                columnKey: "administrator",
+                attributeName: "administrator",
+                propertyNames: ["administrators", "administrator", "descriptor"])
+        });
+    }
 }

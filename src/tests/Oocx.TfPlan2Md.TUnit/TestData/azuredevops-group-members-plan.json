@@ -1,0 +1,70 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_group.release_managers",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_group",
+      "name": "release_managers",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "descriptor": "aadgp.Uy0.ReleaseManagers",
+          "display_name": "Release Managers",
+          "description": "Team members who can approve releases",
+          "scope": "vstfs:///Organization/12345678-1234-1234-1234-123456789012"
+        },
+        "after": {
+          "descriptor": "aadgp.Uy0.ReleaseManagers",
+          "display_name": "Release Managers",
+          "description": "Team members who can approve releases",
+          "scope": "vstfs:///Organization/12345678-1234-1234-1234-123456789012"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group_membership.release_managers_membership_alice",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_group_membership",
+      "name": "release_managers_membership_alice",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group": "aadgp.Uy0.ReleaseManagers",
+          "member": "aadgp.Uy0.AliceUser"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group_membership.release_managers_membership_bob",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuredevops_group_membership",
+      "name": "release_managers_membership_bob",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group": "aadgp.Uy0.ReleaseManagers",
+          "member": "aadgp.Uy0.BobUser"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

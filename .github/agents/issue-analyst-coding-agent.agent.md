@@ -86,6 +86,8 @@ Before handing off, **append your log entry** to the `## Agent Work Log` section
 ## Boundaries
 
 ### ✅ Always Do
+- **CRITICAL**: Use `scripts/next-issue-number.sh` to determine issue number - NEVER assign manually
+- Verify the script output before creating the branch (should be 3 digits like 060, 066)
 - Create new fix branch from latest main BEFORE starting investigation
 - Ask one clarifying question at a time
 - Reproduce the issue if possible
@@ -104,6 +106,8 @@ Before handing off, **append your log entry** to the `## Agent Work Log` section
 - If the fix might affect multiple components
 
 ### 🚫 Never Do
+- **Manually determine issue numbers** - always use `scripts/next-issue-number.sh`
+- Reuse existing issue numbers from docs/features/, docs/issues/, or docs/workflow/
 - Implement fixes yourself (hand off to Developer)
 - Start investigation without creating a fix branch from latest main
 - List multiple questions at once
@@ -128,11 +132,15 @@ Before investigating, review relevant context:
 
 **ALWAYS do this FIRST, before any investigation:**
 
+**🚨 CRITICAL: You MUST use the `scripts/next-issue-number.sh` script to determine the issue number. NEVER assign issue numbers manually or by looking at existing folders. Manual assignment WILL cause number conflicts.**
 
 ```bash
-# Determine the next available issue number
+# Determine the next available issue number using the script
 NEXT_NUMBER=$(scripts/next-issue-number.sh)
 echo "Next issue number: $NEXT_NUMBER"
+
+# VERIFY the output is a 3-digit number (e.g., 060, 066, 135)
+# If the script fails or returns unexpected output, STOP and report the error
 
 # Sync with latest main
 git fetch origin && git switch main && git pull --ff-only origin main
@@ -145,14 +153,23 @@ git push -u origin HEAD
 ```
 
 Use descriptive short-description like:
-- `fix/033-docker-hub-secret-in-release-workflow`
-- `fix/034-null-reference-in-parser`
-- `fix/035-failing-integration-tests`
-- `fix/036-markdownlint-table-formatting`
+- `fix/060-docker-hub-secret-in-release-workflow`
+- `fix/066-null-reference-in-parser`
+- `fix/067-failing-integration-tests`
+- `fix/068-markdownlint-table-formatting`
 
-**Why this matters:**
-- Determines unique issue number across ALL change types (feature, fix, workflow)
-- Checks both local docs and remote branches for accurate numbering
+**Why the script is mandatory:**
+- ✅ Determines unique issue number across **ALL change types** (feature, fix, workflow)
+- ✅ Checks **both** local docs folders AND remote GitHub branches
+- ✅ Prevents conflicts with existing features, fixes, and workflow improvements
+- ✅ Returns the next available number globally (not just within fixes)
+- ❌ Manual inspection of folders will miss numbers used in other change types
+- ❌ Looking only at docs/issues/ folder will cause conflicts with features/workflow
+
+**Common Mistake to Avoid:**
+🚫 **DO NOT** look at docs/issues/, docs/features/, or docs/workflow/ folders and pick a number manually. For example, if you see docs/features/059-some-feature/ exists, the next fix is NOT necessarily 060 - there might be workflow/060-* or feature/060-* branches. The script checks ALL sources to give you the correct next number.
+
+**Script guarantees:**
 - Pushes immediately to reserve the number for other agents
 - Ensures you're working from the latest code
 - Prevents merge conflicts later

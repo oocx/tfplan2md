@@ -50,15 +50,15 @@ Add the necessary hooks to `IProviderModule` and `ProviderRegistry` to allow pro
 Implement the core merging logic in `ReportModelBuilder.Build()` that identifies children, merges them into parents, and removes them from the main list.
 
 **Acceptance Criteria:**
-- [ ] Logic to detect inline children from parent attributes.
-- [ ] Logic to detect separate child resources by matching reference attributes to parent IDs (TC-06).
-- [ ] Inline children set the “Terraform Resource” label to the inline attribute name (e.g., `members`) (TC-07).
-- [ ] Separate children set the “Terraform Resource” label to the original Terraform address (TC-06).
-- [ ] Logic to detect mixed management and set `HasMixedSources` (TC-08).
-- [ ] Logic to re-attribute static analysis findings from inlined children to the parent resource (TC-11).
-- [ ] Re-attributed findings preserve the original child Terraform address in the rendered finding text (spec requirement + Scenario 3).
-- [ ] Logic to update parent summary line with child change counts (TC-10).
-- [ ] Unit tests for the merging logic covering separate, inline, mixed, and findings scenarios.
+- [x] Logic to detect inline children from parent attributes.
+- [x] Logic to detect separate child resources by matching reference attributes to parent IDs (TC-06).
+- [x] Inline children set the “Terraform Resource” label to the inline attribute name (e.g., `members`) (TC-07).
+- [x] Separate children set the “Terraform Resource” label to the original Terraform address (TC-06).
+- [x] Logic to detect mixed management and set `HasMixedSources` (TC-08).
+- [x] Logic to re-attribute static analysis findings from inlined children to the parent resource (TC-11).
+- [x] Re-attributed findings preserve the original child Terraform address in the rendered finding text (spec requirement + Scenario 3).
+- [x] Logic to update parent summary line with child change counts (TC-10).
+- [x] Unit tests for the merging logic covering separate, inline, mixed, and findings scenarios.
 
 **Dependencies:** Task 1, Task 2
 

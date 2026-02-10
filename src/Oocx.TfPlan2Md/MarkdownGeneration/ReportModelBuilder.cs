@@ -91,6 +91,12 @@ internal partial class ReportModelBuilder(
         CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new NullPrincipalMapper(), providerRegistry);
 
     /// <summary>
+    /// Registry for parent-child resource relationships.
+    /// </summary>
+    private readonly ParentChildRelationshipRegistry _parentChildRelationshipRegistry =
+        CreateParentChildRelationshipRegistry(providerRegistry);
+
+    /// <summary>
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.
     /// This will be removed in Task 6 when LargeValueFormat enum is fully removed.
     /// </summary>
@@ -139,6 +145,19 @@ internal partial class ReportModelBuilder(
 
         var registry = new MarkdownGeneration.Services.IconProviderRegistry();
         providerRegistry.RegisterAllIconProviders(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Creates and populates the parent-child relationship registry.
+    /// </summary>
+    /// <param name="providerRegistry">Optional provider registry to register relationships from.</param>
+    /// <returns>The populated parent-child relationship registry.</returns>
+    private static ParentChildRelationshipRegistry CreateParentChildRelationshipRegistry(
+        Providers.ProviderRegistry? providerRegistry)
+    {
+        var registry = new ParentChildRelationshipRegistry();
+        providerRegistry?.RegisterAllParentChildRelationships(registry);
         return registry;
     }
 }

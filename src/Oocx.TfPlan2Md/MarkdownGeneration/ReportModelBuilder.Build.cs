@@ -27,6 +27,8 @@ internal partial class ReportModelBuilder
 
         var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
 
+        MergeParentChildRelationships(allChanges);
+
         // Filter out no-op resources from the changes list passed to the template
         // No-op resources have no meaningful changes to display and including them
         // can cause the template to exceed Scriban's iteration limit of 1000

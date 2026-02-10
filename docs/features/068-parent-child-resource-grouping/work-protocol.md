@@ -33,3 +33,16 @@
   - Updated scope to Examples 1–6A for UAT + snapshot coverage
 - **Problems Encountered:** None. Researched current findings rendering behavior in existing artifacts and docs/features.md to ensure consistency with established patterns.
 - **Refinements:** Decided findings for merged children should appear within parent resource section (Option 1) rather than only in "Other Findings", preserving per-resource discoverability while maintaining resource address context in findings table headings.
+
+### Architect
+- **Date:** 2026-02-10
+- **Summary:** Designed architecture for parent-child resource grouping using a generic framework approach. Evaluated three options (provider-specific typed view models, generic framework, hybrid with overrides) and selected the generic framework. The design introduces core abstractions (`ParentChildRelationship`, `IChildRowExtractor`, `ChildResourceGroup`) in `MarkdownGeneration/Models/`, cross-resource merging logic in `ReportModelBuilder.ParentChildMerging.cs`, and provider-specific row extractors. Adding new patterns requires ~25–40 lines per relationship.
+- **Artifacts Produced:**
+  - architecture.md — Full architecture decision record with detailed design, component locations, provider registration examples, and guidelines for adding future relationships
+- **Problems Encountered:** None. The existing `IProviderModule` extension pattern (default-implemented interface methods) cleanly accommodates the new `RegisterParentChildRelationships()` method without breaking existing providers.
+- **Key Decisions:**
+  - Generic framework over typed view models — scales to 15+ cataloged patterns with consistent rendering
+  - Existing firewall rule collection implementations remain unchanged (different problem: intra-resource vs. cross-resource)
+  - Merging happens in `ReportModelBuilder.Build()` between model building and no-op filtering
+  - Child matching uses JSON attribute values with address-based fallback for `(known after apply)` scenarios
+  - One generic `ChildResourceGroups` property on `ResourceChangeModel` instead of accumulating typed properties

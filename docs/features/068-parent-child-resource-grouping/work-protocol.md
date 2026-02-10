@@ -46,3 +46,14 @@
   - Merging happens in `ReportModelBuilder.Build()` between model building and no-op filtering
   - Child matching uses JSON attribute values with address-based fallback for `(known after apply)` scenarios
   - One generic `ChildResourceGroups` property on `ResourceChangeModel` instead of accumulating typed properties
+### Quality Engineer
+- **Date:** 2026-02-10
+- **Summary:** Created test plan and UAT test plan for parent-child resource grouping. Mapped 10 acceptance criteria to 11 test cases and 3 UAT scenarios.
+- **Artifacts Produced:**
+  - test-plan.md - Comprehensive test plan with coverage matrix, unit/integration test cases, and edge cases.
+  - uat-test-plan.md - Detailed UAT plan for visual verification in GitHub and Azure DevOps.
+- **Problems Encountered:** None. Found that the project uses TUnit and AwesomeAssertions despite the general prompt mention of xUnit. Adjusted test plan references accordingly.
+- **Refinements:**
+  - Included specific test cases for merging logic (TC-06) and mixed management warnings (TC-08).
+  - Explicitly added TC-11 to verify that static analysis findings on merged children are correctly moved to the parent section.
+  - Defined UAT scenarios to cover both simple (one table) and complex (multiple tables for teams) rendering.

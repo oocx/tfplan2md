@@ -53,7 +53,7 @@ jobs:
           # For workflow_dispatch: checkout the specified tag
           ref: |
             ${{
-              (github.event.inputs.tag != '' && github.event.inputs.tag) ||
+              github.event.inputs.tag ||
               (github.event_name == 'workflow_run' && github.event.workflow_run.head_sha) ||
               github.ref
             }}
@@ -66,8 +66,21 @@ jobs:
             TAG="${{ github.event.inputs.tag }}"
           elif [ "${{ github.event_name }}" = "workflow_run" ]; then
             # Find the tag associated with the CI workflow's head commit
-            # Note: There may be a brief delay before the tag is visible after CI push
-            TAG=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
+            # Retry a few times to handle timing delays in tag propagation
+            TAG=""
+            for attempt in 1 2 3; do
+              TAG=$(git describe --tags --exact-match ${{ github.event.workflow_run.head_sha }} 2>/dev/null || echo "")
+              if [ -n "$TAG" ]; then
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                echo "Tag not found yet, waiting 5 seconds before retry $((attempt + 1))/3..."
+                sleep 5
+                # Fetch again to ensure we have the latest tags
+                git fetch --tags
+              fi
+            done
+
             if [ -z "$TAG" ]; then
               echo "Error: No tag found for CI workflow commit ${{ github.event.workflow_run.head_sha }}"
               echo "This indicates that the CI workflow completed without creating a tag."
@@ -75,9 +88,6 @@ jobs:
               echo "  - No release-worthy changes since last tag"
               echo "  - Only insignificant commits (docs, tests, etc.)"
               echo "  - CI workflow failure before tag creation"
-              echo "Note: If the CI workflow just completed, there may be a brief delay before"
-              echo "the tag becomes visible. If this is a timing issue, manually trigger this"
-              echo "workflow after a few seconds using workflow_dispatch with the tag name."
               exit 1
             fi
             echo "Found tag $TAG for CI workflow run"

@@ -261,10 +261,6 @@ _No attribute changes._
 | description | `Platform engineering team with infrastructure access` |
 | display_name | `Platform Engineers` |
 | mail_nickname | `platform-engineers` |
-| members[0] | `user-100` |
-| members[1] | `user-101` |
-| members[2] | `group-200` |
-| members[3] | `spn-300` |
 
 </details>
 

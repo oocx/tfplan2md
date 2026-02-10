@@ -40,6 +40,7 @@ internal partial class ReportModelBuilder
             }
 
             var groups = new List<ChildResourceGroup>();
+            var inlineAttributeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var relationship in relationships)
             {
@@ -61,11 +62,26 @@ internal partial class ReportModelBuilder
                 };
 
                 groups.Add(group);
+
+                if (!string.IsNullOrWhiteSpace(relationship.InlineAttributeName))
+                {
+                    inlineAttributeNames.Add(relationship.InlineAttributeName!);
+                }
             }
 
             if (groups.Count == 0)
             {
                 continue;
+            }
+
+            var usesDefaultSummaryHtml = string.Equals(parent.SummaryHtml, BuildSummaryHtml(parent), StringComparison.Ordinal);
+            if (RemoveInlineAttributeChanges(parent, inlineAttributeNames))
+            {
+                parent.ChangedAttributesSummary = BuildChangedAttributesSummary(parent.AttributeChanges, parent.Action);
+                if (usesDefaultSummaryHtml)
+                {
+                    parent.SummaryHtml = BuildSummaryHtml(parent);
+                }
             }
 
             parent.ChildResourceGroups = groups;
@@ -81,6 +97,60 @@ internal partial class ReportModelBuilder
         {
             allChanges.Remove(child);
         }
+    }
+
+    /// <summary>
+    /// Removes inline child attributes from the parent attribute change list when those children are rendered in tables.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    /// <param name="parent">The parent resource change model to update.</param>
+    /// <param name="inlineAttributeNames">Inline attribute names to exclude from the attribute table.</param>
+    /// <returns>True when attribute changes were removed; otherwise, false.</returns>
+    private static bool RemoveInlineAttributeChanges(ResourceChangeModel parent, HashSet<string> inlineAttributeNames)
+    {
+        if (inlineAttributeNames.Count == 0 || parent.AttributeChanges.Count == 0)
+        {
+            return false;
+        }
+
+        if (parent.AttributeChanges is not List<AttributeChangeModel> changes)
+        {
+            return false;
+        }
+
+        var originalCount = changes.Count;
+        changes.RemoveAll(attr => IsInlineAttributeName(attr.Name, inlineAttributeNames));
+        return changes.Count != originalCount;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute name belongs to an inline child attribute.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The flattened attribute name from the plan.</param>
+    /// <param name="inlineAttributeNames">Inline attribute names to match against.</param>
+    /// <returns>True when the attribute name should be excluded.</returns>
+    private static bool IsInlineAttributeName(string attributeName, HashSet<string> inlineAttributeNames)
+    {
+        foreach (var inlineName in inlineAttributeNames)
+        {
+            if (attributeName.Equals(inlineName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (attributeName.StartsWith(inlineName + "[", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (attributeName.StartsWith(inlineName + ".", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

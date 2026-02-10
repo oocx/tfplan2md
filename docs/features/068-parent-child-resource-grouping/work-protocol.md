@@ -80,3 +80,15 @@
   - src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-team-members-plan.json
   - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/* (updated baselines, SNAPSHOT_UPDATE_OK)
 - **Problems Encountered:** Full test suite failed in architecture boundary tests (CLI/Platforms/Providers/MarkdownGeneration dependency checks). Snapshot regeneration succeeded after fixing `_child_resources.sbn` separator logic.
+
+### Developer
+- **Date:** 2026-02-11
+- **Summary:** Removed inline child attributes from parent attribute tables when child tables are rendered, and added test coverage for the filtering behavior. Preserved provider-specific summary HTML while updating inline rendering.
+- **Artifacts Produced:**
+  - src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderParentChildTests.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuread-group-members.md
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuread-snapshot.md
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuredevops-team-members.md
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo-full.md
+- **Problems Encountered:** Initial summary HTML recalculation overrode Azure AD custom summaries; fixed by only recomputing summary HTML when the default builder produced it.

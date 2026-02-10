@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.CodeAnalysis;
@@ -63,6 +64,22 @@ public class ReportModelBuilderParentChildTests
         parent.ChildResourceGroups[0].Rows
             .Should()
             .OnlyContain(row => row.TerraformResource == "members attribute");
+    }
+
+    /// <summary>
+    /// Ensures inline child attributes are removed from the parent attribute list when rendered as tables.
+    /// </summary>
+    [Test]
+    public void Build_InlineChildren_RemovesInlineAttributesFromParent()
+    {
+        var plan = BuildPlanWithInlineMembers();
+        var model = BuildModel(plan);
+
+        var parent = model.Changes.Single(change => change.Type == ParentType);
+
+        parent.AttributeChanges
+            .Should()
+            .NotContain(attr => attr.Name.StartsWith("members", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>

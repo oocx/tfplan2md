@@ -38,7 +38,7 @@ Investigated 13 open issues to determine which have been fixed and should be clo
 ### Option 1: Run the provided script (Recommended)
 
 ```bash
-.tmp/close-fixed-issues.sh
+docs/issue-investigations/close-fixed-issues.sh
 ```
 
 This script will:
@@ -49,7 +49,7 @@ This script will:
 ### Option 2: Manual closure via GitHub UI
 
 1. Navigate to each issue (#374, #375, #326)
-2. Copy the suggested comment from `.tmp/issue-closure-report.md`
+2. Copy the suggested comment from `docs/issue-investigations/issue-closure-report.md`
 3. Add the comment to the issue
 4. Click "Close issue" and select "Completed" as the reason
 
@@ -63,7 +63,7 @@ gh issue close <issue_number> --reason completed
 
 ## Detailed Analysis
 
-See `.tmp/issue-closure-report.md` for:
+See `docs/issue-investigations/issue-closure-report.md` for:
 - Complete analysis of each issue
 - Evidence of fixes (PR links, commits, file references)
 - Full suggested comments

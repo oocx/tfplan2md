@@ -112,6 +112,101 @@ TUnit uses source-generator based discovery with the following configuration:
 
 ## Test Types
 
+### Architecture Tests
+
+Architecture tests automatically enforce layer boundaries and dependency rules to prevent architectural drift and maintain clean separation of concerns.
+
+**Purpose:** Prevent unintended coupling between layers, document architectural rules as executable tests, and catch boundary violations during PR validation before merge.
+
+**Test Location:** `src/tests/Oocx.TfPlan2Md.TUnit/Architecture/ArchitectureBoundaryTests.cs`
+
+**Technology:** [NetArchTest.Rules](https://github.com/BenMorris/NetArchTest) 1.3.2 - A lightweight, test-framework agnostic library for architecture testing in .NET
+
+**Documentation:** See [docs/architecture-rules.md](architecture-rules.md) for complete list of layer definitions, dependency rules, and rationale.
+
+#### What Architecture Tests Do
+
+Architecture tests analyze compiled assemblies using .NET reflection to verify:
+
+1. **Layer Dependency Rules** - Enforce which namespaces can depend on which others:
+   - ✅ `Parsing` layer must NOT depend on `MarkdownGeneration` (prevents circular dependencies)
+   - ✅ `Platforms` layer CAN depend on `MarkdownGeneration` (platform-specific rendering uses infrastructure)
+   - ✅ `MarkdownGeneration` layer must NOT depend on `Providers` (general rendering independent of specific providers)
+   - And 7 other dependency rules covering all architectural layers
+
+2. **Naming Conventions** - Verify consistent naming across the codebase:
+   - Exception classes must end with `Exception` suffix
+   - Test classes must end with `Tests` suffix
+   - Interface names must start with `I` prefix
+
+#### Running Architecture Tests
+
+```bash
+# Run all architecture tests
+scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/ArchitectureBoundaryTests/*
+
+# Run specific test
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/ArchitectureBoundaryTests/Parsing_ShouldNotDependOn_MarkdownGeneration
+```
+
+#### When They Run
+
+- **Locally:** Part of standard `dotnet test` command
+- **CI:** Run automatically on every PR as part of the test suite in `pr-validation.yml`
+- **Execution Time:** ~3 seconds (well under 10-second target)
+
+#### How Developers Interact with Architecture Tests
+
+**If a test fails:**
+
+1. **Read the error message** - Architecture tests provide clear, actionable error messages with:
+   - Rule statement: What architectural principle was violated
+   - Rationale: Why this rule exists
+   - Violations: Specific types that violate the rule
+   - Guidance: Link to [docs/architecture-rules.md](architecture-rules.md)
+   - ADR reference: [ADR-007](adr-007-architecture-boundary-enforcement.md)
+
+2. **Understand the violation** - Review [docs/architecture-rules.md](architecture-rules.md) to understand the layer structure and allowed dependencies
+
+3. **Fix the violation** - Refactor your code to respect architectural boundaries:
+   - Move code to the appropriate layer
+   - Remove the forbidden dependency
+   - Use allowed dependencies instead
+
+4. **Re-run tests** - Verify the violation is fixed: `dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/`
+
+**Example Error Message:**
+
+```
+Architecture Violation Detected
+
+Rule: Parsing layer must not depend on MarkdownGeneration
+Violations:
+  - Oocx.TfPlan2Md.Parsing.TerraformPlanParser -> Oocx.TfPlan2Md.MarkdownGeneration.MarkdownRenderer
+
+Rationale: Parsing is a core domain layer responsible for converting Terraform JSON into strongly-typed
+domain models. It must remain independent of rendering concerns to maintain testability and prevent
+circular dependencies.
+
+See docs/architecture-rules.md for complete layer definitions and guidance on architectural boundaries.
+Related: docs/adr-007-architecture-boundary-enforcement.md
+```
+
+#### Known Exemptions
+
+4 files have documented exemptions for architectural violations that require refactoring:
+- 1 file: `Parsing → Platforms` (JSON source generation limitation)
+- 3 files: `MarkdownGeneration → Providers` (AOT script mapping needs refactoring)
+
+These exemptions are documented in the test file with clear justification comments. Tests fail for NEW violations only.
+
+#### References
+
+- **Layer Definitions:** [docs/architecture-rules.md](architecture-rules.md)
+- **ADR:** [ADR-007: Architecture Boundary Enforcement](adr-007-architecture-boundary-enforcement.md)
+- **Feature Spec:** [Feature 066 Specification](features/066-architecture-boundary-enforcement/specification.md)
+- **NetArchTest.Rules:** [GitHub Repository](https://github.com/BenMorris/NetArchTest)
+
 ### Unit Tests
 
 Test individual components in isolation to verify correct behavior of parsing, model building, markdown rendering, and CLI argument parsing.

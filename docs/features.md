@@ -465,6 +465,52 @@ This is a development tool only, explicitly **not** for production use:
 - Not distributed in Docker images (source-only tool)
 - Not intended for CI/CD pipeline integration
 
+## Architecture Boundary Enforcement
+
+**Status:** ✅ Implemented  
+**Since:** Feature 066  
+**Specification:** [Feature 066](features/066-architecture-boundary-enforcement/specification.md)
+
+Automated enforcement of architectural layer boundaries using architecture tests. The tfplan2md codebase has clear namespace organization (CLI, Parsing, MarkdownGeneration, Platforms, Providers) representing distinct architectural layers. Architecture tests automatically verify dependency rules between these layers to prevent architectural drift and maintain clean separation of concerns.
+
+### Features
+
+- **Automated boundary enforcement** - Architecture tests run in CI with every PR to catch violations before merge
+- **14 architecture rules** - 7 forbidden dependencies + 4 allowed dependencies (documentation) + 3 naming conventions
+- **Clear error messages** - Test failures include rule statement, rationale, violations, and links to guidance
+- **Fast execution** - All tests complete in ~3 seconds
+- **Living documentation** - Rules are documented as executable tests that serve as architectural documentation
+- **Known exemptions** - 8 files with documented exemptions for violations requiring refactoring
+
+### Layer Dependency Rules
+
+Key architectural rules enforced by tests:
+
+- ✅ **Parsing** layer must NOT depend on `MarkdownGeneration` (prevents circular dependencies)
+- ✅ **Platforms** layer CAN depend on `MarkdownGeneration` (platform-specific rendering uses general infrastructure)
+- ✅ **MarkdownGeneration** layer must NOT depend on `Providers` (general rendering independent of specific providers)
+- ✅ Exception classes must end with `Exception` suffix (naming convention)
+
+### Usage
+
+Architecture tests run automatically as part of standard test execution:
+
+```bash
+# Run all tests (includes architecture tests)
+dotnet test
+
+# Run only architecture tests
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/ArchitectureBoundaryTests/*
+```
+
+### Documentation
+
+- **Architecture Rules:** [docs/architecture-rules.md](architecture-rules.md) - Complete list of layer definitions and dependency rules
+- **ADR:** [ADR-007](adr-007-architecture-boundary-enforcement.md) - Technical decision rationale
+- **Test Location:** `src/tests/Oocx.TfPlan2Md.TUnit/Architecture/ArchitectureBoundaryTests.cs`
+
+This is an **internal infrastructure feature** for maintainers and contributors - it does not affect tfplan2md's functionality or user-facing behavior.
+
 ## Markdown Quality Validation
 
 **Status:** ✅ Implemented (v0.26.0+)

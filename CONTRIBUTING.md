@@ -39,6 +39,7 @@ All changes must include appropriate tests. The project uses a comprehensive tes
 5. **Template Isolation Tests** - Test each template independently
 6. **Fuzz Tests** - Test with edge-case inputs (special characters, Unicode, long values)
 7. **Markdownlint Integration** - Docker-based linting with actual markdownlint-cli2
+8. **Architecture Tests** - Automated enforcement of layer boundaries and dependency rules
 
 ### Running Tests
 
@@ -49,7 +50,32 @@ dotnet test
 # Run specific test categories
 dotnet test --filter "FullyQualifiedName~MarkdownInvariantTests"
 dotnet test --filter "FullyQualifiedName~MarkdownLintIntegrationTests"
+
+# Run architecture tests
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/ArchitectureBoundaryTests/*
 ```
+
+### Architecture Rules
+
+The codebase follows strict architectural layer boundaries that are automatically enforced by architecture tests:
+
+**If architecture tests fail:**
+
+1. **Read the error message** - Tests provide clear guidance on which rule was violated and why
+2. **Review [docs/architecture-rules.md](docs/architecture-rules.md)** - Understand the layer structure and allowed dependencies
+3. **Fix the violation** - Refactor your code to respect architectural boundaries:
+   - Move code to the appropriate layer
+   - Remove forbidden dependencies
+   - Use allowed dependencies instead
+
+**Key architectural rules:**
+
+- **Parsing** layer must NOT depend on `MarkdownGeneration` (prevents circular dependencies)
+- **Platforms** layer must NOT depend on `MarkdownGeneration` (keeps metadata independent)
+- **MarkdownGeneration** layer must NOT depend on `Providers` (general rendering independent of specific providers)
+- Exception classes must end with `Exception` suffix
+
+See [docs/architecture-rules.md](docs/architecture-rules.md) for complete layer definitions and dependency rules.
 
 ### Markdown Quality Requirements
 

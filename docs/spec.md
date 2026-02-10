@@ -91,6 +91,7 @@ The goal of this tool is to help DevOps and infrastructure teams easily review T
 - **Analyzers**: Microsoft.CodeAnalysis.NetAnalyzers with `TreatWarningsAsErrors`
 - **Code Metrics**: Automated enforcement of cyclomatic complexity (≤15), maintainability index (≥20), line length (≤160), and file length (~300 lines)
 - **Code Style**: Enforced via `.editorconfig` and `dotnet format`
+- **Architecture Enforcement**: Automated architecture tests verify layer boundaries and dependency rules (see [docs/architecture-rules.md](architecture-rules.md))
 - **Pre-commit Hooks**: [Husky.Net](https://github.com/alirezanet/Husky.Net) runs format check and build before commit
 - **Dependency Updates**: Dependabot configured for NuGet, Docker, and GitHub Actions
 - **Suppression Policy**: Quality metric violations require explicit `SuppressMessage` attributes with justification and maintainer approval (see [docs/commenting-guidelines.md](commenting-guidelines.md))

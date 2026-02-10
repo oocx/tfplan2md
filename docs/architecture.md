@@ -1260,6 +1260,7 @@ All significant architecture decisions are documented as ADRs:
 | [ADR-002](features/000-initial-project-setup/architecture.md#adr-002-use-net-chiseled-distroless-docker-image) | Use .NET Chiseled (Distroless) Docker Image | Superseded by Feature 037 |
 | [ADR-003](features/000-initial-project-setup/architecture.md#adr-003-use-modern-c-13-patterns) | Use Modern C# 13 Patterns | Accepted |
 | [ADR-004](features/000-initial-project-setup/architecture.md#adr-004-use-css-layers-for-example-style-isolation) | Use CSS Layers for Example Style Isolation | Accepted |
+| [ADR-007](adr-007-architecture-boundary-enforcement.md) | Architecture Boundary Enforcement with Tests | Accepted |
 
 ---
 
@@ -1297,6 +1298,7 @@ All significant architecture decisions are documented as ADRs:
 |-------------|----------------|
 | **Code style enforcement** | `.editorconfig`, `dotnet format`, pre-commit hooks; comprehensive style guide in docs/commenting-guidelines.md |
 | **Test coverage** | Comprehensive unit, integration, snapshot, fuzz tests |
+| **Architecture enforcement** | Automated architecture tests verify layer boundaries and dependency rules (docs/architecture-rules.md) |
 | **Documentation** | XML doc comments on all members (including private), arc42 architecture doc |
 | **Automated versioning** | Conventional Commits + Versionize |
 

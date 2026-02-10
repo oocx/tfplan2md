@@ -52,8 +52,13 @@ Child resources should be rendered as rows in a table within the parent resource
    - Render child resources as table rows within parent sections
    - Include change indicators (➕, 🔄, ❌, ⏺️) for each child
    - Show Terraform resource address for separate child resources
-   - Indicate `(inline)` source for children from parent attributes
+   - For children from inline attributes, show the inline attribute name in the "Terraform Resource" column (e.g., `members` attribute)
    - Handle mixed scenarios (both inline and separate children for same parent)
+
+4. **Static Code Analysis Findings for Merged Children**
+   - If static code analysis findings are mapped to a child resource address that is rendered inline (i.e., the child does not have its own standalone section), the findings MUST still be displayed within the parent resource section
+   - The findings display MUST preserve the original Terraform resource address for each finding (so users can attribute findings to the correct resource even when it is rendered inline)
+   - Report-level sections such as "Code Analysis Summary" and "Other Findings" continue to behave as they do today (this feature only defines where mapped child findings appear when the child resource section is merged)
 
 #### Initial Implementation Targets
 
@@ -139,6 +144,8 @@ These will be added incrementally in future releases once the architecture is pr
 
 **Scenario:** User reviews a plan that modifies NSG rules (adds 2, removes 1, modifies 1).
 
+**Note:** This scenario is illustrative for a future follow-up feature and is out of scope for the initial implementation targets of Feature 068.
+
 **Current Experience:**
 - Separate sections for the NSG and each rule resource
 - Must cross-reference rule names with the parent NSG
@@ -154,14 +161,18 @@ These will be added incrementally in future releases once the architecture is pr
 
 **Scenario:** A plan contains a virtual network with subnets defined both inline and as separate resources (during a migration).
 
+**Note:** This scenario is illustrative for a future follow-up feature and is out of scope for the initial implementation targets of Feature 068.
+
 **Experience:**
 - Table shows all subnets together
-- "Terraform Resource" column shows `azurerm_subnet.xyz` for separate, `(inline)` for inline
+- "Terraform Resource" column shows `azurerm_subnet.xyz` for separate, and the inline attribute name for inline (e.g., `subnet` attribute)
 - Warning message indicates potential conflict: "This resource has children managed both inline and as separate resources"
 
 ### Table Column Overflow
 
 **Scenario:** A child resource has many attributes that don't fit well in a table.
+
+**Note:** This scenario is illustrative for a future follow-up feature and is out of scope for the initial implementation targets of Feature 068.
 
 **Experience:**
 - Essential attributes shown in table columns
@@ -176,14 +187,16 @@ These will be added incrementally in future releases once the architecture is pr
 - [ ] **Inline Rendering**: The 5 initial target resources (firewall rules x2, azuread groups, azuredevops groups, azuredevops teams) render children inline as tables
 - [ ] **Change Indicators**: Tables include change indicators (➕, 🔄, ❌, ⏺️) for each child resource
 - [ ] **Resource Address**: Separate child resources show their Terraform address in the table
-- [ ] **Inline Source**: Children from inline attributes are marked as `(inline)` in the table
+- [ ] **Inline Source**: Children from inline attributes show the inline attribute name in the table (e.g., `members` attribute)
 - [ ] **Mixed Handling**: Plans with both inline and separate children show warning and render both
 - [ ] **Formatting**: All table values use existing formatting (emojis, highlighting, truncation)
 - [ ] **Summary Line**: Parent resource summary line includes child change counts
+- [ ] **Merged-Child Findings**: Findings mapped to inlined/merged child resources are displayed within the parent resource section while preserving the child resource address
 
 ### Quality Requirements
 
 - [ ] **Snapshot Tests**: Updated snapshot tests demonstrate the inline rendering for all target resources
+- [ ] **UAT Test Coverage**: UAT test report covers the in-scope scenarios from `rendering-examples.md` (Examples 1–6A) and is used to generate a new snapshot test
 - [ ] **Example Artifacts**: Demo artifacts in `artifacts/` folder show realistic examples
 - [ ] **Documentation**: Catalog and rendering examples are complete and accurate
 - [ ] **Architecture**: Code structure makes it easy to add new parent-child patterns
@@ -213,7 +226,9 @@ After this feature is implemented, future features can:
 
 ## Open Questions
 
-*None - all requirements clarified during requirements gathering.*
+*None.*
+
+**Resolved Decision:** Examples 7–10 in `rendering-examples.md` are illustrative for future follow-up features. UAT report + snapshot coverage for Feature 068 initial implementation is required for Examples 1–6A only.
 
 ---
 

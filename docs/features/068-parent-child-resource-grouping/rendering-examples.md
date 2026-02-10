@@ -4,6 +4,8 @@ This document shows example markdown output for parent-child resources with inli
 
 **Note:** Examples are shown as raw markdown (not in code blocks) for easy copy/paste into Azure DevOps PRs.
 
+**Scope Note:** Examples 1–6A match the initial implementation targets for Feature 068 and are required for UAT report + snapshot coverage. Examples 7–10 are illustrative only (out of scope for the initial implementation) and document the intended direction for future follow-up features.
+
 ---
 
 ## Example 1: azuread_group with Inline Members (Create)
@@ -11,14 +13,14 @@ This document shows example markdown output for parent-child resources with inli
 **Scenario:** Creating a new Azure AD group with members defined inline via the `members` attribute.
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azuread_group <b><code>engineering</code></b> — <code>🆔 Engineering Team</code></summary>
+<summary>➕ azuread_group <b><code>engineering</code></b> — <code>🆔 Engineering Team</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| display_name | `🆔 Engineering Team` |
-| security_enabled | `✅ true` |
-| mail_enabled | `❌ false` |
+| display_name | `🆔 Engineering Team` |
+| security_enabled | `✅ true` |
+| mail_enabled | `❌ false` |
 | description | `Engineering team members` |
 
 #### Members
@@ -44,7 +46,7 @@ This document shows example markdown output for parent-child resources with inli
 **Scenario:** Updating an existing group where members are managed as separate `azuread_group_member` resources.
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azuread_group <b><code>engineering</code></b> — <code>🆔 Engineering Team</code> | 3🔧 ➕ 2 members, ❌ 1 member</summary>
+<summary>🔄 azuread_group <b><code>engineering</code></b> — <code>🆔 Engineering Team</code> | 3🔧 ➕ 2 members, ❌ 1 member</summary>
 <br>
 
 | Attribute | Before | After |
@@ -72,7 +74,7 @@ This document shows example markdown output for parent-child resources with inli
 **Note:**  In reality, Terraform doesn't allow mixing inline and separate members - this would cause conflicts. However, if a plan somehow contains both (e.g., during migration), we should render them clearly.
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azuread_group <b><code>engineering</code></b> — <code>🆔 Engineering Team</code> | Mixed member management detected</summary>
+<summary>🔄 azuread_group <b><code>engineering</code></b> — <code>🆔 Engineering Team</code> | Mixed member management detected</summary>
 <br>
 
 ⚠️ **Warning:** This group has members managed both inline (via `members` attribute) and as separate `azuread_group_member` resources. This configuration will cause conflicts.
@@ -94,13 +96,13 @@ This document shows example markdown output for parent-child resources with inli
 **Scenario:** Creating a new Azure DevOps team with administrators and members defined inline.
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azuredevops_team <b><code>platform_team</code></b> — <code>🆔 Platform Engineering Team</code> in <code>📁 MyProject</code></summary>
+<summary>➕ azuredevops_team <b><code>platform_team</code></b> — <code>🆔 Platform Engineering Team</code> in <code>📁 MyProject</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 Platform Engineering Team` |
-| project_id | `📁 MyProject` |
+| name | `🆔 Platform Engineering Team` |
+| project_id | `📁 MyProject` |
 | description | `Team responsible for platform infrastructure` |
 
 #### Administrators
@@ -128,7 +130,7 @@ This document shows example markdown output for parent-child resources with inli
 **Scenario:** Updating team administrators and members managed as separate resources.
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azuredevops_team <b><code>platform_team</code></b> — <code>🆔 Platform Engineering Team</code> in <code>📁 MyProject</code> | 4🔧 ➕ 1 admin, ❌ 1 member, +2 more</summary>
+<summary>🔄 azuredevops_team <b><code>platform_team</code></b> — <code>🆔 Platform Engineering Team</code> in <code>📁 MyProject</code> | 4🔧 ➕ 1 admin, ❌ 1 member, +2 more</summary>
 <br>
 
 #### Administrator Changes
@@ -159,19 +161,19 @@ This document shows example markdown output for parent-child resources with inli
 **Current Rendering (Before Feature):**
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azuredevops_group <b><code>release_managers</code></b> — <code>🆔 Release Managers</code></summary>
+<summary>➕ azuredevops_group <b><code>release_managers</code></b> — <code>🆔 Release Managers</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| display_name | `🆔 Release Managers` |
+| display_name | `🆔 Release Managers` |
 | description | `Team members who can approve releases` |
-| scope | `📁 vstfs:///Organization/12345678-1234-1234-1234-123456789012` |
+| scope | `📁 vstfs:///Organization/12345678-1234-1234-1234-123456789012` |
 
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azuredevops_group_membership <b><code>release_managers_membership_alice</code></b> — Add member to <code>🆔 Release Managers</code></summary>
+<summary>➕ azuredevops_group_membership <b><code>release_managers_membership_alice</code></b> — Add member to <code>🆔 Release Managers</code></summary>
 <br>
 
 | Attribute | Value |
@@ -182,7 +184,7 @@ This document shows example markdown output for parent-child resources with inli
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azuredevops_group_membership <b><code>release_managers_membership_bob</code></b> — Add member to <code>🆔 Release Managers</code></summary>
+<summary>➕ azuredevops_group_membership <b><code>release_managers_membership_bob</code></b> — Add member to <code>🆔 Release Managers</code></summary>
 <br>
 
 | Attribute | Value |
@@ -195,14 +197,14 @@ This document shows example markdown output for parent-child resources with inli
 **After Feature Implementation (Inline Rendering):**
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azuredevops_group <b><code>release_managers</code></b> — <code>🆔 Release Managers</code> | ➕ 2 members</summary>
+<summary>➕ azuredevops_group <b><code>release_managers</code></b> — <code>🆔 Release Managers</code> | ➕ 2 members</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| display_name | `🆔 Release Managers` |
+| display_name | `🆔 Release Managers` |
 | description | `Team members who can approve releases` |
-| scope | `📁 vstfs:///Organization/12345678-1234-1234-1234-123456789012` |
+| scope | `📁 vstfs:///Organization/12345678-1234-1234-1234-123456789012` |
 
 #### Members
 
@@ -215,37 +217,82 @@ This document shows example markdown output for parent-child resources with inli
 
 ---
 
+## Example 6A: azuread_group with Inline Members and Security Findings
+
+**Scenario:** Creating a new Azure AD group with inline members, where static code analysis has identified security findings for both the parent and one of the child member resources.
+
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ azuread_group <b><code>contractors</code></b> — <code>🆔 External Contractors</code></summary>
+<br>
+
+🔒&nbsp;**Security & Quality:** 🚨&nbsp;1&nbsp;Critical, ⚠️&nbsp;1&nbsp;Medium
+
+| Attribute | Value |
+| ----------- | ------- |
+| display_name | `🆔 External Contractors` |
+| security_enabled | `✅ true` |
+| mail_enabled | `❌ false` |
+| external_senders_allowed | `✅ true` |
+
+#### Members
+
+| Member | Terraform Resource |
+| -------- | -------------------- |
+| `👤 Contractor A (11111111-1111-1111-1111-111111111111)` | `members` attribute |
+| `👤 Contractor B (22222222-2222-2222-2222-222222222222)` | `members` attribute |
+| `👤 High-Risk User (33333333-3333-3333-3333-333333333333)` | `members` attribute |
+
+#### 🔒 Security & Quality Findings for `azuread_group.contractors`
+
+| Severity | Tool | Attribute | Finding | Remediation |
+|----------|------|-----------|---------|-------------|
+| 🚨 Critical | Checkov | external_senders_allowed | External senders should not be allowed for security groups | [Security Best Practices](https://example.com/fix1) |
+
+#### 🔒 Security & Quality Findings for `azuread_group.contractors` (member `33333333-3333-3333-3333-333333333333`)
+
+| Severity | Tool | Attribute | Finding | Remediation |
+|----------|------|-----------|---------|-------------|
+| ⚠️ Medium | Custom Policy | members | High-risk user account added to security group | [Review Access](https://example.com/fix2) |
+
+</details>
+
+**Note:** When child resources are rendered inline (no standalone section), their security findings still appear within the parent resource section. The findings heading preserves the original Terraform resource context (in this case, indicating which member triggered the finding).
+
+---
+
 ## Example 7: azurerm_network_security_group with Mixed Rules
 
 **Scenario:** NSG with some rules inline and some as separate resources (comparison between current and proposed rendering).
 
+**Status:** Illustrative (out of scope for Feature 068 initial implementation).
+
 **Current Rendering (Separate Sections):**
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azurerm_network_security_group <b><code>app_nsg</code></b> — <code>🆔 nsg-app-tier</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code></summary>
+<summary>➕ azurerm_network_security_group <b><code>app_nsg</code></b> — <code>🆔 nsg-app-tier</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 nsg-app-tier` |
-| location | `🌍 eastus` |
-| resource_group_name | `📁 rg-demo` |
+| name | `🆔 nsg-app-tier` |
+| location | `🌍 eastus` |
+| resource_group_name | `📁 rg-demo` |
 
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azurerm_network_security_rule <b><code>allow_https</code></b> — <code>🆔 allow-https-inbound</code> in <code>🆔 nsg-app-tier</code></summary>
+<summary>➕ azurerm_network_security_rule <b><code>allow_https</code></b> — <code>🆔 allow-https-inbound</code> in <code>🆔 nsg-app-tier</code></summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 allow-https-inbound` |
+| name | `🆔 allow-https-inbound` |
 | priority | `100` |
-| direction | `⬇️ Inbound` |
-| access | `✅ Allow` |
-| protocol | `🔗 TCP` |
+| direction | `⬇️ Inbound` |
+| access | `✅ Allow` |
+| protocol | `🔗 TCP` |
 | source_port_range | `✳️` |
-| destination_port_range | `🔌 443` |
+| destination_port_range | `🔌 443` |
 | source_address_prefix | `✳️` |
 | destination_address_prefix | `✳️` |
 
@@ -254,22 +301,22 @@ This document shows example markdown output for parent-child resources with inli
 **Proposed Rendering (Inline Table):**
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azurerm_network_security_group <b><code>app_nsg</code></b> — <code>🆔 nsg-app-tier</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code> | ➕ 3 rules</summary>
+<summary>➕ azurerm_network_security_group <b><code>app_nsg</code></b> — <code>🆔 nsg-app-tier</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code> | ➕ 3 rules</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 nsg-app-tier` |
-| location | `🌍 eastus` |
-| resource_group_name | `📁 rg-demo` |
+| name | `🆔 nsg-app-tier` |
+| location | `🌍 eastus` |
+| resource_group_name | `📁 rg-demo` |
 
 #### Security Rules
 
 | Change | Name | Priority | Direction | Access | Protocol | Source | Dest | Ports | Terraform Resource |
 | -------- | ------ | ---------- | ----------- | -------- | ---------- | -------- | ------ | ------- | -------------------- |
-| ➕ | `🆔 allow-https-inbound` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `🔌 443` | `azurerm_network_security_rule.allow_https` |
-| ➕ | `🆔 allow-http-inbound` | `110` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `🔌 80` | `security_rule` attribute |
-| ➕ | `🆔 deny-all-inbound` | `4096` | `⬇️ Inbound` | `⛔ Deny` | `✳️` | `✳️` | `✳️` | `✳️` | `security_rule` attribute |
+| ➕ | `🆔 allow-https-inbound` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `🔌 443` | `azurerm_network_security_rule.allow_https` |
+| ➕ | `🆔 allow-http-inbound` | `110` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `🔌 80` | `security_rule` attribute |
+| ➕ | `🆔 deny-all-inbound` | `4096` | `⬇️ Inbound` | `⛔ Deny` | `✳️` | `✳️` | `✳️` | `✳️` | `security_rule` attribute |
 
 </details>
 
@@ -279,18 +326,20 @@ This document shows example markdown output for parent-child resources with inli
 
 **Scenario:** Route table with mixed inline and separate routes being updated.
 
+**Status:** Illustrative (out of scope for Feature 068 initial implementation).
+
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_route_table <b><code>app_routes</code></b> — <code>🆔 rt-app-tier</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code> | 3🔧 ➕ 1 route, 🔄 1 route, ❌ 1 route</summary>
+<summary>🔄 azurerm_route_table <b><code>app_routes</code></b> — <code>🆔 rt-app-tier</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code> | 3🔧 ➕ 1 route, 🔄 1 route, ❌ 1 route</summary>
 <br>
 
 #### Route Changes
 
 | Change | Name | Address Prefix | Next Hop Type | Next Hop Address | Terraform Resource |
 | -------- | ------ | ---------------- | --------------- | ------------------ | -------------------- |
-| ➕ | `🆔 to-firewall` | `🌐 0.0.0.0/0` | `VirtualAppliance` | `🌐 10.0.1.4` | `azurerm_route.to_firewall` |
-| 🔄 | `🆔 to-onprem` | `🌐 10.20.0.0/16` | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- VPN Gateway</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ VirtualNetworkGateway</span></code> | - | `route` attribute |
-| ❌ | `🆔 old-route` | `🌐 10.30.0.0/16` | `VnetLocal` | - | `azurerm_route.old_route` |
-| ⏺️ | `🆔 to-vnet` | `🌐 10.0.0.0/8` | `VnetLocal` | - | `route` attribute |
+| ➕ | `🆔 to-firewall` | `🌐 0.0.0.0/0` | `VirtualAppliance` | `🌐 10.0.1.4` | `azurerm_route.to_firewall` |
+| 🔄 | `🆔 to-onprem` | `🌐 10.20.0.0/16` | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- VPN Gateway</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ VirtualNetworkGateway</span></code> | - | `route` attribute |
+| ❌ | `🆔 old-route` | `🌐 10.30.0.0/16` | `VnetLocal` | - | `azurerm_route.old_route` |
+| ⏺️ | `🆔 to-vnet` | `🌐 10.0.0.0/8` | `VnetLocal` | - | `route` attribute |
 
 </details>
 
@@ -300,23 +349,25 @@ This document shows example markdown output for parent-child resources with inli
 
 **Scenario:** Virtual network with subnets showing both simple and complex changes.
 
+**Status:** Illustrative (out of scope for Feature 068 initial implementation).
+
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_virtual_network <b><code>hub_vnet</code></b> — <code>🆔 vnet-hub</code> in <code>📁 rg-network</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code> | 4🔧 ➕ 1 subnet, 🔄 1 subnet, +2 more</summary>
+<summary>🔄 azurerm_virtual_network <b><code>hub_vnet</code></b> — <code>🆔 vnet-hub</code> in <code>📁 rg-network</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code> | 4🔧 ➕ 1 subnet, 🔄 1 subnet, +2 more</summary>
 <br>
 
 | Attribute | Before | After |
 | ----------- | -------- | ------- |
-| address_space[1] | - | `🌐 10.1.0.0/16` |
+| address_space[1] | - | `🌐 10.1.0.0/16` |
 
 #### Subnet Changes
 
 | Change | Name | Address Prefixes | NSG | Terraform Resource |
 | -------- | ------ | ------------------ | ----- | -------------------- |
-| ➕ | `🆔 snet-firewall` | `🌐 10.0.3.0/24` | - | `azurerm_subnet.firewall` |
-| 🔄 | `🆔 snet-app` | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- 🌐 10.0.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ 🌐 10.0.1.0/23</span></code> | `🛡️ nsg-app` | `subnet` attribute |
-| ⏺️ | `🆔 snet-data` | `🌐 10.0.2.0/24` | `🛡️ nsg-data` | `subnet` attribute |
+| ➕ | `🆔 snet-firewall` | `🌐 10.0.3.0/24` | - | `azurerm_subnet.firewall` |
+| 🔄 | `🆔 snet-app` | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- 🌐 10.0.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ 🌐 10.0.1.0/23</span></code> | `🛡️ nsg-app` | `subnet` attribute |
+| ⏺️ | `🆔 snet-data` | `🌐 10.0.2.0/24` | `🛡️ nsg-data` | `subnet` attribute |
 
-**🏷️ DNS Servers:** `🌐 10.0.0.4`, `🌐 10.0.0.5`
+**🏷️ DNS Servers:** `🌐 10.0.0.4`, `🌐 10.0.0.5`
 
 </details>
 
@@ -326,61 +377,63 @@ This document shows example markdown output for parent-child resources with inli
 
 **Scenario:** Virtual network with subnets that have many attributes set (delegation, service endpoints, policies, etc.) - too many to fit in a readable table row.
 
+**Status:** Illustrative (out of scope for Feature 068 initial implementation).
+
 **Rendering Strategy:** For subnets with many attributes, provide BOTH:
 1. A horizontal table showing all key attributes at-a-glance (with complex attributes formatted inline)
 2. Expandable details sections below for full context and easy navigation
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>➕ azurerm_virtual_network <b><code>enterprise_vnet</code></b> — <code>🆔 vnet-enterprise</code> in <code>📁 rg-network</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code> | ➕ 2 subnets</summary>
+<summary>➕ azurerm_virtual_network <b><code>enterprise_vnet</code></b> — <code>🆔 vnet-enterprise</code> in <code>📁 rg-network</code> <code>🌍 eastus</code> <code>🌐 10.0.0.0/16</code> | ➕ 2 subnets</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 vnet-enterprise` |
-| location | `🌍 eastus` |
-| resource_group_name | `📁 rg-network` |
-| address_space | `🌐 10.0.0.0/16` |
+| name | `🆔 vnet-enterprise` |
+| location | `🌍 eastus` |
+| resource_group_name | `📁 rg-network` |
+| address_space | `🌐 10.0.0.0/16` |
 
 #### Subnets
 
 | Change | Name | Address | Delegation | Service Endpoints | Endpoint Policies | Private Endpoint Policies | Terraform Resource |
 | -------- | ------ | --------- | ------------ | ------------------- | ------------------- | --------------------------- | -------------------- |
-| ➕ | `🆔 snet-aks` | `🌐 10.0.1.0/24` | `aks-delegation` delegates `Microsoft.Network/virtualNetworks/subnets/join/action` to `Microsoft.ContainerService/managedClusters` | `Microsoft.ContainerRegistry`, `Microsoft.Storage`, `Microsoft.Sql`, `Microsoft.KeyVault` | - | `Disabled` | `subnet` attribute |
-| ➕ | `🆔 snet-webapp` | `🌐 10.0.2.0/24` | `webapp-delegation` delegates `Microsoft.Network/virtualNetworks/subnets/action` to `Microsoft.Web/serverFarms` | `Microsoft.Storage`, `Microsoft.KeyVault`, `Microsoft.Web` | Service Endpoint Policy `🔗 policy-storage` in resource group `📁 rg-network` of subscription `🔑 sub-id` | `Enabled` | `azurerm_subnet.webapp` |
+| ➕ | `🆔 snet-aks` | `🌐 10.0.1.0/24` | `aks-delegation` delegates `Microsoft.Network/virtualNetworks/subnets/join/action` to `Microsoft.ContainerService/managedClusters` | `Microsoft.ContainerRegistry`, `Microsoft.Storage`, `Microsoft.Sql`, `Microsoft.KeyVault` | - | `Disabled` | `subnet` attribute |
+| ➕ | `🆔 snet-webapp` | `🌐 10.0.2.0/24` | `webapp-delegation` delegates `Microsoft.Network/virtualNetworks/subnets/action` to `Microsoft.Web/serverFarms` | `Microsoft.Storage`, `Microsoft.KeyVault`, `Microsoft.Web` | Service Endpoint Policy `policy-storage` in resource group `📁 rg-network` of subscription `🔑 sub-id` | `Enabled` | `azurerm_subnet.webapp` |
 
 **Subnet Details:**
 
-<details style="margin-left: 20px; margin-bottom: 8px; border-left: 3px solid #28a745; padding-left: 12px;">
-<summary>➕ <b><code>🆔 snet-aks</code></b> (<code>🌐 10.0.1.0/24</code>) — AKS cluster subnet with delegation</summary>
+<details style="margin-left:20px; margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ <b><code>🆔 snet-aks</code></b> (<code>🌐 10.0.1.0/24</code>) — AKS cluster subnet with delegation</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 snet-aks` |
-| address_prefixes | `🌐 10.0.1.0/24` |
-| default_outbound_access_enabled | `✅ true` |
+| name | `🆔 snet-aks` |
+| address_prefixes | `🌐 10.0.1.0/24` |
+| default_outbound_access_enabled | `✅ true` |
 | private_endpoint_network_policies | `Disabled` |
-| private_link_service_network_policies_enabled | `✅ true` |
+| private_link_service_network_policies_enabled | `✅ true` |
 | delegation | `aks-delegation` delegates `Microsoft.Network/virtualNetworks/subnets/join/action` to `Microsoft.ContainerService/managedClusters` |
 | service_endpoints | `Microsoft.ContainerRegistry`, `Microsoft.Storage`, `Microsoft.Sql`, `Microsoft.KeyVault` |
 
 </details>
 
-<details style="margin-left: 20px; margin-bottom: 8px; border-left: 3px solid #28a745; padding-left: 12px;">
-<summary>➕ <b><code>🆔 snet-webapp</code></b> (<code>🌐 10.0.2.0/24</code>) — Web app subnet with service delegation</summary>
+<details style="margin-left:20px; margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ <b><code>🆔 snet-webapp</code></b> (<code>🌐 10.0.2.0/24</code>) — Web app subnet with service delegation</summary>
 <br>
 
 | Attribute | Value |
 | ----------- | ------- |
-| name | `🆔 snet-webapp` |
-| address_prefixes | `🌐 10.0.2.0/24` |
-| default_outbound_access_enabled | `❌ false` |
+| name | `🆔 snet-webapp` |
+| address_prefixes | `🌐 10.0.2.0/24` |
+| default_outbound_access_enabled | `❌ false` |
 | private_endpoint_network_policies | `Enabled` |
-| private_link_service_network_policies_enabled | `✅ true` |
+| private_link_service_network_policies_enabled | `✅ true` |
 | sharing_scope | `Tenant` |
 | delegation | `webapp-delegation` delegates `Microsoft.Network/virtualNetworks/subnets/action` to `Microsoft.Web/serverFarms` |
 | service_endpoints | `Microsoft.Storage`, `Microsoft.KeyVault`, `Microsoft.Web` |
-| service_endpoint_policy_ids | Service Endpoint Policy `🔗 policy-storage` in resource group `📁 rg-network` of subscription `🔑 sub-id` |
+| service_endpoint_policy_ids | Service Endpoint Policy `policy-storage` in resource group `📁 rg-network` of subscription `🔑 sub-id` |
 
 </details>
 
@@ -415,7 +468,7 @@ This document shows example markdown output for parent-child resources with inli
 ### Summary Line Updates
 
 When parent resources have inlined children, the summary line should indicate:
-- Change counts for children (e.g., "➕ 2 members, ❌ 1 member")
+- Change counts for children (e.g., "➕ 2 members, ❌ 1 member")
 - Use "+N more" pattern when there are many changes
 
 ### Table Column Design
@@ -443,7 +496,7 @@ When parent resources have inlined children, the summary line should indicate:
 **Format complex attributes in tables as:**
 - **Service endpoints:** Comma-separated list (e.g., `Microsoft.Storage`, `Microsoft.KeyVault`)
 - **Delegation:** "`name` delegates `comma-separated actions` to `service name`"
-- **Resource ID references (policies, etc.):** Use readable Azure resource ID format (Feature 019) - e.g., `Service Endpoint Policy` `🔗 policy-storage` in resource group `📁 rg-network` of subscription `🔑 sub-id`
+- **Resource ID references (policies, etc.):** Use readable Azure resource ID format (Feature 019) - e.g., Service Endpoint Policy `policy-storage` in resource group `📁 rg-network` of subscription `🔑 sub-id`
 
 Both table and expandable details can coexist for the same child resources, providing different views for different user needs.
 

@@ -123,6 +123,12 @@ public class ResourceChangeModel
     public VariableGroupViewModel? VariableGroup { get; set; }
 
     /// <summary>
+    /// Gets or sets the child resource groups rendered inline within this parent.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    public IReadOnlyList<ChildResourceGroup> ChildResourceGroups { get; set; } = [];
+
+    /// <summary>
     /// Gets or sets the code analysis findings associated with this resource.
     /// Related feature: docs/features/056-static-analysis-integration/specification.md.
     /// </summary>

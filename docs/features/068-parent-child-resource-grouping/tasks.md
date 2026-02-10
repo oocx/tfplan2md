@@ -72,12 +72,12 @@ Implement the core merging logic in `ReportModelBuilder.Build()` that identifies
 Create the shared Scriban template partial for rendering the child resource table and update the main template to include it.
 
 **Acceptance Criteria:**
-- [ ] `_child_resources.sbn` partial created with standardized table layout (Change, [Columns], Terraform Resource).
-- [ ] Mixed management warning included in the template.
-- [ ] Base/default template updated to include `_child_resources.sbn` if `ChildResourceGroups` is not empty.
-- [ ] Change indicators (emojis) correctly rendered in the first column (TC-05).
-- [ ] Table cell formatting goes through the existing formatting pipeline (icons/formatters/truncation) rather than bespoke string formatting (TC-09).
-- [ ] Findings rendered within the parent resource section still show the original child address they apply to (Scenario 3).
+- [x] `_child_resources.sbn` partial created with standardized table layout (Change, [Columns], Terraform Resource).
+- [x] Mixed management warning included in the template.
+- [x] Base/default template updated to include `_child_resources.sbn` if `ChildResourceGroups` is not empty.
+- [x] Change indicators (emojis) correctly rendered in the first column (TC-05).
+- [x] Table cell formatting goes through the existing formatting pipeline (icons/formatters/truncation) rather than bespoke string formatting (TC-09).
+- [x] Findings rendered within the parent resource section still show the original child address they apply to (Scenario 3).
 
 **Dependencies:** Task 1
 
@@ -91,10 +91,10 @@ Create the shared Scriban template partial for rendering the child resource tabl
 Register the relationship for `azuread_group` and implement the `IChildRowExtractor` for group members.
 
 **Acceptance Criteria:**
-- [ ] `azuread_group` relationship registered in `AzureAdProviderModule`.
-- [ ] `AzureAdGroupMemberExtractor` implemented to format member object IDs.
-- [ ] Test data JSON added for `azuread_group` scenarios (from Test Plan “Test Data Requirements”).
-- [ ] Snapshot test for `azuread_group` with separate and inline members (TC-02).
+- [x] `azuread_group` relationship registered in `AzureAdProviderModule`.
+- [x] `AzureAdGroupMemberExtractor` implemented to format member object IDs.
+- [x] Test data JSON added for `azuread_group` scenarios (from Test Plan “Test Data Requirements”).
+- [x] Snapshot test for `azuread_group` with separate and inline members (TC-02).
 
 **Dependencies:** Task 3, Task 4
 
@@ -108,11 +108,11 @@ Register the relationship for `azuread_group` and implement the `IChildRowExtrac
 Register relationships for `azuredevops_group` and `azuredevops_team` and implement the row extractors.
 
 **Acceptance Criteria:**
-- [ ] `azuredevops_group` relationship registered in `AzureDevOpsProviderModule`.
-- [ ] `azuredevops_team` relationships (administrators and members) registered.
-- [ ] `AzureDevOpsMemberExtractor` implemented to format member descriptors.
-- [ ] Test data JSON added for `azuredevops_group` and `azuredevops_team` scenarios (from Test Plan “Test Data Requirements”).
-- [ ] Snapshot tests for group and team rendering (TC-03, TC-04).
+- [x] `azuredevops_group` relationship registered in `AzureDevOpsProviderModule`.
+- [x] `azuredevops_team` relationships (administrators and members) registered.
+- [x] `AzureDevOpsMemberExtractor` implemented to format member descriptors.
+- [x] Test data JSON added for `azuredevops_group` and `azuredevops_team` scenarios (from Test Plan “Test Data Requirements”).
+- [x] Snapshot tests for group and team rendering (TC-03, TC-04).
 
 ---
 
@@ -124,12 +124,12 @@ Register relationships for `azuredevops_group` and `azuredevops_team` and implem
 Add explicit handling and test coverage for edge cases listed in the test plan and ensure the merging step does not introduce a noticeable slowdown.
 
 **Acceptance Criteria:**
-- [ ] Child references non-existent parent → child remains a separate section / is not merged (TC-E1).
-- [ ] Circular parent-child / unexpected relationship graph → no crash, no infinite loop (TC-E2).
-- [ ] Parent has no children → no child tables rendered, summary line unchanged (TC-E3).
-- [ ] Inline attribute is empty → no child table rendered for that group (TC-E4).
-- [ ] Child has null / missing attributes → extractor handles nulls gracefully (TC-E5).
-- [ ] Merging implementation uses indexed lookups (no repeated full scans per parent) and includes a lightweight performance check consistent with the repo’s testing approach (NFR: no measurable degradation).
+- [x] Child references non-existent parent → child remains a separate section / is not merged (TC-E1).
+- [x] Circular parent-child / unexpected relationship graph → no crash, no infinite loop (TC-E2).
+- [x] Parent has no children → no child tables rendered, summary line unchanged (TC-E3).
+- [x] Inline attribute is empty → no child table rendered for that group (TC-E4).
+- [x] Child has null / missing attributes → extractor handles nulls gracefully (TC-E5).
+- [x] Merging implementation uses indexed lookups (no repeated full scans per parent) and includes a lightweight performance check consistent with the repo’s testing approach (NFR: no measurable degradation).
 
 **Dependencies:** Task 3
 

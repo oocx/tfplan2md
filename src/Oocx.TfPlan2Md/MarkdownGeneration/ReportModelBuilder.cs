@@ -34,7 +34,7 @@ internal partial class ReportModelBuilder(
     Platforms.Azure.IPrincipalMapper? principalMapper = null,
     IMetadataProvider? metadataProvider = null,
     bool hideMetadata = false,
-    Providers.ProviderRegistry? providerRegistry = null,
+    Services.ProviderRegistry? providerRegistry = null,
     CodeAnalysisInput? codeAnalysisInput = null,
     MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
 {
@@ -125,7 +125,7 @@ internal partial class ReportModelBuilder(
     private static ResourceViewModelFactoryRegistry CreateFactoryRegistry(
         LargeValueFormat largeValueFormat,
         Platforms.Azure.IPrincipalMapper principalMapper,
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         var registry = new ResourceViewModelFactoryRegistry(largeValueFormat, principalMapper);
 
@@ -142,7 +142,7 @@ internal partial class ReportModelBuilder(
     /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
     /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
     private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         if (providerRegistry is null)
         {
@@ -161,7 +161,7 @@ internal partial class ReportModelBuilder(
     /// <param name="providerRegistry">The provider registry to pull value formatters from.</param>
     /// <returns>The populated value formatter registry, or null when no providers are registered.</returns>
     private static MarkdownGeneration.Services.ValueFormatterRegistry? CreateValueFormatterRegistry(
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         if (providerRegistry is null)
         {
@@ -179,7 +179,7 @@ internal partial class ReportModelBuilder(
     /// <param name="providerRegistry">Optional provider registry to register relationships from.</param>
     /// <returns>The populated parent-child relationship registry.</returns>
     private static ParentChildRelationshipRegistry CreateParentChildRelationshipRegistry(
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         var registry = new ParentChildRelationshipRegistry();
         providerRegistry?.RegisterAllParentChildRelationships(registry);

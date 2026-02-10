@@ -102,7 +102,7 @@ public class ArchitectureBoundaryTests
     /// <summary>
     /// Verifies that the MarkdownGeneration layer does not depend on Providers.
     /// General rendering logic should not depend on specific providers.
-    /// Known exemptions: 3 AOT script mapping files that need refactoring.
+    /// Known exemption: LargeValueSummary uses AOT script object mapping that needs refactoring.
     /// </summary>
     [Test]
     public void MarkdownGeneration_ShouldNotDependOn_Providers()
@@ -110,8 +110,6 @@ public class ArchitectureBoundaryTests
         var result = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
             .And().DoNotHaveNameMatching("LargeValueSummary")      // Exempt: AOT script object mapping, needs refactoring (Issue #TBD)
-            .And().DoNotHaveNameMatching("ResourceChangeModel")    // Exempt: AOT script object mapping, needs refactoring (Issue #TBD)
-            .And().DoNotHaveNameMatching("AotScriptObjectMapper")  // Exempt: AOT script object mapping, needs refactoring (Issue #TBD)
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Providers")
             .GetResult();
 
@@ -119,7 +117,7 @@ public class ArchitectureBoundaryTests
         {
             throw new AssertionException(CreateViolationMessage(
                 "MarkdownGeneration layer must not depend on Providers",
-                "General rendering logic should not depend on specific providers. Provider-specific rendering should happen in the Providers layer. Exemptions: 3 files use AOT script mapping that needs to be refactored to provider self-registration.",
+                "General rendering logic should not depend on specific providers. Provider-specific rendering should happen in the Providers layer. Exemption: LargeValueSummary uses AOT script mapping that needs to be refactored to provider self-registration.",
                 result.FailingTypes));
         }
     }

@@ -29,9 +29,10 @@ internal class MarkdownRenderer
     private readonly ScribanTemplateLoader _templateLoader;
     private readonly TemplateResolver _templateResolver;
     private readonly DiagnosticContext? _diagnosticContext;
-    private readonly Providers.ProviderRegistry? _providerRegistry;
+    private readonly Services.ProviderRegistry? _providerRegistry;
     private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry;
     private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry;
+    private readonly MarkdownGeneration.Services.ResourceModelMapperRegistry? _resourceModelMapperRegistry;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
@@ -44,7 +45,7 @@ internal class MarkdownRenderer
     public MarkdownRenderer(
         Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
-        Providers.ProviderRegistry? providerRegistry = null,
+        Services.ProviderRegistry? providerRegistry = null,
         MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
         MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
     {
@@ -52,6 +53,7 @@ internal class MarkdownRenderer
         _providerRegistry = providerRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
+        _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
         _templateLoader = new ScribanTemplateLoader(
             coreTemplateResourcePrefix: TemplateResourcePrefix,
             providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
@@ -72,7 +74,7 @@ internal class MarkdownRenderer
         string customTemplateDirectory,
         Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
-        Providers.ProviderRegistry? providerRegistry = null,
+        Services.ProviderRegistry? providerRegistry = null,
         MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
         MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
     {
@@ -80,6 +82,7 @@ internal class MarkdownRenderer
         _providerRegistry = providerRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
+        _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
         _templateLoader = new ScribanTemplateLoader(
             customTemplateDirectory,
             coreTemplateResourcePrefix: TemplateResourcePrefix,
@@ -156,7 +159,7 @@ internal class MarkdownRenderer
     /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
     /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
     private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         if (providerRegistry is null)
         {
@@ -165,6 +168,24 @@ internal class MarkdownRenderer
 
         var registry = new MarkdownGeneration.Services.IconProviderRegistry();
         providerRegistry.RegisterAllIconProviders(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Creates and populates a ResourceModelMapperRegistry from the provider registry.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry to populate from.</param>
+    /// <returns>A populated ResourceModelMapperRegistry, or null if no provider registry is available.</returns>
+    private static MarkdownGeneration.Services.ResourceModelMapperRegistry? CreateResourceModelMapperRegistry(
+        Services.ProviderRegistry? providerRegistry)
+    {
+        if (providerRegistry is null)
+        {
+            return null;
+        }
+
+        var registry = new MarkdownGeneration.Services.ResourceModelMapperRegistry();
+        providerRegistry.RegisterAllResourceModelMappers(registry);
         return registry;
     }
 
@@ -300,7 +321,7 @@ internal class MarkdownRenderer
 
         // Create a nested ScriptObject for the change using AOT-compatible mapping
         // Templates access properties via change.* for consistency with default.sbn include
-        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, renderTarget);
+        var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, renderTarget, _resourceModelMapperRegistry);
 
         scriptObject["change"] = changeObject;
 
@@ -439,11 +460,11 @@ internal class MarkdownRenderer
     /// Creates a ScriptObject from a ReportModel using explicit AOT-compatible mapping.
     /// Reflection-based Import does not work reliably under NativeAOT.
     /// </summary>
-    private static ScriptObject CreateScriptObject(ReportModel model)
+    private ScriptObject CreateScriptObject(ReportModel model)
     {
         // Use explicit mapping for NativeAOT compatibility - reflection-based
         // Import fails at runtime even with TrimmerRootDescriptor preservation
-        return AotScriptObjectMapper.MapReportModel(model);
+        return AotScriptObjectMapper.MapReportModel(model, _resourceModelMapperRegistry);
     }
 
     private string LoadTemplate(string templateName)

@@ -135,4 +135,14 @@ internal sealed class AzureDevOpsModule : IProviderModule
                 propertyNames: ["administrators", "administrator", "descriptor"])
         });
     }
+
+    /// <summary>
+    /// Registers Azure DevOps-specific resource model mappers for ScriptObject enrichment.
+    /// </summary>
+    /// <param name="registry">The resource model mapper registry to register with.</param>
+    public void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
+    {
+        var variableGroupFactory = new VariableGroupFactory(_largeValueFormat);
+        registry.Register(new Mappers.VariableGroupMapper(variableGroupFactory));
+    }
 }

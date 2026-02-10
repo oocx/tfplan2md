@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.Providers.AzureDevOps.Models;
-using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -93,36 +91,6 @@ public class ResourceChangeModel
     public string? TagsBadges { get; set; }
 
     /// <summary>
-    /// Gets or sets the precomputed view model for azurerm_network_security_group resources.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
-    /// </summary>
-    public NetworkSecurityGroupViewModel? NetworkSecurityGroup { get; set; }
-
-    /// <summary>
-    /// Gets or sets the precomputed view model for azurerm_firewall_network_rule_collection resources.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
-    /// </summary>
-    public FirewallNetworkRuleCollectionViewModel? FirewallNetworkRuleCollection { get; set; }
-
-    /// <summary>
-    /// Gets or sets the precomputed view model for azurerm_firewall_application_rule_collection resources.
-    /// Related feature: docs/features/060-azurerm-firewall-application-rule-template/specification.md.
-    /// </summary>
-    public FirewallApplicationRuleCollectionViewModel? FirewallApplicationRuleCollection { get; set; }
-
-    /// <summary>
-    /// Gets or sets the precomputed view model for azurerm_role_assignment resources.
-    /// Related feature: docs/features/026-template-rendering-simplification/specification.md.
-    /// </summary>
-    public RoleAssignmentViewModel? RoleAssignment { get; set; }
-
-    /// <summary>
-    /// Gets or sets the precomputed view model for azuredevops_variable_group resources.
-    /// Related feature: docs/features/039-azdo-variable-group-template/specification.md.
-    /// </summary>
-    public VariableGroupViewModel? VariableGroup { get; set; }
-
-    /// <summary>
     /// Gets or sets the child resource groups rendered inline within this parent.
     /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
     /// </summary>
@@ -151,4 +119,11 @@ public class ResourceChangeModel
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>
     public bool IsRefactoringAlreadyApplied { get; init; }
+
+    /// <summary>
+    /// Gets or sets the original resource change from parsing.
+    /// Used by resource model mappers to create provider-specific view models.
+    /// Internal only - not exposed to templates.
+    /// </summary>
+    internal Parsing.ResourceChange? ResourceChange { get; set; }
 }

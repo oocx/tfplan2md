@@ -44,7 +44,8 @@ internal partial class ReportModelBuilder
             ReplacePaths = rc.Change.ReplacePaths,
             ImportId = importId,
             MovedFromAddress = movedFromAddress,
-            IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied
+            IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied,
+            ResourceChange = rc // Store for mapper access
         };
 
         // Apply resource-specific view model if a factory is registered for this type

@@ -1,6 +1,7 @@
 using System.IO;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
@@ -43,6 +44,22 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
     [Test]
     public void Render_NsgCreateFallback_UsesSingleValueColumn()
     {
+        var resourceChange = new ResourceChange(
+            Address: "azurerm_network_security_group.empty",
+            ModuleAddress: null,
+            Mode: "managed",
+            Type: "azurerm_network_security_group",
+            Name: "empty",
+            ProviderName: "registry.terraform.io/hashicorp/azurerm",
+            Change: new Change(
+                actions: ["create"],
+                before: null,
+                after: new System.Collections.Generic.Dictionary<string, object?>
+                {
+                    ["name"] = "nsg-empty",
+                    ["security_rule"] = System.Array.Empty<object>()
+                }));
+
         var change = new ResourceChangeModel
         {
             Address = "azurerm_network_security_group.empty",
@@ -60,10 +77,7 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
                     After = "nsg-empty"
                 }
             ],
-            NetworkSecurityGroup = new NetworkSecurityGroupViewModel
-            {
-                Name = "nsg-empty"
-            }
+            ResourceChange = resourceChange
         };
 
         var result = _renderer.RenderResourceChange(change);
@@ -77,6 +91,24 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
     [Test]
     public void Render_FirewallCreateFallback_UsesSingleValueColumn()
     {
+        var resourceChange = new ResourceChange(
+            Address: "azurerm_firewall_network_rule_collection.empty",
+            ModuleAddress: null,
+            Mode: "managed",
+            Type: "azurerm_firewall_network_rule_collection",
+            Name: "empty",
+            ProviderName: "registry.terraform.io/hashicorp/azurerm",
+            Change: new Change(
+                actions: ["create"],
+                before: null,
+                after: new System.Collections.Generic.Dictionary<string, object?>
+                {
+                    ["name"] = "collection-empty",
+                    ["priority"] = 100,
+                    ["action"] = "Allow",
+                    ["rule"] = System.Array.Empty<object>()
+                }));
+
         var change = new ResourceChangeModel
         {
             Address = "azurerm_firewall_network_rule_collection.empty",
@@ -94,12 +126,7 @@ public class MarkdownRendererAzureRmTemplateRegressionTests
                     After = "collection-empty"
                 }
             ],
-            FirewallNetworkRuleCollection = new FirewallNetworkRuleCollectionViewModel
-            {
-                Name = "collection-empty",
-                Priority = "100",
-                Action = "Allow"
-            }
+            ResourceChange = resourceChange
         };
 
         var result = _renderer.RenderResourceChange(change);

@@ -33,8 +33,21 @@ internal sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
+        _ = model;
+        _ = action;
+        _ = attributeChanges;
+        _ = resourceChange;
+        // View model is now created on-demand by CreateViewModel
+    }
 
-        model.NetworkSecurityGroup = NetworkSecurityGroupViewModelFactory.Build(
+    /// <summary>
+    /// Creates a NetworkSecurityGroupViewModel for the given resource change.
+    /// </summary>
+    /// <param name="resourceChange">The resource change to create view model for.</param>
+    /// <returns>The created view model.</returns>
+    internal NetworkSecurityGroupViewModel CreateViewModel(Parsing.ResourceChange resourceChange)
+    {
+        return NetworkSecurityGroupViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
             _largeValueFormat);
@@ -68,16 +81,33 @@ internal sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelF
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
+        _ = model;
+        _ = action;
+        _ = attributeChanges;
+        _ = resourceChange;
+        // View model is now created on-demand by CreateViewModel
+    }
 
+    /// <summary>
+    /// Creates a FirewallNetworkRuleCollectionViewModel for the given resource change.
+    /// </summary>
+    /// <param name="resourceChange">The resource change to create view model for.</param>
+    /// <param name="action">The action being performed.</param>
+    /// <returns>The created view model and changed attributes summary.</returns>
+    internal (FirewallNetworkRuleCollectionViewModel ViewModel, string? ChangedAttributesSummary) CreateViewModel(
+        Parsing.ResourceChange resourceChange,
+        string action)
+    {
         var viewModel = FirewallNetworkRuleCollectionViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
             _largeValueFormat);
 
-        model.FirewallNetworkRuleCollection = viewModel;
-        model.ChangedAttributesSummary = FirewallNetworkRuleCollectionViewModelFactory.BuildChangedAttributesSummary(
+        var summary = FirewallNetworkRuleCollectionViewModelFactory.BuildChangedAttributesSummary(
             viewModel,
             action);
+
+        return (viewModel, summary);
     }
 }
 
@@ -108,16 +138,33 @@ internal sealed class FirewallApplicationRuleCollectionFactory : IResourceViewMo
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
+        _ = model;
+        _ = action;
+        _ = attributeChanges;
+        _ = resourceChange;
+        // View model is now created on-demand by CreateViewModel
+    }
 
+    /// <summary>
+    /// Creates a FirewallApplicationRuleCollectionViewModel for the given resource change.
+    /// </summary>
+    /// <param name="resourceChange">The resource change to create view model for.</param>
+    /// <param name="action">The action being performed.</param>
+    /// <returns>The created view model and changed attributes summary.</returns>
+    internal (FirewallApplicationRuleCollectionViewModel ViewModel, string? ChangedAttributesSummary) CreateViewModel(
+        Parsing.ResourceChange resourceChange,
+        string action)
+    {
         var viewModel = FirewallApplicationRuleCollectionViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
             _largeValueFormat);
 
-        model.FirewallApplicationRuleCollection = viewModel;
-        model.ChangedAttributesSummary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(
+        var summary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(
             viewModel,
             action);
+
+        return (viewModel, summary);
     }
 }
 
@@ -158,8 +205,26 @@ internal sealed class RoleAssignmentFactory : IResourceViewModelFactory
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
+        _ = model;
+        _ = action;
+        _ = attributeChanges;
+        _ = resourceChange;
+        // View model is now created on-demand by CreateViewModel
+    }
 
-        model.RoleAssignment = RoleAssignmentViewModelFactory.Build(
+    /// <summary>
+    /// Creates a RoleAssignmentViewModel for the given resource change.
+    /// </summary>
+    /// <param name="resourceChange">The resource change to create view model for.</param>
+    /// <param name="action">The action being performed.</param>
+    /// <param name="attributeChanges">The attribute changes.</param>
+    /// <returns>The created view model.</returns>
+    internal RoleAssignmentViewModel CreateViewModel(
+        Parsing.ResourceChange resourceChange,
+        string action,
+        IReadOnlyList<AttributeChangeModel> attributeChanges)
+    {
+        return RoleAssignmentViewModelFactory.Build(
             resourceChange,
             action,
             attributeChanges,

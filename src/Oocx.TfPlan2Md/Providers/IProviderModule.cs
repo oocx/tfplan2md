@@ -68,4 +68,18 @@ internal interface IProviderModule
     {
         // Default no-op keeps existing provider modules compatible.
     }
+
+    /// <summary>
+    /// Registers provider-specific resource model mappers for ScriptObject enrichment.
+    /// </summary>
+    /// <param name="registry">The resource model mapper registry to register into.</param>
+    /// <remarks>
+    /// Mappers enable providers to extend template rendering with typed view models
+    /// (e.g., FirewallNetworkRuleCollectionViewModel) without creating compile-time
+    /// dependencies from MarkdownGeneration to Providers.
+    /// </remarks>
+    void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
 }

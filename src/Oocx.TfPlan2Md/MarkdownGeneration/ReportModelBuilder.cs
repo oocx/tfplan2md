@@ -80,6 +80,12 @@ internal partial class ReportModelBuilder(
         iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
 
     /// <summary>
+    /// Registry for value formatter services.
+    /// </summary>
+    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry =
+        CreateValueFormatterRegistry(providerRegistry);
+
+    /// <summary>
     /// Mapper for resolving Azure principal names.
     /// </summary>
     private readonly IPrincipalMapper _principalMapper = principalMapper ?? new NullPrincipalMapper();
@@ -145,6 +151,25 @@ internal partial class ReportModelBuilder(
 
         var registry = new MarkdownGeneration.Services.IconProviderRegistry();
         providerRegistry.RegisterAllIconProviders(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Builds a value formatter registry from the configured providers.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry to pull value formatters from.</param>
+    /// <returns>The populated value formatter registry, or null when no providers are registered.</returns>
+    private static MarkdownGeneration.Services.ValueFormatterRegistry? CreateValueFormatterRegistry(
+        Providers.ProviderRegistry? providerRegistry)
+    {
+        if (providerRegistry is null)
+        {
+            return null;
+        }
+
+        var registry = new MarkdownGeneration.Services.ValueFormatterRegistry();
+        providerRegistry.RegisterAllValueFormatters(registry);
         return registry;
     }
 

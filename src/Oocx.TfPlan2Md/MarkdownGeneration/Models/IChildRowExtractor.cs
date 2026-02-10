@@ -16,10 +16,12 @@ internal interface IChildRowExtractor
     /// </summary>
     /// <param name="childState">The child state object from Terraform JSON.</param>
     /// <param name="providerName">The provider name used for formatting decisions.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for semantic formatting.</param>
     /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
     /// <returns>A mapping from column property names to formatted display values.</returns>
     IReadOnlyDictionary<string, string> ExtractRow(
         object? childState,
         string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
         IconProviderRegistry? iconProviderRegistry);
 }

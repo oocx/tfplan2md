@@ -242,6 +242,9 @@ internal static class AotScriptObjectMapper
 
         obj["attribute_changes"] = attrChanges;
 
+        // Child resource groups
+        obj["child_resource_groups"] = MapChildResourceGroups(change.ChildResourceGroups);
+
         // Code analysis findings
         obj["code_analysis_findings"] = MapCodeAnalysisFindings(change.CodeAnalysisFindings);
 
@@ -269,6 +272,83 @@ internal static class AotScriptObjectMapper
         if (change.VariableGroup != null)
         {
             obj["variable_group"] = MapVariableGroup(change.VariableGroup);
+        }
+
+        return obj;
+    }
+
+    /// <summary>
+    /// Maps child resource groups to a Scriban array for template rendering.
+    /// </summary>
+    /// <param name="groups">The child resource groups to map.</param>
+    /// <returns>The mapped Scriban array.</returns>
+    private static ScriptArray MapChildResourceGroups(IReadOnlyList<ChildResourceGroup> groups)
+    {
+        var arr = new ScriptArray();
+        foreach (var group in groups)
+        {
+            var obj = new ScriptObject();
+            obj["label"] = group.Label;
+            obj["columns"] = MapChildTableColumns(group.Columns);
+            obj["rows"] = MapChildResourceRows(group.Rows);
+            obj["has_mixed_sources"] = group.HasMixedSources;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    /// <summary>
+    /// Maps child table columns to a Scriban array.
+    /// </summary>
+    /// <param name="columns">The column definitions to map.</param>
+    /// <returns>The mapped Scriban array.</returns>
+    private static ScriptArray MapChildTableColumns(IReadOnlyList<ChildTableColumn> columns)
+    {
+        var arr = new ScriptArray();
+        foreach (var column in columns)
+        {
+            var obj = new ScriptObject();
+            obj["header"] = column.Header;
+            obj["property_name"] = column.PropertyName;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    /// <summary>
+    /// Maps child resource rows to a Scriban array.
+    /// </summary>
+    /// <param name="rows">The child rows to map.</param>
+    /// <returns>The mapped Scriban array.</returns>
+    private static ScriptArray MapChildResourceRows(IReadOnlyList<ChildResourceRow> rows)
+    {
+        var arr = new ScriptArray();
+        foreach (var row in rows)
+        {
+            var obj = new ScriptObject();
+            obj["change_indicator"] = row.ChangeIndicator;
+            obj["values"] = MapChildRowValues(row.Values);
+            obj["terraform_resource"] = row.TerraformResource;
+            obj["original_resource_address"] = row.OriginalResourceAddress;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    /// <summary>
+    /// Maps child row value dictionaries to a Scriban object.
+    /// </summary>
+    /// <param name="values">The row values keyed by column property name.</param>
+    /// <returns>The mapped Scriban object.</returns>
+    private static ScriptObject MapChildRowValues(IReadOnlyDictionary<string, string> values)
+    {
+        var obj = new ScriptObject();
+        foreach (var (key, value) in values)
+        {
+            obj[key] = value;
         }
 
         return obj;

@@ -1,0 +1,23 @@
+{{~ for group in change.child_resource_groups ~}}
+#### {{ group.label }}{{ "\n" }}
+{{~ if group.has_mixed_sources ~}}
+
+⚠️ **Warning:** This resource has children managed both inline
+and as separate resources. This configuration will cause conflicts.
+{{~ end ~}}
+
+{{~ if change.action == "create" || change.action == "delete" ~}}
+| {{ for col in group.columns }}{{ col.header }} | {{ end }}Terraform Resource |
+| {{ for col in group.columns }}-------- | {{ end }}-------------------- |
+{{~ for row in group.rows ~}}
+| {{ for col in group.columns }}{{ row.values[col.property_name] }} | {{ end }}{{ row.terraform_resource }} |
+{{~ end ~}}
+{{~ else ~}}
+| Change | {{ for col in group.columns }}{{ col.header }} | {{ end }}Terraform Resource |
+| -------- | {{ for col in group.columns }}-------- | {{ end }}-------------------- |
+{{~ for row in group.rows ~}}
+| {{ row.change_indicator }} | {{ for col in group.columns }}{{ row.values[col.property_name] }} | {{ end }}{{ row.terraform_resource }} |
+{{~ end ~}}
+{{~ end ~}}
+
+{{~ end ~}}

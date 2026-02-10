@@ -85,11 +85,13 @@ public class ParentChildRelationshipRegistryTests
         /// </summary>
         /// <param name="childState">The child state object.</param>
         /// <param name="providerName">The provider name.</param>
+        /// <param name="valueFormatterRegistry">The value formatter registry.</param>
         /// <param name="iconProviderRegistry">The icon provider registry.</param>
         /// <returns>An empty dictionary.</returns>
         public IReadOnlyDictionary<string, string> ExtractRow(
             object? childState,
             string providerName,
+            ValueFormatterRegistry? valueFormatterRegistry,
             IconProviderRegistry? iconProviderRegistry)
         {
             return new Dictionary<string, string>();

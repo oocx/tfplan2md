@@ -314,11 +314,13 @@ public class ReportModelBuilderParentChildTests
         /// </summary>
         /// <param name="childState">The child state to inspect.</param>
         /// <param name="providerName">The provider name.</param>
+        /// <param name="valueFormatterRegistry">The value formatter registry.</param>
         /// <param name="iconProviderRegistry">The icon provider registry.</param>
         /// <returns>A dictionary with the member value.</returns>
         public IReadOnlyDictionary<string, string> ExtractRow(
             object? childState,
             string providerName,
+            ValueFormatterRegistry? valueFormatterRegistry,
             IconProviderRegistry? iconProviderRegistry)
         {
             var value = ResolveValue(childState, "member") ?? ResolveInlineValue(childState);

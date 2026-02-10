@@ -175,6 +175,11 @@ internal partial class ReportModelBuilder
         var rows = new List<ChildResourceRow>();
         foreach (var child in candidates)
         {
+            if (ReferenceEquals(child, parent))
+            {
+                continue;
+            }
+
             if (removedChildren.Contains(child))
             {
                 continue;
@@ -299,7 +304,7 @@ internal partial class ReportModelBuilder
         string changeIndicator,
         string attributeName)
     {
-        var values = relationship.RowExtractor.ExtractRow(childState, parent.ProviderName, _iconProviderRegistry);
+        var values = relationship.RowExtractor.ExtractRow(childState, parent.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
 
         return new ChildResourceRow
         {
@@ -321,7 +326,7 @@ internal partial class ReportModelBuilder
         ParentChildRelationship relationship,
         object? childState)
     {
-        var values = relationship.RowExtractor.ExtractRow(childState, child.ProviderName, _iconProviderRegistry);
+        var values = relationship.RowExtractor.ExtractRow(childState, child.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
 
         return new ChildResourceRow
         {

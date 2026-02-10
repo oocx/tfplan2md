@@ -23,30 +23,28 @@ public class MarkdownRendererFormatDiffConfigTests
     /// </summary>
     private readonly TerraformPlanParser _parser = new();
 
-    private static MarkdownRenderer CreateRenderer()
-    {
-        var providerRegistry = new ProviderRegistry();
-        providerRegistry.RegisterProvider(new AzureRMModule(
-            largeValueFormat: LargeValueFormat.InlineDiff,
-            principalMapper: new NullPrincipalMapper()));
-        return new MarkdownRenderer(
-            principalMapper: new NullPrincipalMapper(),
-            providerRegistry: providerRegistry);
-    }
-
-    private static ReportModelBuilder CreateBuilder(RenderTarget renderTarget)
+    private static (ReportModelBuilder Builder, MarkdownRenderer Renderer) CreateTestInfrastructure(RenderTarget renderTarget)
     {
         var largeValueFormat = renderTarget == RenderTarget.GitHub
             ? LargeValueFormat.SimpleDiff
             : LargeValueFormat.InlineDiff;
+
+        // Create a single shared ProviderRegistry with the correct format for this renderTarget
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new AzureRMModule(
             largeValueFormat: largeValueFormat,
             principalMapper: new NullPrincipalMapper()));
-        return new ReportModelBuilder(
+
+        var builder = new ReportModelBuilder(
             renderTarget: renderTarget,
             principalMapper: new NullPrincipalMapper(),
             providerRegistry: providerRegistry);
+
+        var renderer = new MarkdownRenderer(
+            principalMapper: new NullPrincipalMapper(),
+            providerRegistry: providerRegistry);
+
+        return (builder, renderer);
     }
 
     /// <summary>
@@ -58,10 +56,9 @@ public class MarkdownRendererFormatDiffConfigTests
     {
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/firewall-rule-changes.json"));
-        var builder = CreateBuilder(RenderTarget.GitHub);
+        var (builder, renderer) = CreateTestInfrastructure(RenderTarget.GitHub);
         var model = builder.Build(plan);
         var change = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
-        var renderer = CreateRenderer();
 
         // Act
         var markdown = renderer.RenderResourceChange(change, RenderTarget.GitHub)!;
@@ -80,10 +77,9 @@ public class MarkdownRendererFormatDiffConfigTests
     {
         // Arrange
         var plan = _parser.Parse(File.ReadAllText("TestData/firewall-rule-changes.json"));
-        var builder = CreateBuilder(RenderTarget.AzureDevOps);
+        var (builder, renderer) = CreateTestInfrastructure(RenderTarget.AzureDevOps);
         var model = builder.Build(plan);
         var change = model.Changes.First(c => c.Address == "azurerm_firewall_network_rule_collection.web_tier");
-        var renderer = CreateRenderer();
 
         // Act
         var markdown = renderer.RenderResourceChange(change, RenderTarget.AzureDevOps)!;

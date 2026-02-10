@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
-using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
@@ -92,11 +91,6 @@ public static partial class ScribanHelpers
         if (item is AttributeChangeModel attrModel)
         {
             return new AttributeChangeInfo(attrModel.Name, attrModel.Before, attrModel.After);
-        }
-
-        if (item is RoleAssignmentAttributeViewModel roleAttr)
-        {
-            return new AttributeChangeInfo(roleAttr.Name, roleAttr.Before, roleAttr.After);
         }
 
         if (item is AttributeChangeInfo info)

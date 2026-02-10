@@ -1,7 +1,7 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 
-namespace Oocx.TfPlan2Md.Providers;
+namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 /// <summary>
 /// Represents a Terraform provider module that registers provider-specific functionality.
@@ -13,6 +13,8 @@ namespace Oocx.TfPlan2Md.Providers;
 /// - Template discovery prefixes
 /// 
 /// This interface enables explicit, AOT-compatible provider registration without reflection.
+/// Lives in MarkdownGeneration.Services to avoid circular dependency between
+/// MarkdownGeneration and Providers layers. Providers implement this interface.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
 internal interface IProviderModule

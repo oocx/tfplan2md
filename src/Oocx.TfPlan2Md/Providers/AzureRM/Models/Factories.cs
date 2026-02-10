@@ -33,11 +33,11 @@ internal sealed class NetworkSecurityGroupFactory : IResourceViewModelFactory
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
-        _ = model;
         _ = action;
         _ = attributeChanges;
         _ = resourceChange;
-        // View model is now created on-demand by CreateViewModel
+        // NetworkSecurityGroup factory doesn't produce a ChangedAttributesSummary
+        // (no CreateViewModel tuple return for this factory)
     }
 
     /// <summary>
@@ -81,11 +81,14 @@ internal sealed class FirewallNetworkRuleCollectionFactory : IResourceViewModelF
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
-        _ = model;
-        _ = action;
         _ = attributeChanges;
-        _ = resourceChange;
-        // View model is now created on-demand by CreateViewModel
+
+        // Create view model and populate ChangedAttributesSummary
+        var (_, changedAttributesSummary) = CreateViewModel(resourceChange, action);
+        if (!string.IsNullOrWhiteSpace(changedAttributesSummary))
+        {
+            model.ChangedAttributesSummary = changedAttributesSummary;
+        }
     }
 
     /// <summary>
@@ -138,11 +141,14 @@ internal sealed class FirewallApplicationRuleCollectionFactory : IResourceViewMo
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
-        _ = model;
-        _ = action;
         _ = attributeChanges;
-        _ = resourceChange;
-        // View model is now created on-demand by CreateViewModel
+
+        // Create view model and populate ChangedAttributesSummary
+        var (_, changedAttributesSummary) = CreateViewModel(resourceChange, action);
+        if (!string.IsNullOrWhiteSpace(changedAttributesSummary))
+        {
+            model.ChangedAttributesSummary = changedAttributesSummary;
+        }
     }
 
     /// <summary>

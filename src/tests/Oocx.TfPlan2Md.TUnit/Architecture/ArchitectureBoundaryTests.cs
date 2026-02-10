@@ -102,14 +102,12 @@ public class ArchitectureBoundaryTests
     /// <summary>
     /// Verifies that the MarkdownGeneration layer does not depend on Providers.
     /// General rendering logic should not depend on specific providers.
-    /// Known exemption: LargeValueSummary uses AOT script object mapping that needs refactoring.
     /// </summary>
     [Test]
     public void MarkdownGeneration_ShouldNotDependOn_Providers()
     {
         var result = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
-            .And().DoNotHaveNameMatching("LargeValueSummary")      // Exempt: AOT script object mapping, needs refactoring (Issue #TBD)
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Providers")
             .GetResult();
 
@@ -117,7 +115,7 @@ public class ArchitectureBoundaryTests
         {
             throw new AssertionException(CreateViolationMessage(
                 "MarkdownGeneration layer must not depend on Providers",
-                "General rendering logic should not depend on specific providers. Provider-specific rendering should happen in the Providers layer. Exemption: LargeValueSummary uses AOT script mapping that needs to be refactored to provider self-registration.",
+                "General rendering logic should not depend on specific providers. Provider-specific rendering should happen in the Providers layer.",
                 result.FailingTypes));
         }
     }
@@ -173,26 +171,26 @@ public class ArchitectureBoundaryTests
     // === LAYER DEPENDENCY RULES (ALLOWED - DOCUMENTATION) ===
 
     /// <summary>
-    /// Documents that the CLI layer is allowed to depend on all layers.
-    /// CLI is the top-level orchestration layer.
+    /// Documents that the CLI layer depends on RenderTargets for option types.
+    /// The top-level orchestration (ProgramEntry) lives in the root namespace
+    /// and wires together CLI, Parsing, and MarkdownGeneration.
     /// </summary>
     [Test]
-    public void CLI_CanDependOn_AllLayers()
+    public void CLI_CanDependOn_RenderTargets()
     {
-        // This test documents that CLI is allowed to depend on all layers (orchestration layer).
-        // CLI is the top-level layer that coordinates all other layers.
-        // No verification needed - this rule allows dependencies.
+        // CLI types (CliParser, HelpTextProvider) depend on RenderTargets for
+        // RenderTarget enum used in parsed options. Verify at least one CLI type
+        // has this dependency (existential check, not universal).
         var result = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.CLI")
-            .Should().HaveDependencyOnAny(
-                "Oocx.TfPlan2Md.Parsing",
-                "Oocx.TfPlan2Md.MarkdownGeneration")
+            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.RenderTargets")
             .GetResult();
 
-        if (!result.IsSuccessful)
+        // If ShouldNot succeeds, NO CLI types depend on RenderTargets — that's wrong
+        if (result.IsSuccessful)
         {
             throw new AssertionException(
-                "CLI should depend on other layers (orchestration layer). If this test fails, CLI may not be using domain layers.");
+                "CLI should depend on RenderTargets (for option types). If this test fails, CLI may have lost its dependency on RenderTargets.");
         }
     }
 
@@ -204,13 +202,14 @@ public class ArchitectureBoundaryTests
     public void MarkdownGeneration_CanDependOn_Parsing()
     {
         // This test documents that MarkdownGeneration SHOULD depend on Parsing.
-        // Rendering logic needs access to parsed domain models to generate output.
+        // Verify at least one type depends on Parsing (existential check).
         var result = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
-            .Should().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
+            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
             .GetResult();
 
-        if (!result.IsSuccessful)
+        // If ShouldNot succeeds, NO types depend on Parsing — that's wrong
+        if (result.IsSuccessful)
         {
             throw new AssertionException(
                 "MarkdownGeneration should depend on Parsing (rendering needs parsed data). If this test fails, the architecture may be incorrect.");
@@ -225,13 +224,14 @@ public class ArchitectureBoundaryTests
     public void Platforms_CanDependOn_MarkdownGeneration()
     {
         // This test documents that Platforms can depend on MarkdownGeneration.
-        // Platform-specific rendering (formatters, icons, labels) requires MarkdownGeneration services.
+        // Verify at least one type depends on MarkdownGeneration (existential check).
         var result = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.Platforms")
-            .Should().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
+            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
             .GetResult();
 
-        if (!result.IsSuccessful)
+        // If ShouldNot succeeds, NO types depend on MarkdownGeneration — that's wrong
+        if (result.IsSuccessful)
         {
             throw new AssertionException(
                 "Platforms should depend on MarkdownGeneration (platform-specific rendering uses general infrastructure). If this test fails, the architecture may need review.");
@@ -246,18 +246,19 @@ public class ArchitectureBoundaryTests
     public void Providers_CanDependOn_ParsingAndMarkdownGeneration()
     {
         // This test documents that Providers SHOULD depend on both Parsing and MarkdownGeneration.
-        // Provider-specific rendering extends base rendering and uses parsed models.
+        // Verify at least one type depends on each (existential check).
         var parsingResult = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.Providers")
-            .Should().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
+            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
             .GetResult();
 
         var mdResult = Types.InCurrentDomain()
             .That().ResideInNamespace("Oocx.TfPlan2Md.Providers")
-            .Should().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
+            .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
             .GetResult();
 
-        if (!parsingResult.IsSuccessful || !mdResult.IsSuccessful)
+        // If ShouldNot succeeds for either, NO types have the expected dependency
+        if (parsingResult.IsSuccessful || mdResult.IsSuccessful)
         {
             throw new AssertionException(
                 "Providers should depend on both Parsing and MarkdownGeneration (provider-specific templates extend base rendering). If this test fails, the architecture may be incorrect.");

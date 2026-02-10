@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
-using Oocx.TfPlan2Md.Providers;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;

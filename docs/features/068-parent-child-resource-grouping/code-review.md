@@ -115,11 +115,9 @@ var expectedResourceTables = Regex.Count(markdown, @"\| Attribute \|", RegexOpti
 
 **Location**: [src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs](src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs#L218-L268)
 
-**Description**: The architecture document (section "Separate child matching strategy") specifies:
+**Description**: The architecture document (section "Separate child matching strategy", updated Section 3a) specifies configuration reference matching as the fallback when parent IDs are `(known after apply)`. The original architecture incorrectly specified a module-address heuristic, which has been replaced with precise reference matching using the plan's `configuration` block.
 
-> **Fallback for `(known after apply)`**: When the parent's ID is not yet known, use Terraform address-based heuristics (same module scope + matching type). This handles the common create-parent-and-children-together scenario.
-
-However, the implementation in `BuildSeparateRows` method does NOT include this fallback. When a parent's ID is marked as `(known after apply)` (which is the most common case for creating resources), the code returns an empty list:
+The implementation in `BuildSeparateRows` method does NOT include any fallback. When a parent's ID is marked as `(known after apply)` (which is the most common case for creating resources), the code returns an empty list:
 
 ```csharp
 private List<ChildResourceRow> BuildSeparateRows(
@@ -162,45 +160,27 @@ private List<ChildResourceRow> BuildSeparateRows(
 
 3. **Comprehensive Demo**: Running `dotnet run --project src/Oocx.TfPlan2Md` on comprehensive-demo produces NO "#### Members" sections (verified by grep).
 
-**Fix Required**: Implement the fallback logic as specified in the architecture:
+**Fix Required**: Implement configuration reference matching as specified in the updated architecture (Section 3a):
+
+1. **Add `Configuration` to `TerraformPlan`**: Add `[property: JsonPropertyName("configuration")] JsonElement? Configuration = null` to the `TerraformPlan` record. This captures the plan's `configuration` block, which contains Terraform expression references.
+
+2. **Create `ConfigurationReferenceResolver`**: A utility that walks `configuration.root_module.resources[].expressions` (and recursively `module_calls`) to build a reference index: `(child_address, attribute_name) → list of referenced parent addresses`.
+
+3. **Use the reference index in `BuildSeparateRows`**: When `parentId` is null/empty, consult the reference index to check if the child's `ChildReferenceAttribute` references the parent's address:
 
 ```csharp
-// After the existing null check, add:
 if (string.IsNullOrWhiteSpace(parentId))
 {
-    // Fallback: match by address-based heuristics
-    var rows = new List<ChildResourceRow>();
-    foreach (var child in candidates)
-    {
-        if (ReferenceEquals(child, parent))
-        {
-            continue;
-        }
-        
-        if (removedChildren.Contains(child))
-        {
-            continue;
-        }
-        
-        // Match if same module scope and child references this parent by address pattern
-        var childState = ResolveStateForAction(child);
-        var childReference = GetFlatValue(childState, relationship.ChildReferenceAttribute!);
-        
-        // Heuristic: if child is in same module and relationship exists, merge it
-        if (child.ModuleAddress == parent.ModuleAddress)
-        {
-            var row = BuildSeparateRow(child, relationship, childState);
-            rows.Add(row);
-            removedChildren.Add(child);
-            MoveFindingsToParent(parent, child);
-        }
-    }
-    
-    return rows;
+    // Fallback: match via configuration expression references
+    return BuildSeparateRowsByReference(parent, relationship, candidates, removedChildren);
 }
 ```
 
-Alternatively, check if `childReference` would match the parent address pattern, or use more sophisticated heuristics.
+Where `BuildSeparateRowsByReference` looks up `(child.Address, relationship.ChildReferenceAttribute)` in the reference index and checks if any reference matches `parent.Address` or `parent.Address + "." + relationship.ParentIdAttribute`.
+
+4. **Graceful degradation**: If no configuration block is present OR no reference match is found, the child remains in the change list and renders as a standalone resource section (same as pre-Feature 068 behavior). The system must never guess — incorrect merging is worse than no merging.
+
+5. **Update test data**: Add `configuration` blocks to synthetic test plans (`azuread-group-members-plan.json`, `comprehensive-demo/plan.json`) with appropriate `expressions.*.references` entries.
 
 **Why it's a Blocker**: This is the MOST COMMON scenario for Terraform plans (creating parent+children together). Without this fallback, the feature doesn't work for its primary use case. All acceptance criteria related to "separate children" are effectively untested and non-functional.
 
@@ -391,9 +371,14 @@ private static IReadOnlyList<string> GetSummaryIndicatorOrder()
    - [MarkdownInvariantTests.cs](src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownInvariantTests.cs): lines 151, 327, 328, 353, 354
    - [TemplateIsolationTests.cs](src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/TemplateIsolationTests.cs): lines 372, 385, 386, 389, 390
 
-2. **Fix Blocker #2 (Fallback Logic)**: 
-   - Implement address-based heuristic fallback in `BuildSeparateRows` method in [ReportModelBuilder.ParentChildMerging.cs](src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs#L230-234)
+2. **Fix Blocker #2 (Configuration Reference Matching)**: 
+   - Add `Configuration` as `JsonElement?` to `TerraformPlan` record
+   - Create `ConfigurationReferenceResolver` utility (see architecture Section 3a)
+   - Integrate reference index into `BuildSeparateRows` as fallback when parent ID is null
+   - Add `configuration` blocks to synthetic test plans (`azuread-group-members-plan.json`, `comprehensive-demo/plan.json`)
+   - Add unit tests for `ConfigurationReferenceResolver` (root module, nested modules, absent configuration)
    - Add unit test verifying fallback works when parent ID is `(known after apply)`
+   - Verify graceful degradation: absent configuration → child renders as standalone section
    - Update snapshots to show child tables
 
 3. **Fix Major Issue #3 (UAT Artifact)**:

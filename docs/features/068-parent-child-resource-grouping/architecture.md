@@ -301,9 +301,123 @@ For each registered `ParentChildRelationship`:
 1. Identify all resources of `ChildResourceType` in the change list
 2. For each child, read `ChildReferenceAttribute` from its `AfterJson` (or `BeforeJson` for deletes)
 3. Match the reference value against each parent's `ParentIdAttribute` in its `AfterJson`/`BeforeJson`
-4. **Fallback for `(known after apply)`**: When the parent's ID is not yet known, use Terraform address-based heuristics (same module scope + matching type). This handles the common create-parent-and-children-together scenario.
+4. **Fallback for `(known after apply)` — Configuration Reference Matching**: When the parent's ID is not yet known (the most common scenario when creating parent and children together), use the plan's `configuration` block to resolve the Terraform expression references. See **Section 3a** below for details.
+5. **Graceful degradation**: If neither value-based matching (step 3) nor configuration reference matching (step 4) can identify the parent for a child resource, the child is **not merged** — it remains in the change list and renders as a standalone resource section, exactly as it would without Feature 068. Incorrect merging (false positives) is always worse than no merging, so the system must never guess.
 
 **This merging logic is implemented as a new partial class file**: `ReportModelBuilder.ParentChildMerging.cs`.
+
+### 3a. Configuration Reference Matching (Fallback for `(known after apply)`)
+
+#### Problem
+
+When a parent resource is being **created**, its `id` attribute is `(known after apply)` — its value won't exist until Terraform applies the plan. In the same scenario, a separate child resource that references the parent (e.g., `group_object_id = azuread_group.platform_engineers.id`) will also have its reference attribute marked as unknown in `after_unknown`. Neither value-based comparison can succeed.
+
+A naive fallback using module-address heuristics (same module scope + matching type) **fails** when multiple parents of the same type exist in the same module. For example, two `azuread_group` resources with separate `azuread_group_member` children would be incorrectly cross-matched.
+
+#### Solution: Parse `configuration` Block Expression References
+
+The Terraform plan JSON always includes a `configuration` block (in plan output, not state output) containing the parsed Terraform configuration with unevaluated expressions. Each resource's attributes include a `references` array listing the Terraform resources they depend on:
+
+```json
+{
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group_member.platform_admin_member",
+          "type": "azuread_group_member",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.platform_engineers.id",
+                "azuread_group.platform_engineers"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-100"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+The `references` array tells us that `azuread_group_member.platform_admin_member`'s `group_object_id` references `azuread_group.platform_engineers.id` — precisely identifying the parent resource even when neither value is concrete.
+
+#### Design
+
+**Data model change:** Add `Configuration` as an optional `JsonElement?` property to `TerraformPlan`:
+
+```csharp
+public record TerraformPlan(
+    [property: JsonPropertyName("format_version")] string FormatVersion,
+    [property: JsonPropertyName("terraform_version")] string TerraformVersion,
+    [property: JsonPropertyName("resource_changes")] IReadOnlyList<ResourceChange> ResourceChanges,
+    [property: JsonPropertyName("timestamp")] string? Timestamp = null,
+    [property: JsonPropertyName("configuration")] JsonElement? Configuration = null
+);
+```
+
+Using `JsonElement?` instead of strongly-typed models avoids the complexity of modeling the entire configuration tree. The source-generated JSON context (`TfPlanJsonContext`) already supports `JsonElement`. No new model classes are needed for the configuration block itself.
+
+**New utility: `ConfigurationReferenceResolver`** (in `Parsing/` or `MarkdownGeneration/`):
+
+```csharp
+/// Resolves Terraform expression references from the plan's configuration block.
+internal sealed class ConfigurationReferenceResolver
+{
+    /// Builds a reference index from the configuration block.
+    /// Returns a map: (child_resource_address, attribute_name) → list of referenced resource addresses.
+    public static IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>>
+        BuildReferenceIndex(JsonElement? configuration);
+}
+```
+
+The resolver walks `configuration.root_module.resources[]` (and recursively `module_calls.*.module.resources[]` for modules) to extract expression references. For each resource, it:
+
+1. Computes the absolute address by prepending the module path (e.g., a resource `azuread_group.example` inside `module_calls.network` becomes `module.network.azuread_group.example`)
+2. For each expression attribute that has a `references` array, stores the mapping
+3. References within `module_calls` are also prefixed with the module path to produce absolute addresses
+
+**Integration in `BuildSeparateRows`:** When value-based matching fails (parent ID is null/empty), the method consults the reference index:
+
+```
+For each candidate child:
+  1. Look up (child.Address, relationship.ChildReferenceAttribute) in the reference index
+  2. Check if any reference matches the parent's address pattern:
+     - parent.Address (exact match)
+     - parent.Address + "." + relationship.ParentIdAttribute (attribute-qualified match)
+  3. If matched → merge the child into the parent
+```
+
+**Data flow:** `TerraformPlan.Configuration` → `ConfigurationReferenceResolver.BuildReferenceIndex()` (called once per `Build()`) → stored as a field in `ReportModelBuilder` → passed to `MergeParentChildRelationships()` → used in `BuildSeparateRows()` as fallback.
+
+#### Module Nesting
+
+Configuration references are **module-local** — `azuread_group.example` inside module `network` maps to `module.network.azuread_group.example` in `resource_changes`. The resolver reconstructs absolute addresses by tracking the module path during tree traversal:
+
+```
+root_module.resources[] → address as-is
+root_module.module_calls.<name>.module.resources[] → "module.<name>." + address
+root_module.module_calls.<name>.module.module_calls.<inner>.module.resources[]
+  → "module.<name>.module.<inner>." + address
+```
+
+#### Edge Cases
+
+- **`configuration` block absent** (synthetic test data, `terraform show -json` of state files): Fallback returns empty, child resources appear as standalone sections. This is acceptable — the feature degrades gracefully to no merging rather than incorrect merging.
+- **`for_each`/`count` resources**: Configuration has one entry per resource block, while `resource_changes` has entries per instance (`[key]` suffix). The resolver strips instance keys when looking up configuration references.
+- **Dynamic blocks**: Terraform states that "expressions in `dynamic` blocks are not included in the configuration representation." This affects nested block attributes but NOT top-level attributes like `group_object_id`, `team_id`, etc. Parent-child reference attributes are always top-level, so dynamic blocks are not a concern.
+- **`each.value`/`each.key` references**: These produce references like `each.value` rather than a specific resource address. These won't match any parent address and the child will remain unmerged — correct behavior since the actual parent depends on the iteration context.
+
+#### Test Data Updates
+
+Synthetic test plans that need to exercise the fallback must include a `configuration` block with appropriate expression references. Specifically:
+- `azuread-group-members-plan.json` (or a new create-scenario variant): Add `configuration` with `azuread_group_member.*.expressions.group_object_id.references` pointing to the parent group
+- `comprehensive-demo/plan.json`: Add a `configuration` block for the `azuread_group_member.platform_admin_member` resource
+- New unit test: Verify `ConfigurationReferenceResolver.BuildReferenceIndex()` correctly handles root module, nested modules, and absent configuration
 
 ### 4. ResourceChangeModel Changes
 
@@ -450,7 +564,7 @@ All core abstractions live in `MarkdownGeneration/Models/` (core layer). All pro
 ### Negative
 
 - **Two patterns coexist**: Firewall rule collections use typed view models with complex semantic diffing; new parent-child resources use the generic framework. Both handle inline children rendered as tables, but the firewall implementation has additional complexity (per-rule before/after matching across 6+ columns) that exceeds the generic `IChildRowExtractor` interface. Future work could extend the framework to support semantic diffing and then migrate the firewall implementation, but that is not required or planned for this feature.
-- **Reference matching complexity**: Matching separate child resources to parents via JSON attribute values requires handling `(known after apply)` gracefully. The fallback heuristic (address-based matching within the same module scope) adds complexity but covers the common create-everything-together scenario.
+- **Configuration block dependency**: Matching separate child resources to parents when IDs are `(known after apply)` requires parsing the plan's `configuration` block for expression references. This adds a new data dependency (`TerraformPlan.Configuration`) and a reference resolver utility. Synthetic test data must include `configuration` blocks to exercise the fallback path. Plans without a `configuration` block (state files, minimal test data) degrade gracefully to no merging rather than incorrect merging.
 - **New abstraction**: Developers must learn the `ParentChildRelationship` / `IChildRowExtractor` pattern. This is mitigated by clear documentation and the provider registration examples serving as templates for future additions.
 
 ## Implementation Notes
@@ -462,7 +576,7 @@ All core abstractions live in `MarkdownGeneration/Models/` (core layer). All pro
 2. **Implement merging in `ReportModelBuilder.ParentChildMerging.cs`**: This is the most complex piece. Handle:
    - Inline children (parse parent's JSON for the `InlineAttributeName`)
    - Separate children (scan change list for `ChildResourceType`, match via `ChildReferenceAttribute` → `ParentIdAttribute`)
-   - `(known after apply)` fallback: match by module scope when IDs aren't available
+   - `(known after apply)` fallback: use `ConfigurationReferenceResolver` to match children to parents via expression references when value-based matching fails (see Section 3a)
    - Mixed source detection (both inline and separate → set `HasMixedSources` flag)
    - Code analysis finding re-attribution
 

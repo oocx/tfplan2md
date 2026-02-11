@@ -101,3 +101,42 @@
   - docs/features/068-parent-child-resource-grouping/architecture.md — Updated status to Implemented
   - README.md — Mentioned inline parent-child tables in the top-level feature list
 - **Problems Encountered:** None.
+### Architect (Code Review Fix)
+- **Date:** 2026-02-11
+- **Summary:** Redesigned the `(known after apply)` fallback strategy for matching separate child resources to parents. The original architecture specified a module-address heuristic, which is incorrect when multiple parents of the same type exist in the same module. Replaced with configuration reference-based matching using the plan's `configuration` block expression references (Section 3a).
+- **Artifacts Produced:**
+  - architecture.md — Added Section 3a (Configuration Reference Matching), updated Consequences, and corrected Implementation Notes
+- **Problems Encountered:** Discovered the original "address-based heuristic" fallback would produce false positives with multiple parents. The `configuration` block's `expressions[].references` array provides precise parent-child dependency information directly from Terraform's dependency graph.
+- **Key Decisions:**
+  - Parse `configuration` block as `JsonElement?` (lightweight, no new strongly-typed models for the configuration tree)
+  - New `ConfigurationReferenceResolver` utility to build a reference index from the configuration tree
+  - Graceful degradation: absent `configuration` block → no merging (rather than incorrect merging)
+  - Synthetic test data must be extended with `configuration` blocks to exercise the fallback path
+  
+### Quality Engineer (Test Plan Update Post-Architecture Fix)
+- **Date:** 2026-02-11
+- **Summary:** Updated test plan and UAT test plan to comprehensively cover configuration reference matching for `(known after apply)` scenarios. Added 9 new test cases (TC-12 through TC-20) covering Configuration parsing, ConfigurationReferenceResolver functionality, fallback behavior, edge cases, and performance.
+- **Artifacts Produced:**
+  - test-plan.md — Added configuration reference matching test cases, updated test coverage matrix, expanded edge cases table with configuration-related scenarios, added new test data requirements, defined performance test for reference resolution
+  - uat-test-plan.md — Restructured validation instructions with focus on configuration reference matching scenarios, added specific verification steps for `(known after apply)` parent IDs, expanded success criteria
+- **Problems Encountered:** None. Architecture Section 3a provided clear implementation details.
+- **Key Test Coverage Added:**
+  - TC-12: TerraformPlan.Configuration property parsing
+  - TC-13: ConfigurationReferenceResolver for root module
+  - TC-14: ConfigurationReferenceResolver with null configuration
+  - TC-15: Integration snapshot test with known after apply
+  - TC-16: Nested module reference resolution  
+  - TC-17: For each/count instance handling
+  - TC-18: BuildSeparateRows fallback logic
+  - TC-19: Graceful degradation without configuration
+  - TC-20: Multiple parents of same type disambiguation
+  - TC-21: Configuration reference resolution performance
+  - TC-E6: Extractor exception handling
+  - TC-E7: Invalid JSON handling
+- **Test Data Requirements:**
+  - New synthetic plans with `configuration` blocks for all fallback scenarios
+  - Plans with nested modules to test module-qualified addresses
+  - Plans with for_each/count to test instance key stripping
+  - Plans without configuration to test graceful degradation
+  - Plans with multiple parents of same type to verify precision
+- **Next Steps:** Developer Agent should implement ConfigurationReferenceResolver, add Configuration property to TerraformPlan, integrate fallback logic into BuildSeparateRows, and create all required test data with configuration blocks. All test cases must pass before feature completion.

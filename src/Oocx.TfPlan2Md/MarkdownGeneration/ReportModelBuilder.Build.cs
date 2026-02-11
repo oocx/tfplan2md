@@ -30,6 +30,7 @@ internal partial class ReportModelBuilder
         var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
 
         MergeParentChildRelationships(allChanges);
+        UpdateAzureAdGroupSummaries(allChanges);
 
         // Filter out no-op resources from the changes list passed to the template
         // No-op resources have no meaningful changes to display and including them

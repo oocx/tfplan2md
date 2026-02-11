@@ -22,6 +22,8 @@ internal partial class ReportModelBuilder
     {
         if (_parentChildRelationshipRegistry.GetAllChildResourceTypes().Count == 0)
         {
+            // Even without parent-child relationships, invoke callbacks for extensibility
+            InvokePostMergeCallbacks(allChanges);
             return;
         }
 
@@ -86,11 +88,6 @@ internal partial class ReportModelBuilder
 
             parent.ChildResourceGroups = groups;
             UpdateParentSummaryWithChildCounts(parent);
-        }
-
-        if (removedChildren.Count == 0)
-        {
-            return;
         }
 
         foreach (var child in removedChildren)

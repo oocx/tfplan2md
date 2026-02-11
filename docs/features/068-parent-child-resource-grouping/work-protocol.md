@@ -252,3 +252,46 @@
 **Reason:** Rendering logic failing to output member tables despite correct detection/aggregation
 
 **Status:** Ready for developer investigation and fixes
+
+---
+
+## UAT Tester - 2026-02-11 13:49 UTC
+
+**Task:** Run UAT for parent-child resource grouping feature (post-fix retry)
+
+**Actions Taken:**
+1. ✅ Identified work item: `feature/068-parent-child-resource-grouping`
+2. ✅ Located test plan: `docs/features/068-parent-child-resource-grouping/uat-test-plan.md`
+3. ✅ Created UAT PRs:
+   - GitHub PR #67: https://github.com/oocx/tfplan2md-uat/pull/67
+   - Azure DevOps PR #72: https://dev.azure.com/oocx/test/_git/test/pullrequest/72
+4. ✅ Added feature-specific artifact: `artifacts/parent-child-resource-grouping-uat.md`
+5. ✅ Added regression artifacts:
+   - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
+   - AzDO: `artifacts/comprehensive-demo.md`
+6. ✅ Received Maintainer feedback: PASSED (with minor issues)
+7. ✅ Created GitHub Issue #447 for member count summary bug (non-blocking)
+8. ✅ Cleaned up UAT PRs and branches
+9. ✅ Updated UAT report: `docs/features/068-parent-child-resource-grouping/uat-report.md`
+
+**UAT Result:** ✅ PASSED
+
+**Test Results:**
+- ✅ Configuration reference matching (known after apply) - Working correctly
+- ✅ Mixed management warning - Displays correctly
+- ✅ Change summary with child counts - Aggregates correctly
+- ✅ Cross-platform layout - Both GitHub and AzDO render cleanly
+
+**Minor Issues Found (Non-Blocking):**
+- Member count summary shows incorrect breakdown (`0 👤 0 👥 0 💻` when should show actual counts)
+- Count mismatch between summary icons and table rows (appears to only count separate resources, not inline members)
+- Tracked in GitHub Issue #447 for separate fix
+
+**Artifacts Produced:**
+- UAT report: `docs/features/068-parent-child-resource-grouping/uat-report.md` (updated with passing results)
+- GitHub Issue #447: Parent-child resource summary shows incorrect member counts
+
+**Handoff:** → Release Manager  
+**Reason:** UAT passed successfully, feature ready for release
+
+**Status:** Ready for release

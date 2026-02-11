@@ -295,3 +295,10 @@
 **Reason:** UAT passed successfully, feature ready for release
 
 **Status:** Ready for release
+
+### Release Manager
+- **Date:** 2026-02-11
+- **Summary:** Verified readiness for release. UAT passed successfully (GitHub #67, AzDO #72). Generated user-facing release notes. Prepared the PR for merging.
+- **Artifacts Produced:**
+  - docs/features/068-parent-child-resource-grouping/release-notes.md
+- **Problems Encountered:** Screenshot generation timed out in local environment; decided to proceed with text-only release notes describing the visual improvements, as UAT artifacts already demonstrate the output correctly. Tracked non-blocking bug (summary counts) as Issue #447.

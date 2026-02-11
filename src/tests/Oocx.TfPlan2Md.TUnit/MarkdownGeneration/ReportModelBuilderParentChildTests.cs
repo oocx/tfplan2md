@@ -138,6 +138,58 @@ public class ReportModelBuilderParentChildTests
     }
 
     /// <summary>
+    /// Ensures configuration reference matching merges children when parent IDs are unknown.
+    /// </summary>
+    [Test]
+    public void Build_UsesConfigurationReferences_WhenParentIdUnknown()
+    {
+        var plan = BuildPlanWithKnownAfterApplyParent();
+
+        var model = BuildModel(plan);
+
+        var parent = model.Changes.Single(change => change.Address == "custom_parent.team");
+        parent.ChildResourceGroups.Should().ContainSingle();
+        parent.ChildResourceGroups[0].Rows.Should().HaveCount(2);
+        parent.ChildResourceGroups[0].Rows.Should().OnlyContain(row => row.TerraformResource.StartsWith("custom_child"));
+    }
+
+    /// <summary>
+    /// Ensures multiple parents of the same type are matched precisely via configuration references.
+    /// </summary>
+    [Test]
+    public void Build_ConfigurationReferences_ArePreciseForMultipleParents()
+    {
+        var plan = BuildPlanWithMultipleParents();
+
+        var model = BuildModel(plan);
+
+        var teamA = model.Changes.Single(change => change.Address == "custom_parent.team_a");
+        var teamB = model.Changes.Single(change => change.Address == "custom_parent.team_b");
+
+        teamA.ChildResourceGroups.Should().ContainSingle();
+        teamB.ChildResourceGroups.Should().ContainSingle();
+
+        teamA.ChildResourceGroups[0].Rows.Should().ContainSingle(row => row.TerraformResource == "custom_child.member_a");
+        teamB.ChildResourceGroups[0].Rows.Should().ContainSingle(row => row.TerraformResource == "custom_child.member_b");
+    }
+
+    /// <summary>
+    /// Ensures for_each instance addresses are normalized for configuration lookups.
+    /// </summary>
+    [Test]
+    public void Build_ForEachInstanceAddress_UsesConfigurationReferences()
+    {
+        var plan = BuildPlanWithForEachInstance();
+
+        var model = BuildModel(plan);
+
+        var parent = model.Changes.Single(change => change.Address == "custom_parent.team");
+        parent.ChildResourceGroups.Should().ContainSingle();
+        parent.ChildResourceGroups[0].Rows.Should().ContainSingle();
+        parent.ChildResourceGroups[0].Rows[0].TerraformResource.Should().Be("custom_child.members[\"user-100\"]");
+    }
+
+    /// <summary>
     /// Builds a plan with a parent and two separate child resources.
     /// </summary>
     /// <returns>The constructed Terraform plan.</returns>
@@ -237,6 +289,282 @@ public class ReportModelBuilderParentChildTests
                     new Change(["create"], null, childAfter, null, null, null))
             });
     }
+    /// <summary>
+    /// Builds a plan where parent IDs are unknown but configuration references exist.
+    /// </summary>
+    /// <returns>The constructed Terraform plan.</returns>
+    private static TerraformPlan BuildPlanWithKnownAfterApplyParent()
+    {
+        var parentAfter = JsonDocument.Parse("{\"display_name\":\"Team\"}").RootElement;
+        var childAfterOne = JsonDocument.Parse("{\"parent_id\":null,\"member\":\"alice\"}").RootElement;
+        var childAfterTwo = JsonDocument.Parse("{\"parent_id\":null,\"member\":\"bob\"}").RootElement;
+        var configuration = BuildConfigurationElement("""
+                        {
+                            "root_module": {
+                                "resources": [
+                                    {
+                                        "address": "custom_parent.team",
+                                        "mode": "managed",
+                                        "type": "custom_parent",
+                                        "name": "team",
+                                        "expressions": {
+                                            "display_name": { "constant_value": "Team" }
+                                        }
+                                    },
+                                    {
+                                        "address": "custom_child.member1",
+                                        "mode": "managed",
+                                        "type": "custom_child",
+                                        "name": "member1",
+                                        "expressions": {
+                                            "parent_id": {
+                                                "references": [
+                                                    "custom_parent.team.id",
+                                                    "custom_parent.team"
+                                                ]
+                                            },
+                                            "member": { "constant_value": "alice" }
+                                        }
+                                    },
+                                    {
+                                        "address": "custom_child.member2",
+                                        "mode": "managed",
+                                        "type": "custom_child",
+                                        "name": "member2",
+                                        "expressions": {
+                                            "parent_id": {
+                                                "references": [
+                                                    "custom_parent.team.id",
+                                                    "custom_parent.team"
+                                                ]
+                                            },
+                                            "member": { "constant_value": "bob" }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                        """);
+
+        return new TerraformPlan(
+                "1.0",
+                "1.0",
+                new[]
+                {
+                                new ResourceChange(
+                                        "custom_parent.team",
+                                        null,
+                                        "managed",
+                                        ParentType,
+                                        "team",
+                                        "custom",
+                                        new Change(["create"], null, parentAfter, new { id = true }, null, null)),
+                                new ResourceChange(
+                                        "custom_child.member1",
+                                        null,
+                                        "managed",
+                                        ChildType,
+                                        "member1",
+                                        "custom",
+                                        new Change(["create"], null, childAfterOne, new { parent_id = true }, null, null)),
+                                new ResourceChange(
+                                        "custom_child.member2",
+                                        null,
+                                        "managed",
+                                        ChildType,
+                                        "member2",
+                                        "custom",
+                                        new Change(["create"], null, childAfterTwo, new { parent_id = true }, null, null))
+                },
+                null,
+                configuration);
+    }
+
+    /// <summary>
+    /// Builds a plan with multiple parents to verify precise reference matching.
+    /// </summary>
+    /// <returns>The constructed Terraform plan.</returns>
+    private static TerraformPlan BuildPlanWithMultipleParents()
+    {
+        var parentAfter = JsonDocument.Parse("{\"display_name\":\"Team A\"}").RootElement;
+        var parentAfterB = JsonDocument.Parse("{\"display_name\":\"Team B\"}").RootElement;
+        var childAfterA = JsonDocument.Parse("{\"parent_id\":null,\"member\":\"alice\"}").RootElement;
+        var childAfterB = JsonDocument.Parse("{\"parent_id\":null,\"member\":\"bob\"}").RootElement;
+        var configuration = BuildConfigurationElement("""
+                        {
+                            "root_module": {
+                                "resources": [
+                                    {
+                                        "address": "custom_parent.team_a",
+                                        "mode": "managed",
+                                        "type": "custom_parent",
+                                        "name": "team_a",
+                                        "expressions": {
+                                            "display_name": { "constant_value": "Team A" }
+                                        }
+                                    },
+                                    {
+                                        "address": "custom_parent.team_b",
+                                        "mode": "managed",
+                                        "type": "custom_parent",
+                                        "name": "team_b",
+                                        "expressions": {
+                                            "display_name": { "constant_value": "Team B" }
+                                        }
+                                    },
+                                    {
+                                        "address": "custom_child.member_a",
+                                        "mode": "managed",
+                                        "type": "custom_child",
+                                        "name": "member_a",
+                                        "expressions": {
+                                            "parent_id": {
+                                                "references": [
+                                                    "custom_parent.team_a.id",
+                                                    "custom_parent.team_a"
+                                                ]
+                                            },
+                                            "member": { "constant_value": "alice" }
+                                        }
+                                    },
+                                    {
+                                        "address": "custom_child.member_b",
+                                        "mode": "managed",
+                                        "type": "custom_child",
+                                        "name": "member_b",
+                                        "expressions": {
+                                            "parent_id": {
+                                                "references": [
+                                                    "custom_parent.team_b.id",
+                                                    "custom_parent.team_b"
+                                                ]
+                                            },
+                                            "member": { "constant_value": "bob" }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                        """);
+
+        return new TerraformPlan(
+                "1.0",
+                "1.0",
+                new[]
+                {
+                                new ResourceChange(
+                                        "custom_parent.team_a",
+                                        null,
+                                        "managed",
+                                        ParentType,
+                                        "team_a",
+                                        "custom",
+                                        new Change(["create"], null, parentAfter, new { id = true }, null, null)),
+                                new ResourceChange(
+                                        "custom_parent.team_b",
+                                        null,
+                                        "managed",
+                                        ParentType,
+                                        "team_b",
+                                        "custom",
+                                        new Change(["create"], null, parentAfterB, new { id = true }, null, null)),
+                                new ResourceChange(
+                                        "custom_child.member_a",
+                                        null,
+                                        "managed",
+                                        ChildType,
+                                        "member_a",
+                                        "custom",
+                                        new Change(["create"], null, childAfterA, new { parent_id = true }, null, null)),
+                                new ResourceChange(
+                                        "custom_child.member_b",
+                                        null,
+                                        "managed",
+                                        ChildType,
+                                        "member_b",
+                                        "custom",
+                                        new Change(["create"], null, childAfterB, new { parent_id = true }, null, null))
+                },
+                null,
+                configuration);
+    }
+
+    /// <summary>
+    /// Builds a plan where child resources are for_each instances.
+    /// </summary>
+    /// <returns>The constructed Terraform plan.</returns>
+    private static TerraformPlan BuildPlanWithForEachInstance()
+    {
+        var parentAfter = JsonDocument.Parse("{\"display_name\":\"Team\"}").RootElement;
+        var childAfter = JsonDocument.Parse("{\"parent_id\":null,\"member\":\"user-100\"}").RootElement;
+        var configuration = BuildConfigurationElement("""
+                        {
+                            "root_module": {
+                                "resources": [
+                                    {
+                                        "address": "custom_parent.team",
+                                        "mode": "managed",
+                                        "type": "custom_parent",
+                                        "name": "team",
+                                        "expressions": {
+                                            "display_name": { "constant_value": "Team" }
+                                        }
+                                    },
+                                    {
+                                        "address": "custom_child.members",
+                                        "mode": "managed",
+                                        "type": "custom_child",
+                                        "name": "members",
+                                        "expressions": {
+                                            "parent_id": {
+                                                "references": [
+                                                    "custom_parent.team.id",
+                                                    "custom_parent.team"
+                                                ]
+                                            },
+                                            "member": { "constant_value": "user-100" }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                        """);
+
+        return new TerraformPlan(
+                "1.0",
+                "1.0",
+                new[]
+                {
+                                new ResourceChange(
+                                        "custom_parent.team",
+                                        null,
+                                        "managed",
+                                        ParentType,
+                                        "team",
+                                        "custom",
+                                        new Change(["create"], null, parentAfter, new { id = true }, null, null)),
+                                new ResourceChange(
+                                        "custom_child.members[\"user-100\"]",
+                                        null,
+                                        "managed",
+                                        ChildType,
+                                        "members",
+                                        "custom",
+                                        new Change(["create"], null, childAfter, new { parent_id = true }, null, null))
+                },
+                null,
+                configuration);
+    }
+
+    /// <summary>
+    /// Parses a configuration JSON string into a JsonElement.
+    /// </summary>
+    /// <param name="json">The configuration JSON payload.</param>
+    /// <returns>The parsed configuration element.</returns>
+    private static JsonElement BuildConfigurationElement(string json)
+    {
+        return JsonDocument.Parse(json).RootElement;
+    }
 
     /// <summary>
     /// Builds a report model using the test provider registry.
@@ -315,7 +643,7 @@ public class ReportModelBuilderParentChildTests
                 InlineAttributeName = "members",
                 ChildReferenceAttribute = "parent_id",
                 ChildGroupLabel = "Members",
-                TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+                TableColumns = [new ChildTableColumn("Member", "member")],
                 RowExtractor = new MemberRowExtractor()
             });
         }

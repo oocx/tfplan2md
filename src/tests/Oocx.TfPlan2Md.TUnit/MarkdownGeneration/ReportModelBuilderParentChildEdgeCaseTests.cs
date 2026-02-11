@@ -139,6 +139,40 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     }
 
     /// <summary>
+    /// Ensures extractor exceptions do not crash merging and keep children standalone.
+    /// </summary>
+    [Test]
+    public void Build_ExtractorThrows_ChildRemainsStandalone()
+    {
+        var plan = BuildPlanWithSingleChild();
+
+        var model = BuildModel(plan, new ThrowingExtractorProviderModule());
+
+        model.Changes.Should().Contain(change => change.Type == ParentType);
+        model.Changes.Should().Contain(change => change.Type == ChildType);
+
+        var parent = model.Changes.Single(change => change.Type == ParentType);
+        parent.ChildResourceGroups.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Ensures invalid child JSON payloads do not crash merging.
+    /// </summary>
+    [Test]
+    public void Build_InvalidChildJson_ChildRemainsStandalone()
+    {
+        var plan = BuildPlanWithInvalidChildPayload();
+
+        var model = BuildModel(plan, new InvalidJsonExtractorProviderModule());
+
+        model.Changes.Should().Contain(change => change.Type == ParentType);
+        model.Changes.Should().Contain(change => change.Type == ChildType);
+
+        var parent = model.Changes.Single(change => change.Type == ParentType);
+        parent.ChildResourceGroups.Should().BeEmpty();
+    }
+
+    /// <summary>
     /// Ensures merging scales without excessive overhead for larger plans.
     /// </summary>
     [Test]
@@ -232,6 +266,19 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     }
 
     /// <summary>
+    /// Builds a report model using a custom provider module.
+    /// </summary>
+    /// <param name="plan">The Terraform plan to render.</param>
+    /// <param name="providerModule">The provider module to register.</param>
+    /// <returns>The built report model.</returns>
+    private static ReportModel BuildModel(TerraformPlan plan, IProviderModule providerModule)
+    {
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(providerModule);
+        return new ReportModelBuilder(providerRegistry: providerRegistry).Build(plan);
+    }
+
+    /// <summary>
     /// Creates a report builder configured with the test provider module.
     /// </summary>
     /// <returns>The configured report model builder.</returns>
@@ -240,6 +287,72 @@ public class ReportModelBuilderParentChildEdgeCaseTests
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new EdgeCaseProviderModule());
         return new ReportModelBuilder(providerRegistry: providerRegistry);
+    }
+
+    /// <summary>
+    /// Builds a plan with a single parent and child for extractor tests.
+    /// </summary>
+    /// <returns>The constructed Terraform plan.</returns>
+    private static TerraformPlan BuildPlanWithSingleChild()
+    {
+        var parentAfter = JsonDocument.Parse("{\"id\":\"parent-1\"}").RootElement;
+        var childAfter = JsonDocument.Parse("{\"parent_id\":\"parent-1\",\"member\":\"value\"}").RootElement;
+
+        return new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "edge_parent.parent",
+                    null,
+                    "managed",
+                    ParentType,
+                    "parent",
+                    "custom",
+                    new Change(["create"], null, parentAfter, null, null, null)),
+                new ResourceChange(
+                    "edge_child.child",
+                    null,
+                    "managed",
+                    ChildType,
+                    "child",
+                    "custom",
+                    new Change(["create"], null, childAfter, null, null, null))
+            });
+    }
+
+    /// <summary>
+    /// Builds a plan with an invalid JSON payload for child extraction.
+    /// </summary>
+    /// <returns>The constructed Terraform plan.</returns>
+    private static TerraformPlan BuildPlanWithInvalidChildPayload()
+    {
+        var parentAfter = JsonDocument.Parse("{\"id\":\"parent-1\"}").RootElement;
+        var childAfter = JsonDocument.Parse("{\"parent_id\":\"parent-1\",\"payload\":\"{ invalid json }\"}").RootElement;
+
+        return new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "edge_parent.parent",
+                    null,
+                    "managed",
+                    ParentType,
+                    "parent",
+                    "custom",
+                    new Change(["create"], null, parentAfter, null, null, null)),
+                new ResourceChange(
+                    "edge_child.child",
+                    null,
+                    "managed",
+                    ChildType,
+                    "child",
+                    "custom",
+                    new Change(["create"], null, childAfter, null, null, null))
+            });
     }
 
     /// <summary>
@@ -287,7 +400,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
                 ChildReferenceAttribute = "parent_id",
                 ParentIdAttribute = "id",
                 ChildGroupLabel = "Children",
-                TableColumns = [new ChildTableColumn { Header = "Child", PropertyName = "child" }],
+                TableColumns = [new ChildTableColumn("Child", "child")],
                 RowExtractor = new EdgeCaseRowExtractor()
             });
         }
@@ -337,7 +450,7 @@ public class ReportModelBuilderParentChildEdgeCaseTests
                 InlineAttributeName = "members",
                 ChildReferenceAttribute = "parent_id",
                 ChildGroupLabel = "Members",
-                TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+                TableColumns = [new ChildTableColumn("Member", "member")],
                 RowExtractor = new EdgeCaseRowExtractor()
             });
         }
@@ -374,6 +487,159 @@ public class ReportModelBuilderParentChildEdgeCaseTests
 
             var value = member.ValueKind == JsonValueKind.String ? member.GetString() : member.ToString();
             return new Dictionary<string, string> { ["member"] = value ?? string.Empty };
+        }
+    }
+
+    /// <summary>
+    /// Provider module that uses a row extractor which always throws.
+    /// </summary>
+    private sealed class ThrowingExtractorProviderModule : IProviderModule
+    {
+        /// <summary>
+        /// Gets the provider name for the throwing extractor module.
+        /// </summary>
+        public string ProviderName => "custom";
+
+        /// <summary>
+        /// Gets the template resource prefix for the throwing extractor module.
+        /// </summary>
+        public string TemplateResourcePrefix => string.Empty;
+
+        /// <summary>
+        /// Registers helper functions (none for this module).
+        /// </summary>
+        /// <param name="scriptObject">The script object to register helpers with.</param>
+        public void RegisterHelpers(ScriptObject scriptObject)
+        {
+        }
+
+        /// <summary>
+        /// Registers resource factories (none for this module).
+        /// </summary>
+        /// <param name="registry">The factory registry.</param>
+        public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
+        {
+        }
+
+        /// <summary>
+        /// Registers the edge case relationship with a throwing extractor.
+        /// </summary>
+        /// <param name="registry">The parent-child relationship registry.</param>
+        public void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)
+        {
+            registry.Register(new ParentChildRelationship
+            {
+                ParentResourceType = ParentType,
+                ChildResourceType = ChildType,
+                InlineAttributeName = null,
+                ChildReferenceAttribute = "parent_id",
+                ChildGroupLabel = "Members",
+                TableColumns = [new ChildTableColumn("Member", "member")],
+                RowExtractor = new ThrowingRowExtractor()
+            });
+        }
+    }
+
+    /// <summary>
+    /// Row extractor that always throws to simulate extractor failures.
+    /// </summary>
+    private sealed class ThrowingRowExtractor : IChildRowExtractor
+    {
+        /// <summary>
+        /// Throws an exception to simulate a failure.
+        /// </summary>
+        /// <param name="childState">The child state to inspect.</param>
+        /// <param name="providerName">The provider name.</param>
+        /// <param name="valueFormatterRegistry">The value formatter registry.</param>
+        /// <param name="iconProviderRegistry">The icon provider registry.</param>
+        /// <returns>Never returns a value.</returns>
+        public IReadOnlyDictionary<string, string> ExtractRow(
+            object? childState,
+            string providerName,
+            ValueFormatterRegistry? valueFormatterRegistry,
+            IconProviderRegistry? iconProviderRegistry)
+        {
+            throw new InvalidOperationException("Extractor failure");
+        }
+    }
+
+    /// <summary>
+    /// Provider module that simulates invalid JSON in child payloads.
+    /// </summary>
+    private sealed class InvalidJsonExtractorProviderModule : IProviderModule
+    {
+        /// <summary>
+        /// Gets the provider name for the invalid JSON module.
+        /// </summary>
+        public string ProviderName => "custom";
+
+        /// <summary>
+        /// Gets the template resource prefix for the invalid JSON module.
+        /// </summary>
+        public string TemplateResourcePrefix => string.Empty;
+
+        /// <summary>
+        /// Registers helper functions (none for this module).
+        /// </summary>
+        /// <param name="scriptObject">The script object to register helpers with.</param>
+        public void RegisterHelpers(ScriptObject scriptObject)
+        {
+        }
+
+        /// <summary>
+        /// Registers resource factories (none for this module).
+        /// </summary>
+        /// <param name="registry">The factory registry.</param>
+        public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
+        {
+        }
+
+        /// <summary>
+        /// Registers the edge case relationship with an invalid JSON extractor.
+        /// </summary>
+        /// <param name="registry">The parent-child relationship registry.</param>
+        public void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)
+        {
+            registry.Register(new ParentChildRelationship
+            {
+                ParentResourceType = ParentType,
+                ChildResourceType = ChildType,
+                InlineAttributeName = null,
+                ChildReferenceAttribute = "parent_id",
+                ChildGroupLabel = "Members",
+                TableColumns = [new ChildTableColumn("Member", "member")],
+                RowExtractor = new InvalidJsonRowExtractor()
+            });
+        }
+    }
+
+    /// <summary>
+    /// Row extractor that attempts to parse invalid JSON payloads.
+    /// </summary>
+    private sealed class InvalidJsonRowExtractor : IChildRowExtractor
+    {
+        /// <summary>
+        /// Parses the payload property and throws if JSON is invalid.
+        /// </summary>
+        /// <param name="childState">The child state to inspect.</param>
+        /// <param name="providerName">The provider name.</param>
+        /// <param name="valueFormatterRegistry">The value formatter registry.</param>
+        /// <param name="iconProviderRegistry">The icon provider registry.</param>
+        /// <returns>Never returns a value.</returns>
+        public IReadOnlyDictionary<string, string> ExtractRow(
+            object? childState,
+            string providerName,
+            ValueFormatterRegistry? valueFormatterRegistry,
+            IconProviderRegistry? iconProviderRegistry)
+        {
+            if (childState is JsonElement element && element.ValueKind == JsonValueKind.Object
+                && element.TryGetProperty("payload", out var payload))
+            {
+                var raw = payload.GetString() ?? string.Empty;
+                JsonDocument.Parse(raw);
+            }
+
+            return new Dictionary<string, string>();
         }
     }
 }

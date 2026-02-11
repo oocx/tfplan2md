@@ -369,7 +369,7 @@ public class TemplateIsolationTests
         var tables = document.Descendants<Table>().ToList();
 
         // Count expected tables by markdown patterns
-        var expectedAttributeTables = Regex.Matches(markdown, @"\| Attribute \|", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+        var expectedAttributeTables = Regex.Count(markdown, @"\| Attribute \|", RegexOptions.None, TimeSpan.FromSeconds(1));
         var expectedSummaryTable = markdown.Contains("| Action |") ? 1 : 0;
 
         tables.Count.Should().BeGreaterThanOrEqualTo(
@@ -382,12 +382,12 @@ public class TemplateIsolationTests
     /// </summary>
     private static void AssertHtmlTagsBalanced(string markdown, string context)
     {
-        var detailsOpen = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
-        var detailsClose = Regex.Matches(markdown, @"</details>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+        var detailsOpen = Regex.Count(markdown, @"<details(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1));
+        var detailsClose = Regex.Count(markdown, @"</details>", RegexOptions.None, TimeSpan.FromSeconds(1));
         detailsOpen.Should().Be(detailsClose, $"{context}: unbalanced <details> tags");
 
-        var summaryOpen = Regex.Matches(markdown, @"<summary(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
-        var summaryClose = Regex.Matches(markdown, @"</summary>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+        var summaryOpen = Regex.Count(markdown, @"<summary(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1));
+        var summaryClose = Regex.Count(markdown, @"</summary>", RegexOptions.None, TimeSpan.FromSeconds(1));
         summaryOpen.Should().Be(summaryClose, $"{context}: unbalanced <summary> tags");
     }
 

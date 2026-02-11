@@ -100,7 +100,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
             ChildReferenceAttribute = "group",
             ParentIdAttribute = "descriptor",
             ChildGroupLabel = "Members",
-            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureDevOpsDescriptorRowExtractor(
                 columnKey: "member",
                 attributeName: "member",
@@ -114,7 +114,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
             InlineAttributeName = "members",
             ChildReferenceAttribute = "team_id",
             ChildGroupLabel = "Members",
-            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureDevOpsDescriptorRowExtractor(
                 columnKey: "member",
                 attributeName: "member",
@@ -128,7 +128,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
             InlineAttributeName = "administrators",
             ChildReferenceAttribute = "team_id",
             ChildGroupLabel = "Administrators",
-            TableColumns = [new ChildTableColumn { Header = "Administrator", PropertyName = "administrator" }],
+            TableColumns = [new ChildTableColumn("Administrator", "administrator")],
             RowExtractor = new AzureDevOpsDescriptorRowExtractor(
                 columnKey: "administrator",
                 attributeName: "administrator",

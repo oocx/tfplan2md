@@ -238,6 +238,56 @@ public class TerraformPlanParserTests
             .And.OnlyContain(r => r.Change.Actions.Contains("delete"));
     }
 
+    /// <summary>
+    /// Ensures the configuration block is parsed when present.
+    /// </summary>
+    [Test]
+    public void Parse_PlanWithConfiguration_ParsesConfigurationBlock()
+    {
+        var json = """
+                        {
+                            "format_version": "1.2",
+                            "terraform_version": "1.14.0",
+                            "resource_changes": [],
+                            "configuration": {
+                                "root_module": {
+                                    "resources": [
+                                        {
+                                            "address": "example.resource",
+                                            "mode": "managed",
+                                            "type": "example",
+                                            "name": "resource",
+                                            "expressions": {
+                                                "parent_id": {
+                                                    "references": ["example.parent.id"]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                        """;
+
+        var plan = _parser.Parse(json);
+
+        plan.Configuration.HasValue.Should().BeTrue();
+        plan.Configuration!.Value.TryGetProperty("root_module", out _).Should().BeTrue();
+    }
+
+    /// <summary>
+    /// Ensures parsing succeeds when the configuration block is absent.
+    /// </summary>
+    [Test]
+    public void Parse_PlanWithoutConfiguration_ConfigurationIsNull()
+    {
+        var json = File.ReadAllText("TestData/minimal-plan.json");
+
+        var plan = _parser.Parse(json);
+
+        plan.Configuration.Should().BeNull();
+    }
+
     [Test]
     public void Parse_PlanWithTimestamp_ParsesTimestamp()
     {

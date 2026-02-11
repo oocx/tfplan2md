@@ -1725,5 +1725,39 @@
         }
       }
     }
-  ]
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group.platform_engineers",
+          "mode": "managed",
+          "type": "azuread_group",
+          "name": "platform_engineers",
+          "expressions": {
+            "display_name": {
+              "constant_value": "Platform Engineers"
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.platform_admin_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_admin_member",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.platform_engineers.id",
+                "azuread_group.platform_engineers"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-100"
+            }
+          }
+        }
+      ]
+    }
+  }
 }

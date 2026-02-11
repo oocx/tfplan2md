@@ -101,7 +101,7 @@ internal sealed class AzureADModule : IProviderModule
             InlineAttributeName = "members",
             ChildReferenceAttribute = "group_object_id",
             ChildGroupLabel = "Members",
-            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureAdGroupMemberRowExtractor()
         });
     }

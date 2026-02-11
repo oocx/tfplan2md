@@ -70,7 +70,7 @@ public class ParentChildRelationshipRegistryTests
             ParentResourceType = parentType,
             ChildResourceType = childType,
             ChildGroupLabel = label,
-            TableColumns = [new ChildTableColumn { Header = "Member", PropertyName = "member" }],
+            TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new DummyRowExtractor()
         };
     }

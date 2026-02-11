@@ -148,7 +148,7 @@ public class MarkdownInvariantTests
             var tables = document.Descendants<Table>().ToList();
 
             // Count expected tables by counting "| Attribute |" headers (1 per resource) + 1 summary
-            var expectedResourceTables = Regex.Matches(markdown, @"\| Attribute \|", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+            var expectedResourceTables = Regex.Count(markdown, @"\| Attribute \|", RegexOptions.None, TimeSpan.FromSeconds(1));
             var expectedSummaryTable = markdown.Contains("| Action |") ? 1 : 0;
             var expectedTotal = expectedResourceTables + expectedSummaryTable;
 
@@ -324,8 +324,8 @@ public class MarkdownInvariantTests
         {
             var markdown = RenderPlan(planPath);
 
-            var openTags = Regex.Matches(markdown, @"<details(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
-            var closeTags = Regex.Matches(markdown, @"</details>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+            var openTags = Regex.Count(markdown, @"<details(?:\s[^>]*)?>", RegexOptions.None, TimeSpan.FromSeconds(1));
+            var closeTags = Regex.Count(markdown, @"</details>", RegexOptions.None, TimeSpan.FromSeconds(1));
 
             if (openTags != closeTags)
             {
@@ -350,8 +350,8 @@ public class MarkdownInvariantTests
         {
             var markdown = RenderPlan(planPath);
 
-            var openTags = Regex.Matches(markdown, @"<summary>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
-            var closeTags = Regex.Matches(markdown, @"</summary>", RegexOptions.None, TimeSpan.FromSeconds(1)).Count;
+            var openTags = Regex.Count(markdown, @"<summary>", RegexOptions.None, TimeSpan.FromSeconds(1));
+            var closeTags = Regex.Count(markdown, @"</summary>", RegexOptions.None, TimeSpan.FromSeconds(1));
 
             if (openTags != closeTags)
             {

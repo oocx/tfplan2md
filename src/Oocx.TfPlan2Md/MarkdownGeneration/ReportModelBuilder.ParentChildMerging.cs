@@ -175,7 +175,10 @@ internal partial class ReportModelBuilder
         {
             foreach (var entry in afterEntries)
             {
-                rows.Add(BuildInlineRow(parent, relationship, entry.Element, ActionIcons.Add, attributeName));
+                if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Add, attributeName, out var row))
+                {
+                    rows.Add(row);
+                }
             }
 
             return rows;
@@ -185,7 +188,10 @@ internal partial class ReportModelBuilder
         {
             foreach (var entry in beforeEntries)
             {
-                rows.Add(BuildInlineRow(parent, relationship, entry.Element, ActionIcons.Delete, attributeName));
+                if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Delete, attributeName, out var row))
+                {
+                    rows.Add(row);
+                }
             }
 
             return rows;
@@ -196,16 +202,25 @@ internal partial class ReportModelBuilder
         {
             if (TryConsumeInlineEntry(beforeLookup, entry.Key))
             {
-                rows.Add(BuildInlineRow(parent, relationship, entry.Element, ActionIcons.Unchanged, attributeName));
+                if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Unchanged, attributeName, out var row))
+                {
+                    rows.Add(row);
+                }
                 continue;
             }
 
-            rows.Add(BuildInlineRow(parent, relationship, entry.Element, ActionIcons.Add, attributeName));
+            if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Add, attributeName, out var addedRow))
+            {
+                rows.Add(addedRow);
+            }
         }
 
         foreach (var remaining in FlattenInlineEntries(beforeLookup))
         {
-            rows.Add(BuildInlineRow(parent, relationship, remaining.Element, ActionIcons.Delete, attributeName));
+            if (TryBuildInlineRow(parent, relationship, remaining.Element, ActionIcons.Delete, attributeName, out var row))
+            {
+                rows.Add(row);
+            }
         }
 
         return rows;
@@ -239,7 +254,7 @@ internal partial class ReportModelBuilder
         var parentId = GetFlatValue(parentState, relationship.ParentIdAttribute);
         if (string.IsNullOrWhiteSpace(parentId))
         {
-            return [];
+            return BuildSeparateRowsByReference(parent, relationship, candidates, removedChildren);
         }
 
         var rows = new List<ChildResourceRow>();
@@ -262,13 +277,115 @@ internal partial class ReportModelBuilder
                 continue;
             }
 
-            var row = BuildSeparateRow(child, relationship, childState);
+            if (!TryBuildSeparateRow(child, relationship, childState, out var row))
+            {
+                continue;
+            }
+
             rows.Add(row);
             removedChildren.Add(child);
             MoveFindingsToParent(parent, child);
         }
 
         return rows;
+    }
+
+    /// <summary>
+    /// Builds separate child rows by matching configuration references when parent IDs are unknown.
+    /// </summary>
+    /// <param name="parent">The parent resource change model.</param>
+    /// <param name="relationship">The relationship definition to apply.</param>
+    /// <param name="candidates">The candidate child resources to inspect.</param>
+    /// <param name="removedChildren">Set of child resources already marked for removal.</param>
+    /// <returns>The list of matched child rows.</returns>
+    private List<ChildResourceRow> BuildSeparateRowsByReference(
+        ResourceChangeModel parent,
+        ParentChildRelationship relationship,
+        List<ResourceChangeModel> candidates,
+        HashSet<ResourceChangeModel> removedChildren)
+    {
+        if (_configurationReferenceIndex.Count == 0)
+        {
+            return [];
+        }
+
+        var rows = new List<ChildResourceRow>();
+        var parentAddress = parent.Address;
+        var parentIdReference = string.Concat(parentAddress, ".", relationship.ParentIdAttribute);
+
+        foreach (var child in candidates)
+        {
+            if (ReferenceEquals(child, parent))
+            {
+                continue;
+            }
+
+            if (removedChildren.Contains(child))
+            {
+                continue;
+            }
+
+            var normalizedAddress = NormalizeResourceAddressForConfigurationLookup(child.Address);
+            if (!_configurationReferenceIndex.TryGetValue((normalizedAddress, relationship.ChildReferenceAttribute!), out var references))
+            {
+                continue;
+            }
+
+            if (!ReferencesParent(references, parentAddress, parentIdReference))
+            {
+                continue;
+            }
+
+            var childState = ResolveStateForAction(child);
+            if (!TryBuildSeparateRow(child, relationship, childState, out var row))
+            {
+                continue;
+            }
+
+            rows.Add(row);
+            removedChildren.Add(child);
+            MoveFindingsToParent(parent, child);
+        }
+
+        return rows;
+    }
+
+    /// <summary>
+    /// Normalizes resource addresses for configuration lookups by removing instance keys.
+    /// </summary>
+    /// <param name="address">The resource address to normalize.</param>
+    /// <returns>The normalized address without instance keys.</returns>
+    private static string NormalizeResourceAddressForConfigurationLookup(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return string.Empty;
+        }
+
+        if (!address.EndsWith(']'))
+        {
+            return address;
+        }
+
+        var bracketIndex = address.LastIndexOf('[');
+        return bracketIndex < 0 ? address : address[..bracketIndex];
+    }
+
+    /// <summary>
+    /// Determines whether reference values point to the expected parent resource.
+    /// </summary>
+    /// <param name="references">The reference values extracted from configuration.</param>
+    /// <param name="parentAddress">The parent resource address.</param>
+    /// <param name="parentIdReference">The parent address plus ID attribute.</param>
+    /// <returns><c>true</c> when a reference matches the parent.</returns>
+    private static bool ReferencesParent(
+        IReadOnlyList<string> references,
+        string parentAddress,
+        string parentIdReference)
+    {
+        return references.Any(reference =>
+            string.Equals(reference, parentAddress, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(reference, parentIdReference, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -385,6 +502,36 @@ internal partial class ReportModelBuilder
     }
 
     /// <summary>
+    /// Attempts to build an inline child row while guarding against extractor failures.
+    /// </summary>
+    /// <param name="parent">The parent resource change model.</param>
+    /// <param name="relationship">The relationship definition.</param>
+    /// <param name="childState">The inline child JSON state.</param>
+    /// <param name="changeIndicator">The change indicator to use.</param>
+    /// <param name="attributeName">The inline attribute name.</param>
+    /// <param name="row">The constructed row when successful.</param>
+    /// <returns><c>true</c> when the row was created; otherwise <c>false</c>.</returns>
+    private bool TryBuildInlineRow(
+        ResourceChangeModel parent,
+        ParentChildRelationship relationship,
+        JsonElement childState,
+        string changeIndicator,
+        string attributeName,
+        out ChildResourceRow row)
+    {
+        try
+        {
+            row = BuildInlineRow(parent, relationship, childState, changeIndicator, attributeName);
+            return true;
+        }
+        catch (Exception)
+        {
+            row = null!;
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Builds a row for a separate child resource.
     /// </summary>
     /// <param name="child">The child resource change model.</param>
@@ -405,6 +552,32 @@ internal partial class ReportModelBuilder
             TerraformResource = child.Address,
             OriginalResourceAddress = child.Address
         };
+    }
+
+    /// <summary>
+    /// Attempts to build a separate child row while guarding against extractor failures.
+    /// </summary>
+    /// <param name="child">The child resource change model.</param>
+    /// <param name="relationship">The relationship definition.</param>
+    /// <param name="childState">The resolved child state.</param>
+    /// <param name="row">The constructed row when successful.</param>
+    /// <returns><c>true</c> when the row was created; otherwise <c>false</c>.</returns>
+    private bool TryBuildSeparateRow(
+        ResourceChangeModel child,
+        ParentChildRelationship relationship,
+        object? childState,
+        out ChildResourceRow row)
+    {
+        try
+        {
+            row = BuildSeparateRow(child, relationship, childState);
+            return true;
+        }
+        catch (Exception)
+        {
+            row = null!;
+            return false;
+        }
     }
 
     /// <summary>

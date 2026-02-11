@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
@@ -101,6 +102,12 @@ internal partial class ReportModelBuilder(
     /// </summary>
     private readonly ParentChildRelationshipRegistry _parentChildRelationshipRegistry =
         CreateParentChildRelationshipRegistry(providerRegistry);
+
+    /// <summary>
+    /// Cached configuration reference index for fallback parent-child matching.
+    /// </summary>
+    private IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
+        new Dictionary<(string Address, string Attribute), IReadOnlyList<string>>();
 
     /// <summary>
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.

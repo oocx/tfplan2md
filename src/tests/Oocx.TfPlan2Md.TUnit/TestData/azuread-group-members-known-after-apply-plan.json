@@ -1,0 +1,124 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group.platform_engineers",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "platform_engineers",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Platform Engineers",
+          "members": [
+            "user-100",
+            "user-101"
+          ]
+        },
+        "after_unknown": {
+          "id": true,
+          "object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_admin_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_admin_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-200"
+        },
+        "after_unknown": {
+          "group_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_reader_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_reader_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-201"
+        },
+        "after_unknown": {
+          "group_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group.platform_engineers",
+          "mode": "managed",
+          "type": "azuread_group",
+          "name": "platform_engineers",
+          "expressions": {
+            "display_name": {
+              "constant_value": "Platform Engineers"
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.platform_admin_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_admin_member",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.platform_engineers.id",
+                "azuread_group.platform_engineers"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-200"
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.platform_reader_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_reader_member",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.platform_engineers.id",
+                "azuread_group.platform_engineers"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-201"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

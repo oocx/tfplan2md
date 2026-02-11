@@ -53,7 +53,7 @@ Identify improvement opportunities for the development workflow by analyzing the
    )
    ```
    
-   **Note**: When running as a delegated agent (via `task` tool), your `report_progress` commits go to an isolated branch. The orchestrator will collect and commit your changes to the main PR.
+   **Note**: When running as a delegated agent (via `task` tool), your `report_progress` commits are added to the orchestrator's local branch but are NOT pushed to the remote PR. The orchestrator will push your commits using their own `report_progress` call.
 
 5. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed

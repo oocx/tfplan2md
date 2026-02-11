@@ -302,3 +302,12 @@
 - **Artifacts Produced:**
   - docs/features/068-parent-child-resource-grouping/release-notes.md
 - **Problems Encountered:** Screenshot generation timed out in local environment; decided to proceed with text-only release notes describing the visual improvements, as UAT artifacts already demonstrate the output correctly. Tracked non-blocking bug (summary counts) as Issue #447.
+
+### Release Manager
+- **Date:** 2026-02-11
+- **Summary:** Encountered flaky architecture boundary tests in CI (PR #448). Diagnosed issue as stochastic assembly loading failure in NetArchTest. Implemented fix using explicit assembly loading in `ArchitectureBoundaryTests.cs`. Rebased feature branch on top of main, force-pushed, and updated release notes with corrected commit SHAs. Created GitHub Issue #449 to harden instructions against raw CLI usage.
+- **Artifacts Produced:**
+  - src/tests/Oocx.TfPlan2Md.TUnit/Architecture/ArchitectureBoundaryTests.cs (fix)
+  - docs/features/068-parent-child-resource-grouping/release-notes.md (updated)
+  - GitHub Issue #449 (workflow improvement recommendation)
+- **Problems Encountered:** CI failure due to environment-specific test flakiness. Resolved by switching to deterministic assembly scanning.

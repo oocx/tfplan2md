@@ -20,6 +20,11 @@ indent_size = 2
 [*.json]
 indent_size = 2
 
+# C# files - Enforce XML documentation
+[*.cs]
+# CS1591: Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS1591.severity = warning
+
 # Test files - Relax some analyzer rules  
 [{src/tests/**/*.cs,tests/**/*.cs}]
 # SA1600: XML documentation not required for test methods

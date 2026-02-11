@@ -1,4 +1,5 @@
 using NetArchTest.Rules;
+using Oocx.TfPlan2Md.Parsing;
 using TUnit.Assertions.Exceptions;
 using TUnit.Core;
 
@@ -20,7 +21,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void Parsing_ShouldNotDependOn_MarkdownGeneration()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
             .GetResult();
@@ -41,7 +42,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void Parsing_ShouldNotDependOn_CLI()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.CLI")
             .GetResult();
@@ -62,7 +63,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void Parsing_ShouldNotDependOn_Providers()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Providers")
             .GetResult();
@@ -84,7 +85,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void Parsing_ShouldNotDependOn_Platforms()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Parsing")
             .And().DoNotHaveNameMatching("TfPlanJsonContext") // Exempt: JSON source generation requires all types in one context (Issue #TBD)
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Platforms")
@@ -106,7 +107,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void MarkdownGeneration_ShouldNotDependOn_Providers()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Providers")
             .GetResult();
@@ -127,7 +128,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void CodeAnalysis_ShouldNotDependOn_MarkdownGeneration()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.CodeAnalysis")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
             .GetResult();
@@ -148,7 +149,7 @@ public class ArchitectureBoundaryTests
     [Test]
     public void Diagnostics_ShouldNotDependOn_AnyLayer()
     {
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Diagnostics")
             .ShouldNot().HaveDependencyOnAny(
                 "Oocx.TfPlan2Md.CLI",
@@ -181,7 +182,7 @@ public class ArchitectureBoundaryTests
         // CLI types (CliParser, HelpTextProvider) depend on RenderTargets for
         // RenderTarget enum used in parsed options. Verify at least one CLI type
         // has this dependency (existential check, not universal).
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.CLI")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.RenderTargets")
             .GetResult();
@@ -203,7 +204,7 @@ public class ArchitectureBoundaryTests
     {
         // This test documents that MarkdownGeneration SHOULD depend on Parsing.
         // Verify at least one type depends on Parsing (existential check).
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.MarkdownGeneration")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
             .GetResult();
@@ -225,7 +226,7 @@ public class ArchitectureBoundaryTests
     {
         // This test documents that Platforms can depend on MarkdownGeneration.
         // Verify at least one type depends on MarkdownGeneration (existential check).
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Platforms")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
             .GetResult();
@@ -247,12 +248,12 @@ public class ArchitectureBoundaryTests
     {
         // This test documents that Providers SHOULD depend on both Parsing and MarkdownGeneration.
         // Verify at least one type depends on each (existential check).
-        var parsingResult = Types.InCurrentDomain()
+        var parsingResult = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Providers")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.Parsing")
             .GetResult();
 
-        var mdResult = Types.InCurrentDomain()
+        var mdResult = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.Providers")
             .ShouldNot().HaveDependencyOn("Oocx.TfPlan2Md.MarkdownGeneration")
             .GetResult();
@@ -275,7 +276,7 @@ public class ArchitectureBoundaryTests
     public void Exceptions_ShouldHave_ExceptionSuffix()
     {
 #pragma warning disable MA0074 // NetArchTest.Rules doesn't support StringComparison parameter
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().Inherit(typeof(Exception))
             .And().ResideInNamespace("Oocx.TfPlan2Md")
             .Should().HaveNameEndingWith("Exception")
@@ -298,7 +299,7 @@ public class ArchitectureBoundaryTests
     public void Tests_ShouldHave_TestsSuffix()
     {
 #pragma warning disable MA0074 // NetArchTest.Rules doesn't support StringComparison parameter
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().ResideInNamespace("Oocx.TfPlan2Md.TUnit")
             .And().AreClasses()
             .And().DoNotHaveNameMatching("AssemblyInfo")
@@ -329,7 +330,7 @@ public class ArchitectureBoundaryTests
     public void Interfaces_ShouldHave_IPrefix()
     {
 #pragma warning disable MA0074 // NetArchTest.Rules doesn't support StringComparison parameter
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(TerraformPlan).Assembly)
             .That().AreInterfaces()
             .And().ResideInNamespace("Oocx.TfPlan2Md")
             .Should().HaveNameStartingWith("I")

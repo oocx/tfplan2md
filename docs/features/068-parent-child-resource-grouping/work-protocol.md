@@ -92,3 +92,12 @@
   - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuredevops-team-members.md
   - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo-full.md
 - **Problems Encountered:** Initial summary HTML recalculation overrode Azure AD custom summaries; fixed by only recomputing summary HTML when the default builder produced it.
+
+### Technical Writer
+- **Date:** 2026-02-11
+- **Summary:** Updated user-facing documentation to describe the parent-child resource grouping behavior (inline child tables), and aligned feature documentation status with the implemented code.
+- **Artifacts Produced:**
+  - docs/features.md — Added “Parent-Child Resource Grouping (Inline Child Tables)” feature section with supported patterns and example output
+  - docs/features/068-parent-child-resource-grouping/architecture.md — Updated status to Implemented
+  - README.md — Mentioned inline parent-child tables in the top-level feature list
+- **Problems Encountered:** None.

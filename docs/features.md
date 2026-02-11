@@ -1490,6 +1490,49 @@ The nested format organizes principals by type:
 
 The legacy flat format (all principals in one dictionary) is also supported for backwards compatibility.
 
+## Parent-Child Resource Grouping (Inline Child Tables)
+
+**Status:** ✅ Implemented  \
+**Related specification:** [docs/features/068-parent-child-resource-grouping/specification.md](features/068-parent-child-resource-grouping/specification.md)
+
+Some Terraform providers model related data in a parent-child pattern: children can be managed either inline on the parent resource (via an attribute like `members`) or as separate standalone resources (like `azuread_group_member`).
+
+tfplan2md detects these configured parent-child relationships and renders the children as tables inside the parent resource section. This reduces scrolling and makes it easier to understand “what belongs to what” during reviews.
+
+### Supported patterns (initial)
+
+- `azuread_group` → inline `members` / separate `azuread_group_member`
+- `azuredevops_group` → inline `members` / separate `azuredevops_group_membership`
+- `azuredevops_team` → inline `members` / separate `azuredevops_team_members`
+- `azuredevops_team` → inline `administrators` / separate `azuredevops_team_administrators`
+
+### Table behavior
+
+- **Create/Delete**: Child tables omit the “Change” column (the parent action already implies the change).
+- **Update/Replace**: Child tables include a “Change” column using the same indicators as resource changes (➕, 🔄, ❌, ⏺️).
+- **Terraform Resource column**:
+  - Inline children show the inline attribute name (for example: `members attribute`).
+  - Separate child resources show their original Terraform address (for example: `azuredevops_group_membership.release_managers_membership_alice`).
+- **Mixed inline + separate children**: When both sources appear for the same parent, the report shows a warning and renders both.
+
+### Example (Azure DevOps group membership)
+
+```markdown
+<details ...>
+<summary>🔄 azuredevops_group <b><code>release_managers</code></b> — ➕ 2 members</summary>
+
+_No attribute changes._
+
+#### Members
+
+| Change | Member | Terraform Resource |
+| -------- | -------- | -------------------- |
+| ➕ | `aadgp.Uy0.AliceUser` | azuredevops_group_membership.release_managers_membership_alice |
+| ➕ | `aadgp.Uy0.BobUser` | azuredevops_group_membership.release_managers_membership_bob |
+
+</details>
+```
+
 ## Azure API Documentation Mapping
 
 **Status:** ✅ Implemented  

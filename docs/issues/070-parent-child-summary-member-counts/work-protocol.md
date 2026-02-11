@@ -42,3 +42,16 @@
   - Member ID extraction handles both "Name [id]" and `` `id` `` formats
   - Regex pattern with timeout (1 second) to find and replace icon counts in SummaryHtml
   - All existing tests pass, 4 new tests cover the bug scenarios
+
+### Technical Writer
+- **Date:** 2026-02-11
+- **Summary:** Reviewed documentation for accuracy after bug fix. Confirmed that existing user-facing documentation was already correct - it properly described how member counts SHOULD work (showing all members with correct type icons). The bug was purely in the implementation. No documentation updates needed except this work protocol entry. Historical artifacts (UAT reports, code reviews for feature 068) that document the buggy behavior are intentionally left unchanged as they are accurate historical records that reference Issue #447.
+- **Artifacts Produced:**
+  - Updated `docs/issues/070-parent-child-summary-member-counts/work-protocol.md` with Technical Writer entry
+- **Problems Encountered:**
+  - None - documentation review was straightforward
+- **Documentation Status:**
+  - ✅ `docs/features.md` - Already correct (shows proper member count example)
+  - ✅ `docs/features/053-azuread-resources-enhancements/specification.md` - Already correct (specifies member count by type)
+  - ✅ `docs/features/068-parent-child-resource-grouping/specification.md` - Already correct
+  - ✅ Historical artifacts in feature 068 folder (UAT reports, code reviews) - Intentionally preserved as accurate historical records

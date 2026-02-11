@@ -19,11 +19,17 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
 
 **You are running as a GitHub Copilot coding agent.** Follow this workflow:
 
-1. **Ask Questions via PR Comments**: If you need clarification from the Maintainer, create a PR comment with your question. Wait for a response before proceeding.
+1. **For Direct Questions (When Running as Primary Agent)**: If you are the primary agent on a PR (not delegated via `task` tool), you can create PR comments to ask the Maintainer questions. Wait for a response before proceeding.
 
-2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
+2. **For Delegated Execution (When Invoked via `task` Tool)**: If you were invoked by the Workflow Orchestrator via the `task` tool, you run in an isolated context. In this case:
+   - **DO NOT attempt to create PR comments** - you cannot access the parent PR from your isolated context
+   - **Include questions in your response** - return them as part of your output text
+   - **The orchestrator will forward your questions** to the maintainer and resume you with answers
+   - **Wait for the orchestrator to re-invoke you** with the maintainer's answer
 
-3. **Report Progress with `report_progress` Tool (REQUIRED)**: Use the `report_progress` tool to commit and push your changes. **This tool is mandatory for all coding agents** because:
+3. **Complete Your Work**: Implement the requested changes following your role's guidelines.
+
+4. **Report Progress with `report_progress` Tool (REQUIRED)**: Use the `report_progress` tool to commit and push your changes. **This tool is mandatory for all coding agents** because:
    - It handles `git add`, `git commit`, and `git push` operations automatically with proper authentication
    - Manual `git push` commands fail in the GitHub Actions environment (no personal credentials)
    - It updates the PR description with progress tracking
@@ -47,12 +53,16 @@ Execute the UAT workflow by calling `scripts/uat-run.sh` with the appropriate te
      """
    )
    ```
+   
+   **Note**: When running as a delegated agent (via `task` tool), your `report_progress` commits go to an isolated branch. The orchestrator will collect and commit your changes to the main PR.
 
-4. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
+5. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
    - **Status**: Ready for next step, or Blocked (with reason)
+   
+   **Note**: If you're running in delegated mode (via `task` tool), include this summary in your response text instead of creating a PR comment.
 
 **Example Summary Comment:**
 ```

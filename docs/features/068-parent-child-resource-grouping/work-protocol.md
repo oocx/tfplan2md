@@ -180,6 +180,31 @@
   - Only minor suggestions for future improvement (cognitive complexity refactoring, string literal constants in tests)
 - **Next Steps:** Hand off to UAT Tester for visual verification in GitHub/Azure DevOps PR.
 
+### Code Reviewer (Post-UAT Fixes)
+- **Date:** 2026-02-11
+- **Summary:** Reviewed fixes applied after UAT failure (PRs #65/#70). UAT identified missing member tables in Azure AD groups. Root cause was missing `{{ include "/_child_resources.sbn" }}` directive in Azure AD group template. All fixes verified and approved.
+- **Artifacts Produced:**
+  - code-review-post-uat-fixes.md — Comprehensive post-UAT fix review with root cause analysis
+  - Root cause analysis of why previous review missed the template issue
+  - Recommendations for 5 instructional improvements (template verification checklist, mandatory manual artifact generation, simplest-test-first approach, spec-to-output comparison, test data vs implementation issue distinction)
+- **Problems Encountered:** None.
+- **Key Findings:**
+  - **Fix verified:** Template now includes child resource rendering directive
+  - All 943 tests pass (100% pass rate)
+  - Docker build succeeds (2m 51s)
+  - All 20 acceptance criteria met
+  - UAT artifact demonstrates feature working correctly (member tables render, mixed management warnings, findings preservation)
+  - Summary formatting improved (dash separator between name and description)
+  - Minor issue: MD024 duplicate heading linting errors in UAT artifact (expected for multi-resource test documents, not a blocker)
+- **Root Cause of Missed Issue:** Previous review focused on complex configuration reference matching and trusted snapshot tests without manually generating and inspecting artifacts. The simple template inclusion issue was overlooked.
+- **Instructional Gaps Identified:**
+  1. CRITICAL: No template verification checklist
+  2. CRITICAL: No requirement to manually generate and inspect artifacts
+  3. CRITICAL: No "simplest test case first" approach
+  4. HIGH: Insufficient spec-to-output comparison guidance
+  5. MEDIUM: Unclear guidance on distinguishing test data issues from core implementation issues
+- **Next Steps:** Hand off to Release Manager (UAT already completed, issues resolved).
+
 ---
 
 ## UAT Tester - 2026-02-11 12:05 UTC

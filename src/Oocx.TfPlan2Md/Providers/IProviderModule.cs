@@ -1,7 +1,7 @@
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 
-namespace Oocx.TfPlan2Md.Providers;
+namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 /// <summary>
 /// Represents a Terraform provider module that registers provider-specific functionality.
@@ -13,6 +13,8 @@ namespace Oocx.TfPlan2Md.Providers;
 /// - Template discovery prefixes
 /// 
 /// This interface enables explicit, AOT-compatible provider registration without reflection.
+/// Lives in MarkdownGeneration.Services to avoid circular dependency between
+/// MarkdownGeneration and Providers layers. Providers implement this interface.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
 internal interface IProviderModule
@@ -56,6 +58,29 @@ internal interface IProviderModule
     /// </summary>
     /// <param name="registry">The icon provider registry to register into.</param>
     void RegisterIconProviders(IconProviderRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
+
+    /// <summary>
+    /// Registers provider-specific parent-child resource relationships.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register into.</param>
+    void RegisterParentChildRelationships(MarkdownGeneration.Models.IParentChildRelationshipRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
+
+    /// <summary>
+    /// Registers provider-specific resource model mappers for ScriptObject enrichment.
+    /// </summary>
+    /// <param name="registry">The resource model mapper registry to register into.</param>
+    /// <remarks>
+    /// Mappers enable providers to extend template rendering with typed view models
+    /// (e.g., FirewallNetworkRuleCollectionViewModel) without creating compile-time
+    /// dependencies from MarkdownGeneration to Providers.
+    /// </remarks>
+    void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
     {
         // Default no-op keeps existing provider modules compatible.
     }

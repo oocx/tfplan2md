@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Oocx.TfPlan2Md.Parsing;
@@ -9,7 +10,8 @@ public record TerraformPlan(
     [property: JsonPropertyName("format_version")] string FormatVersion,
     [property: JsonPropertyName("terraform_version")] string TerraformVersion,
     [property: JsonPropertyName("resource_changes")] IReadOnlyList<ResourceChange> ResourceChanges,
-    [property: JsonPropertyName("timestamp")] string? Timestamp = null
+    [property: JsonPropertyName("timestamp")] string? Timestamp = null,
+    [property: JsonPropertyName("configuration")] JsonElement? Configuration = null
 );
 
 /// <summary>

@@ -36,8 +36,21 @@ internal sealed class VariableGroupFactory : IResourceViewModelFactory
     {
         _ = principalMapper;
         _ = iconProviderRegistry;
+        _ = model;
+        _ = action;
+        _ = attributeChanges;
+        _ = resourceChange;
+        // View model is now created on-demand by CreateViewModel
+    }
 
-        model.VariableGroup = VariableGroupViewModelFactory.Build(
+    /// <summary>
+    /// Creates a VariableGroupViewModel for the given resource change.
+    /// </summary>
+    /// <param name="resourceChange">The resource change to create view model for.</param>
+    /// <returns>The created view model.</returns>
+    internal VariableGroupViewModel CreateViewModel(ResourceChange resourceChange)
+    {
+        return VariableGroupViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
             _largeValueFormat);

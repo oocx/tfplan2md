@@ -63,6 +63,8 @@
 _No attribute changes._
 {{ end }}
 
+{{ include "_child_resources.sbn" }}
+
 {{ include "_code_analysis_findings.sbn" }}
 
 {{ if large_attrs.size > 0 }}

@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [],
+  "configuration": {
+    "root_module": {
+      "module_calls": {
+        "security": {
+          "module": {
+            "resources": [
+              {
+                "address": "azuread_group.admins",
+                "mode": "managed",
+                "type": "azuread_group",
+                "name": "admins",
+                "expressions": {
+                  "display_name": {
+                    "constant_value": "Admins"
+                  }
+                }
+              },
+              {
+                "address": "azuread_group_member.member1",
+                "mode": "managed",
+                "type": "azuread_group_member",
+                "name": "member1",
+                "expressions": {
+                  "group_object_id": {
+                    "references": [
+                      "azuread_group.admins.id",
+                      "azuread_group.admins"
+                    ]
+                  },
+                  "member_object_id": {
+                    "constant_value": "user-01"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

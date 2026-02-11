@@ -1,0 +1,152 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group.team_a",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "team_a",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Team A"
+        },
+        "after_unknown": {
+          "id": true,
+          "object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group.team_b",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "team_b",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Team B"
+        },
+        "after_unknown": {
+          "id": true,
+          "object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.member_a",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "member_a",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-300"
+        },
+        "after_unknown": {
+          "group_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.member_b",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "member_b",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-301"
+        },
+        "after_unknown": {
+          "group_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group.team_a",
+          "mode": "managed",
+          "type": "azuread_group",
+          "name": "team_a",
+          "expressions": {
+            "display_name": {
+              "constant_value": "Team A"
+            }
+          }
+        },
+        {
+          "address": "azuread_group.team_b",
+          "mode": "managed",
+          "type": "azuread_group",
+          "name": "team_b",
+          "expressions": {
+            "display_name": {
+              "constant_value": "Team B"
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.member_a",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "member_a",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.team_a.id",
+                "azuread_group.team_a"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-300"
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.member_b",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "member_b",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.team_b.id",
+                "azuread_group.team_b"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-301"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

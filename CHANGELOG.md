@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.16.0"></a>
+## [1.16.0](https://github.com/oocx/tfplan2md/compare/v1.15.1...v1.16.0) (2026-02-11)
+
+### ✨ Features
+
+* add azuread group member inline rendering ([2fa7066](https://github.com/oocx/tfplan2md/commit/2fa70667be27dbe691059f5639c24c2bf2c988ec))
+* add azuredevops group/team inline rendering ([ea1b317](https://github.com/oocx/tfplan2md/commit/ea1b317bbda8de8f10ae61a33fc86b4306ed7a6c))
+* add child resource rendering pipeline ([d32e82c](https://github.com/oocx/tfplan2md/commit/d32e82c2a70eb7fba26faebf0535be4f4bec6aea))
+* add configuration reference matching ([566971c](https://github.com/oocx/tfplan2md/commit/566971c2223fbd7adfd409b6ba20b441ba4a8b55))
+* add parent-child relationship registry ([15bae7f](https://github.com/oocx/tfplan2md/commit/15bae7f00ce314cfe3478666dc367e810339df96))
+* add provider hook for parent-child relationships ([a95a126](https://github.com/oocx/tfplan2md/commit/a95a12637061bbcd998eed8432b6228920ebdb2f))
+* merge parent-child resources in report model ([12d4514](https://github.com/oocx/tfplan2md/commit/12d45146944903dff9810c6b8114bb065d92f90a))
+* remove inline child attributes from parent tables ([2d33fcb](https://github.com/oocx/tfplan2md/commit/2d33fcb83a5613c105eabd439295c044277fecbf))
+
+### 🐛 Bug Fixes
+
+* change Platforms → MarkdownGeneration from forbidden to allowed dependency ([8389718](https://github.com/oocx/tfplan2md/commit/838971863412142cfd648d98bad86645d181f456))
+* refresh azuread group summaries and UAT artifact ([f92e619](https://github.com/oocx/tfplan2md/commit/f92e619b1a36c9a1b14e392111814d454cfe7da9))
+
+### ♻️ Refactoring
+
+* align architecture boundaries and tests ([10e8e5d](https://github.com/oocx/tfplan2md/commit/10e8e5d56d592fa3304ad4d73ec39b2153375f15))
+* move ProviderRegistry to MarkdownGeneration.Services ([36d88cc](https://github.com/oocx/tfplan2md/commit/36d88cc0623f9410cbe6006af1f76ba43150ea67))
+
+### 📚 Documentation
+
+* add architecture design for boundary enforcement (feature 066) ([96dd500](https://github.com/oocx/tfplan2md/commit/96dd5007133e3a1385df70e72651b6b533fd406a))
+* add architecture for parent-child resource grouping ([0b79f48](https://github.com/oocx/tfplan2md/commit/0b79f48ea160f833730b189f39e951cf78c4ee63))
+* add code review for parent-child-resource-grouping ([509c339](https://github.com/oocx/tfplan2md/commit/509c33963ffed01febe98c1c4a0e1c8349ccd917))
+* add comprehensive code review for architecture boundary enforcement ([05bd8e4](https://github.com/oocx/tfplan2md/commit/05bd8e4152aa08b06daa2487aa50a6f10d8168f7))
+* add feature specification for 066-architecture-boundary-enforcement ([d71784d](https://github.com/oocx/tfplan2md/commit/d71784d0c05c0a20a9159d06cbde92747d818191))
+* add feature specification for 068-parent-child-resource-grouping ([c05d802](https://github.com/oocx/tfplan2md/commit/c05d802f0db1337ad0e50142e5898e76c1eb0b7b))
+* Add implementation tasks for architecture boundary enforcement ([e15350b](https://github.com/oocx/tfplan2md/commit/e15350b17374010741df0fa9bc416258366505e4))
+* add post-UAT fix code review for feature 068 ([c3b8939](https://github.com/oocx/tfplan2md/commit/c3b893976e1dcaff48efdfcde6454beac179c80c))
+* add release notes and finalize work protocols for Feature 066 ([fd62569](https://github.com/oocx/tfplan2md/commit/fd6256996b7237e3406870171e39c3ef99037bbb))
+* add release notes for parent-child-resource-grouping ([e59952f](https://github.com/oocx/tfplan2md/commit/e59952f7759d05fa71ddca1c2a246728cbbe66ab))
+* add tasks for 068-parent-child-resource-grouping ([e8ebf23](https://github.com/oocx/tfplan2md/commit/e8ebf2326f16c882da9206d6f9a8c453ae811b42))
+* add test plan and UAT plan for 068-parent-child-resource-grouping ([87e9fd9](https://github.com/oocx/tfplan2md/commit/87e9fd9e68fbfcd3cfe81d27f22de9bf05a8bacb))
+* add test plan and UAT plan for architecture boundary enforcement ([2b1851c](https://github.com/oocx/tfplan2md/commit/2b1851cccf97b2c9a37114fc860172d54a66bf32))
+* add UAT report for feature 068 (FAILED) ([93c2a5d](https://github.com/oocx/tfplan2md/commit/93c2a5df12b7dc26a69278b10e98dec8fd4d02a3))
+* clarify scope for examples 7-10 ([3afa2ee](https://github.com/oocx/tfplan2md/commit/3afa2eeb68642efc1f2c13c99a0a040511c5ac58))
+* clarify that Platforms layer includes platform-specific rendering, not just metadata ([56aaaa8](https://github.com/oocx/tfplan2md/commit/56aaaa83a62ec85c9eb6265c1867f41681fd7ce5))
+* complete work protocol for parent-child-resource-grouping release ([edd5423](https://github.com/oocx/tfplan2md/commit/edd5423e0976f67dac4e14375420474f73ce603d))
+* comprehensive test coverage for parent-child configuration reference matching ([adda9cc](https://github.com/oocx/tfplan2md/commit/adda9cc4c745cfadc88e971f8e71fa4447f2e96b))
+* create comprehensive architecture rules documentation ([4d37f47](https://github.com/oocx/tfplan2md/commit/4d37f47ef5da7b2015a9a0c51983f13d51aa9a63))
+* finalize work protocol for feature 068 release ([6a74f8f](https://github.com/oocx/tfplan2md/commit/6a74f8f592e97b10eed685b36756fb01dda4af9e))
+* reference GitHub issues for code review suggestions ([52f734a](https://github.com/oocx/tfplan2md/commit/52f734a60a7c24d560482a6928889bb386a42999))
+* reference issue [#446](https://github.com/oocx/tfplan2md/issues/446) for agent instruction improvements ([c1f247f](https://github.com/oocx/tfplan2md/commit/c1f247faaf6835479b826cb2a53bbf5e40559fed))
+* refresh tasks for feature 068 review fixes ([89f0e00](https://github.com/oocx/tfplan2md/commit/89f0e00c3ab33a4798e80e97259c7f63438708a3))
+* UAT passed for parent-child resource grouping (issue [#447](https://github.com/oocx/tfplan2md/issues/447) tracked separately) ([0d3fa88](https://github.com/oocx/tfplan2md/commit/0d3fa88b69e30d4bf7960a5b94b2927804ef7368))
+* update demo artifacts for inline child tables ([5f757b3](https://github.com/oocx/tfplan2md/commit/5f757b36090f57d71dc26b877378e10087b32008))
+* update documentation ([338e3e3](https://github.com/oocx/tfplan2md/commit/338e3e3a190743eeeefb00114c5587f5e8af4966))
+* update global documentation for architecture boundary enforcement ([9d4035b](https://github.com/oocx/tfplan2md/commit/9d4035b1d7ba05145372d8fc7c137cf1b2dca226))
+* update release notes with correct SHAs ([72cdf9e](https://github.com/oocx/tfplan2md/commit/72cdf9e80274c528d6dc360ccbd9ea827fa2a207))
+* update task status for 068 ([e9e6296](https://github.com/oocx/tfplan2md/commit/e9e629619081b9b6ed564f41dc79c60863bcb8ab))
+* update tasks and UAT artifact ([e813e47](https://github.com/oocx/tfplan2md/commit/e813e47ebe075c51e7b8c9de239b6a47d0e51ee4))
+* update work protocol for 068 ([8fb9459](https://github.com/oocx/tfplan2md/commit/8fb9459104b0e0fc4e947d67434d0b05b17b5d26))
+* update work protocol with Developer implementation summary ([5819da9](https://github.com/oocx/tfplan2md/commit/5819da955e3fb8ef4e34e79760de431ab2d1d54b))
+
 <a name="1.15.1"></a>
 ## [1.15.1](https://github.com/oocx/tfplan2md/compare/v1.15.0...v1.15.1) (2026-02-10)
 

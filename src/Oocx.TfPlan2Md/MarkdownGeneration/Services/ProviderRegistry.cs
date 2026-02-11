@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Scriban.Runtime;
 
-namespace Oocx.TfPlan2Md.Providers;
+namespace Oocx.TfPlan2Md.MarkdownGeneration.Services;
 
 /// <summary>
 /// Central registry for explicitly registering and managing Terraform provider modules.
@@ -89,6 +88,30 @@ internal sealed class ProviderRegistry
         foreach (var provider in _providers)
         {
             provider.RegisterIconProviders(registry);
+        }
+    }
+
+    /// <summary>
+    /// Registers all provider-specific parent-child resource relationships.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register into.</param>
+    public void RegisterAllParentChildRelationships(MarkdownGeneration.Models.IParentChildRelationshipRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterParentChildRelationships(registry);
+        }
+    }
+
+    /// <summary>
+    /// Registers all provider-specific resource model mappers for ScriptObject enrichment.
+    /// </summary>
+    /// <param name="registry">The resource model mapper registry to register into.</param>
+    public void RegisterAllResourceModelMappers(ResourceModelMapperRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterResourceModelMappers(registry);
         }
     }
 }

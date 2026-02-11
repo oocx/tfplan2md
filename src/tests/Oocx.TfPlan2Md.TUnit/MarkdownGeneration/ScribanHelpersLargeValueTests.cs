@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
-using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 using TUnit.Core;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
@@ -226,11 +225,11 @@ public class ScribanHelpersLargeValueTests
             After = "after"
         };
 
-        var roleAttribute = new RoleAssignmentAttributeViewModel
+        var roleAttribute = new ScriptObject
         {
-            Name = "role",
-            Before = "one",
-            After = "two"
+            ["name"] = "role",
+            [BeforeText] = "one",
+            [AfterText] = "two"
         };
 
         IReadOnlyDictionary<string, object?> readOnlyDictionary = new Dictionary<string, object?>

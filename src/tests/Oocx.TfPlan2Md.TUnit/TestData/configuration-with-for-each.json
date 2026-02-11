@@ -1,0 +1,41 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group.team",
+          "mode": "managed",
+          "type": "azuread_group",
+          "name": "team",
+          "expressions": {
+            "display_name": {
+              "constant_value": "Team"
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.members",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "members",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.team.id",
+                "azuread_group.team"
+              ]
+            },
+            "member_object_id": {
+              "references": [
+                "each.value"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

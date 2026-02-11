@@ -61,6 +61,13 @@ log_info "(Tests will fail on first run, but will create new snapshots)"
     --output Normal || true
 )
 
+(
+  cd "$REPO_ROOT/src"
+  dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
+    --treenode-filter "/*/*/ParentChildUatSnapshotTests/*" \
+    --output Normal || true
+)
+
 # Copy snapshots from bin/Debug output to source directory
 BIN_SNAPSHOTS="$REPO_ROOT/src/tests/Oocx.TfPlan2Md.TUnit/bin/Debug/net10.0/TestData/Snapshots"
 if [[ -d "$BIN_SNAPSHOTS" ]]; then
@@ -98,6 +105,11 @@ if (
   cd "$REPO_ROOT/src"
   dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
     --treenode-filter "/*/*/AzureDevOpsSnapshotTests/*" \
+    --output Normal
+) && (
+  cd "$REPO_ROOT/src"
+  dotnet test --project tests/Oocx.TfPlan2Md.TUnit/Oocx.TfPlan2Md.TUnit.csproj \
+    --treenode-filter "/*/*/ParentChildUatSnapshotTests/*" \
     --output Normal
 ); then
   log_info "✅ All snapshot tests pass!"

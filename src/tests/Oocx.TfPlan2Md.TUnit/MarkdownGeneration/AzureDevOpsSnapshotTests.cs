@@ -32,6 +32,26 @@ public class AzureDevOpsSnapshotTests
     }
 
     /// <summary>
+    /// Verifies the Azure DevOps group member snapshot output matches the approved baseline.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureDevOps_GroupMembers_MatchesBaseline()
+    {
+        AssertAzureDevOpsSnapshot("azuredevops-group-members-plan.json", "azuredevops-group-members.md");
+    }
+
+    /// <summary>
+    /// Verifies the Azure DevOps team member snapshot output matches the approved baseline.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureDevOps_TeamMembers_MatchesBaseline()
+    {
+        AssertAzureDevOpsSnapshot("azuredevops-team-members-plan.json", "azuredevops-team-members.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure DevOps plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

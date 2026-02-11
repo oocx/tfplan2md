@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
@@ -21,7 +22,7 @@ public class AzureAdGroupTemplateTests
         var markdown = Render();
         var section = ExtractSection(markdown, "azuread_group.platform_team");
 
-        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_group <b><code>platform_team</code></b> — <code>👥{Nbsp}Platform Team</code> (<code>🆔{Nbsp}Platform Engineering</code>) Core platform engineering team | <code>3 👤{Nbsp}2 👥{Nbsp}1 💻{Nbsp}1 ❓</code></summary>");
+        section.Should().Contain($"<summary>{ActionIcons.Add}{Nbsp}azuread_group <b><code>platform_team</code></b> — <code>👥{Nbsp}Platform Team</code> (<code>🆔{Nbsp}Platform Engineering</code>) - Core platform engineering team | <code>3 👤{Nbsp}2 👥{Nbsp}1 💻{Nbsp}1 ❓</code> | {ActionIcons.Add}{Nbsp}7 members</summary>");
     }
 
     private string Render()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Oocx.TfPlan2Md.Platforms.Azure;
 
@@ -10,6 +11,7 @@ namespace Oocx.TfPlan2Md.Parsing;
 /// </summary>
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
 [JsonSerializable(typeof(TerraformPlan))]
+[JsonSerializable(typeof(JsonElement))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(PrincipalMappingFile))]
 [JsonSerializable(typeof(MappingEntry))]

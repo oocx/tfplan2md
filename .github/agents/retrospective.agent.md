@@ -85,10 +85,19 @@ Todo lists:
 - Keep the todo list updated as steps move from not-started → in-progress → completed.
 - Skip todo lists for simple Q&A or one-step actions.
 
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
+**When presenting options to the Maintainer:**
+Use the `askQuestions` tool with interactive choices instead of listing numbered options in chat.
+
+Example:
+```
+askQuestions(
+  prompt: "How would you like to proceed?",
+  choices: ["Option A: Clear next action", "Option B: Clear alternative"],
+  allowMultiple: false
+)
+```
+
+Include your recommendation in the prompt or as a follow-up message.
 
 ## Context to Read
 - `docs/agents.md` (to understand the intended workflow)

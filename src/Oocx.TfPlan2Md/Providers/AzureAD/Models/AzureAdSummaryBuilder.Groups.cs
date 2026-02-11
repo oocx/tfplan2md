@@ -93,7 +93,9 @@ internal static partial class AzureAdSummaryBuilder
 
         if (!string.IsNullOrWhiteSpace(description))
         {
-            nameSummary = $"{nameSummary} {EscapeMarkdown(description)}";
+            nameSummary = string.IsNullOrWhiteSpace(nameSummary)
+                ? EscapeMarkdown(description)
+                : $"{nameSummary} - {EscapeMarkdown(description)}";
         }
 
         var summaryText = $"{nameSummary} | {FormatCodeSummary(summaryCounts)}";
@@ -133,7 +135,7 @@ internal static partial class AzureAdSummaryBuilder
         {
             summaryText = string.IsNullOrEmpty(summaryText)
                 ? EscapeMarkdown(description)
-                : $"{summaryText} {EscapeMarkdown(description)}";
+                : $"{summaryText} - {EscapeMarkdown(description)}";
         }
 
         if (string.IsNullOrEmpty(summaryText))

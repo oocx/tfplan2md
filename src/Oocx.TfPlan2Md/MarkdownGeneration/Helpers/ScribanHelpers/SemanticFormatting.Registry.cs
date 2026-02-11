@@ -85,7 +85,7 @@ public static partial class ScribanHelpers
     /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Formatted value suitable for markdown tables.</returns>
-    private static string FormatAttributeValueTableWithRegistry(
+    internal static string FormatAttributeValueTableWithRegistry(
         string? attributeName,
         string? value,
         string? providerName,
@@ -120,7 +120,7 @@ public static partial class ScribanHelpers
     /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Formatted value suitable for markdown tables.</returns>
-    private static string FormatAttributeValueTableWithRegistryResource(
+    internal static string FormatAttributeValueTableWithRegistryResource(
         string? attributeName,
         string? value,
         string? providerName,

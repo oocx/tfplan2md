@@ -104,10 +104,19 @@ Todo lists:
 - Update the todo list whenever you switch from one major step to the next (so the Maintainer can see what’s done vs remaining at any time).
 - Skip todo lists for simple Q&A or one-step actions.
 
-**Next**
-- **Option 1:** <clear next action>
-- **Option 2:** <clear alternative>
-**Recommendation:** Option <n>, because <short reason>.
+**When presenting options to the Maintainer:**
+Use the `askQuestions` tool with interactive choices instead of listing numbered options in chat.
+
+Example:
+```
+askQuestions(
+  prompt: "How would you like to proceed?",
+  choices: ["Option A: Clear next action", "Option B: Clear alternative"],
+  allowMultiple: false
+)
+```
+
+Include your recommendation in the prompt or as a follow-up message.
 
 ### Status Template
 

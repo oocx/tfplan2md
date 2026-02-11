@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Platforms.Azure;
+using Oocx.TfPlan2Md.Providers.AzureRM.Models;
 using Scriban.Runtime;
 
 namespace Oocx.TfPlan2Md.Providers.AzureRM;
@@ -10,6 +12,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureRM;
 /// Provider module for Azure Resource Manager (azurerm) resources.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </summary>
+[SuppressMessage("Design", "CA1506:Avoid excessive class coupling", Justification = "Provider registration module naturally references all provider-specific types (mappers, factories, formatters, icon providers). Coupling is marginally over threshold (22 vs 21) after mapper registry refactoring.")]
 internal sealed class AzureRMModule : IProviderModule
 {
     private readonly LargeValueFormat _largeValueFormat;
@@ -85,5 +88,24 @@ internal sealed class AzureRMModule : IProviderModule
     public void RegisterIconProviders(IconProviderRegistry registry)
     {
         AzureRmIconProviderRegistration.Register(registry);
+    }
+
+    /// <summary>
+    /// Registers AzureRM-specific resource model mappers for ScriptObject enrichment.
+    /// </summary>
+    /// <param name="registry">The resource model mapper registry to register with.</param>
+    public void RegisterResourceModelMappers(ResourceModelMapperRegistry registry)
+    {
+        // Create factories (these will be reused by the mappers)
+        var nsgFactory = new NetworkSecurityGroupFactory(_largeValueFormat);
+        var fwNetworkFactory = new FirewallNetworkRuleCollectionFactory(_largeValueFormat);
+        var fwAppFactory = new FirewallApplicationRuleCollectionFactory(_largeValueFormat);
+        var roleFactory = new RoleAssignmentFactory(_principalMapper, _scopeFormatter);
+
+        // Register mappers
+        registry.Register(new Mappers.NetworkSecurityGroupMapper(nsgFactory));
+        registry.Register(new Mappers.FirewallNetworkRuleCollectionMapper(fwNetworkFactory));
+        registry.Register(new Mappers.FirewallApplicationRuleCollectionMapper(fwAppFactory));
+        registry.Register(new Mappers.RoleAssignmentMapper(roleFactory));
     }
 }

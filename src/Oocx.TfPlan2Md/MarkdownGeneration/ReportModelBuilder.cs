@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
@@ -34,7 +35,7 @@ internal partial class ReportModelBuilder(
     Platforms.Azure.IPrincipalMapper? principalMapper = null,
     IMetadataProvider? metadataProvider = null,
     bool hideMetadata = false,
-    Providers.ProviderRegistry? providerRegistry = null,
+    Services.ProviderRegistry? providerRegistry = null,
     CodeAnalysisInput? codeAnalysisInput = null,
     MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
 {
@@ -80,6 +81,12 @@ internal partial class ReportModelBuilder(
         iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
 
     /// <summary>
+    /// Registry for value formatter services.
+    /// </summary>
+    private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry =
+        CreateValueFormatterRegistry(providerRegistry);
+
+    /// <summary>
     /// Mapper for resolving Azure principal names.
     /// </summary>
     private readonly IPrincipalMapper _principalMapper = principalMapper ?? new NullPrincipalMapper();
@@ -89,6 +96,18 @@ internal partial class ReportModelBuilder(
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =
         CreateFactoryRegistry(ConvertRenderTargetToLargeValueFormat(renderTarget), principalMapper ?? new NullPrincipalMapper(), providerRegistry);
+
+    /// <summary>
+    /// Registry for parent-child resource relationships.
+    /// </summary>
+    private readonly ParentChildRelationshipRegistry _parentChildRelationshipRegistry =
+        CreateParentChildRelationshipRegistry(providerRegistry);
+
+    /// <summary>
+    /// Cached configuration reference index for fallback parent-child matching.
+    /// </summary>
+    private IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
+        new Dictionary<(string Address, string Attribute), IReadOnlyList<string>>();
 
     /// <summary>
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.
@@ -113,7 +132,7 @@ internal partial class ReportModelBuilder(
     private static ResourceViewModelFactoryRegistry CreateFactoryRegistry(
         LargeValueFormat largeValueFormat,
         Platforms.Azure.IPrincipalMapper principalMapper,
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         var registry = new ResourceViewModelFactoryRegistry(largeValueFormat, principalMapper);
 
@@ -130,7 +149,7 @@ internal partial class ReportModelBuilder(
     /// <param name="providerRegistry">The provider registry to pull icon providers from.</param>
     /// <returns>The populated icon provider registry, or null when no providers are registered.</returns>
     private static MarkdownGeneration.Services.IconProviderRegistry? CreateIconProviderRegistry(
-        Providers.ProviderRegistry? providerRegistry)
+        Services.ProviderRegistry? providerRegistry)
     {
         if (providerRegistry is null)
         {
@@ -139,6 +158,38 @@ internal partial class ReportModelBuilder(
 
         var registry = new MarkdownGeneration.Services.IconProviderRegistry();
         providerRegistry.RegisterAllIconProviders(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Builds a value formatter registry from the configured providers.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry to pull value formatters from.</param>
+    /// <returns>The populated value formatter registry, or null when no providers are registered.</returns>
+    private static MarkdownGeneration.Services.ValueFormatterRegistry? CreateValueFormatterRegistry(
+        Services.ProviderRegistry? providerRegistry)
+    {
+        if (providerRegistry is null)
+        {
+            return null;
+        }
+
+        var registry = new MarkdownGeneration.Services.ValueFormatterRegistry();
+        providerRegistry.RegisterAllValueFormatters(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Creates and populates the parent-child relationship registry.
+    /// </summary>
+    /// <param name="providerRegistry">Optional provider registry to register relationships from.</param>
+    /// <returns>The populated parent-child relationship registry.</returns>
+    private static ParentChildRelationshipRegistry CreateParentChildRelationshipRegistry(
+        Services.ProviderRegistry? providerRegistry)
+    {
+        var registry = new ParentChildRelationshipRegistry();
+        providerRegistry?.RegisterAllParentChildRelationships(registry);
         return registry;
     }
 }

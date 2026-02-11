@@ -33,6 +33,36 @@ public class AzureAdSnapshotTests
     }
 
     /// <summary>
+    /// Verifies the Azure AD group member snapshot output matches the approved baseline.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMembers_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-members-plan.json", "azuread-group-members.md");
+    }
+
+    /// <summary>
+    /// Verifies the Azure AD group members snapshot for known-after-apply IDs.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMembersKnownAfterApply_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-members-known-after-apply-plan.json", "azuread-group-members-known-after-apply.md");
+    }
+
+    /// <summary>
+    /// Verifies graceful degradation when the configuration block is missing.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMembers_NoConfiguration_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("no-configuration-block-plan.json", "no-configuration-block.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure AD plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

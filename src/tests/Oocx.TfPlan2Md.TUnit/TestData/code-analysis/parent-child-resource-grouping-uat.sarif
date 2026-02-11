@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Checkov",
+          "semanticVersion": "3.2.10",
+          "rules": [
+            {
+              "id": "CKV_AZURE_999",
+              "helpUri": "https://example.com/fix1"
+            },
+            {
+              "id": "CUSTOM_1",
+              "helpUri": "https://example.com/fix2"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CKV_AZURE_999",
+          "level": "error",
+          "message": {
+            "text": "External senders should not be allowed for security groups"
+          },
+          "properties": {
+            "security-severity": "9.1"
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azuread_group.contractors.members"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "CUSTOM_1",
+          "level": "warning",
+          "message": {
+            "text": "High-risk user account added to security group"
+          },
+          "properties": {
+            "security-severity": "5.0"
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azuread_group_member.contractor_high_risk.member_object_id"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

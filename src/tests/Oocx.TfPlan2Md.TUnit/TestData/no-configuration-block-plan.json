@@ -1,0 +1,51 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group.platform_engineers",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group",
+      "name": "platform_engineers",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "display_name": "Platform Engineers",
+          "members": [
+            "user-100"
+          ]
+        },
+        "after_unknown": {
+          "id": true,
+          "object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_admin_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_admin_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-200"
+        },
+        "after_unknown": {
+          "group_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

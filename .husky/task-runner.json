@@ -5,13 +5,21 @@
       "name": "dotnet-format",
       "group": "pre-commit",
       "command": "dotnet",
-      "args": ["format", "src/tfplan2md.slnx", "--verify-no-changes", "--verbosity", "minimal"]
+      "args": ["format", "src/tfplan2md.slnx", "--verify-no-changes", "--verbosity", "minimal"],
+      "include": ["**/*.cs", "**/*.csproj", "**/*.slnx", "**/*.sln"],
+      "exclude": ["docs/**", ".github/**"],
+      "pathMode": "relative",
+      "filteringRule": "staged"
     },
     {
       "name": "dotnet-build",
       "group": "pre-commit",
       "command": "dotnet",
-      "args": ["build", "src/tfplan2md.slnx", "--configuration", "Release", "--no-restore"]
+      "args": ["build", "src/tfplan2md.slnx", "--configuration", "Release", "--no-restore"],
+      "include": ["**/*.cs", "**/*.csproj", "**/*.slnx", "**/*.sln"],
+      "exclude": ["docs/**", ".github/**"],
+      "pathMode": "relative",
+      "filteringRule": "staged"
     },
     {
       "name": "commit-message-linter",

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
 using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;

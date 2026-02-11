@@ -86,7 +86,8 @@ When you cannot proceed because you need Maintainer input (for example, ambiguou
 - State that you are **blocked** and why (1 sentence)
 - Summarize what you completed so far (2–5 bullets)
 - State what work remains (1–3 bullets)
-- Use the `askQuestions` tool to present options or gather input (see Terminal Command Guidelines § Asking questions)
+- **For VS Code chat agents**: Use the `askQuestions` tool to present options or gather input (see Terminal Command Guidelines § Asking questions)
+- **For GitHub Copilot coding agents**: List options in a PR comment and wait for maintainer response
 - Ask **at most one** clarifying question at a time
 
 ## Agent Skills (Required)
@@ -149,10 +150,9 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 - **Snapshot updates**: Snapshot diffs (files under `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
   - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
   - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.
-- **Asking questions**: Use the `askQuestions` tool when you need clarification from the user, especially when presenting options or choices.
-  - The tool provides an interactive UI for single-select, multi-select, or free-text responses.
-  - Use this instead of presenting numbered lists and waiting for the user to type a number.
-  - Example: Instead of "Option 1: X, Option 2: Y - Please reply with 1 or 2", use askQuestions with interactive choices.
+- **Asking questions**: 
+  - **VS Code chat agents**: Use the `askQuestions` tool when you need clarification from the user, especially when presenting options or choices. The tool provides an interactive UI for single-select, multi-select, or free-text responses. Example: Instead of "Option 1: X, Option 2: Y - Please reply with 1 or 2", use askQuestions with interactive choices.
+  - **GitHub Copilot coding agents**: The `askQuestions` tool is NOT available. Instead, create a PR comment listing your options and wait for the maintainer to respond. Example: "I need to choose between Option 1: X and Option 2: Y. Which should I use?"
 - **Directly-invokable scripts**: Always run repository scripts directly (e.g., `scripts/uat-run.sh`, `scripts/pr-github.sh`, `scripts/validate-agents.py`) instead of via an interpreter/runner (e.g., `bash scripts/<script>.sh`, `python3 scripts/<script>.py`, `dotnet <runner> scripts/<script>`).
   - This enables per-script permanent allow rules in VS Code approvals.
   - If a script is not directly invokable, fix it instead of working around it (add a proper shebang and make it executable).

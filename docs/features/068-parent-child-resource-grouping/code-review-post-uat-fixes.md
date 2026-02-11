@@ -362,6 +362,7 @@ All acceptance criteria are met. The fixes correctly address the UAT failures. T
 
 ### Follow-up (Technical Debt)
 - [ ] Create issue to address MD024 duplicate heading violations in generated reports (choose Option A, B, or C from Minor Issues section)
+- [x] Improve Code Reviewer agent instructions to catch template rendering issues (Issue #446)
 - [ ] Consider refactoring high-complexity methods (MergeParentChildRelationships, BuildInlineRows) identified by SonarCloud
 - [ ] Extract string literal constants in test files
 

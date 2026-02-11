@@ -24,9 +24,9 @@ References:
 Fix the code analysis errors that break Docker builds by replacing `Regex.Matches(...).Count` with `Regex.Count(...)` in tests.
 
 **Acceptance Criteria:**
-- [ ] All CA1875 occurrences in test projects are fixed.
-- [ ] `dotnet build` succeeds with analyzers-as-errors enabled (same settings as Docker/CI).
-- [ ] No behavior change in the tests beyond the equivalent regex counting.
+- [x] All CA1875 occurrences in test projects are fixed.
+- [x] `dotnet build` succeeds with analyzers-as-errors enabled (same settings as Docker/CI).
+- [x] No behavior change in the tests beyond the equivalent regex counting.
 
 **Dependencies:** None
 
@@ -40,10 +40,10 @@ Fix the code analysis errors that break Docker builds by replacing `Regex.Matche
 Update the Terraform plan parsing model to include the top-level `configuration` block (as a lightweight `JsonElement?`) so fallback matching can use Terraform expression references.
 
 **Acceptance Criteria:**
-- [ ] `TerraformPlan` includes `Configuration` mapped from JSON property `configuration` (nullable).
-- [ ] Source generation / serializer context is updated so the new property is deserialized in all environments.
-- [ ] Unit test TC-12 verifies parsing with a minimal plan JSON containing a `configuration.root_module.resources[].expressions.*.references` structure.
-- [ ] Unit test verifies graceful handling when `configuration` is absent or null.
+- [x] `TerraformPlan` includes `Configuration` mapped from JSON property `configuration` (nullable).
+- [x] Source generation / serializer context is updated so the new property is deserialized in all environments.
+- [x] Unit test TC-12 verifies parsing with a minimal plan JSON containing a `configuration.root_module.resources[].expressions.*.references` structure.
+- [x] Unit test verifies graceful handling when `configuration` is absent or null.
 
 **Dependencies:** None
 
@@ -61,11 +61,11 @@ Implement a resolver that walks the plan `configuration` tree and builds a refer
 This enables precise parent-child matching even when parent IDs are `(known after apply)`.
 
 **Acceptance Criteria:**
-- [ ] Resolver supports root module resources (TC-13).
-- [ ] Resolver returns an empty index when configuration is null/absent (TC-14).
-- [ ] Resolver supports nested modules via `module_calls` with module-qualified addresses (TC-16).
-- [ ] Resolver supports for_each/count instances by handling instance keys correctly (TC-17).
-- [ ] Resolver does not throw on missing optional nodes; it fails closed (empty/partial index) rather than crashing.
+- [x] Resolver supports root module resources (TC-13).
+- [x] Resolver returns an empty index when configuration is null/absent (TC-14).
+- [x] Resolver supports nested modules via `module_calls` with module-qualified addresses (TC-16).
+- [x] Resolver supports for_each/count instances by handling instance keys correctly (TC-17).
+- [x] Resolver does not throw on missing optional nodes; it fails closed (empty/partial index) rather than crashing.
 
 **Dependencies:** Task 2
 
@@ -79,11 +79,11 @@ This enables precise parent-child matching even when parent IDs are `(known afte
 Update the separate-child matching logic to support `(known after apply)` parents by using configuration reference matching when the parent’s ID value is not available.
 
 **Acceptance Criteria:**
-- [ ] When `ParentIdAttribute` value is present, the existing value-based matching remains the primary path.
-- [ ] When the parent ID is missing/empty, matching falls back to configuration references (TC-18).
-- [ ] Matching is precise with multiple parents of the same type in the same module (TC-20).
-- [ ] Graceful degradation: if configuration is absent OR no reference match exists, children remain standalone (no guessing) (TC-19).
-- [ ] Integration snapshot test TC-15 demonstrates known-after-apply merging end-to-end.
+- [x] When `ParentIdAttribute` value is present, the existing value-based matching remains the primary path.
+- [x] When the parent ID is missing/empty, matching falls back to configuration references (TC-18).
+- [x] Matching is precise with multiple parents of the same type in the same module (TC-20).
+- [x] Graceful degradation: if configuration is absent OR no reference match exists, children remain standalone (no guessing) (TC-19).
+- [x] Integration snapshot test TC-15 demonstrates known-after-apply merging end-to-end.
 
 **Dependencies:** Task 3
 
@@ -97,15 +97,15 @@ Update the separate-child matching logic to support `(known after apply)` parent
 Create/extend test data plans so the configuration fallback path is exercised by tests (including nested modules, for_each, no-configuration, and multiple-parents scenarios).
 
 **Acceptance Criteria:**
-- [ ] New fixtures exist as documented in [test-plan.md](test-plan.md):
-	- [ ] `azuread-group-members-known-after-apply-plan.json`
-	- [ ] `configuration-with-nested-modules.json`
-	- [ ] `configuration-with-for-each.json`
-	- [ ] `no-configuration-block-plan.json`
-	- [ ] `multiple-parents-same-type.json`
-- [ ] Fixtures include realistic `configuration.*.expressions.*.references` data that matches actual Terraform output shapes.
-- [ ] Snapshot baselines are updated/added for TC-15 and TC-19.
-- [ ] If the public demo plan(s) depend on the missing fallback, update the relevant example plan(s) so the demos show child tables (as intended).
+- [x] New fixtures exist as documented in [test-plan.md](test-plan.md):
+- [x] `azuread-group-members-known-after-apply-plan.json`
+- [x] `configuration-with-nested-modules.json`
+- [x] `configuration-with-for-each.json`
+- [x] `no-configuration-block-plan.json`
+- [x] `multiple-parents-same-type.json`
+- [x] Fixtures include realistic `configuration.*.expressions.*.references` data that matches actual Terraform output shapes.
+- [x] Snapshot baselines are updated/added for TC-15 and TC-19.
+- [x] If the public demo plan(s) depend on the missing fallback, update the relevant example plan(s) so the demos show child tables (as intended).
 
 **Dependencies:** Task 4
 
@@ -119,9 +119,9 @@ Create/extend test data plans so the configuration fallback path is exercised by
 Create a deterministic markdown artifact (and snapshot coverage) that matches the documented rendering examples (Examples 1–6A) so UAT reviewers can validate GitHub/Azure DevOps rendering with confidence.
 
 **Acceptance Criteria:**
-- [ ] A single artifact markdown file in `artifacts/` demonstrates Examples 1–6A output structure (tables, columns, warnings, findings placement).
-- [ ] At least one snapshot test asserts the key formatting invariants from the examples (table headers, Terraform Resource column labeling for inline vs separate, mixed-management warning, findings attribution).
-- [ ] The artifact is stable (no timestamps, random IDs, or ordering instability).
+- [x] A single artifact markdown file in `artifacts/` demonstrates Examples 1–6A output structure (tables, columns, warnings, findings placement).
+- [x] At least one snapshot test asserts the key formatting invariants from the examples (table headers, Terraform Resource column labeling for inline vs separate, mixed-management warning, findings attribution).
+- [x] The artifact is stable (no timestamps, random IDs, or ordering instability).
 
 **Dependencies:** Task 5
 
@@ -135,9 +135,9 @@ Create a deterministic markdown artifact (and snapshot coverage) that matches th
 Add test coverage for the new error-handling and performance requirements introduced by configuration reference matching.
 
 **Acceptance Criteria:**
-- [ ] TC-E6: If an `IChildRowExtractor` throws, merging does not crash; the child remains standalone.
-- [ ] TC-E7: Malformed/invalid JSON in child state is handled without crashing.
-- [ ] TC-21: `ConfigurationReferenceResolver.BuildReferenceIndex()` has a performance-oriented test that enforces linear-ish behavior and a bounded runtime for a large configuration.
+- [x] TC-E6: If an `IChildRowExtractor` throws, merging does not crash; the child remains standalone.
+- [x] TC-E7: Malformed/invalid JSON in child state is handled without crashing.
+- [x] TC-21: `ConfigurationReferenceResolver.BuildReferenceIndex()` has a performance-oriented test that enforces linear-ish behavior and a bounded runtime for a large configuration.
 
 **Dependencies:** Task 3, Task 4
 
@@ -151,8 +151,8 @@ Add test coverage for the new error-handling and performance requirements introd
 Align `ChildTableColumn` with the lightweight record style used elsewhere (positional record) if it improves consistency without changing behavior.
 
 **Acceptance Criteria:**
-- [ ] Model is simplified without changing serialized/public behavior.
-- [ ] No net new warnings; all tests remain green.
+- [x] Model is simplified without changing serialized/public behavior.
+- [x] No net new warnings; all tests remain green.
 
 **Dependencies:** None
 

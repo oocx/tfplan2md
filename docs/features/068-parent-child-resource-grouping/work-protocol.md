@@ -147,3 +147,18 @@
 - **Artifacts Produced:**
   - tasks.md — Rewritten to focus on code review fixes (CA1875 Docker build blocker, configuration parsing, ConfigurationReferenceResolver, fallback integration, new fixtures/snapshots, and new tests).
 - **Problems Encountered:** None.
+
+### Developer
+- **Date:** 2026-02-11
+- **Summary:** Completed code review fixes for configuration reference matching, restored child resource rendering in Azure AD group template, regenerated snapshots, and ran full test suite.
+- **Artifacts Produced:**
+  - src/Oocx.TfPlan2Md/Parsing/ConfigurationReferenceResolver.cs
+  - src/Oocx.TfPlan2Md/Parsing/TerraformPlan.cs
+  - src/Oocx.TfPlan2Md/Parsing/TfPlanJsonContext.cs
+  - src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs
+  - src/Oocx.TfPlan2Md/Providers/AzureAD/Templates/azuread/group.sbn
+  - src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ConfigurationReferenceResolverTests.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ParentChildUatSnapshotTests.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/* (updated baselines, including parent-child-resource-grouping-uat.md)
+  - artifacts/parent-child-resource-grouping-uat.md
+- **Problems Encountered:** Missing child resource rendering in the Azure AD group template; fixed by including the shared child resource template with the correct absolute include path.

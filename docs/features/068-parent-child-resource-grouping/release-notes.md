@@ -4,7 +4,7 @@ This release introduces an improved rendering pattern for resources with parent-
 
 ## ✨ Features
 
-- **Inline Child Resource Tables**: Automatically groups functionally related resources (e.g., `azuread_group_member` or `azuredevops_team_members`) into tables inside their parent resource section.
+- **Inline Child Resource Tables**: Automatically groups functionally related resources (e.g., `azuread_group_member` or `azuredevops_group_membership`) into tables inside their parent resource section.
 - **Enhanced Grouping Support**: Initially supports Azure AD Groups, Azure DevOps Groups, and Azure DevOps Teams.
 - **Mixed Management Detection**: Added a warning indicator when a resource has children managed both as inline attributes and as separate Terraform resources, helping to identify potential configuration conflicts.
 - **Improved Resource Summaries**: Parent resource summary lines now include aggregate counts of child changes (e.g., "👤 5 members | ➕ 2 members").
@@ -15,6 +15,7 @@ This release introduces an improved rendering pattern for resources with parent-
 
 - **Azure AD Group Formatting**: Improved the display of Azure AD group names and descriptions in summaries with a clearer separator.
 - **Target Table Consistency**: Fixed an issue where some inline child attributes were duplicated in both the main attribute table and the specialized child table.
+- **CI Reliability**: Resolved flaky architecture boundary tests that occurred stochastically in high-load environments.
 
 ## 📚 Documentation
 
@@ -23,16 +24,11 @@ This release introduces an improved rendering pattern for resources with parent-
 
 ## 🔗 Commits
 
-- [50972f49](https://github.com/oocx/tfplan2md/commit/50972f49) feat: add configuration reference matching
-- 45a61f74 feat: remove inline child attributes from parent tables
-- fe0df543 feat: add azuredevops group/team inline rendering
-- 7b6c757b feat: add azuread group member inline rendering
-- 230c181c feat: add child resource rendering pipeline
-- 50aaf5ed feat: merge parent-child resources in report model
-- c1434cc5 feat: add provider hook for parent-child relationships
-- 71b8c9ea feat: add parent-child relationship registry
+- [6259fba4](https://github.com/oocx/tfplan2md/commit/6259fba4) feat: add configuration reference matching
+- [fda5f5d1](https://github.com/oocx/tfplan2md/commit/fda5f5d1) feat: remove inline child attributes from parent tables
+- [b11ac8ac](https://github.com/oocx/tfplan2md/commit/b11ac8ac) refactor: move ProviderRegistry to MarkdownGeneration.Services
+- [990fe38d](https://github.com/oocx/tfplan2md/commit/990fe38d) fix: resolve flaky architecture tests in CI
 
 ## ▶️ Getting started
 
 This feature is enabled by default for all supported resource types. No additional configuration or flags are required.
-

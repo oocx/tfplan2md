@@ -23,14 +23,32 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 
 2. **Complete Your Work**: Implement the requested changes following your role's guidelines.
 
-3. **Commit and Push**: When finished, commit your changes with a descriptive message and push to the current branch. **This must be done BEFORE step 4.**
-   ```bash
-   git add <files>
-   git commit -m "<type>: <description>"
-   git push origin HEAD
+3. **Report Progress with `report_progress` Tool (REQUIRED)**: Use the `report_progress` tool to commit and push your changes. **This tool is mandatory for all coding agents** because:
+   - It handles `git add`, `git commit`, and `git push` operations automatically with proper authentication
+   - Manual `git push` commands fail in the GitHub Actions environment (no personal credentials)
+   - It updates the PR description with progress tracking
+   
+   **Call `report_progress` with:**
+   - `commitMessage`: Conventional commit message (e.g., "feat: add feature X", "fix: correct issue Y")
+   - `prDescription`: Markdown checklist showing completed and remaining work
+   
+   **Example:**
+   ```
+   report_progress(
+     commitMessage="feat: implement user authentication",
+     prDescription="""
+     ## Implementation Progress
+     
+     - [x] Add authentication service
+     - [x] Add login endpoint with tests
+     - [x] Add JWT token generation
+     - [ ] Add authorization middleware
+     - [ ] Update documentation
+     """
+   )
    ```
 
-4. **Create Summary Comment (After Committing)**: Post a PR comment with:
+4. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
    - **Changes**: List of key files/features modified
    - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)

@@ -253,7 +253,7 @@ _No attribute changes._
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 
-<summary>➕ azuread_group <b><code>platform_engineers</code></b> — <code>👥 Platform Engineers</code> (<code>🆔 platform-engineers</code>) Platform engineering team with infrastructure access | <code>2 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
+<summary>➕ azuread_group <b><code>platform_engineers</code></b> — <code>👥 Platform Engineers</code> (<code>🆔 platform-engineers</code>) - Platform engineering team with infrastructure access | <code>2 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
 <br>
 
 | Attribute | Value |
@@ -304,7 +304,7 @@ and as separate resources. This configuration will cause conflicts.
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 
-<summary>➕ azuread_group_without_members <b><code>readonly_group</code></b> — <code>👥 Read-Only Auditors</code> (<code>🆔 readonly-auditors</code>) Auditor group with read-only access</summary>
+<summary>➕ azuread_group_without_members <b><code>readonly_group</code></b> — <code>👥 Read-Only Auditors</code> (<code>🆔 readonly-auditors</code>) - Auditor group with read-only access</summary>
 <br>
 
 | Attribute | Value |

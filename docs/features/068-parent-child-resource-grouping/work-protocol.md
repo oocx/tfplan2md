@@ -198,6 +198,19 @@
 7. ✅ Cleaned up UAT PRs and branches
 8. ✅ Created comprehensive UAT report: `docs/features/068-parent-child-resource-grouping/uat-report.md`
 
+### Developer
+- **Date:** 2026-02-11
+- **Summary:** Regenerated the parent-child UAT artifact to include inline Azure AD member tables and added a clear separator between Azure AD group names and descriptions in summary lines.
+- **Artifacts Produced:**
+  - artifacts/parent-child-resource-grouping-uat.md
+  - src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.Groups.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdGroupTemplateTests.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdGroupWithoutMembersTemplateTests.cs
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuread-snapshot.md
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/comprehensive-demo-full.md
+  - src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/parent-child-resource-grouping-uat.md
+- **Problems Encountered:** UAT artifact was stale; regenerated it with current renderer output and updated snapshots via the standard update script.
+
 **UAT Result:** ❌ FAILED
 
 **Critical Issues Found:**

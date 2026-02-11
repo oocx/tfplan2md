@@ -32,6 +32,53 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - After implementing changes, ensure that the documentation is updated accordingly
 - Use sub-agents (via the `task` tool) to reduce context rot: delegate codebase research to `explore` agents and build/test runs to `task` agents so their output stays out of your main context. Reserve your context window for the primary task. See `docs/agents.md` § Sub-Agent Strategy for the full decision matrix.
 
+## GitHub Copilot Coding Agent Workflow (CRITICAL)
+
+**If you are running as a GitHub Copilot coding agent** (assigned issues via `@copilot`, PR coding agent on `copilot/*` branches), you **MUST** use the `report_progress` tool for all commits and pushes. **Manual `git push` commands will fail.**
+
+### Why Manual Git Commands Fail
+
+GitHub Copilot coding agents run in a GitHub Actions environment without personal git credentials. Manual `git push` commands fail authentication and result in empty PRs where work is committed locally but never appears in the PR.
+
+### Using report_progress Tool (REQUIRED)
+
+The `report_progress` tool is **mandatory for all GitHub Copilot coding agents** because it:
+- Handles `git add`, `git commit`, and `git push` automatically with proper authentication
+- Uses GitHub Actions `GITHUB_TOKEN` for push operations
+- Updates the PR description with progress tracking
+- Ensures changes are visible in the PR
+
+**Always use `report_progress` instead of manual git commands:**
+
+```typescript
+// ✅ CORRECT - Use report_progress tool
+report_progress({
+  commitMessage: "feat: implement user authentication",
+  prDescription: `
+## Implementation Progress
+
+- [x] Add authentication service
+- [x] Add login endpoint with tests
+- [x] Add JWT token generation
+- [ ] Add authorization middleware
+- [ ] Update documentation
+`
+})
+
+// ❌ WRONG - Manual git commands fail in coding agent environment
+git add <files>
+git commit -m "feat: implement user authentication"
+git push origin HEAD  // ← This will fail authentication
+```
+
+**When to call report_progress:**
+- After completing a meaningful unit of work
+- When you want to save progress and ensure it's in the PR
+- Before asking for feedback or clarification
+- When work is complete and ready for handoff
+
+**Note**: The workflow-orchestrator agent doesn't use `report_progress` because it delegates all work to other agents and doesn't commit changes itself.
+
 ## When Waiting For Input (Avoid Silent Stops)
 
 When you cannot proceed because you need Maintainer input (for example, ambiguous requirements, a missing decision, or a required approval), you must:

@@ -7,6 +7,9 @@ namespace Oocx.TfPlan2Md.CLI;
 /// </summary>
 public static class HelpTextProvider
 {
+    /// <summary>
+    /// Number of characters to pad option names to ensure descriptions align.
+    /// </summary>
     private const int OptionPadding = 50;
 
     /// <summary>

@@ -212,30 +212,77 @@ fi
 # Open details elements based on selector parameter
 OPEN_DETAILS_ARGS=(--open-details "$OPEN_DETAILS_SELECTOR")
 
-# Generate screenshot
+# Generate screenshot with retry logic
 OUTPUT_FILE="$OUTPUT_DIR/${OUTPUT_PREFIX}.png"
+MAX_RETRIES=3
+RETRY_DELAY=5
 
 echo ""
 echo "Generating release screenshot..."
 echo "  Target: $RENDER_TARGET"
 echo "  Size: ${WIDTH}×${HEIGHT}"
 echo "  Output: $OUTPUT_FILE"
+echo ""
 
-dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
-    --input "$HTML_FILE" \
-    --output "$OUTPUT_FILE" \
-    --width "$WIDTH" \
-    --height "$HEIGHT" \
-    "${TARGET_ARGS[@]}" \
-    "${OPEN_DETAILS_ARGS[@]}"
+# Retry loop for screenshot generation
+for attempt in $(seq 1 $MAX_RETRIES); do
+    if [ $attempt -gt 1 ]; then
+        echo ""
+        echo "⚠️  Retry attempt $attempt/$MAX_RETRIES (after ${RETRY_DELAY}s delay)..."
+        sleep $RETRY_DELAY
+    fi
+    
+    if dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
+        --input "$HTML_FILE" \
+        --output "$OUTPUT_FILE" \
+        --width "$WIDTH" \
+        --height "$HEIGHT" \
+        "${TARGET_ARGS[@]}" \
+        "${OPEN_DETAILS_ARGS[@]}"; then
+        # Success - screenshot generated
+        echo ""
+        echo "✅ Release screenshot generated successfully!"
+        echo ""
+        echo "Output: $OUTPUT_FILE"
+        echo "Size: ${WIDTH}×${HEIGHT}"
+        echo ""
+        echo "Next steps:"
+        echo "  1. Review the screenshot to ensure it captures the intended content"
+        echo "  2. Reference it in release notes using: ![Description](./${OUTPUT_PREFIX}.png)"
+        echo "  3. Keep release note screenshots under 580×400 for optimal readability"
+        exit 0
+    else
+        SCREENSHOT_EXIT_CODE=$?
+        echo ""
+        echo "❌ Screenshot generation failed (exit code: $SCREENSHOT_EXIT_CODE)"
+        
+        if [ $attempt -lt $MAX_RETRIES ]; then
+            echo ""
+            echo "Possible causes:"
+            echo "  • External CDN dependencies (CSS/JS) timing out"
+            echo "  • Browser initialization overhead"
+            echo "  • Network connectivity issues"
+            echo "  • Insufficient resources in constrained environment"
+            echo ""
+            echo "Will retry in ${RETRY_DELAY} seconds..."
+        fi
+    fi
+done
 
+# All retries exhausted
 echo ""
-echo "✅ Release screenshot generated successfully!"
+echo "❌ SCREENSHOT GENERATION FAILED after $MAX_RETRIES attempts"
 echo ""
-echo "Output: $OUTPUT_FILE"
-echo "Size: ${WIDTH}×${HEIGHT}"
+echo "Troubleshooting steps:"
+echo "  1. Check network connectivity and CDN access"
+echo "  2. Verify Playwright/Chromium is installed: playwright install chromium --with-deps"
+echo "  3. Review error messages above for specific timeout details"
+echo "  4. Try increasing timeout in HtmlScreenshotCapturer.cs"
+echo "  5. Consider using offline-capable templates or pre-caching assets"
+echo "  6. Check system resources (memory, CPU) in dev container"
 echo ""
-echo "Next steps:"
-echo "  1. Review the screenshot to ensure it captures the intended content"
-echo "  2. Reference it in release notes using: ![Description](./${OUTPUT_PREFIX}.png)"
-echo "  3. Keep release note screenshots under 580×400 for optimal readability"
+echo "Generated artifacts available for debugging:"
+echo "  HTML file: $HTML_FILE"
+echo "  Markdown file: $MARKDOWN_FILE"
+echo ""
+exit 1

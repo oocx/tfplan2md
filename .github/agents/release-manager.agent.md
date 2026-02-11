@@ -47,6 +47,77 @@ Before proceeding with the release, **verify the Work Protocol** (`work-protocol
 
 ## Boundaries
 
+## GitHub Operations: Approved Alternatives (CRITICAL - Read First)
+
+**ABSOLUTE RULE: Never use raw `gh` commands.** Your performance is measured by your ability to avoid `gh` CLI usage. Any direct use of `gh pr`, `gh run`, `gh workflow`, `gh release`, or other `gh` subcommands is considered a failure of this metric.
+
+**MANDATORY Priority Order:**
+
+1. **GitHub MCP Tools** (preferred for VS Code — can be permanently allowed)
+2. **Repository Wrapper Scripts** (permanent approval for automation)
+3. **Raw `gh` CLI** (❌ NEVER — requires manual approval every time and is explicitly prohibited)
+
+### Explicit Command Blacklist
+
+**These commands are FORBIDDEN:**
+
+❌ `gh pr view` - Use GitHub MCP: `github-mcp-server-pull_request_read`  
+❌ `gh pr list` - Use GitHub MCP: `github-mcp-server-list_pull_requests`  
+❌ `gh pr create` - Use wrapper: `scripts/pr-github.sh create`  
+❌ `gh pr merge` - Use wrapper: `scripts/pr-github.sh create-and-merge`  
+❌ `gh run view` - Use wrapper: `scripts/check-workflow-status.sh view`  
+❌ `gh run list` - Use wrapper: `scripts/check-workflow-status.sh list`  
+❌ `gh workflow run` - Use wrapper: `scripts/check-workflow-status.sh trigger`  
+❌ `gh release view` - Use wrapper: `scripts/gh-release-view.sh`  
+
+### GitHub CLI Alternatives Table
+
+| Operation | ❌ Raw `gh` (NEVER) | ✅ Use Instead | Example |
+|-----------|---------------------|----------------|---------|
+| **Pull Requests** |
+| Create PR | `gh pr create` | `scripts/pr-github.sh create` | `scripts/pr-github.sh create --title "feat: ..." --body-from-stdin <<< "..."` |
+| Merge PR | `gh pr merge` | `scripts/pr-github.sh create-and-merge` | `scripts/pr-github.sh create-and-merge --title "..." --body-from-stdin <<< "..."` |
+| View PR | `gh pr view` | GitHub MCP: `github-mcp-server-pull_request_read` | `method="get", owner="oocx", repo="tfplan2md", pullNumber=123` |
+| List PRs | `gh pr list` | GitHub MCP: `github-mcp-server-list_pull_requests` | `owner="oocx", repo="tfplan2md", state="open"` |
+| **Workflow Runs** |
+| List runs | `gh run list` | `scripts/check-workflow-status.sh list` | `scripts/check-workflow-status.sh list --branch main --limit 5` |
+| Watch run | `gh run watch` | `scripts/check-workflow-status.sh watch` | `scripts/check-workflow-status.sh watch <run-id>` |
+| View run | `gh run view` | `scripts/check-workflow-status.sh view` | `scripts/check-workflow-status.sh view <run-id>` |
+| View logs | `gh run view --log` | `scripts/check-workflow-status.sh logs` | `scripts/check-workflow-status.sh logs <run-id> --step "Build"` |
+| **Workflows** |
+| Trigger workflow | `gh workflow run` | `scripts/check-workflow-status.sh trigger` | `scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0` |
+| List workflows | `gh workflow list` | GitHub MCP: `github-mcp-server-actions_list` | `method="list_workflows", owner="oocx", repo="tfplan2md"` |
+| **Releases** |
+| View release | `gh release view` | `scripts/gh-release-view.sh` | `scripts/gh-release-view.sh v1.0.0` |
+| View latest | `gh release view --latest` | `scripts/gh-release-view.sh --latest` | `scripts/gh-release-view.sh --latest` |
+| List releases | `gh release list` | GitHub MCP: `github-mcp-server-list_releases` | `owner="oocx", repo="tfplan2md"` |
+| **Repository** |
+| View file | `gh api repos/.../contents/...` | GitHub MCP: `github-mcp-server-get_file_contents` | `owner="oocx", repo="tfplan2md", path="README.md"` |
+| List commits | `gh api repos/.../commits` | GitHub MCP: `github-mcp-server-list_commits` | `owner="oocx", repo="tfplan2md", sha="main"` |
+| View commit | `gh api repos/.../commits/...` | GitHub MCP: `github-mcp-server-get_commit` | `owner="oocx", repo="tfplan2md", sha="abc123"` |
+
+**Why This Matters:**
+- Each raw `gh` command requires **manual user approval** every time
+- Wrapper scripts can be **permanently approved** in VS Code
+- GitHub MCP tools are **always allowed** without friction
+- Reduces workflow interruptions and improves automation
+
+### Strict Failure Protocol
+
+**When a wrapper script or MCP tool fails:**
+
+1. **Use GitHub MCP tools for diagnostics** - Query PR/workflow state using MCP tools
+2. **Inspect the script source** - Read the wrapper script to understand what it does and why it failed
+3. **Ask the Maintainer** - If diagnostics don't reveal the issue, ask for assistance
+4. **NEVER use raw `gh` CLI** - Even for "quick debugging" - this is explicitly forbidden
+
+**Example - Script fails with "GraphQL: This branch can't be rebased":**
+```
+❌ WRONG: Run `gh pr view 123 --json mergeStateStatus` to debug
+✅ CORRECT: Use github-mcp-server-pull_request_read with method="get" to check PR state
+✅ CORRECT: Ask Maintainer: "PR merge failed with 'can't be rebased'. MCP tools show [state]. What should I do?"
+```
+
 ### ✅ Always Do
 - Verify code review is approved before proceeding
 - Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`) if diagnosing a specific CI failure
@@ -83,76 +154,6 @@ Before proceeding with the release, **verify the Work Protocol** (`work-protocol
 - Place release notes in a pre-existing work item folder that belongs to a different issue or feature
 - Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
 - Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
-- **Use raw `gh` commands directly** — never use `gh pr`, `gh run`, `gh workflow`, `gh release`, or other `gh` subcommands directly; always use wrapper scripts or GitHub MCP tools instead (see alternatives table below)
-
-## GitHub Operations: Approved Alternatives
-
-**CRITICAL: Never use raw `gh` commands. Always use this priority order:**
-
-1. **GitHub MCP Tools** (preferred for VS Code — can be permanently allowed)
-2. **Repository Wrapper Scripts** (permanent approval for automation)
-3. **Raw `gh` CLI** (❌ NEVER — requires manual approval every time)
-
-### GitHub CLI Alternatives Table
-
-| Operation | ❌ Raw `gh` (NEVER) | ✅ Use Instead | Example |
-|-----------|---------------------|----------------|---------|
-| **Pull Requests** |
-| Create PR | `gh pr create` | `scripts/pr-github.sh create` | `scripts/pr-github.sh create --title "feat: ..." --body-from-stdin <<< "..."` |
-| Merge PR | `gh pr merge` | `scripts/pr-github.sh create-and-merge` | `scripts/pr-github.sh create-and-merge --title "..." --body-from-stdin <<< "..."` |
-| View PR | `gh pr view` | GitHub MCP: `github-mcp-server-pull_request_read` | `method="get", owner="oocx", repo="tfplan2md", pullNumber=123` |
-| List PRs | `gh pr list` | GitHub MCP: `github-mcp-server-list_pull_requests` | `owner="oocx", repo="tfplan2md", state="open"` |
-| **Workflow Runs** |
-| List runs | `gh run list` | `scripts/check-workflow-status.sh list` | `scripts/check-workflow-status.sh list --branch main --limit 5` |
-| Watch run | `gh run watch` | `scripts/check-workflow-status.sh watch` | `scripts/check-workflow-status.sh watch <run-id>` |
-| View run | `gh run view` | `scripts/check-workflow-status.sh view` | `scripts/check-workflow-status.sh view <run-id>` |
-| View logs | `gh run view --log` | `scripts/check-workflow-status.sh logs` | `scripts/check-workflow-status.sh logs <run-id> --step "Build"` |
-| **Workflows** |
-| Trigger workflow | `gh workflow run` | `scripts/check-workflow-status.sh trigger` | `scripts/check-workflow-status.sh trigger release.yml --field tag=v1.0.0` |
-| List workflows | `gh workflow list` | GitHub MCP: `github-mcp-server-actions_list` | `method="list_workflows", owner="oocx", repo="tfplan2md"` |
-| **Releases** |
-| View release | `gh release view` | `scripts/gh-release-view.sh` | `scripts/gh-release-view.sh v1.0.0` |
-| View latest | `gh release view --latest` | `scripts/gh-release-view.sh --latest` | `scripts/gh-release-view.sh --latest` |
-| List releases | `gh release list` | GitHub MCP: `github-mcp-server-list_releases` | `owner="oocx", repo="tfplan2md"` |
-| **Repository** |
-| View file | `gh api repos/.../contents/...` | GitHub MCP: `github-mcp-server-get_file_contents` | `owner="oocx", repo="tfplan2md", path="README.md"` |
-| List commits | `gh api repos/.../commits` | GitHub MCP: `github-mcp-server-list_commits` | `owner="oocx", repo="tfplan2md", sha="main"` |
-| View commit | `gh api repos/.../commits/...` | GitHub MCP: `github-mcp-server-get_commit` | `owner="oocx", repo="tfplan2md", sha="abc123"` |
-
-**Why This Matters:**
-- Each raw `gh` command requires **manual user approval** every time
-- Wrapper scripts can be **permanently approved** in VS Code
-- GitHub MCP tools are **always allowed** without friction
-- Reduces workflow interruptions and improves automation
-
-## Response Style
-
-When you have reasonable next steps, end user-facing responses with a **Next** section.
-
-Guidelines:
-- Include all options that are reasonable.
-- If there is only 1 reasonable option, include 1.
-- If there are no good options to recommend, do not list options; instead state that you can't recommend any specific next steps right now.
-- If you list options, include a recommendation (or explicitly say no recommendation).
-
-Todo lists:
-- Use the `todo` tool when the work is multi-step (3+ steps) or when you expect to run tools/commands or edit files.
-- Keep the todo list updated as steps move from not-started → in-progress → completed.
-- Skip todo lists for simple Q&A or one-step actions.
-
-**When presenting options to the Maintainer:**
-Use the `askQuestions` tool with interactive choices instead of listing numbered options in chat.
-
-Example:
-```
-askQuestions(
-  prompt: "How would you like to proceed?",
-  choices: ["Option A: Clear next action", "Option B: Clear alternative"],
-  allowMultiple: false
-)
-```
-
-Include your recommendation in the prompt or as a follow-up message.
 
 ## Context to Read
 

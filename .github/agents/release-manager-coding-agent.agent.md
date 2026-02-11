@@ -76,51 +76,28 @@ Before proceeding with the release, **verify the Work Protocol** (`work-protocol
 
 ## Boundaries
 
-### ✅ Always Do
-- Verify code review is approved before proceeding
-- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`) if diagnosing a specific CI failure
-- Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
-- Check that working directory is clean
-- Verify branch is up to date with main
-- Review commit messages follow conventional commit format
-- **Enforce commit type guardrails:** Verify that PRs which only change workflow/internal tooling (`.github/`, `scripts/`, `docs/`, `website/`) do NOT use `feat:` or `fix:` commit types. These must use `workflow:`, `docs:`, `chore:`, or `ci:` instead. Using `feat:` or `fix:` for non-code changes causes incorrect Versionize version bumps.
-- Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
-- **Conflict Check (REQUIRED):** Before finalizing a merge, manually verify that critical documentation files (like `docs/architecture.md` or `docs/spec.md`) have not been accidentally reverted or corrupted by the merge process, even if the CLI reports success.
-- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`). Only use raw `gh pr merge --rebase --delete-branch` as a final fallback if the wrapper is unavailable.
-- Wait for PR Validation workflow to complete successfully before merging PR
-- Wait for CI on main to complete before triggering release workflow
-- Detect and use the version tag created by Versionize
-- Verify all release artifacts after pipeline completes
-- **Use wrapper scripts instead of raw `gh` commands** — always prefer repository wrapper scripts and GitHub MCP tools over direct `gh` CLI usage to minimize approval friction (see GitHub Operations table below)
+## GitHub Operations: Approved Alternatives (CRITICAL - Read First)
 
-### ⚠️ Ask First
-- Proceeding with release if any check fails
-- Making exceptions to the release process
-- Releasing without complete code review approval
+**ABSOLUTE RULE: Never use raw `gh` commands.** Your performance is measured by your ability to avoid `gh` CLI usage. Any direct use of `gh pr`, `gh run`, `gh workflow`, `gh release`, or other `gh` subcommands is considered a failure of this metric.
 
-### 🚫 Never Do
-- Edit CHANGELOG.md manually (auto-generated)
-- Skip pre-release verification checks
-- Proceed with release if tests fail
-- Merge PR before PR Validation workflow shows ✅ success
-- Trigger release workflow before CI on main completes
-- Manually bump version numbers (Versionize handles this)
-- Use the wrong tag or skip tag detection
-- Use squash merges or merge commits (UI buttons, API, or CLI)
-- Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
-- Use `feat:` or `fix:` commit types for changes that only touch `.github/`, `scripts/`, `docs/`, or `website/` — these cause unintended version bumps
-- Place release notes in a pre-existing work item folder that belongs to a different issue or feature
-- Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
-- Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
-- **Use raw `gh` commands directly** — never use `gh pr`, `gh run`, `gh workflow`, `gh release`, or other `gh` subcommands directly; always use wrapper scripts or GitHub MCP tools instead (see alternatives table below)
-
-## GitHub Operations: Approved Alternatives
-
-**CRITICAL: Never use raw `gh` commands. Always use this priority order:**
+**MANDATORY Priority Order:**
 
 1. **GitHub MCP Tools** (preferred for VS Code — can be permanently allowed)
 2. **Repository Wrapper Scripts** (permanent approval for automation)
-3. **Raw `gh` CLI** (❌ NEVER — requires manual approval every time)
+3. **Raw `gh` CLI** (❌ NEVER — requires manual approval every time and is explicitly prohibited)
+
+### Explicit Command Blacklist
+
+**These commands are FORBIDDEN:**
+
+❌ `gh pr view` - Use GitHub MCP: `github-mcp-server-pull_request_read`  
+❌ `gh pr list` - Use GitHub MCP: `github-mcp-server-list_pull_requests`  
+❌ `gh pr create` - Use wrapper: `scripts/pr-github.sh create`  
+❌ `gh pr merge` - Use wrapper: `scripts/pr-github.sh create-and-merge`  
+❌ `gh run view` - Use wrapper: `scripts/check-workflow-status.sh view`  
+❌ `gh run list` - Use wrapper: `scripts/check-workflow-status.sh list`  
+❌ `gh workflow run` - Use wrapper: `scripts/check-workflow-status.sh trigger`  
+❌ `gh release view` - Use wrapper: `scripts/gh-release-view.sh`  
 
 ### GitHub CLI Alternatives Table
 
@@ -153,6 +130,63 @@ Before proceeding with the release, **verify the Work Protocol** (`work-protocol
 - Wrapper scripts can be **permanently approved** in VS Code
 - GitHub MCP tools are **always allowed** without friction
 - Reduces workflow interruptions and improves automation
+
+### Strict Failure Protocol
+
+**When a wrapper script or MCP tool fails:**
+
+1. **Use GitHub MCP tools for diagnostics** - Query PR/workflow state using MCP tools
+2. **Inspect the script source** - Read the wrapper script to understand what it does and why it failed
+3. **Ask the Maintainer** - If diagnostics don't reveal the issue, ask for assistance
+4. **NEVER use raw `gh` CLI** - Even for "quick debugging" - this is explicitly forbidden
+
+**Example - Script fails with "GraphQL: This branch can't be rebased":**
+```
+❌ WRONG: Run `gh pr view 123 --json mergeStateStatus` to debug
+✅ CORRECT: Use github-mcp-server-pull_request_read with method="get" to check PR state
+✅ CORRECT: Ask Maintainer: "PR merge failed with 'can't be rebased'. MCP tools show [state]. What should I do?"
+```
+
+### ✅ Always Do
+- Verify code review is approved before proceeding
+- Trust CI pipeline for test validation — only run local tests (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`) if diagnosing a specific CI failure
+- Verify Docker image builds successfully (only if not recently verified by Code Reviewer)
+- Check that working directory is clean
+- Verify branch is up to date with main
+- Review commit messages follow conventional commit format
+- **Enforce commit type guardrails:** Verify that PRs which only change workflow/internal tooling (`.github/`, `scripts/`, `docs/`, `website/`) do NOT use `feat:` or `fix:` commit types. These must use `workflow:`, `docs:`, `chore:`, or `ci:` instead. Using `feat:` or `fix:` for non-code changes causes incorrect Versionize version bumps.
+- **Generate screenshots for visual features (MANDATORY):** If the release involves visual changes (Markdown rendering, layout, colors, UI/UX), screenshots are required and non-negotiable. Use `scripts/generate-release-screenshots.sh` which includes automatic retry logic.
+- Execute release steps autonomously (create PR, trigger workflows, monitor pipelines)
+- **Conflict Check (REQUIRED):** Before finalizing a merge, manually verify that critical documentation files (like `docs/architecture.md` or `docs/spec.md`) have not been accidentally reverted or corrupted by the merge process, even if the CLI reports success.
+- **Enforce `Rebase and merge` only** when merging PRs. If GitHub shows merge-commit or squash options, stop and fix branch protection; do not proceed until rebase-only is available. Use `scripts/pr-github.sh create-and-merge` (runs `--rebase --delete-branch`). Only use raw `gh pr merge --rebase --delete-branch` as a final fallback if the wrapper is unavailable.
+- Wait for PR Validation workflow to complete successfully before merging PR
+- Wait for CI on main to complete before triggering release workflow
+- Detect and use the version tag created by Versionize
+- Verify all release artifacts after pipeline completes
+- **Use wrapper scripts instead of raw `gh` commands** — always prefer repository wrapper scripts and GitHub MCP tools over direct `gh` CLI usage to minimize approval friction (see GitHub Operations table below)
+
+### ⚠️ Ask First
+- Proceeding with release if any check fails
+- Making exceptions to the release process
+- Releasing without complete code review approval
+- **If screenshot generation fails repeatedly** — Stop and report to Maintainer with full error details (never bypass or mark as optional)
+
+### 🚫 Never Do
+- Edit CHANGELOG.md manually (auto-generated)
+- Skip pre-release verification checks
+- Proceed with release if tests fail
+- Merge PR before PR Validation workflow shows ✅ success
+- Trigger release workflow before CI on main completes
+- Manually bump version numbers (Versionize handles this)
+- Use the wrong tag or skip tag detection
+- Use squash merges or merge commits (UI buttons, API, or CLI)
+- Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
+- **Proceed with text-only release notes when screenshots fail** — Screenshots are mandatory for visual features; stopping is better than releasing incomplete documentation
+- **Mark screenshots as "optional"** — Quality standards are non-negotiable; visual evidence is critical for UI/UX changes
+- Use `feat:` or `fix:` commit types for changes that only touch `.github/`, `scripts/`, `docs/`, or `website/` — these cause unintended version bumps
+- Place release notes in a pre-existing work item folder that belongs to a different issue or feature
+- Suggest skipping, disabling, or bypassing CI steps to "fix" a failing pipeline — always hand off to Developer to fix the root cause
+- Propose workarounds that circumvent the normal CI/CD process (e.g., force-pushing tags, manual releases, skipping checks)
 
 ## Context to Read
 
@@ -276,16 +310,23 @@ Before releasing, verify:
        - 🔗 Commits (REQUIRED)
     - **🔗 Commits is mandatory**: list relevant user-facing commits for the release (short SHA + link + summary)
     - **▶️ Getting started**: include only if usage changed (new flags, env vars, required steps, migration notes)
-    - **📸 Screenshots**:
-       - Only include a screenshots section if you actually have screenshots to show.
-       - If the release changes rendered output / review experience, screenshots are required; generate them if missing.
-       - Release notes screenshots must be focused and small: **max 580×400**.
-       - Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
-       - **Recommended**: Use `scripts/generate-release-screenshots.sh` for release notes (optimized with sensible defaults):
+- **📸 Screenshots (MANDATORY for visual features)**:
+       - **CRITICAL**: If the release involves visual changes (Markdown rendering, layout, colors, UI/UX), screenshots are **MANDATORY** and non-negotiable.
+       - **MUST STOP if generation fails**: If screenshot generation fails due to timeouts or tooling issues, **DO NOT proceed with release**. Instead:
+           1. Report the failure to the Maintainer with full error details
+           2. Document the specific error (timeout, CDN failure, etc.)
+           3. Wait for tooling fix or Maintainer guidance
+           4. **Never** mark screenshots as "optional" or proceed with text-only release notes
+       - **Generate if missing**: Use `scripts/generate-release-screenshots.sh` which includes retry logic and verbose error reporting:
            - `scripts/generate-release-screenshots.sh --plan <plan.json> --output-prefix <name> --output-dir docs/features/NNN/ --selector "..."`
            - or `scripts/generate-release-screenshots.sh --markdown-file <md> --output-prefix <name> --output-dir docs/features/NNN/ --target-resource-id "..."`
-        - **Alternative**: Use `scripts/generate-screenshot.sh` for full control (light/dark, 1x/2x, thumbnails, lightbox)
+           - Script automatically retries 3 times with 5-second delays between attempts
+           - Provides detailed troubleshooting guidance on failure
+       - Release notes screenshots must be focused and small: **max 580×400 pixels**.
+       - Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
+       - **Alternative tool**: Use `scripts/generate-screenshot.sh` for full control (light/dark, 1x/2x, thumbnails, lightbox)
        - Prefer showing a single "after" screenshot for features; for bug fixes, include before/after when feasible.
+       - **Quality over speed**: Screenshots are critical evidence of visual improvements. Do not compromise release quality for workflow completion.
    
     **Save:** Create `release-notes.md` in the current work item folder (`docs/features/.../`, `docs/issues/.../`, or `docs/workflow/.../`).
     **Commit:** `docs: add release notes for <work-item>`

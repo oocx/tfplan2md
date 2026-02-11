@@ -1,10 +1,16 @@
 # GitHub CLI Usage Instructions for Agents
 
+## ⛔ CRITICAL: Raw `gh` CLI is PROHIBITED for Agents
+
+**ABSOLUTE RULE:** Agents must **NEVER** use raw `gh` CLI commands. This includes `gh pr`, `gh run`, `gh workflow`, `gh release`, `gh api`, and all other `gh` subcommands.
+
+**Your performance is measured by your ability to avoid `gh` CLI.** Any direct usage is considered a critical failure of this instruction set.
+
 ## Priority Order for GitHub Operations
 
-**CRITICAL: Follow this priority order to minimize manual approval friction:**
+**MANDATORY - Follow this priority order:**
 
-1. **FIRST: Use GitHub MCP Tools** (when available in your session)
+1. **FIRST: Use GitHub MCP Tools** (preferred)
    - Available via `github-mcp-server-*` tool names
    - Can be permanently allowed in VS Code
    - Structured, reliable output
@@ -19,10 +25,79 @@
    - **`scripts/git-diff.sh`** - For git diff
    - **`scripts/git-log.sh`** - For git log
 
-3. **LAST: Use `gh` CLI as final fallback** (only when neither MCP tools nor scripts are available)
-   - A maintainer explicitly requests CLI reproduction steps
-   - The required operation is not available via MCP tools or scripts
-   - You need `gh api` flexibility for custom API calls
+3. **NEVER: Raw `gh` CLI is PROHIBITED**
+   - Do not use for "quick debugging"
+   - Do not use to "check state"
+   - Do not use even if scripts fail
+   - Do not use even if MCP tools are unavailable
+
+## Explicit Command Blacklist
+
+**These commands are FORBIDDEN for agents:**
+
+❌ `gh pr view` - Use GitHub MCP: `github-mcp-server-pull_request_read`  
+❌ `gh pr list` - Use GitHub MCP: `github-mcp-server-list_pull_requests`  
+❌ `gh pr create` - Use wrapper: `scripts/pr-github.sh create`  
+❌ `gh pr merge` - Use wrapper: `scripts/pr-github.sh create-and-merge`  
+❌ `gh pr status` - Use GitHub MCP: `github-mcp-server-pull_request_read`  
+❌ `gh run view` - Use wrapper: `scripts/check-workflow-status.sh view`  
+❌ `gh run list` - Use wrapper: `scripts/check-workflow-status.sh list`  
+❌ `gh run watch` - Use wrapper: `scripts/check-workflow-status.sh watch`  
+❌ `gh workflow run` - Use wrapper: `scripts/check-workflow-status.sh trigger`  
+❌ `gh workflow list` - Use GitHub MCP: `github-mcp-server-actions_list`  
+❌ `gh release view` - Use wrapper: `scripts/gh-release-view.sh`  
+❌ `gh release list` - Use GitHub MCP: `github-mcp-server-list_releases`  
+❌ `gh api` - Use GitHub MCP tools for repository/PR/issue/workflow data  
+
+## Strict Failure Protocol
+
+**When a wrapper script or MCP tool fails, follow this protocol:**
+
+### Step 1: Use GitHub MCP Tools for Diagnostics
+Query the state using MCP tools to understand what's happening:
+```
+✅ github-mcp-server-pull_request_read (method="get") - Get PR state
+✅ github-mcp-server-actions_list (method="list_workflow_runs") - Get workflow runs
+✅ github-mcp-server-get_job_logs - Get detailed job logs
+```
+
+### Step 2: Inspect the Script Source
+Read the wrapper script to understand:
+- What it's attempting to do
+- What might have caused the failure
+- What state it's checking
+
+### Step 3: Ask the Maintainer
+If diagnostics don't reveal the issue:
+- Provide specific context about the failure
+- Share the output from MCP tool diagnostics
+- Ask what to do next
+
+### Step 4: NEVER Use Raw `gh` CLI
+**Even for debugging.** This is the most common failure point. Agents default to `gh` when troubleshooting because it's "familiar," but this undermines the entire strategy.
+
+### Example - PR Merge Fails with "This branch can't be rebased"
+
+❌ **WRONG (Prohibited):**
+```bash
+# Agent thinks: "Let me check the PR state with gh to debug"
+gh pr view 123 --json mergeStateStatus
+```
+
+✅ **CORRECT (Required):**
+```
+# Use MCP tool to check PR state
+github-mcp-server-pull_request_read with:
+  method: "get"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
+
+# Then ask Maintainer:
+"The PR merge failed with 'This branch can't be rebased'. 
+MCP tools show the PR is in state: [details]. 
+What should I do next?"
+```
 
 ## GitHub MCP Tools (Preferred)
 
@@ -61,35 +136,46 @@ GitHub MCP tools provide reliable, structured access to GitHub operations withou
 
 ### Example Usage
 
-**Instead of:**
-```bash
-GH_PAGER=cat gh pr view 123 --json number,title,state
+**Get PR details:**
+```
+github-mcp-server-pull_request_read with:
+  method: "get"
+  owner: "oocx"
+  repo: "tfplan2md"
+  pullNumber: 123
 ```
 
-**Use:**
+**List open PRs:**
 ```
-github-mcp-server-pull_request_read with method="get", owner="oocx", repo="tfplan2md", pullNumber=123
-```
-
-**Instead of:**
-```bash
-GH_PAGER=cat gh pr list --state open --json number,title
+github-mcp-server-list_pull_requests with:
+  owner: "oocx"
+  repo: "tfplan2md"
+  state: "open"
 ```
 
-**Use:**
+**List workflow runs:**
 ```
-github-mcp-server-list_pull_requests with owner="oocx", repo="tfplan2md", state="open"
+github-mcp-server-actions_list with:
+  method: "list_workflow_runs"
+  owner: "oocx"
+  repo: "tfplan2md"
+  perPage: 5
 ```
 
-**Instead of:**
-```bash
-GH_PAGER=cat gh run list --limit 5
-```
+---
 
-**Use:**
-```
-github-mcp-server-actions_list with method="list_workflow_runs", owner="oocx", repo="tfplan2md", perPage=5
-```
+## ⚠️ REFERENCE ONLY: Legacy `gh` CLI Patterns
+
+**The remainder of this document describes raw `gh` CLI usage patterns.**
+
+**FOR AGENTS: These patterns are PROHIBITED. This section exists only for:**
+- Historical reference
+- Maintainer troubleshooting
+- Manual operations by human users
+
+**DO NOT use any `gh` commands from this section in agent operations.**
+
+---
 
 ## Critical: Prevent Interactive Mode
 

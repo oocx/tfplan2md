@@ -115,17 +115,55 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 - When a command fails, explain the error and propose a solution before retrying.
 
 ## Tooling specific instructions
-- **GitHub Operations (CRITICAL - Follow Priority Order):**
-  1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-*`) when available - these can be permanently allowed and avoid terminal approval friction
-  2. **SECOND**: Use repository wrapper scripts (`scripts/pr-github.sh`, `scripts/check-workflow-status.sh`, `scripts/gh-release-view.sh`, etc.)
-  3. **LAST**: Use `gh` CLI only as final fallback (see `.github/gh-cli-instructions.md`)
-- For detailed GitHub MCP tool reference and CLI fallback patterns, refer to the `.github/gh-cli-instructions.md` file
+
+### GitHub Operations (CRITICAL - Follow Priority Order)
+
+**ABSOLUTE RULE: Never use raw `gh` CLI commands.** Your performance is measured by your ability to avoid `gh` CLI usage. Any direct use of `gh pr`, `gh run`, `gh workflow`, `gh release`, or `gh api` commands is considered a failure.
+
+**Priority order (MANDATORY):**
+1. **FIRST**: Use GitHub MCP tools (`github-mcp-server-*`) when available - these can be permanently allowed and avoid terminal approval friction
+2. **SECOND**: Use repository wrapper scripts (`scripts/pr-github.sh`, `scripts/check-workflow-status.sh`, `scripts/gh-release-view.sh`, etc.)
+3. **NEVER**: Raw `gh` CLI commands are **PROHIBITED**
+
+**Explicit Command Blacklist (NEVER USE):**
+- ❌ `gh pr view` - Use GitHub MCP: `github-mcp-server-pull_request_read` or ask Maintainer
+- ❌ `gh pr list` - Use GitHub MCP: `github-mcp-server-list_pull_requests`
+- ❌ `gh pr create` - Use wrapper: `scripts/pr-github.sh create`
+- ❌ `gh pr merge` - Use wrapper: `scripts/pr-github.sh create-and-merge`
+- ❌ `gh run view` - Use wrapper: `scripts/check-workflow-status.sh view` or GitHub MCP tools
+- ❌ `gh run list` - Use wrapper: `scripts/check-workflow-status.sh list` or GitHub MCP tools
+- ❌ `gh workflow run` - Use wrapper: `scripts/check-workflow-status.sh trigger`
+- ❌ `gh release view` - Use wrapper: `scripts/gh-release-view.sh`
+- ❌ `gh api` - Use GitHub MCP tools for repository/PR/issue data
+
+### Strict Failure Protocol
+
+**When a wrapper script or MCP tool fails, you MUST follow this protocol:**
+
+1. **Use GitHub MCP tools for diagnostics** - Query PR/workflow state using MCP tools (e.g., `github-mcp-server-pull_request_read`, `github-mcp-server-actions_list`)
+2. **Inspect the script source** - Read the wrapper script to understand what it does and why it might have failed
+3. **Ask the Maintainer** - If diagnostics don't reveal the issue, ask the Maintainer for assistance with specific context
+4. **NEVER use raw `gh` CLI** - Even for "quick debugging" or "just to check" - this is explicitly forbidden
+
+**Example - Script fails with "GraphQL: This branch can't be rebased":**
+```
+❌ WRONG: Run `gh pr view 123 --json mergeStateStatus` to debug
+✅ CORRECT: Use github-mcp-server-pull_request_read with method="get" to check PR state
+✅ CORRECT: Ask Maintainer: "PR merge failed with 'can't be rebased'. MCP tools show [state]. What should I do?"
+```
+
+**Why this matters:**
+- Each raw `gh` command requires **manual user approval** every time
+- Breaking this rule undermines the entire wrapper script/MCP tool strategy
+- Your ability to follow this protocol is a key performance metric
+
 - **Always use project scripts** instead of raw commands when available:
   - PR creation/merge: Use `scripts/pr-github.sh` instead of `gh pr create` or `gh pr merge`
   - Workflow operations: Use `scripts/check-workflow-status.sh` instead of `gh run` or `gh workflow` commands
   - Release viewing: Use `scripts/gh-release-view.sh` instead of `gh release view`
   - UAT execution: Use `scripts/uat-run.sh` instead of manual commands
   - The scripts handle repository-specific policies and conventions
+- For detailed GitHub MCP tool reference and CLI fallback patterns, refer to the `.github/gh-cli-instructions.md` file
 
 ## Remote Debugging with Chrome DevTools
 

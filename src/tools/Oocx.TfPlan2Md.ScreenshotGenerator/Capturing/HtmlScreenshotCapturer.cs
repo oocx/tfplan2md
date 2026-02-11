@@ -54,11 +54,28 @@ internal sealed class HtmlScreenshotCapturer
             cancellationToken.ThrowIfCancellationRequested();
 
             var fileUri = new Uri(Path.GetFullPath(settings.InputPath)).AbsoluteUri;
-            await page.GotoAsync(fileUri, new PageGotoOptions
+            try
             {
-                WaitUntil = WaitUntilState.NetworkIdle,
-                Timeout = 60000, // Increased from 30s to 60s for large HTML documents
-            }).ConfigureAwait(false);
+                await page.GotoAsync(fileUri, new PageGotoOptions
+                {
+                    WaitUntil = WaitUntilState.NetworkIdle,
+                    Timeout = 90000, // Increased to 90s to account for CDN latency and browser initialization
+                }).ConfigureAwait(false);
+            }
+            catch (TimeoutException ex)
+            {
+                // Provide detailed troubleshooting guidance
+                throw new ScreenshotCaptureException(
+                    "Timed out waiting for HTML page to load (90s timeout exceeded). " +
+                    "This may be caused by:\n" +
+                    "  1. External CSS/JS dependencies (CDN) failing to load\n" +
+                    "  2. Large document size requiring more processing time\n" +
+                    "  3. Network connectivity issues\n" +
+                    "  4. Browser initialization overhead in resource-constrained environments\n" +
+                    $"Attempted to load: {fileUri}\n" +
+                    "Check browser console logs for CDN errors or use offline-capable templates.",
+                    ex);
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -84,10 +101,6 @@ internal sealed class HtmlScreenshotCapturer
         catch (PlaywrightException ex)
         {
             throw new ScreenshotCaptureException($"Chromium is not available. Install it with '{InstallHint}'. Details: {ex.Message}", ex);
-        }
-        catch (TimeoutException ex)
-        {
-            throw new ScreenshotCaptureException("Timed out while loading the HTML page before capture.", ex);
         }
     }
 

@@ -7,7 +7,9 @@
       "command": "dotnet",
       "args": ["format", "src/tfplan2md.slnx", "--verify-no-changes", "--verbosity", "minimal"],
       "include": ["**/*.cs", "**/*.csproj", "**/*.slnx", "**/*.sln"],
-      "exclude": ["docs/**", ".github/**"]
+      "exclude": ["docs/**", ".github/**"],
+      "pathMode": "relative",
+      "filteringRule": "staged"
     },
     {
       "name": "dotnet-build",
@@ -15,7 +17,9 @@
       "command": "dotnet",
       "args": ["build", "src/tfplan2md.slnx", "--configuration", "Release", "--no-restore"],
       "include": ["**/*.cs", "**/*.csproj", "**/*.slnx", "**/*.sln"],
-      "exclude": ["docs/**", ".github/**"]
+      "exclude": ["docs/**", ".github/**"],
+      "pathMode": "relative",
+      "filteringRule": "staged"
     },
     {
       "name": "commit-message-linter",

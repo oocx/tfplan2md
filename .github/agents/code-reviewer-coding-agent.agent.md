@@ -208,6 +208,13 @@ Before approving any code, systematically answer these questions:
 15. **Are all imported/used libraries necessary?** AI sometimes adds unused dependencies.
 16. **Is the code consistent with existing patterns?** AI may introduce new patterns unnecessarily.
 
+### Test Data vs Implementation Issues
+17. **When test data has `(known after apply)` values:**
+   - Is the feature supposed to work WITHOUT the fallback logic? (Can I test it with known values first?)
+   - Is the test data designed to test the fallback, or is it incidental?
+   - Can I create simpler test data with known values to isolate the core functionality?
+   - **Anti-pattern:** Assuming a feature doesn't work because of missing edge case handling when the core functionality itself is broken.
+
 ## Review Checklist
 
 ### Correctness
@@ -217,6 +224,12 @@ Before approving any code, systematically answer these questions:
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 - [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
+
+### Template Verification (for features modifying rendering)
+- [ ] All provider-specific templates include required shared template includes
+- [ ] For parent-child features: Verify `{{ include "/_child_resources.sbn" }}` is present in parent templates
+- [ ] Compare template structure against architectural design (e.g., architecture.md Section 4.2 "Template Changes")
+- [ ] If child resources should render, grep the generated artifact for the expected child heading (e.g., `grep "#### Members" test-output.md`)
 
 ### Code Quality
 - [ ] Follows C# coding conventions
@@ -286,7 +299,21 @@ Before approving any code, systematically answer these questions:
    - If Docker is not running, ask the maintainer: "Docker verification is required but Docker is not available. Please start Docker Desktop and confirm when ready."
    - Wait for confirmation before proceeding with Docker build/tests
 
-2. **Run verification** - Execute tests and check for errors:
+2. **Generate test artifacts manually** - Before trusting snapshot tests:
+   ```bash
+   # Generate a simple test case for the feature
+   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- [simple-test-plan].json --output test-output.md
+   
+   # Verify the feature-specific output is present
+   grep "[expected-pattern]" test-output.md || echo "FEATURE NOT RENDERING"
+   ```
+   
+   **Do NOT assume snapshot tests are correct just because they exist.**
+   - Snapshots may have been generated before the feature was complete
+   - Snapshots may have been approved with `SNAPSHOT_UPDATE_OK` despite being incorrect
+   - Always verify the actual rendered output matches the specification examples
+
+3. **Run verification** - Execute tests and check for errors:
    ```bash
    scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
    docker build -t tfplan2md:local .
@@ -298,30 +325,51 @@ Before approving any code, systematically answer these questions:
    scripts/markdownlint.sh artifacts/comprehensive-demo.md
    ```
 
-3. **Line-by-line specification comparison** - For each acceptance criterion in the spec:
-   - [ ] Find the implementing code
-   - [ ] Find the corresponding test(s)
-   - [ ] Verify the behavior matches the spec exactly
-   - Document any gaps or deviations as **Blocker** issues
+4. **Line-by-line specification comparison** - For each acceptance criterion in the spec:
+   1. Read the criterion
+   2. **For rendering features:** Find the relevant example in `rendering-examples.md`
+   3. **Generate an artifact that should match that example** (create test data if needed)
+   4. **Compare the generated output to the example character-by-character**
+   5. Find the implementing code
+   6. Find the corresponding test(s)
+   7. Verify the behavior matches the spec exactly
+   
+   **Red Flag:** If you cannot find a way to generate output that matches the spec examples, the feature may not be implemented correctly.
+   
+   Document any gaps or deviations as **Blocker** issues
 
-4. **Adversarial testing** - Actively try to break the implementation:
+5. **Adversarial testing** - Actively try to break the implementation:
+   
+   **Start with the simplest possible test case:**
+   1. For rendering features, create the minimal example (e.g., 1 parent + 1 child)
+   2. Generate the artifact manually
+   3. Verify the core feature works before testing edge cases
+   4. If the simple case fails, diagnose before reviewing complex scenarios
+   
+   Example for parent-child rendering:
+   - 1 azuread_group with 1 inline member (CREATE action)
+   - Generate markdown
+   - Verify "#### Members" heading and 1-row table exist
+   - **If this fails, the feature is fundamentally broken regardless of edge case coverage**
+   
+   **Then test edge cases:**
    - Test with edge case inputs (empty, null, very large, special characters)
    - Test error paths and exception handling
    - Look for race conditions or state management issues
    - Try inputs that the spec doesn't explicitly cover
 
-5. **Read the code critically** - Review all changed files against the checklist:
+6. **Read the code critically** - Review all changed files against the checklist:
    - Ask "what could go wrong here?" for each function
    - Look for missing validation, error handling, logging
    - Check for inconsistencies with existing codebase patterns
 
-6. **Identify issues** - Note any problems, categorized by severity:
+7. **Identify issues** - Note any problems, categorized by severity:
    - **Blocker** - Must fix before approval (includes spec deviations, failing tests, security issues)
    - **Major** - Should fix, significant quality issue (missing tests, poor error handling)
    - **Minor** - Nice to fix, style or minor improvement
    - **Suggestion** - Optional improvement for consideration
 
-7. **Produce the review report** - Document findings and decision.
+8. **Produce the review report** - Document findings and decision.
 
 ## Output: Code Review Report
 

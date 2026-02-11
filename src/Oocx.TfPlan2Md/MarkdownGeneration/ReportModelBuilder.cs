@@ -104,6 +104,15 @@ internal partial class ReportModelBuilder(
         CreateParentChildRelationshipRegistry(providerRegistry);
 
     /// <summary>
+    /// Registry for parent summary rebuilders.
+    /// </summary>
+    /// <remarks>
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    private readonly ParentSummaryRebuilderRegistry _parentSummaryRebuilderRegistry =
+        CreateParentSummaryRebuilderRegistry(providerRegistry);
+
+    /// <summary>
     /// Cached configuration reference index for fallback parent-child matching.
     /// </summary>
     private IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
@@ -190,6 +199,22 @@ internal partial class ReportModelBuilder(
     {
         var registry = new ParentChildRelationshipRegistry();
         providerRegistry?.RegisterAllParentChildRelationships(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Creates and configures the parent summary rebuilder registry.
+    /// </summary>
+    /// <param name="providerRegistry">Optional registry of provider modules.</param>
+    /// <returns>Configured rebuilder registry.</returns>
+    /// <remarks>
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    private static ParentSummaryRebuilderRegistry CreateParentSummaryRebuilderRegistry(
+        Services.ProviderRegistry? providerRegistry)
+    {
+        var registry = new ParentSummaryRebuilderRegistry();
+        providerRegistry?.RegisterAllParentSummaryRebuilders(registry);
         return registry;
     }
 }

@@ -86,6 +86,7 @@ internal partial class ReportModelBuilder
 
             parent.ChildResourceGroups = groups;
             UpdateParentSummaryWithChildCounts(parent);
+            RebuildParentSummaryIfNeeded(parent);
         }
 
         if (removedChildren.Count == 0)
@@ -416,6 +417,19 @@ internal partial class ReportModelBuilder
     }
 
     /// <summary>
+    /// Rebuilds parent summary using provider-specific rebuilders if available.
+    /// </summary>
+    /// <param name="parent">The parent resource change model to rebuild.</param>
+    /// <remarks>
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    private void RebuildParentSummaryIfNeeded(ResourceChangeModel parent)
+    {
+        var context = new ParentSummaryRebuildContext(parent, _iconProviderRegistry);
+        _parentSummaryRebuilderRegistry.TryRebuild(context);
+    }
+
+    /// <summary>
     /// Builds a concise summary suffix for child resource counts.
     /// </summary>
     /// <param name="groups">The child groups to summarize.</param>
@@ -492,12 +506,14 @@ internal partial class ReportModelBuilder
         string attributeName)
     {
         var values = relationship.RowExtractor.ExtractRow(childState, parent.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
+        var memberId = ExtractAzureAdMemberId(parent, relationship, childState);
 
         return new ChildResourceRow
         {
             ChangeIndicator = changeIndicator,
             Values = values,
-            TerraformResource = FormatInlineResourceLabel(attributeName)
+            TerraformResource = FormatInlineResourceLabel(attributeName),
+            MemberId = memberId
         };
     }
 
@@ -544,13 +560,15 @@ internal partial class ReportModelBuilder
         object? childState)
     {
         var values = relationship.RowExtractor.ExtractRow(childState, child.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
+        var memberId = ExtractAzureAdMemberIdFromState(child, relationship, childState);
 
         return new ChildResourceRow
         {
             ChangeIndicator = GetChildActionIndicator(child.Action),
             Values = values,
             TerraformResource = child.Address,
-            OriginalResourceAddress = child.Address
+            OriginalResourceAddress = child.Address,
+            MemberId = memberId
         };
     }
 
@@ -733,6 +751,85 @@ internal partial class ReportModelBuilder
             ReplaceAction => ActionIcons.Replace,
             _ => ActionIcons.Unchanged
         };
+    }
+
+    /// <summary>
+    /// Extracts the Azure AD member object ID from inline child state.
+    /// </summary>
+    /// <param name="parent">The parent resource model.</param>
+    /// <param name="relationship">The parent-child relationship definition.</param>
+    /// <param name="childState">The inline child JSON state.</param>
+    /// <returns>The member object ID, or null if not an Azure AD member.</returns>
+    /// <remarks>
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    private static string? ExtractAzureAdMemberId(
+        ResourceChangeModel parent,
+        ParentChildRelationship relationship,
+        JsonElement childState)
+    {
+        if (!string.Equals(parent.Type, "azuread_group", StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(relationship.ChildResourceType, "azuread_group_member", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (childState.ValueKind == JsonValueKind.String)
+        {
+            return childState.GetString();
+        }
+
+        if (childState.ValueKind == JsonValueKind.Object)
+        {
+            if (childState.TryGetProperty("member_object_id", out var memberIdProp) && memberIdProp.ValueKind == JsonValueKind.String)
+            {
+                return memberIdProp.GetString();
+            }
+
+            if (childState.TryGetProperty("member", out var memberProp) && memberProp.ValueKind == JsonValueKind.String)
+            {
+                return memberProp.GetString();
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Extracts the Azure AD member object ID from separate child state.
+    /// </summary>
+    /// <param name="child">The child resource model.</param>
+    /// <param name="relationship">The parent-child relationship definition.</param>
+    /// <param name="childState">The child resource state.</param>
+    /// <returns>The member object ID, or null if not an Azure AD member.</returns>
+    /// <remarks>
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    private static string? ExtractAzureAdMemberIdFromState(
+        ResourceChangeModel child,
+        ParentChildRelationship relationship,
+        object? childState)
+    {
+        if (!string.Equals(child.Type, "azuread_group_member", StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(relationship.ChildResourceType, "azuread_group_member", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (childState is JsonElement element && element.ValueKind == JsonValueKind.Object)
+        {
+            if (element.TryGetProperty("member_object_id", out var memberIdProp) && memberIdProp.ValueKind == JsonValueKind.String)
+            {
+                return memberIdProp.GetString();
+            }
+
+            if (element.TryGetProperty("member", out var memberProp) && memberProp.ValueKind == JsonValueKind.String)
+            {
+                return memberProp.GetString();
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

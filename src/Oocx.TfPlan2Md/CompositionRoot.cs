@@ -103,7 +103,7 @@ internal sealed class CompositionRoot(CliOptions options)
         var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget);
 
         registry.RegisterProvider(new AzApiModule(scopeFormatter, entityMapper));
-        registry.RegisterProvider(new AzureADModule(entityMapper));
+        registry.RegisterProvider(new AzureADModule(entityMapper, principalMapper));
         registry.RegisterProvider(new AzureRMModule(
             largeValueFormat: largeValueFormat,
             principalMapper: principalMapper,

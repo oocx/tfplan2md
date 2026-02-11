@@ -33,4 +33,14 @@ public sealed record ChildResourceRow
     /// </summary>
     /// <value>The original resource address, if available.</value>
     public string? OriginalResourceAddress { get; init; }
+
+    /// <summary>
+    /// Gets the Azure AD member object ID for parent-child summary rebuilding.
+    /// </summary>
+    /// <value>The member object ID, or <c>null</c> if not an Azure AD member.</value>
+    /// <remarks>
+    /// Used to resolve principal types when rebuilding Azure AD group summaries after parent-child merging.
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    public string? MemberId { get; init; }
 }

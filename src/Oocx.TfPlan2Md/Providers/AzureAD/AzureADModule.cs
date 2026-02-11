@@ -18,12 +18,19 @@ internal sealed class AzureADModule : IProviderModule
     private readonly AzureEntityMapper? _entityMapper;
 
     /// <summary>
+    /// Optional principal mapper for member type resolution.
+    /// </summary>
+    private readonly IPrincipalMapper? _principalMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureADModule"/> class.
     /// </summary>
     /// <param name="entityMapper">Optional mapper for tenant display names.</param>
-    public AzureADModule(AzureEntityMapper? entityMapper = null)
+    /// <param name="principalMapper">Optional principal mapper for member type resolution.</param>
+    public AzureADModule(AzureEntityMapper? entityMapper = null, IPrincipalMapper? principalMapper = null)
     {
         _entityMapper = entityMapper;
+        _principalMapper = principalMapper;
     }
 
     /// <summary>
@@ -104,5 +111,20 @@ internal sealed class AzureADModule : IProviderModule
             TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureAdGroupMemberRowExtractor()
         });
+    }
+
+    /// <summary>
+    /// Registers Azure AD-specific parent summary rebuilders.
+    /// </summary>
+    /// <param name="registry">The parent summary rebuilder registry to register with.</param>
+    public void RegisterParentSummaryRebuilders(ParentSummaryRebuilderRegistry registry)
+    {
+        if (_principalMapper == null)
+        {
+            // Without principal mapper, we can't resolve member types
+            return;
+        }
+
+        registry.Register(new AzureAdGroupSummaryRebuilder(_principalMapper));
     }
 }

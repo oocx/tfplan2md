@@ -114,4 +114,19 @@ internal sealed class ProviderRegistry
             provider.RegisterResourceModelMappers(registry);
         }
     }
+
+    /// <summary>
+    /// Registers all provider-specific parent summary rebuilders.
+    /// </summary>
+    /// <param name="registry">The parent summary rebuilder registry to register into.</param>
+    /// <remarks>
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    public void RegisterAllParentSummaryRebuilders(MarkdownGeneration.Models.ParentSummaryRebuilderRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterParentSummaryRebuilders(registry);
+        }
+    }
 }

@@ -84,4 +84,18 @@ internal interface IProviderModule
     {
         // Default no-op keeps existing provider modules compatible.
     }
+
+    /// <summary>
+    /// Registers provider-specific parent summary rebuilders.
+    /// </summary>
+    /// <param name="registry">The parent summary rebuilder registry to register into.</param>
+    /// <remarks>
+    /// Rebuilders allow providers to update parent summaries after parent-child merging
+    /// to include data from both inline attributes and child resources.
+    /// Related issue: docs/issues/069-parent-child-summary-count-mismatch/analysis.md.
+    /// </remarks>
+    void RegisterParentSummaryRebuilders(MarkdownGeneration.Models.ParentSummaryRebuilderRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
 }

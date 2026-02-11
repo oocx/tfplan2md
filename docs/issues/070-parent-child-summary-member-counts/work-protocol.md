@@ -105,6 +105,21 @@
   - **Immediate:** Proceed with manual UAT using provided instructions and artifacts
   - **Future Enhancement:** Configure GitHub Copilot agent environment to provide GitHub authentication for UAT workflows, or create dedicated GitHub Actions workflow for automated UAT
 
+### Release Manager
+- **Date:** 2026-02-11
+- **Summary:** Created user-focused release notes for v1.16.1 bug fix release. The release was already published successfully as v1.16.1 on 2026-02-11. Release notes document the Azure AD group member count fix with clear before/after examples and technical implementation details. This is a retroactive documentation task to complete the work protocol.
+- **Artifacts Produced:**
+  - `docs/issues/070-parent-child-summary-member-counts/release-notes.md` - User-focused release notes for v1.16.1
+  - Updated `docs/issues/070-parent-child-summary-member-counts/work-protocol.md` with Release Manager entry
+- **Problems Encountered:**
+  - None - This is retroactive documentation for an already-published release
+- **Release Status:**
+  - ✅ Release v1.16.1 already published successfully
+  - ✅ CHANGELOG.md updated by Versionize
+  - ✅ GitHub Release created
+  - ✅ Docker image published to Docker Hub
+  - ✅ Release notes now documented retroactively in work item folder
+
 ### Code Reviewer (Callback Mechanism Review)
 - **Date:** 2026-02-11
 - **Summary:** Conducted comprehensive review of the provider callback mechanism refactor (commit 03f3267) and comprehensive tests (commit b02818e). The refactor successfully eliminates the MarkdownGeneration→Providers architecture violation by moving Azure AD-specific logic to a clean callback pattern. Added 23 comprehensive tests (12 for callback infrastructure, 11 for Azure AD provider) with excellent coverage of all code paths, error scenarios, and edge cases. All tests pass (963+ passing before timeout), architecture boundary test passes, and comprehensive demo output shows correct member counts.

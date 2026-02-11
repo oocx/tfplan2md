@@ -140,3 +140,10 @@
   - Plans without configuration to test graceful degradation
   - Plans with multiple parents of same type to verify precision
 - **Next Steps:** Developer Agent should implement ConfigurationReferenceResolver, add Configuration property to TerraformPlan, integrate fallback logic into BuildSeparateRows, and create all required test data with configuration blocks. All test cases must pass before feature completion.
+
+### Task Planner (Post-Code Review Task Refresh)
+- **Date:** 2026-02-11
+- **Summary:** Updated the implementation task breakdown to address the code review blockers and the updated architecture for `(known after apply)` fallback. The new tasks focus on parsing the plan `configuration` block, implementing configuration reference matching, adding the required fixtures/snapshots/artifacts, and adding robustness + performance coverage.
+- **Artifacts Produced:**
+  - tasks.md — Rewritten to focus on code review fixes (CA1875 Docker build blocker, configuration parsing, ConfigurationReferenceResolver, fallback integration, new fixtures/snapshots, and new tests).
+- **Problems Encountered:** None.

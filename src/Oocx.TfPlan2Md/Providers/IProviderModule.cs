@@ -84,4 +84,18 @@ internal interface IProviderModule
     {
         // Default no-op keeps existing provider modules compatible.
     }
+
+    /// <summary>
+    /// Registers provider-specific callbacks to be invoked after parent-child merging.
+    /// </summary>
+    /// <param name="builder">The report model builder to register callbacks with.</param>
+    /// <remarks>
+    /// Allows providers to perform post-merge processing like updating summaries
+    /// without introducing dependencies from MarkdownGeneration to Providers.
+    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// </remarks>
+    void RegisterPostMergeCallbacks(ReportModelBuilder builder)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
 }

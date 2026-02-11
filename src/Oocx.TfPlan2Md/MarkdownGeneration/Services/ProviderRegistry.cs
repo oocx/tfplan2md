@@ -114,4 +114,20 @@ internal sealed class ProviderRegistry
             provider.RegisterResourceModelMappers(registry);
         }
     }
+
+    /// <summary>
+    /// Registers all provider-specific post-merge callbacks with the report model builder.
+    /// </summary>
+    /// <param name="builder">The report model builder to register callbacks with.</param>
+    /// <remarks>
+    /// Invoked during builder construction to allow providers to hook into the build pipeline.
+    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// </remarks>
+    public void RegisterAllPostMergeCallbacks(ReportModelBuilder builder)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterPostMergeCallbacks(builder);
+        }
+    }
 }

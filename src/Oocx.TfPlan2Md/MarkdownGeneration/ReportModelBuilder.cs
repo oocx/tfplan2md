@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
@@ -5,6 +6,20 @@ using Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
+
+/// <summary>
+/// Callback invoked after parent-child merging is complete.
+/// </summary>
+/// <param name="allChanges">All resource changes after parent-child merging.</param>
+/// <param name="principalMapper">Optional principal mapper for resolving member types.</param>
+/// <remarks>
+/// This callback mechanism allows provider-specific logic to run after core merging
+/// without introducing dependencies from MarkdownGeneration to Providers.
+/// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+/// </remarks>
+internal delegate void ParentPostMergeCallback(
+    List<ResourceChangeModel> allChanges,
+    IPrincipalMapper? principalMapper);
 
 // Suppress parameter count warning to preserve existing constructor signature.
 #pragma warning disable S107
@@ -108,6 +123,40 @@ internal partial class ReportModelBuilder(
     /// </summary>
     private IReadOnlyDictionary<(string Address, string Attribute), IReadOnlyList<string>> _configurationReferenceIndex =
         new Dictionary<(string Address, string Attribute), IReadOnlyList<string>>();
+
+    /// <summary>
+    /// Collection of callbacks to invoke after parent-child merging completes.
+    /// Populated lazily on first use to avoid initialization order issues.
+    /// </summary>
+    private List<ParentPostMergeCallback>? _postMergeCallbacks;
+
+    /// <summary>
+    /// Registers a callback to be invoked after parent-child merging completes.
+    /// </summary>
+    /// <param name="callback">The callback to register.</param>
+    /// <remarks>
+    /// Used by providers to perform post-merge processing like updating summaries.
+    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// </remarks>
+    public void RegisterPostMergeCallback(ParentPostMergeCallback callback)
+    {
+        _postMergeCallbacks ??= new List<ParentPostMergeCallback>();
+        _postMergeCallbacks.Add(callback);
+    }
+
+    /// <summary>
+    /// Initializes post-merge callbacks from the provider registry.
+    /// </summary>
+    private void EnsurePostMergeCallbacksInitialized()
+    {
+        if (_postMergeCallbacks is not null)
+        {
+            return;
+        }
+
+        _postMergeCallbacks = new List<ParentPostMergeCallback>();
+        providerRegistry?.RegisterAllPostMergeCallbacks(this);
+    }
 
     /// <summary>
     /// Converts RenderTarget to LargeValueFormat for backwards compatibility.

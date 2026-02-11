@@ -105,4 +105,13 @@ internal sealed class AzureADModule : IProviderModule
             RowExtractor = new AzureAdGroupMemberRowExtractor()
         });
     }
+
+    /// <summary>
+    /// Registers Azure AD-specific post-merge callbacks for updating group summaries.
+    /// </summary>
+    /// <param name="builder">The report model builder to register callbacks with.</param>
+    public void RegisterPostMergeCallbacks(MarkdownGeneration.ReportModelBuilder builder)
+    {
+        builder.RegisterPostMergeCallback(AzureAdGroupSummaryRebuilder.UpdateGroupSummaries);
+    }
 }

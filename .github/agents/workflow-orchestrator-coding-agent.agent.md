@@ -160,15 +160,40 @@ Before starting orchestration:
 
 ## Orchestration Workflow
 
-**Use the `orchestrator-workflow` skill for detailed orchestration approach**, including:
-- How to parse issues and delegate immediately
-- Executing workflow stages with complete context
-- Handling feedback loops (code review, UAT, CI failures)
-- Tracking and reporting progress
-- Handling agent questions/blockers
-- Collecting and pushing subagent commits
-- Agent delegation patterns and monitoring
-- Error handling strategies
+### 1. Parse and Delegate Immediately
+- Read issue body, identify type (feature/bug/workflow)
+- **Immediately delegate** to entry point: Features → Requirements Engineer, Bugs → Issue Analyst, Workflow → Workflow Engineer
+- Do NOT ask questions yourself - let entry agent gather requirements
+
+### 2. Execute Workflow Stages
+For each stage: (1) Prepare context with prior deliverables, (2) Delegate via `task` tool with complete instructions, (3) Check output for deliverables/blockers, (4) Update progress, (5) Prepare next stage
+
+### 3. Handle Agent Questions/Blockers (CRITICAL)
+**When subagent asks question or reports blocker:**
+1. **Create PR comment immediately**: 🚨 alert, exact question, context, progress checklist
+2. **STOP workflow** - do not proceed or make assumptions
+3. **Wait for maintainer response**
+4. **Forward answer** back to blocked agent with full context
+5. **Resume workflow**
+
+**You MUST forward ALL questions to maintainer. Never answer yourself.**
+
+### 4. Collect Subagent Commits (CRITICAL)
+**Subagent commits are local-only until pushed:**
+1. Check local history: `git log --oneline -5`
+2. Review changes meet requirements
+3. Push using `report_progress` (commits stay in subagent's name)
+4. Credit subagent in commit message
+
+### 5. Handle Feedback Loops
+- Code review issues → delegate back to Developer with specific feedback
+- UAT failures → delegate to Developer with rendering details
+- CI failures → delegate to Developer with error logs
+
+### 6. Track Progress
+- Update todo list after each stage
+- Report at milestones (spec done, implementation done, review approved, released)
+- Forward all agent questions/blockers immediately
 
 ## Workflow Sequences
 
@@ -235,17 +260,70 @@ Workflow orchestration is complete when:
 - [ ] No unresolved blockers
 - [ ] Final summary reported to maintainer
 
+## Agent Delegation Best Practices
+
+**Provide Complete Context in Every Delegation:**
+```typescript
+task({
+  agent_type: "developer",
+  description: "Implement feature tasks",
+  prompt: `Implement tasks in docs/features/025-title/tasks.md.
+  
+  Context:
+  - Specification: docs/features/025-title/specification.md
+  - Architecture: docs/features/025-title/architecture.md
+  - Test plan: docs/features/025-title/test-plan.md
+  - Branch: feature/025-title
+  
+  Follow test-first approach, implement in priority order.`
+})
+```
+
+**Monitor Agent Progress:**
+- Check output for deliverables, status, blockers
+- If blocked: Create PR comment, STOP, wait for maintainer, forward answer
+- If code changes: Check `git log`, review commits, push via `report_progress`
+- If documentation: Verify files exist, update todo, prepare next stage
+
+## Error Handling Patterns
+
+**Agent Blocker PR Comment Template:**
+```
+🚨 Agent Blocked: [Agent Name] needs maintainer input
+
+**Agent**: [Name]
+**Question/Blocker**: [Exact question from agent]
+
+**Context**:
+- Workflow stage: [current stage]
+- Completed: [summary]
+- Why needed: [reason]
+- Files: [relevant files]
+
+**Progress**:
+- ✅ [Done stages]
+- 🚨 [Blocked stage]
+- ⬜ [Remaining]
+
+**Next Steps**: After you respond, I'll forward to [Agent] and resume.
+```
+
+**Agent Failure Recovery:**
+1. First attempt: Retry with more specific instructions
+2. Second attempt: Different approach or break down task
+3. Third attempt: Surface to maintainer for guidance
+
+**Workflow Deviation:**
+If standard workflow doesn't fit, stop, explain situation, propose alternative, wait for approval.
+
 ## Example Orchestration Pattern
 
-**GitHub Issue → Workflow Orchestration**
-
-1. **Parse and Delegate** → Report workflow plan with stages checklist
-2. **After Each Stage** → Update progress checklist, report milestone completions
-3. **Agent Blocked?** → Create PR comment with 🚨 alert, stop workflow, wait for maintainer
-4. **Rework Needed?** → Delegate back to appropriate agent with specific feedback
-5. **Complete** → Post summary with deliverables, workflow stages, and status
-
-See `orchestrator-workflow` skill for detailed examples and patterns.
+**GitHub Issue → Workflow:**
+1. Parse & Delegate → Report plan with checklist
+2. After Each Stage → Update progress, report milestones
+3. Agent Blocked? → PR comment with 🚨, stop, wait
+4. Rework Needed? → Delegate back with feedback
+5. Complete → Summary with deliverables and status
 
 ## Limitations
 

@@ -56,10 +56,6 @@ Before handing off, **append your log entry** to the `## Agent Work Log` section
 - Add handoffs to non-existent agents
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
 
-## Cloud Agent Workflow (GitHub)
-
-**Use the `github-cloud-agent-workflow` skill for guidance on executing as a GitHub cloud agent (issue assignments and PR coding agent contexts).**
-
 ## VS Code Copilot tool names
 
 - When editing `.github/agents/*.agent.md`, you must always lookup tool names and descriptions from the list of tools available to you in the current session.

@@ -18,6 +18,20 @@ This skill is automatically loaded by all coding agents. It defines the core wor
 
 **You are running as a GitHub Copilot coding agent.** Follow this workflow:
 
+### CRITICAL: Branch and PR Management
+
+**GitHub Copilot automatically creates branches and PRs** - you do NOT create them:
+- When an issue is assigned to `@copilot`, GitHub automatically creates a `copilot/*` branch and draft PR
+- When you start working, you're already on the correct branch with an active PR
+- **NEVER run `git checkout`, `git switch`, or `git branch` commands** - you're already on the right branch
+- **NEVER attempt to create a new PR** - one already exists for your work
+- Your job is to commit work to the existing branch using `report_progress` (which handles git push automatically)
+
+**Why this fails:**
+- Manual `git checkout -b` commands will fail (permission denied)
+- Attempting to create PRs will fail or create duplicate PRs
+- These operations are GitHub's responsibility, not yours
+
 1. **For Direct Questions (When Running as Primary Agent)**: If you are the primary agent on a PR (not delegated via `task` tool), you can create PR comments to ask the Maintainer questions. Wait for a response before proceeding.
 
 2. **For Delegated Execution (When Invoked via `task` Tool)**: If you were invoked by the Workflow Orchestrator via the `task` tool, you run in an isolated context. In this case:
@@ -80,6 +94,7 @@ This skill is automatically loaded by all coding agents. It defines the core wor
 
 ## Key Principles
 
+- **GitHub creates branches/PRs automatically** - never attempt to create them yourself
 - **Always use `report_progress`** for commits and pushes - never use manual `git push` commands
 - **Respect execution context** - behave differently when delegated vs primary agent
 - **Communicate clearly** - provide complete summaries with status and next steps

@@ -348,4 +348,27 @@ public class ConfigurationReferenceResolverTests
         // Assert - should return empty index for this resource (no references)
         index.Should().BeEmpty();
     }
+
+    /// <summary>
+    /// Ensures the exact plan.json from issue #464 processes without error.
+    /// Related issue: https://github.com/oocx/tfplan2md/issues/464
+    /// </summary>
+    /// <remarks>
+    /// This is a real-world integration test using the exact Terraform plan that triggered
+    /// the JsonElementHasWrongType error. The plan contains azurerm_data_factory_trigger_schedule
+    /// resources with nested `pipeline` blocks that have Array-valued expression properties.
+    /// </remarks>
+    [Test]
+    public void BuildReferenceIndex_Issue464PlanJson_DoesNotCrash()
+    {
+        // Arrange - use the exact file provided in issue #464
+        var json = File.ReadAllText("TestData/issue-464-plan.json");
+        var plan = _parser.Parse(json);
+
+        // Act - should not throw JsonElementHasWrongType
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration);
+
+        // Assert - should complete successfully
+        index.Should().NotBeNull();
+    }
 }

@@ -122,6 +122,7 @@ internal sealed class AzureRMModule : IProviderModule
             ChildResourceType = "azurerm_subnet",
             InlineAttributeName = "subnet",
             ChildReferenceAttribute = "virtual_network_name",
+            ParentIdAttribute = "name",
             ChildGroupLabel = "Subnets",
             TableColumns =
             [
@@ -140,6 +141,7 @@ internal sealed class AzureRMModule : IProviderModule
             ChildResourceType = "azurerm_route",
             InlineAttributeName = "route",
             ChildReferenceAttribute = "route_table_name",
+            ParentIdAttribute = "name",
             ChildGroupLabel = "Routes",
             TableColumns =
             [
@@ -158,6 +160,7 @@ internal sealed class AzureRMModule : IProviderModule
             ChildResourceType = "azurerm_network_security_rule",
             InlineAttributeName = "security_rule",
             ChildReferenceAttribute = "network_security_group_name",
+            ParentIdAttribute = "name",
             ChildGroupLabel = "Security Rules",
             TableColumns =
             [
@@ -204,6 +207,7 @@ internal sealed class AzureRMModule : IProviderModule
                 ChildResourceType = recordType,
                 InlineAttributeName = null, // DNS records are always separate resources
                 ChildReferenceAttribute = "zone_name",
+                ParentIdAttribute = "name",
                 ChildGroupLabel = "DNS Records",
                 TableColumns = dnsColumns,
                 RowExtractor = dnsRecordExtractor
@@ -230,6 +234,7 @@ internal sealed class AzureRMModule : IProviderModule
                 ChildResourceType = recordType,
                 InlineAttributeName = null, // DNS records are always separate resources
                 ChildReferenceAttribute = "zone_name",
+                ParentIdAttribute = "name",
                 ChildGroupLabel = "DNS Records",
                 TableColumns = dnsColumns,
                 RowExtractor = dnsRecordExtractor

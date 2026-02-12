@@ -90,8 +90,8 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         var direction = JsonStateReader.GetStringProperty(element, "direction");
         return direction?.ToLowerInvariant() switch
         {
-            "inbound" => "⬇️ Inbound",
-            "outbound" => "⬆️ Outbound",
+            "inbound" => "⬇️ Inbound",
+            "outbound" => "⬆️ Outbound",
             _ => direction ?? "-"
         };
     }
@@ -104,8 +104,8 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         var access = JsonStateReader.GetStringProperty(element, "access");
         return access?.ToLowerInvariant() switch
         {
-            "allow" => "✅ Allow",
-            "deny" => "⛔ Deny",
+            "allow" => "✅ Allow",
+            "deny" => "⛔ Deny",
             _ => access ?? "-"
         };
     }
@@ -118,9 +118,9 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         var protocol = JsonStateReader.GetStringProperty(element, "protocol");
         return protocol?.ToUpperInvariant() switch
         {
-            "TCP" => "🔗 TCP",
-            "UDP" => "🔗 UDP",
-            "ICMP" => "🔗 ICMP",
+            "TCP" => "🔗 TCP",
+            "UDP" => "🔗 UDP",
+            "ICMP" => "🔗 ICMP",
             "*" => "✳️",
             _ => protocol ?? "-"
         };
@@ -202,7 +202,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
                     return string.Join(", ", formatted);
                 }
 
-                return $"✳️ {formatted.Count} items";
+                return $"✳️ {formatted.Count} items";
             }
         }
 
@@ -236,7 +236,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
             {
                 return "✳️";
             }
-            return $"🔌 {portRange}";
+            return $"🔌 {portRange}";
         }
 
         // Try port ranges array
@@ -258,10 +258,10 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
 
                 if (ranges.Count <= 2)
                 {
-                    return $"🔌 {string.Join(",", ranges)}";
+                    return $"🔌 {string.Join(",", ranges)}";
                 }
 
-                return $"✳️ {ranges.Count} ranges";
+                return $"✳️ {ranges.Count} ranges";
             }
         }
 

@@ -531,3 +531,37 @@
   - Maintained consistency with existing documentation style and formatting
 - **Problems Encountered:** None
 - **Next Steps:** Hand off to Code Reviewer for final PR review before merge.
+
+### Code Reviewer - Azure RM Batch 2 Review
+- **Date:** 2025-02-12
+- **Summary:** Conducted comprehensive code review of Azure RM Batch 2 implementation for Feature 068. Generated manual test artifacts to verify rendering for all 4 resource types. Identified **3 BLOCKER issues** that completely prevent core functionality from working: (1) separate child resources don't group under parents due to missing `ParentIdAttribute = "name"` in relationship registrations, (2) NSG custom template bypasses parent-child framework and uses wrong column headers, (3) template/documentation contradiction about Change column rendering.
+- **Artifacts Produced:**
+  - azure-rm-batch-2-code-review.md - Comprehensive review report with detailed findings, root cause analysis, and required fixes
+  - Manual test artifacts in artifacts/ directory (test-vnet-inline.md, test-vnet-separate.md, test-dns.md, test-route.md, test-nsg.md)
+- **Problems Encountered:**
+  - Test suite timed out after 120 seconds during full run (973 tests passing at timeout)
+  - Docker build failed due to network/package issues with Alpine repositories (NOT related to code changes)
+- **Key Findings:**
+  - **BLOCKER-1**: Missing `ParentIdAttribute = "name"` in all 4 Azure RM relationship registrations causes separate child resources to NOT match parents (DNS records, separate subnets, routes, NSG rules all render as separate sections instead of grouping)
+  - **BLOCKER-2**: NSG custom template (`network_security_group.sbn`) from Feature 016 overrides parent-child framework and shows wrong column headers ("Source Addresses", "Destination Addresses", "Source Ports", "Destination Ports" instead of "Source", "Destination", "Ports")
+  - **BLOCKER-3**: Template logic (`_child_resources.sbn` lines 9-21) conditionally omits Change column for create/delete actions, contradicting specification examples that show it for all actions
+  - **MAJOR-1**: Subnet NSG references missing 🛡️ icon (shows `` `nsg-app` `` instead of `` `🛡️ nsg-app` ``)
+  - **MINOR-1**: Only 7 of 16 planned test data files exist (missing separate/mixed/known-after-apply files for DNS, route, NSG)
+  - ✅ **Positive findings**: Code quality excellent with proper comments, error handling, complex attribute formatting, icon usage consistent
+- **Root Cause Analysis:**
+  - Azure RM resources use NAME-based child references (e.g., `virtual_network_name`, `zone_name`) but parent-child matching logic defaults to ID-based matching (`ParentIdAttribute = "id"`). Parent resources have `id = null` in test data, so matching fails for all separate children.
+  - NSG template doesn't include `{{ include "/_child_resources.sbn" }}` directive, so the parent-child framework is bypassed entirely.
+  - docs/features.md documents the wrong behavior (omitting Change column for create/delete) instead of the specification behavior (always show Change column).
+- **Manual Verification:**
+  - ✅ VNet inline subnets render correctly (but missing Change column)
+  - ✅ Route table inline routes render correctly (but missing Change column)
+  - ❌ DNS records do NOT group (render as 5 separate sections)
+  - ❌ VNet separate subnets do NOT group (render as 4 separate sections)
+  - ❌ NSG rules use wrong table headers from old template
+- **Required Fixes:**
+  1. Add `ParentIdAttribute = "name"` to all 4 Azure RM relationship registrations in `AzureRMModule.cs`
+  2. Add `{{ include "/_child_resources.sbn" }}` to NSG template at line 69
+  3. Update `_child_resources.sbn` to always include Change column (remove conditional at lines 9-21) and update docs/features.md to correct the documentation
+  4. Verify icon provider registration for NSG references (🛡️ icon)
+  5. Regenerate artifacts and snapshots after fixes, verify against specification examples
+- **Next Steps:** Hand off to Developer to fix 3 blocker issues and return for re-review. After fixes approved, hand off to UAT Tester for visual verification in GitHub/Azure DevOps PRs.

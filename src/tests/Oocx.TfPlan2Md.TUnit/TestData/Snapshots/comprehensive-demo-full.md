@@ -456,7 +456,7 @@ and as separate resources. This configuration will cause conflicts.
 </details>
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>♻️ azurerm_network_security_group <b><code>app</code></b> — <code>🆔 nsg-app</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+<summary>♻️ azurerm_network_security_group <b><code>app</code></b> — <code>🆔 nsg-app</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> | ➕ 3 security rules | ❌ 1 security rules</summary>
 <br>
 
 #### Security Rules

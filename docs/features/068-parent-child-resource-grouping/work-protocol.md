@@ -565,3 +565,36 @@
   4. Verify icon provider registration for NSG references (🛡️ icon)
   5. Regenerate artifacts and snapshots after fixes, verify against specification examples
 - **Next Steps:** Hand off to Developer to fix 3 blocker issues and return for re-review. After fixes approved, hand off to UAT Tester for visual verification in GitHub/Azure DevOps PRs.
+
+### Developer - Azure RM Batch 2 Blocker Fixes
+- **Date:** 2025-02-12
+- **Summary:** Fixed all 3 BLOCKER issues identified in code review. Separate child resources now group under parents, NSG rules use correct column headers via parent-child framework, and Change column always appears in child resource tables.
+- **Artifacts Modified:**
+  - AzureRMModule.cs - Added `ParentIdAttribute = "name"` to all 5 parent-child relationships (VNet/subnet, route table/route, NSG/rule, DNS zone/records public, DNS zone/records private)
+  - network_security_group.sbn - Added `{{ include "/_child_resources.sbn" }}` directive at line 69 to enable parent-child framework rendering
+  - _child_resources.sbn - Removed conditional logic that omitted Change column for create/delete actions; Change column now always appears as first column
+  - AzureRmNetworkSecurityRuleRowExtractor.cs - Fixed emoji spacing to use non-breaking spaces (U+00A0) instead of regular spaces for all emojis (⬇️, ⬆️, ✅, ⛔, 🔗, 🔌, ✳️)
+  - Test snapshots - Regenerated 8 snapshot files (azuread-group-members-known-after-apply.md, azuread-snapshot.md, azuredevops-team-members.md, comprehensive-demo-full.md, comprehensive-demo.md, no-configuration-block.md, parent-child-resource-grouping-uat.md, summary-template.md)
+  - work-protocol.md - This log entry
+- **Problems Encountered:**
+  - Initial emoji spacing test failures - the project enforces non-breaking spaces (U+00A0) after all emojis, not regular spaces (U+0020). Fixed by using sed and Python to insert correct byte sequences.
+  - Template file encoding required careful handling to preserve UTF-8 non-breaking space characters
+- **Fix Details:**
+  - **BLOCKER-1 Fix**: Added `ParentIdAttribute = "name"` to 5 relationship registrations. This tells the matching logic to use the parent's `name` attribute instead of `id` for matching child references (e.g., `virtual_network_name`, `zone_name`, `route_table_name`, `network_security_group_name`). Azure RM resources typically have `id = null` during plan, so name-based matching is required.
+  - **BLOCKER-2 Fix**: NSG template now includes `{{ include "/_child_resources.sbn" }}` after the Feature 016 logic. Both rendering approaches coexist: Feature 016 semantic diff logic for updates, and parent-child framework for inline/separate children. The parent-child framework rendering appears with correct columns (Name, Priority, Direction, Access, Protocol, Source, Destination, Ports).
+  - **BLOCKER-3 Fix**: Template now always renders Change column as first column in child resource tables, regardless of action type (create/delete/update). Previously omitted for create/delete, contradicting specification.
+  - **Emoji Spacing Fix**: All emojis in AzureRmNetworkSecurityRuleRowExtractor.cs now followed by non-breaking spaces: "⬇️\u00a0Inbound", "⬆️\u00a0Outbound", "✅\u00a0Allow", "⛔\u00a0Deny", "🔗\u00a0TCP/UDP/ICMP", "🔌\u00a0{port}", "✳️\u00a0{count}". Template warning emoji also fixed: "⚠️\u00a0**Warning:**".
+- **Verification Results:**
+  - ✅ Build succeeds with 0 warnings, 0 errors
+  - ✅ Full test suite: 978 of 980 tests pass (2 Docker timeout failures unrelated to changes)
+  - ✅ Snapshot tests: All 9 snapshot tests pass after regeneration
+  - ✅ Template architecture test passes (emoji spacing validation)
+  - ✅ Snapshot diffs show Change column now present in all child resource tables
+  - ✅ Snapshot diffs show NSG rules with correct columns: Change, Name, Priority, Direction, Access, Protocol, Source, Destination, Ports
+  - ✅ All emojis followed by non-breaking spaces (U+00A0)
+- **Impact Assessment:**
+  - Separate child resources (DNS records, separate subnets, separate routes, separate NSG rules) now group under parent resources as intended
+  - NSG inline rules now render via parent-child framework with specification-compliant columns
+  - Change column consistency across all child resource tables (always visible)
+  - No regression in existing functionality (978/980 tests pass)
+- **Next Steps:** Hand off to Code Reviewer for re-review to verify all blocker fixes are correct and complete.

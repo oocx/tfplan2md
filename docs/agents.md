@@ -129,11 +129,13 @@ Format:
 | Skill Name | Description |
 | :--- | :--- |
 | `arc42-documentation` | Create comprehensive architecture documentation using the arc42 template structure (12 sections covering introduction, constraints, context, solution strategy, building blocks, runtime, deployment, concepts, decisions, quality, risks, and glossary). |
+| `coding-agent-workflow` | Standard workflow for GitHub Copilot coding agents including report_progress usage, delegation handling, and PR communication patterns. |
 | `create-agent-skill` | Create a new Agent Skill following project standards and templates. |
 | `create-pr-github` | Create and (optionally) merge a GitHub pull request (prefer GitHub chat tools; gh/wrappers are fallback), following the repo policy to use rebase and merge for a linear history. |
 | `create-pr-azdo` | Create an Azure DevOps pull request using az devops tooling; include the repo’s linear-history merge preference and ask the Maintainer if merge options differ. |
 | `detect-diagram-crossings` | Detect and analyze edge crossings and overlaps in SVG workflow diagrams using geometric intersection algorithms and visual analysis. |
 | `git-rebase-main` | Safely rebase the current feature branch on top of the latest origin/main. |
+| `github-cloud-agent-workflow` | Workflow guidance for agents running in GitHub cloud context (assigned issues and PR coding agents). |
 | `merge-conflict-resolution` | Resolve git merge/rebase conflicts safely without losing intended changes; verify by reviewing diffs and searching for conflict markers. |
 | `next-issue-number` | Determine the next available issue number across all change types (feature, fix, workflow) by checking both local docs and remote branches, then reserve it by pushing an empty branch. |
 | `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
@@ -142,6 +144,9 @@ Format:
 | `view-pr-github` | View a GitHub PR (prefer GitHub chat tools; gh is fallback with pager disabled). |
 | `watch-uat-github-pr` | Watch a GitHub UAT PR for maintainer feedback or approval by polling comments until approved/passed. |
 | `watch-uat-azdo-pr` | Watch an Azure DevOps UAT PR for maintainer feedback or approval by polling threads and reviewer votes until approved/passed. |
+| `agent-file-structure` | Standard structure and key principles for agent definition markdown files. |
+| `agent-model-selection` | Guidelines for selecting appropriate language models for agents based on task-specific benchmarks, availability, and cost efficiency. |
+| `agent-tool-selection` | Guide for selecting appropriate VS Code Copilot tools when configuring agents, including environment-specific considerations. |
 | `analyze-chat-export` | Extract metrics from VS Code Copilot chat exports for retrospective analysis (model usage, tool invocations, approvals, timing). |
 | `website-create-examples` | Create and update interactive examples on the website, including where to source content from artifacts and how to structure the HTML components. |
 | `website-devtools` | Use Chrome DevTools MCP tools to inspect rendering and troubleshoot website issues with the Maintainer. |

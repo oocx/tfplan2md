@@ -57,7 +57,9 @@ Terraform plans are notoriously difficult to review in pull requests:
 
 ## Installation
 
-### Docker (Recommended)
+tfplan2md is distributed in two ways:
+
+### Option 1: Docker Image (Recommended)
 
 ```bash
 docker pull oocx/tfplan2md:latest
@@ -65,7 +67,54 @@ docker pull oocx/tfplan2md:latest
 
 The Docker image is a **14.7MB** AOT-compiled native binary built from scratch for optimal security and performance. It includes a comprehensive demo at `/examples/comprehensive-demo/` showcasing all features.
 
-### From Source
+**Recommended for:**
+- Containerized environments
+- CI/CD pipelines with Docker support
+- Users who prefer isolated, reproducible builds
+
+### Option 2: Pre-built Binary (Linux x64)
+
+**Available starting with the next release**
+
+Download the latest binary from [GitHub Releases](https://github.com/oocx/tfplan2md/releases):
+
+1. **Download the binary and checksum:**
+   ```bash
+   VERSION="1.x.x"  # Replace with desired version
+   wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_linux_x64.tar.gz
+   wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/SHA256SUMS
+   ```
+
+2. **Verify the checksum:**
+   ```bash
+   sha256sum -c SHA256SUMS --ignore-missing
+   ```
+   Expected output: `tfplan2md_1.x.x_linux_x64.tar.gz: OK`
+
+3. **Extract the binary:**
+   ```bash
+   tar -xzf tfplan2md_${VERSION}_linux_x64.tar.gz
+   ```
+
+4. **Run tfplan2md:**
+   ```bash
+   ./tfplan2md --help
+   terraform show -json plan.tfplan | ./tfplan2md > plan.md
+   ```
+
+**Requirements:**
+- Linux x64 (glibc-based distributions: Ubuntu, Debian, Fedora, RHEL, CentOS, etc.)
+- No .NET runtime required (self-contained)
+- Minimum: Ubuntu 22.04 or equivalent
+
+**Use cases:**
+- Closed/air-gapped systems where Docker images cannot be pulled
+- Environments without container runtime
+- Local development and testing without Docker overhead
+
+**Note:** For Alpine Linux or other musl-based systems, use the Docker image.
+
+### Option 3: Build from Source
 
 Requires .NET 10 SDK.
 

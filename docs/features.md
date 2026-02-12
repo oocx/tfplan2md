@@ -1646,9 +1646,71 @@ docker run \
   oocx/tfplan2md --principal-mapping /app/principals.json /data/plan.json
 ```
 
+### Pre-built Binaries
+
+**Status:** ✅ Implemented (Phase 1: Linux x64)
+
+Starting with the next release, tfplan2md provides pre-built native binaries as GitHub Release assets alongside the Docker image. These self-contained executables enable usage in environments without container runtime support.
+
+#### Current Platform Support
+
+**Phase 1 (Available):**
+- **linux-x64** - Standard Linux distributions with glibc (Ubuntu, Debian, Fedora, RHEL, CentOS, etc.)
+
+**Phase 2 (Planned):**
+- linux-arm64 - ARM-based cloud instances and servers
+- darwin-arm64 - macOS Apple Silicon (M1/M2/M3)
+- darwin-x64 - macOS Intel
+- win-x64 - Windows 10/11/Server
+
+**Phase 3 (Future):**
+- linux-musl-x64 - Alpine Linux standalone
+- linux-musl-arm64 - ARM Alpine
+- win-arm64 - Windows ARM devices
+
+#### Binary Characteristics
+
+- **Self-contained**: No .NET runtime or external dependencies required
+- **Native AOT compiled**: Fast startup, optimized performance
+- **Single executable**: One file per platform, no installation needed
+- **Compressed size**: ~5MB tar.gz archive (linux-x64)
+- **Security**: SHA256 checksums provided for verification
+- **Naming convention**: `tfplan2md_<version>_<os>_<arch>.tar.gz` (OpenTofu-style)
+
+#### Download and Usage
+
+```bash
+# Download binary and checksum
+VERSION="1.x.x"  # Replace with desired version
+wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_linux_x64.tar.gz
+wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/SHA256SUMS
+
+# Verify integrity
+sha256sum -c SHA256SUMS --ignore-missing
+
+# Extract
+tar -xzf tfplan2md_${VERSION}_linux_x64.tar.gz
+
+# Run
+./tfplan2md --help
+terraform show -json plan.tfplan | ./tfplan2md > plan.md
+```
+
+#### Use Cases
+
+Pre-built binaries are ideal for:
+
+- **Closed/air-gapped systems**: Organizations that cannot pull images from public Docker registries
+- **Non-containerized environments**: Systems without Docker or container runtime installed
+- **Local development**: Quick testing without Docker overhead
+- **CI/CD without containers**: Build agents or legacy systems without container support
+- **Simplified deployment**: Direct binary execution without container orchestration
+
+For containerized environments, the Docker image remains the recommended distribution method due to its minimal size (14.7MB) and security characteristics.
+
 ### Releases
 
-Docker images are automatically built and pushed when a new version tag is created. See [spec.md](spec.md) for details on the CI/CD process and versioning strategy.
+Docker images and pre-built binaries are automatically built and pushed when a new version tag is created. See [spec.md](spec.md) for details on the CI/CD process and versioning strategy.
 
 ## Resource-Specific Templates
 

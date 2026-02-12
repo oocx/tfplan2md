@@ -2,7 +2,27 @@
 
 ## Status
 
-Proposed
+Accepted (Phase 1: Linux x64 implemented)
+
+## Implementation Status
+
+**Phase 1 (Completed):** Linux x64 binary distribution
+- Implemented in release workflow
+- Available via GitHub Releases starting with the next version
+- Archive naming: `tfplan2md_<version>_linux_x64.tar.gz`
+- Includes SHA256SUMS for checksum verification
+- Self-contained Native AOT binary (~5MB compressed)
+
+**Phase 2 (Planned):** Additional platforms
+- linux-arm64 (glibc) - ARM-based cloud instances
+- darwin-arm64 - macOS Apple Silicon
+- darwin-x64 - macOS Intel
+- win-x64 - Windows 10/11/Server
+
+**Phase 3 (Future):** Complete coverage
+- linux-musl-x64 - Alpine standalone
+- linux-musl-arm64 - ARM Alpine
+- win-arm64 - Windows ARM
 
 ## Context
 

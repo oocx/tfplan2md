@@ -303,4 +303,72 @@ public class ConfigurationReferenceResolverTests
         // Assert - should return empty since references array is empty
         index.Should().BeEmpty();
     }
+
+    /// <summary>
+    /// Ensures expression properties with Array values (nested blocks) do not crash.
+    /// Related issue: 072-json-element-wrong-type-error
+    /// </summary>
+    /// <remarks>
+    /// When Terraform configurations have nested blocks (arrays), expression properties
+    /// can have Array values like `authentication_credentials: [{ credential_id: "test" }]`
+    /// instead of Object values like `{ "references": [...] }`.
+    /// The code must check ValueKind BEFORE calling TryGetProperty to prevent
+    /// JsonElementHasWrongType exceptions.
+    /// </remarks>
+    [Test]
+    public void BuildReferenceIndex_ExpressionPropertyAsArray_DoesNotCrash()
+    {
+        // Arrange - create a configuration with array-valued expression property
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_resource.test",
+                        "mode": "managed",
+                        "type": "azurerm_resource",
+                        "name": "test",
+                        "expressions": {
+                            "authentication_credentials": [
+                                {
+                                    "credential_id": "test"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act - should not throw JsonElementHasWrongType exception
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty index for this resource (no references)
+        index.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Ensures the exact plan.json from issue #464 processes without error.
+    /// Related issue: https://github.com/oocx/tfplan2md/issues/464
+    /// </summary>
+    /// <remarks>
+    /// This is a real-world integration test using the exact Terraform plan that triggered
+    /// the JsonElementHasWrongType error. The plan contains azurerm_data_factory_trigger_schedule
+    /// resources with nested `pipeline` blocks that have Array-valued expression properties.
+    /// </remarks>
+    [Test]
+    public void BuildReferenceIndex_Issue464PlanJson_DoesNotCrash()
+    {
+        // Arrange - use the exact file provided in issue #464
+        var json = File.ReadAllText("TestData/issue-464-plan.json");
+        var plan = _parser.Parse(json);
+
+        // Act - should not throw JsonElementHasWrongType
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration);
+
+        // Assert - should complete successfully
+        index.Should().NotBeNull();
+    }
 }

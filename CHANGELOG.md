@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.16.3"></a>
+## [1.16.3](https://github.com/oocx/tfplan2md/compare/v1.16.2...v1.16.3) (2026-02-12)
+
+### 🐛 Bug Fixes
+
+* handle array-typed expression properties in ConfigurationReferenceResolver ([e22ba25](https://github.com/oocx/tfplan2md/commit/e22ba2544c70d7285c6b95669e5344a86d8aba6d))
+
+### 📚 Documentation
+
+* add ADR-008 for multi-platform binary distribution ([5de4773](https://github.com/oocx/tfplan2md/commit/5de477374e114db74804f4526e822980c7d97533))
+* add code review for JsonElementHasWrongType bug fix ([8439e36](https://github.com/oocx/tfplan2md/commit/8439e36cf4092c814bd9d4bd954780bd09e75883))
+
 <a name="1.16.2"></a>
 ## [1.16.2](https://github.com/oocx/tfplan2md/compare/v1.16.1...v1.16.2) (2026-02-12)
 

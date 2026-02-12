@@ -123,6 +123,14 @@ internal sealed class ConfigurationReferenceResolver
 
         foreach (var expressionProperty in expressions.EnumerateObject())
         {
+            // Skip non-Object expression properties (arrays, primitives, null)
+            // Arrays represent nested blocks and don't have a 'references' property
+            // Related issue: 072-json-element-wrong-type-error
+            if (expressionProperty.Value.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
             if (!expressionProperty.Value.TryGetProperty("references", out var referencesElement))
             {
                 continue;

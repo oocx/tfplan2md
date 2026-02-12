@@ -377,3 +377,51 @@
   - **Icon usage**: Leverage existing icon providers (🆔 🌐 🛡️ 🔌 🔗 ✅ ⛔ ⬇️ ⬆️ ✳️)
   - **Performance**: No pagination/virtualization needed for initial implementation (acceptable for 100+ DNS records)
 - **Next Steps:** Hand off to Task Planner for implementation task breakdown.
+
+### Quality Engineer - Batch 2 (Azure RM Resources)
+- **Date:** 2025-01-XX
+- **Summary:** Created comprehensive test plan and UAT test plan for the 4 Azure RM resource types being added in Batch 2. Mapped all acceptance criteria to 28 test cases plus 13 edge cases. Defined test data requirements for 16 new test files. Created UAT scenarios covering all 4 resource types with visual verification checkpoints.
+- **Artifacts Produced:**
+  - azure-rm-batch-2-test-plan.md - Comprehensive test plan with:
+    - Test coverage matrix mapping 26 acceptance criteria to 28 test cases
+    - Unit tests for row extractors (all 4 resource types, all columns, complex attributes, edge cases)
+    - Integration tests (snapshot tests for inline, separate, mixed scenarios)
+    - Configuration reference matching tests (known after apply scenarios for all 4 types)
+    - Performance tests (DNS zones with 150 records, NSGs with 75 rules)
+    - Scalability test (195 child resources across 10 parents)
+    - 13 edge cases (empty attributes, null values, wildcards, error handling)
+    - 16 test data file specifications with requirements
+  - azure-rm-batch-2-uat-test-plan.md - Detailed UAT plan with:
+    - Feature-specific artifact definition (`artifacts/azure-rm-batch-2-uat.md`)
+    - Validation instructions for all 4 resource types (VNet/subnet, DNS zone/records, route table/routes, NSG/rules)
+    - Specific checkpoints for table columns, icons, formatting, mixed management warnings
+    - Configuration reference matching verification steps
+    - Cross-platform rendering checks (GitHub vs Azure DevOps)
+    - 15 success criteria
+    - Feedback opportunities for column choices, icon usage, readability
+  - work-protocol.md - This log entry
+- **Problems Encountered:** None. Architecture section provided clear implementation details. Specification and rendering examples covered all edge cases.
+- **Key Test Coverage:**
+  - **VNet/Subnet (TC-AZ-01 to TC-AZ-06)**: Registry, inline subnets, separate subnets, mixed management, column mapping, complex attributes (service endpoints, delegations)
+  - **DNS Zone/Records (TC-AZ-07 to TC-AZ-10)**: Registry (9+ record types), public zone, private zone, all record type formatting (A, AAAA, CNAME, MX, SRV, TXT, CAA)
+  - **Route Table/Routes (TC-AZ-11 to TC-AZ-15)**: Registry, inline routes, separate routes, mixed management, next hop formatting
+  - **NSG/Rules (TC-AZ-16 to TC-AZ-21)**: Registry, inline rules, separate rules, mixed management, all columns with icons, port range formatting
+  - **Configuration Reference Matching (TC-AZ-22 to TC-AZ-25)**: Known after apply scenarios for all 4 resource types
+  - **Change Indicators (TC-AZ-26)**: All child types show correct ➕, 🔄, ❌, ⏺️
+  - **Summary Counts (TC-AZ-27)**: Parent summaries include child counts for all types
+  - **Terraform Resource Column (TC-AZ-28)**: Inline vs separate distinction
+  - **Edge Cases (TC-AZ-E1 to TC-AZ-E13)**: Empty attributes, 100+ records/rules, null values, wildcards, service tags, multiple parents, error handling
+  - **Performance (TC-AZ-E2, TC-AZ-E3)**: DNS zones with 150 records (<500ms), NSGs with 75 rules (<500ms)
+  - **Scalability (TC-AZ-29)**: 195 child resources across 10 parents (<2s)
+- **Test Data Requirements:**
+  - 16 new synthetic plan files (4 per resource type: inline, separate, mixed, known after apply)
+  - All known-after-apply plans MUST include `configuration` blocks with expression references
+  - Update comprehensive-demo/plan.json to include examples of all 4 resource types
+- **UAT Focus Areas:**
+  - Table readability with 4-10 columns per resource type
+  - Icon usage (10 different icons: 🆔 🌐 🛡️ 🔌 🔗 ✅ ⛔ ⬇️ ⬆️ ✳️)
+  - DNS zones with 15+ records in single table
+  - NSG rules with 9 columns
+  - Mixed management warnings prominence
+  - Cross-platform rendering (GitHub vs Azure DevOps)
+- **Next Steps:** Hand off to Task Planner for implementation task breakdown. After implementation, Developer should create all test data files and UAT artifact as specified.

@@ -1,0 +1,84 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_virtual_network.new_vnet",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "new_vnet",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "vnet-new",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "address_space": ["10.10.0.0/16"]
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.subnet1",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "subnet1",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "snet-001",
+          "virtual_network_name": null,
+          "address_prefixes": ["10.10.1.0/24"],
+          "security_group": null,
+          "delegation": []
+        },
+        "after_unknown": {
+          "virtual_network_name": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azurerm_virtual_network.new_vnet",
+          "mode": "managed",
+          "type": "azurerm_virtual_network",
+          "name": "new_vnet",
+          "expressions": {
+            "name": {
+              "constant_value": "vnet-new"
+            }
+          }
+        },
+        {
+          "address": "azurerm_subnet.subnet1",
+          "mode": "managed",
+          "type": "azurerm_subnet",
+          "name": "subnet1",
+          "expressions": {
+            "virtual_network_name": {
+              "references": [
+                "azurerm_virtual_network.new_vnet.name",
+                "azurerm_virtual_network.new_vnet"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

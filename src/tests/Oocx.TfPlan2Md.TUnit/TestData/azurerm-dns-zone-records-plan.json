@@ -1,0 +1,139 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_dns_zone.example_com",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_dns_zone",
+      "name": "example_com",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "example.com",
+          "resource_group_name": "rg-dns"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_dns_a_record.root",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_dns_a_record",
+      "name": "root",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "@",
+          "zone_name": "example.com",
+          "ttl": 3600,
+          "records": ["192.0.2.1"]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_dns_a_record.www",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_dns_a_record",
+      "name": "www",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "www",
+          "zone_name": "example.com",
+          "ttl": 3600,
+          "records": ["192.0.2.1"]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_dns_cname_record.blog",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_dns_cname_record",
+      "name": "blog",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "blog",
+          "zone_name": "example.com",
+          "ttl": 3600,
+          "record": "www.example.com"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_dns_mx_record.root",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_dns_mx_record",
+      "name": "root",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "@",
+          "zone_name": "example.com",
+          "ttl": 3600,
+          "record": [
+            {
+              "preference": "10",
+              "exchange": "mail.example.com"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_dns_txt_record.spf",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_dns_txt_record",
+      "name": "spf",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "@",
+          "zone_name": "example.com",
+          "ttl": 3600,
+          "record": [
+            {
+              "value": "v=spf1 include:_spf.example.com ~all"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

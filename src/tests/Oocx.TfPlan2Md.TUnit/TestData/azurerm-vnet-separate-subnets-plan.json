@@ -1,0 +1,169 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_virtual_network.spoke_vnet",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "spoke_vnet",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "vnet-spoke-001",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "address_space": ["10.1.0.0/16"]
+        },
+        "after": {
+          "name": "vnet-spoke-001",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "address_space": ["10.1.0.0/16", "10.2.0.0/16"]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.app",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "snet-app",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.1.0/24"],
+          "security_group": "nsg-app",
+          "delegation": []
+        },
+        "after": {
+          "name": "snet-app",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.1.0/23"],
+          "security_group": "nsg-app",
+          "delegation": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.data",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "data",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "name": "snet-data",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.2.0/24"],
+          "security_group": "nsg-data",
+          "delegation": []
+        },
+        "after": {
+          "name": "snet-data",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.2.0/24"],
+          "security_group": "nsg-data",
+          "delegation": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.mgmt",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "mgmt",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "name": "snet-mgmt",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.3.0/24"],
+          "security_group": "nsg-mgmt",
+          "delegation": []
+        },
+        "after": {
+          "name": "snet-mgmt",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.3.0/24"],
+          "security_group": "nsg-mgmt",
+          "delegation": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.integration",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "integration",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "snet-integration",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.4.0/24"],
+          "security_group": null,
+          "delegation": [
+            {
+              "name": "webapp-delegation",
+              "service_delegation": [
+                {
+                  "name": "Microsoft.Web/serverFarms"
+                }
+              ]
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.temp",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "temp",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "snet-temp",
+          "virtual_network_name": "vnet-spoke-001",
+          "address_prefixes": ["10.1.5.0/24"],
+          "security_group": null,
+          "delegation": []
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

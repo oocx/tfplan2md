@@ -1,0 +1,63 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_virtual_network.legacy_vnet",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "legacy_vnet",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "vnet-legacy",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "address_space": ["10.3.0.0/16"],
+          "subnet": [
+            {
+              "name": "snet-app",
+              "address_prefixes": ["10.3.1.0/24"],
+              "security_group": null,
+              "delegation": []
+            },
+            {
+              "name": "snet-data",
+              "address_prefixes": ["10.3.2.0/24"],
+              "security_group": null,
+              "delegation": []
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.web",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "snet-web",
+          "virtual_network_name": "vnet-legacy",
+          "address_prefixes": ["10.3.3.0/24"],
+          "security_group": "nsg-web",
+          "delegation": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

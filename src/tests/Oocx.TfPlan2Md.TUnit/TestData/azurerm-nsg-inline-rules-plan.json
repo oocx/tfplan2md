@@ -1,0 +1,58 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_network_security_group.app_nsg",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "app_nsg",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "nsg-app-tier",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "security_rule": [
+            {
+              "name": "allow-https-inbound",
+              "priority": "100",
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "TCP",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*",
+              "destination_port_range": "443"
+            },
+            {
+              "name": "allow-http-inbound",
+              "priority": "110",
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "TCP",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*",
+              "destination_port_range": "80"
+            },
+            {
+              "name": "deny-all-inbound",
+              "priority": "4096",
+              "direction": "Inbound",
+              "access": "Deny",
+              "protocol": "*",
+              "source_address_prefix": "*",
+              "destination_address_prefix": "*",
+              "destination_port_range": "*"
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

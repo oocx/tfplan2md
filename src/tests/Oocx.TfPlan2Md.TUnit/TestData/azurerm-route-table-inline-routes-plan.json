@@ -1,0 +1,47 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_route_table.app_routes",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_route_table",
+      "name": "app_routes",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "rt-app-tier",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "disable_bgp_route_propagation": false,
+          "route": [
+            {
+              "name": "default-route",
+              "address_prefix": "0.0.0.0/0",
+              "next_hop_type": "VirtualAppliance",
+              "next_hop_in_ip_address": "10.0.1.4"
+            },
+            {
+              "name": "to-onprem",
+              "address_prefix": "10.20.0.0/16",
+              "next_hop_type": "VirtualNetworkGateway",
+              "next_hop_in_ip_address": null
+            },
+            {
+              "name": "to-vnet",
+              "address_prefix": "10.0.0.0/8",
+              "next_hop_type": "VnetLocal",
+              "next_hop_in_ip_address": null
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

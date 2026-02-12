@@ -1,0 +1,56 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azurerm_virtual_network.hub_vnet",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "hub_vnet",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "vnet-hub",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "address_space": ["10.0.0.0/16"],
+          "subnet": [
+            {
+              "name": "snet-app",
+              "address_prefixes": ["10.0.1.0/24"],
+              "security_group": "nsg-app",
+              "delegation": []
+            },
+            {
+              "name": "snet-data",
+              "address_prefixes": ["10.0.2.0/24"],
+              "security_group": "nsg-data",
+              "delegation": []
+            },
+            {
+              "name": "snet-firewall",
+              "address_prefixes": ["10.0.3.0/24"],
+              "security_group": null,
+              "delegation": [
+                {
+                  "name": "firewall-delegation",
+                  "service_delegation": [
+                    {
+                      "name": "Microsoft.Network/azureFirewalls"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

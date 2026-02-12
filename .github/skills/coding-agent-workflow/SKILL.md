@@ -39,8 +39,10 @@ This skill is automatically loaded by all coding agents. It defines the core wor
    - **Include questions in your response** - return them as part of your output text
    - **The orchestrator will forward your questions** to the maintainer and resume you with answers
    - **Wait for the orchestrator to re-invoke you** with the maintainer's answer
+   - **You MUST use `edit`/`create` tools to apply all file changes** - do not just describe changes; actually apply them
+   - **You MUST call `report_progress` before completing** - this commits your changes to the local branch so the orchestrator can push them (see step 4)
 
-3. **Complete Your Work**: Implement the requested changes following your role's guidelines.
+3. **Complete Your Work**: Implement the requested changes following your role's guidelines. **Use `edit`/`create` tools to apply all file modifications** — never just describe or list changes without applying them.
 
 4. **Report Progress with `report_progress` Tool (REQUIRED)**: Use the `report_progress` tool to commit and push your changes. **This tool is mandatory for all coding agents** because:
    - It handles `git add`, `git commit`, and `git push` operations automatically with proper authentication
@@ -67,7 +69,7 @@ This skill is automatically loaded by all coding agents. It defines the core wor
    )
    ```
    
-   **Note**: When running as a delegated agent (via `task` tool), your `report_progress` commits are added to the orchestrator's local branch but are NOT pushed to the remote PR. The orchestrator will push your commits using their own `report_progress` call.
+   **CRITICAL — Delegated agents**: When running as a delegated agent (via `task` tool), you **MUST still call `report_progress`**. Your commits are added to the orchestrator's local branch (not pushed to the remote PR directly). The orchestrator will push your commits using their own `report_progress` call. If you skip `report_progress`, your file changes remain uncommitted and **will be lost**.
 
 5. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
@@ -96,6 +98,8 @@ This skill is automatically loaded by all coding agents. It defines the core wor
 
 - **GitHub creates branches/PRs automatically** - never attempt to create them yourself
 - **Always use `report_progress`** for commits and pushes - never use manual `git push` commands
+- **Always call `report_progress` before completing** - even when running as a delegated agent; uncommitted changes will be lost
+- **Always use `edit`/`create` tools** to apply file changes - never just describe changes in your response without applying them
 - **Respect execution context** - behave differently when delegated vs primary agent
 - **Communicate clearly** - provide complete summaries with status and next steps
 - **Track progress** - use markdown checklists in PR descriptions to show work completed and remaining

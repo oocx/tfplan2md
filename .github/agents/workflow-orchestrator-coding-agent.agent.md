@@ -195,7 +195,9 @@ For each stage:
      - Scope: [scope description]
      
      Please create the feature specification following the template in docs/agents.md.
-     Save to docs/features/NNN-<slug>/specification.md.`
+     Save to docs/features/NNN-<slug>/specification.md.
+     
+     IMPORTANT: Use edit/create tools to apply all file changes. Call report_progress before completing to commit your changes.`
    })
    ```
 
@@ -402,6 +404,7 @@ When delegating, always include:
 - **Where**: File locations, branch names
 - **Inputs**: Prior deliverables, specifications, requirements
 - **Constraints**: Scope limits, technical constraints
+- **Commit mandate**: Remind the agent to call `report_progress` before completing
 
 **Good Example:**
 ```typescript
@@ -417,7 +420,9 @@ Context:
 - Current branch: feature/025-custom-title
 
 The feature adds a custom report title option to the CLI.
-Follow the test-first approach and implement tasks in priority order.`
+Follow the test-first approach and implement tasks in priority order.
+
+IMPORTANT: Use edit/create tools to apply all file changes. Call report_progress before completing to commit your changes.`
 })
 ```
 
@@ -453,6 +458,7 @@ After delegating:
    - **Push the commits using `report_progress`** to make them visible in the remote PR
    - **Credit the agent** in your commit message (e.g., "chore: push Developer agent's commits")
    - **Important**: Agent commits are in your local branch but NOT pushed to remote until you push them
+   - **If the agent reports changes but didn't call `report_progress`**: The changes may be uncommitted. Call `report_progress` yourself — it will pick up any uncommitted file modifications and commit+push them
 
 4. If agent succeeded without code changes (documentation, planning):
    - Verify deliverables exist

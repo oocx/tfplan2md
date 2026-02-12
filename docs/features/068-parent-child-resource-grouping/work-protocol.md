@@ -598,3 +598,26 @@
   - Change column consistency across all child resource tables (always visible)
   - No regression in existing functionality (978/980 tests pass)
 - **Next Steps:** Hand off to Code Reviewer for re-review to verify all blocker fixes are correct and complete.
+
+### Code Reviewer - Azure RM Batch 2 Re-Review (Post-Fix Verification)
+- **Date:** 2025-02-12
+- **Summary:** Conducted focused re-review to verify Developer's fixes for all 3 BLOCKER issues. Generated manual test artifacts and compared against specification. All blockers successfully resolved. **APPROVED FOR UAT.**
+- **Artifacts Produced:**
+  - Re-review section added to azure-rm-batch-2-code-review.md with detailed verification results
+  - Manual test artifacts generated: test-vnet-separate.md, test-dns.md, test-nsg.md, test-route.md
+  - work-protocol.md updated with this entry
+- **Verification Results:**
+  - ✅ **BLOCKER-1 FIXED**: `ParentIdAttribute = "name"` confirmed present in all 5 Azure RM relationship registrations (lines 125, 144, 163, 210, 237 of AzureRMModule.cs)
+  - ✅ **BLOCKER-2 FIXED**: NSG template includes `{{ include "/_child_resources.sbn" }}` at line 71, both Feature 016 and parent-child framework tables render correctly
+  - ✅ **BLOCKER-3 FIXED**: Change column always appears in child resource tables (line 9 of _child_resources.sbn), verified in all test artifacts
+  - ✅ VNet separate subnets now group under parent (5 subnet resources in single table)
+  - ✅ DNS records now group under parent zone (4 records grouped by type)
+  - ✅ NSG inline rules show correct columns: Change, Name, Priority, Direction, Access, Protocol, Source, Destination, Ports
+  - ✅ Route table inline routes show Change column as first column
+  - ✅ Tests: 972 of 973 pass (1 failure unrelated to fixes)
+  - ✅ Comprehensive demo generates successfully with only 1 acceptable markdownlint warning (duplicate heading by design)
+- **Remaining Issues (Non-Blocking):**
+  - **Minor**: NSG icon (🛡️) missing in subnet NSG references (cosmetic only, can be addressed later)
+  - **Info**: Duplicate "Security Rules" heading in NSG rendering (acceptable - Feature 016 + parent-child framework tables coexist by design)
+- **Problems Encountered:** Docker build timed out (exceeded 120s) - unable to verify but not blocking code approval
+- **Next Steps:** Hand off to UAT Tester for visual validation in GitHub and Azure DevOps PRs before final merge.

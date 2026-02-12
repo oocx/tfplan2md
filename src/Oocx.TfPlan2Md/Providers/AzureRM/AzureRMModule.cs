@@ -108,4 +108,132 @@ internal sealed class AzureRMModule : IProviderModule
         registry.Register(new Mappers.FirewallApplicationRuleCollectionMapper(fwAppFactory));
         registry.Register(new Mappers.RoleAssignmentMapper(roleFactory));
     }
+
+    /// <summary>
+    /// Registers AzureRM parent-child relationships for inline rendering.
+    /// </summary>
+    /// <param name="registry">The parent-child relationship registry to register with.</param>
+    public void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry)
+    {
+        // Virtual Network → Subnets
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azurerm_virtual_network",
+            ChildResourceType = "azurerm_subnet",
+            InlineAttributeName = "subnet",
+            ChildReferenceAttribute = "virtual_network_name",
+            ChildGroupLabel = "Subnets",
+            TableColumns =
+            [
+                new ChildTableColumn("Name", "name"),
+                new ChildTableColumn("Address Prefixes", "address_prefixes"),
+                new ChildTableColumn("NSG", "nsg"),
+                new ChildTableColumn("Delegation", "delegation")
+            ],
+            RowExtractor = new AzureRmSubnetRowExtractor()
+        });
+
+        // Route Table → Routes
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azurerm_route_table",
+            ChildResourceType = "azurerm_route",
+            InlineAttributeName = "route",
+            ChildReferenceAttribute = "route_table_name",
+            ChildGroupLabel = "Routes",
+            TableColumns =
+            [
+                new ChildTableColumn("Name", "name"),
+                new ChildTableColumn("Address Prefix", "address_prefix"),
+                new ChildTableColumn("Next Hop Type", "next_hop_type"),
+                new ChildTableColumn("Next Hop Address", "next_hop_in_ip_address")
+            ],
+            RowExtractor = new AzureRmRouteRowExtractor()
+        });
+
+        // Network Security Group → Security Rules
+        registry.Register(new ParentChildRelationship
+        {
+            ParentResourceType = "azurerm_network_security_group",
+            ChildResourceType = "azurerm_network_security_rule",
+            InlineAttributeName = "security_rule",
+            ChildReferenceAttribute = "network_security_group_name",
+            ChildGroupLabel = "Security Rules",
+            TableColumns =
+            [
+                new ChildTableColumn("Name", "name"),
+                new ChildTableColumn("Priority", "priority"),
+                new ChildTableColumn("Direction", "direction"),
+                new ChildTableColumn("Access", "access"),
+                new ChildTableColumn("Protocol", "protocol"),
+                new ChildTableColumn("Source", "source"),
+                new ChildTableColumn("Destination", "destination"),
+                new ChildTableColumn("Ports", "ports")
+            ],
+            RowExtractor = new AzureRmNetworkSecurityRuleRowExtractor()
+        });
+
+        // DNS Zone → DNS Records (public zone types)
+        var dnsRecordTypes = new[]
+        {
+            "azurerm_dns_a_record",
+            "azurerm_dns_aaaa_record",
+            "azurerm_dns_cname_record",
+            "azurerm_dns_mx_record",
+            "azurerm_dns_ns_record",
+            "azurerm_dns_ptr_record",
+            "azurerm_dns_srv_record",
+            "azurerm_dns_txt_record",
+            "azurerm_dns_caa_record"
+        };
+
+        var dnsRecordExtractor = new AzureRmDnsRecordRowExtractor();
+        var dnsColumns = new[]
+        {
+            new ChildTableColumn("Name", "name"),
+            new ChildTableColumn("Type", "type"),
+            new ChildTableColumn("TTL", "ttl"),
+            new ChildTableColumn("Value/Target", "value")
+        };
+
+        foreach (var recordType in dnsRecordTypes)
+        {
+            registry.Register(new ParentChildRelationship
+            {
+                ParentResourceType = "azurerm_dns_zone",
+                ChildResourceType = recordType,
+                InlineAttributeName = null, // DNS records are always separate resources
+                ChildReferenceAttribute = "zone_name",
+                ChildGroupLabel = "DNS Records",
+                TableColumns = dnsColumns,
+                RowExtractor = dnsRecordExtractor
+            });
+        }
+
+        // Private DNS Zone → Private DNS Records
+        var privateDnsRecordTypes = new[]
+        {
+            "azurerm_private_dns_a_record",
+            "azurerm_private_dns_aaaa_record",
+            "azurerm_private_dns_cname_record",
+            "azurerm_private_dns_mx_record",
+            "azurerm_private_dns_ptr_record",
+            "azurerm_private_dns_srv_record",
+            "azurerm_private_dns_txt_record"
+        };
+
+        foreach (var recordType in privateDnsRecordTypes)
+        {
+            registry.Register(new ParentChildRelationship
+            {
+                ParentResourceType = "azurerm_private_dns_zone",
+                ChildResourceType = recordType,
+                InlineAttributeName = null, // DNS records are always separate resources
+                ChildReferenceAttribute = "zone_name",
+                ChildGroupLabel = "DNS Records",
+                TableColumns = dnsColumns,
+                RowExtractor = dnsRecordExtractor
+            });
+        }
+    }
 }

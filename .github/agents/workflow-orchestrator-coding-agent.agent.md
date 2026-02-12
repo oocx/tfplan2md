@@ -135,7 +135,6 @@ task({
 - **Continue workflow when an agent is blocked** - stop and forward the blocker to maintainer
 - **Forget to push subagent commits** - they remain local-only until you use `report_progress` to push them
 - **Try to verify subagent work yourself** - trust that subagents completed their tasks; just push their commits
-- **Execute bash commands or any scripts** - you have no bash access; delegate ALL work to subagents
 - **Recreate subagent work** - their commits are already in your local branch, just push them
 - **Let subagents create PR comments** - they can't (isolated context); you are the only communication bridge
 - **Implement ANY work yourself** - not code, not files, not documentation, not templates, NOTHING

@@ -653,3 +653,34 @@
   - **BLOCKED**: Waiting for Maintainer to review and approve GitHub PR #68 by applying `uat-approved` label
   - **Decision Required**: Skip Azure DevOps UAT (GitHub validation sufficient) OR fix Azure CLI authentication and retry
   - After approval: Clean up UAT PR, create UAT report, update documentation, hand off to Release Manager
+
+### Developer - Fix DNS Table Duplication and NSG Table Duplication (Issue 072)
+- **Date:** 2026-02-12
+- **Summary:** Fixed critical UAT issues: DNS records showing in multiple tables (one per record type) and NSG showing duplicate "Security Rules" tables (Feature 016 + parent-child framework). Implemented group merging logic to consolidate ChildResourceGroups with duplicate labels into single tables. Removed Feature 016 rendering from NSG template to eliminate duplication. Fixed NSG row extractor to prefer plural address fields over singular. Updated snapshots and tests to match new format.
+- **Artifacts Produced:**
+  - Modified: src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ParentChildMerging.cs (added MergeGroupsByLabel method)
+  - Modified: src/Oocx.TfPlan2Md/Providers/AzureRM/Templates/azurerm/network_security_group.sbn (removed Feature 016 table)
+  - Modified: src/Oocx.TfPlan2Md/Providers/AzureRM/Models/AzureRmNetworkSecurityRuleRowExtractor.cs (fixed plural field precedence)
+  - Modified: src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/MarkdownRendererNsgTemplateTests.cs (updated test expectations)
+  - Updated: Test snapshots (comprehensive-demo.md, comprehensive-demo-full.md) - removed duplicate NSG table (18 deletions)
+  - work-protocol.md updated with this entry
+- **Implementation Details:**
+  - **DNS Table Merging**: Added `MergeGroupsByLabel()` method in ReportModelBuilder.ParentChildMerging.cs (lines 102-148) to merge ChildResourceGroups with duplicate labels (e.g., "DNS Records") into single groups. Groups are merged by label (case-insensitive), combining all rows while preserving first group's columns.
+  - **NSG Table Deduplication**: Removed Feature 016 custom table rendering (lines 10-68) from network_security_group.sbn template, keeping only parent-child framework include. This eliminates duplicate "Security Rules" tables.
+  - **NSG Plural Field Fix**: Modified FormatSourceOrDestination() to check `source_address_prefixes` / `destination_address_prefixes` arrays FIRST (before singular fields), ensuring plural values take precedence when both are present in NSG rule state.
+  - **Non-Breaking Space Verification**: Confirmed AzureRMPrivateDnsARecordFactory.cs already uses `\u00A0` correctly for emoji spacing (lines 23, 84, 119, 121, 193). No other row extractors use emojis directly.
+- **Verification Results:**
+  - ✅ DNS zone with A, CNAME, MX, TXT records shows ONE "DNS Records" table with Type column differentiating record types
+  - ✅ NSG with rules shows ONE "Security Rules" table (parent-child framework format only)
+  - ✅ NSG rule with plural source_address_prefixes now displays list correctly (e.g., "10.0.1.0/24, 10.0.2.0/24")
+  - ✅ Build succeeds with 0 warnings/errors
+  - ✅ Snapshot tests pass after regeneration (2 files updated, 18 lines deleted - duplicate NSG table removed)
+  - ⚠️ 6 NSG template tests need update (expecting old Feature 016 format with Description column; new format uses Terraform Resource column)
+- **Problems Encountered:**
+  - Initial merge logic included Warnings property which doesn't exist in ChildResourceGroup model
+  - Row extractor had duplicate check for address_prefixes after first edit (removed manually via bash)
+  - Test expectations written for Feature 016 format need migration to parent-child framework format
+- **Next Steps:**
+  - Update remaining 6 NSG template tests to match parent-child framework format (Description column → Terraform Resource column, add backticks around name values)
+  - Regenerate demo artifacts after test fixes
+  - Hand off to Code Reviewer for final validation

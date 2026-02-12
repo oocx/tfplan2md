@@ -136,30 +136,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         ValueFormatterRegistry? valueFormatterRegistry,
         IconProviderRegistry? iconProviderRegistry)
     {
-        // Try address_prefix first
-        var addressPrefix = JsonStateReader.GetStringProperty(element, $"{prefix}_address_prefix");
-        if (!string.IsNullOrEmpty(addressPrefix))
-        {
-            if (addressPrefix == "*")
-            {
-                return "✳️";
-            }
-
-            // Check if it's a service tag (starts with capital letter, no dots/slashes)
-            if (IsServiceTag(addressPrefix))
-            {
-                return $"`{addressPrefix}`";
-            }
-
-            return ScribanHelpers.FormatAttributeValueTableWithRegistry(
-                $"{prefix}_address_prefix",
-                addressPrefix,
-                providerName,
-                valueFormatterRegistry,
-                iconProviderRegistry);
-        }
-
-        // Try address_prefixes array
+        // Try address_prefixes array FIRST (takes precedence over singular)
         if (element.TryGetProperty($"{prefix}_address_prefixes", out var prefixesProperty) &&
             prefixesProperty.ValueKind == JsonValueKind.Array)
         {
@@ -202,8 +179,31 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
                     return string.Join(", ", formatted);
                 }
 
-                return $"✳️ {formatted.Count} items";
+                return $"✳️ {formatted.Count} items";
             }
+        }
+
+        // Fallback to address_prefix (singular)
+        var addressPrefix = JsonStateReader.GetStringProperty(element, $"{prefix}_address_prefix");
+        if (!string.IsNullOrEmpty(addressPrefix))
+        {
+            if (addressPrefix == "*")
+            {
+                return "✳️";
+            }
+
+            // Check if it's a service tag (starts with capital letter, no dots/slashes)
+            if (IsServiceTag(addressPrefix))
+            {
+                return $"`{addressPrefix}`";
+            }
+
+            return ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                $"{prefix}_address_prefix",
+                addressPrefix,
+                providerName,
+                valueFormatterRegistry,
+                iconProviderRegistry);
         }
 
         return "-";

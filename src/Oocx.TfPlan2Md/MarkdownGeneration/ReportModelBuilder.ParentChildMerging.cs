@@ -76,6 +76,10 @@ internal partial class ReportModelBuilder
                 continue;
             }
 
+            // Merge groups with duplicate labels (e.g., DNS Records from multiple record types)
+            // into a single group to ensure ONE table per label
+            var mergedGroups = MergeGroupsByLabel(groups);
+
             var usesDefaultSummaryHtml = string.Equals(parent.SummaryHtml, BuildSummaryHtml(parent), StringComparison.Ordinal);
             if (RemoveInlineAttributeChanges(parent, inlineAttributeNames))
             {
@@ -86,7 +90,7 @@ internal partial class ReportModelBuilder
                 }
             }
 
-            parent.ChildResourceGroups = groups;
+            parent.ChildResourceGroups = mergedGroups;
             UpdateParentSummaryWithChildCounts(parent);
         }
 
@@ -97,6 +101,55 @@ internal partial class ReportModelBuilder
 
         // Invoke provider-specific post-merge callbacks
         InvokePostMergeCallbacks(allChanges);
+    }
+
+    /// <summary>
+    /// Merges child resource groups with duplicate labels into single groups.
+    /// </summary>
+    /// <param name="groups">The child resource groups to merge.</param>
+    /// <returns>The merged list with one group per unique label.</returns>
+    /// <remarks>
+    /// Related issue: docs/issues/072-dns-nsg-table-duplication/analysis.md.
+    /// Addresses issue where DNS records of different types (A, CNAME, MX, TXT) create separate tables
+    /// instead of one merged "DNS Records" table with a Type column.
+    /// </remarks>
+    private static List<ChildResourceGroup> MergeGroupsByLabel(List<ChildResourceGroup> groups)
+    {
+        if (groups.Count <= 1)
+        {
+            return groups;
+        }
+
+        var groupsByLabel = groups
+            .GroupBy(g => g.Label, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var mergedGroups = new List<ChildResourceGroup>();
+        foreach (var labelGroup in groupsByLabel)
+        {
+            if (labelGroup.Count() == 1)
+            {
+                mergedGroups.Add(labelGroup.First());
+                continue;
+            }
+
+            // Merge multiple groups with same label into one
+            var firstGroup = labelGroup.First();
+            var allRows = labelGroup.SelectMany(g => g.Rows).ToList();
+            var hasAnyMixedSources = labelGroup.Any(g => g.HasMixedSources);
+
+            var mergedGroup = new ChildResourceGroup
+            {
+                Label = firstGroup.Label,
+                Columns = firstGroup.Columns, // Use first group's columns (should be same for same label)
+                Rows = allRows,
+                HasMixedSources = hasAnyMixedSources
+            };
+
+            mergedGroups.Add(mergedGroup);
+        }
+
+        return mergedGroups;
     }
 
     /// <summary>

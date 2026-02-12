@@ -1,5 +1,5 @@
 {{~## Template for azurerm_network_security_group
-     Provides semantic diffing of NSG security rules instead of index-based changes.
+     Uses parent-child framework for consistent security rule rendering.
      Access properties via 'change' variable - works for both include and direct render paths.
 ~}}
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
@@ -7,36 +7,6 @@
 <br>
 {{~ include "/_code_analysis_metadata.sbn" ~}}
 
-{{~ if change.before_json && change.after_json && change.network_security_group && change.network_security_group.rule_changes.size > 0 ~}}
-
-#### Security Rules{{ "\n" }}
-
-| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
-| -------- | ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{~ for row in change.network_security_group.rule_changes ~}}
-| {{ row.change }} | {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
-{{ end }}
-
-
-{{~ else if change.action == "create" && change.network_security_group && change.network_security_group.after_rules.size > 0 ~}}
-#### Security Rules{{ "\n" }}
-
-| Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
-| ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{~ for row in change.network_security_group.after_rules ~}}
-| {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
-{{~ end ~}}
-
-{{~ else if change.action == "delete" && change.network_security_group && change.network_security_group.before_rules.size > 0 ~}}
-#### Security Rules (being deleted)
-
-| Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
-| ------ | ---------- | ----------- | -------- | ---------- | ------------------ | ------------ | ---------------------- | ------------------- | ------------- |
-{{~ for row in change.network_security_group.before_rules ~}}
-| {{ row.name }} | {{ row.priority }} | {{ row.direction }} | {{ row.access }} | {{ row.protocol }} | {{ row.source_addresses }} | {{ row.source_ports }} | {{ row.destination_addresses }} | {{ row.destination_ports }} | {{ row.description }} |
-{{~ end ~}}
-
-{{~ else ~}}
 {{~ if change.attribute_changes && change.attribute_changes.size > 0 ~}}
 <details>
 <summary>Attribute Changes</summary>
@@ -65,7 +35,6 @@
 {{~ end ~}}
 
 </details>
-{{~ end ~}}
 {{~ end ~}}
 
 {{ include "/_child_resources.sbn" }}

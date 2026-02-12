@@ -621,3 +621,35 @@
   - **Info**: Duplicate "Security Rules" heading in NSG rendering (acceptable - Feature 016 + parent-child framework tables coexist by design)
 - **Problems Encountered:** Docker build timed out (exceeded 120s) - unable to verify but not blocking code approval
 - **Next Steps:** Hand off to UAT Tester for visual validation in GitHub and Azure DevOps PRs before final merge.
+
+### UAT Tester - Azure RM Batch 2
+- **Date:** 2025-02-12
+- **Summary:** Executed UAT for Azure RM Batch 2 parent-child resource grouping. Created feature-specific artifact demonstrating all 4 Azure RM resource types (VNet/subnet, DNS zone/records, route table/routes, NSG/rules) with inline, separate, and mixed management scenarios. Successfully created GitHub UAT PR #68 with both feature-specific and regression artifacts. Azure DevOps UAT failed due to environment authentication issue (Azure CLI not authenticated despite AZURE_DEVOPS_EXT_PAT being set).
+- **Artifacts Produced:**
+  - artifacts/azure-rm-batch-2-uat.md - Comprehensive UAT artifact combining test cases from individual test files, demonstrating all 4 resource types with detailed validation points and success criteria
+  - GitHub UAT PR #68: https://github.com/oocx/tfplan2md-uat/pull/68 with 2 comments (feature-specific and regression artifacts)
+  - work-protocol.md updated with this entry
+- **UAT Results:**
+  - ✅ GitHub PR #68 created successfully
+  - ✅ Feature-specific artifact posted (13,482 chars) - demonstrates VNet inline/separate/mixed, DNS zone with records, route table with routes, NSG with rules
+  - ✅ Regression artifact posted (29,883 chars) - comprehensive-demo-simple-diff.md for side-effects validation
+  - ❌ Azure DevOps PR failed - Azure CLI authentication issue (`az account show` failed despite AZURE_DEVOPS_EXT_PAT being set)
+- **Environment Issues:**
+  - Azure CLI requires Azure subscription login (`az login`) for `az account show` to succeed
+  - AZURE_DEVOPS_EXT_PAT is set but insufficient for Azure CLI authentication
+  - GitHub CLI (gh) authentication works correctly via `gh auth setup-git`
+  - The copilot-setup-steps workflow should have configured Azure CLI but did not
+- **Problems Encountered:**
+  - Git submodule authentication: Initially failed with HTTPS credentials prompt. Fixed by running `gh auth setup-git` to configure git credential helper.
+  - Azure DevOps authentication: Unable to proceed with Azure DevOps UAT due to Azure CLI not being authenticated. This is an environment configuration issue, not a code issue.
+  - No consolidated test plan JSON: The UAT test plan expected `examples/azure-rm-batch-2/plan.json` but it didn't exist. Created composite UAT artifact by generating individual test artifacts and combining them with detailed validation instructions.
+- **UAT Artifact Details:**
+  - Created from individual test files: azurerm-vnet-inline-subnets-plan.json, azurerm-vnet-mixed-subnets-plan.json, azurerm-vnet-separate-subnets-plan.json, azurerm-dns-zone-records-plan.json, azurerm-route-table-inline-routes-plan.json, azurerm-nsg-inline-rules-plan.json
+  - Demonstrates all validation points from azure-rm-batch-2-uat-test-plan.md
+  - Includes detailed "Validation Points" sections for each resource type
+  - Comprehensive cross-platform validation checklist
+  - Success criteria matching UAT test plan requirements
+- **Next Steps:**
+  - **BLOCKED**: Waiting for Maintainer to review and approve GitHub PR #68 by applying `uat-approved` label
+  - **Decision Required**: Skip Azure DevOps UAT (GitHub validation sufficient) OR fix Azure CLI authentication and retry
+  - After approval: Clean up UAT PR, create UAT report, update documentation, hand off to Release Manager

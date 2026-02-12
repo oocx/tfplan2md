@@ -120,4 +120,187 @@ public class ConfigurationReferenceResolverTests
 
         return JsonDocument.Parse(builder.ToString()).RootElement;
     }
+
+    /// <summary>
+    /// Ensures references field with Object type does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void BuildReferenceIndex_ReferencesAsObject_DoesNotCrash()
+    {
+        // Arrange - create a configuration with references as an Object instead of Array
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_storage_container.example",
+                        "mode": "managed",
+                        "type": "azurerm_storage_container",
+                        "name": "example",
+                        "expressions": {
+                            "storage_account_id": {
+                                "references": {
+                                    "type": "object",
+                                    "value": "azurerm_storage_account.example.id"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act - should not throw
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty or skip the malformed reference
+        index.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Ensures missing references property does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void BuildReferenceIndex_MissingReferences_DoesNotCrash()
+    {
+        // Arrange - create a configuration without references property
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_role_assignment.example",
+                        "mode": "managed",
+                        "type": "azurerm_role_assignment",
+                        "name": "example",
+                        "expressions": {
+                            "principal_id": {
+                                "constant_value": "12345-67890"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act - should not throw
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty since no references exist
+        index.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Ensures null references value does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void BuildReferenceIndex_NullReferencesValue_DoesNotCrash()
+    {
+        // Arrange - create a configuration with null references value
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_resource.example",
+                        "mode": "managed",
+                        "type": "azurerm_resource",
+                        "name": "example",
+                        "expressions": {
+                            "parent_id": {
+                                "references": null
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act - should not throw
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty since references is null
+        index.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Ensures references as string (primitive) does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void BuildReferenceIndex_ReferencesAsString_DoesNotCrash()
+    {
+        // Arrange - create a configuration with references as a string primitive
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_resource.example",
+                        "mode": "managed",
+                        "type": "azurerm_resource",
+                        "name": "example",
+                        "expressions": {
+                            "parent_id": {
+                                "references": "azurerm_parent.example.id"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act - should not throw
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty since references is not an array
+        index.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Ensures empty references array is handled correctly.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void BuildReferenceIndex_EmptyReferencesArray_ReturnsEmpty()
+    {
+        // Arrange - create a configuration with empty references array
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_resource.example",
+                        "mode": "managed",
+                        "type": "azurerm_resource",
+                        "name": "example",
+                        "expressions": {
+                            "parent_id": {
+                                "references": []
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty since references array is empty
+        index.Should().BeEmpty();
+    }
 }

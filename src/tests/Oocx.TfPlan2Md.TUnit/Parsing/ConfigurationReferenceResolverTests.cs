@@ -303,4 +303,49 @@ public class ConfigurationReferenceResolverTests
         // Assert - should return empty since references array is empty
         index.Should().BeEmpty();
     }
+
+    /// <summary>
+    /// Ensures expression properties with Array values (nested blocks) do not crash.
+    /// Related issue: 072-json-element-wrong-type-error
+    /// </summary>
+    /// <remarks>
+    /// When Terraform configurations have nested blocks (arrays), expression properties
+    /// can have Array values like `authentication_credentials: [{ credential_id: "test" }]`
+    /// instead of Object values like `{ "references": [...] }`.
+    /// The code must check ValueKind BEFORE calling TryGetProperty to prevent
+    /// JsonElementHasWrongType exceptions.
+    /// </remarks>
+    [Test]
+    public void BuildReferenceIndex_ExpressionPropertyAsArray_DoesNotCrash()
+    {
+        // Arrange - create a configuration with array-valued expression property
+        var json = """
+        {
+            "root_module": {
+                "resources": [
+                    {
+                        "address": "azurerm_resource.test",
+                        "mode": "managed",
+                        "type": "azurerm_resource",
+                        "name": "test",
+                        "expressions": {
+                            "authentication_credentials": [
+                                {
+                                    "credential_id": "test"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+        """;
+        var configuration = JsonDocument.Parse(json).RootElement;
+
+        // Act - should not throw JsonElementHasWrongType exception
+        var index = ConfigurationReferenceResolver.BuildReferenceIndex(configuration);
+
+        // Assert - should return empty index for this resource (no references)
+        index.Should().BeEmpty();
+    }
 }

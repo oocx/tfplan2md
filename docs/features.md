@@ -1499,12 +1499,22 @@ Some Terraform providers model related data in a parent-child pattern: children 
 
 tfplan2md detects these configured parent-child relationships and renders the children as tables inside the parent resource section. This reduces scrolling and makes it easier to understand “what belongs to what” during reviews.
 
-### Supported patterns (initial)
+### Supported patterns
 
+**Azure Active Directory:**
 - `azuread_group` → inline `members` / separate `azuread_group_member`
+
+**Azure DevOps:**
 - `azuredevops_group` → inline `members` / separate `azuredevops_group_membership`
 - `azuredevops_team` → inline `members` / separate `azuredevops_team_members`
 - `azuredevops_team` → inline `administrators` / separate `azuredevops_team_administrators`
+
+**Azure Resource Manager (Network Resources):**
+- `azurerm_virtual_network` → inline `subnet` / separate `azurerm_subnet`
+- `azurerm_dns_zone` → separate DNS records (`azurerm_dns_a_record`, `azurerm_dns_aaaa_record`, `azurerm_dns_cname_record`, `azurerm_dns_mx_record`, `azurerm_dns_ns_record`, `azurerm_dns_ptr_record`, `azurerm_dns_srv_record`, `azurerm_dns_txt_record`, `azurerm_dns_caa_record`)
+- `azurerm_private_dns_zone` → separate private DNS records (same types as public, prefixed with `azurerm_private_dns_*`)
+- `azurerm_route_table` → inline `route` / separate `azurerm_route`
+- `azurerm_network_security_group` → inline `security_rule` / separate `azurerm_network_security_rule`
 
 ### Table behavior
 
@@ -1515,20 +1525,50 @@ tfplan2md detects these configured parent-child relationships and renders the ch
   - Separate child resources show their original Terraform address (for example: `azuredevops_group_membership.release_managers_membership_alice`).
 - **Mixed inline + separate children**: When both sources appear for the same parent, the report shows a warning and renders both.
 
-### Example (Azure DevOps group membership)
+### Example (Azure Virtual Network with subnets)
 
 ```markdown
-<details ...>
-<summary>🔄 azuredevops_group <b><code>release_managers</code></b> — ➕ 2 members</summary>
+<details>
+<summary>➕ azurerm_virtual_network <b><code>hub_vnet</code></b> — <code>🆔 vnet-hub</code> in <code>📁 rg-network</code> <code>🌍 eastus</code> | ➕ 3 subnets</summary>
 
-_No attribute changes._
+| Attribute | Value |
+| ----------- | ------- |
+| name | `🆔 vnet-hub` |
+| location | `🌍 eastus` |
+| resource_group_name | `📁 rg-network` |
+| address_space | `🌐 10.0.0.0/16` |
 
-#### Members
+#### Subnets
 
-| Change | Member | Terraform Resource |
-| -------- | -------- | -------------------- |
-| ➕ | `aadgp.Uy0.AliceUser` | azuredevops_group_membership.release_managers_membership_alice |
-| ➕ | `aadgp.Uy0.BobUser` | azuredevops_group_membership.release_managers_membership_bob |
+| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource |
+| -------- | ------ | ------------------ | ----- | ------------ | -------------------- |
+| ➕ | `🆔 snet-app` | `🌐 10.0.1.0/24` | `🛡️ nsg-app` | - | `subnet` attribute |
+| ➕ | `🆔 snet-data` | `🌐 10.0.2.0/24` | `🛡️ nsg-data` | - | `subnet` attribute |
+| ➕ | `🆔 snet-firewall` | `🌐 10.0.3.0/24` | - | `Microsoft.Network/azureFirewalls` | `subnet` attribute |
+
+</details>
+```
+
+### Example (Network Security Group with rules)
+
+```markdown
+<details>
+<summary>➕ azurerm_network_security_group <b><code>app_nsg</code></b> — <code>🆔 nsg-app-tier</code> in <code>📁 rg-network</code> <code>🌍 eastus</code> | ➕ 4 rules</summary>
+
+| Attribute | Value |
+| ----------- | ------- |
+| name | `🆔 nsg-app-tier` |
+| location | `🌍 eastus` |
+| resource_group_name | `📁 rg-network` |
+
+#### Security Rules
+
+| Change | Name | Priority | Direction | Access | Protocol | Source | Destination | Ports | Terraform Resource |
+| -------- | ------ | ---------- | ----------- | -------- | ---------- | -------- | ------------- | ------- | -------------------- |
+| ➕ | `🆔 allow-https-inbound` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `🔌 443` | `security_rule` attribute |
+| ➕ | `🆔 allow-http-inbound` | `110` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `🔌 80` | `security_rule` attribute |
+| ➕ | `🆔 allow-sql-outbound` | `200` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `🌐 10.0.2.0/24` | `🔌 1433` | `security_rule` attribute |
+| ➕ | `🆔 deny-all-inbound` | `4096` | `⬇️ Inbound` | `⛔ Deny` | `✳️` | `✳️` | `✳️` | `✳️` | `security_rule` attribute |
 
 </details>
 ```

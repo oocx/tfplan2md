@@ -513,3 +513,21 @@
   - Hand off to Technical Writer to document the new resource type support
   - After documentation: Hand off to Code Reviewer for PR review
   - Note: UAT artifact generation skipped due to separate resource matching limitation (would show resources as separate sections rather than grouped)
+
+### Technical Writer - Documentation Update for Azure RM Batch 2
+- **Date:** 2025-02-12
+- **Summary:** Updated user-facing documentation to reflect the 4 new Azure RM resource types added in Batch 2 (VNet/subnet, DNS zones/records, route tables/routes, NSG/rules). Added comprehensive examples showing table rendering with icons and formatting for Azure network resources.
+- **Artifacts Updated:**
+  - **docs/features.md**: Updated "Parent-Child Resource Grouping" section with new Azure RM resource types organized by provider (Azure AD, Azure DevOps, Azure RM). Replaced Azure DevOps example with two Azure RM examples (VNet with subnets, NSG with security rules) demonstrating table structure, icons (🆔 🌐 🌍 📁 🛡️ ⬇️ ⬆️ ✅ ⛔ 🔗 🔌 ✳️), and the "Terraform Resource" column.
+  - **README.md**: Updated features bullet point to mention "Azure network resources" in addition to memberships for parent-child tables.
+  - **work-protocol.md**: Added this Technical Writer log entry.
+- **Documentation Changes:**
+  - Organized supported patterns by provider category (Azure AD, Azure DevOps, Azure RM)
+  - Listed all 4 new Azure RM parent-child patterns with inline attributes where applicable
+  - Listed all 9 DNS record types for both public and private DNS zones
+  - Provided two detailed examples showing complete table structure with Change, Name, and resource-specific columns
+  - Examples demonstrate icon usage for all value types (IPs, names, locations, resource groups, NSGs, directions, access, protocols, ports, wildcards)
+  - Examples show "Terraform Resource" column with inline attribute indicators (e.g., "subnet attribute", "security_rule attribute")
+  - Maintained consistency with existing documentation style and formatting
+- **Problems Encountered:** None
+- **Next Steps:** Hand off to Code Reviewer for final PR review before merge.

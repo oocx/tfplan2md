@@ -36,7 +36,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 ## Boundaries
 
 ### ✅ Always Do
-- **Authenticate before running UAT** - Configure GitHub and Azure DevOps authentication using the provided secrets
+- Verify authentication is configured before running UAT (gh and az CLI should be pre-authenticated)
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - **Post TWO artifacts as separate PR comments**:
   1. **Feature-Specific Report** (from UAT test plan): Label with "🎯 Feature Test"
@@ -49,115 +49,63 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 
 ### ⚠️ Ask First
 - If no test plan exists and user didn't provide validation steps
+- If authentication verification fails (gh or az not authenticated)
 
 ### 🚫 Never Do
-- Skip authentication setup - UAT scripts will fail without configured `gh` and `az` CLI authentication
 - Call the script via `bash scripts/uat-run.sh` (breaks permanent allow)
 - Run prerequisite checks (branch, auth, artifacts) - the script does this
 - Ask for confirmation before running the script (just run it)
 - Run any polling or PR operations yourself (the script does this)
 
-## Authentication Setup
+## Environment Setup
 
-Before running UAT, you must configure authentication for both GitHub and Azure DevOps using the secrets provided in the repository.
+**GitHub Copilot coding agents** run in a pre-configured environment set up by `.github/workflows/copilot-setup-steps.yml`. The workflow authenticates both GitHub CLI (`gh`) and Azure DevOps CLI (`az`) using secrets from the `copilot` environment.
 
-**Environment Context**: When running as a GitHub Copilot coding agent in GitHub Actions, the secrets `GH_UAT_TOKEN` and `AZDO_UAT_TOKEN` must be explicitly passed to the agent's environment. The Maintainer needs to ensure these secrets are configured in the GitHub Actions workflow that runs coding agents.
-
-**For Maintainers**: Add the following to the GitHub Actions workflow step that runs coding agents:
-```yaml
-env:
-  GH_UAT_TOKEN: ${{ secrets.GH_UAT_TOKEN }}
-  AZDO_UAT_TOKEN: ${{ secrets.AZDO_UAT_TOKEN }}
-```
-
-**For the UAT Tester Agent**: Verify secrets are available before starting UAT:
+Before running UAT, verify the environment is properly configured:
 
 ```bash
-# Verify secrets are available (should show "set" without revealing values)
-if [[ -z "$GH_UAT_TOKEN" ]]; then
-  echo "❌ ERROR: GH_UAT_TOKEN is not set. Secrets must be configured in GitHub Actions workflow."
-  echo "The Maintainer needs to add GH_UAT_TOKEN to the workflow environment."
-  exit 1
-fi
-
-if [[ -z "$AZDO_UAT_TOKEN" ]]; then
-  echo "❌ ERROR: AZDO_UAT_TOKEN is not set. Secrets must be configured in GitHub Actions workflow."
-  echo "The Maintainer needs to add AZDO_UAT_TOKEN to the workflow environment."
-  exit 1
-fi
-
-echo "✓ GH_UAT_TOKEN is set"
-echo "✓ AZDO_UAT_TOKEN is set"
-```
-
-### GitHub Authentication
-
-The repository provides `GH_UAT_TOKEN` secret for GitHub authentication. Configure `gh` CLI:
-
-```bash
-# Authenticate gh CLI with the UAT token
-echo "$GH_UAT_TOKEN" | gh auth login --with-token
-
-# Verify authentication
+# Verify GitHub CLI is authenticated
 if ! gh auth status 2>&1 | grep -q "Logged in"; then
-  echo "❌ ERROR: GitHub authentication failed"
+  echo "❌ ERROR: GitHub CLI not authenticated. The copilot-setup-steps workflow may have failed."
+  echo "Check: Repository Settings > Environments > copilot has GH_UAT_TOKEN configured"
   exit 1
 fi
 
-echo "✓ GitHub CLI authenticated successfully"
-```
-
-### Azure DevOps Authentication
-
-The repository provides `AZDO_UAT_TOKEN` secret for Azure DevOps authentication. Configure `az` CLI:
-
-```bash
-# Set the token as an environment variable for az CLI
-export AZURE_DEVOPS_EXT_PAT="$AZDO_UAT_TOKEN"
-
-# Configure Azure DevOps defaults
-az devops configure --defaults organization=https://dev.azure.com/oocx project=test
-
-# Verify the extension is available
-if ! az extension show --name azure-devops >/dev/null 2>&1; then
-  echo "Installing azure-devops extension..."
-  az extension add --name azure-devops
-fi
-
-# Verify authentication by querying the organization
-if ! az devops project show --project test --organization https://dev.azure.com/oocx >/dev/null 2>&1; then
-  echo "❌ ERROR: Azure DevOps authentication failed"
+# Verify Azure DevOps CLI is authenticated
+if [[ -z "$AZURE_DEVOPS_EXT_PAT" ]]; then
+  echo "❌ ERROR: Azure DevOps not authenticated. The copilot-setup-steps workflow may have failed."
+  echo "Check: Repository Settings > Environments > copilot has AZDO_UAT_TOKEN configured"
   exit 1
 fi
 
-echo "✓ Azure DevOps CLI authenticated successfully"
+echo "✓ Authentication verified - ready for UAT"
 ```
 
-**IMPORTANT**: These authentication steps must be completed before calling any UAT scripts. The scripts depend on authenticated `gh` and `az` CLI sessions.
+**Note**: If authentication fails, the issue is with the setup workflow or repository configuration, not this agent.
 
 ## Workflow
 
 When the user asks to run UAT:
 
-0. **Configure Authentication** (required first step)
-   - Set up GitHub authentication using `GH_UAT_TOKEN`
-   - Set up Azure DevOps authentication using `AZDO_UAT_TOKEN`
-   - Verify both authentications succeed
+1. **Verify Authentication** (quick check)
+   - Verify `gh` CLI is authenticated
+   - Verify `AZURE_DEVOPS_EXT_PAT` environment variable is set
+   - If either fails, report error and ask maintainer to check copilot environment configuration
 
-1. **Check for Test Plan** (required)
+2. **Check for Test Plan** (required)
    - Read `docs/features/*/uat-test-plan.md` to find:
      - **Feature-specific artifact path** (e.g., `artifacts/feature-slug-uat.md`)
      - **Validation instructions** to use as test description
    - If test plan doesn't exist or doesn't define artifacts, ask user
 
-2. **Validate Artifacts**
+3. **Validate Artifacts**
    - Verify feature-specific artifact exists
    - Verify comprehensive demo artifacts exist:
      - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
      - Azure DevOps: `artifacts/comprehensive-demo.md`
    - If missing, use `generate-demo-artifacts` skill first
 
-3. **Post PR Overview Links**
+4. **Post PR Overview Links**
    
    Before running the script, post links to the PR overview pages so the user can easily find the UAT PRs:
    
@@ -165,7 +113,7 @@ When the user asks to run UAT:
    > - GitHub: https://github.com/oocx/tfplan2md-uat/pulls
    > - Azure DevOps: https://dev.azure.com/oocx/test/_git/test/pullrequests?_a=mine
 
-4. **Run UAT for Feature-Specific Report**
+5. **Run UAT for Feature-Specific Report**
    
    ```bash
    scripts/uat-run.sh artifacts/<feature-slug>-uat.md "<validation-description>" --create-only
@@ -176,7 +124,7 @@ When the user asks to run UAT:
    - This creates the PRs and saves state to `.tmp/uat-run/last-run.json`
    - The script will output the PR URLs
 
-5. **Post Comprehensive Demo as Additional Comment**
+6. **Post Comprehensive Demo as Additional Comment**
    
    After the feature-specific report is posted, add the comprehensive demo as a second comment:
    
@@ -196,14 +144,14 @@ When the user asks to run UAT:
    fi
    ```
 
-6. **Post the Exact PR Links in Chat (Mandatory)**
+7. **Post the Exact PR Links in Chat (Mandatory)**
 
    Immediately paste the created PR links directly into chat:
    ```bash
    jq -r '"GitHub PR: " + (.github.url // "") + "\nAzure DevOps PR: " + (.azdo.url // "")' .tmp/uat-run/last-run.json
    ```
 
-7. **Ask User to Review and Approve**
+8. **Ask User to Review and Approve**
    
    > **Action Required:**
    > 
@@ -217,14 +165,14 @@ When the user asks to run UAT:
    > 
    > Once approved, I'll clean up the UAT PRs.
 
-8. **Poll for Approval and Clean Up**
+9. **Poll for Approval and Clean Up**
    
    After user has reviewed and approved, clean up:
    ```bash
    scripts/uat-run.sh --cleanup-last
    ```
 
-9. **Report Results**
+10. **Report Results**
    - When cleanup completes, report the final status
 
 ```

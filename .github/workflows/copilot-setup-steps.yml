@@ -1,0 +1,101 @@
+name: Copilot Setup Steps
+
+# This workflow customizes the GitHub Copilot coding agent environment
+# It runs before the agent starts working to set up authentication and tools
+# Documentation: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    # IMPORTANT: Secrets must be defined in Repository Settings > Environments > copilot
+    # for them to be accessible to GitHub Copilot coding agents
+    environment: copilot
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: src/global.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install Azure CLI
+        run: |
+          # Azure CLI is pre-installed on GitHub runners, but ensure it's available
+          if ! command -v az &> /dev/null; then
+            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          fi
+          
+          # Install Azure DevOps extension
+          if ! az extension show --name azure-devops >/dev/null 2>&1; then
+            az extension add --name azure-devops
+          fi
+
+      - name: Configure GitHub CLI authentication for UAT
+        env:
+          GH_UAT_TOKEN: ${{ secrets.GH_UAT_TOKEN }}
+        run: |
+          if [[ -z "$GH_UAT_TOKEN" ]]; then
+            echo "⚠️ WARNING: GH_UAT_TOKEN not configured in copilot environment"
+            echo "UAT tests requiring GitHub authentication will fail"
+            exit 0
+          fi
+          
+          # Authenticate gh CLI with UAT token
+          echo "$GH_UAT_TOKEN" | gh auth login --with-token
+          
+          # Verify authentication
+          if gh auth status 2>&1 | grep -q "Logged in"; then
+            echo "✓ GitHub CLI authenticated for UAT"
+          else
+            echo "❌ GitHub CLI authentication failed"
+            exit 1
+          fi
+
+      - name: Configure Azure DevOps authentication for UAT
+        env:
+          AZDO_UAT_TOKEN: ${{ secrets.AZDO_UAT_TOKEN }}
+        run: |
+          if [[ -z "$AZDO_UAT_TOKEN" ]]; then
+            echo "⚠️ WARNING: AZDO_UAT_TOKEN not configured in copilot environment"
+            echo "UAT tests requiring Azure DevOps authentication will fail"
+            exit 0
+          fi
+          
+          # Set token for Azure DevOps CLI
+          export AZURE_DEVOPS_EXT_PAT="$AZDO_UAT_TOKEN"
+          echo "AZURE_DEVOPS_EXT_PAT=$AZDO_UAT_TOKEN" >> $GITHUB_ENV
+          
+          # Configure Azure DevOps defaults
+          az devops configure --defaults organization=https://dev.azure.com/oocx project=test
+          
+          # Verify authentication
+          if az devops project show --project test --organization https://dev.azure.com/oocx >/dev/null 2>&1; then
+            echo "✓ Azure DevOps CLI authenticated for UAT"
+          else
+            echo "❌ Azure DevOps CLI authentication failed"
+            exit 1
+          fi
+
+      - name: Setup complete
+        run: |
+          echo "✓ GitHub Copilot coding agent environment ready"
+          echo "  - .NET SDK: $(dotnet --version)"
+          echo "  - Node.js: $(node --version)"
+          echo "  - GitHub CLI: $(gh --version | head -1)"
+          echo "  - Azure CLI: $(az --version | head -1)"

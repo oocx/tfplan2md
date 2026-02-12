@@ -65,6 +65,38 @@ If the UAT Tester agent reports authentication errors:
 4. **Check token expiration**: Tokens may need to be regenerated
 5. **Review setup workflow logs**: Check `.github/workflows/copilot-setup-steps.yml` run logs
 
+### Git Push Failures in UAT Scripts
+
+If UAT scripts fail with "Failed to push branch" errors:
+
+**For GitHub UAT (`uat-github.sh`):**
+```bash
+# Verify GitHub CLI is authenticated
+gh auth status
+
+# Should show:
+# ✓ Logged in to github.com account <username>
+```
+
+**For Azure DevOps UAT (`uat-azdo.sh`):**
+```bash
+# Verify Azure DevOps token is set
+echo $AZURE_DEVOPS_EXT_PAT
+
+# Should show the token (not empty)
+
+# Verify Azure DevOps configuration
+az devops configure --list
+
+# Should show organization and project defaults
+```
+
+**Common Issues:**
+- **Token not set**: copilot-setup-steps.yml may have failed silently
+- **Token expired**: Regenerate token in GitHub/Azure DevOps settings
+- **Insufficient permissions**: Token needs write access to UAT repositories
+- **Network issues**: Check if UAT repository URLs are accessible
+
 ### Testing the Setup
 
 To test if the environment is properly configured:

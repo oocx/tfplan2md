@@ -181,7 +181,25 @@ EOF
     } > "$AZDO_SUBMODULE_PATH/.uat/uat-run.txt"
     git -C "$AZDO_SUBMODULE_PATH" add .uat/uat-run.txt
     git -C "$AZDO_SUBMODULE_PATH" -c user.name="tfplan2md uat" -c user.email="uat@tfplan2md.invalid" commit -m "chore(uat): marker ${timestamp}" >/dev/null 2>&1 || true
-    git -C "$AZDO_SUBMODULE_PATH" push origin HEAD:"$branch" --force >/dev/null 2>&1
+    
+    log_info "Pushing branch '$branch' to Azure DevOps UAT repository..."
+    if ! git -C "$AZDO_SUBMODULE_PATH" push origin HEAD:"$branch" --force 2>&1 | tee /tmp/git-push-azdo-output.txt | grep -qE "(Everything up-to-date|new branch|branch.*set up)"; then
+        log_error "Failed to push branch to Azure DevOps UAT repository."
+        log_error "This usually indicates an authentication problem."
+        log_error ""
+        log_error "For GitHub Copilot coding agents:"
+        log_error "  - Verify copilot-setup-steps.yml workflow ran successfully"
+        log_error "  - Check: echo \$AZURE_DEVOPS_EXT_PAT (should not be empty)"
+        log_error "  - Check: az devops configure --list"
+        log_error "  - Ensure AZDO_UAT_TOKEN is configured in Repository Settings > Environments > copilot"
+        log_error ""
+        log_error "For local development:"
+        log_error "  - Ensure AZURE_DEVOPS_EXT_PAT environment variable is set"
+        log_error "  - Or configure git credential helper: see scripts/uat-helpers.sh ensure_azdo_credential_helper"
+        log_error ""
+        cat /tmp/git-push-azdo-output.txt >&2
+        exit 1
+    fi
     
     log_info "Creating PR..."
     local pr_result

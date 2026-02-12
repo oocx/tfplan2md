@@ -165,7 +165,24 @@ EOF
     } > "$UAT_GITHUB_SUBMODULE_PATH/.uat/uat-run.txt"
     git -C "$UAT_GITHUB_SUBMODULE_PATH" add .uat/uat-run.txt
     git -C "$UAT_GITHUB_SUBMODULE_PATH" -c user.name="tfplan2md uat" -c user.email="uat@tfplan2md.invalid" commit -m "chore(uat): marker ${timestamp}" >/dev/null 2>&1 || true
-    git -C "$UAT_GITHUB_SUBMODULE_PATH" push origin HEAD:"$branch" --force >/dev/null 2>&1
+    
+    log_info "Pushing branch '$branch' to $UAT_GITHUB_REPO..."
+    if ! git -C "$UAT_GITHUB_SUBMODULE_PATH" push origin HEAD:"$branch" --force 2>&1 | tee /tmp/git-push-output.txt | grep -qE "(Everything up-to-date|new branch|branch.*set up)"; then
+        log_error "Failed to push branch to GitHub UAT repository."
+        log_error "This usually indicates an authentication problem."
+        log_error ""
+        log_error "For GitHub Copilot coding agents:"
+        log_error "  - Verify copilot-setup-steps.yml workflow ran successfully"
+        log_error "  - Check: gh auth status"
+        log_error "  - Ensure GH_UAT_TOKEN is configured in Repository Settings > Environments > copilot"
+        log_error ""
+        log_error "For local development:"
+        log_error "  - Ensure you're authenticated: gh auth login"
+        log_error "  - Check your GitHub token has write access to $UAT_GITHUB_REPO"
+        log_error ""
+        cat /tmp/git-push-output.txt >&2
+        exit 1
+    fi
     
     log_info "Creating PR in $UAT_GITHUB_REPO..."
     local pr_url

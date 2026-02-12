@@ -60,7 +60,9 @@ internal partial class ReportModelBuilder
                     Label = relationship.ChildGroupLabel,
                     Columns = relationship.TableColumns,
                     Rows = rows,
-                    HasMixedSources = inlineRows.Count > 0 && separateRows.Count > 0
+                    HasMixedSources = inlineRows.Count > 0 && separateRows.Count > 0,
+                    HasExternalResources = rows.Exists(r => !string.IsNullOrEmpty(r.TerraformResource) &&
+                                                              !r.TerraformResource.Contains("attribute"))
                 };
 
                 groups.Add(group);
@@ -137,13 +139,16 @@ internal partial class ReportModelBuilder
             var firstGroup = labelGroup.First();
             var allRows = labelGroup.SelectMany(g => g.Rows).ToList();
             var hasAnyMixedSources = labelGroup.Any(g => g.HasMixedSources);
+            var hasAnyExternalResources = allRows.Exists(r => !string.IsNullOrEmpty(r.TerraformResource) &&
+                                                               !r.TerraformResource.Contains("attribute"));
 
             var mergedGroup = new ChildResourceGroup
             {
                 Label = firstGroup.Label,
                 Columns = firstGroup.Columns, // Use first group's columns (should be same for same label)
                 Rows = allRows,
-                HasMixedSources = hasAnyMixedSources
+                HasMixedSources = hasAnyMixedSources,
+                HasExternalResources = hasAnyExternalResources
             };
 
             mergedGroups.Add(mergedGroup);

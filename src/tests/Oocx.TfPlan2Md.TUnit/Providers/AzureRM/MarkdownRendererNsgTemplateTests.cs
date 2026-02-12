@@ -63,9 +63,9 @@ public class MarkdownRendererNsgTemplateTests
         var normalized = Normalize(result);
 
         normalized.Should().Contain("azurerm_network_security_group new");
-        // Parent-child framework format: Change, Name, Priority, Direction, Access, Protocol, Source, Destination, Ports, Terraform Resource
-        normalized.Should().Contain("| ➕ | 🆔 allow-web-out | 200 | ⬆️ Outbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🔌 443 | security_rule attribute |");
-        normalized.Should().Contain("| ➕ | 🆔 allow-health | 210 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 🌐 10.0.20.0/24 | ✳️ | 🔌 15000 | security_rule attribute |");
+        // Parent-child framework format: Change, Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
+        normalized.Should().Contain("| ➕ | 🆔 allow-web-out | 200 | ⬆️ Outbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow outbound HTTPS |");
+        normalized.Should().Contain("| ➕ | 🆔 allow-health | 210 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 🌐 10.0.20.0/24 | ✳️ | ✳️ | 🔌 15000 | Health probes |");
     }
 
     [Test]
@@ -76,8 +76,8 @@ public class MarkdownRendererNsgTemplateTests
 
         normalized.Should().Contain("azurerm_network_security_group legacy");
         normalized.Should().Contain("Security Rules");
-        // Parent-child framework format: Change, Name, Priority, Direction, Access, Protocol, Source, Destination, Ports, Terraform Resource
-        normalized.Should().Contain("| ❌ | 🆔 allow-ftp | 300 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | 🌐 10.10.5.0/24 | 🔌 21 | security_rule attribute |");
+        // Parent-child framework format: Change, Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
+        normalized.Should().Contain("| ❌ | 🆔 allow-ftp | 300 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🌐 10.10.5.0/24 | 🔌 21 | Deprecated FTP |");
     }
 
     [Test]
@@ -86,13 +86,12 @@ public class MarkdownRendererNsgTemplateTests
         var result = RenderNsgPlan();
         var normalized = Normalize(result);
 
-        // Parent-child framework format: Change, Name, Priority, Direction, Access, Protocol, Source, Destination, Ports, Terraform Resource
-        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🔌 443 | security_rule attribute |");
+        // Parent-child framework format: Change, Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
+        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow HTTPS traffic |");
         normalized.Should().Contain("allow-http");
         normalized.Should().Contain("10.0.2.0/24");
-        normalized.Should().Contain("security_rule attribute");
         normalized.Should().Contain($"| {ActionIcons.Delete} | 🆔 allow-ssh | 120");
-        normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-dns | 130 | ⬆️ Outbound | ✅ Allow | 🔗 UDP | ✳️ | 🌐 168.63.129.16 | 🔌 53 | security_rule attribute |");
+        normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-dns | 130 | ⬆️ Outbound | ✅ Allow | 🔗 UDP | ✳️ | ✳️ | 🌐 168.63.129.16 | 🔌 53 | Azure DNS |");
     }
 
     [Test]
@@ -146,9 +145,10 @@ public class MarkdownRendererNsgTemplateTests
         normalized.Should().Contain("allow-http").And.Contain("10.0.2.0/24");
 
         // Unchanged rule with plural addresses should render the joined list (condensed format, after Normalize backticks removed)
-        normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-monitoring | 140 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 🌐 10.0.3.0/24, 🌐 10.0.4.0/24 | 🌐 10.0.10.0/24 | 🔌 443 | security_rule attribute |");
+        // Format: Change, Name, Priority, Direction, Access, Protocol, Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description
+        normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-monitoring | 140 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | 🌐 10.0.3.0/24, 🌐 10.0.4.0/24 | ✳️ | 🌐 10.0.10.0/24 | 🔌 443 | Monitoring agents |");
 
         // Wildcards remain visible
-        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🔌 443 | security_rule attribute |");
+        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow HTTPS traffic |");
     }
 }

@@ -169,9 +169,11 @@ internal sealed class AzureRMModule : IProviderModule
                 new ChildTableColumn("Direction", "direction"),
                 new ChildTableColumn("Access", "access"),
                 new ChildTableColumn("Protocol", "protocol"),
-                new ChildTableColumn("Source", "source"),
-                new ChildTableColumn("Destination", "destination"),
-                new ChildTableColumn("Ports", "ports")
+                new ChildTableColumn("Source Addresses", "source_addresses"),
+                new ChildTableColumn("Source Ports", "source_ports"),
+                new ChildTableColumn("Destination Addresses", "destination_addresses"),
+                new ChildTableColumn("Destination Ports", "destination_ports"),
+                new ChildTableColumn("Description", "description")
             ],
             RowExtractor = new AzureRmNetworkSecurityRuleRowExtractor()
         });

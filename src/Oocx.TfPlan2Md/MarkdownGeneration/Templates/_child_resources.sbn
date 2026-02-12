@@ -2,14 +2,15 @@
 #### {{ group.label }}{{ "\n" }}
 {{~ if group.has_mixed_sources ~}}
 
-⚠️ **Warning:** This resource has children managed both inline
+⚠️ **Warning:** This resource has children managed both inline
 and as separate resources. This configuration will cause conflicts.
 {{~ end ~}}
 
-| Change | {{ for col in group.columns }}{{ col.header }} | {{ end }}Terraform Resource |
-| -------- | {{ for col in group.columns }}-------- | {{ end }}-------------------- |
+{{~ has_external = group.has_external_resources ~}}
+| Change | {{ for col in group.columns }}{{ col.header }} | {{ end }}{{ if has_external }}Terraform Resource | {{ end }}
+| -------- | {{ for col in group.columns }}-------- | {{ end }}{{ if has_external }}-------------------- | {{ end }}
 {{~ for row in group.rows ~}}
-| {{ row.change_indicator }} | {{ for col in group.columns }}{{ row.values[col.property_name] }} | {{ end }}{{ row.terraform_resource }} |
+| {{ row.change_indicator }} | {{ for col in group.columns }}{{ row.values[col.property_name] }} | {{ end }}{{ if has_external }}{{ row.terraform_resource }} | {{ end }}
 {{~ end ~}}
 
 {{~ end ~}}

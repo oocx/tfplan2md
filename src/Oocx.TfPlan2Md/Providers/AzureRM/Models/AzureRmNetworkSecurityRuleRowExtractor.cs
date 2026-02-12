@@ -24,7 +24,7 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
     /// <param name="providerName">The provider name for formatting context.</param>
     /// <param name="valueFormatterRegistry">The value formatter registry for formatting values.</param>
     /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
-    /// <returns>The formatted row values with columns: name, priority, direction, access, protocol, source, destination, ports.</returns>
+    /// <returns>The formatted row values with columns: name, priority, direction, access, protocol, source_addresses, source_ports, destination_addresses, destination_ports, description.</returns>
     public IReadOnlyDictionary<string, string> ExtractRow(
         object? childState,
         string providerName,
@@ -41,9 +41,6 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         var direction = FormatDirection(element);
         var access = FormatAccess(element);
         var protocol = FormatProtocol(element);
-        var source = FormatSourceOrDestination(element, "source", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var destination = FormatSourceOrDestination(element, "destination", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var ports = FormatPorts(element);
 
         return new Dictionary<string, string>
         {
@@ -52,9 +49,11 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
             ["direction"] = direction,
             ["access"] = access,
             ["protocol"] = protocol,
-            ["source"] = source,
-            ["destination"] = destination,
-            ["ports"] = ports
+            ["source_addresses"] = FormatAddresses(element, "source", providerName, valueFormatterRegistry, iconProviderRegistry),
+            ["source_ports"] = FormatPorts(element, "source"),
+            ["destination_addresses"] = FormatAddresses(element, "destination", providerName, valueFormatterRegistry, iconProviderRegistry),
+            ["destination_ports"] = FormatPorts(element, "destination"),
+            ["description"] = FormatDescription(element)
         };
     }
 
@@ -127,9 +126,13 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
     }
 
     /// <summary>
-    /// Formats source or destination address/prefix with support for wildcards and service tags.
+    /// Formats source or destination addresses with support for wildcards and service tags.
     /// </summary>
-    private static string FormatSourceOrDestination(
+    /// <remarks>
+    /// Handles both address_prefix (singular) and address_prefixes (array) properties.
+    /// Array takes precedence when both are present.
+    /// </remarks>
+    private static string FormatAddresses(
         JsonElement element,
         string prefix,
         string providerName,
@@ -224,23 +227,26 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
     }
 
     /// <summary>
-    /// Formats destination port ranges with 🔌 icon.
+    /// Formats source or destination port ranges with 🔌 icon.
     /// </summary>
-    private static string FormatPorts(JsonElement element)
+    /// <param name="element">The JSON element containing port range data.</param>
+    /// <param name="prefix">The prefix for port properties ("source" or "destination").</param>
+    /// <returns>Formatted port range string with icon, or ✳️ for wildcard.</returns>
+    private static string FormatPorts(JsonElement element, string prefix)
     {
         // Try single port first
-        var portRange = JsonStateReader.GetStringProperty(element, "destination_port_range");
+        var portRange = JsonStateReader.GetStringProperty(element, $"{prefix}_port_range");
         if (!string.IsNullOrEmpty(portRange))
         {
             if (portRange == "*")
             {
                 return "✳️";
             }
-            return $"🔌 {portRange}";
+            return $"🔌\u00A0{portRange}";
         }
 
         // Try port ranges array
-        if (element.TryGetProperty("destination_port_ranges", out var rangesProperty) &&
+        if (element.TryGetProperty($"{prefix}_port_ranges", out var rangesProperty) &&
             rangesProperty.ValueKind == JsonValueKind.Array)
         {
             var ranges = rangesProperty.EnumerateArray()
@@ -258,13 +264,28 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
 
                 if (ranges.Count <= 2)
                 {
-                    return $"🔌 {string.Join(",", ranges)}";
+                    return $"🔌\u00A0{string.Join(",", ranges)}";
                 }
 
-                return $"✳️ {ranges.Count} ranges";
+                return $"✳️ {ranges.Count} ranges";
             }
         }
 
-        return "-";
+        return "✳️";  // Default for wildcard
+    }
+
+    /// <summary>
+    /// Formats rule description text.
+    /// </summary>
+    /// <param name="element">The JSON element containing description property.</param>
+    /// <returns>The description text, or "-" if empty.</returns>
+    private static string FormatDescription(JsonElement element)
+    {
+        var description = JsonStateReader.GetStringProperty(element, "description");
+        if (string.IsNullOrEmpty(description))
+        {
+            return "-";
+        }
+        return description;
     }
 }

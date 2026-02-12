@@ -1,8 +1,9 @@
 ---
 description: Orchestrate complete development workflows from issue to release
 name: Workflow Orchestrator (coding agent)
-model: Gemini 3 Flash (Preview)
+model: Claude Sonnet 4.5
 target: github-copilot
+tools: ['task', 'report_progress', 'reply_to_comment', 'bash', 'view', 'github/*']
 ---
 
 # Workflow Orchestrator Agent

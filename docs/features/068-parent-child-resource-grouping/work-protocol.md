@@ -425,3 +425,47 @@
   - Mixed management warnings prominence
   - Cross-platform rendering (GitHub vs Azure DevOps)
 - **Next Steps:** Hand off to Task Planner for implementation task breakdown. After implementation, Developer should create all test data files and UAT artifact as specified.
+
+### Task Planner - Batch 2 (Azure RM Resources)
+- **Date:** 2025-01-XX
+- **Summary:** Created implementation task breakdown for Azure RM Batch 2 extension (4 resource types: VNet/subnet, DNS zone/records, route table/routes, NSG/rules). Organized into 6 phases with 19 tasks covering row extractors, provider registration, test data, snapshots, UAT artifacts, and documentation. Each task includes detailed acceptance criteria, test case mappings, and effort estimates.
+- **Artifacts Produced:**
+  - azure-rm-batch-2-tasks.md - Detailed task breakdown with 19 tasks across 6 phases
+  - work-protocol.md - This log entry
+- **Problems Encountered:** None. Specification, architecture, and test plan provided comprehensive implementation guidance.
+- **Key Decisions:**
+  - **Phase organization**: Structured tasks by implementation dependency order:
+    - Phase 1: Row Extractors (4 extractors, can be done in parallel)
+    - Phase 2: Provider Registration (4 relationships, depends on Phase 1)
+    - Phase 3: Test Data (16 new files + comprehensive demo update, depends on Phase 2)
+    - Phase 4: Snapshots (17 snapshots, depends on Phase 3)
+    - Phase 5: UAT Artifact (comprehensive test plan + markdown generation, depends on Phase 4)
+    - Phase 6: Documentation (catalog + work protocol updates, can be done last)
+  - **Task granularity**: Each row extractor is a separate task with specific line estimates:
+    - AzureRmSubnetRowExtractor: ~40 lines (4 columns, nested delegation extraction)
+    - AzureRmDnsRecordRowExtractor: ~90 lines (9+ record types, type-specific formatting)
+    - AzureRmRouteRowExtractor: ~30 lines (4 columns, simple attributes)
+    - AzureRmNetworkSecurityRuleRowExtractor: ~90 lines (8 columns, singular/plural attributes, extensive icons)
+  - **Test data strategy**: 4 files per resource type (inline, separate, mixed, known-after-apply) for comprehensive coverage of all scenarios
+  - **UAT focus**: Single comprehensive artifact (`artifacts/azure-rm-batch-2-uat.md`) with 8 parent resources and ~45 child resources covering all 4 resource types
+  - **Parallel work opportunities**: Row extractors can be implemented in parallel (Phase 1), test data creation can be parallelized (Phase 3), snapshot generation can be parallelized (Phase 4)
+- **Implementation Estimates:**
+  - Phase 1 (Row Extractors): ~250 lines total (4 extractors)
+  - Phase 2 (Registration): ~120 lines total (4 relationships + DNS record loop)
+  - Phase 3 (Test Data): 16 new synthetic plan files + 1 comprehensive demo update (~200-400 lines per file)
+  - Phase 4 (Snapshots): 17 snapshot files to generate/update
+  - Phase 5 (UAT): 1 comprehensive test plan (~1500-2000 lines) + 1 generated artifact
+  - Phase 6 (Docs): Catalog status updates + work protocol entry
+  - **Total production code**: ~370 lines (matches Architect's estimate)
+- **Task Dependencies:**
+  - Phase 2 depends on Phase 1 (extractors must exist before registration)
+  - Phase 3 depends on Phase 2 (need working implementation to validate test data)
+  - Phase 4 depends on Phase 3 (test data must exist before generating snapshots)
+  - Phase 5 depends on Phase 4 (complete implementation + snapshots required for UAT)
+  - Phase 6 is independent (can be done last)
+- **Test Case Coverage:**
+  - Each task explicitly maps to test cases from azure-rm-batch-2-test-plan.md
+  - All 28 test cases covered across the 19 tasks
+  - All 13 edge cases covered
+  - Configuration reference matching scenarios covered for all 4 resource types (TC-AZ-22 through TC-AZ-25)
+- **Next Steps:** Hand off to Developer for implementation. Developer should follow phase order for logical progression: extractors → registration → test data → snapshots → UAT → documentation.

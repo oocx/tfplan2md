@@ -33,11 +33,13 @@ Add the new `build-linux-x64-binary` job to `.github/workflows/release.yml` with
 - Job will run in parallel with `docker` job
 
 **Acceptance Criteria:**
-- [ ] New job `build-linux-x64-binary` added to release.yml
-- [ ] Job has `runs-on: ubuntu-latest` configured
-- [ ] Job has `needs: release` dependency configured
-- [ ] Job has descriptive name: "Build Linux x64 Binary"
-- [ ] YAML syntax is valid (no syntax errors)
+- [x] New job `build-linux-x64-binary` added to release.yml
+- [x] Job has `runs-on: ubuntu-latest` configured
+- [x] Job has `needs: release` dependency configured
+- [x] Job has descriptive name: "Build Linux x64 Binary"
+- [x] YAML syntax is valid (no syntax errors)
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 
 **Verification:**
 - Run `yamllint .github/workflows/release.yml` to validate syntax
@@ -61,10 +63,12 @@ Add the initial workflow steps to checkout the repository and set up the .NET SD
 - No fetch-depth or ref customization needed (tag checkout is implicit)
 
 **Acceptance Criteria:**
-- [ ] Checkout step added using `actions/checkout@v6`
-- [ ] .NET setup step added using `actions/setup-dotnet@v4`
-- [ ] .NET version set to '10.x' (same as Docker build)
-- [ ] Steps are named appropriately: "Checkout" and "Setup .NET"
+- [x] Checkout step added using `actions/checkout@v6`
+- [x] .NET setup step added using `actions/setup-dotnet@v4`
+- [x] .NET version set to '10.x' (same as Docker build)
+- [x] Steps are named appropriately: "Checkout" and "Setup .NET"
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 
 **Verification:**
 - Compare with `docker` job checkout step for consistency
@@ -96,13 +100,15 @@ Add the step that builds the Linux x64 Native AOT binary using `dotnet publish` 
 - Command builds a single executable: `artifacts/linux-x64/tfplan2md`
 
 **Acceptance Criteria:**
-- [ ] Build step added with name "Build Linux x64 Binary"
-- [ ] Uses `dotnet publish` with correct project path
-- [ ] Configuration set to Release (`-c Release`)
-- [ ] Runtime identifier set to linux-x64 (`-r linux-x64`)
-- [ ] Self-contained mode enabled (`--self-contained true`)
-- [ ] Native AOT enabled (`-p:PublishAot=true`)
-- [ ] Output directory set to `artifacts/linux-x64` (`-o artifacts/linux-x64`)
+- [x] Build step added with name "Build Linux x64 Binary"
+- [x] Uses `dotnet publish` with correct project path
+- [x] Configuration set to Release (`-c Release`)
+- [x] Runtime identifier set to linux-x64 (`-r linux-x64`)
+- [x] Self-contained mode enabled (`--self-contained true`)
+- [x] Native AOT enabled (`-p:PublishAot=true`)
+- [x] Output directory set to `artifacts/linux-x64` (`-o artifacts/linux-x64`)
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 
 **Verification:**
 - Command matches architecture document Section 3 exactly
@@ -134,13 +140,15 @@ Add the step that packages the built binary into a tar.gz archive with the corre
   ```
 
 **Acceptance Criteria:**
-- [ ] Packaging step added with name "Package Binary"
-- [ ] Uses `needs.release.outputs.version` for version variable
-- [ ] Changes to `artifacts/linux-x64` directory before creating archive
-- [ ] Creates tar.gz with `tar -czf` command
-- [ ] Archive placed in workspace root (two directories up)
-- [ ] Archive name follows pattern: `tfplan2md_${VERSION}_linux_x64.tar.gz`
-- [ ] Archive contains single file `tfplan2md` at root level
+- [x] Packaging step added with name "Package Binary"
+- [x] Uses `needs.release.outputs.version` for version variable
+- [x] Changes to `artifacts/linux-x64` directory before creating archive
+- [x] Creates tar.gz with `tar -czf` command
+- [x] Archive placed in workspace root (two directories up)
+- [x] Archive name follows pattern: `tfplan2md_${VERSION}_linux_x64.tar.gz`
+- [x] Archive contains single file `tfplan2md` at root level
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 
 **Verification:**
 - Command matches architecture document Section 4 exactly
@@ -170,12 +178,14 @@ Add the step that generates SHA256 checksums for the binary archive in standard 
   ```
 
 **Acceptance Criteria:**
-- [ ] Checksum generation step added with name "Generate Checksums"
-- [ ] Uses `needs.release.outputs.version` for version variable
-- [ ] Uses `sha256sum` command to generate checksum
-- [ ] Output redirected to `SHA256SUMS` file
-- [ ] Checksum generated from final tar.gz file (not intermediate build artifacts)
-- [ ] Output file in workspace root (same location as tar.gz)
+- [x] Checksum generation step added with name "Generate Checksums"
+- [x] Uses `needs.release.outputs.version` for version variable
+- [x] Uses `sha256sum` command to generate checksum
+- [x] Output redirected to `SHA256SUMS` file
+- [x] Checksum generated from final tar.gz file (not intermediate build artifacts)
+- [x] Output file in workspace root (same location as tar.gz)
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 
 **Verification:**
 - Command matches architecture document Section 5 exactly
@@ -204,14 +214,16 @@ Add validation step that performs smoke tests on the built artifacts before uplo
 - Any failure should stop the workflow before upload
 
 **Acceptance Criteria:**
-- [ ] Validation step added with name "Validate Artifacts"
-- [ ] Uses `needs.release.outputs.version` for version variable
-- [ ] Check 1: Binary executable bit verified with `test -x`
-- [ ] Check 2: Binary executes without error (`--help` smoke test)
-- [ ] Check 3: Archive integrity verified with `tar -tzf`
-- [ ] Check 4: Checksum verification runs with `sha256sum -c SHA256SUMS`
-- [ ] All checks output stderr/stdout suppressed where appropriate (`> /dev/null`)
-- [ ] Step exits with non-zero code on any validation failure
+- [x] Validation step added with name "Validate Artifacts"
+- [x] Uses `needs.release.outputs.version` for version variable
+- [x] Check 1: Binary executable bit verified with `test -x`
+- [x] Check 2: Binary executes without error (`--help` smoke test)
+- [x] Check 3: Archive integrity verified with `tar -tzf`
+- [x] Check 4: Checksum verification runs with `sha256sum -c SHA256SUMS`
+- [x] All checks output stderr/stdout suppressed where appropriate (`> /dev/null`)
+- [x] Step exits with non-zero code on any validation failure
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 
 **Verification:**
 - Commands match architecture document Section 8 exactly
@@ -247,11 +259,14 @@ Add the step that uploads the binary archive and checksums file to the GitHub Re
   ```
 
 **Acceptance Criteria:**
-- [ ] Upload step added with name "Upload Binary to GitHub Release"
-- [ ] Uses `softprops/action-gh-release@v2`
-- [ ] `tag_name` set to `v${{ needs.release.outputs.version }}`
-- [ ] `files` includes both tar.gz archive and SHA256SUMS
-- [ ] Uses multi-line YAML format with pipe (`|`) for files list
+- [x] Upload step added with name "Upload Binary to GitHub Release"
+- [x] Uses `softprops/action-gh-release@v2`
+- [x] `tag_name` set to `v${{ needs.release.outputs.version }}`
+- [x] `files` includes both tar.gz archive and SHA256SUMS
+- [x] Uses multi-line YAML format with pipe (`|`) for files list
+- [x] No additional options (body, draft, prerelease) - only adding assets
+
+**Status:** ✅ COMPLETE (2024-01-XX)
 - [ ] No additional options (body, draft, prerelease) - only adding assets
 
 **Verification:**

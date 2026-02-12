@@ -663,7 +663,14 @@ internal partial class ReportModelBuilder
             return [];
         }
 
-        if (!element.TryGetProperty(attributeName, out var property) || property.ValueKind != JsonValueKind.Array)
+        if (!element.TryGetProperty(attributeName, out var property))
+        {
+            return [];
+        }
+
+        // Explicitly check and return empty if not an Array to prevent JsonElementHasWrongType exception
+        // Related issue: 071-json-parsing-error-azurerm-resources
+        if (property.ValueKind != JsonValueKind.Array)
         {
             return [];
         }

@@ -123,7 +123,14 @@ internal sealed class ConfigurationReferenceResolver
 
         foreach (var expressionProperty in expressions.EnumerateObject())
         {
-            if (!expressionProperty.Value.TryGetProperty("references", out var referencesElement) || referencesElement.ValueKind != JsonValueKind.Array)
+            if (!expressionProperty.Value.TryGetProperty("references", out var referencesElement))
+            {
+                continue;
+            }
+
+            // Explicitly check and skip if not an Array to prevent JsonElementHasWrongType exception
+            // Related issue: 071-json-parsing-error-azurerm-resources
+            if (referencesElement.ValueKind != JsonValueKind.Array)
             {
                 continue;
             }

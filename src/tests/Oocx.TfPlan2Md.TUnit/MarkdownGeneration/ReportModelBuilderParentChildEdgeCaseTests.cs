@@ -642,4 +642,115 @@ public class ReportModelBuilderParentChildEdgeCaseTests
             return new Dictionary<string, string>();
         }
     }
+
+    /// <summary>
+    /// Ensures inline attribute as Object (not Array) does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void Build_InlineAttributeAsObject_DoesNotCrash()
+    {
+        // Arrange - parent with inline attribute as Object instead of Array
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "edge_parent.example",
+                    null,
+                    "managed",
+                    ParentType,
+                    "example",
+                    "custom",
+                    new Change(
+                        ["create"],
+                        null,
+                        JsonDocument.Parse("""{"name":"parent","members":{"type":"object","value":"data"}}""").RootElement,
+                        null,
+                        null,
+                        null))
+            });
+
+        // Act - should not throw
+        var model = BuildModel(plan);
+
+        // Assert - parent should exist without child group
+        model.Changes.Should().ContainSingle();
+        model.Changes[0].Type.Should().Be(ParentType);
+    }
+
+    /// <summary>
+    /// Ensures inline attribute as null does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void Build_InlineAttributeAsNull_DoesNotCrash()
+    {
+        // Arrange - parent with null inline attribute
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "edge_parent.example",
+                    null,
+                    "managed",
+                    ParentType,
+                    "example",
+                    "custom",
+                    new Change(
+                        ["create"],
+                        null,
+                        JsonDocument.Parse("""{"name":"parent","members":null}""").RootElement,
+                        null,
+                        null,
+                        null))
+            });
+
+        // Act - should not throw
+        var model = BuildModel(plan);
+
+        // Assert - parent should exist without child group
+        model.Changes.Should().ContainSingle();
+        model.Changes[0].Type.Should().Be(ParentType);
+    }
+
+    /// <summary>
+    /// Ensures inline attribute as string (primitive) does not crash.
+    /// Related issue: 071-json-parsing-error-azurerm-resources
+    /// </summary>
+    [Test]
+    public void Build_InlineAttributeAsString_DoesNotCrash()
+    {
+        // Arrange - parent with string inline attribute
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "edge_parent.example",
+                    null,
+                    "managed",
+                    ParentType,
+                    "example",
+                    "custom",
+                    new Change(
+                        ["create"],
+                        null,
+                        JsonDocument.Parse("""{"name":"parent","members":"string_value"}""").RootElement,
+                        null,
+                        null,
+                        null))
+            });
+
+        // Act - should not throw
+        var model = BuildModel(plan);
+
+        // Assert - parent should exist without child group
+        model.Changes.Should().ContainSingle();
+        model.Changes[0].Type.Should().Be(ParentType);
+    }
 }

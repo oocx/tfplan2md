@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.16.2"></a>
+## [1.16.2](https://github.com/oocx/tfplan2md/compare/v1.16.1...v1.16.2) (2026-02-12)
+
+### 🐛 Bug Fixes
+
+* enhance defensive checks for JSON array enumeration ([6493652](https://github.com/oocx/tfplan2md/commit/649365279f4905ffb97aebfc6095327e4355b426))
+
+### 📚 Documentation
+
+* add 5 new agent skills to docs/agents.md ([d75b16e](https://github.com/oocx/tfplan2md/commit/d75b16ebb90eeb65ed7eaba8a00f436295ff2afe))
+* add issue analysis for JSON parsing error with Azure resources (v1.16.0/v1.16.1) ([1c118d4](https://github.com/oocx/tfplan2md/commit/1c118d4039aa551afc88dd17ccccb6805e7dd497))
+* add release notes for issue 070 (v1.16.1) ([5d1d573](https://github.com/oocx/tfplan2md/commit/5d1d5731d2b48ec80f079b109a9a943b3c0213f0))
+* add release notes for v1.16.2 patch ([7b705f2](https://github.com/oocx/tfplan2md/commit/7b705f261dbc3a4c07dcb4711ffb638249233128))
+* update work protocol with Developer implementation summary ([1e3d998](https://github.com/oocx/tfplan2md/commit/1e3d998d3e5117ffd5aaebdf8d3de2543c552b7a))
+* update work protocol with Release Manager entry ([b3627af](https://github.com/oocx/tfplan2md/commit/b3627af87d0f6fc11ce9f5d478812414bf5075fa))
+
 <a name="1.16.1"></a>
 ## [1.16.1](https://github.com/oocx/tfplan2md/compare/v1.16.0...v1.16.1) (2026-02-11)
 

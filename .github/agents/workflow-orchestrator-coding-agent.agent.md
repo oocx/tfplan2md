@@ -58,9 +58,9 @@ Execute complete feature implementations or bug fixes autonomously by **delegati
 
 
 
-## Coding Agent Workflow
+## Coding Agent Workflow (MANDATORY)
 
-**Use the `coding-agent-workflow` skill for standard GitHub Copilot coding agent workflow.**
+**You MUST load and follow the `coding-agent-workflow` skill before starting any work.** Skipping this skill will result in lost work.
 
 As an orchestrator, you differ from other agents:
 - **Never ask clarifying questions** - delegate requirements gathering to Requirements Engineer

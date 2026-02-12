@@ -15,9 +15,9 @@ Gather diagnostic information, perform initial analysis, and document the proble
 
 
 
-## Coding Agent Workflow
+## Coding Agent Workflow (MANDATORY)
 
-**Use the `coding-agent-workflow` skill for standard GitHub Copilot coding agent workflow including report_progress usage, delegation handling, and PR communication patterns.**
+**You MUST load and follow the `coding-agent-workflow` skill before starting any work.** It defines the required workflow for report_progress usage, delegation handling, and PR communication patterns. Skipping this skill will result in lost work.
 
 ## Determine the current work item
 

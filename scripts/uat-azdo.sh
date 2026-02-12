@@ -59,9 +59,11 @@ ensure_git_submodule() {
 
 
 cmd_setup() {
-    log_info "Checking Azure CLI authentication..."
-    if ! az account show >/dev/null 2>&1; then
-        log_error "Not authenticated. Please run: az login"
+    log_info "Checking Azure DevOps authentication..."
+    if [[ -z "$AZURE_DEVOPS_EXT_PAT" ]]; then
+        log_error "Azure DevOps PAT token not set."
+        log_error "For GitHub Copilot coding agents: Ensure AZDO_UAT_TOKEN is configured in Repository Settings > Environments > copilot"
+        log_error "For local development: Set AZURE_DEVOPS_EXT_PAT environment variable"
         exit 1
     fi
     
@@ -72,6 +74,12 @@ cmd_setup() {
     if ! az extension show --name azure-devops >/dev/null 2>&1; then
         log_warn "Installing azure-devops extension..."
         az extension add --name azure-devops
+    fi
+    
+    log_info "Verifying Azure DevOps access..."
+    if ! az devops project show --project "$AZDO_PROJECT" --organization "$AZDO_ORG" >/dev/null 2>&1; then
+        log_error "Cannot access Azure DevOps project. Check AZURE_DEVOPS_EXT_PAT token has correct permissions."
+        exit 1
     fi
     
     log_info "Setup complete. Organization: $AZDO_ORG, Project: $AZDO_PROJECT, Repo: $AZDO_REPO"

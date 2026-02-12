@@ -179,6 +179,61 @@ jobs:
           generate_release_notes: false
           prerelease: ${{ steps.version.outputs.is_prerelease == 'true' }}
 
+  build-linux-x64-binary:
+    name: Build Linux x64 Binary
+    runs-on: ubuntu-latest
+    needs: release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Build Linux x64 Binary
+        run: |
+          dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
+            -c Release \
+            -r linux-x64 \
+            --self-contained true \
+            -p:PublishAot=true \
+            -o artifacts/linux-x64
+
+      - name: Package Binary
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          cd artifacts/linux-x64
+          tar -czf ../../tfplan2md_${VERSION}_linux_x64.tar.gz tfplan2md
+          cd ../..
+
+      - name: Generate Checksums
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          sha256sum tfplan2md_${VERSION}_linux_x64.tar.gz > SHA256SUMS
+
+      - name: Validate Artifacts
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          # Verify binary is executable
+          test -x artifacts/linux-x64/tfplan2md
+          # Smoke test: verify binary runs
+          artifacts/linux-x64/tfplan2md --help > /dev/null
+          # Verify archive integrity
+          tar -tzf tfplan2md_${VERSION}_linux_x64.tar.gz > /dev/null
+          # Verify checksums
+          sha256sum -c SHA256SUMS
+
+      - name: Upload Binary to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.release.outputs.version }}
+          files: |
+            tfplan2md_${{ needs.release.outputs.version }}_linux_x64.tar.gz
+            SHA256SUMS
+
   docker:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest

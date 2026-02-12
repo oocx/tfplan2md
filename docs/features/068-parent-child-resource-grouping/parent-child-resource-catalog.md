@@ -68,7 +68,7 @@ This document catalogs all Terraform resources in the azurerm, azuread, and azur
 
 ### azurerm_virtual_network
 
-**Status:** ⏳ Planned
+**Status:** 🚧 In Progress (Batch 2)
 
 **Parent Resource:** `azurerm_virtual_network`
 
@@ -93,7 +93,7 @@ This document catalogs all Terraform resources in the azurerm, azuread, and azur
 
 ### azurerm_network_security_group
 
-**Status:** ⏳ Planned
+**Status:** 🚧 In Progress (Batch 2)
 
 **Parent Resource:** `azurerm_network_security_group`
 
@@ -115,7 +115,7 @@ This document catalogs all Terraform resources in the azurerm, azuread, and azur
 
 ### azurerm_route_table
 
-**Status:** ⏳ Planned
+**Status:** 🚧 In Progress (Batch 2)
 
 **Parent Resource:** `azurerm_route_table`
 
@@ -135,7 +135,7 @@ This document catalogs all Terraform resources in the azurerm, azuread, and azur
 
 ### azurerm_dns_zone
 
-**Status:** ⏳ Planned
+**Status:** 🚧 In Progress (Batch 2)
 
 **Parent Resource:** `azurerm_dns_zone` (and `azurerm_private_dns_zone`)
 

@@ -345,3 +345,35 @@
   - Mixed management warnings specified for all resources that support both inline and separate children
   - DNS zone is unique: no inline attributes, only separate record resources (grouping only)
 - **Next Steps:** Hand off to Architect to verify the specifications align with existing framework, then to Task Planner for implementation breakdown.
+
+### Architect - Batch 2 (Azure RM Resources)
+- **Date:** 2025-01-XX
+- **Summary:** Verified architectural fit for the 4 Azure RM resource types. Confirmed that the existing generic framework fully supports all resource types without modifications. All table column specifications map cleanly to the existing `ChildResourceRow` model. Created detailed implementation specifications for 5 row extractors and relationship registrations.
+- **Artifacts Produced:**
+  - architecture.md - Added "Azure RM Batch 2 Implementation (Extension)" section with:
+    - Architectural fit analysis (framework compatibility verification)
+    - Row extractor specifications for all 4 resource types
+    - Relationship registration code with all DNS record types
+    - Complex attribute formatting strategies and guidelines
+    - Implementation estimate (~370 lines total, ~93 lines per relationship)
+    - Test data requirements and architectural considerations
+  - work-protocol.md - This log entry
+- **Problems Encountered:** None. The generic framework design from the initial implementation handles all requirements perfectly.
+- **Key Findings:**
+  - ✅ **Core framework requires zero changes** - all abstractions support the new resource types
+  - ✅ **ChildResourceRow model handles all columns** - flexible dictionary accommodates 4-10 columns per resource type
+  - ✅ **Row extractor pattern applies** - same interface, more complex formatting logic for lists/nested objects
+  - ✅ **Configuration reference matching works** - all 4 resource types reference parents by name (not ID)
+  - **DNS records unique**: No inline attribute (always separate), but framework handles with `InlineAttributeName = null`
+  - **Multiple child types**: DNS zones have 9+ child record types - register each separately, merge into single table
+  - **Complex attributes**: Lists (address prefixes, port ranges) and nested objects (delegations) require formatting strategies in extractors
+  - **Effort estimate**: ~370 lines total (~40 subnet, ~90 DNS, ~30 route, ~90 NSG, ~120 registration)
+- **Architectural Decisions:**
+  - **DNS record grouping**: All record types in a single table with "Type" column (not separate tables per type)
+  - **Complex attribute formatting**: 
+    - Lists: Comma-separated if ≤2 items, otherwise show first + count
+    - Nested objects: Extract specific property path (e.g., `service_delegation[0].name`)
+    - Wildcards: Show "✳️" for `*` or empty values
+  - **Icon usage**: Leverage existing icon providers (🆔 🌐 🛡️ 🔌 🔗 ✅ ⛔ ⬇️ ⬆️ ✳️)
+  - **Performance**: No pagination/virtualization needed for initial implementation (acceptable for 100+ DNS records)
+- **Next Steps:** Hand off to Task Planner for implementation task breakdown.

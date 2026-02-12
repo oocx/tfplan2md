@@ -103,9 +103,14 @@ Download the latest binary from [GitHub Releases](https://github.com/oocx/tfplan
    ```
 
 **Requirements:**
-- Linux x64 (glibc-based distributions: Ubuntu, Debian, Fedora, RHEL, CentOS, etc.)
+- Linux x64 (glibc-based distributions)
+- glibc 2.35 or newer
 - No .NET runtime required (self-contained)
-- Minimum: Ubuntu 22.04 or equivalent
+- Supported distributions:
+  - Ubuntu 22.04 LTS or newer
+  - Debian 12 (Bookworm) or newer
+  - RHEL 9 or newer
+  - Other glibc-based distributions with glibc 2.35+
 
 **Use cases:**
 - Closed/air-gapped systems where Docker images cannot be pulled

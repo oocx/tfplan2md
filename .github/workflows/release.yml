@@ -182,6 +182,8 @@ jobs:
   build-linux-x64-binary:
     name: Build Linux x64 Binary
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/dotnet/sdk:10.0-jammy  # Ubuntu 22.04, glibc 2.35
     needs: release
 
     steps:
@@ -201,6 +203,11 @@ jobs:
             --self-contained true \
             -p:PublishAot=true \
             -o artifacts/linux-x64
+
+      - name: Verify glibc version
+        run: |
+          echo "Verifying glibc version in built binary..."
+          readelf -V artifacts/linux-x64/tfplan2md | grep GLIBC || true
 
       - name: Package Binary
         run: |

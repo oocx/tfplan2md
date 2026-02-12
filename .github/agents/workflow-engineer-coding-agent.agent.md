@@ -17,67 +17,7 @@ Evolve and optimize the agent workflow by creating new agents, modifying existin
 
 ## Coding Agent Workflow
 
-**You are running as a GitHub Copilot coding agent.** Follow this workflow:
-
-1. **For Direct Questions (When Running as Primary Agent)**: If you are the primary agent on a PR (not delegated via `task` tool), you can create PR comments to ask the Maintainer questions. Wait for a response before proceeding.
-
-2. **For Delegated Execution (When Invoked via `task` Tool)**: If you were invoked by the Workflow Orchestrator via the `task` tool, you run in an isolated context. In this case:
-   - **DO NOT attempt to create PR comments** - you cannot access the parent PR from your isolated context
-   - **Include questions in your response** - return them as part of your output text
-   - **The orchestrator will forward your questions** to the maintainer and resume you with answers
-   - **Wait for the orchestrator to re-invoke you** with the maintainer's answer
-
-3. **Complete Your Work**: Implement the requested changes following your role's guidelines.
-
-4. **Report Progress with `report_progress` Tool (REQUIRED)**: Use the `report_progress` tool to commit and push your changes. **This tool is mandatory for all coding agents** because:
-   - It handles `git add`, `git commit`, and `git push` operations automatically with proper authentication
-   - Manual `git push` commands fail in the GitHub Actions environment (no personal credentials)
-   - It updates the PR description with progress tracking
-   
-   **Call `report_progress` with:**
-   - `commitMessage`: Conventional commit message (e.g., "feat: add feature X", "fix: correct issue Y")
-   - `prDescription`: Markdown checklist showing completed and remaining work
-   
-   **Example:**
-   ```
-   report_progress(
-     commitMessage="feat: implement user authentication",
-     prDescription="""
-     ## Implementation Progress
-     
-     - [x] Add authentication service
-     - [x] Add login endpoint with tests
-     - [x] Add JWT token generation
-     - [ ] Add authorization middleware
-     - [ ] Update documentation
-     """
-   )
-   ```
-   
-   **Note**: When running as a delegated agent (via `task` tool), your `report_progress` commits are added to the orchestrator's local branch but are NOT pushed to the remote PR. The orchestrator will push your commits using their own `report_progress` call.
-
-5. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
-   - **Summary**: Brief description of what you completed
-   - **Changes**: List of key files/features modified
-   - **Next Agent**: Recommend which agent should continue the workflow (see docs/agents.md for workflow sequence)
-   - **Status**: Ready for next step, or Blocked (with reason)
-   
-   **Note**: If you're running in delegated mode (via `task` tool), include this summary in your response text instead of creating a PR comment.
-
-**Example Summary Comment:**
-```
-✅ Implementation complete
-
-**Summary:** Implemented feature X with tests and documentation
-
-**Changes:**
-- Added FeatureX.cs with core logic
-- Added FeatureXTests.cs with 15 test cases
-- Updated README.md
-
-**Next Agent:** Technical Writer (to review documentation)
-**Status:** Ready
-```
+**Use the `coding-agent-workflow` skill for standard GitHub Copilot coding agent workflow including report_progress usage, delegation handling, and PR communication patterns.**
 
 
 ## Work Protocol
@@ -118,70 +58,7 @@ Before handing off, **append your log entry** to the `## Agent Work Log` section
 
 ## Cloud Agent Workflow (GitHub)
 
-### GitHub Issue Assigned to `@copilot`
-
-When executing as a cloud agent from a GitHub issue assigned to `@copilot`:
-
-1. **Parse Issue:** Extract task specification from issue body
-   - Identify the specific workflow improvement requested
-   - Note any constraints, scope, or acceptance criteria
-   
-2. **Validate Scope:** Ensure task is well-defined and within capabilities
-   - If ambiguous, comment on issue requesting clarification
-   - **Unlike local mode, you may ask multiple questions via issue comments**
-   - Wait for user responses to your questions before proceeding
-   - If out of scope, comment explaining why and suggest alternative
-   - If task requires extensive interactive guidance, recommend local execution
-
-3. **Read Context:** Review relevant documentation and current state
-   - Check docs/agents.md for workflow patterns
-   - Review affected agent files in .github/agents/
-   - Consult docs/ai-model-reference.md if model changes are involved
-   - Check .github/copilot-instructions.md for conventions
-
-4. **Execute Changes:** Modify files according to task requirements
-   - Make minimal, focused changes
-   - Follow existing patterns and conventions
-   - Ensure all handoff references are valid
-   - Update documentation to match code changes
-
-5. **Create PR:**
-   - Branch: `workflow/<NNN>-<slug>` (e.g., workflow/032-cloud-agent-support)
-   - Commits: Use conventional format (`workflow:`, `docs:`, `chore:`, `ci:`, `refactor:`) — do NOT use `feat:` or `fix:` for workflow-only changes (these trigger Versionize version bumps)
-   - Description: Follow standard template (Problem/Change/Verification)
-   - Link to the originating issue
-
-6. **Request Review:** Assign PR to Maintainer or relevant reviewers
-   - Document all decisions in PR description
-   - Explain rationale for any non-obvious changes
-   - Note any limitations or follow-up work needed
-
-### GitHub PR Coding Agent (Existing PR)
-
-When executing as a GitHub **coding agent on an existing pull request** (often on a `copilot/*` branch):
-
-- **Do not create a new branch** and **do not `git switch` away** from the current branch.
-- **Do not create a new PR**. Your job is to push commits to the existing PR branch.
-- If you need clarification, **ask via PR comments** and wait for an answer (do not guess and do not “fill in” answers in docs).
-- If you need to update with latest main, prefer `git fetch origin && git rebase origin/main` while staying on the current branch.
-
-**Cloud Environment Limitations:**
-- Cannot use `edit`, `execute`, `vscode`, `todo` tools directly
-- Cannot run terminal commands interactively
-- Rely on GitHub Actions for testing
-- Document decisions upfront in PR
-
-**Cloud Environment Advantages:**
-- **Can ask multiple clarifying questions via issue comments** (unlike local mode which should minimize questions)
-- User responds via comments, creating clear audit trail
-- Asynchronous communication allows time for thoughtful responses
-
-**When to Recommend Local Execution:**
-- Task requires exploratory analysis
-- Requirements are unclear or ambiguous
-- Multiple design decisions need Maintainer input
-- Rapid prototyping and iteration are beneficial
-- Complex architectural changes are involved
+**Use the `github-cloud-agent-workflow` skill for guidance on executing as a GitHub cloud agent (issue assignments and PR coding agent contexts).**
 
 ## VS Code Copilot tool names
 
@@ -226,129 +103,11 @@ Internal References (Priority Order)
 
 ## Model Selection Guidelines
 
-When creating or modifying agents, choose the appropriate language model based on task-specific performance benchmarks, availability, and cost efficiency.
-
-### Reference Data
-
-**Always consult [docs/ai-model-reference.md](../../docs/ai-model-reference.md)** for:
-- Current performance benchmarks by category (Coding, Reasoning, Language, Instruction Following, etc.)
-- Model availability in GitHub Copilot Pro
-- Premium request multipliers (cost)
-- Recommended model assignments by agent type
-- **Task-based guidance and tutorials** (via external links with descriptions)
-
-This reference is updated periodically with latest benchmark data.
-
-### Critical Learnings
-
-1. **Use task-specific benchmarks, not overall scores**
-   - Different models excel at different tasks
-   - Example: GPT-5.2-Codex excels in Coding while Claude Sonnet 4.5 is better for Language (76.00)
-
-2. **Claude Sonnet 4.5 has poor Instruction Following** (score: 23.52)
-   - Unsuitable for agents that follow templates (Task Planner, Quality Engineer)
-   - Use Gemini models instead for structured output (scores: 65-75)
-
-3. **Gemini 3 Flash offers best value for many tasks**
-   - 0.33x premium multiplier (cost-effective)
-   - Strong Instruction Following (74.86)
-   - Good Language performance (84.56)
-   - Ideal for: Task Planner, Release Manager, high-frequency agents
-
-4. **GPT-5.2-Codex is the latest coding model**
-   - Latest generation Codex model (improved over 5.1 Codex Max)
-   - Specialized for agentic coding tasks
-   - Primary choice for Developer agent
-   - Also solid for Code Reviewer
-
-5. **Always verify model availability**
-   - Check against official GitHub Copilot documentation
-   - Model names must match exactly (case-sensitive)
-   - Include "(Preview)" suffix for preview models (e.g., "Gemini 3 Pro (Preview)")
-
-### Model Selection Process
-
-When selecting or changing a model:
-
-1. **Identify the agent's primary task categories** (from ai-model-reference.md)
-   - Coding, Reasoning, Language, Instruction Following, etc.
-
-2. **Check category-specific performance**
-   - Look up relevant benchmarks in ai-model-reference.md
-   - Compare top 3-5 performers in that category
-
-3. **Consider cost vs frequency**
-   - High-frequency agents → favor lower multipliers (0.33x, 0x)
-   - Critical accuracy agents → favor best performer regardless of cost
-
-4. **Verify availability**
-   - Confirm model is listed in "Available Models" section
-   - Check it's available for VS Code (required)
-
-5. **Document your reasoning**
-   - Include benchmark scores in proposal
-   - Explain trade-offs made
-
-### Example Model Selection
-
-**Scenario**: Selecting model for Quality Engineer agent
-
-1. **Primary tasks**: Define test plans following specific template format
-2. **Key categories**: Instruction Following (critical), Reasoning (important)
-3. **Benchmark lookup** (from ai-model-reference.md):
-   - Gemini 3 Flash: Instruction Following 74.86, 0.33x cost ✅
-   - Gemini 3 Pro: Instruction Following 65.85, 1x cost ✅
-   - Claude Sonnet 4.5: Instruction Following 23.52 ❌ (disqualified)
-4. **Decision**: Gemini 3 Pro (balance of performance and cost)
-5. **Rationale**: Strong instruction following (65.85), reasonable cost (1x), good for template-based work
-
-### When to Update Model Assignments
-
-Reassess models when:
-- New benchmark data shows significant performance changes
-- Agent is underperforming its tasks consistently
-- New models are released with better performance
-- Cost optimization is needed
-- ai-model-reference.md is updated with new data
+**Use the `agent-model-selection` skill for guidance on selecting appropriate language models for agents based on task-specific benchmarks, availability, and cost efficiency.**
 
 ## Agent File Structure
 
-All agents must follow this structure:
-
-```markdown
----
-description: Brief, specific description (≤100 chars)
-name: Workflow Engineer (coding agent)
-model: <model name>
----
-
-# Agent Name Agent
-
-You are the **Agent Name** agent for this project...
-
-## Your Goal
-Single, clear goal statement.
-
-## Boundaries
-✅ Always Do: ...
-⚠️ Ask First: ...
-🚫 Never Do: ...
-
-## Context to Read
-- Relevant docs with links
-
-## Workflow
-Step-by-step numbered approach
-
-## Output
-What this agent produces
-```
-
-**Key principles:**
-- **Specific over general** - "Write unit tests for React components" beats "Help with testing"
-- **Commands over descriptions** - Include exact commands: `npm test`, `dotnet build`
-- **Examples over explanations** - Show real code examples, not abstract descriptions
-- **Boundaries first** - Clear rules prevent mistakes
+**Use the `agent-file-structure` skill for standard structure and key principles when creating agent definition markdown files.**
 
 ## Agent Skills
 
@@ -359,37 +118,7 @@ Agent Skills are reusable capabilities (instructions + scripts) that agents can 
 
 ## Tool Selection Guide
 
-**Tool Awareness:** You are always provided with a list of all available tools, even though you will not need to use many of them. The tools are added to your configuration so that you can see the total list of available tools, and use this list to select the correct tools for every other agent.
-
-### Available VS Code Copilot Tools
-For a complete reference of official tool IDs, consult the [VS Code Copilot Chat Tools documentation](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features#_chat-tools).
-
-**Note:** Tool sets (like `search`, `edit`) are shorthand that enable multiple related tools. For granular control, use the prefixed individual tools.
-
-**Critical:** Never use snake_case names like `read_file` or `run_in_terminal` - VS Code silently ignores invalid tool names.
-
-### Tool Usage by Environment
-
-**Both Environments (Safe for All Contexts):**
-- `search` - Code and file search
-- `web` - Web search for external information
-- `github/*` - GitHub operations (repos, PRs, issues)
-- `memory/*` - Memory storage (if configured)
-
-**VS Code Only (Not Available in Cloud):**
-- `vscode` - VS Code-specific operations
-- `execute` / `read` - Terminal execution and output reading
-- `edit` - Direct file editing
-- `todo` - VS Code TODO panel integration
-- `copilot-container-tools/*` - Local Docker/container tools
-- `io.github.chromedevtools/*` - Local browser DevTools
-
-**Cloud Context Alternatives:**
-- Instead of `edit` → Describe changes in PR or use GitHub API
-- Instead of `execute` → Rely on GitHub Actions workflows
-- Instead of `todo` → Track tasks in issue/PR description
-
-**Best Practice:** When modifying agents intended for both environments, prefer tools available in both contexts. For environment-specific functionality, add conditional logic in the agent instructions.
+**Use the `agent-tool-selection` skill for guidance on selecting appropriate VS Code Copilot tools when configuring agents, including environment-specific considerations.**
 
 ## Workflow
 

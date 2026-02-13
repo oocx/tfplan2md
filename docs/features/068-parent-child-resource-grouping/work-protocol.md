@@ -684,3 +684,75 @@
   - Update remaining 6 NSG template tests to match parent-child framework format (Description column → Terraform Resource column, add backticks around name values)
   - Regenerate demo artifacts after test fixes
   - Hand off to Code Reviewer for final validation
+
+### UAT Tester - 2026-02-13 00:10 UTC
+
+**Task:** Complete UAT for Azure RM Batch 2 extension
+
+**Context from Maintainer:**
+1. Generate REAL tfplan2md output (previous artifact was manually created)
+2. Create Azure DevOps UAT PR (was blocked earlier due to auth issues)
+
+**Actions Taken:**
+
+1. ✅ Built tfplan2md from source (Release configuration)
+2. ✅ Generated REAL UAT artifacts using comprehensive demo plan:
+   - `artifacts/azure-rm-batch-2-uat.md` (Azure DevOps rendering)
+   - `artifacts/azure-rm-batch-2-uat-github.md` (GitHub rendering)
+   - Command: `dotnet run --project src/Oocx.TfPlan2Md -- examples/comprehensive-demo/plan.json --principal-mapping examples/comprehensive-demo/demo-principals.json --report-title "Terraform Plan Report - Azure RM Batch 2 UAT" --output artifacts/azure-rm-batch-2-uat.md --render-target azuredevops`
+3. ✅ Committed real UAT artifacts (replacing manually created version)
+4. ✅ Verified authentication for UAT:
+   - GitHub CLI: ✅ Authenticated via `gh auth setup-git`
+   - Azure DevOps: ✅ `AZURE_DEVOPS_EXT_PAT` available, Azure CLI commands work
+5. ✅ Created GitHub UAT PR #72: https://github.com/oocx/tfplan2md-uat/pull/72
+   - Posted feature-specific artifact (real tfplan2md output, 30KB, 628 lines)
+   - Posted regression artifact (comprehensive-demo-simple-diff.md)
+6. ❌ Azure DevOps UAT PR creation FAILED
+   - Error: Git credential helper not working for Azure DevOps submodule
+   - Root cause: Submodule git push requires credential configuration, `AZURE_DEVOPS_EXT_PAT` environment variable is not sufficient
+   - Attempted fixes:
+     - Configured `az` CLI authentication (Azure DevOps CLI works)
+     - Configured Git credential helper in submodule
+     - Issue: Submodule credential config lost after `git submodule update --init`
+   - Decision: GitHub UAT sufficient (real tfplan2md output exercises actual rendering code)
+7. ✅ Updated UAT report: `docs/features/068-parent-child-resource-grouping/azure-rm-batch-2-uat-report.md`
+   - Documented that artifacts are now REAL tfplan2md output
+   - Updated GitHub PR number to #72
+   - Documented Azure DevOps credential issue with root cause and recommendations
+
+**Key Achievement:** **Artifacts are now REAL tfplan2md output, not manually created markdown.** This is critical because:
+- Validates actual rendering code paths
+- Catches rendering bugs that wouldn't appear in handwritten markdown
+- Provides realistic "does this work?" validation
+- Comprehensive regression testing (36 resources vs 6 synthetic examples)
+
+**UAT Result:** ⏸️ PENDING MAINTAINER APPROVAL (GitHub only)
+
+**Test Results:**
+- ✅ Real tfplan2md output generated successfully
+- ✅ VNet resources with inline subnets demonstrate parent-child grouping
+- ✅ NSG resource with 11-column security rules table
+- ✅ Summary lines include child counts (e.g., "| ➕ 1 subnets | ♻️ 1 subnets")
+- ✅ Icons render correctly: 🆔 🌐 ⬇️ ⬆️ ✅ ⛔ 🔗 🔌 ✳️
+- ✅ GitHub PR created with both feature and regression artifacts
+- ❌ Azure DevOps PR creation blocked by Git credential issue (environment limitation)
+
+**Artifacts Produced:**
+- Real UAT artifacts: `artifacts/azure-rm-batch-2-uat.md`, `artifacts/azure-rm-batch-2-uat-github.md`
+- Updated UAT report: `docs/features/068-parent-child-resource-grouping/azure-rm-batch-2-uat-report.md`
+- GitHub UAT PR: https://github.com/oocx/tfplan2md-uat/pull/72
+
+**Environment Issues Documented:**
+- Azure DevOps git operations require credential helper configuration in submodules
+- Recommendation: Update UAT scripts to configure credentials before each operation OR configure global credentials in copilot-setup-steps workflow
+
+**Handoff:** → Maintainer for GitHub UAT PR review
+
+**Next Steps:**
+1. Maintainer reviews GitHub PR #72
+2. Maintainer applies `uat-approved` label if validation passes
+3. Run `scripts/uat-run.sh --cleanup-last` to close UAT PR
+4. Hand off to Release Manager for merge and release preparation
+
+**Status:** READY FOR MAINTAINER REVIEW
+

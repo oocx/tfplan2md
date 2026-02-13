@@ -59,9 +59,11 @@ ensure_git_submodule() {
 
 
 cmd_setup() {
-    log_info "Checking Azure CLI authentication..."
-    if ! az account show >/dev/null 2>&1; then
-        log_error "Not authenticated. Please run: az login"
+    log_info "Checking Azure DevOps authentication..."
+    if [[ -z "$AZURE_DEVOPS_EXT_PAT" ]]; then
+        log_error "Azure DevOps PAT token not set."
+        log_error "For GitHub Copilot coding agents: Ensure AZDO_UAT_TOKEN is configured in Repository Settings > Environments > copilot"
+        log_error "For local development: Set AZURE_DEVOPS_EXT_PAT environment variable"
         exit 1
     fi
     
@@ -72,6 +74,12 @@ cmd_setup() {
     if ! az extension show --name azure-devops >/dev/null 2>&1; then
         log_warn "Installing azure-devops extension..."
         az extension add --name azure-devops
+    fi
+    
+    log_info "Verifying Azure DevOps access..."
+    if ! az devops project show --project "$AZDO_PROJECT" --organization "$AZDO_ORG" >/dev/null 2>&1; then
+        log_error "Cannot access Azure DevOps project. Check AZURE_DEVOPS_EXT_PAT token has correct permissions."
+        exit 1
     fi
     
     log_info "Setup complete. Organization: $AZDO_ORG, Project: $AZDO_PROJECT, Repo: $AZDO_REPO"
@@ -181,7 +189,25 @@ EOF
     } > "$AZDO_SUBMODULE_PATH/.uat/uat-run.txt"
     git -C "$AZDO_SUBMODULE_PATH" add .uat/uat-run.txt
     git -C "$AZDO_SUBMODULE_PATH" -c user.name="tfplan2md uat" -c user.email="uat@tfplan2md.invalid" commit -m "chore(uat): marker ${timestamp}" >/dev/null 2>&1 || true
-    git -C "$AZDO_SUBMODULE_PATH" push origin HEAD:"$branch" --force >/dev/null 2>&1
+    
+    log_info "Pushing branch '$branch' to Azure DevOps UAT repository..."
+    if ! git -C "$AZDO_SUBMODULE_PATH" push origin HEAD:"$branch" --force 2>&1 | tee /tmp/git-push-azdo-output.txt | grep -qE "(Everything up-to-date|new branch|branch.*set up)"; then
+        log_error "Failed to push branch to Azure DevOps UAT repository."
+        log_error "This usually indicates an authentication problem."
+        log_error ""
+        log_error "For GitHub Copilot coding agents:"
+        log_error "  - Verify copilot-setup-steps.yml workflow ran successfully"
+        log_error "  - Check: echo \$AZURE_DEVOPS_EXT_PAT (should not be empty)"
+        log_error "  - Check: az devops configure --list"
+        log_error "  - Ensure AZDO_UAT_TOKEN is configured in Repository Settings > Environments > copilot"
+        log_error ""
+        log_error "For local development:"
+        log_error "  - Ensure AZURE_DEVOPS_EXT_PAT environment variable is set"
+        log_error "  - Or configure git credential helper: see scripts/uat-helpers.sh ensure_azdo_credential_helper"
+        log_error ""
+        cat /tmp/git-push-azdo-output.txt >&2
+        exit 1
+    fi
     
     log_info "Creating PR..."
     local pr_result

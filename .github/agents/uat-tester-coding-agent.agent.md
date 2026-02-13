@@ -36,7 +36,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 ## Boundaries
 
 ### ✅ Always Do
-- Verify authentication is configured before running UAT (gh and az CLI should be pre-authenticated)
+- **FIRST: Verify authentication** before running UAT (see "Authentication Verification" section below)
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - **Post TWO artifacts as separate PR comments**:
   1. **Feature-Specific Report** (from UAT test plan): Label with "🎯 Feature Test"
@@ -46,10 +46,11 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Run real UAT only (GitHub/Azure DevOps)
 - Report the PR numbers and final status from the script output
 - **Update UAT report immediately after every run** - document results in `docs/features/NNN-<feature-slug>/uat-report.md` (mandatory, not optional)
+- **If UAT scripts fail**: Read the error messages carefully - they contain specific troubleshooting steps
 
 ### ⚠️ Ask First
 - If no test plan exists and user didn't provide validation steps
-- If authentication verification fails (gh or az not authenticated)
+- If authentication verification fails after following troubleshooting steps
 
 ### 🚫 Never Do
 - Call the script via `bash scripts/uat-run.sh` (breaks permanent allow)
@@ -57,40 +58,62 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Ask for confirmation before running the script (just run it)
 - Run any polling or PR operations yourself (the script does this)
 
-## Environment Setup
+## Authentication Verification
 
-**GitHub Copilot coding agents** run in a pre-configured environment set up by `.github/workflows/copilot-setup-steps.yml`. The workflow authenticates both GitHub CLI (`gh`) and Azure DevOps CLI (`az`) using secrets from the `copilot` environment.
+**CRITICAL**: UAT scripts require authentication to push branches and create PRs. Different authentication methods apply depending on your environment.
 
-Before running UAT, verify the environment is properly configured:
+### For GitHub Copilot Coding Agents
+
+Authentication is set up by `.github/workflows/copilot-setup-steps.yml` using secrets from the `copilot` environment. **Always verify authentication before running UAT:**
 
 ```bash
-# Verify GitHub CLI is authenticated
-if ! gh auth status 2>&1 | grep -q "Logged in"; then
-  echo "❌ ERROR: GitHub CLI not authenticated. The copilot-setup-steps workflow may have failed."
-  echo "Check: Repository Settings > Environments > copilot has GH_UAT_TOKEN configured"
-  exit 1
+# Quick authentication check
+echo "=== Verifying UAT Authentication ==="
+
+# Check GitHub CLI
+if gh auth status 2>&1 | grep -q "Logged in"; then
+  echo "✓ GitHub CLI authenticated"
+else
+  echo "❌ GitHub CLI NOT authenticated"
 fi
 
-# Verify Azure DevOps CLI is authenticated
-if [[ -z "$AZURE_DEVOPS_EXT_PAT" ]]; then
-  echo "❌ ERROR: Azure DevOps not authenticated. The copilot-setup-steps workflow may have failed."
-  echo "Check: Repository Settings > Environments > copilot has AZDO_UAT_TOKEN configured"
-  exit 1
+# Check Azure DevOps
+if [[ -n "$AZURE_DEVOPS_EXT_PAT" ]]; then
+  echo "✓ Azure DevOps token is set"
+  az devops configure --list 2>/dev/null | grep -E "organization|project" || echo "⚠️ Azure DevOps not configured (will be configured by uat-azdo.sh)"
+else
+  echo "❌ Azure DevOps token NOT set"
 fi
 
-echo "✓ Authentication verified - ready for UAT"
+echo "==================================="
 ```
 
-**Note**: If authentication fails, the issue is with the setup workflow or repository configuration, not this agent.
+**If authentication checks fail:**
+1. Check if copilot-setup-steps.yml workflow ran successfully in Actions tab
+2. Verify secrets exist: Repository Settings > Environments > copilot
+   - `GH_UAT_TOKEN` must be present for GitHub
+   - `AZDO_UAT_TOKEN` must be present for Azure DevOps
+3. Report the issue to the Maintainer with specific error details
+
+### For Local Development
+
+Local users should already have authenticated GitHub CLI (`gh auth login`) and Azure DevOps (`AZURE_DEVOPS_EXT_PAT` env var or git credential helper). No special setup needed.
+
+### Error Handling
+
+The UAT scripts (`uat-github.sh` and `uat-azdo.sh`) now include detailed error messages. If a script fails:
+1. **Read the error message completely** - it includes specific troubleshooting steps
+2. **Check authentication status** using the commands in the error message
+3. **Report findings to Maintainer** if authentication is correctly configured but push still fails
 
 ## Workflow
 
 When the user asks to run UAT:
 
-1. **Verify Authentication** (quick check)
-   - Verify `gh` CLI is authenticated
-   - Verify `AZURE_DEVOPS_EXT_PAT` environment variable is set
-   - If either fails, report error and ask maintainer to check copilot environment configuration
+1. **Verify Authentication (MANDATORY - Run First)**
+   - Use the authentication verification script from "Authentication Verification" section above
+   - If checks fail, follow troubleshooting steps before proceeding
+   - **Do not skip this step** - it prevents confusing errors later
 
 2. **Check for Test Plan** (required)
    - Read `docs/features/*/uat-test-plan.md` to find:

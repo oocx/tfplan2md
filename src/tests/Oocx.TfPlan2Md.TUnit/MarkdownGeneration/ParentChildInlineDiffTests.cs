@@ -17,10 +17,10 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class ParentChildInlineDiffTests
 {
     /// <summary>
-    /// Verifies that FormatDiff with "inline-diff" format produces plain markdown without HTML style tags.
+    /// Verifies that FormatDiff with "inline-diff" format produces rich HTML with character-level diffs.
     /// </summary>
     [Test]
-    public void FormatDiff_InlineDiff_ProducesPlainMarkdownWithoutHtmlStyles()
+    public void FormatDiff_InlineDiff_ProducesRichHtmlWithCharacterLevelDiffs()
     {
         // Arrange
         var before = "10.200.2.0/24";
@@ -29,14 +29,20 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert - Should NOT contain HTML style attributes
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("background-color:");
-        result.Should().NotContain("border-left:");
+        // Assert - Should contain rich HTML with styling
+        result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
+        result.Should().Contain("<span style=");
+        result.Should().Contain("background-color:");
+        result.Should().Contain("border-left:");
 
-        // Should contain markdown diff markers
-        result.Should().Contain("- ");
-        result.Should().Contain("+ ");
+        // Should contain diff markers within spans
+        result.Should().Contain("- 10.200.2.0/2");
+        result.Should().Contain("+ 10.200.2.0/2");
+
+        // Should contain character-level highlighting
+        result.Should().Contain("#ffc0c0"); // Red highlight for removed char
+        result.Should().Contain("#acf2bd"); // Green highlight for added char
+        result.Should().Contain("<br>"); // Line separator
     }
 
     /// <summary>
@@ -52,11 +58,16 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert - Should use plain markdown diff format
-        result.Should().Contain("- ");
-        result.Should().Contain("+ ");
-        result.Should().Contain("old value");
-        result.Should().Contain("new value");
+        // Assert - Should use styled spans with +/- prefixes
+        result.Should().Contain("<code style=\"display:block;");
+        result.Should().Contain("- "); // Minus prefix
+        result.Should().Contain("+ "); // Plus prefix
+        result.Should().Contain("old"); // Contains before text
+        result.Should().Contain("new"); // Contains after text
+
+        // Should have character-level highlighting
+        result.Should().Contain("background-color: #ffc0c0"); // Red for removed
+        result.Should().Contain("background-color: #acf2bd"); // Green for added
     }
 
     /// <summary>
@@ -96,11 +107,15 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("background-color:");
-        result.Should().Contain("10.200.2.0/24");
-        result.Should().Contain("10.200.2.0/23");
+        // Assert - Should contain rich HTML with character-level highlighting
+        result.Should().Contain("<code style=\"display:block;");
+        result.Should().Contain("<span style=");
+        result.Should().Contain("background-color:");
+        result.Should().Contain("10.200.2.0/2"); // Common prefix
+
+        // Should highlight changed character (4 vs 3)
+        result.Should().Contain("background-color: #ffc0c0"); // Red for "4"
+        result.Should().Contain("background-color: #acf2bd"); // Green for "3"
     }
 
     /// <summary>
@@ -116,11 +131,20 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("background-color:");
-        result.Should().Contain("VirtualAppliance");
-        result.Should().Contain("VnetLocal");
+        // Assert - Should contain rich HTML with character-level highlighting
+        result.Should().Contain("<code style=\"display:block;");
+        result.Should().Contain("<span style=");
+        result.Should().Contain("background-color:");
+
+        // Should show both values with character-level diffs
+        result.Should().Contain("- V"); // Start of before value
+        result.Should().Contain("+ V"); // Start of after value
+        result.Should().Contain("Appliance"); // Unique to before
+        result.Should().Contain("Loc"); // Part of "Local" in after
+
+        // Should highlight changed portions
+        result.Should().Contain("background-color: #ffc0c0"); // Red for removed chars
+        result.Should().Contain("background-color: #acf2bd"); // Green for added chars
     }
 
     /// <summary>
@@ -136,11 +160,15 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("background-color:");
-        result.Should().Contain("10.1.1.5");
-        result.Should().Contain("10.1.1.6");
+        // Assert - Should contain rich HTML with character-level highlighting
+        result.Should().Contain("<code style=\"display:block;");
+        result.Should().Contain("<span style=");
+        result.Should().Contain("10.1.1.5"); // First IP
+        result.Should().Contain("10.1.1.6"); // Second IP
+        result.Should().Contain("🌐"); // Emoji preserved
+
+        // Should highlight the addition (second IP with emoji)
+        result.Should().Contain("background-color: #acf2bd"); // Green for added content
     }
 
     /// <summary>
@@ -149,18 +177,23 @@ public class ParentChildInlineDiffTests
     [Test]
     public void FormatDiff_InlineDiff_NsgRuleDestinationPorts()
     {
-        // Arrange - NSG rule ports changing from single port to port range
+        // Arrange - NSG rule ports changing from single port to multiple ports
         var before = "🔌 8443";
         var after = "🔌 8443, 🔌 9443";
 
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("border-left:");
-        result.Should().Contain("8443");
-        result.Should().Contain("9443");
+        // Assert - Should contain rich HTML with character-level highlighting
+        result.Should().Contain("<code style=\"display:block;");
+        result.Should().Contain("<span style=");
+        result.Should().Contain("border-left:");
+        result.Should().Contain("8443"); // First port
+        result.Should().Contain("9443"); // Second port
+        result.Should().Contain("🔌"); // Emoji preserved
+
+        // Should highlight the addition (second port)
+        result.Should().Contain("background-color: #acf2bd"); // Green for added content
     }
 
     /// <summary>
@@ -176,11 +209,15 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("background-color:");
-        result.Should().Contain("10.1.1.10");
-        result.Should().Contain("10.1.1.20");
+        // Assert - Should contain rich HTML with character-level highlighting
+        result.Should().Contain("<code style=\"display:block;");
+        result.Should().Contain("<span style=");
+        result.Should().Contain("10.1.1."); // Common prefix
+        result.Should().Contain("🌐"); // Emoji preserved
+
+        // Should highlight changed character (1 vs 2)
+        result.Should().Contain("background-color: #ffc0c0"); // Red for "1"
+        result.Should().Contain("background-color: #acf2bd"); // Green for "2"
     }
 
     /// <summary>
@@ -251,9 +288,17 @@ public class ParentChildInlineDiffTests
         // Act
         var result = ScribanHelpers.FormatDiff(before, after, "inline-diff");
 
-        // Assert - Should be table-compatible
-        result.Should().NotContain("\n"); // No raw newlines (use <br> instead)
-        result.Should().NotContain("<span style=");
-        result.Should().NotContain("background-color:");
+        // Assert - Should be table-compatible with rich HTML
+        result.Should().NotContain("\n"); // No raw newlines
+        result.Should().Contain("<br>"); // Uses HTML line breaks
+        result.Should().Contain("<code style=\"display:block;"); // Block-level code tag
+
+        // Should contain rich HTML styling (table-safe HTML is allowed)
+        result.Should().Contain("<span style=");
+        result.Should().Contain("background-color:");
+
+        // Should contain both values (parts that aren't split by highlighting)
+        result.Should().Contain("alue with spaces"); // Common suffix
+        result.Should().Contain("Different"); // Unique to after
     }
 }

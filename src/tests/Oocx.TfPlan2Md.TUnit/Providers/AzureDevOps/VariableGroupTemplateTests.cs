@@ -77,9 +77,13 @@ public class VariableGroupTemplateTests
         section.Should().Contain($"| {ActionIcons.Add} | `NEW_VAR` |");
         // Verify modified variable with diff (🔄)
         section.Should().Contain($"| {ActionIcons.Update} | `APP_VERSION` |");
-        // Should contain before/after diff with plain markdown format
-        section.Should().Contain("- false");
-        section.Should().Contain("+ -");
+
+        // Should contain before/after diff with rich HTML format
+        section.Should().Contain("<code style=\"display:block;"); // HTML code block
+        section.Should().Contain("false"); // Before value (in HTML)
+        section.Should().Contain("+ "); // Plus prefix (in HTML)
+        section.Should().Contain("- "); // Minus prefix (in HTML)
+
         // Verify removed variable (❌)
         section.Should().Contain($"| {ActionIcons.Delete} | `OLD_VAR` |");
     }

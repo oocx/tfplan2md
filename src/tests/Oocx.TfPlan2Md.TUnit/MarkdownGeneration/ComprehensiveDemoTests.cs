@@ -92,11 +92,11 @@ public class ComprehensiveDemoTests
         var summary = _renderer.Render(model, "summary");
 
         summary.Should().Contain("Terraform Plan Summary")
-            .And.Contain($"{ActionIcons.Add}\u00A0Add | 25") // 25 instead of 26 - azuread_group_member is now a child, not counted separately
+            .And.Contain($"{ActionIcons.Add}\u00A0Add | 26") // All resources counted, including children
             .And.Contain($"{ActionIcons.Update}\u00A0Change | 8")
-            .And.Contain($"{ActionIcons.Replace}\u00A0Replace | 1") // 1 not 2
+            .And.Contain($"{ActionIcons.Replace}\u00A0Replace | 2") // Both replace actions counted
             .And.Contain($"{ActionIcons.Delete}\u00A0Destroy | 3")
-            .And.Contain("Total | 37"); // 37 instead of 39 - child resources not counted separately
+            .And.Contain("Total | 39"); // Total reflects actual Terraform changes
     }
 
     [Test]

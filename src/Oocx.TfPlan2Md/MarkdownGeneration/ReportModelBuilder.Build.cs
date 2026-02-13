@@ -29,6 +29,17 @@ internal partial class ReportModelBuilder
 
         var codeAnalysisReport = BuildCodeAnalysisReport(allChanges);
 
+        // CRITICAL: Calculate summary BEFORE parent-child merging.
+        // Parent-child grouping is visual only and must NOT affect resource counts.
+        // The summary must reflect actual Terraform changes (all resources).
+        // Related feature: docs/features/068-parent-child-resource-grouping/specification.md
+        var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
+        var toChange = BuildActionSummary(allChanges.Where(c => c.Action == "update"));
+        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete"));
+        var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
+        var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
+
+        // Now merge parent-child relationships (this removes children from allChanges for display)
         MergeParentChildRelationships(allChanges);
 
         // Filter out no-op resources from the changes list passed to the template
@@ -49,12 +60,6 @@ internal partial class ReportModelBuilder
             }
         }
 #pragma warning restore S3267
-
-        var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
-        var toChange = BuildActionSummary(allChanges.Where(c => c.Action == "update"));
-        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete"));
-        var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
-        var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
 
         var summary = new SummaryModel
         {

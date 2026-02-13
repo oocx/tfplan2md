@@ -70,6 +70,13 @@ internal sealed class AzureAdGroupMemberRowExtractor : IChildRowExtractor
     /// <summary>
     /// Extracts column values with inline diffs for a member that changed between before/after states.
     /// </summary>
+    /// <param name="beforeState">The member state before the change.</param>
+    /// <param name="afterState">The member state after the change.</param>
+    /// <param name="providerName">The provider name for formatting context.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for formatting values.</param>
+    /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
+    /// <param name="largeValueFormat">The preferred format for rendering large value diffs.</param>
+    /// <returns>A mapping from column property names to formatted display values with inline diffs.</returns>
     /// <remarks>
     /// Group members are typically added or removed, not modified. This method falls back to showing after state.
     /// </remarks>

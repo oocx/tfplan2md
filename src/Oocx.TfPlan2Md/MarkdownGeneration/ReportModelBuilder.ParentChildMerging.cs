@@ -970,28 +970,6 @@ internal partial class ReportModelBuilder
     }
 
     /// <summary>
-    /// Attempts to consume a matching inline entry from the lookup.
-    /// </summary>
-    /// <param name="lookup">The inline entry lookup.</param>
-    /// <param name="key">The entry key to consume.</param>
-    /// <returns><c>true</c> if an entry was consumed; otherwise <c>false</c>.</returns>
-    private static bool TryConsumeInlineEntry(Dictionary<string, Queue<InlineChildEntry>> lookup, string key)
-    {
-        if (!lookup.TryGetValue(key, out var queue) || queue.Count == 0)
-        {
-            return false;
-        }
-
-        queue.Dequeue();
-        if (queue.Count == 0)
-        {
-            lookup.Remove(key);
-        }
-
-        return true;
-    }
-
-    /// <summary>
     /// Flattens remaining inline entries in a lookup to a list.
     /// </summary>
     /// <param name="lookup">The inline entry lookup.</param>

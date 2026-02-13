@@ -110,6 +110,13 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
     /// <summary>
     /// Extracts column values with inline diffs for a descriptor that changed between before/after states.
     /// </summary>
+    /// <param name="beforeState">The descriptor state before the change.</param>
+    /// <param name="afterState">The descriptor state after the change.</param>
+    /// <param name="providerName">The provider name for formatting context.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for formatting values.</param>
+    /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
+    /// <param name="largeValueFormat">The preferred format for rendering large value diffs.</param>
+    /// <returns>A mapping from column property names to formatted display values with inline diffs.</returns>
     /// <remarks>
     /// Descriptors are typically added or removed, not modified. This method falls back to showing after state.
     /// </remarks>

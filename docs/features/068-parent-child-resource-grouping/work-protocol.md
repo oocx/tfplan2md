@@ -756,3 +756,122 @@
 
 **Status:** READY FOR MAINTAINER REVIEW
 
+
+---
+
+## Developer - Creating Comprehensive Azure RM Batch 2 Feature Test Plan (2026-02-13)
+
+**Agent:** Developer  
+**Date:** 2026-02-13  
+**Task:** Create comprehensive feature test plan JSON that showcases ALL changes from Azure RM Batch 2 PR
+
+### Work Summary
+
+Created a comprehensive Terraform plan JSON file (`src/tests/Oocx.TfPlan2Md.TUnit/TestData/azure-rm-batch-2-feature-test-plan.json`) that demonstrates all 4 Azure RM resource types added in Batch 2:
+
+#### 1. VNet/Subnet Scenarios (4 examples)
+- **hub_vnet_inline**: VNet with 4 inline subnets (including AzureFirewallSubnet)
+- **spoke_vnet_separate**: VNet with separate subnet resources (CREATE, UPDATE, DELETE, NO-OP actions)
+- **mixed_vnet**: VNet with mixed inline + separate subnets (triggers warning)
+- **known_after_apply_vnet**: VNet with name unknown at plan time + 2 separate subnets (tests configuration reference matching)
+
+#### 2. DNS Zone/Records Scenarios (2 examples)
+- **Public DNS Zone (feature_test)**: 10 DNS records of various types:
+  - A records (www, @) with multiple IPs
+  - AAAA records (IPv6)
+  - CNAME records (blog, cdn)
+  - MX records (@ with multiple mail servers)
+  - TXT records (SPF, DMARC with long values)
+  - CAA records (Let's Encrypt issuers)
+  - NS records (subdomain delegation)
+- **Private DNS Zone (internal)**: 4 A records for internal services (db01, db02, app01, redis)
+
+#### 3. Route Table/Routes Scenarios (3 examples)
+- **inline_routes**: Route table with 4 inline routes (VirtualAppliance, VirtualNetworkGateway, VnetLocal, Internet)
+- **separate_routes**: Route table with separate route resources (CREATE, UPDATE, DELETE, NO-OP actions)
+- **mixed_routes**: Route table with mixed inline + separate routes (triggers warning)
+
+#### 4. NSG/Security Rules Scenarios (3 examples)
+- **inline_rules**: NSG with 9 comprehensive inline rules demonstrating:
+  - Multiple source addresses (arrays)
+  - Multiple destination ports (arrays)
+  - Service tags (AzureLoadBalancer, Internet, VirtualNetwork)
+  - Wildcards (*)
+  - Port ranges (1024-65535)
+  - TCP/UDP protocols
+  - Inbound/Outbound directions
+  - Allow/Deny actions
+  - Descriptions for all rules
+- **separate_rules**: NSG with separate rule resources (CREATE, UPDATE, DELETE, NO-OP actions)
+- **mixed_rules**: NSG with mixed inline + separate rules (triggers warning)
+
+#### 5. Configuration Reference Matching
+- Complete `configuration` block with Terraform expression references for all separate child resources
+- Demonstrates known-after-apply parent name resolution via configuration fallback
+
+### Artifacts Produced
+
+1. **Test Plan JSON**: `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azure-rm-batch-2-feature-test-plan.json`
+   - 48 resource changes (VNets, subnets, DNS zones, DNS records, route tables, routes, NSGs, security rules)
+   - Covers all action types: CREATE, UPDATE, DELETE, NO-OP
+   - Includes edge cases: known-after-apply, mixed management, service tags, wildcards, port ranges
+
+2. **Generated Markdown**: `artifacts/azure-rm-batch-2-feature-test.md`
+   - 286 lines of rendered markdown
+   - Verifies all 4 resource types render correctly
+   - Shows proper icon usage (🆔, 🌐, 🛡️, 🔌, 🔗, ✅, ⛔, ⬇️, ⬆️, ✳️)
+   - Displays mixed management warnings
+   - Demonstrates merged DNS records table
+   - Shows 11-column NSG rules table (Feature 016 restored)
+
+### Verification Results
+
+✅ **JSON validated**: Syntax is correct  
+✅ **Build successful**: Project compiles without errors  
+✅ **Markdown generated**: 15KB output file created  
+✅ **VNet subnets merged**: All subnets appear in parent VNet tables  
+✅ **DNS records merged**: Multiple record types in single table per zone  
+✅ **Route tables merged**: All routes appear in parent route table sections  
+✅ **NSG rules merged**: All rules appear in parent NSG sections with 11 columns  
+✅ **Icons rendered**: All expected icons present (⬇️, ⬆️, ✅, ⛔, 🔗, 🔌, ✳️, 🌐, 🆔)  
+✅ **Service tags**: AzureLoadBalancer, Internet, VirtualNetwork display correctly  
+✅ **Warnings displayed**: Mixed management warnings show for VNets, route tables, and NSGs  
+✅ **Configuration block**: Complete references for known-after-apply matching  
+
+### NSG Table Structure Verification (Feature 016 Restored)
+
+The generated markdown shows the correct 11-column NSG table structure:
+
+| Column | Icon/Format | Verified |
+|--------|-------------|----------|
+| Change | ➕, 🔄, ❌, ⏺️ | ✅ |
+| Name | 🆔 prefix | ✅ |
+| Priority | Number | ✅ |
+| Direction | ⬇️ Inbound, ⬆️ Outbound | ✅ |
+| Access | ✅ Allow, ⛔ Deny | ✅ |
+| Protocol | 🔗 TCP, 🔗 UDP, ✳️ (Any) | ✅ |
+| Source Addresses | 🌐 IPs, Service Tags, ✳️ | ✅ |
+| Source Ports | ✳️ or specific | ✅ |
+| Destination Addresses | 🌐 IPs, Service Tags, ✳️ | ✅ |
+| Destination Ports | 🔌 ports, ✳️, ranges | ✅ |
+| Description | Text | ✅ |
+
+Example from output:
+```
+| ➕ | `🆔 allow-https-inbound` | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | `🌐 10.100.1.0/24`, `🌐 10.100.2.0/24` | ✳️ | ✳️ | 🔌 443,8443 | Allow HTTPS traffic from web and app subnets |
+```
+
+### Problems Encountered
+
+None - all functionality working as expected.
+
+### Status
+
+✅ **Complete** - Comprehensive feature test plan created and verified. Ready for UAT testing.
+
+### Next Steps
+
+1. Hand off to **UAT Tester** to execute UAT test plan
+2. UAT Tester will use this artifact (`artifacts/azure-rm-batch-2-feature-test.md`) as the feature-specific test artifact
+3. Verify rendering in both GitHub and Azure DevOps PR comments
+

@@ -55,6 +55,13 @@ internal partial class ReportModelBuilder
                 }
 
                 var rows = inlineRows.Concat(separateRows).ToList();
+
+                // Determine if the Terraform Resource column should be visible.
+                // The column is shown when ANY row represents an external (separate) resource.
+                // External resources have TerraformResource values like "azurerm_subnet.example".
+                // Inline resources have TerraformResource values like "subnet attribute".
+                // The logic checks if any TerraformResource exists and doesn't contain "attribute".
+                // Test coverage: See ParentChildConditionalColumnTests.cs
                 var group = new ChildResourceGroup
                 {
                     Label = relationship.ChildGroupLabel,

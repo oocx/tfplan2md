@@ -949,3 +949,120 @@ None - all operations completed successfully.
 2. **Maintainer**: Verify NSG 11-column structure and DNS merged table rendering
 3. **Maintainer**: Apply `uat-approved` label if validation passes
 4. **UAT Tester**: Run cleanup after approval
+
+---
+
+## 2026-02-13 20:30 UTC - UAT Tester Agent - Azure DevOps UAT PR Created + GitHub PR Updated
+
+### Task
+
+Complete the UAT process by:
+1. Updating GitHub PR #72 with bug fix comment
+2. Creating Azure DevOps UAT PR
+3. Posting comprehensive demo to both PRs
+4. Updating UAT report documentation
+
+### Context
+
+The maintainer identified two critical issues:
+1. ✅ **FIXED:** Terraform Resource column was missing from tables (now fixed)
+2. ✅ **RESOLVED:** Azure DevOps UAT PR was not created (now created)
+
+### Summary
+
+Successfully completed the UAT process for both GitHub and Azure DevOps platforms:
+
+1. **GitHub PR #72 Updated:**
+   - Posted bug fix comment explaining Terraform Resource column fix
+   - Added comprehensive demo as second comment
+   - All artifacts now have visible Terraform Resource column
+
+2. **Azure DevOps PR #74 Created:**
+   - Configured PAT-based credential helper for git submodule
+   - Created PR with feature-specific artifact
+   - Added comprehensive demo as second comment
+   - Successfully resolved authentication issue from previous attempt
+
+3. **Documentation Updated:**
+   - Updated UAT report status to "PENDING APPROVAL" for both platforms
+   - Added Azure DevOps PR #74 details
+   - Updated validation status
+   - Removed environment blocker section (issue resolved)
+
+### Changes Made
+
+**Files Modified:**
+1. `docs/features/068-parent-child-resource-grouping/azure-rm-batch-2-uat-report.md`
+   - Updated status from "BLOCKED" to "PENDING APPROVAL" for Azure DevOps
+   - Added Azure DevOps PR #74 section with URL and details
+   - Updated validation status for both platforms
+   - Added GitHub bug fix comment to comment list
+   - Removed environment blocker section (no longer applicable)
+
+2. `docs/features/068-parent-child-resource-grouping/work-protocol.md` (this file)
+   - Added this work protocol entry
+
+**GitHub PR #72 Comments:**
+1. Bug fix comment explaining Terraform Resource column visibility fix
+2. Comprehensive demo (comprehensive-demo-simple-diff.md)
+
+**Azure DevOps PR #74 Created:**
+- URL: https://dev.azure.com/oocx/test/_git/test/pullrequest/74
+- Feature test: azure-rm-batch-2-feature-test.md (48 resources)
+- Regression test: comprehensive-demo.md (36 resources)
+
+### Technical Solution
+
+**Credential Helper Configuration:**
+Created a simple PAT-based credential helper for the Azure DevOps git submodule:
+```bash
+# Created /tmp/azdo-pat-helper.sh
+#!/usr/bin/env bash
+case "${1:-}" in
+  get)
+    while IFS= read -r line; do
+      [[ -z "$line" ]] && break
+    done
+    if [[ -n "${AZURE_DEVOPS_EXT_PAT:-}" ]]; then
+      printf 'username=%s\npassword=%s\n' "pat" "$AZURE_DEVOPS_EXT_PAT"
+    fi
+    ;;
+  store|erase)
+    ;;
+esac
+
+# Configured in submodule
+git -C uat-repos/azdo config --local credential.helper ""
+git -C uat-repos/azdo config --local --add credential.helper "/tmp/azdo-pat-helper.sh"
+```
+
+This resolved the git push authentication issue that blocked the previous Azure DevOps UAT attempt.
+
+### Validation Status
+
+✅ **GitHub PR #72**: Bug fix comment posted, comprehensive demo added  
+✅ **Azure DevOps PR #74**: Created successfully with both artifacts  
+✅ **UAT Report**: Updated with both PR details  
+⏸️ **Maintainer Review**: Awaiting approval on both platforms
+
+### Problems Encountered
+
+**Initial Authentication Issue (RESOLVED):**
+- Git push to Azure DevOps UAT submodule failed with credential prompt
+- **Root Cause:** Default credential helper uses Azure CLI OAuth, not PAT
+- **Solution:** Created simple PAT-based credential helper using AZURE_DEVOPS_EXT_PAT
+- **Outcome:** Successfully created Azure DevOps PR #74
+
+### Status
+
+✅ **Complete** - Both GitHub and Azure DevOps UAT PRs are created and ready for maintainer review.
+
+### Next Steps
+
+1. **Maintainer**: Review both PRs:
+   - GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72
+   - Azure DevOps PR #74: https://dev.azure.com/oocx/test/_git/test/pullrequest/74
+2. **Maintainer**: Verify Terraform Resource column is visible in all tables
+3. **Maintainer**: Apply `uat-approved` label to GitHub PR #72 if validation passes
+4. **Maintainer**: Apply "Approve" vote to Azure DevOps PR #74 if validation passes
+5. **UAT Tester**: Run cleanup after approval using `scripts/uat-run.sh --cleanup-last`

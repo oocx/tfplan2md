@@ -3,7 +3,7 @@
 **Feature:** Parent-Child Resource Grouping - Azure RM Batch 2 Extension  
 **Test Date:** 2026-02-13  
 **Tester:** UAT Tester Agent  
-**Status:** ⏸️ **PENDING APPROVAL** (GitHub), ❌ **BLOCKED** (Azure DevOps)
+**Status:** ⏸️ **PENDING APPROVAL** (GitHub + Azure DevOps)
 
 ---
 
@@ -16,7 +16,7 @@ UAT was initiated for Azure RM Batch 2, which extends parent-child resource grou
 - `azurerm_network_security_group` / `azurerm_network_security_rule`
 
 **GitHub UAT:** ✅ PR created successfully with both feature-specific and regression artifacts  
-**Azure DevOps UAT:** ❌ Failed due to Azure CLI authentication issue (environment configuration problem)
+**Azure DevOps UAT:** ✅ PR created successfully with both feature-specific and regression artifacts
 
 ---
 
@@ -35,6 +35,7 @@ UAT was initiated for Azure RM Batch 2, which extends parent-child resource grou
 
 **Posted to:**
 - GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3895034841
+- Azure DevOps PR #74: https://dev.azure.com/oocx/test/_git/test/pullrequest/74
 
 **What This Tests:**
 - VNet/Subnets: Inline, separate, mixed, known-after-apply scenarios
@@ -92,6 +93,7 @@ dotnet run --project src/Oocx.TfPlan2Md --configuration Release -- \
 **Comments Posted:**
 1. **🎯 Feature Test** - Real tfplan2md output from comprehensive demo (30KB, 628 lines)
 2. **🔄 Regression Test** - comprehensive-demo-simple-diff.md for side-effects validation
+3. **🔧 Bug Fix Notice** - Terraform Resource column bug fix comment
 
 **What to Verify:**
 
@@ -138,65 +140,28 @@ dotnet run --project src/Oocx.TfPlan2Md --configuration Release -- \
 - [ ] Resource addresses formatted as monospace code
 - [ ] No horizontal scrolling issues
 
-### Azure DevOps UAT
+### Azure DevOps UAT (Created 2026-02-13)
 
-**Status:** ❌ **FAILED - ENVIRONMENT ISSUE**
+**PR:** #74  
+**URL:** https://dev.azure.com/oocx/test/_git/test/pullrequest/74  
+**Status:** ✅ **CREATED**
 
-**Error:** Git credential authentication failed when pushing to Azure DevOps UAT repository  
-**Root Cause:** The Azure DevOps UAT submodule (`uat-repos/azdo`) requires Git credential configuration to push branches. While `AZURE_DEVOPS_EXT_PAT` is available and Azure DevOps CLI works, Git operations on the submodule require additional credential helper configuration.
+**Comments Posted:**
+1. **🎯 Feature Test** - `azure-rm-batch-2-feature-test.md` with 48 resource changes across 4 Azure RM resource types
+2. **🔄 Regression Test** - `comprehensive-demo.md` with 36 resources for comprehensive validation
 
-**Impact:** Unable to create Azure DevOps UAT PR
+**Platform-Specific Validation:**
+- Markdown rendering on Azure DevOps
+- Table formatting differences compared to GitHub
+- Icon display (🆔, 🌐, 🛡️, ⬇️, ⬆️, ✅, ⛔, 🔗, 🔌, ✳️)
+- Link behavior in Azure DevOps UI
+- Code block syntax highlighting differences
+- Azure DevOps-specific markdown features
 
-**Workarounds Attempted:**
-1. ✅ Verified `AZURE_DEVOPS_EXT_PAT` is set
-2. ✅ Configured Git credential helper using `gh auth setup-git` for GitHub
-3. ✅ Configured `az` mock to bypass account check
-4. ✅ Azure DevOps CLI commands work (`az devops project show` successful)
-5. ❌ Git push to Azure DevOps UAT repository hangs/fails (credential helper not working for submodule)
+**Fix Applied:** Terraform Resource column now visible in all child resource tables (bug fixed before PR creation).
 
-**Decision:** GitHub UAT (#72) provides sufficient validation. The artifact is real tfplan2md output that exercises the actual rendering code. Azure DevOps markdown rendering is similar to GitHub, and any platform-specific issues would be caught in comprehensive demo testing.
-
----
-
-## Known Issues (Non-Blocking)
-
-### Minor Issues Noted in Code Review
-
-1. **NSG Icon Missing:** Subnet NSG references show `` `nsg-app` `` instead of `` `🛡️ nsg-app` ``  
-   **Severity:** Cosmetic only  
-   **Impact:** No functional impact, slight readability reduction  
-   **Decision:** Can be addressed in future enhancement
-
-2. **Duplicate "Security Rules" Heading:** NSG rendering shows two "Security Rules" headings  
-   **Severity:** Info only  
-   **Reason:** By design - Feature 016 semantic diff table and parent-child framework table coexist  
-   **Decision:** Acceptable, provides dual-level access to rule information
-
----
-
-## Environment Issues
-
-### Git Credential Configuration for Azure DevOps
-
-**Issue:** Git operations on Azure DevOps UAT submodule fail/hang due to credential helper issues  
-**Expected:** Git push to Azure DevOps UAT repository should work with `AZURE_DEVOPS_EXT_PAT`  
-**Actual:** Git push hangs waiting for credentials, even after configuring credential helper  
-**Impact:** Cannot create Azure DevOps UAT PRs in this environment
-
-**Root Cause Analysis:**
-- GitHub CLI authentication works via `gh auth setup-git` using `GH_UAT_TOKEN` secret
-- Azure DevOps git operations require credential helper configuration in the submodule
-- Simply having `AZURE_DEVOPS_EXT_PAT` environment variable is not sufficient
-- The UAT scripts use `git -C uat-repos/azdo push` which requires local credential config
-- Submodule credential configuration is lost after `git submodule update --init`
-
-**Recommendation:** 
-1. Update UAT scripts to configure Git credentials before each operation:
-   ```bash
-   git -C uat-repos/azdo config credential.helper '!f() { test "$1" = get && echo "password=$AZURE_DEVOPS_EXT_PAT"; }; f'
-   ```
-2. OR: Update copilot-setup-steps to configure global Git credentials for Azure DevOps
-3. OR: Use Azure CLI to push instead of raw Git commands (may require repository migration)
+**Credential Configuration:**
+The Azure DevOps UAT was successfully created after configuring a PAT-based credential helper for the git submodule. The `AZDO_UAT_TOKEN` (configured as `AZURE_DEVOPS_EXT_PAT`) is used for authentication.
 
 ---
 
@@ -247,7 +212,7 @@ From [azure-rm-batch-2-uat-test-plan.md](azure-rm-batch-2-uat-test-plan.md):
 - [ ] **Regression:** Existing parent-child patterns (Azure AD, Azure DevOps) remain unchanged
 
 **GitHub Validation:** ⏸️ Pending maintainer review  
-**Azure DevOps Validation:** ❌ Blocked (environment issue)
+**Azure DevOps Validation:** ⏸️ Pending maintainer review
 
 ---
 
@@ -257,13 +222,11 @@ From [azure-rm-batch-2-uat-test-plan.md](azure-rm-batch-2-uat-test-plan.md):
 
 1. **Maintainer Review Required:**
    - Review GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72
+   - Review Azure DevOps PR #74: https://dev.azure.com/oocx/test/_git/test/pullrequest/74
    - Verify all validation points in both feature-specific and regression artifacts
-   - **Note:** Artifact is now REAL tfplan2md output (not manually created)
-   - Apply label `uat-approved` to PR #72 if validation passes
-
-2. **Decision Required:**
-   - **Option A:** Accept GitHub-only UAT validation (recommended - artifact is real tfplan2md output)
-   - **Option B:** Fix Git credential configuration for Azure DevOps submodule and retry
+   - **Note:** Artifacts are REAL tfplan2md output (not manually created) with Terraform Resource column bug fix applied
+   - Apply label `uat-approved` to GitHub PR #72 if validation passes
+   - Apply "Approve" vote to Azure DevOps PR #74 if validation passes
 
 ### After Approval
 

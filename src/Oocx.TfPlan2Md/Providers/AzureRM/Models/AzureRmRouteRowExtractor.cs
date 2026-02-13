@@ -121,20 +121,22 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
 
         var format = largeValueFormat.ToString();
 
-        var beforeName = FormatAttribute(beforeElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterName = FormatAttribute(afterElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        // Extract RAW values without formatting, then format the diff
+        // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
+        var beforeName = ExtractRawAttribute(beforeElement, "name", providerName, iconProviderRegistry);
+        var afterName = ExtractRawAttribute(afterElement, "name", providerName, iconProviderRegistry);
         var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
 
-        var beforeAddressPrefix = FormatAttribute(beforeElement, "address_prefix", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterAddressPrefix = FormatAttribute(afterElement, "address_prefix", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var beforeAddressPrefix = ExtractRawAttribute(beforeElement, "address_prefix", providerName, iconProviderRegistry);
+        var afterAddressPrefix = ExtractRawAttribute(afterElement, "address_prefix", providerName, iconProviderRegistry);
         var addressPrefixDiff = ScribanHelpers.FormatDiff(beforeAddressPrefix, afterAddressPrefix, format);
 
         var beforeNextHopType = JsonStateReader.GetStringProperty(beforeElement, "next_hop_type") ?? "-";
         var afterNextHopType = JsonStateReader.GetStringProperty(afterElement, "next_hop_type") ?? "-";
         var nextHopTypeDiff = ScribanHelpers.FormatDiff(beforeNextHopType, afterNextHopType, format);
 
-        var beforeNextHopAddress = FormatNextHopAddress(beforeElement, providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterNextHopAddress = FormatNextHopAddress(afterElement, providerName, valueFormatterRegistry, iconProviderRegistry);
+        var beforeNextHopAddress = ExtractRawNextHopAddress(beforeElement, providerName, iconProviderRegistry);
+        var afterNextHopAddress = ExtractRawNextHopAddress(afterElement, providerName, iconProviderRegistry);
         var nextHopAddressDiff = ScribanHelpers.FormatDiff(beforeNextHopAddress, afterNextHopAddress, format);
 
         return new Dictionary<string, string>
@@ -144,5 +146,49 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
             ["next_hop_type"] = nextHopTypeDiff,
             ["next_hop_in_ip_address"] = nextHopAddressDiff
         };
+    }
+
+    /// <summary>
+    /// Extracts raw attribute value with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawAttribute(
+        JsonElement element,
+        string attributeName,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        var value = JsonStateReader.GetStringProperty(element, attributeName);
+        if (string.IsNullOrEmpty(value))
+        {
+            return "-";
+        }
+
+        // Use FormatAttributeValuePlainWithRegistry which adds icons but NOT backticks
+        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+            attributeName,
+            value,
+            providerName,
+            iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Extracts raw next hop IP address with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawNextHopAddress(
+        JsonElement element,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        var address = JsonStateReader.GetStringProperty(element, "next_hop_in_ip_address");
+        if (string.IsNullOrEmpty(address))
+        {
+            return "-";
+        }
+
+        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+            "next_hop_in_ip_address",
+            address,
+            providerName,
+            iconProviderRegistry);
     }
 }

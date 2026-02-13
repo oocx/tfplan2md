@@ -323,9 +323,6 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
     /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
     /// <param name="largeValueFormat">The preferred format for rendering large value diffs.</param>
     /// <returns>A mapping from column property names to formatted display values with inline diffs.</returns>
-    /// <remarks>
-    /// DNS records are typically added or removed, not modified. This method falls back to showing after state.
-    /// </remarks>
     public IReadOnlyDictionary<string, string> ExtractDiffRow(
         object? beforeState,
         object? afterState,
@@ -334,8 +331,94 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
         IconProviderRegistry? iconProviderRegistry,
         LargeValueFormat largeValueFormat)
     {
-        // DNS records don't typically change values, they're added or removed
-        // Fall back to showing the after state
-        return ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+        if (beforeState is not JsonElement beforeElement || afterState is not JsonElement afterElement)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        var format = largeValueFormat.ToString();
+
+        var beforeName = JsonStateReader.GetStringProperty(beforeElement, "name") ?? "-";
+        var afterName = JsonStateReader.GetStringProperty(afterElement, "name") ?? "-";
+        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+
+        var beforeRecordType = InferRecordType(beforeElement);
+        var afterRecordType = InferRecordType(afterElement);
+        var typeDiff = ScribanHelpers.FormatDiff(beforeRecordType, afterRecordType, format);
+
+        var beforeTtl = JsonStateReader.GetStringProperty(beforeElement, "ttl") ?? "-";
+        var afterTtl = JsonStateReader.GetStringProperty(afterElement, "ttl") ?? "-";
+        var ttlDiff = ScribanHelpers.FormatDiff(beforeTtl, afterTtl, format);
+
+        // Extract RAW values without formatting, then format the diff
+        // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
+        var beforeValue = ExtractRawRecordValue(beforeElement, beforeRecordType, providerName, iconProviderRegistry);
+        var afterValue = ExtractRawRecordValue(afterElement, afterRecordType, providerName, iconProviderRegistry);
+        var valueDiff = ScribanHelpers.FormatDiff(beforeValue, afterValue, format);
+
+        return new Dictionary<string, string>
+        {
+            ["name"] = nameDiff,
+            ["type"] = typeDiff,
+            ["ttl"] = ttlDiff,
+            ["value"] = valueDiff
+        };
+    }
+
+    /// <summary>
+    /// Extracts raw record value with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawRecordValue(
+        JsonElement element,
+        string recordType,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        return recordType.ToUpperInvariant() switch
+        {
+            "A" or "AAAA" => ExtractRawIpRecords(element, providerName, iconProviderRegistry),
+            "CNAME" => FormatCnameRecord(element),  // CNAME doesn't need backticks
+            "MX" => FormatMxRecords(element),  // MX format doesn't need backticks
+            "NS" => FormatNsRecords(element),  // NS doesn't need backticks
+            "PTR" => FormatPtrRecords(element),  // PTR doesn't need backticks
+            "SRV" => FormatSrvRecords(element),  // SRV format doesn't need backticks
+            "TXT" => FormatTxtRecords(element),  // TXT already has quotes
+            "CAA" => FormatCaaRecords(element),  // CAA format doesn't need backticks
+            _ => "-"
+        };
+    }
+
+    /// <summary>
+    /// Extracts raw A/AAAA record IP addresses with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawIpRecords(
+        JsonElement element,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (!element.TryGetProperty("records", out var recordsProperty) || recordsProperty.ValueKind != JsonValueKind.Array)
+        {
+            return "-";
+        }
+
+        var ips = new List<string>();
+        foreach (var record in recordsProperty.EnumerateArray())
+        {
+            if (record.ValueKind == JsonValueKind.String)
+            {
+                var ip = record.GetString();
+                if (!string.IsNullOrEmpty(ip))
+                {
+                    var formatted = ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                        "ip_address",
+                        ip,
+                        providerName,
+                        iconProviderRegistry);
+                    ips.Add(formatted);
+                }
+            }
+        }
+
+        return ips.Count > 0 ? string.Join(", ", ips) : "-";
     }
 }

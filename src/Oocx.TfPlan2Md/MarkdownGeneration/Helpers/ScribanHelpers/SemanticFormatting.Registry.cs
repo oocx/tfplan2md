@@ -160,7 +160,7 @@ public static partial class ScribanHelpers
     /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
     /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
     /// <returns>Plain text value with semantic icons, no markdown or HTML wrapping.</returns>
-    private static string FormatAttributeValuePlainWithRegistry(
+    internal static string FormatAttributeValuePlainWithRegistry(
         string? attributeName,
         string? value,
         string? providerName,

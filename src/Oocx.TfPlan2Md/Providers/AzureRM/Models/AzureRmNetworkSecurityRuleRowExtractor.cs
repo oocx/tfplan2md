@@ -314,8 +314,10 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
 
         var format = largeValueFormat.ToString();
 
-        var beforeName = FormatAttribute(beforeElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterName = FormatAttribute(afterElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        // Extract RAW values without formatting, then format the diff
+        // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
+        var beforeName = ExtractRawAttribute(beforeElement, "name", providerName, iconProviderRegistry);
+        var afterName = ExtractRawAttribute(afterElement, "name", providerName, iconProviderRegistry);
         var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
 
         var beforePriority = JsonStateReader.GetStringProperty(beforeElement, "priority") ?? "-";
@@ -334,16 +336,16 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         var afterProtocol = FormatProtocol(afterElement);
         var protocolDiff = ScribanHelpers.FormatDiff(beforeProtocol, afterProtocol, format);
 
-        var beforeSourceAddresses = FormatAddresses(beforeElement, "source", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterSourceAddresses = FormatAddresses(afterElement, "source", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var beforeSourceAddresses = ExtractRawAddresses(beforeElement, "source", providerName, iconProviderRegistry);
+        var afterSourceAddresses = ExtractRawAddresses(afterElement, "source", providerName, iconProviderRegistry);
         var sourceAddressesDiff = ScribanHelpers.FormatDiff(beforeSourceAddresses, afterSourceAddresses, format);
 
         var beforeSourcePorts = FormatPorts(beforeElement, "source");
         var afterSourcePorts = FormatPorts(afterElement, "source");
         var sourcePortsDiff = ScribanHelpers.FormatDiff(beforeSourcePorts, afterSourcePorts, format);
 
-        var beforeDestinationAddresses = FormatAddresses(beforeElement, "destination", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterDestinationAddresses = FormatAddresses(afterElement, "destination", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var beforeDestinationAddresses = ExtractRawAddresses(beforeElement, "destination", providerName, iconProviderRegistry);
+        var afterDestinationAddresses = ExtractRawAddresses(afterElement, "destination", providerName, iconProviderRegistry);
         var destinationAddressesDiff = ScribanHelpers.FormatDiff(beforeDestinationAddresses, afterDestinationAddresses, format);
 
         var beforeDestinationPorts = FormatPorts(beforeElement, "destination");
@@ -367,5 +369,112 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
             ["destination_ports"] = destinationPortsDiff,
             ["description"] = descriptionDiff
         };
+    }
+
+    /// <summary>
+    /// Extracts raw attribute value with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawAttribute(
+        JsonElement element,
+        string attributeName,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        var value = JsonStateReader.GetStringProperty(element, attributeName);
+        if (string.IsNullOrEmpty(value))
+        {
+            return "-";
+        }
+
+        // Use FormatAttributeValuePlainWithRegistry which adds icons but NOT backticks
+        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+            attributeName,
+            value,
+            providerName,
+            iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Extracts raw source or destination addresses with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    /// <remarks>
+    /// Handles both address_prefix (singular) and address_prefixes (array) properties.
+    /// Array takes precedence when both are present.
+    /// </remarks>
+    private static string ExtractRawAddresses(
+        JsonElement element,
+        string prefix,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        // Try address_prefixes array FIRST (takes precedence over singular)
+        if (element.TryGetProperty($"{prefix}_address_prefixes", out var prefixesProperty) &&
+            prefixesProperty.ValueKind == JsonValueKind.Array)
+        {
+            var prefixes = prefixesProperty.EnumerateArray()
+                .Where(p => p.ValueKind == JsonValueKind.String && !string.IsNullOrEmpty(p.GetString()))
+                .Select(p => p.GetString() ?? string.Empty)
+                .ToList();
+
+            if (prefixes.Count > 0)
+            {
+                if (prefixes.Count == 1 && prefixes[0] == "*")
+                {
+                    return "✳️";
+                }
+
+                var formatted = new List<string>(prefixes.Count);
+                foreach (var p in prefixes)
+                {
+                    if (p == "*")
+                    {
+                        formatted.Add("✳️");
+                    }
+                    else if (IsServiceTag(p))
+                    {
+                        formatted.Add(p);  // No backticks for service tags in diffs
+                    }
+                    else
+                    {
+                        formatted.Add(ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                            $"{prefix}_address_prefix",
+                            p,
+                            providerName,
+                            iconProviderRegistry));
+                    }
+                }
+
+                if (formatted.Count <= 2)
+                {
+                    return string.Join(", ", formatted);
+                }
+
+                return $"✳️ {formatted.Count} items";
+            }
+        }
+
+        // Fallback to address_prefix (singular)
+        var addressPrefix = JsonStateReader.GetStringProperty(element, $"{prefix}_address_prefix");
+        if (!string.IsNullOrEmpty(addressPrefix))
+        {
+            if (addressPrefix == "*")
+            {
+                return "✳️";
+            }
+
+            // Check if it's a service tag (starts with capital letter, no dots/slashes)
+            if (IsServiceTag(addressPrefix))
+            {
+                return addressPrefix;  // No backticks for service tags in diffs
+            }
+
+            return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                $"{prefix}_address_prefix",
+                addressPrefix,
+                providerName,
+                iconProviderRegistry);
+        }
+
+        return "-";
     }
 }

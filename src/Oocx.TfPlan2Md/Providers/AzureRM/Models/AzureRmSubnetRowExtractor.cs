@@ -170,16 +170,18 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
 
         var format = largeValueFormat.ToString();
 
-        var beforeName = FormatAttribute(beforeElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterName = FormatAttribute(afterElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        // Extract RAW values without formatting, then format the diff
+        // FormatDiff will add HTML styling, so we must NOT pre-format with backticks
+        var beforeName = ExtractRawAttribute(beforeElement, "name", providerName, iconProviderRegistry);
+        var afterName = ExtractRawAttribute(afterElement, "name", providerName, iconProviderRegistry);
         var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
 
-        var beforeAddressPrefixes = FormatAddressPrefixes(beforeElement, providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterAddressPrefixes = FormatAddressPrefixes(afterElement, providerName, valueFormatterRegistry, iconProviderRegistry);
+        var beforeAddressPrefixes = ExtractRawAddressPrefixes(beforeElement, providerName, iconProviderRegistry);
+        var afterAddressPrefixes = ExtractRawAddressPrefixes(afterElement, providerName, iconProviderRegistry);
         var addressPrefixesDiff = ScribanHelpers.FormatDiff(beforeAddressPrefixes, afterAddressPrefixes, format);
 
-        var beforeNsg = FormatNsg(beforeElement, providerName, valueFormatterRegistry, iconProviderRegistry);
-        var afterNsg = FormatNsg(afterElement, providerName, valueFormatterRegistry, iconProviderRegistry);
+        var beforeNsg = ExtractRawNsg(beforeElement, providerName, iconProviderRegistry);
+        var afterNsg = ExtractRawNsg(afterElement, providerName, iconProviderRegistry);
         var nsgDiff = ScribanHelpers.FormatDiff(beforeNsg, afterNsg, format);
 
         var beforeDelegation = ExtractDelegation(beforeElement);
@@ -193,6 +195,96 @@ internal sealed class AzureRmSubnetRowExtractor : IChildRowExtractor
             ["nsg"] = nsgDiff,
             ["delegation"] = delegationDiff
         };
+    }
+
+    /// <summary>
+    /// Extracts raw attribute value with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawAttribute(
+        JsonElement element,
+        string attributeName,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        var value = JsonStateReader.GetStringProperty(element, attributeName);
+        if (string.IsNullOrEmpty(value))
+        {
+            return "-";
+        }
+
+        // Use FormatAttributeValuePlainWithRegistry which adds icons but NOT backticks
+        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+            attributeName,
+            value,
+            providerName,
+            iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Extracts raw address prefixes with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawAddressPrefixes(
+        JsonElement element,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (!element.TryGetProperty("address_prefixes", out var prefixesProperty))
+        {
+            // Fallback to singular address_prefix
+            return ExtractRawAttribute(element, "address_prefix", providerName, iconProviderRegistry);
+        }
+
+        if (prefixesProperty.ValueKind != JsonValueKind.Array)
+        {
+            return "-";
+        }
+
+        var prefixes = new List<string>();
+        foreach (var prefix in prefixesProperty.EnumerateArray())
+        {
+            if (prefix.ValueKind == JsonValueKind.String)
+            {
+                var formatted = ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+                    "address_prefix",
+                    prefix.GetString() ?? string.Empty,
+                    providerName,
+                    iconProviderRegistry);
+                prefixes.Add(formatted);
+            }
+        }
+
+        if (prefixes.Count == 0)
+        {
+            return "-";
+        }
+
+        if (prefixes.Count <= 2)
+        {
+            return string.Join(", ", prefixes);
+        }
+
+        return $"✳️ {prefixes.Count} items";
+    }
+
+    /// <summary>
+    /// Extracts raw NSG value with icons but without backtick wrapping (for diff generation).
+    /// </summary>
+    private static string ExtractRawNsg(
+        JsonElement element,
+        string providerName,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        var nsgValue = JsonStateReader.GetStringProperty(element, "security_group");
+        if (string.IsNullOrEmpty(nsgValue))
+        {
+            return "-";
+        }
+
+        return ScribanHelpers.FormatAttributeValuePlainWithRegistry(
+            "security_group",
+            nsgValue,
+            providerName,
+            iconProviderRegistry);
     }
 
     /// <summary>

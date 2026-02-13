@@ -401,12 +401,12 @@ _No attribute changes._
 
 #### Security Rules
 
-| Change | Name | Priority | Direction | Access | Protocol | Source | Destination | Ports | Terraform Resource |
-| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------------------- |
-| ➕ | `🆔 allow-https` | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🔌 443 | security_rule attribute |
-| ➕ | `🆔 deny-rdp` | 200 | ⬇️ Inbound | ⛔ Deny | 🔗 TCP | ✳️ | ✳️ | 🔌 3389 | security_rule attribute |
-| ➕ | `🆔 allow-outbound-https` | 300 | ⬆️ Outbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🔌 443 | security_rule attribute |
-| ❌ | `🆔 allow-http` | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | 🔌 80 | security_rule attribute |
+| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description | Terraform Resource |
+| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------------------- |
+| ➕ | `🆔 allow-https` | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | - | security_rule attribute |
+| ➕ | `🆔 deny-rdp` | 200 | ⬇️ Inbound | ⛔ Deny | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 3389 | Block RDP from internet | security_rule attribute |
+| ➕ | `🆔 allow-outbound-https` | 300 | ⬆️ Outbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 443 | Allow outbound HTTPS | security_rule attribute |
+| ❌ | `🆔 allow-http` | 100 | ⬇️ Inbound | ✅ Allow | 🔗 TCP | ✳️ | ✳️ | ✳️ | 🔌 80 | - | security_rule attribute |
 
 </details>
 

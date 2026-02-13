@@ -33,10 +33,4 @@ public sealed record ChildResourceGroup
     /// </summary>
     /// <value><c>true</c> when mixed sources were detected; otherwise, <c>false</c>.</value>
     public bool HasMixedSources { get; init; }
-
-    /// <summary>
-    /// Gets a value indicating whether any children are external resources (not inline).
-    /// </summary>
-    /// <value><c>true</c> when external resources exist; otherwise, <c>false</c>.</value>
-    public bool HasExternalResources { get; init; }
 }

@@ -84,10 +84,10 @@ public class MarkdownRendererFormatDiffConfigTests
         // Act
         var markdown = renderer.RenderResourceChange(change, RenderTarget.AzureDevOps)!;
 
-        // Assert - inline diff now uses plain markdown with -/+ prefixes, no HTML styling
+        // Assert - inline diff uses HTML with character-level highlighting and background-color styling
         markdown.Should().Contain("10.0.1.0/24")
             .And.Contain("10.0.3.0/24")
-            .And.NotContain("background-color:")
+            .And.Contain("background-color:")
             .And.NotContain("```diff");
     }
 }

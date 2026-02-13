@@ -1519,3 +1519,60 @@ POST https://dev.azure.com/oocx/test/_apis/git/repositories/test/pullRequests/74
 - If approved (GitHub: apply `uat-approved` label, Azure DevOps: approve PR), proceed to Release Manager
 
 **Status:** ✅ Complete - UAT artifacts posted, awaiting approval
+
+---
+
+## UAT Tester Session - 2026-02-13 23:46 UTC
+
+### Summary
+Executed complete UAT workflow for commit 74f93d7, posting both feature-specific and regression test artifacts to GitHub PR #72 and Azure DevOps PR #74.
+
+### Artifacts Produced
+1. **UAT Report:** `docs/features/068-parent-child-resource-grouping/uat-report-commit-74f93d7.md`
+   - Complete documentation of UAT execution
+   - Validation checklist for Maintainer review
+   - 5 critical rendering checks documented
+
+2. **GitHub PR #72 Comments:**
+   - Feature Test: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3900127737
+   - Regression Test: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3900128441
+
+3. **Azure DevOps PR #74 Comments:**
+   - Feature Test: Posted successfully
+   - Regression Test: Posted successfully
+
+### Test Artifacts
+- `artifacts/azure-rm-parent-child-demo.md` (31.5 KB) - Feature-specific test with 52 Azure RM resources
+- `artifacts/comprehensive-demo-simple-diff.md` (31.4 KB) - Regression test for GitHub
+- `artifacts/comprehensive-demo.md` (34.5 KB) - Regression test for Azure DevOps
+
+### Key Validations Required
+1. **`<br>` tags render as line breaks** (not literal text) in table cells
+2. **HTML inline diffs** show colors (red/green highlighting)
+3. **Backticks** on all non-diff values
+4. **Bare dash** without code tags for null values
+5. **Parent-child grouping** works correctly (children in parent tables)
+
+### Technical Notes
+- Encountered GitHub authentication issue with GITHUB_TOKEN
+- Resolved by explicitly using `GH_TOKEN="$GH_UAT_TOKEN"` for UAT operations
+- Both GitHub and Azure DevOps comments posted successfully
+- 23 total comments now on GitHub PR #72
+
+### Status
+✅ **UAT artifacts posted and ready for Maintainer review**
+
+### Next Steps
+1. Maintainer reviews both PRs and validates rendering
+2. Maintainer approves (label `uat-approved` on GitHub, Approve on Azure DevOps)
+3. UAT Tester cleans up PRs after approval
+4. Handoff to Release Manager if passed
+
+### Problems Encountered
+**GitHub Authentication:** Initial `gh pr comment` failed with "Resource not accessible by integration". The `GITHUB_TOKEN` environment variable (used by GitHub Actions) doesn't have permission to comment on the UAT repo. Solution: Use `GH_TOKEN="$GH_UAT_TOKEN"` to explicitly set the UAT token.
+
+### Handoff
+**Awaiting:** Maintainer review and approval  
+**Recommend:** Technical Writer (if changes needed) or Release Manager (if UAT passes)
+
+---

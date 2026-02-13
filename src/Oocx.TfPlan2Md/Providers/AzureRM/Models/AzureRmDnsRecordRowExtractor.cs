@@ -86,10 +86,21 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
     private static string ExtractRecordTypeFromResourceType(string resourceType)
     {
         // Remove prefixes and suffix
-        var cleaned = resourceType
-            .Replace("azurerm_dns_", string.Empty)
-            .Replace("azurerm_private_dns_", string.Empty)
-            .Replace("_record", string.Empty);
+        var cleaned = resourceType;
+
+        if (cleaned.StartsWith("azurerm_private_dns_", StringComparison.OrdinalIgnoreCase))
+        {
+            cleaned = cleaned.Substring("azurerm_private_dns_".Length);
+        }
+        else if (cleaned.StartsWith("azurerm_dns_", StringComparison.OrdinalIgnoreCase))
+        {
+            cleaned = cleaned.Substring("azurerm_dns_".Length);
+        }
+
+        if (cleaned.EndsWith("_record", StringComparison.OrdinalIgnoreCase))
+        {
+            cleaned = cleaned.Substring(0, cleaned.Length - "_record".Length);
+        }
 
         return cleaned.ToUpperInvariant();
     }

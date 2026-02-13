@@ -253,6 +253,7 @@ internal static class AotScriptObjectMapper
             obj["columns"] = MapChildTableColumns(group.Columns);
             obj["rows"] = MapChildResourceRows(group.Rows);
             obj["has_mixed_sources"] = group.HasMixedSources;
+            obj["has_external_resources"] = group.HasExternalResources;
             arr.Add(obj);
         }
 

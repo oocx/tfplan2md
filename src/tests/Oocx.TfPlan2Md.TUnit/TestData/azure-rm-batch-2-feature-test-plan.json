@@ -9,14 +9,21 @@
       "name": "hub_vnet_inline",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "vnet-hub-inline",
           "location": "eastus",
           "resource_group_name": "rg-feature-test",
-          "address_space": ["10.100.0.0/16"],
-          "dns_servers": ["10.100.0.4", "10.100.0.5"],
+          "address_space": [
+            "10.100.0.0/16"
+          ],
+          "dns_servers": [
+            "10.100.0.4",
+            "10.100.0.5"
+          ],
           "subnet": [
             {
               "name": "subnet-web",
@@ -34,7 +41,9 @@
                   "service_delegation": [
                     {
                       "name": "Microsoft.Web/serverFarms",
-                      "actions": ["Microsoft.Network/virtualNetworks/subnets/action"]
+                      "actions": [
+                        "Microsoft.Network/virtualNetworks/subnets/action"
+                      ]
                     }
                   ]
                 }
@@ -73,12 +82,16 @@
       "name": "spoke_vnet_separate",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "vnet-spoke-separate",
           "location": "westus",
           "resource_group_name": "rg-feature-test",
-          "address_space": ["10.200.0.0/16"],
+          "address_space": [
+            "10.200.0.0/16"
+          ],
           "subnet": [],
           "tags": {}
         },
@@ -86,7 +99,10 @@
           "name": "vnet-spoke-separate",
           "location": "westus",
           "resource_group_name": "rg-feature-test",
-          "address_space": ["10.200.0.0/16", "10.201.0.0/16"],
+          "address_space": [
+            "10.200.0.0/16",
+            "10.201.0.0/16"
+          ],
           "subnet": [],
           "tags": {
             "environment": "development"
@@ -104,13 +120,17 @@
       "name": "spoke_subnet1",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "subnet-backend",
           "virtual_network_name": "vnet-spoke-separate",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.200.1.0/24"],
+          "address_prefixes": [
+            "10.200.1.0/24"
+          ],
           "security_group": "nsg-backend",
           "delegation": []
         },
@@ -128,12 +148,16 @@
       "name": "spoke_subnet2",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "subnet-frontend",
           "virtual_network_name": "vnet-spoke-separate",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.200.2.0/24"],
+          "address_prefixes": [
+            "10.200.2.0/24"
+          ],
           "security_group": null,
           "delegation": []
         },
@@ -141,7 +165,9 @@
           "name": "subnet-frontend",
           "virtual_network_name": "vnet-spoke-separate",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.200.2.0/23"],
+          "address_prefixes": [
+            "10.200.2.0/23"
+          ],
           "security_group": "nsg-frontend",
           "delegation": []
         },
@@ -157,12 +183,16 @@
       "name": "spoke_subnet3",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["delete"],
+        "actions": [
+          "delete"
+        ],
         "before": {
           "name": "subnet-legacy",
           "virtual_network_name": "vnet-spoke-separate",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.200.99.0/24"],
+          "address_prefixes": [
+            "10.200.99.0/24"
+          ],
           "security_group": null,
           "delegation": []
         },
@@ -179,12 +209,16 @@
       "name": "spoke_subnet4",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["no-op"],
+        "actions": [
+          "no-op"
+        ],
         "before": {
           "name": "subnet-unchanged",
           "virtual_network_name": "vnet-spoke-separate",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.200.3.0/24"],
+          "address_prefixes": [
+            "10.200.3.0/24"
+          ],
           "security_group": "nsg-unchanged",
           "delegation": []
         },
@@ -192,7 +226,9 @@
           "name": "subnet-unchanged",
           "virtual_network_name": "vnet-spoke-separate",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.200.3.0/24"],
+          "address_prefixes": [
+            "10.200.3.0/24"
+          ],
           "security_group": "nsg-unchanged",
           "delegation": []
         },
@@ -208,12 +244,16 @@
       "name": "mixed_vnet",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "vnet-mixed-mgmt",
           "location": "eastus2",
           "resource_group_name": "rg-feature-test",
-          "address_space": ["10.150.0.0/16"],
+          "address_space": [
+            "10.150.0.0/16"
+          ],
           "subnet": [
             {
               "name": "subnet-inline1",
@@ -227,7 +267,9 @@
           "name": "vnet-mixed-mgmt",
           "location": "eastus2",
           "resource_group_name": "rg-feature-test",
-          "address_space": ["10.150.0.0/16"],
+          "address_space": [
+            "10.150.0.0/16"
+          ],
           "subnet": [
             {
               "name": "subnet-inline1",
@@ -245,7 +287,9 @@
                   "service_delegation": [
                     {
                       "name": "Microsoft.Sql/managedInstances",
-                      "actions": ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+                      "actions": [
+                        "Microsoft.Network/virtualNetworks/subnets/join/action"
+                      ]
                     }
                   ]
                 }
@@ -265,13 +309,17 @@
       "name": "mixed_subnet_separate",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "subnet-separate1",
           "virtual_network_name": "vnet-mixed-mgmt",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.150.10.0/24"],
+          "address_prefixes": [
+            "10.150.10.0/24"
+          ],
           "security_group": null,
           "delegation": []
         },
@@ -289,12 +337,16 @@
       "name": "known_after_apply_vnet",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "location": "centralus",
           "resource_group_name": "rg-feature-test",
-          "address_space": ["10.250.0.0/16"],
+          "address_space": [
+            "10.250.0.0/16"
+          ],
           "subnet": []
         },
         "after_unknown": {
@@ -313,12 +365,16 @@
       "name": "kaa_subnet1",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "subnet-kaa-1",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.250.1.0/24"],
+          "address_prefixes": [
+            "10.250.1.0/24"
+          ],
           "delegation": []
         },
         "after_unknown": {
@@ -336,12 +392,16 @@
       "name": "kaa_subnet2",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "subnet-kaa-2",
           "resource_group_name": "rg-feature-test",
-          "address_prefixes": ["10.250.2.0/24"],
+          "address_prefixes": [
+            "10.250.2.0/24"
+          ],
           "delegation": []
         },
         "after_unknown": {
@@ -359,7 +419,9 @@
       "name": "feature_test",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "feature-test.example.com",
@@ -383,14 +445,19 @@
       "name": "www",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "www",
           "zone_name": "feature-test.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 3600,
-          "records": ["192.0.2.1", "192.0.2.2"]
+          "records": [
+            "192.0.2.1",
+            "192.0.2.2"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -407,14 +474,18 @@
       "name": "root",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "@",
           "zone_name": "feature-test.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 3600,
-          "records": ["192.0.2.10"]
+          "records": [
+            "192.0.2.10"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -431,14 +502,19 @@
       "name": "www_v6",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "www",
           "zone_name": "feature-test.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 3600,
-          "records": ["2001:db8::1", "2001:db8::2"]
+          "records": [
+            "2001:db8::1",
+            "2001:db8::2"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -455,7 +531,9 @@
       "name": "blog",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "blog",
@@ -479,7 +557,9 @@
       "name": "cdn",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "cdn",
@@ -503,7 +583,9 @@
       "name": "mail",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "@",
@@ -536,7 +618,9 @@
       "name": "spf",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "@",
@@ -564,7 +648,9 @@
       "name": "dmarc",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "_dmarc",
@@ -592,7 +678,9 @@
       "name": "root",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "@",
@@ -627,14 +715,19 @@
       "name": "subdomain",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "sub",
           "zone_name": "feature-test.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 3600,
-          "records": ["ns1.subdomain.example.com", "ns2.subdomain.example.com"]
+          "records": [
+            "ns1.subdomain.example.com",
+            "ns2.subdomain.example.com"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -651,7 +744,9 @@
       "name": "internal",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "internal.example.com",
@@ -671,14 +766,18 @@
       "name": "db01",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "db01",
           "zone_name": "internal.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 300,
-          "records": ["10.100.3.10"]
+          "records": [
+            "10.100.3.10"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -695,14 +794,18 @@
       "name": "db02",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "db02",
           "zone_name": "internal.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 300,
-          "records": ["10.100.3.11"]
+          "records": [
+            "10.100.3.11"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -719,14 +822,18 @@
       "name": "app01",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "app01",
           "zone_name": "internal.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 300,
-          "records": ["10.100.2.10"]
+          "records": [
+            "10.100.2.10"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -743,14 +850,18 @@
       "name": "redis",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "redis",
           "zone_name": "internal.example.com",
           "resource_group_name": "rg-feature-test",
           "ttl": 300,
-          "records": ["10.100.3.20"]
+          "records": [
+            "10.100.3.20"
+          ]
         },
         "after_unknown": {
           "id": true,
@@ -767,7 +878,9 @@
       "name": "inline_routes",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "rt-inline-routes",
@@ -818,7 +931,9 @@
       "name": "separate_routes",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "rt-separate-routes",
           "location": "westus",
@@ -849,7 +964,9 @@
       "name": "separate_route1",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "to-firewall",
@@ -873,7 +990,9 @@
       "name": "separate_route2",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "to-hub",
           "resource_group_name": "rg-feature-test",
@@ -902,7 +1021,9 @@
       "name": "separate_route3",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["delete"],
+        "actions": [
+          "delete"
+        ],
         "before": {
           "name": "old-route",
           "resource_group_name": "rg-feature-test",
@@ -924,7 +1045,9 @@
       "name": "separate_route4",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["no-op"],
+        "actions": [
+          "no-op"
+        ],
         "before": {
           "name": "unchanged-route",
           "resource_group_name": "rg-feature-test",
@@ -953,7 +1076,9 @@
       "name": "mixed_routes",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "rt-mixed-routes",
           "location": "eastus2",
@@ -998,7 +1123,9 @@
       "name": "mixed_route_separate",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "separate-route1",
@@ -1022,7 +1149,9 @@
       "name": "inline_rules",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "nsg-inline-rules",
@@ -1035,10 +1164,16 @@
               "direction": "Inbound",
               "access": "Allow",
               "protocol": "Tcp",
-              "source_address_prefixes": ["10.100.1.0/24", "10.100.2.0/24"],
+              "source_address_prefixes": [
+                "10.100.1.0/24",
+                "10.100.2.0/24"
+              ],
               "source_port_range": "*",
               "destination_address_prefix": "*",
-              "destination_port_ranges": ["443", "8443"],
+              "destination_port_ranges": [
+                "443",
+                "8443"
+              ],
               "description": "Allow HTTPS traffic from web and app subnets"
             },
             {
@@ -1062,7 +1197,10 @@
               "source_address_prefix": "AzureLoadBalancer",
               "source_port_range": "*",
               "destination_address_prefix": "*",
-              "destination_port_ranges": ["80", "443"],
+              "destination_port_ranges": [
+                "80",
+                "443"
+              ],
               "description": "Allow health probes from Azure Load Balancer"
             },
             {
@@ -1156,7 +1294,9 @@
       "name": "separate_rules",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "nsg-separate-rules",
           "location": "westus",
@@ -1185,7 +1325,9 @@
       "name": "separate_rule1",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "allow-https-public",
@@ -1215,7 +1357,9 @@
       "name": "separate_rule2",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "allow-app-backend",
           "resource_group_name": "rg-feature-test",
@@ -1227,7 +1371,10 @@
           "source_address_prefix": "10.200.1.0/24",
           "source_port_range": "*",
           "destination_address_prefix": "10.200.2.0/24",
-          "destination_port_ranges": ["8080", "8443"],
+          "destination_port_ranges": [
+            "8080",
+            "8443"
+          ],
           "description": "Allow app to backend"
         },
         "after": {
@@ -1238,10 +1385,17 @@
           "direction": "Inbound",
           "access": "Allow",
           "protocol": "Tcp",
-          "source_address_prefixes": ["10.200.1.0/24", "10.200.3.0/24"],
+          "source_address_prefixes": [
+            "10.200.1.0/24",
+            "10.200.3.0/24"
+          ],
           "source_port_range": "*",
           "destination_address_prefix": "10.200.2.0/24",
-          "destination_port_ranges": ["8080", "8443", "9090"],
+          "destination_port_ranges": [
+            "8080",
+            "8443",
+            "9090"
+          ],
           "description": "Allow app and services to backend"
         },
         "after_unknown": {},
@@ -1256,7 +1410,9 @@
       "name": "separate_rule3",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["delete"],
+        "actions": [
+          "delete"
+        ],
         "before": {
           "name": "temp-allow-all",
           "resource_group_name": "rg-feature-test",
@@ -1284,7 +1440,9 @@
       "name": "separate_rule4",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["no-op"],
+        "actions": [
+          "no-op"
+        ],
         "before": {
           "name": "deny-all-inbound",
           "resource_group_name": "rg-feature-test",
@@ -1325,7 +1483,9 @@
       "name": "mixed_rules",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["update"],
+        "actions": [
+          "update"
+        ],
         "before": {
           "name": "nsg-mixed-rules",
           "location": "eastus2",
@@ -1388,7 +1548,9 @@
       "name": "mixed_rule_separate",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
-        "actions": ["create"],
+        "actions": [
+          "create"
+        ],
         "before": null,
         "after": {
           "name": "separate-rule1",
@@ -1403,6 +1565,164 @@
           "destination_address_prefix": "Internet",
           "destination_port_range": "*",
           "description": "Separate outbound rule"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_virtual_network.inline_update_vnet",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "inline_update_vnet",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "vnet-inline-update",
+          "resource_group_name": "rg-feature-test",
+          "location": "westus",
+          "address_space": [
+            "10.99.0.0/16"
+          ],
+          "subnet": [
+            {
+              "name": "subnet-to-change",
+              "address_prefix": "10.99.1.0/24",
+              "security_group": null
+            },
+            {
+              "name": "subnet-unchanged",
+              "address_prefix": "10.99.2.0/24",
+              "security_group": null
+            }
+          ]
+        },
+        "after": {
+          "name": "vnet-inline-update",
+          "resource_group_name": "rg-feature-test",
+          "location": "westus",
+          "address_space": [
+            "10.99.0.0/16"
+          ],
+          "subnet": [
+            {
+              "name": "subnet-to-change",
+              "address_prefix": "10.99.1.0/23",
+              "security_group": "nsg-new"
+            },
+            {
+              "name": "subnet-unchanged",
+              "address_prefix": "10.99.2.0/24",
+              "security_group": null
+            }
+          ]
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_route_table.inline_update_rt",
+      "mode": "managed",
+      "type": "azurerm_route_table",
+      "name": "inline_update_rt",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "rt-inline-update",
+          "resource_group_name": "rg-feature-test",
+          "location": "eastus",
+          "route": [
+            {
+              "name": "route-to-change",
+              "address_prefix": "10.0.0.0/8",
+              "next_hop_type": "VirtualAppliance",
+              "next_hop_in_ip_address": "10.100.1.4"
+            }
+          ]
+        },
+        "after": {
+          "name": "rt-inline-update",
+          "resource_group_name": "rg-feature-test",
+          "location": "eastus",
+          "route": [
+            {
+              "name": "route-to-change",
+              "address_prefix": "10.0.0.0/8",
+              "next_hop_type": "VirtualAppliance",
+              "next_hop_in_ip_address": "10.100.1.5"
+            }
+          ]
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_network_security_group.inline_update_nsg",
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "inline_update_nsg",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "name": "nsg-inline-update",
+          "resource_group_name": "rg-feature-test",
+          "location": "eastus",
+          "security_rule": [
+            {
+              "name": "rule-to-change",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_address_prefix": "10.0.0.0/8",
+              "source_port_range": "*",
+              "destination_address_prefix": "*",
+              "destination_port_range": "443",
+              "description": "Old description"
+            }
+          ]
+        },
+        "after": {
+          "name": "nsg-inline-update",
+          "resource_group_name": "rg-feature-test",
+          "location": "eastus",
+          "security_rule": [
+            {
+              "name": "rule-to-change",
+              "priority": 100,
+              "direction": "Inbound",
+              "access": "Allow",
+              "protocol": "Tcp",
+              "source_address_prefix": "10.0.0.0/16",
+              "source_port_range": "*",
+              "destination_address_prefix": "*",
+              "destination_port_ranges": [
+                "443",
+                "8443"
+              ],
+              "description": "Updated description"
+            }
+          ]
         },
         "after_unknown": {
           "id": true

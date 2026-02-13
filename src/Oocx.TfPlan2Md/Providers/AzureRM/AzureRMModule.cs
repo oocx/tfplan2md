@@ -198,7 +198,7 @@ internal sealed class AzureRMModule : IProviderModule
             new ChildTableColumn("Name", "name"),
             new ChildTableColumn("Type", "type"),
             new ChildTableColumn("TTL", "ttl"),
-            new ChildTableColumn("Value/Target", "value")
+            new ChildTableColumn("Value", "value")
         };
 
         foreach (var recordType in dnsRecordTypes)

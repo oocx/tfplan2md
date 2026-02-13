@@ -60,7 +60,9 @@ internal partial class ReportModelBuilder
                     Label = relationship.ChildGroupLabel,
                     Columns = relationship.TableColumns,
                     Rows = rows,
-                    HasMixedSources = inlineRows.Count > 0 && separateRows.Count > 0
+                    HasMixedSources = inlineRows.Count > 0 && separateRows.Count > 0,
+                    HasExternalResources = rows.Exists(r => !string.IsNullOrEmpty(r.TerraformResource) &&
+                                                             !r.TerraformResource.Contains("attribute"))
                 };
 
                 groups.Add(group);
@@ -137,13 +139,15 @@ internal partial class ReportModelBuilder
             var firstGroup = labelGroup.First();
             var allRows = labelGroup.SelectMany(g => g.Rows).ToList();
             var hasAnyMixedSources = labelGroup.Any(g => g.HasMixedSources);
+            var hasAnyExternalResources = labelGroup.Any(g => g.HasExternalResources);
 
             var mergedGroup = new ChildResourceGroup
             {
                 Label = firstGroup.Label,
                 Columns = firstGroup.Columns, // Use first group's columns (should be same for same label)
                 Rows = allRows,
-                HasMixedSources = hasAnyMixedSources
+                HasMixedSources = hasAnyMixedSources,
+                HasExternalResources = hasAnyExternalResources
             };
 
             mergedGroups.Add(mergedGroup);
@@ -622,7 +626,9 @@ internal partial class ReportModelBuilder
         ParentChildRelationship relationship,
         object? childState)
     {
-        var values = relationship.RowExtractor.ExtractRow(childState, child.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
+        // Inject resource type metadata for row extractors that need it (e.g., DNS)
+        var enrichedState = InjectResourceTypeMetadata(childState, child.Type);
+        var values = relationship.RowExtractor.ExtractRow(enrichedState, child.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
 
         return new ChildResourceRow
         {
@@ -684,6 +690,43 @@ internal partial class ReportModelBuilder
     private static string FormatInlineResourceLabel(string attributeName)
     {
         return string.IsNullOrWhiteSpace(attributeName) ? string.Empty : $"{attributeName} attribute";
+    }
+
+    /// <summary>
+    /// Injects resource type metadata into child state for row extractors that need it.
+    /// </summary>
+    /// <param name="childState">The original child state.</param>
+    /// <param name="resourceType">The Terraform resource type.</param>
+    /// <returns>The enriched state with metadata, or original if not JsonElement.</returns>
+    private static object? InjectResourceTypeMetadata(object? childState, string resourceType)
+    {
+        if (childState is not JsonElement element || element.ValueKind != JsonValueKind.Object)
+        {
+            return childState;
+        }
+
+        // Create a new JSON object with metadata injected
+        using var stream = new System.IO.MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream))
+        {
+            writer.WriteStartObject();
+
+            // Copy all existing properties
+            foreach (var property in element.EnumerateObject())
+            {
+                property.WriteTo(writer);
+            }
+
+            // Add metadata
+            writer.WriteStartObject("_tfplan2md_metadata");
+            writer.WriteString("resource_type", resourceType);
+            writer.WriteEndObject();
+
+            writer.WriteEndObject();
+        }
+
+        stream.Position = 0;
+        return JsonDocument.Parse(stream).RootElement.Clone();
     }
 
     /// <summary>

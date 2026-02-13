@@ -61,16 +61,18 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Test]
-    public void FormatDiff_InlineDiff_UsesPlainMarkdownFormat()
+    public void FormatDiff_InlineDiff_UsesHtmlWithCharacterLevelHighlighting()
     {
         var result = FormatDiff("abc", "abz", "inline-diff");
 
-        result.Should().NotContain("<code style=")
-            .And.NotContain("background-color:")
+        result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">")
+            .And.Contain("background-color:")
             .And.Contain("<br>")
             .And.Contain("- ")
             .And.Contain("+ ")
-            .And.NotContain("```", "inline diff should be table-compatible without fenced code blocks");
+            .And.NotContain("```", "inline diff should be table-compatible without fenced code blocks")
+            .And.Contain("#ffc0c0", "should highlight removed characters")
+            .And.Contain("#acf2bd", "should highlight added characters");
     }
 
     [Test]
@@ -80,7 +82,9 @@ public class ScribanHelpersFormatDiffTests
 
         result.Should().Contain("- ")
             .And.Contain("+ ")
-            .And.NotContain("<span style=", "plain markdown format without HTML styling");
+            .And.Contain("<span style=", "HTML format with character-level highlighting")
+            .And.Contain("background-color: #fff5f5", "removed line background")
+            .And.Contain("background-color: #f0fff4", "added line background");
     }
 
     [Test]
@@ -92,14 +96,15 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Test]
-    public void FormatDiff_InlineDiff_UsesPlainMarkdownForTables()
+    public void FormatDiff_InlineDiff_UsesHtmlForRichTableRendering()
     {
         var result = FormatDiff("old", "new", "inline-diff");
 
-        result.Should().NotContain("display:block", "plain markdown format without HTML styling")
-            .And.NotContain("white-space:normal", "plain markdown format without HTML styling")
-            .And.NotContain("padding:0", "plain markdown format without HTML styling")
+        result.Should().Contain("display:block", "HTML format with block display for table cells")
+            .And.Contain("white-space:normal", "HTML format with normal whitespace")
+            .And.Contain("padding:0", "HTML format with zero padding")
             .And.Contain("- ")
-            .And.Contain("+ ");
+            .And.Contain("+ ")
+            .And.Contain("<code style=", "HTML wrapper for diff content");
     }
 }

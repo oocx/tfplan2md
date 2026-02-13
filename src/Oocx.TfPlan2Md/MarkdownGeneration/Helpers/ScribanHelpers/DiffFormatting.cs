@@ -48,17 +48,19 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Wraps inline diff content for markdown tables (passthrough since we use plain markdown now).
+    /// Wraps inline diff content in a block-style code tag suitable for markdown tables.
     /// </summary>
     /// <param name="content">Diff content to wrap.</param>
-    /// <returns>The content as-is for plain markdown diff rendering.</returns>
+    /// <returns>HTML block containing the diff content.</returns>
     /// <remarks>
-    /// Changed from HTML-wrapped content to plain markdown to fix rendering issues in tables.
-    /// Markdown tables don't support complex HTML styling, so we use simple - and + prefixes.
+    /// Wraps the HTML diff content in a styled code tag for proper rendering in markdown tables.
+    /// The block-style display ensures the diff maintains proper formatting within table cells.
     /// </remarks>
     private static string WrapInlineDiffCode(string content)
     {
-        return content;
+        return string.IsNullOrEmpty(content)
+            ? string.Empty
+            : $"<code style=\"display:block; white-space:normal; padding:0; margin:0;\">{content}</code>";
     }
 
     /// <summary>
@@ -77,24 +79,37 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Creates an inline diff representation suitable for embedding in markdown tables using plain markdown format.
+    /// Creates an inline diff representation suitable for embedding in markdown tables using HTML formatting.
     /// </summary>
     /// <param name="before">Original value.</param>
     /// <param name="after">Updated value.</param>
-    /// <returns>Table-friendly inline diff string with - and + prefixes.</returns>
+    /// <returns>Table-friendly inline diff string with HTML character-level highlighting.</returns>
     /// <remarks>
-    /// Uses plain markdown diff format (- old / + new) instead of HTML styling.
-    /// GitHub and Azure DevOps markdown renderers handle coloring automatically for lines starting with - and +.
-    /// This approach ensures diffs display correctly in markdown tables without HTML tags appearing as literal text.
+    /// Uses FormatLargeValue with "inline-diff" format to generate rich HTML spans with character-level diffs.
+    /// The output is adapted for table cells by removing the pre/code wrapper and converting newlines to br tags.
     /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
     /// </remarks>
     private static string BuildInlineDiffTable(string before, string after)
     {
-        // Use simple markdown diff format for table compatibility
-        // Escape markdown characters to prevent rendering issues
-        var escapedBefore = EscapeMarkdown(before);
-        var escapedAfter = EscapeMarkdown(after);
+        // Use FormatLargeValue to generate the full HTML diff with character-level highlighting
+        var block = FormatLargeValue(before, after, "inline-diff");
 
-        return $"- {escapedBefore}<br>+ {escapedAfter}";
+        // Adapt the output for table cells by:
+        // 1. Remove the <pre><code> wrapper
+        // 2. Change "display: block" to "display: inline-block" for table compatibility
+        // 3. Replace newlines with <br> tags
+        var content = block
+            .Replace("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", string.Empty, StringComparison.Ordinal)
+            .Replace("</code></pre>", string.Empty, StringComparison.Ordinal)
+            .Replace("display: block;", "display: inline-block;", StringComparison.Ordinal);
+
+        content = content.Replace("\r", string.Empty, StringComparison.Ordinal).Replace("\n", "<br>", StringComparison.Ordinal);
+
+        if (content.EndsWith("<br>", StringComparison.Ordinal))
+        {
+            content = content[..^4];
+        }
+
+        return content;
     }
 }

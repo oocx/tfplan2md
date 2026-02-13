@@ -34,25 +34,44 @@ public class AzureDevOpsDiffFormatterTests
     }
 
     [Test]
-    public async Task FormatDiff_WhenValuesDiffer_UsesSimpleDiffWithoutBackticks()
+    public async Task FormatDiff_WhenValuesDiffer_UsesHtmlInlineDiff()
     {
         var formatter = new AzureDevOpsDiffFormatter();
 
         var result = formatter.FormatDiff("foo", "bar");
 
-        result.Should().Be("- foo<br>+ bar");
+        // Should generate HTML with styled spans and character-level highlighting
+        result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
+        result.Should().Contain("background-color: #fff5f5"); // Removed line background
+        result.Should().Contain("background-color: #f0fff4"); // Added line background
+        result.Should().Contain("background-color: #ffc0c0"); // Removed char background (all chars different)
+        result.Should().Contain("background-color: #acf2bd"); // Added char background (all chars different)
+        result.Should().Contain("- "); // Has minus prefix
+        result.Should().Contain("+ "); // Has plus prefix
+        result.Should().Contain("foo");
+        result.Should().Contain("bar");
+        result.Should().Contain("<br>");
 
         await Task.CompletedTask;
     }
 
     [Test]
-    public async Task FormatDiff_WhenValuesDifferWithSpecialChars_EscapesMarkdown()
+    public async Task FormatDiff_WhenValuesDifferWithSpecialChars_UsesHtmlAndHighlightsChanges()
     {
         var formatter = new AzureDevOpsDiffFormatter();
 
         var result = formatter.FormatDiff("a|b", "a|c");
 
-        result.Should().Be("- a\\|b<br>+ a\\|c");
+        // Should generate HTML with styled spans and character-level highlighting
+        result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
+        result.Should().Contain("background-color: #fff5f5"); // Removed line background
+        result.Should().Contain("background-color: #f0fff4"); // Added line background
+        // Character-level diff highlighting (b vs c)
+        result.Should().Contain("background-color: #ffc0c0"); // Removed char background
+        result.Should().Contain("background-color: #acf2bd"); // Added char background
+        result.Should().Contain("- a|");
+        result.Should().Contain("+ a|");
+        result.Should().Contain("<br>");
 
         await Task.CompletedTask;
     }

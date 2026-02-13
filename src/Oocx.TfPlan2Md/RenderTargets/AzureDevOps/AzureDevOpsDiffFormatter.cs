@@ -1,14 +1,15 @@
 using System;
+using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 
 /// <summary>
-/// Diff formatter for Azure DevOps Pull Request rendering using simple +/- notation.
+/// Diff formatter for Azure DevOps Pull Request rendering using inline HTML diffs.
 /// </summary>
 /// <remarks>
-/// Azure DevOps markdown renderer handles simple before/after diffs using
-/// lines with +/- prefixes separated by line breaks. HTML styling is not
-/// needed and causes rendering issues in markdown tables.
+/// Azure DevOps supports rich HTML rendering in markdown, allowing for styled
+/// inline diffs with character-level highlighting. This provides a more detailed
+/// visual representation of changes than simple +/- notation.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
 internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
@@ -31,8 +32,8 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
             return WrapInlineCode(EscapeMarkdown(afterValue));
         }
 
-        // Build simple diff with +/- notation
-        return BuildSimpleDiffTable(EscapeMarkdown(beforeValue), EscapeMarkdown(afterValue));
+        // Build inline diff with HTML styling
+        return WrapInlineDiffCode(BuildInlineDiffTable(beforeValue, afterValue));
     }
 
     /// <summary>
@@ -46,18 +47,45 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
     }
 
     /// <summary>
-    /// Builds a compact table-friendly diff line without code wrapping.
+    /// Wraps inline diff content in a block-style code tag suitable for markdown tables.
     /// </summary>
-    /// <param name="escapedBefore">Escaped original value.</param>
-    /// <param name="escapedAfter">Escaped updated value.</param>
-    /// <returns>Formatted diff suitable for markdown tables.</returns>
-    /// <remarks>
-    /// Azure DevOps automatically colors lines starting with - and + in markdown tables.
-    /// Backticks are not needed and actually prevent proper rendering.
-    /// </remarks>
-    private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
+    /// <param name="content">Diff content to wrap.</param>
+    /// <returns>HTML block containing the diff content.</returns>
+    private static string WrapInlineDiffCode(string content)
     {
-        return $"- {escapedBefore}<br>+ {escapedAfter}";
+        return string.IsNullOrEmpty(content)
+            ? string.Empty
+            : $"<code style=\"display:block; white-space:normal; padding:0; margin:0;\">{content}</code>";
+    }
+
+    /// <summary>
+    /// Creates an inline diff representation suitable for embedding in markdown tables.
+    /// </summary>
+    /// <param name="before">Original value.</param>
+    /// <param name="after">Updated value.</param>
+    /// <returns>Table-friendly inline diff string with HTML character-level highlighting.</returns>
+    private static string BuildInlineDiffTable(string before, string after)
+    {
+        // Use FormatLargeValue to generate the full HTML diff with character-level highlighting
+        var block = FormatLargeValue(before, after, "inline-diff");
+
+        // Adapt the output for table cells by:
+        // 1. Remove the <pre><code> wrapper
+        // 2. Change "display: block" to "display: inline-block" for table compatibility
+        // 3. Replace newlines with <br> tags
+        var content = block
+            .Replace("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", string.Empty, StringComparison.Ordinal)
+            .Replace("</code></pre>", string.Empty, StringComparison.Ordinal)
+            .Replace("display: block;", "display: inline-block;", StringComparison.Ordinal);
+
+        content = content.Replace("\r", string.Empty, StringComparison.Ordinal).Replace("\n", "<br>", StringComparison.Ordinal);
+
+        if (content.EndsWith("<br>", StringComparison.Ordinal))
+        {
+            content = content[..^4];
+        }
+
+        return content;
     }
 
     /// <summary>

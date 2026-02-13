@@ -24,4 +24,22 @@ internal interface IChildRowExtractor
         string providerName,
         ValueFormatterRegistry? valueFormatterRegistry,
         IconProviderRegistry? iconProviderRegistry);
+
+    /// <summary>
+    /// Extracts column values with inline diffs for a child entry that changed between before/after states.
+    /// </summary>
+    /// <param name="beforeState">The child state before the change.</param>
+    /// <param name="afterState">The child state after the change.</param>
+    /// <param name="providerName">The provider name used for formatting decisions.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for semantic formatting.</param>
+    /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
+    /// <param name="largeValueFormat">The preferred format for rendering large value diffs.</param>
+    /// <returns>A mapping from column property names to formatted display values with inline diffs.</returns>
+    IReadOnlyDictionary<string, string> ExtractDiffRow(
+        object? beforeState,
+        object? afterState,
+        string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry,
+        LargeValueFormat largeValueFormat);
 }

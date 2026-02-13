@@ -95,4 +95,54 @@ internal sealed class AzureRmRouteRowExtractor : IChildRowExtractor
             valueFormatterRegistry,
             iconProviderRegistry);
     }
+
+    /// <summary>
+    /// Extracts column values with inline diffs for a route that changed between before/after states.
+    /// </summary>
+    /// <param name="beforeState">The route state before the change.</param>
+    /// <param name="afterState">The route state after the change.</param>
+    /// <param name="providerName">The provider name for formatting context.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for formatting values.</param>
+    /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
+    /// <param name="largeValueFormat">The preferred format for rendering large value diffs.</param>
+    /// <returns>The formatted row values with inline diffs where values changed.</returns>
+    public IReadOnlyDictionary<string, string> ExtractDiffRow(
+        object? beforeState,
+        object? afterState,
+        string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry,
+        LargeValueFormat largeValueFormat)
+    {
+        if (beforeState is not JsonElement beforeElement || afterState is not JsonElement afterElement)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        var format = largeValueFormat.ToString();
+
+        var beforeName = FormatAttribute(beforeElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var afterName = FormatAttribute(afterElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+
+        var beforeAddressPrefix = FormatAttribute(beforeElement, "address_prefix", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var afterAddressPrefix = FormatAttribute(afterElement, "address_prefix", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var addressPrefixDiff = ScribanHelpers.FormatDiff(beforeAddressPrefix, afterAddressPrefix, format);
+
+        var beforeNextHopType = JsonStateReader.GetStringProperty(beforeElement, "next_hop_type") ?? "-";
+        var afterNextHopType = JsonStateReader.GetStringProperty(afterElement, "next_hop_type") ?? "-";
+        var nextHopTypeDiff = ScribanHelpers.FormatDiff(beforeNextHopType, afterNextHopType, format);
+
+        var beforeNextHopAddress = FormatNextHopAddress(beforeElement, providerName, valueFormatterRegistry, iconProviderRegistry);
+        var afterNextHopAddress = FormatNextHopAddress(afterElement, providerName, valueFormatterRegistry, iconProviderRegistry);
+        var nextHopAddressDiff = ScribanHelpers.FormatDiff(beforeNextHopAddress, afterNextHopAddress, format);
+
+        return new Dictionary<string, string>
+        {
+            ["name"] = nameDiff,
+            ["address_prefix"] = addressPrefixDiff,
+            ["next_hop_type"] = nextHopTypeDiff,
+            ["next_hop_in_ip_address"] = nextHopAddressDiff
+        };
+    }
 }

@@ -312,4 +312,23 @@ internal sealed class AzureRmDnsRecordRowExtractor : IChildRowExtractor
 
         return records.Count > 0 ? string.Join(", ", records) : "-";
     }
+
+    /// <summary>
+    /// Extracts column values with inline diffs for a DNS record that changed between before/after states.
+    /// </summary>
+    /// <remarks>
+    /// DNS records are typically added or removed, not modified. This method falls back to showing after state.
+    /// </remarks>
+    public IReadOnlyDictionary<string, string> ExtractDiffRow(
+        object? beforeState,
+        object? afterState,
+        string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry,
+        LargeValueFormat largeValueFormat)
+    {
+        // DNS records don't typically change values, they're added or removed
+        // Fall back to showing the after state
+        return ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+    }
 }

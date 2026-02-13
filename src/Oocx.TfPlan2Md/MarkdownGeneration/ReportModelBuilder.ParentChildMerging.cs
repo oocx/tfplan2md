@@ -290,11 +290,26 @@ internal partial class ReportModelBuilder
         var beforeLookup = BuildInlineEntryLookup(beforeEntries);
         foreach (var entry in afterEntries)
         {
-            if (TryConsumeInlineEntry(beforeLookup, entry.Key))
+            if (beforeLookup.TryGetValue(entry.Key, out var beforeQueue) && beforeQueue.Count > 0)
             {
-                if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Unchanged, attributeName, out var row))
+                var beforeEntry = beforeQueue.Dequeue();
+                
+                // Check if the inline child actually changed by comparing JSON content
+                if (JsonElementsEqual(beforeEntry.Element, entry.Element))
                 {
-                    rows.Add(row);
+                    // Unchanged: values are identical
+                    if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Unchanged, attributeName, out var row))
+                    {
+                        rows.Add(row);
+                    }
+                }
+                else
+                {
+                    // Modified: values differ, build diff row
+                    if (TryBuildInlineDiffRow(parent, relationship, beforeEntry.Element, entry.Element, attributeName, out var diffRow))
+                    {
+                        rows.Add(diffRow);
+                    }
                 }
                 continue;
             }
@@ -622,6 +637,120 @@ internal partial class ReportModelBuilder
     }
 
     /// <summary>
+    /// Attempts to build an inline child diff row while guarding against extractor failures.
+    /// </summary>
+    /// <param name="parent">The parent resource change model.</param>
+    /// <param name="relationship">The relationship definition.</param>
+    /// <param name="beforeState">The inline child JSON state before the change.</param>
+    /// <param name="afterState">The inline child JSON state after the change.</param>
+    /// <param name="attributeName">The inline attribute name.</param>
+    /// <param name="row">The constructed row when successful.</param>
+    /// <returns><c>true</c> when the row was created; otherwise <c>false</c>.</returns>
+    private bool TryBuildInlineDiffRow(
+        ResourceChangeModel parent,
+        ParentChildRelationship relationship,
+        JsonElement beforeState,
+        JsonElement afterState,
+        string attributeName,
+        out ChildResourceRow row)
+    {
+        try
+        {
+            var values = relationship.RowExtractor.ExtractDiffRow(
+                beforeState,
+                afterState,
+                parent.ProviderName,
+                _valueFormatterRegistry,
+                _iconProviderRegistry,
+                _config.LargeValueFormat);
+
+            row = new ChildResourceRow
+            {
+                ChangeIndicator = ActionIcons.Update,
+                Values = values,
+                TerraformResource = FormatInlineResourceLabel(attributeName)
+            };
+            return true;
+        }
+        catch (Exception)
+        {
+            row = null!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Compares two JSON elements for deep equality.
+    /// </summary>
+    /// <param name="a">The first JSON element.</param>
+    /// <param name="b">The second JSON element.</param>
+    /// <returns><c>true</c> when the elements are structurally and value-wise equal; otherwise <c>false</c>.</returns>
+    private static bool JsonElementsEqual(JsonElement a, JsonElement b)
+    {
+        if (a.ValueKind != b.ValueKind)
+        {
+            return false;
+        }
+
+        switch (a.ValueKind)
+        {
+            case JsonValueKind.Null:
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+                return true;
+
+            case JsonValueKind.Number:
+                return a.GetRawText() == b.GetRawText();
+
+            case JsonValueKind.String:
+                return a.GetString() == b.GetString();
+
+            case JsonValueKind.Array:
+                if (a.GetArrayLength() != b.GetArrayLength())
+                {
+                    return false;
+                }
+                
+                var aArray = a.EnumerateArray().ToList();
+                var bArray = b.EnumerateArray().ToList();
+                for (var i = 0; i < aArray.Count; i++)
+                {
+                    if (!JsonElementsEqual(aArray[i], bArray[i]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+
+            case JsonValueKind.Object:
+                var aProps = a.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
+                var bProps = b.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
+                
+                if (aProps.Count != bProps.Count)
+                {
+                    return false;
+                }
+                
+                foreach (var prop in aProps)
+                {
+                    if (!bProps.TryGetValue(prop.Key, out var bValue))
+                    {
+                        return false;
+                    }
+                    
+                    if (!JsonElementsEqual(prop.Value, bValue))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
     /// Builds a row for a separate child resource.
     /// </summary>
     /// <param name="child">The child resource change model.</param>
@@ -633,14 +762,39 @@ internal partial class ReportModelBuilder
         ParentChildRelationship relationship,
         object? childState)
     {
+        // For UPDATE actions, use diff extractor with both before and after states
+        if (child.Action == UpdateAction)
+        {
+            // Inject metadata for both states
+            var enrichedBefore = InjectResourceTypeMetadata(child.BeforeJson, child.Type);
+            var enrichedAfter = InjectResourceTypeMetadata(child.AfterJson, child.Type);
+            
+            var values = relationship.RowExtractor.ExtractDiffRow(
+                enrichedBefore,
+                enrichedAfter,
+                child.ProviderName,
+                _valueFormatterRegistry,
+                _iconProviderRegistry,
+                _config.LargeValueFormat);
+
+            return new ChildResourceRow
+            {
+                ChangeIndicator = ActionIcons.Update,
+                Values = values,
+                TerraformResource = child.Address,
+                OriginalResourceAddress = child.Address
+            };
+        }
+
+        // For CREATE/DELETE actions, use single state extractor
         // Inject resource type metadata for row extractors that need it (e.g., DNS)
         var enrichedState = InjectResourceTypeMetadata(childState, child.Type);
-        var values = relationship.RowExtractor.ExtractRow(enrichedState, child.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
+        var singleStateValues = relationship.RowExtractor.ExtractRow(enrichedState, child.ProviderName, _valueFormatterRegistry, _iconProviderRegistry);
 
         return new ChildResourceRow
         {
             ChangeIndicator = GetChildActionIndicator(child.Action),
-            Values = values,
+            Values = singleStateValues,
             TerraformResource = child.Address,
             OriginalResourceAddress = child.Address
         };

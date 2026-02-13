@@ -106,4 +106,23 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
 
         return string.Empty;
     }
+
+    /// <summary>
+    /// Extracts column values with inline diffs for a descriptor that changed between before/after states.
+    /// </summary>
+    /// <remarks>
+    /// Descriptors are typically added or removed, not modified. This method falls back to showing after state.
+    /// </remarks>
+    public IReadOnlyDictionary<string, string> ExtractDiffRow(
+        object? beforeState,
+        object? afterState,
+        string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry,
+        LargeValueFormat largeValueFormat)
+    {
+        // Descriptors don't typically change values, they're added or removed
+        // Fall back to showing the after state
+        return ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+    }
 }

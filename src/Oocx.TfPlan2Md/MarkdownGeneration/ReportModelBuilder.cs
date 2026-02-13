@@ -107,6 +107,11 @@ internal partial class ReportModelBuilder(
     private readonly IPrincipalMapper _principalMapper = principalMapper ?? new NullPrincipalMapper();
 
     /// <summary>
+    /// Format for rendering large value diffs in tables.
+    /// </summary>
+    private readonly LargeValueFormat _largeValueFormat = ConvertRenderTargetToLargeValueFormat(renderTarget);
+
+    /// <summary>
     /// Registry for resource-specific view model factories.
     /// </summary>
     private readonly ResourceViewModelFactoryRegistry _viewModelFactoryRegistry =

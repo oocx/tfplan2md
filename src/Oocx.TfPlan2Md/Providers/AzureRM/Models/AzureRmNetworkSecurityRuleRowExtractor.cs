@@ -288,4 +288,84 @@ internal sealed class AzureRmNetworkSecurityRuleRowExtractor : IChildRowExtracto
         }
         return description;
     }
+
+    /// <summary>
+    /// Extracts column values with inline diffs for a security rule that changed between before/after states.
+    /// </summary>
+    /// <param name="beforeState">The security rule state before the change.</param>
+    /// <param name="afterState">The security rule state after the change.</param>
+    /// <param name="providerName">The provider name for formatting context.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for formatting values.</param>
+    /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
+    /// <param name="largeValueFormat">The preferred format for rendering large value diffs.</param>
+    /// <returns>The formatted row values with inline diffs where values changed.</returns>
+    public IReadOnlyDictionary<string, string> ExtractDiffRow(
+        object? beforeState,
+        object? afterState,
+        string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry,
+        LargeValueFormat largeValueFormat)
+    {
+        if (beforeState is not JsonElement beforeElement || afterState is not JsonElement afterElement)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        var format = largeValueFormat.ToString();
+
+        var beforeName = FormatAttribute(beforeElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var afterName = FormatAttribute(afterElement, "name", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var nameDiff = ScribanHelpers.FormatDiff(beforeName, afterName, format);
+
+        var beforePriority = JsonStateReader.GetStringProperty(beforeElement, "priority") ?? "-";
+        var afterPriority = JsonStateReader.GetStringProperty(afterElement, "priority") ?? "-";
+        var priorityDiff = ScribanHelpers.FormatDiff(beforePriority, afterPriority, format);
+
+        var beforeDirection = FormatDirection(beforeElement);
+        var afterDirection = FormatDirection(afterElement);
+        var directionDiff = ScribanHelpers.FormatDiff(beforeDirection, afterDirection, format);
+
+        var beforeAccess = FormatAccess(beforeElement);
+        var afterAccess = FormatAccess(afterElement);
+        var accessDiff = ScribanHelpers.FormatDiff(beforeAccess, afterAccess, format);
+
+        var beforeProtocol = FormatProtocol(beforeElement);
+        var afterProtocol = FormatProtocol(afterElement);
+        var protocolDiff = ScribanHelpers.FormatDiff(beforeProtocol, afterProtocol, format);
+
+        var beforeSourceAddresses = FormatAddresses(beforeElement, "source", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var afterSourceAddresses = FormatAddresses(afterElement, "source", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var sourceAddressesDiff = ScribanHelpers.FormatDiff(beforeSourceAddresses, afterSourceAddresses, format);
+
+        var beforeSourcePorts = FormatPorts(beforeElement, "source");
+        var afterSourcePorts = FormatPorts(afterElement, "source");
+        var sourcePortsDiff = ScribanHelpers.FormatDiff(beforeSourcePorts, afterSourcePorts, format);
+
+        var beforeDestinationAddresses = FormatAddresses(beforeElement, "destination", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var afterDestinationAddresses = FormatAddresses(afterElement, "destination", providerName, valueFormatterRegistry, iconProviderRegistry);
+        var destinationAddressesDiff = ScribanHelpers.FormatDiff(beforeDestinationAddresses, afterDestinationAddresses, format);
+
+        var beforeDestinationPorts = FormatPorts(beforeElement, "destination");
+        var afterDestinationPorts = FormatPorts(afterElement, "destination");
+        var destinationPortsDiff = ScribanHelpers.FormatDiff(beforeDestinationPorts, afterDestinationPorts, format);
+
+        var beforeDescription = FormatDescription(beforeElement);
+        var afterDescription = FormatDescription(afterElement);
+        var descriptionDiff = ScribanHelpers.FormatDiff(beforeDescription, afterDescription, format);
+
+        return new Dictionary<string, string>
+        {
+            ["name"] = nameDiff,
+            ["priority"] = priorityDiff,
+            ["direction"] = directionDiff,
+            ["access"] = accessDiff,
+            ["protocol"] = protocolDiff,
+            ["source_addresses"] = sourceAddressesDiff,
+            ["source_ports"] = sourcePortsDiff,
+            ["destination_addresses"] = destinationAddressesDiff,
+            ["destination_ports"] = destinationPortsDiff,
+            ["description"] = descriptionDiff
+        };
+    }
 }

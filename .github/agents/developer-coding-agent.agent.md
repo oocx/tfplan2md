@@ -205,11 +205,19 @@ Follow the project's coding conventions strictly:
    
    b. **Verify markdown quality (REQUIRED)**:
       - Use `generate-demo-artifacts` skill to regenerate all demo artifacts
-      - **If UAT test plan defines a feature-specific artifact**, generate it:
-        ```bash
-        # Read the UAT test plan to find the source plan and command
-        # Example: tfplan2md examples/feature-slug.json > artifacts/feature-slug-uat.md
-        ```
+      - **For features with UAT test plans, create feature-specific UAT artifacts (REQUIRED)**:
+        1. Read the UAT test plan at `docs/features/NNN-<feature-slug>/uat-test-plan.md`
+        2. Create `docs/features/NNN-<feature-slug>/uat-plan.json` based on the plan requirements
+        3. Generate `docs/features/NNN-<feature-slug>/uat-plan.md`:
+           ```bash
+           tfplan2md docs/features/NNN-<feature-slug>/uat-plan.json > docs/features/NNN-<feature-slug>/uat-plan.md
+           ```
+        4. Verify the generated markdown contains all resources and edge cases specified in the UAT test plan
+        5. Commit both files:
+           ```bash
+           git add docs/features/NNN-<feature-slug>/uat-plan.json docs/features/NNN-<feature-slug>/uat-plan.md
+           git commit -m "test: add UAT plan artifacts for <feature-name>"
+           ```
       - Verify comprehensive-demo.md passes markdownlint with 0 errors:
         ```bash
         scripts/markdownlint.sh artifacts/comprehensive-demo.md

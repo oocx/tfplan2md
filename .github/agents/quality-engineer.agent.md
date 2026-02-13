@@ -1,7 +1,7 @@
 ---
 description: Define test plans and test cases for features
 name: Quality Engineer
-model: Gemini 3 Flash (Preview)
+model: Claude Sonnet 4.5
 target: vscode
 tools: ['vscode/askQuestions', 'search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'edit/createFile', 'edit/editFiles', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'execute/runInTerminal', 'microsoftdocs/mcp/*', 'todo']
 handoffs:
@@ -120,6 +120,12 @@ For user-facing features (especially markdown rendering changes), you must creat
 
 ### UAT Plan Template
 
+**CRITICAL**: For features that affect markdown output, you MUST create BOTH:
+1. A feature-specific test plan JSON file at `docs/features/NNN-<feature-slug>/uat-plan.json`
+2. The rendered markdown file at `docs/features/NNN-<feature-slug>/uat-plan.md`
+
+These artifacts are REQUIRED and will be validated by the Code Reviewer and used by the UAT Tester.
+
 ```markdown
 # UAT Test Plan: <Feature Name>
 
@@ -127,18 +133,53 @@ For user-facing features (especially markdown rendering changes), you must creat
 Verify that <feature description> renders correctly in GitHub and Azure DevOps PR comments.
 
 ## Artifacts
-**Artifact to use:** `<path/to/artifact.md>` (e.g., `artifacts/comprehensive-demo.md`)
 
-**Creation Instructions (if new artifact needed):**
-- **Source Plan:** `<path/to/plan.json>`
-- **Command:** `tfplan2md <arguments>`
-- **Rationale:** <Why this specific plan/configuration is needed>
+### Feature-Specific Test Artifact (REQUIRED)
+**Purpose:** Focus testing on the specific changes in this feature. This artifact MUST be real tfplan2md output, not synthetic or simulated.
+
+**Source Plan Path:** `docs/features/NNN-<feature-slug>/uat-plan.json`
+
+**Rendered Output Path:** `docs/features/NNN-<feature-slug>/uat-plan.md`
+
+**Plan Requirements:**
+- **MUST be a real Terraform plan JSON** that exercises the feature
+- **MUST cover all changes** that affect markdown output
+- **MUST include edge cases** relevant to the feature
+- **Rationale:** <Why this specific plan/configuration tests the feature>
+- **Key Resources:** List the 2-3 specific resources that demonstrate the feature
+- **Coverage:** Explicitly list what aspects of the feature are tested
+
+**Example Creation Command:**
+```bash
+# Generate the rendered output from the plan
+tfplan2md docs/features/NNN-<feature-slug>/uat-plan.json > docs/features/NNN-<feature-slug>/uat-plan.md
+```
+
+### Comprehensive Demo (Regression Test)
+**Purpose:** Ensure no unintended side effects in other areas.
+
+**Artifact Path:** 
+- GitHub: `artifacts/comprehensive-demo-simple-diff.md`
+- Azure DevOps: `artifacts/comprehensive-demo.md`
+
+**Note:** This artifact is generated automatically by the Developer using `generate-demo-artifacts` skill.
 
 ## Test Steps
-1. Run UAT using the `UAT Tester` agent.
-2. Verify the generated PRs on GitHub and Azure DevOps.
+1. Developer creates `uat-plan.json` based on this specification
+2. Developer generates `uat-plan.md` from the plan
+3. Code Reviewer validates both files exist and are complete
+4. UAT Tester uses `uat-plan.md` for testing
+5. UAT will post TWO separate PR comments:
+   - **Feature-Specific Report**: Tests the specific changes using `uat-plan.md`
+   - **Comprehensive Demo**: Regression test for side effects
+6. Verify both reports on GitHub and Azure DevOps
 
 ## Validation Instructions (Test Description)
+
+**Feature-Specific Validation:**
+
+In the **feature-specific report** (first comment, labeled "🎯 Feature Test"):
+
 **Specific Resources/Sections:**
 - <Resource 1> (e.g., `module.security.azurerm_key_vault_secret.audit_policy`)
 - <Resource 2>
@@ -151,6 +192,17 @@ Verify that <feature description> renders correctly in GitHub and Azure DevOps P
 
 **Before/After Context:**
 - <Explanation of improvement>
+
+---
+
+**Regression Validation:**
+
+In the **comprehensive demo** (second comment, labeled "🔄 Regression Test"):
+
+**Verify:**
+- No unintended changes to existing resources
+- Feature changes appear correctly in comprehensive context
+- All sections render correctly (summaries, details, static analysis)
 ```
 
 ### Writing Effective Validation Instructions

@@ -1,7 +1,7 @@
 ---
 description: Define test plans and test cases for features
 name: Quality Engineer (coding agent)
-model: Gemini 3 Flash (Preview)
+model: Claude Sonnet 4.5
 target: github-copilot
 ---
 
@@ -90,6 +90,12 @@ For user-facing features (especially markdown rendering changes), you must creat
 
 ### UAT Plan Template
 
+**CRITICAL**: For features that affect markdown output, you MUST create BOTH:
+1. A feature-specific test plan JSON file at `docs/features/NNN-<feature-slug>/uat-plan.json`
+2. The rendered markdown file at `docs/features/NNN-<feature-slug>/uat-plan.md`
+
+These artifacts are REQUIRED and will be validated by the Code Reviewer and used by the UAT Tester.
+
 ```markdown
 # UAT Test Plan: <Feature Name>
 
@@ -98,16 +104,26 @@ Verify that <feature description> renders correctly in GitHub and Azure DevOps P
 
 ## Artifacts
 
-### Feature-Specific Test Artifact (Required)
-**Purpose:** Focus testing on the specific changes in this feature.
+### Feature-Specific Test Artifact (REQUIRED)
+**Purpose:** Focus testing on the specific changes in this feature. This artifact MUST be real tfplan2md output, not synthetic or simulated.
 
-**Artifact Path:** `artifacts/<feature-slug>-uat.md`
+**Source Plan Path:** `docs/features/NNN-<feature-slug>/uat-plan.json`
 
-**Creation Instructions:**
-- **Source Plan:** `examples/<feature-slug>.json` (create a minimal plan that exercises the feature)
-- **Command:** `tfplan2md examples/<feature-slug>.json > artifacts/<feature-slug>-uat.md`
+**Rendered Output Path:** `docs/features/NNN-<feature-slug>/uat-plan.md`
+
+**Plan Requirements:**
+- **MUST be a real Terraform plan JSON** that exercises the feature
+- **MUST cover all changes** that affect markdown output
+- **MUST include edge cases** relevant to the feature
 - **Rationale:** <Why this specific plan/configuration tests the feature>
 - **Key Resources:** List the 2-3 specific resources that demonstrate the feature
+- **Coverage:** Explicitly list what aspects of the feature are tested
+
+**Example Creation Command:**
+```bash
+# Generate the rendered output from the plan
+tfplan2md docs/features/NNN-<feature-slug>/uat-plan.json > docs/features/NNN-<feature-slug>/uat-plan.md
+```
 
 ### Comprehensive Demo (Regression Test)
 **Purpose:** Ensure no unintended side effects in other areas.
@@ -119,11 +135,14 @@ Verify that <feature description> renders correctly in GitHub and Azure DevOps P
 **Note:** This artifact is generated automatically by the Developer using `generate-demo-artifacts` skill.
 
 ## Test Steps
-1. Run UAT using the `UAT Tester` agent.
-2. UAT will post TWO separate PR comments:
-   - **Feature-Specific Report**: Tests the specific changes
+1. Developer creates `uat-plan.json` based on this specification
+2. Developer generates `uat-plan.md` from the plan
+3. Code Reviewer validates both files exist and are complete
+4. UAT Tester uses `uat-plan.md` for testing
+5. UAT will post TWO separate PR comments:
+   - **Feature-Specific Report**: Tests the specific changes using `uat-plan.md`
    - **Comprehensive Demo**: Regression test for side effects
-3. Verify both reports on GitHub and Azure DevOps.
+6. Verify both reports on GitHub and Azure DevOps
 
 ## Validation Instructions (Test Description)
 

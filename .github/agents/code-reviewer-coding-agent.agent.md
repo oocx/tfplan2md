@@ -241,6 +241,12 @@ Before approving any code, systematically answer these questions:
   - [ ] Spec examples match actual implementation behavior
   - [ ] No conflicting requirements between documents
   - [ ] Feature descriptions are consistent across all docs
+- [ ] **UAT Plan Artifacts** (REQUIRED for features with UAT test plans):
+  - [ ] `docs/features/NNN-<feature-slug>/uat-plan.json` exists
+  - [ ] `docs/features/NNN-<feature-slug>/uat-plan.md` exists and is up-to-date (matches the JSON)
+  - [ ] UAT plan covers all changes that affect markdown output
+  - [ ] UAT plan includes edge cases specified in the UAT test plan
+  - [ ] Generated markdown matches the specification examples
 - [ ] Comprehensive demo output passes markdownlint (required for all reviews):
   - [ ] artifacts/comprehensive-demo.md regenerated
   - [ ] Markdown linter shows 0 errors
@@ -290,6 +296,31 @@ Before approving any code, systematically answer these questions:
    ```bash
    dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
    scripts/markdownlint.sh artifacts/comprehensive-demo.md
+   ```
+
+   **For features with UAT test plans, validate UAT plan artifacts (REQUIRED):**
+   ```bash
+   # Check if UAT test plan exists
+   if [ -f "docs/features/NNN-<feature-slug>/uat-test-plan.md" ]; then
+     # Verify uat-plan.json exists
+     if [ ! -f "docs/features/NNN-<feature-slug>/uat-plan.json" ]; then
+       echo "BLOCKER: uat-plan.json is missing but required by UAT test plan"
+     fi
+     
+     # Verify uat-plan.md exists
+     if [ ! -f "docs/features/NNN-<feature-slug>/uat-plan.md" ]; then
+       echo "BLOCKER: uat-plan.md is missing but required by UAT test plan"
+     fi
+     
+     # Regenerate uat-plan.md and check if it matches
+     tfplan2md docs/features/NNN-<feature-slug>/uat-plan.json > /tmp/uat-plan-check.md
+     if ! diff -q docs/features/NNN-<feature-slug>/uat-plan.md /tmp/uat-plan-check.md; then
+       echo "BLOCKER: uat-plan.md is out of sync with uat-plan.json"
+     fi
+     
+     # Verify the plan covers the feature as specified in the UAT test plan
+     # Read the UAT test plan and check that all specified resources/edge cases are in uat-plan.md
+   fi
    ```
 
 4. **Line-by-line specification comparison** - For each acceptance criterion in the spec:

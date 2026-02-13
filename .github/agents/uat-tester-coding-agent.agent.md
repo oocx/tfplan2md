@@ -38,8 +38,10 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 ### ✅ Always Do
 - **FIRST: Verify authentication** before running UAT (see "Authentication Verification" section below)
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
+- **CRITICAL: Verify UAT plan artifacts exist** - Before running UAT, check that both `docs/features/NNN-<feature-slug>/uat-plan.json` and `docs/features/NNN-<feature-slug>/uat-plan.md` exist when a UAT test plan is defined
+- **BLOCKER if UAT plan artifacts missing**: If `uat-test-plan.md` exists but `uat-plan.json` or `uat-plan.md` are missing, this is a BLOCKER that requires Developer to create them before UAT can proceed
 - **Post TWO artifacts as separate PR comments**:
-  1. **Feature-Specific Report** (from UAT test plan): Label with "🎯 Feature Test"
+  1. **Feature-Specific Report** (from `uat-plan.md` in feature folder): Label with "🎯 Feature Test"
   2. **Comprehensive Demo** (regression test): Label with "🔄 Regression Test"
 - **Validate artifacts before running**: Verify both artifacts exist and exercise the changed code paths
 - Call `scripts/uat-run.sh` directly (NOT `bash scripts/uat-run.sh`) for permanent allow
@@ -117,12 +119,28 @@ When the user asks to run UAT:
 
 2. **Check for Test Plan** (required)
    - Read `docs/features/*/uat-test-plan.md` to find:
-     - **Feature-specific artifact path** (e.g., `artifacts/feature-slug-uat.md`)
+     - **Feature-specific artifact paths**: `docs/features/NNN-<feature-slug>/uat-plan.json` and `docs/features/NNN-<feature-slug>/uat-plan.md`
      - **Validation instructions** to use as test description
+   - **BLOCKER CHECK**: If UAT test plan exists but `uat-plan.json` or `uat-plan.md` are missing:
+     ```bash
+     if [ -f "docs/features/NNN-<feature-slug>/uat-test-plan.md" ]; then
+       if [ ! -f "docs/features/NNN-<feature-slug>/uat-plan.json" ]; then
+         echo "BLOCKER: uat-plan.json is required by UAT test plan but is missing"
+         echo "Developer must create this file before UAT can proceed"
+         exit 1
+       fi
+       if [ ! -f "docs/features/NNN-<feature-slug>/uat-plan.md" ]; then
+         echo "BLOCKER: uat-plan.md is required by UAT test plan but is missing"
+         echo "Developer must create this file before UAT can proceed"
+         exit 1
+       fi
+     fi
+     ```
+   - **If UAT plan artifacts are missing, STOP and report to Maintainer** - Do not attempt to work around or skip the UAT plan
    - If test plan doesn't exist or doesn't define artifacts, ask user
 
 3. **Validate Artifacts**
-   - Verify feature-specific artifact exists
+   - Verify feature-specific artifact exists: `docs/features/NNN-<feature-slug>/uat-plan.md`
    - Verify comprehensive demo artifacts exist:
      - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
      - Azure DevOps: `artifacts/comprehensive-demo.md`
@@ -139,7 +157,7 @@ When the user asks to run UAT:
 5. **Run UAT for Feature-Specific Report**
    
    ```bash
-   scripts/uat-run.sh artifacts/<feature-slug>-uat.md "<validation-description>" --create-only
+   scripts/uat-run.sh docs/features/NNN-<feature-slug>/uat-plan.md "<validation-description>" --create-only
    ```
    
    **CRITICAL:**

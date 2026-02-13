@@ -875,3 +875,77 @@ None - all functionality working as expected.
 2. UAT Tester will use this artifact (`artifacts/azure-rm-batch-2-feature-test.md`) as the feature-specific test artifact
 3. Verify rendering in both GitHub and Azure DevOps PR comments
 
+
+---
+
+## UAT Tester Agent - Feature Test Plan Update (2026-02-13 06:15 UTC)
+
+### Task
+
+Update GitHub UAT PR #72 with feature-specific test plan that demonstrates exact changes implemented (as requested by maintainer).
+
+### What I Did
+
+1. ✅ **Verified Authentication**: GitHub CLI authenticated successfully
+2. ✅ **Posted Feature Test Plan**: Added new comment to PR #72 with comprehensive feature test plan
+3. ✅ **Updated UAT Report**: Added "Feature-Specific Test Plan" section documenting the new artifact
+4. ✅ **Updated Work Protocol**: Documented this work session
+
+### Artifacts Created
+
+**GitHub PR Comment:** https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3895034841
+
+**Test Plan Artifact:** `artifacts/azure-rm-batch-2-feature-test.md`
+- 286 lines of real tfplan2md output
+- 48 resource changes (vs 36 in comprehensive demo)
+- Focused on 4 Azure RM resource types
+- Complete edge case coverage
+
+**Key Features Demonstrated:**
+- VNet/Subnets: Inline, separate, mixed, known-after-apply
+- DNS Zones: 10 records merged into single table (A, AAAA, CNAME, MX, TXT, CAA, NS)
+- Route Tables: Inline and separate with all next hop types
+- NSG/Security Rules: 11-column Feature 016 structure with service tags, wildcards, port ranges
+
+### Changes Made
+
+**Files Modified:**
+1. `docs/features/068-parent-child-resource-grouping/azure-rm-batch-2-uat-report.md`
+   - Added "Feature-Specific Test Plan" section
+   - Documented artifact details (286 lines, 48 resources)
+   - Listed GitHub PR comment URL
+   - Preserved original artifact documentation as "Original Feature-Specific Artifact"
+
+2. `docs/features/068-parent-child-resource-grouping/work-protocol.md` (this file)
+   - Added this work protocol entry
+
+### PR Comment Structure
+
+The GitHub comment includes:
+- **Purpose statement**: Feature-specific test plan (not just regression)
+- **What This Tests**: 48 resource changes across 4 types
+- **Key Features Validated**: NSG 11-column structure, DNS merged table, edge cases
+- **Collapsible details**: Full 286-line artifact content
+- **Verification checklist**: 6 specific validation points for maintainer
+
+### Validation Status
+
+✅ **Comment Posted**: Successfully posted to PR #72  
+✅ **UAT Report Updated**: Feature test plan section added  
+✅ **Work Protocol Updated**: This entry added  
+⏸️ **Maintainer Review**: Awaiting review of feature test plan in PR #72
+
+### Problems Encountered
+
+None - all operations completed successfully.
+
+### Status
+
+✅ **Complete** - GitHub PR #72 now has both feature-specific test plan and regression test. Ready for maintainer review.
+
+### Next Steps
+
+1. **Maintainer**: Review feature test plan in GitHub PR #72 comment
+2. **Maintainer**: Verify NSG 11-column structure and DNS merged table rendering
+3. **Maintainer**: Apply `uat-approved` label if validation passes
+4. **UAT Tester**: Run cleanup after approval

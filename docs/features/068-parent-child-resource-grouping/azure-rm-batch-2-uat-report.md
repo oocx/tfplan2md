@@ -22,7 +22,27 @@ UAT was initiated for Azure RM Batch 2, which extends parent-child resource grou
 
 ## UAT Artifacts
 
-### Feature-Specific Artifact
+### Feature-Specific Test Plan (Added 2026-02-13)
+
+**Purpose:** Demonstrate specific features added in this PR with comprehensive edge case coverage (not just regression)
+
+**File:** `artifacts/azure-rm-batch-2-feature-test.md`
+- **286 lines** of real tfplan2md output
+- **48 resource changes** across 4 resource types
+- **NSG with 11-column Feature 016 structure** (Source Addresses, Source Ports, Destination Addresses, Destination Ports, Description columns)
+- **DNS with merged single table** (10 records of 7 types: A, AAAA, CNAME, MX, TXT, CAA, NS)
+- **Complete edge case coverage** (mixed management, known-after-apply, wildcards, service tags, port ranges, multiple values)
+
+**Posted to:**
+- GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3895034841
+
+**What This Tests:**
+- VNet/Subnets: Inline, separate, mixed, known-after-apply scenarios
+- DNS Zones: 10 records merged into single table (not separate tables)
+- Route Tables: Inline and separate routes with all next hop types
+- NSG/Security Rules: 11-column Feature 016 structure with all edge cases (service tags, wildcards, port ranges, multiple addresses)
+
+### Original Feature-Specific Artifact
 
 **File:** `artifacts/azure-rm-batch-2-uat.md`
 

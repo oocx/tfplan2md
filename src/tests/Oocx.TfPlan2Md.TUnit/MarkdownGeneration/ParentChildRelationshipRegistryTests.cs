@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using TUnit.Core;
@@ -80,6 +81,8 @@ public class ParentChildRelationshipRegistryTests
     /// </summary>
     private sealed class DummyRowExtractor : IChildRowExtractor
     {
+        public IReadOnlyDictionary<string, string> ExtractDiffRow(object? beforeState, object? afterState, string providerName, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, LargeValueFormat largeValueFormat) => ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+
         /// <summary>
         /// Returns an empty row to satisfy the interface contract.
         /// </summary>

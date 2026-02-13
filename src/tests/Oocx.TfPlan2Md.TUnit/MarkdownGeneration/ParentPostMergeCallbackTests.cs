@@ -474,6 +474,8 @@ public class ParentPostMergeCallbackTests
     /// </summary>
     private sealed class TestChildRowExtractor : IChildRowExtractor
     {
+        public IReadOnlyDictionary<string, string> ExtractDiffRow(object? beforeState, object? afterState, string providerName, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, LargeValueFormat largeValueFormat) => ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+
         public IReadOnlyDictionary<string, string> ExtractRow(
             object? childState,
             string providerName,

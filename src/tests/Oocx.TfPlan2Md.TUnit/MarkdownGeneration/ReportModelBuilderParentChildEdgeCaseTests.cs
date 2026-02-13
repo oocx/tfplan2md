@@ -461,6 +461,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// </summary>
     private sealed class EdgeCaseRowExtractor : IChildRowExtractor
     {
+        public IReadOnlyDictionary<string, string> ExtractDiffRow(object? beforeState, object? afterState, string providerName, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, LargeValueFormat largeValueFormat) => ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+
         /// <summary>
         /// Extracts a member value for edge case tests.
         /// </summary>
@@ -545,6 +547,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// </summary>
     private sealed class ThrowingRowExtractor : IChildRowExtractor
     {
+        public IReadOnlyDictionary<string, string> ExtractDiffRow(object? beforeState, object? afterState, string providerName, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, LargeValueFormat largeValueFormat) => ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+
         /// <summary>
         /// Throws an exception to simulate a failure.
         /// </summary>
@@ -618,6 +622,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
     /// </summary>
     private sealed class InvalidJsonRowExtractor : IChildRowExtractor
     {
+        public IReadOnlyDictionary<string, string> ExtractDiffRow(object? beforeState, object? afterState, string providerName, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, LargeValueFormat largeValueFormat) => ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
+
         /// <summary>
         /// Parses the payload property and throws if JSON is invalid.
         /// </summary>

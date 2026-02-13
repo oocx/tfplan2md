@@ -249,6 +249,7 @@ internal partial class ReportModelBuilder
     /// <param name="parent">The parent resource change model.</param>
     /// <param name="relationship">The relationship definition to apply.</param>
     /// <returns>The inline child rows extracted from the parent state.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Complexity arises from handling multiple action types (create/update/delete) with different merge strategies. Breaking into smaller methods would reduce readability.")]
     private List<ChildResourceRow> BuildInlineRows(ResourceChangeModel parent, ParentChildRelationship relationship)
     {
         if (string.IsNullOrWhiteSpace(relationship.InlineAttributeName))
@@ -293,7 +294,7 @@ internal partial class ReportModelBuilder
             if (beforeLookup.TryGetValue(entry.Key, out var beforeQueue) && beforeQueue.Count > 0)
             {
                 var beforeEntry = beforeQueue.Dequeue();
-                
+
                 // Check if the inline child actually changed by comparing JSON content
                 if (JsonElementsEqual(beforeEntry.Element, entry.Element))
                 {
@@ -662,7 +663,7 @@ internal partial class ReportModelBuilder
                 parent.ProviderName,
                 _valueFormatterRegistry,
                 _iconProviderRegistry,
-                _config.LargeValueFormat);
+                _largeValueFormat);
 
             row = new ChildResourceRow
             {
@@ -685,6 +686,7 @@ internal partial class ReportModelBuilder
     /// <param name="a">The first JSON element.</param>
     /// <param name="b">The second JSON element.</param>
     /// <returns><c>true</c> when the elements are structurally and value-wise equal; otherwise <c>false</c>.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1502:Avoid excessive complexity", Justification = "Complexity is inherent to deep JSON comparison requiring type-specific equality checks for all JSON value kinds. Simpler alternatives would sacrifice correctness.")]
     private static bool JsonElementsEqual(JsonElement a, JsonElement b)
     {
         if (a.ValueKind != b.ValueKind)
@@ -710,7 +712,7 @@ internal partial class ReportModelBuilder
                 {
                     return false;
                 }
-                
+
                 var aArray = a.EnumerateArray().ToList();
                 var bArray = b.EnumerateArray().ToList();
                 for (var i = 0; i < aArray.Count; i++)
@@ -725,19 +727,19 @@ internal partial class ReportModelBuilder
             case JsonValueKind.Object:
                 var aProps = a.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
                 var bProps = b.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
-                
+
                 if (aProps.Count != bProps.Count)
                 {
                     return false;
                 }
-                
+
                 foreach (var prop in aProps)
                 {
                     if (!bProps.TryGetValue(prop.Key, out var bValue))
                     {
                         return false;
                     }
-                    
+
                     if (!JsonElementsEqual(prop.Value, bValue))
                     {
                         return false;
@@ -768,14 +770,14 @@ internal partial class ReportModelBuilder
             // Inject metadata for both states
             var enrichedBefore = InjectResourceTypeMetadata(child.BeforeJson, child.Type);
             var enrichedAfter = InjectResourceTypeMetadata(child.AfterJson, child.Type);
-            
+
             var values = relationship.RowExtractor.ExtractDiffRow(
                 enrichedBefore,
                 enrichedAfter,
                 child.ProviderName,
                 _valueFormatterRegistry,
                 _iconProviderRegistry,
-                _config.LargeValueFormat);
+                _largeValueFormat);
 
             return new ChildResourceRow
             {

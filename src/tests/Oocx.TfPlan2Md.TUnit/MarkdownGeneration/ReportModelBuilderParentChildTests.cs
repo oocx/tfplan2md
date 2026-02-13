@@ -707,5 +707,7 @@ public class ReportModelBuilderParentChildTests
 
             return element.ValueKind == JsonValueKind.String ? element.GetString() : element.ToString();
         }
+
+        public IReadOnlyDictionary<string, string> ExtractDiffRow(object? beforeState, object? afterState, string providerName, ValueFormatterRegistry? valueFormatterRegistry, IconProviderRegistry? iconProviderRegistry, LargeValueFormat largeValueFormat) => ExtractRow(afterState, providerName, valueFormatterRegistry, iconProviderRegistry);
     }
 }

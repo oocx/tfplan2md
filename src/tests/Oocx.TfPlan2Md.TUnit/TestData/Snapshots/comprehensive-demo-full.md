@@ -327,9 +327,9 @@ and as separate resources. This configuration will cause conflicts.
 | Change | Name | Value | Enabled | Content Type | Expires |
 | ------ | ---- | ----- | ------- | ------------ | ------- |
 | ➕ | `NEW_FEATURE_FLAG` | `enabled` | `true` | - | - |
-| 🔄 | `APP_VERSION` | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- <span style="background-color: #ffc0c0; color: #24292e;">1</span>.0.0</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ <span style="background-color: #acf2bd; color: #24292e;">2</span>.0.0</span></code> | `true` | - | - |
+| 🔄 | `APP_VERSION` | - 1.0.0<br>+ 2.0.0 | `true` | - | - |
 | 🔄 | `DEPLOY_TOKEN` | `(sensitive / hidden)` | `true` | - | - |
-| 🔄 | `ENVIRONMENT` | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- <span style="background-color: #ffc0c0; color: #24292e;">s</span>t<span style="background-color: #ffc0c0; color: #24292e;">ag</span>in<span style="background-color: #ffc0c0; color: #24292e;">g</span></span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ <span style="background-color: #acf2bd; color: #24292e;">produc</span>ti<span style="background-color: #acf2bd; color: #24292e;">o</span>n</span></code> | `true` | - | - |
+| 🔄 | `ENVIRONMENT` | - staging<br>+ production | `true` | - | - |
 | ❌ | `DEPRECATED_VAR` | `old-value` | `true` | - | - |
 
 </details>
@@ -430,8 +430,8 @@ and as separate resources. This configuration will cause conflicts.
 | ➕ | `🆔 allow-web-secure` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 443` | `Secure web` |
 | ➕ | `🆔 allow-log-ingest` | `🔗 TCP` | `🌐 10.1.4.0/24` | `🌐 10.1.5.0/24` | `🔌 8080` | `Log ingestion` |
 | ➕ | `🆔 allow-icmp-ping` | `📡 ICMP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `✳️` | `ICMP ping for network diagnostics` |
-| 🔄 | `🆔 allow-dns` | 📨 UDP | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- 🌐 10.1.1.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ 🌐 10.1.1.0/24<span style="background-color: #acf2bd; color: #24292e;">, 🌐 10.1.2.0/24</span></span></code> | 🌐 168.63.129.16 | 🔌 53 | <code>DNS to Azure</code> |
-| 🔄 | `🆔 allow-api` | 🔗 TCP | 🌐 10.1.1.0/24 | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- 🌐 10.<span style="background-color: #ffc0c0; color: #24292e;">1</span>.2.0/24</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ 🌐 10.<span style="background-color: #acf2bd; color: #24292e;">2</span>.2.0/24</span></code> | <code style="display:block; white-space:normal; padding:0; margin:0;"><span style="background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">- 🔌 8443</span><br><span style="background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding-left: 8px; margin-left: 0;">+ 🔌 8443<span style="background-color: #acf2bd; color: #24292e;">, 🔌 9443</span></span></code> | <code>API tier</code> |
+| 🔄 | `🆔 allow-dns` | 📨 UDP | - 🌐 10.1.1.0/24<br>+ 🌐 10.1.1.0/24, 🌐 10.1.2.0/24 | 🌐 168.63.129.16 | 🔌 53 | <code>DNS to Azure</code> |
+| 🔄 | `🆔 allow-api` | 🔗 TCP | 🌐 10.1.1.0/24 | - 🌐 10.1.2.0/24<br>+ 🌐 10.2.2.0/24 | - 🔌 8443<br>+ 🔌 8443, 🔌 9443 | <code>API tier</code> |
 | ❌ | `🆔 allow-web` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.3.0/24` | `🔌 80` | `Legacy HTTP` |
 | ⏺️ | `🆔 allow-monitoring` | `🔗 TCP` | `🌐 10.1.1.0/24` | `🌐 10.1.4.0/24` | `🔌 443` | `Monitoring` |
 

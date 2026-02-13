@@ -77,9 +77,9 @@ public class VariableGroupTemplateTests
         section.Should().Contain($"| {ActionIcons.Add} | `NEW_VAR` |");
         // Verify modified variable with diff (🔄)
         section.Should().Contain($"| {ActionIcons.Update} | `APP_VERSION` |");
-        // Should contain before/after diff with HTML styling
-        section.Should().Contain("<span style=\"background-color: #fff5f5");
-        section.Should().Contain("<span style=\"background-color: #f0fff4");
+        // Should contain before/after diff with plain markdown format
+        section.Should().Contain("- false");
+        section.Should().Contain("+ -");
         // Verify removed variable (❌)
         section.Should().Contain($"| {ActionIcons.Delete} | `OLD_VAR` |");
     }

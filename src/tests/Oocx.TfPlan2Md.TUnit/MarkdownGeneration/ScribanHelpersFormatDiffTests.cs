@@ -61,13 +61,15 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Test]
-    public void FormatDiff_InlineDiff_UsesHtmlHighlights()
+    public void FormatDiff_InlineDiff_UsesPlainMarkdownFormat()
     {
         var result = FormatDiff("abc", "abz", "inline-diff");
 
-        result.Should().Contain("<code")
-            .And.Contain("background-color:")
+        result.Should().NotContain("<code style=")
+            .And.NotContain("background-color:")
             .And.Contain("<br>")
+            .And.Contain("- ")
+            .And.Contain("+ ")
             .And.NotContain("```", "inline diff should be table-compatible without fenced code blocks");
     }
 
@@ -78,7 +80,7 @@ public class ScribanHelpersFormatDiffTests
 
         result.Should().Contain("- ")
             .And.Contain("+ ")
-            .And.Contain("<span", "still styled for inline rendering");
+            .And.NotContain("<span style=", "plain markdown format without HTML styling");
     }
 
     [Test]
@@ -90,12 +92,14 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Test]
-    public void FormatDiff_InlineDiff_UsesBlockCodeForAlignment()
+    public void FormatDiff_InlineDiff_UsesPlainMarkdownForTables()
     {
         var result = FormatDiff("old", "new", "inline-diff");
 
-        result.Should().Contain("display:block", "block-level code keeps inline diffs aligned inside tables")
-            .And.Contain("white-space:normal", "inline diffs should not preserve extraneous whitespace in table cells")
-            .And.Contain("padding:0", "reset code padding to avoid column drift");
+        result.Should().NotContain("display:block", "plain markdown format without HTML styling")
+            .And.NotContain("white-space:normal", "plain markdown format without HTML styling")
+            .And.NotContain("padding:0", "plain markdown format without HTML styling")
+            .And.Contain("- ")
+            .And.Contain("+ ");
     }
 }

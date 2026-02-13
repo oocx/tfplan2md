@@ -40,7 +40,7 @@ public class GitHubDiffFormatterTests
 
         var result = formatter.FormatDiff("a|b", "a|c");
 
-        result.Should().Be("- a\\|b<br>+ a\\|c");
+        result.Should().Be("- a\\|b\n+ a\\|c");
 
         await Task.CompletedTask;
     }

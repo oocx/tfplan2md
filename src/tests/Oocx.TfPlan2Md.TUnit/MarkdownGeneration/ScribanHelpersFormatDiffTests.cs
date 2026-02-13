@@ -19,24 +19,24 @@ public class ScribanHelpersFormatDiffTests
     public void FormatDiff_DifferentStrings_ReturnsSimpleDiffWithoutBackticks()
     {
         FormatDiff("TCP", "UDP", "simple-diff")
-            .Should().Be("- TCP<br>+ UDP");
+            .Should().Be("- TCP\n+ UDP");
 
         FormatDiff("10.0.1.0/24", "10.0.1.0/24, 10.0.3.0/24", "simple-diff")
-            .Should().Be("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24");
+            .Should().Be("- 10.0.1.0/24\n+ 10.0.1.0/24, 10.0.3.0/24");
     }
 
     [Test]
     public void FormatDiff_NullBefore_ReturnsSimpleDiffWithoutBackticks()
     {
         FormatDiff(null, "value", "simple-diff")
-            .Should().Be("- <br>+ value");
+            .Should().Be("- \n+ value");
     }
 
     [Test]
     public void FormatDiff_NullAfter_ReturnsSimpleDiffWithoutBackticks()
     {
         FormatDiff("value", null, "simple-diff")
-            .Should().Be("- value<br>+ ");
+            .Should().Be("- value\n+ ");
     }
 
     [Test]
@@ -49,15 +49,15 @@ public class ScribanHelpersFormatDiffTests
     public void FormatDiff_EmptyStrings_HandledCorrectly()
     {
         FormatDiff(string.Empty, string.Empty, "simple-diff").Should().Be(string.Empty);
-        FormatDiff("", "value", "simple-diff").Should().Be("- <br>+ value");
-        FormatDiff("value", "", "simple-diff").Should().Be("- value<br>+ ");
+        FormatDiff("", "value", "simple-diff").Should().Be("- \n+ value");
+        FormatDiff("value", "", "simple-diff").Should().Be("- value\n+ ");
     }
 
     [Test]
-    public void FormatDiff_EscapesValuesAndPreservesLineBreakTags()
+    public void FormatDiff_EscapesValuesAndPreservesLineBreaks()
     {
         FormatDiff("<before>", "<after>", "simple-diff")
-            .Should().Be("- <before><br>+ <after>");
+            .Should().Be("- <before>\n+ <after>");
     }
 
     [Test]

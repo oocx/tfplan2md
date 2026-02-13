@@ -54,10 +54,11 @@ internal sealed class GitHubDiffFormatter : IDiffFormatter
     /// <remarks>
     /// GitHub automatically colors lines starting with - and + in markdown tables.
     /// Backticks are not needed and actually prevent proper rendering.
+    /// Uses newline instead of &lt;br&gt; tag since GitHub escapes HTML in table cells.
     /// </remarks>
     private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
     {
-        return $"- {escapedBefore}<br>+ {escapedAfter}";
+        return $"- {escapedBefore}\n+ {escapedAfter}";
     }
 
     /// <summary>

@@ -27,6 +27,11 @@ public static partial class ScribanHelpers
 
         if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
         {
+            // Special case: bare dash should not be wrapped in code tags
+            if (afterValue == "-")
+            {
+                return "-";
+            }
             return WrapInlineCode(EscapeMarkdown(afterValue));
         }
 
@@ -72,10 +77,11 @@ public static partial class ScribanHelpers
     /// <remarks>
     /// GitHub and Azure DevOps automatically color lines starting with - and + in markdown tables.
     /// Backticks are not needed and actually prevent proper rendering.
+    /// Uses newline instead of &lt;br&gt; tag for better compatibility.
     /// </remarks>
     private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
     {
-        return $"- {escapedBefore}<br>+ {escapedAfter}";
+        return $"- {escapedBefore}\n+ {escapedAfter}";
     }
 
     /// <summary>

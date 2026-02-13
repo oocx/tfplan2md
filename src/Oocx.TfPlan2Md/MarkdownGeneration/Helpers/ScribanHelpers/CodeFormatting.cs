@@ -36,4 +36,56 @@ public static partial class ScribanHelpers
 
         return $"`{EscapeMarkdown(text)}`";
     }
+
+    /// <summary>
+    /// Formats child resource table values, preserving HTML diffs while wrapping plain text in backticks.
+    /// Related feature: docs/features/068-parent-child-resource-grouping/specification.md.
+    /// </summary>
+    /// <param name="value">The value from the child row extractor (may be HTML diff or plain text).</param>
+    /// <returns>Formatted value suitable for markdown tables - HTML diffs pass through, plain values get backticks.</returns>
+    /// <remarks>
+    /// Child row extractors return two types of values:
+    /// 1. HTML-formatted diffs (from FormatDiff) containing code/span tags - these pass through unchanged
+    /// 2. Plain formatted values (from FormatAttributeValueTableWithRegistry) already with backticks - these pass through
+    /// 3. Unformatted plain text - these need backtick wrapping
+    /// This method ensures consistent backtick usage across all non-diff values.
+    /// </remarks>
+    public static string FormatChildValue(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return value ?? string.Empty;
+        }
+
+        // Special case: FormatDiff can return <code>\`value\`</code> when values are equal
+        // (escaped backticks inside code tags). Remove the escaped backticks.
+        if (value.Contains(@"\`", StringComparison.Ordinal))
+        {
+            value = value.Replace(@"\`", string.Empty, StringComparison.Ordinal);
+        }
+
+        // If the value contains HTML tags (diff or code formatting), pass it through unchanged
+        if (value.Contains("<code", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("<span", StringComparison.OrdinalIgnoreCase) ||
+            value.Contains("</code>", StringComparison.OrdinalIgnoreCase))
+        {
+            return value;
+        }
+
+        // If the value already has backticks (from FormatAttributeValueTableWithRegistry), pass it through
+        if (value.StartsWith('`') && value.EndsWith('`'))
+        {
+            return value;
+        }
+
+        // Plain text values without formatting need wrapping
+        // Special case: bare dash should stay as-is
+        if (value == "-")
+        {
+            return value;
+        }
+
+        // Wrap in backticks
+        return $"`{value}`";
+    }
 }

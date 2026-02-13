@@ -72,6 +72,13 @@ public static partial class ScribanHelpers
             return value;
         }
 
+        // If the value is a simple diff (starts with "- " and contains <br>), pass it through unchanged
+        // This is the GitHub simple diff format: "- value1<br>+ value2"
+        if (value.StartsWith("- ", StringComparison.Ordinal) && value.Contains("<br>", StringComparison.OrdinalIgnoreCase))
+        {
+            return value;
+        }
+
         // If the value already has backticks (from FormatAttributeValueTableWithRegistry), pass it through
         if (value.StartsWith('`') && value.EndsWith('`'))
         {

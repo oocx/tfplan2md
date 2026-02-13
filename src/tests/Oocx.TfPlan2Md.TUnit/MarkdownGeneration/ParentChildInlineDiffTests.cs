@@ -91,7 +91,7 @@ public class ParentChildInlineDiffTests
         // Should contain markdown diff markers
         result.Should().Contain("- ");
         result.Should().Contain("+ ");
-        result.Should().Contain("\n"); // newline is used for line breaks in tables
+        result.Should().Contain("<br>"); // newline is used for line breaks in tables
     }
 
     /// <summary>

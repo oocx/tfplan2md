@@ -77,11 +77,11 @@ public static partial class ScribanHelpers
     /// <remarks>
     /// GitHub and Azure DevOps automatically color lines starting with - and + in markdown tables.
     /// Backticks are not needed and actually prevent proper rendering.
-    /// Uses newline instead of &lt;br&gt; tag for better compatibility.
+    /// Uses &lt;br&gt; tag for line breaks which markdown parsers accept in table cells.
     /// </remarks>
     private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
     {
-        return $"- {escapedBefore}\n+ {escapedAfter}";
+        return $"- {escapedBefore}<br>+ {escapedAfter}";
     }
 
     /// <summary>

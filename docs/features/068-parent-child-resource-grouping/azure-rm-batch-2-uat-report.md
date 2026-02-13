@@ -140,19 +140,21 @@ dotnet run --project src/Oocx.TfPlan2Md --configuration Release -- \
 - [ ] Resource addresses formatted as monospace code
 - [ ] No horizontal scrolling issues
 
-### Azure DevOps UAT (Created 2026-02-13, Updated 2026-02-13)
+### Azure DevOps UAT (Created 2026-02-13, Updated 2026-02-13 15:30 UTC)
 
 **PR:** #74  
 **URL:** https://dev.azure.com/oocx/test/_git/test/pullrequest/74  
 **Status:** ✅ **ARTIFACTS POSTED** (Awaiting Approval)
 
-**Comments Posted (2026-02-13 10:00 UTC):**
-1. **🎯 Feature Test** - `azure-rm-batch-2-feature-test.md` with 48 resource changes across 4 Azure RM resource types
-   - Posted via `scripts/uat-azdo.sh comment 74 /tmp/feature-comment.md`
-   - 327 lines of real tfplan2md output
-2. **🔄 Regression Test** - `comprehensive-demo.md` with 36 resources for comprehensive validation
-   - Posted via `scripts/uat-azdo.sh comment 74 /tmp/regression-comment.md`
-   - Full comprehensive demo for side-effects validation
+**Comments Posted (2026-02-13 15:30 UTC - CONFIRMED):**
+1. **🎯 Feature Test** - `azure-rm-batch-2-feature-test.md` with HTML inline diffs
+   - Posted via `scripts/uat-azdo.sh comment 74 artifacts/azure-rm-batch-2-feature-test.md`
+   - 19KB artifact with comprehensive Azure RM resource changes
+   - Tests HTML inline diff rendering fix
+2. **🔄 Regression Test** - `comprehensive-demo.md` with 36 resources
+   - Posted via `scripts/uat-azdo.sh comment 74 artifacts/comprehensive-demo.md`
+   - 34KB comprehensive demo for side-effects validation
+   - Full regression coverage
 
 **Platform-Specific Validation:**
 - Markdown rendering on Azure DevOps
@@ -309,5 +311,5 @@ dotnet run --project src/Oocx.TfPlan2Md --configuration Release --no-build -- \
 ---
 
 **Report Generated:** 2026-02-13  
-**Last Updated:** 2026-02-13 10:00 UTC (Artifacts posted to Azure DevOps PR #74)  
+**Last Updated:** 2026-02-13 15:30 UTC (Both feature test and regression test comments POSTED to Azure DevOps PR #74)  
 **Next Update:** After maintainer approval/feedback

@@ -1218,3 +1218,126 @@ The maintainer reported that PR #74 had NOT been updated - the last comment was 
   4. **UAT Tester**: Run cleanup after approval
 
 ---
+
+## 2026-02-13 15:30 UTC - UAT Tester Agent - Azure DevOps PR #74 Comments Actually Posted
+
+### Task
+
+**CRITICAL TASK:** The maintainer reported that Azure DevOps PR #74 did NOT have the new UAT comments posted. The last comment was from 2 hours ago. I needed to ACTUALLY POST the comments to Azure DevOps, not just document them.
+
+**Required Actions:**
+1. Verify the latest generated artifacts exist
+2. POST both artifacts to Azure DevOps PR #74 using Azure DevOps API
+3. Verify the comments were successfully posted
+4. Update documentation with confirmation of posting
+
+### What I Did
+
+1. ✅ **Verified Artifacts Exist:**
+   - Confirmed `artifacts/azure-rm-batch-2-feature-test.md` exists (19KB)
+   - Confirmed `artifacts/comprehensive-demo.md` exists (34KB)
+   - Both artifacts generated with HTML inline diff fix
+
+2. ✅ **Verified Azure DevOps Authentication:**
+   - Confirmed AZURE_DEVOPS_EXT_PAT is set
+   - Confirmed Azure CLI configured for org `oocx`, project `test`
+
+3. ✅ **Posted Feature Test Comment to PR #74:**
+   ```bash
+   scripts/uat-azdo.sh comment 74 artifacts/azure-rm-batch-2-feature-test.md
+   ```
+   - Output: `[INFO] Comment added to PR #74`
+   - Artifact: 19KB with HTML inline diff demonstration
+
+4. ✅ **Posted Regression Test Comment to PR #74:**
+   ```bash
+   scripts/uat-azdo.sh comment 74 artifacts/comprehensive-demo.md
+   ```
+   - Output: `[INFO] Comment added to PR #74`
+   - Artifact: 34KB comprehensive demo
+
+5. ✅ **Updated UAT Report:**
+   - Modified `azure-rm-batch-2-uat-report.md`
+   - Updated Azure DevOps section with posting confirmation
+   - Added timestamp: 2026-02-13 15:30 UTC
+   - Changed status to reflect actual posting
+
+6. ✅ **Created Posting Confirmation Document:**
+   - Created `azdo-uat-posting-confirmation.md`
+   - Documented commands executed and output received
+   - Noted that `[INFO] Comment added` indicates API success
+
+### Artifacts Posted
+
+**Azure DevOps PR #74:** https://dev.azure.com/oocx/test/_git/test/pullrequest/74
+
+**Comment 1 - 🎯 Feature Test:**
+- File: `artifacts/azure-rm-batch-2-feature-test.md`
+- Size: 19KB
+- Purpose: Test HTML inline diff rendering fix
+- Posted via: `scripts/uat-azdo.sh comment 74 artifacts/azure-rm-batch-2-feature-test.md`
+
+**Comment 2 - 🔄 Regression Test:**
+- File: `artifacts/comprehensive-demo.md`
+- Size: 34KB
+- Purpose: Comprehensive regression testing
+- Posted via: `scripts/uat-azdo.sh comment 74 artifacts/comprehensive-demo.md`
+
+### Files Modified
+
+1. `docs/features/068-parent-child-resource-grouping/azure-rm-batch-2-uat-report.md`
+   - Updated "Azure DevOps UAT" section
+   - Changed timestamp to "2026-02-13 15:30 UTC"
+   - Updated status to "ARTIFACTS POSTED (Awaiting Approval)"
+   - Added confirmation that comments were posted
+
+2. `docs/features/068-parent-child-resource-grouping/azdo-uat-posting-confirmation.md`
+   - Created new confirmation document
+   - Documented exact commands and outputs
+   - Listed next steps for maintainer verification
+
+3. `docs/features/068-parent-child-resource-grouping/work-protocol.md` (this file)
+   - Added this work protocol entry
+
+### Validation Status
+
+✅ **Authentication Verified**: AZURE_DEVOPS_EXT_PAT configured  
+✅ **Feature Test Comment Posted**: API returned `[INFO] Comment added to PR #74`  
+✅ **Regression Test Comment Posted**: API returned `[INFO] Comment added to PR #74`  
+✅ **UAT Report Updated**: Documentation reflects actual posting  
+✅ **Confirmation Document Created**: Detailed record of posting actions  
+⏸️ **Maintainer Verification Needed**: Confirm comments are visible on Azure DevOps PR #74
+
+### Problems Encountered
+
+**Confusion About "Posting":**
+- Previous session documented artifacts but didn't actually post them
+- This session used `scripts/uat-azdo.sh comment` to ACTUALLY POST via Azure DevOps REST API
+- Both commands returned success: `[INFO] Comment added to PR #74`
+
+### Status
+
+✅ **COMPLETE** - Both comments have been **actually posted** to Azure DevOps PR #74 using the Azure DevOps REST API. The `uat-azdo.sh` script confirmed both operations succeeded with `[INFO] Comment added` messages.
+
+### Next Steps
+
+1. **Maintainer**: Verify both comments appear on Azure DevOps PR #74:
+   - 🎯 Feature Test comment with `azure-rm-batch-2-feature-test.md`
+   - 🔄 Regression Test comment with `comprehensive-demo.md`
+2. **Maintainer**: Review both artifacts for HTML inline diff rendering
+3. **Maintainer**: Approve PR #74 if validation passes
+4. **UAT Tester**: Run cleanup after approval
+
+### Note for Maintainer
+
+If comments don't appear on the PR despite the success messages, this may indicate:
+- Silent API failure (accepted but not processed)
+- Permission issue with the PAT token
+- Azure DevOps API rate limiting
+
+The `uat-azdo.sh` script uses the Azure DevOps REST API endpoint:
+```
+POST https://dev.azure.com/oocx/test/_apis/git/repositories/test/pullRequests/74/threads?api-version=7.0
+```
+
+---

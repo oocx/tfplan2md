@@ -2,6 +2,7 @@
 
 **Date:** 2026-02-11 (Initial UAT)  
 **Updated:** 2026-02-13 (Inline Diff Fix)  
+**Updated:** 2026-02-13 (Comprehensive Fixes - Commit 9f0db75)  
 **Feature:** #068 Parent-Child Resource Grouping  
 
 ## UAT PRs
@@ -14,7 +15,11 @@
 - GitHub: #72 (https://github.com/oocx/tfplan2md-uat/pull/72) - UPDATED (inline diff fix)
 - Azure DevOps: #74 (https://dev.azure.com/oocx/test/_git/test/pullrequest/74) - UPDATED (inline diff fix)
 
-**Status:** ✅ PASSED (with inline diff fix applied)
+### Azure RM Batch 2 UAT (Comprehensive Fixes - 2026-02-13)
+- GitHub: #72 (https://github.com/oocx/tfplan2md-uat/pull/72) - UPDATED (commit 9f0db75)
+- Azure DevOps: #74 (https://dev.azure.com/oocx/test/_git/test/pullrequest/74) - UPDATED (commit 9f0db75)
+
+**Status:** ✅ UPDATED - Fresh artifacts posted with comprehensive fixes
 
 ---
 
@@ -29,6 +34,70 @@
 1. **Feature-Specific:** `artifacts/azure-rm-batch-2-uat.md`
 2. **Regression (GitHub):** `artifacts/comprehensive-demo-simple-diff.md` (regenerated)
 3. **Regression (AzDO):** `artifacts/comprehensive-demo.md` (regenerated)
+
+### Azure RM Batch 2 UAT (Comprehensive Fixes - 2026-02-13)
+1. **Feature-Specific:** `artifacts/azure-rm-batch-2-feature-test.md` (328 lines, regenerated with commit 9f0db75)
+2. **Regression (GitHub):** `artifacts/comprehensive-demo-simple-diff.md` (regenerated)
+3. **Regression (AzDO):** `artifacts/comprehensive-demo.md` (regenerated)
+
+---
+
+## Comprehensive Fixes (2026-02-13) - Commit 9f0db75
+
+### Fresh Artifacts Posted
+
+After the inline diff fix, additional issues were identified and fixed. Fresh test artifacts were regenerated and posted to both UAT PRs to validate all fixes together.
+
+### Fixes Included
+
+**Commit:** `9f0db75` - "fix: bare dash without code tags, newlines instead of br in GitHub diffs (SNAPSHOT_UPDATE_OK)"
+
+1. **Bare Dash Placeholder Without Code Tags**
+   - Issue: Dash placeholders (`-`) for empty/missing values were wrapped in backticks, making them look like code
+   - Fix: Render bare dash `-` without code formatting for cleaner presentation
+   - Impact: Improves readability of empty values in tables
+
+2. **GitHub Diffs Using Newlines Instead of Literal `<br>` Tags**
+   - Issue: GitHub simple-diff format was inserting literal `<br>` HTML tags in diff output
+   - Fix: Use actual newlines (`\n`) in GitHub diff format instead of HTML tags
+   - Impact: Proper line breaks in GitHub PR comments
+
+3. **Raw Value Extraction Before HTML Diff Generation**
+   - Issue: HTML escaping was happening before diff generation, causing escaped HTML tags in diffs
+   - Fix: Extract raw values first, generate diffs, then apply HTML escaping only where needed
+   - Impact: Clean diffs without escaped HTML entities
+
+4. **Backticks on All Non-Diff Values**
+   - Issue: Some values weren't consistently formatted as code
+   - Fix: Apply backticks to all non-diff values for consistent code formatting
+   - Impact: Better visual consistency across all value displays
+
+### Test Results
+
+**Posted to:**
+- GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72
+  - Before: 19 comments
+  - After: 21 comments (verified)
+  - 🎯 Feature Test (comment 20)
+  - 🔄 Regression Test (comment 21)
+
+- Azure DevOps PR #74: https://dev.azure.com/oocx/test/_git/test/pullrequest/74
+  - 🎯 Feature Test (posted successfully)
+  - 🔄 Regression Test (posted successfully)
+
+**Artifacts:**
+1. Feature-specific: `artifacts/azure-rm-batch-2-feature-test.md` (328 lines)
+2. Regression (GitHub): `artifacts/comprehensive-demo-simple-diff.md`
+3. Regression (Azure DevOps): `artifacts/comprehensive-demo.md`
+
+**Coverage:**
+- 43 Azure RM resources (4 parent-child resource types)
+- Virtual Networks with Subnets (inline, separate, mixed)
+- DNS Zones with Records (A, AAAA, CNAME, MX, TXT, CAA)
+- Route Tables with Routes (inline and separate)
+- Network Security Groups with Security Rules (inline, separate, mixed)
+
+**Status:** ✅ Artifacts posted successfully, awaiting maintainer review
 
 ---
 

@@ -3,7 +3,7 @@
 **Feature:** Parent-Child Resource Grouping - Azure RM Batch 2 Extension  
 **Test Date:** 2026-02-13  
 **Tester:** UAT Tester Agent  
-**Status:** ⏸️ **PENDING APPROVAL** (GitHub + Azure DevOps)
+**Status:** ✅ **POSTED - AWAITING APPROVAL** (Backticks Fix Verified - Commit a203e4d)
 
 ---
 
@@ -33,9 +33,11 @@ UAT was initiated for Azure RM Batch 2, which extends parent-child resource grou
 - **DNS with merged single table** (10 records of 7 types: A, AAAA, CNAME, MX, TXT, CAA, NS)
 - **Complete edge case coverage** (mixed management, known-after-apply, wildcards, service tags, port ranges, multiple values)
 
-**Posted to:**
-- GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3895034841
-- Azure DevOps PR #74: https://dev.azure.com/oocx/test/_git/test/pullrequest/74
+**Posted to (Latest - 2026-02-13 17:39 UTC):**
+- GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3898457174 (🎯 Feature Test)
+- GitHub PR #72: https://github.com/oocx/tfplan2md-uat/pull/72#issuecomment-3898457558 (🔄 Regression Test)
+- Azure DevOps PR #74: Thread 267 (🎯 Feature Test, 26349 chars)
+- Azure DevOps PR #74: Thread 268 (🔄 Regression Test, 29472 chars)
 
 **What This Tests:**
 - VNet/Subnets: Inline, separate, mixed, known-after-apply scenarios
@@ -79,6 +81,105 @@ dotnet run --project src/Oocx.TfPlan2Md --configuration Release -- \
 **Azure DevOps:** `artifacts/comprehensive-demo.md`
 
 **Purpose:** Ensure no unintended side effects in existing parent-child patterns (Azure AD groups, Azure DevOps teams/groups) or other resource rendering.
+
+---
+
+## Backticks Fix Verification (Commit a203e4d)
+
+### ✅ Verified: Non-Diff Values in Backticks
+
+**What Was Fixed:**
+- Commit 9c1079d + a203e4d applied backticks to all non-diff scalar values
+- Previously, values like `LRS`, `Standard`, `eastus` appeared without backticks
+- Now all values in attribute tables and child resource tables have backticks
+
+**Verification Results:**
+
+#### 1. Attribute Table Values ✅
+```markdown
+| account_replication_type | `LRS` | `GRS` |
+| account_tier | `Standard` |
+| location | `🌍 eastus` |
+| name | `🆔 sttfplan2mdlegacy` |
+```
+**Status:** ✅ All values properly wrapped in backticks
+
+#### 2. Terraform Resource Column ✅
+```markdown
+| ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - | `module.network.azurerm_subnet.app` |
+| ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - | `module.network.azurerm_subnet.db` |
+```
+**Status:** ✅ Resource addresses wrapped in backticks: `module.network.azurerm_subnet.app`
+
+#### 3. Azure AD Group Members ✅
+```markdown
+| ➕ | `user-100` | `members attribute` |
+| ➕ | `user-101` | `members attribute` |
+| ➕ | `user-100` | `azuread_group_member.platform_admin_member` |
+```
+**Status:** ✅ Member names and resource addresses in backticks
+
+#### 4. DNS Record Values ✅
+```markdown
+<code>🆔 api</code> — <code>api.contoso.local</code> <code>🌐 10.1.1.4</code>
+```
+**Status:** ✅ DNS names and IPs wrapped in `<code>` tags (backticks in summary)
+
+### ✅ Verified: HTML Diffs Preserved with Character-Level Highlighting
+
+**What Was Fixed:**
+- HTML diff rendering was broken by initial backticks attempt
+- Commit 98167ed restored HTML diff generation
+- Commit a203e4d ensures diffs are NOT wrapped in backticks
+
+**Verification Results:**
+
+#### Azure DevOps HTML Diff Example ✅
+```html
+<code style="display:block; white-space:normal; padding:0; margin:0;">
+  <span style="background-color: #fff5f5; border-left: 3px solid #d73a49; ...">
+    - <span style="background-color: #ffc0c0; color: #24292e;">1</span>.0.0
+  </span><br>
+  <span style="background-color: #f0fff4; border-left: 3px solid #28a745; ...">
+    + <span style="background-color: #acf2bd; color: #24292e;">2</span>.0.0
+  </span>
+</code>
+```
+
+**Visual Result:**
+- Changed character `1` → `2` has red/green highlighting
+- IP address diffs: `10.1.1.0/24` → `10.1.1.0/24, 🌐 10.1.2.0/24` shows added portion
+- Port diffs: `🔌 8443` → `🔌 8443, 🔌 9443` shows added port
+
+**Status:** ✅ Character-level highlighting working perfectly
+
+### Platform Verification
+
+#### GitHub PR #72
+- **Total Comments:** 17
+- **Feature Test Comment:** ID 3898457174, 26350 chars
+- **Regression Test Comment:** ID 3898457558, 26327 chars
+- **Backticks Verified:** ✅ Via API and manual inspection
+- **Simple Diffs Verified:** ✅ `-` and `+` lines render cleanly
+
+#### Azure DevOps PR #74
+- **Total Threads:** 18
+- **Feature Test Thread:** 267, 26349 chars
+- **Regression Test Thread:** 268, 29472 chars
+- **Backticks Verified:** ✅ Via REST API
+- **HTML Diffs Verified:** ✅ Character-level highlighting present
+
+### Summary
+
+**All verification criteria met:**
+- ✅ Non-diff values wrapped in backticks for consistent monospace rendering
+- ✅ HTML diffs preserved with character-level highlighting in Azure DevOps
+- ✅ Terraform Resource column values in backticks
+- ✅ DNS record values (Name, Type, TTL) in backticks/code tags
+- ✅ Both GitHub and Azure DevOps PRs successfully updated
+- ✅ Comment count and content verified via API
+
+**Ready for Maintainer approval.**
 
 ---
 

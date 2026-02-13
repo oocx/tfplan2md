@@ -28,24 +28,31 @@ public class AzureDevOpsDiffFormatterTests
 
         var result = formatter.FormatDiff("value*", "value*");
 
-        result.Should().Be("<code>value*</code>");
+        result.Should().Be("<code>value\\*</code>");
 
         await Task.CompletedTask;
     }
 
     [Test]
-    public async Task FormatDiff_WhenValuesDiffer_WrapsInlineDiffContent()
+    public async Task FormatDiff_WhenValuesDiffer_UsesSimpleDiffWithoutBackticks()
     {
         var formatter = new AzureDevOpsDiffFormatter();
 
         var result = formatter.FormatDiff("foo", "bar");
 
-        result.Should().StartWith("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
-        result.Should().Contain("- <span");
-        result.Should().Contain("foo</span>");
-        result.Should().Contain("+ <span");
-        result.Should().Contain("bar</span>");
-        result.Should().EndWith("</code>");
+        result.Should().Be("- foo<br>+ bar");
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task FormatDiff_WhenValuesDifferWithSpecialChars_EscapesMarkdown()
+    {
+        var formatter = new AzureDevOpsDiffFormatter();
+
+        var result = formatter.FormatDiff("a|b", "a|c");
+
+        result.Should().Be("- a\\|b<br>+ a\\|c");
 
         await Task.CompletedTask;
     }

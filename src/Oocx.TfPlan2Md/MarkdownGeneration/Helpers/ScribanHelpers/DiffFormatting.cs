@@ -62,14 +62,18 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Builds a compact table-friendly diff line with markdown code wrapping.
+    /// Builds a compact table-friendly diff line without code wrapping.
     /// </summary>
     /// <param name="escapedBefore">Escaped original value.</param>
     /// <param name="escapedAfter">Escaped updated value.</param>
     /// <returns>Formatted diff suitable for markdown tables.</returns>
+    /// <remarks>
+    /// GitHub and Azure DevOps automatically color lines starting with - and + in markdown tables.
+    /// Backticks are not needed and actually prevent proper rendering.
+    /// </remarks>
     private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
     {
-        return $"- `{escapedBefore}`<br>+ `{escapedAfter}`";
+        return $"- {escapedBefore}<br>+ {escapedAfter}";
     }
 
     /// <summary>

@@ -1,18 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 
 /// <summary>
-/// Diff formatter for Azure DevOps Pull Request rendering using inline HTML diffs.
+/// Diff formatter for Azure DevOps Pull Request rendering using simple +/- notation.
 /// </summary>
 /// <remarks>
-/// Azure DevOps supports rich HTML rendering in markdown, allowing for styled
-/// inline diffs with character-level highlighting. This provides a more detailed
-/// visual representation of changes than simple +/- notation.
+/// Azure DevOps markdown renderer handles simple before/after diffs using
+/// lines with +/- prefixes separated by line breaks. HTML styling is not
+/// needed and causes rendering issues in markdown tables.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </remarks>
 internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
@@ -35,8 +31,8 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
             return WrapInlineCode(EscapeMarkdown(afterValue));
         }
 
-        // Build inline diff with HTML styling
-        return WrapInlineDiffCode(BuildInlineDiffTable(beforeValue, afterValue));
+        // Build simple diff with +/- notation
+        return BuildSimpleDiffTable(EscapeMarkdown(beforeValue), EscapeMarkdown(afterValue));
     }
 
     /// <summary>
@@ -50,57 +46,52 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
     }
 
     /// <summary>
-    /// Wraps inline diff content in a block-style code tag suitable for markdown tables.
+    /// Builds a compact table-friendly diff line without code wrapping.
     /// </summary>
-    /// <param name="content">Diff content to wrap.</param>
-    /// <returns>HTML block containing the diff content.</returns>
-    private static string WrapInlineDiffCode(string content)
+    /// <param name="escapedBefore">Escaped original value.</param>
+    /// <param name="escapedAfter">Escaped updated value.</param>
+    /// <returns>Formatted diff suitable for markdown tables.</returns>
+    /// <remarks>
+    /// Azure DevOps automatically colors lines starting with - and + in markdown tables.
+    /// Backticks are not needed and actually prevent proper rendering.
+    /// </remarks>
+    private static string BuildSimpleDiffTable(string escapedBefore, string escapedAfter)
     {
-        return string.IsNullOrEmpty(content)
-            ? string.Empty
-            : $"<code style=\"display:block; white-space:normal; padding:0; margin:0;\">{content}</code>";
+        return $"- {escapedBefore}<br>+ {escapedAfter}";
     }
 
     /// <summary>
-    /// Creates an inline diff representation suitable for embedding in markdown tables.
+    /// Escapes markdown special characters to prevent rendering issues.
     /// </summary>
-    /// <param name="before">Original value.</param>
-    /// <param name="after">Updated value.</param>
-    /// <returns>Table-friendly inline diff string.</returns>
-    private static string BuildInlineDiffTable(string before, string after)
+    /// <param name="value">Value to escape.</param>
+    /// <returns>Escaped string safe for markdown rendering.</returns>
+    /// <remarks>
+    /// Note: + and - are NOT escaped because they're used for diff markers.
+    /// Azure DevOps markdown renderer recognizes lines starting with - and + for diff coloring.
+    /// </remarks>
+    private static string EscapeMarkdown(string? value)
     {
-        var block = BuildInlineDiff(before, after);
-        var content = block
-            .Replace("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", string.Empty, StringComparison.Ordinal)
-            .Replace("</code></pre>", string.Empty, StringComparison.Ordinal)
-            .Replace("display: block;", "display: inline-block;", StringComparison.Ordinal);
-
-        content = content.Replace("\r", string.Empty, StringComparison.Ordinal).Replace("\n", "<br>", StringComparison.Ordinal);
-
-        if (content.EndsWith("<br>", StringComparison.Ordinal))
+        if (string.IsNullOrEmpty(value))
         {
-            content = content[..^4];
+            return string.Empty;
         }
 
-        return content;
-    }
-
-    /// <summary>
-    /// Builds an inline HTML diff block with styled line-level changes.
-    /// </summary>
-    /// <param name="before">Original value.</param>
-    /// <param name="after">Updated value.</param>
-    /// <returns>HTML block showing line and character-level differences.</returns>
-    private static string BuildInlineDiff(string before, string after)
-    {
-        // Delegate to ScribanHelpers for the actual diff computation
-        // This uses the existing diff logic until we fully extract shared utilities
-        // For now, we'll reconstruct it using the public FormatLargeValue method
-        // This is a temporary approach - full extraction will happen when we move shared utilities
-        return FormatLargeValue(before, after, "inline-diff")
-            .Replace("<pre style=\"font-family: monospace; line-height: 1.5;\"><code>", string.Empty, StringComparison.Ordinal)
-            .Replace("</code></pre>", string.Empty, StringComparison.Ordinal)
-            .Replace("\r", string.Empty, StringComparison.Ordinal)
-            .Replace("\n", string.Empty, StringComparison.Ordinal);
+        return value
+            .Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("`", "\\`", StringComparison.Ordinal)
+            .Replace("*", "\\*", StringComparison.Ordinal)
+            .Replace("_", "\\_", StringComparison.Ordinal)
+            .Replace("{", "\\{", StringComparison.Ordinal)
+            .Replace("}", "\\}", StringComparison.Ordinal)
+            .Replace("[", "\\[", StringComparison.Ordinal)
+            .Replace("]", "\\]", StringComparison.Ordinal)
+            .Replace("(", "\\(", StringComparison.Ordinal)
+            .Replace(")", "\\)", StringComparison.Ordinal)
+            .Replace("#", "\\#", StringComparison.Ordinal)
+            .Replace("+", "\\+", StringComparison.Ordinal)
+            .Replace("-", "\\-", StringComparison.Ordinal)
+            .Replace(".", "\\.", StringComparison.Ordinal)
+            .Replace("!", "\\!", StringComparison.Ordinal)
+            .Replace("|", "\\|", StringComparison.Ordinal);
     }
 }

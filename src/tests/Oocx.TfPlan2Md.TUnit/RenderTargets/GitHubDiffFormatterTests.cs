@@ -34,13 +34,13 @@ public class GitHubDiffFormatterTests
     }
 
     [Test]
-    public async Task FormatDiff_WhenValuesDiffer_UsesSimpleDiffWithEscaping()
+    public async Task FormatDiff_WhenValuesDiffer_UsesSimpleDiffWithoutBackticks()
     {
         var formatter = new GitHubDiffFormatter();
 
         var result = formatter.FormatDiff("a|b", "a|c");
 
-        result.Should().Be("- `a\\|b`<br>+ `a\\|c`");
+        result.Should().Be("- a\\|b<br>+ a\\|c");
 
         await Task.CompletedTask;
     }

@@ -16,27 +16,27 @@ public class ScribanHelpersFormatDiffTests
     }
 
     [Test]
-    public void FormatDiff_DifferentStrings_ReturnsBacktickWrappedSimpleDiff()
+    public void FormatDiff_DifferentStrings_ReturnsSimpleDiffWithoutBackticks()
     {
         FormatDiff("TCP", "UDP", "simple-diff")
-            .Should().Be("- `TCP`<br>+ `UDP`");
+            .Should().Be("- TCP<br>+ UDP");
 
         FormatDiff("10.0.1.0/24", "10.0.1.0/24, 10.0.3.0/24", "simple-diff")
-            .Should().Be("- `10.0.1.0/24`<br>+ `10.0.1.0/24, 10.0.3.0/24`");
+            .Should().Be("- 10.0.1.0/24<br>+ 10.0.1.0/24, 10.0.3.0/24");
     }
 
     [Test]
-    public void FormatDiff_NullBefore_ReturnsBacktickWrappedSimpleDiff()
+    public void FormatDiff_NullBefore_ReturnsSimpleDiffWithoutBackticks()
     {
         FormatDiff(null, "value", "simple-diff")
-            .Should().Be("- ``<br>+ `value`");
+            .Should().Be("- <br>+ value");
     }
 
     [Test]
-    public void FormatDiff_NullAfter_ReturnsBacktickWrappedSimpleDiff()
+    public void FormatDiff_NullAfter_ReturnsSimpleDiffWithoutBackticks()
     {
         FormatDiff("value", null, "simple-diff")
-            .Should().Be("- `value`<br>+ ``");
+            .Should().Be("- value<br>+ ");
     }
 
     [Test]
@@ -49,15 +49,15 @@ public class ScribanHelpersFormatDiffTests
     public void FormatDiff_EmptyStrings_HandledCorrectly()
     {
         FormatDiff(string.Empty, string.Empty, "simple-diff").Should().Be(string.Empty);
-        FormatDiff("", "value", "simple-diff").Should().Be("- ``<br>+ `value`");
-        FormatDiff("value", "", "simple-diff").Should().Be("- `value`<br>+ ``");
+        FormatDiff("", "value", "simple-diff").Should().Be("- <br>+ value");
+        FormatDiff("value", "", "simple-diff").Should().Be("- value<br>+ ");
     }
 
     [Test]
     public void FormatDiff_EscapesValuesAndPreservesLineBreakTags()
     {
         FormatDiff("<before>", "<after>", "simple-diff")
-            .Should().Be("- `<before>`<br>+ `<after>`");
+            .Should().Be("- <before><br>+ <after>");
     }
 
     [Test]

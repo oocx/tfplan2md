@@ -1,20 +1,78 @@
 # UAT Report: Parent-Child Resource Grouping
 
-**Date:** 2026-02-11  
+**Date:** 2026-02-11 (Initial UAT)  
+**Updated:** 2026-02-13 (Inline Diff Fix)  
 **Feature:** #068 Parent-Child Resource Grouping  
-**UAT PRs:**
+
+## UAT PRs
+
+### Initial UAT (Core Feature)
 - GitHub: #67 (https://github.com/oocx/tfplan2md-uat/pull/67) - PASSED
 - Azure DevOps: #72 (https://dev.azure.com/oocx/test/_git/test/pullrequest/72) - PASSED
 
-**Status:** ✅ PASSED
+### Azure RM Batch 2 UAT (Inline Diffs)
+- GitHub: #72 (https://github.com/oocx/tfplan2md-uat/pull/72) - UPDATED (inline diff fix)
+- Azure DevOps: #74 (https://dev.azure.com/oocx/test/_git/test/pullrequest/74) - UPDATED (inline diff fix)
+
+**Status:** ✅ PASSED (with inline diff fix applied)
 
 ---
 
 ## Test Artifacts Used
 
+### Initial UAT
 1. **Feature-Specific:** `artifacts/parent-child-resource-grouping-uat.md`
 2. **Regression (GitHub):** `artifacts/comprehensive-demo-simple-diff.md`
 3. **Regression (AzDO):** `artifacts/comprehensive-demo.md`
+
+### Azure RM Batch 2 UAT (Updated for Inline Diff Fix)
+1. **Feature-Specific:** `artifacts/azure-rm-batch-2-uat.md`
+2. **Regression (GitHub):** `artifacts/comprehensive-demo-simple-diff.md` (regenerated)
+3. **Regression (AzDO):** `artifacts/comprehensive-demo.md` (regenerated)
+
+---
+
+## Inline Diff Fix (2026-02-13)
+
+### Issue Identified
+
+During Azure RM Batch 2 UAT testing, inline diffs were completely missing for UPDATE operations on child resources (subnets, routes, NSG rules, DNS records). The summary counts showed changes, but the actual before/after diffs were not visible in the child tables.
+
+### Root Cause
+
+Two bugs were identified and fixed in commit `4ef994e`:
+
+1. **Diff Detection Bug**: The system wasn't properly detecting value changes in nested child resources. The diff detection logic was only checking top-level attributes.
+
+2. **Diff Extraction Bug**: When diffs were detected, they weren't being extracted and passed to the rendering layer. The rendering context didn't include the diff information needed for inline display.
+
+### Fix Applied
+
+**Commit:** `4ef994e`
+
+**Changes:**
+- Fixed diff detection to properly traverse nested child resource attributes
+- Fixed diff extraction to pass before/after values to the rendering layer
+- Verified inline diffs now work for all child resource types
+
+**Test Results:**
+- ✅ All 994 tests pass
+- ✅ Inline diffs render correctly in UPDATE resources
+- ✅ Character-level and word-level diffs display properly
+
+### Examples of Fixed Inline Diffs
+
+1. **Subnet Address Prefix Change:** `/24` → `/23` now shows character-level diff
+2. **Route Next Hop Type Change:** `VirtualAppliance` → `VnetLocal` now shows highlighted changes
+3. **NSG Rule Source Addition:** Single source → multiple sources now shows added values highlighted
+4. **NSG Rule Description Change:** Word-level diff now displays for description updates
+
+### UAT PR Updates
+
+Both UAT PRs (#72 GitHub, #74 Azure DevOps) were updated with:
+1. Explanation comment documenting the fix
+2. Regenerated feature-specific artifact showing working inline diffs
+3. Regenerated comprehensive demo for regression testing
 
 ---
 

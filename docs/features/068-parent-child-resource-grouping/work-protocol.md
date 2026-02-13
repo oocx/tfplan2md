@@ -1168,3 +1168,53 @@ The maintainer reported that PR #74 had NOT been updated - the last comment was 
 3. **UAT Tester**: Run cleanup after approval with `scripts/uat-run.sh --cleanup-last`
 
 ---
+
+### UAT Tester
+- **Date:** 2026-02-13 (Inline Diff Fix)
+- **Summary:** Updated both GitHub and Azure DevOps UAT PRs with regenerated artifacts demonstrating working inline diffs after fixing commit 4ef994e
+- **Artifacts Produced:**
+  - Regenerated `artifacts/azure-rm-batch-2-uat.md` (24KB) with working inline diffs for UPDATE operations
+  - Regenerated `artifacts/comprehensive-demo.md` (34KB) for Azure DevOps regression test
+  - Regenerated `artifacts/comprehensive-demo-simple-diff.md` (31KB) for GitHub regression test
+  - Updated `docs/features/068-parent-child-resource-grouping/uat-report.md` with inline diff fix documentation
+  - Updated `docs/features/068-parent-child-resource-grouping/work-protocol.md` (this file)
+- **Tasks Completed:**
+  1. ✅ Rebuilt project with inline diff fixes (commit 4ef994e)
+  2. ✅ Regenerated feature-specific artifact showing working inline diffs in subnets, routes, NSG rules
+  3. ✅ Regenerated comprehensive demo artifacts for regression testing
+  4. ✅ Updated GitHub UAT PR #72 with 3 comments:
+     - Explanation of inline diff fix with examples
+     - Feature-specific artifact (🎯 Feature Test)
+     - Comprehensive demo regression test (🔄 Regression Test)
+  5. ✅ Updated Azure DevOps UAT PR #74 with 3 comments:
+     - Explanation of inline diff fix with examples
+     - Feature-specific artifact (🎯 Feature Test)
+     - Comprehensive demo regression test (🔄 Regression Test)
+  6. ✅ Updated UAT report documenting the inline diff bug, root cause, fix, and examples
+  7. ✅ Updated work protocol (this entry)
+- **Problems Encountered:**
+  - **Issue:** Inline diffs were completely missing in UPDATE resources for child tables (subnets, routes, NSG rules)
+  - **Root Cause:** Two bugs identified - diff detection not traversing nested attributes, and diff extraction not passing values to renderer
+  - **Resolution:** Fixed in commit 4ef994e. All 994 tests pass. Inline diffs now working correctly.
+- **Inline Diff Examples Verified:**
+  - Subnet address: `- 🌐 10.200.2.0/24` → `+ 🌐 10.200.2.0/23` (character-level diff)
+  - Route next hop: `- VirtualAppliance (10.200.1.4)` → `+ VnetLocal` (word-level diff)
+  - NSG source: `- 🌐 10.200.1.0/24` → `+ 🌐 10.200.1.0/24, 🌐 10.200.3.0/24` (addition highlighted)
+  - NSG description: `- Allow app to backend` → `+ Allow app and services to backend` (word-level diff)
+- **Validation Status:**
+  ✅ Authentication verified (GitHub CLI + Azure DevOps)  
+  ✅ Project built successfully  
+  ✅ Feature artifact regenerated with inline diffs visible  
+  ✅ Regression artifacts regenerated  
+  ✅ GitHub PR #72 updated with 3 comments  
+  ✅ Azure DevOps PR #74 updated with 3 comments  
+  ✅ UAT report updated  
+  ✅ Work protocol updated
+- **Status:** ✅ COMPLETE - Both UAT PRs now have regenerated artifacts demonstrating working inline diffs. Ready for maintainer review and approval.
+- **Next Steps:**
+  1. **Maintainer**: Review updated artifacts in GitHub PR #72 and Azure DevOps PR #74
+  2. **Maintainer**: Verify inline diffs display correctly in both platforms
+  3. **Maintainer**: Approve PRs if validation passes
+  4. **UAT Tester**: Run cleanup after approval
+
+---

@@ -264,6 +264,22 @@ Override timeout (if needed):
 scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test
 ```
 
+**CRITICAL: Why You Must Use the Wrapper Script**
+
+.NET 10 introduced two distinct test runners with incompatible CLI flags:
+
+| Working Directory | Runner Mode | `--solution` | `--project` | `--treenode-filter` | Result |
+|-------------------|-------------|:---:|:---:|:---:|---|
+| Repo root (`/`) | VSTest | ❌ | ❌ | ❌ | `MSBuild error MSB1001: Unknown switch` |
+| `src/` (where `global.json` lives) | Microsoft.Testing.Platform | ✅ | ✅ | ✅ | Works correctly |
+
+The `scripts/test-with-timeout.sh` wrapper automatically:
+1. Changes to the `src/` directory (where `global.json` with `"runner": "Microsoft.Testing.Platform"` exists)
+2. Normalizes any `src/`-prefixed paths in arguments
+3. Enforces a timeout to prevent hung test runs
+
+**NEVER run `dotnet test` directly** - it will fail with cryptic MSBuild errors when run from the repo root.
+
 ### TUnit Test Filtering
 
 **Important**: TUnit uses `--treenode-filter` (not xUnit's `--filter`). All TUnit flags must come after `--`.

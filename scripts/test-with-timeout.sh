@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Wrapper to prevent hung test runs.
+# Wrapper to prevent hung test runs and handle .NET 10 dual test runner issue.
+#
+# .NET 10 has two test runners (VSTest and Microsoft.Testing.Platform) that
+# activate based on whether global.json with "runner": "Microsoft.Testing.Platform"
+# is found. This script ensures tests run from src/ directory where global.json
+# exists, enabling Microsoft.Testing.Platform runner which supports --solution,
+# --project, and --treenode-filter flags.
 #
 # Usage:
 #   scripts/test-with-timeout.sh [--timeout-seconds <n>] [--grace-seconds <n>] [dotnet-test-args...]
@@ -76,6 +82,7 @@ if [[ "$explicit_command" == "true" ]]; then
   cmd=("$@")
   if [[ "${cmd[0]}" == "dotnet" && "${cmd[1]:-}" == "test" ]]; then
     work_dir="$repo_root/src"
+    echo "INFO: Executing 'dotnet test' from src/ directory (required for .NET 10 Microsoft.Testing.Platform runner)" >&2
     normalized_cmd=()
     for arg in "${cmd[@]}"; do
       if [[ "$arg" == src/* && -e "$repo_root/$arg" ]]; then

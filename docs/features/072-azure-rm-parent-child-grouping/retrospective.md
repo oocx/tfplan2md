@@ -99,6 +99,67 @@ This PR was created entirely by the **GitHub Copilot coding agent** (a single ag
 | **Rendering / formatting bugs** | 2 | Comments #2, #6 |
 | **CI not checked** | 1 | Comment #9 |
 
+## Tooling & Instruction Analysis
+
+### Issue 1: .NET 10 `dotnet test` Argument Friction
+
+**Root Cause:** .NET 10 has two distinct test runners with incompatible CLI flags. Which one activates depends on whether `global.json` (with `"runner": "Microsoft.Testing.Platform"`) is found in the current or parent directory:
+
+| Working Directory | Runner Mode | `--solution` | `--project` | Positional path | `--treenode-filter` |
+|-------------------|-------------|:---:|:---:|:---:|:---:|
+| Repo root (`/`) | VSTest | ❌ MSBuild error | ❌ MSBuild error | ❌ MTP error | ❌ |
+| `src/` (where `global.json` lives) | Microsoft.Testing.Platform | ✅ | ✅ | ✅ | ✅ |
+
+**Impact:** Agents trained on pre-.NET 10 knowledge try `dotnet test src/tests/...` from the repo root, which always fails. The `scripts/test-with-timeout.sh` wrapper handles this by `cd`-ing to `src/` before running, but agents don't always use the wrapper.
+
+**Evidence from PR #469:** The agent committed code 4+ times without running tests. When finally asked to run tests (comments #8-#12), the repeated failures suggest the agent could not successfully execute `dotnet test` directly and did not use the wrapper script.
+
+**Documented commands that fail from repo root:**
+- `.github/copilot-instructions.md` line 148: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` — **works** (wrapper handles it)
+- `.github/agents/developer-coding-agent.agent.md` line 51: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` — **works** (wrapper handles it)
+- But any agent attempt to run `dotnet test` directly from repo root fails silently or with cryptic MSBuild errors
+
+**Recommendation:** Add explicit warning in agent instructions that `dotnet test` must NEVER be called directly — always use `scripts/test-with-timeout.sh`. Add explanation of why: .NET 10's dual runner system requires running from `src/` directory where `global.json` enables Microsoft.Testing.Platform.
+
+### Issue 2: UAT Authentication Gap for Coding Agents
+
+**Root Cause:** The GitHub UAT script (`scripts/uat-github.sh`) uses `git push` to push branches to the UAT repository. The `copilot-setup-steps.yml` configures `gh auth login` (for `gh` CLI commands like `gh pr create`) but does NOT configure git credential helpers for `git push`. The missing step is `gh auth setup-git` which registers the GitHub CLI as a git credential helper.
+
+**Impact:** When a coding agent runs `scripts/uat-github.sh create`, the `gh pr create` step succeeds (uses `gh` CLI with token), but the `git push` step may fail because git itself has no credentials configured for the UAT repository.
+
+**Evidence from PR #469:** Comment #1 shows "even after several repeated attempts, the UAT tester still did not post the feature-specific report." While this was partly about posting the wrong artifact, the UAT workflow friction suggests authentication issues contributed to the difficulty.
+
+**Missing step in `copilot-setup-steps.yml`:**
+```yaml
+# After: echo "$GH_UAT_TOKEN" | gh auth login --with-token
+# Missing: gh auth setup-git
+```
+
+**For Azure DevOps:** The `uat-azdo.sh` script uses `AZURE_DEVOPS_EXT_PAT` for `az` CLI operations, but `git push` to the Azure DevOps submodule requires separate git credential configuration. The `uat-helpers.sh` has `ensure_azdo_credential_helper()` but it's designed for WSL environments (checks for Windows `.exe` helpers), not for GitHub Actions runners where there is no credential helper at all.
+
+**Recommendation:**
+1. Add `gh auth setup-git` to `copilot-setup-steps.yml` after `gh auth login`
+2. Configure git credentials for Azure DevOps UAT submodule in `copilot-setup-steps.yml`
+3. Add pre-flight auth check to `uat-github.sh` that verifies git credentials are configured (not just `gh auth status`)
+
+### Issue 3: Screenshot Generation Workflow Confusion
+
+**Root Cause:** When told "release notes should have screenshots," the agent didn't understand what was needed:
+1. **First attempt (commit 90614a8):** Generated release notes with `![...]` image syntax but the referenced image files didn't exist → broken links
+2. **Second attempt (commit 990500e):** Replaced image syntax with markdown links to source files (`[View in comprehensive-demo.md (lines X-Y)]`) → not screenshots
+3. **Third attempt (commit 09...):** Finally generated actual PNG screenshots using `HtmlRenderer` and `ScreenshotGenerator` tools
+
+**Evidence:**
+- Comment #18 (oocx): "the screenshot links in the release notes don't work"
+- Comment #20 (oocx): "I asked you to fix the screenshots, but you replaced them with links to markdown files instead. That's not what I want. I want my release notes to have screenshots!"
+
+**Instruction gap:** The release manager agent instructions (`.github/agents/release-manager-coding-agent.agent.md` line 125) do mention `scripts/generate-release-screenshots.sh`, but this was a GitHub Copilot coding agent (not the release manager agent), so it didn't have access to those instructions. The `copilot-instructions.md` has no guidance on screenshot generation.
+
+**Recommendation:**
+1. Add screenshot generation guidance to `copilot-instructions.md` or `developer-coding-agent.agent.md` for when the agent is asked to add screenshots to release notes
+2. Reference `scripts/generate-release-screenshots.sh` and `scripts/generate-screenshot.sh` explicitly
+3. Clarify that "screenshots" means actual PNG image files, not markdown links
+
 ## Automation Opportunities
 
 ### Terminal Command Patterns
@@ -106,8 +167,11 @@ This PR was created entirely by the **GitHub Copilot coding agent** (a single ag
 | Pattern | Issue | Recommendation |
 |---------|-------|----------------|
 | Agent did not run `dotnet test` before commits | 4+ CI failures from untested commits | **Add pre-commit test requirement** to agent instructions: "Run `dotnet test` and verify all pass before every commit" |
+| Agent ran `dotnet test` from repo root instead of using wrapper | .NET 10 dual runner system causes cryptic failures from wrong directory | **Add explicit warning**: "NEVER call `dotnet test` directly. Always use `scripts/test-with-timeout.sh`" |
 | Agent could not access CI logs directly | Maintainer had to tell agent to "look at the PR validation workflow" | **Improve agent CI log access** — ensure agent can read GitHub Actions logs via MCP tools |
 | Snapshot regeneration not automated | Multiple cycles of template changes + snapshot mismatches | **Use `scripts/update-test-snapshots.sh`** — ensure agent knows about this script |
+| UAT git push may fail without git credential setup | `copilot-setup-steps.yml` configures `gh` CLI but not git credentials | **Add `gh auth setup-git`** to copilot-setup-steps.yml |
+| Screenshot generation unknown to developer agent | Agent didn't know how to generate PNG screenshots | **Document `scripts/generate-release-screenshots.sh`** in developer agent instructions |
 
 ### Suggested Skills / Scripts
 
@@ -181,6 +245,9 @@ This PR was created entirely by the **GitHub Copilot coding agent** (a single ag
 | 5 | Feature folder numbering | Convention awareness | Ensure agent uses `next-issue-number` skill or checks existing folders | Add explicit step to check next available feature number | `.github/agents/developer-coding-agent.agent.md` | Correct feature folder number on first attempt |
 | 6 | Agent cannot access CI logs | Tooling | Ensure agent uses GitHub MCP tools to read workflow run logs | Train agent to use `github-mcp-server-get_job_logs` for CI failure investigation | `.github/agents/developer-coding-agent.agent.md` | Agent diagnoses CI failures without maintainer help |
 | 7 | PR merged with failing CI | Quality gate | Consider blocking merge on CI failure | Review branch protection rules | Repository settings | No PRs merged with failing CI |
+| 8 | `dotnet test` fails from repo root due to .NET 10 dual runner | Tooling / Instructions | Add explicit warning that `dotnet test` must never be called directly; always use `scripts/test-with-timeout.sh`. Explain why: .NET 10 has two test runners (VSTest vs Microsoft.Testing.Platform) that activate based on `global.json` location | Update `.github/copilot-instructions.md` test section and `.github/agents/developer-coding-agent.agent.md` | `.github/copilot-instructions.md`, `.github/agents/developer-coding-agent.agent.md` | No "MSBuild error MSB1001: Unknown switch" failures |
+| 9 | UAT git push fails without git credential setup | Tooling / Auth | Add `gh auth setup-git` to `copilot-setup-steps.yml` after `gh auth login`. Configure git credentials for Azure DevOps submodule | Add git credential configuration step | `.github/workflows/copilot-setup-steps.yml` | UAT `git push` succeeds on first attempt in coding agent environment |
+| 10 | Screenshot generation unknown to coding agent | Instructions | Add screenshot generation guidance referencing `scripts/generate-release-screenshots.sh` and `scripts/generate-screenshot.sh` to developer agent instructions | Document screenshot tools and clarify that "screenshots" means PNG files | `.github/agents/developer-coding-agent.agent.md` or `.github/copilot-instructions.md` | Agent generates correct PNG screenshots on first attempt |
 
 ## User Feedback (verbatim)
 
@@ -202,13 +269,13 @@ This PR was created entirely by the **GitHub Copilot coding agent** (a single ag
    → Maps to improvement #5 (feature folder numbering)
 
 6. > "the screenshot links in the release notes don't work" — oocx, 2026-02-14 08:43
-   → Maps to improvement #1 (verify before commit)
+   → Maps to improvement #10 (screenshot generation instructions)
 
 7. > "I asked you to fix the screenshots, but you replaced them with links to markdown files instead. That's not what I want. I want my release notes to have screenshots!" — oocx, 2026-02-14 08:47
-   → Maps to improvement #6 (instruction following / comprehension)
+   → Maps to improvement #10 (screenshot generation instructions)
 
 8. > "some tests failed in PR validation. fix them." — oocx, 2026-02-14 09:33
-   → Maps to improvement #1 (test before commit)
+   → Maps to improvements #1 and #8 (test before commit, dotnet test from wrong directory)
 
 9. > "just look at the results of the PR validation workflow to see the details of the failed tests" — oocx, 2026-02-14 10:45
    → Maps to improvement #6 (CI log access)
@@ -224,22 +291,30 @@ This PR was created entirely by the **GitHub Copilot coding agent** (a single ag
 
 ### Interactive Phase
 
-No interactive retrospective session was conducted (this retrospective was generated from PR comment analysis only).
+13. > "agents often have trouble running dotnet tests, because they were trained with pre-dotnet 10 knowledge and the arguments to run tests have changed in dotnet 10. They eventually figured it out, but it added friction every time an agent tried to run tests." — oocx, 2026-02-14 (retrospective session)
+    → Maps to improvement #8 (.NET 10 `dotnet test` dual runner documentation)
+
+14. > "for coding agents, authentication is done via a personal access token. I think that some of the scripts used may be using another authentication method (user performs authentication in the terminal before the agent runs), which works locally but not for coding agents." — oocx, 2026-02-14 (retrospective session)
+    → Maps to improvement #9 (UAT git credential setup in copilot-setup-steps.yml)
+
+15. > "The initial release notes did not contain screenshots. When I asked to add screenshots, the first attempt produced broken links to screenshots. It required another attempt to fix the problem." — oocx, 2026-02-14 (retrospective session)
+    → Maps to improvement #10 (screenshot generation instructions for developer agent)
 
 ## Work Protocol Analysis
 
-- **Work protocol file:** Not present (`work-protocol.md` does not exist in `docs/features/072-azure-rm-parent-child-grouping/`)
-- **Assessment:** The work protocol was not maintained for this feature. This is expected because the PR was created entirely by the Copilot coding agent via GitHub (not through the multi-agent workflow), so no agent-to-agent handoffs were tracked.
-- **Gap:** Without a work protocol, there is no structured record of which workflow phases were completed or skipped. The PR comment history serves as the only audit trail.
+- **Work protocol file:** Present (`work-protocol.md` created during retrospective analysis)
+- **Assessment:** The work protocol was not maintained during the original feature development because the PR was created entirely by the Copilot coding agent via GitHub (not through the multi-agent workflow), so no agent-to-agent handoffs were tracked. The protocol was created retroactively during the retrospective session.
+- **Gap:** Without a real-time work protocol, there is no structured record of which workflow phases were completed or skipped during development. The PR comment history serves as the only audit trail.
 
 ## Retrospective DoD Checklist
 
-- [x] Evidence sources enumerated (PR comment history — 31 comments, CI/status checks — 10 runs, feature artifacts)
+- [x] Evidence sources enumerated (PR comment history — 31 comments, CI/status checks — 10 runs, feature artifacts, live tooling verification)
 - [x] Evidence timeline normalized across lifecycle phases
 - [x] Findings clustered by theme and supported by evidence
-- [x] No unsupported claims (all findings cite specific PR comments or CI data)
+- [x] No unsupported claims (all findings cite specific PR comments, CI data, or live verification)
 - [x] No guessed agent attribution (single Copilot agent identified from PR metadata)
 - [x] Action items include where + verification
 - [x] Required metrics and required sections are present
-- [x] All retro-related user feedback captured verbatim (12 maintainer comments)
+- [x] All retro-related user feedback captured verbatim (12 PR comments + 3 interactive phase items)
+- [x] Tooling & instruction analysis completed (dotnet 10 dual runner, UAT auth gap, screenshot workflow)
 - [ ] Exported chat logs analyzed — **N/A**: PR was created on GitHub, no local chat exports available

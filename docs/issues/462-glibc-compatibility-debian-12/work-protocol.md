@@ -118,3 +118,30 @@ Chose Ubuntu 22.04 (glibc 2.35) over Ubuntu 20.04 (glibc 2.31) for:
 **Time Invested:** ~30 minutes
 
 ---
+
+### Developer - 2026-02-14 (Image Reference Fix)
+
+**Summary:**
+Fixed incorrect Docker image reference in release workflow. The image `mcr.microsoft.com/dotnet/sdk:10.0-jammy` does not exist for .NET 10.
+
+**Root Cause:**
+Microsoft discontinued Debian-based images for .NET 10 and switched to Ubuntu 24.04 (Noble) as the default. The `-jammy` suffix (Ubuntu 22.04) does not exist for .NET 10 SDK images.
+
+**Changes Made:**
+- Updated `.github/workflows/release.yml` line 186
+- Changed from: `mcr.microsoft.com/dotnet/sdk:10.0-jammy` (non-existent)
+- Changed to: `mcr.microsoft.com/dotnet/sdk:10.0-noble` (Ubuntu 24.04, glibc 2.39)
+
+**Impact:**
+- ✅ Ubuntu 25+ (glibc 2.41+) - backward compatible
+- ❌ Debian 12 (glibc 2.36) - NOT compatible (requires older glibc)
+- ❌ Ubuntu 22.04 (glibc 2.35) - NOT compatible
+
+**Important Note:**
+This change fixes the non-existent image reference but **reduces compatibility** compared to the original plan. The binary will now only work on Ubuntu 24.04+ and similar distributions with glibc 2.39 or newer. If Debian 12 support is required, a custom Docker build or Alpine-based musl build would be needed.
+
+**Status:** ✅ Complete
+
+**Time Invested:** ~20 minutes
+
+---

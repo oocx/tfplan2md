@@ -12,6 +12,8 @@ public class ReportModelBuilderRefactoringTests
     private const string ManagedMode = "managed";
     private const string ProviderName = "provider";
     private const string CreateAction = "create";
+    private const string ReadAction = "read";
+    private const string UpdateAction = "update";
     private const string NoOpAction = "no-op";
 
     private readonly TerraformPlanParser _parser = new();
@@ -113,5 +115,218 @@ public class ReportModelBuilderRefactoringTests
             "Import:Ready:type.import.ready",
             "Move:AlreadyApplied:type.move.noop",
             "Move:Ready:type.move.ready");
+    }
+
+    /// <summary>
+    /// Tests the fix for issue #464: Import with "read" action should NOT show "Already imported" warning.
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_ReadImport_IncludesChangeAndMarksAsReady()
+    {
+        // Arrange
+        var json = File.ReadAllText("TestData/read-import.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(ReadAction);
+        change.ImportId.Should().NotBeNull();
+        change.IsRefactoringAlreadyApplied.Should().BeFalse("Import with 'read' action should be marked as Ready, not Already Applied");
+
+        var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
+        operation.Operation.Should().Be("Import");
+        operation.Status.Should().Be("Ready");
+    }
+
+    /// <summary>
+    /// Unit test for DetermineAction to verify it correctly handles the "read" action.
+    /// This ensures "read" doesn't fall through to NoOpAction.
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_ImportWithReadAction_ActionIsRead()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([ReadAction]) { Importing = new Importing { Id = "test-id" } })
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(ReadAction, "DetermineAction should return 'read' for actions containing 'read'");
+        change.IsRefactoringAlreadyApplied.Should().BeFalse("Read action with import ID should NOT be marked as already applied");
+    }
+
+    /// <summary>
+    /// Verifies that imports with "create" action are marked as Ready (not Already Applied).
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_ImportWithCreateAction_MarksAsReady()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([CreateAction]) { Importing = new Importing { Id = "test-id" } })
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(CreateAction);
+        change.IsRefactoringAlreadyApplied.Should().BeFalse("Create action with import ID should be marked as Ready");
+
+        var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
+        operation.Status.Should().Be("Ready");
+    }
+
+    /// <summary>
+    /// Verifies that imports with "update" action are marked as Ready (not Already Applied).
+    /// This handles the case where an import will also apply configuration drift.
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_ImportWithUpdateAction_MarksAsReady()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([UpdateAction]) { Importing = new Importing { Id = "test-id" } })
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(UpdateAction);
+        change.IsRefactoringAlreadyApplied.Should().BeFalse("Update action with import ID should be marked as Ready");
+
+        var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
+        operation.Status.Should().Be("Ready");
+    }
+
+    /// <summary>
+    /// Verifies that only "no-op" imports are correctly marked as Already Applied.
+    /// This is the positive test case for the "Already imported" warning.
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_ImportWithNoOpAction_MarksAsAlreadyApplied()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([NoOpAction]) { Importing = new Importing { Id = "test-id" } })
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(NoOpAction);
+        change.IsRefactoringAlreadyApplied.Should().BeTrue("No-op action with import ID should be marked as Already Applied");
+
+        var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
+        operation.Status.Should().Be("AlreadyApplied");
+    }
+
+    /// <summary>
+    /// Verifies that moved resources with "read" action are marked as Ready (not Already Applied).
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_MoveWithReadAction_MarksAsReady()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([ReadAction]),
+                    PreviousAddress: "azurerm_storage_account.old")
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(ReadAction);
+        change.IsRefactoringAlreadyApplied.Should().BeFalse("Read action with move should be marked as Ready");
+
+        var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
+        operation.Operation.Should().Be("Move");
+        operation.Status.Should().Be("Ready");
     }
 }

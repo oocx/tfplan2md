@@ -17,6 +17,7 @@ internal partial class ReportModelBuilder
     private const string CreateAction = "create";
     private const string DeleteAction = "delete";
     private const string UpdateAction = "update";
+    private const string ReadAction = "read";
     private const string ReplaceAction = "replace";
     private const string NoOpAction = "no-op";
 
@@ -139,6 +140,15 @@ internal partial class ReportModelBuilder
     private static Dictionary<string, string?> ConvertToFlatDictionary(object? obj, string prefix = "") =>
         Helpers.JsonFlattener.ConvertToFlatDictionary(obj, prefix);
 
+    /// <summary>
+    /// Determines the action type from Terraform's action list.
+    /// </summary>
+    /// <param name="actions">List of actions from Terraform plan (e.g., ["create"], ["read"], ["no-op"]).</param>
+    /// <returns>A normalized action string for use in report generation.</returns>
+    /// <remarks>
+    /// Explicitly handles the "read" action to prevent false positives in import detection.
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md.
+    /// </remarks>
     private static string DetermineAction(IReadOnlyList<string> actions)
     {
         if (actions.Contains(CreateAction) && actions.Contains(DeleteAction))
@@ -161,14 +171,29 @@ internal partial class ReportModelBuilder
             return UpdateAction;
         }
 
+        if (actions.Contains(ReadAction))
+        {
+            return ReadAction;
+        }
+
         return NoOpAction;
     }
 
+    /// <summary>
+    /// Maps action type to display symbol/icon.
+    /// </summary>
+    /// <param name="action">The normalized action string.</param>
+    /// <returns>An icon/symbol representing the action.</returns>
+    /// <remarks>
+    /// "read" action uses Add icon as it represents bringing a resource into state (similar to create).
+    /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md.
+    /// </remarks>
     private static string GetActionSymbol(string action) => action switch
     {
         CreateAction => ActionIcons.Add,
         DeleteAction => ActionIcons.Delete,
         UpdateAction => ActionIcons.Update,
+        ReadAction => ActionIcons.Add,
         ReplaceAction => ActionIcons.Replace,
         _ => ActionIcons.NoOp
     };

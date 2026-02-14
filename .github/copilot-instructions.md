@@ -147,6 +147,9 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 - **Test hangs**: When running the full test suite, use the timeout wrapper instead of calling `dotnet test` directly.
   - Example: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --no-build --configuration Release --verbosity normal`
   - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test --solution src/tfplan2md.slnx ...`
+- **Pre-commit test verification (CRITICAL for coding agents)**: Before EVERY `report_progress` call, run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and confirm all tests pass. Never commit code without local test verification.
+  - When claiming tests are fixed, include actual test output (e.g., "1,007 passed, 0 failed") as evidence.
+  - After modifying Scriban templates (`.sbn` files), if test failures INCREASE, revert immediately.
 - **Snapshot updates**: Snapshot diffs (files under `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
   - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
   - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.

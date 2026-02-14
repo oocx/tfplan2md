@@ -48,13 +48,15 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - **Detail Checklist (REQUIRED for UI/UX features):** For features with many small visual items (icons, spacing, alignment), maintain a checklist in the task description or a separate file to ensure no detail is missed during implementation.
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Before reporting **Status: Done** (or suggesting merge/release readiness), run applicable tests (scoped for the change, or full suite for feature completion) and report the results
-- **MANDATORY TEST VERIFICATION:** Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and confirm all tests pass before claiming task completion or pushing changes
+- **MANDATORY TEST VERIFICATION BEFORE EVERY COMMIT:** Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and confirm all tests pass BEFORE EVERY call to `report_progress`. Never commit code without first verifying tests pass locally.
+- **EVIDENCE-BASED FIX CLAIMS:** When claiming tests are fixed or pass, ALWAYS include the actual test output showing pass/fail counts (e.g., "Tests passed: 1,007 passed, 0 failed"). Never claim "tests are fixed" without providing the test output as proof.
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
 - Use `generate-demo-artifacts` skill to regenerate all demo artifacts after ALL tasks complete
 - **MANDATE: Use `update-test-snapshots` skill for ALL intentional snapshot changes** - When markdown output logic changes, you MUST use the `update-test-snapshots` skill (which runs `scripts/update-test-snapshots.sh`) to regenerate snapshot baselines. Verify snapshots pass afterwards.
 - **Include `SNAPSHOT_UPDATE_OK` token in commit messages** - When committing snapshot changes, include `SNAPSHOT_UPDATE_OK` in the commit message to signal the change is intentional (example: `git commit -m "test: update snapshots for <feature-name>\n\nSNAPSHOT_UPDATE_OK"`).
 - Never update snapshots to "make tests pass" without first diagnosing what behavior changed and why the new output is correct
+- **REGRESSION PREVENTION FOR TEMPLATE CHANGES:** After modifying Scriban templates (`.sbn` files), ALWAYS run the full test suite (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`). If test failures INCREASE after a fix attempt, REVERT the change immediately and investigate the root cause. Template changes often affect multiple test snapshots.
 - Follow C# coding conventions and use modern C# features
 - Keep files under 300 lines, refactor if larger
 - Check for existing code to reuse before creating new code
@@ -80,7 +82,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Create pull requests (that's the Release Manager's responsibility)
 - Make changes outside the task scope
 - Introduce new patterns unless existing approaches are exhausted
-- Skip tests or commit failing tests
+- Skip tests or commit failing tests (ALWAYS run tests before `report_progress`)
 - Create code without verifying no duplication exists
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.

@@ -49,6 +49,9 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Before reporting **Status: Done** (or suggesting merge/release readiness), run applicable tests (scoped for the change, or full suite for feature completion) and report the results
 - **MANDATORY TEST VERIFICATION:** Use the `run-dotnet-tests` skill for all test execution. Confirm all tests pass before claiming task completion or pushing changes.
+- **CRITICAL: Test before EVERY commit** - Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --no-build --configuration Release --verbosity normal` before EVERY `report_progress` call. If tests fail, fix them BEFORE committing. Never commit with known test failures.
+- **Evidence-based fix claims** - When claiming you fixed tests or bugs, include actual test output (pass/fail counts) as proof. Pattern: "Fixed in commit X — test results: N passed, 0 failed". Never claim "tests are fixed" without providing the actual `dotnet test` output.
+- **Regression prevention for templates** - After modifying Scriban templates (`.sbn` files), ALWAYS run the full test suite. If test failure count increases after a fix, immediately revert the change and diagnose the root cause. Use `scripts/update-test-snapshots.sh` only when template changes are intentional.
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
 - Use `generate-demo-artifacts` skill to regenerate all demo artifacts after ALL tasks complete
@@ -81,6 +84,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Make changes outside the task scope
 - Introduce new patterns unless existing approaches are exhausted
 - Skip tests or commit failing tests
+- **CRITICAL: Commit without running tests** - NEVER call `report_progress` without first running the test suite and verifying all tests pass. Every commit must be test-verified. This prevents CI failures and cascading fix cycles.
 - Create code without verifying no duplication exists
 - Mix multiple unrelated changes in a single commit (keep commits focused on one topic)
 - Create "fixup" or "fix" commits for work you just committed; use `git commit --amend` instead.
@@ -175,7 +179,16 @@ Follow the project's coding conventions strictly:
       - Run relevant tests: `scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/<TestClass>/*`
       - Check for errors: Use `problems` to verify no workspace errors
    
-   d. **Commit the task**:
+   d. **Verify tests pass BEFORE commit**:
+      - **MANDATORY**: Run the test suite to verify all tests pass:
+        ```bash
+        scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --no-build --configuration Release --verbosity normal
+        ```
+      - All tests MUST pass before proceeding to commit
+      - If tests fail, fix the failures before committing
+      - For template changes (`.sbn` files), verify test count does not increase
+   
+   e. **Commit the task**:
       ```bash
       git add <relevant-files>
       git commit -m "feat: <task description>"
@@ -183,7 +196,7 @@ Follow the project's coding conventions strictly:
       - Use descriptive commit message following conventional commits
       - Include reference to task if applicable
    
-   e. **Update task status**:
+   f. **Update task status**:
          - Mark the task as completed in `docs/features/NNN-<feature-slug>/tasks.md`
       - Commit the status update:
         ```bash
@@ -191,7 +204,7 @@ Follow the project's coding conventions strictly:
         git commit -m "docs: mark task <task-name> as complete"
         ```
    
-   f. **Repeat for next task** - Return to step 4a for the next task
+   g. **Repeat for next task** - Return to step 4a for the next task
 
 5. **After ALL tasks complete** - Final verification:
    

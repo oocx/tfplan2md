@@ -20,6 +20,8 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 - Focus on the areas of code relevant to the task
 - Do not touch code that is unrelated to the task
 - Write thorough tests for all major functionality
+- **Test before every commit** - Run the full test suite before every `report_progress` call. Never commit code without verifying all tests pass locally.
+- **Provide evidence for fix claims** - When claiming you fixed tests or bugs, include actual test output (pass count, failure count) as proof. Pattern: "Fixed in commit X — test results: 1,007 passed, 0 failed". Never claim "tests are fixed" without including the `dotnet test` output evidence.
 - Avoid making major changes to the patterns and architecture of how a feature works, after it has shown to work well, unless explicitly instructed
 - Always think about what other methods and areas of code might be affected by code changes
 - Only make changes and give answers with high confidence. "I don't know" is an acceptable answer when you are not sure about something

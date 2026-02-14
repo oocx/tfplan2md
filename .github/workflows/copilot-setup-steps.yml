@@ -59,9 +59,14 @@ jobs:
           # Authenticate gh CLI with UAT token
           echo "$GH_UAT_TOKEN" | gh auth login --with-token
           
+          # Configure git to use gh as credential helper
+          # This is required for git push operations in UAT scripts
+          gh auth setup-git
+          
           # Verify authentication
           if gh auth status 2>&1 | grep -q "Logged in"; then
             echo "✓ GitHub CLI authenticated for UAT"
+            echo "✓ Git credential helper configured"
           else
             echo "❌ GitHub CLI authentication failed"
             exit 1
@@ -84,9 +89,15 @@ jobs:
           # Configure Azure DevOps defaults
           az devops configure --defaults organization=https://dev.azure.com/oocx project=test
           
+          # Configure git credentials for Azure DevOps (required for git push operations)
+          # This uses the AZURE_DEVOPS_EXT_PAT environment variable
+          git config --global credential.https://dev.azure.com.username token
+          git config --global credential.https://dev.azure.com.helper '!f() { echo "password=${AZURE_DEVOPS_EXT_PAT}"; }; f'
+          
           # Verify authentication
           if az devops project show --project test --organization https://dev.azure.com/oocx >/dev/null 2>&1; then
             echo "✓ Azure DevOps CLI authenticated for UAT"
+            echo "✓ Git credential helper configured for Azure DevOps"
           else
             echo "❌ Azure DevOps CLI authentication failed"
             exit 1

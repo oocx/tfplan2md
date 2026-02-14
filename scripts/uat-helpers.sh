@@ -82,17 +82,53 @@ validate_artifact() {
 # ---------------------------------------------------------------------------
 # ensure_azdo_credential_helper <submodule-path>
 #
-# In WSL, the global git credential.helper often points to a Windows .exe
+# Ensures git credentials are configured for Azure DevOps operations.
+#
+# In WSL: The global git credential.helper often points to a Windows .exe
 # (e.g. git-credential-manager.exe) that cannot execute natively, causing
 # git push/fetch to hang indefinitely.
 #
-# This function detects the broken state and:
-#   1. Attempts to re-register WSL interop so the Windows helper works
-#   2. Falls back to a local Azure CLI credential helper if interop can't be fixed
+# In GitHub Actions: No credential helper is configured by default.
+# copilot-setup-steps.yml should configure git credentials, but this
+# function provides a fallback.
+#
+# This function detects the environment and:
+#   1. In WSL: Re-registers WSL interop or falls back to Azure CLI helper
+#   2. In GitHub Actions: Uses AZURE_DEVOPS_EXT_PAT if available
+#   3. Otherwise: No action needed (local dev with working credentials)
 # ---------------------------------------------------------------------------
 ensure_azdo_credential_helper() {
     local submodule_path="${1:?ensure_azdo_credential_helper: submodule path required}"
 
+    # Check if we're in GitHub Actions (GITHUB_ACTIONS=true)
+    if [[ "${GITHUB_ACTIONS:-false}" == "true" ]]; then
+        # GitHub Actions environment
+        # copilot-setup-steps.yml should have configured git credentials globally
+        # Verify it worked, or configure locally as fallback
+        
+        if [[ -z "${AZURE_DEVOPS_EXT_PAT:-}" ]]; then
+            log_warn "AZURE_DEVOPS_EXT_PAT not set in GitHub Actions environment"
+            log_warn "UAT git push to Azure DevOps will likely fail"
+            return 1
+        fi
+        
+        # Check if global credentials are already configured
+        local global_username
+        global_username="$(git config --global credential.https://dev.azure.com.username 2>/dev/null || echo "")"
+        
+        if [[ "$global_username" == "token" ]]; then
+            # Global credentials configured by copilot-setup-steps.yml
+            return 0
+        fi
+        
+        # Fallback: configure locally for this submodule
+        log_info "Configuring Azure DevOps credentials locally for $submodule_path (GitHub Actions fallback)"
+        git -C "$submodule_path" config --local credential.https://dev.azure.com.username token
+        git -C "$submodule_path" config --local credential.https://dev.azure.com.helper '!f() { echo "password=${AZURE_DEVOPS_EXT_PAT}"; }; f'
+        return 0
+    fi
+
+    # WSL environment handling (existing logic)
     # Read the global credential.helper
     local global_helper
     global_helper="$(git config --global credential.helper 2>/dev/null || echo "")"

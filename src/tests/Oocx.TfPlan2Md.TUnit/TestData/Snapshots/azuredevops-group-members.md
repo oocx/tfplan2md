@@ -24,9 +24,9 @@ _No attribute changes._
 
 #### Members
 
-| Change | Member | Terraform Resource |
-| -------- | -------- | -------------------- |
-| ➕ | `aadgp.Uy0.AliceUser` | `azuredevops_group_membership.release_managers_membership_alice` |
-| ➕ | `aadgp.Uy0.BobUser` | `azuredevops_group_membership.release_managers_membership_bob` |
+| Change | Member | Terraform Resource | 
+| -------- | -------- | -------------------- | 
+| ➕ | `aadgp.Uy0.AliceUser` | `azuredevops_group_membership.release_managers_membership_alice` | 
+| ➕ | `aadgp.Uy0.BobUser` | `azuredevops_group_membership.release_managers_membership_bob` | 
 
 </details>

@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.17.1"></a>
+## [1.17.1](https://github.com/oocx/tfplan2md/compare/v1.17.0...v1.17.1) (2026-02-14)
+
+### 🐛 Bug Fixes
+
+* correct Scriban capture syntax and re-enable MD009 (SNAPSHOT_UPDATE_OK) ([e71a079](https://github.com/oocx/tfplan2md/commit/e71a079803c6bd4e47b9ea178982a7e715b11fe6))
+* disable MD009 trailing-spaces rule in markdownlint ([efecb99](https://github.com/oocx/tfplan2md/commit/efecb994ff0b55f3a51bff9f9a776fbed3d6de2d))
+* eliminate trailing spaces in child resource tables (SNAPSHOT_UPDATE_OK) ([4291555](https://github.com/oocx/tfplan2md/commit/4291555f210698fb4d60442cde48d7dcbc8c4bec))
+* remove trailing spaces from child resource tables (SNAPSHOT_UPDATE_OK) ([e6c88a6](https://github.com/oocx/tfplan2md/commit/e6c88a65c53a55dcf7097fdc5084d4dc26fe8bd1))
+* replace non-existent Docker base image with .NET 10 Ubuntu 24.04 ([d1d023c](https://github.com/oocx/tfplan2md/commit/d1d023c46a842cf3ad4891f35b2152afb287b4f0))
+* restore code analysis sections in comprehensive-demo.md ([2fcf3e3](https://github.com/oocx/tfplan2md/commit/2fcf3e3be0afb6c89891446ef4470391de5bf6ef))
+
+### 📚 Documentation
+
+* add tooling & instruction analysis to retrospective (dotnet 10 dual runner, UAT auth, screenshots) ([fdde0e1](https://github.com/oocx/tfplan2md/commit/fdde0e1b51c60caf034535ee5af3109cc10faeba))
+* comprehensive retrospective analysis for Feature 072 (PR [#469](https://github.com/oocx/tfplan2md/issues/469)) ([2070aec](https://github.com/oocx/tfplan2md/commit/2070aec629c4ebcdcf3d93e34c18fd9900602ee8))
+* update issue 462 with .NET 10 image reality check ([3765c67](https://github.com/oocx/tfplan2md/commit/3765c670ca73e735a4abd3780fda95deefbfa01d))
+
 <a name="1.17.0"></a>
 ## [1.17.0](https://github.com/oocx/tfplan2md/compare/v1.16.3...v1.17.0) (2026-02-14)
 

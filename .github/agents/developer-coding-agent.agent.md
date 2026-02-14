@@ -311,6 +311,33 @@ Run the tool in Docker (example):
 docker run --rm -v $(pwd):/data tfplan2md:local /data/plan.json
 ```
 
+### Screenshot Generation
+
+When asked to add screenshots to release notes or documentation:
+
+**Use repository screenshot generation tools:**
+```bash
+# For release note screenshots (includes retry logic)
+scripts/generate-release-screenshots.sh \
+  --plan examples/comprehensive-demo/plan.json \
+  --output-prefix feature-name \
+  --output-dir docs/features/NNN-feature-slug/ \
+  --selector "details:has(summary:has-text('resource_name'))"
+
+# For individual screenshots with full control (light/dark, DPI, crops)
+scripts/generate-screenshot.sh \
+  --plan examples/comprehensive-demo/plan.json \
+  --output-prefix feature-name \
+  --selector "..." \
+  --thumbnail-width 580 --thumbnail-height 400
+```
+
+**Important reminders:**
+- "Screenshots" means actual PNG files, NOT markdown links to source files
+- Generate screenshots BEFORE adding `![...]` references to markdown
+- Verify generated PNG files exist and show correct content
+- Use the `website-visual-assets` skill for detailed workflow guidance
+
 ### Checking Failed Workflows
 
 When fixing PR/CI failures, check workflow logs:

@@ -267,13 +267,7 @@ _No attribute changes._
 ⚠️ **Warning:** This resource has children managed both inline
 and as separate resources. This configuration will cause conflicts.
 
-| Change | Member | Terraform Resource | 
-| -------- | -------- | -------------------- | 
-| ➕ | `user-100` | `members attribute` | 
-| ➕ | `user-101` | `members attribute` | 
-| ➕ | `group-200` | `members attribute` | 
-| ➕ | `spn-300` | `members attribute` | 
-| ➕ | `user-100` | `azuread_group_member.platform_admin_member` | 
+| Change | Member | Terraform Resource || -------- | -------- | -------------------- || ➕ | `user-100` | `members attribute` || ➕ | `user-101` | `members attribute` || ➕ | `group-200` | `members attribute` || ➕ | `spn-300` | `members attribute` || ➕ | `user-100` | `azuread_group_member.platform_admin_member` |
 
 </details>
 
@@ -373,10 +367,7 @@ and as separate resources. This configuration will cause conflicts.
 
 #### Subnets
 
-| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource | 
-| -------- | -------- | -------- | -------- | -------- | -------------------- | 
-| ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - | `module.network.azurerm_subnet.app` | 
-| ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - | `module.network.azurerm_subnet.db` | 
+| Change | Name |Address Prefixes |NSG |Delegation | Terraform Resource || -------- | -------- |-------- |-------- |-------- | -------------------- || ➕ | `🆔 snet-app` |`🌐 10.1.1.0/24` |- |- | `module.network.azurerm_subnet.app` || ♻️ | `🆔 snet-db` |`🌐 10.1.20.0/24` |- |- | `module.network.azurerm_subnet.db` |
 
 </details>
 
@@ -444,12 +435,7 @@ and as separate resources. This configuration will cause conflicts.
 
 #### Security Rules
 
-| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description | 
-| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | 
-| ➕ | `🆔 allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | - | 
-| ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` | 
-| ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` | 
-| ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | - | 
+| Change | Name |Priority |Direction |Access |Protocol |Source Addresses |Source Ports |Destination Addresses |Destination Ports |Description || -------- | -------- |-------- |-------- |-------- |-------- |-------- |-------- |-------- |-------- |-------- || ➕ | `🆔 allow-https` |`100` |`⬇️ Inbound` |`✅ Allow` |`🔗 TCP` |`✳️` |`✳️` |`✳️` |`🔌 443` |- || ➕ | `🆔 deny-rdp` |`200` |`⬇️ Inbound` |`⛔ Deny` |`🔗 TCP` |`✳️` |`✳️` |`✳️` |`🔌 3389` |`Block RDP from internet` || ➕ | `🆔 allow-outbound-https` |`300` |`⬆️ Outbound` |`✅ Allow` |`🔗 TCP` |`✳️` |`✳️` |`✳️` |`🔌 443` |`Allow outbound HTTPS` || ❌ | `🆔 allow-http` |`100` |`⬇️ Inbound` |`✅ Allow` |`🔗 TCP` |`✳️` |`✳️` |`✳️` |`🔌 80` |- |
 
 </details>
 

@@ -138,6 +138,7 @@ Format:
 | `merge-conflict-resolution` | Resolve git merge/rebase conflicts safely without losing intended changes; verify by reviewing diffs and searching for conflict markers. |
 | `next-issue-number` | Determine the next available issue number across all change types (feature, fix, workflow) by checking both local docs and remote branches, then reserve it by pushing an empty branch. |
 | `generate-demo-artifacts` | Generate the comprehensive demo markdown artifact from the current codebase. |
+| `run-dotnet-tests` | Run .NET tests correctly using the test-with-timeout.sh wrapper to handle .NET 10 dual test runner modes and prevent test hangs. |
 | `run-uat` | Run User Acceptance Testing by creating a PR with rendered markdown on GitHub or Azure DevOps. |
 | `update-workflow-diagram` | Convert the mermaid diagram in docs/agents.md to a blueprint-styled SVG for the website. Use when the workflow diagram is updated. |
 | `view-pr-github` | View a GitHub PR (prefer GitHub chat tools; gh is fallback with pager disabled). |

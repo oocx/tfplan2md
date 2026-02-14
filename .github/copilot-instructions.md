@@ -144,10 +144,7 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
   - For `gh`: Use `GH_PAGER=cat GH_FORCE_TTY=false gh ...` or `export GH_PAGER=cat GH_FORCE_TTY=false`.
   - For `az`: Use `AZURE_CORE_PAGER=cat az ...` or `export AZURE_CORE_PAGER=cat`.
   - For general tools: Use `export PAGER=cat`.
-- **NEVER call `dotnet test` directly**: .NET 10 has two test runners (VSTest and Microsoft.Testing.Platform) that activate based on `global.json` location. Running `dotnet test` from the repo root uses VSTest mode, which fails with `MSB1001: Unknown switch` for `--solution`/`--project` flags. **Always use the wrapper script** which handles the correct working directory:
-  - Example: `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx --no-build --configuration Release --verbosity normal`
-  - If you need a different timeout: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test --solution src/tfplan2md.slnx ...`
-  - The wrapper also prevents test hangs by enforcing a timeout (default 120 seconds)
+- **NEVER call `dotnet test` directly**: Use the `run-dotnet-tests` skill for all test execution. .NET 10 has two test runners (VSTest and Microsoft.Testing.Platform) that activate based on `global.json` location. Direct calls from the repo root use VSTest mode, which fails with `MSB1001: Unknown switch` errors. The skill provides complete instructions for using the `scripts/test-with-timeout.sh` wrapper.
 - **Snapshot updates**: Snapshot diffs (files under `src/tests/Oocx.TfPlan2Md.Tests/TestData/Snapshots/`) must be intentional.
   - Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct.
   - To regenerate snapshots intentionally, use `scripts/update-test-snapshots.sh`.

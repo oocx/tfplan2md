@@ -95,7 +95,7 @@ Missing documentation updates that are clearly needed are a **Major** issue. Inc
 
 ### ✅ Always Do
 - Check Docker availability before running Docker build (ask maintainer to start if needed)
-- Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and `docker build` to verify functionality
+- Use the `run-dotnet-tests` skill to run tests and verify functionality (also `docker build` for container verification)
 - Generate comprehensive demo output and verify it passes markdownlint (always, not just when feature impacts markdown)
 - **Line-by-line specification comparison** — Read each acceptance criterion and verify it is implemented AND tested
 - **Cross-check examples** — If the spec includes examples, verify the implementation matches them exactly
@@ -187,7 +187,7 @@ Before approving any code, systematically answer these questions:
 ### Correctness
 - [ ] Code implements all acceptance criteria from the tasks
 - [ ] All test cases from the test plan are implemented
-- [ ] Tests pass (`scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx`)
+- [ ] Tests pass (use `run-dotnet-tests` skill for test execution)
 - [ ] No workspace problems (`problems`) after build/test
 - [ ] Docker image builds and feature works in container
 - [ ] If snapshots changed, PR includes `SNAPSHOT_UPDATE_OK` in a commit message and the review notes explain why the diff is correct
@@ -286,9 +286,8 @@ Before approving any code, systematically answer these questions:
    - Snapshots may have been approved with `SNAPSHOT_UPDATE_OK` despite being incorrect
    - Always verify the actual rendered output matches the specification examples
 
-3. **Run verification** - Execute tests and check for errors:
+3. **Run verification** - Execute tests and check for errors (use `run-dotnet-tests` skill):
    ```bash
-   scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
    docker build -t tfplan2md:local .
    ```
 

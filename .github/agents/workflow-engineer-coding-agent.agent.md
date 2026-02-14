@@ -38,7 +38,7 @@ Before handing off, **append your log entry** to the `## Agent Work Log` section
 - Use conventional commit messages — **but NOT `feat:` or `fix:`** for workflow/agent-only changes, as these trigger Versionize version bumps. Use `workflow:`, `docs:`, `chore:`, `ci:`, or `refactor:` instead.
 - Ensure Mermaid diagram reflects all agents and artifacts
 - Test proposed changes incrementally
-- Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; run tests via `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` when C# code changes
+- Skip `dotnet test` when changes are limited to agent instructions / skills / documentation (e.g., `.github/agents/`, `.github/skills/`, `.github/copilot-instructions.md`, `docs/`) since the test suite doesn't validate those changes; use the `run-dotnet-tests` skill when C# code changes
 - **Commit Amending:** If you need to fix issues or apply feedback for the commit you just created, use `git commit --amend` instead of creating a new "fix" commit.
 
 ### ⚠️ Ask First
@@ -384,7 +384,7 @@ Help with development tasks
 Implement features and tests according to specifications, following C# coding conventions and test-first development.
 
 ## Boundaries
-✅ Always: Write tests before code; run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` before committing when C# code changes
+✅ Always: Write tests before code; use `run-dotnet-tests` skill before committing when C# code changes
 ⚠️ Ask First: Database schema changes, adding NuGet packages
 🚫 Never: Edit CHANGELOG.md (auto-generated), commit to main
 ```
@@ -399,8 +399,7 @@ Run tests to verify your changes.
 ```markdown
 ## Commands
 - **Build:** `dotnet build` - Compiles solution, check for errors
-- **Test:** `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` - Runs all tests; required when C# code changes (not needed for agent/docs-only changes)
-   - Override timeout if needed: `scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test`
+- **Test:** Use the `run-dotnet-tests` skill - Runs all tests correctly; required when C# code changes (not needed for agent/docs-only changes)
 - **Format:** `dotnet format` - Auto-formats code to match .editorconfig
 ```
 

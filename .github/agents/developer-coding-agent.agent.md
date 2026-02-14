@@ -48,7 +48,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - **Detail Checklist (REQUIRED for UI/UX features):** For features with many small visual items (icons, spacing, alignment), maintain a checklist in the task description or a separate file to ensure no detail is missed during implementation.
 - When tests are skipped, identify why and ask Maintainer to resolve (e.g., start Docker) before marking work complete
 - Before reporting **Status: Done** (or suggesting merge/release readiness), run applicable tests (scoped for the change, or full suite for feature completion) and report the results
-- **MANDATORY TEST VERIFICATION:** Run `scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx` and confirm all tests pass before claiming task completion or pushing changes
+- **MANDATORY TEST VERIFICATION:** Use the `run-dotnet-tests` skill for all test execution. Confirm all tests pass before claiming task completion or pushing changes.
 - Write tests before implementation (test-first approach)
 - Run full test suite with NO skipped tests after ALL tasks complete
 - Use `generate-demo-artifacts` skill to regenerate all demo artifacts after ALL tasks complete
@@ -254,44 +254,22 @@ Build the project:
 dotnet build
 ```
 
-Run all tests (TUnit):
+**For running tests**, use the `run-dotnet-tests` skill which provides:
+- Complete instructions for using the `scripts/test-with-timeout.sh` wrapper
+- Explanation of .NET 10 dual test runner issue and why direct `dotnet test` calls fail
+- TUnit-specific filtering syntax and examples
+- Common test commands and troubleshooting guidance
+
+**Quick reference** (see skill for full details):
 ```bash
+# Run all tests
 scripts/test-with-timeout.sh -- dotnet test --solution src/tfplan2md.slnx
-```
 
-Override timeout (if needed):
-```bash
-scripts/test-with-timeout.sh --timeout-seconds <seconds> -- dotnet test
-```
+# Run specific project
+scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/
 
-**CRITICAL: Why You Must Use the Wrapper Script**
-
-.NET 10 introduced two distinct test runners with incompatible CLI flags:
-
-| Working Directory | Runner Mode | `--solution` | `--project` | `--treenode-filter` | Result |
-|-------------------|-------------|:---:|:---:|:---:|---|
-| Repo root (`/`) | VSTest | ❌ | ❌ | ❌ | `MSBuild error MSB1001: Unknown switch` |
-| `src/` (where `global.json` lives) | Microsoft.Testing.Platform | ✅ | ✅ | ✅ | Works correctly |
-
-The `scripts/test-with-timeout.sh` wrapper automatically:
-1. Changes to the `src/` directory (where `global.json` with `"runner": "Microsoft.Testing.Platform"` exists)
-2. Normalizes any `src/`-prefixed paths in arguments
-3. Enforces a timeout to prevent hung test runs
-
-**NEVER run `dotnet test` directly** - it will fail with cryptic MSBuild errors when run from the repo root.
-
-### TUnit Test Filtering
-
-**Important**: TUnit uses `--treenode-filter` (not xUnit's `--filter`). All TUnit flags must come after `--`.
-
-Filter by class name (hierarchical pattern):
-```bash
-scripts/test-with-timeout.sh -- dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownRendererTests/*
-```
-
-Filter by test name:
-```bash
-dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/*/Render_ValidPlan_ContainsSummarySection
+# Filter by class (TUnit uses --treenode-filter, not --filter)
+scripts/test-with-timeout.sh -- dotnet test --project tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/MarkdownRendererTests/*
 ```
 
 Filter by category:

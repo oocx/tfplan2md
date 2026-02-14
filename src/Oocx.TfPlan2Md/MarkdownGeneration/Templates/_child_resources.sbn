@@ -6,10 +6,10 @@
 and as separate resources. This configuration will cause conflicts.
 {{ end }}
 {{~ has_external = group.has_external_resources ~}}
-| Change | {{ for col in group.columns }}{{ col.header }} |{{ end ~}}{{~ if has_external }} Terraform Resource |{{ end ~}}
-| -------- | {{ for col in group.columns }}-------- |{{ end ~}}{{~ if has_external }} -------------------- |{{ end ~}}
+| Change | {{ for col in group.columns }}{{ col.header }} | {{ end ~}}{{~ if has_external }}Terraform Resource | {{ end ~}}
+| -------- | {{ for col in group.columns }}-------- | {{ end ~}}{{~ if has_external }}-------------------- | {{ end ~}}
 {{ for row in group.rows ~}}
-| {{ row.change_indicator }} | {{ for col in group.columns }}{{ format_child_value row.values[col.property_name] }} |{{ end ~}}{{~ if has_external }} {{ format_child_value row.terraform_resource }} |{{ end ~}}
+| {{ row.change_indicator }} | {{ for col in group.columns }}{{ format_child_value row.values[col.property_name] }} | {{ end ~}}{{~ if has_external }}{{ format_child_value row.terraform_resource }} | {{ end ~}}
 {{ end ~}}
 
 {{~ end ~}}

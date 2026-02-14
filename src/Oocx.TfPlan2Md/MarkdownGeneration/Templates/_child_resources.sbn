@@ -6,10 +6,19 @@
 and as separate resources. This configuration will cause conflicts.
 {{ end }}
 {{~ has_external = group.has_external_resources ~}}
+{{~ capture table_row_header ~}}
 | Change | {{ for col in group.columns }}{{ col.header }} | {{ end ~}}{{~ if has_external }}Terraform Resource | {{ end ~}}
+{{~ end_capture ~}}
+{{ table_row_header | string.rstrip }}
+{{~ capture table_separator ~}}
 | -------- | {{ for col in group.columns }}-------- | {{ end ~}}{{~ if has_external }}-------------------- | {{ end ~}}
+{{~ end_capture ~}}
+{{ table_separator | string.rstrip }}
 {{ for row in group.rows ~}}
+{{~ capture table_data_row ~}}
 | {{ row.change_indicator }} | {{ for col in group.columns }}{{ format_child_value row.values[col.property_name] }} | {{ end ~}}{{~ if has_external }}{{ format_child_value row.terraform_resource }} | {{ end ~}}
+{{~ end_capture ~}}
+{{ table_data_row | string.rstrip }}
 {{ end ~}}
 
 {{~ end ~}}

@@ -330,7 +330,7 @@ _No attribute changes._
 
 #### Subnets
 
-| Change | Name | Address Prefixes | NSG | Delegation |  Terraform Resource || -------- | -------- | -------- | -------- | -------- |  -------------------- || ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - |  `module.network.azurerm_subnet.app` || ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - |  `module.network.azurerm_subnet.db` |
+| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource | | -------- | -------- | -------- | -------- | -------- | -------------------- | | ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - | `module.network.azurerm_subnet.app` | | ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - | `module.network.azurerm_subnet.db` | 
 
 </details>
 

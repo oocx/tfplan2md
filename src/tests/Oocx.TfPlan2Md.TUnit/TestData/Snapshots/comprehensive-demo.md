@@ -330,7 +330,10 @@ _No attribute changes._
 
 #### Subnets
 
-| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource | | -------- | -------- | -------- | -------- | -------- | -------------------- | | ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - | `module.network.azurerm_subnet.app` | | ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - | `module.network.azurerm_subnet.db` | 
+| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource |
+| -------- | -------- | -------- | -------- | -------- | -------------------- |
+| ➕ | `🆔 snet-app` | `🌐 10.1.1.0/24` | - | - | `module.network.azurerm_subnet.app` |
+| ♻️ | `🆔 snet-db` | `🌐 10.1.20.0/24` | - | - | `module.network.azurerm_subnet.db` |
 
 </details>
 
@@ -398,7 +401,12 @@ _No attribute changes._
 
 #### Security Rules
 
-| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description | | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | | ➕ | `🆔 allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | - | | ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` | | ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` | | ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | - | 
+| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Destination Addresses | Destination Ports | Description |
+| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+| ➕ | `🆔 allow-https` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | - |
+| ➕ | `🆔 deny-rdp` | `200` | `⬇️ Inbound` | `⛔ Deny` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 3389` | `Block RDP from internet` |
+| ➕ | `🆔 allow-outbound-https` | `300` | `⬆️ Outbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 443` | `Allow outbound HTTPS` |
+| ❌ | `🆔 allow-http` | `100` | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `✳️` | `✳️` | `✳️` | `🔌 80` | - |
 
 </details>
 

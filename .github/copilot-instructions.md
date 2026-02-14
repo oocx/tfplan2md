@@ -94,7 +94,7 @@ When you cannot proceed because you need Maintainer input (for example, ambiguou
 
 - Agent Skills are the source of truth for how to perform recurring workflow tasks correctly.
 - Skills live under `.github/skills/<skill-name>/SKILL.md`.
-- Before performing any non-trivial workflow task (for example: PR creation/merge, rebase, resolving merge conflicts, UAT, release steps, demo artifact generation, architecture documentation updates), you must:
+- Before performing any non-trivial workflow task (for example: PR creation/merge, rebase, resolving merge conflicts, UAT, release steps, demo artifact generation, architecture documentation updates, **screenshot generation for release notes**), you must:
   1. Search for a relevant skill under `.github/skills/`.
   2. If a relevant skill exists, follow it instead of improvising.
   3. If you are unsure which skill applies or the intent is unclear, ask the user questions until it is clear.
@@ -228,33 +228,3 @@ Note: `docs/agents.md` is a helpful index, but `.github/skills/` is the authorit
 			"type": "stdio"
 		}
 ```
-
-## Screenshot Generation
-
-When asked to add screenshots to release notes or documentation:
-
-- **"Screenshots" means actual PNG image files**, NOT:
-  - Markdown links to source files (`[View in file.md (lines X-Y)]`)
-  - Empty `![...]` image syntax referencing non-existent files
-  - Text descriptions or placeholders
-- **Use repository screenshot generation tools** (HtmlRenderer + ScreenshotGenerator):
-  - `scripts/generate-release-screenshots.sh` - For release note screenshots (includes retry logic, error reporting)
-  - `scripts/generate-screenshot.sh` - For individual screenshots with full control (light/dark, DPI, crops)
-  - These scripts render markdown → HTML → PNG using the project's `HtmlRenderer` and `ScreenshotGenerator` tools
-- **Reference the `website-visual-assets` skill** - For detailed screenshot generation workflow, see `.github/skills/website-visual-assets/SKILL.md`
-- **Verify before committing**:
-  - Generated PNG files exist at expected paths
-  - Image references in markdown are correct
-  - Screenshots show the intended content (not blank/error pages)
-
-**Example (release notes):**
-```bash
-# Generate focused screenshots for release notes
-scripts/generate-release-screenshots.sh \
-  --plan examples/comprehensive-demo/plan.json \
-  --output-prefix feature-name \
-  --output-dir docs/features/NNN-feature-slug/ \
-  --selector "details:has(summary:has-text('resource_name'))"
-```
-
-**Common mistake to avoid:** Do not generate release notes with `![Screenshot](path/to/image.png)` syntax before verifying the PNG file exists. Always generate the screenshots first, then reference them.

@@ -73,78 +73,37 @@ Added pattern detection in `FormatChildValue` to recognize `"- value<br>+ value"
 
 Shows subnets rendered as inline table with address prefixes, NSG associations, and delegations:
 
-[View in comprehensive-demo.md (lines 20-42)](../../artifacts/comprehensive-demo.md#L20-L42)
-
-**Example output:**
-```markdown
-| Change | Name | Address Prefixes | NSG | Delegation |
-|--------|------|------------------|-----|------------|
-| ➕ | `🆔 subnet-web` | `🌐 10.100.1.0/24` | `nsg-web` | - |
-| ➕ | `🆔 subnet-app` | `🌐 10.100.2.0/24` | `nsg-app` | `Microsoft.Web/serverFarms` |
-```
+![VNet with inline subnets (create operation)](screenshots/01-vnet-inline-subnets-create.png)
 
 ### Virtual Network with Separate Subnets & Character-Level Diffs (Update)
 
 Shows mixed inline/separate subnets with character-level highlighting for address prefix changes:
 
-[View in comprehensive-demo.md (lines 46-62)](../../artifacts/comprehensive-demo.md#L46-L62)
-
-**Example diff showing CIDR change:**
-```markdown
-| 🔄 | `🆔 subnet-frontend` | 10.200.2.0/<span style="background-color: #ffc0c0">4</span> → 10.200.2.0/<span style="background-color: #acf2bd">3</span> | ... |
-```
+![VNet with character-level diff highlighting (update operation)](screenshots/06-char-level-diff-example.png)
 
 ### Mixed Management Warning
 
 Shows warning indicator when resource has both inline and separate child resources:
 
-[View in comprehensive-demo.md (lines 66-82)](../../artifacts/comprehensive-demo.md#L66-L82)
-
-**Warning message:**
-```markdown
-⚠️ Warning: This resource has children managed both inline 
-and as separate resources. This configuration will cause conflicts.
-```
+![VNet with mixed management warning](screenshots/02-vnet-separate-subnets-update.png)
 
 ### Network Security Group with Rules (11-Column Table)
 
 Shows security rules with split source/destination columns for addresses and ports:
 
-[View in comprehensive-demo.md (lines 185-210)](../../artifacts/comprehensive-demo.md#L185-L210)
-
-**Example output:**
-```markdown
-| Change | Name | Priority | Direction | Access | Protocol | Source Addresses | Source Ports | Dest Addresses | Dest Ports | Description |
-|--------|------|----------|-----------|--------|----------|------------------|--------------|----------------|------------|-------------|
-| ➕ | `allow-https` | `100` | `Inbound` | `Allow` | `Tcp` | `Internet` | `*` | `VirtualNetwork` | `443` | `Allow HTTPS` |
-```
+![Network Security Group with 11-column security rules table](screenshots/03-nsg-security-rules.png)
 
 ### Route Table with Routes
 
 Shows routes with address prefixes, next hop types, and next hop addresses:
 
-[View in comprehensive-demo.md (lines 130-145)](../../artifacts/comprehensive-demo.md#L130-L145)
-
-**Example output:**
-```markdown
-| Change | Name | Address Prefix | Next Hop Type | Next Hop Address |
-|--------|------|----------------|---------------|------------------|
-| ➕ | `to-internet` | `🌐 0.0.0.0/0` | `VirtualAppliance` | `🌐 10.100.1.4` |
-```
+![Route table with routes](screenshots/04-route-table-routes.png)
 
 ### DNS Zone with Records
 
 Shows DNS records grouped by zone with name, type, TTL, and values:
 
-[View in comprehensive-demo.md (lines 250-275)](../../artifacts/comprehensive-demo.md#L250-L275)
-
-**Example output:**
-```markdown
-| Change | Name | Type | TTL | Value |
-|--------|------|------|-----|-------|
-| ➕ | `www` | `A` | `3600` | `🌐 203.0.113.10` |
-| ➕ | `api` | `CNAME` | `300` | `api.example.com` |
-```
+![DNS zone with records](screenshots/05-dns-zone-records.png)
 
 ## 🔗 Commits
 

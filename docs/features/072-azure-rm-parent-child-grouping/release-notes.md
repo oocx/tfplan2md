@@ -73,7 +73,7 @@ Added pattern detection in `FormatChildValue` to recognize `"- value<br>+ value"
 
 Shows subnets rendered as inline table with address prefixes, NSG associations, and delegations:
 
-![VNet with inline subnets](../../artifacts/comprehensive-demo.md#L20-L42)
+[View in comprehensive-demo.md (lines 20-42)](../../artifacts/comprehensive-demo.md#L20-L42)
 
 **Example output:**
 ```markdown
@@ -87,7 +87,7 @@ Shows subnets rendered as inline table with address prefixes, NSG associations, 
 
 Shows mixed inline/separate subnets with character-level highlighting for address prefix changes:
 
-![VNet with character-level diffs](../../artifacts/comprehensive-demo.md#L46-L62)
+[View in comprehensive-demo.md (lines 46-62)](../../artifacts/comprehensive-demo.md#L46-L62)
 
 **Example diff showing CIDR change:**
 ```markdown
@@ -98,7 +98,7 @@ Shows mixed inline/separate subnets with character-level highlighting for addres
 
 Shows warning indicator when resource has both inline and separate child resources:
 
-![Mixed management warning](../../artifacts/comprehensive-demo.md#L66-L82)
+[View in comprehensive-demo.md (lines 66-82)](../../artifacts/comprehensive-demo.md#L66-L82)
 
 **Warning message:**
 ```markdown
@@ -110,7 +110,7 @@ and as separate resources. This configuration will cause conflicts.
 
 Shows security rules with split source/destination columns for addresses and ports:
 
-![NSG with security rules](../../artifacts/comprehensive-demo.md#L185-L210)
+[View in comprehensive-demo.md (lines 185-210)](../../artifacts/comprehensive-demo.md#L185-L210)
 
 **Example output:**
 ```markdown
@@ -123,7 +123,7 @@ Shows security rules with split source/destination columns for addresses and por
 
 Shows routes with address prefixes, next hop types, and next hop addresses:
 
-![Route table with routes](../../artifacts/comprehensive-demo.md#L130-L145)
+[View in comprehensive-demo.md (lines 130-145)](../../artifacts/comprehensive-demo.md#L130-L145)
 
 **Example output:**
 ```markdown
@@ -136,7 +136,7 @@ Shows routes with address prefixes, next hop types, and next hop addresses:
 
 Shows DNS records grouped by zone with name, type, TTL, and values:
 
-![DNS zone with records](../../artifacts/comprehensive-demo.md#L250-L275)
+[View in comprehensive-demo.md (lines 250-275)](../../artifacts/comprehensive-demo.md#L250-L275)
 
 **Example output:**
 ```markdown

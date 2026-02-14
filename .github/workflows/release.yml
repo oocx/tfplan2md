@@ -183,7 +183,7 @@ jobs:
     name: Build Linux x64 Binary
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0-jammy  # Ubuntu 22.04, glibc 2.35
+      image: mcr.microsoft.com/dotnet/sdk:10.0-noble  # Ubuntu 24.04, glibc 2.39
     needs: release
 
     steps:

@@ -40,6 +40,11 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - **CRITICAL: Verify UAT plan artifacts exist** - Before running UAT, check that both `docs/features/NNN-<feature-slug>/uat-plan.json` and `docs/features/NNN-<feature-slug>/uat-plan.md` exist when a UAT test plan is defined
 - **BLOCKER if UAT plan artifacts missing**: If `uat-test-plan.md` exists but `uat-plan.json` or `uat-plan.md` are missing, this is a BLOCKER that requires Developer to create them before UAT can proceed
+- **CRITICAL: Verify artifact CONTENT before running UAT** (see step 3 in Workflow):
+  - Read and verify feature-specific artifact contains the expected resource types
+  - Cross-check against feature specification
+  - Verify it is NOT the comprehensive demo
+  - Never substitute comprehensive demo for feature-specific report
 - **Post TWO artifacts as separate PR comments**:
   1. **Feature-Specific Report** (from `uat-plan.md` in feature folder): Label with "🎯 Feature Test"
   2. **Comprehensive Demo** (regression test): Label with "🔄 Regression Test"
@@ -139,12 +144,44 @@ When the user asks to run UAT:
    - **If UAT plan artifacts are missing, STOP and report to Maintainer** - Do not attempt to work around or skip the UAT plan
    - If test plan doesn't exist or doesn't define artifacts, ask user
 
-3. **Validate Artifacts**
-   - Verify feature-specific artifact exists: `docs/features/NNN-<feature-slug>/uat-plan.md`
-   - Verify comprehensive demo artifacts exist:
-     - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
-     - Azure DevOps: `artifacts/comprehensive-demo.md`
-   - If missing, use `generate-demo-artifacts` skill first
+3. **Validate Artifacts (CRITICAL - Content Verification)**
+   
+   **Before running UAT, verify each artifact's content matches expectations:**
+   
+   **For Feature-Specific Report (`docs/features/NNN-<feature-slug>/uat-plan.md`):**
+   - [ ] Open the file and read its content
+   - [ ] Verify it contains the specific resource types changed in this feature
+   - [ ] Cross-check resource types against the feature specification (e.g., if feature adds NSG support, report must show NSG rules)
+   - [ ] Verify it is NOT the comprehensive demo (should be focused on this feature only)
+   - [ ] Confirm filename matches the feature folder number
+   
+   **For Comprehensive Demo:**
+   - [ ] Verify file exists: `artifacts/comprehensive-demo-simple-diff.md` (GitHub) or `artifacts/comprehensive-demo.md` (Azure DevOps)
+   - [ ] Verify it contains multiple resource types (comprehensive regression test)
+   - [ ] This should be used for the **second comment only** (regression test), never as the primary feature validation artifact
+   
+   **🚫 NEVER SUBSTITUTE ARTIFACTS:**
+   - **NEVER** post the comprehensive demo as the feature-specific report
+   - **NEVER** post the feature-specific report as the comprehensive demo
+   - If the correct artifact is missing, **STOP** and request it from the Developer
+   - If uncertain which artifact to use, **ASK** the Maintainer
+   
+   **Example Verification (Feature 072 - Azure RM Parent-Child Grouping):**
+   ```bash
+   # Read the feature-specific artifact
+   less docs/features/072-azure-rm-parent-child-grouping/uat-plan.md
+   
+   # Verify it contains the NEW resource types:
+   # - azurerm_virtual_network (parent) + azurerm_subnet (child)
+   # - azurerm_dns_zone (parent) + azurerm_dns_*_record (child)
+   # - azurerm_route_table (parent) + azurerm_route (child)
+   # - azurerm_network_security_group (parent) + azurerm_network_security_rule (child)
+   
+   # If it shows unrelated resources (e.g., aws_instance, google_storage), WRONG ARTIFACT
+   # If it shows only comprehensive demo content, WRONG ARTIFACT
+   ```
+   
+   If missing, use `generate-demo-artifacts` skill first
 
 4. **Post PR Overview Links**
    

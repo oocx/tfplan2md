@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.Parsing;
 
 /// <summary>
 /// Validates Terraform plan parse exception constructors and propagation.
-/// Related feature: docs/features/012-terraform-plan-import/specification.md.
+/// Related feature: docs/features/012-nsg-security-rule-template/specification.md.
 /// </summary>
 public class TerraformPlanParseExceptionTests
 {

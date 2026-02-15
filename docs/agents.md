@@ -418,7 +418,7 @@ Agents determine their execution environment by analyzing:
 
 **Note:** Even cloud-capable agents may work better locally for tasks requiring rapid iteration or visual validation.
 
-For detailed analysis of cloud agents, see [docs/workflow/031-cloud-agents-analysis/](./workflow/031-cloud-agents-analysis/).
+For detailed analysis of cloud agents, see [docs/workflow/071-cloud-agents-analysis/](./workflow/071-cloud-agents-analysis/).
 
 ## Agent Roles & Responsibilities
 

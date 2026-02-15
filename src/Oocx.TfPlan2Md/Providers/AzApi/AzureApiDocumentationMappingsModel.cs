@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Root model for Azure API documentation mappings JSON structure.
-/// Related feature: docs/features/048-azure-api-doc-mapping/specification.md.
+/// Related feature: docs/features/033-azure-api-doc-mapping/specification.md.
 /// </summary>
 internal sealed class AzureApiDocumentationMappingsModel
 {

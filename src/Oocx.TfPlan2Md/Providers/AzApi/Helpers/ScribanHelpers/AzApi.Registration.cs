@@ -15,7 +15,7 @@ public static partial class ScribanHelpers
     /// <param name="scriptObject">The script object receiving helpers.</param>
     internal static void RegisterAzApiHelpers(ScriptObject scriptObject)
     {
-        // AzApi helpers - Related feature: docs/features/040-azapi-resource-template/specification.md
+        // AzApi helpers - Related feature: docs/features/028-azapi-resource-template/specification.md
         scriptObject.Import("flatten_json", new Func<object?, string, ScriptArray>(FlattenJson));
         scriptObject.Import("compare_json_properties", new Func<object?, object?, object?, object?, bool, bool, ScriptArray>(CompareJsonProperties));
         scriptObject.Import("parse_azure_resource_type", new Func<string?, ScriptObject>(ParseAzureResourceType));

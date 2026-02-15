@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Shared constants for AzAPI Scriban helper rendering.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md.
+/// Related feature: docs/features/028-azapi-resource-template/specification.md.
 /// </summary>
 public static partial class ScribanHelpers
 {

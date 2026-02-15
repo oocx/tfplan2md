@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Scriban helper functions for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md.
+/// Related feature: docs/features/028-azapi-resource-template/specification.md.
 /// </summary>
 /// <remarks>
 /// These helpers transform JSON body content from azapi_resource resources into human-readable
@@ -18,7 +18,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <remarks>
     /// Array groups correspond to paths that include an array index, while prefix groups
-    /// represent non-array shared prefixes. Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// represent non-array shared prefixes. Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     internal enum AzApiGroupedPrefixKind
     {
@@ -41,7 +41,7 @@ public static partial class ScribanHelpers
     /// <param name="MemberIndexes">The ordered indices of properties that belong to the group.</param>
     /// <remarks>
     /// The indices map back to the original flattened property order, allowing renderers to
-    /// preserve plan ordering. Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// preserve plan ordering. Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     internal sealed record AzApiGroupedPrefix(
         string Path,
@@ -99,7 +99,7 @@ public static partial class ScribanHelpers
     /// <remarks>
     /// This method applies the fixed threshold (≥3), distinguishes array groups from non-array
     /// prefix groups, and enforces the "longest common prefix wins" rule. Related feature:
-    /// docs/features/050-azapi-attribute-grouping/specification.md.
+    /// docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     internal static IReadOnlyList<AzApiGroupedPrefix> IdentifyGroupedPrefixes(ScriptArray properties)
     {
@@ -128,7 +128,7 @@ public static partial class ScribanHelpers
     /// <param name="Segments">The dot-separated segments that make up the path.</param>
     /// <remarks>
     /// The structure is used to preserve ordering when creating grouping sections.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private sealed record AzApiPathInfo(int Index, string Path, IReadOnlyList<string> Segments);
 
@@ -140,7 +140,7 @@ public static partial class ScribanHelpers
     /// <param name="SegmentCount">The number of dot segments in the prefix path.</param>
     /// <remarks>
     /// Candidates are filtered by threshold and overlap rules before becoming final groups.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private sealed record AzApiGroupingCandidate(string Path, IReadOnlyList<int> MemberIndexes, int SegmentCount);
 
@@ -151,7 +151,7 @@ public static partial class ScribanHelpers
     /// <returns>Ordered list of path metadata entries.</returns>
     /// <remarks>
     /// Normalization removes the leading <c>properties.</c> prefix to align grouping with rendered keys.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<AzApiPathInfo> ExtractPathInfos(ScriptArray properties)
     {
@@ -181,7 +181,7 @@ public static partial class ScribanHelpers
     /// <returns>Grouping candidates for array paths.</returns>
     /// <remarks>
     /// The outermost array dimension is used to keep grouping single-level for MVP behavior.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<AzApiGroupingCandidate> BuildArrayGroupCandidates(IReadOnlyList<AzApiPathInfo> pathInfos)
     {
@@ -219,7 +219,7 @@ public static partial class ScribanHelpers
     /// <returns>Grouping candidates for non-array prefixes.</returns>
     /// <remarks>
     /// Prefixes are derived only from non-array segments to avoid grouping within array items.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<AzApiGroupingCandidate> BuildNonArrayPrefixCandidates(
         IReadOnlyList<AzApiPathInfo> pathInfos,
@@ -261,7 +261,7 @@ public static partial class ScribanHelpers
     /// <returns>Grouped prefix descriptors that meet the threshold.</returns>
     /// <remarks>
     /// The fixed threshold is three attributes per group as defined in the feature specification.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<AzApiGroupedPrefix> SelectGroupsByThreshold(
         IReadOnlyList<AzApiGroupingCandidate> candidates,
@@ -285,7 +285,7 @@ public static partial class ScribanHelpers
     /// <returns>Grouped prefix descriptors that remain after overlap filtering.</returns>
     /// <remarks>
     /// Any prefix that is a parent of another qualifying prefix is suppressed to avoid nested sections.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<AzApiGroupedPrefix> SelectLongestPrefixGroups(
         List<AzApiGroupingCandidate> candidates)
@@ -331,7 +331,7 @@ public static partial class ScribanHelpers
     /// <returns><c>true</c> if the parent is a strict prefix of the child; otherwise <c>false</c>.</returns>
     /// <remarks>
     /// This comparison uses dot boundaries to avoid treating <c>foo</c> as a prefix of <c>foobar</c>.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static bool IsParentPrefix(string parent, string child)
     {
@@ -350,7 +350,7 @@ public static partial class ScribanHelpers
     /// <returns>Ordered list of segments for the path.</returns>
     /// <remarks>
     /// Empty segments are ignored to keep grouping deterministic with malformed input.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<string> SplitPathSegments(string path)
     {
@@ -366,7 +366,7 @@ public static partial class ScribanHelpers
     /// <returns>The array prefix path without index notation, or <c>null</c> if none exists.</returns>
     /// <remarks>
     /// Only the first array segment is considered to enforce single-level array grouping.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static string? GetOutermostArrayPath(IReadOnlyList<string> segments)
     {
@@ -394,7 +394,7 @@ public static partial class ScribanHelpers
     /// <returns><c>true</c> if the segment represents an array; otherwise <c>false</c>.</returns>
     /// <remarks>
     /// Array segments are expected to be in the form <c>name[0]</c> as produced by JSON flattening.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static bool TryGetArraySegmentName(string segment, out string arrayName)
     {
@@ -416,7 +416,7 @@ public static partial class ScribanHelpers
     /// <returns>Enumerable of non-array prefix paths.</returns>
     /// <remarks>
     /// Prefix generation stops before the first array segment to avoid grouping within array items.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static IEnumerable<string> GetNonArrayPrefixes(IReadOnlyList<string> segments)
     {
@@ -441,7 +441,7 @@ public static partial class ScribanHelpers
     /// <returns>The index of the first array segment, or <c>-1</c> if none are found.</returns>
     /// <remarks>
     /// Detecting the first array segment ensures grouping respects the MVP single-level array rule.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static int GetFirstArraySegmentIndex(IReadOnlyList<string> segments)
     {

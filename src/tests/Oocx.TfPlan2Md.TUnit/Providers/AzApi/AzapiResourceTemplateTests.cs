@@ -12,31 +12,31 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Integration tests for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/test-plan.md.
+/// Related feature: docs/features/028-azapi-resource-template/test-plan.md.
 /// </summary>
 public class AzapiResourceTemplateTests
 {
     /// <summary>
     /// Resource type name used by AzAPI tests to avoid string duplication.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </summary>
     private const string AzapiResourceType = "azapi_resource";
 
     /// <summary>
     /// Parses plan JSON files for AzAPI template tests.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </summary>
     private readonly TerraformPlanParser _parser = new();
 
     /// <summary>
     /// Renders markdown output for AzAPI template tests.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </summary>
     private readonly MarkdownRenderer _renderer;
 
     /// <summary>
     /// Builds report models for AzAPI template tests.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </summary>
     private readonly ReportModelBuilder _modelBuilder;
 

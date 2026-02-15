@@ -62,13 +62,13 @@ public class ResourceChangeModel
 
     /// <summary>
     /// Gets or sets the paths to attributes that triggered replacement (from Terraform plan replace_paths).
-    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
+    /// Related feature: docs/features/011-replacement-reasons-and-summaries/specification.md.
     /// </summary>
     public IReadOnlyList<IReadOnlyList<object>>? ReplacePaths { get; set; }
 
     /// <summary>
     /// Gets or sets the human-readable summary of the resource change for quick scanning in templates.
-    /// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
+    /// Related feature: docs/features/011-replacement-reasons-and-summaries/specification.md.
     /// </summary>
     public string? Summary { get; set; }
 

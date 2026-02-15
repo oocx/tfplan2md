@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Shared assertions for markdown snapshot tests.
-/// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+/// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
 /// </summary>
 internal static class SnapshotTestAssertions
 {

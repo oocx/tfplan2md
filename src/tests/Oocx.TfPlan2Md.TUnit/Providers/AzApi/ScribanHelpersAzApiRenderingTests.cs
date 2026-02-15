@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Tests for azapi_resource body rendering helpers.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md.
+/// Related feature: docs/features/028-azapi-resource-template/specification.md.
 /// </summary>
 public class ScribanHelpersAzApiRenderingTests
 {

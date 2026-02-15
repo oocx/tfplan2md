@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Unit tests for AzAPI prefix grouping logic.
-/// Related feature: docs/features/050-azapi-attribute-grouping/test-plan.md.
+/// Related feature: docs/features/034-azapi-attribute-grouping/test-plan.md.
 /// </summary>
 public class ScribanHelpersAzApiGroupingTests
 {

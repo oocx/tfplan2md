@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.Providers.AzApi;
 
 /// <summary>
 /// Tests update-mode rendering for azapi body helpers.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md.
+/// Related feature: docs/features/028-azapi-resource-template/specification.md.
 /// </summary>
 public class ScribanHelpersAzApiUpdateRenderingTests
 {

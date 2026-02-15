@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Summaries;
 /// </summary>
 /// <remarks>
 /// Extracted from ResourceSummaryBuilder to improve maintainability.
-/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
+/// Related feature: docs/features/011-replacement-reasons-and-summaries/specification.md.
 /// </remarks>
 internal static class ResourceSummaryMappings
 {

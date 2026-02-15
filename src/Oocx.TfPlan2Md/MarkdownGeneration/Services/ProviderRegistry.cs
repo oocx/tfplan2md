@@ -121,7 +121,7 @@ internal sealed class ProviderRegistry
     /// <param name="builder">The report model builder to register callbacks with.</param>
     /// <remarks>
     /// Invoked during builder construction to allow providers to hook into the build pipeline.
-    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
     /// </remarks>
     public void RegisterAllPostMergeCallbacks(ReportModelBuilder builder)
     {

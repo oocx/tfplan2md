@@ -15,7 +15,7 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 /// <remarks>
 /// This callback mechanism allows provider-specific logic to run after core merging
 /// without introducing dependencies from MarkdownGeneration to Providers.
-/// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+/// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
 /// </remarks>
 internal delegate void ParentPostMergeCallback(
     List<ResourceChangeModel> allChanges,
@@ -141,7 +141,7 @@ internal partial class ReportModelBuilder(
     /// <param name="callback">The callback to register.</param>
     /// <remarks>
     /// Used by providers to perform post-merge processing like updating summaries.
-    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
     /// </remarks>
     public void RegisterPostMergeCallback(ParentPostMergeCallback callback)
     {

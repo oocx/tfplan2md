@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Tests for the parent post-merge callback mechanism.
-/// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+/// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
 /// </summary>
 public class ParentPostMergeCallbackTests
 {

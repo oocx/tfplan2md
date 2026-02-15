@@ -58,3 +58,13 @@
 - **Artifacts Produced:**
   - Updated `docs/features/085-azdo-principal-mapping/architecture.md` - Added Decision 6 (Value Formatters vs. Scriban Templates), architectural discovery section, detailed implementation guidance for value formatters, and complete summary for Developer
 - **Problems Encountered:** None. The architectural analysis revealed that the original design was correct but incomplete. The value formatter registry is the proper extension point for Azure DevOps inline rendering. This discovery improves the implementation by making entity resolution automatic across all Azure DevOps resources without template changes.
+
+### Technical Writer
+- **Date:** 2025-02-15
+- **Summary:** Updated all user-facing documentation to reflect the new Azure DevOps principal mapping feature. Created release notes following established patterns. Updated README.md to document the three new azdo sections (azdoUsers, azdoGroups, azdoProjects) in the principal mapping file format, including complete JSON examples and usage instructions. Updated docs/features.md to add a comprehensive Azure DevOps Principal Mapping section with features, mapping format, rendered output examples, debug output examples, usage commands, and custom template helpers. Verified that examples/comprehensive-demo/demo-principals.json already contains azdo sections with realistic data (previously updated by Developer).
+- **Artifacts Produced:**
+  - `docs/features/085-azdo-principal-mapping/release-notes.md` - User-focused release notes with overview, features, usage examples, benefits, and migration guide
+  - Updated `README.md` - Added azdo sections to principal mapping file format, updated Azure CLI export commands section to clarify azdo sections are manual
+  - Updated `docs/features.md` - Added new "Azure DevOps Principal Mapping" section after "Enhanced Azure AD Resource Display" with complete documentation
+  - Work protocol entry
+- **Problems Encountered:** None. The feature specification and architecture documents provided clear guidance. The existing documentation structure made it straightforward to integrate the new feature. All examples were already updated with azdo data, confirming the implementation is complete.

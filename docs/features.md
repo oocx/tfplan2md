@@ -1490,6 +1490,120 @@ The nested format organizes principals by type:
 
 The legacy flat format (all principals in one dictionary) is also supported for backwards compatibility.
 
+## Azure DevOps Principal Mapping
+
+**Status:** ✅ Implemented  
+**Related specification:** [docs/features/085-azdo-principal-mapping/specification.md](features/085-azdo-principal-mapping/specification.md)
+
+tfplan2md now supports mapping Azure DevOps user IDs, group descriptors, and project IDs to human-readable display names using the same principal mapping JSON file as Azure AD entities. This enhancement makes Terraform plans for Azure DevOps resources significantly more readable by replacing cryptic GUIDs and descriptors with recognizable names.
+
+### Features
+
+- **Three entity types**: Map Azure DevOps users, groups, and projects to display names
+- **Automatic resolution**: Entities are automatically resolved in group memberships, team rosters, and project references
+- **Unified mapping file**: Add `azdoUsers`, `azdoGroups`, and `azdoProjects` sections to your existing principals.json
+- **Consistent display format**: Azure DevOps entities display as `DisplayName (ID)`, matching Azure AD principal format
+- **Full descriptor support**: Group descriptors are displayed in full without truncation
+- **Diagnostic support**: Debug output shows entity counts and failed resolutions
+
+### Mapping File Format
+
+Add three new optional sections to your principal mapping JSON file:
+
+```json
+{
+  "users": {
+    "00000000-0000-0000-0000-000000000001": "Jane Doe"
+  },
+  "groups": {
+    "00000000-0000-0000-0000-000000000002": "DevOps Team"
+  },
+  "azdoUsers": {
+    "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith",
+    "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f": "Alice Johnson"
+  },
+  "azdoGroups": {
+    "vssgp.Uy0xLTktMTU1MTM...": "Platform Team",
+    "aadgp.Uy0.ReleaseManagers": "Release Managers"
+  },
+  "azdoProjects": {
+    "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
+    "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  }
+}
+```
+
+All sections are optional—include only what you need.
+
+### Rendered Output
+
+**Before** (without mapping):
+```markdown
+#### Members
+
+| Change | Member | Terraform Resource |
+| -------- | -------- | -------------------- |
+| ➕ | aadgp.Uy0.AliceUser | `azuredevops_group_membership.release_managers_membership_alice` |
+| ➕ | aadgp.Uy0.BobUser | `azuredevops_group_membership.release_managers_membership_bob` |
+```
+
+**After** (with mapping):
+```markdown
+#### Members
+
+| Change | Member | Terraform Resource |
+| -------- | -------- | -------------------- |
+| ➕ | Alice User (aadgp.Uy0.AliceUser) | `azuredevops_group_membership.release_managers_membership_alice` |
+| ➕ | Bob Smith (aadgp.Uy0.BobUser) | `azuredevops_group_membership.release_managers_membership_bob` |
+```
+
+### Debug Output
+
+When `--debug` is enabled, diagnostic output includes Azure DevOps entity counts and failed resolutions:
+
+```markdown
+## Debug Information
+
+### Principal Mapping
+
+Principal Mapping: Loaded successfully from 'principals.json'
+- Found 45 principals
+- Found 3 azdo users, 2 azdo groups, 1 azdo project
+
+Failed to resolve 1 azdo entity:
+- User `unknown-guid` (referenced in `azuredevops_group_membership.example`)
+```
+
+### Usage
+
+```bash
+# Without mapping
+tfplan2md plan.json
+
+# With Azure DevOps mapping
+tfplan2md --principal-mapping principals.json plan.json
+
+# Docker with mapping
+docker run -v $(pwd):/data oocx/tfplan2md \
+  --principal-mapping /data/principals.json \
+  /data/plan.json --output /data/plan.md
+
+# With debug output
+tfplan2md --debug --principal-mapping principals.json plan.json
+```
+
+### Custom Templates
+
+For users writing custom Scriban templates, three new helper functions are available:
+
+- `azdo_user_name(userId)` → resolves Azure DevOps user ID
+- `azdo_group_name(groupDescriptor)` → resolves Azure DevOps group descriptor  
+- `azdo_project_name(projectId)` → resolves Azure DevOps project ID
+
+These helpers provide explicit control over entity resolution in custom templates, while default rendering automatically resolves entities via value formatters.
+
+**Result:** Azure DevOps resources are easier to review by showing recognizable names instead of GUIDs and descriptors, improving the quality of Azure DevOps infrastructure change reviews.
+
 ## Parent-Child Resource Grouping (Inline Child Tables)
 
 **Status:** ✅ Implemented  \

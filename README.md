@@ -219,7 +219,7 @@ This helps diagnose principal mapping failures, Docker volume mount issues, and 
 
 #### Principal Mapping File Format
 
-The `--principal-mapping` file can include principals plus Azure metadata (subscriptions, management groups, tenants, roles).
+The `--principal-mapping` file can include Azure AD principals, Azure metadata (subscriptions, management groups, tenants, roles), and Azure DevOps entities (users, groups, projects).
 The new sections use an array-of-objects format; existing principal-only files remain supported.
 
 ```json
@@ -244,16 +244,35 @@ The new sections use an array-of-objects format; existing principal-only files r
   ],
   "roles": [
     { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }
-  ]
+  ],
+  "azdoUsers": {
+    "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith",
+    "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f": "Alice Johnson"
+  },
+  "azdoGroups": {
+    "vssgp.Uy0xLTktMTU1MTM...": "Platform Team",
+    "aadgp.Uy0.ReleaseManagers": "Release Managers"
+  },
+  "azdoProjects": {
+    "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
+    "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  }
 }
 ```
 
+**Azure DevOps sections** (optional):
+- `azdoUsers`: Map Azure DevOps user GUIDs to display names
+- `azdoGroups`: Map Azure DevOps group descriptors to display names (supports long descriptors)
+- `azdoProjects`: Map Azure DevOps project GUIDs to display names
+
+Azure DevOps entities are automatically resolved in group memberships, team rosters, and project references, displayed as `DisplayName (ID)` for consistency with Azure AD principals.
+
 #### Azure CLI Export Commands
 
-Use the Azure CLI to export the new mapping sections (each command returns the array-of-objects format):
+Use the Azure CLI to export the Azure AD and Azure infrastructure mapping sections (each command returns the array-of-objects format):
 
 ```bash
-# Principals
+# Principals (Azure AD)
 az ad user list --all --query "[].{id:id,displayName:displayName}" -o json
 az ad group list --query "[].{id:id,displayName:displayName}" -o json
 az ad sp list --all --query "[].{id:id,displayName:displayName}" -o json
@@ -271,7 +290,9 @@ az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o jso
 az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
 ```
 
-Use `scripts/validate-azure-cli-commands.sh` to validate the commands in your environment.
+**Azure DevOps sections** must be created manually as the Azure DevOps CLI does not provide direct export commands for this format. Collect user GUIDs, group descriptors, and project GUIDs from your Azure DevOps organization and add them to the `azdoUsers`, `azdoGroups`, and `azdoProjects` sections in the JSON file.
+
+Use `scripts/validate-azure-cli-commands.sh` to validate the Azure CLI commands in your environment.
 
 #### Principal Mapping with Docker
 

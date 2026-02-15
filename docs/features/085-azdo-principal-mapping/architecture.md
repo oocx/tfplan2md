@@ -2,7 +2,42 @@
 
 ## Status
 
-Proposed
+Approved (with architectural clarification during implementation)
+
+## Architectural Discovery During Implementation
+
+**Date:** 2025-02-15  
+**Phase:** Implementation (Developer working on Tasks 11-12)
+
+During implementation of Phases 1-4, the Developer successfully completed:
+- ✅ Data model extensions (PrincipalMappingFile with azdo sections)
+- ✅ Parser updates (reads and parses azdo sections)
+- ✅ Three mapper classes (AzdoUserMapper, AzdoGroupMapper, AzdoProjectMapper)
+- ✅ Scriban helpers (azdo_user_name, azdo_group_name, azdo_project_name)
+- ✅ Module registration (helpers wired into AzureDevOpsModule)
+- ✅ Diagnostics (azdo entity counts tracked)
+
+However, when approaching Tasks 11-12 ("update Azure DevOps resource templates"), the Developer discovered a critical architectural detail:
+
+**Azure DevOps resources with parent-child inline rendering do NOT use Scriban templates for default output.**
+
+Instead, they use:
+1. `AzureDevOpsDescriptorRowExtractor` to extract entity descriptors from resource state
+2. `ScribanHelpers.FormatAttributeValueTableWithRegistry()` to format values
+3. The **value formatter registry system** to automatically resolve and format entity names
+
+This means:
+- The Scriban helpers ARE correctly implemented and available for custom templates
+- BUT they don't affect default rendering because default rendering doesn't use templates
+- To meet the specification requirement ("users, groups and projects should be rendered with their display name"), we need **value formatters**
+
+**Architectural Decision:** Create value formatters that integrate with the existing formatter registry (Decision 6 below). This is the correct extension point for Azure DevOps inline rendering and matches the pattern used by AzureRM for principal resolution.
+
+Tasks 11-12 remain necessary but are reinterpreted:
+- **Original intent**: "Update templates to use helpers"
+- **Actual work needed**: "Create value formatters for automatic resolution in default rendering"
+
+Both value formatters AND Scriban helpers serve valid purposes and should coexist.
 
 ## Overview
 
@@ -131,7 +166,66 @@ If type tracking is needed later, it can be added by:
 - This may make some lines longer, but maintains consistency and utility
 - Users who want shorter output can customize templates
 
-## High-Level Design
+### Decision 6: Value Formatters vs. Scriban Templates for Default Rendering
+
+**Context (Discovered During Implementation):**
+
+During implementation, the Developer discovered that Azure DevOps resources using parent-child inline rendering (`azuredevops_group_membership`, `azuredevops_team_members`, `azuredevops_team_administrators`) do NOT use Scriban templates for default rendering. Instead, they use:
+
+1. `AzureDevOpsDescriptorRowExtractor` to extract descriptor values from resource state
+2. `ScribanHelpers.FormatAttributeValueTableWithRegistry()` to format values
+3. The **value formatter registry system** to resolve entity names
+
+This is different from most other resources, which use Scriban templates directly.
+
+**Options Considered:**
+
+1. **Create custom Scriban templates** for Azure DevOps resources and modify the rendering pipeline to use them
+2. **Create value formatters** that integrate with the existing extractor and formatter registry
+3. **Skip default rendering**, rely only on Scriban helpers for custom templates
+
+**Decision:** Create value formatters that integrate with the existing value formatter registry.
+
+**Rationale:**
+
+- **Respects existing architecture**: The parent-child inline rendering system is well-designed and works correctly. The value formatter registry is the extension point for this rendering path.
+- **Minimal changes**: Creating value formatters requires less code and fewer changes than modifying the rendering pipeline or creating custom templates.
+- **Consistent with Azure patterns**: The AzureRM provider uses the same approach - `PrincipalIdFormatter` resolves Azure AD principals in default rendering without custom templates.
+- **Automatic application**: Value formatters apply to ALL Azure DevOps resources without template changes, including future resources.
+- **Complements Scriban helpers**: Both serve valid purposes:
+  - **Value formatters**: Automatic resolution in default rendering (meets the specification requirement)
+  - **Scriban helpers**: Explicit control in custom templates (provides flexibility for advanced users)
+
+**Impact:**
+
+- Tasks 11-12 in the original task plan focused on "updating templates" should be reinterpreted as "create value formatters"
+- The Scriban helpers implemented in Phase 4 remain valuable for custom template scenarios
+- Three new formatter classes needed: `AzdoUserIdFormatter`, `AzdoGroupDescriptorFormatter`, `AzdoProjectIdFormatter`
+- Registration in `AzureDevOpsModule.RegisterValueFormatters()` with match patterns for attribute names
+
+**Why Both Value Formatters AND Scriban Helpers:**
+
+This is not duplication - they serve different purposes:
+
+| Mechanism | Use Case | When Applied | Example |
+|-----------|----------|--------------|---------|
+| **Value Formatters** | Default rendering of Azure DevOps inline tables | Automatically when `AzureDevOpsDescriptorRowExtractor` formats values | Member column in group membership table |
+| **Scriban Helpers** | Custom templates explicitly calling resolution functions | Only when template author calls `azdo_user_name()` | User-written template for custom report format |
+
+**Example Output with Value Formatters:**
+
+```markdown
+#### Members
+
+| Change | Member | Terraform Resource |
+| -------- | -------- | -------------------- |
+| ➕ | Alice User (aadgp.Uy0.AliceUser) | `azuredevops_group_membership.release_managers_membership_alice` |
+| ➕ | Bob Smith (aadgp.Uy0.BobUser) | `azuredevops_group_membership.release_managers_membership_bob` |
+```
+
+Without value formatters, only the raw descriptors would appear.
+
+
 
 ### Components to Modify
 
@@ -251,14 +345,40 @@ Update diagnostic output generation:
 
 **Why here?** Centralized diagnostic tracking for debug output.
 
-#### 8. Update Templates (Providers/AzureDevOps/Templates/)
+#### 8. Create Value Formatters for Azure DevOps Entities (Providers/AzureDevOps/)
 
-Update affected resource templates to use new helpers:
-- `azuredevops_group_membership.sbn` → use `azdo_user_name` and `azdo_group_name`
-- `azuredevops_project.sbn` → use `azdo_project_name`
-- Other templates as needed
+**ARCHITECTURAL CLARIFICATION (2025-02-15):**
 
-**Why here?** Provider-specific templates use provider-specific helpers.
+Azure DevOps resources that use parent-child inline rendering (`azuredevops_group_membership`, `azuredevops_team_members`, `azuredevops_team_administrators`) are rendered through the `AzureDevOpsDescriptorRowExtractor`, which uses the **value formatter registry system** to format entity descriptors, NOT Scriban templates.
+
+To meet the specification requirement that "users, groups and projects should be rendered with their display name", we must create **value formatters** that will be automatically invoked during default rendering:
+
+Create three value formatter classes in `Providers/AzureDevOps/`:
+- `AzdoUserIdFormatter` → formats user GUIDs as `DisplayName (userId)`
+- `AzdoGroupDescriptorFormatter` → formats group descriptors as `DisplayName (descriptor)`
+- `AzdoProjectIdFormatter` → formats project GUIDs as `DisplayName (projectId)`
+
+Register these formatters in `AzureDevOpsModule.RegisterValueFormatters()` with appropriate match patterns:
+- User formatter: Match attributes `member`, `administrator`, `user` with GUID pattern
+- Group formatter: Match attributes `group`, `descriptor` with descriptor pattern
+- Project formatter: Match attributes `project_id`, `project` with GUID pattern
+
+**Why value formatters are needed:**
+1. `AzureDevOpsDescriptorRowExtractor` (lines 63-68) calls `ScribanHelpers.FormatAttributeValueTableWithRegistry()`, which uses the value formatter registry
+2. Default rendering of Azure DevOps parent-child resources does NOT use Scriban templates
+3. Value formatters automatically apply to all Azure DevOps resources without template changes
+4. This matches the pattern used by AzureRM for principal formatting (see `PrincipalIdFormatter`)
+
+**What about Scriban helpers?**
+The Scriban helpers (`azdo_user_name`, `azdo_group_name`, `azdo_project_name`) are STILL VALUABLE:
+- They allow users to create custom templates that explicitly resolve azdo entities
+- They provide template-level control over formatting
+- They enable advanced template scenarios (e.g., conditional formatting)
+
+**Implementation Note:**
+Value formatters and Scriban helpers serve different purposes and should both exist:
+- **Value formatters**: Automatic resolution in default rendering (inline tables, attribute formatting)
+- **Scriban helpers**: Explicit resolution in custom templates
 
 ### Data Flow
 
@@ -284,20 +404,25 @@ DiagnosticContext generates debug output
 
 ### Positive
 
-- **Consistency**: Follows established patterns for Azure AD principal mapping
+- **Consistency**: Follows established patterns for Azure AD principal mapping (both value formatters and helpers)
 - **Separation of concerns**: Azure DevOps logic isolated in provider folder
 - **Extensibility**: Easy to add more Azure DevOps entity types in the future
 - **Diagnostics**: Full debug output for troubleshooting mapping issues
 - **Type safety**: Separate mappers prevent mixing Azure AD and Azure DevOps entities
+- **Automatic application**: Value formatters apply to all Azure DevOps resources without template modifications
+- **Dual purpose**: Scriban helpers provide flexibility for custom templates while value formatters handle default rendering
+- **Matches specification**: Directly addresses the requirement that "users, groups and projects should be rendered with their display name"
 
 ### Negative
 
 - **Code duplication**: Three mapper classes instead of reusing `PrincipalMapper`
   - **Mitigation**: Each mapper is simple (~100 lines) and semantically distinct
-- **Additional classes**: More files to maintain
-  - **Mitigation**: Clear separation makes understanding and testing easier
+- **Additional classes**: More files to maintain (3 mappers + 3 value formatters + 3 helper functions)
+  - **Mitigation**: Clear separation makes understanding and testing easier; each component has a single responsibility
 - **Mapping file complexity**: More sections in the JSON file
   - **Mitigation**: All sections remain optional; users only add what they need
+- **Two mechanisms for resolution**: Both value formatters and Scriban helpers exist
+  - **Mitigation**: They serve different purposes (automatic vs. explicit); this is intentional design
 
 ### Risks
 
@@ -305,18 +430,83 @@ DiagnosticContext generates debug output
    - **Mitigation**: Documented in specification; users can customize templates if needed
 2. **Diagnostic output verbosity**: Adding three new count types to debug output
    - **Mitigation**: Only shown when `--debug` flag is used; users opt in
+3. **Pattern matching complexity**: Value formatter registration requires correct regex patterns
+   - **Mitigation**: Follow established patterns from `AzureRmValueFormatterRegistration`; add integration tests
 
 ## Implementation Guidance
 
 ### For the Developer Agent
 
-1. **Start with data model changes**: Update `PrincipalMappingFile`, `AzureMappingFileResult`
-2. **Update parser**: Extend `AzureMappingFileParser` to handle azdo sections
-3. **Create mappers**: Build three mapper classes in `Providers/AzureDevOps/`
-4. **Create helpers**: Implement Scriban helpers in `Providers/AzureDevOps/Helpers/`
-5. **Register in module**: Wire up mappers and helpers in `AzureDevOpsModule`
-6. **Update diagnostics**: Add azdo counts to `DiagnosticContext`
-7. **Update templates**: Use new helpers in Azure DevOps resource templates
+**✅ Completed (Phases 1-4):**
+1. ~~Start with data model changes~~: `PrincipalMappingFile`, `AzureMappingFileResult` extended
+2. ~~Update parser~~: `AzureMappingFileParser` handles azdo sections
+3. ~~Create mappers~~: `AzdoUserMapper`, `AzdoGroupMapper`, `AzdoProjectMapper` created
+4. ~~Create helpers~~: Scriban helpers implemented
+5. ~~Register in module~~: Mappers and helpers registered in `AzureDevOpsModule`
+6. ~~Update diagnostics~~: Azdo counts tracked in `DiagnosticContext`
+
+**🚧 Remaining Work:**
+
+**7. Create Value Formatters** (NEW - Required for Tasks 11-12):
+   - Create `AzdoUserIdFormatter.cs` in `Providers/AzureDevOps/`
+   - Create `AzdoGroupDescriptorFormatter.cs` in `Providers/AzureDevOps/`
+   - Create `AzdoProjectIdFormatter.cs` in `Providers/AzureDevOps/`
+   - Follow the pattern from `PrincipalIdFormatter` in `Providers/AzureRM/`
+   - Each formatter should:
+     - Accept the appropriate mapper in constructor
+     - Implement `IValueFormatter.TryFormat()`
+     - Return formatted string: `DisplayName (ID)` or null if not mapped
+     - Use `ScribanHelpers.FormatCodeTable()` for consistent formatting
+
+**8. Register Value Formatters** in `AzureDevOpsModule.RegisterValueFormatters()`:
+   ```csharp
+   if (_azdoUserMapper is not null)
+   {
+       var userFormatter = new AzdoUserIdFormatter(_azdoUserMapper);
+       // Match common user attribute names with GUID pattern
+       registry.Register(
+           new MatchPattern(
+               "(^azuredevops$|.*/azuredevops$)",
+               null,
+               "^member$|^administrator$|^user$",
+               GuidPattern),
+           userFormatter);
+   }
+   
+   if (_azdoGroupMapper is not null)
+   {
+       var groupFormatter = new AzdoGroupDescriptorFormatter(_azdoGroupMapper);
+       // Match group/descriptor attributes
+       registry.Register(
+           new MatchPattern(
+               "(^azuredevops$|.*/azuredevops$)",
+               null,
+               "^group$|^descriptor$",
+               null),
+           groupFormatter);
+   }
+   
+   if (_azdoProjectMapper is not null)
+   {
+       var projectFormatter = new AzdoProjectIdFormatter(_azdoProjectMapper);
+       // Match project attribute names with GUID pattern
+       registry.Register(
+           new MatchPattern(
+               "(^azuredevops$|.*/azuredevops$)",
+               null,
+               "^project_id$|^project$",
+               GuidPattern),
+           projectFormatter);
+   }
+   ```
+
+**9. Create Integration Tests:**
+   - Add mapping file with azdo entities to `azuredevops-group-members-plan.json` test
+   - Update expected snapshot to show resolved names: `Alice User (aadgp.Uy0.AliceUser)`
+   - Verify value formatters work in parent-child inline rendering
+
+**Note about Tasks 11-12:**
+The original tasks planned to "update templates," but this was based on the assumption that Azure DevOps resources use Scriban templates for rendering. They actually use the value formatter system via `AzureDevOpsDescriptorRowExtractor`. The work has been refocused to create value formatters instead.
 
 ### Key Patterns to Follow
 
@@ -334,17 +524,57 @@ DiagnosticContext generates debug output
 
 ## Testing Strategy
 
-1. **Unit tests** for mappers (similar to `PrincipalMapperTests`)
-2. **Unit tests** for parser extension (add azdo sections to test cases)
-3. **Unit tests** for Scriban helpers (similar to `ScribanHelpersPrincipalInfoTests`)
-4. **Integration tests** with example mapping files showing azdo sections
-5. **Snapshot tests** for rendered output with azdo entity resolution
+1. **Unit tests** for mappers (similar to `PrincipalMapperTests`) - ✅ COMPLETED
+2. **Unit tests** for parser extension (add azdo sections to test cases) - ✅ COMPLETED
+3. **Unit tests** for Scriban helpers (similar to `ScribanHelpersPrincipalInfoTests`) - ✅ COMPLETED
+4. **Unit tests for value formatters** (similar to `PrincipalIdFormatterTests`) - 🚧 TODO
+5. **Integration tests** with example mapping files showing azdo sections - ✅ COMPLETED
+6. **Snapshot tests** for rendered output with azdo entity resolution via value formatters - 🚧 TODO
 
 ## Documentation Updates
 
-- Update example mapping file (`examples/comprehensive-demo/demo-principals-nested.json`) to include azdo sections
-- Add section to README.md explaining Azure DevOps mapping
-- Document the new Scriban helpers in template documentation
+- ✅ Update example mapping file (`examples/comprehensive-demo/demo-principals.json`) - COMPLETED
+- ⏳ Add section to README.md explaining Azure DevOps mapping (should be done after value formatters)
+- ✅ Document the new Scriban helpers in template documentation (helpers are registered)
+
+## Summary for Developer: Completing Tasks 11-12
+
+**What you need to do:**
+
+1. **Create three value formatter classes** in `Providers/AzureDevOps/`:
+   - `AzdoUserIdFormatter.cs` - implements `IValueFormatter`, uses `AzdoUserMapper`
+   - `AzdoGroupDescriptorFormatter.cs` - implements `IValueFormatter`, uses `AzdoGroupMapper`  
+   - `AzdoProjectIdFormatter.cs` - implements `IValueFormatter`, uses `AzdoProjectMapper`
+   
+   Pattern to follow: `src/Oocx.TfPlan2Md/Providers/AzureRM/PrincipalIdFormatter.cs`
+
+2. **Update `AzureDevOpsModule.RegisterValueFormatters()`**:
+   - Instantiate the formatters (only if mappers exist)
+   - Register with match patterns for attribute names and value patterns
+   - See implementation guidance above for exact registration code
+
+3. **Create tests for value formatters**:
+   - Unit tests: Create `AzdoValueFormatterTests.cs` in test project
+   - Integration test: Update `azuredevops-group-members-plan.json` test to include a mapping file
+   - Update snapshot: `azuredevops-group-members.md` should show resolved names
+
+4. **Verify end-to-end**:
+   - Run the comprehensive demo test - azdo entities should resolve
+   - Run the azuredevops-group-members test - member names should appear
+   - Check that inline tables show `DisplayName (descriptor)` format
+
+**Why this is correct:**
+
+The original architecture correctly identified all the components needed. The only thing discovered during implementation is that Azure DevOps inline rendering uses value formatters (not templates) as the extension point. This is actually a cleaner solution because:
+- Value formatters apply automatically to all resources
+- No template changes needed
+- Matches the established pattern from AzureRM
+- Both value formatters and Scriban helpers serve valid purposes
+
+**Reference implementations to study:**
+- `src/Oocx.TfPlan2Md/Providers/AzureRM/PrincipalIdFormatter.cs` - formatter pattern
+- `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRmValueFormatterRegistration.cs` - registration pattern
+- `src/Oocx.TfPlan2Md/Platforms/Azure/AzureValueFormatterRegistration.cs` - shared registration utilities
 
 ## Related Decisions
 

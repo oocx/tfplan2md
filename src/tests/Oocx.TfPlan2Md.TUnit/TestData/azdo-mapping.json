@@ -1,0 +1,9 @@
+{
+  "azdoUsers": {
+    "aadgp.Uy0.AliceUser": "Alice Smith",
+    "aadgp.Uy0.BobUser": "Bob Johnson"
+  },
+  "azdoGroups": {
+    "aadgp.Uy0.ReleaseManagers": "Release Managers Team"
+  }
+}

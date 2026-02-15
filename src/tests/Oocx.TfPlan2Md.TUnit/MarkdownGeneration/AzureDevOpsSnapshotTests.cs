@@ -1,7 +1,9 @@
 using System.IO;
+using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
 using Oocx.TfPlan2Md.Providers.AzureDevOps;
 using Oocx.TfPlan2Md.Tests.TestData;
@@ -38,7 +40,10 @@ public class AzureDevOpsSnapshotTests
     [Test]
     public void Snapshot_AzureDevOps_GroupMembers_MatchesBaseline()
     {
-        AssertAzureDevOpsSnapshot("azuredevops-group-members-plan.json", "azuredevops-group-members.md");
+        AssertAzureDevOpsSnapshot(
+            "azuredevops-group-members-plan.json",
+            "azuredevops-group-members.md",
+            mappingFile: "TestData/azdo-mapping.json");
     }
 
     /// <summary>
@@ -56,12 +61,17 @@ public class AzureDevOpsSnapshotTests
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
     /// <param name="testDataFile">The test data file name under TestData.</param>
+    /// <param name="mappingFile">Optional path to Azure mapping file for entity resolution.</param>
     /// <returns>The rendered markdown output.</returns>
-    private string RenderAzureDevOpsPlan(string testDataFile)
+    private string RenderAzureDevOpsPlan(string testDataFile, string? mappingFile = null)
     {
         var json = File.ReadAllText(Path.Combine("TestData", testDataFile));
         var plan = _parser.Parse(json);
-        var providerRegistry = CreateProviderRegistry();
+
+        // Load mapping file if provided
+        var mappingResult = AzureMappingFileLoader.Load(mappingFile, diagnosticContext: null);
+
+        var providerRegistry = CreateProviderRegistry(mappingResult);
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
         var model = new ReportModelBuilder(
@@ -82,9 +92,10 @@ public class AzureDevOpsSnapshotTests
     /// </summary>
     /// <param name="testDataFile">The test data file name under TestData.</param>
     /// <param name="snapshotName">The snapshot file name under TestData/Snapshots.</param>
-    private void AssertAzureDevOpsSnapshot(string testDataFile, string snapshotName)
+    /// <param name="mappingFile">Optional path to Azure mapping file for entity resolution.</param>
+    private void AssertAzureDevOpsSnapshot(string testDataFile, string snapshotName, string? mappingFile = null)
     {
-        var markdown = RenderAzureDevOpsPlan(testDataFile);
+        var markdown = RenderAzureDevOpsPlan(testDataFile, mappingFile);
 
         SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, snapshotName);
         SnapshotTestAssertions.AssertMatchesSnapshot(snapshotName, markdown);
@@ -94,11 +105,41 @@ public class AzureDevOpsSnapshotTests
     /// Creates a provider registry that includes Azure DevOps support.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>
+    /// <param name="mappingResult">Optional mapping result for entity resolution.</param>
     /// <returns>The configured provider registry.</returns>
-    private static ProviderRegistry CreateProviderRegistry()
+    private static ProviderRegistry CreateProviderRegistry(AzureMappingFileResult? mappingResult = null)
     {
         var registry = new ProviderRegistry();
-        registry.RegisterProvider(new AzureDevOpsModule(LargeValueFormat.SimpleDiff));
+
+        // Create mappers from mapping result if provided
+        AzdoUserMapper? azdoUserMapper = null;
+        AzdoGroupMapper? azdoGroupMapper = null;
+        AzdoProjectMapper? azdoProjectMapper = null;
+
+        if (mappingResult != null)
+        {
+            if (mappingResult.AzdoUsers.Count > 0)
+            {
+                azdoUserMapper = new AzdoUserMapper(mappingResult.AzdoUsers, diagnostics: null);
+            }
+
+            if (mappingResult.AzdoGroups.Count > 0)
+            {
+                azdoGroupMapper = new AzdoGroupMapper(mappingResult.AzdoGroups, diagnostics: null);
+            }
+
+            if (mappingResult.AzdoProjects.Count > 0)
+            {
+                azdoProjectMapper = new AzdoProjectMapper(mappingResult.AzdoProjects, diagnostics: null);
+            }
+        }
+
+        registry.RegisterProvider(new AzureDevOpsModule(
+            LargeValueFormat.SimpleDiff,
+            entityMapper: null,
+            azdoUserMapper: azdoUserMapper,
+            azdoGroupMapper: azdoGroupMapper,
+            azdoProjectMapper: azdoProjectMapper));
         return registry;
     }
 

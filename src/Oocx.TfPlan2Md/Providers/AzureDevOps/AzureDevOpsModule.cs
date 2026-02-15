@@ -121,16 +121,17 @@ internal sealed class AzureDevOpsModule : IProviderModule
         }
 
         // Register Azure DevOps user formatter
+        // Note: Users can appear as either GUIDs or descriptors in member/administrator fields
         if (_azdoUserMapper is not null)
         {
             var userFormatter = new AzdoUserIdFormatter(_azdoUserMapper);
-            // Match common user attribute names with GUID pattern
+            // Match common user attribute names (without value pattern to allow any format)
             registry.Register(
                 new MatchPattern(
                     "(^azuredevops$|.*/azuredevops$)",
                     null,
                     "^member$|^administrator$|^user$",
-                    AzureValueFormatterRegistration.GuidPattern),
+                    null),
                 userFormatter);
         }
 

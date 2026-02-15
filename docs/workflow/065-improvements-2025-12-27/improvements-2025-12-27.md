@@ -2,7 +2,7 @@
 
 **Source:** Retrospective analysis from:
 - `docs/issues/021-ci-deployment-duplication-and-versionize-major/retrospective.md`
-- `docs/features/020-custom-report-title/retrospective.md`
+- `docs/features/016-custom-report-title/retrospective.md`
 
 **Date:** 2025-12-27
 

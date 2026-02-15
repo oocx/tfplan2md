@@ -7,7 +7,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Tests for formatting replacement path summaries.
-/// Related feature: docs/features/010-replacement-reasons-and-summaries/specification.md.
+/// Related feature: docs/features/011-replacement-reasons-and-summaries/specification.md.
 /// </summary>
 public class ResourceSummaryPathFormatterTests
 {

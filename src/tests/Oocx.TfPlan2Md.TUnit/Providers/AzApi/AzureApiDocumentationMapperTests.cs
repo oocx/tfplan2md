@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.Tests.Providers.AzApi;
 
 /// <summary>
 /// Unit tests for AzureApiDocumentationMapper.
-/// Related feature: docs/features/048-azure-api-doc-mapping/test-plan.md.
+/// Related feature: docs/features/033-azure-api-doc-mapping/test-plan.md.
 /// </summary>
 [Category("Unit")]
 public class AzureApiDocumentationMapperTests

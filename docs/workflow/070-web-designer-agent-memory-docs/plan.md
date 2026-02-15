@@ -14,7 +14,7 @@
 
 ## Current context (what already exists)
 
-- Feature categorization table exists in: `docs/features/025-github-pages-website/feature-definitions.md`.
+- Feature categorization table exists in: `docs/features/018-github-pages-website/feature-definitions.md`.
 - Website content currently lives in: `website/` (today it contains `style.css` and `features/index.html`).
 - Web Designer agent exists in: `.github/agents/web-designer.agent.md`.
 - Dev tools exist and have documented CLI usage:
@@ -42,7 +42,7 @@ Create a dedicated directory under `website/`:
 ### File 1: Feature representation table (copy from 025)
 
 - `website/_memory/feature-definitions.md`
-  - Content: copy the “Complete Feature Table” (and relevant headings) from `docs/features/025-github-pages-website/feature-definitions.md`.
+  - Content: copy the “Complete Feature Table” (and relevant headings) from `docs/features/018-github-pages-website/feature-definitions.md`.
   - Required table columns:
     - `Feature`
     - `Description`

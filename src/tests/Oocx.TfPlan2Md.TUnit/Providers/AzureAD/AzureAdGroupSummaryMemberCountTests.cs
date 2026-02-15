@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Tests.Providers.AzureAD;
 
 /// <summary>
 /// Tests for Azure AD group summary member count fix.
-/// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+/// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
 /// </summary>
 public class AzureAdGroupSummaryMemberCountTests
 {

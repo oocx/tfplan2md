@@ -331,7 +331,7 @@ Use `scripts/generate-release-screenshots.sh` for release notes - it generates a
 scripts/generate-release-screenshots.sh \
   --plan examples/firewall-with-static-analysis/plan.json \
   --output-prefix feature-065-icons \
-  --output-dir docs/features/065-tenant-display-mapping \
+  --output-dir docs/features/043-tenant-display-mapping \
   --selector "details:has(summary:has-text('azurerm_role_assignment'))" \
   --render-target github
 ```

@@ -11,13 +11,13 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
 /// Snapshot tests covering AzAPI rendering scenarios.
-/// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+/// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
 /// </summary>
 public class AzapiSnapshotTests
 {
     /// <summary>
     /// Parses Terraform plan JSON files for AzAPI snapshot tests.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </summary>
     private readonly TerraformPlanParser _parser = new();
 

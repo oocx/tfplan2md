@@ -2,7 +2,7 @@
 
 **Date:** January 5, 2026  
 **Status:** Complete  
-**Related Analysis:** [031-cloud-agents-analysis](../031-cloud-agents-analysis/cloud-agents-analysis.md)
+**Related Analysis:** [031-cloud-agents-analysis](../071-cloud-agents-analysis/cloud-agents-analysis.md)
 
 ---
 
@@ -138,7 +138,7 @@ The following validation steps should be performed after merging:
 
 ## References
 
-- **Analysis Document:** [docs/workflow/031-cloud-agents-analysis/cloud-agents-analysis.md](../031-cloud-agents-analysis/cloud-agents-analysis.md)
+- **Analysis Document:** [docs/workflow/071-cloud-agents-analysis/cloud-agents-analysis.md](../071-cloud-agents-analysis/cloud-agents-analysis.md)
 - **Agent Definition:** [.github/agents/workflow-engineer.agent.md](../../../.github/agents/workflow-engineer.agent.md)
 - **Workflow Documentation:** [docs/agents.md](../../agents.md)
 

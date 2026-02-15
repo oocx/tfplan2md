@@ -2,7 +2,7 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Maps Azure resource types to their official REST API documentation URLs.
-/// Related feature: docs/features/048-azure-api-doc-mapping/specification.md.
+/// Related feature: docs/features/033-azure-api-doc-mapping/specification.md.
 /// </summary>
 /// <remarks>
 /// This mapper loads curated mappings from an embedded JSON file and provides O(1) lookups

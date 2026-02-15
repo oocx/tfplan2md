@@ -14,7 +14,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureAD.Models;
 /// This class contains the Azure-specific logic that was previously in ReportModelBuilder.
 /// It runs as a post-merge callback to update group summaries with accurate member counts
 /// after inline and separate members have been merged into child resource groups.
-/// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+/// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
 /// </remarks>
 internal static class AzureAdGroupSummaryRebuilder
 {

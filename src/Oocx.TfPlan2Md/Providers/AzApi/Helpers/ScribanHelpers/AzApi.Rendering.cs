@@ -5,7 +5,7 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Scriban helper functions for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md.
+/// Related feature: docs/features/028-azapi-resource-template/specification.md.
 /// </summary>
 /// <remarks>
 /// These helpers transform JSON body content from azapi_resource resources into human-readable
@@ -31,7 +31,7 @@ public static partial class ScribanHelpers
     /// For create/delete modes, it flattens the body and separates small vs. large properties.
     /// For update mode, it compares before/after and shows only changed properties.
     /// Large properties are rendered outside of tables to avoid markdown parsing issues with newlines.
-    /// Related feature: docs/features/040-azapi-resource-template/specification.md.
+    /// Related feature: docs/features/028-azapi-resource-template/specification.md.
     /// </remarks>
     [SuppressMessage(
         "Major Code Smell",

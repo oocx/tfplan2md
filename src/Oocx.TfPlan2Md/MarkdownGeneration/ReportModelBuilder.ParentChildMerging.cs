@@ -169,7 +169,7 @@ internal partial class ReportModelBuilder
     /// <param name="allChanges">All resource changes after merging.</param>
     /// <remarks>
     /// Callbacks are invoked with error handling to prevent one provider from breaking others.
-    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
     /// </remarks>
     private void InvokePostMergeCallbacks(List<ResourceChangeModel> allChanges)
     {

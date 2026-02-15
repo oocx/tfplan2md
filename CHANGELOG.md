@@ -579,7 +579,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * render other findings and warnings ([8b6cb9d](https://github.com/oocx/tfplan2md/commit/8b6cb9dd51c7052f8e13ea0fc5929bbde96fdb82))
 * update all artifacts after regeneration ([fe7e179](https://github.com/oocx/tfplan2md/commit/fe7e179512aea270228bfb88201eaf67cbe02518))
 * update artifacts and code analysis models ([edca9f1](https://github.com/oocx/tfplan2md/commit/edca9f15f2371c9cfa2b49c48f4e8522cb0b0dbe))
-* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/056-static-analysis-integration/specification.md ([123641d](https://github.com/oocx/tfplan2md/commit/123641d75df326c9980e776bc7b5abaaed70eee6))
+* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/037-static-analysis-integration/specification.md ([123641d](https://github.com/oocx/tfplan2md/commit/123641d75df326c9980e776bc7b5abaaed70eee6))
 * **website:** add v1.6.0 static code analysis feature and Azure AD enhancements ([d99a690](https://github.com/oocx/tfplan2md/commit/d99a6908f5b8a0b056b0c0fd1eac1dbafcba9386))
 
 ### 🐛 Bug Fixes
@@ -633,7 +633,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * render other findings and warnings ([ab40cda](https://github.com/oocx/tfplan2md/commit/ab40cdab8c34e1c099f7259eadefc29b3c3ea03f))
 * update all artifacts after regeneration ([62d0d08](https://github.com/oocx/tfplan2md/commit/62d0d0868161b4eb3ce34c36a7288bbbd36b2004))
 * update artifacts and code analysis models ([4ddc8f7](https://github.com/oocx/tfplan2md/commit/4ddc8f74b5c4ff4cb02a8e9b58834b410455f88e))
-* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/056-static-analysis-integration/specification.md ([8a9f5f4](https://github.com/oocx/tfplan2md/commit/8a9f5f40c2a3f7664706dfa712654ad568765ca6))
+* **cli:** implement static analysis CLI flags and wildcard expansion\n\n- Add --code-analysis-results, --code-analysis-minimum-level, --fail-on-static-code-analysis-errors flags\n- Implement wildcard expansion utility for SARIF patterns\n- Add and fix tests for CLI and wildcard logic\n- Mark Task 2 as complete in static analysis integration feature\n\nRelated: docs/features/037-static-analysis-integration/specification.md ([8a9f5f4](https://github.com/oocx/tfplan2md/commit/8a9f5f40c2a3f7664706dfa712654ad568765ca6))
 
 ### 🐛 Bug Fixes
 

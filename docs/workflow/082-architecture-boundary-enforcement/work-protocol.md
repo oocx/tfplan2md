@@ -14,7 +14,7 @@
 **Summary:** Completed release preparation for Feature 066 Architecture Boundary Enforcement.
 
 **Work Performed:**
-- Verified work protocol completeness in `docs/features/066-architecture-boundary-enforcement/work-protocol.md`
+- Verified work protocol completeness in `docs/features/044-architecture-boundary-enforcement/work-protocol.md`
 - All required agents logged entries (Requirements Engineer, Architect, Quality Engineer, Developer, Technical Writer, Code Reviewer)
 - Reviewed commit history (19 commits from initial plan to code review)
 - Created workflow folder `docs/workflow/082-architecture-boundary-enforcement/` (next available number)

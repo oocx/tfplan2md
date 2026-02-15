@@ -92,7 +92,7 @@ internal interface IProviderModule
     /// <remarks>
     /// Allows providers to perform post-merge processing like updating summaries
     /// without introducing dependencies from MarkdownGeneration to Providers.
-    /// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+    /// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
     /// </remarks>
     void RegisterPostMergeCallbacks(ReportModelBuilder builder)
     {

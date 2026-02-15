@@ -32,7 +32,7 @@ Prevents wasted time recreating test plans in the correct location. Improves age
 - Do NOT migrate existing test plans
 
 **Related Work:**
-- Retrospective: docs/workflow/022-improvements-2025-12-27/improvements-2025-12-27.md #1
+- Retrospective: docs/workflow/065-improvements-2025-12-27/improvements-2025-12-27.md #1
 
 **Priority:** High
 **Complexity:** Low
@@ -152,7 +152,7 @@ Add a new section "Cloud Agents vs Local Agents" to docs/agents.md that explains
 **Scope:**
 - `docs/agents.md` (add new section after "Workflow Overview")
 - Update Workflow Engineer description to mention dual-mode capability
-- Link to docs/workflow/031-cloud-agents-analysis/ for details
+- Link to docs/workflow/071-cloud-agents-analysis/ for details
 
 **Why This Matters:**
 Users need to understand when and how to use cloud agents. Without documentation, the feature won't be used effectively or may cause confusion.
@@ -170,7 +170,7 @@ Users need to understand when and how to use cloud agents. Without documentation
 - Do NOT add implementation details (link to analysis instead)
 
 **Related Work:**
-- Analysis: docs/workflow/031-cloud-agents-analysis/cloud-agents-analysis.md
+- Analysis: docs/workflow/071-cloud-agents-analysis/cloud-agents-analysis.md
 - Implementation: PR #XXX (cloud agent support)
 
 **Priority:** High

@@ -4,7 +4,7 @@ namespace Oocx.TfPlan2Md.Providers.AzApi;
 
 /// <summary>
 /// Scriban helper functions for azapi_resource template rendering.
-/// Related feature: docs/features/040-azapi-resource-template/specification.md.
+/// Related feature: docs/features/028-azapi-resource-template/specification.md.
 /// </summary>
 /// <remarks>
 /// These helpers transform JSON body content from azapi_resource resources into human-readable
@@ -21,7 +21,7 @@ public static partial class ScribanHelpers
     /// <param name="Entries">The extracted item entries.</param>
     /// <remarks>
     /// This model is purpose-built for rendering and stays internal to the Scriban helpers.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private sealed record AzApiArrayItem(int Index, string IndexLabel, IReadOnlyList<AzApiArrayItemEntry> Entries);
 
@@ -35,7 +35,7 @@ public static partial class ScribanHelpers
     /// <remarks>
     /// Only one of <paramref name="Value"/> or <paramref name="Before"/>/<paramref name="After"/> is expected
     /// to be used depending on rendering mode.
-    /// Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private sealed record AzApiArrayItemEntry(
         string LocalPath,
@@ -52,7 +52,7 @@ public static partial class ScribanHelpers
     /// <returns>Ordered list of extracted array items.</returns>
     /// <remarks>
     /// This method supports arrays of objects (e.g. <c>items[0].name</c>) and arrays of primitives
-    /// (e.g. <c>allowedOrigins[0]</c>). Related feature: docs/features/050-azapi-attribute-grouping/specification.md.
+    /// (e.g. <c>allowedOrigins[0]</c>). Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
     /// </remarks>
     private static List<AzApiArrayItem> ExtractArrayItems(
         ScriptArray groupProps,

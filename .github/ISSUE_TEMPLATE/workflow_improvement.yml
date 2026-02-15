@@ -95,9 +95,9 @@ body:
       label: Related Issues or Context (Optional)
       description: Links to related issues, retrospectives, or analysis documents
       placeholder: |
-        - Retrospective: docs/workflow/023-retrospective-2025-12-28/retrospective-2025-12-28.md
+        - Retrospective: docs/workflow/066-retrospective-2025-12-28/retrospective-2025-12-28.md
         - Related issue: #42
-        - Analysis: docs/workflow/031-cloud-agents-analysis/cloud-agents-analysis.md
+        - Analysis: docs/workflow/071-cloud-agents-analysis/cloud-agents-analysis.md
 
   - type: dropdown
     id: priority

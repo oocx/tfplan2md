@@ -8,7 +8,7 @@ During Feature 068 (Parent-Child Resource Grouping), the Code Reviewer agent mis
 
 ## Candidate Workflow Improvements
 
-Based on the detailed root cause analysis in `docs/features/068-parent-child-resource-grouping/code-review-post-uat-fixes.md`, the following 5 improvements would help catch similar issues:
+Based on the detailed root cause analysis in `docs/features/045-parent-child-resource-grouping/code-review-post-uat-fixes.md`, the following 5 improvements would help catch similar issues:
 
 | ID | Title | Source | Status | Rationale | Impact | Effort | Risk | Notes |
 |---:|---|---|---|---|---|---|---|---|

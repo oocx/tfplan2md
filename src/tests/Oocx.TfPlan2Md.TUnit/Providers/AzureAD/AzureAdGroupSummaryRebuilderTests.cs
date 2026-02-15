@@ -15,7 +15,7 @@ namespace Oocx.TfPlan2Md.Tests.Providers.AzureAD;
 
 /// <summary>
 /// Tests for the Azure AD group summary rebuilder callback implementation.
-/// Related issue: docs/issues/070-parent-child-summary-member-counts/analysis.md.
+/// Related issue: docs/issues/059-parent-child-summary-member-counts/analysis.md.
 /// </summary>
 public class AzureAdGroupSummaryRebuilderTests
 {

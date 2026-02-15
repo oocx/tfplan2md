@@ -37,4 +37,19 @@ public class TerraformPlanParserAsyncTests
 
         await action.Should().ThrowAsync<TerraformPlanParseException>();
     }
+
+    /// <summary>
+    /// Ensures ParseAsync throws TerraformPlanParseException (not ArgumentNullException) when stream is null.
+    /// </summary>
+    [Test]
+    public async Task ParseAsync_NullStream_ThrowsTerraformPlanParseException()
+    {
+        var parser = new TerraformPlanParser();
+        Stream? nullStream = null;
+
+        var action = async () => await parser.ParseAsync(nullStream!);
+
+        await action.Should().ThrowAsync<TerraformPlanParseException>()
+            .WithMessage("*cannot be null*");
+    }
 }

@@ -300,4 +300,18 @@ public class TerraformPlanParserTests
         // Assert
         plan.Timestamp.Should().Be("2025-12-20T10:00:00Z");
     }
+
+    [Test]
+    public void Parse_NullInput_ThrowsTerraformPlanParseException()
+    {
+        // Arrange
+        string? nullJson = null;
+
+        // Act
+        var act = () => _parser.Parse(nullJson!);
+
+        // Assert
+        act.Should().Throw<TerraformPlanParseException>()
+            .WithMessage("*cannot be null*");
+    }
 }

@@ -18,6 +18,11 @@ public class TerraformPlanParser
     /// <exception cref="TerraformPlanParseException">Thrown when parsing fails.</exception>
     public TerraformPlan Parse(string json)
     {
+        if (json is null)
+        {
+            throw new TerraformPlanParseException("Input JSON string cannot be null.");
+        }
+
         try
         {
             var plan = JsonSerializer.Deserialize(json, PlanTypeInfo);
@@ -38,6 +43,11 @@ public class TerraformPlanParser
     /// <exception cref="TerraformPlanParseException">Thrown when parsing fails.</exception>
     public async Task<TerraformPlan> ParseAsync(Stream stream, CancellationToken cancellationToken = default)
     {
+        if (stream is null)
+        {
+            throw new TerraformPlanParseException("Input stream cannot be null.");
+        }
+
         try
         {
             var plan = await JsonSerializer.DeserializeAsync(stream, PlanTypeInfo, cancellationToken);

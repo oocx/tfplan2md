@@ -222,3 +222,49 @@ Hand back to **Developer** agent to:
 2. Run full test suite to verify all tests pass
 3. Commit the test fixes
 4. Return to Code Reviewer for re-approval
+
+---
+
+## Agent: Developer (Test Fix Round)
+
+### Date: 2025-02-15
+
+### Summary
+
+Fixed the 2 test expectations that were missed during the initial implementation. Both tests needed to include the 🆔 icon with non-breaking space (`\u00A0`) in their expected values.
+
+### Changes Made
+
+#### Test Expectation Updates
+
+**File: `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureEntityMapperTests.cs`**
+- Line 85: Updated expectation from `Key Vault `kv1`` to `Key Vault `🆔\u00A0kv1``
+- Ensured non-breaking space between icon and resource name
+
+**File: `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererTests.cs`**
+- Line 177: Updated expectation from `Key Vault `kv-long-name`` to `Key Vault `🆔\u00A0kv-long-name``
+- Also updated resource group from `rg-with-a-very-long-name...` to `📁\u00A0rg-with-a-very-long-name...`
+- Both icons now include non-breaking space as per implementation
+
+### Approach Followed
+
+1. **Identified the root cause**: The initial fix used regular spaces instead of non-breaking spaces (`\u00A0`) between icons and names
+2. **Applied correct formatting**: Used `sed` to update test expectations with proper non-breaking space characters
+3. **Verified individual tests**: Ran both failing tests individually - both passed
+4. **Verified full test suite**: Ran complete test suite - all 1006 tests passed, 0 failed, 0 skipped
+
+### Test Results
+
+- ✅ `EnrichedAzureScopeFormatter_ResourceScope_IncludesSubscriptionName` - Passed
+- ✅ `Render_AzureResourceIds_StayInTableWithReadableFormat` - Passed
+- ✅ Full test suite: **1006 tests passed, 0 failed, 0 skipped**
+
+### Problems Encountered
+
+**Issue:** Initial attempt used regular spaces instead of non-breaking spaces between icons and names.
+
+**Resolution:** The implementation uses `AzureLabelFormatter.NonBreakingSpace` (defined as `\u00A0`), so test expectations needed to use the same non-breaking space character. Updated both test files to use `\u00A0` instead of regular space.
+
+### Next Steps
+
+Ready for Code Reviewer re-approval. All tests now pass.

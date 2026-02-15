@@ -1,0 +1,15 @@
+{
+  "azdoUsers": {
+    "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "Alice Smith",
+    "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f": "Bob Johnson",
+    "9d8e7f6c-5b4a-3c2d-1e0f-9a8b7c6d5e4f": "Charlie Williams"
+  },
+  "azdoGroups": {
+    "vssgp.Uy0xLTktMTU1MTM3MjIxNy0zNzYzMTkyMTY3LTI3NDgzNjU3MTYtMjE3MDg3MzYzMy0yNzA1Nzk5MDA2LTEtMjgyODQxODkxNS0zMzY4NDc0NzY0LTIxNDc0ODM2NDgtMTI1MTM1ODA3OQ": "Platform Engineering Team",
+    "vssgp.Uy0yLTktMTY2MjQ4MzIyOC00ODc2MjkzMzg4LTM4NTk0NzYyOTctMzI4MTk2NDc0NC0zODE2OTAwMTE3LTItMzkzOTUwODAyNi00NDk1ODU4ODc1LTMyNTk1OTczNzktMjM2MTQ2OTA4OA": "Security Review Team"
+  },
+  "azdoProjects": {
+    "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
+    "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  }
+}

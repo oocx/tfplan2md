@@ -1,0 +1,201 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_project.infrastructure",
+      "mode": "managed",
+      "type": "azuredevops_project",
+      "name": "infrastructure",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "id": "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f",
+          "name": "Infrastructure",
+          "description": "Infrastructure as Code project",
+          "visibility": "private"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_project.applications",
+      "mode": "managed",
+      "type": "azuredevops_project",
+      "name": "applications",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+          "name": "Applications",
+          "description": "Application development project",
+          "visibility": "private"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group.platform_team",
+      "mode": "managed",
+      "type": "azuredevops_group",
+      "name": "platform_team",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "descriptor": "vssgp.Uy0xLTktMTU1MTM3MjIxNy0zNzYzMTkyMTY3LTI3NDgzNjU3MTYtMjE3MDg3MzYzMy0yNzA1Nzk5MDA2LTEtMjgyODQxODkxNS0zMzY4NDc0NzY0LTIxNDc0ODM2NDgtMTI1MTM1ODA3OQ",
+          "display_name": "Platform Team",
+          "description": "Platform engineering team"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group.security_reviewers",
+      "mode": "managed",
+      "type": "azuredevops_group",
+      "name": "security_reviewers",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "descriptor": "vssgp.Uy0yLTktMTY2MjQ4MzIyOC00ODc2MjkzMzg4LTM4NTk0NzYyOTctMzI4MTk2NDc0NC0zODE2OTAwMTE3LTItMzkzOTUwODAyNi00NDk1ODU4ODc1LTMyNTk1OTczNzktMjM2MTQ2OTA4OA",
+          "display_name": "Security Reviewers",
+          "description": "Security review team"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group_membership.alice_in_platform",
+      "mode": "managed",
+      "type": "azuredevops_group_membership",
+      "name": "alice_in_platform",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group": "vssgp.Uy0xLTktMTU1MTM3MjIxNy0zNzYzMTkyMTY3LTI3NDgzNjU3MTYtMjE3MDg3MzYzMy0yNzA1Nzk5MDA2LTEtMjgyODQxODkxNS0zMzY4NDc0NzY0LTIxNDc0ODM2NDgtMTI1MTM1ODA3OQ",
+          "member": "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group_membership.bob_in_platform",
+      "mode": "managed",
+      "type": "azuredevops_group_membership",
+      "name": "bob_in_platform",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group": "vssgp.Uy0xLTktMTU1MTM3MjIxNy0zNzYzMTkyMTY3LTI3NDgzNjU3MTYtMjE3MDg3MzYzMy0yNzA1Nzk5MDA2LTEtMjgyODQxODkxNS0zMzY4NDc0NzY0LTIxNDc0ODM2NDgtMTI1MTM1ODA3OQ",
+          "member": "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_group_membership.charlie_in_security",
+      "mode": "managed",
+      "type": "azuredevops_group_membership",
+      "name": "charlie_in_security",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group": "vssgp.Uy0yLTktMTY2MjQ4MzIyOC00ODc2MjkzMzg4LTM4NTk0NzYyOTctMzI4MTk2NDc0NC0zODE2OTAwMTE3LTItMzkzOTUwODAyNi00NDk1ODU4ODc1LTMyNTk1OTczNzktMjM2MTQ2OTA4OA",
+          "member": "9d8e7f6c-5b4a-3c2d-1e0f-9a8b7c6d5e4f"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_team.platform_ops",
+      "mode": "managed",
+      "type": "azuredevops_team",
+      "name": "platform_ops",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "id": "team-platform-ops",
+          "project_id": "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f",
+          "name": "Platform Ops",
+          "description": "Platform operations team"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_team_members.platform_ops_members",
+      "mode": "managed",
+      "type": "azuredevops_team_members",
+      "name": "platform_ops_members",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "project_id": "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f",
+          "team_id": "team-platform-ops",
+          "members": [
+            "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b",
+            "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_team_administrators.platform_ops_admins",
+      "mode": "managed",
+      "type": "azuredevops_team_administrators",
+      "name": "platform_ops_admins",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "project_id": "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f",
+          "team_id": "team-platform-ops",
+          "administrators": [
+            "9d8e7f6c-5b4a-3c2d-1e0f-9a8b7c6d5e4f"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

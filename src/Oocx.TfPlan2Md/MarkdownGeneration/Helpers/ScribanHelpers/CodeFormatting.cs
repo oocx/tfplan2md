@@ -57,18 +57,17 @@ public static partial class ScribanHelpers
             return value ?? string.Empty;
         }
 
-        // Special case: FormatDiff can return <code>\`value\`</code> when values are equal
-        // (escaped backticks inside code tags). Remove the escaped backticks.
-        if (value.Contains(@"\`", StringComparison.Ordinal))
-        {
-            value = value.Replace(@"\`", string.Empty, StringComparison.Ordinal);
-        }
-
         // If the value contains HTML tags (diff or code formatting), pass it through unchanged
         if (value.Contains("<code", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("<span", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("</code>", StringComparison.OrdinalIgnoreCase))
         {
+            // Special case: FormatDiff can return <code>\`value\`</code> when values are equal
+            // (escaped backticks inside code tags). Remove the escaped backticks.
+            if (value.Contains(@"\`", StringComparison.Ordinal))
+            {
+                value = value.Replace(@"\`", string.Empty, StringComparison.Ordinal);
+            }
             return value;
         }
 

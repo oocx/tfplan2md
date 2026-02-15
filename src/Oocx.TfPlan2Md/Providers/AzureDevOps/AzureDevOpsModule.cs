@@ -106,19 +106,61 @@ internal sealed class AzureDevOpsModule : IProviderModule
 
     /// <summary>
     /// Registers Azure DevOps-specific value formatters.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
     /// </summary>
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
-        if (_entityMapper is null)
+        // Register Azure entity formatters (tenant, management group)
+        if (_entityMapper is not null)
         {
-            return;
+            AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
+                registry,
+                "(^azuredevops$|.*/azuredevops$)",
+                _entityMapper);
         }
 
-        AzureValueFormatterRegistration.RegisterTenantAndManagementGroup(
-            registry,
-            "(^azuredevops$|.*/azuredevops$)",
-            _entityMapper);
+        // Register Azure DevOps user formatter
+        if (_azdoUserMapper is not null)
+        {
+            var userFormatter = new AzdoUserIdFormatter(_azdoUserMapper);
+            // Match common user attribute names with GUID pattern
+            registry.Register(
+                new MatchPattern(
+                    "(^azuredevops$|.*/azuredevops$)",
+                    null,
+                    "^member$|^administrator$|^user$",
+                    AzureValueFormatterRegistration.GuidPattern),
+                userFormatter);
+        }
+
+        // Register Azure DevOps group formatter
+        if (_azdoGroupMapper is not null)
+        {
+            var groupFormatter = new AzdoGroupDescriptorFormatter(_azdoGroupMapper);
+            // Match group/descriptor attributes
+            registry.Register(
+                new MatchPattern(
+                    "(^azuredevops$|.*/azuredevops$)",
+                    null,
+                    "^group$|^descriptor$",
+                    null),
+                groupFormatter);
+        }
+
+        // Register Azure DevOps project formatter
+        if (_azdoProjectMapper is not null)
+        {
+            var projectFormatter = new AzdoProjectIdFormatter(_azdoProjectMapper);
+            // Match project attribute names with GUID pattern
+            registry.Register(
+                new MatchPattern(
+                    "(^azuredevops$|.*/azuredevops$)",
+                    null,
+                    "^project_id$|^project$",
+                    AzureValueFormatterRegistration.GuidPattern),
+                projectFormatter);
+        }
     }
 
     /// <summary>

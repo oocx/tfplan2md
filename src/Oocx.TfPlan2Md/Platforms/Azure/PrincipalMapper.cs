@@ -59,12 +59,12 @@ internal class PrincipalMapper : IPrincipalMapper
     /// </returns>
     public string GetPrincipalName(string principalId)
     {
-        var name = GetName(principalId);
-
         if (string.IsNullOrWhiteSpace(principalId))
         {
             return principalId ?? string.Empty;
         }
+
+        var name = GetName(principalId);
 
         return name is null
             ? principalId
@@ -87,12 +87,12 @@ internal class PrincipalMapper : IPrincipalMapper
     /// </remarks>
     public string GetPrincipalName(string principalId, string? principalType, string? resourceAddress = null)
     {
-        var name = GetName(principalId, principalType, resourceAddress);
-
         if (string.IsNullOrWhiteSpace(principalId))
         {
             return principalId ?? string.Empty;
         }
+
+        var name = GetName(principalId, principalType, resourceAddress);
 
         return name is null
             ? principalId

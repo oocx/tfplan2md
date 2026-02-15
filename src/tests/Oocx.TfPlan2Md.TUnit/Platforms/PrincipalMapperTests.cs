@@ -348,6 +348,132 @@ public class PrincipalMapperTests
         }
     }
 
+    [Test]
+    public void GetPrincipalName_NullId_ReturnsEmptyString()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("{}");
+        try
+        {
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
+
+            // Act
+            var result = mapper.GetPrincipalName(null!);
+
+            // Assert
+            result.Should().Be(string.Empty);
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void GetPrincipalName_EmptyStringId_ReturnsEmptyString()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("{}");
+        try
+        {
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
+
+            // Act
+            var result = mapper.GetPrincipalName(string.Empty);
+
+            // Assert
+            result.Should().Be(string.Empty);
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void GetPrincipalName_WhitespaceId_ReturnsWhitespace()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("{}");
+        try
+        {
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
+
+            // Act
+            var result = mapper.GetPrincipalName("   ");
+
+            // Assert
+            result.Should().Be("   ");
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void GetPrincipalName_WithResourceAddress_NullId_ReturnsEmptyString()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("{}");
+        try
+        {
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
+
+            // Act
+            var result = mapper.GetPrincipalName(null!, "User", "azurerm_role_assignment.test");
+
+            // Assert
+            result.Should().Be(string.Empty);
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void GetPrincipalName_WithResourceAddress_EmptyStringId_ReturnsEmptyString()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("{}");
+        try
+        {
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
+
+            // Act
+            var result = mapper.GetPrincipalName(string.Empty, "User", "azurerm_role_assignment.test");
+
+            // Assert
+            result.Should().Be(string.Empty);
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
+    [Test]
+    public void GetPrincipalName_WithResourceAddress_WhitespaceId_ReturnsWhitespace()
+    {
+        // Arrange
+        var mappingPath = CreateTempMapping("{}");
+        try
+        {
+            var mapper = PrincipalMapperFactory.Create(mappingPath);
+
+            // Act
+            var result = mapper.GetPrincipalName("   ", "User", "azurerm_role_assignment.test");
+
+            // Assert
+            result.Should().Be("   ");
+        }
+        finally
+        {
+            File.Delete(mappingPath);
+        }
+    }
+
     private static string CreateTempMapping(string content)
     {
         var tempRoot = GetTempRoot();

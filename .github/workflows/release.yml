@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches: [main]
   workflow_dispatch:
     inputs:
       tag:
@@ -24,10 +29,12 @@ jobs:
     runs-on: ubuntu-latest
     # Only run if:
     # 1. Triggered by a tag push (manual or external), OR
-    # 2. Manually triggered via workflow_dispatch
+    # 2. Triggered by CI workflow completion that was successful, OR
+    # 3. Manually triggered via workflow_dispatch
     if: |
       github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
 
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -69,13 +76,13 @@ jobs:
             fi
 
             TAG=""
-            for attempt in 1 2 3; do
+            for attempt in $(seq 1 24); do
               TAG=$(git describe --tags --exact-match "$COMMIT_SHA" 2>/dev/null || echo "")
               if [ -n "$TAG" ]; then
                 break
               fi
-              if [ "$attempt" -lt 3 ]; then
-                echo "Tag not found yet, waiting 5 seconds before retry $((attempt + 1))/3..."
+              if [ "$attempt" -lt 24 ]; then
+                echo "Tag not found yet, waiting 5 seconds before retry $((attempt + 1))/24..."
                 sleep 5
                 # Fetch again to ensure we have the latest tags
                 git fetch --tags
@@ -83,13 +90,13 @@ jobs:
             done
 
             if [ -z "$TAG" ]; then
-              echo "Error: No tag found for CI workflow commit $COMMIT_SHA"
-              echo "This indicates that the CI workflow completed without creating a tag."
-              echo "Check the CI workflow logs to see if versionize was skipped due to:"
-              echo "  - No release-worthy changes since last tag"
-              echo "  - Only insignificant commits (docs, tests, etc.)"
-              echo "  - CI workflow failure before tag creation"
-              exit 1
+              echo "No tag found for CI workflow commit $COMMIT_SHA after waiting."
+              echo "CI likely completed without creating a release tag; skipping release."
+              echo "version=" >> $GITHUB_OUTPUT
+              echo "major=" >> $GITHUB_OUTPUT
+              echo "minor=" >> $GITHUB_OUTPUT
+              echo "is_prerelease=false" >> $GITHUB_OUTPUT
+              exit 0
             fi
             echo "Found tag $TAG for CI workflow run"
           else
@@ -110,6 +117,7 @@ jobs:
 
       - name: Find previous GitHub release
         id: previous_release
+        if: steps.version.outputs.version != ''
         env:
           GH_TOKEN: ${{ github.token }}
           GH_PAGER: cat
@@ -121,6 +129,7 @@ jobs:
 
       - name: Find user-focused release notes
         id: find_release_notes
+        if: steps.version.outputs.version != ''
         run: |
           # Try to find release notes file in feature/fix/workflow directories
           # Search for most recent release-notes.md by extracting numeric prefixes and sorting
@@ -148,6 +157,7 @@ jobs:
 
       - name: Extract changelog range
         id: changelog
+        if: steps.version.outputs.version != ''
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           LAST="${{ steps.previous_release.outputs.last }}"
@@ -165,6 +175,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
+        if: steps.version.outputs.version != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
@@ -174,6 +185,7 @@ jobs:
 
   build-linux-x64-binary:
     name: Build Linux x64 Binary
+    if: needs.release.outputs.version != ''
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/dotnet/sdk:10.0-noble  # Ubuntu 24.04, glibc 2.39
@@ -241,6 +253,7 @@ jobs:
 
   docker:
     name: Build and Push Docker Image
+    if: needs.release.outputs.version != ''
     runs-on: ubuntu-latest
     needs: release
 

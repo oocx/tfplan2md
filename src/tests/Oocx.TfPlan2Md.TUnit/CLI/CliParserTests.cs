@@ -475,4 +475,20 @@ public class CliParserTests
         options.OutputFile.Should().Be("output.md");
         options.ShowSensitive.Should().BeTrue();
     }
+
+    /// <summary>
+    /// Bug 3: Multiple positional arguments should throw CliParseException.
+    /// </summary>
+    [Test]
+    public void Parse_MultiplePositionalArguments_ThrowsCliParseException()
+    {
+        // Arrange
+        var args = new[] { "file1.json", "file2.json" };
+
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>().Which.Message.Should().Contain("Unexpected argument");
+    }
 }

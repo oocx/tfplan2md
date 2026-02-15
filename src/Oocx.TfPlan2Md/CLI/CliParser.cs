@@ -254,6 +254,10 @@ internal static class CliParser
                     {
                         throw new CliParseException($"Unknown option: {arg}");
                     }
+                    if (inputFile is not null)
+                    {
+                        throw new CliParseException($"Unexpected argument: {arg}. Only one input file can be specified.");
+                    }
                     // Positional argument is the input file
                     inputFile = arg;
                     break;

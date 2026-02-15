@@ -4,8 +4,8 @@
 
 This test plan defines the validation strategy for Phase 1 of ADR-008: Multi-Platform Binary Distribution. Since this feature involves **GitHub Actions workflow changes only** (no application code changes), testing focuses on workflow validation, artifact verification, and end-to-end user scenarios rather than unit/integration tests.
 
-**Feature Specification:** `docs/features/461-multi-platform-binary-distribution/specification.md`  
-**Architecture Document:** `docs/features/461-multi-platform-binary-distribution/architecture.md`  
+**Feature Specification:** `docs/features/073-multi-platform-binary-distribution/specification.md`  
+**Architecture Document:** `docs/features/073-multi-platform-binary-distribution/architecture.md`  
 **ADR Reference:** `docs/adr-008-multi-platform-binary-distribution.md`
 
 ## Testing Strategy
@@ -724,12 +724,12 @@ _This section will be populated during implementation by the Developer agent._
 
 ## References
 
-- **Feature Specification**: `docs/features/461-multi-platform-binary-distribution/specification.md`
-- **Architecture Document**: `docs/features/461-multi-platform-binary-distribution/architecture.md`
+- **Feature Specification**: `docs/features/073-multi-platform-binary-distribution/specification.md`
+- **Architecture Document**: `docs/features/073-multi-platform-binary-distribution/architecture.md`
 - **ADR-008**: `docs/adr-008-multi-platform-binary-distribution.md`
 - **Current Release Workflow**: `.github/workflows/release.yml`
 - **Testing Strategy**: `docs/testing-strategy.md`
-- **Issue #461**: [Feature]: Publish pre-built binaries for multiple architectures
+- **Issue #073**: [Feature]: Publish pre-built binaries for multiple architectures
 
 ---
 

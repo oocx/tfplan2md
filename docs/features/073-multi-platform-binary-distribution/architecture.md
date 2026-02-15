@@ -9,7 +9,7 @@ Proposed
 This document provides the detailed implementation architecture for Phase 1 of ADR-008: Multi-Platform Binary Distribution. The high-level decisions have been approved by the maintainer:
 
 - **ADR-008 Status**: Approved (linux-x64 only for Phase 1)
-- **Feature Specification**: `docs/features/461-multi-platform-binary-distribution/specification.md`
+- **Feature Specification**: `docs/features/073-multi-platform-binary-distribution/specification.md`
 - **Scope**: Linux x64 (glibc) binary distribution only
 - **Distribution Model**: Supplementary to Docker (Docker remains primary)
 
@@ -764,7 +764,7 @@ Architecture design is complete when:
 
 ## References
 
-- **Feature Specification**: `docs/features/461-multi-platform-binary-distribution/specification.md`
+- **Feature Specification**: `docs/features/073-multi-platform-binary-distribution/specification.md`
 - **ADR-008**: `docs/adr-008-multi-platform-binary-distribution.md`
 - **Current Release Workflow**: `.github/workflows/release.yml`
 - **Project Specification**: `docs/spec.md`

@@ -4,9 +4,9 @@
 
 This document breaks down the implementation of Phase 1 of ADR-008: Multi-Platform Binary Distribution into actionable tasks. The feature adds Linux x64 binary build, packaging, checksum generation, and GitHub Release upload to the existing release workflow.
 
-**Feature Specification:** `docs/features/461-multi-platform-binary-distribution/specification.md`  
-**Architecture Design:** `docs/features/461-multi-platform-binary-distribution/architecture.md`  
-**Test Plan:** `docs/features/461-multi-platform-binary-distribution/test-plan.md`  
+**Feature Specification:** `docs/features/073-multi-platform-binary-distribution/specification.md`  
+**Architecture Design:** `docs/features/073-multi-platform-binary-distribution/architecture.md`  
+**Test Plan:** `docs/features/073-multi-platform-binary-distribution/test-plan.md`  
 **ADR Reference:** `docs/adr-008-multi-platform-binary-distribution.md`
 
 **Scope:** Modify `.github/workflows/release.yml` only. No application code changes required.
@@ -614,8 +614,8 @@ Commit the modified workflow file and updated work protocol to the feature branc
 **Commands:**
 ```bash
 git add .github/workflows/release.yml
-git add docs/features/461-multi-platform-binary-distribution/work-protocol.md
-git add docs/features/461-multi-platform-binary-distribution/tasks.md
+git add docs/features/073-multi-platform-binary-distribution/work-protocol.md
+git add docs/features/073-multi-platform-binary-distribution/tasks.md
 git commit -m "feat: add Linux x64 binary build to release workflow
 
 - Add build-linux-x64-binary job to release.yml
@@ -627,13 +627,13 @@ git commit -m "feat: add Linux x64 binary build to release workflow
 - Run in parallel with Docker build
 
 Implements Phase 1 of ADR-008: Multi-Platform Binary Distribution
-Closes #461"
+Closes #073"
 ```
 
 **Acceptance Criteria:**
 - [ ] All modified files staged
 - [ ] Commit message follows conventional commits format
-- [ ] Commit message references ADR-008 and Issue #461
+- [ ] Commit message references ADR-008 and Issue #073
 - [ ] Commit is on the feature branch `copilot/implement-linux-x64-binary`
 - [ ] Commit does not include test tag or release artifacts
 

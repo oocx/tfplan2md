@@ -2,7 +2,7 @@
 
 ## Summary
 
-Reviewed bug fix for issue #464 that eliminates false positive "⚠️ Already imported" warnings for Terraform import operations with `actions: ["read"]`. The implementation is **surgical, correct, and well-tested**. The fix precisely targets the root cause identified in the analysis document.
+Reviewed bug fix for issue #076 that eliminates false positive "⚠️ Already imported" warnings for Terraform import operations with `actions: ["read"]`. The implementation is **surgical, correct, and well-tested**. The fix precisely targets the root cause identified in the analysis document.
 
 **Review Decision:** ✅ **APPROVED**
 
@@ -109,7 +109,7 @@ The fix does NOT attempt to validate Terraform's action combinations (e.g., read
 
 **Documentation:**
 - ✅ Excellent XML doc comments on `DetermineAction` method
-- ✅ References the analysis document (`docs/issues/464-already-imported-false-positive/analysis.md`)
+- ✅ References the analysis document (`docs/issues/076-already-imported-false-positive/analysis.md`)
 - ✅ Explains the "why" (prevent false positives) not just the "what"
 - ✅ `GetActionSymbol` comment explains design decision for read → Add icon mapping
 
@@ -184,7 +184,7 @@ var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null 
 /// <returns>A normalized action string for use in report generation.</returns>
 /// <remarks>
 /// Explicitly handles the "read" action to prevent false positives in import detection.
-/// Related issue: docs/issues/464-already-imported-false-positive/analysis.md.
+/// Related issue: docs/issues/076-already-imported-false-positive/analysis.md.
 /// </remarks>
 ```
 - ✅ Explains the "why" (prevent false positives)
@@ -196,7 +196,7 @@ var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null 
 ```csharp
 /// <remarks>
 /// "read" action uses Add icon as it represents bringing a resource into state (similar to create).
-/// Related issue: docs/issues/464-already-imported-false-positive/analysis.md.
+/// Related issue: docs/issues/076-already-imported-false-positive/analysis.md.
 /// </remarks>
 ```
 - ✅ Explains the rationale for mapping read → Add icon

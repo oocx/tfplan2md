@@ -17,7 +17,7 @@ This feature implements **Phase 1** of ADR-008: Multi-Platform Binary Distributi
 - Installation scripts or package manager integration
 - Automated testing on linux-x64 target (deferred to Phase 2)
 
-This addresses Issue #461 which requested OpenTofu-style pre-built binaries for closed/air-gapped systems, non-containerized environments, and local development use cases.
+This addresses Issue #073 which requested OpenTofu-style pre-built binaries for closed/air-gapped systems, non-containerized environments, and local development use cases.
 
 ## User Goals
 
@@ -351,7 +351,7 @@ Phase 1 is successful when:
 
 ## References
 
-- **Issue #461**: [Feature]: Publish pre-built binaries for multiple architectures  
+- **Issue #073**: [Feature]: Publish pre-built binaries for multiple architectures  
 - **ADR-008**: [docs/adr-008-multi-platform-binary-distribution.md](../../adr-008-multi-platform-binary-distribution.md)  
 - **Current Release Workflow**: [.github/workflows/release.yml](../../../.github/workflows/release.yml)  
 - **OpenTofu Releases**: https://github.com/opentofu/opentofu/releases (reference for naming convention)  

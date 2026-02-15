@@ -1,4 +1,4 @@
-# Work Protocol: Fix #462 - glibc Compatibility with Debian 12
+# Work Protocol: Fix #074 - glibc Compatibility with Debian 12
 
 ## Workflow Type
 Bug Fix
@@ -26,7 +26,7 @@ The planned linux-x64 binary release (ADR-008 Phase 1) will not work with Debian
 Completed comprehensive investigation of glibc compatibility issue for linux-x64 binary distribution. Identified root cause as Native AOT backward compatibility limitation and researched solution options.
 
 **Artifacts Produced:**
-- `docs/issues/462-glibc-compatibility-debian-12/analysis.md` - Complete technical analysis with:
+- `docs/issues/074-glibc-compatibility-debian-12/analysis.md` - Complete technical analysis with:
   - glibc version compatibility matrix for 12 distributions
   - Root cause analysis of Native AOT glibc linking
   - Six solution options with detailed pros/cons
@@ -79,7 +79,7 @@ Implemented container-based build solution for linux-x64 binary using Ubuntu 22.
 - Modified `.github/workflows/release.yml`:
   - Added `container` specification with `mcr.microsoft.com/dotnet/sdk:10.0-jammy`
   - Added glibc version verification step using `readelf -V`
-- Updated `docs/issues/462-glibc-compatibility-debian-12/analysis.md` with implementation notes
+- Updated `docs/issues/074-glibc-compatibility-debian-12/analysis.md` with implementation notes
 
 **Implementation Details:**
 1. **Container Image**: `mcr.microsoft.com/dotnet/sdk:10.0-jammy` (Ubuntu 22.04, glibc 2.35)

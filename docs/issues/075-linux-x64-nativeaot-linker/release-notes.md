@@ -4,7 +4,7 @@ Fix release for Linux x64 binary packaging in the release workflow.
 
 ## 🐛 Bug fixes
 
-- **Fixed Linux x64 release binary build failure (Issue #463)** by installing the missing NativeAOT linker prerequisite (`clang`) in the Linux build job before `dotnet publish -p:PublishAot=true`.
+- **Fixed Linux x64 release binary build failure (Issue #075)** by installing the missing NativeAOT linker prerequisite (`clang`) in the Linux build job before `dotnet publish -p:PublishAot=true`.
 
 ## 🔗 Commits
 

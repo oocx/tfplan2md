@@ -91,7 +91,7 @@ Reviewed and updated documentation to reflect the bug fix for missing icons in A
 
 #### 1. Created Release Notes
 
-**File: `docs/issues/465-missing-icons-azure-resource-id-rendering/release-notes.md`**
+**File: `docs/issues/077-missing-icons-azure-resource-id-rendering/release-notes.md`**
 - Documented the bug fix with before/after examples
 - Listed all affected scenarios (network, storage, compute, etc.)
 - Confirmed non-breaking nature of the change
@@ -130,7 +130,7 @@ Reviewed the following files and confirmed no updates needed:
 
 ### Artifacts Produced
 
-- **Release notes**: `docs/issues/465-missing-icons-azure-resource-id-rendering/release-notes.md`
+- **Release notes**: `docs/issues/077-missing-icons-azure-resource-id-rendering/release-notes.md`
 - **Updated feature documentation**: `docs/features.md` (Universal Azure Resource ID Formatting section)
 - **Updated work protocol**: This entry
 
@@ -202,7 +202,7 @@ Developer must update 2 test expectations:
 
 ### Artifacts Produced
 
-- Code review report: `docs/issues/465-missing-icons-azure-resource-id-rendering/code-review.md`
+- Code review report: `docs/issues/077-missing-icons-azure-resource-id-rendering/code-review.md`
 - Updated work protocol with review findings
 
 ### Problems Encountered
@@ -358,7 +358,7 @@ Per [docs/agents.md § UAT Requirements](../../docs/agents.md), UAT is primarily
 
 ### Artifacts Produced
 
-- Updated code review report: `docs/issues/465-missing-icons-azure-resource-id-rendering/code-review.md`
+- Updated code review report: `docs/issues/077-missing-icons-azure-resource-id-rendering/code-review.md`
 - Updated work protocol: This entry
 
 ### Problems Encountered
@@ -428,7 +428,7 @@ Coordinated the release of the bug fix for missing icons in Azure resource ID re
 
 **Documentation:**
 - `docs/features.md` - Updated Azure resource ID examples with icons
-- `docs/issues/465-missing-icons-azure-resource-id-rendering/release-notes.md` - Comprehensive release notes created
+- `docs/issues/077-missing-icons-azure-resource-id-rendering/release-notes.md` - Comprehensive release notes created
 
 ### Release Coordination Activities
 
@@ -456,7 +456,7 @@ Coordinated the release of the bug fix for missing icons in Azure resource ID re
 
 ### PR Description Prepared
 
-**Title:** `fix: add missing icons in Azure resource ID rendering (issue #465)`
+**Title:** `fix: add missing icons in Azure resource ID rendering (issue #077)`
 
 **Description:**
 ```markdown
@@ -505,9 +505,9 @@ Fixed missing semantic icons in Azure resource ID rendering by:
 - ✅ Markdownlint validation passes (0 errors)
 
 **Related Documentation:**
-- Analysis: `docs/issues/465-missing-icons-azure-resource-id-rendering/analysis.md`
-- Release notes: `docs/issues/465-missing-icons-azure-resource-id-rendering/release-notes.md`
-- Work protocol: `docs/issues/465-missing-icons-azure-resource-id-rendering/work-protocol.md`
+- Analysis: `docs/issues/077-missing-icons-azure-resource-id-rendering/analysis.md`
+- Release notes: `docs/issues/077-missing-icons-azure-resource-id-rendering/release-notes.md`
+- Work protocol: `docs/issues/077-missing-icons-azure-resource-id-rendering/work-protocol.md`
 ```
 
 ### Artifacts Produced
@@ -613,7 +613,7 @@ Excellent analysis, clean implementation, and thorough documentation. However, i
 
 ### Artifacts Produced
 
-- **Retrospective report:** `docs/issues/465-missing-icons-azure-resource-id-rendering/retrospective.md`
+- **Retrospective report:** `docs/issues/077-missing-icons-azure-resource-id-rendering/retrospective.md`
   - Summary and scoring (7.5/10)
   - Session overview and workflow stages
   - Agent analysis with performance ratings

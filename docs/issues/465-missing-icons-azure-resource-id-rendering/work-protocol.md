@@ -141,3 +141,84 @@ None - documentation updates were straightforward. The fix is non-breaking and o
 ### Next Steps
 
 Ready for code review.
+
+---
+
+## Agent: Code Reviewer
+
+### Date: 2025-02-15
+
+### Summary
+
+Conducted thorough code review of the bug fix implementation. The core implementation is **correct and follows all coding standards**, but found **2 test files that were not updated** with the new icon expectations, causing test failures.
+
+### Review Findings
+
+#### Implementation Quality ✅
+- Code changes are correct and follow established patterns
+- Icon formatting helpers mirror the existing `FormatSubscriptionLabel` approach
+- XML documentation comments follow project guidelines
+- Non-breaking space handling is consistent
+- Null/empty checks are appropriate
+- No code quality issues
+
+#### Test Coverage ⚠️
+- **2 test failures found** (Blocker issues):
+  1. `AzureEntityMapperTests.EnrichedAzureScopeFormatter_ResourceScope_IncludesSubscriptionName` (line 85)
+  2. `MarkdownRendererTests.Render_AzureResourceIds_StayInTableWithReadableFormat` (line 177)
+- Both tests expect resource names without the 🆔 icon
+- Tests were missed during development - work protocol stated "8 tests updated" but should have been "10 tests"
+- Snapshot files (5 files) were correctly updated
+
+#### Documentation ✅
+- Release notes are comprehensive and clear
+- `docs/features.md` updated correctly with icon examples
+- Work protocol complete for Developer and Technical Writer agents
+- No global documentation gaps
+
+#### Build & Lint ✅
+- Build: Success (no warnings or errors)
+- Markdownlint: Pass (0 errors in comprehensive-demo.md)
+- Docker: Available (not tested - tests must pass first)
+
+### Test Results
+
+- **Status:** ❌ Failed
+- **Passed:** 1004 tests
+- **Failed:** 2 tests
+- **Test suite:** Timed out after 120 seconds (expected - many integration tests)
+
+### Changes Required
+
+Developer must update 2 test expectations:
+
+1. **File:** `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureEntityMapperTests.cs`
+   - **Line:** 85
+   - **Change:** `"Key Vault `kv1` in..."` → `"Key Vault `🆔 kv1` in..."`
+
+2. **File:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererTests.cs`
+   - **Line:** 177
+   - **Change:** `"Key Vault `kv-long-name` in..."` → `"Key Vault `🆔 kv-long-name` in..."`
+
+### Artifacts Produced
+
+- Code review report: `docs/issues/465-missing-icons-azure-resource-id-rendering/code-review.md`
+- Updated work protocol with review findings
+
+### Problems Encountered
+
+None - review was straightforward. The issue is clear: 2 tests need their expectations updated to match the (correct) new output.
+
+### Decision
+
+**Status:** ❌ Changes Requested (Blocker issues)
+
+**Reason:** Test failures must be resolved before approval. The implementation itself is correct.
+
+### Next Steps
+
+Hand back to **Developer** agent to:
+1. Update the 2 failing test expectations
+2. Run full test suite to verify all tests pass
+3. Commit the test fixes
+4. Return to Code Reviewer for re-approval

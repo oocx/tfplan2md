@@ -255,7 +255,7 @@ public class ResourceSummaryBuilder : IResourceSummaryBuilder
     {
         var state = GetStateDictionary(change.BeforeJson);
         var name = FormatSummaryValue(GetDisplayName(state, change, preferAfter: false), change.ProviderName);
-        return name is not null ? name : null;
+        return name;
     }
 
     private static string? GetDisplayName(Dictionary<string, string?>? values, ResourceChangeModel change, bool preferAfter)

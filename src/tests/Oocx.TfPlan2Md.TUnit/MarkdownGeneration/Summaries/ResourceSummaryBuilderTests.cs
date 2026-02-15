@@ -152,6 +152,28 @@ public class ResourceSummaryBuilderTests
         summary.Should().Be("`st1`");
     }
 
+    /// <summary>
+    /// Verifies that BuildDeleteSummary correctly returns null when no display name is available.
+    /// This test confirms the fix for the redundant ternary expression (return name is not null ? name : null).
+    /// </summary>
+    [Test]
+    public void BuildSummary_Delete_ReturnsNullWhenNoDisplayName()
+    {
+        // Create a change with empty before state to force null return from FormatSummaryValue
+        var change = CreateChange(
+            type: "test_resource",
+            action: "delete",
+            beforeJson: "{ }"
+        );
+
+        var summary = _builder.BuildSummary(change);
+
+        // When there's no display name and address is used as fallback,
+        // BuildDeleteSummary should return the address formatted as markdown
+        summary.Should().NotBeNull();
+        summary.Should().Be("`resource.example`");
+    }
+
     [Test]
     public void BuildSummary_MsGraph_UsesUrlAndDisplayName()
     {

@@ -312,7 +312,7 @@ Before approving any code, systematically answer these questions:
 
    Generate and lint the comprehensive demo output:
    ```bash
-   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principals examples/comprehensive-demo/demo-principals.json --output artifacts/comprehensive-demo.md
+   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- examples/comprehensive-demo/plan.json --principal-mapping examples/comprehensive-demo/demo-principals.json --code-analysis-results "examples/static-analysis/*.sarif" --output artifacts/comprehensive-demo.md
    scripts/markdownlint.sh artifacts/comprehensive-demo.md
    ```
 

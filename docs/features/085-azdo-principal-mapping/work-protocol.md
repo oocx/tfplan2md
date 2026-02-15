@@ -38,3 +38,16 @@
 - **Artifacts Produced:**
   - `docs/features/085-azdo-principal-mapping/tasks.md` - Complete task breakdown with 15 tasks, implementation order, open questions, and definition of done
 - **Problems Encountered:** None. The architecture is well-designed with clear separation of concerns. All architectural decisions have been made (naming conventions, mapper design, helper placement, display format). Open questions identified: (1) Which Azure DevOps templates need helper integration (requires template directory review), (2) Diagnostic output formatting preference (recommendation: follow existing patterns), (3) Helper registration approach (recommendation: direct in AzureDevOpsModule), (4) Test file organization (recommendation: mirror source structure with Providers/AzureDevOps/ folder).
+
+### Developer
+- **Date:** 2025-02-15
+- **Summary:** Completed Azure DevOps principal mapping implementation Phases 4 and partial Phase 6 (Tasks 8-10, 13). Integrated all three Azure DevOps mappers (AzdoUserMapper, AzdoGroupMapper, AzdoProjectMapper) with Scriban helper system. Registered helpers (azdo_user_name, azdo_group_name, azdo_project_name) in AzureDevOpsModule for use in custom templates. Updated CompositionRoot to create and wire mappers. Diagnostic output already includes Azure DevOps entity counts (completed in Phase 3). Updated comprehensive demo mapping files with realistic Azure DevOps example data. Created comprehensive tests for all implemented functionality: 6 Scriban helper tests (TC-14, TC-15, TC-16), 3 diagnostic output tests (TC-18), 1 integration test (TC-19). Total: 28 tests passing (18 from Phases 1-3 + 10 new).
+- **Artifacts Produced:**
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanHelpersAzdoTests.cs` - Scriban helper tests (TC-14, TC-15, TC-16)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Diagnostics/DiagnosticContextTests.cs` - Added TC-18 tests for azdo diagnostic output
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ComprehensiveDemoTests.cs` - Added TC-19 test
+  - Updated `src/Oocx.TfPlan2Md/Providers/AzureDevOps/AzureDevOpsModule.cs` - Registered azdo helpers
+  - Updated `src/Oocx.TfPlan2Md/CompositionRoot.cs` - Created and wired azdo mappers
+  - Updated `examples/comprehensive-demo/demo-principals.json` - Added azdo example data
+  - Updated `examples/comprehensive-demo/demo-principals-nested.json` - Added azdo example data
+- **Problems Encountered:** Tasks 11-12 (template updates) require clarification. Azure DevOps resources (azuredevops_group_membership, azuredevops_team_members, azuredevops_team_administrators) use parent-child inline rendering via AzureDevOpsDescriptorRowExtractor, not Scriban templates. The descriptors are formatted through the value formatter registry system. The azdo helpers are now available for custom Scriban templates if users create them, but the default rendering doesn't use templates. **Question for Maintainer:** Should Tasks 11-12 be marked "not applicable" since these resources don't need custom templates, or should I create custom templates that use the helpers even though default rendering works? Tasks 14-15 depend on this decision.

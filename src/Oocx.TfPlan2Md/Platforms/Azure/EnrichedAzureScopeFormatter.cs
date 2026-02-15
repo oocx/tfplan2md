@@ -24,6 +24,11 @@ internal sealed class EnrichedAzureScopeFormatter
     private const string ResourceGroupIcon = "📁";
 
     /// <summary>
+    /// Icon for resource name identifiers.
+    /// </summary>
+    private const string ResourceNameIcon = "🆔";
+
+    /// <summary>
     /// Prefix used to identify tenant root management group labels.
     /// </summary>
     private const string TenantRootPrefix = "Tenant ";
@@ -93,6 +98,7 @@ internal sealed class EnrichedAzureScopeFormatter
             : subscriptionDisplay;
         var subscriptionValue = FormatSubscriptionLabel(subscriptionLabel);
         var resourceGroupValue = FormatResourceGroupLabel(scopeInfo.ResourceGroup);
+        var resourceNameValue = FormatResourceNameLabel(scopeInfo.Name);
 
         return scopeInfo.Level switch
         {
@@ -100,8 +106,8 @@ internal sealed class EnrichedAzureScopeFormatter
             ScopeLevel.Subscription => $"subscription `{subscriptionValue}`",
             ScopeLevel.ResourceGroup => $"`{resourceGroupValue}` in subscription `{subscriptionValue}`",
             ScopeLevel.Resource when !string.IsNullOrWhiteSpace(scopeInfo.ResourceGroup) =>
-                $"{scopeInfo.Type} `{scopeInfo.Name}` in resource group `{resourceGroupValue}` of subscription `{subscriptionValue}`",
-            ScopeLevel.Resource => $"{scopeInfo.Type} `{scopeInfo.Name}` in subscription `{subscriptionValue}`",
+                $"{scopeInfo.Type} `{resourceNameValue}` in resource group `{resourceGroupValue}` of subscription `{subscriptionValue}`",
+            ScopeLevel.Resource => $"{scopeInfo.Type} `{resourceNameValue}` in subscription `{subscriptionValue}`",
             _ => scopeInfo.Details
         };
     }
@@ -212,5 +218,20 @@ internal sealed class EnrichedAzureScopeFormatter
         }
 
         return $"{ResourceGroupIcon}{AzureLabelFormatter.NonBreakingSpace}{resourceGroup}";
+    }
+
+    /// <summary>
+    /// Formats a resource name label with the ID icon when available.
+    /// </summary>
+    /// <param name="resourceName">The resource name to format.</param>
+    /// <returns>Resource name with icon prefix.</returns>
+    private static string FormatResourceNameLabel(string? resourceName)
+    {
+        if (string.IsNullOrWhiteSpace(resourceName))
+        {
+            return string.Empty;
+        }
+
+        return $"{ResourceNameIcon}{AzureLabelFormatter.NonBreakingSpace}{resourceName}";
     }
 }

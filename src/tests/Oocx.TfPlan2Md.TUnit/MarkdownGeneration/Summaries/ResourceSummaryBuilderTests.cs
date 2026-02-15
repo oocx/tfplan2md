@@ -188,7 +188,7 @@ public class ResourceSummaryBuilderTests
 
         var summary = builder.BuildSummary(change);
 
-        summary.Should().Be("`app1` in `rg1` (`eastus`) | ManagedEnvironments `env1` in resource group `📁\u00A0rg-env` of subscription `🔑\u00A0Production (sub-123)`");
+        summary.Should().Be("`app1` in `rg1` (`eastus`) | ManagedEnvironments `🆔 env1` in resource group `📁\u00A0rg-env` of subscription `🔑\u00A0Production (sub-123)`");
     }
 
     private static ResourceChangeModel CreateChange(

@@ -16,6 +16,16 @@ public static class AzureScopeParser
     private const string NonBreakingSpace = "\u00A0";
 
     /// <summary>
+    /// Icon for resource group identifiers.
+    /// </summary>
+    private const string ResourceGroupIcon = "📁";
+
+    /// <summary>
+    /// Icon for resource name identifiers.
+    /// </summary>
+    private const string ResourceNameIcon = "🆔";
+
+    /// <summary>
     /// Formats a subscription identifier with the key icon.
     /// Related feature: docs/features/051-display-enhancements/specification.md.
     /// </summary>
@@ -24,6 +34,34 @@ public static class AzureScopeParser
     private static string FormatSubscriptionId(string subscriptionId)
     {
         return $"🔑{NonBreakingSpace}{subscriptionId}";
+    }
+
+    /// <summary>
+    /// Formats a resource group label with icon.
+    /// </summary>
+    /// <param name="resourceGroup">The resource group name to format.</param>
+    /// <returns>Icon-prefixed resource group name.</returns>
+    private static string FormatResourceGroupLabel(string? resourceGroup)
+    {
+        if (string.IsNullOrWhiteSpace(resourceGroup))
+        {
+            return string.Empty;
+        }
+        return $"{ResourceGroupIcon}{NonBreakingSpace}{resourceGroup}";
+    }
+
+    /// <summary>
+    /// Formats a resource name label with icon.
+    /// </summary>
+    /// <param name="resourceName">The resource name to format.</param>
+    /// <returns>Icon-prefixed resource name.</returns>
+    private static string FormatResourceNameLabel(string? resourceName)
+    {
+        if (string.IsNullOrWhiteSpace(resourceName))
+        {
+            return string.Empty;
+        }
+        return $"{ResourceNameIcon}{NonBreakingSpace}{resourceName}";
     }
 
     /// <summary>
@@ -160,9 +198,9 @@ public static class AzureScopeParser
             ScopeLevel.ManagementGroup => $"`{parsed.Name}` (Management Group)",
             ScopeLevel.Subscription => $"subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
             ScopeLevel.Resource when !string.IsNullOrWhiteSpace(parsed.ResourceGroup) =>
-                $"{parsed.Type} `{parsed.Name}` in resource group `{parsed.ResourceGroup}` of subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
-            ScopeLevel.Resource => $"{parsed.Type} `{parsed.Name}` in subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
-            ScopeLevel.ResourceGroup => $"`{parsed.ResourceGroup}` in subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
+                $"{parsed.Type} `{FormatResourceNameLabel(parsed.Name)}` in resource group `{FormatResourceGroupLabel(parsed.ResourceGroup)}` of subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
+            ScopeLevel.Resource => $"{parsed.Type} `{FormatResourceNameLabel(parsed.Name)}` in subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
+            ScopeLevel.ResourceGroup => $"`{FormatResourceGroupLabel(parsed.ResourceGroup)}` in subscription `{FormatSubscriptionId(parsed.SubscriptionId ?? string.Empty)}`",
             _ => parsed.Details
         };
     }

@@ -44,6 +44,6 @@ _No attribute changes._
 
 | Operation | Resource | Details | Status |
 | --------- | -------- | ------- | ------ |
-| 📥 Import | azurerm_storage_account `legacy` | ID: Storage Account `legacy` in resource group `rg-legacy` of subscription `🔑 00000000-0000-0000-0000-000000000000` | ⚠️ Already imported |
+| 📥 Import | azurerm_storage_account `legacy` | ID: Storage Account `🆔 legacy` in resource group `📁 rg-legacy` of subscription `🔑 00000000-0000-0000-0000-000000000000` | ⚠️ Already imported |
 | 📥 Import | azurerm_resource_group `existing` | ID: `rg-existing` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `hub` | From: `module.old.azurerm_virtual_network.hub` | ✅ Ready |

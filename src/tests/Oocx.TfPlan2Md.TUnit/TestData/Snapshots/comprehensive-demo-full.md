@@ -216,7 +216,7 @@ _No attribute changes._
 
 | Property | Value |
 |----------|-------|
-| managedEnvironmentId | ManagedEnvironments `cae-demo` in resource group `rg-tfplan2md-demo` of subscription `🔑 12345678-1234-1234-1234-123456789012` |
+| managedEnvironmentId | ManagedEnvironments `🆔 cae-demo` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 12345678-1234-1234-1234-123456789012` |
 | configuration.secrets[0].name | `registry-password` |
 | configuration.secrets[0].value | `supersecret123` |
 | template.scale.minReplicas | `1` |
@@ -583,7 +583,7 @@ _No attribute changes._
 | Attribute | Value |
 | ----------- | ------- |
 | content_type | `password` |
-| key_vault_id | Key Vault `kv-tfplan2md` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 Production (12345678-1234-1234-1234-123456789012)` |
+| key_vault_id | Key Vault `🆔 kv-tfplan2md` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 Production (12345678-1234-1234-1234-123456789012)` |
 | name | `🆔 db-password` |
 | value | `(sensitive)` |
 
@@ -678,5 +678,5 @@ line3: end
 
 | Operation | Resource | Details | Status |
 | --------- | -------- | ------- | ------ |
-| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `rg-imported-existing` in subscription `🔑 12345678-1234-1234-1234-123456789012` | ✅ Ready |
+| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-1234-1234-1234-123456789012` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |

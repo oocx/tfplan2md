@@ -480,7 +480,7 @@ _No attribute changes._
 | principal_id | `00000000-0000-0000-0000-000000000001` |
 | principal_type | `👤 User` |
 | role_definition_id | `🛡️ /providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635` |
-| scope | `rg-tfplan2md-demo` in subscription `🔑 12345678-1234-1234-1234-123456789012` |
+| scope | `📁 rg-tfplan2md-demo` in subscription `🔑 12345678-1234-1234-1234-123456789012` |
 
 </details>
 
@@ -531,7 +531,7 @@ _No attribute changes._
 | Attribute | Value |
 | ----------- | ------- |
 | content_type | `password` |
-| key_vault_id | Key Vault `kv-tfplan2md` in resource group `rg-tfplan2md-demo` of subscription `🔑 12345678-1234-1234-1234-123456789012` |
+| key_vault_id | Key Vault `🆔 kv-tfplan2md` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 12345678-1234-1234-1234-123456789012` |
 | name | `🆔 db-password` |
 | value | `(sensitive)` |
 
@@ -612,5 +612,5 @@ line3: end
 
 | Operation | Resource | Details | Status |
 | --------- | -------- | ------- | ------ |
-| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `rg-imported-existing` in subscription `🔑 12345678-1234-1234-1234-123456789012` | ✅ Ready |
+| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-1234-1234-1234-123456789012` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |

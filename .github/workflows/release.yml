@@ -4,11 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
-    branches: [main]
   workflow_dispatch:
     inputs:
       tag:

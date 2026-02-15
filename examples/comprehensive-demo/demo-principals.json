@@ -27,5 +27,19 @@
   ],
   "roles": [
     { "id": "custom-role-guid", "displayName": "Custom Deployment Role" }
-  ]
+  ],
+  "azdoUsers": {
+    "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith",
+    "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f": "Alice Johnson",
+    "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d": "Bob Williams"
+  },
+  "azdoGroups": {
+    "vssgp.Uy0xLTktMTU1MTM3NDI0NS0yNzY5MzQwNjk3LTExMDE5ODM1NjMtMzU0Nzk5MjM2MS0zNzAyMTIxNjI4LTEtMTIzNDU2Nzg5MC0xMjM0NTY3ODkwLTEyMzQ1Njc4OTAtMTIzNDU2Nzg5MA": "Platform Team",
+    "vssgp.Short": "Security Reviewers",
+    "aadgp.Uy0.ReleaseManagers": "Release Managers"
+  },
+  "azdoProjects": {
+    "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
+    "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  }
 }

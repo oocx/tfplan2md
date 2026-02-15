@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.Diagnostics;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
@@ -112,5 +113,32 @@ public class ComprehensiveDemoTests
         var pattern = @"</details>\s+(?:<details[^>]*>|<div[^>]*>)";
 
         markdown.Should().MatchRegex(pattern);
+    }
+
+    /// <summary>
+    /// TC-19: Comprehensive demo mapping file with azdo sections loads successfully.
+    /// Related feature: docs/features/085-azdo-principal-mapping/test-cases.md.
+    /// </summary>
+    [Test]
+    public void ComprehensiveDemoMappingFile_WithAzdoSections_LoadsSuccessfully()
+    {
+        // Arrange
+        var diagnostics = new DiagnosticContext();
+
+        // Act
+        var result = AzureMappingFileLoader.Load(DemoPaths.DemoPrincipalsPath, diagnostics);
+
+        // Assert - Should have Azure AD mappings
+        result.Principals.Should().NotBeEmpty();
+
+        // Assert - Should have azdo mappings
+        result.AzdoUsers.Should().NotBeEmpty();
+        result.AzdoGroups.Should().NotBeEmpty();
+        result.AzdoProjects.Should().NotBeEmpty();
+
+        diagnostics.PrincipalMappingLoadedSuccessfully.Should().BeTrue();
+        diagnostics.AzdoUserCount.Should().BeGreaterThan(0);
+        diagnostics.AzdoGroupCount.Should().BeGreaterThan(0);
+        diagnostics.AzdoProjectCount.Should().BeGreaterThan(0);
     }
 }

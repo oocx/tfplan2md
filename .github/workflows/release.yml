@@ -48,13 +48,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-          # For workflow_run: checkout the head SHA of the CI workflow
+          # For workflow_run: checkout main branch (CI pushes versionize commit + tag to main)
           # For tag push: checkout the tag ref
           # For workflow_dispatch: checkout the specified tag
           ref: |
             ${{
               github.event.inputs.tag ||
-              (github.event_name == 'workflow_run' && github.event.workflow_run.head_sha) ||
+              (github.event_name == 'workflow_run' && 'main') ||
               github.ref
             }}
 
@@ -65,32 +65,25 @@ jobs:
           if [ -n "${{ github.event.inputs.tag }}" ]; then
             TAG="${{ github.event.inputs.tag }}"
           elif [ "${{ github.event_name }}" = "workflow_run" ]; then
-            # Find the tag associated with the CI workflow's head commit
+            # CI workflow pushes versionize commit + tag to main branch
+            # We checked out main, so HEAD should have the tag
             # Retry a few times to handle timing delays in tag propagation
-            COMMIT_SHA="${{ github.event.workflow_run.head_sha }}"
-
-            # Validate SHA format (40 hex characters) using bash pattern matching
-            if [[ ! "$COMMIT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
-              echo "Error: Invalid commit SHA format: $COMMIT_SHA"
-              exit 1
-            fi
-
             TAG=""
             for attempt in $(seq 1 24); do
-              TAG=$(git describe --tags --exact-match "$COMMIT_SHA" 2>/dev/null || echo "")
+              TAG=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
               if [ -n "$TAG" ]; then
                 break
               fi
               if [ "$attempt" -lt 24 ]; then
                 echo "Tag not found yet, waiting 5 seconds before retry $((attempt + 1))/24..."
                 sleep 5
-                # Fetch again to ensure we have the latest tags
-                git fetch --tags
+                # Pull latest main to get the versionize commit + tag pushed by CI
+                git pull origin main --tags
               fi
             done
 
             if [ -z "$TAG" ]; then
-              echo "No tag found for CI workflow commit $COMMIT_SHA after waiting."
+              echo "No tag found on main branch HEAD after waiting."
               echo "CI likely completed without creating a release tag; skipping release."
               echo "version=" >> $GITHUB_OUTPUT
               echo "major=" >> $GITHUB_OUTPUT
@@ -98,7 +91,7 @@ jobs:
               echo "is_prerelease=false" >> $GITHUB_OUTPUT
               exit 0
             fi
-            echo "Found tag $TAG for CI workflow run"
+            echo "Found tag $TAG on main branch HEAD"
           else
             TAG="${{ github.ref }}"
           fi

@@ -84,3 +84,14 @@
   - Updated PR #492 description with comprehensive release information
   - Work protocol entry (this entry)
 - **Problems Encountered:** None. All pre-release checks passed. Tests completed successfully (1050/1050). Code review shows approved status. All documentation complete. PR exists and awaiting CI validation before merge.
+
+### UAT Tester
+- **Date:** 2026-02-15
+- **Summary:** Conducted User Acceptance Testing for Azure DevOps principal mapping feature. Generated UAT artifact demonstrating before/after comparison of Azure DevOps entity rendering. The artifact shows user IDs (GUIDs), group descriptors, and project IDs being resolved to human-readable display names in the format `DisplayName (ID)`. Created test plan showcasing azuredevops_group_membership, azuredevops_team, and azuredevops_project resources with principal mapping applied. Successfully created UAT PRs in both GitHub and Azure DevOps UAT repositories. Waiting for Maintainer approval before cleanup.
+- **Artifacts Produced:**
+  - `.tmp/uat-085/azdo-principal-mapping-uat.md` - UAT demonstration artifact with before/after comparison
+  - `.tmp/uat-085/azdo-test-plan.json` - Test Terraform plan with Azure DevOps resources
+  - GitHub UAT PR: #73 (https://github.com/oocx/tfplan2md-uat/pull/73)
+  - Azure DevOps UAT PR: #76 (https://dev.azure.com/oocx/test/_git/test/pullrequest/76)
+  - Work protocol entry (this entry)
+- **Problems Encountered:** Authentication issue with GitHub UAT repository push (git credential helper was using GITHUB_TOKEN instead of GH_UAT_TOKEN). Resolved by creating a wrapper script that temporarily replaces GITHUB_TOKEN with GH_UAT_TOKEN for git operations. Submodule state issue after failed push attempt (submodule was on stale UAT branch). Resolved by removing and reinitializing the submodule.

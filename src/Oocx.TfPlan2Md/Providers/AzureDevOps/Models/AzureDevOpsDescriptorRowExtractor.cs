@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Models;
@@ -60,6 +61,14 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
         IconProviderRegistry? iconProviderRegistry)
     {
         var rawValue = ResolveDescriptor(childState);
+
+        // Check if the raw value is a JSON array
+        if (rawValue.StartsWith('[') && rawValue.EndsWith(']'))
+        {
+            var formattedElements = FormatArrayElements(rawValue, providerName, valueFormatterRegistry, iconProviderRegistry);
+            return new Dictionary<string, string> { [_columnKey] = formattedElements };
+        }
+
         var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
             _attributeName,
             rawValue,
@@ -68,6 +77,51 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
             iconProviderRegistry);
 
         return new Dictionary<string, string> { [_columnKey] = formatted };
+    }
+
+    /// <summary>
+    /// Formats individual elements of a JSON array by applying value formatters to each element.
+    /// </summary>
+    /// <param name="jsonArray">The JSON array string.</param>
+    /// <param name="providerName">The provider name for formatting context.</param>
+    /// <param name="valueFormatterRegistry">The value formatter registry for formatting values.</param>
+    /// <param name="iconProviderRegistry">The icon provider registry for semantic icons.</param>
+    /// <returns>A formatted string with comma-separated formatted elements.</returns>
+    private string FormatArrayElements(
+        string jsonArray,
+        string providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        try
+        {
+            var array = JsonDocument.Parse(jsonArray).RootElement;
+            var formattedElements = new List<string>();
+
+            foreach (var element in array.EnumerateArray())
+            {
+                var value = element.ValueKind == JsonValueKind.String
+                    ? element.GetString() ?? string.Empty
+                    : element.ToString();
+
+                var formatted = ScribanHelpers.FormatAttributeValueTableWithRegistry(
+                    _attributeName,
+                    value,
+                    providerName,
+                    valueFormatterRegistry,
+                    iconProviderRegistry);
+
+                formattedElements.Add(formatted);
+            }
+
+            // Return as backtick-enclosed comma-separated list
+            return $"`{string.Join(", ", formattedElements.Select(e => e.Trim('`')))}`";
+        }
+        catch
+        {
+            // If parsing fails, return the original array string
+            return ScribanHelpers.FormatCodeTable(jsonArray);
+        }
     }
 
     /// <summary>
@@ -87,6 +141,13 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
             return element.GetString() ?? string.Empty;
         }
 
+        if (element.ValueKind == JsonValueKind.Array)
+        {
+            // Handle arrays by returning the JSON representation
+            // Formatting will be applied by FormatAttributeValueTableWithRegistry
+            return element.ToString();
+        }
+
         if (element.ValueKind != JsonValueKind.Object)
         {
             return element.ToString();
@@ -99,9 +160,19 @@ internal sealed class AzureDevOpsDescriptorRowExtractor : IChildRowExtractor
                 continue;
             }
 
-            return property.ValueKind == JsonValueKind.String
-                ? property.GetString() ?? string.Empty
-                : property.ToString();
+            if (property.ValueKind == JsonValueKind.String)
+            {
+                return property.GetString() ?? string.Empty;
+            }
+
+            if (property.ValueKind == JsonValueKind.Array)
+            {
+                // Handle arrays by returning the JSON representation
+                // Formatting will be applied by FormatAttributeValueTableWithRegistry
+                return property.ToString();
+            }
+
+            return property.ToString();
         }
 
         return string.Empty;

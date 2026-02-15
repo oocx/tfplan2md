@@ -47,7 +47,7 @@ internal sealed class AzdoUserIdFormatter : IValueFormatter
             return null;
         }
 
-        var enriched = $"{displayName} ({context.Value})";
+        var enriched = $"👤\u00A0{displayName} ({context.Value})";
         return ScribanHelpers.FormatCodeTable(enriched);
     }
 }

@@ -125,12 +125,12 @@ internal sealed class AzureDevOpsModule : IProviderModule
         if (_azdoUserMapper is not null)
         {
             var userFormatter = new AzdoUserIdFormatter(_azdoUserMapper);
-            // Match common user attribute names (without value pattern to allow any format)
+            // Match common user attribute names (both singular and plural forms)
             registry.Register(
                 new MatchPattern(
                     "(^azuredevops$|.*/azuredevops$)",
                     null,
-                    "^member$|^administrator$|^user$",
+                    "^members?$|^administrators?$|^user$",
                     null),
                 userFormatter);
         }

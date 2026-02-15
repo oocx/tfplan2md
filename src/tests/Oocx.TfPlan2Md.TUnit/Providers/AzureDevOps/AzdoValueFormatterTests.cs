@@ -28,7 +28,7 @@ public class AzdoValueFormatterTests
 
         var result = formatter.TryFormat(context);
 
-        result.Should().Be("`Alice User (4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b)`");
+        result.Should().Be("`👤\u00A0Alice User (4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b)`");
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public class AzdoValueFormatterTests
 
         var result = formatter.TryFormat(context);
 
-        result.Should().Be("`Platform Team (aadgp.Uy0xLTktMTU1MTM3NDI0NS0xMjA0NDAwOTY5LTI0MDI5ODY0MTMtMjE3OTQwODYxNi0zLTM4Mzg1ODYwMTUtMzIyMTk1OTc5OC0xMjM0NTY3ODkw)`");
+        result.Should().Be("`👥\u00A0Platform Team (aadgp.Uy0xLTktMTU1MTM3NDI0NS0xMjA0NDAwOTY5LTI0MDI5ODY0MTMtMjE3OTQwODYxNi0zLTM4Mzg1ODYwMTUtMzIyMTk1OTc5OC0xMjM0NTY3ODkw)`");
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class AzdoValueFormatterTests
 
         var result = formatter.TryFormat(context);
 
-        result.Should().Be("`Contoso Project (8b3e9c1d-4f5a-6b7c-8d9e-0f1a2b3c4d5e)`");
+        result.Should().Be("`📋\u00A0Contoso Project (8b3e9c1d-4f5a-6b7c-8d9e-0f1a2b3c4d5e)`");
     }
 
     /// <summary>

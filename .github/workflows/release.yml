@@ -24,12 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     # Only run if:
     # 1. Triggered by a tag push (manual or external), OR
-    # 2. Triggered by CI workflow completion that was successful, OR
-    # 3. Manually triggered via workflow_dispatch
+    # 2. Manually triggered via workflow_dispatch
     if: |
       github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+      github.event_name == 'workflow_dispatch'
 
     outputs:
       version: ${{ steps.version.outputs.version }}

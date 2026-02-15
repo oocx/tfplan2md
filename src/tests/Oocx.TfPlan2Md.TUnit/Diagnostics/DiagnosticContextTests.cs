@@ -403,4 +403,93 @@ public class DiagnosticContextTests
         await Assert.That(markdown).Contains("-v");
         await Assert.That(markdown).Contains("--principal-mapping");
     }
+
+    /// <summary>
+    /// TC-18: Azure DevOps entity counts are included in diagnostic output.
+    /// Related feature: docs/features/085-azdo-principal-mapping/test-cases.md.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GenerateMarkdownSection_WithAzdoEntities_IncludesCounts()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = true,
+            PrincipalMappingFilePath = PrincipalsFileName,
+            AzdoUserCount = 2,
+            AzdoGroupCount = 3,
+            AzdoProjectCount = 1,
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Verify azdo counts are included
+        await Assert.That(markdown).Contains(PrincipalMappingHeader);
+        await Assert.That(markdown).Contains("2 azdo users");
+        await Assert.That(markdown).Contains("3 azdo groups");
+        await Assert.That(markdown).Contains("1 azdo project");
+    }
+
+    /// <summary>
+    /// TC-18: Azure DevOps entity counts use singular form correctly.
+    /// Related feature: docs/features/085-azdo-principal-mapping/test-cases.md.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GenerateMarkdownSection_WithSingleAzdoEntity_UsesSingularForm()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = true,
+            PrincipalMappingFilePath = PrincipalsFileName,
+            AzdoUserCount = 1,
+            AzdoGroupCount = 1,
+            AzdoProjectCount = 1,
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Verify singular forms are used
+        await Assert.That(markdown).Contains("1 azdo user");
+        await Assert.That(markdown).Contains("1 azdo group");
+        await Assert.That(markdown).Contains("1 azdo project");
+        await Assert.That(markdown).DoesNotContain("1 azdo users");
+        await Assert.That(markdown).DoesNotContain("1 azdo groups");
+        await Assert.That(markdown).DoesNotContain("1 azdo projects");
+    }
+
+    /// <summary>
+    /// TC-18: Azure DevOps entity counts are omitted when all are zero.
+    /// Related feature: docs/features/085-azdo-principal-mapping/test-cases.md.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GenerateMarkdownSection_WithZeroAzdoEntities_OmitsAzdoCounts()
+    {
+        // Arrange
+        var context = new DiagnosticContext
+        {
+            PrincipalMappingFileProvided = true,
+            PrincipalMappingLoadedSuccessfully = true,
+            PrincipalMappingFilePath = PrincipalsFileName,
+            AzdoUserCount = 0,
+            AzdoGroupCount = 0,
+            AzdoProjectCount = 0,
+        };
+
+        // Act
+        var markdown = context.GenerateMarkdownSection();
+
+        // Assert - Verify azdo counts are not shown when all zero
+        await Assert.That(markdown).Contains(PrincipalMappingHeader);
+        await Assert.That(markdown).DoesNotContain("azdo user");
+        await Assert.That(markdown).DoesNotContain("azdo group");
+        await Assert.That(markdown).DoesNotContain("azdo project");
+    }
 }

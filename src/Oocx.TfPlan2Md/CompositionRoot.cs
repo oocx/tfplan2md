@@ -77,6 +77,48 @@ internal sealed class CompositionRoot(CliOptions options)
     }
 
     /// <summary>
+    /// Creates the Azure DevOps user mapper for user ID resolution.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </summary>
+    /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
+    /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>
+    /// <returns>A configured Azure DevOps user mapper instance.</returns>
+    internal AzdoUserMapper CreateAzdoUserMapper(
+        AzureMappingFileResult mappingResult,
+        DiagnosticContext? diagnostics)
+    {
+        return new AzdoUserMapper(mappingResult.AzdoUsers, diagnostics);
+    }
+
+    /// <summary>
+    /// Creates the Azure DevOps group mapper for group descriptor resolution.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </summary>
+    /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
+    /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>
+    /// <returns>A configured Azure DevOps group mapper instance.</returns>
+    internal AzdoGroupMapper CreateAzdoGroupMapper(
+        AzureMappingFileResult mappingResult,
+        DiagnosticContext? diagnostics)
+    {
+        return new AzdoGroupMapper(mappingResult.AzdoGroups, diagnostics);
+    }
+
+    /// <summary>
+    /// Creates the Azure DevOps project mapper for project ID resolution.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </summary>
+    /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
+    /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>
+    /// <returns>A configured Azure DevOps project mapper instance.</returns>
+    internal AzdoProjectMapper CreateAzdoProjectMapper(
+        AzureMappingFileResult mappingResult,
+        DiagnosticContext? diagnostics)
+    {
+        return new AzdoProjectMapper(mappingResult.AzdoProjects, diagnostics);
+    }
+
+    /// <summary>
     /// Creates the enriched Azure scope formatter.
     /// </summary>
     /// <param name="entityMapper">The entity mapper for resolving Azure entities.</param>
@@ -93,11 +135,17 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <param name="principalMapper">The principal mapper for role assignment resolution.</param>
     /// <param name="scopeFormatter">The scope formatter for Azure resource scopes.</param>
     /// <param name="entityMapper">The mapper for tenant and management group display names.</param>
+    /// <param name="azdoUserMapper">The mapper for Azure DevOps user display names.</param>
+    /// <param name="azdoGroupMapper">The mapper for Azure DevOps group display names.</param>
+    /// <param name="azdoProjectMapper">The mapper for Azure DevOps project display names.</param>
     /// <returns>A configured provider registry with all modules registered.</returns>
     internal ProviderRegistry CreateProviderRegistry(
         IPrincipalMapper principalMapper,
         EnrichedAzureScopeFormatter scopeFormatter,
-        AzureEntityMapper entityMapper)
+        AzureEntityMapper entityMapper,
+        AzdoUserMapper azdoUserMapper,
+        AzdoGroupMapper azdoGroupMapper,
+        AzdoProjectMapper azdoProjectMapper)
     {
         var registry = new ProviderRegistry();
         var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget);
@@ -109,7 +157,12 @@ internal sealed class CompositionRoot(CliOptions options)
             principalMapper: principalMapper,
             scopeFormatter: scopeFormatter,
             entityMapper: entityMapper));
-        registry.RegisterProvider(new AzureDevOpsModule(largeValueFormat: largeValueFormat, entityMapper: entityMapper));
+        registry.RegisterProvider(new AzureDevOpsModule(
+            largeValueFormat: largeValueFormat,
+            entityMapper: entityMapper,
+            azdoUserMapper: azdoUserMapper,
+            azdoGroupMapper: azdoGroupMapper,
+            azdoProjectMapper: azdoProjectMapper));
 
         return registry;
     }
@@ -242,8 +295,19 @@ internal sealed class CompositionRoot(CliOptions options)
         var entityMapper = CreateEntityMapper(mappingResult, diagnosticContext);
         var scopeFormatter = CreateScopeFormatter(entityMapper);
 
+        // Create Azure DevOps-specific mappers
+        var azdoUserMapper = CreateAzdoUserMapper(mappingResult, diagnosticContext);
+        var azdoGroupMapper = CreateAzdoGroupMapper(mappingResult, diagnosticContext);
+        var azdoProjectMapper = CreateAzdoProjectMapper(mappingResult, diagnosticContext);
+
         // Create provider registry and dependent registries
-        var providerRegistry = CreateProviderRegistry(principalMapper, scopeFormatter, entityMapper);
+        var providerRegistry = CreateProviderRegistry(
+            principalMapper,
+            scopeFormatter,
+            entityMapper,
+            azdoUserMapper,
+            azdoGroupMapper,
+            azdoProjectMapper);
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
 

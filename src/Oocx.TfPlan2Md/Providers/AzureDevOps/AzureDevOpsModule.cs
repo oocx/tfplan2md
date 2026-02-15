@@ -11,6 +11,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 /// Provider module for Azure DevOps (azuredevops) resources.
 /// Related feature: docs/features/047-provider-code-separation/specification.md.
 /// </summary>
+#pragma warning disable CA1506 // Suppress class coupling - module integrates multiple mapper types
 internal sealed class AzureDevOpsModule : IProviderModule
 {
     private readonly LargeValueFormat _largeValueFormat;
@@ -21,14 +22,43 @@ internal sealed class AzureDevOpsModule : IProviderModule
     private readonly AzureEntityMapper? _entityMapper;
 
     /// <summary>
+    /// Optional mapper for Azure DevOps user resolution.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </summary>
+    private readonly AzdoUserMapper? _azdoUserMapper;
+
+    /// <summary>
+    /// Optional mapper for Azure DevOps group resolution.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </summary>
+    private readonly AzdoGroupMapper? _azdoGroupMapper;
+
+    /// <summary>
+    /// Optional mapper for Azure DevOps project resolution.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </summary>
+    private readonly AzdoProjectMapper? _azdoProjectMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureDevOpsModule"/> class.
     /// </summary>
     /// <param name="largeValueFormat">Format for rendering large values (inline-diff or simple-diff).</param>
     /// <param name="entityMapper">Optional mapper for tenant display names.</param>
-    public AzureDevOpsModule(LargeValueFormat largeValueFormat, AzureEntityMapper? entityMapper = null)
+    /// <param name="azdoUserMapper">Optional mapper for Azure DevOps user display names.</param>
+    /// <param name="azdoGroupMapper">Optional mapper for Azure DevOps group display names.</param>
+    /// <param name="azdoProjectMapper">Optional mapper for Azure DevOps project display names.</param>
+    public AzureDevOpsModule(
+        LargeValueFormat largeValueFormat,
+        AzureEntityMapper? entityMapper = null,
+        AzdoUserMapper? azdoUserMapper = null,
+        AzdoGroupMapper? azdoGroupMapper = null,
+        AzdoProjectMapper? azdoProjectMapper = null)
     {
         _largeValueFormat = largeValueFormat;
         _entityMapper = entityMapper;
+        _azdoUserMapper = azdoUserMapper;
+        _azdoGroupMapper = azdoGroupMapper;
+        _azdoProjectMapper = azdoProjectMapper;
     }
 
     /// <summary>
@@ -43,12 +73,26 @@ internal sealed class AzureDevOpsModule : IProviderModule
 
     /// <summary>
     /// Registers AzureDevOps-specific Scriban helper functions.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
     /// </summary>
     /// <param name="scriptObject">The Scriban script object to register helpers with.</param>
     public void RegisterHelpers(ScriptObject scriptObject)
     {
-        // AzureDevOps provider currently uses only core helpers
-        // No provider-specific Scriban helpers needed
+        // Register Azure DevOps entity name helpers if mappers are available
+        if (_azdoUserMapper is not null)
+        {
+            scriptObject.Import("azdo_user_name", new Func<string, string>(userId => _azdoUserMapper.GetEntityName(userId)));
+        }
+
+        if (_azdoGroupMapper is not null)
+        {
+            scriptObject.Import("azdo_group_name", new Func<string, string>(groupDescriptor => _azdoGroupMapper.GetEntityName(groupDescriptor)));
+        }
+
+        if (_azdoProjectMapper is not null)
+        {
+            scriptObject.Import("azdo_project_name", new Func<string, string>(projectId => _azdoProjectMapper.GetEntityName(projectId)));
+        }
     }
 
     /// <summary>
@@ -146,3 +190,4 @@ internal sealed class AzureDevOpsModule : IProviderModule
         registry.Register(new Mappers.VariableGroupMapper(variableGroupFactory));
     }
 }
+#pragma warning restore CA1506

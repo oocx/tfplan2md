@@ -72,8 +72,17 @@ public class CompositionRootTests
         var principalMapper = root.CreatePrincipalMapper(mappingResult, diagnostics: null);
         var entityMapper = root.CreateEntityMapper(mappingResult, diagnostics: null);
         var scopeFormatter = root.CreateScopeFormatter(entityMapper);
+        var azdoUserMapper = root.CreateAzdoUserMapper(mappingResult, diagnostics: null);
+        var azdoGroupMapper = root.CreateAzdoGroupMapper(mappingResult, diagnostics: null);
+        var azdoProjectMapper = root.CreateAzdoProjectMapper(mappingResult, diagnostics: null);
 
-        var registry = root.CreateProviderRegistry(principalMapper, scopeFormatter, entityMapper);
+        var registry = root.CreateProviderRegistry(
+            principalMapper,
+            scopeFormatter,
+            entityMapper,
+            azdoUserMapper,
+            azdoGroupMapper,
+            azdoProjectMapper);
 
         var providers = registry.GetProviders();
         var providerNames = providers.Select(p => p.ProviderName).ToList();

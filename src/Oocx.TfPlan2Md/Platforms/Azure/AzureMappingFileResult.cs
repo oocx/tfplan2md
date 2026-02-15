@@ -11,8 +11,15 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// <param name="ManagementGroups">Management group mappings for display name resolution.</param>
 /// <param name="Tenants">Tenant mappings for display name resolution.</param>
 /// <param name="Roles">Custom role definition mappings for display name resolution.</param>
+/// <param name="AzdoUsers">Azure DevOps user ID to display name mappings.</param>
+/// <param name="AzdoGroups">Azure DevOps group descriptor to display name mappings.</param>
+/// <param name="AzdoProjects">Azure DevOps project ID to display name mappings.</param>
 /// <remarks>
-/// Related feature: docs/features/063-azure-display-enhancements/specification.md.
+/// Related features:
+/// <list type="bullet">
+/// <item><description>docs/features/063-azure-display-enhancements/specification.md.</description></item>
+/// <item><description>docs/features/085-azdo-principal-mapping/specification.md.</description></item>
+/// </list>
 /// </remarks>
 internal sealed record AzureMappingFileResult(
     FrozenDictionary<string, string> Principals,
@@ -20,7 +27,10 @@ internal sealed record AzureMappingFileResult(
     IReadOnlyList<MappingEntry> Subscriptions,
     IReadOnlyList<MappingEntry> ManagementGroups,
     IReadOnlyList<MappingEntry> Tenants,
-    IReadOnlyList<MappingEntry> Roles)
+    IReadOnlyList<MappingEntry> Roles,
+    FrozenDictionary<string, string> AzdoUsers,
+    FrozenDictionary<string, string> AzdoGroups,
+    FrozenDictionary<string, string> AzdoProjects)
 {
     /// <summary>
     /// Gets an empty mapping file result with no data.
@@ -34,5 +44,8 @@ internal sealed record AzureMappingFileResult(
         Array.Empty<MappingEntry>(),
         Array.Empty<MappingEntry>(),
         Array.Empty<MappingEntry>(),
-        Array.Empty<MappingEntry>());
+        Array.Empty<MappingEntry>(),
+        FrozenDictionary<string, string>.Empty,
+        FrozenDictionary<string, string>.Empty,
+        FrozenDictionary<string, string>.Empty);
 }

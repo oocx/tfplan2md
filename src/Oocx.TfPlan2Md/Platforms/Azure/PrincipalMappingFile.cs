@@ -80,4 +80,47 @@ internal sealed class PrincipalMappingFile
     /// </remarks>
     [JsonPropertyName("roles")]
     public List<MappingEntry>? Roles { get; set; }
+
+    /// <summary>
+    /// Gets or sets the mapping of Azure DevOps user IDs (GUIDs) to display names.
+    /// </summary>
+    /// <remarks>
+    /// Azure DevOps users are identified by unique GUIDs. This mapping allows
+    /// displaying recognizable names in rendered Terraform plans.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </remarks>
+    /// <example>
+    /// "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith".
+    /// </example>
+    [JsonPropertyName("azdoUsers")]
+    public Dictionary<string, string>? AzdoUsers { get; set; }
+
+    /// <summary>
+    /// Gets or sets the mapping of Azure DevOps group descriptors to display names.
+    /// </summary>
+    /// <remarks>
+    /// Azure DevOps groups are identified by base64-encoded descriptors (e.g., "vssgp.Uy0xLTktMTU1MTM...").
+    /// These descriptors can be very long (100+ characters). This mapping allows
+    /// displaying recognizable team/group names in rendered Terraform plans.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </remarks>
+    /// <example>
+    /// "vssgp.Uy0xLTktMTU1MTM7NDI0NS0yNzY5MzQwNjk3...": "Platform Team".
+    /// </example>
+    [JsonPropertyName("azdoGroups")]
+    public Dictionary<string, string>? AzdoGroups { get; set; }
+
+    /// <summary>
+    /// Gets or sets the mapping of Azure DevOps project IDs (GUIDs) to display names.
+    /// </summary>
+    /// <remarks>
+    /// Azure DevOps projects are identified by unique GUIDs. This mapping allows
+    /// displaying recognizable project names in rendered Terraform plans.
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </remarks>
+    /// <example>
+    /// "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project".
+    /// </example>
+    [JsonPropertyName("azdoProjects")]
+    public Dictionary<string, string>? AzdoProjects { get; set; }
 }

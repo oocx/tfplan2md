@@ -60,6 +60,11 @@ internal static class AzureMappingFileParser
             AddPrincipalSection(names, types, nestedMapping.Groups, "Group");
             AddPrincipalSection(names, types, nestedMapping.ServicePrincipals, "ServicePrincipal");
 
+            // Parse Azure DevOps entity mappings
+            var azdoUsers = nestedMapping.AzdoUsers ?? new Dictionary<string, string>();
+            var azdoGroups = nestedMapping.AzdoGroups ?? new Dictionary<string, string>();
+            var azdoProjects = nestedMapping.AzdoProjects ?? new Dictionary<string, string>();
+
             RecordNestedDiagnostics(diagnosticContext, nestedMapping);
 
             return new AzureMappingFileResult(
@@ -68,7 +73,10 @@ internal static class AzureMappingFileParser
                 nestedMapping.Subscriptions ?? new List<MappingEntry>(),
                 nestedMapping.ManagementGroups ?? new List<MappingEntry>(),
                 nestedMapping.Tenants ?? new List<MappingEntry>(),
-                nestedMapping.Roles ?? new List<MappingEntry>());
+                nestedMapping.Roles ?? new List<MappingEntry>(),
+                azdoUsers.ToFrozenDictionary(StringComparer.Ordinal),
+                azdoGroups.ToFrozenDictionary(StringComparer.Ordinal),
+                azdoProjects.ToFrozenDictionary(StringComparer.Ordinal));
         }
         catch (JsonException)
         {
@@ -102,7 +110,10 @@ internal static class AzureMappingFileParser
             Array.Empty<MappingEntry>(),
             Array.Empty<MappingEntry>(),
             Array.Empty<MappingEntry>(),
-            Array.Empty<MappingEntry>());
+            Array.Empty<MappingEntry>(),
+            FrozenDictionary<string, string>.Empty,
+            FrozenDictionary<string, string>.Empty,
+            FrozenDictionary<string, string>.Empty);
     }
 
     /// <summary>
@@ -118,7 +129,10 @@ internal static class AzureMappingFileParser
                nestedMapping.Subscriptions != null ||
                nestedMapping.ManagementGroups != null ||
                nestedMapping.Tenants != null ||
-               nestedMapping.Roles != null;
+               nestedMapping.Roles != null ||
+               nestedMapping.AzdoUsers != null ||
+               nestedMapping.AzdoGroups != null ||
+               nestedMapping.AzdoProjects != null;
     }
 
     /// <summary>
@@ -151,7 +165,9 @@ internal static class AzureMappingFileParser
     /// </summary>
     /// <param name="diagnosticContext">Optional diagnostic context to update.</param>
     /// <param name="nestedMapping">The parsed mapping file.</param>
+#pragma warning disable CA1502 // Avoid excessive complexity - adding azdo entity counts increases complexity slightly but keeps related logic together
     private static void RecordNestedDiagnostics(DiagnosticContext? diagnosticContext, PrincipalMappingFile nestedMapping)
+#pragma warning restore CA1502
     {
         if (diagnosticContext == null)
         {
@@ -168,6 +184,11 @@ internal static class AzureMappingFileParser
         diagnosticContext.ManagementGroupCount = nestedMapping.ManagementGroups?.Count ?? 0;
         diagnosticContext.TenantCount = nestedMapping.Tenants?.Count ?? 0;
         diagnosticContext.RoleCount = nestedMapping.Roles?.Count ?? 0;
+
+        // Azure DevOps entity counts
+        diagnosticContext.AzdoUserCount = nestedMapping.AzdoUsers?.Count ?? 0;
+        diagnosticContext.AzdoGroupCount = nestedMapping.AzdoGroups?.Count ?? 0;
+        diagnosticContext.AzdoProjectCount = nestedMapping.AzdoProjects?.Count ?? 0;
     }
 
     /// <summary>

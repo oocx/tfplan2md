@@ -2,8 +2,14 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 
 /// <summary>
 /// Enumerates the types of failed mapping resolutions captured in diagnostics.
-/// Related feature: docs/features/063-azure-display-enhancements/specification.md.
 /// </summary>
+/// <remarks>
+/// Related features:
+/// <list type="bullet">
+/// <item><description>docs/features/063-azure-display-enhancements/specification.md.</description></item>
+/// <item><description>docs/features/085-azdo-principal-mapping/specification.md.</description></item>
+/// </list>
+/// </remarks>
 internal enum FailedResolutionType
 {
     /// <summary>
@@ -29,5 +35,20 @@ internal enum FailedResolutionType
     /// <summary>
     /// A role definition ID could not be resolved.
     /// </summary>
-    RoleDefinition
+    RoleDefinition,
+
+    /// <summary>
+    /// An Azure DevOps user ID could not be resolved.
+    /// </summary>
+    AzdoUser,
+
+    /// <summary>
+    /// An Azure DevOps group descriptor could not be resolved.
+    /// </summary>
+    AzdoGroup,
+
+    /// <summary>
+    /// An Azure DevOps project ID could not be resolved.
+    /// </summary>
+    AzdoProject
 }

@@ -133,6 +133,30 @@ internal class DiagnosticContext
     public int RoleCount { get; set; }
 
     /// <summary>
+    /// Gets or sets the number of Azure DevOps user mappings loaded from the mapping file.
+    /// </summary>
+    /// <remarks>
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </remarks>
+    public int AzdoUserCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of Azure DevOps group mappings loaded from the mapping file.
+    /// </summary>
+    /// <remarks>
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </remarks>
+    public int AzdoGroupCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of Azure DevOps project mappings loaded from the mapping file.
+    /// </summary>
+    /// <remarks>
+    /// Related feature: docs/features/085-azdo-principal-mapping/specification.md.
+    /// </remarks>
+    public int AzdoProjectCount { get; set; }
+
+    /// <summary>
     /// Gets the list of IDs that failed to resolve, along with the resource that referenced them.
     /// </summary>
     /// <remarks>
@@ -263,6 +287,33 @@ internal class DiagnosticContext
         AppendCount(sb, ManagementGroupCount, "management group");
         AppendCount(sb, TenantCount, "tenant");
         AppendCount(sb, RoleCount, "custom role");
+
+        // Azure DevOps entity counts
+        if (AzdoUserCount > 0 || AzdoGroupCount > 0 || AzdoProjectCount > 0)
+        {
+            sb.Append(FoundPrefix);
+            sb.Append(AzdoUserCount);
+            sb.Append(" azdo user");
+            if (AzdoUserCount != 1)
+            {
+                sb.Append('s');
+            }
+            sb.Append(", ");
+            sb.Append(AzdoGroupCount);
+            sb.Append(" azdo group");
+            if (AzdoGroupCount != 1)
+            {
+                sb.Append('s');
+            }
+            sb.Append(", ");
+            sb.Append(AzdoProjectCount);
+            sb.Append(" azdo project");
+            if (AzdoProjectCount != 1)
+            {
+                sb.Append('s');
+            }
+            sb.AppendLine();
+        }
     }
 
     /// <summary>
@@ -566,6 +617,9 @@ internal class DiagnosticContext
             FailedResolutionType.ManagementGroup => "Management group",
             FailedResolutionType.Tenant => "Tenant",
             FailedResolutionType.RoleDefinition => "Role definition",
+            FailedResolutionType.AzdoUser => "Azure DevOps user",
+            FailedResolutionType.AzdoGroup => "Azure DevOps group",
+            FailedResolutionType.AzdoProject => "Azure DevOps project",
             _ => "Unknown"
         };
     }

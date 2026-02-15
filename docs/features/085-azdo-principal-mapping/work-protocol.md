@@ -106,3 +106,13 @@
   - `docs/features/085-azdo-principal-mapping/uat-test-plan.md` - UAT test plan with generation steps and validation criteria
   - Work protocol entry (this entry)
 - **Problems Encountered:** Original UAT artifact was synthetic (handwritten markdown). This was a critical error - UAT must use real tool output to validate functionality. Resolved by building tfplan2md from source and running the actual CLI tool with test data. The new artifacts are 100% authentic tfplan2md output demonstrating the principal mapping feature working correctly.
+
+### UAT Tester (Fix Update)
+- **Date:** 2026-02-15
+- **Summary:** Updated UAT PRs with corrected artifact after Developer applied UAT feedback fixes. Developer fixed three issues: (1) azuredevops_team members/administrators now show display names, (2) added icons (👤 for users, 👥 for groups, 📋 for projects), (3) enhanced array handling for member lists. Verified fixes by rebuilding the code and regenerating the UAT artifact using the CLI tool. The updated artifact now shows all fixes working correctly: icons appear for users/groups/projects, team members show resolved names like `👤 Alice Smith (4a2c5e2b-...)`, and arrays are properly formatted with comma-separated values. Posted the corrected artifact as new comments to both GitHub PR #73 and Azure DevOps PR #76 with explanation of the fixes and reference to fix commit d3d105ff.
+- **Artifacts Produced:**
+  - Updated `docs/features/085-azdo-principal-mapping/uat-plan.md` - Regenerated with fixes applied
+  - Posted corrected artifact to GitHub PR #73 (https://github.com/oocx/tfplan2md-uat/pull/73)
+  - Posted corrected artifact to Azure DevOps PR #76 (https://dev.azure.com/oocx/test/_git/test/pullrequest/76)
+  - Work protocol entry (this entry)
+- **Problems Encountered:** Discovered that `uat-github.sh` script doesn't use the `GH_UAT_TOKEN` environment variable when calling `gh pr comment` commands. The script references the token in error messages but doesn't actually export it before GitHub CLI operations. Worked around this by manually setting `GH_TOKEN="$GH_UAT_TOKEN"` when calling `gh pr comment`. The Azure DevOps script (`uat-azdo.sh`) works correctly without modification because `az devops` uses `AZURE_DEVOPS_EXT_PAT` which is properly configured.

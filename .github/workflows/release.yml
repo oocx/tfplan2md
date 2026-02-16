@@ -124,25 +124,34 @@ jobs:
         id: find_release_notes
         if: steps.version.outputs.version != ''
         run: |
-          # Try to find release notes file in feature/fix/workflow directories
-          # Search for most recent release-notes.md by extracting numeric prefixes and sorting
-          RELEASE_NOTES_FILE=$(find docs/features docs/issues docs/workflow -name "release-notes.md" -type f 2>/dev/null | \
-            awk -F'/' '{
-              # Extract directory name (e.g., "059-tool-column-findings-tables")
-              dir = $(NF-1);
-              # Extract leading numeric prefix
-              match(dir, /^[0-9]+/);
-              num = substr(dir, RSTART, RLENGTH);
-              # Print numeric prefix (padded) and full path for sorting
-              printf "%05d %s\n", num, $0;
-            }' | \
-            sort -rn | \
-            head -n 1 | \
-            cut -d' ' -f2-)
-          if [ -n "$RELEASE_NOTES_FILE" ] && [ -f "$RELEASE_NOTES_FILE" ]; then
+          VERSION="${{ steps.version.outputs.version }}"
+          LAST="${{ steps.previous_release.outputs.last }}"
+          CURRENT_TAG="v${VERSION}"
+
+          # Only use release notes that changed in the current release range.
+          # This prevents accidentally reusing stale release notes from older releases.
+          if [ -n "$LAST" ]; then
+            PREVIOUS_TAG="v${LAST}"
+            echo "Searching release notes changed between ${PREVIOUS_TAG} and ${CURRENT_TAG}"
+            mapfile -t RELEASE_NOTES_FILES < <(git diff --name-only "${PREVIOUS_TAG}..${CURRENT_TAG}" -- \
+              docs/features/*/release-notes.md \
+              docs/issues/*/release-notes.md \
+              docs/workflow/*/release-notes.md | sort -u)
+          else
+            echo "No previous release found; searching release notes changed in ${CURRENT_TAG}"
+            mapfile -t RELEASE_NOTES_FILES < <(git show --pretty="" --name-only "${CURRENT_TAG}" -- \
+              docs/features/*/release-notes.md \
+              docs/issues/*/release-notes.md \
+              docs/workflow/*/release-notes.md | sort -u)
+          fi
+
+          if [ "${#RELEASE_NOTES_FILES[@]}" -eq 1 ] && [ -f "${RELEASE_NOTES_FILES[0]}" ]; then
             echo "found=true" >> $GITHUB_OUTPUT
-            echo "path=$RELEASE_NOTES_FILE" >> $GITHUB_OUTPUT
-            echo "Found user-focused release notes: $RELEASE_NOTES_FILE"
+            echo "path=${RELEASE_NOTES_FILES[0]}" >> $GITHUB_OUTPUT
+            echo "Found user-focused release notes: ${RELEASE_NOTES_FILES[0]}"
+          elif [ "${#RELEASE_NOTES_FILES[@]}" -gt 1 ]; then
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo "Multiple release-notes.md files changed in this release range; using changelog extraction"
           else
             echo "found=false" >> $GITHUB_OUTPUT
             echo "No user-focused release notes found, will use changelog extraction"

@@ -1,0 +1,714 @@
+# Style Guide vs Implementation Comparison Analysis
+
+**Date:** 2026-02-16  
+**Analyzed Files:**
+- Style Guide: `docs/report-style-guide.md`
+- Artifacts: `artifacts/*.md`
+- Examples: `examples/*/report.md`
+- Templates: `src/Oocx.TfPlan2Md/**/*.sbn`
+
+---
+
+## Executive Summary
+
+This document provides a comprehensive analysis of differences between the Report Style Guide (`docs/report-style-guide.md`) and the current implementation as seen in generated reports and template files. Each difference is categorized as either requiring a style guide update or an implementation fix.
+
+**Key Findings:**
+- **17 differences found** across various categories
+- **8 require style guide updates** (undocumented features)
+- **6 require implementation fixes** (violations of style guide)
+- **3 are discrepancies** requiring clarification/decision
+
+---
+
+## Category 1: Icons - Missing from Style Guide
+
+### 1.1 ID Icon (🆔) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used extensively but not documented in style guide
+
+**Current Usage in Implementation:**
+- Resource names (e.g., `<code>🆔 rg-tfplan2md-demo</code>`)
+- Resource IDs in attribute tables
+- Azure AD user principal names
+- API Management operation IDs
+- Group mail nicknames
+- Container names
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+<summary>➕ azurerm_resource_group <b><code>core</code></b> — <code>🆔 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+| name | `🆔 rg-tfplan2md-demo` |
+| user_principal_name | `🆔 jane.doe@example.com` |
+```
+
+**Recommendation:** Add to style guide under "Semantic Value Icons" section with:
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| 🆔 | Resource ID/Name | `🆔 <id>` | `🆔 rg-demo` | Resource identifiers, names, IDs |
+```
+
+---
+
+### 1.2 Folder Icon (📁) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for resource groups but not documented
+
+**Current Usage in Implementation:**
+- Resource group names in summaries
+- Resource group references in attribute tables (resource_group_name)
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — <code>🆔 sttfplan2mdlogs</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+| resource_group_name | `📁 rg-tfplan2md-demo` |
+```
+
+**Recommendation:** Add to style guide under "Semantic Value Icons":
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| 📁 | Resource Group | `📁 <rg-name>` | `📁 rg-demo` | Resource group references |
+```
+
+---
+
+### 1.3 Key Icon (🔑) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for subscriptions but not documented
+
+**Current Usage in Implementation:**
+- Subscription names and IDs
+- Subscription references in scopes
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+<summary>➕ azurerm_subscription <b><code>demo</code></b> — <code>🔑 Production (12345678-1234-1234-1234-123456789012)</code></summary>
+| subscription | `🔑 Production` |
+| subscription_id | `🔑 12345678-1234-1234-1234-123456789012` |
+```
+
+**Recommendation:** Add to style guide under "Semantic Value Icons":
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| 🔑 | Subscription | `🔑 <name> (<id>)` | `🔑 Production (guid)` | Azure subscription references |
+```
+
+---
+
+### 1.4 Email Icon (📧) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for email addresses but not documented
+
+**Current Usage in Implementation:**
+- User email addresses
+- Invitation email addresses
+- Mail attributes
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+<summary>➕ azuread_user <b><code>platform_admin</code></b> — <code>👤 Platform Admin</code> (<code>🆔 platform.admin@contoso.com</code>) <code>📧 platform.admin@contoso.com</code></summary>
+| mail | `📧 platform.admin@contoso.com` |
+```
+
+**Recommendation:** Add to style guide under "Semantic Value Icons":
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| 📧 | Email Address | `📧 <email>` | `📧 user@domain.com` | Email addresses |
+```
+
+---
+
+### 1.5 Office Building Icon (🏢) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for Azure AD tenant IDs but not documented
+
+**Current Usage in Implementation:**
+- Tenant IDs in Key Vault resources
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+| tenant_id | `🏢 Contoso Tenant (11111111-2222-3333-4444-555555555555)` |
+```
+
+**Recommendation:** Add to style guide under "Semantic Value Icons":
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| 🏢 | Tenant | `🏢 <name> (<id>)` | `🏢 Contoso (guid)` | Azure AD tenant references |
+```
+
+---
+
+### 1.6 Card File Box Icon (🗂️) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for management groups but not documented
+
+**Current Usage in Implementation:**
+- Management group references in role management policies
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+<summary>🔄 azurerm_role_management_policy <b><code>ops</code></b> — <code>🛡️ Reader</code> in <code>🗂️ Tenant Contoso Corp (mg-root) root</code></summary>
+```
+
+**Recommendation:** Add to style guide under "Semantic Value Icons":
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| 🗂️ | Management Group | `🗂️ <name> (<id>)` | `🗂️ Corp (mg-root)` | Azure management group references |
+```
+
+---
+
+### 1.7 Question Mark Icon (❓) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for unknown member types in groups but not documented
+
+**Current Usage in Implementation:**
+- Azure AD group member type indicators when type cannot be determined
+
+**Examples from artifacts/azuread-enhancements-demo.md:**
+```markdown
+<summary>➕ azuread_group <b><code>platform_team</code></b> — <code>👥 Platform Team</code> (<code>🆔 Platform Engineering</code>) Core platform engineering team | <code>2 👤 1 👥 1 💻 1 ❓</code></summary>
+```
+
+**Recommendation:** Add to style guide under "Identity & Roles":
+```markdown
+| Icon | Value Type | Pattern | Example | When to Use |
+|------|------------|---------|---------|-------------|
+| ❓ | Unknown Type | `❓ Unknown` | `1 ❓` | When member type cannot be determined |
+```
+
+---
+
+### 1.8 Lock Icon (🔒) - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Used for security findings metadata but not documented
+
+**Current Usage in Implementation:**
+- Security & Quality findings summary banner
+
+**Examples from artifacts/comprehensive-demo.md:**
+```markdown
+🔒 **Security & Quality:** ⚠️ 1 High, ⚠️ 1 Medium
+```
+
+**Recommendation:** Add to style guide under "Other Markers":
+```markdown
+| Icon | Purpose | Pattern | Example | When to Use |
+|------|---------|---------|---------|-------------|
+| 🔒 | Security Findings | `🔒 **Security & Quality:**` | - | Security findings header |
+```
+
+---
+
+## Category 2: AzAPI Resource Template Issues
+
+### 2.1 H3 Headings Inside Details Blocks - **IMPLEMENTATION FIX REQUIRED**
+
+**Status:** Violates style guide section "Structure & Hierarchy"
+
+**Style Guide Says:**
+> - **H3 (`###`)**: Module Grouping (e.g., "📦 Module: root", "📦 Module: `module.network`").
+> - **H4 (`####`)**: Not used (resources are in collapsible `<details>` sections).
+
+**Current Implementation:**
+The `azapi/resource.sbn` template contains H3 headings INSIDE the `<details>` block:
+
+```markdown
+<details open style="...">
+<summary>➕ azapi_resource <b></b> — <code>🆔 example-vm</code> <code>🌍 eastus</code></summary>
+<br>
+
+### ➕ azapi_resource.vm
+```
+
+**Examples from artifacts/azapi-mixed-mappings-demo.md:**
+- Line 23: `### ➕ azapi_resource.vm`
+- Line 54: `### ➕ azapi_resource.unknown`
+- Line 84: `### 🔄 azapi_resource.storage`
+- Line 112: `### ➕ azapi_resource.nested_blob_service`
+
+**Impact:**
+- Breaks heading hierarchy (H3 should only be for modules)
+- Inconsistent with other resource templates
+- Makes document structure confusing for accessibility tools
+
+**Recommendation:** Remove H3 headings from azapi/resource.sbn template. The resource information should be part of the details content without a heading, similar to other resource templates.
+
+---
+
+### 2.2 Empty Resource Names in Summaries - **DISCREPANCY - NEEDS CLARIFICATION**
+
+**Status:** Unclear if intentional or bug
+
+**Style Guide Says:**
+> - **Resource Name**: Bold + code-formatted (e.g., `<b><code>hub</code></b>`)
+
+**Current Implementation:**
+AzAPI resources without a mapped friendly name show empty bold/code tags in summaries:
+
+```html
+<summary>➕ azapi_resource <b></b> — <code>🆔 example-vm</code> <code>🌍 eastus</code></summary>
+```
+
+vs resources with mapped names:
+```html
+<summary>➕ azapi_resource <b><code>container_app</code></b> — <code>🆔 ca-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
+```
+
+**Examples:**
+- artifacts/azapi-mixed-mappings-demo.md: All 4 resources show `<b></b>`
+- artifacts/comprehensive-demo.md line 201: `<b><code>container_app</code></b>` (has mapping)
+
+**Questions:**
+1. Should empty tags be rendered at all when no friendly name exists?
+2. Should the terraform resource name (e.g., `vm`) be used instead?
+3. Should this be documented in the style guide?
+
+**Recommendation:** Clarify intended behavior and document in style guide. Consider either:
+- Option A: Omit `<b></b>` when name is empty
+- Option B: Use terraform resource name as fallback
+- Option C: Keep current behavior and document it
+
+---
+
+## Category 3: Update Summary Format
+
+### 3.1 Space After Wrench Icon - **IMPLEMENTATION CORRECT** ✅
+
+**Status:** Implementation follows style guide correctly
+
+**Style Guide Says:**
+> - `<count> 🔧 <attributes>` (non-breaking space between wrench icon and attributes)
+
+**Current Implementation:**
+Binary analysis shows non-breaking space (U+00A0, bytes `c2 a0`) is correctly used:
+
+```
+🔧 (F0 9F 94 A7) + NON-BREAKING SPACE (C2 A0) + attribute text
+```
+
+**Examples verified in artifacts/comprehensive-demo.md:**
+- Line 74: `2🔧 account_replication_type, tags.cost_center`
+- Line 319: `5🔧 secret_variable[0].value, variable[0].value, ...`
+- Line 412: `1🔧 address_space[1]`
+
+All show correct non-breaking space after 🔧 icon.
+
+**No action required** - Implementation is correct.
+
+---
+
+### 3.2 Missing Space Between Count and Wrench - **IMPLEMENTATION FIX REQUIRED**
+
+**Status:** Violates style guide format specification
+
+**Style Guide Says:**
+> - `<count> 🔧 <attributes>` (shows space between count and wrench)
+
+**Current Implementation:**
+The count and wrench icon are directly adjacent with no space:
+```
+2🔧 account_replication_type, tags.cost_center
+```
+
+Should be:
+```
+2 🔧 account_replication_type, tags.cost_center
+```
+
+**Examples from artifacts/comprehensive-demo.md:**
+- Line 74: `2🔧` instead of `2 🔧`
+- Line 319: `5🔧` instead of `5 🔧`
+- Line 412: `1🔧` instead of `1 🔧`
+- Line 422: `6🔧` instead of `6 🔧`
+
+**Recommendation:** Add space (preferably non-breaking space U+00A0) between count and wrench icon in summary generation code.
+
+---
+
+## Category 4: Module Header Format
+
+### 4.1 Non-Breaking Space After Module Icon - **IMPLEMENTATION CORRECT** ✅
+
+**Status:** Implementation follows style guide correctly
+
+**Style Guide Says:**
+> Note: The space between 📦 and "Module:" is a non-breaking space (U+00A0).
+
+**Current Implementation:**
+Binary analysis confirms non-breaking space is used:
+```
+📦 (F0 9F 93 A6) + NON-BREAKING SPACE (C2 A0) + "Module:"
+```
+
+**Verified in artifacts/comprehensive-demo.md:**
+- Line 31: `### 📦 Module: root`
+- Line 340: `### 📦 Module: `module.network``
+
+Hex analysis shows: `F0 9F 93 A6 C2 A0 4D 6F 64 75 6C 65`
+
+**No action required** - Implementation is correct.
+
+---
+
+## Category 5: Action Icons in Summary Table
+
+### 5.1 Non-Breaking Spaces After Action Icons - **IMPLEMENTATION CORRECT** ✅
+
+**Status:** Implementation follows style guide correctly
+
+**Style Guide Says:**
+> All icons followed by text labels must use a non-breaking space (U+00A0, `\u00A0`) between the icon and the label.
+
+**Current Implementation:**
+Binary analysis shows correct non-breaking spaces after all action icons:
+
+- ➕ Add: `E2 9E 95 C2 A0` ✅
+- 🔄 Change: `F0 9F 94 84 C2 A0` ✅
+- ❌ Delete: `E2 9D 8C C2 A0` ✅
+- ♻️ Replace: `E2 99 BB EF B8 8F C2 A0` ✅ (includes variation selector)
+
+**Examples verified in artifacts/comprehensive-demo.md:**
+- Line 9: `| ➕ Add | 26 |` (correct non-breaking space)
+- Line 10: `| 🔄 Change | 8 |` (correct non-breaking space)
+- Line 11: `| ♻️ Replace | 2 |` (correct with variation selector + non-breaking space)
+- Line 12: `| ❌ Destroy | 3 |` (correct non-breaking space)
+
+**No action required** - Implementation is correct.
+
+---
+
+## Category 6: Tags Display
+
+### 6.1 Tags Format in AzAPI Resources - **DISCREPANCY - NEEDS CLARIFICATION**
+
+**Status:** Different format used for azapi_resource
+
+**Style Guide Says:**
+```markdown
+**🏷️ Tags:** `environment: production` `owner: devops` `cost_center: 1234`
+```
+
+**Current Implementation for AzureRM:**
+Matches style guide perfectly:
+```markdown
+**🏷️ Tags:** `environment: demo` `owner: tfplan2md`
+```
+
+**Current Implementation for AzAPI:**
+Uses different format without 🏷️ icon and different layout:
+```markdown
+**Tags:**
+ `environment: demo`
+```
+
+**Examples:**
+- artifacts/comprehensive-demo.md line 42: AzureRM format (correct)
+- artifacts/comprehensive-demo.md line 189-190: AzAPI format (different)
+- artifacts/azure-rm-parent-child-demo.md: AzureRM format (correct)
+
+**Recommendation:** Either:
+1. Update azapi/resource.sbn to match the standard tags format, OR
+2. Document the different format for AzAPI in the style guide
+
+---
+
+## Category 7: Code Analysis Integration
+
+### 7.1 Security Findings Banner - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Feature exists but not documented in style guide
+
+**Current Implementation:**
+Resources with security findings show a banner with 🔒 icon:
+
+```markdown
+🔒 **Security & Quality:** ⚠️ 1 High, ⚠️ 1 Medium
+```
+
+**Examples from artifacts/comprehensive-demo.md:**
+- Line 50: Storage account with findings
+- Line 346: Virtual network with findings
+- Line 542: Key vault with findings
+
+**Recommendation:** Add section to style guide documenting this feature:
+
+```markdown
+### Code Analysis Metadata
+
+Resources with security or quality findings display a banner after the summary:
+
+**Format:** `🔒 **Security & Quality:** <severity_counts>`
+
+**Example:**
+```markdown
+<details open>
+<summary>➕ azurerm_storage_account ...</summary>
+<br>
+
+🔒 **Security & Quality:** ⚠️ 1 High, ⚠️ 1 Medium
+```
+
+---
+
+### 7.2 Attribute Finding Indicators - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Feature exists but not documented in style guide
+
+**Current Implementation:**
+Attributes with security findings show a warning triangle indicator:
+
+```markdown
+| min_tls_version ⚠️ | `TLS1_2` |
+```
+
+**Examples from artifacts/comprehensive-demo.md:**
+- Line 58: `min_tls_version ⚠️`
+
+**Recommendation:** Add to style guide:
+
+```markdown
+### Attribute Finding Indicators
+
+Attributes flagged by code analysis tools show a ⚠️ indicator next to the attribute name in tables:
+
+**Format:** `| <attribute_name> ⚠️ | <value> |`
+```
+
+---
+
+## Category 8: Refactoring Operations
+
+### 8.1 Import/Move Operation Display - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Feature exists but not fully documented
+
+**Current Implementation:**
+Resources with import or move operations show special formatting in summaries and a refactoring summary table:
+
+**Import Summary:**
+```markdown
+<summary>➕ azurerm_resource_group <b><code>imported</code></b> — 📥 *Imported* | <code>🆔 rg-imported-existing</code> <code>🌍 eastus</code></summary>
+```
+
+**Move Summary:**
+```markdown
+<summary>  azurerm_virtual_network <b><code>migrated</code></b> — 🔀 *Moved from* <code>module.legacy.azurerm_virtual_network.main</code> (⚠️ *already moved*) | ...</summary>
+```
+
+**Refactoring Summary Table:**
+```markdown
+## Refactoring Summary
+
+| Operation | Resource | Details | Status |
+| --------- | -------- | ------- | ------ |
+| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-...` | ✅ Ready |
+| 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |
+```
+
+**Style Guide Coverage:**
+- 📥 Import icon is NOT documented
+- 🔀 Move icon is NOT documented
+- "Refactoring Summary" section format is NOT documented
+- Move operation summary format is NOT documented
+- Import operation summary format is partially documented
+
+**Recommendation:** Add comprehensive refactoring section to style guide covering:
+1. Import and move icons (📥, 🔀)
+2. Resource summary format for imported/moved resources
+3. Refactoring Summary table format and columns
+4. Status indicators (✅ Ready, ⚠️ Already moved/imported)
+
+---
+
+## Category 9: Resource-Specific Summaries
+
+### 9.1 AzureDevOps Variable Group Format - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Resource-specific format not documented
+
+**Current Implementation:**
+Variable groups show custom summary format with variable group name:
+
+```markdown
+<summary>🔄 azuredevops_variable_group <b><code>pipeline_vars</code></b> — <code>🆔 deploy-pipeline-vars</code> | 5🔧 secret_variable[0].value, variable[0].value, variable[1].value, +2 more</summary>
+```
+
+Content includes:
+```markdown
+**Variable Group:** <code>deploy-pipeline-vars</code>
+
+**Description:** <code>Pipeline variables for deployment</code>
+
+#### Variables
+
+| Change | Name | Value | Enabled | Content Type | Expires |
+```
+
+**Recommendation:** Document AzureDevOps variable group template in style guide.
+
+---
+
+### 9.2 Virtual Network with Subnets - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Child resource display format not documented
+
+**Current Implementation:**
+Virtual networks with child subnet resources show:
+
+```markdown
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — ... | ➕ 1 subnets | ♻️ 1 subnets</summary>
+```
+
+Content includes subnet table:
+```markdown
+#### Subnets
+
+| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource |
+```
+
+**Recommendation:** Add section on child resource display patterns.
+
+---
+
+### 9.3 Azure AD Group with Members - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Member count indicators not documented
+
+**Current Implementation:**
+Groups show member type breakdown in summary:
+
+```markdown
+<summary>➕ azuread_group <b><code>platform_engineers</code></b> — <code>👥 Platform Engineers</code> (<code>🆔 platform-engineers</code>) - Platform engineering team with infrastructure access | <code>3 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
+```
+
+With member table:
+```markdown
+#### Members
+
+| Change | Member | Terraform Resource |
+```
+
+And conflict warning:
+```markdown
+⚠️ **Warning:** This resource has children managed both inline
+and as separate resources. This configuration will cause conflicts.
+```
+
+**Recommendation:** Document group member display patterns and conflict detection.
+
+---
+
+## Category 10: API Management Resources
+
+### 10.1 APIM Operation Summary Format - **STYLE GUIDE NEEDS UPDATE**
+
+**Status:** Resource-specific format not documented
+
+**Current Implementation:**
+API operations show display name and operation hierarchy:
+
+```markdown
+<summary>➕ azurerm_api_management_api_operation <b><code>get_profile</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁 rg-tfplan2md-demo</code></summary>
+```
+
+Format: `{display_name}` — `{api_name}`/`{operation_id}` @ `{apim_name}` in `{resource_group}`
+
+**Recommendation:** Document APIM resource summary formats.
+
+---
+
+## Category 11: Role Assignment Summaries
+
+### 11.1 Role Assignment Arrow Format - **IMPLEMENTATION CORRECT** ✅
+
+**Status:** Implementation matches style guide
+
+**Style Guide Example:**
+```html
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-demo</code></summary>
+```
+
+**Current Implementation:**
+```html
+<summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe</code> → <code>🛡️ Reader</code> on <code>📁 rg-tfplan2md-demo</code></summary>
+```
+
+**Difference:** Implementation uses 📁 icon for resource group (correct), style guide example doesn't.
+
+**No action required** - Implementation is correct, style guide example could be updated to show 📁 icon.
+
+---
+
+## Summary Table
+
+| # | Issue | Category | Action Required | Priority |
+|---|-------|----------|-----------------|----------|
+| 1.1 | ID Icon (🆔) missing | Style Guide Update | Add to semantic icons | High |
+| 1.2 | Folder Icon (📁) missing | Style Guide Update | Add to semantic icons | High |
+| 1.3 | Key Icon (🔑) missing | Style Guide Update | Add to semantic icons | High |
+| 1.4 | Email Icon (📧) missing | Style Guide Update | Add to semantic icons | Medium |
+| 1.5 | Office Building Icon (🏢) missing | Style Guide Update | Add to semantic icons | Low |
+| 1.6 | Card File Box Icon (🗂️) missing | Style Guide Update | Add to semantic icons | Low |
+| 1.7 | Question Mark Icon (❓) missing | Style Guide Update | Add to identity icons | Low |
+| 1.8 | Lock Icon (🔒) missing | Style Guide Update | Add to other markers | Medium |
+| 2.1 | H3 headings in azapi template | Implementation Fix | Remove H3 from azapi/resource.sbn | High |
+| 2.2 | Empty azapi resource names | Clarification Needed | Decide on behavior | Medium |
+| 3.2 | Missing space before wrench | Implementation Fix | Add space in summary code | Medium |
+| 6.1 | AzAPI tags format different | Clarification Needed | Standardize or document | Low |
+| 7.1 | Security findings banner | Style Guide Update | Document feature | Medium |
+| 7.2 | Attribute finding indicators | Style Guide Update | Document feature | Medium |
+| 8.1 | Import/Move operations | Style Guide Update | Add comprehensive section | High |
+| 9.1 | AzureDevOps variable groups | Style Guide Update | Document template | Low |
+| 9.2 | VNet with subnets | Style Guide Update | Document child resources | Low |
+| 9.3 | Azure AD groups with members | Style Guide Update | Document member display | Low |
+| 10.1 | APIM operation summaries | Style Guide Update | Document format | Low |
+
+---
+
+## Recommendations
+
+### Immediate Actions (High Priority)
+
+1. **Update Style Guide** - Add missing core icons (🆔, 📁, 🔑) that are used extensively
+2. **Fix AzAPI Template** - Remove H3 headings from azapi/resource.sbn
+3. **Add Refactoring Section** - Document import/move operation display format
+
+### Medium Priority Actions
+
+1. Add space between count and wrench icon (` 🔧` not `🔧`)
+2. Document security findings integration features
+3. Add email icon (📧) to style guide
+4. Clarify empty azapi resource name behavior
+
+### Low Priority Actions
+
+1. Document remaining resource-specific templates (AzureDevOps, APIM, etc.)
+2. Add remaining icons (🏢, 🗂️, ❓, 🔒)
+3. Standardize or document AzAPI tags format difference
+4. Update style guide examples to use 📁 icon consistently
+
+---
+
+## Conclusion
+
+The implementation is generally consistent with the style guide, with most differences being **undocumented features** rather than violations. The style guide needs significant expansion to cover:
+
+1. Additional semantic icons being used (8 icons missing)
+2. Security/quality findings integration
+3. Refactoring operations (import/move)
+4. Resource-specific templates and formats
+5. Child resource display patterns
+
+The main implementation issues are:
+1. AzAPI template using H3 headings (violates hierarchy)
+2. Missing space between count and wrench icon
+3. Potential inconsistency in AzAPI tags format
+
+All verified differences are documented above with specific examples, file locations, and recommendations for resolution.

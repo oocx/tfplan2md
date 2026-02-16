@@ -28,7 +28,7 @@ tfplan2md is a CLI tool that converts Terraform plan JSON files into human-reada
 
 | Priority | Quality Goal | Motivation |
 |----------|--------------|------------|
-| 1 | **Security** | Mask sensitive values by default; use distroless images; minimal dependencies |
+| 1 | **Security** | Mask sensitive values by default; minimal scratch container image; NativeAOT binary |
 | 2 | **Reliability** | Handle malformed JSON gracefully; validate all markdown output |
 | 3 | **Usability** | Simple CLI; sensible defaults; clear error messages |
 | 4 | **Maintainability** | Clean architecture; comprehensive tests; modern C# patterns |
@@ -140,7 +140,7 @@ flowchart LR
 | **Language** | C# | 13 | Implementation language |
 | **JSON Parser** | System.Text.Json | Built-in | Parse Terraform plan JSON |
 | **Template Engine** | Scriban | 6.5.2 | Render markdown from templates |
-| **Container Base** | scratch (Alpine musl build) | - | Minimal NativeAOT binary image (~15MB) |
+| **Container Base** | scratch (NativeAOT binary with musl libs) | - | Minimal image (~15MB) |
 | **Test Framework** | TUnit | 1.9.26 | Unit, integration, and snapshot tests |
 | **Assertion Library** | AwesomeAssertions | Latest | Fluent test assertions |
 | **Architecture Tests** | NetArchTest.Rules | Latest | Layer boundary enforcement |
@@ -155,7 +155,7 @@ flowchart LR
 | Decision | Rationale | ADR Reference |
 |----------|-----------|---------------|
 | **Scriban for templating** | Lightweight, text-focused, familiar syntax, embeddable | ADR-001 |
-| **Chiseled Docker image** | Minimal attack surface (~50MB), no shell, security-first | ADR-002 (Superseded) |
+| **Chiseled Docker image** | Superseded by NativeAOT scratch image (ADR-008) | ADR-002 (Superseded) |
 | **Modern C# 13 patterns** | Records for immutability, file-scoped namespaces, nullable reference types | ADR-003 |
 | **Scriban loop limit** | Handle large plans by filtering no-ops before template rendering | ADR-005 |
 | **Pure Dependency Injection** | AOT-compatible, explicit composition root, no container overhead | ADR-006 |

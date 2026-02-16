@@ -132,17 +132,27 @@ jobs:
           # This prevents accidentally reusing stale release notes from older releases.
           if [ -n "$LAST" ]; then
             PREVIOUS_TAG="v${LAST}"
-            echo "Searching release notes changed between ${PREVIOUS_TAG} and ${CURRENT_TAG}"
-            mapfile -t RELEASE_NOTES_FILES < <(git diff --name-only "${PREVIOUS_TAG}..${CURRENT_TAG}" -- \
-              docs/features/*/release-notes.md \
-              docs/issues/*/release-notes.md \
-              docs/workflow/*/release-notes.md | sort -u)
+            if git rev-parse --verify --quiet "refs/tags/${PREVIOUS_TAG}" >/dev/null && git rev-parse --verify --quiet "refs/tags/${CURRENT_TAG}" >/dev/null; then
+              echo "Searching release notes changed between ${PREVIOUS_TAG} and ${CURRENT_TAG}"
+              mapfile -t RELEASE_NOTES_FILES < <(git diff --name-only "${PREVIOUS_TAG}..${CURRENT_TAG}" -- \
+                docs/features/*/release-notes.md \
+                docs/issues/*/release-notes.md \
+                docs/workflow/*/release-notes.md | sort -u)
+            else
+              echo "Previous or current tag not found; using changelog extraction"
+              RELEASE_NOTES_FILES=()
+            fi
           else
-            echo "No previous release found; searching release notes changed in ${CURRENT_TAG}"
-            mapfile -t RELEASE_NOTES_FILES < <(git show --pretty="" --name-only "${CURRENT_TAG}" -- \
-              docs/features/*/release-notes.md \
-              docs/issues/*/release-notes.md \
-              docs/workflow/*/release-notes.md | sort -u)
+            if git rev-parse --verify --quiet "refs/tags/${CURRENT_TAG}" >/dev/null; then
+              echo "No previous release found; searching release notes changed in ${CURRENT_TAG}"
+              mapfile -t RELEASE_NOTES_FILES < <(git show --pretty="" --name-only "${CURRENT_TAG}" -- \
+                docs/features/*/release-notes.md \
+                docs/issues/*/release-notes.md \
+                docs/workflow/*/release-notes.md | sort -u)
+            else
+              echo "Current tag not found; using changelog extraction"
+              RELEASE_NOTES_FILES=()
+            fi
           fi
 
           if [ "${#RELEASE_NOTES_FILES[@]}" -eq 1 ] && [ -f "${RELEASE_NOTES_FILES[0]}" ]; then

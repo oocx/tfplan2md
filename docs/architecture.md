@@ -54,7 +54,8 @@ tfplan2md is a CLI tool that converts Terraform plan JSON files into human-reada
 |------------|------------|
 | **.NET 10** | Latest LTS framework for long-term support and modern C# features |
 | **C# 13** | Modern language features (records, pattern matching, file-scoped namespaces) |
-| **Docker Distribution** | Primary distribution mechanism; must run in distroless containers |
+| **Docker Distribution** | Primary distribution mechanism; NativeAOT binary in scratch container |
+| **NativeAOT** | Ahead-of-time compiled self-contained binary (~5MB); no .NET runtime required |
 | **Scriban Templates** | Template engine for markdown generation (ADR-001) |
 | **System.Text.Json** | Built-in JSON parser for .NET 10 |
 | **No External APIs** | Tool must work offline without external dependencies |
@@ -139,9 +140,10 @@ flowchart LR
 | **Language** | C# | 13 | Implementation language |
 | **JSON Parser** | System.Text.Json | Built-in | Parse Terraform plan JSON |
 | **Template Engine** | Scriban | 6.5.2 | Render markdown from templates |
-| **Container Base** | mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled | - | Distroless runtime image (~50MB) |
-| **Test Framework** | xUnit | 2.9.3 | Unit and integration tests |
+| **Container Base** | scratch (Alpine musl build) | - | Minimal NativeAOT binary image (~15MB) |
+| **Test Framework** | TUnit | 1.9.26 | Unit, integration, and snapshot tests |
 | **Assertion Library** | AwesomeAssertions | Latest | Fluent test assertions |
+| **Architecture Tests** | NetArchTest.Rules | Latest | Layer boundary enforcement |
 | **Linter** | markdownlint-cli2 | 0.20.0 | Validate markdown output |
 
 ---
@@ -153,8 +155,12 @@ flowchart LR
 | Decision | Rationale | ADR Reference |
 |----------|-----------|---------------|
 | **Scriban for templating** | Lightweight, text-focused, familiar syntax, embeddable | ADR-001 |
-| **Chiseled Docker image** | Minimal attack surface (~50MB), no shell, security-first | ADR-002 |
+| **Chiseled Docker image** | Minimal attack surface (~50MB), no shell, security-first | ADR-002 (Superseded) |
 | **Modern C# 13 patterns** | Records for immutability, file-scoped namespaces, nullable reference types | ADR-003 |
+| **Scriban loop limit** | Handle large plans by filtering no-ops before template rendering | ADR-005 |
+| **Pure Dependency Injection** | AOT-compatible, explicit composition root, no container overhead | ADR-006 |
+| **Architecture boundaries** | Layer enforcement via NetArchTest to prevent cross-layer coupling | ADR-007 |
+| **Multi-platform binaries** | NativeAOT self-contained binaries for direct CLI use without Docker | ADR-008 |
 
 ### 4.2 Key Architectural Patterns
 
@@ -180,6 +186,12 @@ flowchart LR
 - Resource-specific templates in `{provider}/{resource}.sbn` format
 - Future: customizable icons, summary formatters, and other extensibility points
 
+**Pure Dependency Injection (ADR-006):**
+- `CompositionRoot` class wires all services explicitly without a DI container
+- AOT-compatible: no reflection-based service discovery
+- Returns a fully-composed `ApplicationServices` record
+- Provider modules register their services through explicit method calls
+
 **Security by Default:**
 - Sensitive values masked unless `--show-sensitive` flag provided
 - Minimal Docker image with no shell access
@@ -191,67 +203,129 @@ flowchart LR
 tfplan2md/
 ├── CLI/                         # Command-line parsing and orchestration
 │   ├── CliParser.cs             # Argument parsing
+│   ├── CliOptions.cs            # Parsed CLI options (record)
+│   ├── CliParseException.cs     # Invalid argument errors
 │   └── HelpTextProvider.cs      # Usage documentation
 │
 ├── Parsing/                     # Terraform plan JSON parsing
 │   ├── TerraformPlan.cs         # Domain models (records)
-│   ├── TerraformPlanParser.cs
-│   └── TerraformPlanParseException.cs
+│   ├── TerraformPlanParser.cs   # JSON → domain model
+│   ├── TerraformPlanParseException.cs
+│   ├── TfPlanJsonContext.cs     # AOT-safe JSON serialization context
+│   ├── ReplacePathsConverter.cs # Custom JSON converter for replace paths
+│   └── ConfigurationReferenceResolver.cs  # Resolve configuration references
 │
 ├── MarkdownGeneration/          # Core report model building and rendering
 │   ├── ReportModel.cs           # Report data models
 │   ├── MarkdownRenderer.cs      # Template application and orchestration
-│   ├── ReportModelBuilder.cs    # Transform domain models to report models
-│   ├── Models/                  # Core model interfaces and registries
+│   ├── MarkdownRenderException.cs
+│   ├── TemplateLoader.cs        # ScribanTemplateLoader: multi-prefix template loading
+│   ├── TemplateResolver.cs      # Provider-specific template resolution
+│   ├── ReportModelBuilder.cs    # Transform domain → report model (partial, 5 files)
+│   ├── ReportModelBuilder.Build.cs
+│   ├── ReportModelBuilder.ResourceChanges.cs
+│   ├── ReportModelBuilder.CodeAnalysis.cs
+│   ├── ReportModelBuilder.Summaries.cs
+│   ├── ReportModelBuilder.ParentChildMerging.cs
+│   ├── Models/                  # Core model interfaces and data types
 │   │   ├── IResourceViewModelFactory.cs
-│   │   └── ResourceViewModelFactoryRegistry.cs
+│   │   ├── ResourceViewModelFactoryRegistry.cs
+│   │   ├── ParentChildRelationship.cs
+│   │   ├── IParentChildRelationshipRegistry.cs
+│   │   ├── ParentChildRelationshipRegistry.cs
+│   │   ├── ChildResourceRow.cs, ChildResourceGroup.cs, ChildTableColumn.cs
+│   │   ├── RefactoringOperationModel.cs
+│   │   ├── FormattedValue.cs, FormattedList.cs
+│   │   └── CodeAnalysis*.cs     # Code analysis report models
 │   ├── Summaries/               # Resource summary builders
+│   │   ├── IResourceSummaryBuilder.cs
+│   │   ├── ResourceSummaryBuilder.cs
+│   │   ├── ResourceSummaryMappings.cs
+│   │   └── ResourceSummaryPathFormatter.cs
 │   ├── Helpers/                 # Core Scriban helper functions
-│   │   ├── ScribanHelpers.*.cs  # Grouped by concern (DiffFormatting, Markdown, etc.)
-│   │   └── ScribanTemplateLoader.cs  # Multi-prefix template loading
-│   └── Templates/               # Core embedded Scriban templates
-│       ├── default.sbn          # Global report template
+│   │   ├── JsonFlattener.cs     # JSON → flat key-value pairs
+│   │   ├── ResourceSummaryHtmlBuilder.cs  # HTML summary generation
+│   │   └── ScribanHelpers/      # 19 partial files grouped by concern
+│   │       ├── Registry.cs      # Function registration (27+ functions)
+│   │       ├── DiffFormatting.cs, DiffArray.cs, DiffComputation.cs, DiffUtilities.cs
+│   │       ├── LargeValues.cs, LargeValueSummary.cs
+│   │       ├── SemanticFormatting.cs (+ .Registry, .Helpers, .Identity)
+│   │       ├── ValueFormatting.cs, CodeFormatting.cs, Markdown.cs, Json.cs
+│   │       ├── AttributeCollection.cs, CodeAnalysis.cs
+│   │       └── AzApi.Metadata.cs
+│   ├── Services/                # Service registries and abstractions
+│   │   ├── ProviderRegistry.cs  # Central provider module manager
+│   │   ├── ValueFormatterRegistry.cs  # Pattern-matched value formatting
+│   │   ├── IconProviderRegistry.cs    # Pattern-matched icon resolution
+│   │   ├── ResourceModelMapperRegistry.cs  # View model enrichment
+│   │   ├── PatternMatchingRegistry.cs  # Generic specificity-based resolver
+│   │   ├── IValueFormatter.cs, IIconProvider.cs, IResourceModelMapper.cs
+│   │   ├── FileBasedIconProvider.cs, StaticIconProvider.cs
+│   │   ├── AzureResourceIdFormatter.cs
+│   │   └── ServiceRegistrationException.cs
+│   └── Templates/               # Core embedded Scriban templates (10 files)
+│       ├── default.sbn          # Full report template
 │       ├── summary.sbn          # Summary-only template
-│       └── _resource.sbn        # Default per-resource fallback template
+│       ├── _header.sbn          # Report header partial
+│       ├── _summary.sbn         # Summary section partial
+│       ├── _resource.sbn        # Default per-resource fallback template
+│       ├── _child_resources.sbn # Child resource table rendering
+│       └── _code_analysis_*.sbn # Code analysis report partials (4 files)
+│
+├── CodeAnalysis/                # Static code analysis integration (SARIF)
+│   ├── CodeAnalysisLoader.cs    # Load SARIF results
+│   ├── SarifParser.cs           # Parse SARIF JSON format
+│   ├── SarifDocumentReader.cs, SarifRunReader.cs, SarifResultReader.cs
+│   ├── CodeAnalysisModel.cs     # Analysis data models
+│   ├── CodeAnalysisFailureEvaluator.cs  # Severity threshold evaluation
+│   ├── ResourceMapper.cs        # Map findings to Terraform resources
+│   └── WildcardExpander.cs      # Glob pattern matching
+│
+├── Diagnostics/                 # Debug and diagnostic support
+│   ├── DiagnosticContext.cs     # Collects diagnostic info in debug mode
+│   ├── TemplateResolution.cs    # Template resolution tracking
+│   ├── FailedResolution.cs      # Failed lookup details
+│   ├── FailedResolutionType.cs  # Resolution error types
+│   └── PrincipalLoadError.cs    # Principal mapping errors
 │
 ├── Providers/                   # Provider-specific implementations (modular)
 │   ├── IProviderModule.cs       # Provider registration contract
-│   ├── ProviderRegistry.cs      # Explicit provider registration
 │   ├── AzApi/                   # AzApi provider (azapi_resource, azapi_update_resource)
-│   │   ├── AzApiModule.cs       # Provider registration
-│   │   ├── Helpers/             # AzApi-specific Scriban helpers
-│   │   └── Templates/           # AzApi-specific .sbn templates
+│   ├── AzureAD/                 # Azure AD provider (azuread_*)
 │   ├── AzureRM/                 # AzureRM provider (azurerm_*)
-│   │   ├── AzureRMModule.cs     # Provider registration
-│   │   ├── Models/              # AzureRM-specific view models and factories
-│   │   │   ├── FirewallNetworkRuleCollectionViewModelFactory.cs
-│   │   │   ├── NetworkSecurityGroupViewModelFactory.cs
-│   │   │   └── RoleAssignmentViewModelFactory.cs
-│   │   ├── Helpers/             # AzureRM-specific Scriban helpers
-│   │   └── Templates/           # AzureRM-specific .sbn templates (NSG, firewall, etc.)
 │   └── AzureDevOps/             # AzureDevOps provider (azuredevops_*)
-│       ├── AzureDevOpsModule.cs # Provider registration
-│       ├── Models/              # AzureDevOps-specific view models
-│       └── Templates/           # AzureDevOps-specific .sbn templates
 │
 ├── RenderTargets/               # Platform-specific rendering (GitHub vs Azure DevOps)
+│   ├── RenderTarget.cs          # Enum: GitHub, AzureDevOps
 │   ├── IDiffFormatter.cs        # Diff formatting abstraction
-│   ├── GitHubDiffFormatter.cs   # Simple diff format for GitHub PR comments
-│   └── AzureDevOpsDiffFormatter.cs  # Inline diff format for Azure DevOps PR comments
+│   ├── GitHubDiffFormatter.cs   # Simple diff format
+│   └── AzureDevOpsDiffFormatter.cs  # Inline HTML diff format
 │
 ├── Platforms/                   # Cloud platform utilities (Azure-specific, provider-agnostic)
 │   └── Azure/
-│       ├── PrincipalMapper.cs   # Map Azure principal IDs to names
-│       └── RoleNamesProvider.cs # Azure role name constants
+│       ├── IPrincipalMapper.cs, PrincipalMapper.cs, NullPrincipalMapper.cs
+│       ├── AzureEntityMapper.cs # Map subscriptions/management groups/tenants
+│       ├── AzureScopeParser.cs  # Parse Azure resource scopes
+│       ├── AzureRoleDefinitionMapper.cs, AzureRoleDefinitionsRegistry.cs
+│       ├── EnrichedAzureScopeFormatter.cs
+│       ├── AzureMappingFileLoader.cs, AzureMappingFileParser.cs
+│       ├── AzureValueFormatterRegistration.cs
+│       └── ScribanHelpers.Azure.cs  # Azure-specific Scriban helpers
 │
-└── Program.cs                   # Application entry point
+├── CompositionRoot.cs           # Pure DI composition (no container)
+├── Program.cs                   # Entry point
+└── ProgramEntry.cs              # Main workflow orchestration
 ```
 
-**Key Architectural Changes (Feature 047):**
-- **Provider Separation:** All Terraform provider-specific code (azapi, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProviderModule`.
+**Key Architectural Patterns:**
+- **Provider Separation:** All Terraform provider-specific code (azapi, azuread, azurerm, azuredevops) now lives in dedicated `Providers/` folders with explicit registration via `IProviderModule`.
 - **RenderTarget Separation:** Platform-specific rendering logic (GitHub vs Azure DevOps) moved to `RenderTargets/` with `IDiffFormatter` abstraction.
 - **Template Multi-Prefix Loading:** `ScribanTemplateLoader` checks core templates first, then provider-specific templates, enabling modular template organization.
-- **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry`.
+- **Explicit Registration:** No reflection-based discovery; all providers register explicitly through `ProviderRegistry` (AOT-compatible).
+- **Pure DI:** `CompositionRoot` wires all services without a DI container (ADR-006).
+- **Code Analysis Integration:** SARIF-based static analysis results integrated into markdown reports.
+- **Parent-Child Resource Merging:** Resources can be grouped hierarchically (e.g., NSG rules under NSG) via `ParentChildRelationshipRegistry`.
+- **Registry Pattern:** Generic `PatternMatchingRegistry<T>` enables specificity-based resolution for value formatters, icon providers, and model mappers.
 
 ---
 
@@ -265,27 +339,34 @@ flowchart LR
     classDef componentNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
     classDef utilNode fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
     classDef providerNode fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
+    classDef analysisNode fill:#ef4444,stroke:#f87171,stroke-width:2px,color:#ffffff
     
     subgraph tfplan2md
         CLI[CLI]
         Parsing[Parsing]
         Markdown[Markdown<br/>Generation]
-        Providers[Providers<br/>AzApi, AzureRM,<br/>AzureDevOps]
+        Providers[Providers<br/>AzApi, AzureAD,<br/>AzureRM, AzureDevOps]
         RenderTargets[RenderTargets<br/>GitHub, Azure DevOps]
+        CodeAnalysis[Code Analysis<br/>SARIF Integration]
         Platforms[Platform Utilities<br/>PrincipalMapper, etc.]
+        Diagnostics[Diagnostics<br/>Debug Context]
         
         CLI --> Parsing
+        CLI --> CodeAnalysis
         Parsing --> Markdown
+        CodeAnalysis --> Markdown
         Markdown --> Providers
         Markdown --> RenderTargets
         CLI -.-> Platforms
         Markdown -.-> Platforms
         Providers -.-> Platforms
+        CLI -.-> Diagnostics
     end
     
     class CLI,Parsing,Markdown componentNode
     class Providers,RenderTargets providerNode
-    class Platforms utilNode
+    class Platforms,Diagnostics utilNode
+    class CodeAnalysis analysisNode
 ```
 
 ### 5.2 Level 2: Component Details
@@ -304,7 +385,7 @@ flowchart LR
 **Key Classes:**
 - `CliParser` - Parses arguments into `CliOptions`
 - `HelpTextProvider` - Provides usage documentation
-- `CliOptions` (record) - Parsed command-line options
+- `CliOptions` (record) - Parsed command-line options (input/output files, template path, render target, show-sensitive flag, debug mode, code analysis patterns, etc.)
 - `CliParseException` - Exception for invalid arguments
 
 #### 5.2.2 Parsing Component
@@ -319,10 +400,12 @@ flowchart LR
 
 **Key Classes:**
 - `TerraformPlanParser` - Main parser
-- `TerraformPlan` (record) - Root plan model
-- `ResourceChange` (record) - Individual resource change
-- `Change` (record) - Before/after/actions for a resource
+- `TerraformPlan` (record) - Root plan model (FormatVersion, TerraformVersion, ResourceChanges, Timestamp, Configuration)
+- `ResourceChange` (record) - Individual resource change (Address, Type, Change, ActionReason, PreviousAddress)
+- `Change` (record) - Before/after/actions for a resource (with AfterUnknown, Importing support)
 - `ReplacePathsConverter` - Custom JSON converter for replace paths
+- `TfPlanJsonContext` - AOT-safe JSON serialization context (System.Text.Json source generator)
+- `ConfigurationReferenceResolver` - Resolves configuration references
 - `TerraformPlanParseException` - Exception for parse errors
 
 **Data Flow:**
@@ -356,15 +439,20 @@ flowchart LR
 
 | Class | Responsibility |
 |-------|---------------|
-| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; build rich model data to keep template logic minimal |
-| `ReportModel` | Data passed to templates (terraform version, changes, summary, module groups) |
-| `ResourceChangeModel` | Single resource change for template rendering; includes precomputed summaries and formatted values |
+| `ReportModelBuilder` | Transform `TerraformPlan` → `ReportModel`; partial class split across 5 files (Build, ResourceChanges, CodeAnalysis, Summaries, ParentChildMerging) |
+| `ReportModel` | Data passed to templates (terraform version, changes, summary, module groups, code analysis, refactoring operations) |
+| `ResourceChangeModel` | Single resource change for template rendering; includes precomputed summaries, child resources, code analysis findings, import/move info |
 | `AttributeChangeModel` | Single attribute change |
 | `SummaryModel` | Aggregated statistics (count by action, breakdown by type) |
 | `MarkdownRenderer` | Apply templates to generate markdown; validate output is compatible with GitHub and Azure DevOps |
-| `ScribanHelpers` | Custom Scriban functions (`diff_array`, `format_diff`, etc.); provides complex logic that templates should not implement |
+| `TemplateResolver` | Resolve provider-specific templates for resource types |
+| `ScribanTemplateLoader` | Load templates from embedded resources or filesystem with multi-prefix support |
+| `ScribanHelpers` | Static partial class (19 files) with 27+ custom Scriban functions (`diff_array`, `format_diff`, etc.) |
 | `RenderTarget` (enum) | Target platform for rendering (GitHub, AzureDevOps); controls diff formatting and markdown features |
 | `IResourceSummaryBuilder` / `ResourceSummaryBuilder` | Generate one-line summaries for resources |
+| `RefactoringOperationModel` | Track terraform import and move operations |
+| `ChildResourceGroup` / `ChildResourceRow` | Hierarchical child resource table data |
+| `ParentChildRelationshipRegistry` | Register and resolve parent-child resource relationships |
 
 **Design Principle: Logic in Code, Not Templates**
 
@@ -379,8 +467,11 @@ This ensures templates are maintainable and extensible by users without C# knowl
 
 | Directory | Purpose |
 |-----------|---------|
-| `Summaries/` | Resource summary generation logic |
-| `Templates/` | Embedded Scriban templates (default.sbn for report structure, _resource.sbn for default resource rendering, summary.sbn, azurerm/* for resource-specific overrides) |
+| `Models/` | Core model types: view model factories, parent-child relationships, child resources, code analysis report models, formatted values |
+| `Summaries/` | Resource summary generation: builders, mappings, path formatters |
+| `Helpers/` | JSON flattening, HTML summary builder, and `ScribanHelpers/` (19 partial files with 27+ Scriban functions) |
+| `Services/` | Service registries: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`, `ResourceModelMapperRegistry`, `PatternMatchingRegistry<T>` |
+| `Templates/` | Embedded Scriban templates: `default.sbn`, `summary.sbn`, `_resource.sbn`, `_header.sbn`, `_summary.sbn`, `_child_resources.sbn`, and 4 code analysis partials |
 
 **Template Resolution Flow:**
 1. If custom template directory provided: `{customDir}/{provider}/{resource}.sbn`
@@ -424,11 +515,17 @@ classDiagram
     class ReportModel {
         +string TerraformVersion
         +string FormatVersion
+        +string TfPlan2MdVersion
+        +string CommitHash
+        +DateTimeOffset GeneratedAtUtc
+        +bool HideMetadata
         +string? Timestamp
         +string? ReportTitle
         +IReadOnlyList~ResourceChangeModel~ Changes
         +IReadOnlyList~ModuleChangeGroup~ ModuleChanges
         +SummaryModel Summary
+        +CodeAnalysisReportModel? CodeAnalysis
+        +IReadOnlyList~RefactoringOperationModel~ RefactoringOperations
         +bool ShowUnchangedValues
         +RenderTarget RenderTarget
     }
@@ -473,6 +570,11 @@ classDiagram
         +string? SummaryHtml
         +string? ChangedAttributesSummary
         +string? TagsBadges
+        +IReadOnlyList~ChildResourceGroup~? ChildResourceGroups
+        +IReadOnlyList~CodeAnalysisFindingModel~? CodeAnalysisFindings
+        +string? ImportId
+        +string? MovedFromAddress
+        +bool IsRefactoringAlreadyApplied
     }
     
     class AttributeChangeModel {
@@ -481,6 +583,21 @@ classDiagram
         +string? After
         +bool IsSensitive
         +bool IsLarge
+    }
+    
+    class RefactoringOperationModel {
+        +string Operation
+        +string Address
+        +string ResourceType
+        +string ResourceName
+        +string Details
+        +string Status
+        +bool IsAlreadyApplied
+    }
+    
+    class CodeAnalysisReportModel {
+        +CodeAnalysisSummaryModel Summary
+        +IReadOnlyList~CodeAnalysisModuleFindingsModel~ ModuleFindings
     }
     
     class RenderTarget {
@@ -492,6 +609,8 @@ classDiagram
     ReportModel "1" *-- "0..*" ResourceChangeModel : changes
     ReportModel "1" *-- "1..*" ModuleChangeGroup : module_changes
     ReportModel "1" *-- "1" SummaryModel : summary
+    ReportModel "1" *-- "0..1" CodeAnalysisReportModel : code_analysis
+    ReportModel "1" *-- "0..*" RefactoringOperationModel : refactoring_operations
     ModuleChangeGroup "1" *-- "0..*" ResourceChangeModel : changes
     SummaryModel "1" *-- "5" ActionSummary : action summaries
     ActionSummary "1" *-- "0..*" ResourceTypeBreakdown : breakdown
@@ -503,19 +622,23 @@ classDiagram
     style SummaryModel fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
     style ActionSummary fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
     style ModuleChangeGroup fill:#f59e0b,stroke:#fbbf24,stroke-width:2px,color:#ffffff
+    style RefactoringOperationModel fill:#f59e0b,stroke:#fbbf24,stroke-width:2px,color:#ffffff
+    style CodeAnalysisReportModel fill:#ef4444,stroke:#f87171,stroke-width:2px,color:#ffffff
 ```
 
 **Model Components:**
 
 | Model Class | Purpose | Template Access |
 |-------------|---------|-----------------|
-| `ReportModel` | Root container for all report data | Direct properties: `terraform_version`, `summary`, `module_changes`, etc. |
+| `ReportModel` | Root container for all report data | Direct properties: `terraform_version`, `summary`, `module_changes`, `code_analysis`, `refactoring_operations`, etc. |
 | `ModuleChangeGroup` | Groups resources by Terraform module | Iterate via `module_changes`, access `module_address` and `changes` |
 | `SummaryModel` | Aggregated statistics for the summary table | Access via `summary.to_add.count`, `summary.total`, etc. |
 | `ActionSummary` | Per-action statistics with type breakdown | `count` for total, `breakdown` for per-type counts |
 | `ResourceTypeBreakdown` | Count of resources per type for an action | `type` (resource type name), `count` (number) |
-| `ResourceChangeModel` | Single resource with all change details | Full resource data including `before_json`/`after_json` for raw state |
+| `ResourceChangeModel` | Single resource with all change details | Full resource data including `child_resource_groups`, `code_analysis_findings`, `import_id`, `moved_from_address` |
 | `AttributeChangeModel` | Single attribute's before/after values | `name`, `before`, `after`, `is_sensitive`, `is_large` |
+| `RefactoringOperationModel` | Terraform import/move operations | `operation`, `address`, `resource_type`, `details`, `status`, `is_already_applied` |
+| `CodeAnalysisReportModel` | Code analysis results from SARIF | `summary` (counts by severity), `module_findings` (grouped by module) |
 
 **Precomputed Properties:**
 
@@ -528,6 +651,10 @@ To keep templates simple, several properties are precomputed by `ReportModelBuil
 | `SummaryHtml` | Multiple fields | Rich HTML for `<summary>` elements with formatted values |
 | `ChangedAttributesSummary` | `AttributeChanges` | Compact list of changed attributes (e.g., "2🔧 tags, location") |
 | `TagsBadges` | Resource tags | Formatted tag badges for create/delete actions |
+| `ChildResourceGroups` | Parent-child merging | Hierarchical child resource tables (e.g., NSG rules grouped under NSG) |
+| `CodeAnalysisFindings` | SARIF results | Static analysis findings mapped to this resource |
+| `ImportId` | Terraform importing | Resource import identifier |
+| `MovedFromAddress` | Previous address | Tracks resource moves/renames |
 
 **Data Flow from Terraform Plan to Model:**
 
@@ -592,18 +719,24 @@ Each provider is a self-contained module implementing the `IProviderModule` inte
 public interface IProviderModule
 {
     string Name { get; }
-    void RegisterHelpers(Scriban.TemplateContext context);
+    void RegisterHelpers(ScriptObject scriptObject);
     void RegisterFactories(IResourceViewModelFactoryRegistry registry);
+    void RegisterValueFormatters(ValueFormatterRegistry registry) { }
+    void RegisterIconProviders(IconProviderRegistry registry) { }
+    void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry) { }
+    void RegisterResourceModelMappers(ResourceModelMapperRegistry registry) { }
+    void RegisterPostMergeCallbacks(Action<IReadOnlyList<ResourceChangeModel>> callback) { }
 }
 ```
 
 **Provider Registration:**
 
-Providers are explicitly registered in `ProviderRegistry` at application startup (no reflection):
+Providers are explicitly registered in `ProviderRegistry` at application startup (no reflection, AOT-compatible):
 
 ```csharp
 ProviderRegistry.RegisterProviders(
     new AzApiModule(),
+    new AzureADModule(),
     new AzureRMModule(),
     new AzureDevOpsModule()
 );
@@ -613,26 +746,42 @@ ProviderRegistry.RegisterProviders(
 
 | Provider | Namespace | Resources | Key Features |
 |----------|-----------|-----------|--------------|
-| **AzApi** | `Oocx.TfPlan2Md.Providers.AzApi` | `azapi_resource`, `azapi_update_resource` | Templates for Azure API resources, AzApi-specific helpers |
-| **AzureRM** | `Oocx.TfPlan2Md.Providers.AzureRM` | `azurerm_*` (firewall, NSG, role assignments, etc.) | Resource-specific view models, semantic diffs for complex resources |
-| **AzureDevOps** | `Oocx.TfPlan2Md.Providers.AzureDevOps` | `azuredevops_variable_group` | Variable group templates and view models |
+| **AzApi** | `Oocx.TfPlan2Md.Providers.AzApi` | `azapi_resource`, `azapi_update_resource` | JSON flattening, API documentation links, grouped property rendering |
+| **AzureAD** | `Oocx.TfPlan2Md.Providers.AzureAD` | `azuread_user`, `azuread_group`, `azuread_group_member`, `azuread_service_principal`, `azuread_invitation` | Group member extraction, user/group summaries |
+| **AzureRM** | `Oocx.TfPlan2Md.Providers.AzureRM` | `azurerm_*` (firewall, NSG, role assignments, APIM, DNS, etc.) | Semantic diffs, parent-child grouping, role definition mapping |
+| **AzureDevOps** | `Oocx.TfPlan2Md.Providers.AzureDevOps` | `azuredevops_variable_group`, `azuredevops_group`, `azuredevops_user_entitlement`, `azuredevops_project` | Variable group templates, descriptor formatting |
 
 **Provider Structure (Example: AzureRM):**
 
 ```
 Providers/AzureRM/
-├── AzureRMModule.cs          # IProviderModule implementation
-├── Models/                   # View models and factories
-│   ├── FirewallNetworkRuleCollectionViewModelFactory.cs
-│   ├── NetworkSecurityGroupViewModelFactory.cs
-│   └── RoleAssignmentViewModelFactory.cs
-├── Helpers/                  # AzureRM-specific Scriban helpers
-│   └── ScribanHelpers.AzureRM.*.cs
-└── Templates/                # .sbn templates for azurerm_* resources
-    ├── azurerm_firewall_application_rule_collection.sbn
-    ├── azurerm_firewall_network_rule_collection.sbn
-    ├── azurerm_network_security_group.sbn
-    └── azurerm_role_assignment.sbn
+├── AzureRMModule.cs              # IProviderModule implementation
+├── Models/                       # View models and factories
+│   ├── FirewallNetworkRuleCollectionMapper.cs
+│   ├── FirewallApplicationRuleCollectionMapper.cs
+│   ├── NetworkSecurityGroupMapper.cs
+│   ├── RoleAssignmentMapper.cs
+│   ├── PimEligibleRoleAssignmentFactory.cs
+│   ├── RoleManagementPolicyFactory.cs
+│   ├── AzureRMApimSubresourceFactory.cs
+│   └── AzureRMPrivateDnsARecordFactory.cs
+├── RowExtractors/                # Child resource row extraction
+│   ├── AzureRmDnsRecordRowExtractor.cs
+│   ├── AzureRmNetworkSecurityRuleRowExtractor.cs
+│   ├── AzureRmRouteRowExtractor.cs
+│   └── AzureRmSubnetRowExtractor.cs
+├── Formatters/                   # Value formatters
+│   ├── RoleDefinitionFormatter.cs
+│   └── PrincipalIdFormatter.cs
+├── Registration/                 # Factory/formatter/icon registration
+│   ├── AzureRmFactoryRegistration.cs
+│   ├── AzureRmValueFormatterRegistration.cs
+│   └── AzureRmIconProviderRegistration.cs
+└── Templates/                    # .sbn templates for azurerm_* resources
+    ├── firewall_application_rule_collection.sbn
+    ├── firewall_network_rule_collection.sbn
+    ├── network_security_group.sbn
+    └── role_assignment.sbn
 ```
 
 **Template Multi-Prefix Loading:**
@@ -703,14 +852,135 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 
 **Responsibilities:**
 - Map Azure principal IDs to human-readable names
-- Provide Azure role name constants
-- Format Azure resource IDs for readability
+- Map Azure subscription, management group, and tenant IDs to display names
+- Parse and format Azure resource scopes
+- Map Azure role definition IDs to names
+- Provide enriched scope formatting with display names
 
 **Key Classes:**
-- `PrincipalMapper` - Load and resolve principal ID mappings from JSON file
-- `RoleNamesProvider` - Azure role name constants
 
-**Note:** This component is Azure-specific but not Terraform provider-specific. It's used by both AzApi and AzureRM providers.
+| Class | Responsibility |
+|-------|---------------|
+| `IPrincipalMapper` / `PrincipalMapper` | Load and resolve principal ID mappings from JSON file |
+| `NullPrincipalMapper` | No-op implementation when no mapping file provided |
+| `AzureEntityMapper` | Map subscriptions, management groups, and tenants to display names |
+| `AzureScopeParser` | Parse Azure resource scope strings into structured data |
+| `EnrichedAzureScopeFormatter` | Format scopes with human-readable display names |
+| `AzureRoleDefinitionMapper` | Map Azure role definition IDs to role names |
+| `AzureRoleDefinitionsRegistry` | Static registry of Azure built-in role definitions |
+| `AzureMappingFileLoader` / `AzureMappingFileParser` | Load and parse principal mapping JSON files |
+| `ScribanHelpers.Azure` | Azure-specific Scriban template functions |
+
+**Note:** This component is Azure-specific but not Terraform provider-specific. It is used by both AzApi and AzureRM providers.
+
+---
+
+#### 5.2.7 CodeAnalysis Component
+
+**Purpose:** Integrate static code analysis results (SARIF format) into Terraform plan reports.
+
+**Responsibilities:**
+- Parse SARIF (Static Analysis Results Interchange Format) JSON files
+- Map code analysis findings to Terraform resources
+- Evaluate severity thresholds for build failure decisions
+- Expand wildcard patterns for file matching
+
+**Key Classes:**
+
+| Class | Responsibility |
+|-------|---------------|
+| `CodeAnalysisLoader` | Load and process SARIF files from glob patterns |
+| `SarifParser` | Parse SARIF JSON into domain models |
+| `SarifDocumentReader` / `SarifRunReader` / `SarifResultReader` | Layered SARIF document reading chain |
+| `CodeAnalysisModel` | Root model containing tools and findings |
+| `CodeAnalysisTool` / `CodeAnalysisFinding` / `CodeAnalysisLocation` | SARIF data models |
+| `CodeAnalysisFailureEvaluator` | Count findings at/above severity threshold |
+| `ResourceMapper` | Map SARIF findings to Terraform resource changes |
+| `WildcardExpander` | Expand glob patterns for SARIF file discovery |
+| `CodeAnalysisInput` | Input record (model, warnings, minimum level, fail-on level) |
+
+**Data Flow:**
+
+```mermaid
+%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
+flowchart LR
+    classDef dataNode fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
+    classDef processNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
+    
+    SARIF[SARIF JSON files] --> Loader[CodeAnalysisLoader]
+    Loader --> Parser[SarifParser]
+    Parser --> Model[CodeAnalysisModel]
+    Model --> Mapper[ResourceMapper]
+    Mapper --> Findings[Mapped Findings<br/>per resource]
+    
+    class SARIF,Model,Findings dataNode
+    class Loader,Parser,Mapper processNode
+```
+
+---
+
+#### 5.2.8 Diagnostics Component
+
+**Purpose:** Provide debug-mode diagnostic information for troubleshooting template resolution and principal mapping.
+
+**Responsibilities:**
+- Track template resolution decisions in debug mode
+- Record failed principal/subscription/management group lookups
+- Record principal mapping file load errors
+- Provide diagnostic output for `--debug` flag
+
+**Key Classes:**
+
+| Class | Responsibility |
+|-------|---------------|
+| `DiagnosticContext` | Central diagnostic collector; active only in `--debug` mode |
+| `TemplateResolution` (record) | Tracks which template was selected for a resource type |
+| `FailedResolution` (record) | Records failed lookup details (what was searched, where) |
+| `FailedResolutionType` (enum) | Type of failed resolution: Principal, Subscription, ManagementGroup, Tenant |
+| `PrincipalLoadError` (record) | Records principal mapping file or parse errors |
+
+---
+
+#### 5.2.9 Composition and Entry Point
+
+**Purpose:** Wire all services together and orchestrate the main execution flow.
+
+**Key Classes:**
+
+| Class | Responsibility |
+|-------|---------------|
+| `Program` | Minimal entry point; delegates to `ProgramEntry.RunAsync` |
+| `ProgramEntry` | Main workflow orchestration: parse CLI → compose services → read input → parse plan → build model → render markdown |
+| `CompositionRoot` | Pure DI composition root; creates and wires all services without a DI container |
+| `ApplicationServices` (record) | Holds fully-composed services: `Parser`, `ModelBuilder`, `Renderer`, `DiagnosticContext`, `CodeAnalysisInput` |
+
+**Composition Flow:**
+
+```mermaid
+%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
+flowchart TD
+    classDef entryNode fill:#f59e0b,stroke:#fbbf24,stroke-width:3px,color:#ffffff
+    classDef compNode fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
+    classDef serviceNode fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
+    
+    Entry[Program.cs<br/>Entry Point] --> PEntry[ProgramEntry<br/>RunAsync]
+    PEntry --> CliParse[Parse CLI args]
+    CliParse --> Compose[CompositionRoot<br/>Compose Services]
+    
+    subgraph CompositionRoot["Pure DI Composition"]
+        Compose --> Registries[Create Registries<br/>ValueFormatter, Icon,<br/>ResourceModelMapper]
+        Registries --> Providers[Register Providers<br/>AzApi, AzureAD,<br/>AzureRM, AzureDevOps]
+        Providers --> Services[Create Services<br/>Parser, Builder, Renderer]
+        Services --> AppSvc[ApplicationServices<br/>record]
+    end
+    
+    AppSvc --> Workflow[Execute Workflow<br/>Parse → Build → Render]
+    
+    class Entry entryNode
+    class PEntry,CliParse entryNode
+    class Compose,Registries,Providers,Services compNode
+    class AppSvc,Workflow serviceNode
+```
 
 ---
 
@@ -722,26 +992,30 @@ See [ADR-005: RenderTarget Abstraction](adr-005-render-target-abstraction.md) fo
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif', 'actorBkg':'#f59e0b', 'actorBorder':'#fbbf24', 'actorTextColor':'#ffffff', 'noteBkgColor':'#8b5cf6', 'noteBorderColor':'#a78bfa'}}}%%
 sequenceDiagram
     actor User
-    participant CLI as Program.cs
+    participant Entry as ProgramEntry
     participant Parser as CliParser
+    participant DI as CompositionRoot
     participant TFParser as TerraformPlanParser
     participant Builder as ReportModelBuilder
     participant Renderer as MarkdownRenderer
     participant Output
     
-    User->>CLI: terraform show -json plan.tfplan | tfplan2md
-    CLI->>Parser: Parse(args)
-    Parser-->>CLI: CliOptions
-    CLI->>CLI: Read input JSON<br/>(stdin or file)
-    CLI->>TFParser: Parse(json)
-    TFParser-->>CLI: TerraformPlan
-    CLI->>Builder: Build(plan)
-    Note over Builder: • Determine actions<br/>• Build attribute changes<br/>• Generate summaries<br/>• Group by module
-    Builder-->>CLI: ReportModel
-    CLI->>Renderer: Render(model)
-    Note over Renderer: • Load principal mapper<br/>• Select template<br/>• Resolve resource templates<br/>• Apply Scriban template
-    Renderer-->>CLI: Markdown string
-    CLI->>Output: Write to stdout or file
+    User->>Entry: terraform show -json plan.tfplan | tfplan2md
+    Entry->>Parser: Parse(args)
+    Parser-->>Entry: CliOptions
+    Entry->>DI: Compose(options)
+    Note over DI: • Create registries<br/>• Register providers<br/>• Wire services
+    DI-->>Entry: ApplicationServices
+    Entry->>Entry: Read input JSON<br/>(stdin or file)
+    Entry->>TFParser: Parse(json)
+    TFParser-->>Entry: TerraformPlan
+    Entry->>Builder: Build(plan)
+    Note over Builder: • Determine actions<br/>• Build attribute changes<br/>• Generate summaries<br/>• Group by module<br/>• Merge parent-child<br/>• Map code analysis
+    Builder-->>Entry: ReportModel
+    Entry->>Renderer: Render(model)
+    Note over Renderer: • Resolve templates<br/>• Apply Scriban templates<br/>• Normalize output
+    Renderer-->>Entry: Markdown string
+    Entry->>Output: Write to stdout or file
 ```
 
 ### 6.2 Template Resolution Sequence
@@ -820,34 +1094,37 @@ flowchart TD
 
 ### 7.1 Docker Deployment
 
-**Multi-Stage Build:**
+**Multi-Stage Build (NativeAOT):**
 
 ```mermaid
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
 flowchart TD
     classDef buildNode fill:#3b82f6,stroke:#60a5fa,stroke-width:2px,color:#ffffff
+    classDef baseNode fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
     classDef runtimeNode fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
     
-    subgraph Build["🔨 Build Stage (mcr.microsoft.com/dotnet/sdk:10.0)"]
-        B1[1. Copy source files]
+    subgraph Build["🔨 Build Stage (mcr.microsoft.com/dotnet/sdk:10.0-alpine)"]
+        B1[1. Install clang, build-base, zlib-dev]
         B2[2. dotnet restore]
-        B3[3. dotnet build -c Release]
-        B4[4. dotnet test -c Release]
-        B5[5. dotnet publish -c Release -o /app]
+        B3[3. dotnet publish -r linux-musl-x64<br/>--self-contained -p:PublishAot=true]
         
-        B1 --> B2 --> B3 --> B4 --> B5
+        B1 --> B2 --> B3
     end
     
-    subgraph Runtime["🐳 Runtime Stage (mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled)"]
-        R1[🔒 Security Features:<br/>• No shell, no package manager<br/>• Non-root user<br/>• ~50MB total size<br/>• Includes /examples/comprehensive-demo]
-        R2[▶️ ENTRYPOINT: dotnet tfplan2md.dll]
-        
-        R1 --> R2
+    subgraph Base["📦 Base Stage (alpine:3.21)"]
+        BA1[Extract minimal musl libraries:<br/>ld-musl, libgcc_s, libstdc++,<br/>libssl, libcrypto, libz]
     end
     
-    B5 -->|📦 Copy /app| Runtime
+    subgraph Runtime["🐳 Runtime Stage (FROM scratch)"]
+        R1[🔒 Security Features:<br/>• No OS, no shell, no package manager<br/>• Single static binary + musl libs<br/>• ~15MB total image size<br/>• Includes /examples/comprehensive-demo]
+        R2[▶️ ENTRYPOINT: /app/tfplan2md]
+    end
     
-    class B1,B2,B3,B4,B5 buildNode
+    B3 -->|📦 Copy binary| Runtime
+    BA1 -->|📦 Copy musl libs| Runtime
+    
+    class B1,B2,B3 buildNode
+    class BA1 baseNode
     class R1,R2 runtimeNode
 ```
 
@@ -904,8 +1181,17 @@ flowchart TD
 | Channel | Artifact | Tag Strategy |
 |---------|----------|-------------|
 | **Docker Hub** | `oocx/tfplan2md` | `latest`, `v1`, `v1.2`, `v1.2.3` |
-| **GitHub Container Registry** | `ghcr.io/oocx/tfplan2md` | Same as Docker Hub |
-| **GitHub Releases** | Source code, changelog | `v1.2.3` |
+| **GitHub Releases** | NativeAOT binary (`tfplan2md_<version>_linux_x64.tar.gz`), SHA256SUMS | `v1.2.3` |
+
+**NativeAOT Binary Distribution (ADR-008):**
+
+Pre-built self-contained binaries are published as GitHub Release assets:
+- **Platform:** Linux x64 (glibc) — Phase 1
+- **Format:** `.tar.gz` archive with SHA256 checksums
+- **Size:** ~5MB compressed
+- **Requirements:** No .NET runtime needed (fully self-contained)
+
+Future phases will add ARM64, macOS, and Windows binaries.
 
 ---
 
@@ -920,9 +1206,9 @@ flowchart TD
 - Masking applied after comparison (to detect actual changes)
 
 **Container Security:**
-- Distroless base image (no shell, no package manager)
-- Non-root user execution
-- Minimal dependencies (only .NET runtime and Scriban)
+- Scratch-based image (no OS, no shell, no package manager)
+- Single NativeAOT binary with minimal musl library dependencies
+- ~15MB total image size
 - No network calls required
 - Regular Dependabot updates for vulnerabilities
 
@@ -959,11 +1245,12 @@ graph TB
 
 | Category | Framework | Purpose |
 |----------|-----------|---------|
-| **Unit Tests** | xUnit | Test individual components in isolation |
-| **Integration Tests** | xUnit + Docker | Test Docker container end-to-end |
-| **Snapshot Tests** | xUnit + Golden files | Detect unexpected markdown changes |
-| **Invariant Tests** | xUnit + Markdig | Verify markdown always follows rules |
-| **Fuzz Tests** | xUnit + Theory | Test with random/edge-case inputs |
+| **Unit Tests** | TUnit | Test individual components in isolation |
+| **Integration Tests** | TUnit + Docker | Test Docker container end-to-end |
+| **Snapshot Tests** | TUnit + Golden files | Detect unexpected markdown changes |
+| **Invariant Tests** | TUnit + Markdig | Verify markdown always follows rules |
+| **Fuzz Tests** | TUnit + Theory | Test with random/edge-case inputs |
+| **Architecture Tests** | TUnit + NetArchTest.Rules | Verify layer boundaries and dependency rules |
 | **Lint Tests** | markdownlint-cli2 in Docker | Validate markdown quality |
 | **UAT** | Manual in GitHub/Azure DevOps PRs | Validate real-world rendering |
 
@@ -1102,16 +1389,36 @@ Each template is invoked directly with the resource change, eliminating the need
 
 ```
 Global Report Templates:
-  ├── default.sbn       (Full report structure - header, summary, footer)
+  ├── default.sbn       (Full report structure)
   └── summary.sbn       (Compact summary only)
 
-Per-Resource Templates:
+Report Partials:
+  ├── _header.sbn       (Report header with metadata)
+  ├── _summary.sbn      (Summary statistics section)
   ├── _resource.sbn     (Default fallback for all resources)
-  └── azurerm/          (Provider-specific overrides)
-      ├── firewall_application_rule_collection.sbn
-      ├── firewall_network_rule_collection.sbn
-      ├── network_security_group.sbn
-      └── role_assignment.sbn
+  ├── _child_resources.sbn  (Child resource table rendering)
+  ├── _code_analysis_summary.sbn     (Code analysis summary)
+  ├── _code_analysis_findings.sbn    (Code analysis findings)
+  ├── _code_analysis_metadata.sbn    (Code analysis metadata)
+  └── _code_analysis_other_findings.sbn  (Other findings)
+
+Per-Resource Templates (Provider-specific):
+  ├── azurerm/          (AzureRM provider overrides)
+  │   ├── firewall_application_rule_collection.sbn
+  │   ├── firewall_network_rule_collection.sbn
+  │   ├── network_security_group.sbn
+  │   └── role_assignment.sbn
+  ├── azuread/          (AzureAD provider overrides)
+  │   ├── user.sbn
+  │   ├── group.sbn
+  │   ├── group_member.sbn
+  │   ├── group_without_members.sbn
+  │   ├── service_principal.sbn
+  │   └── invitation.sbn
+  ├── azuredevops/      (AzureDevOps provider overrides)
+  │   └── variable_group.sbn
+  └── azapi/            (AzApi provider overrides)
+      └── resource.sbn
 ```
 
 #### Template Context
@@ -1119,13 +1426,18 @@ Per-Resource Templates:
 **Global templates** receive a `ReportModel` with:
 - `terraform_version` - Terraform version string
 - `format_version` - Plan format version
+- `tfplan2md_version` - Tool version
+- `commit_hash` - Tool commit hash
+- `generated_at_utc` - Report generation timestamp
+- `hide_metadata` - Whether to hide metadata section
 - `timestamp` - Plan generation timestamp
 - `report_title` - Optional custom title
 - `summary` - Aggregated statistics
 - `changes` - Flat list of resource changes (no-ops filtered out)
 - `module_changes` - Changes grouped by module
+- `code_analysis` - Code analysis report (if SARIF provided)
+- `refactoring_operations` - Import/move operations
 - `show_unchanged_values` - Boolean flag
-- `large_value_format` - Display mode enum
 
 **Resource-specific templates** receive a `ResourceChangeModel` with:
 - `address` - Full resource address
@@ -1138,6 +1450,10 @@ Per-Resource Templates:
 - `after_json` - Raw JSON state after change (converted to ScriptObject for navigation)
 - `replace_paths` - Paths that triggered replacement
 - `summary` - Precomputed one-line summary
+- `child_resource_groups` - Hierarchical child resource tables
+- `code_analysis_findings` - SARIF findings mapped to this resource
+- `import_id` - Import identifier (for terraform import operations)
+- `moved_from_address` - Previous address (for terraform moved operations)
 
 #### Property Name Conversion
 
@@ -1153,15 +1469,20 @@ All C# property names are converted to snake_case for template access:
 | `diff_array` | `diff_array(before, after, key)` | Semantic diff of arrays by key property |
 | `format_diff` | `format_diff(before, after)` | Format before/after values with `-`/`+` markers |
 | `escape_markdown` | `escape_markdown(value)` | Escape special characters for markdown |
+| `escape_markdown_table_cell` | `escape_markdown_table_cell(value)` | Escape characters for table cells (pipes, newlines) |
 | `format_code_table` | `format_code_table(value)` | Format value as inline code in tables |
 | `format_code_summary` | `format_code_summary(value)` | Format value for summary HTML |
+| `format_value` | `format_value(name, value, provider)` | Format attribute value with semantic formatting |
 | `format_attribute_value_summary` | `format_attribute_value_summary(name, value, provider)` | Format attribute with semantic icons |
 | `format_attribute_value_table` | `format_attribute_value_table(name, value, provider)` | Format attribute for table cells |
 | `format_large_value` | `format_large_value(before, after, format)` | Render large values with diff highlighting |
 | `is_large_value` | `is_large_value(value, provider)` | Check if value exceeds size threshold |
+| `collect_attributes` | `collect_attributes(change)` | Collect and categorize attribute changes |
 | `azure_role_name` | `azure_role_name(role_id)` | Map Azure role definition ID to name |
 | `azure_scope` | `azure_scope(scope_id)` | Parse Azure resource scope to readable format |
 | `azure_principal_name` | `azure_principal_name(principal_id)` | Resolve Azure principal ID to name |
+| `azure_principal_info` | `azure_principal_info(principal_id)` | Get full principal info (name + type) |
+| `get_attribute_finding_indicator` | `get_attribute_finding_indicator(findings, name)` | Code analysis indicator for attributes |
 
 **Template Rendering Patterns:**
 
@@ -1189,15 +1510,13 @@ This maintains the outer resource-level `<details>` wrapper while avoiding neste
 ```mermaid
 %%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
 classDiagram
-    Exception <|-- ApplicationException
-    ApplicationException <|-- TerraformPlanParseException
-    ApplicationException <|-- MarkdownRenderException
-    ApplicationException <|-- CliParseException
+    Exception <|-- TerraformPlanParseException
+    Exception <|-- MarkdownRenderException
+    Exception <|-- CliParseException
+    Exception <|-- ScribanHelperException
+    Exception <|-- ServiceRegistrationException
     
     class Exception {
-        <<built-in>>
-    }
-    class ApplicationException {
         <<built-in>>
     }
     class TerraformPlanParseException {
@@ -1209,12 +1528,19 @@ classDiagram
     class CliParseException {
         +string Message
     }
+    class ScribanHelperException {
+        +string Message
+    }
+    class ServiceRegistrationException {
+        +string Message
+    }
     
     style Exception fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
-    style ApplicationException fill:#8b5cf6,stroke:#a78bfa,stroke-width:2px,color:#ffffff
     style TerraformPlanParseException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
     style MarkdownRenderException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
     style CliParseException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
+    style ScribanHelperException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
+    style ServiceRegistrationException fill:#ef4444,stroke:#f87171,stroke-width:3px,color:#ffffff
 ```
 
 **Error Handling Principles:**
@@ -1230,6 +1556,7 @@ classDiagram
 |------|---------|
 | 0 | Success |
 | 1 | Error (parse failure, render failure, invalid arguments) |
+| 10 | Code analysis failures exceed configured severity threshold |
 
 ### 8.6 Immutability Pattern
 
@@ -1248,6 +1575,68 @@ classDiagram
 - Use `required init` properties for non-positional records
 - Use `IReadOnlyList<T>` and `IReadOnlyDictionary<K,V>` for collections
 
+### 8.7 Service Registry Pattern
+
+The codebase uses a generic `PatternMatchingRegistry<T>` for specificity-based service resolution. This pattern enables providers to register specialized formatters and icons that are resolved based on resource type matching.
+
+**Registry Architecture:**
+
+```mermaid
+%%{init: {'theme':'dark', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'ui-sans-serif, system-ui, sans-serif'}}}%%
+classDiagram
+    class PatternMatchingRegistry~T~ {
+        +Register(pattern, service)
+        +Resolve(resourceType) T?
+    }
+    
+    class ValueFormatterRegistry {
+        +Register(pattern, formatter)
+        +Format(name, value, resourceType) string
+    }
+    
+    class IconProviderRegistry {
+        +Register(pattern, provider)
+        +GetIcon(name, value, resourceType) string?
+    }
+    
+    class ResourceModelMapperRegistry {
+        +Register(resourceType, mapper)
+        +Enrich(scriptObject, change)
+    }
+    
+    PatternMatchingRegistry~T~ <|-- ValueFormatterRegistry : wraps
+    PatternMatchingRegistry~T~ <|-- IconProviderRegistry : wraps
+    
+    class IValueFormatter {
+        <<interface>>
+        +Format(name, value) string
+    }
+    
+    class IIconProvider {
+        <<interface>>
+        +GetIcon(name, value) string?
+    }
+    
+    class IResourceModelMapper {
+        <<interface>>
+        +Enrich(scriptObject, change)
+    }
+    
+    ValueFormatterRegistry --> IValueFormatter
+    IconProviderRegistry --> IIconProvider
+    ResourceModelMapperRegistry --> IResourceModelMapper
+    
+    style PatternMatchingRegistry~T~ fill:#3b82f6,stroke:#60a5fa,stroke-width:3px,color:#ffffff
+    style ValueFormatterRegistry fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
+    style IconProviderRegistry fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
+    style ResourceModelMapperRegistry fill:#10b981,stroke:#34d399,stroke-width:2px,color:#ffffff
+```
+
+**How It Works:**
+- Providers register services with glob-like patterns (e.g., `azurerm_*`, `azurerm_role_assignment`)
+- More specific patterns take precedence over wildcards
+- Resolution is AOT-compatible (no reflection)
+
 ---
 
 ## 9. Architecture Decisions
@@ -1256,11 +1645,14 @@ All significant architecture decisions are documented as ADRs:
 
 | ADR | Title | Status |
 |-----|-------|--------|
-| [ADR-001](features/000-initial-project-setup/architecture.md#adr-001-use-scriban-for-markdown-templating) | Use Scriban for Markdown Templating | Accepted |
-| [ADR-002](features/000-initial-project-setup/architecture.md#adr-002-use-net-chiseled-distroless-docker-image) | Use .NET Chiseled (Distroless) Docker Image | Superseded by Feature 037 |
-| [ADR-003](features/000-initial-project-setup/architecture.md#adr-003-use-modern-c-13-patterns) | Use Modern C# 13 Patterns | Accepted |
-| [ADR-004](features/000-initial-project-setup/architecture.md#adr-004-use-css-layers-for-example-style-isolation) | Use CSS Layers for Example Style Isolation | Accepted |
+| [ADR-001](adr-001-scriban-templating.md) | Use Scriban for Markdown Templating | Accepted |
+| [ADR-002](adr-002-chiseled-docker-image.md) | Use .NET Chiseled (Distroless) Docker Image | Superseded by NativeAOT scratch image |
+| [ADR-003](adr-003-modern-csharp-patterns.md) | Use Modern C# 13 Patterns | Accepted |
+| [ADR-004](adr-004-css-layers-for-example-isolation.md) | Use CSS Layers for Example Style Isolation | Accepted |
+| [ADR-005](adr-005-scriban-template-loop-limit.md) | Scriban Template Loop Limit | Accepted |
+| [ADR-006](adr-006-dependency-injection.md) | Pure Dependency Injection Strategy | Accepted |
 | [ADR-007](adr-007-architecture-boundary-enforcement.md) | Architecture Boundary Enforcement with Tests | Accepted |
+| [ADR-008](adr-008-multi-platform-binary-distribution.md) | Multi-Platform Binary Distribution (NativeAOT) | Accepted |
 
 ---
 
@@ -1273,7 +1665,7 @@ All significant architecture decisions are documented as ADRs:
 | **Startup time** | < 1 second | Time from invocation to first output |
 | **Processing time** | < 5 seconds for 1000 resources | End-to-end conversion time |
 | **Memory usage** | < 200MB for 1000 resources | Peak memory during processing |
-| **Docker image size** | < 100MB | Total image size on Docker Hub |
+| **Docker image size** | < 20MB | Total image size on Docker Hub (NativeAOT scratch image) |
 
 ### 10.2 Reliability
 
@@ -1289,7 +1681,7 @@ All significant architecture decisions are documented as ADRs:
 |-------------|----------------|
 | **Sensitive value masking** | Default masking with opt-in `--show-sensitive` |
 | **No external network calls** | Tool operates entirely offline |
-| **Minimal attack surface** | Distroless container, no shell, no package manager |
+| **Minimal attack surface** | NativeAOT binary in scratch container, no shell, no package manager |
 | **Dependency scanning** | Dependabot for NuGet, Docker, GitHub Actions |
 
 ### 10.4 Maintainability
@@ -1297,8 +1689,8 @@ All significant architecture decisions are documented as ADRs:
 | Requirement | Implementation |
 |-------------|----------------|
 | **Code style enforcement** | `.editorconfig`, `dotnet format`, pre-commit hooks; comprehensive style guide in docs/commenting-guidelines.md |
-| **Test coverage** | Comprehensive unit, integration, snapshot, fuzz tests |
-| **Architecture enforcement** | Automated architecture tests verify layer boundaries and dependency rules (docs/architecture-rules.md) |
+| **Test coverage** | Comprehensive unit, integration, snapshot, fuzz, and architecture tests (TUnit) |
+| **Architecture enforcement** | Automated architecture tests verify layer boundaries and dependency rules (docs/architecture-rules.md, NetArchTest.Rules) |
 | **Documentation** | XML doc comments on all members (including private), arc42 architecture doc |
 | **Automated versioning** | Conventional Commits + Versionize |
 
@@ -1348,18 +1740,23 @@ All significant architecture decisions are documented as ADRs:
 | **Terraform Plan** | A JSON representation of proposed infrastructure changes generated by `terraform plan` |
 | **Resource Change** | A single resource creation, update, deletion, or replacement in a Terraform plan |
 | **Scriban** | A lightweight text templating engine for .NET |
-| **Distroless** | A Docker image containing only the application and runtime dependencies, no OS utilities |
-| **Chiseled** | Microsoft's term for distroless .NET images |
+| **NativeAOT** | .NET ahead-of-time compilation producing a self-contained native binary without runtime dependency |
+| **Scratch Image** | A Docker image with no operating system; contains only the application binary and required libraries |
 | **ADR** | Architecture Decision Record - Documents significant design decisions |
 | **arc42** | A template for architecture documentation |
+| **TUnit** | A modern .NET test framework used for unit, integration, and architecture tests |
 | **UAT** | User Acceptance Testing - Manual validation in real environments |
+| **SARIF** | Static Analysis Results Interchange Format - Standard format for code analysis results |
 | **Semantic Diff** | Comparing arrays/lists by content, not by index (e.g., firewall rules) |
 | **Sensitive Value** | Terraform attribute marked as sensitive (passwords, secrets) |
 | **No-Op** | A resource with no changes (included in plan but not modified) |
 | **Module Grouping** | Organizing resources by Terraform module hierarchy |
+| **Parent-Child Merging** | Grouping child resources under their parent (e.g., NSG rules under NSG) |
 | **Principal Mapping** | Converting Azure principal IDs to human-readable names |
+| **Pure DI** | Dependency injection without a container; services wired explicitly in code |
 | **Conventional Commits** | A commit message format for automated versioning |
 | **Versionize** | A tool that automates semantic versioning from commit messages |
+| **Provider Module** | A self-contained module implementing `IProviderModule` for a Terraform provider |
 
 ---
 
@@ -1379,4 +1776,5 @@ All significant architecture decisions are documented as ADRs:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 2.0 | 2026-02-16 | GitHub Copilot (Claude Sonnet 4) | Comprehensive update: NativeAOT/scratch Docker, TUnit, CodeAnalysis/Diagnostics components, AzureAD provider, Pure DI, updated model diagrams, all ADRs |
 | 1.0 | 2025-12-29 | GitHub Copilot (Claude Sonnet 4.5) | Initial arc42 architecture documentation |

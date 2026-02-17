@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.19.0"></a>
+## [1.19.0](https://github.com/oocx/tfplan2md/compare/v1.18.1...v1.19.0) (2026-02-17)
+
+### ✨ Features
+
+* add multi-architecture binary builds to release workflow ([4a83a84](https://github.com/oocx/tfplan2md/commit/4a83a84e04c710900c5ed0856827450121080301))
+
+### 🐛 Bug Fixes
+
+* address code review feedback ([761dd5c](https://github.com/oocx/tfplan2md/commit/761dd5cf9f3b1798cec2afc0a34b81ae61535dd5))
+* improve checksum file existence check ([15b06ed](https://github.com/oocx/tfplan2md/commit/15b06ed374ed051245b6363cba3050744a72a003))
+
+### 📚 Documentation
+
+* add distribution versions for Linux ARM64 binary ([bb7306e](https://github.com/oocx/tfplan2md/commit/bb7306eec73c53c7d743480d7accb40b360dc3cf))
+* address code review feedback in architecture.md ([fa7f18a](https://github.com/oocx/tfplan2md/commit/fa7f18ab0df081dfb905f0914ca936b66277cf8c))
+* comprehensive update to architecture.md reflecting current implementation ([d9de7f3](https://github.com/oocx/tfplan2md/commit/d9de7f3cd4b0ad839fed0afd499cdabb2d2c5158))
+* update README with multi-platform binary installation instructions ([56487a6](https://github.com/oocx/tfplan2md/commit/56487a6ed8c49c87fa61c57d34606f4f5f87b07b))
+
 <a name="1.18.1"></a>
 ## [1.18.1](https://github.com/oocx/tfplan2md/compare/v1.18.0...v1.18.1) (2026-02-16)
 

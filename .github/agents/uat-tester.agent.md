@@ -1,7 +1,7 @@
 ---
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: vscode
 tools: ['vscode/askQuestions', 'execute/runInTerminal', 'read/readFile', 'search/listDirectory', 'search/codebase', 'github/*']
 handoffs:

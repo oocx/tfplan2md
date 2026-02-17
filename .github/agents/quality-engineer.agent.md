@@ -1,7 +1,7 @@
 ---
 description: Define test plans and test cases for features
 name: Quality Engineer
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: vscode
 tools: ['vscode/askQuestions', 'search', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'edit/createFile', 'edit/editFiles', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'github/*', 'execute/runInTerminal', 'microsoftdocs/mcp/*', 'todo']
 handoffs:

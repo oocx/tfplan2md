@@ -462,7 +462,7 @@ For detailed analysis of cloud agents, see [docs/workflow/071-cloud-agents-analy
 ### 4. Quality Engineer
 - **Goal:** Define how the feature will be tested and validated.
 - **Deliverables:** Test plan, test cases, quality criteria. For user-facing features, user acceptance scenarios for manual review via PRs. **For features with UAT test plans, defines requirements for feature-specific UAT plan artifacts (`uat-plan.json` and `uat-plan.md`) stored in the feature folder.**
-- **Model:** Claude Sonnet 4.5
+- **Model:** Claude Sonnet 4.6
 - **Definition of Done:** Test plan covers all acceptance criteria. User-facing features have clear acceptance scenarios defined. UAT test plans specify what the feature-specific plan.json must contain and test.
 
 ### 5. Task Planner

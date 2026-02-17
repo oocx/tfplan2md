@@ -259,4 +259,174 @@ else
   exit 1
 fi
 
+# ============================================================================
+# Part 3: Generate additional artifacts (restored and examples)
+# ============================================================================
+
+log_info "Generating artifacts/azapi-nested-grouping-demo.md (AzAPI nested grouping demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azapi-nested-grouping-demo.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-complex-nested-plan.json
+
+if [[ -s artifacts/azapi-nested-grouping-demo.md ]]; then
+  log_info "✓ artifacts/azapi-nested-grouping-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azapi-nested-grouping-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azapi-uat-combined.md (AzAPI UAT combined demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azapi-uat-combined.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-complex-nested-plan.json
+
+if [[ -s artifacts/azapi-uat-combined.md ]]; then
+  log_info "✓ artifacts/azapi-uat-combined.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azapi-uat-combined.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/comprehensive-demo-nested.md (comprehensive demo with nested principals)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --principal-mapping examples/comprehensive-demo/demo-principals-nested.json \
+  --code-analysis-results "examples/static-analysis/*.sarif" \
+  --output artifacts/comprehensive-demo-nested.md \
+  examples/comprehensive-demo/plan.json
+
+if [[ -s artifacts/comprehensive-demo-nested.md ]]; then
+  log_info "✓ artifacts/comprehensive-demo-nested.md generated successfully"
+else
+  log_error "Failed to generate artifacts/comprehensive-demo-nested.md"
+  exit 1
+fi
+
+log_info "Generating examples/code-analysis/report.md (code analysis example)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --code-analysis-results "examples/code-analysis/analysis.sarif" \
+  --output examples/code-analysis/report.md \
+  examples/code-analysis/plan.json
+
+if [[ -s examples/code-analysis/report.md ]]; then
+  log_info "✓ examples/code-analysis/report.md generated successfully"
+else
+  log_error "Failed to generate examples/code-analysis/report.md"
+  exit 1
+fi
+
+log_info "Generating examples/firewall-with-static-analysis/report.md (firewall with static analysis example)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --code-analysis-results "examples/firewall-with-static-analysis/analysis.sarif" \
+  --output examples/firewall-with-static-analysis/report.md \
+  examples/firewall-with-static-analysis/plan.json
+
+if [[ -s examples/firewall-with-static-analysis/report.md ]]; then
+  log_info "✓ examples/firewall-with-static-analysis/report.md generated successfully"
+else
+  log_error "Failed to generate examples/firewall-with-static-analysis/report.md"
+  exit 1
+fi
+
+# ============================================================================
+# Part 4: Generate old UAT artifacts (from test data)
+# ============================================================================
+
+log_info "Generating artifacts/azure-rm-batch-2-feature-test.md (Azure RM batch 2 feature test)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azure-rm-batch-2-feature-test.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/azure-rm-batch-2-feature-test-plan.json
+
+if [[ -s artifacts/azure-rm-batch-2-feature-test.md ]]; then
+  log_info "✓ artifacts/azure-rm-batch-2-feature-test.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azure-rm-batch-2-feature-test.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azure-rm-batch-2-feature-test-simple-diff.md (GitHub render target)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --render-target github \
+  --output artifacts/azure-rm-batch-2-feature-test-simple-diff.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/azure-rm-batch-2-feature-test-plan.json
+
+if [[ -s artifacts/azure-rm-batch-2-feature-test-simple-diff.md ]]; then
+  log_info "✓ artifacts/azure-rm-batch-2-feature-test-simple-diff.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azure-rm-batch-2-feature-test-simple-diff.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/parent-child-resource-grouping-uat.md (parent-child grouping UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/parent-child-resource-grouping-uat.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/parent-child-resource-grouping-uat-plan.json
+
+if [[ -s artifacts/parent-child-resource-grouping-uat.md ]]; then
+  log_info "✓ artifacts/parent-child-resource-grouping-uat.md generated successfully"
+else
+  log_error "Failed to generate artifacts/parent-child-resource-grouping-uat.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azure-rm-parent-child-demo.md (Azure RM parent-child demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azure-rm-parent-child-demo.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/multiple-parents-same-type.json
+
+if [[ -s artifacts/azure-rm-parent-child-demo.md ]]; then
+  log_info "✓ artifacts/azure-rm-parent-child-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azure-rm-parent-child-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/test-vnet-separate.md (VNet separate subnets test)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/test-vnet-separate.md \
+  src/tests/Oocx.TfPlan2Md.TUnit/TestData/azurerm-vnet-separate-subnets-plan.json
+
+if [[ -s artifacts/test-vnet-separate.md ]]; then
+  log_info "✓ artifacts/test-vnet-separate.md generated successfully"
+else
+  log_error "Failed to generate artifacts/test-vnet-separate.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/firewall-application-rules-uat.md (firewall application rules UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/firewall-application-rules-uat.md \
+  examples/firewall-application-rules-demo/plan.json
+
+if [[ -s artifacts/firewall-application-rules-uat.md ]]; then
+  log_info "✓ artifacts/firewall-application-rules-uat.md generated successfully"
+else
+  log_error "Failed to generate artifacts/firewall-application-rules-uat.md"
+  exit 1
+fi
+
+log_info "Generating examples/firewall-rules-demo/firewall-rules.md (firewall rules example)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --principal-mapping examples/firewall-rules-demo/principals.json \
+  --output examples/firewall-rules-demo/firewall-rules.md \
+  examples/firewall-rules-demo/plan.json
+
+if [[ -s examples/firewall-rules-demo/firewall-rules.md ]]; then
+  log_info "✓ examples/firewall-rules-demo/firewall-rules.md generated successfully"
+else
+  log_error "Failed to generate examples/firewall-rules-demo/firewall-rules.md"
+  exit 1
+fi
+
+log_info "Generating examples/api-management-policy-demo/output.md (API management policy example)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output examples/api-management-policy-demo/output.md \
+  examples/api-management-policy-demo/plan.json
+
+if [[ -s examples/api-management-policy-demo/output.md ]]; then
+  log_info "✓ examples/api-management-policy-demo/output.md generated successfully"
+else
+  log_error "Failed to generate examples/api-management-policy-demo/output.md"
+  exit 1
+fi
+
 log_info "All demo artifacts generated successfully"

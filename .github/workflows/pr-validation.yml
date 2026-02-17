@@ -84,6 +84,10 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: scripts/validate-snapshot-changes.sh --base-ref "${{ github.event.pull_request.base.sha }}" --head-ref "${{ github.event.pull_request.head.sha }}"
 
+      - name: Release notes guardrail
+        if: steps.filter.outputs.changed == 'true'
+        run: scripts/validate-release-notes.sh --base-ref "${{ github.event.pull_request.base.sha }}" --head-ref "${{ github.event.pull_request.head.sha }}"
+
       - name: Shell test (timeout wrapper)
         if: steps.filter.outputs.changed == 'true'
         run: src/tests/shell/test_with_timeout_test.sh
@@ -91,6 +95,10 @@ jobs:
       - name: Shell test (analyze chat)
         if: steps.filter.outputs.changed == 'true'
         run: src/tests/shell/analyze_chat_test.sh
+
+      - name: Shell test (validate release notes)
+        if: steps.filter.outputs.changed == 'true'
+        run: src/tests/shell/validate_release_notes_test.sh
 
       - name: Setup .NET
         if: steps.filter.outputs.changed == 'true'

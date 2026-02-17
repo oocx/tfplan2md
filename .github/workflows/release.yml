@@ -266,6 +266,7 @@ jobs:
           apt-get install -y --no-install-recommends clang
 
       - name: Build Binary
+        shell: bash
         run: |
           dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
             -c Release \

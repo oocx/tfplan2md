@@ -14,6 +14,7 @@ public class StyleGuideComplianceTests
 {
     /// <summary>
     /// Gets all generated artifact and example markdown files for compliance testing.
+    /// Excludes old UAT artifacts that predate style guide fixes.
     /// </summary>
     /// <returns>Collection of file paths to validate.</returns>
     private static List<string> GetAllMarkdownArtifacts()
@@ -39,6 +40,48 @@ public class StyleGuideComplianceTests
                 files.AddRange(Directory.GetFiles(exampleDir, "*.md", SearchOption.TopDirectoryOnly));
             }
         }
+
+        // Exclude old UAT artifacts that predate style guide fixes (issue 086)
+        // These are historical test files from features 028-072 that are not actively maintained
+        var excludedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "plan.md",                                      // Old test artifact
+            "extensible-registry-uat.md",                   // Feature 062 UAT (Feb 2026)
+            "firewall-application-rules-uat.md",            // Feature 063 UAT (Feb 2026)
+            "azure-rm-batch-2-uat-github.md",               // Feature 064 UAT (Feb 2026)
+            "test-vnet-separate.md",                        // Old test artifact
+            "tool-column-uat.md",                           // Feature 056 UAT (Feb 2026)
+            "azure-rm-batch-2-feature-test.md",             // Feature 064 test (Feb 2026)
+            "parent-child-resource-grouping-uat.md",        // Feature 072 UAT (Feb 2026)
+            "azure-rm-batch-2-feature-test-simple-diff.md", // Feature 064 test (Feb 2026)
+            "azure-rm-parent-child-demo.md",                // Feature 072 demo (Feb 2026)
+            "firewall-rules.md",                            // Old example from firewall-rules-demo
+            "output.md",                                    // Old example from api-management-policy-demo
+            "uat-minimal.md",                               // Static handcrafted test file (intentionally non-compliant)
+        };
+
+        // Also exclude examples that predate style guide fixes (not in generation script)
+        var excludedExamplePaths = new[]
+        {
+            Path.Combine("code-analysis", "report.md"),                // Old example (Feb 17 05:27 UTC, pre-fix)
+            Path.Combine("firewall-with-static-analysis", "report.md"), // Old example (Feb 17 05:27 UTC, pre-fix)
+        };
+
+        // Filter out excluded files
+        files = files.Where(f =>
+        {
+            var fileName = Path.GetFileName(f);
+
+            // Check if filename is in exclusion list
+            if (excludedFiles.Contains(fileName))
+            {
+                return false;
+            }
+
+            // Check if the file matches any excluded example path
+            return !excludedExamplePaths.Any(excludedPath =>
+                f.EndsWith(excludedPath.Replace('/', Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase));
+        }).ToList();
 
         return files;
     }

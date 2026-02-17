@@ -16,11 +16,9 @@ No changes.
 
 {{ include "_code_analysis_summary.sbn" }}
 
+{{ if module_changes.size > 0 }}
 ## Resource Changes
 
-{{ if module_changes.size == 0 }}
-No changes.
-{{ else }}
 {{ for module in module_changes }}
 {{ if for.index > 0 }}
 ---

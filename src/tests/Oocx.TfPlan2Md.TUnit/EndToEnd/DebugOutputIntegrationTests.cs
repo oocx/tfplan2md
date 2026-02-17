@@ -250,15 +250,13 @@ public class DebugOutputIntegrationTests
 
         // Assert - Summary section shows "No changes" text
         await Assert.That(markdown).Contains("## Summary");
-
-        // Check for "No changes." in Summary section (should appear after "## Summary")
-        var summaryIndex = markdown.IndexOf("## Summary", StringComparison.Ordinal);
-        var resourceChangesIndex = markdown.IndexOf("## Resource Changes", StringComparison.Ordinal);
-        var summarySection = markdown.Substring(summaryIndex, resourceChangesIndex - summaryIndex);
-        await Assert.That(summarySection).Contains("No changes.");
+        await Assert.That(markdown).Contains("No changes.");
 
         // Assert - Summary section does NOT contain the table
-        await Assert.That(summarySection).DoesNotContain("| Action | Count |");
-        await Assert.That(summarySection).DoesNotContain("| ➕ Add |");
+        await Assert.That(markdown).DoesNotContain("| Action | Count |");
+        await Assert.That(markdown).DoesNotContain("| ➕ Add |");
+
+        // Assert - Resource Changes section should be omitted entirely for no-changes plans
+        await Assert.That(markdown).DoesNotContain("## Resource Changes");
     }
 }

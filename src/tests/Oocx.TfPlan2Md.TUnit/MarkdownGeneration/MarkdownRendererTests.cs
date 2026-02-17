@@ -446,9 +446,8 @@ public class MarkdownRendererTests
             .And.Contain("No changes.")
             .And.NotContain("| **Total** | **0** | |");
 
-        // And resource changes section should show No changes (module_changes is empty)
-        markdown.Should().Contain("## Resource Changes")
-            .And.Contain("No changes");
+        // And resource changes section should be omitted entirely for empty plans
+        markdown.Should().NotContain("## Resource Changes");
     }
 
     [Test]
@@ -469,8 +468,9 @@ public class MarkdownRendererTests
             .And.NotContain("azurerm_resource_group.main") // no-op resources are filtered
             .And.Contain("No changes"); // Should show "No changes" when all resources are no-op
 
-        // Also ensure Module: root is not present when there are no changes
-        markdown.Should().NotContain("Module: root");
+        // Resource Changes section should be omitted entirely for no-op plans
+        markdown.Should().NotContain("## Resource Changes")
+            .And.NotContain("Module: root");
     }
 
     [Test]
@@ -486,8 +486,8 @@ public class MarkdownRendererTests
         var markdown = _renderer.Render(model);
 
         // Assert
-        markdown.Should().Contain("## Resource Changes")
-            .And.Contain("No changes");
+        markdown.Should().Contain("No changes")
+            .And.NotContain("## Resource Changes"); // Resource Changes section omitted for empty plans
     }
 
     [Test]

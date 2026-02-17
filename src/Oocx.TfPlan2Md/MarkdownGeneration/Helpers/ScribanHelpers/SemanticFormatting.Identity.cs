@@ -325,16 +325,31 @@ public static partial class ScribanHelpers
     /// <returns>True when the value is an IP address or CIDR.</returns>
     private static bool IsIpAddressOrCidr(string value)
     {
+        // Check for IPv6 addresses (contain colons)
+        if (value.Contains(':', StringComparison.Ordinal))
+        {
+            return IPAddress.TryParse(value, out var ipv6) && ipv6.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6;
+        }
+
+        // Check for IPv4 addresses (contain dots)
         if (!value.Contains('.', StringComparison.Ordinal))
         {
             return false;
         }
 
-        if (IPAddress.TryParse(value, out _))
+        // Check for IPv4 CIDR notation first
+        if (Regex.IsMatch(value, "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1)))
         {
             return true;
         }
 
-        return Regex.IsMatch(value, "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
+        // For plain IPv4, ensure it has exactly 4 octets to avoid matching decimal numbers like "0.5" or "1.5"
+        if (IPAddress.TryParse(value, out var ipv4) && ipv4.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+        {
+            // Count the number of dots; valid IPv4 must have exactly 3 dots (4 octets)
+            return value.Count(c => c == '.') == 3;
+        }
+
+        return false;
     }
 }

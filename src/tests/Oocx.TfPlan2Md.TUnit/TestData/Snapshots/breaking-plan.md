@@ -43,7 +43,7 @@ This has a | pipe and a
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_storage_account <b><code>multiline</code></b> — | 1🔧 tags.note</summary>
+<summary>🔄 azurerm_storage_account <b><code>multiline</code></b> — | 1 🔧 tags.note</summary>
 <br>
 
 Large values: tags.note (2 lines, 1 change)

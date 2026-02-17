@@ -142,7 +142,7 @@ and as separate resources. This configuration will cause conflicts.
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azuredevops_team <b><code>platform_team_updates</code></b> — <code>🆔 Platform Team</code> | 1🔧 description | ➕ 1 members | ❌ 1 members | ➕ 1 administrators</summary>
+<summary>🔄 azuredevops_team <b><code>platform_team_updates</code></b> — <code>🆔 Platform Team</code> | 1 🔧 description | ➕ 1 members | ❌ 1 members | ➕ 1 administrators</summary>
 <br>
 
 | Attribute | Before | After |

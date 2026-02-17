@@ -72,52 +72,94 @@ The Docker image is a **14.7MB** AOT-compiled native binary built from scratch f
 - CI/CD pipelines with Docker support
 - Users who prefer isolated, reproducible builds
 
-### Option 2: Pre-built Binary (Linux x64)
+### Option 2: Pre-built Binaries
 
 **Available starting with the next release**
 
-Download the latest binary from [GitHub Releases](https://github.com/oocx/tfplan2md/releases):
+Download pre-built binaries for your platform from [GitHub Releases](https://github.com/oocx/tfplan2md/releases):
 
-1. **Download the binary and checksum:**
+#### Available Platforms
+
+| Platform | Architecture | Archive | Notes |
+|----------|-------------|---------|-------|
+| **Linux** | x64 | `tfplan2md_VERSION_linux-x64.tar.gz` | Ubuntu 24.04+, Debian 12+, RHEL 9+ (glibc 2.39) |
+| **Linux** | ARM64 | `tfplan2md_VERSION_linux-arm64.tar.gz` | ARM64 Linux (glibc 2.39) |
+| **Windows** | x64 | `tfplan2md_VERSION_windows-x64.zip` | Windows 10+ (x64) |
+| **Windows** | ARM64 | `tfplan2md_VERSION_windows-arm64.zip` | Windows 11 ARM64 |
+| **macOS** | Intel | `tfplan2md_VERSION_macos-x64.tar.gz` | macOS 10.15+ (Intel) |
+| **macOS** | Apple Silicon | `tfplan2md_VERSION_macos-arm64.tar.gz` | macOS 11+ (M1/M2/M3) |
+
+#### Installation Steps
+
+1. **Download the binary for your platform:**
    ```bash
    VERSION="1.x.x"  # Replace with desired version
-   wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_linux_x64.tar.gz
+   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, windows-x64, windows-arm64, macos-x64, macos-arm64
+   
+   # Linux/macOS (tar.gz)
+   wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_${PLATFORM}.tar.gz
+   
+   # Windows (zip) - use PowerShell
+   # Invoke-WebRequest -Uri "https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_windows-x64.zip" -OutFile "tfplan2md_${VERSION}_windows-x64.zip"
+   ```
+
+2. **Download and verify checksums:**
+   ```bash
+   # Download consolidated checksums
    wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/SHA256SUMS
-   ```
-
-2. **Verify the checksum:**
-   ```bash
+   
+   # Verify (Linux/macOS)
    sha256sum -c SHA256SUMS --ignore-missing
+   
+   # Verify (Windows PowerShell)
+   # $expectedHash = (Get-Content SHA256SUMS | Select-String "windows-x64").Line.Split()[0]
+   # $actualHash = (Get-FileHash tfplan2md_${VERSION}_windows-x64.zip).Hash.ToLower()
+   # if ($expectedHash -eq $actualHash) { "OK" } else { "FAILED" }
    ```
-   Expected output: `tfplan2md_1.x.x_linux_x64.tar.gz: OK`
+   Expected output: `tfplan2md_VERSION_PLATFORM.tar.gz: OK`
 
-3. **Extract the binary:**
+3. **Extract and run:**
    ```bash
-   tar -xzf tfplan2md_${VERSION}_linux_x64.tar.gz
-   ```
-
-4. **Run tfplan2md:**
-   ```bash
+   # Linux/macOS
+   tar -xzf tfplan2md_${VERSION}_${PLATFORM}.tar.gz
    ./tfplan2md --help
    terraform show -json plan.tfplan | ./tfplan2md > plan.md
+   
+   # Windows (PowerShell)
+   # Expand-Archive tfplan2md_${VERSION}_windows-x64.zip
+   # .\tfplan2md.exe --help
    ```
 
-**Requirements:**
-- Linux x64 (glibc-based distributions)
-- glibc 2.35 or newer
-- No .NET runtime required (self-contained)
-- Supported distributions:
-  - Ubuntu 22.04 LTS or newer
-  - Debian 12 (Bookworm) or newer
-  - RHEL 9 or newer
-  - Other glibc-based distributions with glibc 2.35+
+#### Platform Requirements
 
-**Use cases:**
+**Linux:**
+- glibc 2.39 or newer (binaries built on Ubuntu 24.04)
+- No .NET runtime required (self-contained NativeAOT)
+- Supported distributions:
+  - Ubuntu 24.04 LTS or newer
+  - Debian 13 (Trixie) or newer
+  - RHEL 10 or newer
+  - Other glibc-based distributions with glibc 2.39+
+- **Note:** For Alpine Linux or musl-based systems, use the Docker image
+
+**Windows:**
+- Windows 10 version 1607 or newer (x64)
+- Windows 11 ARM64 (arm64 builds)
+- No .NET runtime required (self-contained NativeAOT)
+
+**macOS:**
+- macOS 10.15 (Catalina) or newer for Intel builds
+- macOS 11 (Big Sur) or newer for Apple Silicon builds
+- No .NET runtime required (self-contained NativeAOT)
+
+#### Use Cases
+
+**Recommended for:**
 - Closed/air-gapped systems where Docker images cannot be pulled
+- High compliance or regulatory environments
 - Environments without container runtime
 - Local development and testing without Docker overhead
-
-**Note:** For Alpine Linux or other musl-based systems, use the Docker image.
+- Systems requiring specific architecture support (ARM64, Apple Silicon)
 
 ### Option 3: Build from Source
 

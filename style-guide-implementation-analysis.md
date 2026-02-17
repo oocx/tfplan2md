@@ -1,11 +1,13 @@
 # Style Guide vs Implementation Comparison Analysis
 
-**Date:** 2026-02-16  
+**Date:** 2026-02-16 (Updated: 2026-02-17)  
 **Analyzed Files:**
 - Style Guide: `docs/report-style-guide.md`
-- Artifacts: `artifacts/*.md`
-- Examples: `examples/*/report.md`
+- Artifacts: `artifacts/*.md` (regenerated with v1.18.1)
+- Examples: `examples/*/report.md` (regenerated with v1.18.1)
 - Templates: `src/Oocx.TfPlan2Md/**/*.sbn`
+
+**Update 2026-02-17:** All artifacts have been regenerated using tfplan2md v1.18.1 (3a2284b) to ensure findings reflect the current implementation. The script `scripts/generate-demo-artifacts.sh` was run, plus additional manual regeneration for azapi artifacts from the `TestData/` folder.
 
 ---
 
@@ -14,10 +16,12 @@
 This document provides a comprehensive analysis of differences between the Report Style Guide (`docs/report-style-guide.md`) and the current implementation as seen in generated reports and template files. Each difference is categorized as either requiring a style guide update or an implementation fix.
 
 **Key Findings:**
-- **17 differences found** across various categories
+- **16 differences found** across various categories (1 fixed in v1.18.1)
 - **8 require style guide updates** (undocumented features)
-- **6 require implementation fixes** (violations of style guide)
+- **5 require implementation fixes** (violations of style guide)
 - **3 are discrepancies** requiring clarification/decision
+
+**Note:** Analysis initially found 17 differences, but Issue 2.1 (H3 headings in AzAPI template) was fixed in v1.18.1. All artifacts have been regenerated with the latest version to ensure findings are current.
 
 ---
 
@@ -208,37 +212,33 @@ This document provides a comprehensive analysis of differences between the Repor
 
 ## Category 2: AzAPI Resource Template Issues
 
-### 2.1 H3 Headings Inside Details Blocks - **IMPLEMENTATION FIX REQUIRED**
+### 2.1 H3 Headings Inside Details Blocks - **FIXED IN v1.18.1** ✅
 
-**Status:** Violates style guide section "Structure & Hierarchy"
+**Status:** ~~Violates style guide section "Structure & Hierarchy"~~ **RESOLVED**
 
-**Style Guide Says:**
-> - **H3 (`###`)**: Module Grouping (e.g., "📦 Module: root", "📦 Module: `module.network`").
-> - **H4 (`####`)**: Not used (resources are in collapsible `<details>` sections).
+**Original Issue (pre-v1.18.1):**
+Older versions of the `azapi/resource.sbn` template contained H3 headings INSIDE the `<details>` block, which violated the style guide.
 
-**Current Implementation:**
-The `azapi/resource.sbn` template contains H3 headings INSIDE the `<details>` block:
+**Current Implementation (v1.18.1+):**
+The azapi template now uses H4 (`####`) headings for Body sections, which is correct:
 
 ```markdown
 <details open style="...">
 <summary>➕ azapi_resource <b></b> — <code>🆔 example-vm</code> <code>🌍 eastus</code></summary>
 <br>
 
-### ➕ azapi_resource.vm
+**Type:** `Microsoft.Compute/virtualMachines@2023-03-01`
+
+#### Body
 ```
 
-**Examples from artifacts/azapi-mixed-mappings-demo.md:**
-- Line 23: `### ➕ azapi_resource.vm`
-- Line 54: `### ➕ azapi_resource.unknown`
-- Line 84: `### 🔄 azapi_resource.storage`
-- Line 112: `### ➕ azapi_resource.nested_blob_service`
+**Verified in artifacts/azapi-mixed-mappings-demo.md (v1.18.1):**
+- Line 17: `### 📦 Module: root` (CORRECT - module level)
+- Line 32: `#### Body` (CORRECT - H4 inside details)
+- Line 51: `#### Body` (CORRECT - H4 inside details)
+- Line 73: `#### Body Changes` (CORRECT - H4 inside details)
 
-**Impact:**
-- Breaks heading hierarchy (H3 should only be for modules)
-- Inconsistent with other resource templates
-- Makes document structure confusing for accessibility tools
-
-**Recommendation:** Remove H3 headings from azapi/resource.sbn template. The resource information should be part of the details content without a heading, similar to other resource templates.
+**No action required** - This issue has been resolved.
 
 ---
 
@@ -658,7 +658,7 @@ Format: `{display_name}` — `{api_name}`/`{operation_id}` @ `{apim_name}` in `{
 | 1.6 | Card File Box Icon (🗂️) missing | Style Guide Update | Add to semantic icons | Low |
 | 1.7 | Question Mark Icon (❓) missing | Style Guide Update | Add to identity icons | Low |
 | 1.8 | Lock Icon (🔒) missing | Style Guide Update | Add to other markers | Medium |
-| 2.1 | H3 headings in azapi template | Implementation Fix | Remove H3 from azapi/resource.sbn | High |
+| 2.1 | ~~H3 headings in azapi template~~ | ✅ Fixed in v1.18.1 | ~~Remove H3 from azapi/resource.sbn~~ | ~~High~~ |
 | 2.2 | Empty azapi resource names | Clarification Needed | Decide on behavior | Medium |
 | 3.2 | Missing space before wrench | Implementation Fix | Add space in summary code | Medium |
 | 6.1 | AzAPI tags format different | Clarification Needed | Standardize or document | Low |
@@ -677,15 +677,15 @@ Format: `{display_name}` — `{api_name}`/`{operation_id}` @ `{apim_name}` in `{
 ### Immediate Actions (High Priority)
 
 1. **Update Style Guide** - Add missing core icons (🆔, 📁, 🔑) that are used extensively
-2. **Fix AzAPI Template** - Remove H3 headings from azapi/resource.sbn
+2. **Fix Wrench Spacing** - Add space between count and wrench icon (` 🔧` not `🔧`)
 3. **Add Refactoring Section** - Document import/move operation display format
+4. **Expand generate-demo-artifacts.sh** - Add generation for all artifacts currently tracked in git (azapi demos, azuread demos, etc.) to ensure they stay current with each release
 
 ### Medium Priority Actions
 
-1. Add space between count and wrench icon (` 🔧` not `🔧`)
-2. Document security findings integration features
-3. Add email icon (📧) to style guide
-4. Clarify empty azapi resource name behavior
+1. Document security findings integration features
+2. Add email icon (📧) to style guide
+3. Clarify empty azapi resource name behavior
 
 ### Low Priority Actions
 

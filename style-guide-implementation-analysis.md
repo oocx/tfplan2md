@@ -2,12 +2,18 @@
 
 **Date:** 2026-02-16 (Updated: 2026-02-17)  
 **Analyzed Files:**
-- Style Guide: `docs/report-style-guide.md`
+- Style Guide: `docs/report-style-guide.md` (last updated: 2026-02-16, v1.18.1)
 - Artifacts: `artifacts/*.md` (regenerated with v1.18.1)
 - Examples: `examples/*/report.md` (regenerated with v1.18.1)
 - Templates: `src/Oocx.TfPlan2Md/**/*.sbn`
+- Release Notes: Reviewed all releases since style guide last updated (v1.18.0+)
 
-**Update 2026-02-17:** All artifacts have been regenerated using tfplan2md v1.18.1 (3a2284b) to ensure findings reflect the current implementation. The script `scripts/generate-demo-artifacts.sh` was run, plus additional manual regeneration for azapi artifacts from the `TestData/` folder.
+**Update 2026-02-17:** 
+- All artifacts regenerated using tfplan2md v1.18.1 (3a2284b) to ensure findings reflect current implementation
+- Reviewed release notes from v1.16.0+ for new features not yet documented in style guide
+- Identified parent-child resource grouping (v1.16.0, v1.17.0) as major undocumented feature
+- Reclassified issues 2.2 and 6.1 from "clarification needed" to "implementation fix required" per maintainer feedback
+- The script `scripts/generate-demo-artifacts.sh` was run, plus additional manual regeneration for azapi artifacts from the `TestData/` folder
 
 ---
 
@@ -18,10 +24,15 @@ This document provides a comprehensive analysis of differences between the Repor
 **Key Findings:**
 - **16 differences found** across various categories (1 fixed in v1.18.1)
 - **8 require style guide updates** (undocumented features)
-- **5 require implementation fixes** (violations of style guide)
-- **3 are discrepancies** requiring clarification/decision
+- **7 require implementation fixes** (violations of style guide) ← increased from 5
+- **1 is a discrepancy** requiring clarification/decision ← reduced from 3
 
 **Note:** Analysis initially found 17 differences, but Issue 2.1 (H3 headings in AzAPI template) was fixed in v1.18.1. All artifacts have been regenerated with the latest version to ensure findings are current.
+
+**Update based on maintainer feedback:**
+- Issue 2.2 (empty resource names) and 6.1 (tags format) changed from "clarification needed" to "implementation fix required"
+- Issue 9.2 expanded to cover parent-child resource grouping (NEW feature from v1.16.0 and v1.17.0)
+- Issue 9.3 merged into 9.2 as part of comprehensive parent-child grouping documentation
 
 ---
 
@@ -242,12 +253,14 @@ The azapi template now uses H4 (`####`) headings for Body sections, which is cor
 
 ---
 
-### 2.2 Empty Resource Names in Summaries - **DISCREPANCY - NEEDS CLARIFICATION**
+### 2.2 Empty Resource Names in Summaries - **IMPLEMENTATION FIX REQUIRED**
 
-**Status:** Unclear if intentional or bug
+**Status:** Violates style guide specification
 
 **Style Guide Says:**
 > - **Resource Name**: Bold + code-formatted (e.g., `<b><code>hub</code></b>`)
+
+The style guide requires a resource name to be present and formatted.
 
 **Current Implementation:**
 AzAPI resources without a mapped friendly name show empty bold/code tags in summaries:
@@ -256,24 +269,21 @@ AzAPI resources without a mapped friendly name show empty bold/code tags in summ
 <summary>➕ azapi_resource <b></b> — <code>🆔 example-vm</code> <code>🌍 eastus</code></summary>
 ```
 
-vs resources with mapped names:
+This violates the style guide because:
+1. Empty `<b></b>` tags provide no value
+2. The resource name should always be present (either friendly name or Terraform resource name)
+
+**Correct Implementation:**
+Resources with mapped names show proper formatting:
 ```html
 <summary>➕ azapi_resource <b><code>container_app</code></b> — <code>🆔 ca-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 ```
 
 **Examples:**
-- artifacts/azapi-mixed-mappings-demo.md: All 4 resources show `<b></b>`
-- artifacts/comprehensive-demo.md line 201: `<b><code>container_app</code></b>` (has mapping)
+- artifacts/azapi-mixed-mappings-demo.md: All 4 resources show `<b></b>` (incorrect)
+- artifacts/comprehensive-demo.md line 201: `<b><code>container_app</code></b>` (correct, has mapping)
 
-**Questions:**
-1. Should empty tags be rendered at all when no friendly name exists?
-2. Should the terraform resource name (e.g., `vm`) be used instead?
-3. Should this be documented in the style guide?
-
-**Recommendation:** Clarify intended behavior and document in style guide. Consider either:
-- Option A: Omit `<b></b>` when name is empty
-- Option B: Use terraform resource name as fallback
-- Option C: Keep current behavior and document it
+**Recommendation:** Fix implementation to use Terraform resource name as fallback when no friendly name is available. For example, `azapi_resource.vm` should display as `<b><code>vm</code></b>` instead of `<b></b>`.
 
 ---
 
@@ -386,23 +396,25 @@ Binary analysis shows correct non-breaking spaces after all action icons:
 
 ## Category 6: Tags Display
 
-### 6.1 Tags Format in AzAPI Resources - **DISCREPANCY - NEEDS CLARIFICATION**
+### 6.1 Tags Format in AzAPI Resources - **IMPLEMENTATION FIX REQUIRED**
 
-**Status:** Different format used for azapi_resource
+**Status:** Violates style guide specification
 
 **Style Guide Says:**
 ```markdown
 **🏷️ Tags:** `environment: production` `owner: devops` `cost_center: 1234`
 ```
 
+The style guide specifies a standard format with 🏷️ icon and inline tag badges.
+
 **Current Implementation for AzureRM:**
-Matches style guide perfectly:
+Matches style guide correctly:
 ```markdown
 **🏷️ Tags:** `environment: demo` `owner: tfplan2md`
 ```
 
 **Current Implementation for AzAPI:**
-Uses different format without 🏷️ icon and different layout:
+Uses non-standard format without 🏷️ icon and different layout:
 ```markdown
 **Tags:**
  `environment: demo`
@@ -410,12 +422,10 @@ Uses different format without 🏷️ icon and different layout:
 
 **Examples:**
 - artifacts/comprehensive-demo.md line 42: AzureRM format (correct)
-- artifacts/comprehensive-demo.md line 189-190: AzAPI format (different)
+- artifacts/comprehensive-demo.md line 189-190: AzAPI format (incorrect - missing 🏷️, newline instead of inline)
 - artifacts/azure-rm-parent-child-demo.md: AzureRM format (correct)
 
-**Recommendation:** Either:
-1. Update azapi/resource.sbn to match the standard tags format, OR
-2. Document the different format for AzAPI in the style guide
+**Recommendation:** Update azapi/resource.sbn template to match the standard tags format specified in the style guide. The format should be consistent across all providers.
 
 ---
 
@@ -555,13 +565,19 @@ Content includes:
 
 ---
 
-### 9.2 Virtual Network with Subnets - **STYLE GUIDE NEEDS UPDATE**
+### 9.2 Parent-Child Resource Grouping - **STYLE GUIDE NEEDS UPDATE**
 
-**Status:** Child resource display format not documented
+**Status:** NEW FEATURE (v1.16.0, v1.17.0) not documented in style guide
+
+**Feature Background:**
+Parent-child resource grouping was introduced in two releases:
+- **v1.16.0 (Feature 068)**: Azure AD groups/members, Azure DevOps groups/teams
+- **v1.17.0 (Feature 072)**: Azure RM resources (VNets/subnets, DNS zones/records, Route tables/routes, NSGs/rules)
 
 **Current Implementation:**
-Virtual networks with child subnet resources show:
+Resources with parent-child relationships show inline tables instead of separate collapsible sections:
 
+**Virtual Networks with Subnets:**
 ```markdown
 <summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — ... | ➕ 1 subnets | ♻️ 1 subnets</summary>
 ```
@@ -573,35 +589,42 @@ Content includes subnet table:
 | Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource |
 ```
 
-**Recommendation:** Add section on child resource display patterns.
-
----
-
-### 9.3 Azure AD Group with Members - **STYLE GUIDE NEEDS UPDATE**
-
-**Status:** Member count indicators not documented
-
-**Current Implementation:**
-Groups show member type breakdown in summary:
-
+**Azure AD Groups with Members:**
 ```markdown
-<summary>➕ azuread_group <b><code>platform_engineers</code></b> — <code>👥 Platform Engineers</code> (<code>🆔 platform-engineers</code>) - Platform engineering team with infrastructure access | <code>3 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
+<summary>➕ azuread_group <b><code>platform_engineers</code></b> — <code>👥 Platform Engineers</code> ... | <code>3 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
 ```
 
-With member table:
+Content includes members table and mixed management warning:
 ```markdown
 #### Members
+
+⚠️ **Warning:** This resource has children managed both inline
+and as separate resources. This configuration will cause conflicts.
 
 | Change | Member | Terraform Resource |
 ```
 
-And conflict warning:
-```markdown
-⚠️ **Warning:** This resource has children managed both inline
-and as separate resources. This configuration will cause conflicts.
-```
+**Supported Patterns:**
+- Azure AD: Groups + members
+- Azure DevOps: Groups/teams + members
+- Azure RM: VNets + subnets, DNS zones + records, Route tables + routes, NSGs + rules
 
-**Recommendation:** Document group member display patterns and conflict detection.
+**Features:**
+- Inline child resource tables within parent section
+- Aggregate counts in parent summaries (e.g., "➕ 2 members")
+- Mixed management detection warnings
+- Character-level diff highlighting for inline changes
+- Conditional "Terraform Resource" column (only when mixed management)
+
+**Recommendation:** Add comprehensive section to style guide documenting:
+1. Parent-child resource grouping pattern
+2. Inline table format and structure
+3. Summary line format with child counts
+4. Mixed management warning format
+5. Supported resource types
+6. Examples for each pattern (Azure AD groups, VNets/subnets, DNS zones/records, etc.)
+
+**Note:** This section supersedes and merges the former section 9.3 (Azure AD groups with members), which is now covered as part of the comprehensive parent-child grouping pattern.
 
 ---
 
@@ -659,15 +682,15 @@ Format: `{display_name}` — `{api_name}`/`{operation_id}` @ `{apim_name}` in `{
 | 1.7 | Question Mark Icon (❓) missing | Style Guide Update | Add to identity icons | Low |
 | 1.8 | Lock Icon (🔒) missing | Style Guide Update | Add to other markers | Medium |
 | 2.1 | ~~H3 headings in azapi template~~ | ✅ Fixed in v1.18.1 | ~~Remove H3 from azapi/resource.sbn~~ | ~~High~~ |
-| 2.2 | Empty azapi resource names | Clarification Needed | Decide on behavior | Medium |
+| 2.2 | Empty azapi resource names | Implementation Fix | Use Terraform resource name as fallback | High |
 | 3.2 | Missing space before wrench | Implementation Fix | Add space in summary code | Medium |
-| 6.1 | AzAPI tags format different | Clarification Needed | Standardize or document | Low |
+| 6.1 | AzAPI tags format different | Implementation Fix | Match standard tags format | Medium |
 | 7.1 | Security findings banner | Style Guide Update | Document feature | Medium |
 | 7.2 | Attribute finding indicators | Style Guide Update | Document feature | Medium |
 | 8.1 | Import/Move operations | Style Guide Update | Add comprehensive section | High |
 | 9.1 | AzureDevOps variable groups | Style Guide Update | Document template | Low |
-| 9.2 | VNet with subnets | Style Guide Update | Document child resources | Low |
-| 9.3 | Azure AD groups with members | Style Guide Update | Document member display | Low |
+| 9.2 | Parent-child grouping (NEW v1.16-17) | Style Guide Update | Document comprehensive patterns | High |
+| 9.3 | ~~Azure AD groups with members~~ | ~~Merged into 9.2~~ | ~~Covered by parent-child grouping~~ | ~~Low~~ |
 | 10.1 | APIM operation summaries | Style Guide Update | Document format | Low |
 
 ---
@@ -677,38 +700,52 @@ Format: `{display_name}` — `{api_name}`/`{operation_id}` @ `{apim_name}` in `{
 ### Immediate Actions (High Priority)
 
 1. **Update Style Guide** - Add missing core icons (🆔, 📁, 🔑) that are used extensively
-2. **Fix Wrench Spacing** - Add space between count and wrench icon (` 🔧` not `🔧`)
-3. **Add Refactoring Section** - Document import/move operation display format
-4. **Expand generate-demo-artifacts.sh** - Add generation for all artifacts currently tracked in git (azapi demos, azuread demos, etc.) to ensure they stay current with each release
+2. **Fix Empty AzAPI Resource Names** - Use Terraform resource name as fallback instead of empty `<b></b>` tags
+3. **Document Parent-Child Resource Grouping** - Add comprehensive section covering the new feature from v1.16.0 and v1.17.0
+4. **Add Refactoring Section** - Document import/move operation display format
+5. **Expand generate-demo-artifacts.sh** - Add generation for all artifacts currently tracked in git (azapi demos, azuread demos, etc.) to ensure they stay current with each release
 
 ### Medium Priority Actions
 
-1. Document security findings integration features
-2. Add email icon (📧) to style guide
-3. Clarify empty azapi resource name behavior
+1. **Fix Wrench Spacing** - Add space between count and wrench icon (` 🔧` not `🔧`)
+2. **Fix AzAPI Tags Format** - Update azapi/resource.sbn to match standard tags format with 🏷️ icon
+3. Document security findings integration features
+4. Add email icon (📧) to style guide
 
 ### Low Priority Actions
 
-1. Document remaining resource-specific templates (AzureDevOps, APIM, etc.)
+1. Document remaining resource-specific templates (AzureDevOps variable groups, APIM, etc.)
 2. Add remaining icons (🏢, 🗂️, ❓, 🔒)
-3. Standardize or document AzAPI tags format difference
-4. Update style guide examples to use 📁 icon consistently
+3. Update style guide examples to use 📁 icon consistently
 
 ---
 
 ## Conclusion
 
-The implementation is generally consistent with the style guide, with most differences being **undocumented features** rather than violations. The style guide needs significant expansion to cover:
+The implementation is generally consistent with the style guide, with most differences being **undocumented features** rather than violations. However, based on maintainer feedback, several issues previously marked as "clarification needed" are actually **implementation bugs** that need fixing.
+
+### Style Guide Needs Expansion
+
+The style guide needs significant expansion to cover:
 
 1. Additional semantic icons being used (8 icons missing)
 2. Security/quality findings integration
 3. Refactoring operations (import/move)
-4. Resource-specific templates and formats
-5. Child resource display patterns
+4. **Parent-child resource grouping** (NEW major feature from v1.16.0 and v1.17.0)
+5. Resource-specific templates and formats
+
+### Implementation Issues Requiring Fixes
 
 The main implementation issues are:
-1. AzAPI template using H3 headings (violates hierarchy)
-2. Missing space between count and wrench icon
-3. Potential inconsistency in AzAPI tags format
+
+1. ~~AzAPI template using H3 headings~~ ✅ **FIXED in v1.18.1**
+2. **Empty resource names in AzAPI summaries** - Should use Terraform resource name as fallback
+3. **AzAPI tags format** - Should match standard format with 🏷️ icon
+4. Missing space between count and wrench icon
+5. Potential inconsistency in value formatting
+
+### Process Improvement
+
+The `generate-demo-artifacts.sh` script should be expanded to include all tracked artifacts (azapi demos, azuread demos, etc.) to prevent version drift in future releases.
 
 All verified differences are documented above with specific examples, file locations, and recommendations for resolution.

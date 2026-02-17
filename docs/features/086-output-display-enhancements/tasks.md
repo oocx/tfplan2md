@@ -210,12 +210,12 @@ Implement end-to-end integration tests that verify the complete rendering pipeli
 Update existing tests for debug output and no-changes scenarios to expect the new formats (collapsible debug section, "No changes" text), ensuring backward compatibility for plans with changes and maintaining test coverage.
 
 **Acceptance Criteria:**
-- [ ] Test TC-08: All existing debug output tests updated to expect `<details>` wrapper
-- [ ] Test TC-09: All existing no-changes tests updated to expect "No changes" text and no Resource Changes section
-- [ ] Snapshot tests updated if they exist (use `update-test-snapshots` skill if needed)
-- [ ] All updated tests pass
-- [ ] Test coverage remains at or above current levels
-- [ ] No regression: tests for plans with changes remain unchanged (except debug wrapper)
+- [x] Test TC-08: All existing debug output tests updated to expect `<details>` wrapper
+- [x] Test TC-09: All existing no-changes tests updated to expect "No changes" text and no Resource Changes section
+- [x] Snapshot tests updated if they exist (use `update-test-snapshots` skill if needed)
+- [x] All updated tests pass
+- [x] Test coverage remains at or above current levels
+- [x] No regression: tests for plans with changes remain unchanged (except debug wrapper)
 
 **Dependencies:** Task 1, Task 2, Task 3, Task 4, Task 5 (all implementations and new tests complete)
 

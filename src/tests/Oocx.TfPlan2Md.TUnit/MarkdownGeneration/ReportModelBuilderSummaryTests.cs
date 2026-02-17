@@ -72,7 +72,7 @@ public class ReportModelBuilderSummaryTests
 
         // Assert
         var update = model.Changes.Should().ContainSingle(c => c.Action == "update").Subject;
-        update.ChangedAttributesSummary.Should().Be($"4🔧{Nbsp}account_replication_type, https_only, kind, +1 more");
+        update.ChangedAttributesSummary.Should().Be($"4{Nbsp}🔧{Nbsp}account_replication_type, https_only, kind, +1 more");
     }
 
     [Test]
@@ -97,7 +97,7 @@ public class ReportModelBuilderSummaryTests
             .First(c => c.Type == "azurerm_firewall_network_rule_collection" && c.Action == "update");
 
         update.ChangedAttributesSummary.Should().Be(
-            $"3🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>🆔{Nbsp}allow-dns</code>, {ActionIcons.Update}{Nbsp}<code>🆔{Nbsp}allow-http</code>, {ActionIcons.Delete}{Nbsp}<code>🆔{Nbsp}allow-ssh-old</code>");
+            $"3{Nbsp}🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>🆔{Nbsp}allow-dns</code>, {ActionIcons.Update}{Nbsp}<code>🆔{Nbsp}allow-http</code>, {ActionIcons.Delete}{Nbsp}<code>🆔{Nbsp}allow-ssh-old</code>");
     }
 
     [Test]

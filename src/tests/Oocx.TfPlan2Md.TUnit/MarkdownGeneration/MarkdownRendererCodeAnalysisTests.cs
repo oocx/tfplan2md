@@ -131,7 +131,7 @@ public class MarkdownRendererCodeAnalysisTests
         var markdown = _renderer.Render(model);
 
         markdown.Should().Contain("## Other Findings");
-        markdown.Should().Contain("### Module:");
+        markdown.Should().Contain("### 📦\u00A0Module:");
         markdown.Should().Contain("module.network");
         markdown.Should().Contain("### Unmatched Findings");
         markdown.Should().Contain("Orphaned finding");

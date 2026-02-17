@@ -96,7 +96,7 @@ internal static class FirewallApplicationRuleCollectionViewModelFactory
             nameList += $", +{remaining} more";
         }
 
-        return $"{changes.Count}🔧{NonBreakingSpace}{nameList}";
+        return $"{changes.Count}{NonBreakingSpace}🔧{NonBreakingSpace}{nameList}";
     }
 
     /// <summary>

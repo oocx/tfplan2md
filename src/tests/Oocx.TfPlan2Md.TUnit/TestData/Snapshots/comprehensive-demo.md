@@ -376,7 +376,7 @@ _No attribute changes._
 </details>
 
 <details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔 network-rules</code> in <code>📁 rg-tfplan2md-demo</code> | 6🔧 ➕ <code>🆔 allow-web-secure</code>, ➕ <code>🆔 allow-log-ingest</code>, ➕ <code>🆔 allow-icmp-ping</code>, +3 more</summary>
+<summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔 network-rules</code> in <code>📁 rg-tfplan2md-demo</code> | 6 🔧 ➕ <code>🆔 allow-web-secure</code>, ➕ <code>🆔 allow-log-ingest</code>, ➕ <code>🆔 allow-icmp-ping</code>, +3 more</summary>
 <br>
 
 **Collection:** `network-rules` | **Priority:** `120` | **Action:** `✅ Allow`

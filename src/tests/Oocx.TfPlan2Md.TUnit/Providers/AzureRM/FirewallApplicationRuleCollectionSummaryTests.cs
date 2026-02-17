@@ -71,7 +71,7 @@ public class FirewallApplicationRuleCollectionSummaryTests
         var summary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(model, "update");
 
         summary.Should().Be(
-            $"4🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-github</code>, {ActionIcons.Update}{Nbsp}<code>allow-microsoft</code>, {ActionIcons.Delete}{Nbsp}<code>allow-old-site</code>, +1 more");
+            $"4{Nbsp}🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-github</code>, {ActionIcons.Update}{Nbsp}<code>allow-microsoft</code>, {ActionIcons.Delete}{Nbsp}<code>allow-old-site</code>, +1 more");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class FirewallApplicationRuleCollectionSummaryTests
 
         var summary = FirewallApplicationRuleCollectionViewModelFactory.BuildChangedAttributesSummary(model, "update");
 
-        summary.Should().Be($"1🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-github</code>");
+        summary.Should().Be($"1{Nbsp}🔧{Nbsp}{ActionIcons.Add}{Nbsp}<code>allow-github</code>");
     }
 
     /// <summary>

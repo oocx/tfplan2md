@@ -195,13 +195,60 @@ jobs:
           generate_release_notes: false
           prerelease: ${{ steps.version.outputs.is_prerelease == 'true' }}
 
-  build-linux-x64-binary:
-    name: Build Linux x64 Binary
+  build-binaries:
+    name: Build ${{ matrix.platform }} Binary
     if: needs.release.outputs.version != ''
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0-noble  # Ubuntu 24.04, glibc 2.39
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     needs: release
+    strategy:
+      matrix:
+        include:
+          # Linux builds (use container for consistent glibc)
+          - platform: linux-x64
+            os: ubuntu-latest
+            rid: linux-x64
+            archive_ext: tar.gz
+            binary_name: tfplan2md
+            container: mcr.microsoft.com/dotnet/sdk:10.0-noble
+            needs_clang: true
+          - platform: linux-arm64
+            os: ubuntu-latest
+            rid: linux-arm64
+            archive_ext: tar.gz
+            binary_name: tfplan2md
+            container: mcr.microsoft.com/dotnet/sdk:10.0-noble
+            needs_clang: true
+          # Windows builds
+          - platform: windows-x64
+            os: windows-latest
+            rid: win-x64
+            archive_ext: zip
+            binary_name: tfplan2md.exe
+            container: ''
+            needs_clang: false
+          - platform: windows-arm64
+            os: windows-latest
+            rid: win-arm64
+            archive_ext: zip
+            binary_name: tfplan2md.exe
+            container: ''
+            needs_clang: false
+          # macOS builds
+          - platform: macos-x64
+            os: macos-13  # Intel-based runner
+            rid: osx-x64
+            archive_ext: tar.gz
+            binary_name: tfplan2md
+            container: ''
+            needs_clang: false
+          - platform: macos-arm64
+            os: macos-14  # Apple Silicon runner
+            rid: osx-arm64
+            archive_ext: tar.gz
+            binary_name: tfplan2md
+            container: ''
+            needs_clang: false
 
     steps:
       - name: Checkout
@@ -212,56 +259,133 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Install NativeAOT linker prerequisite
+      - name: Install NativeAOT linker prerequisite (Linux)
+        if: matrix.needs_clang
         run: |
           apt-get update
           apt-get install -y --no-install-recommends clang
 
-      - name: Build Linux x64 Binary
+      - name: Build Binary
         run: |
           dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
             -c Release \
-            -r linux-x64 \
+            -r ${{ matrix.rid }} \
             --self-contained true \
             -p:PublishAot=true \
-            -o artifacts/linux-x64
+            -o artifacts/${{ matrix.platform }}
 
-      - name: Verify glibc version
+      - name: Verify glibc version (Linux only)
+        if: startsWith(matrix.platform, 'linux-')
         run: |
           echo "Verifying glibc version in built binary..."
-          readelf -V artifacts/linux-x64/tfplan2md | grep GLIBC || true
+          readelf -V artifacts/${{ matrix.platform }}/${{ matrix.binary_name }} | grep GLIBC || true
 
-      - name: Package Binary
+      - name: Package Binary (tar.gz)
+        if: matrix.archive_ext == 'tar.gz'
+        shell: bash
         run: |
           VERSION="${{ needs.release.outputs.version }}"
-          cd artifacts/linux-x64
-          tar -czf ../../tfplan2md_${VERSION}_linux_x64.tar.gz tfplan2md
+          cd artifacts/${{ matrix.platform }}
+          tar -czf ../../tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz ${{ matrix.binary_name }}
           cd ../..
 
+      - name: Package Binary (zip)
+        if: matrix.archive_ext == 'zip'
+        shell: pwsh
+        run: |
+          $VERSION = "${{ needs.release.outputs.version }}"
+          Compress-Archive -Path "artifacts/${{ matrix.platform }}/${{ matrix.binary_name }}" -DestinationPath "tfplan2md_${VERSION}_${{ matrix.platform }}.zip"
+
       - name: Generate Checksums
+        shell: bash
         run: |
           VERSION="${{ needs.release.outputs.version }}"
-          sha256sum tfplan2md_${VERSION}_linux_x64.tar.gz > SHA256SUMS
+          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
+            sha256sum tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz > tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          else
+            sha256sum tfplan2md_${VERSION}_${{ matrix.platform }}.zip > tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          fi
 
-      - name: Validate Artifacts
+      - name: Validate Artifacts (Unix)
+        if: runner.os != 'Windows'
         run: |
           VERSION="${{ needs.release.outputs.version }}"
           # Verify binary is executable
-          test -x artifacts/linux-x64/tfplan2md
+          test -x artifacts/${{ matrix.platform }}/${{ matrix.binary_name }}
           # Smoke test: verify binary runs
-          artifacts/linux-x64/tfplan2md --help > /dev/null
+          artifacts/${{ matrix.platform }}/${{ matrix.binary_name }} --help > /dev/null
           # Verify archive integrity
-          tar -tzf tfplan2md_${VERSION}_linux_x64.tar.gz > /dev/null
+          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
+            tar -tzf tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz > /dev/null
+          fi
           # Verify checksums
-          sha256sum -c SHA256SUMS
+          sha256sum -c tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+
+      - name: Validate Artifacts (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $VERSION = "${{ needs.release.outputs.version }}"
+          # Smoke test: verify binary runs
+          & "artifacts/${{ matrix.platform }}/${{ matrix.binary_name }}" --help > $null
+          # Verify archive integrity
+          $zipPath = "tfplan2md_${VERSION}_${{ matrix.platform }}.zip"
+          $extractPath = "test-extract"
+          Expand-Archive -Path $zipPath -DestinationPath $extractPath
+          if (-not (Test-Path "$extractPath/${{ matrix.binary_name }}")) {
+            throw "Binary not found in archive"
+          }
+          Remove-Item -Recurse -Force $extractPath
+          # Verify checksums
+          $expectedHash = (Get-Content "tfplan2md_${VERSION}_${{ matrix.platform }}.sha256").Split()[0]
+          $actualHash = (Get-FileHash $zipPath -Algorithm SHA256).Hash.ToLower()
+          if ($expectedHash -ne $actualHash) {
+            throw "Checksum mismatch: expected $expectedHash, got $actualHash"
+          }
 
       - name: Upload Binary to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.release.outputs.version }}
           files: |
-            tfplan2md_${{ needs.release.outputs.version }}_linux_x64.tar.gz
-            SHA256SUMS
+            tfplan2md_${{ needs.release.outputs.version }}_${{ matrix.platform }}.${{ matrix.archive_ext }}
+            tfplan2md_${{ needs.release.outputs.version }}_${{ matrix.platform }}.sha256
+
+  consolidate-checksums:
+    name: Consolidate Checksums
+    if: needs.release.outputs.version != ''
+    runs-on: ubuntu-latest
+    needs: [release, build-binaries]
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Consolidate SHA256 checksums
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          # Download all release assets to get checksums
+          gh release download "v${VERSION}" --pattern '*.sha256' --dir checksums || true
+          # Combine all individual checksum files into SHA256SUMS
+          cat checksums/*.sha256 2>/dev/null | sort > SHA256SUMS || touch SHA256SUMS
+          if [ -s SHA256SUMS ]; then
+            echo "Consolidated checksums:"
+            cat SHA256SUMS
+          else
+            echo "No checksums found to consolidate"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_PAGER: cat
+
+      - name: Upload consolidated checksums
+        if: hashFiles('SHA256SUMS') != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.release.outputs.version }}
+          files: SHA256SUMS
 
   docker:
     name: Build and Push Docker Image

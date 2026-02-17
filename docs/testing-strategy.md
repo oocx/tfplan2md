@@ -601,3 +601,69 @@ Fuzz testing with random/edge-case inputs to find escaping bugs and edge cases t
 | `Fuzz_WhitespaceValues_DontBreakTables` (Theory) | Verifies whitespace-only value handling |
 | `Fuzz_CombinedSpecialChars_AllEscaped` (Theory) | Verifies combined special characters |
 | `Fuzz_RandomPlans_ProduceValidMarkdown` | Generates random plans and validates output |
+
+### Style Guide Compliance Tests (`MarkdownGeneration/StyleGuideComplianceTests.cs`)
+
+Automated validation of generated markdown against the [Report Style Guide](report-style-guide.md). These tests scan all snapshot files to detect style guide violations and prevent regressions.
+
+**Purpose:** Ensure all generated markdown complies with documented formatting standards for consistency, readability, and professional appearance.
+
+**Test Location:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/StyleGuideComplianceTests.cs`
+
+**Related Issue:** [Issue 086](issues/086-style-guide-compliance-fixes/issue-analysis.md) - Style Guide Compliance Fixes
+
+**Running Compliance Tests:**
+```bash
+# Run all compliance tests
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/StyleGuideComplianceTests/*
+
+# Run specific compliance test
+dotnet test --project src/tests/Oocx.TfPlan2Md.TUnit/ --treenode-filter /*/*/StyleGuideComplianceTests/Test_AzApiResourceNames_NotEmpty
+```
+
+#### Compliance Test Methods
+
+| Test Name | Description |
+|-----------|-------------|
+| `Test_AzApiResourceNames_NotEmpty` | Detects empty `<b></b>` tags in resource summaries (high severity) |
+| `Test_WrenchIcon_HasNonBreakingSpace` | Validates non-breaking space before 🔧 icon in changed attribute summaries |
+| `Test_TagsHeader_HasIcon` | Ensures tags headers include 🏷️ emoji per style guide |
+| `Test_ModuleHeaders_HavePackageIcon` | Validates 📦 icon in module headers |
+| `Test_NoH3HeadingsInDetails` | Prevents H3 headings inside `<details>` blocks (heading hierarchy violation) |
+| `Test_AttributeNamesNotInBackticks` | Ensures attribute names are plain text, not code-formatted (validates "Labels are Text" principle) |
+
+**How These Tests Work:**
+
+1. **Scan all snapshot files** - Tests examine every `.verified.md` file in the test suite
+2. **Pattern-based detection** - Use regex patterns to find style guide violations
+3. **Generic validation** - Not tied to specific resources; works across all templates and providers
+4. **Clear error messages** - Report exact violation locations and expected patterns
+
+**When Tests Fail:**
+
+1. Review the error message - shows which files violate which style guide rule
+2. Check [docs/report-style-guide.md](report-style-guide.md) - understand the violated rule
+3. Fix the implementation:
+   - Update templates in `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/` or `src/Oocx.TfPlan2Md/Providers/{Provider}/Templates/`
+   - Update helper functions in `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/`
+4. Regenerate test snapshots if the fix changes expected output
+5. Re-run compliance tests to verify the fix
+
+**Example Violation Detection:**
+
+```
+Test_AzApiResourceNames_NotEmpty failed:
+  Found 3 empty resource names in summaries:
+    - artifacts/azapi-create-demo.verified.md:23
+    - artifacts/azapi-update-demo.verified.md:45
+    
+  Expected: <b><code>resourceName</code></b>
+  Found:    <b></b>
+```
+
+**Benefits:**
+
+- **Prevents regressions** - New templates must pass style guide checks
+- **Automated validation** - No manual verification needed
+- **Consistency enforcement** - All generated markdown follows same standards
+- **Documentation as tests** - Tests serve as executable specification of the style guide

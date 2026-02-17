@@ -1,5 +1,8 @@
 # Style Guide Compliance Check Results
 
+> **Note:** This compliance report identified violations that were addressed in **Issue 086** (fix/086-style-guide-compliance-fixes).  
+> See [docs/issues/086-style-guide-compliance-fixes/summary.md](docs/issues/086-style-guide-compliance-fixes/summary.md) for resolution details.
+
 **Date:** 2026-02-17  
 **Version:** tfplan2md 1.18.1 (3a2284b)  
 **Files Checked:** 46 (artifacts + examples)

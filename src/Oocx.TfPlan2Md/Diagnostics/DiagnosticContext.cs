@@ -184,7 +184,7 @@ internal class DiagnosticContext
     /// <remarks>
     /// The generated markdown follows this structure:
     /// <list type="bullet">
-    /// <item><description>## Debug Information (level-2 heading)</description></item>
+    /// <item><description>Collapsible &lt;details&gt; block with "Debug Information" summary</description></item>
     /// <item><description>### Principal Mapping subsection (if applicable)</description></item>
     /// <item><description>### Template Resolution subsection (if applicable)</description></item>
     /// </list>

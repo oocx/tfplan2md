@@ -91,8 +91,7 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 
 | LiveBench Model Name | Copilot Model ID | Score | Notes |
 |---------------------|-----------------|-------|-------|
-| GPT-5.2 Codex | GPT-5.2-Codex | 84.60* | Latest Codex (using 5.1 Max score) |
-| GPT-5.3 Codex | GPT-5.3-Codex | 84.60* | **Latest Codex** (using 5.2 Codex score as proxy) |
+| GPT-5.2 Codex | GPT-5.2-Codex | 84.60* | **Latest Codex** (using 5.1 Max score) |
 | GPT-5.2 | GPT-5.2 | 83.21 | Strong general model |
 | GPT-5.1 Codex | GPT-5.1-Codex | 81.98 | Strong alternative |
 | GPT-5.1 | GPT-5.1 | 78.79 | Strong general model |
@@ -103,16 +102,13 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 | GPT-5.1 Codex Mini | GPT-5.1-Codex-Mini | 64.71 | Specialized but weaker |
 | Grok Code Fast | Grok Code Fast 1 | 42.30 | Poor performance |
 | Claude Haiku 4.5 | Claude Haiku 4.5 | 33.94 | **Avoid for coding** |
-| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 42.29 | Poor for coding |
-| Claude Sonnet 4.6 | Claude Sonnet 4.6 | 42.29* | **Latest Sonnet** (using 4.5 score as proxy) |
+| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 42.29 | **Poor for coding** |
 
 #### Reasoning (Critical for: Architect, Code Reviewer)
 | Claude Sonnet 4.5 | 76.07 | Strong reasoning |
-| Claude Sonnet 4.6 | 76.07* | **Latest Sonnet** (using 4.5 score as proxy) |
 | GPT-5.2 | GPT-5.2 | 76.07 | Strong general model |
 | Gemini 2.5 Pro | Gemini 2.5 Pro | 75.69 | Good reasoning |
 | GPT-5.2 Codex | GPT-5.2-Codex | 74.98* | Latest Codex (using 5.1 Max score) |
-| GPT-5.3 Codex | GPT-5.3-Codex | 74.98* | **Latest Codex** (using 5.2 Codex score as proxy) |
 | Gemini 3 Pro | Gemini 3 Pro (Preview) | 74.60 | Good alternative |
 | GPT-5.1 | GPT-5.1 | 72.49 | Decent reasoning |
 | Claude Haiku 4.5 | Claude Haiku 4.5 | 72.17 | Good for size |
@@ -151,14 +147,12 @@ Source: [LiveBench](https://livebench.ai/) - 2025-11-25 release
 |---------------------|-----------------|-------|-------|
 | Gemini 3 Flash | Gemini 3 Flash (Preview) | 74.86 | **Best value** |
 | GPT-5.2 Codex | GPT-5.2-Codex | 73.90* | Latest Codex (using 5.1 Max score) |
-| GPT-5.3 Codex | GPT-5.3-Codex | 73.90* | **Latest Codex** (using 5.2 Codex score as proxy) |
 | Gemini 3 Pro | Gemini 3 Pro (Preview) | 65.85 | Good |
 | GPT-5.2 | GPT-5.2 | 61.77 | Acceptable |
 | Claude 4.5 Opus Medium | N/A (benchmark-only variant) | 28.11 | Poor |
-| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 23.52 | Very poor |
-| Claude Sonnet 4.6 | Claude Sonnet 4.6 | 23.52* | **Latest Sonnet** (using 4.5 score as proxy) |
+| Claude Sonnet 4.5 | Claude Sonnet 4.5 | 23.52 | **Very poor** |
 
-**Critical Finding**: Claude Sonnet 4.5/4.6 (non-thinking) has very poor Instruction Following performance (23.52), making it unsuitable for agents that need to follow templates or structured formats strictly (Task Planner, Quality Engineer).
+**Critical Finding**: Claude Sonnet 4.5 (non-thinking) has very poor Instruction Following performance (23.52), making it unsuitable for agents that need to follow templates or structured formats strictly (Task Planner, Quality Engineer).
 
 ## SWE-bench Verified Performance (Software Engineering)
 

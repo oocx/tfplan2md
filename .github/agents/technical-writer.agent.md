@@ -1,7 +1,7 @@
 ---
 description: Update documentation to reflect new features and changes
 name: Technical Writer
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: vscode
 tools: ['vscode/askQuestions', 'search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'search/changes', 'read/problems', 'web/fetch', 'web/githubRepo', 'github/*', 'mcp-mermaid/*', 'microsoftdocs/mcp/*', 'todo']
 handoffs:

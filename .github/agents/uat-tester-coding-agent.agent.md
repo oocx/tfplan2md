@@ -1,7 +1,7 @@
 ---
 description: Validate user-facing features via real PR rendering in GitHub and Azure DevOps
 name: UAT Tester (coding agent)
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: github-copilot
 ---
 

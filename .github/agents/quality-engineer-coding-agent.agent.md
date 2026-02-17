@@ -1,7 +1,7 @@
 ---
 description: Define test plans and test cases for features
 name: Quality Engineer (coding agent)
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: github-copilot
 ---
 

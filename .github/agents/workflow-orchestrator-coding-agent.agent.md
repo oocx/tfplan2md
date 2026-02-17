@@ -1,7 +1,7 @@
 ---
 description: Orchestrate complete development workflows from issue to release
 name: Workflow Orchestrator (coding agent)
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: github-copilot
 tools: ['task', 'report_progress', 'reply_to_comment', 'view', 'github-mcp-server-*']
 ---

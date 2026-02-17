@@ -22,15 +22,15 @@ This document breaks down Feature 086: Output Display Enhancements into actionab
 Modify `DiagnosticContext.GenerateMarkdownSection()` to wrap the entire debug section in a `<details>` block with a `<summary>` tag containing the bug emoji and "Debug Information" text. The section should be collapsed by default (no `open` attribute).
 
 **Acceptance Criteria:**
-- [ ] Debug section output starts with `<details>` tag (no `open` attribute)
-- [ ] Summary line is `<summary>🐛\u00A0Debug Information</summary>` (using non-breaking space U+00A0)
-- [ ] `<br>` tag appears immediately after `</summary>` for proper spacing
-- [ ] `## Debug Information` H2 heading is removed (replaced by summary tag)
-- [ ] All subsection headings (`### Principal Mapping`, `### Template Resolution`) are preserved
-- [ ] All diagnostic content is preserved exactly as before (principal mapping, template resolution, failed resolutions)
-- [ ] "No diagnostics collected." message appears inside `<details>` block when context is empty
-- [ ] Debug section output ends with `</details>` tag
-- [ ] Changes follow the style guide pattern for collapsible sections
+- [x] Debug section output starts with `<details>` tag (no `open` attribute)
+- [x] Summary line is `<summary>🐛\u00A0Debug Information</summary>` (using non-breaking space U+00A0)
+- [x] `<br>` tag appears immediately after `</summary>` for proper spacing
+- [x] `## Debug Information` H2 heading is removed (replaced by summary tag)
+- [x] All subsection headings (`### Principal Mapping`, `### Template Resolution`) are preserved
+- [x] All diagnostic content is preserved exactly as before (principal mapping, template resolution, failed resolutions)
+- [x] "No diagnostics collected." message appears inside `<details>` block when context is empty
+- [x] Debug section output ends with `</details>` tag
+- [x] Changes follow the style guide pattern for collapsible sections
 
 **Dependencies:** None
 
@@ -55,12 +55,12 @@ Modify `DiagnosticContext.GenerateMarkdownSection()` to wrap the entire debug se
 Modify the `_summary.sbn` template to conditionally render either "No changes" text or the full summary table based on whether `summary.total == 0`. When there are zero changes, display a simple "No changes" message instead of an empty table.
 
 **Acceptance Criteria:**
-- [ ] Template checks `if summary.total == 0` condition
-- [ ] When `summary.total == 0`, output is plain text: `No changes`
-- [ ] When `summary.total > 0`, output is the existing summary table with all columns and rows
-- [ ] `## Summary` heading remains in both cases
-- [ ] No regression: plans with changes continue to show full summary table
-- [ ] Template logic is clean and readable
+- [x] Template checks `if summary.total == 0` condition
+- [x] When `summary.total == 0`, output is plain text: `No changes`
+- [x] When `summary.total > 0`, output is the existing summary table with all columns and rows
+- [x] `## Summary` heading remains in both cases
+- [x] No regression: plans with changes continue to show full summary table
+- [x] Template logic is clean and readable
 
 **Dependencies:** None
 
@@ -85,12 +85,12 @@ Modify the `_summary.sbn` template to conditionally render either "No changes" t
 Modify the `default.sbn` template to wrap the Resource Changes section in a conditional block that only renders when `module_changes.size > 0`. This prevents displaying a redundant "No changes" message in the Resource Changes section when the Summary already shows "No changes".
 
 **Acceptance Criteria:**
-- [ ] Resource Changes section wrapped in `{{ if module_changes.size > 0 }}...{{ end }}`
-- [ ] `## Resource Changes` heading only appears when there are changes
-- [ ] When `module_changes.size == 0`, Resource Changes section is completely omitted
-- [ ] When `module_changes.size > 0`, Resource Changes section renders exactly as before
-- [ ] No regression: existing Resource Changes rendering remains unchanged for plans with changes
-- [ ] Code Analysis Summary section (if present) still renders independently of Resource Changes
+- [x] Resource Changes section wrapped in `{{ if module_changes.size > 0 }}...{{ end }}`
+- [x] `## Resource Changes` heading only appears when there are changes
+- [x] When `module_changes.size == 0`, Resource Changes section is completely omitted
+- [x] When `module_changes.size > 0`, Resource Changes section renders exactly as before
+- [x] No regression: existing Resource Changes rendering remains unchanged for plans with changes
+- [x] Code Analysis Summary section (if present) still renders independently of Resource Changes
 
 **Dependencies:** Task 2 (for consistent no-changes detection)
 

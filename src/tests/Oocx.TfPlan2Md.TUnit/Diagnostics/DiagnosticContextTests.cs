@@ -31,9 +31,13 @@ public class DiagnosticContextTests
         // Act
         var markdown = context.GenerateMarkdownSection();
 
-        // Assert
-        await Assert.That(markdown).Contains("## Debug Information");
+        // Assert - Verify collapsible details block structure
+        await Assert.That(markdown).Contains("<details>");
+        await Assert.That(markdown).Contains("<summary>🐛\u00A0Debug Information</summary>");
+        await Assert.That(markdown).Contains("<br>");
         await Assert.That(markdown).Contains("No diagnostics collected");
+        await Assert.That(markdown).Contains("</details>");
+        await Assert.That(markdown).DoesNotContain("<details open>");
     }
 
     /// <summary>
@@ -76,8 +80,10 @@ public class DiagnosticContextTests
         // Act
         var markdown = context.GenerateMarkdownSection();
 
-        // Assert
-        await Assert.That(markdown).Contains("## Debug Information");
+        // Assert - Verify collapsible details block with all content preserved
+        await Assert.That(markdown).Contains("<details>");
+        await Assert.That(markdown).Contains("<summary>🐛\u00A0Debug Information</summary>");
+        await Assert.That(markdown).Contains("</details>");
         await Assert.That(markdown).Contains(PrincipalMappingHeader);
         await Assert.That(markdown).Contains($"Loaded successfully from '{PrincipalsFileName}'");
         await Assert.That(markdown).Contains("45 users");
@@ -169,9 +175,11 @@ public class DiagnosticContextTests
         // Act
         var markdown = context.GenerateMarkdownSection();
 
-        // Assert - Principal Mapping section should not appear
+        // Assert - Principal Mapping section should not appear, but details block should be present
         await Assert.That(markdown).DoesNotContain(PrincipalMappingHeader);
-        await Assert.That(markdown).Contains("## Debug Information");
+        await Assert.That(markdown).Contains("<details>");
+        await Assert.That(markdown).Contains("<summary>🐛\u00A0Debug Information</summary>");
+        await Assert.That(markdown).Contains("</details>");
     }
 
     /// <summary>

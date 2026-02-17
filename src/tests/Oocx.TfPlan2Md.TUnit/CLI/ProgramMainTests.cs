@@ -134,7 +134,9 @@ public class ProgramMainTests
 
         result.ExitCode.Should().Be(0);
         var output = await File.ReadAllTextAsync(outputPath);
-        output.Should().Contain("## Debug Information");
+        output.Should().Contain("<details>");
+        output.Should().Contain("<summary>🐛\u00A0Debug Information</summary>");
+        output.Should().Contain("</details>");
     }
 
     /// <summary>

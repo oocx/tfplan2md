@@ -179,22 +179,31 @@ internal class DiagnosticContext
     /// Generates a markdown section containing all collected diagnostic information.
     /// </summary>
     /// <returns>
-    /// A markdown-formatted string with debug information, or a message indicating no diagnostics were collected.
+    /// A markdown-formatted string with debug information wrapped in a collapsible details block,
+    /// or a message indicating no diagnostics were collected.
     /// </returns>
     /// <remarks>
     /// The generated markdown follows this structure:
     /// <list type="bullet">
-    /// <item><description>## Debug Information (level-2 heading)</description></item>
+    /// <item><description>&lt;details&gt; tag (collapsed by default)</description></item>
+    /// <item><description>&lt;summary&gt;🐛 Debug Information&lt;/summary&gt; (with non-breaking space U+00A0)</description></item>
+    /// <item><description>&lt;br&gt; spacing tag</description></item>
     /// <item><description>### Principal Mapping subsection (if applicable)</description></item>
     /// <item><description>### Template Resolution subsection (if applicable)</description></item>
+    /// <item><description>&lt;/details&gt; closing tag</description></item>
     /// </list>
     /// All resource addresses and principal IDs are formatted in code blocks for readability.
-    /// If no diagnostics were collected, returns a message indicating that.
+    /// If no diagnostics were collected, the message appears inside the details block.
+    /// Related feature: docs/features/086-output-display-enhancements/specification.md.
     /// </remarks>
     public string GenerateMarkdownSection()
     {
         var sb = new StringBuilder();
-        sb.AppendLine("## Debug Information");
+
+        // Start collapsible details block (collapsed by default)
+        sb.AppendLine("<details>");
+        sb.AppendLine("<summary>🐛\u00A0Debug Information</summary>");
+        sb.AppendLine("<br>");
         sb.AppendLine();
 
         var hasDiagnostics = false;
@@ -220,6 +229,9 @@ internal class DiagnosticContext
             sb.AppendLine("No diagnostics collected.");
             sb.AppendLine();
         }
+
+        // Close collapsible details block
+        sb.AppendLine("</details>");
 
         return sb.ToString();
     }

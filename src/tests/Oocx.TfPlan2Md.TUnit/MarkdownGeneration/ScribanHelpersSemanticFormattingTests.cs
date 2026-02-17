@@ -306,4 +306,44 @@ public class ScribanHelpersSemanticFormattingTests
 
         result.Should().Be("`👤\u00A0Jane Doe`");
     }
+
+    [Test]
+    public void FormatAttributeValueTable_DecimalNumber_DoesNotUseIpIcon()
+    {
+        var result = FormatAttributeValueTable("min_capacity", "0.5", null);
+
+        result.Should().Be("`0.5`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_MultiDecimalNumber_DoesNotUseIpIcon()
+    {
+        var result = FormatAttributeValueTable("max_size_gb", "1.5", null);
+
+        result.Should().Be("`1.5`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_ValidIpv4Address_UsesNetworkIcon()
+    {
+        var result = FormatAttributeValueTable("ip_address", "192.168.1.1", null);
+
+        result.Should().Be("`🌐\u00A0192.168.1.1`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_ValidIpv4Cidr_UsesNetworkIcon()
+    {
+        var result = FormatAttributeValueTable("address_prefix", "10.0.0.0/24", null);
+
+        result.Should().Be("`🌐\u00A010.0.0.0/24`");
+    }
+
+    [Test]
+    public void FormatAttributeValueTable_ValidIpv6Address_UsesNetworkIcon()
+    {
+        var result = FormatAttributeValueTable("ipv6_address", "2001:0db8:85a3::8a2e:0370:7334", null);
+
+        result.Should().Be("`🌐\u00A02001:0db8:85a3::8a2e:0370:7334`");
+    }
 }

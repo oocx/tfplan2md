@@ -343,6 +343,13 @@ jobs:
             throw "Checksum mismatch: expected $expectedHash, got $actualHash"
           }
 
+      - name: Upload checksum as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksum-${{ matrix.platform }}
+          path: tfplan2md_${{ needs.release.outputs.version }}_${{ matrix.platform }}.sha256
+          retention-days: 1
+
       - name: Upload Binary to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -358,27 +365,26 @@ jobs:
     needs: [release, build-binaries]
 
     steps:
-      - name: Download all artifacts
+      - name: Download all checksum artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          pattern: checksum-*
+          path: checksums
+          merge-multiple: true
 
       - name: Consolidate SHA256 checksums
         run: |
           VERSION="${{ needs.release.outputs.version }}"
-          # Download all release assets to get checksums
-          gh release download "v${VERSION}" --pattern '*.sha256' --dir checksums || true
           # Combine all individual checksum files into SHA256SUMS
-          cat checksums/*.sha256 2>/dev/null | sort > SHA256SUMS || touch SHA256SUMS
-          if [ -s SHA256SUMS ]; then
+          if ls checksums/*.sha256 1> /dev/null 2>&1; then
+            cat checksums/*.sha256 | sort > SHA256SUMS
             echo "Consolidated checksums:"
             cat SHA256SUMS
           else
             echo "No checksums found to consolidate"
+            echo "Error: Expected checksum files not found" >&2
+            exit 1
           fi
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_PAGER: cat
 
       - name: Upload consolidated checksums
         if: hashFiles('SHA256SUMS') != ''

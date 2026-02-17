@@ -82,7 +82,7 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 
 | Platform | Architecture | Archive | Notes |
 |----------|-------------|---------|-------|
-| **Linux** | x64 | `tfplan2md_VERSION_linux-x64.tar.gz` | Ubuntu 24.04+, Debian 12+, RHEL 9+ (glibc 2.39) |
+| **Linux** | x64 | `tfplan2md_VERSION_linux-x64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
 | **Linux** | ARM64 | `tfplan2md_VERSION_linux-arm64.tar.gz` | ARM64 Linux (glibc 2.39) |
 | **Windows** | x64 | `tfplan2md_VERSION_windows-x64.zip` | Windows 10+ (x64) |
 | **Windows** | ARM64 | `tfplan2md_VERSION_windows-arm64.zip` | Windows 11 ARM64 |

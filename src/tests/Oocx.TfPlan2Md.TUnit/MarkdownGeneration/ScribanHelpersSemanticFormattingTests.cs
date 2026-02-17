@@ -346,4 +346,21 @@ public class ScribanHelpersSemanticFormattingTests
 
         result.Should().Be("`🌐\u00A02001:0db8:85a3::8a2e:0370:7334`");
     }
+
+    [Test]
+    public void FormatAttributeValueTable_IpLikeButInvalidValues_DoNotUseNetworkIcon()
+    {
+        var cases = new Dictionary<string, string>
+        {
+            ["a.b.c.d"] = "`a.b.c.d`",
+            ["256.256.256.256"] = "`256.256.256.256`",
+            ["1.2.3.4.5"] = "`1.2.3.4.5`"
+        };
+
+        foreach (var entry in cases)
+        {
+            var result = FormatAttributeValueTable("source_address_prefix", entry.Key, null);
+            result.Should().Be(entry.Value);
+        }
+    }
 }

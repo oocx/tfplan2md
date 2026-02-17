@@ -376,7 +376,7 @@ jobs:
         run: |
           VERSION="${{ needs.release.outputs.version }}"
           # Combine all individual checksum files into SHA256SUMS
-          if ls checksums/*.sha256 1> /dev/null 2>&1; then
+          if compgen -G "checksums/*.sha256" > /dev/null; then
             cat checksums/*.sha256 | sort > SHA256SUMS
             echo "Consolidated checksums:"
             cat SHA256SUMS

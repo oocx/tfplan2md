@@ -116,8 +116,16 @@ jobs:
           GH_PAGER: cat
           PAGER: cat
         run: |
-          last=$(GH_PAGER=cat gh release list --limit 1 --json tagName --jq '.[0].tagName // ""')
-          last=${last#v}
+          CURRENT_TAG="v${{ steps.version.outputs.version }}"
+          # Get the latest 2 releases to handle re-runs where the current release already exists
+          mapfile -t tags < <(GH_PAGER=cat gh release list --limit 2 --json tagName --jq '.[].tagName // ""')
+          last=""
+          for tag in "${tags[@]}"; do
+            if [ "$tag" != "$CURRENT_TAG" ] && [ -n "$tag" ]; then
+              last="${tag#v}"
+              break
+            fi
+          done
           echo "last=${last}" >> $GITHUB_OUTPUT
 
       - name: Find user-focused release notes

@@ -279,6 +279,7 @@ Before releasing, verify:
     - **▶️ Getting started**: include only if usage changed (new flags, env vars, required steps, migration notes)
 - **📸 Screenshots (MANDATORY for visual features)**:
        - **CRITICAL**: If the release involves visual changes (Markdown rendering, layout, colors, UI/UX), screenshots are **MANDATORY** and non-negotiable.
+       - **PREREQUISITE — Install Playwright first**: Run `npx playwright install chromium --with-deps` before any screenshot generation. The GitHub Copilot coding agent environment does NOT have Playwright pre-installed. Skipping this step causes all screenshot generation to fail.
        - **MUST STOP if generation fails**: If screenshot generation fails due to timeouts or tooling issues, **DO NOT proceed with release**. Instead:
            1. Report the failure to the Maintainer with full error details
            2. Document the specific error (timeout, CDN failure, etc.)
@@ -289,11 +290,13 @@ Before releasing, verify:
            - or `scripts/generate-release-screenshots.sh --markdown-file <md> --output-prefix <name> --output-dir docs/features/NNN/ --target-resource-id "..."`
            - Script automatically retries 3 times with 5-second delays between attempts
            - Provides detailed troubleshooting guidance on failure
+       - **Choose selectors carefully**: Match the selector to the actual visual change. Use the `generate-release-screenshots` skill's Selector Guide for detailed guidance. Key rule: do NOT use `--target-terraform-resource-id` for summary-line changes (emoji/spacing fixes) — it captures the full expanded details block instead of the summary where the fix is visible. Use `--selector "summary:has-text('resource_name')"` instead.
        - Release notes screenshots must be focused and small: **max 580×400 pixels**.
        - Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
        - **Alternative tool**: Use `scripts/generate-screenshot.sh` for full control (light/dark, 1x/2x, thumbnails, lightbox)
        - Prefer showing a single "after" screenshot for features; for bug fixes, include before/after when feasible.
        - **Quality over speed**: Screenshots are critical evidence of visual improvements. Do not compromise release quality for workflow completion.
+       - **Image URLs in release notes**: Use absolute `raw.githubusercontent.com` URLs, NOT relative paths. Relative paths like `./image.png` break in GitHub Release pages. Format: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png`. Verify all referenced filenames actually exist before committing.
    
     **Save:** Create `release-notes.md` in the current work item folder (`docs/features/.../`, `docs/issues/.../`, or `docs/workflow/.../`).
     **Commit:** `docs: add release notes for <work-item>`

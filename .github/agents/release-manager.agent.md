@@ -279,14 +279,16 @@ Before releasing, verify:
     - **📸 Screenshots**:
        - Only include a screenshots section if you actually have screenshots to show.
        - If the release changes rendered output / review experience, screenshots are required; generate them if missing.
+       - **PREREQUISITE — Install Playwright first**: Run `npx playwright install chromium --with-deps` before any screenshot generation.
        - Release notes screenshots must be focused and small: **max 580×400**.
        - Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
        - **Recommended**: Use `scripts/generate-release-screenshots.sh` for release notes (optimized with sensible defaults):
           - `scripts/generate-release-screenshots.sh --plan <plan.json> --output-prefix <name> --output-dir docs/features/NNN/ --selector "..."`
           - or `scripts/generate-release-screenshots.sh --markdown-file <md> --output-prefix <name> --output-dir docs/features/NNN/ --target-resource-id "..."`
-       - **Alternative**: Use `scripts/generate-screenshot.sh` for full control (light/dark, 1x/2x, thumbnails, lightbox)
+       - **Choose selectors carefully**: Match the selector to the actual visual change. Use the `generate-release-screenshots` skill’s Selector Guide for detailed guidance. Key rule: do NOT use `--target-terraform-resource-id` for summary-line changes (emoji/spacing fixes) — use `--selector "summary:has-text('resource_name')"` instead.
        - **Alternative**: Use `scripts/generate-screenshot.sh` for full control (light/dark, 1x/2x, thumbnails, lightbox)
        - Prefer showing a single “after” screenshot for features; for bug fixes, include before/after when feasible.
+       - **Image URLs in release notes**: Use absolute `raw.githubusercontent.com` URLs, NOT relative paths. Relative paths like `./image.png` break in GitHub Release pages. Format: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png`. Verify all referenced filenames actually exist before committing.
    
     **Save:** Create `release-notes.md` in the current work item folder (`docs/features/.../`, `docs/issues/.../`, or `docs/workflow/.../`).
     **Commit:** `docs: add release notes for <work-item>`

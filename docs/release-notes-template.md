@@ -19,7 +19,13 @@
 Include this section only if you have screenshots.
 
 If you list anything under ✨ Features and it changes rendered output, you should include screenshots.
-If no suitable screenshots exist yet, generate them using:
+
+PREREQUISITE: Install Playwright before generating screenshots:
+```bash
+npx playwright install chromium --with-deps
+```
+
+Generate screenshots using:
 
 ```bash
 # For release notes (recommended - single 580×400 screenshot)
@@ -27,7 +33,7 @@ scripts/generate-release-screenshots.sh \
   --plan examples/example-demo/plan.json \
   --output-prefix feature-name \
   --output-dir docs/features/NNN-feature-name \
-  --selector "details:has(summary:has-text('resource'))"
+  --selector "summary:has-text('resource_name')"
 
 # For website (full control - all variants)
 scripts/generate-screenshot.sh --plan ... --output-prefix ... --selector ...
@@ -37,17 +43,19 @@ Constraints for release notes:
 - Max screenshot size: 580×400
 - Use the generated `*-crop*.png` files (not `*-lightbox*` or `*-full*`)
 - Focus screenshots using `--selector` / `--target-resource-id` so the image shows the relevant part of the plan
+- Choose selectors that match the visual change (see generate-release-screenshots skill's Selector Guide)
 
 ## 📸 Screenshots
 
-> GitHub Releases render Markdown images (`![alt](url)`).
-> Prefer stable URLs (e.g., raw.githubusercontent.com with a commit SHA), not links to main.
+> **CRITICAL**: Use absolute `raw.githubusercontent.com` URLs, NOT relative paths.
+> Relative paths (e.g., `./image.png`) break in GitHub Release pages.
+> Use the release tag in the URL: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png`
 
 ### Before
-![Before](https://...)
+![Before](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN-feature-name/before-screenshot.png)
 
 ### After
-![After](https://...)
+![After](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN-feature-name/after-screenshot.png)
 
 -->
 

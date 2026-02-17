@@ -10,19 +10,24 @@ Provide clear, actionable guidance for generating actual PNG screenshot files fo
 
 ## Hard Rules
 ### Must
+- [ ] **Install Playwright before generating screenshots**: Run `npx playwright install chromium --with-deps` to ensure the browser is available. The GitHub Copilot coding agent environment does NOT have Playwright pre-installed.
 - [ ] Generate actual PNG files, NOT markdown links to source files or empty image references.
 - [ ] Use `scripts/generate-release-screenshots.sh` for release note screenshots (includes retry logic and error reporting).
 - [ ] Use `scripts/generate-screenshot.sh` for individual screenshots with full control (light/dark themes, DPI, crops).
 - [ ] Verify generated PNG files exist at expected paths before adding markdown references.
-- [ ] Verify screenshots show the intended content (not blank pages or errors).
+- [ ] Verify screenshots show the intended content (not blank pages or errors) — visually inspect each screenshot.
 - [ ] Use focused, small screenshots for release notes: **max 580×400 pixels**.
 - [ ] Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
+- [ ] **Use absolute `raw.githubusercontent.com` URLs in release notes** — relative paths like `./image.png` do NOT work in GitHub Release pages. Use format: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png` where `{VERSION}` is the release tag.
+- [ ] **Choose selectors that capture the visual change**: Match the selector to what the feature/fix actually changes (see Selector Guide below).
 
 ### Must Not
 - [ ] Add `![Screenshot](path/to/image.png)` syntax to markdown before verifying the PNG file exists.
 - [ ] Replace actual screenshots with markdown links to source files (e.g., `[View in file.md (lines X-Y)]`).
 - [ ] Use text descriptions or placeholders instead of actual PNG files.
 - [ ] Proceed with release if screenshot generation fails due to timeouts or tooling issues.
+- [ ] Use relative paths (e.g., `./image.png`) in release notes — they break in GitHub Release pages.
+- [ ] Reference filenames that don't exist — always verify the actual generated filename matches the markdown reference.
 
 ## Golden Example
 
@@ -72,6 +77,13 @@ scripts/generate-screenshot.sh \
 
 ## Actions
 
+### 0. Install Playwright (PREREQUISITE — REQUIRED)
+Before any screenshot generation, ensure Playwright and Chromium are installed:
+```bash
+npx playwright install chromium --with-deps
+```
+This is required in the GitHub Copilot coding agent environment. Without this step, all screenshot generation will fail with browser-not-found errors.
+
 ### 1. Understand What Screenshots Are Needed
 Clarify with the user:
 - What content should the screenshots show?
@@ -106,10 +118,11 @@ Before proceeding:
 - [ ] Confirm file sizes are appropriate for release notes
 
 ### 5. Add Markdown References
-Only after verification:
+Only after verification, use absolute URLs for release notes:
 ```markdown
-![Feature demonstration](docs/features/NNN-feature-slug/feature-name-crop-light-1x.png)
+![Feature demonstration](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/NNN-feature-slug/feature-name.png)
 ```
+**Never use relative paths** in release notes — they break in GitHub Release pages.
 
 ### 6. Handle Failures
 If screenshot generation fails:
@@ -117,6 +130,60 @@ If screenshot generation fails:
 - Report the failure to the Maintainer with full error details
 - Document the specific error (timeout, CDN failure, tooling issue)
 - Wait for tooling fix or Maintainer guidance
+
+## Selector Guide — Choosing What to Capture
+
+The selector determines which part of the rendered HTML page is captured. Choosing the wrong selector is a common mistake that results in screenshots showing irrelevant content.
+
+### How selectors work
+- `--selector` captures the bounding box of all matching elements
+- `--target-terraform-resource-id` finds the `<details>` block for a specific Terraform resource and captures its full content (attribute tables, body changes, etc.)
+
+### Matching selector to visual change type
+
+| What changed | What to show | Recommended selector |
+|---|---|---|
+| **Summary line** (emoji, spacing, icons in collapsed view) | The `<summary>` element showing the change | `--selector "summary:has-text('resource_type.resource_name')"` |
+| **Resource details** (attribute rendering, body layout) | The expanded `<details>` block | `--target-terraform-resource-id "resource_type.resource_name"` |
+| **Section header** (module icons, heading format) | The heading element | `--selector "h3:has-text('Module:')"` or `--selector "h4:has-text('Section Name')"` |
+| **Tags rendering** | The tags section within a resource | `--selector "p:has-text('Tags:')"` |
+| **Table formatting** | A specific table | `--selector "table:near(summary:has-text('resource'))"` |
+| **Multiple elements** (before/after, several fixes) | Wider section containing all changes | `--selector "article"` or use a parent container |
+
+### ❌ Common mistake: Using `--target-terraform-resource-id` for summary-line changes
+If a fix only changes the collapsed `<summary>` line (e.g., emoji spacing like `2 🔧`), do NOT use `--target-terraform-resource-id` — this captures the entire expanded resource details block, which shows attribute tables instead of the summary where the fix is visible.
+
+### ✅ Correct: Use a targeted CSS selector
+```bash
+# To capture wrench icon spacing fix in summary:
+--selector "summary:has-text('azurerm_network_security_group')"
+
+# To capture tags emoji addition:
+--selector "p:has-text('🏷️ Tags:')"
+
+# To capture module icon fix:
+--selector "h3:has-text('📦 Module:')"
+```
+
+## Image URLs for Release Notes
+
+### ❌ Wrong: Relative paths (break in GitHub Release pages)
+```markdown
+![Screenshot](./screenshot.png)
+![Screenshot](docs/features/NNN/screenshot.png)
+```
+Relative paths work when browsing the file in the GitHub repository, but GitHub Release pages render the markdown body without a file context, so relative paths produce broken images.
+
+### ✅ Correct: Absolute raw.githubusercontent.com URLs
+```markdown
+![Screenshot](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/issues/086/screenshot.png)
+```
+Use the release tag (e.g., `v1.20.0`) in the URL. Since the release notes are committed before the tag exists, use the tag that will be created by the release pipeline. The format is:
+```
+https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{work-item-folder}/{filename}.png
+```
+
+**Important:** The release notes file is committed to main before the tag is created. The release workflow copies `release-notes.md` as the GitHub Release body. Since the tag is created by Versionize on the same commit, the file will be accessible at the tag URL.
 
 ## Common Mistakes to Avoid
 
@@ -148,7 +215,38 @@ See the changes in [comprehensive-demo.md (lines 45-67)](comprehensive-demo.md#L
 
 ### ✅ Correct: Using actual PNG screenshots
 ```markdown
-![Network security rules demonstration](docs/features/072/nsg-rules-crop-light-1x.png)
+![Network security rules demonstration](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/features/072/nsg-rules.png)
+```
+
+### ❌ Wrong: Referencing filenames that don't exist
+```markdown
+![Before](https://raw.githubusercontent.com/oocx/tfplan2md/abc123/docs/features/072/before-screenshot.png)
+# But the actual file is named "nsg-rules.png", not "before-screenshot.png"
+```
+
+### ✅ Correct: Verify actual filenames before referencing
+```bash
+# 1. Generate screenshots
+scripts/generate-release-screenshots.sh --plan ... --output-prefix nsg-rules --output-dir docs/features/072/
+
+# 2. List actual generated files
+ls docs/features/072/*.png
+
+# 3. Use the exact filename in markdown
+# Output: docs/features/072/nsg-rules.png
+```
+
+### ❌ Wrong: Skipping Playwright installation
+```bash
+# Jumping straight to screenshot generation without installing Playwright
+scripts/generate-release-screenshots.sh --plan ... --output-prefix feature ...
+# Result: "Browser not found" error
+```
+
+### ✅ Correct: Install Playwright first
+```bash
+npx playwright install chromium --with-deps
+scripts/generate-release-screenshots.sh --plan ... --output-prefix feature ...
 ```
 
 ## Technical Details

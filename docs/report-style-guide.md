@@ -258,6 +258,9 @@ This rule applies to all icon+label combinations throughout the generated markdo
 | 🌐 | IP Address / CIDR | `🌐 <address>` | `🌐 10.1.1.0/24` | Any value matching IP address or CIDR format (requires dot notation) |
 | 🌍 | Location / Region | `🌍 <region>` | `🌍 eastus` | Azure regions, geographic locations |
 | 🔌 | Port Number | `🔌 <port>` | `🔌 443` | Network port numbers |
+| 🆔 | Resource ID/Name | `🆔 <id>` | `🆔 rg-demo` | Resource identifiers, names, IDs, user principal names, API operation IDs |
+| 📁 | Resource Group | `📁 <rg-name>` | `📁 rg-demo` | Azure resource group references |
+| 🔑 | Subscription | `🔑 <name> (<id>)` | `🔑 Production (guid)` | Azure subscription references |
 
 #### Protocols & Directions
 
@@ -286,6 +289,10 @@ This rule applies to all icon+label combinations throughout the generated markdo
 | 👥 | Group | `👥 Group` | `👥 DevOps Team (Group)` | Azure AD group principals |
 | 💻 | Service Principal | `💻 ServicePrincipal` | `💻 App (ServicePrincipal)` | Azure AD service principals |
 | 🛡️ | Role | `🛡️ <role_name>` | `🛡️ Reader` | Azure role definitions |
+| 📧 | Email Address | `📧 <email>` | `📧 user@domain.com` | Email addresses (user mail, invitation emails) |
+| 🏢 | Tenant | `🏢 <name> (<id>)` | `🏢 Contoso (guid)` | Azure AD tenant references |
+| 🗂️ | Management Group | `🗂️ <name> (<id>)` | `🗂️ Corp (mg-root)` | Azure management group references |
+| ❓ | Unknown Type | `❓ Unknown` | `1 ❓` | When principal/member type cannot be determined |
 
 #### Other Markers
 
@@ -294,6 +301,9 @@ This rule applies to all icon+label combinations throughout the generated markdo
 | 🏷️ | Tags | `**🏷️ Tags:**` | `**🏷️ Tags:** `env: prod`` | Tags section header (icon outside code) |
 | 🔧 | Changed Attributes | `<count> 🔧 <attrs>` | `2 🔧 name, location` | Update summaries showing changed attribute count |
 | 📦 | Module | `### 📦 Module:` | `### 📦 Module: network` | Module section headers |
+| 🔒 | Security Findings | `🔒 **Security & Quality:**` | See Code Analysis Integration | Security findings header in resource details |
+| 📥 | Import Operation | `📥 Import` | See Refactoring Operations | Resource import operation indicator |
+| 🔀 | Move Operation | `🔀 Move` | See Refactoring Operations | Resource move operation indicator |
 
 ### Icon Placement Rules
 
@@ -375,4 +385,285 @@ Custom templates (e.g., Firewall, NSG, Role Assignments) must adhere to these gu
 **Example (Role Assignment summary with icons and local name):**
 ```html
 <summary>➕ azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤 Jane Doe (User)</code> → <code>🛡️ Reader</code> on <code>rg-demo</code></summary>
+```
+
+## Code Analysis Integration
+
+When security or quality findings are associated with resources, they are displayed inline with the resource content.
+
+### Security & Quality Findings Banner
+
+Resources with code analysis findings display a banner immediately after the `<summary>` line:
+
+**Format:**
+```markdown
+<details open>
+<summary>➕ azurerm_storage_account <b><code>logs</code></b> — ...</summary>
+<br>
+
+🔒 **Security & Quality:** ⚠️ 1 High, ⚠️ 1 Medium
+```
+
+**Pattern:** `🔒 **Security & Quality:** <severity_counts>`
+
+The banner shows aggregate counts of findings by severity level using the ⚠️ warning icon.
+
+### Attribute Finding Indicators
+
+Individual attributes flagged by code analysis tools show a ⚠️ indicator next to the attribute name in tables:
+
+**Format:**
+```markdown
+| Attribute | Value |
+|-----------|-------|
+| min_tls_version ⚠️ | `TLS1_2` |
+```
+
+The indicator appears after the attribute name without additional spacing, providing a visual cue that this attribute has associated findings.
+
+### Findings Detail Section
+
+Detailed findings are displayed in a collapsible section within the resource details:
+
+**Example:**
+```markdown
+<details>
+<summary>🔒 Security & Quality Findings (2)</summary>
+
+| Severity | Tool | Finding | Remediation |
+|----------|------|---------|-------------|
+| ⚠️ High | checkov | CKV_AZURE_35: Ensure default network access rule for Storage Accounts is set to deny | [Details](link) |
+| ⚠️ Medium | tflint | Missing required attribute | [Details](link) |
+
+</details>
+```
+
+## Refactoring Operations
+
+Resources that are part of refactoring operations (import or move) display special indicators in their summaries and are listed in a separate Refactoring Summary section.
+
+### Import Operations
+
+Resources being imported from existing infrastructure show the 📥 Import indicator:
+
+**Summary Format:**
+```html
+<summary>➕ azurerm_resource_group <b><code>imported</code></b> — 📥 *Imported* | <code>🆔 rg-imported-existing</code> <code>🌍 eastus</code></summary>
+```
+
+**Pattern:** Action icon, resource type, name, `— 📥 *Imported* |`, then standard context info.
+
+### Move Operations
+
+Resources being moved between modules show the 🔀 Move indicator:
+
+**Summary Format:**
+```html
+<summary>  azurerm_virtual_network <b><code>migrated</code></b> — 🔀 *Moved from* <code>module.legacy.azurerm_virtual_network.main</code> (⚠️ *already moved*) | <code>🆔 vnet-legacy</code> ...</summary>
+```
+
+**Pattern:** Two spaces (no action icon for moves), resource type, name, `— 🔀 *Moved from*`, source address, optional status, then standard context.
+
+**Status indicators:**
+- `⚠️ *already moved*` - The move has already been applied in Terraform state
+- No status - Move is ready to be applied
+
+### Refactoring Summary Table
+
+A separate section summarizes all refactoring operations at the end of the report:
+
+**Format:**
+```markdown
+## Refactoring Summary
+
+| Operation | Resource | Details | Status |
+| --------- | -------- | ------- | ------ |
+| 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-...` | ✅ Ready |
+| 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |
+```
+
+**Columns:**
+- **Operation**: Icon (📥 or 🔀) and operation type
+- **Resource**: Resource type and local name (code-formatted)
+- **Details**: For imports, the resource ID; for moves, the source address
+- **Status**: ✅ Ready or ⚠️ Already applied
+
+## Parent-Child Resource Grouping
+
+**Feature introduced:** v1.16.0 (Azure AD, Azure DevOps), v1.17.0 (Azure RM)
+
+Resources with parent-child relationships are rendered with inline tables showing child resources within the parent section, instead of separate collapsible sections.
+
+### Supported Patterns
+
+- **Azure AD**: Groups with members (`azuread_group` + `azuread_group_member`)
+- **Azure DevOps**: Groups/teams with members
+- **Azure RM Virtual Networks**: VNets with subnets (`azurerm_virtual_network` + `azurerm_subnet`)
+- **Azure RM DNS**: DNS zones with records (`azurerm_dns_zone` + `azurerm_dns_*_record`, `azurerm_private_dns_zone` + `azurerm_private_dns_*_record`)
+- **Azure RM Routing**: Route tables with routes (`azurerm_route_table` + `azurerm_route`)
+- **Azure RM Security**: Network security groups with rules (`azurerm_network_security_group` + `azurerm_network_security_rule`)
+
+### Parent Summary with Child Counts
+
+Parent resource summaries include aggregate counts of child changes:
+
+**Azure AD Group Example:**
+```html
+<summary>➕ azuread_group <b><code>platform_team</code></b> — <code>👥 Platform Team</code> (<code>🆔 Platform Engineering</code>) Core platform engineering team | <code>3 👤 1 👥 1 💻</code> | ➕ 5 members</summary>
+```
+
+**Pattern components:**
+- Standard resource summary info
+- Member type breakdown: `<code>3 👤 1 👥 1 💻</code>` (3 users, 1 group, 1 service principal)
+- Child change summary: `➕ 5 members` (5 members being added)
+
+**Virtual Network Example:**
+```html
+<summary>➕ azurerm_virtual_network <b><code>spoke</code></b> — <code>🆔 vnet-spoke</code> in <code>📁 rg-demo</code> <code>🌍 eastus</code> <code>🌐 10.2.0.0/16</code> | ➕ 2 subnets</summary>
+```
+
+**Pattern components:**
+- Standard resource summary info
+- Child change summary: `➕ 2 subnets` (2 subnets being added)
+
+### Child Resource Tables
+
+Child resources are displayed in inline tables with appropriate columns for the resource type:
+
+#### Subnets Table
+
+```markdown
+#### Subnets
+
+| Change | Name | Address Prefixes | NSG | Delegation | Terraform Resource |
+|--------|------|------------------|-----|------------|-------------------|
+| ➕ | `frontend` | `🌐 10.2.1.0/24` | - | - | inline attribute |
+| ➕ | `backend` | `🌐 10.2.2.0/24` | `nsg-backend` | - | `azurerm_subnet.backend` |
+```
+
+#### Members Table (Azure AD Groups)
+
+```markdown
+#### Members
+
+| Change | Member | Terraform Resource |
+|--------|--------|-------------------|
+| ➕ | `👤 Jane Doe` (user-100) | inline attribute |
+| ➕ | `💻 terraform-spn` (spn-200) | `azuread_group_member.terraform` |
+```
+
+#### Routes Table
+
+```markdown
+#### Routes
+
+| Change | Name | Address Prefix | Next Hop Type | Next Hop Address | Terraform Resource |
+|--------|------|----------------|---------------|------------------|-------------------|
+| ➕ | `to-firewall` | `🌐 0.0.0.0/0` | `VirtualAppliance` | `🌐 10.1.1.4` | inline attribute |
+```
+
+#### Security Rules Table
+
+```markdown
+#### Security Rules
+
+| Change | Name | Priority | Direction | Access | Protocol | Source Address | Source Port | Destination Address | Destination Port | Description | Terraform Resource |
+|--------|------|----------|-----------|--------|----------|----------------|-------------|---------------------|------------------|-------------|-------------------|
+| ➕ | `allow-https` | 100 | `⬇️ Inbound` | `✅ Allow` | `🔗 TCP` | `🌐 10.1.0.0/16` | `✳️` | `✳️` | `🔌 443` | Secure web | inline attribute |
+```
+
+### Character-Level Diff Highlighting
+
+For updated child resources, inline diffs show character-level changes with styled highlighting:
+
+**Example (address prefix change):**
+```markdown
+| 🔄 | `subnet-1` | <span style="background-color: #fff5f5">🌐 10.200.2.0/</span><span style="background-color: #ffc0c0">4</span> → <span style="background-color: #f0fff4">🌐 10.200.2.0/</span><span style="background-color: #acf2bd">3</span> | ... |
+```
+
+**Styling:**
+- Removed content: Red background (`#fff5f5` for full line, `#ffc0c0` for changed characters)
+- Added content: Green background (`#f0fff4` for full line, `#acf2bd` for changed characters)
+
+### Mixed Management Warning
+
+When a resource has children managed both as inline attributes and as separate Terraform resources, a warning is displayed:
+
+```markdown
+⚠️ **Warning:** This resource has children managed both inline
+and as separate resources. This configuration will cause conflicts.
+```
+
+This warning appears above the child resource table when mixed management is detected.
+
+### Terraform Resource Column
+
+The "Terraform Resource" column appears conditionally:
+
+- **Shows** when a parent has mixed management (some children inline, some separate)
+- **Hidden** when all children are inline attributes (cleaner table display)
+
+**Values:**
+- `inline attribute` - Child is part of parent resource's inline attributes
+- Resource address (e.g., `azurerm_subnet.backend`) - Child is a separate Terraform resource
+
+## Resource-Specific Templates
+
+### Azure DevOps Variable Groups
+
+Variable groups display with a custom format showing the group name, description, and variable changes in a table:
+
+**Summary:**
+```html
+<summary>🔄 azuredevops_variable_group <b><code>pipeline_vars</code></b> — <code>🆔 deploy-pipeline-vars</code> | 5🔧 secret_variable[0].value, variable[0].value, variable[1].value, +2 more</summary>
+```
+
+**Content structure:**
+```markdown
+**Variable Group:** <code>deploy-pipeline-vars</code>
+
+**Description:** <code>Pipeline variables for deployment</code>
+
+#### Variables
+
+| Change | Name | Value | Enabled | Content Type | Expires |
+|--------|------|-------|---------|--------------|---------|
+| 🔄 | `API_KEY` | `(sensitive)` | ✅ | - | - |
+| ➕ | `VERSION` | `1.0.0` | ✅ | - | - |
+```
+
+### API Management Operations
+
+API Management operations show the display name and operation hierarchy in the summary:
+
+**Summary Format:**
+```html
+<summary>➕ azurerm_api_management_api_operation <b><code>get_profile</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁 rg-apim-demo</code></summary>
+```
+
+**Pattern:** 
+- Resource name (operation_id)
+- Display name
+- API hierarchy: `<api_name>`/`<operation_id>` @ `<apim_name>`
+- Resource group
+
+**Large Values (Policies):**
+
+Policy content (XML, JSON) is displayed in collapsible sections with appropriate language highlighting:
+
+```markdown
+<details>
+<summary>Large values: policy_xml (2 lines, 2 changes)</summary>
+
+##### **policy_xml:**
+
+\`\`\`xml
+<policies>
+  <inbound>
+    <base />
+  </inbound>
+</policies>
+\`\`\`
+
+</details>
 ```

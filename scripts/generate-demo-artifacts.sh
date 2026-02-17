@@ -124,6 +124,19 @@ else
   exit 1
 fi
 
+log_info "Generating artifacts/static-analysis-comprehensive-demo.md (comprehensive demo with code analysis)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --code-analysis-results "examples/static-analysis/*.sarif" \
+  --output artifacts/static-analysis-comprehensive-demo.md \
+  examples/comprehensive-demo/plan.json
+
+if [[ -s artifacts/static-analysis-comprehensive-demo.md ]]; then
+  log_info "✓ artifacts/static-analysis-comprehensive-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/static-analysis-comprehensive-demo.md"
+  exit 1
+fi
+
 # Note: uat-minimal.md is a static handcrafted file, not generated
 
 # ============================================================================

@@ -139,6 +139,80 @@ fi
 
 # Note: uat-minimal.md is a static handcrafted file, not generated
 
+log_info "Generating artifacts/azapi-create-demo.md (AzAPI create demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azapi-create-demo.md \
+  examples/azapi-create.json
+
+if [[ -s artifacts/azapi-create-demo.md ]]; then
+  log_info "✓ artifacts/azapi-create-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azapi-create-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azapi-update-demo.md (AzAPI update demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azapi-update-demo.md \
+  examples/azapi-update.json
+
+if [[ -s artifacts/azapi-update-demo.md ]]; then
+  log_info "✓ artifacts/azapi-update-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azapi-update-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azapi-complex-demo.md (AzAPI complex demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azapi-complex-demo.md \
+  examples/azapi-complex.json
+
+if [[ -s artifacts/azapi-complex-demo.md ]]; then
+  log_info "✓ artifacts/azapi-complex-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azapi-complex-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azuread-enhancements-demo.md (AzureAD enhancements demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --principal-mapping examples/principal-mapping-azuread.json \
+  --output artifacts/azuread-enhancements-demo.md \
+  examples/azuread-resources-demo.json
+
+if [[ -s artifacts/azuread-enhancements-demo.md ]]; then
+  log_info "✓ artifacts/azuread-enhancements-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azuread-enhancements-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azure-display-enhancements-demo.md (Azure display enhancements demo)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --output artifacts/azure-display-enhancements-demo.md \
+  examples/azure-display-enhancements.json
+
+if [[ -s artifacts/azure-display-enhancements-demo.md ]]; then
+  log_info "✓ artifacts/azure-display-enhancements-demo.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azure-display-enhancements-demo.md"
+  exit 1
+fi
+
+log_info "Generating artifacts/azure-display-enhancements-demo-simple-diff.md (GitHub render target)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --render-target github \
+  --output artifacts/azure-display-enhancements-demo-simple-diff.md \
+  examples/azure-display-enhancements.json
+
+if [[ -s artifacts/azure-display-enhancements-demo-simple-diff.md ]]; then
+  log_info "✓ artifacts/azure-display-enhancements-demo-simple-diff.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azure-display-enhancements-demo-simple-diff.md"
+  exit 1
+fi
+
 # ============================================================================
 # Part 2: Generate examples/comprehensive-demo/*.md (documentation samples)
 # ============================================================================

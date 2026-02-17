@@ -279,7 +279,7 @@ Before releasing, verify:
     - **▶️ Getting started**: include only if usage changed (new flags, env vars, required steps, migration notes)
 - **📸 Screenshots (MANDATORY for visual features)**:
        - **CRITICAL**: If the release involves visual changes (Markdown rendering, layout, colors, UI/UX), screenshots are **MANDATORY** and non-negotiable.
-       - **PREREQUISITE — Install Playwright first**: Run `npx playwright install chromium --with-deps` before any screenshot generation. The GitHub Copilot coding agent environment does NOT have Playwright pre-installed. Skipping this step causes all screenshot generation to fail.
+       - **PREREQUISITE — Install Playwright first**: Build the ScreenshotGenerator (`dotnet build src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`), then install the browser via `pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps`. Do NOT use `npx playwright install` — the npm version differs from the .NET package. Skipping this step causes all screenshot generation to fail.
        - **MUST STOP if generation fails**: If screenshot generation fails due to timeouts or tooling issues, **DO NOT proceed with release**. Instead:
            1. Report the failure to the Maintainer with full error details
            2. Document the specific error (timeout, CDN failure, etc.)

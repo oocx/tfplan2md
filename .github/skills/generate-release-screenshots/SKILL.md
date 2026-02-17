@@ -10,7 +10,7 @@ Provide clear, actionable guidance for generating actual PNG screenshot files fo
 
 ## Hard Rules
 ### Must
-- [ ] **Install Playwright before generating screenshots**: Run `npx playwright install chromium --with-deps` to ensure the browser is available. The GitHub Copilot coding agent environment does NOT have Playwright pre-installed.
+- [ ] **Install Playwright before generating screenshots**: Build the ScreenshotGenerator project (`dotnet build src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`), then install the browser via `pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps`. Do NOT use `npx playwright install` — the npm version differs from the .NET package version.
 - [ ] Generate actual PNG files, NOT markdown links to source files or empty image references.
 - [ ] Use `scripts/generate-release-screenshots.sh` for release note screenshots (includes retry logic and error reporting).
 - [ ] Use `scripts/generate-screenshot.sh` for individual screenshots with full control (light/dark themes, DPI, crops).
@@ -78,11 +78,15 @@ scripts/generate-screenshot.sh \
 ## Actions
 
 ### 0. Install Playwright (PREREQUISITE — REQUIRED)
-Before any screenshot generation, ensure Playwright and Chromium are installed:
+Before any screenshot generation, ensure the correct Chromium browser is installed for the .NET Playwright package:
 ```bash
-npx playwright install chromium --with-deps
+# 1. Build the ScreenshotGenerator project first
+dotnet build src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/
+
+# 2. Install Chromium using the .NET project's Playwright script
+pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
-This is required in the GitHub Copilot coding agent environment. Without this step, all screenshot generation will fail with browser-not-found errors.
+**⚠️ Do NOT use `npx playwright install`** — the npm Playwright version differs from the .NET `Microsoft.Playwright` NuGet package version, causing browser version mismatches (e.g., the .NET package expects `chromium_headless_shell-1200` but npm installs `chromium_headless_shell-1208`). Always use the .NET project's `playwright.ps1` script to ensure version compatibility.
 
 ### 1. Understand What Screenshots Are Needed
 Clarify with the user:
@@ -236,16 +240,22 @@ ls docs/features/072/*.png
 # Output: docs/features/072/nsg-rules.png
 ```
 
-### ❌ Wrong: Skipping Playwright installation
+### ❌ Wrong: Skipping Playwright installation or using npx
 ```bash
-# Jumping straight to screenshot generation without installing Playwright
+# Wrong: Skipping installation entirely
 scripts/generate-release-screenshots.sh --plan ... --output-prefix feature ...
 # Result: "Browser not found" error
+
+# Wrong: Using npx (version mismatch with .NET Playwright package)
+npx playwright install chromium --with-deps
+scripts/generate-release-screenshots.sh --plan ... --output-prefix feature ...
+# Result: "Executable doesn't exist at chromium_headless_shell-1200" (npm installed -1208)
 ```
 
-### ✅ Correct: Install Playwright first
+### ✅ Correct: Install via .NET Playwright script
 ```bash
-npx playwright install chromium --with-deps
+dotnet build src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/
+pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 scripts/generate-release-screenshots.sh --plan ... --output-prefix feature ...
 ```
 

@@ -11,7 +11,7 @@ This release fixes systematic style guide violations in generated markdown repor
 
 **Impact:** 6 artifact files (13%) now show meaningful resource identifiers instead of empty placeholders.
 
-![AzAPI resource showing Terraform name fallback](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/issues/086-style-guide-compliance-fixes/azapi-resource-name-fix.png)
+![AzAPI resource showing Terraform name fallback](https://raw.githubusercontent.com/oocx/tfplan2md/main/docs/issues/086-style-guide-compliance-fixes/azapi-resource-name-fix.png)
 
 ### Fixed wrench icon spacing
 **Symptom:** Changed attribute summaries displayed `2🔧` (no space) instead of the documented `2 🔧` format.
@@ -20,7 +20,7 @@ This release fixes systematic style guide violations in generated markdown repor
 
 **Impact:** 19 artifact files (41%) now render with correct spacing per the style guide.
 
-![Resource summary showing proper wrench icon spacing](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/issues/086-style-guide-compliance-fixes/wrench-spacing-fix.png)
+![Resource summary showing proper wrench icon spacing](https://raw.githubusercontent.com/oocx/tfplan2md/main/docs/issues/086-style-guide-compliance-fixes/wrench-spacing-fix.png)
 
 ### Added tags emoji to AzAPI resources
 **Symptom:** AzAPI resource tags rendered as `**Tags:**` without the 🏷️ emoji required by the style guide.
@@ -29,7 +29,7 @@ This release fixes systematic style guide violations in generated markdown repor
 
 **Impact:** 7 artifact files (15%) now show tags with the correct emoji prefix.
 
-![Tags section with 🏷️ emoji icon](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/issues/086-style-guide-compliance-fixes/tags-icon-fix.png)
+![Tags section with 🏷️ emoji icon](https://raw.githubusercontent.com/oocx/tfplan2md/main/docs/issues/086-style-guide-compliance-fixes/tags-icon-fix.png)
 
 ### Added module emoji to code analysis sections
 **Symptom:** Module headers in "Other Findings" sections lacked the 📦 emoji: `### Module: root`
@@ -38,7 +38,7 @@ This release fixes systematic style guide violations in generated markdown repor
 
 **Impact:** 8 artifact files (17%) now show module headers with the correct emoji.
 
-![Code analysis section with 📦 module icon](https://raw.githubusercontent.com/oocx/tfplan2md/v1.20.0/docs/issues/086-style-guide-compliance-fixes/module-icon-fix.png)
+![Code analysis section with 📦 module icon](https://raw.githubusercontent.com/oocx/tfplan2md/main/docs/issues/086-style-guide-compliance-fixes/module-icon-fix.png)
 
 ## 📚 Documentation
 

@@ -22,8 +22,10 @@ If you list anything under ✨ Features and it changes rendered output, you shou
 
 PREREQUISITE: Install Playwright before generating screenshots:
 ```bash
-npx playwright install chromium --with-deps
+dotnet build src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/
+pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps
 ```
+NOTE: Do NOT use `npx playwright install` — the npm version differs from the .NET package.
 
 Generate screenshots using:
 

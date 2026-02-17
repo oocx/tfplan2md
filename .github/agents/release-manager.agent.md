@@ -279,7 +279,7 @@ Before releasing, verify:
     - **📸 Screenshots**:
        - Only include a screenshots section if you actually have screenshots to show.
        - If the release changes rendered output / review experience, screenshots are required; generate them if missing.
-       - **PREREQUISITE — Install Playwright first**: Run `npx playwright install chromium --with-deps` before any screenshot generation.
+       - **PREREQUISITE — Install Playwright first**: Build the ScreenshotGenerator (`dotnet build src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/`), then install the browser via `pwsh src/tools/Oocx.TfPlan2Md.ScreenshotGenerator/bin/Debug/net10.0/playwright.ps1 install chromium --with-deps`. Do NOT use `npx playwright install` — the npm version differs from the .NET package.
        - Release notes screenshots must be focused and small: **max 580×400**.
        - Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
        - **Recommended**: Use `scripts/generate-release-screenshots.sh` for release notes (optimized with sensible defaults):

@@ -36,7 +36,13 @@ internal static class ResourceSummaryHtmlBuilder
         flatState.TryGetValue("address_space[0]", out var addressSpace);
         flatState.TryGetValue("subscription", out var subscriptionName);
         flatState.TryGetValue("subscription_id", out var subscriptionId);
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(model.Name)}</b>";
+
+        // For AzAPI resources without a friendly name, fall back to the Terraform resource name
+        var displayName = !string.IsNullOrWhiteSpace(model.Name)
+            ? model.Name
+            : ExtractTerraformLocalName(model.Address);
+
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(displayName)}</b>";
         var detailParts = new List<string>();
         var refactoringContext = BuildRefactoringContext(model);
 
@@ -200,7 +206,7 @@ internal static class ResourceSummaryHtmlBuilder
             nameList += $", +{remaining} more";
         }
 
-        return $"{names.Count}🔧{NonBreakingSpace}{nameList}";
+        return $"{names.Count}{NonBreakingSpace}🔧{NonBreakingSpace}{nameList}";
     }
 
 
@@ -235,5 +241,26 @@ internal static class ResourceSummaryHtmlBuilder
 
         var badges = tags.Select(tag => FormatCodeTable($"{tag.Key}: {tag.Value}"));
         return $"**🏷️{NonBreakingSpace}Tags:** {string.Join(' ', badges)}";
+    }
+
+    /// <summary>
+    /// Extracts the Terraform local resource name from a resource address.
+    /// Related issue: docs/issues/086-style-guide-compliance-fixes/issue-analysis.md (Violation 2).
+    /// </summary>
+    /// <param name="address">The full Terraform resource address (e.g., "azapi_resource.automation_account").</param>
+    /// <returns>The local resource name (e.g., "automation_account").</returns>
+    /// <remarks>
+    /// For module resources, extracts the name after the last dot (e.g., "module.network.azapi_resource.vm" returns "vm").
+    /// </remarks>
+    private static string ExtractTerraformLocalName(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return string.Empty;
+        }
+
+        // Address format: "resource_type.local_name" or "module.name.resource_type.local_name"
+        var lastDotIndex = address.LastIndexOf('.');
+        return lastDotIndex >= 0 ? address[(lastDotIndex + 1)..] : address;
     }
 }

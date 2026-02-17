@@ -187,7 +187,7 @@ _No attribute changes._
 | body.properties.configuration.secrets[0].value | `(sensitive)` |
 | body.properties.template.containers[0].image | `myregistry.azurecr.io/myapp:latest` |
 | body.properties.template.containers[0].name | `app` |
-| body.properties.template.containers[0].resources.cpu | `🌐 0.5` |
+| body.properties.template.containers[0].resources.cpu | `0.5` |
 | body.properties.template.containers[0].resources.memory | `1Gi` |
 | body.properties.template.scale.maxReplicas | `10` |
 | body.properties.template.scale.minReplicas | `1` |
@@ -294,7 +294,7 @@ _No attribute changes._
 | ----------- | -------- | ------- |
 | secret_variable[0].value | `(sensitive)` | `(sensitive)` |
 | variable[0].value | `staging` | `production` |
-| variable[1].value | `🌐 1.0.0` | `🌐 2.0.0` |
+| variable[1].value | `1.0.0` | `2.0.0` |
 | variable[2].name | `DEPRECATED_VAR` | `NEW_FEATURE_FLAG` |
 | variable[2].value | `old-value` | `enabled` |
 

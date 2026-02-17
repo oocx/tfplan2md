@@ -234,7 +234,7 @@ _No attribute changes._
 
 | Index | name | image | resources.cpu | resources.memory |
 |-------|-------|-------|-------|-------|
-| [0] | `🆔 app` | `myregistry.azurecr.io/myapp:latest` | `🌐 0.5` | `1Gi` |
+| [0] | `🆔 app` | `myregistry.azurecr.io/myapp:latest` | `0.5` | `1Gi` |
 
 </details>
 

@@ -14,8 +14,7 @@ public class StyleGuideComplianceTests
 {
     /// <summary>
     /// Gets all generated artifact and example markdown files for compliance testing.
-    /// Excludes documentation files from docs/* directories and a few old UAT artifacts
-    /// that don't have source JSON files available for regeneration.
+    /// Excludes documentation files from docs/* directories.
     /// </summary>
     /// <returns>Collection of file paths to validate.</returns>
     private static List<string> GetAllMarkdownArtifacts()
@@ -46,19 +45,6 @@ public class StyleGuideComplianceTests
         // These are documentation/specification files, not generated artifacts
         var docsPath = Path.Combine(repoRoot, "docs");
         files = files.Where(f => !f.StartsWith(docsPath, StringComparison.OrdinalIgnoreCase)).ToList();
-
-        // Exclude a few old UAT artifacts that don't have source JSON files for regeneration
-        // These predate the current test data structure and their original sources are lost
-        var excludedLegacyFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "plan.md",                      // Very old test artifact, source unknown
-            "extensible-registry-uat.md",   // Feature 062 UAT, source JSON not in repo
-            "azure-rm-batch-2-uat-github.md", // Feature 064 UAT GitHub variant, source JSON not available
-            "tool-column-uat.md",           // Feature 056 UAT, source JSON not in repo
-            "uat-minimal.md",               // Static handcrafted test file (intentionally non-compliant)
-        };
-
-        files = files.Where(f => !excludedLegacyFiles.Contains(Path.GetFileName(f))).ToList();
 
         return files;
     }

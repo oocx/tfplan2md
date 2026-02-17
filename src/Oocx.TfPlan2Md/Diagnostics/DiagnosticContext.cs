@@ -194,7 +194,8 @@ internal class DiagnosticContext
     public string GenerateMarkdownSection()
     {
         var sb = new StringBuilder();
-        sb.AppendLine("## Debug Information");
+        sb.AppendLine("<details>");
+        sb.AppendLine("<summary>Debug Information</summary>");
         sb.AppendLine();
 
         var hasDiagnostics = false;
@@ -220,6 +221,9 @@ internal class DiagnosticContext
             sb.AppendLine("No diagnostics collected.");
             sb.AppendLine();
         }
+
+        sb.AppendLine("</details>");
+        sb.AppendLine();
 
         return sb.ToString();
     }

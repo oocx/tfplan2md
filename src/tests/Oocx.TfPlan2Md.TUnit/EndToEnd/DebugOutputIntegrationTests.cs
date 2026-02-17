@@ -44,7 +44,7 @@ public class DebugOutputIntegrationTests
         var markdown = renderer.Render(model);
 
         // Assert
-        await Assert.That(markdown).DoesNotContain("## Debug Information");
+        await Assert.That(markdown).DoesNotContain("Debug Information");
         await Assert.That(markdown).DoesNotContain("### Principal Mapping");
         await Assert.That(markdown).DoesNotContain("### Template Resolution");
     }
@@ -84,8 +84,10 @@ public class DebugOutputIntegrationTests
         // Append debug section (simulating what Program.cs does)
         markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
 
-        // Assert - Debug section exists
-        await Assert.That(markdown).Contains("## Debug Information");
+        // Assert - Debug section exists in collapsible details
+        await Assert.That(markdown).Contains("<details>");
+        await Assert.That(markdown).Contains("<summary>Debug Information</summary>");
+        await Assert.That(markdown).Contains("</details>");
 
         // Assert - Principal mapping diagnostics are present
         await Assert.That(markdown).Contains("### Principal Mapping");
@@ -216,6 +218,47 @@ public class DebugOutputIntegrationTests
         await Assert.That(markdown).Contains("## Summary");
 
         // Assert - No debug section
-        await Assert.That(markdown).DoesNotContain("## Debug Information");
+        await Assert.That(markdown).DoesNotContain("Debug Information");
+    }
+
+    /// <summary>
+    /// Verify that plans with no changes show "No changes" instead of a table in the Summary section.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task NoChangesPlan_SummaryShowsNoChangesText()
+    {
+        // Arrange
+        var planJson = await File.ReadAllTextAsync("TestData/empty-plan.json");
+        var parser = new TerraformPlanParser();
+        var plan = parser.Parse(planJson);
+
+        var principalMapper = new NullPrincipalMapper();
+        var modelBuilder = new ReportModelBuilder(
+            showSensitive: false,
+            showUnchangedValues: false,
+            renderTarget: RenderTarget.AzureDevOps,
+            reportTitle: null,
+            principalMapper: principalMapper,
+            hideMetadata: false);
+        var model = modelBuilder.Build(plan);
+
+        var renderer = new MarkdownRenderer(principalMapper);
+
+        // Act
+        var markdown = renderer.Render(model);
+
+        // Assert - Summary section shows "No changes" text
+        await Assert.That(markdown).Contains("## Summary");
+
+        // Check for "No changes." in Summary section (should appear after "## Summary")
+        var summaryIndex = markdown.IndexOf("## Summary", StringComparison.Ordinal);
+        var resourceChangesIndex = markdown.IndexOf("## Resource Changes", StringComparison.Ordinal);
+        var summarySection = markdown.Substring(summaryIndex, resourceChangesIndex - summaryIndex);
+        await Assert.That(summarySection).Contains("No changes.");
+
+        // Assert - Summary section does NOT contain the table
+        await Assert.That(summarySection).DoesNotContain("| Action | Count |");
+        await Assert.That(summarySection).DoesNotContain("| ➕ Add |");
     }
 }

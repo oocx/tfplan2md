@@ -47,7 +47,7 @@
 {{~ # Tags badges (if present) ~}}
 {{~ if metadata.tags ~}}
 
-**🏷️ Tags:**
+**🏷️ Tags:**
 {{~ for tag in metadata.tags ~}}
  `{{ tag.key | escape_markdown }}: {{ tag.value | escape_markdown }}`
 {{~ end ~}}

@@ -2,7 +2,7 @@
 ## Other Findings
 
 {{ for module in code_analysis.module_findings }}
-### 📦 Module: {{ if module.module_address && module.module_address != "" }}{{ format_code_table(module.module_address) }}{{ else }}root{{ end }}
+### 📦 Module: {{ if module.module_address && module.module_address != "" }}{{ format_code_table(module.module_address) }}{{ else }}root{{ end }}
 
 | Severity | Tool | Finding | Remediation |
 | -------- | ---- | ------- | ----------- |

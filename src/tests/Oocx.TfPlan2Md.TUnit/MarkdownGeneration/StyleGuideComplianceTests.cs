@@ -170,11 +170,12 @@ public class StyleGuideComplianceTests
     [Test]
     public void Test_NoH3HeadingsInDetails()
     {
-        // Pattern: <details> block containing ### heading
+        // Pattern: <details> block containing ### heading (but not ####, #####, etc.)
         // Use multiline matching to find details blocks with H3
+        // Key: ^### matches line-start with exactly 3 hashes, [^#] ensures 4th char is not a hash
         var violationPattern = new Regex(
-            @"<details[^>]*>(?:(?!<\/details>).)*###\s+",
-            RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant,
+            @"<details[^>]*>(?:(?!<\/details>).)*^###[^#]",
+            RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.CultureInvariant,
             TimeSpan.FromSeconds(1));
 
         var violations = new List<string>();

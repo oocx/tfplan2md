@@ -1,7 +1,7 @@
 ---
 description: Design, develop, and maintain the tfplan2md website
 name: Web Designer
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: vscode
 tools: ['vscode/askQuestions', 'execute/runInTerminal', 'read/readFile', 'read/problems', 'edit', 'edit/createFile', 'edit/editFiles', 'search', 'web', 'io.github.chromedevtools/chrome-devtools-mcp/*', 'github/*', 'todo']
 ---

@@ -1,7 +1,7 @@
 ---
 description: Gather and document requirements for new features (incl non-functional improvements)
 name: Requirements Engineer
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: vscode
 tools: ['vscode/askQuestions', 'search', 'edit', 'read/readFile', 'search/listDirectory', 'search/codebase', 'search/usages', 'web/fetch', 'web/githubRepo', 'execute/runInTerminal', 'execute/getTerminalOutput', 'read/terminalLastCommand', 'github/*', 'memory/*', 'io.github.hashicorp/terraform-mcp-server/*', 'todo']
 handoffs:

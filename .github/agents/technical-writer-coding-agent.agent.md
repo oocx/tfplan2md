@@ -1,7 +1,7 @@
 ---
 description: Update documentation to reflect new features and changes
 name: Technical Writer (coding agent)
-model: Claude Sonnet 4.5
+model: Claude Sonnet 4.6
 target: github-copilot
 ---
 

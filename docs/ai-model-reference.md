@@ -1,6 +1,6 @@
 # AI Model Reference for GitHub Copilot Agents
 
-**Last Updated**: January 17, 2026  
+**Last Updated**: February 17, 2026  
 **Data Sources**: 
 - LiveBench 2025-12-23
 - SWE-bench Verified (via mini-SWE-agent)
@@ -35,7 +35,8 @@ Source: [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/ref
 | GPT-5 mini | GA | 0x (included) | 400K | Vision | Fast, lightweight |
 | GPT-5.1 | GA | 1x | 400K | - | Improved reasoning |
 | GPT-5.2 | GA | 1x | 400K | - | Latest general model |
-| GPT-5.2-Codex | GA | 1x | 400K | - | **Latest Codex model (agentic coding)** |
+| GPT-5.2-Codex | GA | 1x | 400K | - | Latest Codex model (agentic coding) |
+| GPT-5.3-Codex | GA | 1x | 400K | - | **Latest Codex model (agentic coding, improved)** |
 | GPT-5-Codex | GA | 1x | 400K | - | Specialized for code |
 | GPT-5.1-Codex | GA | 1x | 400K | - | Improved code model |
 | GPT-5.1-Codex-Mini | Public Preview | 0.33x | 400K | - | Fast coding |
@@ -47,6 +48,7 @@ Source: [GitHub Copilot Supported Models](https://docs.github.com/en/copilot/ref
 | Claude Haiku 4.5 | GA | 0.33x | 200K | - | Fast, lightweight |
 | Claude Sonnet 4 | GA | 1x | 1M | Vision | Balanced performance |
 | Claude Sonnet 4.5 | GA | 1x | 1M | - | Strong language/reasoning |
+| Claude Sonnet 4.6 | GA | 1x | 1M | - | **Improved language/reasoning** |
 | Claude Opus 4.1 | GA | 10x | 200K | Vision | Very expensive |
 | Claude Opus 4.5 | GA | 3x | 200K | Vision | Premium reasoning |
 

@@ -206,9 +206,9 @@ This reference is updated periodically with latest benchmark data.
 
 1. **Use task-specific benchmarks, not overall scores**
    - Different models excel at different tasks
-   - Example: GPT-5.2-Codex excels in Coding while Claude Sonnet 4.5 is better for Language (76.00)
+   - Example: GPT-5.3-Codex excels in Coding while Claude Sonnet 4.6 is better for Language (76.00)
 
-2. **Claude Sonnet 4.5 has poor Instruction Following** (score: 23.52)
+2. **Claude Sonnet 4.6 has poor Instruction Following** (score: 23.52)
    - Unsuitable for agents that follow templates (Task Planner, Quality Engineer)
    - Use Gemini models instead for structured output (scores: 65-75)
 
@@ -218,7 +218,7 @@ This reference is updated periodically with latest benchmark data.
    - Good Language performance (84.56)
    - Ideal for: Task Planner, Release Manager, high-frequency agents
 
-4. **GPT-5.2-Codex is the latest coding model**
+4. **GPT-5.3-Codex is the latest coding model**
    - Latest generation Codex model (improved over 5.1 Codex Max)
    - Specialized for agentic coding tasks
    - Primary choice for Developer agent
@@ -261,7 +261,7 @@ When selecting or changing a model:
 3. **Benchmark lookup** (from ai-model-reference.md):
    - Gemini 3 Flash: Instruction Following 74.86, 0.33x cost ✅
    - Gemini 3 Pro: Instruction Following 65.85, 1x cost ✅
-   - Claude Sonnet 4.5: Instruction Following 23.52 ❌ (disqualified)
+   - Claude Sonnet 4.6: Instruction Following 23.52 ❌ (disqualified)
 4. **Decision**: Gemini 3 Pro (balance of performance and cost)
 5. **Rationale**: Strong instruction following (65.85), reasonable cost (1x), good for template-based work
 

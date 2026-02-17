@@ -11,12 +11,16 @@ This release fixes systematic style guide violations in generated markdown repor
 
 **Impact:** 6 artifact files (13%) now show meaningful resource identifiers instead of empty placeholders.
 
+![AzAPI resource showing Terraform name fallback](./azapi-resource-name-fix.png)
+
 ### Fixed wrench icon spacing
 **Symptom:** Changed attribute summaries displayed `2🔧` (no space) instead of the documented `2 🔧` format.
 
 **Fix:** Added non-breaking space before the wrench icon in summary builders.
 
 **Impact:** 19 artifact files (41%) now render with correct spacing per the style guide.
+
+![Resource summary showing proper wrench icon spacing](./wrench-spacing-fix.png)
 
 ### Added tags emoji to AzAPI resources
 **Symptom:** AzAPI resource tags rendered as `**Tags:**` without the 🏷️ emoji required by the style guide.
@@ -25,12 +29,16 @@ This release fixes systematic style guide violations in generated markdown repor
 
 **Impact:** 7 artifact files (15%) now show tags with the correct emoji prefix.
 
+![Tags section with 🏷️ emoji icon](./tags-icon-fix.png)
+
 ### Added module emoji to code analysis sections
 **Symptom:** Module headers in "Other Findings" sections lacked the 📦 emoji: `### Module: root`
 
 **Fix:** Updated code analysis template to include the module icon: `### 📦 Module: root`
 
 **Impact:** 8 artifact files (17%) now show module headers with the correct emoji.
+
+![Code analysis section with 📦 module icon](./module-icon-fix.png)
 
 ## 📚 Documentation
 

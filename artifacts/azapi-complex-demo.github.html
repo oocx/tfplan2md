@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="light" data-light-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md GitHub-style Rendering (Light)</title>
+    <!-- GitHub light theme markdown CSS with offline fallback -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css" 
+          onerror="this.onerror=null; this.disabled=true; document.getElementById('fallback-css').disabled=false;">
+    <!-- highlight.js light theme for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+          onerror="this.onerror=null; this.disabled=true;">
+    <!-- Fallback CSS when CDN is unavailable -->
+    <style id="fallback-css" disabled>
+        /* Minimal fallback styling based on github-markdown-css core features */
+        .markdown-body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .markdown-body h1, .markdown-body h2 {
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 0.3em;
+        }
+        .markdown-body table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            display: block;
+            width: max-content;
+            max-width: 100%;
+            overflow: auto;
+        }
+        .markdown-body table th {
+            font-weight: 600;
+        }
+        .markdown-body table td, .markdown-body table th {
+            border: 1px solid #d0d7de;
+            padding: 6px 13px;
+        }
+        .markdown-body table tr {
+            background-color: #ffffff;
+            border-top: 1px solid #d8dee4;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        .markdown-body code {
+            background-color: rgba(175, 184, 193, 0.2);
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 85%;
+            margin: 0;
+            padding: 0.2em 0.4em;
+        }
+        .markdown-body pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            font-size: 85%;
+            line-height: 1.45;
+            overflow: auto;
+            padding: 16px;
+        }
+        .markdown-body pre code {
+            background-color: transparent;
+            border: 0;
+            display: inline;
+            line-height: inherit;
+            margin: 0;
+            overflow: visible;
+            padding: 0;
+            word-wrap: normal;
+        }
+    </style>
+    <style>
+        /* GitHub light theme colors extracted from actual GitHub PR pages */
+        :root {
+            color-scheme: light;
+            --bgColor-default: #ffffff;
+            --bgColor-muted: #f6f8fa;
+            --bgColor-emphasis: #656d76;
+            --borderColor-default: #d0d7de;
+            --borderColor-muted: #d8dee4;
+            --fgColor-default: #1f2328;
+            --fgColor-muted: #656d76;
+            --fgColor-accent: #0969da;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px 16px 56px;
+            background: var(--bgColor-default);
+            color: var(--fgColor-default);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .page-container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        /* Simulates a GitHub PR comment card without extra outline */
+        .comment-surface {
+            background: var(--bgColor-muted);
+            border: 0;
+            border-radius: 6px;
+            padding: 24px 28px;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            background: transparent !important;
+        }
+
+        /* Heading styles */
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--fgColor-default);
+            border-bottom-color: var(--borderColor-muted);
+        }
+
+        /* Links */
+        .markdown-body a {
+            color: var(--fgColor-accent);
+        }
+
+        .markdown-body table { width: 100%; }
+
+        /* Tables: keep subtle cell borders like GitHub tables */
+        .markdown-body table th,
+        .markdown-body table td {
+            border: 1px solid var(--borderColor-muted);
+        }
+
+        /* Details/Summary collapsible sections */
+        .markdown-body details {
+            border: 0;
+            border-radius: 6px;
+            padding: 0;
+            background: transparent;
+        }
+
+        .markdown-body details summary {
+            cursor: pointer;
+            font-weight: 600;
+            list-style: none;
+            color: var(--fgColor-default);
+        }
+
+        .markdown-body details summary::-webkit-details-marker { display: none; }
+
+        .markdown-body details summary::before {
+            content: "▸";
+            display: inline-block;
+            margin-right: 8px;
+            color: var(--fgColor-muted);
+            transform: translateY(-1px);
+        }
+
+        .markdown-body details[open] summary::before { content: "▾"; }
+
+        /* Code blocks */
+        .markdown-body code,
+        .markdown-body pre code {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+
+        .markdown-body pre {
+            border: 1px solid var(--borderColor-muted);
+            border-radius: 6px;
+            padding: 16px;
+            background: var(--bgColor-default) !important;
+        }
+
+        .markdown-body code {
+            background: rgba(175, 184, 193, 0.2);
+        }
+
+        /* Make embedded <details> from tfplan2md look like cards */
+        .markdown-body details[style*="border:"] {
+            border: 1px solid var(--borderColor-default) !important;
+            background: var(--bgColor-muted) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="comment-surface">
+            <article class="markdown-body">
+                <h1 dir="auto">Terraform Plan Report</h1>
+<p dir="auto">Generated by tfplan2md 1.19.0 (bbb6233) on 2026-02-17 17:46:55 UTC | Terraform 1.14.0</p>
+<h2 dir="auto">Summary</h2>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Action</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕&nbsp;Add</td>
+<td>1</td>
+<td>1 azapi_resource</td>
+</tr>
+<tr>
+<td>🔄&nbsp;Change</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td>♻️&nbsp;Replace</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td>❌&nbsp;Destroy</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>1</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h2 dir="auto">Resource Changes</h2>
+<h3 dir="auto">📦&nbsp;Module: root</h3>
+<details open >
+<summary>➕&nbsp;azapi_resource <b><code class="notranslate">app_service</code></b> — <code class="notranslate">🆔&nbsp;myWebApp</code> <code class="notranslate">🌍&nbsp;westeurope</code></summary>
+<br/>
+<p dir="auto"><strong>Type:</strong> <code class="notranslate">Microsoft.Web/sites@2022-03-01</code></p>
+<p dir="auto">📚&nbsp;<a href="https://learn.microsoft.com/rest/api/appservice/web-apps">View API Documentation</a></p>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><code class="notranslate">🆔&nbsp;myWebApp</code></td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td><code class="notranslate">example-resources</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code class="notranslate">🌍&nbsp;westeurope</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h4 dir="auto">Body</h4>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>serverFarmId</td>
+<td>App Service Plan <code class="notranslate">🆔&nbsp;myPlan</code> in resource group <code class="notranslate">📁&nbsp;example-resources</code> of subscription <code class="notranslate">🔑&nbsp;00000000-0000-0000-0000-000000000000</code></td>
+</tr>
+<tr>
+<td>siteConfig.netFrameworkVersion</td>
+<td><code class="notranslate">v6.0</code></td>
+</tr>
+<tr>
+<td>siteConfig.alwaysOn</td>
+<td><code class="notranslate">✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>siteConfig.metadata[0].name</td>
+<td><code class="notranslate">CURRENT_STACK</code></td>
+</tr>
+<tr>
+<td>siteConfig.metadata[0].value</td>
+<td><code class="notranslate">dotnet</code></td>
+</tr>
+<tr>
+<td>httpsOnly</td>
+<td><code class="notranslate">✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>clientAffinityEnabled</td>
+<td><code class="notranslate">❌&nbsp;false</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h6 dir="auto"><code class="notranslate">siteConfig.connectionStrings</code> Array</h6>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Index</th>
+<th>name</th>
+<th>connectionString</th>
+<th>type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[0]</td>
+<td><code class="notranslate">🆔&nbsp;Database</code></td>
+<td><code class="notranslate">Server=tcp:myserver.database.windows.net,1433;Initial Catalog=mydb;User ID=admin;Password=***;</code></td>
+<td><code class="notranslate">SQLAzure</code></td>
+</tr>
+<tr>
+<td>[1]</td>
+<td><code class="notranslate">🆔&nbsp;Redis</code></td>
+<td><code class="notranslate">myredis.redis.cache.windows.net:6380,password=***,ssl=True</code></td>
+<td><code class="notranslate">RedisCache</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h6 dir="auto"><code class="notranslate">siteConfig.appSettings</code> Array</h6>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Index</th>
+<th>name</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[0]</td>
+<td><code class="notranslate">🆔&nbsp;ASPNETCORE_ENVIRONMENT</code></td>
+<td><code class="notranslate">Production</code></td>
+</tr>
+<tr>
+<td>[1]</td>
+<td><code class="notranslate">🆔&nbsp;APPLICATIONINSIGHTS_CONNECTION_STRING</code></td>
+<td><code class="notranslate">InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h6 dir="auto"><code class="notranslate">siteConfig.cors</code></h6>
+<markdown-accessiblity-table data-catalyst=""><table role="table" tabindex="0">
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>allowedOrigins[0]</td>
+<td><code class="notranslate">https://portal.azure.com</code></td>
+</tr>
+<tr>
+<td>allowedOrigins[1]</td>
+<td><code class="notranslate">https://myapp.azurewebsites.net</code></td>
+</tr>
+<tr>
+<td>supportCredentials</td>
+<td><code class="notranslate">✅&nbsp;true</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+</details>
+
+            </article>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" 
+            onerror="console.warn('highlight.js failed to load from CDN, syntax highlighting disabled');"></script>
+    <script>
+        // Only run syntax highlighting if highlight.js loaded successfully
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightAll();
+        }
+    </script>
+</body>
+</html>

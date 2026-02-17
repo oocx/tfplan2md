@@ -246,7 +246,7 @@ terraform show -json plan.tfplan | tfplan2md --debug
 tfplan2md --debug --principal-mapping principals.json plan.json -o report.md
 ```
 
-Debug information is added as a "Debug Information" section at the end of the report and includes:
+Debug information is added as a collapsible "Debug Information" section at the end of the report (collapsed by default to reduce visual clutter) and includes:
 
 - **Principal mapping diagnostics**: Load status, principal type counts, and failed ID resolutions with context showing which resource referenced each missing ID
 - **Enhanced error diagnostics** (when principal mapping fails):

@@ -15,7 +15,8 @@ tfplan2md can append diagnostic information to reports to help troubleshoot issu
 ### Features
 
 - **Command-line flag**: Single `--debug` flag enables all diagnostics
-- **Output location**: Debug information is appended to the markdown report as a new section
+- **Output location**: Debug information is appended to the markdown report in a collapsible `<details>` block (collapsed by default)
+- **Collapsible format**: Debug section is wrapped in a `<details>` block to reduce visual clutter while keeping information accessible (Feature 086)
 - **Principal mapping diagnostics**:
   - Load status (success/failure) and file path
   - Count of principals by type (users, groups, service principals)
@@ -38,10 +39,12 @@ docker run -v $(pwd):/data oocx/tfplan2md --debug /data/plan.json
 
 ### Debug Output Example
 
-When `--debug` is enabled, the report includes a section like:
+When `--debug` is enabled, the report includes a collapsible section like:
 
 ```markdown
-## Debug Information
+<details>
+<summary>🐛 Debug Information</summary>
+<br>
 
 ### Principal Mapping
 
@@ -57,9 +60,72 @@ Failed to resolve 2 principal IDs:
 - `azurerm_firewall_network_rule_collection`: Built-in resource-specific template
 - `azurerm_role_assignment`: Built-in resource-specific template
 - `azurerm_storage_account`: Default template
+
+</details>
 ```
 
-This helps diagnose principal mapping failures and verify which templates are being applied to each resource type.
+The debug information is collapsed by default to reduce visual clutter in PR reviews, but can be expanded by clicking the "🐛 Debug Information" summary line. This helps diagnose principal mapping failures and verify which templates are being applied to each resource type.
+
+## Output Display Enhancements
+
+**Status:** ✅ Implemented (Feature 086)
+
+tfplan2md includes display enhancements that improve readability and user experience in markdown reports, particularly for PR reviews:
+
+### Collapsible Debug Section
+
+The debug information section (enabled with `--debug` flag) is displayed in a collapsed `<details>` block by default to reduce visual clutter while keeping debug information accessible when needed.
+
+**Benefits:**
+- **Cleaner reports**: Debug information doesn't dominate the visible report
+- **Accessible when needed**: Users can expand the section by clicking the summary line
+- **Professional appearance**: Reports look clean in PR reviews, especially when multiple modules are being reviewed
+
+**Implementation:** The debug section is wrapped in `<details>` tags with `<summary>🐛 Debug Information</summary>` and is collapsed by default (no `open` attribute).
+
+### No-Changes Summary
+
+When a Terraform plan contains no changes (zero add, change, replace, or destroy actions), the Summary section displays a simple "No changes" message instead of an empty summary table.
+
+**Before (empty table):**
+```markdown
+## Summary
+
+| Action | Count | Resource Types |
+| -------- | ------- | ---------------- |
+| ➕ Add | 0 | |
+| 🔄 Change | 0 | |
+| ♻️ Replace | 0 | |
+| ❌ Destroy | 0 | |
+| **Total** | **0** | |
+
+## Resource Changes
+
+No changes
+```
+
+**After (clean message):**
+```markdown
+## Summary
+
+No changes
+```
+
+**Benefits:**
+- **Professional appearance**: No-changes plans show a clean, simple message
+- **Reduced redundancy**: Resource Changes section is omitted when Summary already shows "No changes"
+- **Better PR reviews**: Easier to scan multiple modules where many may have no changes (e.g., unaffected modules in a monorepo)
+
+**Implementation:** 
+- Templates check `summary.total == 0` and render "No changes" text instead of the table
+- Resource Changes section is omitted when `module_changes.size == 0` to avoid redundancy
+
+### User Experience
+
+These enhancements make tfplan2md reports cleaner, more professional, and easier to scan, especially in PR reviews where:
+- Debug information may be enabled for troubleshooting but shouldn't clutter the main view
+- Many plans may have no changes (e.g., unaffected modules in infrastructure monorepos)
+- Reviewers need to quickly identify which modules have changes and which don't
 
 ## Markdown to HTML Renderer (Dev Tool)
 

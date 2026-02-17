@@ -244,12 +244,12 @@ Update existing tests for debug output and no-changes scenarios to expect the ne
 Update the `docs/report-style-guide.md` to document the new collapsible debug section structure and no-changes summary format, providing guidance for future template development and maintenance.
 
 **Acceptance Criteria:**
-- [ ] Style guide documents collapsible debug section pattern (structure, tags, spacing)
-- [ ] Style guide documents no-changes summary format ("No changes" text vs table)
-- [ ] Style guide explains when Resource Changes section is omitted (zero changes)
-- [ ] Examples provided for both debug section and no-changes summary
-- [ ] Documentation is consistent with existing style guide structure and formatting
-- [ ] References to these features are added to appropriate sections (collapsible sections, summary formatting)
+- [x] Style guide documents collapsible debug section pattern (structure, tags, spacing)
+- [x] Style guide documents no-changes summary format ("No changes" text vs table)
+- [x] Style guide explains when Resource Changes section is omitted (zero changes)
+- [x] Examples provided for both debug section and no-changes summary
+- [x] Documentation is consistent with existing style guide structure and formatting
+- [x] References to these features are added to appropriate sections (collapsible sections, summary formatting)
 
 **Dependencies:** Task 1, Task 2, Task 3 (implementations complete to accurately document)
 

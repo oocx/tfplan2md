@@ -30,3 +30,20 @@
   - **Formula Design:** Multi-platform conditional formula using `on_macos`/`on_linux` blocks with architecture detection (standard Homebrew pattern)
   - **Workflow Integration:** Dedicated `update-homebrew-formula` job with script-based updates, graceful degradation (doesn't block releases)
 - **Problems Encountered:** Feature 047 platform builds failing for 4 platforms due to missing toolchains (macOS needs Xcode, ARM64 needs cross-compilation setup). Prioritized fixes based on Homebrew requirements (macOS critical, Linux ARM64 optional).
+
+### Quality Engineer
+- **Date:** 2025-02-18
+- **Summary:** Created comprehensive test plan for Homebrew installation support covering platform build testing, Homebrew formula validation, release workflow integration, and end-to-end integration testing. Defined 35 test cases mapping to all acceptance criteria with clear test types, priorities, steps, and expected results.
+- **Artifacts Produced:**
+  - `docs/features/089-homebrew-installation/test-plan.md` - Complete test plan with test coverage matrix, detailed test cases, edge cases, test data requirements, and execution schedule
+- **Key Test Areas:**
+  - **Platform Build Testing (9 test cases):** macOS x64/ARM64 build success with Xcode installation, windows-arm64 removal, regression testing for existing platforms, binary architecture validation
+  - **Homebrew Formula Testing (9 test cases):** Formula syntax/style validation, installation on macOS x64/ARM64/Linux x64, platform detection, checksum verification, upgrade/uninstall testing
+  - **Release Workflow Testing (9 test cases):** Formula update job execution, checksum extraction, placeholder replacement, tap repository updates, prerelease handling, error scenarios (missing/invalid checksums, push failures)
+  - **Integration Testing (2 test cases):** End-to-end release workflow, prerelease behavior validation
+- **Testing Strategy:**
+  - **Automated (CI/CD):** 17 test cases (BUILD-*, WORKFLOW-*, INTEGRATION-E2E-002) run in GitHub Actions
+  - **Manual:** 18 test cases (BREW-*, INTEGRATION-E2E-001) require Homebrew installed on macOS/Linux systems
+  - **Test Execution Schedule:** 4 phases (pre-development, during development, pre-release, post-release) with clear test priorities
+- **Test Coverage:** All 16 acceptance criteria from specification mapped to test cases with Critical (14), High (9), and Medium (2) priorities
+- **Problems Encountered:** None. Leveraged existing testing strategy documentation and workflow structure. Identified that Homebrew installation tests cannot be easily automated in CI/CD (requires Homebrew setup), recommending manual testing approach for BREW-* test cases.

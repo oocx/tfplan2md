@@ -357,6 +357,84 @@ Despite the blocker, the generated markdown artifacts prove the fix is working c
 
 ---
 
+### UAT Tester - 2026-02-18 (Second Attempt - RESOLVED)
+**Duration:** ~2 hours
+**Status:** ✅ Complete
+
+**Work Completed:**
+1. ✅ Loaded coding-agent-workflow skill
+2. ✅ Verified current branch (`copilot/fix-html-rendering-issue`)
+3. ✅ Verified authentication status (GitHub CLI authenticated, Azure DevOps token set)
+4. ✅ Resolved authentication issues from previous attempt:
+   - Unset `GITHUB_TOKEN` which was taking precedence over `GH_UAT_TOKEN`
+   - Created custom `GIT_ASKPASS` script for git push operations
+   - Used `GH_TOKEN` environment variable for `gh pr create` commands
+   - Configured git user identity for commits
+5. ✅ Verified UAT artifacts exist and contain correct test scenarios
+6. ✅ Validated feature-specific artifact content matches expected nested array filtering
+7. ✅ Created GitHub UAT PR #80: https://github.com/oocx/tfplan2md-uat/pull/80
+8. ✅ Posted feature-specific artifact to GitHub PR as "🎯 Feature Test" comment
+9. ✅ Posted comprehensive demo to GitHub PR as "🔄 Regression Test" comment
+10. ✅ Created Azure DevOps UAT PR #80: https://dev.azure.com/oocx/test/_git/test/pullrequest/80
+11. ✅ Posted feature-specific artifact to Azure DevOps PR as "🎯 Feature Test" comment
+12. ✅ Posted comprehensive demo to Azure DevOps PR as "🔄 Regression Test" comment
+13. ✅ Saved UAT state to `.tmp/uat-run/last-run.json` for cleanup
+14. ✅ Updated UAT report with successful execution details
+15. ✅ Updated work protocol with UAT completion
+
+**Artifacts Produced:**
+- GitHub UAT PR #80 with two comment threads (feature test + regression test)
+- Azure DevOps UAT PR #80 with two comment threads (feature test + regression test)
+- Updated `docs/issues/089-nested-array-shows-all-items/uat-report.md` - Status changed to AWAITING MAINTAINER REVIEW
+- `.tmp/uat-run/last-run.json` - UAT state for cleanup
+
+**UAT PRs Created:**
+- **GitHub**: https://github.com/oocx/tfplan2md-uat/pull/80
+- **Azure DevOps**: https://dev.azure.com/oocx/test/_git/test/pullrequest/80
+
+**Test Scenarios Posted:**
+Each PR contains two artifacts for validation:
+
+1. **🎯 Feature Test** (`docs/issues/089-nested-array-shows-all-items/uat-plan.md`):
+   - Scenario 1: 6-item array with 1 changed item → Shows only index [4]
+   - Scenario 2: 6-item array with 2 changed items → Shows only indexes [1] and [4]
+   - Scenario 3: 6-item array with 6 changed items → Shows all indexes [0] through [5]
+
+2. **🔄 Regression Test** (comprehensive demo):
+   - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
+   - Azure DevOps: `artifacts/comprehensive-demo.md`
+
+**Authentication Resolution:**
+The authentication blocker from the first attempt was resolved by:
+1. Understanding token precedence: `GITHUB_TOKEN` > `GH_TOKEN` > stored credentials
+2. Unsetting `GITHUB_TOKEN` to allow `GH_UAT_TOKEN` to be used
+3. Creating custom `GIT_ASKPASS` script to provide credentials for git operations
+4. Using `GH_TOKEN=$GH_UAT_TOKEN` for GitHub CLI operations
+
+**Problems Encountered:**
+1. Initial authentication issues due to `GITHUB_TOKEN` precedence (resolved)
+2. Multiple submodule state resets needed due to failed push attempts (resolved)
+3. PR creation via `gh pr create` required different token configuration than git push (resolved)
+
+**Next Steps for Maintainer:**
+1. Review both UAT PRs on GitHub and Azure DevOps
+2. Validate feature test scenarios:
+   - [ ] Scenario 1 shows exactly 1 table row (not 6)
+   - [ ] Scenario 2 shows exactly 2 table rows (not 6)
+   - [ ] Scenario 3 shows all 6 table rows (as expected)
+3. Validate regression test renders correctly with no side effects
+4. Approve UAT:
+   - GitHub: Add `uat-approved` label to PR #80
+   - Azure DevOps: Approve PR #80
+5. Notify UAT Tester to clean up PRs using `scripts/uat-run.sh --cleanup-last`
+
+**Ready for Handoff:** Yes ✅
+
+**Next Agent Recommendation:**
+Awaiting Maintainer validation. Once approved, UAT Tester will clean up PRs and recommend Release Manager for final release preparation.
+
+---
+
 ## Notes
 
 - Issue number 089 was determined using `scripts/next-issue-number.sh` (required to prevent conflicts)

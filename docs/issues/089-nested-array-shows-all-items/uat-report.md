@@ -1,6 +1,6 @@
 # UAT Report: Nested Array Filtering Fix (Issue #089)
 
-## Status: ❌ BLOCKED
+## Status: 🕐 AWAITING MAINTAINER REVIEW
 
 ## Test Execution Date
 2026-02-18
@@ -9,61 +9,38 @@
 GitHub Copilot - UAT Tester Agent
 
 ## Summary
-UAT could not be completed due to authentication issues with the GitHub UAT repository. The `GH_UAT_TOKEN` does not have write access to `oocx/tfplan2md-uat`.
+UAT PRs successfully created on both GitHub and Azure DevOps. Both feature-specific and regression test artifacts have been posted. The rendering is ready for Maintainer validation.
 
-## Blocker Details
+## UAT PRs Created
 
-### Issue
-Git push to the GitHub UAT repository fails with:
-```
-remote: Permission to oocx/tfplan2md-uat.git denied to oocx.
-fatal: unable to access 'https://github.com/oocx/tfplan2md-uat.git/': The requested URL returned error: 403
-```
+- **GitHub PR #80**: https://github.com/oocx/tfplan2md-uat/pull/80
+- **Azure DevOps PR #80**: https://dev.azure.com/oocx/test/_git/test/pullrequest/80
 
-### Root Cause Analysis
-1. **Token Type**: `GH_UAT_TOKEN` appears to be a fine-grained personal access token (no `X-OAuth-Scopes` header in API responses)
-2. **Permission Issue**: The token can read the UAT repository (verified via `gh api repos/oocx/tfplan2md-uat`) but cannot push to it
-3. **Credential Helper**: Multiple attempts to configure git credential helper were made but failed because the underlying token lacks write permissions
+### Artifacts Posted to Each PR
 
-### Troubleshooting Steps Attempted
-1. ✅ Verified `GH_UAT_TOKEN` is set in environment
-2. ✅ Verified GitHub CLI authentication works (`gh auth status`)
-3. ✅ Verified token can read UAT repository via API
-4. ✅ Created custom git credential helper to use `GH_UAT_TOKEN`
-5. ❌ Git push still fails with 403 Permission Denied
+Both PRs contain two comments:
 
-### Technical Details
-- Environment: GitHub Copilot coding agent (GitHub Actions runner)
-- Authentication method: Fine-grained personal access token
-- Token can: Read repository, access API
-- Token cannot: Push to repository (write access)
+1. **🎯 Feature Test** - Nested Array Filtering
+   - Artifact: `docs/issues/089-nested-array-shows-all-items/uat-plan.md`
+   - Contains 3 test scenarios demonstrating the fix
+   
+2. **🔄 Regression Test** - Comprehensive Demo
+   - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
+   - Azure DevOps: `artifacts/comprehensive-demo.md`
+   - Validates no side effects from the fix
 
-## Required Action
+## Authentication Resolution
 
-**Maintainer must update the `GH_UAT_TOKEN` secret** in Repository Settings > Environments > copilot with one of the following:
+Initial attempts to run UAT encountered authentication issues. These were resolved by:
 
-### Option 1: Grant Write Access (Recommended)
-If `GH_UAT_TOKEN` is a fine-grained token:
-1. Go to GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens
-2. Find the token used for `GH_UAT_TOKEN`
-3. Edit the token and grant **Read and write** access to the `oocx/tfplan2md-uat` repository
-4. Save the token
-5. Re-run UAT
+1. **Unsetting GITHUB_TOKEN** - This token took precedence but lacked write permissions
+2. **Using GH_UAT_TOKEN via GIT_ASKPASS** - Created a custom askpass script to provide credentials
+3. **Using GH_TOKEN for gh CLI** - Set `GH_TOKEN=$GH_UAT_TOKEN` for PR creation commands
 
-### Option 2: Use Classic Token
-Replace `GH_UAT_TOKEN` with a classic personal access token that has:
-- ✅ `repo` scope (full control of private repositories)
-- ✅ `workflow` scope (if needed for GitHub Actions)
-
-### Option 3: Skip UAT for This Fix (Alternative)
-As noted by the Code Reviewer:
-> ⚠️ **UAT RECOMMENDED but not strictly required** - This is a rendering change affecting markdown output, but it's low-risk (improvement, not new feature). Recommendation: Skip UAT to expedite this clear improvement, monitor first few uses in real PRs.
-
-This bug fix:
-- ✅ Has 1092/1092 tests passing (including 3 new regression tests)
-- ✅ Has code review approval
-- ✅ Is a low-risk improvement (filtering display, not changing logic)
-- ✅ Has comprehensive unit tests covering all scenarios
+The key discovery was that environment variable precedence matters:
+- `GITHUB_TOKEN` takes precedence in GitHub Actions runners
+- `GH_TOKEN` is respected by `gh` CLI when `GITHUB_TOKEN` is unset
+- `GIT_ASKPASS` is needed for git push operations in submodules
 
 ## UAT Artifacts Created
 
@@ -93,80 +70,79 @@ All artifacts were validated:
 - ✅ Comprehensive demo is truly comprehensive (not feature-specific)
 - ✅ All markdown files are properly formatted and ready for rendering
 
-## Verification Evidence
+## Test Scenarios
 
-The generated markdown in `uat-plan.md` proves the fix is working:
+The feature-specific artifact (`uat-plan.md`) contains three critical test scenarios:
 
-### Scenario 1: Single Item Changed (Lines 28-36)
-```markdown
-###### `policyRule.if.allOf` Array
+### ✅ Scenario 1: Single Changed Item
+- **Resource**: `azapi_resource.policy_scenario1`
+- **Test**: 6-item array with only item at index [4] changed
+- **Expected Result**: Table shows only 1 row for index [4]
+- **What to Validate**: Confirm the rendered table has exactly 1 data row (plus header), not 6 rows
 
-| Index | equals | field | in[0] | in[1] | in[2] | in[3] |
-|-------|-------|-------|-------|-------|-------|-------|
-| [4] | `value4` | `property4` | - <br>+ `0` | - <br>+ `1` | - <br>+ `2` | - <br>+ `3` |
+### ✅ Scenario 2: Multiple Changed Items  
+- **Resource**: `azapi_resource.policy_scenario2`
+- **Test**: 6-item array with items at indexes [1] and [4] changed
+- **Expected Result**: Table shows only 2 rows for indexes [1] and [4]
+- **What to Validate**: Confirm the rendered table has exactly 2 data rows (plus header), not 6 rows
+
+### ✅ Scenario 3: All Items Changed
+- **Resource**: `azapi_resource.policy_scenario3`
+- **Test**: 6-item array with all 6 items changed
+- **Expected Result**: Table shows all 6 rows for indexes [0] through [5]
+- **What to Validate**: Confirm the rendered table has all 6 data rows (plus header)
+
+## Validation Checklist for Maintainer
+
+When reviewing the UAT PRs, please verify:
+
+### Feature Test (🎯 Comment)
+- [ ] Scenario 1 table shows **exactly 1 row** (index [4]) - not 6 rows
+- [ ] Scenario 2 table shows **exactly 2 rows** (indexes [1] and [4]) - not 6 rows  
+- [ ] Scenario 3 table shows **all 6 rows** (indexes [0] through [5]) as expected
+- [ ] Tables are properly formatted and readable
+- [ ] Before/after values are clearly distinguishable
+
+### Regression Test (🔄 Comment)
+- [ ] Comprehensive demo renders correctly
+- [ ] No unexpected formatting issues
+- [ ] All resource types display properly
+- [ ] No visual regressions from the fix
+
+## Approval Process
+
+Once validation is complete:
+
+### GitHub PR #80
+Add the `uat-approved` label to the PR
+
+### Azure DevOps PR #80
+Approve the PR using the Azure DevOps approval mechanism
+
+### After Approval
+The UAT Tester will clean up both PRs using:
+```bash
+scripts/uat-run.sh --cleanup-last
 ```
-✅ **PASS**: Only 1 row shown (not 6)
-
-### Scenario 2: Multiple Items Changed (Lines 47-55)
-```markdown
-###### `policyRule.if.allOf` Array
-
-| Index | equals | field |
-|-------|-------|-------|
-| [1] | - `value1`<br>+ `changedValue1` | `property1` |
-| [4] | - `value4`<br>+ `changedValue4` | `property4` |
-```
-✅ **PASS**: Only 2 rows shown (not 6)
-
-### Scenario 3: All Items Changed (Lines 67-79)
-```markdown
-###### `policyRule.if.allOf` Array
-
-| Index | equals | field |
-|-------|-------|-------|
-| [0] | - `value0`<br>+ `changedValue0` | `property0` |
-| [1] | - `value1`<br>+ `changedValue1` | `property1` |
-| [2] | - `value2`<br>+ `changedValue2` | `property2` |
-| [3] | - `value3`<br>+ `changedValue3` | `property3` |
-| [4] | - `value4`<br>+ `changedValue4` | `property4` |
-| [5] | - `value5`<br>+ `changedValue5` | `property5` |
-```
-✅ **PASS**: All 6 rows shown (as expected)
-
-## Recommendation
-
-### Primary: Fix Authentication & Run UAT
-1. Update `GH_UAT_TOKEN` with write access (see Required Action above)
-2. Re-run UAT using existing artifacts: `scripts/uat-run.sh docs/issues/089-nested-array-shows-all-items/uat-plan.md "..."`
-3. Validate rendering on real platforms
-
-### Alternative: Approve for Release Without UAT
-Given:
-- ✅ All unit tests pass (1092/1092)
-- ✅ Code review approved
-- ✅ Generated markdown proves fix works correctly
-- ✅ Low-risk improvement (display filtering only)
-
-The Maintainer may choose to:
-1. Review the generated markdown in `uat-plan.md` locally
-2. Approve the fix for release without platform UAT
-3. Monitor the first few real PRs that use this fix
-4. Fix the UAT authentication for future rendering changes
-
-## Next Steps
-
-**For Maintainer:**
-1. Choose approach: Fix UAT authentication OR approve without UAT
-2. If fixing authentication: Update `GH_UAT_TOKEN` and notify UAT Tester
-3. If approving without UAT: Proceed directly to Release Manager
-
-**For UAT Tester (if authentication fixed):**
-1. Re-run `scripts/uat-run.sh` with existing artifacts
-2. Validate rendering in GitHub and Azure DevOps UAT PRs
-3. Update this report with PASS/FAIL results
 
 ## Artifacts Committed
 - ✅ `docs/issues/089-nested-array-shows-all-items/uat-test-plan.md`
 - ✅ `docs/issues/089-nested-array-shows-all-items/uat-plan.json`
 - ✅ `docs/issues/089-nested-array-shows-all-items/uat-plan.md`
 - ✅ `docs/issues/089-nested-array-shows-all-items/uat-report.md` (this file)
+
+---
+
+## Final Status
+
+**UAT Execution:** ✅ **COMPLETE**  
+**Platform Validation:** 🕐 **PENDING MAINTAINER REVIEW**
+
+### Summary
+
+UAT PRs have been successfully created on both GitHub and Azure DevOps with:
+- Feature-specific test artifact demonstrating the nested array fix
+- Comprehensive regression test to validate no side effects
+- Clear validation criteria for the Maintainer
+
+The fix is working correctly as evidenced by the generated markdown showing only changed array items. Platform rendering validation is the final step before approval.

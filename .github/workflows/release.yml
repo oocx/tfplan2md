@@ -411,6 +411,60 @@ jobs:
           tag_name: v${{ needs.release.outputs.version }}
           files: SHA256SUMS
 
+      - name: Upload checksums as artifact
+        if: hashFiles('SHA256SUMS') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksums
+          path: SHA256SUMS
+          retention-days: 1
+
+  update-homebrew-formula:
+    name: Update Homebrew Formula
+    runs-on: ubuntu-latest
+    needs: [release, consolidate-checksums]
+    # Only run for stable releases (skip prereleases)
+    if: needs.release.outputs.version != '' && needs.release.outputs.is_prerelease != 'true'
+    
+    steps:
+      - name: Checkout tfplan2md repository
+        uses: actions/checkout@v6
+
+      - name: Download consolidated checksums
+        uses: actions/download-artifact@v4
+        with:
+          name: checksums
+          path: checksums
+
+      - name: Checkout Homebrew tap repository
+        uses: actions/checkout@v6
+        with:
+          repository: oocx/homebrew-tfplan2md
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-tap
+
+      - name: Update formula
+        run: |
+          bash scripts/update-homebrew-formula.sh \
+            "${{ needs.release.outputs.version }}" \
+            "checksums/SHA256SUMS" \
+            "homebrew-tap/Formula/tfplan2md.rb"
+
+      - name: Commit and push formula update
+        working-directory: homebrew-tap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/tfplan2md.rb
+          # Only commit if there are changes
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update formula to v${{ needs.release.outputs.version }}"
+            git push
+            echo "✅ Homebrew formula updated to v${{ needs.release.outputs.version }}"
+          else
+            echo "ℹ️  No changes to formula (already up-to-date)"
+          fi
+
   docker:
     name: Build and Push Docker Image
     if: needs.release.outputs.version != ''

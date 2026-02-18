@@ -236,13 +236,8 @@ jobs:
             binary_name: tfplan2md.exe
             container: ''
             needs_clang: false
-          - platform: windows-arm64
-            os: windows-latest
-            rid: win-arm64
-            archive_ext: zip
-            binary_name: tfplan2md.exe
-            container: ''
-            needs_clang: false
+          # Note: windows-arm64 removed due to lack of native ARM64 Windows runners
+          # and low usage (<1%). Can be re-added if native runners become available.
           # macOS builds
           - platform: macos-x64
             os: macos-13  # Intel-based runner
@@ -262,6 +257,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Install Xcode Command Line Tools (macOS)
+        if: startsWith(matrix.platform, 'macos-')
+        run: |
+          # Xcode CLT is required for .NET NativeAOT compilation on macOS
+          # xcode-select --install starts installer, but it may already be installed
+          sudo xcode-select --install 2>&1 || true
+          # Verify installation
+          if ! xcode-select -p &>/dev/null; then
+            echo "Error: Xcode Command Line Tools not found after installation"
+            exit 1
+          fi
+          echo "Xcode Command Line Tools installed at: $(xcode-select -p)"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5

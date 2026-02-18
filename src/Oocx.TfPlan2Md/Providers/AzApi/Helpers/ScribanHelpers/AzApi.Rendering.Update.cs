@@ -415,6 +415,18 @@ public static partial class ScribanHelpers
             return beforeFormatted;
         }
 
+        // When before is empty (new element being added), show only the after value without diff markers
+        if (string.IsNullOrEmpty(beforeFormatted))
+        {
+            return afterFormatted;
+        }
+
+        // When after is empty (element being removed), show only the before value without diff markers
+        if (string.IsNullOrEmpty(afterFormatted))
+        {
+            return beforeFormatted;
+        }
+
         return $"- {beforeFormatted}<br>+ {afterFormatted}";
     }
 

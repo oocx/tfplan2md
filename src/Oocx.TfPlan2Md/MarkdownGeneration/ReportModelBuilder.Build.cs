@@ -45,9 +45,9 @@ internal partial class ReportModelBuilder
         // Filter out no-op resources from the changes list passed to the template
         // No-op resources have no meaningful changes to display and including them
         // can cause the template to exceed Scriban's iteration limit of 1000
-        // Exception: Preserve no-op parents that have children with changes (ChildResourceGroups.Count > 0)
+        // Exception: Preserve no-op parents that have children with actual changes (not just no-op children)
         var displayChanges = allChanges
-            .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null || c.ChildResourceGroups.Count > 0)
+            .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null || HasChildrenWithChanges(c))
             .ToList();
 
         // SonarAnalyzer S3267: Cannot simplify with LINQ - this loop mutates existing objects
@@ -116,6 +116,29 @@ internal partial class ReportModelBuilder
             RenderTarget = renderTarget,
             RefactoringOperations = refactoringOperations
         };
+    }
+
+    /// <summary>
+    /// Checks if a resource has child resources with actual changes (not just no-op children).
+    /// </summary>
+    /// <param name="resource">The resource to check.</param>
+    /// <returns><c>true</c> if the resource has children with changes; otherwise, <c>false</c>.</returns>
+    /// <remarks>
+    /// Related issue: docs/issues/088-no-op-parent-hides-child-changes/analysis.md.
+    /// This method ensures no-op parents are preserved only when their children have real changes,
+    /// avoiding the opposite error where no-op parents with only no-op children are displayed.
+    /// </remarks>
+    private static bool HasChildrenWithChanges(ResourceChangeModel resource)
+    {
+        if (resource.ChildResourceGroups.Count == 0)
+        {
+            return false;
+        }
+
+        // Check if any child row has a change indicator other than "Unchanged" (⏺️)
+        return resource.ChildResourceGroups
+            .SelectMany(group => group.Rows)
+            .Any(row => row.ChangeIndicator != ActionIcons.Unchanged);
     }
 
     /// <summary>

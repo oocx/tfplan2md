@@ -120,6 +120,30 @@ public class ReportModelBuilderNoOpParentWithChildrenTests
     }
 
     /// <summary>
+    /// Verifies that no-op parent with only no-op children is filtered from display changes.
+    /// </summary>
+    /// <remarks>
+    /// This is the opposite edge case: when both parent and all children are no-op,
+    /// the parent should still be filtered out to avoid showing resources with no changes.
+    /// Related issue: docs/issues/088-no-op-parent-hides-child-changes/analysis.md.
+    /// Addresses maintainer concern about the fix not causing the opposite error.
+    /// </remarks>
+    [Test]
+    public void Build_NoOpParentWithNoOpChildren_FilteredFromDisplayChanges()
+    {
+        var plan = _parser.Parse(File.ReadAllText("TestData/nsg-with-no-op-rules.json"));
+        var model = BuildModel(plan);
+
+        // Parent NSG should NOT be in the changes list because both parent and children are no-op
+        model.Changes.Should().BeEmpty(
+            "no-op parent with only no-op children should be filtered from displayChanges");
+
+        // Summary should show all 3 resources (parent + 2 children) in no-op count
+        model.Summary.NoOp.Count.Should().Be(3,
+            "summary should count parent NSG and both no-op child rules");
+    }
+
+    /// <summary>
     /// Builds a report model from a Terraform plan.
     /// </summary>
     /// <param name="plan">The Terraform plan to build from.</param>

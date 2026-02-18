@@ -1960,6 +1960,7 @@ The `azapi_resource` resource type from the AzAPI Terraform provider manages Azu
 **Key Features:**
 - **Flattened body representation**: JSON properties displayed in tables with dot notation (e.g., `properties.sku.name`)
 - **Before/after comparison**: Update operations show changed properties with before/after values
+- **Smart array filtering**: For update operations, only changed array items are displayed in nested array structures (e.g., if `allOf[4]` changes, only that item is shown, not all items in the `allOf` array)
 - **Auto-generated documentation links**: Best-effort links to Azure REST API documentation on Microsoft Learn
 - **Per-property sensitive masking**: Respects Terraform's sensitivity markers at the property level (not just entire body)
 - **Large value handling**: Properties over 200 characters moved to collapsible sections

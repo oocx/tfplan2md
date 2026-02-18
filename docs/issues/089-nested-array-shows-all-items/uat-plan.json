@@ -1,0 +1,156 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.6.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.policy_scenario1",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "policy_scenario1",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "body": {
+            "properties": {
+              "displayName": "Scenario 1: Single Item Change",
+              "policyRule": {
+                "if": {
+                  "allOf": [
+                    {"field": "property0", "equals": "value0"},
+                    {"field": "property1", "equals": "value1"},
+                    {"field": "property2", "equals": "value2"},
+                    {"field": "property3", "equals": "value3"},
+                    {"field": "property4", "equals": "value4"},
+                    {"field": "property5", "equals": "value5"}
+                  ]
+                }
+              }
+            }
+          },
+          "type": "Microsoft.Authorization/policyDefinitions@2021-06-01"
+        },
+        "after": {
+          "body": {
+            "properties": {
+              "displayName": "Scenario 1: Single Item Change",
+              "policyRule": {
+                "if": {
+                  "allOf": [
+                    {"field": "property0", "equals": "value0"},
+                    {"field": "property1", "equals": "value1"},
+                    {"field": "property2", "equals": "value2"},
+                    {"field": "property3", "equals": "value3"},
+                    {"field": "property4", "equals": "value4", "in": [0, 1, 2, 3]},
+                    {"field": "property5", "equals": "value5"}
+                  ]
+                }
+              }
+            }
+          },
+          "type": "Microsoft.Authorization/policyDefinitions@2021-06-01"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.policy_scenario2",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "policy_scenario2",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "body": {
+            "properties": {
+              "displayName": "Scenario 2: Multiple Items Changed",
+              "policyRule": {
+                "if": {
+                  "allOf": [
+                    {"field": "property0", "equals": "value0"},
+                    {"field": "property1", "equals": "value1"},
+                    {"field": "property2", "equals": "value2"},
+                    {"field": "property3", "equals": "value3"},
+                    {"field": "property4", "equals": "value4"},
+                    {"field": "property5", "equals": "value5"}
+                  ]
+                }
+              }
+            }
+          },
+          "type": "Microsoft.Authorization/policyDefinitions@2021-06-01"
+        },
+        "after": {
+          "body": {
+            "properties": {
+              "displayName": "Scenario 2: Multiple Items Changed",
+              "policyRule": {
+                "if": {
+                  "allOf": [
+                    {"field": "property0", "equals": "value0"},
+                    {"field": "property1", "equals": "changedValue1"},
+                    {"field": "property2", "equals": "value2"},
+                    {"field": "property3", "equals": "value3"},
+                    {"field": "property4", "equals": "changedValue4"},
+                    {"field": "property5", "equals": "value5"}
+                  ]
+                }
+              }
+            }
+          },
+          "type": "Microsoft.Authorization/policyDefinitions@2021-06-01"
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.policy_scenario3",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "policy_scenario3",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "body": {
+            "properties": {
+              "displayName": "Scenario 3: All Items Changed",
+              "policyRule": {
+                "if": {
+                  "allOf": [
+                    {"field": "property0", "equals": "value0"},
+                    {"field": "property1", "equals": "value1"},
+                    {"field": "property2", "equals": "value2"},
+                    {"field": "property3", "equals": "value3"},
+                    {"field": "property4", "equals": "value4"},
+                    {"field": "property5", "equals": "value5"}
+                  ]
+                }
+              }
+            }
+          },
+          "type": "Microsoft.Authorization/policyDefinitions@2021-06-01"
+        },
+        "after": {
+          "body": {
+            "properties": {
+              "displayName": "Scenario 3: All Items Changed",
+              "policyRule": {
+                "if": {
+                  "allOf": [
+                    {"field": "property0", "equals": "changedValue0"},
+                    {"field": "property1", "equals": "changedValue1"},
+                    {"field": "property2", "equals": "changedValue2"},
+                    {"field": "property3", "equals": "changedValue3"},
+                    {"field": "property4", "equals": "changedValue4"},
+                    {"field": "property5", "equals": "changedValue5"}
+                  ]
+                }
+              }
+            }
+          },
+          "type": "Microsoft.Authorization/policyDefinitions@2021-06-01"
+        }
+      }
+    }
+  ]
+}

@@ -36,7 +36,8 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 ## Boundaries
 
 ### ✅ Always Do
-- **FIRST: Verify authentication** before running UAT (see "Authentication Verification" section below)
+- **FIRST: Initialize git submodules** - UAT requires `uat-repos/github` and `uat-repos/azdo` submodules to be initialized before running any UAT scripts (see "Git Submodule Initialization" section below)
+- **SECOND: Verify authentication** before running UAT (see "Authentication Verification" section below)
 - Check for test plans in `docs/features/*/uat-test-plan.md` or `docs/test-plans/*.md` and use validation steps if they exist
 - **CRITICAL: Verify UAT plan artifacts exist** - Before running UAT, check that both `docs/features/NNN-<feature-slug>/uat-plan.json` and `docs/features/NNN-<feature-slug>/uat-plan.md` exist when a UAT test plan is defined
 - **BLOCKER if UAT plan artifacts missing**: If `uat-test-plan.md` exists but `uat-plan.json` or `uat-plan.md` are missing, this is a BLOCKER that requires Developer to create them before UAT can proceed
@@ -54,6 +55,7 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 - Report the PR numbers and final status from the script output
 - **Update UAT report immediately after every run** - document results in `docs/features/NNN-<feature-slug>/uat-report.md` (mandatory, not optional)
 - **If UAT scripts fail**: Read the error messages carefully - they contain specific troubleshooting steps
+- **CRITICAL: Verify PR comments were posted** - After UAT PRs are created, verify both GitHub and Azure DevOps PRs have comments by checking PR URLs in browser or using GitHub/Azure DevOps APIs
 
 ### ⚠️ Ask First
 - If no test plan exists and user didn't provide validation steps
@@ -68,6 +70,38 @@ Before handing off, **append your log entry** to the `work-protocol.md` file in 
 ## Authentication Verification
 
 **CRITICAL**: UAT scripts require authentication to push branches and create PRs. Different authentication methods apply depending on your environment.
+
+## Git Submodule Initialization
+
+**CRITICAL - DO THIS FIRST**: UAT scripts use git submodules (`uat-repos/github` and `uat-repos/azdo`) to create test PRs. These submodules MUST be initialized before running any UAT scripts, or you will encounter 403 authentication errors.
+
+### Verify Submodules Are Initialized
+
+```bash
+# Check if submodules are initialized
+if [[ -e "uat-repos/github/.git" && -e "uat-repos/azdo/.git" ]]; then
+  echo "✓ UAT submodules are initialized"
+else
+  echo "❌ UAT submodules NOT initialized - running initialization..."
+  git submodule update --init --recursive
+  echo "✓ UAT submodules initialized successfully"
+fi
+```
+
+**Why This Matters:**
+- The UAT scripts create branches and PRs in separate UAT repositories
+- These repositories are checked out as git submodules under `uat-repos/`
+- If submodules aren't initialized, git push operations will fail with "remote: Permission denied" errors
+- This is NOT an authentication problem - it's a missing repository problem
+
+**Symptom of Uninitialized Submodules:**
+```
+remote: Permission to oocx/tfplan2md-uat.git denied to oocx.
+fatal: unable to access 'https://github.com/oocx/tfplan2md-uat.git/': The requested URL returned error: 403
+```
+
+**Fix:**
+Run `git submodule update --init --recursive` before any UAT operations.
 
 ### For GitHub Copilot Coding Agents
 
@@ -222,14 +256,61 @@ When the user asks to run UAT:
    fi
    ```
 
-7. **Post the Exact PR Links in Chat (Mandatory)**
+7. **Verify PR Comments Were Posted (CRITICAL - NEW STEP)**
+   
+   **IMPORTANT**: After posting comments, verify they actually appear in the PRs. Comments can fail to post silently.
+   
+   **For GitHub PR:**
+   ```bash
+   # Get PR number from state file
+   gh_pr=$(jq -r '.github.pr // ""' .tmp/uat-run/last-run.json)
+   
+   # Check comment count
+   comment_count=$(gh pr view "$gh_pr" --repo oocx/tfplan2md-uat --json comments --jq '.comments | length')
+   echo "GitHub PR #$gh_pr has $comment_count comment(s)"
+   
+   # Should have at least 2 comments (feature + regression)
+   if [[ "$comment_count" -lt 2 ]]; then
+     echo "❌ WARNING: GitHub PR has fewer than 2 comments"
+     echo "Expected: 2 comments (🎯 Feature Test + 🔄 Regression Test)"
+     echo "Actual: $comment_count comment(s)"
+     echo "Action: Check PR manually or re-run comment posting commands"
+   fi
+   ```
+   
+   **For Azure DevOps PR:**
+   ```bash
+   # Get PR number from state file  
+   azdo_pr=$(jq -r '.azdo.pr // ""' .tmp/uat-run/last-run.json)
+   
+   # Check threads (comments are posted as threads in Azure DevOps)
+   thread_count=$(az repos pr show --id "$azdo_pr" --org "https://dev.azure.com/oocx" --project "test" --query "properties.Microsoft_TeamFoundation_Discussion_ThreadCount" -o tsv 2>/dev/null || echo "0")
+   echo "Azure DevOps PR #$azdo_pr has $thread_count thread(s)"
+   
+   # Should have at least 2 threads (feature + regression)
+   if [[ "$thread_count" -lt 2 ]]; then
+     echo "❌ WARNING: Azure DevOps PR has fewer than 2 threads"
+     echo "Expected: 2 threads (🎯 Feature Test + 🔄 Regression Test)"
+     echo "Actual: $thread_count thread(s)"
+     echo "Action: Check PR manually and investigate why comments weren't posted"
+   fi
+   ```
+   
+   **If Comments Are Missing:**
+   - Check if the comment posting commands succeeded (no error output)
+   - Verify network connectivity to GitHub/Azure DevOps
+   - Try re-run the comment commands
+   - Check UAT script logs for error messages
+   - Report the issue to Maintainer with specific details
+
+8. **Post the Exact PR Links in Chat (Mandatory)**
 
    Immediately paste the created PR links directly into chat:
    ```bash
    jq -r '"GitHub PR: " + (.github.url // "") + "\nAzure DevOps PR: " + (.azdo.url // "")' .tmp/uat-run/last-run.json
    ```
 
-8. **Ask User to Review and Approve**
+9. **Ask User to Review and Approve**
    
    > **Action Required:**
    > 
@@ -243,14 +324,14 @@ When the user asks to run UAT:
    > 
    > Once approved, I'll clean up the UAT PRs.
 
-9. **Poll for Approval and Clean Up**
+10. **Poll for Approval and Clean Up**
    
    After user has reviewed and approved, clean up:
    ```bash
    scripts/uat-run.sh --cleanup-last
    ```
 
-10. **Report Results**
+11. **Report Results**
    - When cleanup completes, report the final status
 
 ```

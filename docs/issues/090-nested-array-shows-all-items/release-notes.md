@@ -96,7 +96,7 @@ The fix modifies the array extraction logic in `ExtractArrayItems` (in `AzApi.Re
 
 ## 🔗 Related Documentation
 
-- **Issue analysis:** [docs/issues/089-nested-array-shows-all-items/analysis.md](../089-nested-array-shows-all-items/analysis.md)
+- **Issue analysis:** [docs/issues/090-nested-array-shows-all-items/analysis.md](../090-nested-array-shows-all-items/analysis.md)
 - **Feature specification:** [docs/features/034-azapi-attribute-grouping/specification.md](../../features/034-azapi-attribute-grouping/specification.md)
 - **Test coverage:** 3 new regression tests covering single-item changes, multiple-item changes, and all-items-changed scenarios
 - **All tests:** Passing (50/50 AzAPI tests verified)

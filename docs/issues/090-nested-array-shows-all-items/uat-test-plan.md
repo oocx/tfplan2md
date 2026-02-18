@@ -1,4 +1,4 @@
-# UAT Test Plan: Nested Array Rendering Fix (Issue #089)
+# UAT Test Plan: Nested Array Rendering Fix (Issue #090)
 
 ## Objective
 Validate that the bug fix correctly filters nested array items to show only changed items instead of all items in markdown reports.
@@ -28,7 +28,7 @@ Validate that the bug fix correctly filters nested array items to show only chan
 ## UAT Artifacts
 
 **Feature-Specific Report:**
-- Path: `docs/issues/089-nested-array-shows-all-items/uat-plan.md`
+- Path: `docs/issues/090-nested-array-shows-all-items/uat-plan.md`
 - Content: Markdown demonstrating the three test scenarios above
 
 **Comprehensive Demo:**

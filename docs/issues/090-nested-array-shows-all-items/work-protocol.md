@@ -26,7 +26,7 @@ Nested Array Changes Show All Items Instead of Only Changed Items
 1. ✅ Loaded coding-agent-workflow skill
 2. ✅ Verified current branch (`copilot/fix-html-rendering-issue`)
 3. ✅ Determined next issue number (089) using `scripts/next-issue-number.sh`
-4. ✅ Created issue directory: `docs/issues/089-nested-array-shows-all-items/`
+4. ✅ Created issue directory: `docs/issues/090-nested-array-shows-all-items/`
 5. ✅ Investigated codebase to understand nested array change detection and rendering
 6. ✅ Identified root cause in `SelectUpdateGroupsAndMainProps` function
 7. ✅ Traced through related code in:
@@ -35,11 +35,11 @@ Nested Array Changes Show All Items Instead of Only Changed Items
    - `AzApi.Grouping.cs` - Grouping detection logic
    - `AzApi.Data.cs` - JSON comparison logic
 8. ✅ Reviewed feature specification (034-azapi-attribute-grouping)
-9. ✅ Created comprehensive issue analysis document at `docs/issues/089-nested-array-shows-all-items/analysis.md`
+9. ✅ Created comprehensive issue analysis document at `docs/issues/090-nested-array-shows-all-items/analysis.md`
 10. ✅ Committed analysis document with conventional commit message
 
 **Artifacts Produced:**
-- `docs/issues/089-nested-array-shows-all-items/analysis.md` - Comprehensive issue analysis with root cause, suggested fixes, and test recommendations
+- `docs/issues/090-nested-array-shows-all-items/analysis.md` - Comprehensive issue analysis with root cause, suggested fixes, and test recommendations
 
 **Root Cause Identified:**
 The `SelectUpdateGroupsAndMainProps` function in `AzApi.Rendering.Update.cs` (lines 163-176) uses an all-or-nothing approach: if ANY property in an array group has changed, it renders the ENTIRE group (all array items). This was an intentional MVP design decision documented in the feature specification, but creates poor user experience with excessive output.
@@ -128,7 +128,7 @@ This aligns the detailed change view with the change summary (which correctly id
 2. ✅ Verified current branch (`copilot/fix-html-rendering-issue`)
 3. ✅ Reviewed issue analysis document
 4. ✅ Reviewed work protocol to understand implementation
-5. ✅ Created comprehensive release notes at `docs/issues/089-nested-array-shows-all-items/release-notes.md`:
+5. ✅ Created comprehensive release notes at `docs/issues/090-nested-array-shows-all-items/release-notes.md`:
    - Added clear problem description with before/after comparison
    - Included detailed example showing the improvement (Azure Policy Definition update)
    - Documented impact, compatibility considerations, and technical details
@@ -139,7 +139,7 @@ This aligns the detailed change view with the change summary (which correctly id
 7. ✅ Updated work protocol with documentation changes
 
 **Artifacts Produced:**
-- `docs/issues/089-nested-array-shows-all-items/release-notes.md` - Comprehensive release notes with before/after examples
+- `docs/issues/090-nested-array-shows-all-items/release-notes.md` - Comprehensive release notes with before/after examples
 - Updated `docs/features.md` - Added smart array filtering to azapi_resource feature list
 
 **Documentation Updates:**
@@ -179,18 +179,18 @@ Code Reviewer agent to review the implementation and documentation.
    - `AzApi.Rendering.Array.cs` - Array filtering implementation
    - `AzApi.Rendering.Update.cs` - Changed indexes pass-through
    - `ScribanHelpersAzApiUpdateRenderingTests.cs` - 3 new regression tests
-   - `docs/issues/089-nested-array-shows-all-items/release-notes.md` - Comprehensive release notes
+   - `docs/issues/090-nested-array-shows-all-items/release-notes.md` - Comprehensive release notes
    - `docs/features.md` - Smart array filtering documentation
 7. ✅ Verified specification compliance (all acceptance criteria met)
 8. ✅ Conducted adversarial testing analysis (all edge cases handled)
 9. ✅ Reviewed code quality (excellent: good naming, proper access modifiers, comprehensive XML docs)
 10. ✅ Validated work protocol completeness (all required agents logged)
 11. ✅ Verified global documentation updates (features.md updated appropriately)
-12. ✅ Created comprehensive code review report at `docs/issues/089-nested-array-shows-all-items/code-review.md`
+12. ✅ Created comprehensive code review report at `docs/issues/090-nested-array-shows-all-items/code-review.md`
 13. ✅ Updated work protocol with review findings
 
 **Artifacts Produced:**
-- `docs/issues/089-nested-array-shows-all-items/code-review.md` - Comprehensive code review report with approval
+- `docs/issues/090-nested-array-shows-all-items/code-review.md` - Comprehensive code review report with approval
 
 **Review Decision:**
 ✅ **APPROVED** - Implementation is production-ready
@@ -254,7 +254,7 @@ Release Manager agent to prepare the patch release (or UAT Tester if maintainer 
 11. ✅ Prepared release guidance for maintainer
 
 **Artifacts Produced:**
-- Updated `docs/issues/089-nested-array-shows-all-items/work-protocol.md` - Added Release Manager work log
+- Updated `docs/issues/090-nested-array-shows-all-items/work-protocol.md` - Added Release Manager work log
 
 **Pre-Release Verification:**
 - ✅ **Code Review:** APPROVED (see code-review.md)
@@ -271,7 +271,7 @@ This is a bug fix (conventional commit type: `fix:`), which should trigger a **p
 
 **Commits Ready for Release:**
 ```
-83369ccf docs: add code review approval for nested array fix (issue #089)
+83369ccf docs: add code review approval for nested array fix (issue #090)
 ddb6468d docs: add release notes and update feature docs for nested array fix
 e4f77f69 fix: filter array items to show only changed items in update mode
 cf8c860e docs: add issue analysis for nested array rendering showing all items instead of only changed items
@@ -307,7 +307,7 @@ None - all artifacts are in place and ready for release.
 1. ✅ Loaded coding-agent-workflow skill
 2. ✅ Verified current branch (`copilot/fix-html-rendering-issue`)
 3. ✅ Verified authentication status (GitHub CLI authenticated, Azure DevOps token set)
-4. ✅ Determined work item folder (`docs/issues/089-nested-array-shows-all-items/`)
+4. ✅ Determined work item folder (`docs/issues/090-nested-array-shows-all-items/`)
 5. ✅ Created UAT test plan document (`uat-test-plan.md`) with three test scenarios
 6. ✅ Created UAT test data (`uat-plan.json`) with nested array changes matching regression tests
 7. ✅ Generated feature-specific UAT artifact (`uat-plan.md`) using tfplan2md
@@ -322,10 +322,10 @@ None - all artifacts are in place and ready for release.
 13. ✅ Created comprehensive UAT report documenting the blocker and providing resolution options
 
 **Artifacts Produced:**
-- `docs/issues/089-nested-array-shows-all-items/uat-test-plan.md` - Comprehensive test plan with validation criteria
-- `docs/issues/089-nested-array-shows-all-items/uat-plan.json` - Test data for three scenarios
-- `docs/issues/089-nested-array-shows-all-items/uat-plan.md` - Generated markdown proving fix works correctly
-- `docs/issues/089-nested-array-shows-all-items/uat-report.md` - Comprehensive UAT report with blocker analysis
+- `docs/issues/090-nested-array-shows-all-items/uat-test-plan.md` - Comprehensive test plan with validation criteria
+- `docs/issues/090-nested-array-shows-all-items/uat-plan.json` - Test data for three scenarios
+- `docs/issues/090-nested-array-shows-all-items/uat-plan.md` - Generated markdown proving fix works correctly
+- `docs/issues/090-nested-array-shows-all-items/uat-report.md` - Comprehensive UAT report with blocker analysis
 
 **Blocker Details:**
 - **Issue**: `GH_UAT_TOKEN` does not have write access to `oocx/tfplan2md-uat` repository
@@ -385,7 +385,7 @@ Despite the blocker, the generated markdown artifacts prove the fix is working c
 **Artifacts Produced:**
 - GitHub UAT PR #80 with two comment threads (feature test + regression test)
 - Azure DevOps UAT PR #80 with two comment threads (feature test + regression test)
-- Updated `docs/issues/089-nested-array-shows-all-items/uat-report.md` - Status changed to AWAITING MAINTAINER REVIEW
+- Updated `docs/issues/090-nested-array-shows-all-items/uat-report.md` - Status changed to AWAITING MAINTAINER REVIEW
 - `.tmp/uat-run/last-run.json` - UAT state for cleanup
 
 **UAT PRs Created:**
@@ -395,7 +395,7 @@ Despite the blocker, the generated markdown artifacts prove the fix is working c
 **Test Scenarios Posted:**
 Each PR contains two artifacts for validation:
 
-1. **🎯 Feature Test** (`docs/issues/089-nested-array-shows-all-items/uat-plan.md`):
+1. **🎯 Feature Test** (`docs/issues/090-nested-array-shows-all-items/uat-plan.md`):
    - Scenario 1: 6-item array with 1 changed item → Shows only index [4]
    - Scenario 2: 6-item array with 2 changed items → Shows only indexes [1] and [4]
    - Scenario 3: 6-item array with 6 changed items → Shows all indexes [0] through [5]

@@ -1,4 +1,4 @@
-# UAT Report: Nested Array Filtering Fix (Issue #089)
+# UAT Report: Nested Array Filtering Fix (Issue #090)
 
 ## Status: 🕐 AWAITING MAINTAINER REVIEW
 
@@ -21,7 +21,7 @@ UAT PRs successfully created on both GitHub and Azure DevOps. Both feature-speci
 Both PRs contain two comments:
 
 1. **🎯 Feature Test** - Nested Array Filtering
-   - Artifact: `docs/issues/089-nested-array-shows-all-items/uat-plan.md`
+   - Artifact: `docs/issues/090-nested-array-shows-all-items/uat-plan.md`
    - Contains 3 test scenarios demonstrating the fix
    
 2. **🔄 Regression Test** - Comprehensive Demo
@@ -47,12 +47,12 @@ The key discovery was that environment variable precedence matters:
 Despite the blocker, UAT artifacts were successfully created and are ready for use once authentication is fixed:
 
 ### Test Plan
-- **Location**: `docs/issues/089-nested-array-shows-all-items/uat-test-plan.md`
+- **Location**: `docs/issues/090-nested-array-shows-all-items/uat-test-plan.md`
 - **Content**: Comprehensive test scenarios for validating the fix
 
 ### Feature-Specific Report
-- **Location**: `docs/issues/089-nested-array-shows-all-items/uat-plan.md`
-- **Source Data**: `docs/issues/089-nested-array-shows-all-items/uat-plan.json`
+- **Location**: `docs/issues/090-nested-array-shows-all-items/uat-plan.md`
+- **Source Data**: `docs/issues/090-nested-array-shows-all-items/uat-plan.json`
 - **Content**: Three test scenarios demonstrating correct filtering:
   1. Scenario 1: 6-item array, only item [4] changed → Shows only `| [4] |` ✅
   2. Scenario 2: 6-item array, items [1] and [4] changed → Shows only `| [1] |` and `| [4] |` ✅
@@ -126,10 +126,10 @@ scripts/uat-run.sh --cleanup-last
 ```
 
 ## Artifacts Committed
-- ✅ `docs/issues/089-nested-array-shows-all-items/uat-test-plan.md`
-- ✅ `docs/issues/089-nested-array-shows-all-items/uat-plan.json`
-- ✅ `docs/issues/089-nested-array-shows-all-items/uat-plan.md`
-- ✅ `docs/issues/089-nested-array-shows-all-items/uat-report.md` (this file)
+- ✅ `docs/issues/090-nested-array-shows-all-items/uat-test-plan.md`
+- ✅ `docs/issues/090-nested-array-shows-all-items/uat-plan.json`
+- ✅ `docs/issues/090-nested-array-shows-all-items/uat-plan.md`
+- ✅ `docs/issues/090-nested-array-shows-all-items/uat-report.md` (this file)
 
 ---
 

@@ -49,23 +49,32 @@ public static partial class ScribanHelpers
     /// <param name="groupProps">The grouped flattened properties.</param>
     /// <param name="arrayPath">The normalized array path (without <c>properties.</c> prefix).</param>
     /// <param name="isUpdateMode">Whether the group is being rendered in update mode.</param>
+    /// <param name="changedIndexes">The set of changed property indexes (for update mode filtering).</param>
     /// <returns>Ordered list of extracted array items.</returns>
     /// <remarks>
     /// This method supports arrays of objects (e.g. <c>items[0].name</c>) and arrays of primitives
-    /// (e.g. <c>allowedOrigins[0]</c>). Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
+    /// (e.g. <c>allowedOrigins[0]</c>). In update mode, only array items containing at least one changed
+    /// property are included. Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
+    /// Related issue: docs/issues/089-nested-array-shows-all-items/analysis.md.
     /// </remarks>
     private static List<AzApiArrayItem> ExtractArrayItems(
         ScriptArray groupProps,
         string arrayPath,
-        bool isUpdateMode)
+        bool isUpdateMode,
+        HashSet<int>? changedIndexes = null)
     {
         var itemOrder = new List<int>();
         var byIndex = new Dictionary<int, List<AzApiArrayItemEntry>>();
+        var changedArrayItems = isUpdateMode && changedIndexes is not null
+            ? new HashSet<int>()
+            : null;
 
+        var propIndex = 0;
         foreach (var item in groupProps)
         {
             if (item is not ScriptObject prop)
             {
+                propIndex++;
                 continue;
             }
 
@@ -74,7 +83,14 @@ public static partial class ScribanHelpers
 
             if (!TryParseArrayItemPath(normalizedPath, arrayPath, out var index, out var localPath))
             {
+                propIndex++;
                 continue;
+            }
+
+            // Track if this property is changed in update mode
+            if (changedArrayItems is not null && changedIndexes!.Contains(propIndex))
+            {
+                changedArrayItems.Add(index);
             }
 
             if (!byIndex.TryGetValue(index, out var entries))
@@ -84,27 +100,61 @@ public static partial class ScribanHelpers
                 itemOrder.Add(index);
             }
 
-            if (isUpdateMode)
-            {
-                entries.Add(new AzApiArrayItemEntry(
-                    LocalPath: localPath,
-                    Value: null,
-                    Before: prop["before"],
-                    After: prop["after"]));
-            }
-            else
-            {
-                entries.Add(new AzApiArrayItemEntry(
-                    LocalPath: localPath,
-                    Value: prop["value"],
-                    Before: null,
-                    After: null));
-            }
+            var entry = CreateArrayItemEntry(prop, isUpdateMode, localPath);
+            entries.Add(entry);
+
+            propIndex++;
         }
 
+        return BuildArrayItemList(itemOrder, byIndex, changedArrayItems);
+    }
+
+    /// <summary>
+    /// Creates an array item entry from a property object.
+    /// </summary>
+    /// <param name="prop">The property object.</param>
+    /// <param name="isUpdateMode">Whether in update mode.</param>
+    /// <param name="localPath">The local path within the array item.</param>
+    /// <returns>The array item entry.</returns>
+    private static AzApiArrayItemEntry CreateArrayItemEntry(ScriptObject prop, bool isUpdateMode, string localPath)
+    {
+        if (isUpdateMode)
+        {
+            return new AzApiArrayItemEntry(
+                LocalPath: localPath,
+                Value: null,
+                Before: prop["before"],
+                After: prop["after"]);
+        }
+
+        return new AzApiArrayItemEntry(
+            LocalPath: localPath,
+            Value: prop["value"],
+            Before: null,
+            After: null);
+    }
+
+    /// <summary>
+    /// Builds the final list of array items from the indexed data.
+    /// </summary>
+    /// <param name="itemOrder">The order of array item indices.</param>
+    /// <param name="byIndex">Dictionary of entries by array index.</param>
+    /// <param name="changedArrayItems">Set of changed array item indices (null to include all).</param>
+    /// <returns>Ordered list of array items.</returns>
+    private static List<AzApiArrayItem> BuildArrayItemList(
+        List<int> itemOrder,
+        Dictionary<int, List<AzApiArrayItemEntry>> byIndex,
+        HashSet<int>? changedArrayItems)
+    {
         var result = new List<AzApiArrayItem>();
         foreach (var index in itemOrder)
         {
+            // Filter to only changed array items when filtering is enabled
+            if (changedArrayItems?.Contains(index) == false)
+            {
+                continue;
+            }
+
             if (!byIndex.TryGetValue(index, out var entries))
             {
                 continue;

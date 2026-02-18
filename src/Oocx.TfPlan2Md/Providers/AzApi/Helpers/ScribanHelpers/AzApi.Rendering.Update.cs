@@ -82,7 +82,7 @@ public static partial class ScribanHelpers
         var (groupsToRender, mainProps) = SelectUpdateGroupsAndMainProps(smallAll, groups, changedIndexesInAll);
 
         RenderUpdateMainTable(sb, mainProps);
-        RenderUpdateGroupedSections(sb, groupsToRender, smallAll);
+        RenderUpdateGroupedSections(sb, groupsToRender, smallAll, changedIndexesInAll);
         RenderLargeUpdateChanges(sb, largeChanged, input.LargeValueFormat);
         RenderNoChangesMessage(sb, smallChanged.Count, largeChanged.Count, "*No body changes detected*");
     }
@@ -235,10 +235,12 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="groups">The groups that should be rendered.</param>
     /// <param name="allProperties">All small properties including unchanged.</param>
+    /// <param name="changedIndexes">Set of indices representing changed properties.</param>
     private static void RenderUpdateGroupedSections(
         StringBuilder sb,
         IReadOnlyList<AzApiGroupedPrefix> groups,
-        ScriptArray allProperties)
+        ScriptArray allProperties,
+        HashSet<int> changedIndexes)
     {
         foreach (var group in groups)
         {
@@ -253,7 +255,7 @@ public static partial class ScribanHelpers
 
             if (group.Kind == AzApiGroupedPrefixKind.Array)
             {
-                RenderUpdateArrayGroup(sb, group.Path, groupProps);
+                RenderUpdateArrayGroup(sb, group.Path, groupProps, group.MemberIndexes, changedIndexes);
             }
             else
             {
@@ -303,12 +305,29 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="arrayPath">The array path for the section.</param>
     /// <param name="groupProps">The grouped properties for the array.</param>
-    private static void RenderUpdateArrayGroup(StringBuilder sb, string arrayPath, ScriptArray groupProps)
+    /// <param name="memberIndexes">The property indexes that belong to this group.</param>
+    /// <param name="changedIndexes">Set of all changed property indexes.</param>
+    private static void RenderUpdateArrayGroup(
+        StringBuilder sb,
+        string arrayPath,
+        ScriptArray groupProps,
+        IReadOnlyList<int> memberIndexes,
+        HashSet<int> changedIndexes)
     {
         sb.AppendLine($"###### `{EscapeMarkdown(arrayPath)}` Array");
         sb.AppendLine();
 
-        var items = ExtractArrayItems(groupProps, arrayPath, isUpdateMode: true);
+        // Build a set of changed property indexes relative to this group
+        var groupChangedIndexes = new HashSet<int>();
+        for (var i = 0; i < memberIndexes.Count; i++)
+        {
+            if (changedIndexes.Contains(memberIndexes[i]))
+            {
+                groupChangedIndexes.Add(i);
+            }
+        }
+
+        var items = ExtractArrayItems(groupProps, arrayPath, isUpdateMode: true, groupChangedIndexes);
         if (items.Count == 0)
         {
             return;

@@ -43,8 +43,9 @@ public class DebugOutputIntegrationTests
         // Act
         var markdown = renderer.Render(model);
 
-        // Assert
-        await Assert.That(markdown).DoesNotContain("## Debug Information");
+        // Assert - No collapsible debug section
+        await Assert.That(markdown).DoesNotContain("<details>");
+        await Assert.That(markdown).DoesNotContain("<summary>🐛\u00A0Debug Information</summary>");
         await Assert.That(markdown).DoesNotContain("### Principal Mapping");
         await Assert.That(markdown).DoesNotContain("### Template Resolution");
     }
@@ -84,8 +85,10 @@ public class DebugOutputIntegrationTests
         // Append debug section (simulating what Program.cs does)
         markdown += "\n\n" + diagnosticContext.GenerateMarkdownSection();
 
-        // Assert - Debug section exists
-        await Assert.That(markdown).Contains("## Debug Information");
+        // Assert - Debug section exists in collapsible format
+        await Assert.That(markdown).Contains("<details>");
+        await Assert.That(markdown).Contains("<summary>🐛\u00A0Debug Information</summary>");
+        await Assert.That(markdown).Contains("</details>");
 
         // Assert - Principal mapping diagnostics are present
         await Assert.That(markdown).Contains("### Principal Mapping");
@@ -216,6 +219,7 @@ public class DebugOutputIntegrationTests
         await Assert.That(markdown).Contains("## Summary");
 
         // Assert - No debug section
-        await Assert.That(markdown).DoesNotContain("## Debug Information");
+        await Assert.That(markdown).DoesNotContain("<details>");
+        await Assert.That(markdown).DoesNotContain("<summary>🐛\u00A0Debug Information</summary>");
     }
 }

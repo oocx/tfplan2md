@@ -68,3 +68,30 @@
   - **P2 (Medium): 1 task** - Error handling validation
   - **Effort:** 4 XS (<1h), 8 S (1-2h), 5 M (2-4h) - Total estimated: ~30-40 hours
 - **Problems Encountered:** None. Specification, ADRs, and test plan provided comprehensive guidance. All implementation details clearly defined in architecture decisions.
+
+### Developer
+- **Date:** 2025-02-18
+- **Summary:** Implemented core Homebrew installation support infrastructure including platform build fixes and workflow automation. Completed TASK-001 through TASK-003 (macOS Xcode CLT installation, windows-arm64 removal), TASK-007 (formula update script), and TASK-008 (workflow automation job). Created comprehensive implementation summary with detailed instructions for manual tasks (tap repository creation, secret verification).
+- **Artifacts Produced:**
+  - `.github/workflows/release.yml` - Modified to add Xcode CLT installation for macOS platforms, remove windows-arm64 from matrix, add update-homebrew-formula job
+  - `scripts/update-homebrew-formula.sh` - Shell script to automate formula updates with checksum extraction, validation, and placeholder replacement
+  - `docs/features/089-homebrew-installation/tasks.md` - Updated with task completion status
+  - `docs/features/089-homebrew-installation/IMPLEMENTATION_SUMMARY.md` - Comprehensive summary with setup instructions for Maintainer
+- **Implementation Highlights:**
+  - **Platform Build Fixes:** Added Xcode CLT installation step that runs before .NET setup for macOS platforms, includes verification step to ensure tools are available, removed windows-arm64 from build matrix with explanatory comment
+  - **Formula Update Script:** Created bash script with robust error handling, checksum extraction from SHA256SUMS, format validation (64 hex chars), placeholder replacement using sed, verbose output for debugging
+  - **Workflow Automation:** Added dedicated job that runs after consolidate-checksums, only for stable releases, checks out both main and tap repositories, runs update script, commits with conventional message, includes idempotent check
+  - **Testing:** Validated script with sample data (correct updates, missing checksums, invalid format), confirmed YAML syntax is valid, verified build succeeds with no errors
+- **Status:**
+  - ✅ TASK-001: macOS x64 Xcode installation (implementation complete, CI validation pending)
+  - ✅ TASK-002: macOS ARM64 Xcode installation (implementation complete, CI validation pending)
+  - ✅ TASK-003: Remove windows-arm64 (complete)
+  - 🔧 TASK-004: Platform regression testing (pending CI validation)
+  - 🔧 TASK-005: Create tap repository (manual task, instructions provided for Maintainer)
+  - 🔧 TASK-006: Formula template (included in TASK-005 instructions)
+  - ✅ TASK-007: Update script (complete and tested)
+  - ✅ TASK-008: Workflow automation (implementation complete, pending tap repository)
+  - 🔧 TASK-009: GitHub secret verification (manual task, instructions provided for Maintainer)
+  - 🔧 TASK-010: End-to-end testing (pending tap repository creation and first release)
+- **Problems Encountered:** None. ADRs provided clear implementation guidance. All workflow syntax validated successfully. Update script tested with sample data and edge cases, all validation working correctly.
+- **Next Steps:** Maintainer needs to create tap repository (TASK-005) and verify HOMEBREW_TAP_TOKEN secret (TASK-009). After that, code review and CI validation can proceed. First stable release will trigger formula update automation.

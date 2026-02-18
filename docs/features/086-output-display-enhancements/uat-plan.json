@@ -1,0 +1,150 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "variables": {
+    "environment": {
+      "value": "uat"
+    },
+    "location": {
+      "value": "eastus"
+    }
+  },
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azurerm_resource_group.main",
+          "mode": "managed",
+          "type": "azurerm_resource_group",
+          "name": "main",
+          "provider_name": "registry.terraform.io/hashicorp/azurerm",
+          "values": {
+            "location": "eastus",
+            "name": "rg-uat-no-changes",
+            "tags": {
+              "environment": "uat",
+              "managed_by": "terraform"
+            }
+          }
+        }
+      ],
+      "child_modules": [
+        {
+          "address": "module.network",
+          "resources": [
+            {
+              "address": "module.network.azurerm_virtual_network.vnet",
+              "mode": "managed",
+              "type": "azurerm_virtual_network",
+              "name": "vnet",
+              "provider_name": "registry.terraform.io/hashicorp/azurerm",
+              "values": {
+                "name": "vnet-uat",
+                "location": "eastus",
+                "resource_group_name": "rg-uat-no-changes",
+                "address_space": ["10.0.0.0/16"],
+                "tags": {
+                  "environment": "uat"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "resource_changes": [],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azurerm_resource_group.main",
+          "mode": "managed",
+          "type": "azurerm_resource_group",
+          "name": "main",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "location": {
+              "references": ["var.location"]
+            },
+            "name": {
+              "constant_value": "rg-uat-no-changes"
+            },
+            "tags": {
+              "constant_value": {
+                "environment": "uat",
+                "managed_by": "terraform"
+              }
+            }
+          }
+        }
+      ],
+      "module_calls": {
+        "network": {
+          "source": "./modules/network",
+          "expressions": {
+            "resource_group_name": {
+              "references": ["azurerm_resource_group.main.name"]
+            },
+            "location": {
+              "references": ["var.location"]
+            },
+            "environment": {
+              "references": ["var.environment"]
+            }
+          }
+        }
+      }
+    }
+  },
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.14.0",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "azurerm_resource_group.main",
+            "mode": "managed",
+            "type": "azurerm_resource_group",
+            "name": "main",
+            "provider_name": "registry.terraform.io/hashicorp/azurerm",
+            "values": {
+              "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat-no-changes",
+              "location": "eastus",
+              "name": "rg-uat-no-changes",
+              "tags": {
+                "environment": "uat",
+                "managed_by": "terraform"
+              }
+            }
+          }
+        ],
+        "child_modules": [
+          {
+            "address": "module.network",
+            "resources": [
+              {
+                "address": "module.network.azurerm_virtual_network.vnet",
+                "mode": "managed",
+                "type": "azurerm_virtual_network",
+                "name": "vnet",
+                "provider_name": "registry.terraform.io/hashicorp/azurerm",
+                "values": {
+                  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat-no-changes/providers/Microsoft.Network/virtualNetworks/vnet-uat",
+                  "name": "vnet-uat",
+                  "location": "eastus",
+                  "resource_group_name": "rg-uat-no-changes",
+                  "address_space": ["10.0.0.0/16"],
+                  "tags": {
+                    "environment": "uat"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

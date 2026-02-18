@@ -95,3 +95,32 @@
   - 🔧 TASK-010: End-to-end testing (pending tap repository creation and first release)
 - **Problems Encountered:** None. ADRs provided clear implementation guidance. All workflow syntax validated successfully. Update script tested with sample data and edge cases, all validation working correctly.
 - **Next Steps:** Maintainer needs to create tap repository (TASK-005) and verify HOMEBREW_TAP_TOKEN secret (TASK-009). After that, code review and CI validation can proceed. First stable release will trigger formula update automation.
+
+### Technical Writer
+- **Date:** 2025-02-18
+- **Summary:** Updated all user-facing documentation for Homebrew installation support. Added Homebrew as the first installation option in README.md (most convenient for macOS/Linux users), updated platform support documentation to remove windows-arm64, created comprehensive user-focused release notes, and updated docs/features.md with detailed Homebrew installation section.
+- **Artifacts Produced:**
+  - `README.md` - Updated Installation section with Homebrew as Option 1, removed windows-arm64 from platform table and requirements, updated option numbering (Docker now Option 2, Binaries Option 3, Build from Source Option 4)
+  - `docs/features/089-homebrew-installation/release-notes.md` - Created comprehensive release notes covering Homebrew installation, platform improvements (macOS fixes, windows-arm64 removal), platform compatibility matrix, upgrade notes, and technical details
+  - `docs/features.md` - Added "Homebrew Installation" section under Distribution with installation instructions, supported platforms, features, use cases, and technical explanation
+  - `docs/features.md` - Updated Pre-built Binaries section to mark macOS and Windows x64 as "Now Available" and explain windows-arm64 removal
+  - `docs/features/089-homebrew-installation/work-protocol.md` - This entry
+- **Documentation Updates:**
+  - **README.md Installation Section:** Homebrew positioned as first/preferred method for macOS and Linux users, clear platform support (macOS Intel/ARM64, Linux x64), simple installation commands with tap setup, upgrade instructions, removed windows-arm64 from all tables and documentation
+  - **Release Notes:** User-focused language explaining new Homebrew installation capability, platform support improvements (macOS build fixes, windows-arm64 removal with rationale and alternatives), clear upgrade guidance (no breaking changes), comprehensive platform compatibility matrix
+  - **Features Documentation:** Added dedicated Homebrew section explaining features (automatic updates, platform detection, security), how it works (downloads pre-built binaries, verifies checksums), and appropriate use cases
+- **Platform Support Changes Documented:**
+  - ✅ macOS x64 (Intel) - Homebrew supported
+  - ✅ macOS ARM64 (Apple Silicon) - Homebrew supported
+  - ✅ Linux x64 - Homebrew supported (including WSL)
+  - ✅ Windows x64 - Binary download only (Homebrew not available on native Windows)
+  - ❌ Windows ARM64 - No longer supported (removed from documentation with explanation and alternatives)
+- **Status:**
+  - ✅ TASK-015: README.md installation section updated with Homebrew as first option
+  - ✅ TASK-016: Release notes created (`release-notes.md`)
+  - ✅ docs/features.md updated with Homebrew installation section
+  - ✅ Platform support documentation updated to reflect windows-arm64 removal
+  - ✅ All installation methods renumbered consistently
+- **Problems Encountered:** None. Implementation summary and specification provided clear guidance. All documentation follows existing style and conventions. Markdown formatting verified.
+- **Next Steps:** Recommend Code Reviewer agent to review documentation changes for accuracy, consistency, and completeness before final approval.
+

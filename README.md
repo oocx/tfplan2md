@@ -57,9 +57,34 @@ Terraform plans are notoriously difficult to review in pull requests:
 
 ## Installation
 
-tfplan2md is distributed in two ways:
+tfplan2md is distributed in multiple ways to suit different environments:
 
-### Option 1: Docker Image (Recommended)
+### Option 1: Homebrew (macOS and Linux)
+
+Install tfplan2md using Homebrew:
+
+```bash
+brew tap oocx/tfplan2md
+brew install tfplan2md
+```
+
+To upgrade to the latest version:
+
+```bash
+brew upgrade tfplan2md
+```
+
+**Supported Platforms:**
+- macOS x64 (Intel)
+- macOS ARM64 (Apple Silicon - M1/M2/M3)
+- Linux x64 (including WSL)
+
+**Recommended for:**
+- macOS and Linux users who prefer package manager installation
+- Development environments where Homebrew is already installed
+- Users who want automatic update notifications via `brew outdated`
+
+### Option 2: Docker Image
 
 ```bash
 docker pull oocx/tfplan2md:latest
@@ -71,8 +96,9 @@ The Docker image is a **14.7MB** AOT-compiled native binary built from scratch f
 - Containerized environments
 - CI/CD pipelines with Docker support
 - Users who prefer isolated, reproducible builds
+- Alpine Linux or musl-based systems
 
-### Option 2: Pre-built Binaries
+### Option 3: Pre-built Binaries
 
 **Available starting with the next release**
 
@@ -85,7 +111,6 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 | **Linux** | x64 | `tfplan2md_VERSION_linux-x64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
 | **Linux** | ARM64 | `tfplan2md_VERSION_linux-arm64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
 | **Windows** | x64 | `tfplan2md_VERSION_windows-x64.zip` | Windows 10+ (x64) |
-| **Windows** | ARM64 | `tfplan2md_VERSION_windows-arm64.zip` | Windows 11 ARM64 |
 | **macOS** | Intel | `tfplan2md_VERSION_macos-x64.tar.gz` | macOS 10.15+ (Intel) |
 | **macOS** | Apple Silicon | `tfplan2md_VERSION_macos-arm64.tar.gz` | macOS 11+ (M1/M2/M3) |
 
@@ -94,7 +119,7 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 1. **Download the binary for your platform:**
    ```bash
    VERSION="1.x.x"  # Replace with desired version
-   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, windows-x64, windows-arm64, macos-x64, macos-arm64
+   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, windows-x64, macos-x64, macos-arm64
    
    # Linux/macOS (tar.gz)
    wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_${PLATFORM}.tar.gz
@@ -144,8 +169,8 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 
 **Windows:**
 - Windows 10 version 1607 or newer (x64)
-- Windows 11 ARM64 (arm64 builds)
 - No .NET runtime required (self-contained NativeAOT)
+- **Note:** Windows ARM64 builds are not currently available. Use x64 binary (runs via emulation) or Docker image.
 
 **macOS:**
 - macOS 10.15 (Catalina) or newer for Intel builds
@@ -157,11 +182,11 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 **Recommended for:**
 - Closed/air-gapped systems where Docker images cannot be pulled
 - High compliance or regulatory environments
-- Environments without container runtime
+- Environments without container runtime or Homebrew
 - Local development and testing without Docker overhead
-- Systems requiring specific architecture support (ARM64, Apple Silicon)
+- Windows users (Homebrew not available on native Windows)
 
-### Option 3: Build from Source
+### Option 4: Build from Source
 
 Requires .NET 10 SDK.
 

@@ -1879,14 +1879,15 @@ Starting with the next release, tfplan2md provides pre-built native binaries as 
 
 **Phase 2 (Planned):**
 - linux-arm64 - ARM-based cloud instances and servers
-- darwin-arm64 - macOS Apple Silicon (M1/M2/M3)
-- darwin-x64 - macOS Intel
-- win-x64 - Windows 10/11/Server
+- darwin-arm64 - macOS Apple Silicon (M1/M2/M3) ✅ **Now Available**
+- darwin-x64 - macOS Intel ✅ **Now Available**
+- win-x64 - Windows 10/11/Server ✅ **Now Available**
 
 **Phase 3 (Future):**
 - linux-musl-x64 - Alpine Linux standalone
 - linux-musl-arm64 - ARM Alpine
-- win-arm64 - Windows ARM devices
+
+**Note:** Windows ARM64 builds are not currently provided due to lack of native ARM64 Windows runners in GitHub Actions. Windows ARM64 users can use the x64 binary (runs via emulation on Windows 11) or the Docker image.
 
 #### Binary Characteristics
 
@@ -1927,6 +1928,61 @@ Pre-built binaries are ideal for:
 - **Simplified deployment**: Direct binary execution without container orchestration
 
 For containerized environments, the Docker image remains the recommended distribution method due to its minimal size (14.7MB) and security characteristics.
+
+### Homebrew Installation
+
+**Status:** ✅ Implemented (Feature 089)
+
+tfplan2md is available via Homebrew for macOS and Linux users, providing a convenient package manager experience with automatic updates.
+
+#### Installation
+
+```bash
+# Add the tfplan2md tap
+brew tap oocx/tfplan2md
+
+# Install tfplan2md
+brew install tfplan2md
+
+# Verify installation
+tfplan2md --version
+```
+
+#### Supported Platforms
+
+- **macOS x64** - Intel-based Macs (macOS 10.15+)
+- **macOS ARM64** - Apple Silicon Macs (M1/M2/M3, macOS 11+)
+- **Linux x64** - Linux distributions with Homebrew (including WSL)
+
+#### Features
+
+- **Automatic updates**: Get notified of new versions with `brew outdated`
+- **Simple upgrades**: Update to the latest version with `brew upgrade tfplan2md`
+- **No manual downloads**: Homebrew handles binary download, verification, and PATH configuration
+- **Platform detection**: Formula automatically selects the correct binary for your platform
+- **Security**: SHA256 checksum verification for all downloads
+
+#### How It Works
+
+The Homebrew formula downloads pre-built native binaries from GitHub Releases (the same binaries available for direct download). The formula:
+- Detects your platform (macOS Intel, macOS ARM64, or Linux x64)
+- Downloads the appropriate archive from GitHub Releases
+- Verifies the SHA256 checksum
+- Installs the binary to Homebrew's bin directory
+- Adds the binary to your PATH automatically
+
+The formula is automatically updated when new stable releases are published.
+
+#### Use Cases
+
+Homebrew installation is ideal for:
+- **macOS users**: Standard installation method on macOS
+- **Development environments**: Local testing without Docker
+- **WSL users**: Linux package management on Windows
+- **Version management**: Easy upgrades and rollbacks via Homebrew
+- **Team standardization**: Consistent installation across development teams
+
+For CI/CD pipelines, the Docker image remains the recommended distribution method due to its containerized isolation.
 
 ### Releases
 

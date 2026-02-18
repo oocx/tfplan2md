@@ -1,0 +1,100 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.5.0",
+  "resource_changes": [
+    {
+      "address": "module.monitoring_vnet[0].azurerm_network_security_group.this",
+      "module_address": "module.monitoring_vnet[0]",
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "id": "/subscriptions/.../networkSecurityGroups/my-nsg",
+          "name": "my-nsg",
+          "location": "westeurope",
+          "security_rule": []
+        },
+        "after": {
+          "id": "/subscriptions/.../networkSecurityGroups/my-nsg",
+          "name": "my-nsg",
+          "location": "westeurope",
+          "security_rule": []
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.monitoring_vnet[0].azurerm_network_security_rule.this[\"rule-a\"]",
+      "module_address": "module.monitoring_vnet[0]",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "this",
+      "index": "rule-a",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "id": "...",
+          "name": "rule-a",
+          "network_security_group_name": "my-nsg",
+          "description": "a",
+          "source_address_prefixes": []
+        },
+        "after": {
+          "id": "...",
+          "name": "rule-a",
+          "network_security_group_name": "my-nsg",
+          "description": "b",
+          "source_address_prefixes": [
+            "1.2.3.4/24"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.monitoring_vnet[0].azurerm_network_security_rule.this[\"rule-b\"]",
+      "module_address": "module.monitoring_vnet[0]",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "this",
+      "index": "rule-b",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "id": "...",
+          "name": "rule-b",
+          "network_security_group_name": "my-nsg",
+          "description": "a",
+          "source_address_prefixes": []
+        },
+        "after": {
+          "id": "...",
+          "name": "rule-b",
+          "network_security_group_name": "my-nsg",
+          "description": "b",
+          "source_address_prefixes": [
+            "1.2.3.5/24"
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    }
+  ]
+}

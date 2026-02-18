@@ -28,6 +28,7 @@
 {{~ end ~}}
 
 {{~ # Standard attributes table with semantic formatting ~}}
+{{~ if metadata.name || metadata.parent_id || metadata.location ~}}
 
 | Attribute | Value |
 |-----------|-------|
@@ -42,6 +43,7 @@
 {{~ if metadata.location ~}}
 {{~ location_indicator = get_attribute_finding_indicator "location" change.code_analysis_findings ~}}
 | location{{ location_indicator }} | {{ format_attribute_value_table "location" metadata.location "azapi" }} |
+{{~ end ~}}
 {{~ end ~}}
 
 {{~ # Tags badges (if present) ~}}

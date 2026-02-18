@@ -240,4 +240,24 @@ public class AzapiResourceTemplateTests
         result.Should().NotBeEmpty();
         result.Should().Contain(AzapiResourceType);
     }
+
+    [Test]
+    public async Task Render_AzapiNoMetadata_DoesNotRenderEmptyTable()
+    {
+        // Arrange - Bug fix: Resources without metadata should not show empty table headers
+        var result = await RenderAzapiPlanAsync("azapi-no-metadata-plan.json");
+
+        // Assert - Should not contain empty metadata table
+        // The pattern "| Attribute | Value |\n|-----------|-------|\n\n" represents an empty table
+        var emptyTablePattern = new Regex(
+            @"\|\s*Attribute\s*\|\s*Value\s*\|\s*\n\s*\|[-\s|]+\|\s*\n\s*\n",
+            RegexOptions.Multiline,
+            TimeSpan.FromSeconds(2));
+
+        emptyTablePattern.Matches(result).Should().BeEmpty();
+
+        // Should still render the resource
+        result.Should().Contain(AzapiResourceType);
+        result.Should().Contain("Body");
+    }
 }

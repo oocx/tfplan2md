@@ -47,3 +47,24 @@
   - **Test Execution Schedule:** 4 phases (pre-development, during development, pre-release, post-release) with clear test priorities
 - **Test Coverage:** All 16 acceptance criteria from specification mapped to test cases with Critical (14), High (9), and Medium (2) priorities
 - **Problems Encountered:** None. Leveraged existing testing strategy documentation and workflow structure. Identified that Homebrew installation tests cannot be easily automated in CI/CD (requires Homebrew setup), recommending manual testing approach for BREW-* test cases.
+
+### Task Planner
+- **Date:** 2025-02-18
+- **Summary:** Created detailed implementation task breakdown for Homebrew installation support. Analyzed specification, architecture decisions (ADR-001, ADR-002, ADR-003), and test plan to create 17 actionable tasks organized into 7 implementation phases. Tasks cover platform build fixes (macOS x64/ARM64, windows-arm64 removal), Homebrew infrastructure setup (tap repository, formula template), workflow automation (update script, GitHub Actions integration), platform validation testing, documentation, and error handling.
+- **Artifacts Produced:**
+  - `docs/features/089-homebrew-installation/tasks.md` - Complete task breakdown with 17 tasks, each with priority, description, files to modify, acceptance criteria, dependencies, effort estimates
+- **Key Task Areas:**
+  - **Phase 1 (P0): Platform Build Fixes** - 4 tasks fixing macOS builds with Xcode CLT, removing windows-arm64, regression testing
+  - **Phase 2 (P0): Homebrew Infrastructure** - 3 tasks creating tap repository, formula template, update script
+  - **Phase 3 (P0): Workflow Automation** - 2 tasks configuring GitHub secret, integrating formula update job
+  - **Phase 4 (P0): End-to-End Testing** - 2 tasks validating automation and prerelease behavior
+  - **Phase 5 (P1): Platform Validation** - 3 tasks testing formula on macOS x64, macOS ARM64, Linux x64
+  - **Phase 6 (P1/P2): Documentation** - 2 tasks updating README and tap repository docs
+  - **Phase 7 (P2): Error Handling** - 1 task validating error scenarios
+- **Implementation Order:** Tasks organized by dependencies with critical path identified (13 tasks for MVP, 17 for complete delivery). Phases 1-2 can run in parallel, followed by integration and validation phases.
+- **Task Characteristics:** 
+  - **P0 (Critical): 11 tasks** - Platform fixes, infrastructure setup, automation, core testing
+  - **P1 (High): 5 tasks** - Platform validation, documentation
+  - **P2 (Medium): 1 task** - Error handling validation
+  - **Effort:** 4 XS (<1h), 8 S (1-2h), 5 M (2-4h) - Total estimated: ~30-40 hours
+- **Problems Encountered:** None. Specification, ADRs, and test plan provided comprehensive guidance. All implementation details clearly defined in architecture decisions.

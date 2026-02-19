@@ -33,6 +33,7 @@ internal class MarkdownRenderer
     private readonly MarkdownGeneration.Services.ValueFormatterRegistry? _valueFormatterRegistry;
     private readonly MarkdownGeneration.Services.IconProviderRegistry? _iconProviderRegistry;
     private readonly MarkdownGeneration.Services.ResourceModelMapperRegistry? _resourceModelMapperRegistry;
+    private readonly RenderTargets.DetailsDisplayMode _detailsDisplayMode;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdownRenderer"/> class using embedded templates.
@@ -42,18 +43,21 @@ internal class MarkdownRenderer
     /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
     /// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
     /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
+    /// <param name="detailsDisplayMode">Controls whether resource details blocks are expanded or collapsed.</param>
     public MarkdownRenderer(
         Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         Services.ProviderRegistry? providerRegistry = null,
         MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
-        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
+        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
+        RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.OpenOnWarnings)
     {
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
         _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
+        _detailsDisplayMode = detailsDisplayMode;
         _templateLoader = new ScribanTemplateLoader(
             coreTemplateResourcePrefix: TemplateResourcePrefix,
             providerTemplateResourcePrefixes: providerRegistry?.GetTemplateResourcePrefixes());
@@ -70,19 +74,22 @@ internal class MarkdownRenderer
     /// <param name="providerRegistry">Optional registry of provider modules for template loading and helper registration.</param>
     /// <param name="valueFormatterRegistry">Optional registry of value formatters used during rendering.</param>
     /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
+    /// <param name="detailsDisplayMode">Controls whether resource details blocks are expanded or collapsed.</param>
     public MarkdownRenderer(
         string customTemplateDirectory,
         Platforms.Azure.IPrincipalMapper? principalMapper = null,
         DiagnosticContext? diagnosticContext = null,
         Services.ProviderRegistry? providerRegistry = null,
         MarkdownGeneration.Services.ValueFormatterRegistry? valueFormatterRegistry = null,
-        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
+        MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
+        RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.OpenOnWarnings)
     {
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
         _valueFormatterRegistry = valueFormatterRegistry;
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
         _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
+        _detailsDisplayMode = detailsDisplayMode;
         _templateLoader = new ScribanTemplateLoader(
             customTemplateDirectory,
             coreTemplateResourcePrefix: TemplateResourcePrefix,
@@ -324,6 +331,7 @@ internal class MarkdownRenderer
         var changeObject = AotScriptObjectMapper.MapResourceChangeWithFormat(change, renderTarget, _resourceModelMapperRegistry);
 
         scriptObject["change"] = changeObject;
+        scriptObject["details_state"] = AotScriptObjectMapper.ConvertDetailsDisplayMode(_detailsDisplayMode);
 
         // Register custom helper functions
         var diffFormatter = CreateDiffFormatter(renderTarget);

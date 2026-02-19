@@ -114,7 +114,8 @@ internal partial class ReportModelBuilder
             CodeAnalysis = codeAnalysisReport,
             ShowUnchangedValues = _showUnchangedValues,
             RenderTarget = renderTarget,
-            RefactoringOperations = refactoringOperations
+            RefactoringOperations = refactoringOperations,
+            DetailsDisplayMode = _detailsDisplayMode
         };
     }
 

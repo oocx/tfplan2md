@@ -98,4 +98,10 @@ internal class ReportModel
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>
     public required IReadOnlyList<RefactoringOperationModel> RefactoringOperations { get; init; }
+
+    /// <summary>
+    /// Gets the details display mode controlling whether resource details blocks are expanded or collapsed.
+    /// Related feature: docs/features/092-details-display-mode/specification.md.
+    /// </summary>
+    public required RenderTargets.DetailsDisplayMode DetailsDisplayMode { get; init; }
 }

@@ -2,6 +2,7 @@ using Oocx.TfPlan2Md.RenderTargets;
 
 namespace Oocx.TfPlan2Md.CLI;
 
+
 /// <summary>
 /// Represents the parsed command-line options.
 /// </summary>
@@ -100,6 +101,17 @@ internal record CliOptions
     /// The debug information is appended to the markdown report as a separate "Debug Information" section.
     /// </remarks>
     public bool Debug { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating how resource details blocks are expanded or collapsed.
+    /// Related feature: docs/features/092-details-display-mode/specification.md.
+    /// </summary>
+    /// <value>
+    /// <see cref="DetailsDisplayMode.OpenOnWarnings"/> (default) opens details only when code analysis warnings are present;
+    /// <see cref="DetailsDisplayMode.Open"/> always expands all details blocks;
+    /// <see cref="DetailsDisplayMode.Closed"/> always collapses all details blocks.
+    /// </value>
+    public DetailsDisplayMode DetailsDisplayMode { get; init; }
 }
 
 /// <summary>
@@ -127,6 +139,7 @@ internal static class CliParser
         var hideMetadata = false;
         var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
         var debug = false;
+        var detailsDisplayMode = DetailsDisplayMode.OpenOnWarnings; // Default: open when code analysis warnings present
 
         var codeAnalysisResultsPatterns = new List<string>();
         string? codeAnalysisMinimumLevel = null;
@@ -249,6 +262,16 @@ internal static class CliParser
                 case "--debug":
                     debug = true;
                     break;
+                case "--details":
+                    if (i + 1 < args.Length)
+                    {
+                        detailsDisplayMode = ParseDetailsDisplayMode(args[++i]);
+                    }
+                    else
+                    {
+                        throw new CliParseException("--details requires a value (open, closed, or auto).");
+                    }
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -281,7 +304,8 @@ internal static class CliParser
             ,
             CodeAnalysisResultsPatterns = codeAnalysisResultsPatterns,
             CodeAnalysisMinimumLevel = codeAnalysisMinimumLevel,
-            FailOnStaticCodeAnalysisErrorsLevel = failOnStaticCodeAnalysisErrorsLevel
+            FailOnStaticCodeAnalysisErrorsLevel = failOnStaticCodeAnalysisErrorsLevel,
+            DetailsDisplayMode = detailsDisplayMode
         };
     }
 
@@ -300,6 +324,25 @@ internal static class CliParser
             "github" => RenderTarget.GitHub,
             "azuredevops" or "azdo" => RenderTarget.AzureDevOps,
             _ => throw new CliParseException("--render-target must be 'github' or 'azuredevops' (alias: azdo).")
+        };
+    }
+
+    /// <summary>
+    /// Parses the details display mode value from CLI input.
+    /// </summary>
+    /// <param name="value">The details display mode string (case-insensitive).</param>
+    /// <returns>The parsed <see cref="DetailsDisplayMode"/> enum value.</returns>
+    /// <exception cref="CliParseException">Thrown when the value is not recognized.</exception>
+    private static DetailsDisplayMode ParseDetailsDisplayMode(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+
+        return normalized switch
+        {
+            "open" => DetailsDisplayMode.Open,
+            "closed" => DetailsDisplayMode.Closed,
+            "auto" => DetailsDisplayMode.OpenOnWarnings,
+            _ => throw new CliParseException("--details must be 'open', 'closed', or 'auto'.")
         };
     }
 }

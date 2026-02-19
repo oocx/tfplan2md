@@ -39,6 +39,7 @@ internal static class AotScriptObjectMapper
         scriptObject["report_title"] = model.ReportTitle;
         scriptObject["show_unchanged_values"] = model.ShowUnchangedValues;
         scriptObject["large_value_format"] = model.RenderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
+        scriptObject["details_state"] = ConvertDetailsDisplayMode(model.DetailsDisplayMode);
 
         // Generated timestamp as nested object with DateTime for Scriban date functions
         var generatedAtUtcObj = new ScriptObject();
@@ -81,6 +82,23 @@ internal static class AotScriptObjectMapper
         changeObject["large_value_format"] = formatString;
 
         return changeObject;
+    }
+
+    /// <summary>
+    /// Converts a <see cref="RenderTargets.DetailsDisplayMode"/> value to the string used in Scriban templates.
+    /// </summary>
+    /// <param name="mode">The details display mode to convert.</param>
+    /// <returns>
+    /// <c>"open"</c>, <c>"closed"</c>, or <c>"auto"</c> corresponding to the enum value.
+    /// </returns>
+    internal static string ConvertDetailsDisplayMode(RenderTargets.DetailsDisplayMode mode)
+    {
+        return mode switch
+        {
+            RenderTargets.DetailsDisplayMode.Open => "open",
+            RenderTargets.DetailsDisplayMode.Closed => "closed",
+            _ => "auto"
+        };
     }
 
     private static ScriptObject MapSummary(SummaryModel summary)

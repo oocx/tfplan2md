@@ -38,6 +38,7 @@ internal delegate void ParentPostMergeCallback(
 /// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
 /// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
 /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
+/// <param name="detailsDisplayMode">Controls whether resource details blocks are expanded or collapsed.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
@@ -52,7 +53,8 @@ internal partial class ReportModelBuilder(
     bool hideMetadata = false,
     Services.ProviderRegistry? providerRegistry = null,
     CodeAnalysisInput? codeAnalysisInput = null,
-    MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
+    MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
+    RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.OpenOnWarnings)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -83,6 +85,12 @@ internal partial class ReportModelBuilder(
     /// Indicates whether metadata should be hidden from the rendered report.
     /// </summary>
     private readonly bool _hideMetadata = hideMetadata;
+
+    /// <summary>
+    /// Controls whether resource details blocks are expanded or collapsed in the rendered report.
+    /// Related feature: docs/features/092-details-display-mode/specification.md.
+    /// </summary>
+    private readonly RenderTargets.DetailsDisplayMode _detailsDisplayMode = detailsDisplayMode;
 
     /// <summary>
     /// Optional code analysis inputs to integrate into the report.

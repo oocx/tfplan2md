@@ -25,6 +25,7 @@ public static class HelpTextProvider
             ("--report-title <title>", "Override the report title (level-1 heading) with a custom value."),
             ("-p, --principal-mapping <file>", "Map principal IDs to names using a JSON file."),
             ("--render-target <github|azuredevops>", "Target platform for rendering (default: azuredevops)."),
+            ("--details <open|closed|auto>", "Control resource details expansion (default: auto = open on warnings)."),
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
             ("--hide-metadata", "Hide tfplan2md version/commit/timestamp metadata in the header."),
             ("--show-sensitive", "Show sensitive values unmasked."),

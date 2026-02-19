@@ -843,7 +843,8 @@ public class MarkdownRendererTests
             },
             ShowUnchangedValues = false,
             RenderTarget = RenderTarget.AzureDevOps,
-            RefactoringOperations = []
+            RefactoringOperations = [],
+            DetailsDisplayMode = DetailsDisplayMode.OpenOnWarnings
         };
         var tempFile = Path.GetTempFileName();
         File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");

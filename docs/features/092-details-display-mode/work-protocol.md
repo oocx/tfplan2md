@@ -16,3 +16,16 @@
   - `docs/features/092-details-display-mode/specification.md`
   - `docs/features/092-details-display-mode/work-protocol.md`
 - **Problems Encountered:** None
+
+### Architect
+- **Date:** 2026-02-19
+- **Summary:** Designed technical architecture for `--details` CLI feature with DetailsDisplayMode enum, data flow threading through CLI → ReportModel → Scriban context, and details_open_attr helper function for template rendering
+- **Artifacts Produced:**
+  - `docs/features/092-details-display-mode/architecture.md`
+- **Key Decisions:**
+  - Enum location: `RenderTargets/DetailsDisplayMode.cs` (consistent with RenderTarget pattern)
+  - Helper function uses closure to capture mode (similar to diffFormatter pattern)
+  - Default mode is Auto (preserves current behavior for backward compatibility)
+  - Debug block requires no changes (already collapsed by default)
+  - Child resource findings already rolled up during parent-child merging
+- **Problems Encountered:** None

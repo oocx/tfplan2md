@@ -168,8 +168,31 @@ jobs:
             echo "path=${RELEASE_NOTES_FILES[0]}" >> $GITHUB_OUTPUT
             echo "Found user-focused release notes: ${RELEASE_NOTES_FILES[0]}"
           elif [ "${#RELEASE_NOTES_FILES[@]}" -gt 1 ]; then
-            echo "found=false" >> $GITHUB_OUTPUT
-            echo "Multiple release-notes.md files changed in this release range; using changelog extraction"
+            # Multiple release note files can exist in cumulative release ranges when
+            # intermediate versions were not released. Pick the latest work item by
+            # numeric prefix (docs/*/NNN-*/release-notes.md).
+            latest_release_notes=""
+            latest_work_item_id=-1
+            for release_notes_file in "${RELEASE_NOTES_FILES[@]}"; do
+              work_item_dir="$(basename "$(dirname "$release_notes_file")")"
+              work_item_id="${work_item_dir%%-*}"
+              if [[ "$work_item_id" =~ ^[0-9]+$ ]]; then
+                work_item_id_numeric=$((10#$work_item_id))
+                if [ "$work_item_id_numeric" -gt "$latest_work_item_id" ]; then
+                  latest_work_item_id="$work_item_id_numeric"
+                  latest_release_notes="$release_notes_file"
+                fi
+              fi
+            done
+
+            if [ -n "$latest_release_notes" ] && [ -f "$latest_release_notes" ]; then
+              echo "found=true" >> $GITHUB_OUTPUT
+              echo "path=${latest_release_notes}" >> $GITHUB_OUTPUT
+              echo "Multiple release-notes.md files changed; selected latest work item notes: ${latest_release_notes}"
+            else
+              echo "found=false" >> $GITHUB_OUTPUT
+              echo "Multiple release-notes.md files changed but no valid latest work item found; using changelog extraction"
+            fi
           else
             echo "found=false" >> $GITHUB_OUTPUT
             echo "No user-focused release notes found, will use changelog extraction"

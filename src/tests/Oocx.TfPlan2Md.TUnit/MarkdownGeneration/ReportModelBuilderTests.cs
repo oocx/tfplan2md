@@ -105,6 +105,94 @@ public class ReportModelBuilderTests
     }
 
     [Test]
+    public void Build_WithSensitiveArrayAttributes_MasksByDefault()
+    {
+        // Arrange - test with plan1.json which has azuredevops_build_definition with sensitive variable array
+        var json = File.ReadAllText("TestData/TerraformShow/plan1.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder(showSensitive: false);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert - variable array is marked sensitive, so all variable[*] attributes should be masked
+        var buildDef = model.Changes.FirstOrDefault(c => c.Address == "azuredevops_build_definition.example2");
+        buildDef.Should().NotBeNull();
+
+        // Check that variable array items are masked
+        var variableNameAttr = buildDef!.AttributeChanges.FirstOrDefault(a => a.Name == "variable[0].name");
+        variableNameAttr.Should().NotBeNull();
+        variableNameAttr!.IsSensitive.Should().BeTrue("entire variable array is marked sensitive");
+        variableNameAttr.After.Should().Be("(sensitive)", "array items should be masked when parent array is sensitive");
+
+        var variableSecretAttr = buildDef.AttributeChanges.FirstOrDefault(a => a.Name == "variable[0].secret_value");
+        variableSecretAttr.Should().NotBeNull();
+        variableSecretAttr!.IsSensitive.Should().BeTrue("entire variable array is marked sensitive");
+        variableSecretAttr.After.Should().Be("(sensitive)", "secret_value should be masked when parent array is sensitive");
+
+        var variableValueAttr = buildDef.AttributeChanges.FirstOrDefault(a => a.Name == "variable[0].value");
+        variableValueAttr.Should().NotBeNull();
+        variableValueAttr!.IsSensitive.Should().BeTrue("entire variable array is marked sensitive");
+        variableValueAttr.After.Should().Be("(sensitive)", "array items should be masked when parent array is sensitive");
+    }
+
+    [Test]
+    public void Build_WithSensitiveArrayAttributes_ShowsWhenFlagSet()
+    {
+        // Arrange - test with plan1.json which has azuredevops_build_definition with sensitive variable array
+        var json = File.ReadAllText("TestData/TerraformShow/plan1.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder(showSensitive: true);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert - with showSensitive=true, values should be shown even though array is marked sensitive
+        var buildDef = model.Changes.FirstOrDefault(c => c.Address == "azuredevops_build_definition.example2");
+        buildDef.Should().NotBeNull();
+
+        // Check that variable array items are still marked as sensitive but values are NOT masked
+        var variableNameAttr = buildDef!.AttributeChanges.FirstOrDefault(a => a.Name == "variable[0].name");
+        variableNameAttr.Should().NotBeNull();
+        variableNameAttr!.IsSensitive.Should().BeTrue("entire variable array is marked sensitive");
+        variableNameAttr.After.Should().NotBe("(sensitive)", "values should be shown when --show-sensitive is set");
+        variableNameAttr.After.Should().Be("BUILD_CONFIGURATION", "actual value should be shown");
+
+        var variableValueAttr = buildDef.AttributeChanges.FirstOrDefault(a => a.Name == "variable[0].value");
+        variableValueAttr.Should().NotBeNull();
+        variableValueAttr!.IsSensitive.Should().BeTrue("entire variable array is marked sensitive");
+        variableValueAttr.After.Should().NotBe("(sensitive)", "values should be shown when --show-sensitive is set");
+        variableValueAttr.After.Should().Be("Release", "actual value should be shown");
+    }
+
+    [Test]
+    public void Build_WithNestedSensitiveAttributes_MasksNestedValues()
+    {
+        // Arrange - test with plan1.json which has azuredevops_variable_group with sensitive secret_variable array
+        var json = File.ReadAllText("TestData/TerraformShow/plan1.json");
+        var plan = _parser.Parse(json);
+        var builder = new ReportModelBuilder(showSensitive: false, showUnchangedValues: true);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert - secret_variable array is marked sensitive in before_sensitive/after_sensitive
+        var variableGroup = model.Changes.FirstOrDefault(c => c.Address == "azuredevops_variable_group.example");
+        variableGroup.Should().NotBeNull();
+
+        // Check that secret_variable array items are masked
+        var secretNameAttr = variableGroup!.AttributeChanges.FirstOrDefault(a => a.Name == "secret_variable[0].name");
+        secretNameAttr.Should().NotBeNull("secret_variable array should have name attribute");
+        secretNameAttr!.IsSensitive.Should().BeTrue("entire secret_variable array is marked sensitive");
+        secretNameAttr.After.Should().Be("(sensitive)", "array items should be masked when parent array is sensitive");
+
+        var secretValueAttr = variableGroup.AttributeChanges.FirstOrDefault(a => a.Name == "secret_variable[0].value");
+        secretValueAttr.Should().NotBeNull("secret_variable array should have value attribute");
+        secretValueAttr!.IsSensitive.Should().BeTrue("entire secret_variable array is marked sensitive");
+        secretValueAttr.After.Should().Be("(sensitive)", "secret value should be masked when parent array is sensitive");
+    }
+
+    [Test]
     public void Build_ValidPlan_PreservesTerraformVersion()
     {
         // Arrange

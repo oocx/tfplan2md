@@ -377,6 +377,44 @@ public partial class TemplateArchitectureTests
 
     #endregion
 
+    #region Details Open Attribute Validation
+
+    /// <summary>
+    /// Verifies that no template uses the old hardcoded details-open logic.
+    /// Templates must use the <c>details_open_attr(change)</c> helper instead, which
+    /// respects the <c>--details</c> CLI flag. The old pattern only opens details blocks
+    /// for resources with code analysis findings, ignoring the user's choice.
+    /// </summary>
+    /// <remarks>
+    /// This test was introduced as part of Feature 092 (Details Display Mode) to prevent
+    /// regression after the fix was applied to provider-specific templates that had missed
+    /// the initial migration.
+    /// </remarks>
+    [Test]
+    public void Templates_ShouldNotContainHardcodedDetailsOpenLogic()
+    {
+        var violations = new List<string>();
+
+        foreach (var resourceName in GetAllTemplateResources())
+        {
+            var content = ReadTemplateContent(resourceName);
+            var templateName = GetTemplateName(resourceName);
+
+            if (HardcodedDetailsOpenRegex().IsMatch(content))
+            {
+                violations.Add(templateName);
+            }
+        }
+
+        violations.Should().BeEmpty(
+            "templates must use `{{ details_open_attr(change) }}` instead of the hardcoded " +
+            "`{{ if change.code_analysis_findings.size > 0 }} open{{ end }}` pattern. " +
+            "The helper respects the --details CLI flag (open/closed/auto). " +
+            "Templates with violations: " + string.Join(", ", violations));
+    }
+
+    #endregion
+
     #region Regex Patterns
 
     /// <summary>
@@ -391,6 +429,16 @@ public partial class TemplateArchitectureTests
     /// </summary>
     [GeneratedRegex(@"<!--\s*tfplan2md:anchor\b", RegexOptions.None, matchTimeoutMilliseconds: 1000)]
     private static partial Regex LegacyAnchorRegex();
+
+    /// <summary>
+    /// Matches the old hardcoded details-open logic that was replaced by the
+    /// <c>details_open_attr(change)</c> helper. Templates must not use this pattern.
+    /// </summary>
+    [GeneratedRegex(
+        @"\{\{[-~]?\s*if\s+change\.code_analysis_findings\.size\s*>\s*0\s*\}\}\s*open\s*\{\{[-~]?\s*end\s*[-~]?\}\}",
+        RegexOptions.None,
+        matchTimeoutMilliseconds: 1000)]
+    private static partial Regex HardcodedDetailsOpenRegex();
 
     #endregion
 }

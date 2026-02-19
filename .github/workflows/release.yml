@@ -222,7 +222,7 @@ jobs:
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
             needs_clang: true
           - platform: linux-arm64
-            os: ubuntu-latest
+            os: ubuntu-24.04-arm
             rid: linux-arm64
             archive_ext: tar.gz
             binary_name: tfplan2md
@@ -318,10 +318,16 @@ jobs:
         shell: bash
         run: |
           VERSION="${{ needs.release.outputs.version }}"
-          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
-            sha256sum tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz > tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          # sha256sum is unavailable on macOS; use shasum as fallback
+          if command -v sha256sum &>/dev/null; then
+            sha256() { sha256sum "$@"; }
           else
-            sha256sum tfplan2md_${VERSION}_${{ matrix.platform }}.zip > tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+            sha256() { shasum -a 256 "$@"; }
+          fi
+          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
+            sha256 tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz > tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          else
+            sha256 tfplan2md_${VERSION}_${{ matrix.platform }}.zip > tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
           fi
 
       - name: Validate Artifacts (Unix)
@@ -337,7 +343,11 @@ jobs:
             tar -tzf tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz > /dev/null
           fi
           # Verify checksums
-          sha256sum -c tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          if command -v sha256sum &>/dev/null; then
+            sha256sum -c tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          else
+            shasum -a 256 --check tfplan2md_${VERSION}_${{ matrix.platform }}.sha256
+          fi
 
       - name: Validate Artifacts (Windows)
         if: runner.os == 'Windows'

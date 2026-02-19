@@ -245,8 +245,9 @@ internal class MarkdownRenderer
     /// </summary>
     /// <param name="change">The resource change to render.</param>
     /// <param name="renderTarget">The target platform for rendering.</param>
+    /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
     /// <returns>The rendered Markdown string for this resource, or null if default handling should be used.</returns>
-    public string? RenderResourceChange(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps)
+    public string? RenderResourceChange(ResourceChangeModel change, RenderTargets.RenderTarget renderTarget = RenderTargets.RenderTarget.AzureDevOps, RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto)
     {
         var templateSource = ResolveResourceTemplate(change.Type);
         if (templateSource is null)
@@ -256,7 +257,7 @@ internal class MarkdownRenderer
 
         try
         {
-            return RenderResourceWithTemplate(change, templateSource.Value, renderTarget);
+            return RenderResourceWithTemplate(change, templateSource.Value, renderTarget, detailsDisplayMode);
         }
         catch (ScribanHelperException ex)
         {
@@ -307,8 +308,9 @@ internal class MarkdownRenderer
     /// <param name="change">The resource change model to render.</param>
     /// <param name="templateSource">The template source to use for rendering.</param>
     /// <param name="renderTarget">The target platform for rendering.</param>
+    /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
     /// <returns>The rendered Markdown string.</returns>
-    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, RenderTargets.RenderTarget renderTarget)
+    private string RenderResourceWithTemplate(ResourceChangeModel change, TemplateSource templateSource, RenderTargets.RenderTarget renderTarget, RenderTargets.DetailsDisplayMode detailsDisplayMode)
     {
         var template = Template.Parse(templateSource.Content, templateSource.Path);
         if (template.HasErrors)
@@ -327,7 +329,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         var diffFormatter = CreateDiffFormatter(renderTarget);
-        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry, RenderTargets.DetailsDisplayMode.Auto);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry, detailsDisplayMode);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 

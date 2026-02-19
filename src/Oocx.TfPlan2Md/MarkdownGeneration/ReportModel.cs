@@ -94,6 +94,12 @@ internal class ReportModel
     public required RenderTargets.RenderTarget RenderTarget { get; init; }
 
     /// <summary>
+    /// Gets the display mode for resource details blocks.
+    /// Related feature: docs/features/092-details-display-mode/specification.md.
+    /// </summary>
+    public required RenderTargets.DetailsDisplayMode DetailsDisplayMode { get; init; }
+
+    /// <summary>
     /// Gets the refactoring operations (imports and moves) included in the plan.
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>

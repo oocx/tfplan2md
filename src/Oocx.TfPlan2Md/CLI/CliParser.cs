@@ -100,6 +100,12 @@ internal record CliOptions
     /// The debug information is appended to the markdown report as a separate "Debug Information" section.
     /// </remarks>
     public bool Debug { get; init; }
+
+    /// <summary>
+    /// Gets the display mode for resource details blocks.
+    /// Related feature: docs/features/092-details-display-mode/specification.md.
+    /// </summary>
+    public DetailsDisplayMode DetailsDisplayMode { get; init; }
 }
 
 /// <summary>
@@ -127,6 +133,7 @@ internal static class CliParser
         var hideMetadata = false;
         var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
         var debug = false;
+        var detailsDisplayMode = DetailsDisplayMode.Auto; // Default to Auto (current behavior)
 
         var codeAnalysisResultsPatterns = new List<string>();
         string? codeAnalysisMinimumLevel = null;
@@ -249,6 +256,16 @@ internal static class CliParser
                 case "--debug":
                     debug = true;
                     break;
+                case "--details":
+                    if (i + 1 < args.Length)
+                    {
+                        detailsDisplayMode = ParseDetailsDisplayMode(args[++i]);
+                    }
+                    else
+                    {
+                        throw new CliParseException("--details requires a value (open, closed, or auto).");
+                    }
+                    break;
                 default:
                     if (arg.StartsWith('-'))
                     {
@@ -277,7 +294,8 @@ internal static class CliParser
             HideMetadata = hideMetadata,
             RenderTarget = renderTarget,
             ReportTitle = reportTitle,
-            Debug = debug
+            Debug = debug,
+            DetailsDisplayMode = detailsDisplayMode
             ,
             CodeAnalysisResultsPatterns = codeAnalysisResultsPatterns,
             CodeAnalysisMinimumLevel = codeAnalysisMinimumLevel,
@@ -300,6 +318,25 @@ internal static class CliParser
             "github" => RenderTarget.GitHub,
             "azuredevops" or "azdo" => RenderTarget.AzureDevOps,
             _ => throw new CliParseException("--render-target must be 'github' or 'azuredevops' (alias: azdo).")
+        };
+    }
+
+    /// <summary>
+    /// Parses the details display mode value from CLI input.
+    /// </summary>
+    /// <param name="value">The details display mode string (case-insensitive).</param>
+    /// <returns>The parsed <see cref="DetailsDisplayMode"/> enum value.</returns>
+    /// <exception cref="CliParseException">Thrown when the value is not recognized.</exception>
+    private static DetailsDisplayMode ParseDetailsDisplayMode(string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+
+        return normalized switch
+        {
+            "open" => DetailsDisplayMode.Open,
+            "closed" => DetailsDisplayMode.Closed,
+            "auto" => DetailsDisplayMode.Auto,
+            _ => throw new CliParseException("--details must be 'open', 'closed', or 'auto'.")
         };
     }
 }

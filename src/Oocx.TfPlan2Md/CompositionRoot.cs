@@ -217,7 +217,8 @@ internal sealed class CompositionRoot(CliOptions options)
             hideMetadata: options.HideMetadata,
             providerRegistry: providerRegistry,
             codeAnalysisInput: codeAnalysisInput,
-            iconProviderRegistry: iconProviderRegistry);
+            iconProviderRegistry: iconProviderRegistry,
+            detailsDisplayMode: options.DetailsDisplayMode);
     }
 
     /// <summary>

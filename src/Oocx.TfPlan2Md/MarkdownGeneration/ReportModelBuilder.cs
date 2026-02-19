@@ -38,6 +38,7 @@ internal delegate void ParentPostMergeCallback(
 /// <param name="providerRegistry">Optional registry of provider modules for registering provider-specific factories.</param>
 /// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
 /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
+/// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
@@ -52,7 +53,8 @@ internal partial class ReportModelBuilder(
     bool hideMetadata = false,
     Services.ProviderRegistry? providerRegistry = null,
     CodeAnalysisInput? codeAnalysisInput = null,
-    MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null)
+    MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
+    RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -110,6 +112,11 @@ internal partial class ReportModelBuilder(
     /// Format for rendering large value diffs in tables.
     /// </summary>
     private readonly LargeValueFormat _largeValueFormat = ConvertRenderTargetToLargeValueFormat(renderTarget);
+
+    /// <summary>
+    /// Display mode for resource details blocks.
+    /// </summary>
+    private readonly RenderTargets.DetailsDisplayMode _detailsDisplayMode = detailsDisplayMode;
 
     /// <summary>
     /// Registry for resource-specific view model factories.

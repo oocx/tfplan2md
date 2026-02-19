@@ -20,12 +20,14 @@ public static partial class ScribanHelpers
     /// <param name="diffFormatter">Formatter used for rendering before/after diffs.</param>
     /// <param name="valueFormatterRegistry">Optional registry of value formatters for helper resolution.</param>
     /// <param name="iconProviderRegistry">Optional registry of icon providers for helper resolution.</param>
+    /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
     internal static void RegisterHelpers(
         ScriptObject scriptObject,
         IPrincipalMapper principalMapper,
         IDiffFormatter diffFormatter,
         ValueFormatterRegistry? valueFormatterRegistry = null,
-        IconProviderRegistry? iconProviderRegistry = null)
+        IconProviderRegistry? iconProviderRegistry = null,
+        RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto)
     {
         scriptObject.Import("format_diff", new Func<string?, string?, string>((before, after) => diffFormatter.FormatDiff(before, after)));
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
@@ -55,5 +57,6 @@ public static partial class ScribanHelpers
         scriptObject.Import("try_get_principal_type", new Func<string?, ScriptObject>(id => TryGetPrincipalType(id, principalMapper)));
         scriptObject.Import("collect_attributes", new Func<object?, object?, ScriptArray>(CollectAttributes));
         scriptObject.Import("get_attribute_finding_indicator", new Func<string?, ScriptArray?, string>(GetAttributeFindingIndicator));
+        scriptObject.Import("details_open_attr", new Func<ScriptObject?, string>(change => GetDetailsOpenAttr(change, detailsDisplayMode)));
     }
 }

@@ -327,7 +327,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         var diffFormatter = CreateDiffFormatter(renderTarget);
-        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry, RenderTargets.DetailsDisplayMode.Auto);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 
@@ -366,7 +366,7 @@ internal class MarkdownRenderer
 
         // Register custom helper functions
         var diffFormatter = CreateDiffFormatter(model.RenderTarget);
-        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry);
+        RegisterHelpers(scriptObject, _principalMapper, diffFormatter, _valueFormatterRegistry, _iconProviderRegistry, model.DetailsDisplayMode);
         _providerRegistry?.RegisterAllHelpers(scriptObject);
         RegisterRendererHelpers(scriptObject);
 

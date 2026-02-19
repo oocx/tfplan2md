@@ -491,4 +491,92 @@ public class CliParserTests
         // Assert
         act.Should().Throw<CliParseException>().Which.Message.Should().Contain("Unexpected argument");
     }
+
+    [Test]
+    public void Parse_NoArgs_DetailsDefaultsToAuto()
+    {
+        // Act
+        var options = CliParser.Parse(Array.Empty<string>());
+
+        // Assert
+        options.DetailsDisplayMode.Should().Be(DetailsDisplayMode.Auto);
+    }
+
+    [Test]
+    public void Parse_DetailsOpen_SetsDetailsDisplayModeOpen()
+    {
+        // Arrange
+        var args = new[] { "--details", "open" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.DetailsDisplayMode.Should().Be(DetailsDisplayMode.Open);
+    }
+
+    [Test]
+    public void Parse_DetailsClosed_SetsDetailsDisplayModeClosed()
+    {
+        // Arrange
+        var args = new[] { "--details", "closed" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.DetailsDisplayMode.Should().Be(DetailsDisplayMode.Closed);
+    }
+
+    [Test]
+    public void Parse_DetailsAuto_SetsDetailsDisplayModeAuto()
+    {
+        // Arrange
+        var args = new[] { "--details", "auto" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.DetailsDisplayMode.Should().Be(DetailsDisplayMode.Auto);
+    }
+
+    [Test]
+    public void Parse_DetailsCaseInsensitive_ParsesCorrectly()
+    {
+        // Arrange
+        var args = new[] { "--details", "OPEN" };
+
+        // Act
+        var options = CliParser.Parse(args);
+
+        // Assert
+        options.DetailsDisplayMode.Should().Be(DetailsDisplayMode.Open);
+    }
+
+    [Test]
+    public void Parse_DetailsMissingValue_ThrowsCliParseException()
+    {
+        // Arrange
+        var args = new[] { "--details" };
+
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>().Which.Message.Should().Contain("--details requires a value");
+    }
+
+    [Test]
+    public void Parse_DetailsInvalidValue_ThrowsCliParseException()
+    {
+        // Arrange
+        var args = new[] { "--details", "invalid" };
+
+        // Act
+        var act = () => CliParser.Parse(args);
+
+        // Assert
+        act.Should().Throw<CliParseException>().Which.Message.Should().Contain("--details must be");
+    }
 }

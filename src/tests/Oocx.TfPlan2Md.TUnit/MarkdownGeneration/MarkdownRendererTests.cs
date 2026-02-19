@@ -843,6 +843,7 @@ public class MarkdownRendererTests
             },
             ShowUnchangedValues = false,
             RenderTarget = RenderTarget.AzureDevOps,
+            DetailsDisplayMode = Oocx.TfPlan2Md.RenderTargets.DetailsDisplayMode.Auto,
             RefactoringOperations = []
         };
         var tempFile = Path.GetTempFileName();

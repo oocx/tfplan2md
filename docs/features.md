@@ -2498,6 +2498,136 @@ When using multiple static analysis tools (Checkov, Trivy, tflint, Semgrep, etc.
 
 See [docs/features/059-tool-column-findings-tables/](features/059-tool-column-findings-tables/) for architecture and implementation details.
 
+## Resource Details Display Mode Control
+
+**Status:** ✅ Implemented
+
+The `--details` CLI option gives you control over whether resource details blocks are initially expanded or collapsed in the generated markdown report. This feature is particularly useful for large plans or when focusing attention on resources with code analysis findings.
+
+### Features
+
+- **Three display modes**: Choose how resource details blocks are initially rendered
+  - `auto` (default): Automatically expand resources with code analysis findings, collapse others
+  - `open`: Expand all resource details blocks
+  - `closed`: Collapse all resource details blocks
+- **Smart auto mode**: Integrates with Static Code Analysis Integration (Feature 056) to automatically expand resources that need attention
+- **Merged child handling**: In auto mode, parent resources are expanded if any merged child resource has code analysis findings
+- **Manual override**: Users can always manually expand/collapse details blocks by clicking the summary line
+- **Consistent debug behavior**: Debug information blocks (enabled with `--debug`) remain collapsed regardless of `--details` setting
+- **Backward compatible**: Default behavior is `auto`, which preserves current behavior
+
+### Usage
+
+```bash
+# Collapse all resources by default (clean, scannable view)
+tfplan2md --details closed plan.json
+
+# Expand all resources by default
+tfplan2md --details open plan.json
+
+# Auto mode: expand only resources with code analysis findings (default)
+tfplan2md --details auto \
+  --code-analysis-results checkov-results.sarif \
+  plan.json
+
+# Auto mode is the default when --details is not specified
+tfplan2md --code-analysis-results checkov-results.sarif plan.json
+```
+
+### CLI Flag
+
+| Flag | Description |
+|------|-------------|
+| `--details <auto\|open\|closed>` | Control resource details display: `auto` (expand resources with findings, default), `open` (expand all), `closed` (collapse all) |
+
+### Display Modes
+
+#### Auto Mode (Default)
+
+Automatically expand resources that have code analysis findings attached, collapse others. This mode helps focus attention on security and quality issues while keeping the report clean and scannable.
+
+**Behavior:**
+- Resources **with** code analysis findings: Rendered as `<details open>` (expanded)
+- Resources **without** findings: Rendered as `<details>` (collapsed)
+- Parent resources with merged children: Expanded if any child has findings
+- Debug block: Always collapsed (not affected by this setting)
+
+**Use cases:**
+- Security-focused reviews where you want to immediately see resources with findings
+- Large plans where most resources are clean and only a few need attention
+- Default behavior that works well for most scenarios
+
+**Example output:**
+```html
+<!-- Resource with findings: expanded -->
+<details open>
+<summary>🔄 azurerm_storage_account <b><code>data</code></b> — <code>stdata</code></summary>
+<br>
+
+**Security & Quality:** 🚨 1 critical, ⚠️ 2 high
+
+| Severity | Tool | Attribute | Finding | Remediation |
+|----------|------|-----------|---------|-------------|
+| 🚨 Critical | Checkov | ... | ... | ... |
+</details>
+
+<!-- Resource without findings: collapsed -->
+<details>
+<summary>➕ azurerm_virtual_network <b><code>hub</code></b> — <code>vnet-hub</code></summary>
+<br>
+{content}
+</details>
+```
+
+#### Open Mode
+
+Expand all resource details blocks by default. All resources are immediately visible without requiring manual expansion.
+
+**Behavior:**
+- All resources: Rendered as `<details open>` (expanded)
+- Debug block: Always collapsed (exception)
+
+**Use cases:**
+- Small plans where reviewing all details is manageable
+- Detailed reviews where you want to see everything
+- Teams that prefer maximum visibility by default
+
+#### Closed Mode
+
+Collapse all resource details blocks by default. Provides a clean, scannable overview where you can selectively expand resources of interest.
+
+**Behavior:**
+- All resources: Rendered as `<details>` (collapsed)
+- Debug block: Always collapsed
+
+**Use cases:**
+- Large plans with dozens or hundreds of resources
+- High-level reviews where you want to scan summaries first
+- Clean PR comments that don't dominate the review interface
+
+### Integration with Code Analysis
+
+The `auto` mode is designed to work seamlessly with the Static Code Analysis Integration feature (Feature 056). When you provide SARIF files via `--code-analysis-results`, resources with findings are automatically expanded:
+
+```bash
+# Resources with Checkov findings will be expanded automatically
+tfplan2md --details auto \
+  --code-analysis-results checkov-results.sarif \
+  --code-analysis-results trivy-results.sarif \
+  plan.json
+```
+
+This creates a powerful workflow where security and quality issues are immediately visible, while clean resources remain collapsed to reduce noise.
+
+### Technical Details
+
+- **HTML implementation**: Controls the `open` attribute on `<details>` elements
+- **Template integration**: Uses a Scriban helper function (`details_open_attr`) to determine whether to render the `open` attribute
+- **Performance**: No impact on rendering performance; decision is made once per resource during template rendering
+- **Validation**: Invalid mode values are rejected with a clear error message
+
+See [docs/features/092-details-display-mode/](features/092-details-display-mode/) for specification, architecture, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

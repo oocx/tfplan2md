@@ -66,3 +66,19 @@
   - Integration tests in new file: `DetailsDisplayModeSnapshotTests.cs` or added to existing snapshot tests
   - Documentation updates deferred to Technical Writer agent
 - **Problems Encountered:** None
+
+### Technical Writer
+- **Date:** 2026-02-19
+- **Summary:** Updated all documentation to reflect the new `--details` CLI feature, including README.md, docs/features.md, help text, and release notes
+- **Artifacts Produced:**
+  - `docs/features/092-details-display-mode/release-notes.md` - User-facing release notes with usage examples
+  - Updated `README.md` - Added `--details` to CLI Options table and added detailed subsection
+  - Updated `docs/features.md` - Added comprehensive feature description with usage examples and integration details
+  - Updated `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs` - Added `--details` and code analysis options to help text with examples
+- **Key Updates:**
+  - CLI Options table now includes `--details <auto|open|closed>` with clear description
+  - Added "Resource Details Display Control" subsection in README after Debug Output section
+  - Added complete feature section in docs/features.md before "Future Considerations"
+  - Help text now includes `--details`, `--code-analysis-results`, `--code-analysis-minimum-level`, and `--fail-on-static-code-analysis-errors`
+  - Added examples showing `--details closed` and code analysis usage in help text
+- **Problems Encountered:** None

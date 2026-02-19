@@ -232,6 +232,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--template`, `-t <name\|file>` | Use a built-in template by name (default, summary) or a custom Scriban template file |
 | `--report-title <text>` | Override the level-1 heading in the generated report |
 | `--render-target <github\|azuredevops>` | Target platform for rendering: `github` (simple diff) or `azuredevops` (inline diff, default) |
+| `--details <auto\|open\|closed>` | Control resource details display: `auto` (expand resources with findings, default), `open` (expand all), `closed` (collapse all) |
 | `--principal-mapping`, `--principals`, `-p <file>` | Map Azure principal IDs to names using a JSON file |
 | `--code-analysis-results <pattern>` | SARIF file pattern for static analysis findings (can be specified multiple times) |
 | `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |
@@ -281,6 +282,30 @@ Debug information is added as a collapsible "Debug Information" section at the e
 - **Template resolution**: Which templates (custom, built-in, or default) were used for each resource type
 
 This helps diagnose principal mapping failures, Docker volume mount issues, and understand template selection behavior.
+
+#### Resource Details Display Control
+
+The `--details` option controls whether resource details blocks are initially expanded or collapsed in the generated markdown report. This is particularly useful for large plans or when focusing on resources with code analysis findings:
+
+```bash
+# Collapse all resources by default (clean, scannable view)
+terraform show -json plan.tfplan | tfplan2md --details closed
+
+# Expand all resources by default
+terraform show -json plan.tfplan | tfplan2md --details open
+
+# Auto mode: expand only resources with code analysis findings (default)
+terraform show -json plan.tfplan | tfplan2md --details auto \
+  --code-analysis-results checkov-results.sarif
+```
+
+**Display Modes:**
+
+- **`auto`** (default): Automatically expand resources that have code analysis findings attached, collapse others. This helps draw attention to security and quality issues while keeping the report clean.
+- **`open`**: Expand all resource details blocks. Useful for small plans or when you want to review everything in detail.
+- **`closed`**: Collapse all resource details blocks. Provides a clean overview where you can selectively expand resources of interest.
+
+Users can always manually expand or collapse details blocks by clicking the summary line, regardless of the initial state. The debug information block (enabled with `--debug`) is always collapsed regardless of the `--details` setting.
 
 #### Principal Mapping File Format
 

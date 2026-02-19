@@ -75,7 +75,6 @@ brew upgrade tfplan2md
 ```
 
 **Supported Platforms:**
-- macOS x64 (Intel)
 - macOS ARM64 (Apple Silicon - M1/M2/M3)
 - Linux x64 (including WSL)
 
@@ -111,7 +110,6 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 | **Linux** | x64 | `tfplan2md_VERSION_linux-x64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
 | **Linux** | ARM64 | `tfplan2md_VERSION_linux-arm64.tar.gz` | Ubuntu 24.04+, Debian 13+, RHEL 10+ (glibc 2.39) |
 | **Windows** | x64 | `tfplan2md_VERSION_windows-x64.zip` | Windows 10+ (x64) |
-| **macOS** | Intel | `tfplan2md_VERSION_macos-x64.tar.gz` | macOS 10.15+ (Intel) |
 | **macOS** | Apple Silicon | `tfplan2md_VERSION_macos-arm64.tar.gz` | macOS 11+ (M1/M2/M3) |
 
 #### Installation Steps
@@ -119,7 +117,7 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 1. **Download the binary for your platform:**
    ```bash
    VERSION="1.x.x"  # Replace with desired version
-   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, windows-x64, macos-x64, macos-arm64
+   PLATFORM="linux-x64"  # Choose: linux-x64, linux-arm64, windows-x64, macos-arm64
    
    # Linux/macOS (tar.gz)
    wget https://github.com/oocx/tfplan2md/releases/download/v${VERSION}/tfplan2md_${VERSION}_${PLATFORM}.tar.gz
@@ -173,9 +171,9 @@ Download pre-built binaries for your platform from [GitHub Releases](https://git
 - **Note:** Windows ARM64 builds are not currently available. Use x64 binary (runs via emulation) or Docker image.
 
 **macOS:**
-- macOS 10.15 (Catalina) or newer for Intel builds
 - macOS 11 (Big Sur) or newer for Apple Silicon builds
 - No .NET runtime required (self-contained NativeAOT)
+- **Note:** Intel (x64) builds are not currently available. Use Docker image or build from source.
 
 #### Use Cases
 

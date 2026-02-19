@@ -262,13 +262,7 @@ jobs:
           # Note: windows-arm64 removed due to lack of native ARM64 Windows runners
           # and low usage (<1%). Can be re-added if native runners become available.
           # macOS builds
-          - platform: macos-x64
-            os: macos-13  # Intel-based runner
-            rid: osx-x64
-            archive_ext: tar.gz
-            binary_name: tfplan2md
-            container: ''
-            needs_clang: false
+          # Note: macos-x64 (Intel) removed — GitHub Actions macos-13 runner is no longer supported.
           - platform: macos-arm64
             os: macos-14  # Apple Silicon runner
             rid: osx-arm64

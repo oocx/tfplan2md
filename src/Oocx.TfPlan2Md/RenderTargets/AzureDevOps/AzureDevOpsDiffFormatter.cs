@@ -116,6 +116,8 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
             .Replace("(", "\\(", StringComparison.Ordinal)
             .Replace(")", "\\)", StringComparison.Ordinal)
             .Replace("#", "\\#", StringComparison.Ordinal)
+            .Replace("+", "\\+", StringComparison.Ordinal)
+            .Replace("-", "\\-", StringComparison.Ordinal)
             .Replace(".", "\\.", StringComparison.Ordinal)
             .Replace("!", "\\!", StringComparison.Ordinal)
             .Replace("|", "\\|", StringComparison.Ordinal);

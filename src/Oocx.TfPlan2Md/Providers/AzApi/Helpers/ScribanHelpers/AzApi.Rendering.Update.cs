@@ -394,7 +394,7 @@ public static partial class ScribanHelpers
                 var entry = byKey[header];
                 var beforeFormatted = FormatAttributeValueTable(header, entry.Before?.ToString(), AzApiValueFormatProviderName);
                 var afterFormatted = FormatAttributeValueTable(header, entry.After?.ToString(), AzApiValueFormatProviderName);
-                sb.Append(FormatUpdateCell(beforeFormatted, afterFormatted));
+                sb.Append(FormatUpdateCell(beforeFormatted, afterFormatted, entry.Before, entry.After));
                 sb.Append(' ');
             }
 
@@ -407,27 +407,48 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="beforeFormatted">The formatted before value.</param>
     /// <param name="afterFormatted">The formatted after value.</param>
+    /// <param name="beforeRaw">The raw before value (null if property didn't exist).</param>
+    /// <param name="afterRaw">The raw after value (null if property doesn't exist).</param>
     /// <returns>Cell content suitable for markdown table rendering.</returns>
-    private static string FormatUpdateCell(string beforeFormatted, string afterFormatted)
+    private static string FormatUpdateCell(string beforeFormatted, string afterFormatted, object? beforeRaw, object? afterRaw)
     {
         if (string.Equals(beforeFormatted, afterFormatted, StringComparison.Ordinal))
         {
             return beforeFormatted;
         }
 
-        // When before is empty (new element being added), show only the after value without diff markers
-        if (string.IsNullOrEmpty(beforeFormatted))
+        // When the property didn't exist in the before state (beforeRaw is null),
+        // show only the after value without diff markers
+        if (beforeRaw is null && afterRaw is not null)
         {
             return afterFormatted;
         }
 
-        // When after is empty (element being removed), show only the before value without diff markers
-        if (string.IsNullOrEmpty(afterFormatted))
+        // When the property doesn't exist in the after state (afterRaw is null),
+        // show only the before value without diff markers
+        if (afterRaw is null && beforeRaw is not null)
         {
             return beforeFormatted;
         }
 
-        return $"- {beforeFormatted}<br>+ {afterFormatted}";
+        // For Azure DevOps, use styled spans for colored diffs
+        // For GitHub, use simple +/- notation
+        return BuildStyledDiffForTable(beforeFormatted, afterFormatted);
+    }
+
+    /// <summary>
+    /// Builds a styled diff for table cells with colored backgrounds.
+    /// </summary>
+    /// <param name="beforeFormatted">The formatted before value.</param>
+    /// <param name="afterFormatted">The formatted after value.</param>
+    /// <returns>HTML-styled diff suitable for table cells.</returns>
+    private static string BuildStyledDiffForTable(string beforeFormatted, string afterFormatted)
+    {
+        // Use styled spans for colored diffs (works in Azure DevOps and GitHub)
+        var removedStyle = "background-color: #fff5f5; border-left: 3px solid #d73a49; color: #24292e; display: inline-block; padding: 2px 4px; margin: 0;";
+        var addedStyle = "background-color: #f0fff4; border-left: 3px solid #28a745; color: #24292e; display: inline-block; padding: 2px 4px; margin: 0;";
+
+        return $"<span style=\"{removedStyle}\">- {beforeFormatted}</span><br><span style=\"{addedStyle}\">+ {afterFormatted}</span>";
     }
 
     /// <summary>

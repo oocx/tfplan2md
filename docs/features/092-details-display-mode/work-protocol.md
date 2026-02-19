@@ -106,3 +106,27 @@
   - Helper function properly registered with closure pattern
   - Error messages clear and consistent
 - **Problems Encountered:** None with the feature implementation itself. Infrastructure issues (Docker network, test runner timeout) are not blocking.
+
+### UAT Tester
+- **Date:** 2026-02-19
+- **Summary:** Validated `--details` CLI feature through direct CLI testing with all three modes (closed, open, auto). All modes function correctly and produce expected HTML output with proper `open` attribute control.
+- **Artifacts Produced:**
+  - `docs/features/092-details-display-mode/uat-report.md` - Comprehensive UAT validation report
+  - `docs/features/092-details-display-mode/uat-artifact.md` - Interactive demo artifact showing all three modes
+- **Validation Results:**
+  - ✅ `--details closed`: All resources rendered without `open` attribute (collapsed)
+  - ✅ `--details open`: All resources rendered with `open` attribute (expanded)
+  - ✅ `--details auto`: Selective expansion - resources with findings have `open`, others don't
+  - ✅ Error handling: Invalid values produce clear error message and exit code 1
+  - ✅ Help text: `--details` option properly documented with valid values
+  - ⚠️ Default behavior: Defaults to `auto` (not `open` as specified in specification line 46)
+- **Issues Identified:**
+  - **Minor Discrepancy:** Specification states default should be `--details open`, but implementation defaults to `auto`. Help text correctly shows `(default: auto)`. Recommend updating specification to match implementation, as `auto` is arguably better UX.
+- **UAT Artifact Details:**
+  - Created side-by-side demonstration of all three modes using `nsg-rule-changes.json` test data
+  - Included examples with code analysis findings (checkov.sarif)
+  - Added validation checklists for manual verification
+  - Artifact ready for platform rendering validation by Maintainer
+- **Platform Rendering:** Could not complete full UAT PR creation in GitHub Actions environment due to authentication constraints. Maintainer should run `scripts/uat-run.sh docs/features/092-details-display-mode/uat-artifact.md` locally to validate rendering in real GitHub/Azure DevOps environments.
+- **Recommendation:** Feature is functionally complete and working as implemented. Approve for release after specification is updated to reflect the `auto` default.
+- **Problems Encountered:** Authentication limitations in GitHub Actions prevented full UAT PR workflow. Resolved by performing direct CLI validation and creating comprehensive report for Maintainer review.

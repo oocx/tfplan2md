@@ -1,0 +1,29 @@
+class Tfplan2md < Formula
+  desc "Convert Terraform plan JSON files into human-readable Markdown reports"
+  homepage "https://github.com/oocx/tfplan2md"
+  license "MIT"
+  version "{{VERSION}}"
+
+  on_macos do
+    if Hardware::CPU.arm?
+      url "https://github.com/oocx/tfplan2md/releases/download/v{{VERSION}}/tfplan2md_{{VERSION}}_macos-arm64.tar.gz"
+      sha256 "{{MACOS_ARM64_SHA256}}"
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.intel?
+      url "https://github.com/oocx/tfplan2md/releases/download/v{{VERSION}}/tfplan2md_{{VERSION}}_linux-x64.tar.gz"
+      sha256 "{{LINUX_X64_SHA256}}"
+    end
+  end
+
+  def install
+    bin.install "tfplan2md"
+  end
+
+  test do
+    system "#{bin}/tfplan2md", "--version"
+    system "#{bin}/tfplan2md", "--help"
+  end
+end

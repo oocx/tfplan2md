@@ -22,10 +22,17 @@ if [ ! -f "$CHECKSUMS_FILE" ]; then
   exit 1
 fi
 
-if [ ! -f "$FORMULA_FILE" ]; then
-  echo "❌ Error: Formula file not found: $FORMULA_FILE"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATE_FILE="$SCRIPT_DIR/tfplan2md.rb.template"
+
+if [ ! -f "$TEMPLATE_FILE" ]; then
+  echo "❌ Error: Formula template not found: $TEMPLATE_FILE"
   exit 1
 fi
+
+# Always regenerate the formula from the template so placeholders are present
+mkdir -p "$(dirname "$FORMULA_FILE")"
+cp "$TEMPLATE_FILE" "$FORMULA_FILE"
 
 # Extract checksums for each platform
 echo "Extracting checksums from $CHECKSUMS_FILE..."

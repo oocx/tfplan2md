@@ -350,7 +350,7 @@ _No attribute changes._
 
 </details>
 
-<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>➕ azurerm_firewall_network_rule_collection <b><code>new_public</code></b> — <code>🆔 public-egress</code> in <code>📁 rg-tfplan2md-demo</code></summary>
 <br>
 
@@ -375,7 +375,7 @@ _No attribute changes._
 
 </details>
 
-<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>🔄 azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔 network-rules</code> in <code>📁 rg-tfplan2md-demo</code> | 6 🔧 ➕ <code>🆔 allow-web-secure</code>, ➕ <code>🆔 allow-log-ingest</code>, ➕ <code>🆔 allow-icmp-ping</code>, +3 more</summary>
 <br>
 
@@ -395,7 +395,7 @@ _No attribute changes._
 
 </details>
 
-<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>♻️ azurerm_network_security_group <b><code>app</code></b> — <code>🆔 nsg-app</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code> | ➕ 3 security rules | ❌ 1 security rules</summary>
 <br>
 
@@ -423,7 +423,7 @@ _No attribute changes._
 
 </details>
 
-<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>➕ azurerm_firewall_application_rule_collection <b><code>web_access</code></b> — <code>🆔 app-web-access</code> in <code>📁 rg-tfplan2md-demo</code></summary>
 <br>
 

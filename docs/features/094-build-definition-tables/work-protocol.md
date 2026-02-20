@@ -16,3 +16,16 @@
   - `docs/features/094-build-definition-tables/specification.md`
   - `docs/features/094-build-definition-tables/work-protocol.md`
 - **Problems Encountered:** None
+
+### Architect
+- **Date:** 2025-02-20
+- **Summary:** Analyzed the existing azuredevops_variable_group pattern and designed technical architecture for build definition table rendering. The design follows the exact same pattern (ViewModel → Factory → Extractor → Formatter → Change Builder → Mapper → Template) with additional block types beyond variables. No new ADR required as this directly applies the established pattern.
+- **Artifacts Produced:**
+  - `docs/features/094-build-definition-tables/architecture.md` - Complete technical design with component structure, secret masking logic, semantic diffing approach, and template structure
+- **Problems Encountered:** None
+- **Key Decisions:**
+  - Follow variable_group pattern exactly (ViewModel, Factory, Extractors, Formatters, Change Builders, Mapper, Template)
+  - Semantic diffing for variables (match by name), simple before/after display for other blocks
+  - Secret masking: `is_secret: true` → `(sensitive / hidden)` in Value column
+  - Conditional rendering: only show tables when blocks contain data
+  - 8 new files + 2 modified files following existing provider structure

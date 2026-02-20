@@ -260,4 +260,30 @@ public class AzapiResourceTemplateTests
         result.Should().Contain(AzapiResourceType);
         result.Should().Contain("Body");
     }
+
+    [Test]
+    public async Task Render_AzapiUpdateResource_UsesAzapiTemplate()
+    {
+        // Arrange - azapi_update_resource should use azapi/update_resource template (not generic _resource)
+        var result = await RenderAzapiPlanAsync("azapi-update-resource-plan.json");
+        var normalized = Normalize(result);
+
+        // Assert - Template should include azapi-specific rendering
+        normalized.Should().Contain("azapi_update_resource");
+        normalized.Should().Contain("Body Changes");
+        normalized.Should().Contain("Before");
+        normalized.Should().Contain("After");
+    }
+
+    [Test]
+    public async Task Render_AzapiUpdateResource_ShowsMetadata()
+    {
+        // Arrange - azapi_update_resource should show metadata (name, parent_id, location) like azapi_resource
+        var result = await RenderAzapiPlanAsync("azapi-update-resource-plan.json");
+
+        // Assert - Should show azapi metadata table
+        result.Should().Contain("| Attribute | Value |");
+        result.Should().Contain("name");
+        result.Should().Contain("parent_id");
+    }
 }

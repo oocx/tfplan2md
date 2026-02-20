@@ -56,3 +56,53 @@ internal sealed class VariableGroupFactory : IResourceViewModelFactory
             _largeValueFormat);
     }
 }
+
+/// <summary>
+/// Factory adapter for creating <see cref="BuildDefinitionViewModel"/> instances.
+/// Adapts the static factory to implement <see cref="IResourceViewModelFactory"/>.
+/// Related feature: docs/features/094-build-definition-tables/specification.md.
+/// </summary>
+internal sealed class BuildDefinitionFactory : IResourceViewModelFactory
+{
+    private readonly LargeValueFormat _largeValueFormat;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BuildDefinitionFactory"/> class.
+    /// </summary>
+    /// <param name="largeValueFormat">Format for rendering large values.</param>
+    public BuildDefinitionFactory(LargeValueFormat largeValueFormat)
+    {
+        _largeValueFormat = largeValueFormat;
+    }
+
+    /// <inheritdoc/>
+    public void ApplyViewModel(
+        ResourceChangeModel model,
+        ResourceChange resourceChange,
+        string action,
+        IReadOnlyList<AttributeChangeModel> attributeChanges,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        _ = principalMapper;
+        _ = iconProviderRegistry;
+        _ = model;
+        _ = action;
+        _ = attributeChanges;
+        _ = resourceChange;
+        // View model is now created on-demand by CreateViewModel
+    }
+
+    /// <summary>
+    /// Creates a BuildDefinitionViewModel for the given resource change.
+    /// </summary>
+    /// <param name="resourceChange">The resource change to create view model for.</param>
+    /// <returns>The created view model.</returns>
+    internal BuildDefinitionViewModel CreateViewModel(ResourceChange resourceChange)
+    {
+        return BuildDefinitionViewModelFactory.Build(
+            resourceChange,
+            resourceChange.ProviderName,
+            _largeValueFormat);
+    }
+}

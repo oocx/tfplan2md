@@ -29,3 +29,28 @@
   - Use StringComparer.OrdinalIgnoreCase for repository GUID lookups (minor improvement over Feature 085)
   - Apply icons uniformly across all providers via semantic formatting layer
   - Reuse all existing infrastructure from Feature 085 (no new abstractions needed)
+
+### Quality Engineer
+- **Date:** 2025-01-03
+- **Summary:** Created comprehensive test plan with 27 test cases covering repository mapping, icon rendering, semantic formatting, and edge cases. Organized tests into unit tests (data model, parser, mapper, formatter, semantic icons, diagnostics) and integration tests (end-to-end rendering, example files). Defined test data requirements including 6 new test files and 3 snapshot baselines.
+- **Artifacts Produced:**
+  - `docs/features/095-azdo-repo-mapping-and-icons/test-plan.md`
+- **Problems Encountered:** None
+- **Key Test Areas:**
+  - Data model deserialization (TC-01, TC-02)
+  - Mapping file parsing including backwards compatibility (TC-03 through TC-07)
+  - Repository mapper with icon formatting: `🗃️ DisplayName [GUID]` when mapped, `🗃️ GUID` when unmapped (TC-08 through TC-12)
+  - Value formatter for table context (TC-13, TC-14)
+  - Semantic icon application for repository attributes (🗃️) and branch attributes (⎇) across all rendering contexts (TC-15 through TC-20)
+  - Diagnostic tracking and output (TC-21, TC-22)
+  - Scriban helper registration (TC-23)
+  - End-to-end integration with Azure DevOps resources (TC-24 through TC-27)
+- **Test Data Required:**
+  - 6 new test JSON files for mapping and Terraform plans
+  - 3 new snapshot baselines for rendered output
+  - Update to comprehensive demo mapping file
+- **Notes:**
+  - Tests follow Feature 085 patterns and naming conventions
+  - All tests must be fully automated (no manual steps except UAT visual verification)
+  - Edge cases include null/empty sections, unmapped repositories, case sensitivity, backwards compatibility
+  - Non-breaking spaces (\u00A0) verified in icon formatting tests

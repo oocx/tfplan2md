@@ -346,6 +346,10 @@ The new sections use an array-of-objects format; existing principal-only files r
   "azdoProjects": {
     "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
     "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  },
+  "azdoRepositories": {
+    "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo",
+    "f9e8d7c6-b5a4-3210-fedc-ba9876543210": "Web Application Repo"
   }
 }
 ```
@@ -354,8 +358,9 @@ The new sections use an array-of-objects format; existing principal-only files r
 - `azdoUsers`: Map Azure DevOps user GUIDs to display names
 - `azdoGroups`: Map Azure DevOps group descriptors to display names (supports long descriptors)
 - `azdoProjects`: Map Azure DevOps project GUIDs to display names
+- `azdoRepositories`: Map Azure DevOps repository GUIDs to display names
 
-Azure DevOps entities are automatically resolved in group memberships, team rosters, and project references, displayed as `DisplayName (ID)` for consistency with Azure AD principals.
+Azure DevOps entities are automatically resolved in group memberships, team rosters, project references, and repository attributes. Repositories display as `🗃️ DisplayName [GUID]` when mapped. Branch/ref attributes (e.g., `default_branch`, `branch_name`) are shown with the ⎇ icon for improved visual scanning.
 
 #### Azure CLI Export Commands
 
@@ -380,7 +385,7 @@ az account tenant list --query "[].{id:tenantId,displayName:displayName}" -o jso
 az role definition list --custom-role-only true --query "[].{id:name,displayName:roleName}" -o json
 ```
 
-**Azure DevOps sections** must be created manually as the Azure DevOps CLI does not provide direct export commands for this format. Collect user GUIDs, group descriptors, and project GUIDs from your Azure DevOps organization and add them to the `azdoUsers`, `azdoGroups`, and `azdoProjects` sections in the JSON file.
+**Azure DevOps sections** must be created manually as the Azure DevOps CLI does not provide direct export commands for this format. Collect user GUIDs, group descriptors, project GUIDs, and repository GUIDs from your Azure DevOps organization and add them to the `azdoUsers`, `azdoGroups`, `azdoProjects`, and `azdoRepositories` sections in the JSON file.
 
 Use `scripts/validate-azure-cli-commands.sh` to validate the Azure CLI commands in your environment.
 

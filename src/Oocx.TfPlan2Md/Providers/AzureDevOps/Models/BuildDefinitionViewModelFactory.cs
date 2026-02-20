@@ -25,8 +25,6 @@ internal static class BuildDefinitionViewModelFactory
     public static BuildDefinitionViewModel Build(ResourceChange change, string providerName, LargeValueFormat largeValueFormat)
 #pragma warning restore CA1506
     {
-        _ = providerName; // Not used for Azure DevOps build definitions
-
         // Extract metadata
         var name = BuildDefinitionExtractors.ExtractName(change.Change.After)
             ?? BuildDefinitionExtractors.ExtractName(change.Change.Before);
@@ -70,12 +68,12 @@ internal static class BuildDefinitionViewModelFactory
                 Path = path,
                 AgentPoolName = agentPoolName,
                 QueueStatus = queueStatus,
-                AfterVariables = BuildDefinitionFormatters.FormatVariableRows(afterVariables),
+                AfterVariables = BuildDefinitionFormatters.FormatVariableRows(afterVariables, providerName),
                 AfterCiTriggers = FormatCiTriggerRows(afterCiTriggers),
                 AfterPullRequestTriggers = FormatPullRequestTriggerRows(afterPullRequestTriggers),
                 AfterSchedules = FormatScheduleRows(afterSchedules),
                 AfterRepositories = FormatRepositoryRows(afterRepositories),
-                AfterJobs = FormatJobRows(afterJobs)
+                AfterJobs = FormatJobRows(afterJobs, providerName)
             };
         }
         else if (isDelete)
@@ -86,21 +84,21 @@ internal static class BuildDefinitionViewModelFactory
                 Path = path,
                 AgentPoolName = agentPoolName,
                 QueueStatus = queueStatus,
-                BeforeVariables = BuildDefinitionFormatters.FormatVariableRows(beforeVariables),
+                BeforeVariables = BuildDefinitionFormatters.FormatVariableRows(beforeVariables, providerName),
                 BeforeCiTriggers = FormatCiTriggerRows(beforeCiTriggers),
                 BeforePullRequestTriggers = FormatPullRequestTriggerRows(beforePullRequestTriggers),
                 BeforeSchedules = FormatScheduleRows(beforeSchedules),
                 BeforeRepositories = FormatRepositoryRows(beforeRepositories),
-                BeforeJobs = FormatJobRows(beforeJobs)
+                BeforeJobs = FormatJobRows(beforeJobs, providerName)
             };
         }
         else // update or replace
         {
             // Build variable changes using semantic diffing
-            var added = BuildDefinitionChangeBuilders.BuildAdded(afterVariables, beforeVariables);
-            var removed = BuildDefinitionChangeBuilders.BuildRemoved(beforeVariables, afterVariables);
-            var modified = BuildDefinitionChangeBuilders.BuildModified(beforeVariables, afterVariables, largeValueFormat);
-            var unchanged = BuildDefinitionChangeBuilders.BuildUnchanged(beforeVariables, afterVariables);
+            var added = BuildDefinitionChangeBuilders.BuildAdded(afterVariables, beforeVariables, providerName);
+            var removed = BuildDefinitionChangeBuilders.BuildRemoved(beforeVariables, afterVariables, providerName);
+            var modified = BuildDefinitionChangeBuilders.BuildModified(beforeVariables, afterVariables, largeValueFormat, providerName);
+            var unchanged = BuildDefinitionChangeBuilders.BuildUnchanged(beforeVariables, afterVariables, providerName);
 
             var variableChanges = new List<BuildDefinitionVariableChangeRowViewModel>();
             variableChanges.AddRange(added);
@@ -123,8 +121,8 @@ internal static class BuildDefinitionViewModelFactory
                 BeforeSchedules = FormatScheduleRows(beforeSchedules),
                 AfterRepositories = FormatRepositoryRows(afterRepositories),
                 BeforeRepositories = FormatRepositoryRows(beforeRepositories),
-                AfterJobs = FormatJobRows(afterJobs),
-                BeforeJobs = FormatJobRows(beforeJobs)
+                AfterJobs = FormatJobRows(afterJobs, providerName),
+                BeforeJobs = FormatJobRows(beforeJobs, providerName)
             };
         }
     }
@@ -173,9 +171,10 @@ internal static class BuildDefinitionViewModelFactory
     /// Formats job rows from extracted values.
     /// </summary>
     /// <param name="jobs">Extracted job values.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted job rows.</returns>
-    private static List<JobRowViewModel> FormatJobRows(IReadOnlyList<JobValues> jobs)
+    private static List<JobRowViewModel> FormatJobRows(IReadOnlyList<JobValues> jobs, string? providerName)
     {
-        return jobs.Select(BuildDefinitionFormatters.CreateJobRow).ToList();
+        return jobs.Select(job => BuildDefinitionFormatters.CreateJobRow(job, providerName)).ToList();
     }
 }

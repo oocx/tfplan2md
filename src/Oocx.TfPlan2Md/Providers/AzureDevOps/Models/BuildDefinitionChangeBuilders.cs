@@ -19,16 +19,18 @@ internal static class BuildDefinitionChangeBuilders
     /// </summary>
     /// <param name="afterVariables">Variables from the after state.</param>
     /// <param name="beforeVariables">Variables from the before state.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Ordered added variable rows.</returns>
     public static List<BuildDefinitionVariableChangeRowViewModel> BuildAdded(
         IReadOnlyList<BuildDefinitionVariableValues> afterVariables,
-        IReadOnlyList<BuildDefinitionVariableValues> beforeVariables)
+        IReadOnlyList<BuildDefinitionVariableValues> beforeVariables,
+        string? providerName)
     {
         var beforeNames = new HashSet<string>(beforeVariables.Select(v => v.Name), StringComparer.OrdinalIgnoreCase);
         return afterVariables
             .Where(variable => !beforeNames.Contains(variable.Name))
             .OrderBy(variable => variable.Name, StringComparer.Ordinal)
-            .Select(BuildDefinitionFormatters.CreateAddedRow)
+            .Select(variable => BuildDefinitionFormatters.CreateAddedRow(variable, providerName))
             .ToList();
     }
 
@@ -37,16 +39,18 @@ internal static class BuildDefinitionChangeBuilders
     /// </summary>
     /// <param name="beforeVariables">Variables from the before state.</param>
     /// <param name="afterVariables">Variables from the after state.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Ordered removed variable rows.</returns>
     public static List<BuildDefinitionVariableChangeRowViewModel> BuildRemoved(
         IReadOnlyList<BuildDefinitionVariableValues> beforeVariables,
-        IReadOnlyList<BuildDefinitionVariableValues> afterVariables)
+        IReadOnlyList<BuildDefinitionVariableValues> afterVariables,
+        string? providerName)
     {
         var afterNames = new HashSet<string>(afterVariables.Select(v => v.Name), StringComparer.OrdinalIgnoreCase);
         return beforeVariables
             .Where(variable => !afterNames.Contains(variable.Name))
             .OrderBy(variable => variable.Name, StringComparer.Ordinal)
-            .Select(BuildDefinitionFormatters.CreateRemovedRow)
+            .Select(variable => BuildDefinitionFormatters.CreateRemovedRow(variable, providerName))
             .ToList();
     }
 
@@ -56,18 +60,20 @@ internal static class BuildDefinitionChangeBuilders
     /// <param name="beforeVariables">Variables from the before state.</param>
     /// <param name="afterVariables">Variables from the after state.</param>
     /// <param name="largeValueFormat">Preferred diff format.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Ordered modified variable rows.</returns>
     public static List<BuildDefinitionVariableChangeRowViewModel> BuildModified(
         IReadOnlyList<BuildDefinitionVariableValues> beforeVariables,
         IReadOnlyList<BuildDefinitionVariableValues> afterVariables,
-        LargeValueFormat largeValueFormat)
+        LargeValueFormat largeValueFormat,
+        string? providerName)
     {
         var beforeLookup = beforeVariables.ToDictionary(v => v.Name, StringComparer.OrdinalIgnoreCase);
 
         return afterVariables
             .Where(after => beforeLookup.TryGetValue(after.Name, out var before) && !VariablesEqual(before!, after))
             .OrderBy(variable => variable.Name, StringComparer.Ordinal)
-            .Select(after => BuildDefinitionFormatters.CreateDiffRow(beforeLookup[after.Name], after, largeValueFormat))
+            .Select(after => BuildDefinitionFormatters.CreateDiffRow(beforeLookup[after.Name], after, largeValueFormat, providerName))
             .ToList();
     }
 
@@ -76,17 +82,19 @@ internal static class BuildDefinitionChangeBuilders
     /// </summary>
     /// <param name="beforeVariables">Variables from the before state.</param>
     /// <param name="afterVariables">Variables from the after state.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Ordered unchanged variable rows.</returns>
     public static List<BuildDefinitionVariableChangeRowViewModel> BuildUnchanged(
         IReadOnlyList<BuildDefinitionVariableValues> beforeVariables,
-        IReadOnlyList<BuildDefinitionVariableValues> afterVariables)
+        IReadOnlyList<BuildDefinitionVariableValues> afterVariables,
+        string? providerName)
     {
         var beforeLookup = beforeVariables.ToDictionary(v => v.Name, StringComparer.OrdinalIgnoreCase);
 
         return afterVariables
             .Where(after => beforeLookup.TryGetValue(after.Name, out var before) && VariablesEqual(before!, after))
             .OrderBy(variable => variable.Name, StringComparer.Ordinal)
-            .Select(BuildDefinitionFormatters.CreateUnchangedRow)
+            .Select(variable => BuildDefinitionFormatters.CreateUnchangedRow(variable, providerName))
             .ToList();
     }
 

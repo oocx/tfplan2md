@@ -41,15 +41,17 @@ internal static class BuildDefinitionFormatters
     /// Formats variable values for create/delete tables.
     /// </summary>
     /// <param name="variables">Raw variable values.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted variable rows.</returns>
     public static List<BuildDefinitionVariableRowViewModel> FormatVariableRows(
-        IReadOnlyList<BuildDefinitionVariableValues> variables)
+        IReadOnlyList<BuildDefinitionVariableValues> variables,
+        string? providerName)
     {
         return variables
             .OrderBy(variable => variable.Name, StringComparer.Ordinal)
             .Select(variable => new BuildDefinitionVariableRowViewModel
             {
-                Name = $"`{EscapeMarkdown(variable.Name)}`",
+                Name = FormatAttributeValueTable("name", variable.Name, providerName),
                 Value = FormatVariableValue(variable),
                 IsSecret = FormatBoolean(variable.IsSecret),
                 AllowOverride = FormatBoolean(variable.AllowOverride),
@@ -62,14 +64,15 @@ internal static class BuildDefinitionFormatters
     /// Creates a formatted row for an added variable.
     /// </summary>
     /// <param name="variable">Variable values from the after state.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted change row.</returns>
-    public static BuildDefinitionVariableChangeRowViewModel CreateAddedRow(BuildDefinitionVariableValues variable)
+    public static BuildDefinitionVariableChangeRowViewModel CreateAddedRow(BuildDefinitionVariableValues variable, string? providerName)
     {
         return new BuildDefinitionVariableChangeRowViewModel
         {
             Change = AddedChange,
             ChangeIcon = ActionIcons.Add,
-            Name = $"`{EscapeMarkdown(variable.Name)}`",
+            Name = FormatAttributeValueTable("name", variable.Name, providerName),
             Value = FormatVariableValue(variable),
             IsSecret = FormatBoolean(variable.IsSecret),
             AllowOverride = FormatBoolean(variable.AllowOverride),
@@ -81,14 +84,15 @@ internal static class BuildDefinitionFormatters
     /// Creates a formatted row for a removed variable.
     /// </summary>
     /// <param name="variable">Variable values from the before state.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted change row.</returns>
-    public static BuildDefinitionVariableChangeRowViewModel CreateRemovedRow(BuildDefinitionVariableValues variable)
+    public static BuildDefinitionVariableChangeRowViewModel CreateRemovedRow(BuildDefinitionVariableValues variable, string? providerName)
     {
         return new BuildDefinitionVariableChangeRowViewModel
         {
             Change = RemovedChange,
             ChangeIcon = ActionIcons.Delete,
-            Name = $"`{EscapeMarkdown(variable.Name)}`",
+            Name = FormatAttributeValueTable("name", variable.Name, providerName),
             Value = FormatVariableValue(variable),
             IsSecret = FormatBoolean(variable.IsSecret),
             AllowOverride = FormatBoolean(variable.AllowOverride),
@@ -100,14 +104,15 @@ internal static class BuildDefinitionFormatters
     /// Creates a formatted row for an unchanged variable.
     /// </summary>
     /// <param name="variable">Variable values.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted change row.</returns>
-    public static BuildDefinitionVariableChangeRowViewModel CreateUnchangedRow(BuildDefinitionVariableValues variable)
+    public static BuildDefinitionVariableChangeRowViewModel CreateUnchangedRow(BuildDefinitionVariableValues variable, string? providerName)
     {
         return new BuildDefinitionVariableChangeRowViewModel
         {
             Change = UnchangedChange,
             ChangeIcon = ActionIcons.Unchanged,
-            Name = $"`{EscapeMarkdown(variable.Name)}`",
+            Name = FormatAttributeValueTable("name", variable.Name, providerName),
             Value = FormatVariableValue(variable),
             IsSecret = FormatBoolean(variable.IsSecret),
             AllowOverride = FormatBoolean(variable.AllowOverride),
@@ -121,11 +126,13 @@ internal static class BuildDefinitionFormatters
     /// <param name="before">Variable values before the change.</param>
     /// <param name="after">Variable values after the change.</param>
     /// <param name="largeValueFormat">Preferred diff format.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted diff row.</returns>
     public static BuildDefinitionVariableChangeRowViewModel CreateDiffRow(
         BuildDefinitionVariableValues before,
         BuildDefinitionVariableValues after,
-        LargeValueFormat largeValueFormat)
+        LargeValueFormat largeValueFormat,
+        string? providerName)
     {
         var format = largeValueFormat.ToString();
 
@@ -139,7 +146,7 @@ internal static class BuildDefinitionFormatters
         {
             Change = ModifiedChange,
             ChangeIcon = ActionIcons.Update,
-            Name = $"`{EscapeMarkdown(after.Name)}`",
+            Name = FormatAttributeValueTable("name", after.Name, providerName),
             Value = valueDisplay,
             IsSecret = FormatBooleanDiff(before.IsSecret, after.IsSecret, format),
             AllowOverride = FormatBooleanDiff(before.AllowOverride, after.AllowOverride, format),
@@ -204,7 +211,9 @@ internal static class BuildDefinitionFormatters
             return "-";
         }
 
-        return value.Value ? "`true`" : "`false`";
+        var icon = value.Value ? "✅" : "❌";
+        var text = value.Value ? "true" : "false";
+        return $"`{icon}{NonBreakingSpace}{text}`";
     }
 
     /// <summary>
@@ -375,12 +384,13 @@ internal static class BuildDefinitionFormatters
     /// Creates a formatted row for a job block.
     /// </summary>
     /// <param name="job">Job values.</param>
+    /// <param name="providerName">The Terraform provider name for semantic formatting.</param>
     /// <returns>Formatted job row.</returns>
-    public static JobRowViewModel CreateJobRow(JobValues job)
+    public static JobRowViewModel CreateJobRow(JobValues job, string? providerName)
     {
         return new JobRowViewModel
         {
-            Name = FormatOptionalString(job.Name),
+            Name = string.IsNullOrEmpty(job.Name) ? "-" : FormatAttributeValueTable("name", job.Name, providerName),
             Condition = FormatOptionalString(job.Condition),
             TimeoutInMinutes = job.TimeoutInMinutes.HasValue
                 ? $"`{job.TimeoutInMinutes.Value}`"

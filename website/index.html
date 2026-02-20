@@ -6,8 +6,8 @@
     <title>tfplan2md - Transform Terraform Plans Into Readable Reports</title>
     <link rel="stylesheet" href="style.css">
     <!-- highlight.js themes - loaded based on current theme -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" disabled>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light" integrity="sha384-eFTL69TLRZTkNfYZOLM+G04821K1qZao/4QLJbet1pP4tcF+fdXq/9CdqAbWRl/L" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark" integrity="sha384-wH75j6z1lH97ZOpMOInqhgKzFkAInZPPSPlZpYKYTOqsaizPvhQZmAtLcPKXpLyH" crossorigin="anonymous" disabled>
     <style>
         /* Override highlight.js backgrounds to match code-tab-content */
         .code-tab-content .hljs,
@@ -668,9 +668,17 @@
         });
 
         // Simple Markdown Syntax Highlighter
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
         function highlightMarkdown() {
             document.querySelectorAll('.source-view code').forEach(block => {
-                let html = block.innerHTML;
+                let html = escapeHtml(block.textContent);
                 
                 // Comments
                 html = html.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="md-comment">$1</span>');
@@ -698,9 +706,9 @@
     </script>
     
     <!-- highlight.js for syntax highlighting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha384-F/bZzf7p3Joyp5psL90p/p89AZJsndkSoGwRpXcZhleCWhd8SnRuoYo4d0yirjJp" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js" integrity="sha384-7YspHobypEnqY8ZOz2b0dwjM3LBhK18ogJfebE+C5BoXfIOO46DczczxY9GHUK0k" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js" integrity="sha384-OqfnIfpOmAlErKRs2a525ZcwLuZ8Z1x8hPdIwBcMtHkJBbHnpJ6wX5/LVzASHkD5" crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Apply syntax highlighting

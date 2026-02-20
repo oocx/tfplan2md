@@ -67,12 +67,23 @@
     }
 
     /**
+     * Escape special HTML characters in a plain text string
+     */
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    /**
      * Simple Markdown Syntax Highlighter
      * Applies syntax highlighting to markdown source in .source-view elements
      */
     function highlightMarkdown() {
         document.querySelectorAll('.source-view code').forEach(block => {
-            let html = block.innerHTML;
+            let html = escapeHtml(block.textContent);
             
             // HTML tags (already escaped)
             html = html.replace(/(&lt;[^&]+&gt;)/g, '<span class="md-tag">$1</span>');

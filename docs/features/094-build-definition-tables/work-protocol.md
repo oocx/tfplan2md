@@ -94,3 +94,28 @@
 - **Tasks Completed:** Tasks 1-10 (core implementation)
 - **Tasks Remaining:** Tasks 11-16 (unit tests, integration tests, test data, UAT artifacts)
 - **Recommendation:** Hand off to Code Reviewer for review of implementation before proceeding with comprehensive test creation.
+
+### Technical Writer
+- **Date:** 2025-02-20
+- **Summary:** Updated all documentation to reflect the new azuredevops_build_definition table rendering feature. Added comprehensive documentation following the same pattern as azuredevops_variable_group. Updated global documentation files (docs/features.md, README.md, docs/architecture.md) to include build definitions in supported resources lists and provider descriptions.
+- **Artifacts Produced:**
+  - Updated `docs/features.md`:
+    - Added `azuredevops_build_definition` to Supported Resources table
+    - Added new "Azure DevOps Build Definitions" section with feature description, table column definitions, and example output (positioned before Variable Groups section for logical flow)
+  - Updated `README.md`:
+    - Added "build definitions" to the "Specialized templates" feature list (line 55)
+    - Added `azuredevops_build_definition` to the specialized resources list with description (line 644)
+  - Updated `docs/architecture.md`:
+    - Added `azuredevops_build_definition` to the AzureDevOps provider row in the provider structure table
+- **Problems Encountered:** None
+- **Documentation Approach:**
+  - Followed the existing documentation style and structure exactly
+  - Used azuredevops_variable_group documentation as a reference pattern
+  - Included concrete example output showing variables table, CI trigger table, and repository table
+  - Emphasized secret protection (`(sensitive / hidden)` display) and semantic diffing features
+  - Highlighted conditional rendering (tables only shown when blocks contain data)
+- **Verification:**
+  - All documentation additions are consistent with existing style
+  - Example markdown is formatted correctly per Report Style Guide
+  - No contradictions with existing documentation
+  - Build definition feature is now documented in all appropriate locations

@@ -749,7 +749,7 @@ ProviderRegistry.RegisterProviders(
 | **AzApi** | `Oocx.TfPlan2Md.Providers.AzApi` | `azapi_resource`, `azapi_update_resource` | JSON flattening, API documentation links, grouped property rendering |
 | **AzureAD** | `Oocx.TfPlan2Md.Providers.AzureAD` | `azuread_user`, `azuread_group`, `azuread_group_member`, `azuread_service_principal`, `azuread_invitation` | Group member extraction, user/group summaries |
 | **AzureRM** | `Oocx.TfPlan2Md.Providers.AzureRM` | `azurerm_*` (firewall, NSG, role assignments, APIM, DNS, etc.) | Semantic diffs, parent-child grouping, role definition mapping |
-| **AzureDevOps** | `Oocx.TfPlan2Md.Providers.AzureDevOps` | `azuredevops_variable_group`, `azuredevops_group`, `azuredevops_user_entitlement`, `azuredevops_project` | Variable group templates, descriptor formatting |
+| **AzureDevOps** | `Oocx.TfPlan2Md.Providers.AzureDevOps` | `azuredevops_build_definition`, `azuredevops_variable_group`, `azuredevops_group`, `azuredevops_user_entitlement`, `azuredevops_project` | Build definition tables, variable group templates, descriptor formatting |
 
 **Provider Structure (Example: AzureRM):**
 

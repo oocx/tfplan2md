@@ -2007,6 +2007,7 @@ When rendering the full report, the default renderer applies resource-specific t
 | azurerm | `azurerm_firewall_application_rule_collection` | Application firewall rule diffing with FQDN targets |
 | azurerm | `azurerm_firewall_network_rule_collection` | Network firewall rule diffing with IP/port targets |
 | azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
+| azuredevops | `azuredevops_build_definition` | Pipeline configuration tables with secret variable protection |
 | azuredevops | `azuredevops_variable_group` | Variable changes with secret value protection |
 
 #### azapi_resource
@@ -2131,6 +2132,59 @@ Example of a modified NSG rule with a port change and description update:
 ```markdown
 | 🔄 | allow-http | 110 | Inbound | Allow | Tcp | - *<br>+ 10.0.1.0/24, 10.0.2.0/24 | * | * | - 80<br>+ 8080 | - Allow HTTP<br>+ Allow alternate HTTP |
 ```
+
+#### Azure DevOps Build Definitions
+
+For `azuredevops_build_definition`, pipeline configuration is displayed as structured tables for variables, triggers, repository settings, schedules, and jobs. This solves the common problem where Terraform marks all build definition nested blocks as sensitive, making it impossible to review pipeline configuration changes.
+
+**Features:**
+- **Variables table**: Shows all pipeline variables with Name, Value, Is Secret, and Allow Override columns
+- **Secret protection**: Secret variables (`is_secret: true`) display as `(sensitive / hidden)` while showing all metadata
+- **Semantic diffing**: Variables matched by name across before/after states, showing Added (➕), Modified (🔄), Removed (❌), or Unchanged (⏺️)
+- **Trigger tables**: CI triggers, pull request triggers, and schedules displayed as separate tables when present
+- **Repository table**: Source repository configuration showing type, repo ID, branch, YAML path, and build status reporting
+- **Jobs table**: Job definitions displayed when present (name, condition, timeout)
+- **Conditional rendering**: Tables only appear when the corresponding blocks contain data—no empty tables shown
+
+**Table columns (Variables):**
+- **Change**: Icon indicating the type of change (update operations only)
+- **Name**: Variable name (formatted as inline code)
+- **Value**: Variable value or `(sensitive / hidden)` for secret variables
+- **Is Secret**: Boolean flag indicating if the variable is a secret
+- **Allow Override**: Boolean flag indicating if the variable can be overridden at queue time
+
+**Example output for update operation:**
+
+```markdown
+**Pipeline Name:** `example-pipeline`
+
+**Path:** `\\Pipelines`
+
+#### Variables
+
+| Change | Name | Value | Is Secret | Allow Override |
+| ------ | ---- | ----- | --------- | -------------- |
+| ➕ | `NEW_VAR` | `value` | `false` | `true` |
+| 🔄 | `BUILD_CONFIG` | - `Debug`<br>+ `Release` | `false` | `true` |
+| 🔄 | `API_KEY` | `(sensitive / hidden)` | - `false`<br>+ `true` | `true` |
+| ❌ | `OLD_VAR` | `old-value` | `false` | `true` |
+
+#### CI Trigger
+
+| Use YAML | Override (Branch Filters) |
+| -------- | ------------------------- |
+| `true` | - |
+
+#### Repository
+
+| Type | Repo ID | Branch | YAML Path | Report Build Status |
+| ---- | ------- | ------ | --------- | ------------------- |
+| `TfsGit` | `80128bc2-17ff-45f8-ad59-d7609a605c75` | `refs/heads/master` | `azure-pipelines.yml` | `true` |
+```
+
+Note how the `API_KEY` variable shows its metadata (name, is_secret flag, allow_override) but displays `(sensitive / hidden)` instead of the actual secret value. Modified attributes show before/after values with `-` and `+` prefixes; unchanged attributes show a single value without prefix.
+
+This template makes it possible to review build definition changes in CI/CD pipelines without exposing secret values, while providing full visibility into pipeline variables, triggers, and repository configuration.
 
 #### Azure DevOps Variable Groups
 

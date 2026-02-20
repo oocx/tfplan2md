@@ -1,0 +1,55 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_update_resource.automation_update",
+      "mode": "managed",
+      "type": "azapi_update_resource",
+      "name": "automation_update",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "resource_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources/providers/Microsoft.Automation/automationAccounts/myAccount",
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "body": {
+            "properties": {
+              "disableLocalAuth": false,
+              "publicNetworkAccess": true,
+              "encryption": {
+                "keySource": "Microsoft.Automation"
+              },
+              "sku": {
+                "name": "Basic"
+              }
+            }
+          }
+        },
+        "after": {
+          "resource_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources/providers/Microsoft.Automation/automationAccounts/myAccount",
+          "type": "Microsoft.Automation/automationAccounts@2021-06-22",
+          "body": {
+            "properties": {
+              "disableLocalAuth": true,
+              "publicNetworkAccess": false,
+              "encryption": {
+                "keySource": "Microsoft.KeyVault",
+                "keyVaultProperties": {
+                  "keyName": "encryption-key",
+                  "keyVaultUri": "https://myvault.vault.azure.net/"
+                }
+              },
+              "sku": {
+                "name": "Standard"
+              }
+            }
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {"body": {}},
+        "after_sensitive": {"body": {}}
+      }
+    }
+  ]
+}

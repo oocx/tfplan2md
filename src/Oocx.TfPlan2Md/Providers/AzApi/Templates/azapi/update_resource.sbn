@@ -1,0 +1,61 @@
+{{~## Template for azapi_update_resource
+     Provides human-readable rendering of azapi_update_resource body content using dot notation.
+     Related feature: docs/features/095-azapi-update-resource-grouping/specification.md
+~}}
+<details{{ details_open_attr(change) }} style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>{{ change.summary_html }}</summary>
+<br>
+
+{{ include "/_code_analysis_metadata.sbn" }}
+
+{{~ # Extract azapi metadata (type) ~}}
+{{~ metadata = extract_azapi_metadata change ~}}
+
+{{~ if metadata.type ~}}
+**Type:** {{ format_attribute_value_table "type" metadata.type "azapi" }}
+{{~ end ~}}
+
+{{~ # Generate documentation link if available ~}}
+{{~ if change.after_json && change.after_json.type ~}}
+{{~ doc_link = azure_api_doc_link change.after_json.type ~}}
+{{~ else if change.before_json && change.before_json.type ~}}
+{{~ doc_link = azure_api_doc_link change.before_json.type ~}}
+{{~ end ~}}
+
+{{~ if doc_link ~}}
+
+📚 [View API Documentation]({{ doc_link | escape_markdown }})
+{{~ end ~}}
+
+{{~ # Show resource_id attribute ~}}
+{{~ resource_id = change.after_json ? change.after_json.resource_id : (change.before_json ? change.before_json.resource_id : null) ~}}
+{{~ if resource_id ~}}
+
+| Attribute | Value |
+|-----------|-------|
+{{~ resource_id_indicator = get_attribute_finding_indicator "resource_id" change.code_analysis_findings ~}}
+| resource_id{{ resource_id_indicator }} | {{ format_attribute_value_table "resource_id" resource_id "azurerm" }} |
+{{~ end ~}}
+
+{{~ # Body rendering based on action type ~}}
+{{~ if change.action == "update" ~}}
+{{~ if change.before_json && change.before_json.body && change.after_json && change.after_json.body ~}}
+{{~ before_sensitive_body = change.before_sensitive ? change.before_sensitive.body : null ~}}
+{{~ after_sensitive_body = change.after_sensitive ? change.after_sensitive.body : null ~}}
+{{ render_azapi_body change.after_json.body "Body Changes" "update" change.before_json.body before_sensitive_body after_sensitive_body false "inline-diff" }}
+{{~ else ~}}
+
+*Body: (no changes or missing data)*
+{{~ end ~}}
+{{~ else if change.action == "delete" ~}}
+{{~ if change.before_json && change.before_json.body ~}}
+{{ render_azapi_body change.before_json.body "Body (being deleted)" "delete" null null null false "inline-diff" }}
+{{~ else ~}}
+
+*Body: (empty)*
+{{~ end ~}}
+{{~ end ~}}
+
+{{ include "/_code_analysis_findings.sbn" }}
+
+</details>

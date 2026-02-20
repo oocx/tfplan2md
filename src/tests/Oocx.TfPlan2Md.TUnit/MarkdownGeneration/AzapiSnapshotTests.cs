@@ -184,6 +184,26 @@ public class AzapiSnapshotTests
     }
 
     /// <summary>
+    /// Verifies azapi_update_resource update action with grouping.
+    /// Related feature: docs/features/095-azapi-update-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiUpdateResourceUpdate_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-update-resource-update-plan.json", "azapi-update-resource-update.md");
+    }
+
+    /// <summary>
+    /// Verifies azapi_update_resource delete action with grouping.
+    /// Related feature: docs/features/095-azapi-update-resource-grouping/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiUpdateResourceDelete_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-update-resource-delete-plan.json", "azapi-update-resource-delete.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an AzAPI plan test data file.
     /// </summary>
     /// <param name="testDataFile">The test data file name under TestData.</param>

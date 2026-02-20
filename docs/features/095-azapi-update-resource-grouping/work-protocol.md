@@ -16,3 +16,17 @@
   - `docs/features/095-azapi-update-resource-grouping/specification.md` - Feature specification document
   - `docs/features/095-azapi-update-resource-grouping/work-protocol.md` - Work protocol tracking file
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2025-01-24
+- **Summary:** Implemented Feature 095 by creating a dedicated template for azapi_update_resource that applies the same attribute grouping logic from Feature 034. The template correctly handles resource_id (instead of name/parent_id/location), renders body changes with grouping, and includes Azure API documentation links. All tests pass including integration tests, snapshot tests, and architecture tests.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Templates/azapi/update_resource.sbn` - New template for azapi_update_resource with grouping support
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-update-resource-update-plan.json` - Test data for update action
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azapi-update-resource-delete-plan.json` - Test data for delete action
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzApi/AzapiUpdateResourceTemplateTests.cs` - Integration tests (5 tests)
+  - Updated `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzapiSnapshotTests.cs` - Added 2 snapshot tests
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azapi-update-resource-update.md` - Snapshot baseline for update
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azapi-update-resource-delete.md` - Snapshot baseline for delete
+- **Problems Encountered:** Initial template had a regular space after the 📚 emoji instead of a non-breaking space (U+00A0), which failed the TemplateArchitectureTests. Fixed by using the correct non-breaking space character matching the azapi/resource.sbn pattern.
+

@@ -198,3 +198,27 @@
   - Complete interactive phase with maintainer to gather additional feedback
   - Create PR comments for Workflow Engineer to implement recommended agent instruction improvements
   - Use this retrospective as a reference pattern for future feature workflows
+
+### UAT Tester (Re-run #2)
+- **Date:** 2026-02-20
+- **Summary:** Re-ran User Acceptance Testing with regenerated artifacts after the first UAT (PR #86/85) failed due to stale `uat-plan.md` (missing semantic icons). The Developer regenerated the artifact with correct output including `🆔` icons for variable names and `✅`/`❌` icons for boolean values. Created new UAT PRs (GitHub #87, Azure DevOps #86) with both feature-specific report and regression test. Updated UAT report to document both runs and highlight key differences.
+- **Artifacts Produced:**
+  - Updated `docs/features/094-build-definition-tables/uat-report.md` - Documented re-run with pending approval status
+  - GitHub UAT PR: https://github.com/oocx/tfplan2md-uat/pull/87
+  - Azure DevOps UAT PR: https://dev.azure.com/oocx/test/_git/test/pullrequest/86
+- **Problems Encountered:**
+  - Git submodules not initialized → Resolved with `git submodule update --init --recursive`
+  - Authentication token mismatch → Resolved by exporting `GITHUB_TOKEN="$GH_UAT_TOKEN"`
+  - Stale UAT branch in submodule → Resolved by cleaning up and resetting to main
+- **Result:** ⏳ PENDING APPROVAL — Awaiting maintainer review of rendered output
+- **Key Validations Expected:**
+  - Variable names should show `🆔` icon prefix (e.g., `🆔 API_KEY`)
+  - Boolean values should show `✅` or `❌` icons (e.g., `✅ true`, `❌ false`)
+  - Secret masking should show `(sensitive / hidden)` for `API_KEY`
+  - All table columns should render correctly
+  - Regression test should pass without errors
+- **Next Steps:**
+  - Maintainer reviews UAT PRs #87 (GitHub) and #86 (Azure DevOps)
+  - Apply `uat-approved` label to GitHub PR or approve Azure DevOps PR
+  - Run cleanup with `scripts/uat-run.sh --cleanup-last`
+  - Update UAT report with final PASS/FAIL status

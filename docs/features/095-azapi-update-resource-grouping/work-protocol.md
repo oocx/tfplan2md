@@ -30,3 +30,13 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azapi-update-resource-delete.md` - Snapshot baseline for delete
 - **Problems Encountered:** Initial template had a regular space after the 📚 emoji instead of a non-breaking space (U+00A0), which failed the TemplateArchitectureTests. Fixed by using the correct non-breaking space character matching the azapi/resource.sbn pattern.
 
+### Technical Writer
+- **Date:** 2025-01-24
+- **Summary:** Updated documentation to reflect Feature 095 implementation. Added azapi_update_resource to the list of supported resource-specific templates in both README.md and docs/features.md. Created comprehensive release notes following the project's standard format. Documentation emphasizes the consistent user experience between azapi_resource and azapi_update_resource with intelligent attribute grouping.
+- **Artifacts Produced:**
+  - `docs/features/095-azapi-update-resource-grouping/release-notes.md` - Release notes for Feature 095
+  - Updated `README.md` - Added azapi_update_resource to supported resource types list
+  - Updated `docs/features.md` - Added azapi_update_resource to resource-specific templates table and created detailed subsection with examples
+  - Updated `docs/features/095-azapi-update-resource-grouping/work-protocol.md` - Added Technical Writer entry
+- **Problems Encountered:** None
+

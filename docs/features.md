@@ -2004,6 +2004,7 @@ When rendering the full report, the default renderer applies resource-specific t
 | Provider | Resource Type | Template |
 |----------|--------------|----------|
 | azapi | `azapi_resource` | Flattened body representation with dot notation |
+| azapi | `azapi_update_resource` | Intelligent attribute grouping and array rendering for partial updates |
 | azurerm | `azurerm_firewall_application_rule_collection` | Application firewall rule diffing with FQDN targets |
 | azurerm | `azurerm_firewall_network_rule_collection` | Network firewall rule diffing with IP/port targets |
 | azurerm | `azurerm_network_security_group` | Security rule diffing with `diff_array` |
@@ -2082,6 +2083,68 @@ The template respects Terraform's per-property sensitivity markers. If Terraform
 **Large Properties:**
 
 Properties with values exceeding 200 characters are automatically moved to a collapsible "Large body properties" section below the main table. This keeps the main view scannable while preserving access to detailed configuration values.
+
+#### azapi_update_resource
+
+The `azapi_update_resource` resource type from the AzAPI Terraform provider manages partial updates to existing Azure resources via the Azure Resource Manager REST API. Like `azapi_resource`, most configuration resides in a JSON `body` attribute. The custom template applies the same intelligent attribute grouping and array rendering from Feature 034 to make partial updates easy to review.
+
+**Key Features:**
+- **Intelligent attribute grouping**: Body attributes with common prefixes (≥3 attributes required) are automatically grouped for improved readability
+- **Improved array rendering**: Array-indexed attributes are rendered with clean structure using the hybrid rendering strategy
+- **Nested object grouping**: Attributes in nested objects are grouped appropriately (e.g., `cors.allowedOrigins[0]`, `cors.supportCredentials`)
+- **Clean property names**: Grouped attributes show clean property names without repetitive prefixes
+- **Azure API documentation links**: Automatic links to Microsoft Learn REST API documentation based on the resource type
+- **Consistent with azapi_resource**: Update resources render with the same grouping behavior as create resources
+- **All operations supported**: Update and delete actions handled appropriately
+
+**Example output for update operation with grouping:**
+
+```markdown
+**Type:** `Microsoft.Web/sites@2022-03-01`
+
+📚 [View API Documentation](https://learn.microsoft.com/rest/api/appservice/web-apps/)
+
+| Attribute | Value |
+|-----------|-------|
+| resource_id | `/subscriptions/.../Microsoft.Web/sites/myapp` |
+
+###### Body Changes - `siteConfig`
+
+| Property | Before | After |
+|----------|--------|-------|
+| netFrameworkVersion | `v4.8` | `v6.0` |
+| alwaysOn | ❌ `false` | ✅ `true` |
+
+###### `connectionStrings` Array (new)
+
+**Item [0]**
+
+| Property | Value |
+|----------|-------|
+| name | `Database` |
+| connectionString | `Server=tcp:...` |
+| type | `SQLAzure` |
+
+**Item [1]**
+
+| Property | Value |
+|----------|-------|
+| name | `Redis` |
+| connectionString | `myredis...` |
+| type | `RedisCache` |
+```
+
+**Grouping Behavior:**
+
+The template uses the same grouping logic as `azapi_resource`:
+- Attributes with ≥3 common prefix components are automatically grouped
+- Array-indexed attributes are rendered with improved structure (matrix tables for ≤8 properties/item, per-item tables for >8)
+- Nested object attributes are grouped appropriately
+- Long, repetitive property paths are collapsed into logical groups
+
+**Documentation Links:**
+
+Documentation links are generated using the same curated mappings as `azapi_resource`, covering 92 Azure resource types across 37 services. When a mapping exists, the resource displays a reliable documentation link. When no mapping exists, the link is omitted.
 
 #### Firewall Rule Collections
 

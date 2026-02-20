@@ -83,6 +83,14 @@ When tfplan2md processes a Terraform plan containing `azapi_update_resource` cha
 | type | `RedisCache` |
 ```
 
+## 📸 Screenshots
+
+Example output showing `azapi_update_resource` with attribute grouping — the `encryption` prefix group is rendered as a dedicated section with clean property names:
+
+![azapi_update_resource with attribute grouping](https://raw.githubusercontent.com/oocx/tfplan2md/main/docs/features/095-azapi-update-resource-grouping/azapi-update-resource.png)
+
+> **Note:** Screenshot URL uses `main` branch reference — will resolve correctly after PR merge.
+
 ## 🔗 Related Features
 
 - **Feature 034** - Improved AzAPI Attribute Grouping and Array Rendering (provides the grouping logic)

@@ -71,8 +71,8 @@ public class BuildDefinitionTemplateTests
         section.Should().Contain("| ---- | ----- | --------- | -------------- |");
 
         // Assert - Variable data
-        section.Should().Contain("| `BUILD_CONFIGURATION` | `Release` | `false` | `true` |");
-        section.Should().Contain("| `BUILD_PLATFORM` | `Any CPU` | `false` | `false` |");
+        section.Should().Contain($"| `🆔{Nbsp}BUILD_CONFIGURATION` | `Release` | `❌{Nbsp}false` | `✅{Nbsp}true` |");
+        section.Should().Contain($"| `🆔{Nbsp}BUILD_PLATFORM` | `Any CPU` | `❌{Nbsp}false` | `❌{Nbsp}false` |");
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public class BuildDefinitionTemplateTests
         // Assert - CI Trigger section
         section.Should().Contain("#### CI Trigger");
         section.Should().Contain("| Use YAML | Override (Branch Filters) |");
-        section.Should().Contain("| `true` |");
+        section.Should().Contain($"| `✅{Nbsp}true` |");
         section.Should().Contain("main");
         section.Should().Contain("develop");
 
@@ -97,7 +97,7 @@ public class BuildDefinitionTemplateTests
         section.Should().Contain("| Type | Repo ID | Branch | YAML Path | Report Build Status |");
         section.Should().Contain("| `TfsGit` |");
         section.Should().Contain("| `azure-pipelines.yml` |");
-        section.Should().Contain("| `true` |");
+        section.Should().Contain($"| `✅{Nbsp}true` |");
     }
 
     #endregion
@@ -125,11 +125,11 @@ public class BuildDefinitionTemplateTests
         section.Should().Contain("| ------ | ---- | ----- | --------- | -------------- |");
 
         // Assert - Added variable (➕)
-        section.Should().Contain($"| {ActionIcons.Add} | `NEW_VAR` |");
+        section.Should().Contain($"| {ActionIcons.Add} | `🆔{Nbsp}NEW_VAR` |");
         section.Should().Contain("| `new-value` |");
 
         // Assert - Modified variable (🔄)
-        section.Should().Contain($"| {ActionIcons.Update} | `ENV` |");
+        section.Should().Contain($"| {ActionIcons.Update} | `🆔{Nbsp}ENV` |");
 
         // Assert - Should contain before/after diff
         section.Should().Contain("<code style=\"display:block;"); // HTML code block for diff
@@ -137,7 +137,7 @@ public class BuildDefinitionTemplateTests
         section.Should().Contain("+ "); // Plus prefix
 
         // Assert - Removed variable (❌)
-        section.Should().Contain($"| {ActionIcons.Delete} | `OLD_VAR` |");
+        section.Should().Contain($"| {ActionIcons.Delete} | `🆔{Nbsp}OLD_VAR` |");
     }
 
     /// <summary>
@@ -152,7 +152,7 @@ public class BuildDefinitionTemplateTests
 
         // Assert - CI Trigger section exists (after state)
         section.Should().Contain("#### CI Trigger");
-        section.Should().Contain("| `true` |");
+        section.Should().Contain($"| `✅{Nbsp}true` |");
 
         // Assert - Repository section exists (after state)
         section.Should().Contain("#### Repository");
@@ -183,8 +183,8 @@ public class BuildDefinitionTemplateTests
         section.Should().Contain("| Name | Value | Is Secret | Allow Override |");
 
         // Assert - Variables displayed
-        section.Should().Contain("| `LEGACY_VAR` | `legacy-value` |");
-        section.Should().Contain("| `SECRET_TOKEN` | `(sensitive / hidden)` |");
+        section.Should().Contain($"| `🆔{Nbsp}LEGACY_VAR` | `legacy-value` |");
+        section.Should().Contain($"| `🆔{Nbsp}SECRET_TOKEN` | `(sensitive / hidden)` |");
     }
 
     #endregion
@@ -202,15 +202,15 @@ public class BuildDefinitionTemplateTests
         var section = ExtractSection(markdown, "azuredevops_build_definition.create_with_secrets");
 
         // Assert - Secret variables show masked value
-        section.Should().Contain("| `API_KEY` | `(sensitive / hidden)` | `true` | `true` |");
-        section.Should().Contain("| `DB_PASSWORD` | `(sensitive / hidden)` | `true` | `false` |");
+        section.Should().Contain($"| `🆔{Nbsp}API_KEY` | `(sensitive / hidden)` | `✅{Nbsp}true` | `✅{Nbsp}true` |");
+        section.Should().Contain($"| `🆔{Nbsp}DB_PASSWORD` | `(sensitive / hidden)` | `✅{Nbsp}true` | `❌{Nbsp}false` |");
 
         // Assert - Actual secret values NEVER appear
         section.Should().NotContain("super-secret-key-123");
         section.Should().NotContain("p@ssw0rd");
 
         // Assert - Regular variable still shows value
-        section.Should().Contain("| `ENV` | `production` | `false` | `true` |");
+        section.Should().Contain($"| `🆔{Nbsp}ENV` | `production` | `❌{Nbsp}false` | `✅{Nbsp}true` |");
     }
 
     /// <summary>
@@ -224,7 +224,7 @@ public class BuildDefinitionTemplateTests
         var section = ExtractSection(markdown, "azuredevops_build_definition.delete_basic");
 
         // Assert - Secret variable masked in delete
-        section.Should().Contain("| `SECRET_TOKEN` | `(sensitive / hidden)` |");
+        section.Should().Contain($"| `🆔{Nbsp}SECRET_TOKEN` | `(sensitive / hidden)` |");
 
         // Assert - Actual secret value NEVER appears
         section.Should().NotContain("secret-token-value");
@@ -247,7 +247,7 @@ public class BuildDefinitionTemplateTests
         // Assert - CI Trigger table
         section.Should().Contain("#### CI Trigger");
         section.Should().Contain("| Use YAML | Override (Branch Filters) |");
-        section.Should().Contain("| `true` |");
+        section.Should().Contain($"| `✅{Nbsp}true` |");
 
         // Assert - Repository table
         section.Should().Contain("#### Repository");
@@ -273,8 +273,8 @@ public class BuildDefinitionTemplateTests
         // Assert - Pull Request Trigger section exists
         section.Should().Contain("#### Pull Request Trigger");
         section.Should().Contain("| Use YAML | Override (Branch Filters) | Forks Enabled | Forks Comment Requirement |");
-        section.Should().Contain("| `false` |");
-        section.Should().Contain("| `true` |");
+        section.Should().Contain($"| `❌{Nbsp}false` |");
+        section.Should().Contain($"| `✅{Nbsp}true` |");
         section.Should().Contain("| - |"); // Comment requirement can be dash
     }
 
@@ -299,7 +299,7 @@ public class BuildDefinitionTemplateTests
         section.Should().Contain("Wed");
         section.Should().Contain("Fri");
         section.Should().Contain("| `09:30` |");
-        section.Should().Contain("| `true` |");
+        section.Should().Contain($"| `✅{Nbsp}true` |");
     }
 
     /// <summary>
@@ -335,7 +335,7 @@ public class BuildDefinitionTemplateTests
 
         // Assert - Variables section exists (has data)
         section.Should().Contain("#### Variables");
-        section.Should().Contain("| `SINGLE_VAR` |");
+        section.Should().Contain($"| `🆔{Nbsp}SINGLE_VAR` |");
 
         // Assert - Empty sections do NOT render
         // We check that there's no CI Trigger section at all
@@ -370,7 +370,7 @@ public class BuildDefinitionTemplateTests
         markdown.Should().Contain("<code>My Pipeline</code>");
 
         // Assert - Backticks used for inline code in table cells
-        markdown.Should().Contain("| `BUILD_CONFIGURATION` |");
+        markdown.Should().Contain($"| `🆔{Nbsp}BUILD_CONFIGURATION` |");
         markdown.Should().Contain("| `Release` |");
 
         // Assert - Plain text for labels (no backticks)

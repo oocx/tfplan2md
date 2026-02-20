@@ -20,6 +20,7 @@ public class BuildDefinitionViewModelFactoryTests
 {
     private const string ProviderName = "azuredevops";
     private const LargeValueFormat DefaultFormat = LargeValueFormat.InlineDiff;
+    private const string Nbsp = "\u00A0";
 
     #region TC-01: Create Operation - Regular Variables
 
@@ -55,22 +56,22 @@ public class BuildDefinitionViewModelFactoryTests
         viewModel.BeforeVariables.Should().BeEmpty();
 
         var var1 = viewModel.AfterVariables[0];
-        var1.Name.Should().Be("`BUILD_CONFIGURATION`");
+        var1.Name.Should().Be($"`🆔{Nbsp}BUILD_CONFIGURATION`");
         var1.Value.Should().Be("`Release`");
-        var1.IsSecret.Should().Be("`false`");
-        var1.AllowOverride.Should().Be("`true`");
+        var1.IsSecret.Should().Be($"`❌{Nbsp}false`");
+        var1.AllowOverride.Should().Be($"`✅{Nbsp}true`");
         var1.IsLargeValue.Should().BeFalse();
 
         var var2 = viewModel.AfterVariables[1];
-        var2.Name.Should().Be("`BUILD_PLATFORM`");
+        var2.Name.Should().Be($"`🆔{Nbsp}BUILD_PLATFORM`");
         var2.Value.Should().Be("`Any CPU`");
-        var2.IsSecret.Should().Be("`false`");
-        var2.AllowOverride.Should().Be("`false`");
+        var2.IsSecret.Should().Be($"`❌{Nbsp}false`");
+        var2.AllowOverride.Should().Be($"`❌{Nbsp}false`");
 
         var var3 = viewModel.AfterVariables[2];
-        var3.Name.Should().Be("`TIMEOUT`");
+        var3.Name.Should().Be($"`🆔{Nbsp}TIMEOUT`");
         var3.Value.Should().Be("`30`");
-        var3.IsSecret.Should().Be("`false`");
+        var3.IsSecret.Should().Be($"`❌{Nbsp}false`");
         var3.AllowOverride.Should().Be("-");
     }
 
@@ -102,17 +103,17 @@ public class BuildDefinitionViewModelFactoryTests
         viewModel.AfterVariables.Should().HaveCount(2);
 
         var secret1 = viewModel.AfterVariables[0];
-        secret1.Name.Should().Be("`API_KEY`");
+        secret1.Name.Should().Be($"`🆔{Nbsp}API_KEY`");
         secret1.Value.Should().Be("`(sensitive / hidden)`");
-        secret1.IsSecret.Should().Be("`true`");
-        secret1.AllowOverride.Should().Be("`true`");
+        secret1.IsSecret.Should().Be($"`✅{Nbsp}true`");
+        secret1.AllowOverride.Should().Be($"`✅{Nbsp}true`");
         secret1.IsLargeValue.Should().BeFalse();
 
         var secret2 = viewModel.AfterVariables[1];
-        secret2.Name.Should().Be("`DB_PASSWORD`");
+        secret2.Name.Should().Be($"`🆔{Nbsp}DB_PASSWORD`");
         secret2.Value.Should().Be("`(sensitive / hidden)`");
-        secret2.IsSecret.Should().Be("`true`");
-        secret2.AllowOverride.Should().Be("`false`");
+        secret2.IsSecret.Should().Be($"`✅{Nbsp}true`");
+        secret2.AllowOverride.Should().Be($"`❌{Nbsp}false`");
     }
 
     #endregion
@@ -145,13 +146,13 @@ public class BuildDefinitionViewModelFactoryTests
         viewModel.VariableChanges.Should().BeEmpty();
 
         var var1 = viewModel.BeforeVariables[0];
-        var1.Name.Should().Be("`ENV`");
+        var1.Name.Should().Be($"`🆔{Nbsp}ENV`");
         var1.Value.Should().Be("`prod`");
-        var1.IsSecret.Should().Be("`false`");
-        var1.AllowOverride.Should().Be("`true`");
+        var1.IsSecret.Should().Be($"`❌{Nbsp}false`");
+        var1.AllowOverride.Should().Be($"`✅{Nbsp}true`");
 
         var var2 = viewModel.BeforeVariables[1];
-        var2.Name.Should().Be("`REGION`");
+        var2.Name.Should().Be($"`🆔{Nbsp}REGION`");
         var2.Value.Should().Be("`eastus`");
     }
 
@@ -181,9 +182,9 @@ public class BuildDefinitionViewModelFactoryTests
         // Assert
         viewModel.BeforeVariables.Should().HaveCount(1);
         var secret = viewModel.BeforeVariables[0];
-        secret.Name.Should().Be("`SECRET_TOKEN`");
+        secret.Name.Should().Be($"`🆔{Nbsp}SECRET_TOKEN`");
         secret.Value.Should().Be("`(sensitive / hidden)`");
-        secret.IsSecret.Should().Be("`true`");
+        secret.IsSecret.Should().Be($"`✅{Nbsp}true`");
     }
 
     #endregion
@@ -222,7 +223,7 @@ public class BuildDefinitionViewModelFactoryTests
         viewModel.BeforeVariables.Should().BeEmpty();
 
         var change = viewModel.VariableChanges[0];
-        change.Name.Should().Be("`ENV`");
+        change.Name.Should().Be($"`🆔{Nbsp}ENV`");
         change.Change.Should().Be("update");
         change.ChangeIcon.Should().Be("🔄");
         // Value diff is rendered as HTML for inline-diff format
@@ -266,7 +267,7 @@ public class BuildDefinitionViewModelFactoryTests
         // Assert
         viewModel.VariableChanges.Should().HaveCount(2);
 
-        var added = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`NEW_VAR`");
+        var added = viewModel.VariableChanges.FirstOrDefault(v => v.Name == $"`🆔{Nbsp}NEW_VAR`");
         added.Should().NotBeNull();
         added!.Change.Should().Be("add");
         added.ChangeIcon.Should().Be("➕");
@@ -315,7 +316,7 @@ public class BuildDefinitionViewModelFactoryTests
         modified.Value.Should().Contain("+");
 
         // IsSecret unchanged
-        modified.IsSecret.Should().Be("`false`");
+        modified.IsSecret.Should().Be($"`❌{Nbsp}false`");
 
         // AllowOverride changed - contains HTML-formatted diff
         modified.AllowOverride.Should().Contain("e"); // Common letter in true/false
@@ -355,7 +356,7 @@ public class BuildDefinitionViewModelFactoryTests
         var viewModel = BuildDefinitionViewModelFactory.Build(changeJson, ProviderName, DefaultFormat);
 
         // Assert
-        var removed = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`REMOVED_VAR`");
+        var removed = viewModel.VariableChanges.FirstOrDefault(v => v.Name == $"`🆔{Nbsp}REMOVED_VAR`");
         removed.Should().NotBeNull();
         removed!.Change.Should().Be("remove");
         removed.ChangeIcon.Should().Be("❌");
@@ -396,10 +397,10 @@ public class BuildDefinitionViewModelFactoryTests
         var unchanged = viewModel.VariableChanges[0];
         unchanged.Change.Should().Be("unchanged");
         unchanged.ChangeIcon.Should().Be("⏺️");
-        unchanged.Name.Should().Be("`UNCHANGED`");
+        unchanged.Name.Should().Be($"`🆔{Nbsp}UNCHANGED`");
         unchanged.Value.Should().Be("`same`");
-        unchanged.IsSecret.Should().Be("`false`");
-        unchanged.AllowOverride.Should().Be("`true`");
+        unchanged.IsSecret.Should().Be($"`❌{Nbsp}false`");
+        unchanged.AllowOverride.Should().Be($"`✅{Nbsp}true`");
     }
 
     #endregion
@@ -507,7 +508,7 @@ public class BuildDefinitionViewModelFactoryTests
 
         // Assert
         viewModel.AfterCiTriggers.Should().HaveCount(1);
-        viewModel.AfterCiTriggers[0].UseYaml.Should().Be("`true`");
+        viewModel.AfterCiTriggers[0].UseYaml.Should().Be($"`✅{Nbsp}true`");
         viewModel.AfterCiTriggers[0].Override.Should().Contain("main");
         viewModel.AfterCiTriggers[0].Override.Should().Contain("develop");
 
@@ -516,7 +517,7 @@ public class BuildDefinitionViewModelFactoryTests
         viewModel.AfterRepositories[0].YmlPath.Should().Be("`azure-pipelines.yml`");
 
         viewModel.AfterPullRequestTriggers.Should().HaveCount(1);
-        viewModel.AfterPullRequestTriggers[0].UseYaml.Should().Be("`false`");
+        viewModel.AfterPullRequestTriggers[0].UseYaml.Should().Be($"`❌{Nbsp}false`");
 
         viewModel.AfterSchedules.Should().HaveCount(1);
         viewModel.AfterSchedules[0].DaysToBuild.Should().Contain("Mon");

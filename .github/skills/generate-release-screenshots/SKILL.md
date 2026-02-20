@@ -20,6 +20,7 @@ Provide clear, actionable guidance for generating actual PNG screenshot files fo
 - [ ] Use only `*-crop*.png` files in release notes, or generate single screenshots using the release wrapper.
 - [ ] **Use absolute `raw.githubusercontent.com` URLs in release notes** — relative paths like `./image.png` do NOT work in GitHub Release pages. Use format: `https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/{path}/image.png` where `{VERSION}` is the release tag.
 - [ ] **Choose selectors that capture the visual change**: Match the selector to what the feature/fix actually changes (see Selector Guide below).
+- [ ] **Generate the report with `--details open`** so resource details blocks are expanded in screenshots — unless you specifically want to capture a collapsed resource.
 
 ### Must Not
 - [ ] Add `![Screenshot](path/to/image.png)` syntax to markdown before verifying the PNG file exists.
@@ -113,6 +114,7 @@ Run the chosen script with appropriate parameters:
 - Set output prefix and directory
 - Use selectors to focus on specific content
 - For release notes, ensure max 580×400 pixel size
+- **Generate the report with `--details open`** so resource attribute tables are visible in the screenshot — unless you specifically want to capture a collapsed resource
 
 ### 4. Verify Generation Success
 Before proceeding:

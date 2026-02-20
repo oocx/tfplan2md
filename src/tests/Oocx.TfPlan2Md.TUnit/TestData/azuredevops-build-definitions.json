@@ -1,0 +1,305 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_build_definition.create_basic",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "create_basic",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "My Pipeline",
+          "path": "\\Pipelines\\CI",
+          "agent_pool_name": "Default",
+          "queue_status": "enabled",
+          "variable": [
+            {
+              "name": "BUILD_CONFIGURATION",
+              "value": "Release",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            },
+            {
+              "name": "BUILD_PLATFORM",
+              "value": "Any CPU",
+              "is_secret": false,
+              "allow_override": false,
+              "secret_value": ""
+            }
+          ],
+          "ci_trigger": [
+            {
+              "use_yaml": true,
+              "override": ["main", "develop"]
+            }
+          ],
+          "repository": [
+            {
+              "repo_type": "TfsGit",
+              "repo_id": "12345678-1234-1234-1234-123456789012",
+              "branch_name": "refs/heads/main",
+              "yml_path": "azure-pipelines.yml",
+              "report_build_status": true,
+              "service_connection_id": "",
+              "github_enterprise_url": ""
+            }
+          ],
+          "pull_request_trigger": [],
+          "schedules": []
+        }
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.create_with_secrets",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "create_with_secrets",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "Secure Pipeline",
+          "path": "\\",
+          "agent_pool_name": "Azure Pipelines",
+          "variable": [
+            {
+              "name": "API_KEY",
+              "value": "",
+              "is_secret": true,
+              "allow_override": true,
+              "secret_value": "super-secret-key-123"
+            },
+            {
+              "name": "DB_PASSWORD",
+              "value": "",
+              "is_secret": true,
+              "allow_override": false,
+              "secret_value": "p@ssw0rd"
+            },
+            {
+              "name": "ENV",
+              "value": "production",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            }
+          ],
+          "ci_trigger": [],
+          "repository": [],
+          "pull_request_trigger": [],
+          "schedules": []
+        }
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.update_variables",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "update_variables",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "Updated Pipeline",
+          "path": "\\CI",
+          "variable": [
+            {
+              "name": "ENV",
+              "value": "dev",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            },
+            {
+              "name": "OLD_VAR",
+              "value": "old-value",
+              "is_secret": false,
+              "allow_override": false,
+              "secret_value": ""
+            },
+            {
+              "name": "CONFIG",
+              "value": "debug",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            }
+          ],
+          "ci_trigger": [],
+          "repository": []
+        },
+        "after": {
+          "name": "Updated Pipeline",
+          "path": "\\CI",
+          "variable": [
+            {
+              "name": "ENV",
+              "value": "prod",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            },
+            {
+              "name": "NEW_VAR",
+              "value": "new-value",
+              "is_secret": false,
+              "allow_override": false,
+              "secret_value": ""
+            },
+            {
+              "name": "CONFIG",
+              "value": "release",
+              "is_secret": false,
+              "allow_override": false,
+              "secret_value": ""
+            }
+          ],
+          "ci_trigger": [
+            {
+              "use_yaml": true,
+              "override": ["main"]
+            }
+          ],
+          "repository": [
+            {
+              "repo_type": "TfsGit",
+              "repo_id": "87654321-4321-4321-4321-210987654321",
+              "branch_name": "refs/heads/main",
+              "yml_path": "pipelines/ci.yml",
+              "report_build_status": true,
+              "service_connection_id": "",
+              "github_enterprise_url": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.delete_basic",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "delete_basic",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "name": "Deleted Pipeline",
+          "path": "\\Archived",
+          "variable": [
+            {
+              "name": "LEGACY_VAR",
+              "value": "legacy-value",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            },
+            {
+              "name": "SECRET_TOKEN",
+              "value": "",
+              "is_secret": true,
+              "allow_override": false,
+              "secret_value": "secret-token-value"
+            }
+          ],
+          "ci_trigger": [],
+          "repository": []
+        },
+        "after": null
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.with_all_triggers",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "with_all_triggers",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "Full Featured Pipeline",
+          "path": "\\Advanced",
+          "agent_pool_name": "Azure Pipelines",
+          "variable": [],
+          "ci_trigger": [
+            {
+              "use_yaml": false,
+              "override": ["main", "release/*", "feature/*"]
+            }
+          ],
+          "pull_request_trigger": [
+            {
+              "use_yaml": false,
+              "override": ["main"],
+              "forks": {
+                "enabled": true,
+                "share_secrets": false
+              },
+              "comment_required": "CommunityMembers"
+            }
+          ],
+          "schedules": [
+            {
+              "branch_filter": [
+                {
+                  "include": ["main", "develop"],
+                  "exclude": []
+                }
+              ],
+              "days_to_build": ["Mon", "Wed", "Fri"],
+              "schedule_only_with_changes": true,
+              "start_hours": 9,
+              "start_minutes": 30,
+              "time_zone": "(UTC) Coordinated Universal Time"
+            }
+          ],
+          "repository": [
+            {
+              "repo_type": "GitHub",
+              "repo_id": "myorg/myrepo",
+              "branch_name": "refs/heads/main",
+              "yml_path": ".github/workflows/ci.yml",
+              "report_build_status": true,
+              "service_connection_id": "aaaaaaaa-1111-1111-1111-111111111111",
+              "github_enterprise_url": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "azuredevops_build_definition.empty_nested_blocks",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "empty_nested_blocks",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "Minimal Pipeline",
+          "path": "\\",
+          "variable": [
+            {
+              "name": "SINGLE_VAR",
+              "value": "value",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            }
+          ],
+          "ci_trigger": [],
+          "pull_request_trigger": [],
+          "schedules": [],
+          "repository": []
+        }
+      }
+    }
+  ]
+}

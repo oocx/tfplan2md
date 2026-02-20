@@ -1,0 +1,58 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azuredevops_build_definition.feature_pipeline",
+      "mode": "managed",
+      "type": "azuredevops_build_definition",
+      "name": "feature_pipeline",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "Feature CI/CD Pipeline",
+          "path": "\\CI\\Feature",
+          "agent_pool_name": "Azure Pipelines",
+          "queue_status": "enabled",
+          "variable": [
+            {
+              "name": "BUILD_CONFIGURATION",
+              "value": "Release",
+              "is_secret": false,
+              "allow_override": true,
+              "secret_value": ""
+            },
+            {
+              "name": "API_KEY",
+              "value": "",
+              "is_secret": true,
+              "allow_override": false,
+              "secret_value": "super-secret-api-key"
+            }
+          ],
+          "ci_trigger": [
+            {
+              "use_yaml": true,
+              "override": ["main", "develop", "feature/*"]
+            }
+          ],
+          "repository": [
+            {
+              "repo_type": "TfsGit",
+              "repo_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+              "branch_name": "refs/heads/main",
+              "yml_path": "azure-pipelines.yml",
+              "report_build_status": true,
+              "service_connection_id": "",
+              "github_enterprise_url": ""
+            }
+          ],
+          "pull_request_trigger": [],
+          "schedules": []
+        }
+      }
+    }
+  ]
+}

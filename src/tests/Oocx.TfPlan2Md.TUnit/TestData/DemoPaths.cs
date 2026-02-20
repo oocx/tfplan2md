@@ -36,6 +36,11 @@ public static class DemoPaths
     public static string AzureDevOpsVariableGroupPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuredevops-variable-groups.json");
 
     /// <summary>
+    /// Gets the path to the Azure DevOps build definitions test plan JSON file.
+    /// </summary>
+    public static string AzureDevOpsBuildDefinitionPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuredevops-build-definitions.json");
+
+    /// <summary>
     /// Gets the path to the Azure AD group member test plan JSON file.
     /// </summary>
     public static string AzureAdGroupMemberPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-member-plan.json");

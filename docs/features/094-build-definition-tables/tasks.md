@@ -465,23 +465,23 @@ Ensure the `build_definition.sbn` template file is included as an embedded resou
 Implement comprehensive unit tests for the `BuildDefinitionViewModelFactory` covering all operation types (create, update, delete), variable types (regular, secret), semantic diffing, and edge cases.
 
 **Acceptance Criteria:**
-- [ ] Create test file: `tests/Oocx.TfPlan2Md.TUnit/Providers/AzureDevOps/BuildDefinitionViewModelFactoryTests.cs`
-- [ ] Implement TC-01: Create operation with regular variables
-- [ ] Implement TC-02: Create operation with secret variables (verify `(sensitive / hidden)`)
-- [ ] Implement TC-03: Delete operation
-- [ ] Implement TC-04: Secret variable metadata displayed but values masked
-- [ ] Implement TC-05: Update operation with variable changes
-- [ ] Implement TC-06: Variables categorized as Added
-- [ ] Implement TC-07: Variables categorized as Modified (with before/after diffs)
-- [ ] Implement TC-08: Variables categorized as Removed
-- [ ] Implement TC-09: Variables categorized as Unchanged
-- [ ] Implement TC-10: Large variable values flagged with `IsLargeValue = true`
-- [ ] Implement TC-11: CI Trigger, Repository, and other nested blocks extraction
-- [ ] Implement TC-12: Empty/null attribute values formatted as `-`
-- [ ] Implement TC-13: Conditional rendering data (empty arrays result in empty view model lists)
-- [ ] All tests use inline JSON test data or builder pattern
-- [ ] All tests verify secret masking (no actual secret values in output)
-- [ ] Follow the test structure pattern from existing tests
+- [x] Create test file: `tests/Oocx.TfPlan2Md.TUnit/Providers/AzureDevOps/BuildDefinitionViewModelFactoryTests.cs`
+- [x] Implement TC-01: Create operation with regular variables
+- [x] Implement TC-02: Create operation with secret variables (verify `(sensitive / hidden)`)
+- [x] Implement TC-03: Delete operation
+- [x] Implement TC-04: Secret variable metadata displayed but values masked
+- [x] Implement TC-05: Update operation with variable changes
+- [x] Implement TC-06: Variables categorized as Added
+- [x] Implement TC-07: Variables categorized as Modified (with before/after diffs)
+- [x] Implement TC-08: Variables categorized as Removed
+- [x] Implement TC-09: Variables categorized as Unchanged
+- [x] Implement TC-10: Large variable values flagged with `IsLargeValue = true`
+- [x] Implement TC-11: CI Trigger, Repository, and other nested blocks extraction
+- [x] Implement TC-12: Empty/null attribute values formatted as `-`
+- [x] Implement TC-13: Conditional rendering data (empty arrays result in empty view model lists)
+- [x] All tests use inline JSON test data or builder pattern
+- [x] All tests verify secret masking (no actual secret values in output)
+- [x] Follow the test structure pattern from existing tests
 
 **Dependencies:** Task 5 (factory), Task 1-4 (supporting classes)
 
@@ -505,36 +505,36 @@ Implement comprehensive unit tests for the `BuildDefinitionViewModelFactory` cov
 Implement integration tests that verify end-to-end template rendering for build definitions, including all operation types and conditional rendering scenarios.
 
 **Acceptance Criteria:**
-- [ ] Create test file: `tests/Oocx.TfPlan2Md.TUnit/Providers/AzureDevOps/BuildDefinitionTemplateTests.cs`
-- [ ] Implement TC-14: Create operation template rendering
+- [x] Create test file: `tests/Oocx.TfPlan2Md.TUnit/Providers/AzureDevOps/BuildDefinitionTemplateTests.cs`
+- [x] Implement TC-14: Create operation template rendering
   - Verify markdown structure
   - Verify variables table with proper columns
   - Verify CI Trigger and Repository sections
-- [ ] Implement TC-15: Update operation template rendering
+- [x] Implement TC-15: Update operation template rendering
   - Verify variables table includes Change column
   - Verify change icons (➕, 🔄, ❌, ⏺️) appear correctly
   - Verify before/after diffs for modified variables
-- [ ] Implement TC-16: Delete operation template rendering
+- [x] Implement TC-16: Delete operation template rendering
   - Verify "(being deleted)" label
   - Verify before_variables table
-- [ ] Implement TC-17: Security - secret values never leaked (integration test)
+- [x] Implement TC-17: Security - secret values never leaked (integration test)
   - Create build definition with secret variables
   - Verify rendered output contains `(sensitive / hidden)`
   - Verify rendered output does NOT contain actual secret values
-- [ ] Implement TC-18: CI Trigger display
-- [ ] Implement TC-19: Pull Request Trigger display
-- [ ] Implement TC-20: Schedules and Repository display
-- [ ] Implement TC-21: Conditional rendering - no empty tables
+- [x] Implement TC-18: CI Trigger display
+- [x] Implement TC-19: Pull Request Trigger display
+- [x] Implement TC-20: Schedules and Repository display
+- [x] Implement TC-21: Conditional rendering - no empty tables
   - Create build definition with only variables (no triggers)
   - Verify only Variables section is rendered
   - Verify CI Trigger, Repository sections are NOT rendered
-- [ ] Implement TC-22: Report Style Guide compliance
+- [x] Implement TC-22: Report Style Guide compliance
   - Verify code formatting (backticks) for values
   - Verify plain text for labels
   - Verify table structure
-- [ ] Implement TC-23: Mapper registered in dependency injection
-- [ ] All tests use full rendering pipeline (factory → mapper → template)
-- [ ] All tests verify markdown output matches expected structure
+- [x] Implement TC-23: Mapper registered in dependency injection
+- [x] All tests use full rendering pipeline (factory → mapper → template)
+- [x] All tests verify markdown output matches expected structure
 
 **Dependencies:** Task 8 (template), Task 9 (registration), Task 10 (embedded resource)
 
@@ -558,16 +558,16 @@ Implement integration tests that verify end-to-end template rendering for build 
 Create test data JSON file with realistic build definition scenarios to support unit and integration tests. This file should include examples of create, update, and delete operations with various nested blocks.
 
 **Acceptance Criteria:**
-- [ ] Create `tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-build-definitions.json`
-- [ ] Include test scenario 1: Create with regular variables
-- [ ] Include test scenario 2: Create with secret variables
-- [ ] Include test scenario 3: Update with added/modified/removed variables
-- [ ] Include test scenario 4: Delete with variables
-- [ ] Include test scenario 5: Build definition with CI trigger and repository
-- [ ] Include test scenario 6: Build definition with all nested blocks (PR trigger, schedules, jobs)
-- [ ] Each scenario includes proper `before`, `after`, `before_sensitive`, `after_sensitive` structure
-- [ ] Follow the JSON structure from `examples/azuredevops/terraform_plan2.json`
-- [ ] Include realistic data (GUIDs, branch names, etc.)
+- [x] Create `tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-build-definitions.json`
+- [x] Include test scenario 1: Create with regular variables
+- [x] Include test scenario 2: Create with secret variables
+- [x] Include test scenario 3: Update with added/modified/removed variables
+- [x] Include test scenario 4: Delete with variables
+- [x] Include test scenario 5: Build definition with CI trigger and repository
+- [x] Include test scenario 6: Build definition with all nested blocks (PR trigger, schedules, jobs)
+- [x] Each scenario includes proper `before`, `after`, `before_sensitive`, `after_sensitive` structure
+- [x] Follow the JSON structure from `examples/azuredevops/terraform_plan2.json`
+- [x] Include realistic data (GUIDs, branch names, etc.)
 
 **Dependencies:** None (can be done in parallel)
 
@@ -590,11 +590,11 @@ Create test data JSON file with realistic build definition scenarios to support 
 Add a new demo path entry for the Azure DevOps build definition test data file to support demo and testing workflows.
 
 **Acceptance Criteria:**
-- [ ] Open `tests/Oocx.TfPlan2Md.TUnit/TestData/DemoPaths.cs`
-- [ ] Add property: `public static string AzureDevOpsBuildDefinitionPlanPath => ...;`
-- [ ] Path should point to the test data file created in Task 13
-- [ ] Follow the pattern of existing demo path entries
-- [ ] Add XML documentation comment
+- [x] Open `tests/Oocx.TfPlan2Md.TUnit/TestData/DemoPaths.cs`
+- [x] Add property: `public static string AzureDevOpsBuildDefinitionPlanPath => ...;`
+- [x] Path should point to the test data file created in Task 13
+- [x] Follow the pattern of existing demo path entries
+- [x] Add XML documentation comment
 
 **Dependencies:** Task 13 (test data file)
 
@@ -616,19 +616,19 @@ Add a new demo path entry for the Azure DevOps build definition test data file t
 Create the UAT test artifacts (JSON and rendered Markdown) that demonstrate the build definition table rendering for Maintainer review in GitHub/Azure DevOps PR comments.
 
 **Acceptance Criteria:**
-- [ ] Create `docs/features/094-build-definition-tables/uat-plan.json`
+- [x] Create `docs/features/094-build-definition-tables/uat-plan.json`
   - Include realistic build definition with variables (regular and secret)
   - Include CI trigger configuration
   - Include repository configuration
   - Include at least one variable change scenario (added/modified/removed)
-- [ ] Generate `docs/features/094-build-definition-tables/uat-plan.md` using tfplan2md
+- [x] Generate `docs/features/094-build-definition-tables/uat-plan.md` using tfplan2md
   - Run: `tfplan2md --input uat-plan.json --output uat-plan.md`
   - Verify variables are displayed in table format
   - Verify secret variables show `(sensitive / hidden)`
   - Verify CI trigger and repository sections appear
   - Verify conditional rendering (no empty tables)
-- [ ] Follow the UAT test plan guidelines from `uat-test-plan.md`
-- [ ] Ensure rendered output demonstrates all key features
+- [x] Follow the UAT test plan guidelines from `uat-test-plan.md`
+- [x] Ensure rendered output demonstrates all key features
 
 **Dependencies:** Task 8, 9, 10 (template and registration must be complete)
 

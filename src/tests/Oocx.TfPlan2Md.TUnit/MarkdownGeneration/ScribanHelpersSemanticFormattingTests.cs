@@ -363,4 +363,76 @@ public class ScribanHelpersSemanticFormattingTests
             result.Should().Be(entry.Value);
         }
     }
+
+    /// <summary>
+    /// Verifies repository_id formatting with repository icon in table context.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValueTable_RepositoryId_UsesRepositoryEmojiAndCode()
+    {
+        var result = FormatAttributeValueTable("repository_id", "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d", null);
+
+        result.Should().Be("`🗃️\u00A0a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d`");
+    }
+
+    /// <summary>
+    /// Verifies branch_name formatting with branch icon in table context.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValueTable_BranchName_UsesBranchEmojiAndCode()
+    {
+        var result = FormatAttributeValueTable("branch_name", "refs/heads/main", null);
+
+        result.Should().Be("`⎇\u00A0refs/heads/main`");
+    }
+
+    /// <summary>
+    /// Verifies repository_id formatting with repository icon in summary context.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValueSummary_RepositoryId_UsesRepositoryEmoji()
+    {
+        var result = FormatAttributeValueSummary("repository_id", "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d", null);
+
+        result.Should().Be("<code>🗃️\u00A0a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d</code>");
+    }
+
+    /// <summary>
+    /// Verifies branch_name formatting with branch icon in summary context.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValueSummary_BranchName_UsesBranchEmoji()
+    {
+        var result = FormatAttributeValueSummary("branch_name", "refs/heads/main", null);
+
+        result.Should().Be("<code>⎇\u00A0refs/heads/main</code>");
+    }
+
+    /// <summary>
+    /// Verifies repository_id formatting with repository icon in plain context.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValuePlain_RepositoryId_UsesRepositoryEmoji()
+    {
+        var result = FormatAttributeValuePlain("repository_id", "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d", null);
+
+        result.Should().Be("🗃️\u00A0a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d");
+    }
+
+    /// <summary>
+    /// Verifies branch_name formatting with branch icon in plain context.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValuePlain_BranchName_UsesBranchEmoji()
+    {
+        var result = FormatAttributeValuePlain("branch_name", "refs/heads/main", null);
+
+        result.Should().Be("⎇\u00A0refs/heads/main");
+    }
 }

@@ -48,3 +48,22 @@
   - New file: `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuredevops-build-definitions.json` with 6 test scenarios
   - New DemoPaths entry: `AzureDevOpsBuildDefinitionPlanPath`
   - UAT artifact: `docs/features/094-build-definition-tables/uat-plan.json` and `uat-plan.md` (to be created by Developer)
+
+### Task Planner
+- **Date:** 2025-02-20
+- **Summary:** Created detailed implementation tasks document breaking down the feature into 16 actionable tasks following the azuredevops_variable_group pattern. Tasks cover the complete implementation pipeline: ViewModel → Extractors → Formatters → Change Builders → Factory → Mapper → Template → Registration → Tests → UAT.
+- **Artifacts Produced:**
+  - `docs/features/094-build-definition-tables/tasks.md` - Complete implementation plan with 16 prioritized tasks, each with specific acceptance criteria, dependencies, file locations, and test requirements
+- **Problems Encountered:** None
+- **Key Implementation Sequence:**
+  1. Core data pipeline (Tasks 1-5): ViewModel, Extractors, Formatters, Change Builders, Factory
+  2. Framework integration (Tasks 6-10): Factory adapter, Mapper, Template, Embedded resource, Registration
+  3. Testing (Tasks 11-13, 16): Unit tests, integration tests, test data, verification
+  4. Finalization (Tasks 14-15): UAT artifacts, demo paths
+- **Critical Security Requirements Emphasized:**
+  - Task 3: Secret masking logic - `is_secret: true` variables MUST always display `(sensitive / hidden)`
+  - Task 12 (TC-17): Security integration test - verify no secret values leak in any scenario
+- **Pattern Adherence:**
+  - All tasks explicitly reference the `azuredevops_variable_group` implementation as the pattern to follow
+  - Each task specifies exact file locations and component names
+  - Dependencies clearly mapped to ensure correct implementation order

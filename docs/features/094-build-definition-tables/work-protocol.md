@@ -141,3 +141,19 @@
   - ✅ Manual rendering verification passed
 - **Review Decision:** Approved - No rework required
 - **Recommendation:** Hand off to UAT Tester for validation of markdown rendering in real GitHub and Azure DevOps PRs
+
+### UAT Tester
+- **Date:** 2026-02-20
+- **Summary:** Ran User Acceptance Testing for Feature 094. Created UAT PRs in GitHub (PR #86) and Azure DevOps (PR #85). Validated rendered output against all criteria from the UAT test plan.
+- **Artifacts Produced:**
+  - `docs/features/094-build-definition-tables/uat-report.md`
+  - GitHub UAT PR: https://github.com/oocx/tfplan2md-uat/pull/86
+  - Azure DevOps UAT PR: https://dev.azure.com/oocx/test/_git/test/pullrequest/85
+- **Result:** ✅ PASSED — All validation criteria met
+- **Key Validations:**
+  - Variables table renders with correct columns
+  - Secret masking confirmed: `API_KEY` shows `(sensitive / hidden)`
+  - CI Trigger table renders correctly
+  - Repository table renders correctly
+  - No empty tables shown
+  - Regression test (comprehensive demo) passes without unintended changes

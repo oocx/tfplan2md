@@ -5,8 +5,8 @@
 This test plan verifies the Azure DevOps repository mapping and icon feature that extends the existing mapping infrastructure to support Azure DevOps repository GUIDs and adds semantic icons for repository and branch/ref attributes. The feature enables users to map repository GUIDs to human-readable names and provides visual distinction for repositories (🗃️) and branches (⎇) in rendered Terraform plan reports.
 
 **Related Documents:**
-- Specification: `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
-- Architecture: `docs/features/095-azdo-repo-mapping-and-icons/architecture.md`
+- Specification: `docs/features/096-azdo-repo-mapping-and-icons/specification.md`
+- Architecture: `docs/features/096-azdo-repo-mapping-and-icons/architecture.md`
 - Template Feature: `docs/features/085-azdo-principal-mapping/` (mapping pattern reference)
 
 ## Test Coverage Matrix
@@ -953,7 +953,7 @@ scripts/update-snapshots.sh
 ## UAT Test Plan Reference
 
 For user acceptance testing of this feature, see:
-- `docs/features/095-azdo-repo-mapping-and-icons/uat-test-plan.md` - Defines UAT artifacts and validation steps
+- `docs/features/096-azdo-repo-mapping-and-icons/uat-test-plan.md` - Defines UAT artifacts and validation steps
 - UAT focuses on visual verification in real GitHub and Azure DevOps PR rendering
 - Test plan includes feature-specific artifact (`uat-plan.md`) and comprehensive regression test
 

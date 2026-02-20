@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.Diagnostics;
 /// <list type="bullet">
 /// <item><description>docs/features/063-azure-display-enhancements/specification.md.</description></item>
 /// <item><description>docs/features/085-azdo-principal-mapping/specification.md.</description></item>
-/// <item><description>docs/features/095-azdo-repo-mapping-and-icons/specification.md.</description></item>
+/// <item><description>docs/features/096-azdo-repo-mapping-and-icons/specification.md.</description></item>
 /// </list>
 /// </remarks>
 internal enum FailedResolutionType
@@ -55,7 +55,7 @@ internal enum FailedResolutionType
 
     /// <summary>
     /// An Azure DevOps repository ID could not be resolved.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     AzdoRepository
 }

@@ -120,7 +120,7 @@ internal sealed class CompositionRoot(CliOptions options)
 
     /// <summary>
     /// Creates the Azure DevOps repository mapper for repository ID resolution.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
     /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>

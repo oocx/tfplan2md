@@ -41,7 +41,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
 
     /// <summary>
     /// Optional mapper for Azure DevOps repository resolution.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     private readonly AzdoRepositoryMapper? _azdoRepositoryMapper;
 
@@ -179,7 +179,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
         }
 
         // Register Azure DevOps repository formatter
-        // Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md
+        // Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md
         if (_azdoRepositoryMapper is not null)
         {
             var repositoryFormatter = new AzdoRepositoryIdFormatter(_azdoRepositoryMapper);

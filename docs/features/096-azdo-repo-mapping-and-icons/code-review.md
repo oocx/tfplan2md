@@ -2,7 +2,7 @@
 
 ## Summary
 
-This code review validates the implementation of Feature 095, which extends the Azure principal mapping file to support Azure DevOps repository mappings and adds semantic icons (🗃️ for repositories, ⎇ for branches/refs) to improve report readability. The implementation follows Feature 085's established patterns for Azure DevOps entity mapping while introducing repository-specific enhancements.
+This code review validates the implementation of Feature 096, which extends the Azure principal mapping file to support Azure DevOps repository mappings and adds semantic icons (🗃️ for repositories, ⎇ for branches/refs) to improve report readability. The implementation follows Feature 085's established patterns for Azure DevOps entity mapping while introducing repository-specific enhancements.
 
 **Overall Assessment:** The implementation is **well-executed** with comprehensive test coverage and correct architecture alignment. The code follows established patterns from Feature 085, includes all required components, and provides an intentional improvement (OrdinalIgnoreCase for GUID lookups). One notable design decision is the inclusion of icons in the mapper's `GetEntityName()` method, which differs from Feature 085 but is explicitly required by the specification.
 
@@ -88,7 +88,7 @@ None
 #### S-01: Consider Updating Feature 085 to Use OrdinalIgnoreCase
 **Location:** `src/Oocx.TfPlan2Md/Platforms/Azure/AzureMappingFileParser.cs:78,80`
 
-**Description:** Feature 095 uses `StringComparer.OrdinalIgnoreCase` for repository GUID lookups (line 81), which is the correct approach for GUIDs. However, Feature 085's `azdoUsers` and `azdoProjects` use `StringComparer.Ordinal` (lines 78, 80), even though they also store GUIDs.
+**Description:** Feature 096 uses `StringComparer.OrdinalIgnoreCase` for repository GUID lookups (line 81), which is the correct approach for GUIDs. However, Feature 085's `azdoUsers` and `azdoProjects` use `StringComparer.Ordinal` (lines 78, 80), even though they also store GUIDs.
 
 **Recommendation:** Consider updating Feature 085's user and project mappers to use `OrdinalIgnoreCase` in a future enhancement for consistency with best practices for GUID lookups.
 
@@ -101,7 +101,7 @@ None
 
 **Observation:**  
 - **Feature 085 pattern:** `GetEntityName()` returns "DisplayName [ID]" (no icon)
-- **Feature 095 pattern:** `GetEntityName()` returns "🗃️ DisplayName [ID]" (with icon)
+- **Feature 096 pattern:** `GetEntityName()` returns "🗃️ DisplayName [ID]" (with icon)
 - **Specification:** Explicitly requires icon in FR-3 and verified by test TC-08
 
 The specification intentionally diverges from Feature 085 for repositories. Icons are applied in THREE separate contexts:
@@ -255,10 +255,10 @@ This is architecturally sound because each serves a different use case, and the 
 ### Documentation
 
 **Files Reviewed:**
-- `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
-- `docs/features/095-azdo-repo-mapping-and-icons/architecture.md`
-- `docs/features/095-azdo-repo-mapping-and-icons/tasks.md`
-- `docs/features/095-azdo-repo-mapping-and-icons/release-notes.md`
+- `docs/features/096-azdo-repo-mapping-and-icons/specification.md`
+- `docs/features/096-azdo-repo-mapping-and-icons/architecture.md`
+- `docs/features/096-azdo-repo-mapping-and-icons/tasks.md`
+- `docs/features/096-azdo-repo-mapping-and-icons/release-notes.md`
 - `docs/features.md`
 - `README.md`
 - `examples/comprehensive-demo/demo-principals-nested.json`
@@ -268,7 +268,7 @@ This is architecturally sound because each serves a different use case, and the 
 - ✅ Architecture document provides detailed component breakdown
 - ✅ Architecture includes data flow diagrams and integration points
 - ✅ Release notes document features, usage, and examples
-- ✅ `docs/features.md` updated with Feature 095 entry
+- ✅ `docs/features.md` updated with Feature 096 entry
 - ✅ `README.md` updated with azdoRepositories section
 - ✅ Example mapping file includes sample repository mappings
 - ✅ Work protocol shows all required agents have completed their work
@@ -325,7 +325,7 @@ The implementation strictly follows the architecture document design:
 
 ## Comparison with Feature 085
 
-| Aspect | Feature 085 | Feature 095 | Notes |
+| Aspect | Feature 085 | Feature 096 | Notes |
 |--------|-------------|-------------|-------|
 | Mapper pattern | AzdoUserMapper | AzdoRepositoryMapper | ✅ Identical structure |
 | Formatter pattern | AzdoUserIdFormatter | AzdoRepositoryIdFormatter | ✅ Identical structure |
@@ -349,7 +349,7 @@ All required agents have logged entries:
 
 **Global Documentation Status:** ✅ Updated
 
-- ✅ `docs/features.md` - Feature 095 entry added after Feature 085
+- ✅ `docs/features.md` - Feature 096 entry added after Feature 085
 - ✅ `README.md` - azdoRepositories section added to mapping file format
 - ✅ `docs/architecture.md` - Not updated (no architectural pattern changes)
 - ✅ `docs/testing-strategy.md` - Not updated (no new test patterns introduced)

@@ -5,9 +5,9 @@
 This document breaks down the implementation of Azure DevOps repository mapping and semantic icons into actionable tasks. The feature extends the existing principal mapping infrastructure to support Azure DevOps repositories (mapping GUIDs to display names) and adds semantic icons (🗃️ for repositories, ⎇ for branches/refs) to improve report readability.
 
 **Related Documents:**
-- Specification: `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
-- Architecture: `docs/features/095-azdo-repo-mapping-and-icons/architecture.md`
-- Test Plan: `docs/features/095-azdo-repo-mapping-and-icons/test-plan.md`
+- Specification: `docs/features/096-azdo-repo-mapping-and-icons/specification.md`
+- Architecture: `docs/features/096-azdo-repo-mapping-and-icons/architecture.md`
+- Test Plan: `docs/features/096-azdo-repo-mapping-and-icons/test-plan.md`
 - Template Feature: `docs/features/085-azdo-principal-mapping/tasks.md` (reference implementation)
 
 ## Implementation Approach
@@ -37,7 +37,7 @@ Add `AzdoRepositories` property to `PrincipalMappingFile` class to support Azure
 - [ ] Property is of type `Dictionary<string, string>?` (nullable)
 - [ ] XML documentation comments explain that this maps repository GUIDs to display names
 - [ ] Documentation includes example mapping (e.g., `"a1b2c3d4-e5f6-...": "Infrastructure Repo"`)
-- [ ] Feature reference comment added: `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
+- [ ] Feature reference comment added: `docs/features/096-azdo-repo-mapping-and-icons/specification.md`
 - [ ] Test TC-01 passes: `PrincipalMappingFile_DeserializeAzdoRepositories_PopulatesProperty`
 - [ ] Test TC-02 passes: `PrincipalMappingFile_DeserializeAllAzdoSections_IncludesRepositories`
 
@@ -56,7 +56,7 @@ Add `AzdoRepositories` property to `PrincipalMappingFile` class to support Azure
 /// <remarks>
 /// Azure DevOps repositories are identified by unique GUIDs. This mapping allows
 /// displaying recognizable repository names in rendered Terraform plans.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </remarks>
 /// <example>
 /// "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo".
@@ -114,7 +114,7 @@ Add diagnostic properties to track Azure DevOps repository counts and extend `Fa
 **Acceptance Criteria:**
 - [ ] `DiagnosticContext` includes `AzdoRepositoryCount` property (int)
 - [ ] XML documentation comment added for the new property
-- [ ] Feature reference comment added: `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
+- [ ] Feature reference comment added: `docs/features/096-azdo-repo-mapping-and-icons/specification.md`
 - [ ] `FailedResolutionType` enum includes `AzdoRepository` value
 - [ ] XML documentation comment added for the new enum value
 
@@ -131,14 +131,14 @@ Add diagnostic properties to track Azure DevOps repository counts and extend `Fa
 // In DiagnosticContext.cs
 /// <summary>
 /// Gets or sets the count of Azure DevOps repository mappings loaded.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 public int AzdoRepositoryCount { get; set; }
 
 // In FailedResolutionType.cs
 /// <summary>
 /// Azure DevOps repository resolution failure.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 AzdoRepository,
 ```
@@ -360,7 +360,7 @@ Add `TryFormatRepositoryAttribute` method to `SemanticFormatting.Identity.cs` to
 ```csharp
 /// <summary>
 /// Determines whether an attribute represents a repository value and formats it with the repository icon.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 /// <param name="attributeName">The attribute name to evaluate.</param>
 /// <param name="value">The raw attribute value.</param>
@@ -435,7 +435,7 @@ Add `TryFormatBranchAttribute` method to `SemanticFormatting.Identity.cs` to app
 ```csharp
 /// <summary>
 /// Determines whether an attribute represents a branch/ref value and formats it with the branch icon.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 /// <param name="attributeName">The attribute name to evaluate.</param>
 /// <param name="value">The raw attribute value.</param>
@@ -563,7 +563,7 @@ Update `CompositionRoot` to create the `AzdoRepositoryMapper` instance and pass 
 ```csharp
 /// <summary>
 /// Creates the Azure DevOps repository mapper for repository ID resolution.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
 /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>

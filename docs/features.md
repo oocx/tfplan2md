@@ -1673,7 +1673,7 @@ These helpers provide explicit control over entity resolution in custom template
 ## Azure DevOps Repository Mapping and Branch/Repo Icons
 
 **Status:** ✅ Implemented  
-**Related specification:** [docs/features/095-azdo-repo-mapping-and-icons/specification.md](features/095-azdo-repo-mapping-and-icons/specification.md)
+**Related specification:** [docs/features/096-azdo-repo-mapping-and-icons/specification.md](features/096-azdo-repo-mapping-and-icons/specification.md)
 
 This feature extends the principal mapping system to support Azure DevOps repositories and adds semantic icons for repositories and branches/refs, making Terraform plans for Azure DevOps resources more readable and scannable.
 

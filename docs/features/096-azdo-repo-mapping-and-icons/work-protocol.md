@@ -1,6 +1,6 @@
 # Work Protocol: Azure DevOps Repository Mapping and Branch/Repo Icons
 
-**Work Item:** `docs/features/095-azdo-repo-mapping-and-icons/`
+**Work Item:** `docs/features/096-azdo-repo-mapping-and-icons/`
 **Branch:** `copilot/extend-mapping-to-azure-devops`
 **Workflow Type:** Feature
 **Created:** 2025-01-03
@@ -13,15 +13,15 @@
 - **Date:** 2025-01-03
 - **Summary:** Created feature specification based on design decisions and feature 085 template. Documented requirements for extending mapping to Azure DevOps repositories and adding repository/branch icons.
 - **Artifacts Produced:** 
-  - `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
-  - `docs/features/095-azdo-repo-mapping-and-icons/work-protocol.md`
+  - `docs/features/096-azdo-repo-mapping-and-icons/specification.md`
+  - `docs/features/096-azdo-repo-mapping-and-icons/work-protocol.md`
 - **Problems Encountered:** None
 
 ### Architect
 - **Date:** 2025-01-03
 - **Summary:** Designed technical architecture following Feature 085 pattern exactly. Created comprehensive architecture documentation including component changes, data flow, integration points, and implementation sequence.
 - **Artifacts Produced:**
-  - `docs/features/095-azdo-repo-mapping-and-icons/architecture.md`
+  - `docs/features/096-azdo-repo-mapping-and-icons/architecture.md`
 - **Problems Encountered:** None
 - **Key Decisions:**
   - Follow Feature 085 pattern exactly for repository mapping (AzdoRepositoryMapper + AzdoRepositoryIdFormatter)
@@ -34,7 +34,7 @@
 - **Date:** 2025-01-03
 - **Summary:** Created comprehensive test plan with 27 test cases covering repository mapping, icon rendering, semantic formatting, and edge cases. Organized tests into unit tests (data model, parser, mapper, formatter, semantic icons, diagnostics) and integration tests (end-to-end rendering, example files). Defined test data requirements including 6 new test files and 3 snapshot baselines.
 - **Artifacts Produced:**
-  - `docs/features/095-azdo-repo-mapping-and-icons/test-plan.md`
+  - `docs/features/096-azdo-repo-mapping-and-icons/test-plan.md`
 - **Problems Encountered:** None
 - **Key Test Areas:**
   - Data model deserialization (TC-01, TC-02)
@@ -59,7 +59,7 @@
 - **Date:** 2025-01-03
 - **Summary:** Created actionable implementation tasks following Feature 085 pattern. Broke down the feature into 15 prioritized tasks covering data model updates, parser changes, new mapper/formatter classes, semantic icon formatting, composition/DI registration, diagnostics, tests, examples, and documentation.
 - **Artifacts Produced:**
-  - `docs/features/095-azdo-repo-mapping-and-icons/tasks.md`
+  - `docs/features/096-azdo-repo-mapping-and-icons/tasks.md`
 - **Problems Encountered:** None
 - **Key Organization:**
   - 6 phases of implementation with clear dependencies
@@ -73,10 +73,10 @@
 
 ### Technical Writer
 - **Date:** 2025-02-20
-- **Summary:** Updated all documentation to reflect Feature 095 implementation. Created release notes following Feature 085 pattern, added feature entry to features.md, updated README.md with azdoRepositories mapping section, and enhanced comprehensive demo mapping file.
+- **Summary:** Updated all documentation to reflect Feature 096 implementation. Created release notes following Feature 085 pattern, added feature entry to features.md, updated README.md with azdoRepositories mapping section, and enhanced comprehensive demo mapping file.
 - **Artifacts Produced:**
-  - `docs/features/095-azdo-repo-mapping-and-icons/release-notes.md` - Comprehensive release notes with examples
-  - Updated `docs/features.md` - Added Feature 095 entry after Azure DevOps Principal Mapping section
+  - `docs/features/096-azdo-repo-mapping-and-icons/release-notes.md` - Comprehensive release notes with examples
+  - Updated `docs/features.md` - Added Feature 096 entry after Azure DevOps Principal Mapping section
   - Updated `README.md` - Added azdoRepositories to principal mapping format documentation
   - Updated `examples/comprehensive-demo/demo-principals-nested.json` - Added sample repository mappings
 - **Problems Encountered:** None
@@ -89,9 +89,9 @@
 
 ### Code Reviewer
 - **Date:** 2025-02-20
-- **Summary:** Conducted comprehensive code review of Feature 095 implementation. Verified all components against specification, architecture, and Feature 085 patterns. Build successful, comprehensive demo generated, all acceptance criteria met. Implementation follows established patterns with one intentional improvement (OrdinalIgnoreCase for GUID lookups). No blocking or major issues found.
+- **Summary:** Conducted comprehensive code review of Feature 096 implementation. Verified all components against specification, architecture, and Feature 085 patterns. Build successful, comprehensive demo generated, all acceptance criteria met. Implementation follows established patterns with one intentional improvement (OrdinalIgnoreCase for GUID lookups). No blocking or major issues found.
 - **Artifacts Produced:**
-  - `docs/features/095-azdo-repo-mapping-and-icons/code-review.md` - Comprehensive code review report
+  - `docs/features/096-azdo-repo-mapping-and-icons/code-review.md` - Comprehensive code review report
 - **Problems Encountered:** None
 - **Review Findings:**
   - ✅ Specification compliance: 100% - all 14 acceptance criteria met

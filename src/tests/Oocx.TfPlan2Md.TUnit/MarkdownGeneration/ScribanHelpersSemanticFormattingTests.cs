@@ -366,7 +366,7 @@ public class ScribanHelpersSemanticFormattingTests
 
     /// <summary>
     /// Verifies repository_id formatting with repository icon in table context.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void FormatAttributeValueTable_RepositoryId_UsesRepositoryEmojiAndCode()
@@ -378,7 +378,7 @@ public class ScribanHelpersSemanticFormattingTests
 
     /// <summary>
     /// Verifies branch_name formatting with branch icon in table context.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void FormatAttributeValueTable_BranchName_UsesBranchEmojiAndCode()
@@ -390,7 +390,7 @@ public class ScribanHelpersSemanticFormattingTests
 
     /// <summary>
     /// Verifies repository_id formatting with repository icon in summary context.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void FormatAttributeValueSummary_RepositoryId_UsesRepositoryEmoji()
@@ -402,7 +402,7 @@ public class ScribanHelpersSemanticFormattingTests
 
     /// <summary>
     /// Verifies branch_name formatting with branch icon in summary context.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void FormatAttributeValueSummary_BranchName_UsesBranchEmoji()
@@ -414,7 +414,7 @@ public class ScribanHelpersSemanticFormattingTests
 
     /// <summary>
     /// Verifies repository_id formatting with repository icon in plain context.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void FormatAttributeValuePlain_RepositoryId_UsesRepositoryEmoji()
@@ -426,7 +426,7 @@ public class ScribanHelpersSemanticFormattingTests
 
     /// <summary>
     /// Verifies branch_name formatting with branch icon in plain context.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void FormatAttributeValuePlain_BranchName_UsesBranchEmoji()

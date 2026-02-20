@@ -37,7 +37,7 @@ This approach maximizes consistency, reuses existing infrastructure, and follows
 /// <remarks>
 /// Azure DevOps repositories are identified by unique GUIDs. This mapping allows
 /// displaying recognizable repository names in rendered Terraform plans.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </remarks>
 /// <example>
 /// "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo".
@@ -152,7 +152,7 @@ diagnosticContext.AzdoRepositoryCount = nestedMapping.AzdoRepositories?.Count ??
 ```csharp
 /// <summary>
 /// Determines whether an attribute represents a repository value and formats it with the repository icon.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 /// <param name="attributeName">The attribute name to evaluate.</param>
 /// <param name="value">The raw attribute value.</param>
@@ -180,7 +180,7 @@ private static bool TryFormatRepositoryAttribute(string attributeName, string va
 ```csharp
 /// <summary>
 /// Determines whether an attribute represents a branch/ref value and formats it with the branch icon.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 /// <param name="attributeName">The attribute name to evaluate.</param>
 /// <param name="value">The raw attribute value.</param>
@@ -257,7 +257,7 @@ private static bool TryFormatBranchAttributePlain(string attributeName, string v
 ```csharp
 /// <summary>
 /// Creates the Azure DevOps repository mapper for repository ID resolution.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
 /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>
@@ -285,7 +285,7 @@ Add `AzdoRepositoryMapper azdoRepositoryMapper` parameter and pass to AzureDevOp
 ```csharp
 /// <summary>
 /// Optional mapper for Azure DevOps repository resolution.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 private readonly AzdoRepositoryMapper? _azdoRepositoryMapper;
 ```
@@ -329,7 +329,7 @@ if (_azdoRepositoryMapper is not null)
 ```csharp
 /// <summary>
 /// Gets or sets the count of Azure DevOps repository mappings loaded.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 public int AzdoRepositoryCount { get; set; }
 ```
@@ -345,7 +345,7 @@ public int AzdoRepositoryCount { get; set; }
 ```csharp
 /// <summary>
 /// Azure DevOps repository resolution failure.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 AzdoRepository,
 ```

@@ -130,7 +130,7 @@ internal sealed class PrincipalMappingFile
     /// <remarks>
     /// Azure DevOps repositories are identified by unique GUIDs. This mapping allows
     /// displaying recognizable repository names in rendered Terraform plans.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </remarks>
     /// <example>
     /// "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo".

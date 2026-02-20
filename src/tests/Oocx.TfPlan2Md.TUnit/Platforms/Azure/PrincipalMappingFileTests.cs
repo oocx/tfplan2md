@@ -67,7 +67,7 @@ public class PrincipalMappingFileTests
 
     /// <summary>
     /// TC-03: Verifies that the PrincipalMappingFile class correctly deserializes the azdoRepositories JSON section.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void PrincipalMappingFile_DeserializeAzdoRepositories_PopulatesProperty()
@@ -94,7 +94,7 @@ public class PrincipalMappingFileTests
 
     /// <summary>
     /// TC-04: Verifies that the PrincipalMappingFile class correctly deserializes all four azdo sections including repositories.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     [Test]
     public void PrincipalMappingFile_DeserializeAllAzdoSectionsIncludingRepositories_PopulatesAllProperties()

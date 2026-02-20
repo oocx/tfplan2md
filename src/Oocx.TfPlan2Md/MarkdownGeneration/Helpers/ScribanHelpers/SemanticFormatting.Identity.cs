@@ -98,7 +98,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a repository value and formats it with the repository icon.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -122,7 +122,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a branch/ref value and formats it with the branch icon.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -328,7 +328,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a repository value and formats it with the repository icon.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>
@@ -351,7 +351,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Determines whether an attribute represents a branch/ref value and formats it with the branch icon.
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </summary>
     /// <param name="attributeName">The attribute name to evaluate.</param>
     /// <param name="value">The raw attribute value.</param>

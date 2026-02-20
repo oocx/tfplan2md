@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.Tests.Providers.AzureDevOps;
 
 /// <summary>
 /// Tests for AzdoRepositoryMapper class.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </summary>
 public class AzdoRepositoryMapperTests
 {

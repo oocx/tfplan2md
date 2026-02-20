@@ -9,7 +9,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 /// <remarks>
 /// Azure DevOps repositories are identified by unique GUIDs. This mapper resolves
 /// repository IDs to human-readable names for improved report readability.
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </remarks>
 internal sealed class AzdoRepositoryMapper
 {

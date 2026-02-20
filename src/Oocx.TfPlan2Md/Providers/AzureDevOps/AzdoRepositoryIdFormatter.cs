@@ -8,7 +8,7 @@ namespace Oocx.TfPlan2Md.Providers.AzureDevOps;
 /// Formats Azure DevOps repository identifiers with mapped display names.
 /// </summary>
 /// <remarks>
-/// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+/// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
 /// </remarks>
 internal sealed class AzdoRepositoryIdFormatter : IValueFormatter
 {

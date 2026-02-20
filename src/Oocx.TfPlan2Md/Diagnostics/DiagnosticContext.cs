@@ -160,7 +160,7 @@ internal class DiagnosticContext
     /// Gets or sets the number of Azure DevOps repository mappings loaded from the mapping file.
     /// </summary>
     /// <remarks>
-    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
     /// </remarks>
     public int AzdoRepositoryCount { get; set; }
 

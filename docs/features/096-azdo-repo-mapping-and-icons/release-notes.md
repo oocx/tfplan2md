@@ -49,7 +49,7 @@ All sections are optional—include only what you need.
 
 Repository and branch attributes in Azure DevOps resources now display with semantic icons:
 
-![Azure DevOps build definition repository table showing 🗃️ icon on Repo ID and ⎇ icon on Branch](https://raw.githubusercontent.com/oocx/tfplan2md/v1.25.0/docs/features/095-azdo-repo-mapping-and-icons/repo-icons.png)
+![Azure DevOps build definition repository table showing 🗃️ icon on Repo ID and ⎇ icon on Branch](https://raw.githubusercontent.com/oocx/tfplan2md/v1.25.0/docs/features/096-azdo-repo-mapping-and-icons/repo-icons.png)
 
 ### Repository Mapping
 
@@ -158,9 +158,9 @@ This helper provides explicit control over repository resolution in custom templ
 
 ## 📚 Related Documentation
 
-- **Feature specification**: [docs/features/095-azdo-repo-mapping-and-icons/specification.md](specification.md)
-- **Architecture**: [docs/features/095-azdo-repo-mapping-and-icons/architecture.md](architecture.md)
-- **Test plan**: [docs/features/095-azdo-repo-mapping-and-icons/test-plan.md](test-plan.md)
+- **Feature specification**: [docs/features/096-azdo-repo-mapping-and-icons/specification.md](specification.md)
+- **Architecture**: [docs/features/096-azdo-repo-mapping-and-icons/architecture.md](architecture.md)
+- **Test plan**: [docs/features/096-azdo-repo-mapping-and-icons/test-plan.md](test-plan.md)
 - **User guide**: [README.md](../../../README.md) (principal mapping section)
 - **Features list**: [docs/features.md](../../features.md)
 

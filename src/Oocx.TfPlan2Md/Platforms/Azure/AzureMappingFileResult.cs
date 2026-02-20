@@ -20,7 +20,7 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// <list type="bullet">
 /// <item><description>docs/features/063-azure-display-enhancements/specification.md.</description></item>
 /// <item><description>docs/features/085-azdo-principal-mapping/specification.md.</description></item>
-/// <item><description>docs/features/095-azdo-repo-mapping-and-icons/specification.md.</description></item>
+/// <item><description>docs/features/096-azdo-repo-mapping-and-icons/specification.md.</description></item>
 /// </list>
 /// </remarks>
 internal sealed record AzureMappingFileResult(

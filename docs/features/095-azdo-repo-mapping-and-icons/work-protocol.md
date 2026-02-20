@@ -54,3 +54,19 @@
   - All tests must be fully automated (no manual steps except UAT visual verification)
   - Edge cases include null/empty sections, unmapped repositories, case sensitivity, backwards compatibility
   - Non-breaking spaces (\u00A0) verified in icon formatting tests
+
+### Task Planner
+- **Date:** 2025-01-03
+- **Summary:** Created actionable implementation tasks following Feature 085 pattern. Broke down the feature into 15 prioritized tasks covering data model updates, parser changes, new mapper/formatter classes, semantic icon formatting, composition/DI registration, diagnostics, tests, examples, and documentation.
+- **Artifacts Produced:**
+  - `docs/features/095-azdo-repo-mapping-and-icons/tasks.md`
+- **Problems Encountered:** None
+- **Key Organization:**
+  - 6 phases of implementation with clear dependencies
+  - Phase 1-3: Foundation (data model, parsing, mapper/formatter)
+  - Phase 4: Semantic icons (repository 🗃️, branch ⎇)
+  - Phase 5: Integration (module registration, DI wiring, diagnostics)
+  - Phase 6: Polish (examples, test data, documentation)
+  - Tasks follow test-first development approach
+  - All 27 test cases from test plan mapped to specific task acceptance criteria
+  - Implementation follows Feature 085 patterns exactly for consistency

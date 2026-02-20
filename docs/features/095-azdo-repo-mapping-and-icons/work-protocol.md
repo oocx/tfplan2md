@@ -16,3 +16,16 @@
   - `docs/features/095-azdo-repo-mapping-and-icons/specification.md`
   - `docs/features/095-azdo-repo-mapping-and-icons/work-protocol.md`
 - **Problems Encountered:** None
+
+### Architect
+- **Date:** 2025-01-03
+- **Summary:** Designed technical architecture following Feature 085 pattern exactly. Created comprehensive architecture documentation including component changes, data flow, integration points, and implementation sequence.
+- **Artifacts Produced:**
+  - `docs/features/095-azdo-repo-mapping-and-icons/architecture.md`
+- **Problems Encountered:** None
+- **Key Decisions:**
+  - Follow Feature 085 pattern exactly for repository mapping (AzdoRepositoryMapper + AzdoRepositoryIdFormatter)
+  - Add semantic icons to SemanticFormatting.Identity.cs (🗃️ for repositories, ⎇ for branches)
+  - Use StringComparer.OrdinalIgnoreCase for repository GUID lookups (minor improvement over Feature 085)
+  - Apply icons uniformly across all providers via semantic formatting layer
+  - Reuse all existing infrastructure from Feature 085 (no new abstractions needed)

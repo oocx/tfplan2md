@@ -222,3 +222,26 @@
   - Apply `uat-approved` label to GitHub PR or approve Azure DevOps PR
   - Run cleanup with `scripts/uat-run.sh --cleanup-last`
   - Update UAT report with final PASS/FAIL status
+
+### Release Manager (PR Preparation - Session 2)
+- **Date:** 2026-02-20
+- **Summary:** Prepared Feature 094 for final release by updating release notes with correct commit references and fixing screenshot URL. Verified all pre-release requirements are met (Code Review: APPROVED, UAT: PASSED, Work Protocol: Complete). PR #528 exists and is ready for status check monitoring and merge.
+- **Artifacts Produced:**
+  - Updated `docs/features/094-build-definition-tables/release-notes.md` - Fixed commits section with actual feature commits (`094ba3ee`, `ab837376`), updated screenshot URL to use `main` branch reference
+  - Updated `docs/features/094-build-definition-tables/work-protocol.md` - Appended Release Manager session 2 entry
+- **Problems Encountered:** None
+- **Pre-Release Checklist Status:**
+  - ✅ Code Review Approved (per work protocol and code-review.md)
+  - ✅ UAT Passed (UAT report shows final PASS with GitHub PR #87)
+  - ✅ Work Protocol Complete (all required agents logged entries)
+  - ✅ Release notes complete with screenshots and correct commit references
+  - ⏳ PR #528 exists (draft, checks pending)
+  - ⏳ Waiting for PR Validation workflow to complete
+- **Next Steps:**
+  - Monitor PR #528 status checks until all pass
+  - Mark PR as ready for review (convert from draft)
+  - Merge PR using `scripts/pr-github.sh create-and-merge` (rebase and merge)
+  - Wait for CI on main to complete
+  - Detect version tag created by Versionize
+  - Trigger release workflow with detected tag
+  - Verify release artifacts (GitHub Release, CHANGELOG.md, Docker image)

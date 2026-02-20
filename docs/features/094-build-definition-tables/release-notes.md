@@ -53,8 +53,11 @@ Secret variable values are masked at the formatting layer — the `is_secret` fl
 
 Example output showing variables table with secret masking, CI trigger table, and repository table:
 
-![Build Definition Tables](https://raw.githubusercontent.com/oocx/tfplan2md/v{VERSION}/docs/features/094-build-definition-tables/build-definition-tables.png)
+![Build Definition Tables](https://raw.githubusercontent.com/oocx/tfplan2md/main/docs/features/094-build-definition-tables/build-definition-tables.png)
+
+> **Note:** Screenshot URL uses `main` branch reference — will resolve correctly after PR merge.
 
 ## 🔗 Commits
 
-- [`156701a4`](https://github.com/oocx/tfplan2md/commit/156701a427957a93f5e8216a03b090d0a9b168ba) fix: split build_definition.sbn into partial templates to pass line count test
+- [`094ba3ee`](https://github.com/oocx/tfplan2md/commit/094ba3ee) feat: add semantic icons for boolean and name values in azuredevops_build_definition tables
+- [`ab837376`](https://github.com/oocx/tfplan2md/commit/ab837376) fix: update test assertions to match formatter output with semantic icons

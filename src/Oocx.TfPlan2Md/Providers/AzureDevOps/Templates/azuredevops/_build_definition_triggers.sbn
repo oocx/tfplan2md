@@ -1,0 +1,58 @@
+{{~## Partial: build definition triggers section (CI and pull request) ~}}
+{{ if change.action == "create" && change.build_definition && change.build_definition.after_ci_triggers.size > 0 ~}}
+#### CI Trigger
+
+| Use YAML | Override (Branch Filters) |
+| -------- | ------------------------- |
+{{ for trigger in change.build_definition.after_ci_triggers ~}}
+| {{ trigger.use_yaml }} | {{ trigger.override }} |
+{{ end ~}}
+
+{{ else if change.action == "delete" && change.build_definition && change.build_definition.before_ci_triggers.size > 0 ~}}
+#### CI Trigger (being deleted)
+
+| Use YAML | Override (Branch Filters) |
+| -------- | ------------------------- |
+{{ for trigger in change.build_definition.before_ci_triggers ~}}
+| {{ trigger.use_yaml }} | {{ trigger.override }} |
+{{ end ~}}
+
+{{ else if change.build_definition && (change.build_definition.after_ci_triggers.size > 0 || change.build_definition.before_ci_triggers.size > 0) ~}}
+#### CI Trigger
+
+| Use YAML | Override (Branch Filters) |
+| -------- | ------------------------- |
+{{ for trigger in change.build_definition.after_ci_triggers ~}}
+| {{ trigger.use_yaml }} | {{ trigger.override }} |
+{{ end ~}}
+
+{{ end ~}}
+
+{{ if change.action == "create" && change.build_definition && change.build_definition.after_pull_request_triggers.size > 0 ~}}
+#### Pull Request Trigger
+
+| Use YAML | Override (Branch Filters) | Forks Enabled | Forks Comment Requirement |
+| -------- | ------------------------- | ------------- | ------------------------- |
+{{ for trigger in change.build_definition.after_pull_request_triggers ~}}
+| {{ trigger.use_yaml }} | {{ trigger.override }} | {{ trigger.forks_enabled }} | {{ trigger.forks_comment_requirement }} |
+{{ end ~}}
+
+{{ else if change.action == "delete" && change.build_definition && change.build_definition.before_pull_request_triggers.size > 0 ~}}
+#### Pull Request Trigger (being deleted)
+
+| Use YAML | Override (Branch Filters) | Forks Enabled | Forks Comment Requirement |
+| -------- | ------------------------- | ------------- | ------------------------- |
+{{ for trigger in change.build_definition.before_pull_request_triggers ~}}
+| {{ trigger.use_yaml }} | {{ trigger.override }} | {{ trigger.forks_enabled }} | {{ trigger.forks_comment_requirement }} |
+{{ end ~}}
+
+{{ else if change.build_definition && (change.build_definition.after_pull_request_triggers.size > 0 || change.build_definition.before_pull_request_triggers.size > 0) ~}}
+#### Pull Request Trigger
+
+| Use YAML | Override (Branch Filters) | Forks Enabled | Forks Comment Requirement |
+| -------- | ------------------------- | ------------- | ------------------------- |
+{{ for trigger in change.build_definition.after_pull_request_triggers ~}}
+| {{ trigger.use_yaml }} | {{ trigger.override }} | {{ trigger.forks_enabled }} | {{ trigger.forks_comment_requirement }} |
+{{ end ~}}
+
+{{ end ~}}

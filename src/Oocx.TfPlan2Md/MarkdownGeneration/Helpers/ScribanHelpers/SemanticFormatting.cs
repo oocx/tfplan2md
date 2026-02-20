@@ -129,6 +129,16 @@ public static partial class ScribanHelpers
             return subscriptionFormatted;
         }
 
+        if (TryFormatRepositoryAttributePlain(normalizedName, normalizedValue, out var repositoryFormatted))
+        {
+            return repositoryFormatted;
+        }
+
+        if (TryFormatBranchAttributePlain(normalizedName, normalizedValue, out var branchFormatted))
+        {
+            return branchFormatted;
+        }
+
         if (TryFormatNameAttributePlain(normalizedName, normalizedValue, out var nameFormatted))
         {
             return nameFormatted;
@@ -218,6 +228,18 @@ public static partial class ScribanHelpers
         if (TryFormatSubscriptionAttribute(attributeName, value, context, out var subscriptionFormatted))
         {
             formattedValue = subscriptionFormatted;
+            return true;
+        }
+
+        if (TryFormatRepositoryAttribute(attributeName, value, context, out var repositoryFormatted))
+        {
+            formattedValue = repositoryFormatted;
+            return true;
+        }
+
+        if (TryFormatBranchAttribute(attributeName, value, context, out var branchFormatted))
+        {
+            formattedValue = branchFormatted;
             return true;
         }
 

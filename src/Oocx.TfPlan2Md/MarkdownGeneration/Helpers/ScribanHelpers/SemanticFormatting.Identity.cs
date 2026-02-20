@@ -97,6 +97,55 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Determines whether an attribute represents a repository value and formats it with the repository icon.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a repository identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatRepositoryAttribute(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("repo_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("repository_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("source_repo_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("target_repo_id", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValue($"🗃️ {value}", context, false);
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a branch/ref value and formats it with the branch icon.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="context">The rendering context.</param>
+    /// <param name="formatted">Formatted result when the attribute is a branch/ref identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatBranchAttribute(string attributeName, string value, ValueFormatContext context, out string formatted)
+    {
+        if (!attributeName.Equals("default_branch", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("branch_name", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("ref_name", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("source_branch", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("target_branch", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValue($"⎇ {value}", context, false);
+        return true;
+    }
+
+    /// <summary>
     /// Determines whether an attribute represents Azure AD identity values and formats them with icons.
     /// Related feature: docs/features/053-azuread-resources-enhancements/specification.md.
     /// </summary>
@@ -274,6 +323,53 @@ public static partial class ScribanHelpers
         }
 
         formatted = FormatIconValuePlain($"🔑 {value}");
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a repository value and formats it with the repository icon.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="formatted">Formatted result when the attribute is a repository identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatRepositoryAttributePlain(string attributeName, string value, out string formatted)
+    {
+        if (!attributeName.Equals("repo_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("repository_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("source_repo_id", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("target_repo_id", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValuePlain($"🗃️ {value}");
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether an attribute represents a branch/ref value and formats it with the branch icon.
+    /// Related feature: docs/features/095-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name to evaluate.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="formatted">Formatted result when the attribute is a branch/ref identifier.</param>
+    /// <returns>True when the attribute was formatted; otherwise false.</returns>
+    private static bool TryFormatBranchAttributePlain(string attributeName, string value, out string formatted)
+    {
+        if (!attributeName.Equals("default_branch", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("branch_name", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("ref_name", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("source_branch", StringComparison.OrdinalIgnoreCase)
+            && !attributeName.Equals("target_branch", StringComparison.OrdinalIgnoreCase))
+        {
+            formatted = string.Empty;
+            return false;
+        }
+
+        formatted = FormatIconValuePlain($"⎇ {value}");
         return true;
     }
 

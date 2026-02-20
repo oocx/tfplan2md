@@ -64,6 +64,7 @@ internal static class AzureMappingFileParser
             var azdoUsers = nestedMapping.AzdoUsers ?? new Dictionary<string, string>();
             var azdoGroups = nestedMapping.AzdoGroups ?? new Dictionary<string, string>();
             var azdoProjects = nestedMapping.AzdoProjects ?? new Dictionary<string, string>();
+            var azdoRepositories = nestedMapping.AzdoRepositories ?? new Dictionary<string, string>();
 
             RecordNestedDiagnostics(diagnosticContext, nestedMapping);
 
@@ -76,7 +77,8 @@ internal static class AzureMappingFileParser
                 nestedMapping.Roles ?? new List<MappingEntry>(),
                 azdoUsers.ToFrozenDictionary(StringComparer.Ordinal),
                 azdoGroups.ToFrozenDictionary(StringComparer.Ordinal),
-                azdoProjects.ToFrozenDictionary(StringComparer.Ordinal));
+                azdoProjects.ToFrozenDictionary(StringComparer.Ordinal),
+                azdoRepositories.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase));
         }
         catch (JsonException)
         {
@@ -113,6 +115,7 @@ internal static class AzureMappingFileParser
             Array.Empty<MappingEntry>(),
             FrozenDictionary<string, string>.Empty,
             FrozenDictionary<string, string>.Empty,
+            FrozenDictionary<string, string>.Empty,
             FrozenDictionary<string, string>.Empty);
     }
 
@@ -132,7 +135,8 @@ internal static class AzureMappingFileParser
                nestedMapping.Roles != null ||
                nestedMapping.AzdoUsers != null ||
                nestedMapping.AzdoGroups != null ||
-               nestedMapping.AzdoProjects != null;
+               nestedMapping.AzdoProjects != null ||
+               nestedMapping.AzdoRepositories != null;
     }
 
     /// <summary>
@@ -189,6 +193,7 @@ internal static class AzureMappingFileParser
         diagnosticContext.AzdoUserCount = nestedMapping.AzdoUsers?.Count ?? 0;
         diagnosticContext.AzdoGroupCount = nestedMapping.AzdoGroups?.Count ?? 0;
         diagnosticContext.AzdoProjectCount = nestedMapping.AzdoProjects?.Count ?? 0;
+        diagnosticContext.AzdoRepositoryCount = nestedMapping.AzdoRepositories?.Count ?? 0;
     }
 
     /// <summary>

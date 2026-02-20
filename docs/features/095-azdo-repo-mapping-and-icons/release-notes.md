@@ -47,6 +47,10 @@ All sections are optional—include only what you need.
 
 ## ▶️ Example Output
 
+Repository and branch attributes in Azure DevOps resources now display with semantic icons:
+
+![Azure DevOps build definition repository table showing 🗃️ icon on Repo ID and ⎇ icon on Branch](https://raw.githubusercontent.com/oocx/tfplan2md/v1.25.0/docs/features/095-azdo-repo-mapping-and-icons/repo-icons.png)
+
 ### Repository Mapping
 
 **Before** (without mapping):

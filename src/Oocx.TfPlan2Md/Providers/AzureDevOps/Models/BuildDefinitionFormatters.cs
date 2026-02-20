@@ -371,8 +371,12 @@ internal static class BuildDefinitionFormatters
         return new RepositoryRowViewModel
         {
             RepoType = FormatOptionalString(repository.RepoType),
-            RepoId = FormatOptionalString(repository.RepoId),
-            BranchName = FormatOptionalString(repository.BranchName),
+            RepoId = string.IsNullOrEmpty(repository.RepoId)
+                ? "-"
+                : FormatIconValueTable($"🗃️\u00A0{repository.RepoId}"),
+            BranchName = string.IsNullOrEmpty(repository.BranchName)
+                ? "-"
+                : FormatIconValueTable($"⎇\u00A0{repository.BranchName}"),
             YmlPath = FormatOptionalString(repository.YmlPath),
             ReportBuildStatus = FormatBoolean(repository.ReportBuildStatus),
             ServiceConnectionId = FormatOptionalString(repository.ServiceConnectionId),

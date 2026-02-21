@@ -21,8 +21,9 @@ Reference: [analysis.md](analysis.md) · [architecture.md](architecture.md) · [
 
 ---
 
-## Task 1: Failing unit tests — hierarchical sensitivity edge cases
+## Task 1: Failing unit tests — hierarchical sensitivity edge cases ✅
 
+**Status:** Complete  
 **Priority:** High  
 **Test plan coverage:** TC-13, TC-14, TC-15, TC-16, TC-17, TC-18, TC-19  
 **Exposure paths:** E, F
@@ -55,8 +56,9 @@ rather than changing access modifiers on the partial class.
 
 ---
 
-## Task 2: Fix hierarchical sensitivity detection
+## Task 2: Fix hierarchical sensitivity detection ✅
 
+**Status:** Complete  
 **Priority:** High  
 **Test plan coverage:** TC-13, TC-14, TC-15, TC-16, TC-17, TC-19  
 **Exposure paths:** E, F
@@ -85,8 +87,9 @@ main parent-splitting loop.
 
 ---
 
-## Task 3: Failing unit tests — Variable Group `IsSecret` transitions
+## Task 3: Failing unit tests — Variable Group `IsSecret` transitions ✅
 
+**Status:** Complete  
 **Priority:** High  
 **Test plan coverage:** TC-11, TC-12  
 **Exposure paths:** D
@@ -107,8 +110,9 @@ In `VariableGroupViewModelFactoryTests.cs`, add two new test methods that cover 
 
 ---
 
-## Task 4: Fix Variable Group `IsSecret` masking
+## Task 4: Fix Variable Group `IsSecret` masking ✅
 
+**Status:** Complete  
 **Priority:** High  
 **Test plan coverage:** TC-11, TC-12  
 **Exposure paths:** D
@@ -133,8 +137,9 @@ One-line change. The display string for the secret case already uses the masked 
 
 ---
 
-## Task 5: Failing tests — AzApi create/delete/replace sensitivity
+## Task 5: Failing tests — AzApi create/delete/replace sensitivity ✅
 
+**Status:** Complete  
 **Priority:** High  
 **Test plan coverage:** TC-01, TC-02, TC-03, TC-04, TC-05, TC-21  
 **Exposure paths:** A
@@ -174,8 +179,9 @@ to be settable for TC-05; check its existing constructor options.
 
 ---
 
-## Task 6: Fix AzApi create/delete/replace body sensitivity
+## Task 6: Fix AzApi create/delete/replace body sensitivity ✅
 
+**Status:** Complete  
 **Priority:** High  
 **Test plan coverage:** TC-01, TC-02, TC-03, TC-04, TC-05  
 **Exposure paths:** A

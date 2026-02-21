@@ -26,3 +26,9 @@
 - **Summary:** Reviewed `analysis.md` and `architecture.md` as the requirements source. Audited all existing sensitivity-related tests. Produced a 21-test-case test plan with a requirements→tests coverage matrix covering all six confirmed exposure paths, plus regression guards and edge cases. Produced a UAT test plan describing feature-specific verification for both GitHub and Azure DevOps. Confirmed that existing snapshot baselines (`azapi-sensitive.md`, `azapi-body-sensitive.md`) encode the broken (plaintext) behavior and must be regenerated as part of the fix.
 - **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/test-plan.md`, `docs/issues/098-sensitive-info-exposure/uat-test-plan.md`
 - **Problems Encountered:** None — all requirements directly traceable to confirmed bugs in `analysis.md`.
+
+### Task Planner
+- **Date:** 2026-02-21
+- **Summary:** Reviewed `analysis.md`, `architecture.md`, and `test-plan.md`. Produced 11 tasks covering all 21 test plan cases across 6 confirmed exposure paths. Tasks follow Red → Green → Refactor: odd-numbered tasks write failing tests, even-numbered tasks implement the fix. Tasks 1–8 (hierarchical sensitivity, Variable Group masking, AzApi create/delete/replace and update) are independent of Tasks 9–10 (Scriban template context propagation) and can proceed in parallel. Task 11 regenerates snapshot baselines after the rendering fixes land.
+- **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/tasks.md`
+- **Problems Encountered:** `IsSensitiveAttribute` and `GetHierarchicalPaths` are private static methods; Task 1 notes they may need extraction to a testable static class to enable direct unit testing without modifying access modifiers on the partial class.

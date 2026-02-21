@@ -41,5 +41,9 @@
   "azdoProjects": {
     "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
     "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  },
+  "azdoRepositories": {
+    "80128bc2-17ff-45f8-ad59-d7609a605c75": "Infrastructure-Platform",
+    "a3f2c1d0-9e8b-4f7a-b6c5-d4e3f2a1b0c9": "Application-Services"
   }
 }

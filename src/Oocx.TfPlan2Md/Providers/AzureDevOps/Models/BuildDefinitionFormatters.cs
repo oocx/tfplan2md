@@ -365,14 +365,31 @@ internal static class BuildDefinitionFormatters
     /// Creates a formatted row for a repository block.
     /// </summary>
     /// <param name="repository">Repository values.</param>
+    /// <param name="repositoryMapper">Optional mapper for resolving repository display names.</param>
     /// <returns>Formatted repository row.</returns>
-    public static RepositoryRowViewModel CreateRepositoryRow(RepositoryValues repository)
+    public static RepositoryRowViewModel CreateRepositoryRow(RepositoryValues repository, AzdoRepositoryMapper? repositoryMapper = null)
     {
+        string formattedRepoId;
+        if (string.IsNullOrEmpty(repository.RepoId))
+        {
+            formattedRepoId = "-";
+        }
+        else if (repositoryMapper != null)
+        {
+            formattedRepoId = FormatIconValueTable(repositoryMapper.GetEntityName(repository.RepoId));
+        }
+        else
+        {
+            formattedRepoId = FormatIconValueTable($"🗃️\u00A0{repository.RepoId}");
+        }
+
         return new RepositoryRowViewModel
         {
             RepoType = FormatOptionalString(repository.RepoType),
-            RepoId = FormatOptionalString(repository.RepoId),
-            BranchName = FormatOptionalString(repository.BranchName),
+            RepoId = formattedRepoId,
+            BranchName = string.IsNullOrEmpty(repository.BranchName)
+                ? "-"
+                : FormatIconValueTable($"⎇\u00A0{repository.BranchName}"),
             YmlPath = FormatOptionalString(repository.YmlPath),
             ReportBuildStatus = FormatBoolean(repository.ReportBuildStatus),
             ServiceConnectionId = FormatOptionalString(repository.ServiceConnectionId),

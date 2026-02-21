@@ -119,6 +119,20 @@ internal sealed class CompositionRoot(CliOptions options)
     }
 
     /// <summary>
+    /// Creates the Azure DevOps repository mapper for repository ID resolution.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    /// <param name="mappingResult">The Azure mapping data loaded from file.</param>
+    /// <param name="diagnostics">Optional diagnostic context for troubleshooting.</param>
+    /// <returns>A configured Azure DevOps repository mapper instance.</returns>
+    internal AzdoRepositoryMapper CreateAzdoRepositoryMapper(
+        AzureMappingFileResult mappingResult,
+        DiagnosticContext? diagnostics)
+    {
+        return new AzdoRepositoryMapper(mappingResult.AzdoRepositories, diagnostics);
+    }
+
+    /// <summary>
     /// Creates the enriched Azure scope formatter.
     /// </summary>
     /// <param name="entityMapper">The entity mapper for resolving Azure entities.</param>
@@ -138,6 +152,7 @@ internal sealed class CompositionRoot(CliOptions options)
     /// <param name="azdoUserMapper">The mapper for Azure DevOps user display names.</param>
     /// <param name="azdoGroupMapper">The mapper for Azure DevOps group display names.</param>
     /// <param name="azdoProjectMapper">The mapper for Azure DevOps project display names.</param>
+    /// <param name="azdoRepositoryMapper">The mapper for Azure DevOps repository display names.</param>
     /// <returns>A configured provider registry with all modules registered.</returns>
     internal ProviderRegistry CreateProviderRegistry(
         IPrincipalMapper principalMapper,
@@ -145,7 +160,8 @@ internal sealed class CompositionRoot(CliOptions options)
         AzureEntityMapper entityMapper,
         AzdoUserMapper azdoUserMapper,
         AzdoGroupMapper azdoGroupMapper,
-        AzdoProjectMapper azdoProjectMapper)
+        AzdoProjectMapper azdoProjectMapper,
+        AzdoRepositoryMapper azdoRepositoryMapper)
     {
         var registry = new ProviderRegistry();
         var largeValueFormat = ReportModelBuilder.ConvertRenderTargetToLargeValueFormat(options.RenderTarget);
@@ -162,7 +178,8 @@ internal sealed class CompositionRoot(CliOptions options)
             entityMapper: entityMapper,
             azdoUserMapper: azdoUserMapper,
             azdoGroupMapper: azdoGroupMapper,
-            azdoProjectMapper: azdoProjectMapper));
+            azdoProjectMapper: azdoProjectMapper,
+            azdoRepositoryMapper: azdoRepositoryMapper));
 
         return registry;
     }
@@ -300,6 +317,7 @@ internal sealed class CompositionRoot(CliOptions options)
         var azdoUserMapper = CreateAzdoUserMapper(mappingResult, diagnosticContext);
         var azdoGroupMapper = CreateAzdoGroupMapper(mappingResult, diagnosticContext);
         var azdoProjectMapper = CreateAzdoProjectMapper(mappingResult, diagnosticContext);
+        var azdoRepositoryMapper = CreateAzdoRepositoryMapper(mappingResult, diagnosticContext);
 
         // Create provider registry and dependent registries
         var providerRegistry = CreateProviderRegistry(
@@ -308,7 +326,8 @@ internal sealed class CompositionRoot(CliOptions options)
             entityMapper,
             azdoUserMapper,
             azdoGroupMapper,
-            azdoProjectMapper);
+            azdoProjectMapper,
+            azdoRepositoryMapper);
         var valueFormatterRegistry = CreateValueFormatterRegistry(providerRegistry);
         var iconProviderRegistry = CreateIconProviderRegistry(providerRegistry);
 

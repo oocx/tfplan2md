@@ -429,4 +429,17 @@ else
   exit 1
 fi
 
+log_info "Generating artifacts/azuredevops-feature-096.md (Azure DevOps repo mapping and icons - feature 096 UAT)..."
+dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --principal-mapping examples/comprehensive-demo/demo-principals.json \
+  --output artifacts/azuredevops-feature-096.md \
+  examples/azuredevops/terraform_plan.json
+
+if [[ -s artifacts/azuredevops-feature-096.md ]]; then
+  log_info "✓ artifacts/azuredevops-feature-096.md generated successfully"
+else
+  log_error "Failed to generate artifacts/azuredevops-feature-096.md"
+  exit 1
+fi
+
 log_info "All demo artifacts generated successfully"

@@ -37,5 +37,10 @@
   "azdoProjects": {
     "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project",
     "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": "Application Platform"
+  },
+  "azdoRepositories": {
+    "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo",
+    "f9e8d7c6-b5a4-3210-fedc-ba9876543210": "Web Application Repo",
+    "01234567-89ab-cdef-0123-456789abcdef": "Shared Libraries"
   }
 }

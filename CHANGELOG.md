@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.26.0"></a>
+## [1.26.0](https://github.com/oocx/tfplan2md/compare/v1.25.0...v1.26.0) (2026-02-21)
+
+### ✨ Features
+
+* add Azure DevOps repository mapping and branch/repo icons ([bc804b5](https://github.com/oocx/tfplan2md/commit/bc804b5efcd62402c2d1edb99978f009e1b3f5c3))
+* add azuredevops-feature-096 artifact showing 🗃️/⎇ icons for UAT ([2fe8253](https://github.com/oocx/tfplan2md/commit/2fe8253a9f8080d333a1b0490b382084eb6274c3))
+* apply 🗃️/⎇ icons in build definition repository table and add release screenshot ([c9937b1](https://github.com/oocx/tfplan2md/commit/c9937b1f83b880f85155bc1ae8f41012d5e3929d))
+* Azure DevOps repository mapping and 🗃️/⎇ semantic icons (feature 096) ([95c93f1](https://github.com/oocx/tfplan2md/commit/95c93f1da43364c3f00ce439a7cec6311b01ab28))
+
+### 🐛 Bug Fixes
+
+* regenerate release screenshot with azdoRepositories mapping applied ([cb97549](https://github.com/oocx/tfplan2md/commit/cb97549fbab209594575612eda519c6725a91f4e))
+* wire AzdoRepositoryMapper into BuildDefinitionFactory so repo IDs resolve to display names ([51e69d1](https://github.com/oocx/tfplan2md/commit/51e69d12bc99c2097c889aca518128dc9406b366))
+
+### ♻️ Refactoring
+
+* rename feature 095 to 096 (conflict with parallel feature branch) ([6c5bafa](https://github.com/oocx/tfplan2md/commit/6c5bafa1d2048c69d991875946b8c3a518af44c6))
+
+### 📚 Documentation
+
+* add architecture for Azure DevOps repository mapping and branch/repo icons ([94aa708](https://github.com/oocx/tfplan2md/commit/94aa708a906eecc5f4cecd2ee6dbfac205246189))
+* add code review for feature 095 - azure devops repository mapping and icons ([53046ad](https://github.com/oocx/tfplan2md/commit/53046add2dbb5964aadbfe82f9b4fb636571b5e7))
+* add documentation for Feature 095 Azure DevOps repository mapping and icons ([78b6e74](https://github.com/oocx/tfplan2md/commit/78b6e74619778e95b846f4d1ec5533dcd4618b1c))
+* add feature specification for 095-azdo-repo-mapping-and-icons ([292636d](https://github.com/oocx/tfplan2md/commit/292636d07a94fda79dc1fbce7a5e71d9fccfdd12))
+* add task plan for feature 095-azdo-repo-mapping-and-icons ([a3c8ac7](https://github.com/oocx/tfplan2md/commit/a3c8ac7866b80f3d8d2f3f84b726c19e328fefef))
+* add test plan for feature 095 - azdo repository mapping and icons ([6c22c26](https://github.com/oocx/tfplan2md/commit/6c22c26bfcb8c74fea8e903d61a0c306a55d70be))
+* update work protocol with UAT re-run for feature 096 ([9a2ae3a](https://github.com/oocx/tfplan2md/commit/9a2ae3a74a621f63de50f5290b44369a0d720e9c))
+
 <a name="1.25.0"></a>
 ## [1.25.0](https://github.com/oocx/tfplan2md/compare/v1.24.0...v1.25.0) (2026-02-20)
 

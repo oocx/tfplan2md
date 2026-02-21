@@ -1670,6 +1670,79 @@ These helpers provide explicit control over entity resolution in custom template
 
 **Result:** Azure DevOps resources are easier to review by showing recognizable names instead of GUIDs and descriptors, improving the quality of Azure DevOps infrastructure change reviews.
 
+## Azure DevOps Repository Mapping and Branch/Repo Icons
+
+**Status:** ✅ Implemented  
+**Related specification:** [docs/features/096-azdo-repo-mapping-and-icons/specification.md](features/096-azdo-repo-mapping-and-icons/specification.md)
+
+This feature extends the principal mapping system to support Azure DevOps repositories and adds semantic icons for repositories and branches/refs, making Terraform plans for Azure DevOps resources more readable and scannable.
+
+### Features
+
+- **Repository mapping**: Map Azure DevOps repository GUIDs to human-readable display names via `azdoRepositories` section
+- **Repository icon (🗃️)**: Automatically applied to repository-related attributes (`repo_id`, `repository_id`, `source_repo_id`, `target_repo_id`)
+- **Branch icon (⎇)**: Automatically applied to branch/ref attributes (`default_branch`, `branch_name`, `ref_name`, `source_branch`, `target_branch`)
+- **Consistent display format**: Mapped repositories display as `🗃️ DisplayName [GUID]`, unmapped as `🗃️ GUID`
+- **Unified mapping file**: Uses the same principals.json file as Azure AD and other Azure DevOps entities
+- **Provider-agnostic icons**: Semantic icons apply to any provider using matching attribute names
+- **Diagnostic support**: Debug output shows repository mapping counts and failed resolutions
+
+### Mapping File Format
+
+Add the optional `azdoRepositories` section to your principal mapping JSON file:
+
+```json
+{
+  "azdoUsers": {
+    "4a2c5e2b-3b4f-4e6f-8a9b-1c2d3e4f5a6b": "John Smith"
+  },
+  "azdoGroups": {
+    "vssgp.Uy0xLTktMTU1MTM...": "Platform Team"
+  },
+  "azdoProjects": {
+    "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f": "Infrastructure Project"
+  },
+  "azdoRepositories": {
+    "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d": "Infrastructure Repo",
+    "f9e8d7c6-b5a4-3210-fedc-ba9876543210": "Web Application Repo"
+  }
+}
+```
+
+### Rendered Output
+
+**Before** (without mapping or icons):
+```markdown
+azuredevops_build_definition ci-pipeline
+  Repository ID: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+  Default Branch: refs/heads/main
+```
+
+**After** (with mapping and icons):
+```markdown
+azuredevops_build_definition ci-pipeline
+  Repository ID: 🗃️ Infrastructure Repo [a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d]
+  Default Branch: ⎇ refs/heads/main
+```
+
+### Usage
+
+```bash
+# With repository mapping
+tfplan2md --principal-mapping principals.json plan.json
+
+# With debug output to see repository counts
+tfplan2md --debug --principal-mapping principals.json plan.json
+```
+
+### Custom Templates
+
+For custom Scriban templates, a new helper function is available:
+
+- `azdo_repository_name(repositoryId)` → resolves Azure DevOps repository ID to display name
+
+**Result:** Azure DevOps resources referencing repositories and branches are visually clearer with semantic icons, and repository GUIDs are replaced with recognizable names, making build definitions, branch policies, and git repository resources easier to review.
+
 ## Parent-Child Resource Grouping (Inline Child Tables)
 
 **Status:** ✅ Implemented  \

@@ -40,6 +40,12 @@ internal sealed class AzureDevOpsModule : IProviderModule
     private readonly AzdoProjectMapper? _azdoProjectMapper;
 
     /// <summary>
+    /// Optional mapper for Azure DevOps repository resolution.
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
+    /// </summary>
+    private readonly AzdoRepositoryMapper? _azdoRepositoryMapper;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="AzureDevOpsModule"/> class.
     /// </summary>
     /// <param name="largeValueFormat">Format for rendering large values (inline-diff or simple-diff).</param>
@@ -47,18 +53,21 @@ internal sealed class AzureDevOpsModule : IProviderModule
     /// <param name="azdoUserMapper">Optional mapper for Azure DevOps user display names.</param>
     /// <param name="azdoGroupMapper">Optional mapper for Azure DevOps group display names.</param>
     /// <param name="azdoProjectMapper">Optional mapper for Azure DevOps project display names.</param>
+    /// <param name="azdoRepositoryMapper">Optional mapper for Azure DevOps repository display names.</param>
     public AzureDevOpsModule(
         LargeValueFormat largeValueFormat,
         AzureEntityMapper? entityMapper = null,
         AzdoUserMapper? azdoUserMapper = null,
         AzdoGroupMapper? azdoGroupMapper = null,
-        AzdoProjectMapper? azdoProjectMapper = null)
+        AzdoProjectMapper? azdoProjectMapper = null,
+        AzdoRepositoryMapper? azdoRepositoryMapper = null)
     {
         _largeValueFormat = largeValueFormat;
         _entityMapper = entityMapper;
         _azdoUserMapper = azdoUserMapper;
         _azdoGroupMapper = azdoGroupMapper;
         _azdoProjectMapper = azdoProjectMapper;
+        _azdoRepositoryMapper = azdoRepositoryMapper;
     }
 
     /// <summary>
@@ -93,6 +102,11 @@ internal sealed class AzureDevOpsModule : IProviderModule
         {
             scriptObject.Import("azdo_project_name", new Func<string, string>(projectId => _azdoProjectMapper.GetEntityName(projectId)));
         }
+
+        if (_azdoRepositoryMapper is not null)
+        {
+            scriptObject.Import("azdo_repository_name", new Func<string, string>(repoId => _azdoRepositoryMapper.GetEntityName(repoId)));
+        }
     }
 
     /// <summary>
@@ -102,7 +116,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
         registry.RegisterFactory("azuredevops_variable_group", new VariableGroupFactory(_largeValueFormat));
-        registry.RegisterFactory("azuredevops_build_definition", new BuildDefinitionFactory(_largeValueFormat));
+        registry.RegisterFactory("azuredevops_build_definition", new BuildDefinitionFactory(_largeValueFormat, _azdoRepositoryMapper));
     }
 
     /// <summary>
@@ -162,6 +176,21 @@ internal sealed class AzureDevOpsModule : IProviderModule
                     "^project_id$|^project$",
                     AzureValueFormatterRegistration.GuidPattern),
                 projectFormatter);
+        }
+
+        // Register Azure DevOps repository formatter
+        // Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md
+        if (_azdoRepositoryMapper is not null)
+        {
+            var repositoryFormatter = new AzdoRepositoryIdFormatter(_azdoRepositoryMapper);
+            // Match repository attribute names with GUID pattern
+            registry.Register(
+                new MatchPattern(
+                    "(^azuredevops$|.*/azuredevops$)",
+                    null,
+                    "^repo_id$|^repository_id$|^source_repo_id$|^target_repo_id$",
+                    AzureValueFormatterRegistration.GuidPattern),
+                repositoryFormatter);
         }
     }
 
@@ -233,7 +262,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
         var variableGroupFactory = new VariableGroupFactory(_largeValueFormat);
         registry.Register(new Mappers.VariableGroupMapper(variableGroupFactory));
 
-        var buildDefinitionFactory = new BuildDefinitionFactory(_largeValueFormat);
+        var buildDefinitionFactory = new BuildDefinitionFactory(_largeValueFormat, _azdoRepositoryMapper);
         registry.Register(new Mappers.BuildDefinitionMapper(buildDefinitionFactory));
     }
 }

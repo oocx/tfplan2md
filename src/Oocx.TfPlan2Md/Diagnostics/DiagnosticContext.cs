@@ -157,6 +157,14 @@ internal class DiagnosticContext
     public int AzdoProjectCount { get; set; }
 
     /// <summary>
+    /// Gets or sets the number of Azure DevOps repository mappings loaded from the mapping file.
+    /// </summary>
+    /// <remarks>
+    /// Related feature: docs/features/096-azdo-repo-mapping-and-icons/specification.md.
+    /// </remarks>
+    public int AzdoRepositoryCount { get; set; }
+
+    /// <summary>
     /// Gets the list of IDs that failed to resolve, along with the resource that referenced them.
     /// </summary>
     /// <remarks>
@@ -301,7 +309,7 @@ internal class DiagnosticContext
         AppendCount(sb, RoleCount, "custom role");
 
         // Azure DevOps entity counts
-        if (AzdoUserCount > 0 || AzdoGroupCount > 0 || AzdoProjectCount > 0)
+        if (AzdoUserCount > 0 || AzdoGroupCount > 0 || AzdoProjectCount > 0 || AzdoRepositoryCount > 0)
         {
             sb.Append(FoundPrefix);
             sb.Append(AzdoUserCount);
@@ -323,6 +331,17 @@ internal class DiagnosticContext
             if (AzdoProjectCount != 1)
             {
                 sb.Append('s');
+            }
+            sb.Append(", ");
+            sb.Append(AzdoRepositoryCount);
+            sb.Append(" azdo repositor");
+            if (AzdoRepositoryCount != 1)
+            {
+                sb.Append("ies");
+            }
+            else
+            {
+                sb.Append('y');
             }
             sb.AppendLine();
         }
@@ -632,6 +651,7 @@ internal class DiagnosticContext
             FailedResolutionType.AzdoUser => "Azure DevOps user",
             FailedResolutionType.AzdoGroup => "Azure DevOps group",
             FailedResolutionType.AzdoProject => "Azure DevOps project",
+            FailedResolutionType.AzdoRepository => "Azure DevOps repository",
             _ => "Unknown"
         };
     }

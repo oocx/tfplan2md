@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tfplan2md Azure DevOps-style Rendering</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css"
+          integrity="sha384-Ao8ogxjh8YOpD0QuD98ftM0JgunR9NBRo18vvW76DgMR3Ek/XScY5KdUdV1Ams5S"
+          crossorigin="anonymous"
+          onerror="this.onerror=null; this.disabled=true; console.warn('highlight.js CSS failed to load from CDN');">
+    <style>
+        /* Align wrapper with observed AzDO markdown rendering */
+        :root {
+            color-scheme: light dark;
+            /* Azure DevOps theme-aware CSS variable for light theme */
+            --palette-neutral-10: 240, 240, 240;
+        }
+
+        /* Dark theme CSS variables */
+        [data-theme="dark"] {
+            --palette-neutral-10: 50, 50, 50;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px 0 32px;
+            background: #ffffff;
+            color: rgba(0, 0, 0, 0.9);
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Ubuntu, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        /* Dark mode styles */
+        [data-theme="dark"] body {
+            background: #1e1e1e;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .page-container {
+            box-sizing: border-box;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            max-width: 1062px;
+            padding-left: 8px;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.9);
+        }
+
+        [data-theme="dark"] .markdown-body h1,
+        [data-theme="dark"] .markdown-body h2,
+        [data-theme="dark"] .markdown-body h3,
+        [data-theme="dark"] .markdown-body h4,
+        [data-theme="dark"] .markdown-body h5,
+        [data-theme="dark"] .markdown-body h6 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body h1 {
+            font-size: 21px;
+            margin: 0 0 8px;
+        }
+
+        .markdown-body h2 {
+            font-size: 17px;
+            margin: 24px 0 8px;
+        }
+
+        .markdown-body h3 {
+            font-size: 0.9375rem;
+            margin: 24px 0 8px;
+        }
+
+        .markdown-body h4 {
+            font-size: 14px;
+            margin: 24px 0 8px;
+        }
+
+        .markdown-body p,
+        .markdown-body ul,
+        .markdown-body ol,
+        .markdown-body table,
+        .markdown-body pre {
+            margin: 0 0 16px;
+        }
+
+        .markdown-body a {
+            color: rgb(0, 120, 212);
+            text-decoration: none;
+        }
+
+        [data-theme="dark"] .markdown-body a {
+            color: rgb(51, 153, 255);
+        }
+
+        .markdown-body a:hover { text-decoration: underline; }
+
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 16px;
+            background: transparent;
+        }
+
+        .markdown-body th {
+            padding: 13px 11px;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.55);
+            text-align: left;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: transparent;
+        }
+
+        [data-theme="dark"] .markdown-body th {
+            color: rgba(255, 255, 255, 0.55);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .markdown-body td {
+            padding: 10px 13px;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            text-align: left;
+            min-width: 50px;
+            max-width: 1000px;
+        }
+
+        [data-theme="dark"] .markdown-body td {
+            color: rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .markdown-body code {
+            font-size: 0.75rem;
+            font-family: Menlo, Consolas, "Courier New", monospace;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 2px 4px;
+            border-radius: 2px;
+            border: 0;
+            color: rgba(0, 0, 0, 0.9);
+        }
+
+        [data-theme="dark"] .markdown-body code {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body pre {
+            font-size: 12px;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 15px;
+            border-radius: 2px;
+            border: 0;
+            color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+            line-height: 1.45;
+        }
+
+        [data-theme="dark"] .markdown-body pre {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body details {
+            margin-bottom: 12px;
+            border-radius: 0;
+            padding: 12px;
+            /* Note: border color is defined in inline styles within templates */
+            /* using rgb(var(--palette-neutral-10, 153, 153, 153)) for theme adaptation */
+        }
+
+        .markdown-body summary {
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.875rem;
+            color: rgba(0, 0, 0, 0.9);
+            margin: -12px;
+            padding: 12px;
+        }
+
+        [data-theme="dark"] .markdown-body summary {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .markdown-body hr {
+            border: 0;
+            border-top: 1px solid #eaeaea;
+            margin: 16px 0;
+            height: 1px;
+            background: none;
+        }
+
+        [data-theme="dark"] .markdown-body hr {
+            border-top-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .markdown-body ul,
+        .markdown-body ol { padding-left: 20px; }
+
+        @media (max-width: 900px) {
+            body { padding: 16px 0 28px; }
+            .page-container { max-width: 100%; padding: 0 12px; }
+            .markdown-body { max-width: 100%; padding-left: 6px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+            integrity="sha384-F/bZzf7p3Joyp5psL90p/p89AZJsndkSoGwRpXcZhleCWhd8SnRuoYo4d0yirjJp"
+            crossorigin="anonymous"></script>
+    <script>hljs.highlightAll();</script>
+    <script>
+        // Set theme from URL query parameter, or preserve the theme set in the HTML tag
+        const params = new URLSearchParams(window.location.search);
+        const urlTheme = params.get('theme');
+        if (urlTheme) {
+            document.documentElement.setAttribute('data-theme', urlTheme);
+        }
+        // If no URL parameter, keep the theme from the HTML data-theme attribute (no override)
+    </script>
+</head>
+<body>
+    <div class="page-container">
+        <article class="markdown-body panel-surface">
+            <h1 id="user-content-terraform-plan-report">Terraform Plan Report</h1>
+<p>Generated by tfplan2md 1.25.0 (efa2118) on 2026-02-21 13:21:27 UTC | Terraform 1.14.0</p>
+<h2 id="user-content-summary">Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕&nbsp;Add</td>
+<td>26</td>
+<td>1 azapi_resource<br/>1 azuread_group<br/>1 azuread_group_member<br/>1 azuread_group_without_members<br/>1 azuread_invitation<br/>1 azuread_service_principal<br/>1 azuread_user<br/>1 azurerm_api_management_api_operation<br/>1 azurerm_api_management_named_value<br/>1 azurerm_firewall_application_rule_collection<br/>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>2 azurerm_log_analytics_workspace<br/>1 azurerm_pim_eligible_role_assignment<br/>1 azurerm_private_dns_a_record<br/>2 azurerm_resource_group<br/>2 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_subnet<br/>1 azurerm_subscription<br/>2 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>🔄&nbsp;Change</td>
+<td>8</td>
+<td>1 azuredevops_variable_group<br/>1 azurerm_firewall_network_rule_collection<br/>1 azurerm_key_vault<br/>1 azurerm_key_vault_secret<br/>1 azurerm_role_management_policy<br/>2 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>♻️&nbsp;Replace</td>
+<td>2</td>
+<td>1 azurerm_network_security_group<br/>1 azurerm_subnet</td>
+</tr>
+<tr>
+<td>❌&nbsp;Destroy</td>
+<td>3</td>
+<td>1 azurerm_role_assignment<br/>1 azurerm_storage_account<br/>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>39</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-content-code-analysis-summary">Code Analysis Summary</h2>
+<p><strong>Status:</strong> ⚠️&nbsp;2 high findings require attention</p>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Count</th>
+<th>Resource Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🚨&nbsp;Critical</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td>⚠️&nbsp;High</td>
+<td>2</td>
+<td>1 azurerm_key_vault<br/>1 azurerm_storage_account</td>
+</tr>
+<tr>
+<td>⚠️&nbsp;Medium</td>
+<td>4</td>
+<td>1 azurerm_key_vault<br/>1 azurerm_storage_account</td>
+</tr>
+<tr>
+<td>ℹ️&nbsp;Low</td>
+<td>1</td>
+<td>1 azurerm_virtual_network</td>
+</tr>
+<tr>
+<td>ℹ️&nbsp;Informational</td>
+<td>0</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tools Used:</strong> Checkov 3.2.490, tflint 0.60.0, tflint-errors 0.60.0, Trivy 0.50.0</p>
+<h2 id="user-content-resource-changes">Resource Changes</h2>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-root">📦&nbsp;Module: root</h3>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_resource_group <b><code>core</code></b> — <code>🆔&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️&nbsp;Tags:</strong> <code>environment: demo</code> <code>owner: tfplan2md</code></p>
+</details>
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_storage_account <b><code>logs</code></b> — <code>🆔&nbsp;sttfplan2mdlogs</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<p>🔒&nbsp;<strong>Security &amp; Quality:</strong> ⚠️&nbsp;1 High, ⚠️&nbsp;1 Medium</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code>Standard</code></td>
+</tr>
+<tr>
+<td>allow_blob_public_access</td>
+<td><code>❌&nbsp;false</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>min_tls_version ⚠️</td>
+<td><code>TLS1_2</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;sttfplan2mdlogs</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️&nbsp;Tags:</strong> <code>cost_center: ops</code> <code>environment: demo</code></p>
+<h4 id="user-content-%F0%9F%94%92-security-%26-quality-findings-for-%60azurerm_storage_account.logs%60">🔒&nbsp;Security &amp; Quality Findings for <code>azurerm_storage_account.logs</code></h4>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Tool</th>
+<th>Attribute</th>
+<th>Finding</th>
+<th>Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠️&nbsp;High</td>
+<td>Checkov</td>
+<td>-</td>
+<td>Ensure storage account uses secure transfer<br/>Rule: <code>CKV_AZURE_3</code></td>
+<td><a href="https://docs.prismacloud.io/en/enterprise-edition/policy-reference/azure-policies/azure-storage-policies/ensure-azure-storage-accounts-use-secure-transfer">Details</a></td>
+</tr>
+<tr>
+<td>⚠️&nbsp;Medium</td>
+<td>Checkov</td>
+<td><code>min_tls_version</code></td>
+<td>Storage account should enforce TLS 1.2.<br/>Rule: <code>CKV_AZURE_2</code></td>
+<td><a href="https://docs.prismacloud.io/en/enterprise-edition/policy-reference/azure-policies/azure-storage-policies/ensure-azure-storage-accounts-use-tls-12">Details</a></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_storage_account <b><code>data</code></b> — <code>🆔&nbsp;sttfplan2mddata</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> | 2&nbsp;🔧&nbsp;account_replication_type, tags.cost_center</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+<td><code>GRS</code></td>
+</tr>
+<tr>
+<td>tags.cost_center</td>
+<td>-</td>
+<td><code>1234</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>❌&nbsp;azurerm_storage_account <b><code>legacy</code></b> — <code>🆔&nbsp;sttfplan2mdlegacy</code> in <code>📁&nbsp;rg-old</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+</tr>
+<tr>
+<td>account_tier</td>
+<td><code>Standard</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;sttfplan2mdlegacy</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-old</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️&nbsp;Tags:</strong> <code>environment: old</code></p>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_api_management_api_operation <b><code>get_profile</code></b> <code>Get Profile</code> — <code>users</code>/<code>get-profile</code> @ <code>apim-demo</code> in <code>📁&nbsp;rg-tfplan2md-demo</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>api_management_name</td>
+<td><code>apim-demo</code></td>
+</tr>
+<tr>
+<td>api_name</td>
+<td><code>users</code></td>
+</tr>
+<tr>
+<td>display_name</td>
+<td><code>Get Profile</code></td>
+</tr>
+<tr>
+<td>operation_id</td>
+<td><code>get-profile</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<br/>
+<details>
+<summary>Large values: policy_content (2 lines, 2 changes), policy_xml (2 lines, 2 changes)</summary>
+<h5 id="user-content-policy_content%3A"><strong>policy_content:</strong></h5>
+<pre><code class="language-json">{
+  &quot;properties&quot;: {
+    &quot;displayName&quot;: &quot;Example Policy&quot;,
+    &quot;mode&quot;: &quot;All&quot;,
+    &quot;description&quot;: &quot;A long description that exceeds the large-value threshold for formatting&quot;,
+    &quot;settings&quot;: {
+      &quot;foo&quot;: &quot;bar&quot;,
+      &quot;baz&quot;: [
+        1,
+        2,
+        3
+      ]
+    }
+  }
+}
+</code></pre>
+<h5 id="user-content-policy_xml%3A"><strong>policy_xml:</strong></h5>
+<pre><code class="language-xml">&lt;policies&gt;
+  &lt;inbound&gt;
+    &lt;base /&gt;
+    &lt;set-header name=&quot;x-test&quot; exists-action=&quot;override&quot; value=&quot;true&quot; /&gt;
+  &lt;/inbound&gt;
+  &lt;backend&gt;
+    &lt;base /&gt;
+  &lt;/backend&gt;
+&lt;/policies&gt;
+</code></pre>
+</details>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_api_management_named_value <b><code>client_id</code></b> — <code>🆔&nbsp;IDP-WEB-CLIENT-ID</code> <code>apim-demo</code> in <code>📁&nbsp;rg-tfplan2md-demo</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>api_management_name</td>
+<td><code>apim-demo</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;IDP-WEB-CLIENT-ID</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>secret</td>
+<td><code>❌&nbsp;false</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>https://example.com/api</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_subscription <b><code>demo</code></b> — <code>🔑&nbsp;Production (12345678-1234-1234-1234-123456789012)</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>subscription</td>
+<td><code>🔑&nbsp;Production</code></td>
+</tr>
+<tr>
+<td>subscription_id</td>
+<td><code>🔑&nbsp;12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_resource_group <b><code>imported</code></b> — 📥&nbsp;*Imported* | <code>🆔&nbsp;rg-imported-existing</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;rg-imported-existing</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️&nbsp;Tags:</strong> <code>imported: true</code></p>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary> &nbsp;azurerm_virtual_network <b><code>migrated</code></b> — 🔀&nbsp;*Moved from* <code>module.legacy.azurerm_virtual_network.main</code> (⚠️&nbsp;*already moved*) | <code>🆔&nbsp;vnet-legacy</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> <code>🌐&nbsp;10.50.0.0/16</code></summary>
+<br/>
+<p><em>No attribute changes.</em></p>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azapi_resource <b><code>container_app</code></b> — <code>🆔&nbsp;ca-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<p><strong>Type:</strong> <code>Microsoft.App/containerApps@2023-05-01</code></p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;ca-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td><code>rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️&nbsp;Tags:</strong>
+<code>environment: demo</code></p>
+<h4 id="user-content-body">Body</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>managedEnvironmentId</td>
+<td>ManagedEnvironments <code>🆔&nbsp;cae-demo</code> in resource group <code>📁&nbsp;rg-tfplan2md-demo</code> of subscription <code>🔑&nbsp;12345678-1234-1234-1234-123456789012</code></td>
+</tr>
+<tr>
+<td>configuration.secrets[0].name</td>
+<td><code>registry-password</code></td>
+</tr>
+<tr>
+<td>configuration.secrets[0].value</td>
+<td><code>supersecret123</code></td>
+</tr>
+<tr>
+<td>template.scale.minReplicas</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td>template.scale.maxReplicas</td>
+<td><code>10</code></td>
+</tr>
+</tbody>
+</table>
+<h6 id="user-content-%60configuration.ingress%60"><code>configuration.ingress</code></h6>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>external</td>
+<td><code>✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>targetPort</td>
+<td><code>🔌&nbsp;8080</code></td>
+</tr>
+<tr>
+<td>transport</td>
+<td><code>auto</code></td>
+</tr>
+</tbody>
+</table>
+<h6 id="user-content-%60template.containers%60-array"><code>template.containers</code> Array</h6>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th>name</th>
+<th>image</th>
+<th>resources.cpu</th>
+<th>resources.memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[0]</td>
+<td><code>🆔&nbsp;app</code></td>
+<td><code>myregistry.azurecr.io/myapp:latest</code></td>
+<td><code>0.5</code></td>
+<td><code>1Gi</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azuread_user <b><code>platform_admin</code></b> — <code>👤&nbsp;Platform Admin</code> (<code>🆔&nbsp;platform.admin@contoso.com</code>) <code>📧&nbsp;platform.admin@contoso.com</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>display_name</td>
+<td><code>👤&nbsp;Platform Admin</code></td>
+</tr>
+<tr>
+<td>mail</td>
+<td><code>📧&nbsp;platform.admin@contoso.com</code></td>
+</tr>
+<tr>
+<td>user_principal_name</td>
+<td><code>🆔&nbsp;platform.admin@contoso.com</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azuread_group <b><code>platform_engineers</code></b> — <code>👥&nbsp;Platform Engineers</code> (<code>🆔&nbsp;platform-engineers</code>) - Platform engineering team with infrastructure access | <code>3 👤&nbsp;1 👥&nbsp;1 💻</code> | ➕&nbsp;5 members</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>description</td>
+<td><code>Platform engineering team with infrastructure access</code></td>
+</tr>
+<tr>
+<td>display_name</td>
+<td><code>Platform Engineers</code></td>
+</tr>
+<tr>
+<td>mail_nickname</td>
+<td><code>platform-engineers</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="user-content-members">Members</h4>
+<p>⚠️&nbsp;<strong>Warning:</strong> This resource has children managed both inline
+and as separate resources. This configuration will cause conflicts.</p>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Member</th>
+<th>Terraform Resource</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>user-100</code></td>
+<td><code>members attribute</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>user-101</code></td>
+<td><code>members attribute</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>group-200</code></td>
+<td><code>members attribute</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>spn-300</code></td>
+<td><code>members attribute</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>user-100</code></td>
+<td><code>azuread_group_member.platform_admin_member</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azuread_service_principal <b><code>deployment_spn</code></b> — <code>💻&nbsp;tfplan2md-deployment</code> (<code>🆔&nbsp;app-deploy-001</code>) Service principal for automated deployments</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>application_id</td>
+<td><code>app-deploy-001</code></td>
+</tr>
+<tr>
+<td>description</td>
+<td><code>Service principal for automated deployments</code></td>
+</tr>
+<tr>
+<td>display_name</td>
+<td><code>tfplan2md-deployment</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azuread_invitation <b><code>external_consultant</code></b> — <code>📧&nbsp;consultant@external-partner.com</code> (<code>Guest</code>)</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user_email_address</td>
+<td><code>📧&nbsp;consultant@external-partner.com</code></td>
+</tr>
+<tr>
+<td>user_type</td>
+<td><code>Guest</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azuread_group_without_members <b><code>readonly_group</code></b> — <code>👥&nbsp;Read-Only Auditors</code> (<code>🆔&nbsp;readonly-auditors</code>) - Auditor group with read-only access</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>description</td>
+<td><code>Auditor group with read-only access</code></td>
+</tr>
+<tr>
+<td>display_name</td>
+<td><code>Read-Only Auditors</code></td>
+</tr>
+<tr>
+<td>mail_nickname</td>
+<td><code>readonly-auditors</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azuredevops_variable_group <b><code>pipeline_vars</code></b> — <code>🆔&nbsp;deploy-pipeline-vars</code> | 5&nbsp;🔧&nbsp;secret_variable[0].value, variable[0].value, variable[1].value, +2 more</summary>
+<br/>
+<p><strong>Variable Group:</strong> <code>deploy-pipeline-vars</code></p>
+<p><strong>Description:</strong> <code>Pipeline variables for deployment</code></p>
+<h4 id="user-content-variables">Variables</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Name</th>
+<th>Value</th>
+<th>Enabled</th>
+<th>Content Type</th>
+<th>Expires</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>NEW_FEATURE_FLAG</code></td>
+<td><code>enabled</code></td>
+<td><code>true</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>APP_VERSION</code></td>
+<td>- 1.0.0<br/>+ 2.0.0</td>
+<td><code>true</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>DEPLOY_TOKEN</code></td>
+<td><code>(sensitive / hidden)</code></td>
+<td><code>true</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>ENVIRONMENT</code></td>
+<td>- staging<br/>+ production</td>
+<td><code>true</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>DEPRECATED_VAR</code></td>
+<td><code>old-value</code></td>
+<td><code>true</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</details>
+<hr/>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.network%60">📦&nbsp;Module: <code>module.network</code></h3>
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_virtual_network <b><code>hub</code></b> — <code>🆔&nbsp;vnet-hub</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> <code>🌐&nbsp;10.0.0.0/16</code></summary>
+<br/>
+<p>🔒&nbsp;<strong>Security &amp; Quality:</strong> ℹ️&nbsp;1 Low</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code>🌐&nbsp;10.0.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;vnet-hub</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="user-content-%F0%9F%94%92-security-%26-quality-findings-for-%60module.network.azurerm_virtual_network.hub%60">🔒&nbsp;Security &amp; Quality Findings for <code>module.network.azurerm_virtual_network.hub</code></h4>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Tool</th>
+<th>Attribute</th>
+<th>Finding</th>
+<th>Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ℹ️&nbsp;Low</td>
+<td>Trivy</td>
+<td>-</td>
+<td>Virtual Network should have custom DNS servers configured<br/>Rule: <code>AVD-AZU-0047</code></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_virtual_network <b><code>spoke</code></b> — <code>🆔&nbsp;vnet-spoke</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> <code>🌐&nbsp;10.1.0.0/16</code> | ➕&nbsp;1 subnets | ♻️&nbsp;1 subnets</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code>🌐&nbsp;10.1.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;vnet-spoke</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="user-content-subnets">Subnets</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Name</th>
+<th>Address Prefixes</th>
+<th>NSG</th>
+<th>Delegation</th>
+<th>Terraform Resource</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;snet-app</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td>-</td>
+<td>-</td>
+<td><code>module.network.azurerm_subnet.app</code></td>
+</tr>
+<tr>
+<td>♻️</td>
+<td><code>🆔&nbsp;snet-db</code></td>
+<td><code>🌐&nbsp;10.1.20.0/24</code></td>
+<td>-</td>
+<td>-</td>
+<td><code>module.network.azurerm_subnet.db</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_private_dns_a_record <b><code>🆔&nbsp;api</code></b> — <code>api.contoso.local</code> <code>🌐&nbsp;10.1.1.4</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;api</code></td>
+</tr>
+<tr>
+<td>records[0]</td>
+<td><code>🌐&nbsp;10.1.1.4</code></td>
+</tr>
+<tr>
+<td>ttl</td>
+<td><code>300</code></td>
+</tr>
+<tr>
+<td>zone_name</td>
+<td><code>contoso.local</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_firewall_network_rule_collection <b><code>new_public</code></b> — <code>🆔&nbsp;public-egress</code> in <code>📁&nbsp;rg-tfplan2md-demo</code></summary>
+<br/>
+<p><strong>Collection:</strong> <code>public-egress</code> | <strong>Priority:</strong> <code>110</code> | <strong>Action:</strong> <code>✅&nbsp;Allow</code></p>
+<h4 id="user-content-network-rules">Network Rules</h4>
+<table>
+<thead>
+<tr>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>🆔&nbsp;allow-http</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;80</code></td>
+<td><code>Allow outbound HTTP</code></td>
+</tr>
+<tr>
+<td><code>🆔&nbsp;allow-https</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td><code>Allow outbound HTTPS</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_virtual_network <b><code>branch</code></b> — <code>🆔&nbsp;vnet-branch</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> <code>🌐&nbsp;10.2.0.0/16</code> | 1&nbsp;🔧&nbsp;address_space[1]</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[1]</td>
+<td>-</td>
+<td><code>🌐&nbsp;10.3.0.0/16</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_firewall_network_rule_collection <b><code>network_rules</code></b> — <code>🆔&nbsp;network-rules</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> | 6&nbsp;🔧&nbsp;➕&nbsp;<code>🆔&nbsp;allow-web-secure</code>, ➕&nbsp;<code>🆔&nbsp;allow-log-ingest</code>, ➕&nbsp;<code>🆔&nbsp;allow-icmp-ping</code>, +3 more</summary>
+<br/>
+<p><strong>Collection:</strong> <code>network-rules</code> | <strong>Priority:</strong> <code>120</code> | <strong>Action:</strong> <code>✅&nbsp;Allow</code></p>
+<h4 id="user-content-rule-changes">Rule Changes</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-web-secure</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td><code>🌐&nbsp;10.1.3.0/24</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td><code>Secure web</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-log-ingest</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.4.0/24</code></td>
+<td><code>🌐&nbsp;10.1.5.0/24</code></td>
+<td><code>🔌&nbsp;8080</code></td>
+<td><code>Log ingestion</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-icmp-ping</code></td>
+<td><code>📡&nbsp;ICMP</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td><code>🌐&nbsp;10.1.4.0/24</code></td>
+<td><code>✳️</code></td>
+<td><code>ICMP ping for network diagnostics</code></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>🆔&nbsp;allow-dns</code></td>
+<td>📨&nbsp;UDP</td>
+<td>- 🌐&nbsp;10.1.1.0/24<br/>+ 🌐&nbsp;10.1.1.0/24, 🌐&nbsp;10.1.2.0/24</td>
+<td>🌐&nbsp;168.63.129.16</td>
+<td>🔌&nbsp;53</td>
+<td><code>DNS to Azure</code></td>
+</tr>
+<tr>
+<td>🔄</td>
+<td><code>🆔&nbsp;allow-api</code></td>
+<td>🔗&nbsp;TCP</td>
+<td>🌐&nbsp;10.1.1.0/24</td>
+<td>- 🌐&nbsp;10.1.2.0/24<br/>+ 🌐&nbsp;10.2.2.0/24</td>
+<td>- 🔌&nbsp;8443<br/>+ 🔌&nbsp;8443, 🔌&nbsp;9443</td>
+<td><code>API tier</code></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>🆔&nbsp;allow-web</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td><code>🌐&nbsp;10.1.3.0/24</code></td>
+<td><code>🔌&nbsp;80</code></td>
+<td><code>Legacy HTTP</code></td>
+</tr>
+<tr>
+<td>⏺️</td>
+<td><code>🆔&nbsp;allow-monitoring</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>🌐&nbsp;10.1.1.0/24</code></td>
+<td><code>🌐&nbsp;10.1.4.0/24</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td><code>Monitoring</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>♻️&nbsp;azurerm_network_security_group <b><code>app</code></b> — <code>🆔&nbsp;nsg-app</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> | ➕&nbsp;3 security rules | ❌&nbsp;1 security rules</summary>
+<br/>
+<h4 id="user-content-security-rules">Security Rules</h4>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Name</th>
+<th>Priority</th>
+<th>Direction</th>
+<th>Access</th>
+<th>Protocol</th>
+<th>Source Addresses</th>
+<th>Source Ports</th>
+<th>Destination Addresses</th>
+<th>Destination Ports</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-https</code></td>
+<td><code>100</code></td>
+<td><code>⬇️&nbsp;Inbound</code></td>
+<td><code>✅&nbsp;Allow</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td>-</td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;deny-rdp</code></td>
+<td><code>200</code></td>
+<td><code>⬇️&nbsp;Inbound</code></td>
+<td><code>⛔&nbsp;Deny</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;3389</code></td>
+<td><code>Block RDP from internet</code></td>
+</tr>
+<tr>
+<td>➕</td>
+<td><code>🆔&nbsp;allow-outbound-https</code></td>
+<td><code>300</code></td>
+<td><code>⬆️&nbsp;Outbound</code></td>
+<td><code>✅&nbsp;Allow</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;443</code></td>
+<td><code>Allow outbound HTTPS</code></td>
+</tr>
+<tr>
+<td>❌</td>
+<td><code>🆔&nbsp;allow-http</code></td>
+<td><code>100</code></td>
+<td><code>⬇️&nbsp;Inbound</code></td>
+<td><code>✅&nbsp;Allow</code></td>
+<td><code>🔗&nbsp;TCP</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>✳️</code></td>
+<td><code>🔌&nbsp;80</code></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>❌&nbsp;azurerm_virtual_network <b><code>decom</code></b> — <code>🆔&nbsp;vnet-old</code> in <code>📁&nbsp;rg-old</code> <code>🌍&nbsp;eastus</code> <code>🌐&nbsp;10.50.0.0/16</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address_space[0]</td>
+<td><code>🌐&nbsp;10.50.0.0/16</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;vnet-old</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-old</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_firewall_application_rule_collection <b><code>web_access</code></b> — <code>🆔&nbsp;app-web-access</code> in <code>📁&nbsp;rg-tfplan2md-demo</code></summary>
+<br/>
+<p><strong>Collection:</strong> <code>app-web-access</code> | <strong>Priority:</strong> <code>200</code> | <strong>Action:</strong> <code>✅&nbsp;Allow</code></p>
+<h4 id="user-content-application-rules">Application Rules</h4>
+<table>
+<thead>
+<tr>
+<th>Rule Name</th>
+<th>Protocols</th>
+<th>Source Addresses</th>
+<th>Source IP Groups</th>
+<th>Target FQDNs</th>
+<th>FQDN Tags</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>🆔&nbsp;allow-github</code></td>
+<td><code>Https:443</code></td>
+<td><code>10.0.1.0/24</code></td>
+<td></td>
+<td><code>github.com, *.github.io, api.github.com</code></td>
+<td></td>
+<td><code>GitHub access for CI/CD</code></td>
+</tr>
+<tr>
+<td><code>🆔&nbsp;allow-azure-services</code></td>
+<td><code>Https:443, Http:80</code></td>
+<td><code>10.0.0.0/16</code></td>
+<td></td>
+<td><code>*.azure.com, *.azurewebsites.net, *.windows.net, ... +3 more</code></td>
+<td></td>
+<td><code>Azure platform services</code></td>
+</tr>
+<tr>
+<td><code>🆔&nbsp;allow-monitoring</code></td>
+<td><code>Https:443</code></td>
+<td><code>10.0.2.0/24</code></td>
+<td></td>
+<td><code>*.applicationinsights.azure.com, *.monitor.azure.com</code></td>
+<td></td>
+<td><code>Monitoring endpoints</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<hr/>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.security%60">📦&nbsp;Module: <code>module.security</code></h3>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_role_assignment <b><code>rg_reader</code></b> — <code>👤&nbsp;Jane Doe</code> → <code>🛡️&nbsp;Reader</code> on <code>📁&nbsp;rg-tfplan2md-demo</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code> in subscription <code>🔑&nbsp;Production (12345678-1234-1234-1234-123456789012)</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code>🛡️&nbsp;Reader</code> (<code>acdd72a7-3385-48ef-bd42-f606fba81ae7</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code>👤&nbsp;Jane Doe (User)</code> [<code>00000000-0000-0000-0000-000000000001</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code>👤&nbsp;User</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code>🛡️&nbsp;Reader</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_role_assignment <b><code>storage_reader</code></b> — <code>👥&nbsp;DevOps Team</code> → <code>🛡️&nbsp;Storage Blob Data Reader</code> on Storage Account <code>sttfplan2mdlogs</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td>Storage Account <code>🆔&nbsp;sttfplan2mdlogs</code> in resource group <code>📁&nbsp;rg-tfplan2md-demo</code> of subscription <code>🔑&nbsp;Production (12345678-1234-1234-1234-123456789012)</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code>🛡️&nbsp;Storage&nbsp;Blob Data Reader</code> (<code>2a2b9908-6ea1-4ae2-8e65-a410df84e7d1</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code>👥&nbsp;DevOps Team (Group)</code> [<code>00000000-0000-0000-0000-000000000002</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code>👥&nbsp;Group</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code>🛡️&nbsp;Storage&nbsp;Blob Data Reader</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_pim_eligible_role_assignment <b><code>ops</code></b> — Assign <code>🛡️&nbsp;Owner</code> to <code>👤&nbsp;Jane Doe</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>principal_id</td>
+<td><code>Jane Doe (00000000-0000-0000-0000-000000000001)</code></td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code>👤&nbsp;User</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code>🛡️&nbsp;Owner (8e3af657-a8ff-443c-a75c-2fe8c4bcb635)</code></td>
+</tr>
+<tr>
+<td>scope</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code> in subscription <code>🔑&nbsp;Production (12345678-1234-1234-1234-123456789012)</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_role_management_policy <b><code>ops</code></b> — <code>🛡️&nbsp;Reader</code> in <code>🗂️&nbsp;Tenant Contoso Corp (mg-root) root</code></summary>
+<br/>
+<p><em>No attribute changes.</em></p>
+</details>
+<details open style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_key_vault <b><code>main</code></b> — <code>🆔&nbsp;kv-tfplan2md</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<p>🔒&nbsp;<strong>Security &amp; Quality:</strong> ⚠️&nbsp;1 High, ⚠️&nbsp;1 Medium</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>enabled_for_deployment</td>
+<td><code>✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;kv-tfplan2md</code></td>
+</tr>
+<tr>
+<td>public_network_access_enabled</td>
+<td><code>✅&nbsp;true</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>sku_name</td>
+<td><code>standard</code></td>
+</tr>
+<tr>
+<td>tenant_id</td>
+<td><code>🏢&nbsp;Contoso Tenant (11111111-2222-3333-4444-555555555555)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🏷️&nbsp;Tags:</strong> <code>environment: demo</code> <code>owner: security</code></p>
+<h4 id="user-content-%F0%9F%94%92-security-%26-quality-findings-for-%60module.security.azurerm_key_vault.main%60">🔒&nbsp;Security &amp; Quality Findings for <code>module.security.azurerm_key_vault.main</code></h4>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Tool</th>
+<th>Attribute</th>
+<th>Finding</th>
+<th>Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠️&nbsp;High</td>
+<td>Checkov</td>
+<td><code>purge_protection_enabled</code></td>
+<td>Enable purge protection for Key Vault.<br/>Rule: <code>CKV_AZURE_1</code></td>
+<td><a href="https://docs.prismacloud.io/en/enterprise-edition/policy-reference/azure-policies/azure-general-policies/ensure-key-vault-purge-protection-enabled">Details</a></td>
+</tr>
+<tr>
+<td>⚠️&nbsp;Medium</td>
+<td>Trivy</td>
+<td>-</td>
+<td>Key Vault should have public network access disabled<br/>Rule: <code>AVD-AZU-0013</code></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_log_analytics_workspace <b><code>security</code></b> — <code>🆔&nbsp;law-security</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;law-security</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>retention_in_days</td>
+<td><code>90</code></td>
+</tr>
+<tr>
+<td>sku</td>
+<td><code>PerGB2018</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_key_vault_secret <b><code>db_password</code></b> — <code>🆔&nbsp;db-password</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>content_type</td>
+<td><code>password</code></td>
+</tr>
+<tr>
+<td>key_vault_id</td>
+<td>Key Vault <code>🆔&nbsp;kv-tfplan2md</code> in resource group <code>📁&nbsp;rg-tfplan2md-demo</code> of subscription <code>🔑&nbsp;Production (12345678-1234-1234-1234-123456789012)</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;db-password</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>(sensitive)</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_key_vault_secret <b><code>audit_policy</code></b> — <code>🆔&nbsp;audit-policy</code> | 1&nbsp;🔧&nbsp;value</summary>
+<br/>
+<p>Large values: value (4 lines, 2 changes)</p>
+<h5 id="user-content-value%3A"><strong>value:</strong></h5>
+<pre><code class="language-diff">- line1: allow
+- line2: log old activity
+- line3: end
++ line1: allow
++ line2: log critical activity
++ line3: end
+</code></pre>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_storage_account <b><code>analytics</code></b> — <code>🆔&nbsp;sttfplan2mdanalytics</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> | 3&nbsp;🔧&nbsp;account_replication_type, min_tls_version, tags.retention</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>account_replication_type</td>
+<td><code>LRS</code></td>
+<td><code>ZRS</code></td>
+</tr>
+<tr>
+<td>min_tls_version</td>
+<td>-</td>
+<td><code>TLS1_2</code></td>
+</tr>
+<tr>
+<td>tags.retention</td>
+<td>-</td>
+<td><code>long</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>🔄&nbsp;azurerm_key_vault <b><code>audit</code></b> — <code>🆔&nbsp;kv-audit</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code> | 2&nbsp;🔧&nbsp;public_network_access_enabled, tags.tier</summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public_network_access_enabled</td>
+<td><code>✅&nbsp;true</code></td>
+<td><code>❌&nbsp;false</code></td>
+</tr>
+<tr>
+<td>tags.tier</td>
+<td>-</td>
+<td><code>gold</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>❌&nbsp;azurerm_role_assignment <b><code>obsolete</code></b> — remove <code>🛡️&nbsp;Reader</code> on <code>📁&nbsp;rg-old</code> from <code>💻&nbsp;Legacy App</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td><code>📁&nbsp;rg-old</code> in subscription <code>🔑&nbsp;Production (12345678-1234-1234-1234-123456789012)</code></td>
+</tr>
+<tr>
+<td>role_definition_id</td>
+<td><code>🛡️&nbsp;Reader</code> (<code>acdd72a7-3385-48ef-bd42-f606fba81ae7</code>)</td>
+</tr>
+<tr>
+<td>principal_id</td>
+<td><code>💻&nbsp;Legacy App (Service Principal)</code> [<code>00000000-0000-0000-0000-000000000005</code>]</td>
+</tr>
+<tr>
+<td>principal_type</td>
+<td><code>💻&nbsp;ServicePrincipal</code></td>
+</tr>
+<tr>
+<td>role_definition_name</td>
+<td><code>🛡️&nbsp;Reader</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<hr/>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.network.module.monitoring%60">📦&nbsp;Module: <code>module.network.module.monitoring</code></h3>
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px">
+<summary>➕&nbsp;azurerm_log_analytics_workspace <b><code>core</code></b> — <code>🆔&nbsp;law-core</code> in <code>📁&nbsp;rg-tfplan2md-demo</code> <code>🌍&nbsp;eastus</code></summary>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><code>🌍&nbsp;eastus</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>🆔&nbsp;law-core</code></td>
+</tr>
+<tr>
+<td>resource_group_name</td>
+<td><code>📁&nbsp;rg-tfplan2md-demo</code></td>
+</tr>
+<tr>
+<td>retention_in_days</td>
+<td><code>30</code></td>
+</tr>
+<tr>
+<td>sku</td>
+<td><code>PerGB2018</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<h2 id="user-content-other-findings">Other Findings</h2>
+<h3 id="user-content-%F0%9F%93%A6-module%3A-%60module.network%60">📦&nbsp;Module: <code>module.network</code></h3>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Tool</th>
+<th>Finding</th>
+<th>Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠️&nbsp;Medium</td>
+<td>tflint</td>
+<td>terraform &quot;required_version&quot; attribute is required<br/>Artifact: examples/comprehensive-demo/main.tf (Line: 1, Column: 1)<br/>Rule: <code>terraform_required_version</code></td>
+<td><a href="https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.13.0/docs/rules/terraform_required_version.md">Details</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="user-content-unmatched-findings">Unmatched Findings</h3>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Tool</th>
+<th>Finding</th>
+<th>Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠️&nbsp;Medium</td>
+<td>tflint</td>
+<td>Unused declaration detected in root module<br/>Rule: <code>terraform_unused_declarations</code></td>
+<td><a href="https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.13.0/docs/rules/terraform_unused_declarations.md">Details</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-content-refactoring-summary">Refactoring Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Resource</th>
+<th>Details</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>📥&nbsp;Import</td>
+<td>azurerm_resource_group <code>rg-imported-existing</code></td>
+<td>ID: <code>📁&nbsp;rg-imported-existing</code> in subscription <code>🔑&nbsp;12345678-1234-1234-1234-123456789012</code></td>
+<td>✅&nbsp;Ready</td>
+</tr>
+<tr>
+<td>🔀&nbsp;Move</td>
+<td>azurerm_virtual_network <code>vnet-legacy</code></td>
+<td>From: <code>module.legacy.azurerm_virtual_network.main</code></td>
+<td>⚠️&nbsp;Already moved</td>
+</tr>
+</tbody>
+</table>
+
+        </article>
+    </div>
+</body>
+</html>

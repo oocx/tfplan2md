@@ -14,11 +14,13 @@ namespace Oocx.TfPlan2Md.Platforms.Azure;
 /// <param name="AzdoUsers">Azure DevOps user ID to display name mappings.</param>
 /// <param name="AzdoGroups">Azure DevOps group descriptor to display name mappings.</param>
 /// <param name="AzdoProjects">Azure DevOps project ID to display name mappings.</param>
+/// <param name="AzdoRepositories">Azure DevOps repository ID to display name mappings.</param>
 /// <remarks>
 /// Related features:
 /// <list type="bullet">
 /// <item><description>docs/features/063-azure-display-enhancements/specification.md.</description></item>
 /// <item><description>docs/features/085-azdo-principal-mapping/specification.md.</description></item>
+/// <item><description>docs/features/096-azdo-repo-mapping-and-icons/specification.md.</description></item>
 /// </list>
 /// </remarks>
 internal sealed record AzureMappingFileResult(
@@ -30,7 +32,8 @@ internal sealed record AzureMappingFileResult(
     IReadOnlyList<MappingEntry> Roles,
     FrozenDictionary<string, string> AzdoUsers,
     FrozenDictionary<string, string> AzdoGroups,
-    FrozenDictionary<string, string> AzdoProjects)
+    FrozenDictionary<string, string> AzdoProjects,
+    FrozenDictionary<string, string> AzdoRepositories)
 {
     /// <summary>
     /// Gets an empty mapping file result with no data.
@@ -45,6 +48,7 @@ internal sealed record AzureMappingFileResult(
         Array.Empty<MappingEntry>(),
         Array.Empty<MappingEntry>(),
         Array.Empty<MappingEntry>(),
+        FrozenDictionary<string, string>.Empty,
         FrozenDictionary<string, string>.Empty,
         FrozenDictionary<string, string>.Empty,
         FrozenDictionary<string, string>.Empty);

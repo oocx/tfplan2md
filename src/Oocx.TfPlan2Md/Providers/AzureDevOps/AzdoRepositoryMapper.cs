@@ -104,6 +104,6 @@ internal sealed class AzdoRepositoryMapper
         var displayName = GetName(repositoryId);
         return displayName is null
             ? $"🗃️ {repositoryId}"
-            : $"🗃️ {displayName} [{repositoryId}]";
+            : $"🗃️ {displayName} ({repositoryId})";
     }
 }

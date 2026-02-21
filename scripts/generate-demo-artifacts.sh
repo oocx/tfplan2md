@@ -431,6 +431,7 @@ fi
 
 log_info "Generating artifacts/azuredevops-feature-096.md (Azure DevOps repo mapping and icons - feature 096 UAT)..."
 dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj --no-build -c Release -- \
+  --principal-mapping examples/comprehensive-demo/demo-principals.json \
   --output artifacts/azuredevops-feature-096.md \
   examples/azuredevops/terraform_plan.json
 

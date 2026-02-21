@@ -20,9 +20,10 @@ internal static class BuildDefinitionViewModelFactory
     /// <param name="change">The resource change containing before/after state.</param>
     /// <param name="providerName">The provider name for semantic formatting.</param>
     /// <param name="largeValueFormat">Preferred large value format for diff rendering.</param>
+    /// <param name="repositoryMapper">Optional mapper for resolving repository display names.</param>
     /// <returns>Populated <see cref="BuildDefinitionViewModel"/>.</returns>
 #pragma warning disable CA1506 // Suppress class coupling - Build method orchestrates many extractors/formatters
-    public static BuildDefinitionViewModel Build(ResourceChange change, string providerName, LargeValueFormat largeValueFormat)
+    public static BuildDefinitionViewModel Build(ResourceChange change, string providerName, LargeValueFormat largeValueFormat, AzdoRepositoryMapper? repositoryMapper = null)
 #pragma warning restore CA1506
     {
         // Extract metadata
@@ -72,7 +73,7 @@ internal static class BuildDefinitionViewModelFactory
                 AfterCiTriggers = FormatCiTriggerRows(afterCiTriggers),
                 AfterPullRequestTriggers = FormatPullRequestTriggerRows(afterPullRequestTriggers),
                 AfterSchedules = FormatScheduleRows(afterSchedules),
-                AfterRepositories = FormatRepositoryRows(afterRepositories),
+                AfterRepositories = FormatRepositoryRows(afterRepositories, repositoryMapper),
                 AfterJobs = FormatJobRows(afterJobs, providerName)
             };
         }
@@ -88,7 +89,7 @@ internal static class BuildDefinitionViewModelFactory
                 BeforeCiTriggers = FormatCiTriggerRows(beforeCiTriggers),
                 BeforePullRequestTriggers = FormatPullRequestTriggerRows(beforePullRequestTriggers),
                 BeforeSchedules = FormatScheduleRows(beforeSchedules),
-                BeforeRepositories = FormatRepositoryRows(beforeRepositories),
+                BeforeRepositories = FormatRepositoryRows(beforeRepositories, repositoryMapper),
                 BeforeJobs = FormatJobRows(beforeJobs, providerName)
             };
         }
@@ -119,8 +120,8 @@ internal static class BuildDefinitionViewModelFactory
                 BeforePullRequestTriggers = FormatPullRequestTriggerRows(beforePullRequestTriggers),
                 AfterSchedules = FormatScheduleRows(afterSchedules),
                 BeforeSchedules = FormatScheduleRows(beforeSchedules),
-                AfterRepositories = FormatRepositoryRows(afterRepositories),
-                BeforeRepositories = FormatRepositoryRows(beforeRepositories),
+                AfterRepositories = FormatRepositoryRows(afterRepositories, repositoryMapper),
+                BeforeRepositories = FormatRepositoryRows(beforeRepositories, repositoryMapper),
                 AfterJobs = FormatJobRows(afterJobs, providerName),
                 BeforeJobs = FormatJobRows(beforeJobs, providerName)
             };
@@ -161,10 +162,11 @@ internal static class BuildDefinitionViewModelFactory
     /// Formats repository rows from extracted values.
     /// </summary>
     /// <param name="repositories">Extracted repository values.</param>
+    /// <param name="repositoryMapper">Optional mapper for resolving repository display names.</param>
     /// <returns>Formatted repository rows.</returns>
-    private static List<RepositoryRowViewModel> FormatRepositoryRows(IReadOnlyList<RepositoryValues> repositories)
+    private static List<RepositoryRowViewModel> FormatRepositoryRows(IReadOnlyList<RepositoryValues> repositories, AzdoRepositoryMapper? repositoryMapper)
     {
-        return repositories.Select(BuildDefinitionFormatters.CreateRepositoryRow).ToList();
+        return repositories.Select(r => BuildDefinitionFormatters.CreateRepositoryRow(r, repositoryMapper)).ToList();
     }
 
     /// <summary>

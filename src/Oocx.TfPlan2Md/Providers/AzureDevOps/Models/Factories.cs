@@ -65,14 +65,17 @@ internal sealed class VariableGroupFactory : IResourceViewModelFactory
 internal sealed class BuildDefinitionFactory : IResourceViewModelFactory
 {
     private readonly LargeValueFormat _largeValueFormat;
+    private readonly AzdoRepositoryMapper? _repositoryMapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BuildDefinitionFactory"/> class.
     /// </summary>
     /// <param name="largeValueFormat">Format for rendering large values.</param>
-    public BuildDefinitionFactory(LargeValueFormat largeValueFormat)
+    /// <param name="repositoryMapper">Optional mapper for Azure DevOps repository display names.</param>
+    public BuildDefinitionFactory(LargeValueFormat largeValueFormat, AzdoRepositoryMapper? repositoryMapper = null)
     {
         _largeValueFormat = largeValueFormat;
+        _repositoryMapper = repositoryMapper;
     }
 
     /// <inheritdoc/>
@@ -103,6 +106,7 @@ internal sealed class BuildDefinitionFactory : IResourceViewModelFactory
         return BuildDefinitionViewModelFactory.Build(
             resourceChange,
             resourceChange.ProviderName,
-            _largeValueFormat);
+            _largeValueFormat,
+            _repositoryMapper);
     }
 }

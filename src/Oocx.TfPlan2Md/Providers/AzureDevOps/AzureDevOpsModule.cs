@@ -116,7 +116,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
     public void RegisterFactories(IResourceViewModelFactoryRegistry registry)
     {
         registry.RegisterFactory("azuredevops_variable_group", new VariableGroupFactory(_largeValueFormat));
-        registry.RegisterFactory("azuredevops_build_definition", new BuildDefinitionFactory(_largeValueFormat));
+        registry.RegisterFactory("azuredevops_build_definition", new BuildDefinitionFactory(_largeValueFormat, _azdoRepositoryMapper));
     }
 
     /// <summary>
@@ -262,7 +262,7 @@ internal sealed class AzureDevOpsModule : IProviderModule
         var variableGroupFactory = new VariableGroupFactory(_largeValueFormat);
         registry.Register(new Mappers.VariableGroupMapper(variableGroupFactory));
 
-        var buildDefinitionFactory = new BuildDefinitionFactory(_largeValueFormat);
+        var buildDefinitionFactory = new BuildDefinitionFactory(_largeValueFormat, _azdoRepositoryMapper);
         registry.Register(new Mappers.BuildDefinitionMapper(buildDefinitionFactory));
     }
 }

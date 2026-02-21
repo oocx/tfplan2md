@@ -163,6 +163,54 @@ public class AzApiSensitiveMaskingTests
 
     #endregion
 
+    #region TC-06: AzApi update body masks sensitive changed field
+
+    /// <summary>
+    /// TC-06: When rendering an <c>azapi_resource</c> update where
+    /// <c>after_sensitive.body.properties.clientSecret = true</c>,
+    /// the before and after secret values must both be replaced with <c>(sensitive)</c>.
+    /// </summary>
+    [Test]
+    public void RenderAzapiUpdate_WithSensitiveBodyProperty_MasksValue()
+    {
+        // Arrange & Act
+        var markdown = RenderAzapiPlan("azapi-update-sensitive-plan.json");
+
+        // Assert: neither old nor new secret values must appear
+        markdown.Should().NotContain("old-secret-value",
+            "sensitive body property 'clientSecret' before value must be masked in update rendering");
+        markdown.Should().NotContain("new-secret-value",
+            "sensitive body property 'clientSecret' after value must be masked in update rendering");
+
+        // Assert: masked placeholder must appear
+        markdown.Should().Contain("(sensitive)",
+            "masked placeholder must appear for sensitive body properties in update");
+
+        // Assert: non-sensitive changed value must still appear
+        markdown.Should().Contain("new-object-id",
+            "non-sensitive property 'objectId' must still be visible in update rendering");
+    }
+
+    #endregion
+
+    #region TC-07: AzApi update body shows sensitive values with --show-sensitive
+
+    /// <summary>
+    /// TC-07: When <c>--show-sensitive</c> is enabled, sensitive update body values should be rendered as-is.
+    /// </summary>
+    [Test]
+    public void RenderAzapiUpdate_ShowSensitive_RevealsValue()
+    {
+        // Arrange & Act
+        var markdown = RenderAzapiPlan("azapi-update-sensitive-plan.json", showSensitive: true);
+
+        // Assert: secret values must appear when show-sensitive is enabled
+        markdown.Should().Contain("new-secret-value",
+            "sensitive body values must be visible when --show-sensitive is enabled in update mode");
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>

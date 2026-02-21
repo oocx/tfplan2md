@@ -121,6 +121,22 @@ public class ResourceChangeModel
     public bool IsRefactoringAlreadyApplied { get; init; }
 
     /// <summary>
+    /// Gets the sensitivity map for the resource state before the change.
+    /// Contains the <c>before_sensitive</c> structure from the Terraform plan,
+    /// used by provider templates to mask sensitive values in rendered output.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </summary>
+    public object? BeforeSensitive { get; init; }
+
+    /// <summary>
+    /// Gets the sensitivity map for the resource state after the change.
+    /// Contains the <c>after_sensitive</c> structure from the Terraform plan,
+    /// used by provider templates to mask sensitive values in rendered output.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </summary>
+    public object? AfterSensitive { get; init; }
+
+    /// <summary>
     /// Gets or sets the original resource change from parsing.
     /// Used by resource model mappers to create provider-specific view models.
     /// Internal only - not exposed to templates.

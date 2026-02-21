@@ -32,21 +32,29 @@ public static partial class ScribanHelpers
     /// <param name="heading">The heading text to display.</param>
     /// <param name="bodyJson">The JSON body to render.</param>
     /// <param name="largeValueFormat">Format for rendering large values.</param>
+    /// <param name="sensitiveStructure">The sensitivity structure (<c>after_sensitive.body</c> for create, <c>before_sensitive.body</c> for delete).</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    /// <remarks>
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
     private static void RenderCreateDeleteBody(
         StringBuilder sb,
         string heading,
         object bodyJson,
-        string largeValueFormat)
+        string largeValueFormat,
+        object? sensitiveStructure,
+        bool showSensitive)
     {
         var flattened = FlattenJson(bodyJson, string.Empty);
+        var sensitivePaths = FlattenSensitivity(sensitiveStructure);
         var (smallProps, largeProps) = SplitBySize(flattened);
 
         var groups = IdentifyGroupedPrefixes(smallProps);
         var mainProps = ExtractNonGroupedProperties(smallProps, groups);
 
-        RenderCreateDeleteMainTable(sb, mainProps, groups.Count == 0);
-        RenderCreateDeleteGroupedSections(sb, groups, smallProps);
-        RenderLargeCreateDeleteProps(sb, largeProps, largeValueFormat);
+        RenderCreateDeleteMainTable(sb, mainProps, groups.Count == 0, sensitivePaths, showSensitive);
+        RenderCreateDeleteGroupedSections(sb, groups, smallProps, sensitivePaths, showSensitive);
+        RenderLargeCreateDeleteProps(sb, largeProps, largeValueFormat, sensitivePaths, showSensitive);
         RenderNoChangesMessage(sb, smallProps.Count, largeProps.Count, $"*{heading}: (empty)*");
     }
 
@@ -82,10 +90,14 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="properties">The properties to render.</param>
     /// <param name="renderWhenEmpty">Whether to render a table even when no main properties exist.</param>
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
     private static void RenderCreateDeleteMainTable(
         StringBuilder sb,
         ScriptArray properties,
-        bool renderWhenEmpty)
+        bool renderWhenEmpty,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         if (properties.Count == 0 && !renderWhenEmpty)
         {
@@ -99,13 +111,20 @@ public static partial class ScribanHelpers
         {
             if (item is ScriptObject prop)
             {
-                var path = prop[AzApiPathKey]?.ToString() ?? string.Empty;
+                var rawPath = prop[AzApiPathKey]?.ToString() ?? string.Empty;
                 var value = prop[AzApiValueKey];
 
-                path = RemovePropertiesPrefix(path);
+                var path = RemovePropertiesPrefix(rawPath);
 
-                var valueFormatted = FormatAttributeValueTable(path, value?.ToString(), AzApiValueFormatProviderName);
-                sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
+                if (IsPathSensitive(rawPath, sensitivePaths) && !showSensitive)
+                {
+                    sb.AppendLine($"| {EscapeMarkdown(path)} | (sensitive) |");
+                }
+                else
+                {
+                    var valueFormatted = FormatAttributeValueTable(path, value?.ToString(), AzApiValueFormatProviderName);
+                    sb.AppendLine($"| {EscapeMarkdown(path)} | {valueFormatted} |");
+                }
             }
         }
 
@@ -118,10 +137,14 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="groups">The selected grouping sections.</param>
     /// <param name="properties">The original flattened properties (small values only).</param>
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
     private static void RenderCreateDeleteGroupedSections(
         StringBuilder sb,
         IReadOnlyList<AzApiGroupedPrefix> groups,
-        ScriptArray properties)
+        ScriptArray properties,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         foreach (var group in groups)
         {
@@ -136,11 +159,11 @@ public static partial class ScribanHelpers
 
             if (group.Kind == AzApiGroupedPrefixKind.Array)
             {
-                RenderCreateDeleteArrayGroup(sb, group.Path, groupProps);
+                RenderCreateDeleteArrayGroup(sb, group.Path, groupProps, sensitivePaths, showSensitive);
             }
             else
             {
-                RenderCreateDeletePrefixGroup(sb, group.Path, groupProps);
+                RenderCreateDeletePrefixGroup(sb, group.Path, groupProps, sensitivePaths, showSensitive);
             }
         }
     }
@@ -151,7 +174,14 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="groupPath">The prefix path for the section.</param>
     /// <param name="groupProps">The grouped properties.</param>
-    private static void RenderCreateDeletePrefixGroup(StringBuilder sb, string groupPath, ScriptArray groupProps)
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderCreateDeletePrefixGroup(
+        StringBuilder sb,
+        string groupPath,
+        ScriptArray groupProps,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         sb.AppendLine($"###### `{EscapeMarkdown(groupPath)}`");
         sb.AppendLine();
@@ -169,8 +199,16 @@ public static partial class ScribanHelpers
             var value = prop[AzApiValueKey];
 
             var localPath = RemoveNestedPrefix(path, groupPath);
-            var valueFormatted = FormatAttributeValueTable(localPath, value?.ToString(), AzApiValueFormatProviderName);
-            sb.AppendLine($"| {EscapeMarkdown(localPath)} | {valueFormatted} |");
+
+            if (IsPathSensitive(path, sensitivePaths) && !showSensitive)
+            {
+                sb.AppendLine($"| {EscapeMarkdown(localPath)} | (sensitive) |");
+            }
+            else
+            {
+                var valueFormatted = FormatAttributeValueTable(localPath, value?.ToString(), AzApiValueFormatProviderName);
+                sb.AppendLine($"| {EscapeMarkdown(localPath)} | {valueFormatted} |");
+            }
         }
 
         sb.AppendLine();
@@ -182,7 +220,14 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="arrayPath">The array path for the section.</param>
     /// <param name="groupProps">The grouped properties that belong to the array.</param>
-    private static void RenderCreateDeleteArrayGroup(StringBuilder sb, string arrayPath, ScriptArray groupProps)
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderCreateDeleteArrayGroup(
+        StringBuilder sb,
+        string arrayPath,
+        ScriptArray groupProps,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         sb.AppendLine($"###### `{EscapeMarkdown(arrayPath)}` Array");
         sb.AppendLine();
@@ -195,11 +240,11 @@ public static partial class ScribanHelpers
 
         if (ShouldRenderMatrixTable(items, maxPropertiesPerItem: 8))
         {
-            RenderCreateDeleteArrayMatrixTable(sb, items);
+            RenderCreateDeleteArrayMatrixTable(sb, items, arrayPath, sensitivePaths, showSensitive);
         }
         else
         {
-            RenderCreateDeleteArrayPerItemTables(sb, items);
+            RenderCreateDeleteArrayPerItemTables(sb, items, arrayPath, sensitivePaths, showSensitive);
         }
 
         sb.AppendLine();
@@ -239,7 +284,15 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="items">The extracted array items.</param>
-    private static void RenderCreateDeleteArrayMatrixTable(StringBuilder sb, IReadOnlyList<AzApiArrayItem> items)
+    /// <param name="arrayPath">The display-level array path (without <c>properties.</c> prefix).</param>
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderCreateDeleteArrayMatrixTable(
+        StringBuilder sb,
+        IReadOnlyList<AzApiArrayItem> items,
+        string arrayPath,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         var headers = items[0].Entries.Select(entry => entry.LocalPath).ToList();
 
@@ -281,8 +334,17 @@ public static partial class ScribanHelpers
                 sb.Append(' ');
 
                 var entry = byKey[header];
-                var valueFormatted = FormatAttributeValueTable(header, entry.Value?.ToString(), AzApiValueFormatProviderName);
-                sb.Append(valueFormatted);
+                var fullPath = ReconstructArrayEntryPath(arrayPath, item.Index, header);
+                if (IsPathSensitive(fullPath, sensitivePaths) && !showSensitive)
+                {
+                    sb.Append("(sensitive)");
+                }
+                else
+                {
+                    var valueFormatted = FormatAttributeValueTable(header, entry.Value?.ToString(), AzApiValueFormatProviderName);
+                    sb.Append(valueFormatted);
+                }
+
                 sb.Append(' ');
             }
 
@@ -295,7 +357,15 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="items">The extracted array items.</param>
-    private static void RenderCreateDeleteArrayPerItemTables(StringBuilder sb, IReadOnlyList<AzApiArrayItem> items)
+    /// <param name="arrayPath">The display-level array path (without <c>properties.</c> prefix).</param>
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderCreateDeleteArrayPerItemTables(
+        StringBuilder sb,
+        IReadOnlyList<AzApiArrayItem> items,
+        string arrayPath,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         foreach (var item in items)
         {
@@ -306,8 +376,16 @@ public static partial class ScribanHelpers
 
             foreach (var entry in item.Entries)
             {
-                var valueFormatted = FormatAttributeValueTable(entry.LocalPath, entry.Value?.ToString(), AzApiValueFormatProviderName);
-                sb.AppendLine($"| {EscapeMarkdown(entry.LocalPath)} | {valueFormatted} |");
+                var fullPath = ReconstructArrayEntryPath(arrayPath, item.Index, entry.LocalPath);
+                if (IsPathSensitive(fullPath, sensitivePaths) && !showSensitive)
+                {
+                    sb.AppendLine($"| {EscapeMarkdown(entry.LocalPath)} | (sensitive) |");
+                }
+                else
+                {
+                    var valueFormatted = FormatAttributeValueTable(entry.LocalPath, entry.Value?.ToString(), AzApiValueFormatProviderName);
+                    sb.AppendLine($"| {EscapeMarkdown(entry.LocalPath)} | {valueFormatted} |");
+                }
             }
 
             sb.AppendLine();
@@ -320,7 +398,14 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="properties">The large properties to render.</param>
     /// <param name="largeValueFormat">Format for rendering large values.</param>
-    private static void RenderLargeCreateDeleteProps(StringBuilder sb, ScriptArray properties, string largeValueFormat)
+    /// <param name="sensitivePaths">Set of flattened paths that are sensitive.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderLargeCreateDeleteProps(
+        StringBuilder sb,
+        ScriptArray properties,
+        string largeValueFormat,
+        HashSet<string> sensitivePaths,
+        bool showSensitive)
     {
         if (properties.Count == 0)
         {
@@ -335,16 +420,22 @@ public static partial class ScribanHelpers
         {
             if (item is ScriptObject prop)
             {
-                var path = prop[AzApiPathKey]?.ToString() ?? string.Empty;
-                var value = prop[AzApiValueKey];
+                var rawPath = prop[AzApiPathKey]?.ToString() ?? string.Empty;
+                var displayPath = RemovePropertiesPrefix(rawPath);
 
-                path = RemovePropertiesPrefix(path);
-
-                sb.AppendLine($"##### **{EscapeMarkdown(path)}:**");
+                sb.AppendLine($"##### **{EscapeMarkdown(displayPath)}:**");
                 sb.AppendLine();
 
-                var valueStr = value?.ToString();
-                sb.AppendLine(FormatLargeValue(null, valueStr, largeValueFormat));
+                if (IsPathSensitive(rawPath, sensitivePaths) && !showSensitive)
+                {
+                    sb.AppendLine("(sensitive)");
+                }
+                else
+                {
+                    var valueStr = prop[AzApiValueKey]?.ToString();
+                    sb.AppendLine(FormatLargeValue(null, valueStr, largeValueFormat));
+                }
+
                 sb.AppendLine();
             }
         }

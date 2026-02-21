@@ -88,6 +88,13 @@ internal class ReportModel
     public required bool ShowUnchangedValues { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether sensitive values should be shown in plaintext instead of masked.
+    /// When <c>false</c> (default), provider templates replace sensitive values with "(sensitive)".
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </summary>
+    public required bool ShowSensitive { get; init; }
+
+    /// <summary>
     /// Gets the target platform for markdown rendering.
     /// Related feature: docs/features/047-provider-code-separation/specification.md.
     /// </summary>

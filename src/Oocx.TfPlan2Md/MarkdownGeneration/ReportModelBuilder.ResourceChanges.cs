@@ -43,6 +43,8 @@ internal partial class ReportModelBuilder
             AttributeChanges = attributeChanges,
             BeforeJson = rc.Change.Before,
             AfterJson = rc.Change.After,
+            BeforeSensitive = rc.Change.BeforeSensitive,
+            AfterSensitive = rc.Change.AfterSensitive,
             ReplacePaths = rc.Change.ReplacePaths,
             ImportId = importId,
             MovedFromAddress = movedFromAddress,

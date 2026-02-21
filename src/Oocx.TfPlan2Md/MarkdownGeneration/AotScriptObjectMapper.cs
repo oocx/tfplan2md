@@ -38,6 +38,7 @@ internal static class AotScriptObjectMapper
         scriptObject["timestamp"] = model.Timestamp;
         scriptObject["report_title"] = model.ReportTitle;
         scriptObject["show_unchanged_values"] = model.ShowUnchangedValues;
+        scriptObject["show_sensitive"] = model.ShowSensitive;
         scriptObject["large_value_format"] = model.RenderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
 
         // Generated timestamp as nested object with DateTime for Scriban date functions
@@ -197,6 +198,15 @@ internal static class AotScriptObjectMapper
             : null;
         obj["after_json"] = change.AfterJson is JsonElement jsonAfter
             ? ConvertToScriptObject(jsonAfter)
+            : null;
+
+        // Sensitivity maps for provider templates to mask sensitive values
+        // Related issue: docs/issues/098-sensitive-info-exposure/analysis.md
+        obj["before_sensitive"] = change.BeforeSensitive is JsonElement sensBefore
+            ? ConvertToScriptObject(sensBefore)
+            : null;
+        obj["after_sensitive"] = change.AfterSensitive is JsonElement sensAfter
+            ? ConvertToScriptObject(sensAfter)
             : null;
 
         // Replace paths

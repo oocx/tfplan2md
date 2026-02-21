@@ -218,7 +218,7 @@ _No attribute changes._
 |----------|-------|
 | managedEnvironmentId | ManagedEnvironments `🆔 cae-demo` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 12345678-1234-1234-1234-123456789012` |
 | configuration.secrets[0].name | `registry-password` |
-| configuration.secrets[0].value | `supersecret123` |
+| configuration.secrets[0].value | (sensitive) |
 | template.scale.minReplicas | `1` |
 | template.scale.maxReplicas | `10` |
 

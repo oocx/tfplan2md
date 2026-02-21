@@ -113,6 +113,7 @@ internal partial class ReportModelBuilder
             Summary = summary,
             CodeAnalysis = codeAnalysisReport,
             ShowUnchangedValues = _showUnchangedValues,
+            ShowSensitive = _showSensitive,
             RenderTarget = renderTarget,
             DetailsDisplayMode = _detailsDisplayMode,
             RefactoringOperations = refactoringOperations

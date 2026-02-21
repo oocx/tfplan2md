@@ -99,10 +99,16 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Flattens a sensitivity structure to extract paths of sensitive properties.
+    /// Handles both raw <see cref="JsonElement"/> values (from direct parsing) and Scriban types
+    /// (<see cref="ScriptObject"/>, <see cref="ScriptArray"/>, <c>bool</c>) that arrive through
+    /// the template rendering pipeline after JSON-to-Scriban conversion.
+    /// When the root element is <c>true</c>, returns a set containing an empty string
+    /// to signal that all descendant paths should be treated as sensitive.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </summary>
     /// <param name="sensitiveObject">The sensitivity structure (e.g., before_sensitive or after_sensitive).</param>
     /// <returns>Set of paths that are marked as sensitive.</returns>
-    private static HashSet<string> FlattenSensitivity(object? sensitiveObject)
+    internal static HashSet<string> FlattenSensitivity(object? sensitiveObject)
     {
         var result = new HashSet<string>();
 
@@ -111,7 +117,25 @@ public static partial class ScribanHelpers
             return result;
         }
 
-        // Convert to JsonElement if needed
+        // Handle root-level boolean: entire body/section is sensitive
+        if (sensitiveObject is bool boolValue)
+        {
+            if (boolValue)
+            {
+                result.Add(string.Empty);
+            }
+
+            return result;
+        }
+
+        // Handle Scriban types (from template pipeline)
+        if (sensitiveObject is ScriptObject || sensitiveObject is ScriptArray)
+        {
+            TraverseScribanSensitivity(sensitiveObject, string.Empty, result);
+            return result;
+        }
+
+        // Handle raw JsonElement (from direct C# calls)
         JsonElement element;
         if (sensitiveObject is JsonElement jsonElement)
         {
@@ -133,10 +157,63 @@ public static partial class ScribanHelpers
             return result;
         }
 
-        // Recursively traverse sensitivity structure
+        // Handle root-level true in JsonElement
+        if (element.ValueKind == JsonValueKind.True)
+        {
+            result.Add(string.Empty);
+            return result;
+        }
+
+        // Recursively traverse JSON sensitivity structure
         TraverseSensitivity(element, string.Empty, result);
 
         return result;
+    }
+
+    /// <summary>
+    /// Recursively traverses a Scriban-typed sensitivity structure to identify sensitive paths.
+    /// Handles <see cref="ScriptObject"/> (object with named properties) and <see cref="ScriptArray"/>
+    /// (indexed array) with <c>bool</c> leaves signalling sensitivity.
+    /// </summary>
+    /// <param name="obj">The current Scriban object or array.</param>
+    /// <param name="prefix">The current path prefix.</param>
+    /// <param name="sensitivePaths">The set to populate with sensitive paths.</param>
+    private static void TraverseScribanSensitivity(object obj, string prefix, HashSet<string> sensitivePaths)
+    {
+        if (obj is ScriptObject scriptObj)
+        {
+            foreach (var key in scriptObj.Keys)
+            {
+                var path = string.IsNullOrEmpty(prefix) ? key : $"{prefix}.{key}";
+                var value = scriptObj[key];
+
+                if (value is bool bv && bv)
+                {
+                    sensitivePaths.Add(path);
+                }
+                else if (value is ScriptObject or ScriptArray)
+                {
+                    TraverseScribanSensitivity(value, path, sensitivePaths);
+                }
+            }
+        }
+        else if (obj is ScriptArray scriptArr)
+        {
+            for (var i = 0; i < scriptArr.Count; i++)
+            {
+                var path = $"{prefix}[{i}]";
+                var value = scriptArr[i];
+
+                if (value is bool bv && bv)
+                {
+                    sensitivePaths.Add(path);
+                }
+                else if (value is ScriptObject or ScriptArray)
+                {
+                    TraverseScribanSensitivity(value, path, sensitivePaths);
+                }
+            }
+        }
     }
 
     /// <summary>

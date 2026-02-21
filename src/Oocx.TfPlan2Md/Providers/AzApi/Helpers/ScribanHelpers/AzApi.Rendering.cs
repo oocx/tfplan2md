@@ -21,10 +21,11 @@ public static partial class ScribanHelpers
     /// <param name="heading">The heading text (e.g., "Body", "Body Changes").</param>
     /// <param name="mode">The rendering mode: "create", "update", or "delete".</param>
     /// <param name="beforeJson">The before state JSON (for update mode).</param>
-    /// <param name="beforeSensitive">The before_sensitive structure (for update mode).</param>
-    /// <param name="afterSensitive">The after_sensitive structure (for update mode).</param>
+    /// <param name="beforeSensitive">The before_sensitive structure (for update mode and delete sensitivity).</param>
+    /// <param name="afterSensitive">The after_sensitive structure (for update mode and create sensitivity).</param>
     /// <param name="showUnchanged">Whether to show unchanged properties (for update mode).</param>
     /// <param name="largeValueFormat">Format for rendering large values ("inline-diff" or "simple-diff").</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
     /// <returns>Formatted markdown string for the body section.</returns>
     /// <remarks>
     /// This helper consolidates body rendering logic to keep the template concise.
@@ -32,6 +33,7 @@ public static partial class ScribanHelpers
     /// For update mode, it compares before/after and shows only changed properties.
     /// Large properties are rendered outside of tables to avoid markdown parsing issues with newlines.
     /// Related feature: docs/features/028-azapi-resource-template/specification.md.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </remarks>
     [SuppressMessage(
         "Major Code Smell",
@@ -45,7 +47,8 @@ public static partial class ScribanHelpers
         object? beforeSensitive = null,
         object? afterSensitive = null,
         bool showUnchanged = false,
-        string largeValueFormat = "inline-diff")
+        string largeValueFormat = "inline-diff",
+        bool showSensitive = false)
     {
         if (bodyJson is null)
         {
@@ -71,7 +74,8 @@ public static partial class ScribanHelpers
         }
         else
         {
-            RenderCreateDeleteBody(sb, heading, bodyJson, largeValueFormat);
+            var sensitivity = mode == "delete" ? beforeSensitive : afterSensitive;
+            RenderCreateDeleteBody(sb, heading, bodyJson, largeValueFormat, sensitivity, showSensitive);
         }
 
         return sb.ToString();

@@ -842,6 +842,7 @@ public class MarkdownRendererTests
                 Total = 0
             },
             ShowUnchangedValues = false,
+            ShowSensitive = false,
             RenderTarget = RenderTarget.AzureDevOps,
             DetailsDisplayMode = Oocx.TfPlan2Md.RenderTargets.DetailsDisplayMode.Auto,
             RefactoringOperations = []

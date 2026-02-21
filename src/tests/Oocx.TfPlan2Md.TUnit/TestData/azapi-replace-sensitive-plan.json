@@ -1,0 +1,59 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.storage_account",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "storage_account",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": {
+          "type": "Microsoft.Storage/storageAccounts@2023-01-01",
+          "name": "mystorage",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "accountType": "Standard_LRS",
+              "secret": "old-secret",
+              "publicAccess": "Enabled"
+            }
+          }
+        },
+        "after": {
+          "type": "Microsoft.Storage/storageAccounts@2023-01-01",
+          "name": "mystorage-v2",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "accountType": "Standard_GRS",
+              "secret": "new-secret",
+              "publicAccess": "Disabled"
+            }
+          }
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {
+          "body": {
+            "properties": {
+              "secret": true
+            }
+          }
+        },
+        "after_sensitive": {
+          "body": {
+            "properties": {
+              "secret": true
+            }
+          }
+        }
+      }
+    }
+  ]
+}

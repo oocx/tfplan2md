@@ -1,0 +1,39 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.app_registration",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "app_registration",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "type": "Microsoft.Graph/applications@v1.0",
+          "name": "myapp",
+          "parent_id": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/example-resources",
+          "location": "global",
+          "body": {
+            "properties": {
+              "displayName": "My Application",
+              "clientSecret": "actual-secret",
+              "signInAudience": "AzureADMyOrg"
+            }
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {
+            "properties": {
+              "clientSecret": true
+            }
+          }
+        },
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

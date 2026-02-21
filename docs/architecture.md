@@ -1204,6 +1204,7 @@ Future phases will add ARM64, macOS, and Windows binaries.
 - Opt-in via `--show-sensitive` flag
 - Sensitivity determined by Terraform's `before_sensitive` and `after_sensitive` flags
 - Masking applied after comparison (to detect actual changes)
+- Template safety rule: template contexts must receive masked-by-default JSON unless `--show-sensitive` is enabled (ADR-009)
 
 **Container Security:**
 - Scratch-based image (no OS, no shell, no package manager)

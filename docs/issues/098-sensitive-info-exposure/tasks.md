@@ -258,13 +258,13 @@ the value-rendering code so that sensitive update rows emit `(sensitive)` instea
 raw `before`/`after` values.
 
 **Acceptance Criteria:**
-- [ ] `CompareJsonProperties` properly passes `showSensitive` (remove the `#pragma warning
+- [x] `CompareJsonProperties` properly passes `showSensitive` (remove the `#pragma warning
   disable IDE0060` suppression) or the flag is removed from the signature and masking is handled
   at the render layer.
-- [ ] Each comparison row with `is_sensitive = true` renders `(sensitive)` for its before/after
+- [x] Each comparison row with `is_sensitive = true` renders `(sensitive)` for its before/after
   value columns when `showSensitive = false`.
-- [ ] TC-06 and TC-07 pass.
-- [ ] No plaintext secret values appear in the existing `azapi-sensitive` update snapshot (to be
+- [x] TC-06 and TC-07 pass.
+- [x] No plaintext secret values appear in the existing `azapi-sensitive` update snapshot (to be
   verified by the snapshot update task).
 
 **Dependencies:** Task 2 (centralized sensitivity API), Task 7 (failing tests)

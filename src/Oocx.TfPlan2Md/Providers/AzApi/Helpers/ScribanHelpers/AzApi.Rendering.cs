@@ -68,7 +68,8 @@ public static partial class ScribanHelpers
                 beforeSensitive,
                 afterSensitive,
                 showUnchanged,
-                largeValueFormat);
+                largeValueFormat,
+                showSensitive);
 
             RenderUpdateBody(sb, updateInput);
         }

@@ -32,16 +32,19 @@ public static partial class ScribanHelpers
     /// <param name="Value">The create/delete mode value.</param>
     /// <param name="Before">The update mode "before" value.</param>
     /// <param name="After">The update mode "after" value.</param>
+    /// <param name="IsSensitive">Whether this entry is marked sensitive.</param>
     /// <remarks>
     /// Only one of <paramref name="Value"/> or <paramref name="Before"/>/<paramref name="After"/> is expected
     /// to be used depending on rendering mode.
     /// Related feature: docs/features/034-azapi-attribute-grouping/specification.md.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </remarks>
     private sealed record AzApiArrayItemEntry(
         string LocalPath,
         object? Value,
         object? Before,
-        object? After);
+        object? After,
+        bool IsSensitive = false);
 
     /// <summary>
     /// Extracts array item data from a grouped property list.
@@ -116,22 +119,30 @@ public static partial class ScribanHelpers
     /// <param name="isUpdateMode">Whether in update mode.</param>
     /// <param name="localPath">The local path within the array item.</param>
     /// <returns>The array item entry.</returns>
+    /// <remarks>
+    /// Reads the <c>is_sensitive</c> flag from the property object to propagate sensitivity
+    /// into the extracted entry. Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
     private static AzApiArrayItemEntry CreateArrayItemEntry(ScriptObject prop, bool isUpdateMode, string localPath)
     {
+        var isSensitive = prop["is_sensitive"] is bool sensitive && sensitive;
+
         if (isUpdateMode)
         {
             return new AzApiArrayItemEntry(
                 LocalPath: localPath,
                 Value: null,
                 Before: prop["before"],
-                After: prop["after"]);
+                After: prop["after"],
+                IsSensitive: isSensitive);
         }
 
         return new AzApiArrayItemEntry(
             LocalPath: localPath,
             Value: prop["value"],
             Before: null,
-            After: null);
+            After: null,
+            IsSensitive: isSensitive);
     }
 
     /// <summary>

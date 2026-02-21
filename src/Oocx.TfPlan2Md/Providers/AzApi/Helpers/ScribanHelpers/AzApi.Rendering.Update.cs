@@ -39,13 +39,15 @@ public static partial class ScribanHelpers
     /// <param name="AfterSensitive">The after_sensitive structure.</param>
     /// <param name="ShowUnchanged">Whether to include unchanged properties.</param>
     /// <param name="LargeValueFormat">Format for rendering large values.</param>
+    /// <param name="ShowSensitive">Whether to reveal sensitive values instead of masking them.</param>
     private sealed record UpdateBodyRenderInput(
         object BodyJson,
         object BeforeJson,
         object? BeforeSensitive,
         object? AfterSensitive,
         bool ShowUnchanged,
-        string LargeValueFormat);
+        string LargeValueFormat,
+        bool ShowSensitive);
 
     /// <summary>
     /// Renders update-mode content by comparing before/after and grouping property changes.
@@ -62,7 +64,7 @@ public static partial class ScribanHelpers
             input.BeforeSensitive,
             input.AfterSensitive,
             showUnchanged: true,
-            showSensitive: false);
+            showSensitive: input.ShowSensitive);
 
         var changedComparisons = CompareJsonProperties(
             input.BeforeJson,
@@ -70,7 +72,7 @@ public static partial class ScribanHelpers
             input.BeforeSensitive,
             input.AfterSensitive,
             showUnchanged: input.ShowUnchanged,
-            showSensitive: false);
+            showSensitive: input.ShowSensitive);
 
         var (smallAll, _) = SplitBySize(allComparisons);
         var (smallChanged, largeChanged) = SplitBySize(changedComparisons);
@@ -81,9 +83,9 @@ public static partial class ScribanHelpers
         var groups = IdentifyGroupedPrefixes(smallAll);
         var (groupsToRender, mainProps) = SelectUpdateGroupsAndMainProps(smallAll, groups, changedIndexesInAll);
 
-        RenderUpdateMainTable(sb, mainProps);
-        RenderUpdateGroupedSections(sb, groupsToRender, smallAll, changedIndexesInAll);
-        RenderLargeUpdateChanges(sb, largeChanged, input.LargeValueFormat);
+        RenderUpdateMainTable(sb, mainProps, input.ShowSensitive);
+        RenderUpdateGroupedSections(sb, groupsToRender, smallAll, changedIndexesInAll, input.ShowSensitive);
+        RenderLargeUpdateChanges(sb, largeChanged, input.LargeValueFormat, input.ShowSensitive);
         RenderNoChangesMessage(sb, smallChanged.Count, largeChanged.Count, "*No body changes detected*");
     }
 
@@ -199,7 +201,8 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="properties">The properties to render.</param>
-    private static void RenderUpdateMainTable(StringBuilder sb, ScriptArray properties)
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderUpdateMainTable(StringBuilder sb, ScriptArray properties, bool showSensitive)
     {
         if (properties.Count == 0)
         {
@@ -216,13 +219,21 @@ public static partial class ScribanHelpers
                 var path = prop[AzApiPathKey]?.ToString() ?? string.Empty;
                 var before = prop[AzApiBeforeKey];
                 var after = prop[AzApiAfterKey];
+                var isSensitive = prop["is_sensitive"] is bool s && s;
 
                 path = RemovePropertiesPrefix(path);
 
-                var beforeFormatted = FormatAttributeValueTable(path, before?.ToString(), AzApiValueFormatProviderName);
-                var afterFormatted = FormatAttributeValueTable(path, after?.ToString(), AzApiValueFormatProviderName);
+                if (isSensitive && !showSensitive)
+                {
+                    sb.AppendLine($"| {EscapeMarkdown(path)} | (sensitive) | (sensitive) |");
+                }
+                else
+                {
+                    var beforeFormatted = FormatAttributeValueTable(path, before?.ToString(), AzApiValueFormatProviderName);
+                    var afterFormatted = FormatAttributeValueTable(path, after?.ToString(), AzApiValueFormatProviderName);
 
-                sb.AppendLine($"| {EscapeMarkdown(path)} | {beforeFormatted} | {afterFormatted} |");
+                    sb.AppendLine($"| {EscapeMarkdown(path)} | {beforeFormatted} | {afterFormatted} |");
+                }
             }
         }
 
@@ -236,11 +247,13 @@ public static partial class ScribanHelpers
     /// <param name="groups">The groups that should be rendered.</param>
     /// <param name="allProperties">All small properties including unchanged.</param>
     /// <param name="changedIndexes">Set of indices representing changed properties.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
     private static void RenderUpdateGroupedSections(
         StringBuilder sb,
         IReadOnlyList<AzApiGroupedPrefix> groups,
         ScriptArray allProperties,
-        HashSet<int> changedIndexes)
+        HashSet<int> changedIndexes,
+        bool showSensitive)
     {
         foreach (var group in groups)
         {
@@ -255,11 +268,11 @@ public static partial class ScribanHelpers
 
             if (group.Kind == AzApiGroupedPrefixKind.Array)
             {
-                RenderUpdateArrayGroup(sb, group.Path, groupProps, group.MemberIndexes, changedIndexes);
+                RenderUpdateArrayGroup(sb, group.Path, groupProps, group.MemberIndexes, changedIndexes, showSensitive);
             }
             else
             {
-                RenderUpdatePrefixGroup(sb, group.Path, groupProps);
+                RenderUpdatePrefixGroup(sb, group.Path, groupProps, showSensitive);
             }
         }
     }
@@ -270,7 +283,8 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="groupPath">The prefix path for the section.</param>
     /// <param name="groupProps">The grouped properties.</param>
-    private static void RenderUpdatePrefixGroup(StringBuilder sb, string groupPath, ScriptArray groupProps)
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    private static void RenderUpdatePrefixGroup(StringBuilder sb, string groupPath, ScriptArray groupProps, bool showSensitive)
     {
         sb.AppendLine($"###### `{EscapeMarkdown(groupPath)}`");
         sb.AppendLine();
@@ -287,13 +301,21 @@ public static partial class ScribanHelpers
             var path = prop[AzApiPathKey]?.ToString() ?? string.Empty;
             var before = prop[AzApiBeforeKey];
             var after = prop[AzApiAfterKey];
+            var isSensitive = prop["is_sensitive"] is bool s && s;
 
             var localPath = RemoveNestedPrefix(path, groupPath);
 
-            var beforeFormatted = FormatAttributeValueTable(localPath, before?.ToString(), AzApiValueFormatProviderName);
-            var afterFormatted = FormatAttributeValueTable(localPath, after?.ToString(), AzApiValueFormatProviderName);
+            if (isSensitive && !showSensitive)
+            {
+                sb.AppendLine($"| {EscapeMarkdown(localPath)} | (sensitive) | (sensitive) |");
+            }
+            else
+            {
+                var beforeFormatted = FormatAttributeValueTable(localPath, before?.ToString(), AzApiValueFormatProviderName);
+                var afterFormatted = FormatAttributeValueTable(localPath, after?.ToString(), AzApiValueFormatProviderName);
 
-            sb.AppendLine($"| {EscapeMarkdown(localPath)} | {beforeFormatted} | {afterFormatted} |");
+                sb.AppendLine($"| {EscapeMarkdown(localPath)} | {beforeFormatted} | {afterFormatted} |");
+            }
         }
 
         sb.AppendLine();
@@ -307,12 +329,14 @@ public static partial class ScribanHelpers
     /// <param name="groupProps">The grouped properties for the array.</param>
     /// <param name="memberIndexes">The property indexes that belong to this group.</param>
     /// <param name="changedIndexes">Set of all changed property indexes.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
     private static void RenderUpdateArrayGroup(
         StringBuilder sb,
         string arrayPath,
         ScriptArray groupProps,
         IReadOnlyList<int> memberIndexes,
-        HashSet<int> changedIndexes)
+        HashSet<int> changedIndexes,
+        bool showSensitive)
     {
         sb.AppendLine($"###### `{EscapeMarkdown(arrayPath)}` Array");
         sb.AppendLine();
@@ -335,11 +359,11 @@ public static partial class ScribanHelpers
 
         if (ShouldRenderMatrixTable(items, maxPropertiesPerItem: 8))
         {
-            RenderUpdateArrayMatrixTable(sb, items);
+            RenderUpdateArrayMatrixTable(sb, items, showSensitive);
         }
         else
         {
-            RenderUpdateArrayPerItemTables(sb, items);
+            RenderUpdateArrayPerItemTables(sb, items, showSensitive);
         }
 
         sb.AppendLine();
@@ -350,7 +374,13 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="items">The extracted array items.</param>
-    private static void RenderUpdateArrayMatrixTable(StringBuilder sb, IReadOnlyList<AzApiArrayItem> items)
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    /// <remarks>
+    /// When <paramref name="showSensitive"/> is <c>false</c>, entries marked as sensitive
+    /// display <c>(sensitive)</c> instead of their actual before/after values.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
+    private static void RenderUpdateArrayMatrixTable(StringBuilder sb, IReadOnlyList<AzApiArrayItem> items, bool showSensitive)
     {
         var headers = items[0].Entries.Select(entry => entry.LocalPath).ToList();
 
@@ -392,9 +422,18 @@ public static partial class ScribanHelpers
                 sb.Append(' ');
 
                 var entry = byKey[header];
-                var beforeFormatted = FormatAttributeValueTable(header, entry.Before?.ToString(), AzApiValueFormatProviderName);
-                var afterFormatted = FormatAttributeValueTable(header, entry.After?.ToString(), AzApiValueFormatProviderName);
-                sb.Append(FormatUpdateCell(beforeFormatted, afterFormatted, entry.Before, entry.After));
+
+                if (!showSensitive && entry.IsSensitive)
+                {
+                    sb.Append("(sensitive)");
+                }
+                else
+                {
+                    var beforeFormatted = FormatAttributeValueTable(header, entry.Before?.ToString(), AzApiValueFormatProviderName);
+                    var afterFormatted = FormatAttributeValueTable(header, entry.After?.ToString(), AzApiValueFormatProviderName);
+                    sb.Append(FormatUpdateCell(beforeFormatted, afterFormatted, entry.Before, entry.After));
+                }
+
                 sb.Append(' ');
             }
 
@@ -456,7 +495,13 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="items">The extracted array items.</param>
-    private static void RenderUpdateArrayPerItemTables(StringBuilder sb, IReadOnlyList<AzApiArrayItem> items)
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    /// <remarks>
+    /// When <paramref name="showSensitive"/> is <c>false</c>, entries marked as sensitive
+    /// display <c>(sensitive)</c> for both before and after columns.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
+    private static void RenderUpdateArrayPerItemTables(StringBuilder sb, IReadOnlyList<AzApiArrayItem> items, bool showSensitive)
     {
         foreach (var item in items)
         {
@@ -467,9 +512,16 @@ public static partial class ScribanHelpers
 
             foreach (var entry in item.Entries)
             {
-                var beforeFormatted = FormatAttributeValueTable(entry.LocalPath, entry.Before?.ToString(), AzApiValueFormatProviderName);
-                var afterFormatted = FormatAttributeValueTable(entry.LocalPath, entry.After?.ToString(), AzApiValueFormatProviderName);
-                sb.AppendLine($"| {EscapeMarkdown(entry.LocalPath)} | {beforeFormatted} | {afterFormatted} |");
+                if (!showSensitive && entry.IsSensitive)
+                {
+                    sb.AppendLine($"| {EscapeMarkdown(entry.LocalPath)} | (sensitive) | (sensitive) |");
+                }
+                else
+                {
+                    var beforeFormatted = FormatAttributeValueTable(entry.LocalPath, entry.Before?.ToString(), AzApiValueFormatProviderName);
+                    var afterFormatted = FormatAttributeValueTable(entry.LocalPath, entry.After?.ToString(), AzApiValueFormatProviderName);
+                    sb.AppendLine($"| {EscapeMarkdown(entry.LocalPath)} | {beforeFormatted} | {afterFormatted} |");
+                }
             }
 
             sb.AppendLine();
@@ -482,7 +534,13 @@ public static partial class ScribanHelpers
     /// <param name="sb">The string builder to append markdown to.</param>
     /// <param name="properties">The large properties to render.</param>
     /// <param name="largeValueFormat">Format for rendering large values.</param>
-    private static void RenderLargeUpdateChanges(StringBuilder sb, ScriptArray properties, string largeValueFormat)
+    /// <param name="showSensitive">Whether to reveal sensitive values instead of masking them.</param>
+    /// <remarks>
+    /// When <paramref name="showSensitive"/> is <c>false</c>, properties flagged with
+    /// <c>is_sensitive</c> display <c>(sensitive)</c> instead of their actual content.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
+    private static void RenderLargeUpdateChanges(StringBuilder sb, ScriptArray properties, string largeValueFormat, bool showSensitive)
     {
         if (properties.Count == 0)
         {
@@ -498,17 +556,26 @@ public static partial class ScribanHelpers
             if (item is ScriptObject prop)
             {
                 var path = prop[AzApiPathKey]?.ToString() ?? string.Empty;
-                var before = prop[AzApiBeforeKey];
-                var after = prop[AzApiAfterKey];
-
                 path = RemovePropertiesPrefix(path);
 
                 sb.AppendLine($"##### **{EscapeMarkdown(path)}:**");
                 sb.AppendLine();
 
-                var beforeStr = before?.ToString();
-                var afterStr = after?.ToString();
-                sb.AppendLine(FormatLargeValue(beforeStr, afterStr, largeValueFormat));
+                var isSensitive = prop["is_sensitive"] is bool sensitive && sensitive;
+
+                if (!showSensitive && isSensitive)
+                {
+                    sb.AppendLine("*(sensitive)*");
+                }
+                else
+                {
+                    var before = prop[AzApiBeforeKey];
+                    var after = prop[AzApiAfterKey];
+                    var beforeStr = before?.ToString();
+                    var afterStr = after?.ToString();
+                    sb.AppendLine(FormatLargeValue(beforeStr, afterStr, largeValueFormat));
+                }
+
                 sb.AppendLine();
             }
         }

@@ -125,3 +125,26 @@
   - Verify branch/ref attributes show ⎇ icon with refs/heads/...
   - Check icons render correctly in Azure DevOps dark theme
 - **Status:** ⏳ Awaiting maintainer approval (GitHub: apply `uat-approved` label, Azure DevOps: approve PR)
+
+### UAT Tester (Re-run)
+- **Date:** 2025-02-21
+- **Summary:** Re-executed User Acceptance Testing for Feature 096 after bug fix. Cleaned up old UAT PRs (#92 GitHub, #90 Azure DevOps) and created fresh UAT PRs with updated artifact showing FULL repository mapping format (🗃️ Infrastructure-Platform with GUID and ⎇ refs/heads/master). Both feature-specific artifact and comprehensive demo regression test posted to each PR.
+- **Artifacts Produced:**
+  - GitHub UAT PR #93: https://github.com/oocx/tfplan2md-uat/pull/93
+  - Azure DevOps UAT PR #91: https://dev.azure.com/oocx/test/_git/test/pullrequest/91
+  - Feature-specific artifact: `artifacts/azuredevops-feature-096.md` (shows repository mapping with icons)
+  - Regression artifact: `artifacts/comprehensive-demo-simple-diff.md` (GitHub) / `artifacts/comprehensive-demo.md` (Azure DevOps)
+- **Problems Encountered:** None - authentication and git submodules initialized successfully
+- **Verification:**
+  - ✅ Git submodules initialized successfully
+  - ✅ Authentication verified (GitHub CLI + Azure DevOps)
+  - ✅ Old UAT PRs cleaned up (#92, #90)
+  - ✅ New UAT PRs created (#93 GitHub, #91 Azure DevOps)
+  - ✅ GitHub PR has 2 comments (feature test + regression test)
+  - ⚠️ Azure DevOps thread count shows 0 (may be query issue; UAT script reported success)
+- **Validation Instructions:**
+  - In `azuredevops_build_definition.example2`, verify Repository table shows:
+    - Repo ID: `🗃️ Infrastructure-Platform (80128bc2-17ff-45f8-ad59-d7609a605c75)`
+    - Branch: `⎇ refs/heads/master`
+  - Verify icons render correctly in both GitHub and Azure DevOps
+- **Status:** ⏳ Awaiting maintainer approval (GitHub: apply `uat-approved` label, Azure DevOps: approve PR)

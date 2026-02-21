@@ -135,8 +135,11 @@ internal static class VariableGroupFormatters
     {
         var format = largeValueFormat.ToString();
 
-        // For secret variables, always show masked value (no diff)
-        var valueDisplay = after.IsSecret
+        // For secret variables, always show masked value (no diff).
+        // Mask when either side is secret to prevent leaking values during
+        // is_secret transitions (e.g., secret → non-secret would expose the old value).
+        // Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+        var valueDisplay = (before.IsSecret || after.IsSecret)
             ? "`(sensitive / hidden)`"
             : FormatDiff(before.Value, after.Value, format);
 

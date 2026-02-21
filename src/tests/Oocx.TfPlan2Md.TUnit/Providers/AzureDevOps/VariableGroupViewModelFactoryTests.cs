@@ -291,6 +291,94 @@ public class VariableGroupViewModelFactoryTests
 
     #endregion
 
+    #region TC-11: Secret-to-NonSecret Transition Masks Before Value
+
+    /// <summary>
+    /// TC-11: When a variable transitions from <c>is_secret = true</c> (secret_variable) to
+    /// <c>is_secret = false</c> (variable), the original secret value must NOT be exposed.
+    /// The display should show masked value because either side was a secret.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md § Variable Group secret disclosure.
+    /// </summary>
+    [Test]
+    public void Build_UpdateSecretToNonSecret_MasksBeforeValue()
+    {
+        // Arrange: before has secret_variable, after has it as regular variable
+        var changeJson = CreateResourceChange("update", new
+        {
+            name = "test-group",
+            variable = Array.Empty<object>(),
+            secret_variable = new object[]
+            {
+                new { name = "API_KEY", value = "super-secret-key", enabled = true, content_type = "", expires = "" }
+            }
+        }, new
+        {
+            name = "test-group",
+            variable = new object[]
+            {
+                new { name = "API_KEY", value = "now-visible", enabled = true, content_type = "", expires = "" }
+            },
+            secret_variable = Array.Empty<object>()
+        });
+
+        // Act
+        var viewModel = VariableGroupViewModelFactory.Build(changeJson, ProviderName, DefaultFormat);
+
+        // Assert: the diff should mask the value because before was a secret
+        var apiKey = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`API_KEY`");
+        apiKey.Should().NotBeNull();
+        apiKey!.Value.Should().Be("`(sensitive / hidden)`",
+            "when transitioning from secret to non-secret, the value must remain masked to prevent leaking the old secret");
+    }
+
+    #endregion
+
+    #region TC-12: NonSecret-to-Secret Transition Masks Both Values
+
+    /// <summary>
+    /// TC-12: When a variable transitions from <c>is_secret = false</c> (variable) to
+    /// <c>is_secret = true</c> (secret_variable), both before and after values must be masked.
+    /// Although the after value is already masked by the existing <c>after.IsSecret</c> check,
+    /// the before plaintext could leak via diff formatting.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md § Variable Group secret disclosure.
+    /// </summary>
+    [Test]
+    public void Build_UpdateNonSecretToSecret_MasksBothValues()
+    {
+        // Arrange: before has regular variable, after has it as secret_variable
+        var changeJson = CreateResourceChange("update", new
+        {
+            name = "test-group",
+            variable = new object[]
+            {
+                new { name = "DB_PASSWORD", value = "plaintext-password", enabled = true, content_type = "", expires = "" }
+            },
+            secret_variable = Array.Empty<object>()
+        }, new
+        {
+            name = "test-group",
+            variable = Array.Empty<object>(),
+            secret_variable = new object[]
+            {
+                new { name = "DB_PASSWORD", value = "new-secret-value", enabled = true, content_type = "", expires = "" }
+            }
+        });
+
+        // Act
+        var viewModel = VariableGroupViewModelFactory.Build(changeJson, ProviderName, DefaultFormat);
+
+        // Assert: both values should be masked
+        var dbPwd = viewModel.VariableChanges.FirstOrDefault(v => v.Name == "`DB_PASSWORD`");
+        dbPwd.Should().NotBeNull();
+        dbPwd!.Value.Should().Be("`(sensitive / hidden)`",
+            "when transitioning from non-secret to secret, values must be masked to prevent leaking the before plaintext");
+        // Ensure the plaintext password is not anywhere in the value
+        dbPwd.Value.Should().NotContain("plaintext-password");
+        dbPwd.Value.Should().NotContain("new-secret-value");
+    }
+
+    #endregion
+
     #region Helper Methods
 
     /// <summary>

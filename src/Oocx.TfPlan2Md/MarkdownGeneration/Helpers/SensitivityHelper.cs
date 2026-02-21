@@ -34,6 +34,14 @@ internal static class SensitivityHelper
         Dictionary<string, string?> beforeSensitive,
         Dictionary<string, string?> afterSensitive)
     {
+        // Check root boolean sensitivity first: when Terraform marks the entire resource
+        // as sensitive, the flattened dictionary contains {"": "true"}.
+        if ((beforeSensitive.TryGetValue("", out var rootBefore) && rootBefore == "true")
+            || (afterSensitive.TryGetValue("", out var rootAfter) && rootAfter == "true"))
+        {
+            return true;
+        }
+
         // Check all hierarchical paths (key itself, then parent paths)
         foreach (var pathToCheck in GetHierarchicalPaths(key))
         {
@@ -55,8 +63,10 @@ internal static class SensitivityHelper
     /// <remarks>
     /// Examples:
     /// - Input: "variable[0].secret_value" → Output: ["variable[0].secret_value", "variable[0]", "variable"].
-    /// - Input: "repository[0].secrets[1].value" → Output: ["repository[0].secrets[1].value", "repository[0].secrets[1]", "repository[0].secrets", "repository[0]", "repository"].
+    /// - Input: "a[0].b[1]" → Output: ["a[0].b[1]", "a[0].b", "a[0]", "a"].
+    /// - Input: "secrets[0]" → Output: ["secrets[0]", "secrets"].
     /// - Input: "simple_attr" → Output: ["simple_attr"].
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </remarks>
     internal static IEnumerable<string> GetHierarchicalPaths(string key)
     {
@@ -71,7 +81,18 @@ internal static class SensitivityHelper
         {
             var parentPath = string.Join('.', parts.Take(i));
 
-            // If the parent path contains array indices, also check without the index
+            // If the last removed segment had an array index, also yield the parent path
+            // with that segment but without the index. For example, when processing
+            // "a[0].b[1]" and removing "b[1]", we first yield "a[0].b" (strip index from
+            // the removed segment and append to parent), then yield "a[0]" (the parent itself).
+            var removedSegment = parts[i];
+            if (removedSegment.Contains('['))
+            {
+                var segmentBase = removedSegment[..removedSegment.IndexOf('[')];
+                yield return $"{parentPath}.{segmentBase}";
+            }
+
+            // If the parent path itself contains array indices, also check without the index
             // e.g., "variable[0]" should also check "variable"
             if (parentPath.Contains('['))
             {
@@ -80,6 +101,14 @@ internal static class SensitivityHelper
             }
 
             yield return parentPath;
+        }
+
+        // Handle top-level array keys without dots (e.g., "secrets[0]" → "secrets")
+        // The loop above only runs when parts.Length > 1, so single-segment array keys
+        // need this additional check.
+        if (parts.Length == 1 && key.Contains('['))
+        {
+            yield return key[..key.IndexOf('[')];
         }
     }
 }

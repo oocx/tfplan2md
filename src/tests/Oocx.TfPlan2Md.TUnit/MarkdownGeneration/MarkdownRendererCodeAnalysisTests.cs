@@ -76,6 +76,23 @@ public class MarkdownRendererCodeAnalysisTests
     }
 
     [Test]
+    public void Render_CodeAnalysisFindingsTable_HelpUriWithGreaterThan_IsEscapedForAngleBracketLinks()
+    {
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var helpUriWithGreaterThan = "rules/contains>char";
+        var finding = CreateFinding("null_resource.test", helpUriWithGreaterThan, 9.5);
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain("[Details](<rules/contains%3Echar>)", "because angle-bracket destinations must not be terminated by raw greater-than characters");
+        markdown.Should().NotContain("[Details](<rules/contains>char>)", "because raw greater-than would break the markdown link destination");
+    }
+
+    [Test]
     public void Render_CodeAnalysisFindingsTable_DoesNotInsertBlankLines()
     {
         var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));

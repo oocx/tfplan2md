@@ -82,6 +82,29 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Escapes a markdown link destination for angle-bracket form <c>(&lt;...&gt;)</c>.
+    /// Related feature: docs/features/056-static-analysis-integration/specification.md.
+    /// </summary>
+    /// <param name="input">The raw URL or destination value.</param>
+    /// <returns>A destination-safe value that cannot prematurely terminate the link target.</returns>
+    public static string EscapeMarkdownLinkDestination(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
+        var value = input;
+        value = value.Replace("<", "%3C", StringComparison.Ordinal);
+        value = value.Replace(">", "%3E", StringComparison.Ordinal);
+        value = value.Replace("\r\n", string.Empty, StringComparison.Ordinal);
+        value = value.Replace("\n", string.Empty, StringComparison.Ordinal);
+        value = value.Replace("\r", string.Empty, StringComparison.Ordinal);
+
+        return value;
+    }
+
+    /// <summary>
     /// HTML encodes a string while preserving emoji characters.
     /// Manually escapes HTML special characters without encoding Unicode emoji.
     /// </summary>

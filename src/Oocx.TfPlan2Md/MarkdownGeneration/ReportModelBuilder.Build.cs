@@ -34,8 +34,8 @@ internal partial class ReportModelBuilder
         // The summary must reflect actual Terraform changes (all resources).
         // Related feature: docs/features/068-parent-child-resource-grouping/specification.md
         var toAdd = BuildActionSummary(allChanges.Where(c => c.Action == "create"));
-        var toChange = BuildActionSummary(allChanges.Where(c => c.Action is "update" or "forget" or "unknown"));
-        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action == "delete"));
+        var toChange = BuildActionSummary(allChanges.Where(c => c.Action is "update" or "unknown"));
+        var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action is "delete" or "forget"));
         var toReplace = BuildActionSummary(allChanges.Where(c => c.Action == "replace"));
         var noOp = BuildActionSummary(allChanges.Where(c => c.Action == "no-op"));
 

@@ -33,6 +33,7 @@ public static partial class ScribanHelpers
         scriptObject.Import("diff_array", new Func<object?, object?, string, ScriptObject>(DiffArray));
         scriptObject.Import("escape_markdown", new Func<string?, string>(EscapeMarkdown));
         scriptObject.Import("escape_markdown_table_cell", new Func<string?, string>(EscapeMarkdownTableCell));
+        scriptObject.Import("escape_markdown_link_destination", new Func<string?, string>(EscapeMarkdownLinkDestination));
         scriptObject.Import("escape_heading", new Func<string?, string>(EscapeMarkdownHeading));
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
         scriptObject.Import("format_value", new Func<string?, string?, string>((value, provider) => FormatValueWithRegistry(value, provider, valueFormatterRegistry)));

@@ -208,6 +208,32 @@ public class ReportModelBuilderRefactoringTests
     }
 
     [Test]
+    public void Build_ForgetAction_CountedInDestroySummary()
+    {
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([ForgetAction]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        model.Summary.ToDestroy.Count.Should().Be(1, "forget removes resources from state and should be reflected as destroy in summary");
+        model.Summary.ToChange.Count.Should().Be(0, "forget should not be grouped under change summary counts");
+    }
+
+    [Test]
     public void Build_UnknownAction_ActionIsUnknown()
     {
         var plan = new TerraformPlan(

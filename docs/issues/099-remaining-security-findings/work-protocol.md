@@ -41,3 +41,16 @@
 - **Artifacts Produced:**
   - `docs/issues/099-remaining-security-findings/code-review.md`
 - **Problems Encountered:** None
+
+### Developer (Rework)
+- **Date:** 2026-02-22
+- **Summary:** Addressed code review follow-up items: moved `forget` from summary "to change" to "to destroy", added link-destination escaping for `help_uri` angle-bracket links to handle raw `>` safely, and added regression tests for both behaviors.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/Markdown.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/Registry.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_code_analysis_findings.sbn`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderRefactoringTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererCodeAnalysisTests.cs`
+  - `docs/issues/099-remaining-security-findings/work-protocol.md`
+- **Problems Encountered:** Initial template run failed because the new helper was not registered; resolved by adding it to Scriban helper registry.

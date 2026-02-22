@@ -316,19 +316,19 @@ Extend the Scriban template context to include masked-by-default JSON and explic
 maps, as specified in `architecture.md § Option 2`.
 
 **Acceptance Criteria:**
-- [ ] `ResourceChangeModel` gains `BeforeSensitive` and `AfterSensitive` properties (type
-  `object?`, consistent with `BeforeJson` / `AfterJson`).
-- [ ] `ReportModelBuilder.BuildResourceChangeModel` populates these from
-  `rc.Change.BeforeSensitive` and `rc.Change.AfterSensitive`.
-- [ ] `AotScriptObjectMapper.MapResourceChange` maps `before_sensitive` and `after_sensitive`
+- [x] `ResourceChangeModel` gains `BeforeSensitive` and `AfterSensitive` properties (type
+  `object?`, consistent with `BeforeJson` / `AfterJson`). (Done in Task 6)
+- [x] `ReportModelBuilder.BuildResourceChangeModel` populates these from
+  `rc.Change.BeforeSensitive` and `rc.Change.AfterSensitive`. (Done in Task 6)
+- [x] `AotScriptObjectMapper.MapResourceChange` maps `before_sensitive` and `after_sensitive`
   into the `ScriptObject` using the same `ConvertToScriptObject` helper as `before_json` /
-  `after_json`.
-- [ ] `AotScriptObjectMapper.MapResourceChange` applies the sensitivity mask to `before_json` /
+  `after_json`. (Done in Task 6)
+- [x] `AotScriptObjectMapper.MapResourceChange` applies the sensitivity mask to `before_json` /
   `after_json` before placing them in the `ScriptObject`: when `showSensitive = false`,
   any leaf value whose key is sensitive (per the centralized sensitivity API) is replaced with
-  the string `"(sensitive)"`.
-- [ ] TC-08, TC-09, TC-10 pass.
-- [ ] Existing template-based snapshot tests continue to pass (no unintended masking of
+  the string `"(sensitive)"`. Also required `CompareJsonProperties` fix to handle pre-masked data.
+- [x] TC-08, TC-09, TC-10 pass.
+- [x] Existing template-based snapshot tests continue to pass (no unintended masking of
   non-sensitive values).
 
 **Dependencies:** Task 2 (centralized sensitivity API), Task 9 (failing tests)
@@ -355,15 +355,15 @@ baseline files that currently encode the broken (plaintext) behavior. Verify all
 guard tests pass.
 
 **Acceptance Criteria:**
-- [ ] `TestData/Snapshots/azapi-sensitive.md` updated: `administratorLoginPassword` row shows
-  `` `(sensitive)` `` instead of `` `P@ssw0rd123!` ``.
-- [ ] `TestData/Snapshots/azapi-body-sensitive.md` updated: all body property rows show
-  `` `(sensitive)` `` instead of plaintext values.
-- [ ] TC-20 (regression guard — existing sensitive attribute masking) passes.
-- [ ] TC-21 (regression guard — non-sensitive attributes not over-masked) passes.
-- [ ] All `AzapiSnapshotTests` pass after baseline regeneration.
-- [ ] Commit message for the snapshot update includes the token `SNAPSHOT_UPDATE_OK` (project
-  convention required by `.github/copilot-instructions.md`).
+- [x] `TestData/Snapshots/azapi-sensitive.md` updated: `administratorLoginPassword` row shows
+  `` `(sensitive)` `` instead of `` `P@ssw0rd123!` ``. (Done in Task 6 snapshot update)
+- [x] `TestData/Snapshots/azapi-body-sensitive.md` updated: all body property rows show
+  `` `(sensitive)` `` instead of plaintext values. (Updated in Task 10 with `accessPolicies` row added)
+- [x] TC-20 (regression guard — existing sensitive attribute masking) passes.
+- [x] TC-21 (regression guard — non-sensitive attributes not over-masked) passes.
+- [x] All `AzapiSnapshotTests` pass after baseline regeneration.
+- [x] Commit message for the snapshot update includes the token `SNAPSHOT_UPDATE_OK` (project
+  convention required by `.github/copilot-instructions.md`). (Included in Task 10 commit)
 
 **Dependencies:** Task 6, Task 8
 

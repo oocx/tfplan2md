@@ -488,24 +488,38 @@ internal static class AotScriptObjectMapper
         foreach (var key in json.GetMembers())
         {
             var sensitiveValue = sensitivity.TryGetValue(key, out var sv) ? sv : null;
+            MaskKeyIfSensitive(json, key, sensitiveValue);
+        }
+    }
 
-            if (sensitiveValue is bool isSensitive && isSensitive)
+    /// <summary>
+    /// Masks a single key in a <see cref="ScriptObject"/> based on its sensitivity marker.
+    /// </summary>
+    /// <param name="json">The parent object containing the key.</param>
+    /// <param name="key">The property key to evaluate.</param>
+    /// <param name="sensitiveValue">
+    /// The sensitivity marker: <c>true</c> means the property is fully sensitive,
+    /// a <see cref="ScriptObject"/> means recurse into sub-properties,
+    /// anything else means the property is not sensitive.
+    /// </param>
+    private static void MaskKeyIfSensitive(ScriptObject json, string key, object? sensitiveValue)
+    {
+        if (sensitiveValue is bool isSensitive && isSensitive)
+        {
+            // This leaf/subtree is marked sensitive — mask it
+            if (json[key] is ScriptObject childObj)
             {
-                // This leaf/subtree is marked sensitive — mask it
-                if (json[key] is ScriptObject childObj)
-                {
-                    MaskAllLeaves(childObj);
-                }
-                else
-                {
-                    json[key] = "(sensitive)";
-                }
+                MaskAllLeaves(childObj);
             }
-            else if (sensitiveValue is ScriptObject sensitiveChild && json[key] is ScriptObject jsonChild)
+            else
             {
-                // Recurse into nested structure
-                MaskSensitiveLeaves(jsonChild, sensitiveChild);
+                json[key] = "(sensitive)";
             }
+        }
+        else if (sensitiveValue is ScriptObject sensitiveChild && json[key] is ScriptObject jsonChild)
+        {
+            // Recurse into nested structure
+            MaskSensitiveLeaves(jsonChild, sensitiveChild);
         }
     }
 

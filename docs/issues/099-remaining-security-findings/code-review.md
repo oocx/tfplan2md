@@ -12,7 +12,7 @@ Reviewed the implementation of five security/correctness fixes from `analysis.md
 |-------|--------|
 | Tests | ✅ Pass — 1209/1209 passed, 0 failed |
 | Build | ✅ Success |
-| Docker | Not checked (Linux host, no Docker available) |
+| Docker | ✅ Builds and runs — smoke test produces valid markdown output |
 | Workspace errors | None observed |
 | Markdownlint (`artifacts/comprehensive-demo.md`) | ⚠️ 1 error — MD024 line 665 ("📦 Module: `module.network`") — **pre-existing on `main`**, not introduced by this PR |
 | CHANGELOG.md | ✅ Not modified |

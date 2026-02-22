@@ -825,6 +825,22 @@ All summary values are automatically escaped to ensure valid markdown output.
 - Sensitive values are **masked by default** for security
 - Use `--show-sensitive` flag to reveal sensitive values in the output
 
+Masking is applied comprehensively across all rendering paths:
+
+- **Attribute tables** — individual attributes marked sensitive by Terraform are shown as `(sensitive)`
+- **AzApi body tables** — flattened JSON body properties (create, update, delete, replace) are masked when the corresponding `before_sensitive` / `after_sensitive` metadata marks them as sensitive
+- **Azure DevOps Variable Group diffs** — a variable cell is masked as `(sensitive / hidden)` when either the before or after state has `is_secret: true` (including transitions where a variable gains or loses secret status)
+- **Scriban template JSON context** — `before_json` and `after_json` objects supplied to templates are masked before template rendering; any leaf whose path matches a sensitivity entry in `before_sensitive` / `after_sensitive` is replaced with `(sensitive)`
+
+**Hierarchical sensitivity detection** handles all Terraform sensitivity encodings:
+
+| Terraform encoding | Example | Effect |
+|---|---|---|
+| Exact path | `{"password": true}` | `password` is masked |
+| Root boolean | `before_sensitive: true` | Every attribute in the resource is masked |
+| Array-parent | `{"secrets": true}` | `secrets[0]`, `secrets[1]`, … are all masked |
+| Nested path | `{"properties.accessPolicies": true}` | All child keys are masked |
+
 ### Attribute Tables
 
 Attribute tables in the default template now vary by the resource change action to make output more concise and meaningful:
@@ -979,7 +995,8 @@ Templates have access to the following variables:
   - `summary` - One-line summary of the resource change (auto-generated)
   - `replace_paths` - Array of attribute paths that triggered replacement (Terraform 1.2+, may be null)
   - `attribute_changes` - List of attribute changes with `name`, `before`, `after`, and `is_sensitive`
-  - `before_json`, `after_json` - Raw JSON state (for resource-specific templates)
+  - `before_json`, `after_json` - JSON state objects for resource-specific templates. When `--show-sensitive` is **not** enabled, any leaf matching a sensitivity entry is replaced with `(sensitive)` before the template sees the value (masked by default). Pass `--show-sensitive` to receive raw values.
+  - `before_sensitive`, `after_sensitive` - Sensitivity metadata from the Terraform plan (object or boolean). Templates can inspect these to understand which paths are masked or to drive layout decisions.
 - **`module_changes`** - Resource changes grouped by module, each with:
   - `module_address` - Module address (empty string for root)
   - `changes` - Array of resource changes for this module

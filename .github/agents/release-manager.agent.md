@@ -1,7 +1,7 @@
 ---
 description: Coordinate and execute releases
 name: Release Manager
-model: Gemini 3 Flash (Preview)
+model: Claude Sonnet 4.6
 target: vscode
 tools: ['vscode/askQuestions', 'search', 'execute/runInTerminal', 'execute/runTests', 'execute/testFailure', 'read/problems', 'search/changes', 'search/usages', 'read/readFile', 'search/listDirectory', 'search/codebase', 'read/terminalLastCommand', 'execute/getTerminalOutput', 'web/githubRepo', 'github/*', 'todo']
 handoffs:

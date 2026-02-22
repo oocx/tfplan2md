@@ -34,3 +34,10 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderRefactoringTests.cs`
   - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/nsg-with-separate-rule-updates.md`
 - **Problems Encountered:** Snapshot regeneration script generated baselines in `bin/` output only; one missing baseline (`nsg-with-separate-rule-updates.md`) was added to source snapshots to satisfy deterministic test execution.
+
+### Code Reviewer
+- **Date:** 2026-02-22
+- **Summary:** Reviewed all five security/correctness fixes. All 1209 tests pass. Spec compliance verified line-by-line. One Blocker: `SNAPSHOT_UPDATE_OK` token missing from commit messages. Two minor gaps (forget summary bucket semantics, unencoded `>` in angle-bracket URLs) noted. Changes Requested.
+- **Artifacts Produced:**
+  - `docs/issues/099-remaining-security-findings/code-review.md`
+- **Problems Encountered:** None

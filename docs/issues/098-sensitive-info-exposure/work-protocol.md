@@ -96,6 +96,6 @@
 
 ### Code Reviewer (Round 2)
 - **Date:** 2026-02-22
-- **Summary:** Re-reviewed rework commits (B-1 Technical Writer log, B-2 UAT artifacts, M-1 dedup, M-2 SecretValue removal, M-3 ScriptArray sensitivity). 1203/1203 tests pass; coverage line 88.28% / branch 78.53% (both above thresholds); all previously raised issues correctly addressed. One new Blocker (B-3): the Technical Writer's `docs/features.md` changes are present in the working tree but were never committed — `git status` shows ` M docs/features.md`. Decision: **Changes Requested** (B-3 only).
-- **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/code-review.md` — Round 2 section appended
+- **Summary:** Re-reviewed rework commits (B-1 Technical Writer log, B-2 UAT artifacts, M-1 dedup, M-2 SecretValue removal, M-3 ScriptArray sensitivity). 1203/1203 tests pass; coverage line 88.28% / branch 78.53% (both above thresholds); all previously raised issues correctly addressed. One new Blocker (B-3): the Technical Writer's `docs/features.md` changes are present in the working tree but were never committed — resolved by committing `docs/features.md` in `8c6706aa`. Final decision: **Approved**.
+- **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/code-review.md` — Round 2 section appended and finalized; `docs/features.md` committed (8c6706aa)
 - **Problems Encountered:** Docker daemon not running; Docker build not verified this round.

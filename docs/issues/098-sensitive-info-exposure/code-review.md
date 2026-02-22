@@ -313,14 +313,16 @@ diffs). Only `docs/features.md` is missing from the commit history.
 | Document | Required Update? | Updated? | Notes |
 |----------|-----------------|----------|-------|
 | `docs/adr-009-template-json-sensitivity-masking.md` | ✅ Status change | ✅ Status = Accepted |
-| `docs/features.md` | ✅ Required | ❌ **Changes exist in working tree but are uncommitted — Blocker B-3** |
+| `docs/features.md` | ✅ Required | ✅ **Committed in 8c6706aa — Blocker B-3 resolved** |
 | `docs/architecture.md` | Partial (ADR reference) | ✅ (committed on branch) |
-| `docs/features.md` template variable reference | ✅ Required | ❌ **Not committed — Blocker B-3** |
 
 ---
 
-### Next Steps (Round 2)
+### Round 2 Final Decision
 
-1. **Developer:** `git add docs/features.md && git commit -m "docs: update features.md with sensitive value masking coverage"` and push.
-2. **Developer:** Verify Docker build once Docker daemon is available (pre-existing gap from Round 1; not a new Blocker, but should be confirmed before release).
-3. Return to **Code Reviewer** for Round 3 (expected to be approval-only).
+**Status: Approved** ✅
+
+All Blockers (B-1, B-2, B-3), all Minor issues (M-1, M-2, M-3), and the Suggestion (S-1) from Round 1 are fully resolved. 1203/1203 tests pass; coverage above thresholds; no new markdownlint errors; UAT artifacts present with zero plaintext secrets.
+
+**Next:** Proceed to **UAT Tester** agent (user-facing markdown rendering change — UAT required per checklist).
+

@@ -105,3 +105,13 @@
 - **Summary:** Ran UAT on both GitHub (PR #94) and Azure DevOps (PR #92) using the feature-specific `uat-plan.md` artifact and the comprehensive demo for regression. All 6 exposure paths verified: AzApi create/update/delete body sensitivity, Variable Group `is_secret` transition, root-boolean sensitivity, array-parent sensitivity. Regression test confirmed no accidental over-masking on unrelated resources. Maintainer confirmed both platforms passed. PRs cleaned up.
 - **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/uat-report.md`
 - **Problems Encountered:** Azure DevOps `AZURE_DEVOPS_EXT_PAT` not set in environment; resolved by deriving token from active `az` CLI session. GitHub UAT PR state file was stale from a previous feature; manually updated `.tmp/uat-run/last-run.json`.
+
+### Release Manager
+- **Date:** 2026-02-22
+- **Summary:** Verified Work Protocol completeness (all required Bug Fix agents present), code review approval (Round 2 Approved), and UAT completion (GitHub PR #94 closed after review, Azure DevOps also completed per maintainer confirmation). Generated release screenshots via native Chromium (Playwright `ScreenshotAsync` timed out on font loading in the current WSL environment; screenshots captured successfully using `chrome --headless --screenshot`). Created `docs/issues/098-sensitive-info-exposure/release-notes.md` and pushed screenshots. Pre-release checklist: working tree clean, branch up to date with remote, commits follow conventional format. No Docker build this session (daemon not running). Proceeding to create PR.
+- **Artifacts Produced:**
+  - `docs/issues/098-sensitive-info-exposure/release-notes.md`
+  - `docs/issues/098-sensitive-info-exposure/098-azapi-create.png`
+  - `docs/issues/098-sensitive-info-exposure/098-vargroup.png`
+  - `docs/issues/098-sensitive-info-exposure/098-azapi-full.png`
+- **Problems Encountered:** Playwright `ScreenshotAsync` timed out (30s) waiting for fonts to load; worked around using native `chrome --headless --screenshot` from the Playwright Chromium installation. Screenshots are lower-fidelity than CDN-styled HTML but clearly show the masking behavior.

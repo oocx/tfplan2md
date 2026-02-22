@@ -16,3 +16,21 @@
   - `docs/issues/099-remaining-security-findings/work-protocol.md`
   - `docs/issues/099-remaining-security-findings/analysis.md`
 - **Problems Encountered:** None
+
+### Developer
+- **Date:** 2026-02-22
+- **Summary:** Implemented the remaining security/correctness fixes from `analysis.md`: fail-gate now fails on SARIF load warnings, custom template loading blocks traversal outside `--template-dir`, code-analysis help links use CommonMark-safe angle brackets, summary HTML encodes `model.Type`, and Terraform action mapping now recognizes `forget` plus marks non-empty unknown action sets as `unknown` (instead of `no-op`).
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/ProgramEntry.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/TemplateLoader.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_code_analysis_findings.sbn`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ResourceSummaryHtmlBuilder.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/CLI/ProgramMainTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ScribanTemplateLoaderTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererCodeAnalysisTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderSummaryTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderRefactoringTests.cs`
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/nsg-with-separate-rule-updates.md`
+- **Problems Encountered:** Snapshot regeneration script generated baselines in `bin/` output only; one missing baseline (`nsg-with-separate-rule-updates.md`) was added to source snapshots to satisfy deterministic test execution.

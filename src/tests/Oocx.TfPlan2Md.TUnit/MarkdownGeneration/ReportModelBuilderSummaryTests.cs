@@ -205,6 +205,34 @@ public class ReportModelBuilderSummaryTests
         model.Changes.Single().SummaryHtml.Should().Be(SummaryOverrideFactory.OverrideSummaryHtml);
     }
 
+    [Test]
+    public void Build_SummaryHtml_EncodesResourceType()
+    {
+        var change = new Change([CreateAction], null, JsonDocument.Parse("{}").RootElement, null, null, null);
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new[]
+            {
+                new ResourceChange(
+                    "azurerm_virtual_network.demo",
+                    null,
+                    "managed",
+                    "azurerm_virtual_network<script>alert(1)</script>",
+                    "demo",
+                    "registry.terraform.io/hashicorp/azurerm",
+                    change)
+            });
+
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        var summary = model.Changes.Single().SummaryHtml;
+        summary.Should().Contain("azurerm_virtual_network&lt;script&gt;alert(1)&lt;/script&gt;");
+        summary.Should().NotContain("<script>");
+    }
+
     /// <summary>
     /// Verifies that provider factories can override Summary before the generic builder runs.
     /// </summary>

@@ -202,6 +202,38 @@ public class ProgramMainTests
     }
 
     /// <summary>
+    /// Verifies malformed SARIF input causes failure when fail-on severity is enabled.
+    /// </summary>
+    [Test]
+    public async Task Main_WithInvalidSarifAndFailOnSeverity_ReturnsExitCode10()
+    {
+        var inputPath = GetTestDataPath("minimal-plan.json");
+        var sarifPath = GetTempPath("invalid-sarif-for-fail-gate.sarif");
+        var outputPath = GetTempPath("code-analysis-warning-fail-output.md");
+
+        await File.WriteAllTextAsync(sarifPath, "not-json");
+        if (File.Exists(outputPath))
+        {
+            File.Delete(outputPath);
+        }
+
+        var result = await RunMainAsync([
+            inputPath,
+            "--code-analysis-results",
+            sarifPath,
+            "--fail-on-static-code-analysis-errors",
+            "low",
+            "--output",
+            outputPath
+        ]);
+
+        result.ExitCode.Should().Be(10);
+        var combinedOutput = result.StdErr + result.StdOut;
+        combinedOutput.Should().Contain("Static code analysis input warnings", "because malformed SARIF must fail the gate when fail-on is enabled");
+        combinedOutput.Should().Contain(sarifPath, "because warning output should identify the failed SARIF file");
+    }
+
+    /// <summary>
     /// Invokes the program entry point while capturing stdout/stderr.
     /// </summary>
     /// <param name="args">Command-line arguments.</param>

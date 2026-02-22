@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Encodings.Web;
 using static Oocx.TfPlan2Md.MarkdownGeneration.ScribanHelpers;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
@@ -42,7 +43,8 @@ internal static class ResourceSummaryHtmlBuilder
             ? model.Name
             : ExtractTerraformLocalName(model.Address);
 
-        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{model.Type} <b>{FormatCodeSummary(displayName)}</b>";
+        var encodedType = HtmlEncoder.Default.Encode(model.Type);
+        var prefix = $"{model.ActionSymbol}{NonBreakingSpace}{encodedType} <b>{FormatCodeSummary(displayName)}</b>";
         var detailParts = new List<string>();
         var refactoringContext = BuildRefactoringContext(model);
 

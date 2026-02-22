@@ -175,6 +175,36 @@ public class ScribanTemplateLoaderTests
         }
     }
 
+    [Test]
+    public void Loader_WithTraversalInclude_ThrowsAndDoesNotReadOutsideCustomDirectory()
+    {
+        var tempDirectory = CreateTempDirectory();
+        try
+        {
+            var outsidePath = Path.Combine(Directory.GetParent(tempDirectory)!.FullName, "outside-secret.sbn");
+            File.WriteAllText(outsidePath, "outside-content");
+
+            var mainTemplatePath = Path.Combine(tempDirectory, "main.sbn");
+            File.WriteAllText(mainTemplatePath, "{{ include '../outside-secret' }}");
+
+            var loader = new ScribanTemplateLoader(tempDirectory);
+            var template = Template.Parse(File.ReadAllText(mainTemplatePath), "main.sbn");
+            var context = new TemplateContext
+            {
+                TemplateLoader = loader
+            };
+
+            var render = () => template.Render(context);
+
+            render.Should().Throw<Exception>()
+                .WithMessage("*outside-secret*", "because traversal attempts should fail fast and include the requested template path");
+        }
+        finally
+        {
+            Directory.Delete(tempDirectory, true);
+        }
+    }
+
     private static string CreateTempDirectory()
     {
         var directory = Path.Combine(Path.GetTempPath(), "tfplan2md-templates-" + Guid.NewGuid());

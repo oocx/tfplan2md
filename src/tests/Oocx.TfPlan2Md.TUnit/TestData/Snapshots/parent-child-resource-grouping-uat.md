@@ -108,8 +108,8 @@ and as separate resources. This configuration will cause conflicts.
 
 | Severity | Tool | Attribute | Finding | Remediation |
 | -------- | ---- | --------- | ------- | ----------- |
-| 🚨 Critical | Checkov | `members` | External senders should not be allowed for security groups<br/>Rule: `CKV_AZURE_999` | [Details](https://example.com/fix1) |
-| ⚠️ Medium | Checkov | `member_object_id` | High-risk user account added to security group<br/>Rule: `CUSTOM_1`<br/>Resource: `azuread_group_member.contractor_high_risk` | [Details](https://example.com/fix2) |
+| 🚨 Critical | Checkov | `members` | External senders should not be allowed for security groups<br/>Rule: `CKV_AZURE_999` | [Details](<https://example.com/fix1>) |
+| ⚠️ Medium | Checkov | `member_object_id` | High-risk user account added to security group<br/>Rule: `CUSTOM_1`<br/>Resource: `azuread_group_member.contractor_high_risk` | [Details](<https://example.com/fix2>) |
 
 </details>
 

@@ -199,6 +199,18 @@ internal static class ProgramEntry
     /// <returns>True when a failure should terminate execution; otherwise false.</returns>
     private static async Task<bool> HandleCodeAnalysisFailureAsync(CodeAnalysisInput codeAnalysisInput)
     {
+        if (codeAnalysisInput.Warnings.Count > 0)
+        {
+            await Console.Error.WriteLineAsync("Static code analysis input warnings detected:");
+            foreach (var warning in codeAnalysisInput.Warnings)
+            {
+                await Console.Error.WriteLineAsync($"- {warning.FilePath}: {warning.Message}");
+            }
+
+            await Console.Error.FlushAsync();
+            return true;
+        }
+
         var failureCount = CodeAnalysisFailureEvaluator.CountFindingsAtOrAbove(
             codeAnalysisInput.Model,
             codeAnalysisInput.FailOnLevel!.Value);

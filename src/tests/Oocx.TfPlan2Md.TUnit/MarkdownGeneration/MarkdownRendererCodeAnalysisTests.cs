@@ -52,11 +52,27 @@ public class MarkdownRendererCodeAnalysisTests
         markdown.Should().Contain("🔒 **Security & Quality:**", "because the metadata line should appear with lock icon");
         markdown.Should().Contain("#### 🔒 Security & Quality Findings for", "because the findings table heading should have lock icon");
         markdown.Should().Contain("| 🚨 Critical | - | `triggers.endpoint` |", "because attribute paths should render with backticks for findings");
-        markdown.Should().Contain($"[Details]({CriticalHelpUri})");
+        markdown.Should().Contain($"[Details](<{CriticalHelpUri}>)");
 
         var criticalIndex = markdown.IndexOf("🚨 Critical", StringComparison.Ordinal);
         var lowIndex = markdown.IndexOf("ℹ️ Low", StringComparison.Ordinal);
         criticalIndex.Should().BeLessThan(lowIndex, "because findings should be ordered by severity");
+    }
+
+    [Test]
+    public void Render_CodeAnalysisFindingsTable_HelpUriWithParentheses_UsesAngleBracketLinks()
+    {
+        var plan = _parser.Parse(File.ReadAllText(MinimalPlanPath));
+        var helpUriWithParentheses = "https://example.test/rules/path(with-parentheses)";
+        var finding = CreateFinding("null_resource.test", helpUriWithParentheses, 9.5);
+        var codeAnalysisInput = BuildInput([finding]);
+
+        var builder = new ReportModelBuilder(codeAnalysisInput: codeAnalysisInput);
+        var model = builder.Build(plan);
+
+        var markdown = _renderer.Render(model);
+
+        markdown.Should().Contain($"[Details](<{helpUriWithParentheses}>)", "because URLs containing parentheses should be emitted as CommonMark-safe links");
     }
 
     [Test]

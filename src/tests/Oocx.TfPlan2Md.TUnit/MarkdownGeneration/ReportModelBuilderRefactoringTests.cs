@@ -13,8 +13,10 @@ public class ReportModelBuilderRefactoringTests
     private const string ProviderName = "provider";
     private const string CreateAction = "create";
     private const string ReadAction = "read";
+    private const string ForgetAction = "forget";
     private const string UpdateAction = "update";
     private const string NoOpAction = "no-op";
+    private const string UnknownAction = "unknown";
 
     private readonly TerraformPlanParser _parser = new();
 
@@ -176,6 +178,60 @@ public class ReportModelBuilderRefactoringTests
         var change = model.Changes.Should().ContainSingle().Subject;
         change.Action.Should().Be(ReadAction, "DetermineAction should return 'read' for actions containing 'read'");
         change.IsRefactoringAlreadyApplied.Should().BeFalse("Read action with import ID should NOT be marked as already applied");
+    }
+
+    [Test]
+    public void Build_ForgetAction_ActionIsForget()
+    {
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([ForgetAction]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(ForgetAction, "DetermineAction should recognize Terraform state-removal actions");
+        change.Action.Should().NotBe(NoOpAction, "forget must not be misclassified as no-op");
+    }
+
+    [Test]
+    public void Build_UnknownAction_ActionIsUnknown()
+    {
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change(["future-action"]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(UnknownAction, "unknown action sets should be surfaced explicitly");
+        change.Action.Should().NotBe(NoOpAction, "unknown action sets must not be treated as no-op");
     }
 
     /// <summary>

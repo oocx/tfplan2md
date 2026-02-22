@@ -19,7 +19,9 @@ internal partial class ReportModelBuilder
     private const string DeleteAction = "delete";
     private const string UpdateAction = "update";
     private const string ReadAction = "read";
+    private const string ForgetAction = "forget";
     private const string ReplaceAction = "replace";
+    private const string UnknownAction = "unknown";
     private const string NoOpAction = "no-op";
 
     private ResourceChangeModel BuildResourceChangeModel(ResourceChange rc)
@@ -157,6 +159,11 @@ internal partial class ReportModelBuilder
     /// </remarks>
     private static string DetermineAction(IReadOnlyList<string> actions)
     {
+        if (actions.Count == 0)
+        {
+            return NoOpAction;
+        }
+
         if (actions.Contains(CreateAction) && actions.Contains(DeleteAction))
         {
             return ReplaceAction;
@@ -182,7 +189,20 @@ internal partial class ReportModelBuilder
             return ReadAction;
         }
 
-        return NoOpAction;
+        if (actions.Contains(NoOpAction))
+        {
+            return NoOpAction;
+        }
+
+        if (actions.Contains(ForgetAction))
+        {
+            return ForgetAction;
+        }
+
+        Console.Error.WriteLine(
+            $"Warning: Encountered unknown Terraform action set: [{string.Join(", ", actions)}]; classifying as '{UnknownAction}'.");
+
+        return UnknownAction;
     }
 
     /// <summary>
@@ -200,7 +220,9 @@ internal partial class ReportModelBuilder
         DeleteAction => ActionIcons.Delete,
         UpdateAction => ActionIcons.Update,
         ReadAction => ActionIcons.Add,
+        ForgetAction => ActionIcons.Delete,
         ReplaceAction => ActionIcons.Replace,
+        UnknownAction => "⚠️",
         _ => ActionIcons.NoOp
     };
 }

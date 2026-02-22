@@ -12,6 +12,9 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 internal sealed class ScribanTemplateLoader : ITemplateLoader
 {
     private const string TemplateExtension = ".sbn";
+    private static readonly StringComparison PathComparison = OperatingSystem.IsWindows()
+        ? StringComparison.OrdinalIgnoreCase
+        : StringComparison.Ordinal;
     private readonly string? _customTemplateDirectory;
     private readonly Assembly _assembly;
     private readonly string _coreTemplateResourcePrefix;
@@ -32,7 +35,7 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
     {
         _customTemplateDirectory = string.IsNullOrWhiteSpace(customTemplateDirectory)
             ? null
-            : customTemplateDirectory;
+            : Path.GetFullPath(customTemplateDirectory);
         _assembly = assembly ?? Assembly.GetExecutingAssembly();
         _coreTemplateResourcePrefix = coreTemplateResourcePrefix;
         _providerTemplateResourcePrefixes = providerTemplateResourcePrefixes ?? [];
@@ -110,7 +113,14 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
         // 1. Check custom template directory first (highest priority)
         if (_customTemplateDirectory is not null)
         {
-            var customPath = Path.Combine(_customTemplateDirectory, normalized.Replace('/', Path.DirectorySeparatorChar));
+            var requestedRelativePath = normalized.Replace('/', Path.DirectorySeparatorChar);
+            var customPath = Path.GetFullPath(Path.Combine(_customTemplateDirectory, requestedRelativePath));
+            if (!IsPathWithinRoot(customPath, _customTemplateDirectory))
+            {
+                throw new InvalidOperationException(
+                    $"Template path '{templatePath}' resolves outside custom template directory '{_customTemplateDirectory}'.");
+            }
+
             if (File.Exists(customPath))
             {
                 return File.ReadAllText(customPath);
@@ -190,5 +200,19 @@ internal sealed class ScribanTemplateLoader : ITemplateLoader
         }
 
         return path + TemplateExtension;
+    }
+
+    private static bool IsPathWithinRoot(string candidatePath, string rootPath)
+    {
+        if (candidatePath.Equals(rootPath, PathComparison))
+        {
+            return true;
+        }
+
+        var rootWithSeparator = rootPath.EndsWith(Path.DirectorySeparatorChar)
+            ? rootPath
+            : rootPath + Path.DirectorySeparatorChar;
+
+        return candidatePath.StartsWith(rootWithSeparator, PathComparison);
     }
 }

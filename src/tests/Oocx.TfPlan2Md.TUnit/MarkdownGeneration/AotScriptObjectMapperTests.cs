@@ -114,6 +114,57 @@ public class AotScriptObjectMapperTests
     }
 
     /// <summary>
+    /// Verifies that per-element array sensitivity is handled correctly by <c>MaskSensitiveLeaves</c>.
+    /// When sensitivity metadata is a <see cref="ScriptArray"/> (e.g., <c>[false, {"password": true}]</c>),
+    /// the matching elements in the JSON data array must be masked per-element.
+    /// </summary>
+    /// <remarks>
+    /// Related issue: docs/issues/098-sensitive-info-exposure/code-review.md (Minor M-3).
+    /// </remarks>
+    [Test]
+    public async Task MapResourceChange_WithArraySensitivity_MasksPerElement_WhenShowSensitiveFalse()
+    {
+        // Arrange — JSON: {"settings": [{"name": "visible"}, {"password": "secret123"}]}
+        // Sensitivity: {"settings": [false, {"password": true}]}
+        var afterJson = JsonDocument.Parse("""
+            {"settings": [{"name": "visible"}, {"password": "secret123"}]}
+        """).RootElement;
+        var afterSensitive = JsonDocument.Parse("""
+            {"settings": [false, {"password": true}]}
+        """).RootElement;
+
+        var change = CreateMinimalChangeModel(
+            afterJson: afterJson,
+            afterSensitive: afterSensitive);
+
+        // Act
+        var model = CreateMinimalReportModel(change, showSensitive: false);
+        var scriptObject = AotScriptObjectMapper.MapReportModel(model);
+
+        var changes = scriptObject["changes"] as ScriptArray;
+        var firstChange = changes![0] as ScriptObject;
+        var afterJsonObj = firstChange!["after_json"] as ScriptObject;
+
+        // Assert — the settings array should exist
+        var settings = afterJsonObj!["settings"] as ScriptArray;
+        settings.Should().NotBeNull("settings should be a ScriptArray");
+
+        // Element 0 is not sensitive — name should be visible
+        var elem0 = settings![0] as ScriptObject;
+        elem0.Should().NotBeNull("first element should be a ScriptObject");
+        elem0!["name"].Should().Be("visible",
+            "non-sensitive array element should retain its value");
+
+        // Element 1 has password marked sensitive — should be masked
+        var elem1 = settings[1] as ScriptObject;
+        elem1.Should().NotBeNull("second element should be a ScriptObject");
+        elem1!["password"].Should().Be("(sensitive)",
+            "sensitive array element property should be masked");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Creates a minimal <see cref="ResourceChangeModel"/> for testing mapper behavior.
     /// </summary>
     private static ResourceChangeModel CreateMinimalChangeModel(

@@ -458,11 +458,12 @@ internal static class AotScriptObjectMapper
     /// <param name="sensitivityObj">The sensitivity map. A <c>true</c> at any leaf marks the
     /// corresponding value in <paramref name="jsonObj"/> as sensitive.</param>
     /// <remarks>
-    /// Handles three sensitivity patterns from Terraform plan data:
+    /// Handles four sensitivity patterns from Terraform plan data:
     /// <list type="bullet">
     ///   <item><c>true</c> at object level — all children are sensitive</item>
     ///   <item><c>true</c> at leaf level — single property is sensitive</item>
     ///   <item>nested object — recurse into sub-trees</item>
+    ///   <item>array — per-element sensitivity via <see cref="ScriptArray"/></item>
     /// </list>
     /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </remarks>
@@ -500,8 +501,14 @@ internal static class AotScriptObjectMapper
     /// <param name="sensitiveValue">
     /// The sensitivity marker: <c>true</c> means the property is fully sensitive,
     /// a <see cref="ScriptObject"/> means recurse into sub-properties,
+    /// a <see cref="ScriptArray"/> means per-element array sensitivity,
     /// anything else means the property is not sensitive.
     /// </param>
+    /// <remarks>
+    /// Handles per-element array sensitivity (e.g., <c>{"settings": [false, {"password": true}]}</c>)
+    /// by iterating over the sensitivity array and recursing into each element.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/code-review.md (Minor M-3).
+    /// </remarks>
     private static void MaskKeyIfSensitive(ScriptObject json, string key, object? sensitiveValue)
     {
         if (sensitiveValue is bool isSensitive && isSensitive)
@@ -510,6 +517,10 @@ internal static class AotScriptObjectMapper
             if (json[key] is ScriptObject childObj)
             {
                 MaskAllLeaves(childObj);
+            }
+            else if (json[key] is ScriptArray childArr)
+            {
+                MaskAllLeavesInArray(childArr);
             }
             else
             {
@@ -520,6 +531,55 @@ internal static class AotScriptObjectMapper
         {
             // Recurse into nested structure
             MaskSensitiveLeaves(jsonChild, sensitiveChild);
+        }
+        else if (sensitiveValue is ScriptArray sensitiveArray && json[key] is ScriptArray jsonArray)
+        {
+            // Per-element array sensitivity: iterate over elements and apply masking per-index
+            MaskArrayElements(jsonArray, sensitiveArray);
+        }
+    }
+
+    /// <summary>
+    /// Applies per-element sensitivity masking to a <see cref="ScriptArray"/>.
+    /// </summary>
+    /// <param name="jsonArray">The data array to mask in place.</param>
+    /// <param name="sensitiveArray">The sensitivity array with per-element markers.</param>
+    /// <remarks>
+    /// Each element in <paramref name="sensitiveArray"/> can be:
+    /// <list type="bullet">
+    ///   <item><c>true</c> — mask all leaves in the corresponding data element</item>
+    ///   <item><c>false</c> / <c>null</c> — leave the data element untouched</item>
+    ///   <item><see cref="ScriptObject"/> — recurse into the element's properties</item>
+    /// </list>
+    /// </remarks>
+    private static void MaskArrayElements(ScriptArray jsonArray, ScriptArray sensitiveArray)
+    {
+        var count = Math.Min(jsonArray.Count, sensitiveArray.Count);
+        for (var i = 0; i < count; i++)
+        {
+            var elemSensitivity = sensitiveArray[i];
+            var jsonElem = jsonArray[i];
+
+            if (elemSensitivity is bool elemSensitive && elemSensitive)
+            {
+                // Entire element is sensitive
+                if (jsonElem is ScriptObject elemObj)
+                {
+                    MaskAllLeaves(elemObj);
+                }
+                else
+                {
+                    jsonArray[i] = "(sensitive)";
+                }
+            }
+            else if (elemSensitivity is ScriptObject sensitiveChild && jsonElem is ScriptObject jsonChild)
+            {
+                MaskSensitiveLeaves(jsonChild, sensitiveChild);
+            }
+            else if (elemSensitivity is ScriptArray sensitiveChildArray && jsonElem is ScriptArray jsonChildArray)
+            {
+                MaskArrayElements(jsonChildArray, sensitiveChildArray);
+            }
         }
     }
 
@@ -535,9 +595,52 @@ internal static class AotScriptObjectMapper
             {
                 MaskAllLeaves(child);
             }
+            else if (obj[key] is ScriptArray childArr)
+            {
+                // Empty arrays are replaced entirely — showing an empty collection
+                // would leak structural information when the attribute is sensitive.
+                if (childArr.Count == 0)
+                {
+                    obj[key] = "(sensitive)";
+                }
+                else
+                {
+                    MaskAllLeavesInArray(childArr);
+                }
+            }
             else
             {
                 obj[key] = "(sensitive)";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Recursively replaces all leaf values in a <see cref="ScriptArray"/> with <c>(sensitive)</c>.
+    /// </summary>
+    /// <param name="array">The array to mask completely.</param>
+    private static void MaskAllLeavesInArray(ScriptArray array)
+    {
+        for (var i = 0; i < array.Count; i++)
+        {
+            if (array[i] is ScriptObject child)
+            {
+                MaskAllLeaves(child);
+            }
+            else if (array[i] is ScriptArray childArr)
+            {
+                if (childArr.Count == 0)
+                {
+                    array[i] = "(sensitive)";
+                }
+                else
+                {
+                    MaskAllLeavesInArray(childArr);
+                }
+            }
+            else
+            {
+                array[i] = "(sensitive)";
             }
         }
     }

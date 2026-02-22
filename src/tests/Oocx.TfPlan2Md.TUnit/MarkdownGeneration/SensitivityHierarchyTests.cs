@@ -141,6 +141,32 @@ public class SensitivityHierarchyTests
         paths.Should().Contain("a", "must include the root array name");
     }
 
+    /// <summary>
+    /// Verifies that <c>GetHierarchicalPaths</c> does not emit duplicate paths for multi-level indexed keys.
+    /// </summary>
+    /// <remarks>
+    /// Related issue: docs/issues/098-sensitive-info-exposure/code-review.md (Minor M-1).
+    /// For <c>"properties.accessPolicies[0].permissions.keys[0]"</c>, the method previously yielded
+    /// <c>"properties"</c> multiple times due to incorrect stripping of array indices from middle segments.
+    /// </remarks>
+    [Test]
+    public void GetHierarchicalPaths_MultiLevelIndexedKey_NoDuplicates()
+    {
+        // Act
+        var paths = SensitivityHelper.GetHierarchicalPaths("properties.accessPolicies[0].permissions.keys[0]").ToList();
+
+        // Assert — no duplicates
+        paths.Should().OnlyHaveUniqueItems("GetHierarchicalPaths must not emit duplicate paths");
+
+        // Assert — all expected paths present
+        paths.Should().Contain("properties.accessPolicies[0].permissions.keys[0]", "full key");
+        paths.Should().Contain("properties.accessPolicies[0].permissions.keys", "stripped last index");
+        paths.Should().Contain("properties.accessPolicies[0].permissions", "parent of last segment");
+        paths.Should().Contain("properties.accessPolicies[0]", "second-level indexed segment");
+        paths.Should().Contain("properties.accessPolicies", "stripped second-level index");
+        paths.Should().Contain("properties", "root segment");
+    }
+
     #endregion
 
     #region TC-19: Root boolean sensitivity masks any key pattern

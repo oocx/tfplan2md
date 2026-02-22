@@ -59,19 +59,24 @@ internal static class SensitivityHelper
     /// Generates all hierarchical paths for a given attribute key to support parent-level sensitivity checking.
     /// </summary>
     /// <param name="key">The attribute path (e.g., "variable[0].secret_value").</param>
-    /// <returns>An enumerable of all paths from most specific to least specific.</returns>
+    /// <returns>An enumerable of unique paths from most specific to least specific, though strict ordering
+    /// within a level is not guaranteed for intermediate paths.</returns>
     /// <remarks>
     /// Examples:
     /// - Input: "variable[0].secret_value" → Output: ["variable[0].secret_value", "variable[0]", "variable"].
     /// - Input: "a[0].b[1]" → Output: ["a[0].b[1]", "a[0].b", "a[0]", "a"].
     /// - Input: "secrets[0]" → Output: ["secrets[0]", "secrets"].
     /// - Input: "simple_attr" → Output: ["simple_attr"].
+    /// All paths are unique — no duplicates are yielded even for deeply nested indexed keys.
     /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </remarks>
     internal static IEnumerable<string> GetHierarchicalPaths(string key)
     {
+        var seen = new HashSet<string>();
+
         // Always check the key itself first
         yield return key;
+        seen.Add(key);
 
         // Split by '.' to get path segments
         var parts = key.Split('.');
@@ -89,18 +94,29 @@ internal static class SensitivityHelper
             if (removedSegment.Contains('['))
             {
                 var segmentBase = removedSegment[..removedSegment.IndexOf('[')];
-                yield return $"{parentPath}.{segmentBase}";
+                var pathWithBase = $"{parentPath}.{segmentBase}";
+                if (seen.Add(pathWithBase))
+                {
+                    yield return pathWithBase;
+                }
             }
 
-            // If the parent path itself contains array indices, also check without the index
-            // e.g., "variable[0]" should also check "variable"
-            if (parentPath.Contains('['))
+            // If the parent path ends with an array-indexed segment (e.g., "a[0]"),
+            // also check without the index (e.g., "a"). Only strip when the path ends
+            // with ']' to avoid incorrectly stripping indices from middle segments.
+            if (parentPath.EndsWith(']'))
             {
-                var arrayName = parentPath[..parentPath.IndexOf('[')];
-                yield return arrayName;
+                var arrayName = parentPath[..parentPath.LastIndexOf('[')];
+                if (seen.Add(arrayName))
+                {
+                    yield return arrayName;
+                }
             }
 
-            yield return parentPath;
+            if (seen.Add(parentPath))
+            {
+                yield return parentPath;
+            }
         }
 
         // Handle top-level array keys without dots (e.g., "secrets[0]" → "secrets")
@@ -108,7 +124,11 @@ internal static class SensitivityHelper
         // need this additional check.
         if (parts.Length == 1 && key.Contains('['))
         {
-            yield return key[..key.IndexOf('[')];
+            var baseName = key[..key.IndexOf('[')];
+            if (seen.Add(baseName))
+            {
+                yield return baseName;
+            }
         }
     }
 }

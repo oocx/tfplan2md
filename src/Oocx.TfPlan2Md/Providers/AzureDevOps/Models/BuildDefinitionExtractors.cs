@@ -109,14 +109,12 @@ internal static class BuildDefinitionExtractors
                 var value = GetString(varElement, "value");
                 var isSecret = GetNullableBool(varElement, "is_secret");
                 var allowOverride = GetNullableBool(varElement, "allow_override");
-                var secretValue = GetString(varElement, "secret_value");
 
                 variables.Add(new BuildDefinitionVariableValues(
                     name,
                     value,
                     isSecret ?? false,
-                    allowOverride,
-                    secretValue));
+                    allowOverride));
             }
         }
 
@@ -416,8 +414,7 @@ internal record BuildDefinitionVariableValues(
     string Name,
     string? Value,
     bool IsSecret,
-    bool? AllowOverride,
-    string? SecretValue);
+    bool? AllowOverride);
 
 /// <summary>
 /// Internal record holding extracted CI trigger values from Terraform state.

@@ -32,3 +32,30 @@
 - **Summary:** Reviewed `analysis.md`, `architecture.md`, and `test-plan.md`. Produced 11 tasks covering all 21 test plan cases across 6 confirmed exposure paths. Tasks follow Red → Green → Refactor: odd-numbered tasks write failing tests, even-numbered tasks implement the fix. Tasks 1–8 (hierarchical sensitivity, Variable Group masking, AzApi create/delete/replace and update) are independent of Tasks 9–10 (Scriban template context propagation) and can proceed in parallel. Task 11 regenerates snapshot baselines after the rendering fixes land.
 - **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/tasks.md`
 - **Problems Encountered:** `IsSensitiveAttribute` and `GetHierarchicalPaths` are private static methods; Task 1 notes they may need extraction to a testable static class to enable direct unit testing without modifying access modifiers on the partial class.
+
+### Developer
+- **Date:** 2026-02-22
+- **Summary:** Implemented all 11 tasks following Red→Green→Refactor discipline across 6 confirmed exposure paths. Key changes:
+  - **Tasks 1-2:** Fixed hierarchical sensitivity detection in `SensitivityHelper` — nested paths like `properties.accessPolicies[0].permissions.keys` are now correctly identified as sensitive when parent `properties.accessPolicies` is marked sensitive.
+  - **Tasks 3-4:** Fixed Azure DevOps Variable Group `isSecret` masking — variables with `isSecret: true` now render as `(sensitive / hidden)` instead of exposing plaintext values.
+  - **Tasks 5-6:** Fixed AzApi create/delete/replace body rendering — `RenderCreateBody`, `RenderDeleteBody`, and `RenderReplaceBody` now respect `showSensitive` flag and mask sensitive JSON properties.
+  - **Tasks 7-8:** Fixed AzApi update body rendering — threaded `showSensitive` through `UpdateBodyRenderInput`, `RenderUpdateMainTable`, `RenderUpdateGroupedSections`, `RenderUpdatePrefixGroup`, `RenderUpdateArrayGroup`, `RenderUpdateArrayMatrixTable`, `RenderUpdateArrayPerItemTables`, and `RenderLargeUpdateChanges`.
+  - **Tasks 9-10:** Implemented defense-in-depth JSON masking at the Scriban template context mapper level — `AotScriptObjectMapper.MapResourceChange` now masks `before_json`/`after_json` ScriptObjects using sensitivity maps when `ShowSensitive=false`. Fixed resulting AzApi comparison logic conflict by making `CompareJsonProperties` treat pre-masked sensitive fields as "changed" (safe over-approximation).
+  - **Task 11:** Updated all snapshot baselines via `scripts/update-test-snapshots.sh`. Restored accidentally deleted `nsg-with-separate-rule-updates.md` snapshot.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs` — `MaskSensitiveLeaves`, `MaskAllLeaves`, `MaskKeyIfSensitive` methods; `showSensitive` threading through `MapReportModel`→`MapChanges`→`MapModuleChanges`→`MapResourceChange`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/ScribanHelpers/AzApi.Rendering.Update.cs` — sensitivity masking in all update renderers
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/ScribanHelpers/AzApi.Rendering.Array.cs` — `IsSensitive` on `AzApiArrayItemEntry`
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Helpers/ScribanHelpers/AzApi.Data.cs` — `CompareJsonProperties` now uses `showSensitive` parameter
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AotScriptObjectMapperTests.cs` — TC-08, TC-09, TC-10
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azapi-body-sensitive.md` — updated baseline
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/nsg-with-separate-rule-updates.md` — restored
+  - 31 demo artifacts regenerated in `artifacts/` and `examples/`
+- **Problems Encountered:**
+  - Mapper-level JSON masking initially broke AzApi comparison logic — both before and after values became `(sensitive)`, so `CompareJsonProperties` saw "no change" for sensitive fields. Resolved by modifying `CompareJsonProperties` to treat sensitive fields with both before/after present as "changed" (safe over-approximation). User chose this approach over alternatives.
+  - Pre-existing cognitive complexity warnings on `TraverseScribanSensitivity` (22/15) and `TraverseSensitivity` (19/15) in `AzApi.Data.cs` — not addressed in this fix as they are pre-existing.
+- **Verification:**
+  - 1201/1201 tests passing, 0 failures, 0 skipped
+  - Coverage: line 86.75% (≥84.48%), branch 78.35% (≥72.80%)
+  - Docker image builds successfully
+  - Markdownlint: 0 new errors (1 pre-existing MD024 duplicate heading)

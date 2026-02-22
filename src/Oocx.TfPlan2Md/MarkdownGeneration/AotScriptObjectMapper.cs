@@ -55,8 +55,8 @@ internal static class AotScriptObjectMapper
             : MapCodeAnalysisReport(model.CodeAnalysis);
 
         // Changes and module changes
-        scriptObject["changes"] = MapChanges(model.Changes, mapperRegistry);
-        scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges, mapperRegistry);
+        scriptObject["changes"] = MapChanges(model.Changes, model.ShowSensitive, mapperRegistry);
+        scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges, model.ShowSensitive, mapperRegistry);
         scriptObject["refactoring_operations"] = MapRefactoringOperations(model.RefactoringOperations);
 
         return scriptObject;
@@ -69,13 +69,20 @@ internal static class AotScriptObjectMapper
     /// <param name="change">The resource change to map.</param>
     /// <param name="renderTarget">The target platform for rendering.</param>
     /// <param name="mapperRegistry">Optional registry for provider-specific resource model mappers.</param>
+    /// <param name="showSensitive">Whether to reveal sensitive values. When <c>false</c>, sensitive JSON leaves are masked.</param>
     /// <returns>A ScriptObject containing the change data.</returns>
+    /// <remarks>
+    /// Delegates to <see cref="MapResourceChange"/> which applies sensitivity masking on
+    /// <c>before_json</c>/<c>after_json</c> before the template sees them.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
     internal static ScriptObject MapResourceChangeWithFormat(
         ResourceChangeModel change,
         RenderTargets.RenderTarget renderTarget,
-        Services.ResourceModelMapperRegistry? mapperRegistry = null)
+        Services.ResourceModelMapperRegistry? mapperRegistry = null,
+        bool showSensitive = false)
     {
-        var changeObject = MapResourceChange(change, mapperRegistry);
+        var changeObject = MapResourceChange(change, showSensitive, mapperRegistry);
 
         // Add large_value_format to change context for template access
         var formatString = renderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
@@ -124,25 +131,25 @@ internal static class AotScriptObjectMapper
         return arr;
     }
 
-    private static ScriptArray MapChanges(IReadOnlyList<ResourceChangeModel> changes, Services.ResourceModelMapperRegistry? mapperRegistry = null)
+    private static ScriptArray MapChanges(IReadOnlyList<ResourceChangeModel> changes, bool showSensitive, Services.ResourceModelMapperRegistry? mapperRegistry = null)
     {
         var arr = new ScriptArray();
         foreach (var change in changes)
         {
-            arr.Add(MapResourceChange(change, mapperRegistry));
+            arr.Add(MapResourceChange(change, showSensitive, mapperRegistry));
         }
 
         return arr;
     }
 
-    private static ScriptArray MapModuleChanges(IReadOnlyList<ModuleChangeGroup> moduleChanges, Services.ResourceModelMapperRegistry? mapperRegistry = null)
+    private static ScriptArray MapModuleChanges(IReadOnlyList<ModuleChangeGroup> moduleChanges, bool showSensitive, Services.ResourceModelMapperRegistry? mapperRegistry = null)
     {
         var arr = new ScriptArray();
         foreach (var group in moduleChanges)
         {
             var obj = new ScriptObject();
             obj[ModuleAddressKey] = group.ModuleAddress;
-            obj["changes"] = MapChanges(group.Changes, mapperRegistry);
+            obj["changes"] = MapChanges(group.Changes, showSensitive, mapperRegistry);
             arr.Add(obj);
         }
 
@@ -174,7 +181,7 @@ internal static class AotScriptObjectMapper
         return arr;
     }
 
-    private static ScriptObject MapResourceChange(ResourceChangeModel change, Services.ResourceModelMapperRegistry? mapperRegistry = null)
+    private static ScriptObject MapResourceChange(ResourceChangeModel change, bool showSensitive = false, Services.ResourceModelMapperRegistry? mapperRegistry = null)
     {
         var obj = new ScriptObject();
         obj["address"] = change.Address;
@@ -192,22 +199,34 @@ internal static class AotScriptObjectMapper
         obj["moved_from_address"] = change.MovedFromAddress;
         obj["is_refactoring_already_applied"] = change.IsRefactoringAlreadyApplied;
 
-        // JSON values
-        obj["before_json"] = change.BeforeJson is JsonElement jsonBefore
+        // Sensitivity maps for provider templates to mask sensitive values
+        // Related issue: docs/issues/098-sensitive-info-exposure/analysis.md
+        var beforeSensitiveObj = change.BeforeSensitive is JsonElement sensBefore
+            ? ConvertToScriptObject(sensBefore)
+            : null;
+        var afterSensitiveObj = change.AfterSensitive is JsonElement sensAfter
+            ? ConvertToScriptObject(sensAfter)
+            : null;
+
+        obj["before_sensitive"] = beforeSensitiveObj;
+        obj["after_sensitive"] = afterSensitiveObj;
+
+        // JSON values — mask sensitive leaves when showSensitive is false
+        var beforeJsonObj = change.BeforeJson is JsonElement jsonBefore
             ? ConvertToScriptObject(jsonBefore)
             : null;
-        obj["after_json"] = change.AfterJson is JsonElement jsonAfter
+        var afterJsonObj = change.AfterJson is JsonElement jsonAfter
             ? ConvertToScriptObject(jsonAfter)
             : null;
 
-        // Sensitivity maps for provider templates to mask sensitive values
-        // Related issue: docs/issues/098-sensitive-info-exposure/analysis.md
-        obj["before_sensitive"] = change.BeforeSensitive is JsonElement sensBefore
-            ? ConvertToScriptObject(sensBefore)
-            : null;
-        obj["after_sensitive"] = change.AfterSensitive is JsonElement sensAfter
-            ? ConvertToScriptObject(sensAfter)
-            : null;
+        if (!showSensitive)
+        {
+            MaskSensitiveLeaves(beforeJsonObj, beforeSensitiveObj);
+            MaskSensitiveLeaves(afterJsonObj, afterSensitiveObj);
+        }
+
+        obj["before_json"] = beforeJsonObj;
+        obj["after_json"] = afterJsonObj;
 
         // Replace paths
         if (change.ReplacePaths != null)
@@ -429,5 +448,83 @@ internal static class AotScriptObjectMapper
         obj["is_sensitive"] = attr.IsSensitive;
         obj["is_large"] = attr.IsLarge;
         return obj;
+    }
+
+    /// <summary>
+    /// Replaces leaf values in a JSON-derived <see cref="ScriptObject"/> with <c>(sensitive)</c>
+    /// where the corresponding node in the sensitivity map is <c>true</c>.
+    /// </summary>
+    /// <param name="jsonObj">The JSON tree (from <see cref="ConvertToScriptObject"/>). Modified in place.</param>
+    /// <param name="sensitivityObj">The sensitivity map. A <c>true</c> at any leaf marks the
+    /// corresponding value in <paramref name="jsonObj"/> as sensitive.</param>
+    /// <remarks>
+    /// Handles three sensitivity patterns from Terraform plan data:
+    /// <list type="bullet">
+    ///   <item><c>true</c> at object level — all children are sensitive</item>
+    ///   <item><c>true</c> at leaf level — single property is sensitive</item>
+    ///   <item>nested object — recurse into sub-trees</item>
+    /// </list>
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
+    /// </remarks>
+    private static void MaskSensitiveLeaves(object? jsonObj, object? sensitivityObj)
+    {
+        if (jsonObj is not ScriptObject json)
+        {
+            return;
+        }
+
+        // If the entire sensitivity tree is boolean true, mask ALL leaves
+        if (sensitivityObj is bool allSensitive && allSensitive)
+        {
+            MaskAllLeaves(json);
+            return;
+        }
+
+        if (sensitivityObj is not ScriptObject sensitivity)
+        {
+            return;
+        }
+
+        foreach (var key in json.GetMembers())
+        {
+            var sensitiveValue = sensitivity.TryGetValue(key, out var sv) ? sv : null;
+
+            if (sensitiveValue is bool isSensitive && isSensitive)
+            {
+                // This leaf/subtree is marked sensitive — mask it
+                if (json[key] is ScriptObject childObj)
+                {
+                    MaskAllLeaves(childObj);
+                }
+                else
+                {
+                    json[key] = "(sensitive)";
+                }
+            }
+            else if (sensitiveValue is ScriptObject sensitiveChild && json[key] is ScriptObject jsonChild)
+            {
+                // Recurse into nested structure
+                MaskSensitiveLeaves(jsonChild, sensitiveChild);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Recursively replaces all leaf values in a <see cref="ScriptObject"/> with <c>(sensitive)</c>.
+    /// </summary>
+    /// <param name="obj">The object to mask completely.</param>
+    private static void MaskAllLeaves(ScriptObject obj)
+    {
+        foreach (var key in obj.GetMembers())
+        {
+            if (obj[key] is ScriptObject child)
+            {
+                MaskAllLeaves(child);
+            }
+            else
+            {
+                obj[key] = "(sensitive)";
+            }
+        }
     }
 }

@@ -32,8 +32,10 @@ public static partial class ScribanHelpers
     /// before and after JSON, compares them property-by-property, and identifies added, removed, and
     /// modified properties. Sensitivity is determined by navigating the before_sensitive and after_sensitive
     /// structures in parallel with the value structures.
-    /// The showSensitive parameter is included for API consistency but the actual masking of sensitive
-    /// values is handled by the template layer.
+    /// When <paramref name="showSensitive"/> is <c>false</c>, sensitive fields with pre-masked values
+    /// are treated as "changed" because the actual before/after values cannot be compared through
+    /// the <c>(sensitive)</c> mask. This is a safe over-approximation.
+    /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.
     /// </remarks>
     public static ScriptArray CompareJsonProperties(
         object? beforeJson,
@@ -41,9 +43,7 @@ public static partial class ScribanHelpers
         object? beforeSensitive,
         object? afterSensitive,
         bool showUnchanged,
-#pragma warning disable IDE0060 // Remove unused parameter - included for API consistency
         bool showSensitive)
-#pragma warning restore IDE0060
     {
         var result = new ScriptArray();
 
@@ -66,8 +66,14 @@ public static partial class ScribanHelpers
             // Check if property is sensitive
             var isSensitive = beforeSensitiveFlattened.Contains(path) || afterSensitiveFlattened.Contains(path);
 
-            // Determine if value changed
+            // Determine if value changed. When showSensitive is false, sensitive fields
+            // have been pre-masked to "(sensitive)" — we cannot compare through the mask,
+            // so treat them as changed if both before and after exist (safe over-approximation).
             var isChanged = !ValuesEqual(beforeValue, afterValue);
+            if (!isChanged && isSensitive && !showSensitive && beforeValue is not null && afterValue is not null)
+            {
+                isChanged = true;
+            }
 
             // Skip unchanged properties if showUnchanged is false
             if (!isChanged && !showUnchanged)

@@ -99,3 +99,9 @@
 - **Summary:** Re-reviewed rework commits (B-1 Technical Writer log, B-2 UAT artifacts, M-1 dedup, M-2 SecretValue removal, M-3 ScriptArray sensitivity). 1203/1203 tests pass; coverage line 88.28% / branch 78.53% (both above thresholds); all previously raised issues correctly addressed. One new Blocker (B-3): the Technical Writer's `docs/features.md` changes are present in the working tree but were never committed — resolved by committing `docs/features.md` in `8c6706aa`. Final decision: **Approved**.
 - **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/code-review.md` — Round 2 section appended and finalized; `docs/features.md` committed (8c6706aa)
 - **Problems Encountered:** Docker daemon not running; Docker build not verified this round.
+
+### UAT Tester
+- **Date:** 2026-02-22
+- **Summary:** Ran UAT on both GitHub (PR #94) and Azure DevOps (PR #92) using the feature-specific `uat-plan.md` artifact and the comprehensive demo for regression. All 6 exposure paths verified: AzApi create/update/delete body sensitivity, Variable Group `is_secret` transition, root-boolean sensitivity, array-parent sensitivity. Regression test confirmed no accidental over-masking on unrelated resources. Maintainer confirmed both platforms passed. PRs cleaned up.
+- **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/uat-report.md`
+- **Problems Encountered:** Azure DevOps `AZURE_DEVOPS_EXT_PAT` not set in environment; resolved by deriving token from active `az` CLI session. GitHub UAT PR state file was stale from a previous feature; manually updated `.tmp/uat-run/last-run.json`.

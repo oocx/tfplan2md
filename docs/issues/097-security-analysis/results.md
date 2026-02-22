@@ -8,21 +8,21 @@
 
 ## Summary
 
-| # | Title | CVSS v4 (Sonnet 4.6) | CVSS v4 (Opus 4.6) | CVSS v4 (GPT-5.3-Codex) | CVSS v4 (Gemini 3.1 Pro) | Can occur without manipulated input? |
-|---|-------|-----------------------|---------------------|--------------------------|--------------------------|--------------------------------------|
-| 1 | [AzApi body renders sensitive values in plaintext (create/delete)](#issue-1) | 8.7 | 8.7 | 8.6 | — | **Yes** |
-| 2 | [AzApi body renders sensitive values in plaintext (update)](#issue-2) | 8.7 | 8.7 | 8.2 | — | **Yes** |
-| 3 | [`before_json` / `after_json` expose raw Terraform state to all templates (architectural root cause)](#issue-3) | 7.7 | 7.7 | (covered in #1) | — | **Yes** |
-| 4 | [Variable Group secret disclosure on `IsSecret` transition](#issue-4) | 7.1 | 7.1 | — | — | **Yes** |
-| 5 | [Static-analysis fail gate bypass via malformed SARIF inputs](#issue-5) | 6.5 | 6.8 | 8.0 | — | **Yes** |
-| 6 | [Root-level `after_sensitive: true` bypasses all attribute masking](#issue-6) | 6.5 | 6.9 | — | — | **Yes** (uncommon but valid Terraform construct) |
-| 7 | [Path traversal via resource type in custom template directory](#issue-7) | 6.0 | 5.1 | — | — | **No** (requires `--template-dir` and crafted plan) |
-| 8 | [Nested array keys without dot separator miss parent sensitivity check](#issue-8) | 5.5 | 5.9 | — | 7.1 | **Yes** (with certain providers/sensitive patterns) |
-| 9 | [Markdown link injection via SARIF `help_uri`](#issue-9) | 5.5 | 4.8 | — | — | **Yes** (URLs with parentheses) |
-| 10 | [HTML injection via unencoded `model.Type` in summary HTML](#issue-10) | 5.5 | 4.2 | — | 5.5 | **No** (plans) / **Partially** (SARIF) |
-| 11 | [Unknown or empty `actions` renders destructive changes as no-op](#issue-11) | 5.5 | 5.5 | — | 5.5 | **Yes** (Terraform 1.7+ `forget` action) |
-| 12 | [`BuildDefinitionVariableValues.SecretValue` stored but unused (latent risk)](#issue-12) | N/A | N/A | — | — | N/A (latent risk, no current exposure) |
-| 13 | [No output path validation](#issue-13) | 2.5 | 3.1 | — | (noted, not scored) | N/A (standard CLI behavior) |
+| # | Title | CVSS v4 (Sonnet 4.6) | CVSS v4 (Opus 4.6) | CVSS v4 (GPT-5.3-Codex) | CVSS v4 (Gemini 3.1 Pro) | Can occur without manipulated input? | Fixed in |
+|---|-------|-----------------------|---------------------|--------------------------|--------------------------|--------------------------------------|----------|
+| 1 | [AzApi body renders sensitive values in plaintext (create/delete)](#issue-1) | 8.7 | 8.7 | 8.6 | — | **Yes** | [098](../098-sensitive-info-exposure/) |
+| 2 | [AzApi body renders sensitive values in plaintext (update)](#issue-2) | 8.7 | 8.7 | 8.2 | — | **Yes** | [098](../098-sensitive-info-exposure/) |
+| 3 | [`before_json` / `after_json` expose raw Terraform state to all templates (architectural root cause)](#issue-3) | 7.7 | 7.7 | (covered in #1) | — | **Yes** | [098](../098-sensitive-info-exposure/) |
+| 4 | [Variable Group secret disclosure on `IsSecret` transition](#issue-4) | 7.1 | 7.1 | — | — | **Yes** | [098](../098-sensitive-info-exposure/) |
+| 5 | [Static-analysis fail gate bypass via malformed SARIF inputs](#issue-5) | 6.5 | 6.8 | 8.0 | — | **Yes** | [099](../099-remaining-security-findings/) |
+| 6 | [Root-level `after_sensitive: true` bypasses all attribute masking](#issue-6) | 6.5 | 6.9 | — | — | **Yes** (uncommon but valid Terraform construct) | [098](../098-sensitive-info-exposure/) |
+| 7 | [Path traversal via resource type in custom template directory](#issue-7) | 6.0 | 5.1 | — | — | **No** (requires `--template-dir` and crafted plan) | [099](../099-remaining-security-findings/) |
+| 8 | [Nested array keys without dot separator miss parent sensitivity check](#issue-8) | 5.5 | 5.9 | — | 7.1 | **Yes** (with certain providers/sensitive patterns) | [098](../098-sensitive-info-exposure/) |
+| 9 | [Markdown link injection via SARIF `help_uri`](#issue-9) | 5.5 | 4.8 | — | — | **Yes** (URLs with parentheses) | [099](../099-remaining-security-findings/) |
+| 10 | [HTML injection via unencoded `model.Type` in summary HTML](#issue-10) | 5.5 | 4.2 | — | 5.5 | **No** (plans) / **Partially** (SARIF) | [099](../099-remaining-security-findings/) |
+| 11 | [Unknown or empty `actions` renders destructive changes as no-op](#issue-11) | 5.5 | 5.5 | — | 5.5 | **Yes** (Terraform 1.7+ `forget` action) | [099](../099-remaining-security-findings/) |
+| 12 | [`BuildDefinitionVariableValues.SecretValue` stored but unused (latent risk)](#issue-12) | N/A | N/A | — | — | N/A (latent risk, no current exposure) | [098](../098-sensitive-info-exposure/) (resolved on main by 099) |
+| 13 | [No output path validation](#issue-13) | 2.5 | 3.1 | — | (noted, not scored) | N/A (standard CLI behavior) | Won't fix |
 
 ---
 
@@ -141,6 +141,8 @@ Both models agree this is exploitable: an attacker can replace or corrupt a SARI
 
 **Opus 4.6 post-hoc assessment (6.8):** Confirmed. The `CodeAnalysisLoadResult.Warnings` collection captures failed files, but the threshold logic in `HandleCodeAnalysisFailureAsync` only counts findings — it never checks whether any warnings exist. This means the gate can pass with zero findings even when one or more SARIF files failed to parse. GPT-5.3-Codex's 8.0 score is arguably too high (AV should be L, not N — modifying CI artifacts requires pipeline access), while Sonnet's AC:H underestimates ease of accidental triggering (truncated files require no attack sophistication). A conservative fix should treat any parse warning as a gate failure unless an explicit `--ignore-sarif-errors` flag is provided.
 
+**Resolution (Issue 099):** `HandleCodeAnalysisFailureAsync` now checks `codeAnalysisInput.Warnings.Count > 0` as the very first step, *before* evaluating finding counts. If any parse warning exists, the method immediately writes each failed file path and error message to stderr and returns `true` (failure). The bypass path is therefore eliminated: a corrupted, truncated, or schema-incompatible SARIF file that previously silently reduced the in-memory finding count to zero now always causes a non-zero exit code when `--fail-on-static-code-analysis-errors` is set. The stderr output also makes the failure diagnosable in CI logs. No opt-out flag was added (per `analysis.md`); the gate is intentionally strict.
+
 ---
 
 ### Issue 6
@@ -179,6 +181,13 @@ When `after_sensitive` is the JSON boolean `true` (rather than a per-attribute o
 Both Sonnet and Opus identified the same vulnerability with the same recommended fix: canonicalize the resolved path and assert it is a descendant of the custom template directory.
 
 Sonnet additionally noted the path is re-entered by `TemplateResolver.ResolveTemplate` via the `resolve_template` Scriban helper, compounding the exposure. Opus noted that Scriban's `{{ include "../../..." }}` is also affected.
+
+**Resolution (Issue 099):** Two hardening changes were applied to `ScribanTemplateLoader`:
+
+1. **Constructor:** The custom template directory is now stored as a canonical absolute path via `Path.GetFullPath(customTemplateDirectory)`. This eliminates relative-path tricks at configuration time.
+2. **`LoadInternal`:** Before reading any file from the custom directory, the candidate path is canonicalized via `Path.GetFullPath(Path.Combine(_customTemplateDirectory, requestedRelativePath))`. The new `IsPathWithinRoot` helper then asserts that this resolved path starts with the canonical root (using OS-appropriate case comparison — `OrdinalIgnoreCase` on Windows, `Ordinal` elsewhere). Any path that resolves outside the root directory throws `InvalidOperationException` with a message naming both the requested template and the configured directory.
+
+The fix closes all traversal vectors: `../` segments in resource type names, `{{ include "../..." }}` inside templates, and the `resolve_template` Scriban helper all pass through the same canonicalization and containment check. A crafted `..` sequence now produces an exception rather than a file read outside the sandbox.
 
 ---
 
@@ -221,6 +230,13 @@ The `escape_markdown` helper escapes `\`, `|`, `` ` ``, `&`, and newlines but do
 
 **Opus 4.6 post-hoc assessment (4.8):** Confirmed, though I rate this lower than Sonnet's 5.5. The integrity impact is limited to the rendered markdown table — no system state is modified. The proper fix is to use angle-bracket URL syntax in the template (`[Details](<{{ finding.help_uri | escape_markdown }}>)`), which handles parentheses natively per CommonMark spec §6.7. Alternatively, percent-encode `(` → `%28` and `)` → `%29` in URLs specifically. Escaping `[` and `]` in URLs is less critical because they don't break markdown link syntax when inside the `()` portion, but should be addressed for completeness.
 
+**Resolution (Issue 099):** Two changes eliminate the injection surface:
+
+1. **Template (`_code_analysis_findings.sbn`):** The link is now rendered as `[Details](<{{ finding.help_uri | escape_markdown_link_destination }}>)`. In CommonMark, angle-bracket link destinations are terminated only by a bare `>` — parentheses inside them are inert, so `help_uri` values like `https://example.com/path(with-parens)` now render correctly without escaping.
+2. **New helper (`EscapeMarkdownLinkDestination`):** Because the angle-bracket form is still terminated by `>`, a new dedicated helper was introduced. It percent-encodes `<` → `%3C` and `>` → `%3E` and strips embedded newlines. This ensures that no `help_uri` value, however malformed, can prematurely close the angle bracket or inject additional link syntax into the table cell.
+
+The threat is eliminated: neither parentheses nor any other character in a well-formed or adversarial URL can break the link boundary or inject raw content into the surrounding table cell.
+
 ---
 
 ### Issue 10
@@ -243,6 +259,8 @@ The `escape_markdown` helper escapes `\`, `|`, `` ` ``, `&`, and newlines but do
 
 **Gemini 3.1 Pro assessment (5.5):** Independently confirmed with identical CVSS vector to Sonnet's score. Gemini cited the same interpolation line in `BuildSummaryHtml` and noted that while `displayName` is properly encoded via `FormatCodeSummary`, `model.Type` is not. Gemini highlighted that even without XSS (due to platform sanitization), formatting tags like `<b>`, `<s>`, `<span style="display:none">` enable visual spoofing to hide malicious infrastructure changes. Recommended wrapping `model.Type` with `EscapeHtmlForCode()` — the same fix proposed by other models.
 
+**Resolution (Issue 099):** `BuildSummaryHtml` now encodes `model.Type` via `HtmlEncoder.Default.Encode(model.Type)` before interpolating it into the `<summary>` HTML string. `.NET`'s `HtmlEncoder` converts `<` → `&lt;`, `>` → `&gt;`, `&` → `&amp;`, and `"` → `&quot;`. A crafted type string like `azurerm_resource_group<span style="display:none">` is therefore rendered as the literal text `azurerm_resource_group&lt;span style=&quot;display:none&quot;&gt;` in the HTML, which platforms display as plain text rather than a formatting element. The visual-spoofing vector is eliminated for both Terraform plan inputs and SARIF-derived resource types.
+
 ---
 
 ### Issue 11
@@ -264,6 +282,14 @@ The `escape_markdown` helper escapes `\`, `|`, `` ` ``, `&`, and newlines but do
 **Opus 4.6 post-hoc assessment (5.5):** Confirmed, and I agree with Sonnet's 5.5 rating. This directly undermines the tool's core value proposition — making Terraform plan changes visible to reviewers. The `forget` action (Terraform 1.7+, used with `removed` blocks and `lifecycle { destroy = false }`) is a real-world example already in production. Additionally, Terraform 1.8 introduced `"actions": ["forget"]` for `import` blocks with `removed`. The fix should: (1) add explicit handling for `forget` (and potentially `import`) with a distinct icon, (2) render any truly unrecognized action with a ⚠️ warning icon rather than the no-op icon, and (3) emit a diagnostic warning to stderr when an unrecognized action is encountered, so the tool degrades visibly rather than silently.
 
 **Gemini 3.1 Pro assessment (5.5):** Independently confirmed with identical CVSS vector. Gemini specifically identified the `"forget"` action from Terraform 1.7+ `removed` blocks as the primary real-world trigger. Proposed the same three-part fix: (1) add explicit handling for `forget`, (2) use a ⚠️ warning icon for unrecognized actions instead of the no-op ⊘ icon, and (3) emit a diagnostic warning to stderr.
+
+**Resolution (Issue 099):** `DetermineAction` was updated with all three recommended changes:
+
+1. **Explicit `forget` branch:** A new `ForgetAction = "forget"` constant and a dedicated branch in `DetermineAction` return `"forget"` for the Terraform 1.7+ state-removal action. `GetActionSymbol` maps `"forget"` to the delete icon (🗑️), matching the semantic of the operation. In the summary, `forget` contributes to `toDestroy` (not `toChange` or `noOp`).
+2. **`unknown` for unrecognized action sets:** Any non-empty action list that does not match a known action constant now returns `"unknown"` rather than `"no-op"`. `GetActionSymbol` maps `"unknown"` to ⚠️, making these resources highly visible in the rendered report rather than invisible. `unknown` contributes to `toChange` in the summary.
+3. **Diagnostic stderr warning:** When `DetermineAction` reaches the unknown branch, it writes a human-readable warning to `Console.Error` listing the unrecognized action set. This ensures the tool degrades visibly in CI logs rather than silently misrepresenting the plan.
+
+The `forget` misclassification is fully remediated. Future unrecognized Terraform actions introduced in versions beyond 1.7 will also surface as visible ⚠️ warnings rather than silent no-ops, preventing the same class of PR-gate bypass from recurring.
 
 ---
 

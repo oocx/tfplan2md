@@ -1,8 +1,10 @@
-# Code Review: Remaining Security Findings (Issue 099)
+# Code Review: Remaining Security Findings (Issue 099) — Re-review after Rework
+
+**Round:** 2 (re-review following developer rework of Round 1 findings)
 
 ## Summary
 
-Reviewed the implementation of five security/correctness fixes from `analysis.md` (Issues 5, 7, 9, 10, 11): SARIF fail-gate bypass, path traversal in custom template directory, help-URI link injection, HTML injection in summary, and incorrect Terraform action mapping. The implementation is accurate and well-tested. One blocker exists: snapshot files were changed without the required `SNAPSHOT_UPDATE_OK` commit token.
+The developer addressed all Round 1 issues: the `SNAPSHOT_UPDATE_OK` token is now present in commit `9647176d` with a clear explanation; `forget` is correctly bucketed into `toDestroy` (not `toChange`); a new `EscapeMarkdownLinkDestination` helper percent-encodes `<` and `>` so angle-bracket links cannot be broken by bare `>` in `help_uri`; and regression tests cover both behaviours. All 1211 tests pass, coverage thresholds are met, and CHANGELOG.md was not modified.
 
 ---
 
@@ -10,31 +12,74 @@ Reviewed the implementation of five security/correctness fixes from `analysis.md
 
 | Check | Result |
 |-------|--------|
-| Tests | ✅ Pass — 1209/1209 passed, 0 failed |
+| Tests | ✅ Pass — 1211/1211 passed, 0 failed (+2 new tests vs. Round 1) |
+| Coverage | ✅ Line 86.75% (threshold ≥84.48%), Branch 78.35% (threshold ≥72.80%) |
 | Build | ✅ Success |
-| Docker | ✅ Builds and runs — smoke test produces valid markdown output |
-| Workspace errors | None observed |
+| Docker | ✅ Builds successfully (verified in prior round, unchanged files) |
+| Workspace errors | None |
 | Markdownlint (`artifacts/comprehensive-demo.md`) | ⚠️ 1 error — MD024 line 665 ("📦 Module: `module.network`") — **pre-existing on `main`**, not introduced by this PR |
 | CHANGELOG.md | ✅ Not modified |
-| Snapshot token | ❌ **Missing** — see Blockers |
+| Snapshot token | ✅ Present — commit `9647176d` message includes `SNAPSHOT_UPDATE_OK` with explanation |
+
+---
+
+## Rework Verification — Resolved Items
+
+### B1 — `SNAPSHOT_UPDATE_OK` token ✅ Resolved
+
+Commit `9647176d` (`fix: address issue 099 code review findings`) includes the token with explanation:
+
+> SNAPSHOT_UPDATE_OK: Existing snapshot diffs in this branch are expected from the help_uri angle-bracket link rendering change; this commit finalizes the review follow-ups and preserves that intentional output format.
+
+The two affected snapshots (`comprehensive-demo-full.md`, `parent-child-resource-grouping-uat.md`) have only the help-URI link format change (`[Details](url)` → `[Details](<url>)`), which is the expected output of the Issue 9 template fix. ✅
+
+---
+
+### m1 — `forget` now bucketed in `toDestroy` ✅ Resolved
+
+`ReportModelBuilder.Build.cs` (line 38–39) now reads:
+
+```csharp
+var toChange = BuildActionSummary(allChanges.Where(c => c.Action is "update" or "unknown"));
+var toDestroy = BuildActionSummary(allChanges.Where(c => c.Action is "delete" or "forget"));
+```
+
+New test `Build_ForgetAction_CountedInDestroySummary` asserts:
+- `model.Summary.ToDestroy.Count == 1`
+- `model.Summary.ToChange.Count == 0`
+
+✅ Correct and tested.
+
+---
+
+### m2 — `escape_markdown` replaced with `escape_markdown_link_destination` ✅ Resolved
+
+A new helper `EscapeMarkdownLinkDestination` was added to `Markdown.cs`. It percent-encodes `<` → `%3C` and `>` → `%3E` and strips newlines — all characters that would break an angle-bracket link destination.
+
+The helper is registered in `Registry.cs` as `escape_markdown_link_destination` and the template now uses it:
+
+```
+[Details](<{{ finding.help_uri | escape_markdown_link_destination }}>)
+```
+
+New test `Render_CodeAnalysisFindingsTable_HelpUriWithGreaterThan_IsEscapedForAngleBracketLinks` verifies that a URI containing `>` is rendered as `%3E` and does not break the angle-bracket link. ✅ Correct and tested.
 
 ---
 
 ## Specification Compliance
 
-Each issue from `analysis.md` was verified against the implementation:
-
 | Issue | Acceptance Criterion | Implemented | Tested | Notes |
 |-------|---------------------|-------------|--------|-------|
-| 5 — SARIF fail gate | Warnings cause failure when `--fail-on` set | ✅ | ✅ | `HandleCodeAnalysisFailureAsync` returns `true` on any `Warnings.Count > 0`; gated by `FailOnLevel is not null` |
+| 5 — SARIF fail gate | Warnings cause failure when `--fail-on` set | ✅ | ✅ | `HandleCodeAnalysisFailureAsync` returns `true` on `Warnings.Count > 0`; caller gated by `FailOnLevel is not null` |
 | 5 — SARIF fail gate | stderr lists failed files | ✅ | ✅ | Each warning's `FilePath` and `Message` written to stderr |
-| 7 — Path traversal | Traversal outside `--template-dir` throws | ✅ | ✅ | `Path.GetFullPath` canonicalization + `IsPathWithinRoot` guard in `LoadInternal` |
+| 7 — Path traversal | Traversal outside `--template-dir` throws | ✅ | ✅ | `Path.GetFullPath` canonicalization + `IsPathWithinRoot` guard |
 | 7 — Path traversal | Custom dir stored as full path | ✅ | ✅ | `Path.GetFullPath(customTemplateDirectory)` in constructor |
-| 9 — help_uri link | Angle-bracket form used | ✅ | ✅ | Template changed to `[Details](<{{ help_uri | escape_markdown }}>)` |
+| 9 — help_uri link | Angle-bracket form, `<`/`>` in URL percent-encoded | ✅ | ✅ | `escape_markdown_link_destination` helper; snapshot diff confirms output |
 | 10 — HTML injection | `model.Type` HTML-encoded | ✅ | ✅ | `HtmlEncoder.Default.Encode(model.Type)` |
-| 11 — `forget` action | `forget` not classified as `no-op` | ✅ | ✅ | Explicit `ForgetAction` constant and branch in `DetermineAction` |
-| 11 — unknown actions | Non-empty unknown sets classified as `unknown` | ✅ | ✅ | Diagnostic warning emitted to stderr; `UnknownAction` returned |
-| 11 — empty action list | Empty list still maps to `no-op` | ✅ | ✅ | Explicit `actions.Count == 0` early return |
+| 11 — `forget` action | `forget` not classified as `no-op` | ✅ | ✅ | Explicit `ForgetAction` branch, tested in `Build_ForgetAction_ActionIsForget` |
+| 11 — `forget` summary | `forget` counted in `toDestroy`, not `toChange` | ✅ | ✅ | `Build_ForgetAction_CountedInDestroySummary` |
+| 11 — unknown actions | Non-empty unknown sets classified as `unknown` | ✅ | ✅ | `Build_UnknownAction_ActionIsUnknown` |
+| 11 — empty action list | Empty list maps to `no-op` | ✅ | ✅ | Explicit `actions.Count == 0` early return |
 
 **Spec Deviations Found:** None
 
@@ -45,20 +90,22 @@ Each issue from `analysis.md` was verified against the implementation:
 | Test Case | Result | Notes |
 |-----------|--------|-------|
 | Empty SARIF / parse error with `--fail-on` | ✅ Caught | `Main_WithInvalidSarifAndFailOnSeverity_ReturnsExitCode10` |
-| Path traversal via `../` in template include | ✅ Caught | `Loader_WithTraversalInclude_ThrowsAndDoesNotReadOutsideCustomDirectory` throws `InvalidOperationException` |
+| Path traversal via `../` in template include | ✅ Caught | Throws `InvalidOperationException` |
 | `help_uri` with `()` characters | ✅ Caught | `Render_CodeAnalysisFindingsTable_HelpUriWithParentheses_UsesAngleBracketLinks` |
-| `model.Type` containing `<script>` | ✅ Caught | `Build_SummaryHtml_EncodesResourceType` — asserts `&lt;script&gt;` |
-| `["forget"]` action list | ✅ Caught | `Build_ForgetAction_ActionIsForget` |
+| `help_uri` with bare `>` character | ✅ Caught | `Render_CodeAnalysisFindingsTable_HelpUriWithGreaterThan_IsEscapedForAngleBracketLinks` |
+| `model.Type` containing `<script>` | ✅ Caught | `Build_SummaryHtml_EncodesResourceType` |
+| `["forget"]` action list | ✅ Caught | `Build_ForgetAction_ActionIsForget`, `Build_ForgetAction_CountedInDestroySummary` |
 | Unknown action set `["future-action"]` | ✅ Caught | `Build_UnknownAction_ActionIsUnknown` |
-| `help_uri` containing unencoded `>` | ⚠️ Not tested | `escape_markdown` deliberately does not escape `>`; a URL with a bare `>` would break the angle-bracket link. In practice malformed, but untested. |
+
+All adversarial cases from Round 1 are now covered.
 
 ---
 
 ## Review Decision
 
-**Status: Changes Requested**
+**Status: Approved**
 
-One Blocker must be resolved before approval.
+All Round 1 issues are resolved. No new issues found in the rework.
 
 ---
 
@@ -66,11 +113,12 @@ One Blocker must be resolved before approval.
 
 | Item | Status |
 |------|--------|
-| Snapshot files changed | Yes — 2 files |
-| `comprehensive-demo-full.md` | `[Details](url)` → `[Details](<url>)` in 3 help-link cells — correct, reflects Issue 9 fix |
-| `parent-child-resource-grouping-uat.md` | Same template change in 2 cells — correct |
-| `nsg-with-separate-rule-updates.md` | Mentioned in work-protocol as "added", but file was already present on `main` (commit `dbc9c38e` on history); no diff in this PR — no concern |
-| `SNAPSHOT_UPDATE_OK` token present | ❌ **No** — neither commit in this branch (`fix: close issue 099 remaining security findings`, `docs: add issue analysis for remaining security findings`) contains the token |
+| Snapshot files changed | Yes — 2 files (`comprehensive-demo-full.md`, `parent-child-resource-grouping-uat.md`) |
+| Diff content | `[Details](url)` → `[Details](<url>)` in help-link cells — correct, reflects Issue 9 template fix |
+| `nsg-with-separate-rule-updates.md` | No diff vs. `main` — no concern |
+| `SNAPSHOT_UPDATE_OK` token present | ✅ Yes — commit `9647176d` with explanation |
+
+The snapshot diff is correct. It represents the expected output change from using CommonMark-safe angle-bracket link syntax for SARIF `help_uri` values.
 
 ---
 
@@ -78,63 +126,37 @@ One Blocker must be resolved before approval.
 
 ### Blockers
 
-**B1 — `SNAPSHOT_UPDATE_OK` token missing from commit message**
-
-Two snapshot files were modified (`comprehensive-demo-full.md`, `parent-child-resource-grouping-uat.md`) but no commit in this branch includes the required `SNAPSHOT_UPDATE_OK` token in its message.
-
-**Fix:** Amend or add a new commit whose message includes `SNAPSHOT_UPDATE_OK` and briefly explains why the snapshot diff is correct (example: `SNAPSHOT_UPDATE_OK: help_uri links now use CommonMark angle-bracket form per Issue 9 fix`).
-
-Required by: `.github/copilot-instructions.md` — "Include the token `SNAPSHOT_UPDATE_OK` in at least one commit message in the PR and explain why the snapshot changes are correct."
-
----
+None.
 
 ### Major Issues
 
 None.
 
----
-
 ### Minor Issues
 
-**m1 — `forget` bucketed into "to change" summary count**
-
-In [ReportModelBuilder.Build.cs](../../src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs#L37):
-
-```csharp
-var toChange = BuildActionSummary(allChanges.Where(c => c.Action is "update" or "forget" or "unknown"));
-```
-
-`forget` removes a resource from Terraform state management — semantically closer to a delete than a change. The delete icon is correctly assigned for single-resource display, but the header-level summary count lumps it with "update". A reviewer could see "2 items will change" and miss that one is a state-removal. No test covers the summary bucket for `forget` actions.
-
-This is not a spec deviation (the analysis does not specify the bucket), but consider whether `forget` should be counted under "destroy" or as its own bucket. At minimum, add a unit test that verifies the summary count for a `forget` plan.
-
-**m2 — `escape_markdown` not safe for URLs in angle-bracket context**
-
-The template change renders URLs as `[Details](<{{ finding.help_uri | escape_markdown }}>)`. The `escape_markdown` helper intentionally does not escape `>` (see [Markdown.cs comment](../../src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/Markdown.cs#L18-L19)). A `help_uri` value containing a bare `>` would close the angle-bracket prematurely and corrupt the link. While malformed in real HTTP URLs, SARIF files could contain such values. No test covers this edge case.
-
----
+None.
 
 ### Suggestions
 
-**S1 — Commit message for fix is generic**
+**S1 — `unknown` action does not have a summary-bucket test**
 
-`fix: close issue 099 remaining security findings` covers five distinct fixes. If this PR is ever bisected, the message won't help narrow down which fix introduced a regression. Splitting into per-fix commits or adding a body listing the five changes would help.
+`unknown` is grouped under `toChange` (`ReportModelBuilder.Build.cs` line 38). `Build_UnknownAction_ActionIsUnknown` verifies the action value but not the summary count. Low risk — the bucket assignment is a one-liner and the pattern mirrors `forget`'s now-tested bucket — but adding `Build_UnknownAction_CountedInChangeSummary` would complete parity. Not blocking.
 
 ---
 
 ## Critical Questions Answered
 
 - **What could make this code fail?**
-  - A SARIF file with warnings is always rejected when `--fail-on` is set, even if those warnings are non-fatal. No opt-out is provided (analysis notes this as acceptable). Risk: overly strict, could cause false-positive CI failures if SARIF tools emit non-critical warnings.
-  - A URL containing an unencoded `>` character in `help_uri` breaks the angle-bracket link (see m2).
+  - A SARIF file with warnings always triggers failure when `--fail-on` is set, even for non-critical warnings. This is intentional (per `analysis.md`) but could cause false-positive CI failures if a SARIF tool emits informational warnings. No opt-out flag exists; acceptable per the analysis doc.
+  - A compound action like `["forget", "create"]` routes to `CreateAction` (due to `contains(CreateAction)` checked before `contains(ForgetAction)`). This is unspecified behaviour, not a regression, and matches reasonable semantics.
 
 - **What edge cases might not be handled?**
-  - `forget` in combination with other actions (e.g., `["forget", "create"]`) is not explicitly tested. `DetermineAction` would currently reach the `contains(NoOpAction)` → `contains(ForgetAction)` section, and return `ForgetAction` since the `create`+`forget` combination isn't listed as `replace` or other compound.
+  - Compound exotic actions (e.g., `["forget", "update"]`) reach the `contains(ForgetAction)` branch and return `ForgetAction`. Reasonable, but untested.
 
 - **Are all error paths tested?**
-  - The SARIF warning path is fully tested end-to-end via `ProgramMainTests`.
-  - Path traversal throws an exception — tested via template render.
-  - `unknown` action emits a console warning — not explicitly asserted in the test (test only checks `Action` value). Low risk, but the stderr output could be silently lost in future refactors.
+  - SARIF warning path: ✅ fully tested end-to-end.
+  - Path traversal: ✅ tested via template include.
+  - `unknown` action stderr warning: the test checks the `Action` value but not the console output. Low risk.
 
 ---
 
@@ -146,9 +168,9 @@ The template change renders URLs as `[Details](<{{ finding.help_uri | escape_mar
 | Spec Compliance | ✅ |
 | Code Quality | ✅ |
 | Architecture | ✅ |
-| Testing | ✅ (with minor gaps noted) |
-| Documentation | ✅ (fix workflow; no global docs update required) |
-| Snapshot token | ❌ Blocker |
+| Testing | ✅ |
+| Documentation | ✅ (bug-fix; no global docs update required) |
+| Snapshot token | ✅ |
 | CHANGELOG.md untouched | ✅ |
 
 ---
@@ -156,13 +178,11 @@ The template change renders URLs as `[Details](<{{ finding.help_uri | escape_mar
 ## Work Protocol & Documentation Verification
 
 - `work-protocol.md` exists: ✅
-- Required agents (Issue Analyst, Developer) have logged entries: ✅
-- Global docs: This is a bug-fix with no user-visible rendering changes other than angle-bracket link formatting. `docs/features.md` does not require update. `docs/architecture.md` does not require update. ✅
+- Required agents logged: Issue Analyst ✅, Developer ✅, Code Reviewer ✅, Developer (Rework) ✅
+- Global docs: This is a bug-fix with no user-visible rendering changes beyond the help-link angle-bracket format (a correctness fix, not a feature). `docs/features.md`, `docs/architecture.md`, `README.md` do not require updates. ✅
 
 ---
 
 ## Next Steps
 
-1. **Developer:** Add `SNAPSHOT_UPDATE_OK` to the fix commit message (amend the commit or add a new commit), explaining the two snapshot diffs are due to the Issue 9 help-URI angle-bracket template change.
-2. **Developer (optional):** Add a test verifying that a `forget` action contributes to the correct summary bucket, and a test for a URL with `>` in `help_uri`.
-3. **Code Reviewer:** Re-verify after Blocker is resolved; approve and hand off to Release Manager (no markdown rendering UAT needed — the link format change is cosmetic and angle brackets are standard CommonMark, validated by the existing snapshot tests).
+Approved. No UAT is required (this fix has no new user-visible markdown features; the link format change is a spec-conformant correctness fix already validated by snapshot tests). Hand off to **Release Manager**.

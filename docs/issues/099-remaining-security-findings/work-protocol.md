@@ -54,3 +54,11 @@
   - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/MarkdownRendererCodeAnalysisTests.cs`
   - `docs/issues/099-remaining-security-findings/work-protocol.md`
 - **Problems Encountered:** Initial template run failed because the new helper was not registered; resolved by adding it to Scriban helper registry.
+
+### Code Reviewer (Re-review)
+- **Date:** 2026-02-22
+- **Summary:** Re-reviewed the rework. All Round 1 issues resolved: `SNAPSHOT_UPDATE_OK` token present in commit `9647176d`; `forget` now correctly bucketed in `toDestroy`; `escape_markdown_link_destination` helper percent-encodes `<`/`>` and is tested for bare `>` in `help_uri`. All 1211 tests pass, coverage at line 86.75% / branch 78.35%. Approved. No UAT needed. Handing off to Release Manager.
+- **Artifacts Produced:**
+  - `docs/issues/099-remaining-security-findings/code-review.md` (updated)
+- **Problems Encountered:** None
+

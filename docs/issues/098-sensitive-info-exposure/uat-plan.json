@@ -1,0 +1,281 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azapi_resource.sql_server",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "sql_server",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.Sql/servers@2021-11-01",
+          "name": "uat-sqlserver",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "administratorLogin": "sqladmin",
+              "administratorLoginPassword": "P@ssw0rd123!",
+              "version": "12.0",
+              "publicNetworkAccess": "Enabled"
+            }
+          }
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {
+          "body": {
+            "properties": {
+              "administratorLoginPassword": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.policy_assignment",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "policy_assignment",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "type": "Microsoft.Authorization/policyAssignments@2022-06-01",
+          "name": "uat-policy",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "displayName": "UAT Policy",
+              "clientSecret": "old-secret-abc123",
+              "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/def-001"
+            }
+          }
+        },
+        "after": {
+          "type": "Microsoft.Authorization/policyAssignments@2022-06-01",
+          "name": "uat-policy",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat",
+          "location": "westeurope",
+          "body": {
+            "properties": {
+              "displayName": "UAT Policy Updated",
+              "clientSecret": "new-secret-xyz789",
+              "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/def-001"
+            }
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {
+            "properties": {
+              "clientSecret": true
+            }
+          }
+        },
+        "after_sensitive": {
+          "body": {
+            "properties": {
+              "clientSecret": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "address": "azapi_resource.app_registration",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "app_registration",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "type": "Microsoft.Graph/applications@v1.0",
+          "name": "uat-app",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat",
+          "location": "global",
+          "body": {
+            "properties": {
+              "displayName": "UAT Application",
+              "clientSecret": "delete-me-secret-456",
+              "signInAudience": "AzureADMyOrg"
+            }
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "body": {
+            "properties": {
+              "clientSecret": true
+            }
+          }
+        },
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuredevops_variable_group.pipeline_vars",
+      "mode": "managed",
+      "type": "azuredevops_variable_group",
+      "name": "pipeline_vars",
+      "provider_name": "registry.terraform.io/microsoft/azuredevops",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "allow_access": true,
+          "description": "Pipeline variables for deployment",
+          "id": "99",
+          "key_vault": [],
+          "name": "uat-pipeline-vars",
+          "project_id": "proj-uat-098",
+          "secret_variable": [
+            {
+              "name": "API_KEY",
+              "value": "old-plaintext-secret",
+              "content_type": "",
+              "enabled": true,
+              "expires": ""
+            }
+          ],
+          "variable": [
+            {
+              "name": "ENVIRONMENT",
+              "value": "staging",
+              "content_type": "",
+              "enabled": true,
+              "expires": ""
+            }
+          ]
+        },
+        "after": {
+          "allow_access": true,
+          "description": "Pipeline variables for deployment",
+          "id": "99",
+          "key_vault": [],
+          "name": "uat-pipeline-vars",
+          "project_id": "proj-uat-098",
+          "secret_variable": [],
+          "variable": [
+            {
+              "name": "API_KEY",
+              "value": "now-visible-value",
+              "content_type": "",
+              "enabled": true,
+              "expires": ""
+            },
+            {
+              "name": "ENVIRONMENT",
+              "value": "production",
+              "content_type": "",
+              "enabled": true,
+              "expires": ""
+            }
+          ]
+        },
+        "after_unknown": {
+          "key_vault": [],
+          "secret_variable": [],
+          "variable": [{}, {}]
+        },
+        "before_sensitive": {
+          "key_vault": [],
+          "secret_variable": [{ "value": true }],
+          "variable": [{}]
+        },
+        "after_sensitive": {
+          "key_vault": [],
+          "secret_variable": [],
+          "variable": [{}, {}]
+        }
+      }
+    },
+    {
+      "address": "azurerm_key_vault_secret.root_sensitive",
+      "mode": "managed",
+      "type": "azurerm_key_vault_secret",
+      "name": "root_sensitive",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "content_type": "text/plain",
+          "expiration_date": "2027-01-01T00:00:00Z",
+          "key_vault_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat/providers/Microsoft.KeyVault/vaults/kv-uat",
+          "name": "root-secret",
+          "not_before_date": null,
+          "tags": {},
+          "value": "super-secret-root-value"
+        },
+        "after_unknown": {
+          "id": true,
+          "resource_versionless_id": true,
+          "version": true,
+          "versionless_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": true
+      }
+    },
+    {
+      "address": "azapi_resource.container_app",
+      "mode": "managed",
+      "type": "azapi_resource",
+      "name": "container_app",
+      "provider_name": "registry.terraform.io/azure/azapi",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "Microsoft.App/containerApps@2023-05-01",
+          "name": "ca-uat-098",
+          "parent_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat",
+          "location": "eastus",
+          "body": {
+            "properties": {
+              "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-uat/providers/Microsoft.App/managedEnvironments/cae-uat",
+              "configuration": {
+                "ingress": {
+                  "external": true,
+                  "targetPort": 8080
+                },
+                "secrets": [
+                  {
+                    "name": "registry-password",
+                    "value": "array-secret-value-123"
+                  }
+                ]
+              },
+              "template": {
+                "containers": [
+                  {
+                    "name": "app",
+                    "image": "myregistry.azurecr.io/myapp:latest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "body": {
+            "properties": {
+              "configuration": {
+                "secrets": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

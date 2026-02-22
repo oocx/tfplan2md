@@ -62,3 +62,10 @@
   - `docs/issues/099-remaining-security-findings/code-review.md` (updated)
 - **Problems Encountered:** None
 
+### Technical Writer
+- **Date:** 2026-02-22
+- **Summary:** Reviewed the five security/correctness fixes and updated documentation to reflect user-visible behavior changes introduced in issue 099.
+- **Artifacts Produced:**
+  - `docs/features.md` — Updated Action Symbols section with `forget` (Terraform 1.7+, shown as ❌, counted in Destroy) and `unknown` (⚠️) entries; updated SARIF error handling bullet to document that `--fail-on-static-code-analysis-errors` now also triggers the fail gate on SARIF parse failures; updated terraform-show feature to include `forget` in the supported actions list.
+  - `README.md` — Added `forget` to the action types list in the comprehensive demo description.
+- **Problems Encountered:** None

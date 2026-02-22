@@ -608,7 +608,7 @@ dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
 
 The demo includes:
 - Module grouping (root, module.network, module.security, nested modules)
-- All action types (create, update, replace, delete, no-op)
+- All action types (create, update, replace, delete, no-op, forget)
 - Firewall rule semantic diffing
 - Network security group rule semantic diffing
 - Role assignments with principal mapping

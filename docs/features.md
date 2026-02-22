@@ -448,7 +448,7 @@ This tool solves the problem by reading Terraform plan JSON files and producing 
 - **Authentic output format**: Matches `terraform show` structure and appearance
 - **ANSI color support**: Includes terminal color codes (green for additions, yellow for updates, red for deletions)
 - **Plain text mode**: `--no-color` flag strips ANSI codes for non-terminal contexts
-- **All plan operations**: Supports create, update, delete, replace, read, and no-op actions
+- **All plan operations**: Supports create, update, delete, replace, read, no-op, and forget (Terraform 1.7+) actions
 - **Complete sections**: Generates legend, resource details with attribute diffs, and plan summary
 - **Terraform-style formatting**: Proper action symbols (`+`, `~`, `-`, `-/+`, `<=`), indentation, and diff markers
 - **Known-after-apply indicators**: Shows `(known after apply)` for computed values
@@ -755,6 +755,8 @@ Resources are displayed with emoji symbols indicating the action. These symbols 
 - `🔄` - update (modify existing resource)
 - `❌` - delete (remove resource)
 - `♻️` - replace (delete and recreate resource)
+- `❌` - forget (remove resource from Terraform state without destroying infrastructure, Terraform 1.7+; counted in the Destroy total)
+- `⚠️` - unknown (unrecognized action combination; reported as a warning in debug output)
 
 ### Resource Summaries
 
@@ -2569,7 +2571,7 @@ Integrate security and quality findings from static analysis tools (Checkov, Tri
 - **Severity filtering**: Display only findings at or above specified severity level
 - **CI/CD integration**: Exit with error code when critical/high findings are detected
 - **Provider support**: Works with specialized templates (Azure AD, API Management, etc.)
-- **Error handling**: Invalid SARIF files are skipped with detailed warnings in report
+- **Error handling**: Invalid SARIF files produce detailed warnings; when `--fail-on-static-code-analysis-errors` is set, any SARIF parse failure also triggers the fail gate (exit code 10)
 
 ### Usage
 

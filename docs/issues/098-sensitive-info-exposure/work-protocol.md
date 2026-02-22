@@ -84,3 +84,18 @@
 - **Problems Encountered:**
   - M-3 fix initially caused `Snapshot_AzapiBodySensitive_MatchesBaseline` regression — `MaskAllLeavesInArray` iterated 0 elements for empty arrays (leaving them as empty ScriptArray), breaking the body flattening path. Fixed by replacing empty arrays with `"(sensitive)"` string instead of recursing into them.
 - **Verification:** 1203/1203 tests pass, 0 failures, 0 skipped.
+
+### Technical Writer
+- **Date:** 2026-02-22
+- **Summary:** Reviewed implementation of all 11 tasks and rework items. Updated documentation to reflect the comprehensive sensitive value masking fixes.
+- **Artifacts Produced:**
+  - `docs/adr-009-template-json-sensitivity-masking.md` — Status updated from "Proposed" to "Accepted"
+  - `docs/features.md` — "Sensitive Values" section expanded with masking coverage table, hierarchical sensitivity encoding table, and clarification of all affected rendering paths (AzApi bodies, Variable Group transitions, Scriban template context)
+  - `docs/features.md` — Template variable reference updated: `before_json`/`after_json` documented as masked-by-default; `before_sensitive`/`after_sensitive` added as new template context variables
+- **Problems Encountered:** None
+
+### Code Reviewer (Round 2)
+- **Date:** 2026-02-22
+- **Summary:** Re-reviewed rework commits (B-1 Technical Writer log, B-2 UAT artifacts, M-1 dedup, M-2 SecretValue removal, M-3 ScriptArray sensitivity). 1203/1203 tests pass; coverage line 88.28% / branch 78.53% (both above thresholds); all previously raised issues correctly addressed. One new Blocker (B-3): the Technical Writer's `docs/features.md` changes are present in the working tree but were never committed — `git status` shows ` M docs/features.md`. Decision: **Changes Requested** (B-3 only).
+- **Artifacts Produced:** `docs/issues/098-sensitive-info-exposure/code-review.md` — Round 2 section appended
+- **Problems Encountered:** Docker daemon not running; Docker build not verified this round.

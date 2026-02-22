@@ -232,3 +232,95 @@ This review results in **Changes Requested** with two Blockers. Required actions
 2. **Maintainer:** Invoke the Technical Writer agent to review documentation coverage and log their entry in `work-protocol.md`.
 
 After both Blockers are resolved, return to **Code Reviewer** for re-approval. The re-review will focus only on the new artifacts; no code changes are anticipated.
+
+---
+
+## Round 2 — Rework Review (2026-02-22)
+
+### Summary
+
+Reviewed all five rework commits (UAT artifacts, `GetHierarchicalPaths` dedup, `SecretValue` removal,
+`ScriptArray` per-element sensitivity, work protocol update). All previously identified Blockers and
+Minor issues from Round 1 are addressed correctly — except that the **Technical Writer's
+`docs/features.md` changes are present in the working tree but not committed to the branch**. This
+leaves the documentation update silently absent from the PR.
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| Tests | ✅ **1203/1203 passed**, 0 failed, 0 skipped |
+| Coverage — Line | ✅ **88.28%** (threshold ≥ 84.48%) |
+| Coverage — Branch | ✅ **78.53%** (threshold ≥ 72.80%) |
+| Build | ⚠️ Docker daemon not running — not verified this round |
+| Markdownlint | ✅ 1 error — pre-existing MD024 duplicate heading (unchanged) |
+| UAT plan — no plaintext secrets | ✅ 0 plaintext secrets in `uat-plan.md` |
+| UAT plan — sensitive placeholders | ✅ 9× `(sensitive)` + 1× `(sensitive / hidden)` |
+
+---
+
+### Rework Items Verified
+
+| Item | Description | Status |
+|------|-------------|--------|
+| B-1 | Technical Writer work log added to `work-protocol.md` | ✅ Log entry present and complete |
+| B-2 | `uat-plan.json` and `uat-plan.md` created | ✅ Covers all 6 exposure paths; no plaintext secrets in rendered output |
+| M-1 | `GetHierarchicalPaths` deduplication via `HashSet<string>` | ✅ Fixed; `EndsWith(']')` guard prevents mid-segment stripping; new test `GetHierarchicalPaths_MultiLevelIndexedKey_NoDuplicates` passes |
+| M-2 | Removed unused `SecretValue` from `BuildDefinitionVariableValues` | ✅ Record now has 4 properties; extractor updated accordingly |
+| M-3 | `ScriptArray` per-element sensitivity masking | ✅ `MaskArrayElements` and `MaskAllLeavesInArray` implemented; new test `MapResourceChange_WithArraySensitivity_MasksPerElement_WhenShowSensitiveFalse` passes |
+| S-1 | Updated `GetHierarchicalPaths` doc comment | ✅ `<returns>` now documents that strict ordering within a level is not guaranteed |
+
+---
+
+### New Blocker Found in Round 2
+
+#### B-3: `docs/features.md` Technical Writer changes are uncommitted
+
+**Evidence:**
+```
+$ git status --short docs/features.md
+ M docs/features.md
+```
+
+The Technical Writer's work log (added in `8464d638`) claims:
+> `docs/features.md` — "Sensitive Values" section expanded with masking coverage table, hierarchical
+> sensitivity encoding table, and clarification of all affected rendering paths…
+
+The changes are present in the working tree (lines 828–842 with the masking coverage table, the
+hierarchical sensitivity encoding table, and lines 998–999 with `before_json`/`after_json`
+masked-by-default documentation). However, the file is **not staged and not committed**. The
+`origin/main` version still shows only two bullet points under "### Sensitive Values" with none of
+the expanded content.
+
+The ADR-009 status change (`Proposed` → `Accepted`) **was** committed (included in the branch
+diffs). Only `docs/features.md` is missing from the commit history.
+
+**Fix needed:** Developer commits the `docs/features.md` changes before re-review. Confirm
+`git add docs/features.md && git commit -m "docs: update features.md with sensitive value masking coverage"`.
+
+---
+
+### Review Decision
+
+**Status: Changes Requested** — Blocker B-3 must be resolved.
+
+---
+
+### Updated Work Protocol & Documentation Verification
+
+| Document | Required Update? | Updated? | Notes |
+|----------|-----------------|----------|-------|
+| `docs/adr-009-template-json-sensitivity-masking.md` | ✅ Status change | ✅ Status = Accepted |
+| `docs/features.md` | ✅ Required | ❌ **Changes exist in working tree but are uncommitted — Blocker B-3** |
+| `docs/architecture.md` | Partial (ADR reference) | ✅ (committed on branch) |
+| `docs/features.md` template variable reference | ✅ Required | ❌ **Not committed — Blocker B-3** |
+
+---
+
+### Next Steps (Round 2)
+
+1. **Developer:** `git add docs/features.md && git commit -m "docs: update features.md with sensitive value masking coverage"` and push.
+2. **Developer:** Verify Docker build once Docker daemon is available (pre-existing gap from Round 1; not a new Blocker, but should be confirmed before release).
+3. Return to **Code Reviewer** for Round 3 (expected to be approval-only).

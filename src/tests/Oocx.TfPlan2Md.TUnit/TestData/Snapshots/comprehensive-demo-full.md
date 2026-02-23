@@ -549,7 +549,7 @@ _No attribute changes._
 | public_network_access_enabled | `✅ true` |
 | resource_group_name | `📁 rg-tfplan2md-demo` |
 | sku_name | `standard` |
-| tenant_id | `👤 11111111-2222-3333-4444-555555555555` |
+| tenant_id | `11111111-2222-3333-4444-555555555555` |
 
 **🏷️ Tags:** `environment: demo` `owner: security`
 

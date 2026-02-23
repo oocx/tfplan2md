@@ -37,6 +37,13 @@ public class OutputChangeModel
     public required string ActionSymbol { get; init; }
 
     /// <summary>
+    /// Gets the provider name of the resource this output references (e.g., "registry.terraform.io/hashicorp/azurerm").
+    /// Null when the referenced resource cannot be determined.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    public string? ProviderName { get; init; }
+
+    /// <summary>
     /// Gets the output value (before or after depending on action).
     /// This is the raw value; templates will format it via helpers.
     /// Related feature: docs/features/097-terraform-outputs/specification.md.

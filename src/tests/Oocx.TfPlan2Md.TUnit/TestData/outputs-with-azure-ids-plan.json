@@ -1,7 +1,40 @@
 {
   "format_version": "1.2",
   "terraform_version": "1.9.0",
-  "resource_changes": [],
+  "resource_changes": [
+    {
+      "address": "azurerm_key_vault.main",
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+    },
+    {
+      "address": "azurerm_virtual_network.prod",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "prod",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+    },
+    {
+      "address": "azurerm_resource_group.network",
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "network",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+    },
+    {
+      "address": "azurerm_role_assignment.main",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+    }
+  ],
   "output_changes": {
     "keyvault_id": {
       "actions": ["create"],
@@ -57,27 +90,45 @@
       "outputs": {
         "keyvault_id": {
           "description": "The ID of the key vault resource",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_key_vault.main.id", "azurerm_key_vault.main"]
+          }
         },
         "principal_id": {
           "description": "Service principal object ID",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_role_assignment.main.principal_id", "azurerm_role_assignment.main"]
+          }
         },
         "resource_group_id": {
           "description": "Network resource group ID",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_resource_group.network.id", "azurerm_resource_group.network"]
+          }
         },
         "role_definition_id": {
           "description": "Role definition resource ID",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_role_assignment.main.role_definition_id", "azurerm_role_assignment.main"]
+          }
         },
         "subscription_id": {
           "description": "The Azure subscription ID",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_resource_group.network.location", "azurerm_resource_group.network"]
+          }
         },
         "vnet_id": {
           "description": "ID of the production virtual network",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_virtual_network.prod.id", "azurerm_virtual_network.prod"]
+          }
         }
       }
     }

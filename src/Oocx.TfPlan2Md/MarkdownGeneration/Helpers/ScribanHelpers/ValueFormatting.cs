@@ -111,15 +111,19 @@ public static partial class ScribanHelpers
     /// <param name="isMasked">Whether the value should be masked (sensitive and not --show-sensitive).</param>
     /// <param name="isComputed">Whether the value is computed (known after apply).</param>
     /// <param name="value">The raw value (may be JsonElement or string).</param>
-    /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="providerName">The Terraform provider name of the referenced resource.</param>
+    /// <param name="attributeName">The output name used as attribute name for semantic formatting rules.</param>
     /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry for semantic icons.</param>
     /// <returns>Formatted markdown string for table rendering.</returns>
     private static string FormatOutputValue(
         bool isMasked,
         bool isComputed,
         object? value,
         string? providerName,
-        ValueFormatterRegistry? valueFormatterRegistry)
+        string? attributeName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        Services.IconProviderRegistry? iconProviderRegistry = null)
     {
         if (isMasked)
         {
@@ -131,7 +135,17 @@ public static partial class ScribanHelpers
             return "(known after apply)";
         }
 
-        // Convert value to string (handles JsonElement and other types)
+        // For JSON objects and arrays, render as compact single-line JSON in backticks.
+        // Code fences cannot be used inside table cells (they introduce newlines which break table formatting).
+        if (value is System.Text.Json.JsonElement jsonElement &&
+            (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Object ||
+             jsonElement.ValueKind == System.Text.Json.JsonValueKind.Array))
+        {
+            var compact = CompactJson(jsonElement);
+            return $"`{EscapeMarkdownTableCell(compact)}`";
+        }
+
+        // Convert scalar value to string (handles JsonElement strings/numbers/bools)
         var stringValue = ConvertValueToString(value);
 
         if (string.IsNullOrEmpty(stringValue))
@@ -139,25 +153,10 @@ public static partial class ScribanHelpers
             return string.Empty;
         }
 
-        // Try registry-based formatting first (covers principal names, role names, etc.)
-        if (valueFormatterRegistry is not null)
-        {
-            var context = new Services.ServiceResolutionContext(providerName, null, null, stringValue);
-            var formatted = valueFormatterRegistry.TryFormat(context);
-            if (!string.IsNullOrEmpty(formatted))
-            {
-                return formatted;
-            }
-        }
-
-        // Azure resource IDs are always rendered as readable scope paths regardless of provider,
-        // because outputs can reference Azure resources from any Terraform provider.
-        if (Platforms.Azure.AzureScopeParser.IsAzureResourceId(stringValue))
-        {
-            return Platforms.Azure.AzureScopeParser.ParseScope(stringValue);
-        }
-
-        return $"`{EscapeMarkdown(stringValue)}`";
+        // Use the same formatting pipeline as attribute values:
+        // tries value formatter registry (display names, principal mapping) then
+        // semantic formatting (icons, Azure ID parsing) based on attribute name + provider.
+        return FormatAttributeValueTableWithRegistry(attributeName, stringValue, providerName, valueFormatterRegistry, iconProviderRegistry);
     }
 
     /// <summary>
@@ -199,5 +198,20 @@ public static partial class ScribanHelpers
     {
         return !string.IsNullOrWhiteSpace(providerName)
                && providerName.Contains("azurerm", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Serializes a JSON element to a compact (single-line) string without indentation.
+    /// Uses a raw writer to avoid trimming issues with JsonSerializer.
+    /// </summary>
+    /// <param name="element">The JSON element to serialize.</param>
+    /// <returns>A compact JSON string.</returns>
+    private static string CompactJson(System.Text.Json.JsonElement element)
+    {
+        using var stream = new System.IO.MemoryStream();
+        using var writer = new System.Text.Json.Utf8JsonWriter(stream, new System.Text.Json.JsonWriterOptions { Indented = false });
+        element.WriteTo(writer);
+        writer.Flush();
+        return System.Text.Encoding.UTF8.GetString(stream.ToArray());
     }
 }

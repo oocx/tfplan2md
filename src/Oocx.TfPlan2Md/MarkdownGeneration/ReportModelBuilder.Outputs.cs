@@ -67,7 +67,8 @@ internal partial class ReportModelBuilder
                 Value = value,
                 IsComputed = isComputed,
                 IsMasked = isMasked,
-                ModuleAddress = moduleAddress
+                ModuleAddress = moduleAddress,
+                ProviderName = ResolveOutputProviderName(plan, outputName, moduleAddress)
             });
         }
 
@@ -277,5 +278,85 @@ internal partial class ReportModelBuilder
 #pragma warning restore S3267
 
         return false;
+    }
+
+    /// <summary>
+    /// Resolves the provider name for an output by finding the referenced resource in the plan.
+    /// Reads the output's <c>expression.references</c> from configuration, then looks up the
+    /// first matching resource in <see cref="TerraformPlan.ResourceChanges"/> to get its provider name.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="plan">The Terraform plan.</param>
+    /// <param name="outputName">The output name.</param>
+    /// <param name="moduleAddress">The module address (empty for root).</param>
+    /// <returns>The provider name of the first referenced resource, or null if none found.</returns>
+    private static string? ResolveOutputProviderName(TerraformPlan plan, string outputName, string moduleAddress)
+    {
+        if (plan.Configuration is null || plan.Configuration.Value.ValueKind == JsonValueKind.Undefined)
+        {
+            return null;
+        }
+
+        if (!plan.Configuration.Value.TryGetProperty("root_module", out var rootModule))
+        {
+            return null;
+        }
+
+        // Get the output configuration element
+        var outputConfig = FindOutputConfig(rootModule, outputName, moduleAddress);
+        if (!outputConfig.HasValue)
+        {
+            return null;
+        }
+
+        // Extract expression.references
+        if (!outputConfig.Value.TryGetProperty("expression", out var expression))
+        {
+            return null;
+        }
+
+        if (!expression.TryGetProperty("references", out var references) ||
+            references.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        // Try each reference to find a matching resource change
+        foreach (var reference in references.EnumerateArray())
+        {
+            if (reference.ValueKind != JsonValueKind.String)
+            {
+                continue;
+            }
+
+            var refString = reference.GetString();
+            if (string.IsNullOrEmpty(refString))
+            {
+                continue;
+            }
+
+            // References look like "azurerm_virtual_network.main.id" or "azurerm_virtual_network.main"
+            // Build a resource address by taking the first two dot-separated segments
+            var parts = refString.Split('.');
+            if (parts.Length < 2)
+            {
+                continue;
+            }
+
+            // Build candidate address: type.name (with optional module prefix)
+            var resourceAddress = string.IsNullOrEmpty(moduleAddress)
+                ? $"{parts[0]}.{parts[1]}"
+                : $"{moduleAddress}.{parts[0]}.{parts[1]}";
+
+            var match = plan.ResourceChanges.FirstOrDefault(r =>
+                string.Equals(r.Address, resourceAddress, StringComparison.OrdinalIgnoreCase));
+
+            if (match is not null)
+            {
+                return match.ProviderName;
+            }
+        }
+
+        return null;
     }
 }

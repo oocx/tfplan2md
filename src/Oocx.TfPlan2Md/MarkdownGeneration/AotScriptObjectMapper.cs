@@ -200,6 +200,7 @@ internal static class AotScriptObjectMapper
             obj["is_sensitive"] = output.IsSensitive;
             obj["action"] = output.Action;
             obj["action_symbol"] = output.ActionSymbol;
+            obj["provider_name"] = output.ProviderName;
             obj["value"] = output.Value;
             obj["is_computed"] = output.IsComputed;
             obj["is_masked"] = output.IsMasked;

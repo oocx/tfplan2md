@@ -8,7 +8,16 @@
       "type": "azurerm_key_vault",
       "name": "main",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
-      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
     },
     {
       "address": "azurerm_virtual_network.prod",
@@ -16,7 +25,16 @@
       "type": "azurerm_virtual_network",
       "name": "prod",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
-      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
     },
     {
       "address": "azurerm_resource_group.network",
@@ -24,7 +42,16 @@
       "type": "azurerm_resource_group",
       "name": "network",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
-      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
     },
     {
       "address": "azurerm_role_assignment.main",
@@ -32,12 +59,23 @@
       "type": "azurerm_role_assignment",
       "name": "main",
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
-      "change": { "actions": ["create"], "before": null, "after": {}, "after_unknown": false, "before_sensitive": false, "after_sensitive": false }
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
     }
   ],
   "output_changes": {
     "keyvault_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security/providers/Microsoft.KeyVault/vaults/kv-prod-001",
       "after_unknown": false,
@@ -45,7 +83,9 @@
       "after_sensitive": false
     },
     "user_principal_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "aabbccdd-1234-5678-9012-aabbccddeeff",
       "after_unknown": false,
@@ -53,7 +93,9 @@
       "after_sensitive": false
     },
     "principal_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "12345678-1234-1234-1234-123456789012",
       "after_unknown": false,
@@ -61,7 +103,9 @@
       "after_sensitive": false
     },
     "resource_group_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-network",
       "after_unknown": false,
@@ -69,7 +113,9 @@
       "after_sensitive": false
     },
     "role_definition_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
       "after_unknown": false,
@@ -77,7 +123,9 @@
       "after_sensitive": false
     },
     "subscription_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "d1828a48-1111-2222-3333-123456789abc",
       "after_unknown": false,
@@ -85,7 +133,9 @@
       "after_sensitive": false
     },
     "vnet_id": {
-      "actions": ["create"],
+      "actions": [
+        "create"
+      ],
       "before": null,
       "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-prod",
       "after_unknown": false,
@@ -100,49 +150,70 @@
           "description": "The ID of the key vault resource",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_key_vault.main.id", "azurerm_key_vault.main"]
+            "references": [
+              "azurerm_key_vault.main.id",
+              "azurerm_key_vault.main"
+            ]
           }
         },
         "user_principal_id": {
           "description": "User principal object ID",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_role_assignment.main.principal_id", "azurerm_role_assignment.main"]
+            "references": [
+              "azurerm_role_assignment.main.principal_id",
+              "azurerm_role_assignment.main"
+            ]
           }
         },
         "principal_id": {
           "description": "Service principal object ID",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_role_assignment.main.principal_id", "azurerm_role_assignment.main"]
+            "references": [
+              "azurerm_role_assignment.main.principal_id",
+              "azurerm_role_assignment.main"
+            ]
           }
         },
         "resource_group_id": {
           "description": "Network resource group ID",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_resource_group.network.id", "azurerm_resource_group.network"]
+            "references": [
+              "azurerm_resource_group.network.id",
+              "azurerm_resource_group.network"
+            ]
           }
         },
         "role_definition_id": {
           "description": "Role definition resource ID",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_role_assignment.main.role_definition_id", "azurerm_role_assignment.main"]
+            "references": [
+              "azurerm_role_assignment.main.role_definition_id",
+              "azurerm_role_assignment.main"
+            ]
           }
         },
         "subscription_id": {
           "description": "The Azure subscription ID",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_resource_group.network.location", "azurerm_resource_group.network"]
+            "references": [
+              "data.azurerm_client_config.current.subscription_id",
+              "data.azurerm_client_config.current"
+            ]
           }
         },
         "vnet_id": {
           "description": "ID of the production virtual network",
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_virtual_network.prod.id", "azurerm_virtual_network.prod"]
+            "references": [
+              "azurerm_virtual_network.prod.id",
+              "azurerm_virtual_network.prod"
+            ]
           }
         }
       }

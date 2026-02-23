@@ -69,7 +69,8 @@ internal partial class ReportModelBuilder
                 IsMasked = isMasked,
                 ModuleAddress = moduleAddress,
                 ProviderName = ResolveOutputProviderName(plan, outputName, moduleAddress),
-                IsLargeOutputValue = ScribanHelpers.IsLargeOutputValue(value)
+                IsLargeOutputValue = ScribanHelpers.IsLargeOutputValue(value),
+                ReferencedAttributeName = ExtractReferencedAttributeName(plan.Configuration, outputName, moduleAddress)
             });
         }
 
@@ -364,5 +365,96 @@ internal partial class ReportModelBuilder
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Extracts the attribute name from an output's <c>expression.references</c> in the configuration.
+    /// For example, <c>azurerm_role_assignment.main.principal_id</c> yields <c>principal_id</c>.
+    /// Data sources use the pattern <c>data.type.name.attribute</c>; managed resources use <c>type.name.attribute</c>.
+    /// Non-resource prefixes (var, local, module, path, terraform) are skipped.
+    /// Returns null when no attribute reference is found, so callers can fall back to the output name.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="configuration">The configuration JSON element from the Terraform plan.</param>
+    /// <param name="outputName">The output name.</param>
+    /// <param name="moduleAddress">The module address (empty for root).</param>
+    /// <returns>The referenced attribute name, or null if none found.</returns>
+    private static string? ExtractReferencedAttributeName(JsonElement? configuration, string outputName, string moduleAddress)
+    {
+        if (configuration is null || configuration.Value.ValueKind == JsonValueKind.Undefined)
+        {
+            return null;
+        }
+
+        if (!configuration.Value.TryGetProperty("root_module", out var rootModule))
+        {
+            return null;
+        }
+
+        var outputConfig = FindOutputConfig(rootModule, outputName, moduleAddress);
+        if (!outputConfig.HasValue)
+        {
+            return null;
+        }
+
+        if (!outputConfig.Value.TryGetProperty("expression", out var expression) ||
+            !expression.TryGetProperty("references", out var references) ||
+            references.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        foreach (var reference in references.EnumerateArray())
+        {
+            var attrName = TryExtractAttributeFromReference(reference);
+            if (attrName is not null)
+            {
+                return attrName;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Tries to extract the attribute name from a single Terraform reference string.
+    /// Managed resources: <c>type.name.attribute</c> → attribute (index 2).
+    /// Data sources: <c>data.type.name.attribute</c> → attribute (index 3).
+    /// Non-resource references (var, local, module, path, terraform) and address-only
+    /// references (no attribute segment) return null.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="reference">The JSON element containing the reference string.</param>
+    /// <returns>The attribute name, or null if the reference has no attribute segment.</returns>
+    private static string? TryExtractAttributeFromReference(JsonElement reference)
+    {
+        if (reference.ValueKind != JsonValueKind.String)
+        {
+            return null;
+        }
+
+        var refStr = reference.GetString();
+        if (string.IsNullOrEmpty(refStr))
+        {
+            return null;
+        }
+
+        var parts = refStr.Split('.');
+
+        // Data sources: data.type.name.attribute (4+ segments)
+        if (parts[0] == "data")
+        {
+            return parts.Length >= 4 ? parts[3] : null;
+        }
+
+        // Skip non-resource prefixes (var, local, module, path, terraform)
+        string[] nonResourcePrefixes = ["var", "local", "module", "path", "terraform"];
+        if (Array.IndexOf(nonResourcePrefixes, parts[0]) >= 0)
+        {
+            return null;
+        }
+
+        // Managed resources: type.name.attribute (3+ segments)
+        return parts.Length >= 3 ? parts[2] : null;
     }
 }

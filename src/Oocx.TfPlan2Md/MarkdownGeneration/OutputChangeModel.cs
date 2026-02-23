@@ -74,4 +74,13 @@ public class OutputChangeModel
     /// Related feature: docs/features/097-terraform-outputs/specification.md.
     /// </summary>
     public bool IsLargeOutputValue { get; init; }
+
+    /// <summary>
+    /// Gets the attribute name extracted from <c>expression.references</c> in the plan configuration
+    /// (e.g., <c>principal_id</c> from <c>azurerm_role_assignment.main.principal_id</c>).
+    /// Used as the formatting key for semantic icons, display name mappings, and other per-attribute
+    /// formatting rules. Falls back to the output's own <see cref="Name"/> when null.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    public string? ReferencedAttributeName { get; init; }
 }

@@ -206,6 +206,8 @@ internal static class AotScriptObjectMapper
             obj["is_masked"] = output.IsMasked;
             obj["module_address"] = output.ModuleAddress;
             obj["is_large_output_value"] = output.IsLargeOutputValue;
+            obj["referenced_attribute_name"] = output.ReferencedAttributeName;
+            obj["formatting_attribute_name"] = output.ReferencedAttributeName ?? output.Name;
             arr.Add(obj);
         }
 

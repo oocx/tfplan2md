@@ -39,7 +39,7 @@ No changes
 | Change | Name | Description | Sensitive | Value |
 | ------ | ---- | ----------- | --------- | ----- |
 {{~ for output in module.outputs ~}}
-| {{ output.action_symbol }} | `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ if output.is_large_output_value }}_(see below)_{{ else }}{{ format_output_value output.is_masked output.is_computed output.value output.provider_name output.name }}{{ end }} |
+| {{ output.action_symbol }} | `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ if output.is_large_output_value }}_(see below)_{{ else }}{{ format_output_value output.is_masked output.is_computed output.value output.provider_name output.formatting_attribute_name }}{{ end }} |
 {{~ end ~}}
 {{~ for output in module.outputs ~}}
 {{~ if output.is_large_output_value ~}}
@@ -73,7 +73,7 @@ No changes
 | Change | Name | Description | Sensitive | Value |
 | ------ | ---- | ----------- | --------- | ----- |
 {{~ for output in global_outputs ~}}
-| {{ output.action_symbol }} | `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ if output.is_large_output_value }}_(see below)_{{ else }}{{ format_output_value output.is_masked output.is_computed output.value output.provider_name output.name }}{{ end }} |
+| {{ output.action_symbol }} | `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ if output.is_large_output_value }}_(see below)_{{ else }}{{ format_output_value output.is_masked output.is_computed output.value output.provider_name output.formatting_attribute_name }}{{ end }} |
 {{~ end ~}}
 {{~ for output in global_outputs ~}}
 {{~ if output.is_large_output_value ~}}

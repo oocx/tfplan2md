@@ -19,7 +19,6 @@ internal partial class ReportModelBuilder
     private const string DeleteAction = "delete";
     private const string UpdateAction = "update";
     private const string ReadAction = "read";
-    private const string OpenAction = "open";
     private const string ForgetAction = "forget";
     private const string ReplaceAction = "replace";
     private const string UnknownAction = "unknown";
@@ -157,12 +156,6 @@ internal partial class ReportModelBuilder
     /// <remarks>
     /// Explicitly handles the "read" action to prevent false positives in import detection.
     /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md.
-    /// The "open" action is an OpenTofu extension for ephemeral resources (e.g. vault secrets).
-    /// It is not present in the HashiCorp Terraform JSON format docs
-    /// (https://developer.hashicorp.com/terraform/internals/json-format) but is defined
-    /// in the OpenTofu source at internal/command/jsonplan/plan.go and documented at
-    /// https://opentofu.org/docs/internals/json-format/.
-    /// OpenTofu ephemeral resources: https://opentofu.org/docs/language/ephemerality/ephemeral-resources/.
     /// </remarks>
     private static string DetermineAction(IReadOnlyList<string> actions)
     {
@@ -196,11 +189,6 @@ internal partial class ReportModelBuilder
             return ReadAction;
         }
 
-        if (actions.Contains(OpenAction))
-        {
-            return OpenAction;
-        }
-
         if (actions.Contains(NoOpAction))
         {
             return NoOpAction;
@@ -232,7 +220,6 @@ internal partial class ReportModelBuilder
         DeleteAction => ActionIcons.Delete,
         UpdateAction => ActionIcons.Update,
         ReadAction => ActionIcons.Add,
-        OpenAction => ActionIcons.Add,
         ForgetAction => ActionIcons.Delete,
         ReplaceAction => ActionIcons.Replace,
         UnknownAction => "⚠️",

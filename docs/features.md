@@ -2837,6 +2837,46 @@ This creates a powerful workflow where security and quality issues are immediate
 
 See [docs/features/092-details-display-mode/](features/092-details-display-mode/) for specification, architecture, and implementation details.
 
+## Terraform Outputs Support
+
+Terraform plan output changes (`output_changes`) are now rendered in the markdown report, giving reviewers visibility into which output values are being created, updated, or deleted.
+
+### Output Table
+
+Outputs render as a 5-column table showing the change type, name, description, sensitivity flag, and value:
+
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `new_repository_id` | ID of the new repository | No | `abc-123` |
+| 🔄 | `endpoint_url` | Service endpoint URL | No | `https://example.com` |
+| ❌ | `old_output` | Output being removed | No | `old-value` |
+|   | `stable_output` | Unchanged output | No | `stable-value` |
+| ➕ | `deploy_token` | Deployment token | 🔒 Yes | (sensitive value) |
+
+### Positioning
+
+- **Module outputs** appear at the end of their module section under `#### 📤 Outputs`
+- **Global (root) outputs** appear after all resource sections under `## 📤 Outputs`
+
+### Sensitive Value Protection
+
+Sensitive output values are masked as `(sensitive value)` by default to prevent accidental exposure of secrets in PR reports. Use `--show-sensitive` to reveal them when needed.
+
+Computed outputs (not yet known) display `(known after apply)`.
+
+### Display Name Mappings
+
+Output values automatically benefit from existing display name mappings — for example, an output referencing an Azure resource ID or Azure DevOps repository GUID will show the human-readable name.
+
+### Technical Details
+
+- **Data source**: Reads `output_changes` from the Terraform plan JSON
+- **Metadata**: Description and sensitivity flags correlated from `configuration.root_module.outputs`
+- **Sensitivity precedence**: `after_sensitive` > `before_sensitive` > configuration `sensitive` flag
+- **Value formatting**: Reuses the existing `ValueFormatterRegistry` pipeline
+
+See [docs/features/097-terraform-outputs/](features/097-terraform-outputs/) for specification, architecture, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

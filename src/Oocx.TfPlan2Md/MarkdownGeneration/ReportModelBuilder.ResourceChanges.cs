@@ -19,6 +19,7 @@ internal partial class ReportModelBuilder
     private const string DeleteAction = "delete";
     private const string UpdateAction = "update";
     private const string ReadAction = "read";
+    private const string OpenAction = "open";
     private const string ForgetAction = "forget";
     private const string ReplaceAction = "replace";
     private const string UnknownAction = "unknown";
@@ -189,6 +190,11 @@ internal partial class ReportModelBuilder
             return ReadAction;
         }
 
+        if (actions.Contains(OpenAction))
+        {
+            return OpenAction;
+        }
+
         if (actions.Contains(NoOpAction))
         {
             return NoOpAction;
@@ -220,6 +226,7 @@ internal partial class ReportModelBuilder
         DeleteAction => ActionIcons.Delete,
         UpdateAction => ActionIcons.Update,
         ReadAction => ActionIcons.Add,
+        OpenAction => ActionIcons.Add,
         ForgetAction => ActionIcons.Delete,
         ReplaceAction => ActionIcons.Replace,
         UnknownAction => "⚠️",

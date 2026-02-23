@@ -14,6 +14,7 @@ public class ReportModelBuilderRefactoringTests
     private const string CreateAction = "create";
     private const string ReadAction = "read";
     private const string ForgetAction = "forget";
+    private const string OpenAction = "open";
     private const string UpdateAction = "update";
     private const string NoOpAction = "no-op";
     private const string UnknownAction = "unknown";
@@ -231,6 +232,38 @@ public class ReportModelBuilderRefactoringTests
 
         model.Summary.ToDestroy.Count.Should().Be(1, "forget removes resources from state and should be reflected as destroy in summary");
         model.Summary.ToChange.Count.Should().Be(0, "forget should not be grouped under change summary counts");
+    }
+
+    /// <summary>
+    /// Verifies that the OpenTofu "open" action (used for ephemeral resources such as vault secrets)
+    /// is recognized without emitting an "unknown action" warning.
+    /// Related issue: GitHub issue #544.
+    /// </summary>
+    [Test]
+    public void Build_OpenAction_ActionIsOpen()
+    {
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "ephemeral.vault_kv_secret_v2.test",
+                    null,
+                    "ephemeral",
+                    "vault_kv_secret_v2",
+                    "test",
+                    ProviderName,
+                    new Change([OpenAction]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        var model = builder.Build(plan);
+
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(OpenAction, "DetermineAction should recognize OpenTofu ephemeral resource 'open' action");
+        change.Action.Should().NotBe(UnknownAction, "open must not be misclassified as unknown");
     }
 
     [Test]

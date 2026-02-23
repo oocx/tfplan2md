@@ -68,6 +68,68 @@ Hand off to **Developer** agent to implement Option 1 (match pattern exclusion) 
 
 ---
 
+### Developer - 2024-02-23
+
+**Task:** Implement the fix based on analysis
+
+**Actions Taken:**
+- ✅ Modified `AzureResourceIdFormatter.TryFormat()` to exclude `id` and `name` attributes
+- ✅ Added 4 comprehensive test cases (2 for azurerm, 2 for azapi)
+- ✅ Verified all existing tests continue to pass
+- ✅ Added XML documentation to explain the exclusion logic
+
+**Implementation Details:**
+The fix uses a simple early-return pattern in `TryFormat()`:
+```csharp
+if (context.AttributeName is "id" or "name")
+{
+    return null;
+}
+```
+This ensures identity attributes are not formatted by `AzureResourceIdFormatter`, allowing them to fall through to semantic formatting which adds only the icon decoration.
+
+**Problems Encountered:**
+- None - the implementation was straightforward
+
+**Artifacts Created/Modified:**
+- Modified: `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/AzureResourceIdFormatter.cs`
+- Modified: `src/Oocx.TfPlan2Md/Providers/AzApi/AzApiModule.cs` (comment update)
+- Modified: `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRmValueFormatterRegistration.cs` (comment update)
+- Created: 4 new test methods in `src/tests/Oocx.TfPlan2Md.TUnit/Providers/ProviderValueFormatterRegistryTests.cs`
+
+**Next Steps:**
+- Technical Writer to create release notes and update documentation
+
+---
+
+### Technical Writer - 2024-02-23
+
+**Task:** Create release notes and update documentation for the bug fix
+
+**Actions Taken:**
+- ✅ Reviewed the implementation and test changes
+- ✅ Examined the issue analysis document
+- ✅ Checked existing feature documentation (Feature 015 - Universal Azure Resource ID Formatting)
+- ✅ Created comprehensive release notes following project conventions
+- ✅ Verified docs/features.md and README.md don't need updates (they describe the feature correctly at a high level)
+
+**Documentation Analysis:**
+- **docs/features.md**: Line 648-652 describes "Universal Azure Resource ID Formatting" - no update needed as it describes the feature generically without specifying it applies to identity attributes
+- **README.md**: Line 51 mentions "Readable Azure Resource IDs" - no update needed as it's accurate
+- **Feature 015 specification**: Documents the feature correctly; the bug was in implementation, not design
+
+**Problems Encountered:**
+- None - the documentation already describes the feature correctly
+
+**Artifacts Created/Modified:**
+- ✅ Created: `docs/issues/100-readable-display-name-identity-attrs/release-notes.md`
+- ✅ Updated: `docs/issues/100-readable-display-name-identity-attrs/work-protocol.md` (this file)
+
+**Next Steps:**
+- Code Reviewer to review the implementation and documentation
+
+---
+
 ### [Next Agent] - [Date]
 
 **Task:** [To be filled by next agent]

@@ -61,7 +61,7 @@ Ephemeral resources are a security feature introduced in OpenTofu 1.10 and Terra
 
 ## 🔗 Commits
 
-- [`<commit-hash>`](https://github.com/oocx/tfplan2md/commit/<commit-hash>) fix: add support for ephemeral resource 'open' action and replace variants
+- [`a506ccd`](https://github.com/oocx/tfplan2md/commit/a506ccd02c7dec0c7ce46556054fd03d844e55e2) fix: add support for ephemeral resource 'open' action and replace variants
 
 ## 🧪 Test coverage
 

@@ -251,6 +251,14 @@ jobs:
             binary_name: tfplan2md
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
             needs_clang: true
+          # Alpine/musl builds (for Alpine Linux, Atlantis, and other musl-based environments)
+          - platform: linux-musl-arm64
+            os: ubuntu-24.04-arm
+            rid: linux-musl-arm64
+            archive_ext: tar.gz
+            binary_name: tfplan2md
+            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+            needs_clang: true
           # Windows builds
           - platform: windows-x64
             os: windows-latest
@@ -296,8 +304,12 @@ jobs:
       - name: Install NativeAOT linker prerequisite (Linux)
         if: matrix.needs_clang
         run: |
-          apt-get update
-          apt-get install -y --no-install-recommends clang
+          if command -v apt-get &>/dev/null; then
+            apt-get update
+            apt-get install -y --no-install-recommends clang
+          else
+            apk add --no-cache clang build-base zlib-dev linux-headers
+          fi
 
       - name: Build Binary
         shell: bash
@@ -407,7 +419,7 @@ jobs:
     name: Consolidate Checksums
     if: needs.release.outputs.version != ''
     runs-on: ubuntu-latest
-    needs: [release, build-binaries]
+    needs: [release, build-binaries, docker]
 
     steps:
       - name: Download all checksum artifacts
@@ -530,6 +542,42 @@ jobs:
           context: .
           file: src/Dockerfile
           push: true
+          load: true
           tags: ${{ steps.docker_tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Extract musl x64 binary from Docker image
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          # Reuse the binary already built by the Docker stage (linux-musl-x64)
+          docker create --name extract-musl-x64 "${{ secrets.DOCKERHUB_USERNAME }}/tfplan2md:${VERSION}"
+          mkdir -p artifacts/linux-musl-x64
+          docker cp extract-musl-x64:/app/tfplan2md artifacts/linux-musl-x64/tfplan2md
+          docker rm extract-musl-x64
+
+      - name: Package musl x64 binary (tar.gz)
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          cd artifacts/linux-musl-x64
+          tar -czf ../../tfplan2md_${VERSION}_linux-musl-x64.tar.gz tfplan2md
+
+      - name: Generate musl x64 checksum
+        run: |
+          VERSION="${{ needs.release.outputs.version }}"
+          sha256sum tfplan2md_${VERSION}_linux-musl-x64.tar.gz > tfplan2md_${VERSION}_linux-musl-x64.sha256
+
+      - name: Upload musl x64 checksum as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksum-linux-musl-x64
+          path: tfplan2md_${{ needs.release.outputs.version }}_linux-musl-x64.sha256
+          retention-days: 1
+
+      - name: Upload musl x64 binary to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.release.outputs.version }}
+          files: |
+            tfplan2md_${{ needs.release.outputs.version }}_linux-musl-x64.tar.gz
+            tfplan2md_${{ needs.release.outputs.version }}_linux-musl-x64.sha256

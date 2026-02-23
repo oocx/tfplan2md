@@ -198,7 +198,6 @@ This ensures identity attributes are not formatted by `AzureResourceIdFormatter`
 - Hand off to Retrospective agent after release completes
 
 ---
-
 ### [Next Agent] - [Date]
 
 **Task:** [To be filled by next agent]

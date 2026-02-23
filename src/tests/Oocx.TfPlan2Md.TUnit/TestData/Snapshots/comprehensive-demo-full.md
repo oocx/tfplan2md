@@ -335,6 +335,14 @@ and as separate resources. This configuration will cause conflicts.
 
 </details>
 
+<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
+<summary>➕ vault_kv_secret_v2 <b><code>app_secret</code></b></summary>
+<br>
+
+_No attribute changes._
+
+</details>
+
 ---
 
 ### 📦 Module: `module.network`

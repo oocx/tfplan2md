@@ -1,0 +1,81 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.10.0",
+  "variables": {},
+  "resource_changes": [
+    {
+      "address": "ephemeral.vault_kv_secret_v2.app_password",
+      "mode": "ephemeral",
+      "type": "vault_kv_secret_v2",
+      "name": "app_password",
+      "provider_name": "registry.opentofu.org/hashicorp/vault",
+      "change": {
+        "actions": ["open"],
+        "before": null,
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "ephemeral.vault_kv_secret_v2.db_credentials",
+      "mode": "ephemeral",
+      "type": "vault_kv_secret_v2",
+      "name": "db_credentials",
+      "provider_name": "registry.opentofu.org/hashicorp/vault",
+      "change": {
+        "actions": ["create", "forget"],
+        "before": null,
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "ephemeral.vault_kv_secret_v2.api_token",
+      "mode": "ephemeral",
+      "type": "vault_kv_secret_v2",
+      "name": "api_token",
+      "provider_name": "registry.opentofu.org/hashicorp/vault",
+      "change": {
+        "actions": ["forget", "create"],
+        "before": null,
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "null_resource.app_config",
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "app_config",
+      "provider_name": "registry.terraform.io/hashicorp/null",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "id": null,
+          "triggers": null
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    }
+  ],
+  "output_changes": {},
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.10.0",
+    "values": {}
+  },
+  "configuration": {
+    "root_module": {}
+  }
+}

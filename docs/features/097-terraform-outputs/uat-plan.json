@@ -106,6 +106,43 @@
       }
     },
     {
+      "address": "data.azurerm_client_config.current",
+      "mode": "data",
+      "type": "azurerm_client_config",
+      "name": "current",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["read"],
+        "before": null,
+        "after": {
+          "subscription_id": "d1828a48-1111-2222-3333-123456789abc",
+          "tenant_id": "11111111-2222-3333-4444-555555555555"
+        },
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.user_access",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "user_access",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "scope": "/subscriptions/d1828a48-1111-2222-3333-123456789abc",
+          "role_definition_id": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principal_id": "aabbccdd-1234-5678-9012-aabbccddeeff"
+        },
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
       "address": "azurerm_role_assignment.pipeline",
       "mode": "managed",
       "type": "azurerm_role_assignment",
@@ -249,6 +286,14 @@
       "before_sensitive": false,
       "after_sensitive": false
     },
+    "user_principal_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "aabbccdd-1234-5678-9012-aabbccddeeff",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
     "resource_group_id": {
       "actions": ["create"],
       "before": null,
@@ -319,7 +364,14 @@
         "subscription_id": {
           "sensitive": false,
           "expression": {
-            "references": ["azurerm_key_vault.prod.location", "azurerm_key_vault.prod"]
+            "references": ["data.azurerm_client_config.current.subscription_id", "data.azurerm_client_config.current"]
+          }
+        },
+        "user_principal_id": {
+          "description": "User principal object ID",
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_role_assignment.user_access.principal_id", "azurerm_role_assignment.user_access"]
           }
         }
       },

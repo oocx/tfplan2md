@@ -1,0 +1,83 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "array_output": {
+      "actions": ["create"],
+      "before": null,
+      "after": ["value1", "value2", "value3"],
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "object_output": {
+      "actions": ["create"],
+      "before": null,
+      "after": {
+        "name": "example",
+        "tier": "standard",
+        "enabled": true
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "nested_object": {
+      "actions": ["create"],
+      "before": null,
+      "after": {
+        "level1": {
+          "level2": {
+            "level3": "deep-value"
+          }
+        }
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "number_output": {
+      "actions": ["create"],
+      "before": null,
+      "after": 42,
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "boolean_output": {
+      "actions": ["create"],
+      "before": null,
+      "after": true,
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "array_output": {
+          "description": "A list of values",
+          "sensitive": false
+        },
+        "object_output": {
+          "description": "A complex object",
+          "sensitive": false
+        },
+        "nested_object": {
+          "description": "A deeply nested structure",
+          "sensitive": false
+        },
+        "number_output": {
+          "description": "A numeric value",
+          "sensitive": false
+        },
+        "boolean_output": {
+          "description": "A boolean flag",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

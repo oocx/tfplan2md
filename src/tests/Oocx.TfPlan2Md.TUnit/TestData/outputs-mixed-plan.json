@@ -1,0 +1,73 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "global_app_url": {
+      "actions": ["create"],
+      "before": null,
+      "after": "https://app.example.com",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "global_region": {
+      "actions": ["create"],
+      "before": null,
+      "after": "us-east-1",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "db_endpoint": {
+      "actions": ["create"],
+      "before": null,
+      "after": "db-prod.cluster-xyz.us-east-1.rds.amazonaws.com",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "cache_endpoint": {
+      "actions": ["create"],
+      "before": null,
+      "after": "redis.cache.windows.net:6380",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "global_app_url": {
+          "description": "The URL of the application",
+          "sensitive": false
+        },
+        "global_region": {
+          "description": "The deployment region",
+          "sensitive": false
+        }
+      },
+      "modules": [
+        {
+          "address": "module.database",
+          "outputs": {
+            "db_endpoint": {
+              "description": "Database endpoint",
+              "sensitive": false
+            }
+          }
+        },
+        {
+          "address": "module.cache",
+          "outputs": {
+            "cache_endpoint": {
+              "description": "Redis cache endpoint",
+              "sensitive": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

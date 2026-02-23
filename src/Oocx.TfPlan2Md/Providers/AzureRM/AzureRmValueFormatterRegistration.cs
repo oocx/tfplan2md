@@ -42,7 +42,7 @@ internal static class AzureRmValueFormatterRegistration
         if (principalMapper is not null)
         {
             registry.Register(
-                new MatchPattern("(^azurerm$|.*/azurerm$)", null, "^principal_id$", null),
+                new MatchPattern("(^azurerm$|.*/azurerm$)", null, "^(principal_id|user_principal_id|object_id)$", null),
                 new PrincipalIdFormatter(principalMapper));
         }
 

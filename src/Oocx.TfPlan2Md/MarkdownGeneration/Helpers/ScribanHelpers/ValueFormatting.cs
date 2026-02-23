@@ -104,6 +104,146 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Determines whether an output value is large enough to render outside the outputs table.
+    /// JSON objects/arrays with compact representation exceeding 80 characters are considered large.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="value">The raw output value (may be JsonElement or string).</param>
+    /// <returns>True when the value should be rendered outside the table; otherwise false.</returns>
+    public static bool IsLargeOutputValue(object? value)
+    {
+        if (value is null)
+        {
+            return false;
+        }
+
+        if (value is System.Text.Json.JsonElement jsonElement)
+        {
+            if (jsonElement.ValueKind is System.Text.Json.JsonValueKind.Object
+                or System.Text.Json.JsonValueKind.Array)
+            {
+                return CompactJson(jsonElement).Length > 80;
+            }
+
+            var str = jsonElement.ValueKind == System.Text.Json.JsonValueKind.String
+                ? jsonElement.GetString()
+                : null;
+            if (str is not null && TryCompactJsonString(str, out var compacted))
+            {
+                return compacted.Length > 80;
+            }
+        }
+
+        return false;
+    }
+
+
+    /// <param name="isMasked">Whether the value should be masked (sensitive and not --show-sensitive).</param>
+    /// <param name="isComputed">Whether the value is computed (known after apply).</param>
+    /// <param name="value">The raw value (may be JsonElement or string).</param>
+    /// <param name="providerName">The Terraform provider name of the referenced resource.</param>
+    /// <param name="attributeName">The output name used as attribute name for semantic formatting rules.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry for semantic icons.</param>
+    /// <returns>Formatted markdown string for table rendering.</returns>
+    private static string FormatOutputValue(
+        bool isMasked,
+        bool isComputed,
+        object? value,
+        string? providerName,
+        string? attributeName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        Services.IconProviderRegistry? iconProviderRegistry = null)
+    {
+        if (isMasked)
+        {
+            return "(sensitive value)";
+        }
+
+        if (isComputed)
+        {
+            return "(known after apply)";
+        }
+
+        // For JSON objects and arrays, render inline for small values or as placeholder for large ones.
+        if (value is System.Text.Json.JsonElement jsonElement &&
+            (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Object ||
+             jsonElement.ValueKind == System.Text.Json.JsonValueKind.Array))
+        {
+            var compact = CompactJson(jsonElement);
+            if (compact.Length > 80)
+            {
+                return "_(see below)_";
+            }
+
+            return FormatJsonInTable(jsonElement);
+        }
+
+        // Convert scalar value to string (handles JsonElement strings/numbers/bools)
+        var stringValue = ConvertValueToString(value);
+
+        if (string.IsNullOrEmpty(stringValue))
+        {
+            return string.Empty;
+        }
+
+        // If the string value looks like a JSON object or array (e.g., stored via jsonencode()),
+        // render inline for small values or as placeholder for large ones.
+        if (TryCompactJsonString(stringValue, out var compacted))
+        {
+            if (compacted.Length > 80)
+            {
+                return "_(see below)_";
+            }
+
+            try
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(stringValue.TrimStart());
+                return FormatJsonInTable(doc.RootElement);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return $"`{EscapeMarkdownTableCell(compacted)}`";
+            }
+        }
+
+        // Use the same formatting pipeline as attribute values:
+        // tries value formatter registry (display names, principal mapping) then
+        // semantic formatting (icons, Azure ID parsing) based on attribute name + provider.
+        return FormatAttributeValueTableWithRegistry(attributeName, stringValue, providerName, valueFormatterRegistry, iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Converts an output value to a string for rendering.
+    /// Handles JsonElement and other types.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>A string representation of the value.</returns>
+    private static string? ConvertValueToString(object? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        if (value is System.Text.Json.JsonElement jsonElement)
+        {
+            return jsonElement.ValueKind switch
+            {
+                System.Text.Json.JsonValueKind.String => jsonElement.GetString(),
+                System.Text.Json.JsonValueKind.Number => jsonElement.ToString(),
+                System.Text.Json.JsonValueKind.True => "true",
+                System.Text.Json.JsonValueKind.False => "false",
+                System.Text.Json.JsonValueKind.Null => null,
+                _ => jsonElement.GetRawText()
+            };
+        }
+
+        return value.ToString();
+    }
+
+    /// <summary>
     /// Determines whether the provided Terraform provider name represents the azurerm provider.
     /// </summary>
     /// <param name="providerName">The provider name.</param>
@@ -112,5 +252,119 @@ public static partial class ScribanHelpers
     {
         return !string.IsNullOrWhiteSpace(providerName)
                && providerName.Contains("azurerm", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Serializes a JSON element to a compact (single-line) string without indentation.
+    /// Uses a raw writer to avoid trimming issues with JsonSerializer.
+    /// </summary>
+    /// <param name="element">The JSON element to serialize.</param>
+    /// <returns>A compact JSON string.</returns>
+    private static string CompactJson(System.Text.Json.JsonElement element)
+    {
+        using var stream = new System.IO.MemoryStream();
+        using var writer = new System.Text.Json.Utf8JsonWriter(stream, new System.Text.Json.JsonWriterOptions { Indented = false });
+        element.WriteTo(writer);
+        writer.Flush();
+        return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    /// <summary>
+    /// Attempts to compact a string value that contains a JSON object or array.
+    /// Used to prevent newlines in JSON strings (e.g., from jsonencode()) from producing
+    /// &lt;br&gt; tags in table cells.
+    /// </summary>
+    /// <param name="value">The string value to inspect.</param>
+    /// <param name="compacted">The compact JSON string when the method returns true.</param>
+    /// <returns>True when the value was a JSON object or array and was successfully compacted.</returns>
+    private static bool TryCompactJsonString(string value, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? compacted)
+    {
+        var trimmed = value.TrimStart();
+        if (trimmed.Length == 0 || (trimmed[0] != '{' && trimmed[0] != '['))
+        {
+            compacted = null;
+            return false;
+        }
+
+        try
+        {
+            var doc = System.Text.Json.JsonDocument.Parse(trimmed);
+            if (doc.RootElement.ValueKind is System.Text.Json.JsonValueKind.Object or System.Text.Json.JsonValueKind.Array)
+            {
+                compacted = CompactJson(doc.RootElement);
+                return true;
+            }
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            // Not valid JSON — fall through
+        }
+
+        compacted = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Formats an output value as a large value (code fence) for rendering outside the outputs table.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    private static string FormatOutputValueLarge(bool isMasked, bool isComputed, object? value)
+    {
+        if (isMasked)
+        {
+            return "(sensitive value)";
+        }
+
+        if (isComputed)
+        {
+            return "(known after apply)";
+        }
+
+        if (value is System.Text.Json.JsonElement jsonElement &&
+            (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Object ||
+             jsonElement.ValueKind == System.Text.Json.JsonValueKind.Array))
+        {
+            var pretty = FormatJson(jsonElement);
+            return CodeFence(pretty, "json");
+        }
+
+        var stringValue = ConvertValueToString(value);
+        if (string.IsNullOrEmpty(stringValue))
+        {
+            return string.Empty;
+        }
+
+        if (TryCompactJsonString(stringValue, out _) &&
+            TryFormatJson(stringValue, out var formattedJson))
+        {
+            return CodeFence(formattedJson, "json");
+        }
+
+        return CodeFence(stringValue, null);
+    }
+
+    /// <summary>
+    /// Formats a JSON element for inline rendering inside a markdown table cell.
+    /// Uses HTML code tags with br line separators for readability.
+    /// Leading indentation is preserved using non-breaking spaces.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="element">The JSON element to format.</param>
+    /// <returns>HTML-formatted string suitable for a markdown table cell.</returns>
+    private static string FormatJsonInTable(System.Text.Json.JsonElement element)
+    {
+        var pretty = FormatJson(element);
+        var lines = pretty
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        var htmlLines = lines.Select(line =>
+        {
+            var spaces = line.Length - line.TrimStart().Length;
+            var nbsp = string.Concat(System.Linq.Enumerable.Repeat("&nbsp;", spaces));
+            return nbsp + HtmlEncode(line.TrimStart());
+        });
+
+        return "<code>" + string.Join("<br>", htmlLines) + "</code>";
     }
 }

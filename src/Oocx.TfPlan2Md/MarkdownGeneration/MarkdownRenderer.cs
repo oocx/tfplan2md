@@ -51,7 +51,7 @@ internal class MarkdownRenderer
     {
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
-        _valueFormatterRegistry = valueFormatterRegistry;
+        _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(providerRegistry);
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
         _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
         _templateLoader = new ScribanTemplateLoader(
@@ -80,7 +80,7 @@ internal class MarkdownRenderer
     {
         _principalMapper = principalMapper ?? new Platforms.Azure.NullPrincipalMapper();
         _providerRegistry = providerRegistry;
-        _valueFormatterRegistry = valueFormatterRegistry;
+        _valueFormatterRegistry = valueFormatterRegistry ?? CreateValueFormatterRegistry(providerRegistry);
         _iconProviderRegistry = iconProviderRegistry ?? CreateIconProviderRegistry(providerRegistry);
         _resourceModelMapperRegistry = CreateResourceModelMapperRegistry(providerRegistry);
         _templateLoader = new ScribanTemplateLoader(
@@ -168,6 +168,25 @@ internal class MarkdownRenderer
 
         var registry = new MarkdownGeneration.Services.IconProviderRegistry();
         providerRegistry.RegisterAllIconProviders(registry);
+        return registry;
+    }
+
+    /// <summary>
+    /// Builds a value formatter registry from the configured providers when not supplied explicitly.
+    /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry to pull value formatters from.</param>
+    /// <returns>The populated value formatter registry, or null when no providers are registered.</returns>
+    private static MarkdownGeneration.Services.ValueFormatterRegistry? CreateValueFormatterRegistry(
+        Services.ProviderRegistry? providerRegistry)
+    {
+        if (providerRegistry is null)
+        {
+            return null;
+        }
+
+        var registry = new MarkdownGeneration.Services.ValueFormatterRegistry();
+        providerRegistry.RegisterAllValueFormatters(registry);
         return registry;
     }
 

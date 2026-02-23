@@ -10,12 +10,15 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 public class ReportModelBuilderRefactoringTests
 {
     private const string ManagedMode = "managed";
+    private const string EphemeralMode = "ephemeral";
     private const string ProviderName = "provider";
     private const string CreateAction = "create";
     private const string ReadAction = "read";
     private const string ForgetAction = "forget";
+    private const string OpenAction = "open";
     private const string UpdateAction = "update";
     private const string NoOpAction = "no-op";
+    private const string ReplaceAction = "replace";
     private const string UnknownAction = "unknown";
 
     private readonly TerraformPlanParser _parser = new();
@@ -410,5 +413,111 @@ public class ReportModelBuilderRefactoringTests
         var operation = model.RefactoringOperations.Should().ContainSingle().Subject;
         operation.Operation.Should().Be("Move");
         operation.Status.Should().Be("Ready");
+    }
+
+    /// <summary>
+    /// Tests support for OpenTofu ephemeral resource "open" action.
+    /// Related issue: docs/issues/573-open-action-support/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_OpenAction_ActionIsOpen()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "ephemeral.vault_kv_secret_v2.test",
+                    null,
+                    EphemeralMode,
+                    "vault_kv_secret_v2",
+                    "test",
+                    ProviderName,
+                    new Change([OpenAction]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(OpenAction, "DetermineAction should return 'open' for actions containing 'open'");
+        change.Action.Should().NotBe(UnknownAction, "'open' action must not be classified as unknown");
+        change.ActionSymbol.Should().Be("➕", "'open' action should use Add icon (same as 'read')");
+    }
+
+    /// <summary>
+    /// Tests handling of ["forget", "create"] as replace action (OpenTofu replace variant).
+    /// Related issue: docs/issues/573-open-action-support/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_ForgetThenCreateAction_ClassifiedAsReplace()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([ForgetAction, CreateAction]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(ReplaceAction, "Actions [forget, create] should be classified as 'replace'");
+        change.Action.Should().NotBe(CreateAction, "[forget, create] must not be misclassified as 'create'");
+        change.ActionSymbol.Should().Be("♻️", "Replace action should use Replace icon");
+    }
+
+    /// <summary>
+    /// Tests handling of ["create", "forget"] as replace action (Terraform replace variant).
+    /// The Contains check is order-independent, so both orderings are handled by the same logic.
+    /// Related issue: docs/issues/573-open-action-support/analysis.md
+    /// </summary>
+    [Test]
+    public void Build_CreateThenForgetAction_ClassifiedAsReplace()
+    {
+        // Arrange
+        var plan = new TerraformPlan(
+            "1.0",
+            "1.0",
+            new List<ResourceChange>
+            {
+                new(
+                    "azurerm_storage_account.test",
+                    null,
+                    ManagedMode,
+                    "azurerm_storage_account",
+                    "test",
+                    ProviderName,
+                    new Change([CreateAction, ForgetAction]))
+            });
+
+        var builder = new ReportModelBuilder();
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        var change = model.Changes.Should().ContainSingle().Subject;
+        change.Action.Should().Be(ReplaceAction, "Actions [create, forget] should be classified as 'replace'");
+        change.Action.Should().NotBe(CreateAction, "[create, forget] must not be misclassified as 'create'");
+        change.ActionSymbol.Should().Be("♻️", "Replace action should use Replace icon");
     }
 }

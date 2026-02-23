@@ -1724,6 +1724,23 @@
           "variable": [{}, {}, {}]
         }
       }
+    },
+    {
+      "address": "ephemeral.vault_kv_secret_v2.app_secret",
+      "mode": "ephemeral",
+      "type": "vault_kv_secret_v2",
+      "name": "app_secret",
+      "provider_name": "registry.opentofu.org/hashicorp/vault",
+      "change": {
+        "actions": [
+          "open"
+        ],
+        "before": null,
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
     }
   ],
   "configuration": {

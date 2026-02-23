@@ -1,0 +1,47 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "database_connection": {
+      "actions": ["create"],
+      "before": null,
+      "after": "postgresql://db.example.com:5432",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "vpc_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "vpc-12345",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "modules": [
+        {
+          "address": "module.database",
+          "outputs": {
+            "database_connection": {
+              "description": "PostgreSQL connection string",
+              "sensitive": false
+            }
+          }
+        },
+        {
+          "address": "module.network",
+          "outputs": {
+            "vpc_id": {
+              "description": "The ID of the VPC",
+              "sensitive": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

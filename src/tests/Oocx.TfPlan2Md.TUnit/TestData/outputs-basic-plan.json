@@ -1,0 +1,61 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "created_output": {
+      "actions": ["create"],
+      "before": null,
+      "after": "new-value-123",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "updated_output": {
+      "actions": ["update"],
+      "before": "old-value",
+      "after": "new-value",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "deleted_output": {
+      "actions": ["delete"],
+      "before": "value-to-remove",
+      "after": null,
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "no_op_output": {
+      "actions": ["no-op"],
+      "before": "unchanged-value",
+      "after": "unchanged-value",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "created_output": {
+          "description": "A newly created output",
+          "sensitive": false
+        },
+        "updated_output": {
+          "description": "An output being updated",
+          "sensitive": false
+        },
+        "deleted_output": {
+          "description": "An output being removed",
+          "sensitive": false
+        },
+        "no_op_output": {
+          "description": "An unchanged output",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

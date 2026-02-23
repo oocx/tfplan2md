@@ -16,4 +16,10 @@ public class ModuleChangeGroup
     /// Gets the list of resource changes within this module.
     /// </summary>
     public required IReadOnlyList<ResourceChangeModel> Changes { get; init; }
+
+    /// <summary>
+    /// Gets the list of outputs for this module, ordered alphabetically by name.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    public IReadOnlyList<OutputChangeModel> Outputs { get; init; } = Array.Empty<OutputChangeModel>();
 }

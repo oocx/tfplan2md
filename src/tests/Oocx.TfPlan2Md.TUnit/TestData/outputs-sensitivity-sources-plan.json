@@ -1,0 +1,61 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "after_sensitive_true": {
+      "actions": ["create"],
+      "before": null,
+      "after": "secret-value-1",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": true
+    },
+    "before_sensitive_true": {
+      "actions": ["delete"],
+      "before": "old-secret-value",
+      "after": null,
+      "after_unknown": false,
+      "before_sensitive": true,
+      "after_sensitive": false
+    },
+    "config_sensitive_true": {
+      "actions": ["create"],
+      "before": null,
+      "after": "secret-from-config",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "not_sensitive": {
+      "actions": ["create"],
+      "before": null,
+      "after": "public-value",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "after_sensitive_true": {
+          "description": "Sensitive via after_sensitive",
+          "sensitive": false
+        },
+        "before_sensitive_true": {
+          "description": "Sensitive via before_sensitive",
+          "sensitive": false
+        },
+        "config_sensitive_true": {
+          "description": "Sensitive via configuration",
+          "sensitive": true
+        },
+        "not_sensitive": {
+          "description": "Not sensitive anywhere",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

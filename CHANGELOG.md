@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.28.0"></a>
+## [1.28.0](https://github.com/oocx/tfplan2md/compare/v1.27.0...v1.28.0) (2026-02-23)
+
+### ✨ Features
+
+* add support for 'open' action and ['create', 'forget'] replace variant ([a67a4e7](https://github.com/oocx/tfplan2md/commit/a67a4e7cf20ac3b7c9ceff364a78be2f917d108c))
+
+### 📚 Documentation
+
+* add code review report for open action support ([07e3392](https://github.com/oocx/tfplan2md/commit/07e3392e4fc73a9605c9ae0c91b9c0a2e439cd88))
+* add issue analysis for OpenTofu open action support ([030a2f7](https://github.com/oocx/tfplan2md/commit/030a2f78d50049c04fc337509381f65f301055e2))
+* add release notes for ephemeral resource 'open' action support ([41353b5](https://github.com/oocx/tfplan2md/commit/41353b5388f9826f4bc2e8a32125074cff4495d2))
+* add retrospective analysis for issue [#573](https://github.com/oocx/tfplan2md/issues/573) (open action support) ([6cd7087](https://github.com/oocx/tfplan2md/commit/6cd7087a341dd27a8f080c82c488004c7ef1eb54))
+* complete work protocol with all required agent entries ([d0077a0](https://github.com/oocx/tfplan2md/commit/d0077a0857223860541883f57a911509b07fe279))
+* update release notes with commit hash and add Release Manager verification ([4d9b515](https://github.com/oocx/tfplan2md/commit/4d9b515617dc193f18a60cc391ad2ce3c60b8311))
+
+<a name="1.27.0"></a>
+## [1.27.0](https://github.com/oocx/tfplan2md/compare/v1.26.2...v1.27.0) (2026-02-23)
+
+### ✨ Features
+
+* add Alpine musl binaries (linux-musl-x64 and linux-musl-arm64) to release ([162a202](https://github.com/oocx/tfplan2md/commit/162a20294bf9393b7df0ceadd807b640a0c51e12))
+* add change type column to outputs table (097) SNAPSHOT_UPDATE_OK ([1b93920](https://github.com/oocx/tfplan2md/commit/1b93920f7d4c075fe940b2eb5745f61021086b19))
+* add rendering layer for Terraform outputs ([f03cc6a](https://github.com/oocx/tfplan2md/commit/f03cc6af9650d448e78c141afcfecde419904b43))
+* add Terraform outputs parsing and model building ([8cd2aa7](https://github.com/oocx/tfplan2md/commit/8cd2aa7729e13d46bf94ad58eac4b815f740a472))
+
+### 🐛 Bug Fixes
+
+* add expression.references+azurerm resources to uat-plan.json, add principal mapping, regenerate uat-plan.md (097) ([aa2dbc5](https://github.com/oocx/tfplan2md/commit/aa2dbc534c9a83045d43baa5502cd2fdbba15550))
+* always parse Azure resource IDs in output values regardless of provider (097) SNAPSHOT_UPDATE_OK ([917b8eb](https://github.com/oocx/tfplan2md/commit/917b8ebb0b18da4c38784a1e57e2efcaf98fcdb3))
+* expand PrincipalIdFormatter MatchPattern to include user_principal_id and object_id (097) SNAPSHOT_UPDATE_OK ([3395e72](https://github.com/oocx/tfplan2md/commit/3395e729c86028b5c0fff4f8337e3a3241bce36a))
+* fix subscription_id icon, add user_principal_id with correct reference, regenerate uat-plan.md and demo artifacts (097) ([007a2d8](https://github.com/oocx/tfplan2md/commit/007a2d89b8647a0dddddc3d118395f80c16999be))
+* parse trimmed value in TryCompactJsonString (code review) (097) ([fb8d850](https://github.com/oocx/tfplan2md/commit/fb8d850bd44db3daebd64be0c0deb7e4f6c07529))
+* properly resolve output value formatting - provider-aware icons, JSON string compaction, principal mapping (097) SNAPSHOT_UPDATE_OK ([f2f7994](https://github.com/oocx/tfplan2md/commit/f2f79949ba46044cfc4af5e8ece4b82c68e65d99))
+* regenerate output snapshots with Change column (097) SNAPSHOT_UPDATE_OK ([e937989](https://github.com/oocx/tfplan2md/commit/e93798923c50bcbbe61457649c9ec0d6d0e9bdd8))
+* remove incorrect 👤 fallback icon rule for principal_id/tenant_id UUIDs; update snapshots (097) SNAPSHOT_UPDATE_OK ([8e59ca0](https://github.com/oocx/tfplan2md/commit/8e59ca0ef2fb2df092e80fbfd6be454d3b6cde0c))
+* rename test method to UsesLaptopIcon per code review (097) ([8b2d9ab](https://github.com/oocx/tfplan2md/commit/8b2d9ab9801c807314753b0912a432cde0bf2f1b))
+* restore accidentally deleted nsg-with-separate-rule-updates.md snapshot (097) ([e0bfda0](https://github.com/oocx/tfplan2md/commit/e0bfda0a5000fb9d1ce055d7716eea463d69060b))
+* use 💻 for service principals per style guide; add type-aware icon tests; expand snapshot coverage (097) SNAPSHOT_UPDATE_OK ([418634d](https://github.com/oocx/tfplan2md/commit/418634d3c08769957d64ab34ab1fb8727180c9b6))
+* use build-binaries matrix for musl builds (load+push incompatible in buildx) ([d3b3ba5](https://github.com/oocx/tfplan2md/commit/d3b3ba5ccd6b38e4240881fd934e04c334643960))
+* use docker run for musl builds instead of Alpine job containers ([6c84dc4](https://github.com/oocx/tfplan2md/commit/6c84dc4f3caaf462dfac5f00abe63e8ced0980f5))
+* use provider from expression references and semantic formatting for output values (097) SNAPSHOT_UPDATE_OK ([f61cc8e](https://github.com/oocx/tfplan2md/commit/f61cc8ece938c9fcc8dc291ff8189b999cc6d29c))
+* use referenced attribute name for output value formatting; fix Scriban OR bug via formatting_attribute_name (097) SNAPSHOT_UPDATE_OK ([3e9bd62](https://github.com/oocx/tfplan2md/commit/3e9bd620d29ebec16156aa63047a32e4588aac44))
+* use runtime-deps:10.0-alpine for musl smoke test (no apk needed) ([f75e822](https://github.com/oocx/tfplan2md/commit/f75e8229d624b41058baa033fd6b0e01638dd588))
+* **outputs:** fix principal_id icon, large JSON rendering, and stub resource attributes ([7a85c66](https://github.com/oocx/tfplan2md/commit/7a85c6685ab6131a2f3178285221bd08870f12b5))
+
+### 📚 Documentation
+
+* add architecture design for Terraform outputs support ([a159f90](https://github.com/oocx/tfplan2md/commit/a159f904c70e396e6219e242e17ace10a661362f))
+* add feature specification for terraform outputs (097) ([fbcdb17](https://github.com/oocx/tfplan2md/commit/fbcdb170366ce36e898728feb7acb0363f19fee8))
+* add implementation tasks for terraform outputs feature (097) ([f5a8da0](https://github.com/oocx/tfplan2md/commit/f5a8da04dc9d7037234ea70e5585362512b1e71f))
+* add Release Manager entry to work protocol (097) ([5e26414](https://github.com/oocx/tfplan2md/commit/5e2641442dcc27fad4b0cf02a489257cbd727c52))
+* add release notes and features.md entry for terraform outputs (097) ([939f196](https://github.com/oocx/tfplan2md/commit/939f1964859ee0876936a43f34dfd6a926970ef9))
+* add test plan and UAT plan for terraform outputs feature ([7da9c09](https://github.com/oocx/tfplan2md/commit/7da9c09f8367a2d3933b7bdaefd0eced8b08c0c9))
+* add UAT Tester work log entry for feature 097 ([d7cb764](https://github.com/oocx/tfplan2md/commit/d7cb764260d87d092e59c3610f208a8c070e979e))
+* fix typos in release notes examples for terraform outputs (097) ([b61e864](https://github.com/oocx/tfplan2md/commit/b61e8641f6e6a40b639765808128f82ac26b626f))
+* update work protocol with Developer progress ([ac667de](https://github.com/oocx/tfplan2md/commit/ac667decf781f9b5439efe7269b8d3b990c2681e))
+* update work protocol with rendering layer progress ([27c236b](https://github.com/oocx/tfplan2md/commit/27c236b8fec00b6a728be7890bed175a9ef2660a))
+
 <a name="1.26.2"></a>
 ## [1.26.2](https://github.com/oocx/tfplan2md/compare/v1.26.1...v1.26.2) (2026-02-22)
 

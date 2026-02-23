@@ -30,10 +30,10 @@ public class PrincipalIdFormatterTests
     }
 
     /// <summary>
-    /// Verifies mapped service principal ids render with robot icon.
+    /// Verifies mapped service principal ids render with laptop icon.
     /// </summary>
     [Test]
-    public void TryFormat_WhenServicePrincipalMapped_UsesRobotIcon()
+    public void TryFormat_WhenServicePrincipalMapped_UsesLaptopIcon()
     {
         var principalMapper = new PrincipalMapper(
             new Dictionary<string, string> { ["sp-456"] = "Terraform Deploy SP" },

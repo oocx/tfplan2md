@@ -252,20 +252,24 @@ jobs:
             container: mcr.microsoft.com/dotnet/sdk:10.0-noble
             needs_clang: true
           # Alpine/musl builds (for Alpine Linux, Atlantis, and other musl-based environments)
+          # Note: Alpine job containers are NOT used because:
+          # - actions/setup-dotnet requires bash, which Alpine lacks by default
+          # - JavaScript Actions in Alpine containers are only supported on x64 (not ARM64)
+          # Instead, we run the build inside a Docker container via a build step.
           - platform: linux-musl-x64
             os: ubuntu-latest
             rid: linux-musl-x64
             archive_ext: tar.gz
             binary_name: tfplan2md
-            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
-            needs_clang: true
+            container: ''
+            needs_clang: false
           - platform: linux-musl-arm64
             os: ubuntu-24.04-arm
             rid: linux-musl-arm64
             archive_ext: tar.gz
             binary_name: tfplan2md
-            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
-            needs_clang: true
+            container: ''
+            needs_clang: false
           # Windows builds
           - platform: windows-x64
             os: windows-latest
@@ -304,6 +308,7 @@ jobs:
           echo "Xcode Command Line Tools installed at: $(xcode-select -p)"
 
       - name: Setup .NET
+        if: "!startsWith(matrix.platform, 'linux-musl-')"
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
@@ -319,6 +324,7 @@ jobs:
           fi
 
       - name: Build Binary
+        if: "!startsWith(matrix.platform, 'linux-musl-')"
         shell: bash
         run: |
           dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj \
@@ -327,6 +333,17 @@ jobs:
             --self-contained true \
             -p:PublishAot=true \
             -o artifacts/${{ matrix.platform }}
+
+      - name: Build Binary (musl via Docker)
+        if: startsWith(matrix.platform, 'linux-musl-')
+        run: |
+          docker run --rm \
+            -v "$(pwd):/work" \
+            -w /work \
+            -e RID="${{ matrix.rid }}" \
+            -e PLATFORM="${{ matrix.platform }}" \
+            mcr.microsoft.com/dotnet/sdk:10.0-alpine \
+            sh -c 'apk add --no-cache clang build-base zlib-dev linux-headers && dotnet publish src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -c Release -r "$RID" --self-contained true -p:PublishAot=true -o "/work/artifacts/$PLATFORM"'
 
       - name: Verify glibc version (Linux only)
         if: startsWith(matrix.platform, 'linux-')
@@ -368,12 +385,20 @@ jobs:
 
       - name: Validate Artifacts (Unix)
         if: runner.os != 'Windows'
+        shell: bash
         run: |
           VERSION="${{ needs.release.outputs.version }}"
           # Verify binary is executable
           test -x artifacts/${{ matrix.platform }}/${{ matrix.binary_name }}
-          # Smoke test: verify binary runs
-          artifacts/${{ matrix.platform }}/${{ matrix.binary_name }} --help > /dev/null
+          # Smoke test: musl binaries link against musl libc and can't run directly on glibc Ubuntu
+          if [[ "${{ matrix.platform }}" == linux-musl-* ]]; then
+            docker run --rm \
+              -v "$(pwd)/artifacts/${{ matrix.platform }}:/musl_binary" \
+              alpine:3.21 \
+              sh -c "apk add --no-cache libgcc libstdc++ && /musl_binary/${{ matrix.binary_name }} --help > /dev/null"
+          else
+            artifacts/${{ matrix.platform }}/${{ matrix.binary_name }} --help > /dev/null
+          fi
           # Verify archive integrity
           if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
             tar -tzf tfplan2md_${VERSION}_${{ matrix.platform }}.tar.gz > /dev/null

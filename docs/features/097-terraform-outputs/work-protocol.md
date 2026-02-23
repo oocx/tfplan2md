@@ -57,3 +57,26 @@
   6. Update Actions → Show only `after` value (before→after diff is future enhancement per spec)
 - **Problems Encountered:** None. Existing architecture patterns (model building, value formatting, sensitivity masking from ADR-009) provide clear integration paths.
 - **Next Steps:** Handoff to Quality Engineer for test plan creation
+
+### Quality Engineer
+- **Date:** 2025-02-23
+- **Summary:** Created comprehensive test plan for Terraform outputs support. Defined 30 test cases covering unit tests (parsing, model building, value formatting, masking), integration tests (module/global positioning, complex scenarios), snapshot tests (full rendering validation), architecture tests (layer boundaries), and end-to-end Docker tests. Also created UAT test plan for real-world validation in GitHub and Azure DevOps PRs.
+- **Artifacts Produced:**
+  - `docs/features/097-terraform-outputs/test-plan.md` - Complete test plan with 30 test cases
+  - `docs/features/097-terraform-outputs/uat-test-plan.md` - User acceptance testing plan for PR validation
+- **Test Coverage:**
+  - **Unit Tests (TC-01 to TC-16):** Parse `OutputChange` from JSON, correlate metadata from configuration, build `OutputChangeModel` with correct properties, handle missing descriptions, detect sensitivity from multiple sources, mask sensitive values by default, detect computed values, reveal sensitive values with `--show-sensitive`, apply display name mappings, alphabetical ordering, all output actions (create/update/delete/no-op), no outputs scenario, modules with only outputs
+  - **Integration Tests (TC-17 to TC-20, TC-27 to TC-28):** Module output positioning after resources, multiple modules with outputs, global output positioning after all modules, mixed module and global outputs, nested sensitivity detection, complex output values (arrays/objects)
+  - **Snapshot Tests (TC-21 to TC-26):** Full rendering validation for basic outputs, sensitive values revealed, computed values, display name mappings, all actions, no outputs
+  - **Architecture Tests (TC-29):** Verify no circular dependencies introduced
+  - **End-to-End Tests (TC-30):** Docker container validation with CLI flag testing
+  - **UAT:** Feature-specific artifact (`uat-plan.json` and `uat-plan.md`) plus comprehensive demo for regression testing
+- **Test Data Requirements:** 23 test plan JSON files documented, 6 snapshot baseline markdown files identified
+- **Edge Cases Covered:** No outputs, modules with only outputs, missing descriptions, nested sensitivity objects, complex values, missing configuration metadata, computed sensitive values (masking precedence), empty module addresses, multiple actions
+- **Non-Functional Requirements:** Performance (100+ outputs rendering), error handling (malformed data), compatibility (Terraform 1.0+ plan formats)
+- **UAT Strategy:** Two-artifact approach:
+  1. Feature-specific test artifact focusing on outputs rendering with various scenarios
+  2. Comprehensive demo for regression detection
+  Both tested on GitHub and Azure DevOps platforms
+- **Problems Encountered:** None. Existing test infrastructure (TUnit, snapshot testing, AwesomeAssertions) provides clear patterns for outputs feature testing.
+- **Next Steps:** Handoff to Developer for implementation with test-driven development approach

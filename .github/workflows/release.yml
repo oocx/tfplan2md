@@ -394,8 +394,8 @@ jobs:
           if [[ "${{ matrix.platform }}" == linux-musl-* ]]; then
             docker run --rm \
               -v "$(pwd)/artifacts/${{ matrix.platform }}:/musl_binary" \
-              alpine:3.21 \
-              sh -c "apk add --no-cache libgcc libstdc++ && /musl_binary/${{ matrix.binary_name }} --help > /dev/null"
+              mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine \
+              /musl_binary/${{ matrix.binary_name }} --help > /dev/null
           else
             artifacts/${{ matrix.platform }}/${{ matrix.binary_name }} --help > /dev/null
           fi

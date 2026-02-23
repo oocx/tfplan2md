@@ -80,3 +80,41 @@
   Both tested on GitHub and Azure DevOps platforms
 - **Problems Encountered:** None. Existing test infrastructure (TUnit, snapshot testing, AwesomeAssertions) provides clear patterns for outputs feature testing.
 - **Next Steps:** Handoff to Developer for implementation with test-driven development approach
+
+### Task Planner
+- **Date:** 2025-02-23
+- **Summary:** Created comprehensive task breakdown for Terraform outputs support feature. Organized 18 tasks following test-driven development approach, with clear dependencies, acceptance criteria, and implementation order.
+- **Artifacts Produced:**
+  - `docs/features/097-terraform-outputs/tasks.md` - Complete task breakdown with 18 tasks
+- **Task Organization:**
+  - **Task 1:** Add test data files (13 JSON test plans for various output scenarios)
+  - **Tasks 2-5:** Parsing and model layer extensions (OutputChange, OutputChangeModel, ModuleChangeGroup, ReportModel)
+  - **Tasks 6-8:** Model building logic (metadata extraction, BuildOutputModels, integration)
+  - **Tasks 9-12:** Rendering layer (Scriban helper, templates, integration)
+  - **Tasks 13-16:** Comprehensive testing (snapshot baselines, integration tests, architecture tests, E2E Docker tests)
+  - **Tasks 17-18:** Documentation and final verification
+- **Implementation Order:**
+  - TDD approach: test data → parsing → model → building → rendering → testing → docs
+  - Dependencies clearly mapped to enable parallel work where possible
+  - Each task has specific acceptance criteria with checkboxes
+- **Key Design Patterns Applied:**
+  - Test-driven development (write tests before implementation)
+  - Partial class pattern for ReportModelBuilder extensions
+  - Pre-computed masking flags (defense in depth per ADR-009)
+  - Value formatting reuse via ValueFormatterRegistry
+  - Alphabetical ordering at model layer (deterministic, testable)
+- **Edge Cases Documented:**
+  - No outputs (render nothing)
+  - Modules with only outputs, no resources
+  - Missing descriptions, nested sensitivity, complex values
+  - Computed AND sensitive (masking precedence)
+  - Missing configuration metadata
+- **Test Coverage Defined:**
+  - 30 test cases from test plan mapped to tasks
+  - Unit tests (TC-01 to TC-16)
+  - Integration tests (TC-17 to TC-20, TC-27 to TC-28)
+  - Snapshot tests (TC-21 to TC-26)
+  - Architecture tests (TC-29)
+  - End-to-end Docker tests (TC-30)
+- **Problems Encountered:** None. Architecture and test plan provided clear guidance for task decomposition. Existing codebase patterns (partial classes, model building, Scriban templates) provided natural task boundaries.
+- **Next Steps:** Present task plan to Maintainer for approval, then handoff to Developer for implementation

@@ -12,7 +12,12 @@
       "change": {
         "actions": ["create"],
         "before": null,
-        "after": {},
+        "after": {
+          "name": "vnet-prod",
+          "location": "eastus",
+          "resource_group_name": "rg-network",
+          "address_space": ["10.0.0.0/16"]
+        },
         "after_unknown": false,
         "before_sensitive": false,
         "after_sensitive": false
@@ -28,7 +33,12 @@
       "change": {
         "actions": ["create"],
         "before": null,
-        "after": {},
+        "after": {
+          "name": "subnet-app",
+          "resource_group_name": "rg-network",
+          "virtual_network_name": "vnet-prod",
+          "address_prefixes": ["10.0.1.0/24"]
+        },
         "after_unknown": false,
         "before_sensitive": false,
         "after_sensitive": false
@@ -44,7 +54,11 @@
       "change": {
         "actions": ["create"],
         "before": null,
-        "after": {},
+        "after": {
+          "name": "id-deploy",
+          "location": "eastus",
+          "resource_group_name": "rg-security"
+        },
         "after_unknown": false,
         "before_sensitive": false,
         "after_sensitive": false
@@ -60,7 +74,10 @@
       "change": {
         "actions": ["create"],
         "before": null,
-        "after": {},
+        "after": {
+          "name": "rg-security",
+          "location": "eastus"
+        },
         "after_unknown": false,
         "before_sensitive": false,
         "after_sensitive": false
@@ -75,7 +92,14 @@
       "change": {
         "actions": ["create"],
         "before": null,
-        "after": {},
+        "after": {
+          "name": "kv-prod-001",
+          "location": "eastus",
+          "resource_group_name": "rg-security",
+          "sku_name": "standard",
+          "soft_delete_retention_days": 7,
+          "purge_protection_enabled": false
+        },
         "after_unknown": false,
         "before_sensitive": false,
         "after_sensitive": false
@@ -89,8 +113,16 @@
       "provider_name": "registry.terraform.io/hashicorp/azurerm",
       "change": {
         "actions": ["update"],
-        "before": {},
-        "after": {},
+        "before": {
+          "scope": "/subscriptions/d1828a48-1111-2222-3333-123456789abc",
+          "role_definition_id": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "principal_id": "12345678-1234-1234-1234-123456789012"
+        },
+        "after": {
+          "scope": "/subscriptions/d1828a48-1111-2222-3333-123456789abc",
+          "role_definition_id": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principal_id": "12345678-1234-1234-1234-123456789012"
+        },
         "after_unknown": false,
         "before_sensitive": false,
         "after_sensitive": false
@@ -125,6 +157,17 @@
           "auto_scaling": true,
           "monitoring": true
         }
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "monitoring_config": {
+      "actions": ["create"],
+      "before": null,
+      "after": {
+        "enabled": true,
+        "interval": 60
       },
       "after_unknown": false,
       "before_sensitive": false,
@@ -233,7 +276,14 @@
           }
         },
         "deployment_config": {
-          "description": "Complete deployment configuration",
+          "description": "Complete deployment configuration (large JSON — rendered outside table)",
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_key_vault.prod.id", "azurerm_key_vault.prod"]
+          }
+        },
+        "monitoring_config": {
+          "description": "Monitoring settings (small JSON — rendered inline in table)",
           "sensitive": false,
           "expression": {
             "references": ["azurerm_key_vault.prod.id", "azurerm_key_vault.prod"]

@@ -205,6 +205,7 @@ internal static class AotScriptObjectMapper
             obj["is_computed"] = output.IsComputed;
             obj["is_masked"] = output.IsMasked;
             obj["module_address"] = output.ModuleAddress;
+            obj["is_large_output_value"] = output.IsLargeOutputValue;
             arr.Add(obj);
         }
 

@@ -68,7 +68,8 @@ internal partial class ReportModelBuilder
                 IsComputed = isComputed,
                 IsMasked = isMasked,
                 ModuleAddress = moduleAddress,
-                ProviderName = ResolveOutputProviderName(plan, outputName, moduleAddress)
+                ProviderName = ResolveOutputProviderName(plan, outputName, moduleAddress),
+                IsLargeOutputValue = ScribanHelpers.IsLargeOutputValue(value)
             });
         }
 

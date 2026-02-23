@@ -38,6 +38,7 @@ public static partial class ScribanHelpers
         scriptObject.Import("format_large_value", new Func<string?, string?, string, string>(FormatLargeValue));
         scriptObject.Import("format_value", new Func<string?, string?, string>((value, provider) => FormatValueWithRegistry(value, provider, valueFormatterRegistry)));
         scriptObject.Import("format_output_value", new Func<bool, bool, object?, string?, string?, string>((isMasked, isComputed, value, provider, attrName) => FormatOutputValue(isMasked, isComputed, value, provider, attrName, valueFormatterRegistry, iconProviderRegistry)));
+        scriptObject.Import("format_output_value_large", new Func<bool, bool, object?, string>((isMasked, isComputed, value) => FormatOutputValueLarge(isMasked, isComputed, value)));
         scriptObject.Import("format_import_id_details", new Func<string?, string>(FormatImportIdDetails));
         scriptObject.Import("format_code_summary", new Func<string?, string>(FormatCodeSummary));
         scriptObject.Import("format_code_table", new Func<string?, string>(FormatCodeTable));

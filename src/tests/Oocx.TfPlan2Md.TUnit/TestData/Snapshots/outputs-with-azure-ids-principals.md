@@ -55,7 +55,7 @@ _No attribute changes._
 | Change | Name | Description | Sensitive | Value |
 | ------ | ---- | ----------- | --------- | ----- |
 | ➕ | `keyvault_id` | The ID of the key vault resource | No | Key Vault `🆔 kv-prod-001` in resource group `📁 rg-security` of subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |
-| ➕ | `principal_id` | Service principal object ID | No | `Terraform Deploy SP (12345678-1234-1234-1234-123456789012)` |
+| ➕ | `principal_id` | Service principal object ID | No | `👤 Terraform Deploy SP (12345678-1234-1234-1234-123456789012)` |
 | ➕ | `resource_group_id` | Network resource group ID | No | `📁 rg-network` in subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |
 | ➕ | `role_definition_id` | Role definition resource ID | No | `🛡️ Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)` |
 | ➕ | `subscription_id` | The Azure subscription ID | No | `🔑 d1828a48-1111-2222-3333-123456789abc` |

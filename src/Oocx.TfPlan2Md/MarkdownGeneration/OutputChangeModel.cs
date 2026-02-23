@@ -67,4 +67,11 @@ public class OutputChangeModel
     /// Related feature: docs/features/097-terraform-outputs/specification.md.
     /// </summary>
     public required string ModuleAddress { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the output value is large enough to render outside the table.
+    /// When true, the template renders a placeholder in the table and the actual value below.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    public bool IsLargeOutputValue { get; init; }
 }

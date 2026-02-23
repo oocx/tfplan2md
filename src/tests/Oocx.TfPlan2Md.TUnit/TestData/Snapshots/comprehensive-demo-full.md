@@ -520,7 +520,7 @@ and as separate resources. This configuration will cause conflicts.
 
 | Attribute | Value |
 | ----------- | ------- |
-| principal_id | `Jane Doe (00000000-0000-0000-0000-000000000001)` |
+| principal_id | `👤 Jane Doe (00000000-0000-0000-0000-000000000001)` |
 | principal_type | `👤 User` |
 | role_definition_id | `🛡️ Owner (8e3af657-a8ff-443c-a75c-2fe8c4bcb635)` |
 | scope | `📁 rg-tfplan2md-demo` in subscription `🔑 Production (12345678-1234-1234-1234-123456789012)` |
@@ -549,7 +549,7 @@ _No attribute changes._
 | public_network_access_enabled | `✅ true` |
 | resource_group_name | `📁 rg-tfplan2md-demo` |
 | sku_name | `standard` |
-| tenant_id | `11111111-2222-3333-4444-555555555555` |
+| tenant_id | `👤 11111111-2222-3333-4444-555555555555` |
 
 **🏷️ Tags:** `environment: demo` `owner: security`
 

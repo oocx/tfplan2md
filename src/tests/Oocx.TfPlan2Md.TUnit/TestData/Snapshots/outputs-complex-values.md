@@ -10,8 +10,8 @@ No changes
 
 | Change | Name | Description | Sensitive | Value |
 | ------ | ---- | ----------- | --------- | ----- |
-| ➕ | `array_output` | A list of values | No | `["value1","value2","value3"]` |
+| ➕ | `array_output` | A list of values | No | <code>[<br>&nbsp;&nbsp;&quot;value1&quot;,<br>&nbsp;&nbsp;&quot;value2&quot;,<br>&nbsp;&nbsp;&quot;value3&quot;<br>]</code> |
 | ➕ | `boolean_output` | A boolean flag | No | `✅ true` |
-| ➕ | `nested_object` | A deeply nested structure | No | `{"level1":{"level2":{"level3":"deep-value"}}}` |
+| ➕ | `nested_object` | A deeply nested structure | No | <code>{<br>&nbsp;&nbsp;&quot;level1&quot;: {<br>&nbsp;&nbsp;&nbsp;&nbsp;&quot;level2&quot;: {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;level3&quot;: &quot;deep-value&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code> |
 | ➕ | `number_output` | A numeric value | No | `42` |
-| ➕ | `object_output` | A complex object | No | `{"name":"example","tier":"standard","enabled":true}` |
+| ➕ | `object_output` | A complex object | No | <code>{<br>&nbsp;&nbsp;&quot;name&quot;: &quot;example&quot;,<br>&nbsp;&nbsp;&quot;tier&quot;: &quot;standard&quot;,<br>&nbsp;&nbsp;&quot;enabled&quot;: true<br>}</code> |

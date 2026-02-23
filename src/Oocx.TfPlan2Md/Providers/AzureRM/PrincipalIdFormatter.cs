@@ -48,7 +48,7 @@ internal sealed class PrincipalIdFormatter : IValueFormatter
             return null;
         }
 
-        var enriched = $"{displayName} ({context.Value})";
+        var enriched = $"👤{ScribanHelpers.NonBreakingSpace}{displayName} ({context.Value})";
         return ScribanHelpers.FormatCodeTable(enriched);
     }
 }

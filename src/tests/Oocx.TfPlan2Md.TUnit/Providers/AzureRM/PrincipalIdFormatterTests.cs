@@ -26,7 +26,7 @@ public class PrincipalIdFormatterTests
 
         var formatted = formatter.TryFormat(context);
 
-        formatted.Should().Be("`Jane Doe (user-123)`");
+        formatted.Should().Be("`👤\u00a0Jane Doe (user-123)`");
     }
 
     /// <summary>

@@ -104,10 +104,40 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
-    /// Formats an output value for rendering in the outputs table.
-    /// Handles masking (sensitive values), computed values (known after apply), and display name mappings.
+    /// Determines whether an output value is large enough to render outside the outputs table.
+    /// JSON objects/arrays with compact representation exceeding 80 characters are considered large.
     /// Related feature: docs/features/097-terraform-outputs/specification.md.
     /// </summary>
+    /// <param name="value">The raw output value (may be JsonElement or string).</param>
+    /// <returns>True when the value should be rendered outside the table; otherwise false.</returns>
+    public static bool IsLargeOutputValue(object? value)
+    {
+        if (value is null)
+        {
+            return false;
+        }
+
+        if (value is System.Text.Json.JsonElement jsonElement)
+        {
+            if (jsonElement.ValueKind is System.Text.Json.JsonValueKind.Object
+                or System.Text.Json.JsonValueKind.Array)
+            {
+                return CompactJson(jsonElement).Length > 80;
+            }
+
+            var str = jsonElement.ValueKind == System.Text.Json.JsonValueKind.String
+                ? jsonElement.GetString()
+                : null;
+            if (str is not null && TryCompactJsonString(str, out var compacted))
+            {
+                return compacted.Length > 80;
+            }
+        }
+
+        return false;
+    }
+
+
     /// <param name="isMasked">Whether the value should be masked (sensitive and not --show-sensitive).</param>
     /// <param name="isComputed">Whether the value is computed (known after apply).</param>
     /// <param name="value">The raw value (may be JsonElement or string).</param>
@@ -135,14 +165,18 @@ public static partial class ScribanHelpers
             return "(known after apply)";
         }
 
-        // For JSON objects and arrays, render as compact single-line JSON in backticks.
-        // Code fences cannot be used inside table cells (they introduce newlines which break table formatting).
+        // For JSON objects and arrays, render inline for small values or as placeholder for large ones.
         if (value is System.Text.Json.JsonElement jsonElement &&
             (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Object ||
              jsonElement.ValueKind == System.Text.Json.JsonValueKind.Array))
         {
             var compact = CompactJson(jsonElement);
-            return $"`{EscapeMarkdownTableCell(compact)}`";
+            if (compact.Length > 80)
+            {
+                return "_(see below)_";
+            }
+
+            return FormatJsonInTable(jsonElement);
         }
 
         // Convert scalar value to string (handles JsonElement strings/numbers/bools)
@@ -154,10 +188,23 @@ public static partial class ScribanHelpers
         }
 
         // If the string value looks like a JSON object or array (e.g., stored via jsonencode()),
-        // compact it to a single line to prevent <br> tags in table cells from embedded newlines.
+        // render inline for small values or as placeholder for large ones.
         if (TryCompactJsonString(stringValue, out var compacted))
         {
-            return $"`{EscapeMarkdownTableCell(compacted)}`";
+            if (compacted.Length > 80)
+            {
+                return "_(see below)_";
+            }
+
+            try
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(stringValue.TrimStart());
+                return FormatJsonInTable(doc.RootElement);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return $"`{EscapeMarkdownTableCell(compacted)}`";
+            }
         }
 
         // Use the same formatting pipeline as attribute values:
@@ -255,5 +302,69 @@ public static partial class ScribanHelpers
 
         compacted = null;
         return false;
+    }
+
+    /// <summary>
+    /// Formats an output value as a large value (code fence) for rendering outside the outputs table.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    private static string FormatOutputValueLarge(bool isMasked, bool isComputed, object? value)
+    {
+        if (isMasked)
+        {
+            return "(sensitive value)";
+        }
+
+        if (isComputed)
+        {
+            return "(known after apply)";
+        }
+
+        if (value is System.Text.Json.JsonElement jsonElement &&
+            (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Object ||
+             jsonElement.ValueKind == System.Text.Json.JsonValueKind.Array))
+        {
+            var pretty = FormatJson(jsonElement);
+            return CodeFence(pretty, "json");
+        }
+
+        var stringValue = ConvertValueToString(value);
+        if (string.IsNullOrEmpty(stringValue))
+        {
+            return string.Empty;
+        }
+
+        if (TryCompactJsonString(stringValue, out _) &&
+            TryFormatJson(stringValue, out var formattedJson))
+        {
+            return CodeFence(formattedJson, "json");
+        }
+
+        return CodeFence(stringValue, null);
+    }
+
+    /// <summary>
+    /// Formats a JSON element for inline rendering inside a markdown table cell.
+    /// Uses HTML code tags with br line separators for readability.
+    /// Leading indentation is preserved using non-breaking spaces.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="element">The JSON element to format.</param>
+    /// <returns>HTML-formatted string suitable for a markdown table cell.</returns>
+    private static string FormatJsonInTable(System.Text.Json.JsonElement element)
+    {
+        var pretty = FormatJson(element);
+        var lines = pretty
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        var htmlLines = lines.Select(line =>
+        {
+            var spaces = line.Length - line.TrimStart().Length;
+            var nbsp = string.Concat(System.Linq.Enumerable.Repeat("&nbsp;", spaces));
+            return nbsp + HtmlEncode(line.TrimStart());
+        });
+
+        return "<code>" + string.Join("<br>", htmlLines) + "</code>";
     }
 }

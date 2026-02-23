@@ -477,10 +477,10 @@ _No attribute changes._
 
 | Attribute | Value |
 | ----------- | ------- |
-| principal_id | `00000000-0000-0000-0000-000000000001` |
+| principal_id | `👤 Jane Doe (00000000-0000-0000-0000-000000000001)` |
 | principal_type | `👤 User` |
-| role_definition_id | `🛡️ /providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635` |
-| scope | `📁 rg-tfplan2md-demo` in subscription `🔑 12345678-1234-1234-1234-123456789012` |
+| role_definition_id | `🛡️ Owner (8e3af657-a8ff-443c-a75c-2fe8c4bcb635)` |
+| scope | `📁 rg-tfplan2md-demo` in subscription `🔑 Production (12345678-1234-1234-1234-123456789012)` |
 
 </details>
 
@@ -504,7 +504,7 @@ _No attribute changes._
 | public_network_access_enabled | `✅ true` |
 | resource_group_name | `📁 rg-tfplan2md-demo` |
 | sku_name | `standard` |
-| tenant_id | `11111111-2222-3333-4444-555555555555` |
+| tenant_id | `👤 11111111-2222-3333-4444-555555555555` |
 
 **🏷️ Tags:** `environment: demo` `owner: security`
 
@@ -531,7 +531,7 @@ _No attribute changes._
 | Attribute | Value |
 | ----------- | ------- |
 | content_type | `password` |
-| key_vault_id | Key Vault `🆔 kv-tfplan2md` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 12345678-1234-1234-1234-123456789012` |
+| key_vault_id | Key Vault `🆔 kv-tfplan2md` in resource group `📁 rg-tfplan2md-demo` of subscription `🔑 Production (12345678-1234-1234-1234-123456789012)` |
 | name | `🆔 db-password` |
 | value | `(sensitive)` |
 

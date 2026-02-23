@@ -290,14 +290,6 @@ public static partial class ScribanHelpers
             return FormatIconValue($"🌍 {normalizedValue}", context, false);
         }
 
-        if (context == ValueFormatContext.Table
-            && normalizedName.Equals("id", StringComparison.OrdinalIgnoreCase)
-            && IsAzurermProvider(providerName)
-            && AzureScopeParser.IsAzureResourceId(normalizedValue))
-        {
-            return AzureScopeParser.ParseScopeIdentity(normalizedValue);
-        }
-
         return context == ValueFormatContext.Table
             ? FormatValue(normalizedValue, providerName)
             : FormatCodeSummary(normalizedValue);

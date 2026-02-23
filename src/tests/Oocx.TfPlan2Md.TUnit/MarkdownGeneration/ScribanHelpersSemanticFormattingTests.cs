@@ -437,21 +437,6 @@ public class ScribanHelpersSemanticFormattingTests
     }
 
     /// <summary>
-    /// Verifies that the 'id' attribute with an Azure resource ID renders as resource type label
-    /// plus raw ARM ID value in backticks, not the full expanded display name.
-    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
-    /// </summary>
-    [Test]
-    public void FormatAttributeValueTable_IdAttributeWithAzureResourceId_ReturnsTypeAndRawValue()
-    {
-        const string armId = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
-
-        var result = FormatAttributeValueTable("id", armId, "azurerm");
-
-        result.Should().Be("Key Vault `/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv`");
-    }
-
-    /// <summary>
     /// Verifies that reference attributes (non-'id') with Azure resource IDs still render with full display name.
     /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
     /// </summary>
@@ -463,5 +448,31 @@ public class ScribanHelpersSemanticFormattingTests
         var result = FormatAttributeValueTable("key_vault_id", armId, "azurerm");
 
         result.Should().Be("Key Vault `🆔\u00A0my-kv` in resource group `📁\u00A0my-rg` of subscription `🔑\u00A0sub-id`");
+    }
+
+    /// <summary>
+    /// Verifies that identity formatting for the 'id' attribute renders as resource type label plus raw ARM ID.
+    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeIdentityValueTable_AzureResourceId_ReturnsTypeAndRawValue()
+    {
+        const string armId = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
+
+        var result = FormatAttributeIdentityValueTable(armId, "azurerm", null, null);
+
+        result.Should().Be("Key Vault `/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv`");
+    }
+
+    /// <summary>
+    /// Verifies that identity formatting for non-Azure-ID values falls back to regular code formatting.
+    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeIdentityValueTable_NonAzureIdValue_ReturnsCodeValue()
+    {
+        var result = FormatAttributeIdentityValueTable("my-resource-name", "azurerm", null, null);
+
+        result.Should().Be("`my-resource-name`");
     }
 }

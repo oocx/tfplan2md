@@ -48,6 +48,39 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Formats the value of a resource's own identity attribute ('id') for table rendering.
+    /// For Azure resource IDs, shows the resource type label with the raw identifier value
+    /// instead of the full expanded display name, since name/resource-group/subscription
+    /// information is redundant for the resource's own identity.
+    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
+    /// </summary>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Formatted markdown string for table rendering.</returns>
+    internal static string FormatAttributeIdentityValueTable(
+        string? value,
+        string? providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalizedValue = value.Trim();
+
+        if (IsAzurermProvider(providerName) && AzureScopeParser.IsAzureResourceId(normalizedValue))
+        {
+            return AzureScopeParser.ParseScopeIdentity(normalizedValue);
+        }
+
+        return FormatAttributeValueTableWithRegistry("id", value, providerName, valueFormatterRegistry, iconProviderRegistry);
+    }
+
+    /// <summary>
     /// Formats attribute values using registry-provided formatters before default logic.
     /// </summary>
     /// <param name="value">The raw value.</param>

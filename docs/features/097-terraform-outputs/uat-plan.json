@@ -1,0 +1,192 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "api_endpoint": {
+      "actions": ["create"],
+      "before": null,
+      "after": "https://api.example.com/v1",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "api_key": {
+      "actions": ["create"],
+      "before": null,
+      "after": "super-secret-key-12345",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": true
+    },
+    "deployment_config": {
+      "actions": ["create"],
+      "before": null,
+      "after": {
+        "region": "eastus",
+        "environment": "production",
+        "replicas": 3,
+        "features": {
+          "auto_scaling": true,
+          "monitoring": true
+        }
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "keyvault_uri": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security/providers/Microsoft.KeyVault/vaults/kv-prod-001",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "pipeline_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": null,
+      "after_unknown": true,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "resource_list": {
+      "actions": ["create"],
+      "before": null,
+      "after": ["vnet-prod", "kv-prod-001", "rg-network"],
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "role_assignment_id": {
+      "actions": ["update"],
+      "before": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "subscription_id": {
+      "actions": ["no-op"],
+      "before": "d1828a48-1111-2222-3333-123456789abc",
+      "after": "d1828a48-1111-2222-3333-123456789abc",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "subnet_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-prod/subnets/subnet-app",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "vnet_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-prod",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "keyvault_secrets": {
+      "actions": ["create"],
+      "before": null,
+      "after": {
+        "db_password": "secret-001",
+        "api_key": "secret-002",
+        "storage_key": "secret-003"
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": true
+    },
+    "principal_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "12345678-1234-1234-1234-123456789012",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "resource_group_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "api_endpoint": {
+          "description": "Public API endpoint URL",
+          "sensitive": false
+        },
+        "api_key": {
+          "description": "API authentication key",
+          "sensitive": true
+        },
+        "deployment_config": {
+          "description": "Complete deployment configuration",
+          "sensitive": false
+        },
+        "keyvault_uri": {
+          "description": "Azure Key Vault resource ID",
+          "sensitive": false
+        },
+        "pipeline_id": {
+          "description": "Build pipeline identifier",
+          "sensitive": false
+        },
+        "resource_list": {
+          "description": "List of deployed resource names",
+          "sensitive": false
+        },
+        "role_assignment_id": {
+          "description": "Role definition ID for access control",
+          "sensitive": false
+        },
+        "subscription_id": {
+          "sensitive": false
+        }
+      },
+      "modules": [
+        {
+          "address": "module.network",
+          "outputs": {
+            "subnet_id": {
+              "description": "Application subnet resource ID",
+              "sensitive": false
+            },
+            "vnet_id": {
+              "description": "Virtual network resource ID",
+              "sensitive": false
+            }
+          }
+        },
+        {
+          "address": "module.security",
+          "outputs": {
+            "keyvault_secrets": {
+              "description": "Key Vault secret references",
+              "sensitive": true
+            },
+            "principal_id": {
+              "description": "Service principal object ID",
+              "sensitive": false
+            },
+            "resource_group_id": {
+              "description": "Security resource group ID",
+              "sensitive": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

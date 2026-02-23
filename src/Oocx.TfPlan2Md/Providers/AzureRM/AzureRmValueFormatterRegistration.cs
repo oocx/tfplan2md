@@ -27,6 +27,10 @@ internal static class AzureRmValueFormatterRegistration
     {
         ArgumentNullException.ThrowIfNull(registry);
 
+        // Register Azure resource ID formatter for all attributes.
+        // The formatter internally excludes id and name attributes from full readable
+        // display name formatting (see AzureResourceIdFormatter.TryFormat).
+        // Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
         registry.Register(
             new MatchPattern("(^azurerm$|.*/azurerm$)", null, null, null),
             new AzureResourceIdFormatter(scopeFormatter));

@@ -34,3 +34,26 @@
   - Update action display (before→after now vs future enhancement)
 - **Problems Encountered:** None. Terraform plan JSON structure is well-documented, existing display name mapping features provide clear integration points.
 - **Next Steps:** Handoff to Architect for technical design
+
+### Architect
+- **Date:** 2025-02-23
+- **Summary:** Designed technical architecture for Terraform outputs support. Extended parsing layer with `OutputChanges` and `OutputChange` record, created `OutputChangeModel` for report model layer, extended `ModuleChangeGroup` and `ReportModel` to include outputs, designed value formatting pipeline integration, and specified template structure. All open questions from Requirements Engineer have been resolved with documented design decisions.
+- **Artifacts Produced:**
+  - `docs/features/097-terraform-outputs/architecture.md` - Complete technical architecture design
+- **Key Design Decisions:**
+  - **Parsing:** Extend `TerraformPlan` with optional `OutputChanges` property (`IReadOnlyDictionary<string, OutputChange>?`)
+  - **Model Layer:** New `OutputChangeModel` with pre-computed masking flag (`IsMasked`), `ModuleChangeGroup.Outputs`, `ReportModel.GlobalOutputs`
+  - **Correlation:** Navigate configuration JSON structure during model building to correlate output names with module addresses and metadata
+  - **Value Formatting:** Reuse existing `ValueFormatterRegistry` pipeline to automatically apply display name mappings
+  - **Sensitivity:** Use `after_sensitive`/`before_sensitive` from `output_changes` as primary source, fall back to configuration metadata
+  - **Template Structure:** New `_outputs.sbn` partial template, integrated into `default.sbn` for module and global outputs
+  - **Edge Cases:** Handle modules with only outputs (no resources), missing metadata, nested sensitivity markers
+- **Open Questions Resolved:**
+  1. Data Model Extension → Parse `output_changes` eagerly during plan parsing
+  2. Metadata Correlation → Correlate by name + module address during model building using configuration structure
+  3. Module Output Parsing → Build complete output list, then group by module; handle output-only modules
+  4. Value Rendering → Reuse `ValueFormatterRegistry` for automatic display name mappings
+  5. Sensitivity Detection → Precedence: `after_sensitive` > `before_sensitive` > `configuration.sensitive` > `false`
+  6. Update Actions → Show only `after` value (before→after diff is future enhancement per spec)
+- **Problems Encountered:** None. Existing architecture patterns (model building, value formatting, sensitivity masking from ADR-009) provide clear integration paths.
+- **Next Steps:** Handoff to Quality Engineer for test plan creation

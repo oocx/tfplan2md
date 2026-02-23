@@ -59,5 +59,5 @@ _No attribute changes._
 | ➕ | `resource_group_id` | Network resource group ID | No | `📁 rg-network` in subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |
 | ➕ | `role_definition_id` | Role definition resource ID | No | `🛡️ Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)` |
 | ➕ | `subscription_id` | The Azure subscription ID | No | `🔑 d1828a48-1111-2222-3333-123456789abc` |
-| ➕ | `user_principal_id` | User principal object ID | No | `aabbccdd-1234-5678-9012-aabbccddeeff` |
+| ➕ | `user_principal_id` | User principal object ID | No | `👤 Jane Admin (aabbccdd-1234-5678-9012-aabbccddeeff)` |
 | ➕ | `vnet_id` | ID of the production virtual network | No | Virtual Network `🆔 vnet-prod` in resource group `📁 rg-network` of subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |

@@ -15,6 +15,9 @@ class Tfplan2md < Formula
     if Hardware::CPU.intel?
       url "https://github.com/oocx/tfplan2md/releases/download/v{{VERSION}}/tfplan2md_{{VERSION}}_linux-x64.tar.gz"
       sha256 "{{LINUX_X64_SHA256}}"
+    elsif Hardware::CPU.arm?
+      url "https://github.com/oocx/tfplan2md/releases/download/v{{VERSION}}/tfplan2md_{{VERSION}}_linux-arm64.tar.gz"
+      sha256 "{{LINUX_ARM64_SHA256}}"
     end
   end
 

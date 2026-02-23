@@ -241,7 +241,7 @@ public static partial class ScribanHelpers
 
         try
         {
-            var doc = System.Text.Json.JsonDocument.Parse(value);
+            var doc = System.Text.Json.JsonDocument.Parse(trimmed);
             if (doc.RootElement.ValueKind is System.Text.Json.JsonValueKind.Object or System.Text.Json.JsonValueKind.Array)
             {
                 compacted = CompactJson(doc.RootElement);

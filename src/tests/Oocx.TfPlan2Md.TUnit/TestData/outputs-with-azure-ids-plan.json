@@ -19,10 +19,10 @@
       "before_sensitive": false,
       "after_sensitive": false
     },
-    "subscription_id": {
+    "resource_group_id": {
       "actions": ["create"],
       "before": null,
-      "after": "d1828a48-1111-2222-3333-123456789abc",
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-network",
       "after_unknown": false,
       "before_sensitive": false,
       "after_sensitive": false
@@ -31,6 +31,22 @@
       "actions": ["create"],
       "before": null,
       "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "subscription_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "d1828a48-1111-2222-3333-123456789abc",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "vnet_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-prod",
       "after_unknown": false,
       "before_sensitive": false,
       "after_sensitive": false
@@ -47,12 +63,20 @@
           "description": "Service principal object ID",
           "sensitive": false
         },
-        "subscription_id": {
-          "description": "The Azure subscription ID",
+        "resource_group_id": {
+          "description": "Network resource group ID",
           "sensitive": false
         },
         "role_definition_id": {
           "description": "Role definition resource ID",
+          "sensitive": false
+        },
+        "subscription_id": {
+          "description": "The Azure subscription ID",
+          "sensitive": false
+        },
+        "vnet_id": {
+          "description": "ID of the production virtual network",
           "sensitive": false
         }
       }

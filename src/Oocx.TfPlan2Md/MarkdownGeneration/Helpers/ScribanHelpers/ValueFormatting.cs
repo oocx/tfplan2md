@@ -133,7 +133,31 @@ public static partial class ScribanHelpers
 
         // Convert value to string (handles JsonElement and other types)
         var stringValue = ConvertValueToString(value);
-        return FormatValueWithRegistry(stringValue, providerName, valueFormatterRegistry);
+
+        if (string.IsNullOrEmpty(stringValue))
+        {
+            return string.Empty;
+        }
+
+        // Try registry-based formatting first (covers principal names, role names, etc.)
+        if (valueFormatterRegistry is not null)
+        {
+            var context = new Services.ServiceResolutionContext(providerName, null, null, stringValue);
+            var formatted = valueFormatterRegistry.TryFormat(context);
+            if (!string.IsNullOrEmpty(formatted))
+            {
+                return formatted;
+            }
+        }
+
+        // Azure resource IDs are always rendered as readable scope paths regardless of provider,
+        // because outputs can reference Azure resources from any Terraform provider.
+        if (Platforms.Azure.AzureScopeParser.IsAzureResourceId(stringValue))
+        {
+            return Platforms.Azure.AzureScopeParser.ParseScope(stringValue);
+        }
+
+        return $"`{EscapeMarkdown(stringValue)}`";
     }
 
     /// <summary>

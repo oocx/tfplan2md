@@ -10,7 +10,9 @@ No changes
 
 | Change | Name | Description | Sensitive | Value |
 | ------ | ---- | ----------- | --------- | ----- |
-| ➕ | `keyvault_id` | The ID of the key vault resource | No | `/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security/providers/Microsoft.KeyVault/vaults/kv-prod-001` |
+| ➕ | `keyvault_id` | The ID of the key vault resource | No | Key Vault `🆔 kv-prod-001` in resource group `📁 rg-security` of subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |
 | ➕ | `principal_id` | Service principal object ID | No | `12345678-1234-1234-1234-123456789012` |
-| ➕ | `role_definition_id` | Role definition resource ID | No | `/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7` |
+| ➕ | `resource_group_id` | Network resource group ID | No | `📁 rg-network` in subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |
+| ➕ | `role_definition_id` | Role definition resource ID | No | RoleDefinitions `🆔 acdd72a7-3385-48ef-bd42-f606fba81ae7` in subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |
 | ➕ | `subscription_id` | The Azure subscription ID | No | `d1828a48-1111-2222-3333-123456789abc` |
+| ➕ | `vnet_id` | ID of the production virtual network | No | Virtual Network `🆔 vnet-prod` in resource group `📁 rg-network` of subscription `🔑 d1828a48-1111-2222-3333-123456789abc` |

@@ -68,6 +68,10 @@ internal sealed class AzApiModule : IProviderModule
     /// <param name="registry">The value formatter registry to register with.</param>
     public void RegisterValueFormatters(ValueFormatterRegistry registry)
     {
+        // Register Azure resource ID formatter for all attributes.
+        // The formatter internally excludes id and name attributes from full readable
+        // display name formatting (see AzureResourceIdFormatter.TryFormat).
+        // Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
         registry.Register(
             new MatchPattern("(^azapi$|.*/azapi$)", null, null, null),
             new AzureResourceIdFormatter(_scopeFormatter));

@@ -48,6 +48,56 @@ public class ProviderValueFormatterRegistryTests
     }
 
     /// <summary>
+    /// Ensures AzureRM does NOT format the 'id' attribute with full readable display name.
+    /// A resource's own id should not receive contextual expansion.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </summary>
+    [Test]
+    public void AzureRmModule_RegisterValueFormatters_DoesNotFormatIdAttribute()
+    {
+        var registry = new ValueFormatterRegistry();
+        var module = new AzureRMModule(LargeValueFormat.SimpleDiff, new NullPrincipalMapper());
+
+        module.RegisterValueFormatters(registry);
+
+        var context = new ServiceResolutionContext(
+            "azurerm",
+            null,
+            "id",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/acc");
+
+        var formatted = registry.TryFormat(context);
+
+        // The id attribute should not be formatted by AzureResourceIdFormatter
+        formatted.Should().BeNull();
+    }
+
+    /// <summary>
+    /// Ensures AzureRM does NOT format the 'name' attribute with full readable display name.
+    /// A resource's own name should not receive contextual expansion.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </summary>
+    [Test]
+    public void AzureRmModule_RegisterValueFormatters_DoesNotFormatNameAttribute()
+    {
+        var registry = new ValueFormatterRegistry();
+        var module = new AzureRMModule(LargeValueFormat.SimpleDiff, new NullPrincipalMapper());
+
+        module.RegisterValueFormatters(registry);
+
+        var context = new ServiceResolutionContext(
+            "azurerm",
+            null,
+            "name",
+            "mystorageaccount");
+
+        var formatted = registry.TryFormat(context);
+
+        // The name attribute should not be formatted by AzureResourceIdFormatter
+        formatted.Should().BeNull();
+    }
+
+    /// <summary>
     /// Ensures AzApi registers the Azure resource ID formatter.
     /// </summary>
     [Test]
@@ -67,6 +117,56 @@ public class ProviderValueFormatterRegistryTests
         var formatted = registry.TryFormat(context);
 
         formatted.Should().Contain("Storage Account");
+    }
+
+    /// <summary>
+    /// Ensures AzApi does NOT format the 'id' attribute with full readable display name.
+    /// A resource's own id should not receive contextual expansion.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </summary>
+    [Test]
+    public void AzApiModule_RegisterValueFormatters_DoesNotFormatIdAttribute()
+    {
+        var registry = new ValueFormatterRegistry();
+        var module = new AzApiModule();
+
+        module.RegisterValueFormatters(registry);
+
+        var context = new ServiceResolutionContext(
+            "azapi",
+            null,
+            "id",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/acc");
+
+        var formatted = registry.TryFormat(context);
+
+        // The id attribute should not be formatted by AzureResourceIdFormatter
+        formatted.Should().BeNull();
+    }
+
+    /// <summary>
+    /// Ensures AzApi does NOT format the 'name' attribute with full readable display name.
+    /// A resource's own name should not receive contextual expansion.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </summary>
+    [Test]
+    public void AzApiModule_RegisterValueFormatters_DoesNotFormatNameAttribute()
+    {
+        var registry = new ValueFormatterRegistry();
+        var module = new AzApiModule();
+
+        module.RegisterValueFormatters(registry);
+
+        var context = new ServiceResolutionContext(
+            "azapi",
+            null,
+            "name",
+            "mystorageaccount");
+
+        var formatted = registry.TryFormat(context);
+
+        // The name attribute should not be formatted by AzureResourceIdFormatter
+        formatted.Should().BeNull();
     }
 
     /// <summary>

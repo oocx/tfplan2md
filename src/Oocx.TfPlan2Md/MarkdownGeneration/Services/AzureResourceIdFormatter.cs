@@ -30,9 +30,21 @@ internal sealed class AzureResourceIdFormatter : IValueFormatter
     /// </summary>
     /// <param name="context">The resolution context to evaluate.</param>
     /// <returns>Formatted summary when the value is an Azure resource ID; otherwise null.</returns>
+    /// <remarks>
+    /// Excludes formatting for 'id' and 'name' attributes as these represent the resource's
+    /// own identity and should only receive semantic icon decoration, not full contextual expansion.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </remarks>
     public string? TryFormat(ServiceResolutionContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
+
+        // Exclude a resource's own identity attributes from full readable display name formatting.
+        // These should only receive semantic icon decoration (handled by semantic formatting).
+        if (context.AttributeName is "id" or "name")
+        {
+            return null;
+        }
 
         if (string.IsNullOrWhiteSpace(context.Value))
         {

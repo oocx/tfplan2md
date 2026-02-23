@@ -111,4 +111,11 @@ internal class ReportModel
     /// Related feature: docs/features/057-terraform-import-moved-blocks/specification.md.
     /// </summary>
     public required IReadOnlyList<RefactoringOperationModel> RefactoringOperations { get; init; }
+
+    /// <summary>
+    /// Gets the global/root outputs (outputs not belonging to any module).
+    /// Ordered alphabetically by output name.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    public IReadOnlyList<OutputChangeModel> GlobalOutputs { get; init; } = Array.Empty<OutputChangeModel>();
 }

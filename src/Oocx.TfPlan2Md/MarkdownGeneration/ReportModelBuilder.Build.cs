@@ -77,22 +77,26 @@ internal partial class ReportModelBuilder
         // Preserve the order of modules as they appear in the plan while ensuring the root
         // module is listed first. This keeps child modules next to their parent modules
         // (flat grouping but ordered by appearance).
-        var moduleGroups = displayChanges
-            .GroupBy(c => c.ModuleAddress ?? string.Empty)
-            .Select(g => new
-            {
-                Key = g.Key,
-                Changes = g.ToList(),
-                FirstIndex = displayChanges.FindIndex(c => (c.ModuleAddress ?? string.Empty) == g.Key)
-            })
-            .OrderBy(g => g.Key == string.Empty ? 0 : 1)
-            .ThenBy(g => g.FirstIndex)
-            .Select(g => new ModuleChangeGroup
-            {
-                ModuleAddress = g.Key, // empty string represents root
-                Changes = g.Changes
-            })
+
+        // Build output models from the plan
+        // Related feature: docs/features/097-terraform-outputs/specification.md
+        var allOutputs = BuildOutputModels(plan);
+
+        // Separate global vs module outputs
+        var globalOutputs = allOutputs
+            .Where(o => o.ModuleAddress == string.Empty)
+            .OrderBy(o => o.Name, StringComparer.Ordinal)
             .ToList();
+
+        // Group module outputs by module address
+        var outputsByModule = allOutputs
+            .Where(o => o.ModuleAddress != string.Empty)
+            .GroupBy(o => o.ModuleAddress)
+            .ToDictionary(
+                g => g.Key,
+                g => (IReadOnlyList<OutputChangeModel>)g.OrderBy(o => o.Name, StringComparer.Ordinal).ToList());
+
+        var moduleGroups = BuildModuleGroups(displayChanges, outputsByModule);
 
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
@@ -116,7 +120,8 @@ internal partial class ReportModelBuilder
             ShowSensitive = _showSensitive,
             RenderTarget = renderTarget,
             DetailsDisplayMode = _detailsDisplayMode,
-            RefactoringOperations = refactoringOperations
+            RefactoringOperations = refactoringOperations,
+            GlobalOutputs = globalOutputs
         };
     }
 
@@ -141,6 +146,64 @@ internal partial class ReportModelBuilder
         return resource.ChildResourceGroups
             .SelectMany(group => group.Rows)
             .Any(row => row.ChangeIndicator != ActionIcons.Unchanged);
+    }
+
+    /// <summary>
+    /// Builds module change groups with resource changes and outputs.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="displayChanges">Resource changes to group by module.</param>
+    /// <param name="outputsByModule">Outputs grouped by module address.</param>
+    /// <returns>List of module change groups with outputs.</returns>
+    private static List<ModuleChangeGroup> BuildModuleGroups(
+        List<ResourceChangeModel> displayChanges,
+        Dictionary<string, IReadOnlyList<OutputChangeModel>> outputsByModule)
+    {
+        var moduleGroups = displayChanges
+            .GroupBy(c => c.ModuleAddress ?? string.Empty)
+            .Select(g => new
+            {
+                Key = g.Key,
+                Changes = g.ToList(),
+                FirstIndex = displayChanges.FindIndex(c => (c.ModuleAddress ?? string.Empty) == g.Key)
+            })
+            .OrderBy(g => g.Key == string.Empty ? 0 : 1)
+            .ThenBy(g => g.FirstIndex)
+            .Select(g => new ModuleChangeGroup
+            {
+                ModuleAddress = g.Key, // empty string represents root
+                Changes = g.Changes,
+                Outputs = outputsByModule.TryGetValue(g.Key, out var outputs) ? outputs : Array.Empty<OutputChangeModel>()
+            })
+            .ToList();
+
+        // Handle modules with ONLY outputs (no resource changes)
+        // Related feature: docs/features/097-terraform-outputs/specification.md
+        foreach (var (moduleAddress, outputs) in outputsByModule)
+        {
+            if (!moduleGroups.Exists(m => m.ModuleAddress == moduleAddress))
+            {
+                // Find the position to insert this module (maintain appearance order)
+                var insertIndex = moduleGroups.Count;
+                for (var i = 0; i < moduleGroups.Count; i++)
+                {
+                    if (string.Compare(moduleAddress, moduleGroups[i].ModuleAddress, StringComparison.Ordinal) < 0)
+                    {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+
+                moduleGroups.Insert(insertIndex, new ModuleChangeGroup
+                {
+                    ModuleAddress = moduleAddress,
+                    Changes = Array.Empty<ResourceChangeModel>(),
+                    Outputs = outputs
+                });
+            }
+        }
+
+        return moduleGroups;
     }
 
     /// <summary>

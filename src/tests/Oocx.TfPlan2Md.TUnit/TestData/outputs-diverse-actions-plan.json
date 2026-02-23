@@ -1,0 +1,61 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "sensitive_computed": {
+      "actions": ["create"],
+      "before": null,
+      "after": null,
+      "after_unknown": true,
+      "before_sensitive": false,
+      "after_sensitive": true
+    },
+    "string_to_number": {
+      "actions": ["update"],
+      "before": "old-string-value",
+      "after": 123,
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "null_value": {
+      "actions": ["create"],
+      "before": null,
+      "after": null,
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "empty_string": {
+      "actions": ["create"],
+      "before": null,
+      "after": "",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "sensitive_computed": {
+          "description": "Sensitive AND computed output",
+          "sensitive": true
+        },
+        "string_to_number": {
+          "description": "Output changing type",
+          "sensitive": false
+        },
+        "null_value": {
+          "description": "Null output value",
+          "sensitive": false
+        },
+        "empty_string": {
+          "description": "Empty string output",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

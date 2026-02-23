@@ -1,0 +1,49 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "resource_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": null,
+      "after_unknown": true,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "computed_fqdn": {
+      "actions": ["create"],
+      "before": null,
+      "after": null,
+      "after_unknown": true,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "known_value": {
+      "actions": ["create"],
+      "before": null,
+      "after": "static-value",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "resource_id": {
+          "description": "The ID of the resource (computed)",
+          "sensitive": false
+        },
+        "computed_fqdn": {
+          "description": "The fully qualified domain name (computed)",
+          "sensitive": false
+        },
+        "known_value": {
+          "description": "A statically known value",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

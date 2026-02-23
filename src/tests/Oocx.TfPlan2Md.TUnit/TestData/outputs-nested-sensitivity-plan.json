@@ -1,0 +1,31 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "nested_sensitive": {
+      "actions": ["create"],
+      "before": null,
+      "after": {
+        "username": "admin",
+        "password": "secret123"
+      },
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": {
+        "username": false,
+        "password": true
+      }
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "nested_sensitive": {
+          "description": "Object with nested sensitivity",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

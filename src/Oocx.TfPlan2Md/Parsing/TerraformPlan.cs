@@ -11,7 +11,8 @@ public record TerraformPlan(
     [property: JsonPropertyName("terraform_version")] string TerraformVersion,
     [property: JsonPropertyName("resource_changes")] IReadOnlyList<ResourceChange> ResourceChanges,
     [property: JsonPropertyName("timestamp")] string? Timestamp = null,
-    [property: JsonPropertyName("configuration")] JsonElement? Configuration = null
+    [property: JsonPropertyName("configuration")] JsonElement? Configuration = null,
+    [property: JsonPropertyName("output_changes")] IReadOnlyDictionary<string, OutputChange>? OutputChanges = null
 );
 
 /// <summary>
@@ -158,4 +159,80 @@ public record Importing
     /// </summary>
     [JsonPropertyName("id")]
     public string? Id { get; init; }
+}
+
+/// <summary>
+/// Represents an output value change in the Terraform plan.
+/// Related feature: docs/features/097-terraform-outputs/specification.md.
+/// </summary>
+public record OutputChange
+{
+    /// <summary>
+    /// Gets the ordered list of actions applied to the output.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    [JsonPropertyName("actions")]
+    public IReadOnlyList<string> Actions { get; init; }
+
+    /// <summary>
+    /// Gets the optional value before the change.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    [JsonPropertyName("before")]
+    public object? Before { get; init; }
+
+    /// <summary>
+    /// Gets the optional value after the change.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    [JsonPropertyName("after")]
+    public object? After { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the value is unknown/computed after the change.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    [JsonPropertyName("after_unknown")]
+    public bool AfterUnknown { get; init; }
+
+    /// <summary>
+    /// Gets whether the value was sensitive before the change.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    [JsonPropertyName("before_sensitive")]
+    public object? BeforeSensitive { get; init; }
+
+    /// <summary>
+    /// Gets whether the value is sensitive after the change.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    [JsonPropertyName("after_sensitive")]
+    public object? AfterSensitive { get; init; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OutputChange"/> class.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="actions">The ordered list of actions applied to the output.</param>
+    /// <param name="before">Optional value before the change.</param>
+    /// <param name="after">Optional value after the change.</param>
+    /// <param name="afterUnknown">Whether the value is unknown/computed after the change.</param>
+    /// <param name="beforeSensitive">Whether the value was sensitive before the change.</param>
+    /// <param name="afterSensitive">Whether the value is sensitive after the change.</param>
+    [JsonConstructor]
+    public OutputChange(
+        IReadOnlyList<string> actions,
+        object? before = null,
+        object? after = null,
+        bool afterUnknown = false,
+        object? beforeSensitive = null,
+        object? afterSensitive = null)
+    {
+        Actions = actions;
+        Before = before;
+        After = after;
+        AfterUnknown = afterUnknown;
+        BeforeSensitive = beforeSensitive;
+        AfterSensitive = afterSensitive;
+    }
 }

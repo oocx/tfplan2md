@@ -1,0 +1,30 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "db_endpoint": {
+      "actions": ["create"],
+      "before": null,
+      "after": "db.example.com:5432",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "modules": [
+        {
+          "address": "module.database",
+          "outputs": {
+            "db_endpoint": {
+              "description": "Database endpoint from module with no resources",
+              "sensitive": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [],
+  "output_changes": {
+    "keyvault_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security/providers/Microsoft.KeyVault/vaults/kv-prod-001",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "principal_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "12345678-1234-1234-1234-123456789012",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "subscription_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "d1828a48-1111-2222-3333-123456789abc",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "role_definition_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "keyvault_id": {
+          "description": "The ID of the key vault resource",
+          "sensitive": false
+        },
+        "principal_id": {
+          "description": "Service principal object ID",
+          "sensitive": false
+        },
+        "subscription_id": {
+          "description": "The Azure subscription ID",
+          "sensitive": false
+        },
+        "role_definition_id": {
+          "description": "Role definition resource ID",
+          "sensitive": false
+        }
+      }
+    }
+  }
+}

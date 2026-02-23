@@ -58,6 +58,7 @@ internal static class AotScriptObjectMapper
         scriptObject["changes"] = MapChanges(model.Changes, model.ShowSensitive, mapperRegistry);
         scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges, model.ShowSensitive, mapperRegistry);
         scriptObject["refactoring_operations"] = MapRefactoringOperations(model.RefactoringOperations);
+        scriptObject["global_outputs"] = MapOutputChanges(model.GlobalOutputs);
 
         return scriptObject;
     }
@@ -150,6 +151,7 @@ internal static class AotScriptObjectMapper
             var obj = new ScriptObject();
             obj[ModuleAddressKey] = group.ModuleAddress;
             obj["changes"] = MapChanges(group.Changes, showSensitive, mapperRegistry);
+            obj["outputs"] = MapOutputChanges(group.Outputs);
             arr.Add(obj);
         }
 
@@ -175,6 +177,32 @@ internal static class AotScriptObjectMapper
             obj["details"] = operation.Details;
             obj["status"] = operation.Status;
             obj["is_already_applied"] = operation.IsAlreadyApplied;
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    /// <summary>
+    /// Maps output changes to a Scriban array for template rendering.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="outputs">The output changes to map.</param>
+    /// <returns>A Scriban array of output change objects.</returns>
+    private static ScriptArray MapOutputChanges(IReadOnlyList<OutputChangeModel> outputs)
+    {
+        var arr = new ScriptArray();
+        foreach (var output in outputs)
+        {
+            var obj = new ScriptObject();
+            obj["name"] = output.Name;
+            obj["description"] = output.Description;
+            obj["is_sensitive"] = output.IsSensitive;
+            obj["action"] = output.Action;
+            obj["value"] = output.Value;
+            obj["is_computed"] = output.IsComputed;
+            obj["is_masked"] = output.IsMasked;
+            obj["module_address"] = output.ModuleAddress;
             arr.Add(obj);
         }
 

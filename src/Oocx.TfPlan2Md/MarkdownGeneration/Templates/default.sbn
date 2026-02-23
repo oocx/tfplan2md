@@ -32,6 +32,16 @@ No changes
 {{ include (resolve_template change.type) }}
 
 {{ end }}
+{{ if module.outputs && module.outputs.size > 0 }}
+
+#### 📤 Outputs
+
+| Name | Description | Sensitive | Value |
+| ---- | ----------- | --------- | ----- |
+{{~ for output in module.outputs ~}}
+| `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ format_output_value output.is_masked output.is_computed output.value null }} |
+{{~ end ~}}
+{{ end }}
 {{ end }}
 {{ end }}
 
@@ -45,5 +55,16 @@ No changes
 | --------- | -------- | ------- | ------ |
 {{~ for operation in refactoring_operations ~}}
 | {{ if operation.operation == "Import" }}📥 Import{{ else }}🔀 Move{{ end }} | {{ operation.resource_type | escape_markdown }} {{ format_code_table(operation.resource_name) }} | {{ if operation.operation == "Import" }}ID: {{ format_import_id_details(operation.details) }}{{ else }}From: {{ format_code_table(operation.details) }}{{ end }} | {{ if operation.is_already_applied }}{{ if operation.operation == "Import" }}⚠️ Already imported{{ else }}⚠️ Already moved{{ end }}{{ else }}✅ Ready{{ end }} |
+{{~ end ~}}
+{{ end }}
+
+{{ if global_outputs && global_outputs.size > 0 }}
+
+## 📤 Outputs
+
+| Name | Description | Sensitive | Value |
+| ---- | ----------- | --------- | ----- |
+{{~ for output in global_outputs ~}}
+| `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ format_output_value output.is_masked output.is_computed output.value null }} |
 {{~ end ~}}
 {{ end }}

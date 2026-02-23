@@ -104,6 +104,69 @@ public static partial class ScribanHelpers
     }
 
     /// <summary>
+    /// Formats an output value for rendering in the outputs table.
+    /// Handles masking (sensitive values), computed values (known after apply), and display name mappings.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="isMasked">Whether the value should be masked (sensitive and not --show-sensitive).</param>
+    /// <param name="isComputed">Whether the value is computed (known after apply).</param>
+    /// <param name="value">The raw value (may be JsonElement or string).</param>
+    /// <param name="providerName">The Terraform provider name.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <returns>Formatted markdown string for table rendering.</returns>
+    private static string FormatOutputValue(
+        bool isMasked,
+        bool isComputed,
+        object? value,
+        string? providerName,
+        ValueFormatterRegistry? valueFormatterRegistry)
+    {
+        if (isMasked)
+        {
+            return "(sensitive value)";
+        }
+
+        if (isComputed)
+        {
+            return "(known after apply)";
+        }
+
+        // Convert value to string (handles JsonElement and other types)
+        var stringValue = ConvertValueToString(value);
+        return FormatValueWithRegistry(stringValue, providerName, valueFormatterRegistry);
+    }
+
+    /// <summary>
+    /// Converts an output value to a string for rendering.
+    /// Handles JsonElement and other types.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>A string representation of the value.</returns>
+    private static string? ConvertValueToString(object? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        if (value is System.Text.Json.JsonElement jsonElement)
+        {
+            return jsonElement.ValueKind switch
+            {
+                System.Text.Json.JsonValueKind.String => jsonElement.GetString(),
+                System.Text.Json.JsonValueKind.Number => jsonElement.ToString(),
+                System.Text.Json.JsonValueKind.True => "true",
+                System.Text.Json.JsonValueKind.False => "false",
+                System.Text.Json.JsonValueKind.Null => null,
+                _ => jsonElement.GetRawText()
+            };
+        }
+
+        return value.ToString();
+    }
+
+    /// <summary>
     /// Determines whether the provided Terraform provider name represents the azurerm provider.
     /// </summary>
     /// <param name="providerName">The provider name.</param>

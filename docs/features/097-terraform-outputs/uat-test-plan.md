@@ -49,8 +49,10 @@ Verify that Terraform outputs render correctly in GitHub and Azure DevOps PR com
 
 **Example Creation Command:**
 ```bash
-# Generate the rendered output from the plan
-tfplan2md docs/features/097-terraform-outputs/uat-plan.json > docs/features/097-terraform-outputs/uat-plan.md
+# Generate the rendered output from the plan (include principal mapping file)
+tfplan2md docs/features/097-terraform-outputs/uat-plan.json \
+  -p docs/features/097-terraform-outputs/principal-mapping.json \
+  -o docs/features/097-terraform-outputs/uat-plan.md
 ```
 
 ---

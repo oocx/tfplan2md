@@ -1,7 +1,102 @@
 {
   "format_version": "1.2",
   "terraform_version": "1.9.0",
-  "resource_changes": [],
+  "resource_changes": [
+    {
+      "address": "module.network.azurerm_virtual_network.main",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.network.azurerm_subnet.app",
+      "module_address": "module.network",
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.security.azurerm_user_assigned_identity.deploy",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_user_assigned_identity",
+      "name": "deploy",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.security.azurerm_resource_group.security",
+      "module_address": "module.security",
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "security",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_key_vault.prod",
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "prod",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.pipeline",
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "pipeline",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {},
+        "after": {},
+        "after_unknown": false,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    }
+  ],
   "output_changes": {
     "api_endpoint": {
       "actions": ["create"],
@@ -125,34 +220,57 @@
       "outputs": {
         "api_endpoint": {
           "description": "Public API endpoint URL",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": []
+          }
         },
         "api_key": {
           "description": "API authentication key",
-          "sensitive": true
+          "sensitive": true,
+          "expression": {
+            "references": []
+          }
         },
         "deployment_config": {
           "description": "Complete deployment configuration",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_key_vault.prod.id", "azurerm_key_vault.prod"]
+          }
         },
         "keyvault_uri": {
           "description": "Azure Key Vault resource ID",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_key_vault.prod.id", "azurerm_key_vault.prod"]
+          }
         },
         "pipeline_id": {
           "description": "Build pipeline identifier",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": []
+          }
         },
         "resource_list": {
           "description": "List of deployed resource names",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": []
+          }
         },
         "role_assignment_id": {
-          "description": "Role definition ID for access control",
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_role_assignment.pipeline.id", "azurerm_role_assignment.pipeline"]
+          }
         },
         "subscription_id": {
-          "sensitive": false
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_key_vault.prod.location", "azurerm_key_vault.prod"]
+          }
         }
       },
       "modules": [
@@ -161,11 +279,17 @@
           "outputs": {
             "subnet_id": {
               "description": "Application subnet resource ID",
-              "sensitive": false
+              "sensitive": false,
+              "expression": {
+                "references": ["azurerm_subnet.app.id", "azurerm_subnet.app"]
+              }
             },
             "vnet_id": {
               "description": "Virtual network resource ID",
-              "sensitive": false
+              "sensitive": false,
+              "expression": {
+                "references": ["azurerm_virtual_network.main.id", "azurerm_virtual_network.main"]
+              }
             }
           }
         },
@@ -174,15 +298,24 @@
           "outputs": {
             "keyvault_secrets": {
               "description": "Key Vault secret references",
-              "sensitive": true
+              "sensitive": true,
+              "expression": {
+                "references": []
+              }
             },
             "principal_id": {
               "description": "Service principal object ID",
-              "sensitive": false
+              "sensitive": false,
+              "expression": {
+                "references": ["azurerm_user_assigned_identity.deploy.principal_id", "azurerm_user_assigned_identity.deploy"]
+              }
             },
             "resource_group_id": {
               "description": "Security resource group ID",
-              "sensitive": false
+              "sensitive": false,
+              "expression": {
+                "references": ["azurerm_resource_group.security.id", "azurerm_resource_group.security"]
+              }
             }
           }
         }

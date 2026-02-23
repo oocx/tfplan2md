@@ -48,7 +48,15 @@ internal sealed class PrincipalIdFormatter : IValueFormatter
             return null;
         }
 
-        var enriched = $"👤{ScribanHelpers.NonBreakingSpace}{displayName} ({context.Value})";
+        _principalMapper.TryGetPrincipalType(context.Value, out var principalType);
+        var icon = principalType switch
+        {
+            "ServicePrincipal" => "💻",
+            "Group" => "👥",
+            _ => "👤"
+        };
+
+        var enriched = $"{icon}{ScribanHelpers.NonBreakingSpace}{displayName} ({context.Value})";
         return ScribanHelpers.FormatCodeTable(enriched);
     }
 }

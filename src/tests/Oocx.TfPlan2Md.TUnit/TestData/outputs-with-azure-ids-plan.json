@@ -44,6 +44,14 @@
       "before_sensitive": false,
       "after_sensitive": false
     },
+    "user_principal_id": {
+      "actions": ["create"],
+      "before": null,
+      "after": "aabbccdd-1234-5678-9012-aabbccddeeff",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
     "principal_id": {
       "actions": ["create"],
       "before": null,
@@ -93,6 +101,13 @@
           "sensitive": false,
           "expression": {
             "references": ["azurerm_key_vault.main.id", "azurerm_key_vault.main"]
+          }
+        },
+        "user_principal_id": {
+          "description": "User principal object ID",
+          "sensitive": false,
+          "expression": {
+            "references": ["azurerm_role_assignment.main.principal_id", "azurerm_role_assignment.main"]
           }
         },
         "principal_id": {

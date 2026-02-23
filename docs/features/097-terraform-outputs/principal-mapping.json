@@ -1,4 +1,7 @@
 {
+  "users": {
+    "aabbccdd-1234-5678-9012-aabbccddeeff": "Jane Admin (jane.admin@contoso.com)"
+  },
   "servicePrincipals": {
     "12345678-1234-1234-1234-123456789012": "Terraform Deploy SP"
   }

@@ -322,6 +322,11 @@ internal partial class ReportModelBuilder
         }
 
         // Try each reference to find a matching resource change
+        if (plan.ResourceChanges is null)
+        {
+            return null;
+        }
+
         foreach (var reference in references.EnumerateArray())
         {
             if (reference.ValueKind != JsonValueKind.String)

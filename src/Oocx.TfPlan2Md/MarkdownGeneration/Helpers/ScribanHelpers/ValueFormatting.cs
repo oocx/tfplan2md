@@ -153,6 +153,13 @@ public static partial class ScribanHelpers
             return string.Empty;
         }
 
+        // If the string value looks like a JSON object or array (e.g., stored via jsonencode()),
+        // compact it to a single line to prevent <br> tags in table cells from embedded newlines.
+        if (TryCompactJsonString(stringValue, out var compacted))
+        {
+            return $"`{EscapeMarkdownTableCell(compacted)}`";
+        }
+
         // Use the same formatting pipeline as attribute values:
         // tries value formatter registry (display names, principal mapping) then
         // semantic formatting (icons, Azure ID parsing) based on attribute name + provider.
@@ -213,5 +220,40 @@ public static partial class ScribanHelpers
         element.WriteTo(writer);
         writer.Flush();
         return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    /// <summary>
+    /// Attempts to compact a string value that contains a JSON object or array.
+    /// Used to prevent newlines in JSON strings (e.g., from jsonencode()) from producing
+    /// &lt;br&gt; tags in table cells.
+    /// </summary>
+    /// <param name="value">The string value to inspect.</param>
+    /// <param name="compacted">The compact JSON string when the method returns true.</param>
+    /// <returns>True when the value was a JSON object or array and was successfully compacted.</returns>
+    private static bool TryCompactJsonString(string value, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? compacted)
+    {
+        var trimmed = value.TrimStart();
+        if (trimmed.Length == 0 || (trimmed[0] != '{' && trimmed[0] != '['))
+        {
+            compacted = null;
+            return false;
+        }
+
+        try
+        {
+            var doc = System.Text.Json.JsonDocument.Parse(value);
+            if (doc.RootElement.ValueKind is System.Text.Json.JsonValueKind.Object or System.Text.Json.JsonValueKind.Array)
+            {
+                compacted = CompactJson(doc.RootElement);
+                return true;
+            }
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            // Not valid JSON — fall through
+        }
+
+        compacted = null;
+        return false;
     }
 }

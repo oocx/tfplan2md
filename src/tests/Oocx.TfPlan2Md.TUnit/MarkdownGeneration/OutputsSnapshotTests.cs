@@ -2,7 +2,9 @@ using System.IO;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers;
+using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
 
@@ -138,17 +140,29 @@ public class OutputsSnapshotTests
     }
 
     /// <summary>
+    /// Verifies Azure IDs in output values with principal mapper applied to principal_id output.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureIdsWithPrincipals_MatchesBaseline()
+    {
+        var principalMapper = PrincipalMapperFactory.Create(Path.Combine("TestData", "outputs-principals.json"));
+        AssertOutputsSnapshot("outputs-with-azure-ids-plan.json", "outputs-with-azure-ids-principals.md", principalMapper);
+    }
+
+    /// <summary>
     /// Renders a markdown report from an outputs plan test data file.
     /// </summary>
     /// <param name="testDataFile">The test data file name under TestData.</param>
+    /// <param name="principalMapper">Optional principal mapper for name resolution.</param>
     /// <returns>The rendered markdown output.</returns>
-    private string RenderOutputsPlan(string testDataFile)
+    private string RenderOutputsPlan(string testDataFile, Oocx.TfPlan2Md.Platforms.Azure.IPrincipalMapper? principalMapper = null)
     {
         var json = File.ReadAllText(Path.Combine("TestData", testDataFile));
         var plan = _parser.Parse(json);
-        var providerRegistry = CreateProviderRegistry();
+        var providerRegistry = CreateProviderRegistry(principalMapper);
         var model = new ReportModelBuilder(
             metadataProvider: TestMetadataProvider.Instance,
+            principalMapper: principalMapper,
             providerRegistry: providerRegistry).Build(plan);
         var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
 
@@ -160,19 +174,27 @@ public class OutputsSnapshotTests
     /// </summary>
     /// <param name="testDataFile">The test data file name under TestData.</param>
     /// <param name="snapshotName">The snapshot file name under TestData/Snapshots.</param>
-    private void AssertOutputsSnapshot(string testDataFile, string snapshotName)
+    /// <param name="principalMapper">Optional principal mapper for name resolution.</param>
+    private void AssertOutputsSnapshot(string testDataFile, string snapshotName, Oocx.TfPlan2Md.Platforms.Azure.IPrincipalMapper? principalMapper = null)
     {
-        var markdown = RenderOutputsPlan(testDataFile);
+        var markdown = RenderOutputsPlan(testDataFile, principalMapper);
         SnapshotTestAssertions.AssertMatchesSnapshot(snapshotName, markdown);
     }
 
     /// <summary>
     /// Creates a provider registry for rendering tests.
     /// </summary>
+    /// <param name="principalMapper">Optional principal mapper to include in AzureRMModule.</param>
     /// <returns>The configured provider registry.</returns>
-    private static ProviderRegistry CreateProviderRegistry()
+    private static ProviderRegistry CreateProviderRegistry(IPrincipalMapper? principalMapper = null)
     {
         var registry = new ProviderRegistry();
+        if (principalMapper is not null)
+        {
+            registry.RegisterProvider(new AzureRMModule(
+                largeValueFormat: LargeValueFormat.InlineDiff,
+                principalMapper: principalMapper));
+        }
         return registry;
     }
 }

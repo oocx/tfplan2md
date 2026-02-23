@@ -157,6 +157,12 @@ internal partial class ReportModelBuilder
     /// <remarks>
     /// Explicitly handles the "read" action to prevent false positives in import detection.
     /// Related issue: docs/issues/464-already-imported-false-positive/analysis.md.
+    /// The "open" action is an OpenTofu extension for ephemeral resources (e.g. vault secrets).
+    /// It is not present in the HashiCorp Terraform JSON format docs
+    /// (https://developer.hashicorp.com/terraform/internals/json-format) but is defined
+    /// in the OpenTofu source at internal/command/jsonplan/plan.go and documented at
+    /// https://opentofu.org/docs/internals/json-format/.
+    /// OpenTofu ephemeral resources: https://opentofu.org/docs/language/ephemerality/ephemeral-resources/.
     /// </remarks>
     private static string DetermineAction(IReadOnlyList<string> actions)
     {

@@ -151,3 +151,47 @@
 - **Next Steps:** Continue with Tasks 9-12 (Scriban helpers and templates for rendering)
 - **Problems Encountered:** None. Clean build with all tests passing. Ready to continue with template implementation.
 
+### Developer (continued)
+- **Date:** 2025-02-23
+- **Summary:** Implemented rendering layer for Terraform outputs support (Tasks 9-12 and Task 13). Added `format_output_value` Scriban helper, updated template integration, extended AotScriptObjectMapper for NativeAOT compatibility, and added comprehensive snapshot tests. All rendering tests passing.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/ValueFormatting.cs` - Added `FormatOutputValue` and `ConvertValueToString` helpers
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ScribanHelpers/Registry.cs` - Registered `format_output_value` Scriban helper
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/default.sbn` - Added module outputs (4th-level header) and global outputs (2nd-level header) sections
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs` - Added `MapOutputChanges` method and integrated outputs into module mapping
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/OutputsSnapshotTests.cs` - 13 snapshot tests covering all output rendering scenarios
+  - 13 snapshot baseline files (`outputs-*.md`) for validation
+- **Tasks Completed:**
+  - ✅ Task 9: Create `format_output_value` Scriban helper
+  - ✅ Task 10: Template integration (module outputs in default.sbn)
+  - ✅ Task 11: Template integration (global outputs in default.sbn)
+  - ✅ Task 12: AotScriptObjectMapper extension for NativeAOT compatibility
+  - ✅ Task 13: Create snapshot test baselines for output rendering
+- **Implementation Highlights:**
+  - `format_output_value` helper handles masking (`(sensitive value)`), computed values (`(known after apply)`), and value formatting
+  - `ConvertValueToString` safely converts JsonElement to string representation
+  - Module outputs render within module sections after resource changes (4th-level `#### 📤 Outputs` header)
+  - Global outputs render in dedicated section after refactoring summary (2nd-level `## 📤 Outputs` header)
+  - 4-column table format: Name, Description, Sensitive (🔒 icon for Yes), Value
+  - AotScriptObjectMapper correctly maps `global_outputs` and module `outputs` properties
+  - All 13 snapshot tests passing (100% coverage of rendering scenarios)
+  - All 7 parsing tests still passing (no regression)
+- **Snapshot Test Coverage:**
+  - Basic outputs (create/update/delete/no-op actions)
+  - Module outputs positioning
+  - Mixed module and global outputs
+  - Sensitive value masking
+  - Computed values (`(known after apply)`)
+  - Missing descriptions handled gracefully
+  - Multiple sensitivity sources (after_sensitive, before_sensitive, configuration)
+  - Azure resource ID display name mappings (integration with existing formatters)
+  - Diverse action combinations
+  - No outputs (renders nothing)
+  - Complex values (arrays/objects)
+  - Nested sensitivity markers
+  - Module with only outputs (no resources)
+- **Next Steps:** Continue with remaining tasks (Tasks 14-18: integration tests, architecture tests, E2E tests, documentation updates)
+- **Problems Encountered:** 
+  - Initial issue with `object.to_string` not being a valid Scriban function - fixed by updating helper to accept `object?` and handle conversion internally
+  - AotScriptObjectMapper initially missing `global_outputs` and module `outputs` mappings - fixed by adding `MapOutputChanges` method and integrating into module mapping
+

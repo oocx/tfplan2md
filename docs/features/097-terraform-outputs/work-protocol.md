@@ -118,3 +118,36 @@
   - End-to-end Docker tests (TC-30)
 - **Problems Encountered:** None. Architecture and test plan provided clear guidance for task decomposition. Existing codebase patterns (partial classes, model building, Scriban templates) provided natural task boundaries.
 - **Next Steps:** Present task plan to Maintainer for approval, then handoff to Developer for implementation
+
+### Developer
+- **Date:** 2025-02-23
+- **Summary:** Implemented parsing and model building layers for Terraform outputs support (Tasks 1-8). Extended TerraformPlan with OutputChange record, created OutputChangeModel, extended ModuleChangeGroup and ReportModel, implemented output metadata extraction and model building logic. Added comprehensive test data files and unit tests for parsing validation.
+- **Artifacts Produced:**
+  - 13 test data JSON files (`outputs-*.json`) covering various output scenarios
+  - `src/Oocx.TfPlan2Md/Parsing/TerraformPlan.cs` - Extended with `OutputChanges` property and `OutputChange` record
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/OutputChangeModel.cs` - New model class for output rendering
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ModuleChangeGroup.cs` - Extended with `Outputs` property
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` - Extended with `GlobalOutputs` property
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Outputs.cs` - New partial class with output building logic
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs` - Integrated output building into main Build() method
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Parsing/TerraformPlanParserOutputTests.cs` - 7 unit tests for parsing validation
+- **Tasks Completed:**
+  - ✅ Task 1: Add test data files (13 JSON test plans)
+  - ✅ Task 2: Extend TerraformPlan with OutputChange
+  - ✅ Task 3: Create OutputChangeModel class
+  - ✅ Task 4: Extend ModuleChangeGroup with Outputs property
+  - ✅ Task 5: Extend ReportModel with GlobalOutputs property
+  - ✅ Task 6: Implement output metadata extraction logic
+  - ✅ Task 7: Implement BuildOutputModels method
+  - ✅ Task 8: Integrate output building into ReportModelBuilder.Build
+- **Implementation Highlights:**
+  - Parsing layer correctly handles `output_changes` dictionary with all sensitivity and action types
+  - Model building correlates output changes with configuration metadata (description, sensitivity)
+  - Sensitivity detection follows precedence: `after_sensitive` > `before_sensitive` > `configuration.sensitive`
+  - Pre-computed `IsMasked` flag (defense in depth per ADR-009)
+  - Handles edge case: modules with only outputs (no resource changes)
+  - Alphabetical ordering enforced at model layer
+  - All parsing tests passing (7/7)
+- **Next Steps:** Continue with Tasks 9-12 (Scriban helpers and templates for rendering)
+- **Problems Encountered:** None. Clean build with all tests passing. Ready to continue with template implementation.
+

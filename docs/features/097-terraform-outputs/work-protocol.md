@@ -195,3 +195,20 @@
   - Initial issue with `object.to_string` not being a valid Scriban function - fixed by updating helper to accept `object?` and handle conversion internally
   - AotScriptObjectMapper initially missing `global_outputs` and module `outputs` mappings - fixed by adding `MapOutputChanges` method and integrating into module mapping
 
+### UAT Tester
+- **Date:** 2025-02-23
+- **Summary:** Executed UAT for Terraform outputs feature. Regenerated artifacts with latest code, created UAT PRs on both GitHub and Azure DevOps platforms. PRs include feature-specific test artifact (uat-plan.md) and comprehensive demo for regression testing.
+- **Artifacts Produced:**
+  - Regenerated `docs/features/097-terraform-outputs/uat-plan.md` with latest code (commit 489f76d)
+  - Regenerated all comprehensive demo artifacts
+- **UAT PRs Created:**
+  - GitHub PR #105: https://github.com/oocx/tfplan2md-uat/pull/105
+  - Azure DevOps PR #99: https://dev.azure.com/oocx/test/_git/test/pullrequest/99
+- **Test Scope:**
+  - Feature-specific validation: Terraform outputs rendering with proper table formatting (5 columns: Change, Name, Description, Sensitive, Value), module outputs at `#### Outputs`, global outputs at `## Outputs`, sensitivity masking, computed values, display name mappings, alphabetical ordering
+  - Regression validation: Comprehensive demo ensures no side effects on existing resource rendering
+- **Status:** Awaiting Maintainer approval on both platforms
+- **Next Steps:** Poll for approval and cleanup PRs after validation, report results, handoff to Release Manager if UAT passes
+- **Problems Encountered:** 
+  - Initial artifact staleness (built with commit 561f36a but source files changed since then) - resolved by regenerating all artifacts with latest code
+  - Git push failed in coding agent environment (expected) - artifacts committed locally for UAT script to use

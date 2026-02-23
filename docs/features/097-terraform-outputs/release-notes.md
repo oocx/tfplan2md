@@ -32,7 +32,7 @@ tfplan2md --show-sensitive plan.json
 | ------ | ---- | ----------- | --------- | ----- |
 | ➕ | `new_repository_id` | ID of the new repository | No | `abc-123` |
 | 🔄 | `endpoint_url` | Service endpoint URL | No | `https://...` |
-| 🔒 Yes | `deploy_token` | Deployment token | 🔒 Yes | (sensitive value) |
+| ➕ | `deploy_token` | Deployment token | 🔒 Yes | (sensitive value) |
 ```
 
 ## 💡 Use Cases
@@ -59,7 +59,7 @@ Renders as:
 
 | Change | Name | Description | Sensitive | Value |
 | ------ | ---- | ----------- | --------- | ----- |
-| ➕ | `new_repository_id` | | No | `🗃️ my-repo [a1b2c3d4-...]` |
+| ➕ | `new_repository_id` | ID of the new repository | No | `🗃️ my-repo [a1b2c3d4-...]` |
 
 ## 🔧 Usage
 

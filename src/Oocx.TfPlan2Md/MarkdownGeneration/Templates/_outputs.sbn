@@ -1,0 +1,12 @@
+{{~ ## Template for rendering Terraform output changes
+     Related feature: docs/features/097-terraform-outputs/specification.md ~}}
+{{~ if outputs && outputs.size > 0 ~}}
+
+#### 📤 Outputs
+
+| Name | Description | Action | Sensitive | Value |
+| ---- | ----------- | ------ | --------- | ----- |
+{{~ for output in outputs ~}}
+| {{ format_code_table(output.name) }} | {{ output.description ?? "" | escape_markdown }} | {{ output.action_icon }} {{ output.action | escape_markdown }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ if output.is_sensitive && !show_sensitive }}***{{ else if output.is_unknown }}(known after apply){{ else }}{{ output.after ?? output.before ?? "" | escape_markdown }}{{ end }} |
+{{~ end ~}}
+{{~ end ~}}

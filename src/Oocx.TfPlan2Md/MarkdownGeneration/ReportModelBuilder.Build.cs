@@ -94,6 +94,37 @@ internal partial class ReportModelBuilder
             })
             .ToList();
 
+        // Build output changes and add to the root module group
+        // Outputs are always at the root level in Terraform
+        // Related feature: docs/features/097-terraform-outputs/specification.md
+        var outputs = BuildOutputChangeModels(plan);
+        if (outputs.Count > 0)
+        {
+            // Find or create the root module group
+            var rootModuleGroup = moduleGroups.Find(g => g.ModuleAddress == string.Empty);
+            if (rootModuleGroup is not null)
+            {
+                // Update the existing root module group with outputs
+                var index = moduleGroups.IndexOf(rootModuleGroup);
+                moduleGroups[index] = new ModuleChangeGroup
+                {
+                    ModuleAddress = rootModuleGroup.ModuleAddress,
+                    Changes = rootModuleGroup.Changes,
+                    Outputs = outputs
+                };
+            }
+            else
+            {
+                // Create a root module group just for outputs (if there are no resource changes in root)
+                moduleGroups.Insert(0, new ModuleChangeGroup
+                {
+                    ModuleAddress = string.Empty,
+                    Changes = [],
+                    Outputs = outputs
+                });
+            }
+        }
+
         var escapedReportTitle = _reportTitle is null ? null : EscapeMarkdownHeading(_reportTitle);
         var metadata = _metadataProvider.GetMetadata();
         var refactoringOperations = BuildRefactoringOperations(allChanges);

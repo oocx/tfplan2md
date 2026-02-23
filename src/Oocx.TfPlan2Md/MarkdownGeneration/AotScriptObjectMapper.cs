@@ -150,6 +150,33 @@ internal static class AotScriptObjectMapper
             var obj = new ScriptObject();
             obj[ModuleAddressKey] = group.ModuleAddress;
             obj["changes"] = MapChanges(group.Changes, showSensitive, mapperRegistry);
+            obj["outputs"] = MapOutputs(group.Outputs);
+            arr.Add(obj);
+        }
+
+        return arr;
+    }
+
+    /// <summary>
+    /// Maps output changes to a Scriban array for template rendering.
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    /// <param name="outputs">The output changes to map.</param>
+    /// <returns>A Scriban array of output change objects.</returns>
+    private static ScriptArray MapOutputs(IReadOnlyList<OutputChangeModel> outputs)
+    {
+        var arr = new ScriptArray();
+        foreach (var output in outputs)
+        {
+            var obj = new ScriptObject();
+            obj["name"] = output.Name;
+            obj["description"] = output.Description;
+            obj["action"] = output.Action;
+            obj["action_icon"] = output.ActionIcon;
+            obj["is_sensitive"] = output.IsSensitive;
+            obj["before"] = output.Before;
+            obj["after"] = output.After;
+            obj["is_unknown"] = output.IsUnknown;
             arr.Add(obj);
         }
 

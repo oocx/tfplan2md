@@ -11,7 +11,8 @@ public record TerraformPlan(
     [property: JsonPropertyName("terraform_version")] string TerraformVersion,
     [property: JsonPropertyName("resource_changes")] IReadOnlyList<ResourceChange> ResourceChanges,
     [property: JsonPropertyName("timestamp")] string? Timestamp = null,
-    [property: JsonPropertyName("configuration")] JsonElement? Configuration = null
+    [property: JsonPropertyName("configuration")] JsonElement? Configuration = null,
+    [property: JsonPropertyName("output_changes")] IReadOnlyDictionary<string, OutputChange>? OutputChanges = null
 );
 
 /// <summary>
@@ -159,3 +160,16 @@ public record Importing
     [JsonPropertyName("id")]
     public string? Id { get; init; }
 }
+
+/// <summary>
+/// Represents an output change in the Terraform plan.
+/// Related feature: docs/features/097-terraform-outputs/specification.md.
+/// </summary>
+public record OutputChange(
+    [property: JsonPropertyName("actions")] IReadOnlyList<string> Actions,
+    [property: JsonPropertyName("before")] object? Before = null,
+    [property: JsonPropertyName("after")] object? After = null,
+    [property: JsonPropertyName("after_unknown")] object? AfterUnknown = null,
+    [property: JsonPropertyName("before_sensitive")] object? BeforeSensitive = null,
+    [property: JsonPropertyName("after_sensitive")] object? AfterSensitive = null
+);

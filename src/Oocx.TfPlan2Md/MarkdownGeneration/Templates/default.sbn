@@ -32,6 +32,9 @@ No changes
 {{ include (resolve_template change.type) }}
 
 {{ end }}
+{{~ # Render outputs for this module (outputs are always at root level). Related feature: docs/features/097-terraform-outputs/specification.md ~}}
+{{~ outputs = module.outputs ~}}
+{{ include "_outputs.sbn" }}
 {{ end }}
 {{ end }}
 

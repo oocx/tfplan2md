@@ -63,6 +63,7 @@ internal partial class ReportModelBuilder
                 Description = description,
                 IsSensitive = isSensitive,
                 Action = action,
+                ActionSymbol = GetActionSymbol(action),
                 Value = value,
                 IsComputed = isComputed,
                 IsMasked = isMasked,

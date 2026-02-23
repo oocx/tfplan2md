@@ -31,6 +31,12 @@ public class OutputChangeModel
     public required string Action { get; init; }
 
     /// <summary>
+    /// Gets the icon symbol representing the action (➕, 🔄, ❌, etc.).
+    /// Related feature: docs/features/097-terraform-outputs/specification.md.
+    /// </summary>
+    public required string ActionSymbol { get; init; }
+
+    /// <summary>
     /// Gets the output value (before or after depending on action).
     /// This is the raw value; templates will format it via helpers.
     /// Related feature: docs/features/097-terraform-outputs/specification.md.

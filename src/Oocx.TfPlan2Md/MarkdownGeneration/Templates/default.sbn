@@ -34,12 +34,12 @@ No changes
 {{ end }}
 {{ if module.outputs && module.outputs.size > 0 }}
 
-#### 📤 Outputs
+#### 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
 {{~ for output in module.outputs ~}}
-| `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ format_output_value output.is_masked output.is_computed output.value null }} |
+| {{ output.action_symbol }} | `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ format_output_value output.is_masked output.is_computed output.value null }} |
 {{~ end ~}}
 {{ end }}
 {{ end }}
@@ -60,11 +60,11 @@ No changes
 
 {{ if global_outputs && global_outputs.size > 0 }}
 
-## 📤 Outputs
+## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
 {{~ for output in global_outputs ~}}
-| `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ format_output_value output.is_masked output.is_computed output.value null }} |
+| {{ output.action_symbol }} | `{{ output.name | escape_markdown_table_cell }}` | {{ if output.description }}{{ output.description | escape_markdown_table_cell }}{{ end }} | {{ if output.is_sensitive }}🔒 Yes{{ else }}No{{ end }} | {{ format_output_value output.is_masked output.is_computed output.value null }} |
 {{~ end ~}}
 {{ end }}

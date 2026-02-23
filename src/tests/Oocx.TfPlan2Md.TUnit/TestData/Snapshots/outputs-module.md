@@ -10,7 +10,7 @@ No changes
 
 ### 📦 Module: `module.database`
 
-#### 📤 Outputs
+#### 📤 Outputs
 
 | Name | Description | Sensitive | Value |
 | ---- | ----------- | --------- | ----- |
@@ -20,7 +20,7 @@ No changes
 
 ### 📦 Module: `module.network`
 
-#### 📤 Outputs
+#### 📤 Outputs
 
 | Name | Description | Sensitive | Value |
 | ---- | ----------- | --------- | ----- |

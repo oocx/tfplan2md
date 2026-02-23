@@ -10,7 +10,7 @@ No changes
 
 ### 📦 Module: `module.cache`
 
-#### 📤 Outputs
+#### 📤 Outputs
 
 | Name | Description | Sensitive | Value |
 | ---- | ----------- | --------- | ----- |
@@ -20,13 +20,13 @@ No changes
 
 ### 📦 Module: `module.database`
 
-#### 📤 Outputs
+#### 📤 Outputs
 
 | Name | Description | Sensitive | Value |
 | ---- | ----------- | --------- | ----- |
 | `db_endpoint` | Database endpoint | No | `db-prod.cluster-xyz.us-east-1.rds.amazonaws.com` |
 
-## 📤 Outputs
+## 📤 Outputs
 
 | Name | Description | Sensitive | Value |
 | ---- | ----------- | --------- | ----- |

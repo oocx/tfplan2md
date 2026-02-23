@@ -8,6 +8,6 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `nested_sensitive` | Object with nested sensitivity | 🔒 Yes | (sensitive value) |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `nested_sensitive` | Object with nested sensitivity | 🔒 Yes | (sensitive value) |

@@ -8,8 +8,8 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `computed_fqdn` | The fully qualified domain name (computed) | No | (known after apply) |
-| `known_value` | A statically known value | No | `static-value` |
-| `resource_id` | The ID of the resource (computed) | No | (known after apply) |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `computed_fqdn` | The fully qualified domain name (computed) | No | (known after apply) |
+| ➕ | `known_value` | A statically known value | No | `static-value` |
+| ➕ | `resource_id` | The ID of the resource (computed) | No | (known after apply) |

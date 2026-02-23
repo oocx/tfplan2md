@@ -12,9 +12,9 @@ No changes
 
 #### 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `database_connection` | PostgreSQL connection string | No | `postgresql://db.example.com:5432` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `database_connection` | PostgreSQL connection string | No | `postgresql://db.example.com:5432` |
 
 ---
 
@@ -22,6 +22,6 @@ No changes
 
 #### 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `vpc_id` | The ID of the VPC | No | `vpc-12345` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `vpc_id` | The ID of the VPC | No | `vpc-12345` |

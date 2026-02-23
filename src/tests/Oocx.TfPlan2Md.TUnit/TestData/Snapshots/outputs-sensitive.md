@@ -8,9 +8,9 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `api_key` | API key for authentication | 🔒 Yes | (sensitive value) |
-| `database_password` | Database administrator password | 🔒 Yes | (sensitive value) |
-| `public_endpoint` | Public API endpoint | No | `https://api.example.com/v1` |
-| `storage_key` | Storage account access key | 🔒 Yes | (sensitive value) |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `api_key` | API key for authentication | 🔒 Yes | (sensitive value) |
+| ➕ | `database_password` | Database administrator password | 🔒 Yes | (sensitive value) |
+| ➕ | `public_endpoint` | Public API endpoint | No | `https://api.example.com/v1` |
+| ➕ | `storage_key` | Storage account access key | 🔒 Yes | (sensitive value) |

@@ -8,9 +8,9 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `created_output` | A newly created output | No | `new-value-123` |
-| `deleted_output` | An output being removed | No | `value-to-remove` |
-| `no_op_output` | An unchanged output | No | `unchanged-value` |
-| `updated_output` | An output being updated | No | `new-value` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `created_output` | A newly created output | No | `new-value-123` |
+| ❌ | `deleted_output` | An output being removed | No | `value-to-remove` |
+|   | `no_op_output` | An unchanged output | No | `unchanged-value` |
+| 🔄 | `updated_output` | An output being updated | No | `new-value` |

@@ -8,9 +8,9 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `keyvault_id` | The ID of the key vault resource | No | `/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security/providers/Microsoft.KeyVault/vaults/kv-prod-001` |
-| `principal_id` | Service principal object ID | No | `12345678-1234-1234-1234-123456789012` |
-| `role_definition_id` | Role definition resource ID | No | `/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7` |
-| `subscription_id` | The Azure subscription ID | No | `d1828a48-1111-2222-3333-123456789abc` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `keyvault_id` | The ID of the key vault resource | No | `/subscriptions/d1828a48-1111-2222-3333-123456789abc/resourceGroups/rg-security/providers/Microsoft.KeyVault/vaults/kv-prod-001` |
+| ➕ | `principal_id` | Service principal object ID | No | `12345678-1234-1234-1234-123456789012` |
+| ➕ | `role_definition_id` | Role definition resource ID | No | `/subscriptions/d1828a48-1111-2222-3333-123456789abc/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7` |
+| ➕ | `subscription_id` | The Azure subscription ID | No | `d1828a48-1111-2222-3333-123456789abc` |

@@ -8,7 +8,7 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `output_with_description` | This output has a description | No | `value-1` |
-| `output_without_description` |  | No | `value-2` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `output_with_description` | This output has a description | No | `value-1` |
+| ➕ | `output_without_description` |  | No | `value-2` |

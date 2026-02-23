@@ -8,9 +8,9 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `empty_string` | Empty string output | No |  |
-| `null_value` | Null output value | No |  |
-| `sensitive_computed` | Sensitive AND computed output | 🔒 Yes | (sensitive value) |
-| `string_to_number` | Output changing type | No | `123` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `empty_string` | Empty string output | No |  |
+| ➕ | `null_value` | Null output value | No |  |
+| ➕ | `sensitive_computed` | Sensitive AND computed output | 🔒 Yes | (sensitive value) |
+| 🔄 | `string_to_number` | Output changing type | No | `123` |

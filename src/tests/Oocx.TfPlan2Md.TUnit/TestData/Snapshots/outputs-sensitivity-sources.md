@@ -8,9 +8,9 @@ No changes
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `after_sensitive_true` | Sensitive via after_sensitive | 🔒 Yes | (sensitive value) |
-| `before_sensitive_true` | Sensitive via before_sensitive | 🔒 Yes | (sensitive value) |
-| `config_sensitive_true` | Sensitive via configuration | 🔒 Yes | (sensitive value) |
-| `not_sensitive` | Not sensitive anywhere | No | `public-value` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `after_sensitive_true` | Sensitive via after_sensitive | 🔒 Yes | (sensitive value) |
+| ❌ | `before_sensitive_true` | Sensitive via before_sensitive | 🔒 Yes | (sensitive value) |
+| ➕ | `config_sensitive_true` | Sensitive via configuration | 🔒 Yes | (sensitive value) |
+| ➕ | `not_sensitive` | Not sensitive anywhere | No | `public-value` |

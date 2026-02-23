@@ -12,6 +12,6 @@ No changes
 
 #### 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `db_endpoint` | Database endpoint from module with no resources | No | `db.example.com:5432` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `db_endpoint` | Database endpoint from module with no resources | No | `db.example.com:5432` |

@@ -12,9 +12,9 @@ No changes
 
 #### 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `cache_endpoint` | Redis cache endpoint | No | `redis.cache.windows.net:6380` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `cache_endpoint` | Redis cache endpoint | No | `redis.cache.windows.net:6380` |
 
 ---
 
@@ -22,13 +22,13 @@ No changes
 
 #### 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `db_endpoint` | Database endpoint | No | `db-prod.cluster-xyz.us-east-1.rds.amazonaws.com` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `db_endpoint` | Database endpoint | No | `db-prod.cluster-xyz.us-east-1.rds.amazonaws.com` |
 
 ## 📤 Outputs
 
-| Name | Description | Sensitive | Value |
-| ---- | ----------- | --------- | ----- |
-| `global_app_url` | The URL of the application | No | `https://app.example.com` |
-| `global_region` | The deployment region | No | `us-east-1` |
+| Change | Name | Description | Sensitive | Value |
+| ------ | ---- | ----------- | --------- | ----- |
+| ➕ | `global_app_url` | The URL of the application | No | `https://app.example.com` |
+| ➕ | `global_region` | The deployment region | No | `us-east-1` |

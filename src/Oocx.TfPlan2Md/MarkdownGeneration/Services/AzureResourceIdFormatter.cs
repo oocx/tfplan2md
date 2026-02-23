@@ -44,6 +44,11 @@ internal sealed class AzureResourceIdFormatter : IValueFormatter
             return null;
         }
 
+        if (context.AttributeName?.Equals("id", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return AzureScopeParser.ParseScopeIdentity(context.Value);
+        }
+
         return _scopeFormatter != null
             ? _scopeFormatter.FormatScope(context.Value)
             : AzureScopeParser.ParseScope(context.Value);

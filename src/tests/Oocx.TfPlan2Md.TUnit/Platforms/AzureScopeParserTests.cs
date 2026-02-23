@@ -209,4 +209,24 @@ public class AzureScopeParserTests
 
         result.Should().Be(ScopeInfo.Empty);
     }
+
+    [Test]
+    public void ParseScopeIdentity_ResourceScope_ReturnsTypeAndRawId()
+    {
+        const string scope = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.Insights/metricAlerts/my-alert";
+
+        var result = AzureScopeParser.ParseScopeIdentity(scope);
+
+        result.Should().Be("MetricAlerts `/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.Insights/metricAlerts/my-alert`");
+    }
+
+    [Test]
+    public void ParseScopeIdentity_KnownResourceType_ReturnsTypeAndRawId()
+    {
+        const string scope = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
+
+        var result = AzureScopeParser.ParseScopeIdentity(scope);
+
+        result.Should().Be("Key Vault `/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv`");
+    }
 }

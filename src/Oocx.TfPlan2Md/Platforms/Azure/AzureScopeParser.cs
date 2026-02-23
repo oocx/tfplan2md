@@ -205,6 +205,29 @@ public static class AzureScopeParser
         };
     }
 
+    /// <summary>
+    /// Formats an Azure resource identifier for the resource's own identity attribute:
+    /// preserves the resource type label as context but renders the raw identifier as the value,
+    /// avoiding the redundant name/resource-group/subscription expansion.
+    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
+    /// </summary>
+    /// <param name="scope">The Azure resource identifier to format.</param>
+    /// <returns>A markdown-formatted string with resource type prefix and raw identifier value.</returns>
+    public static string ParseScopeIdentity(string? scope)
+    {
+        if (string.IsNullOrWhiteSpace(scope))
+        {
+            return string.Empty;
+        }
+
+        var parsed = Parse(scope);
+        var rawCode = $"`{scope}`";
+
+        return !string.IsNullOrEmpty(parsed.SummaryLabel)
+            ? $"{parsed.SummaryLabel}{rawCode}"
+            : rawCode;
+    }
+
     private static bool IsManagementGroupScope(string[] parts)
     {
         return parts.Length >= 4

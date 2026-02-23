@@ -435,4 +435,33 @@ public class ScribanHelpersSemanticFormattingTests
 
         result.Should().Be("⎇\u00A0refs/heads/main");
     }
+
+    /// <summary>
+    /// Verifies that the 'id' attribute with an Azure resource ID renders as resource type label
+    /// plus raw ARM ID value in backticks, not the full expanded display name.
+    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValueTable_IdAttributeWithAzureResourceId_ReturnsTypeAndRawValue()
+    {
+        const string armId = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
+
+        var result = FormatAttributeValueTable("id", armId, "azurerm");
+
+        result.Should().Be("Key Vault `/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv`");
+    }
+
+    /// <summary>
+    /// Verifies that reference attributes (non-'id') with Azure resource IDs still render with full display name.
+    /// Related issue: docs/issues/100-readable-display-names-on-identity-attributes/analysis.md.
+    /// </summary>
+    [Test]
+    public void FormatAttributeValueTable_ReferenceAttributeWithAzureResourceId_ReturnsFullDisplayName()
+    {
+        const string armId = "/subscriptions/sub-id/resourceGroups/my-rg/providers/Microsoft.KeyVault/vaults/my-kv";
+
+        var result = FormatAttributeValueTable("key_vault_id", armId, "azurerm");
+
+        result.Should().Be("Key Vault `🆔\u00A0my-kv` in resource group `📁\u00A0my-rg` of subscription `🔑\u00A0sub-id`");
+    }
 }

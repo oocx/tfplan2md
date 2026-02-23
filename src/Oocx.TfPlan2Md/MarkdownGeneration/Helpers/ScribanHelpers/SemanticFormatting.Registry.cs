@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -287,6 +288,14 @@ public static partial class ScribanHelpers
         if (IsLocationAttribute(normalizedName))
         {
             return FormatIconValue($"🌍 {normalizedValue}", context, false);
+        }
+
+        if (context == ValueFormatContext.Table
+            && normalizedName.Equals("id", StringComparison.OrdinalIgnoreCase)
+            && IsAzurermProvider(providerName)
+            && AzureScopeParser.IsAzureResourceId(normalizedValue))
+        {
+            return AzureScopeParser.ParseScopeIdentity(normalizedValue);
         }
 
         return context == ValueFormatContext.Table

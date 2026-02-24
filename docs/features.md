@@ -856,7 +856,7 @@ Attribute tables in the default template now vary by the resource change action 
 - Use `--show-unchanged-values` flag to display all attributes including unchanged ones
 - This filtering applies to all attribute change tables regardless of which template is used
 
-Null or unknown attributes are omitted from the tables to avoid meaningless rows, and sensitive attributes are masked unless `--show-sensitive` is used.
+Attributes with a known value of `null` (not set) are omitted from the tables to avoid meaningless rows. Attributes whose value is not yet known at plan time are shown as `(known after apply)`, matching Terraform's own output format. Sensitive attributes are masked as `(sensitive)` unless `--show-sensitive` is used.
 
 ## Large Attribute Value Display
 

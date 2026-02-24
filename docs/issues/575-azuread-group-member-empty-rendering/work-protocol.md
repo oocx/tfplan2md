@@ -22,6 +22,14 @@
 - **Test Results:** 1233/1233 non-Docker tests pass (0 skipped)
 - **Problems Encountered:** The `update-test-snapshots.sh` script doesn't cover `EphemeralSnapshotTests`, so `ephemeral-open.md` had to be manually regenerated (it has a `null_resource` with `after_unknown: {id: true}`).
 
+### Technical Writer
+- **Date:** 2025-07-15
+- **Summary:** Created release notes for the fix and updated `docs/features.md` to accurately reflect the new `(known after apply)` rendering behaviour for fully-computed resources.
+- **Artifacts Produced:**
+  - `docs/issues/575-azuread-group-member-empty-rendering/release-notes.md` — new release notes file
+  - `docs/features.md` — corrected inaccurate statement ("Null or unknown attributes are omitted") to reflect that attributes in `after_unknown` are now shown as `(known after apply)` rather than silently dropped
+- **Problems Encountered:** None
+
 ### Issue Analyst
 - **Date:** 2025-07-15
 - **Summary:** Investigated why `azuread_group_member` resources render with an empty attribute table when all values are "known after apply". Identified the root cause in `BuildAttributeChanges` — it only looks at `change.After` and ignores `change.AfterUnknown`. When `change.After` is `null` (all attributes computed), no keys are found, and the table is empty.

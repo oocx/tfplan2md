@@ -9,6 +9,13 @@
 
 <!-- Each agent appends their entry below when they complete their work. -->
 
+### Issue Analyst (Enhanced Context Investigation)
+- **Date:** 2025-01-27
+- **Summary:** Investigated what richer context can be provided for `azuread_group_member` resources when IDs are unknown at plan time. Determined that the Terraform plan's `configuration.root_module.resources[].expressions[].references` block contains the source resource reference (e.g., `azuread_group.team`) for statically-defined references, and that the `ConfigurationReferenceResolver` already parses this data into `_configurationReferenceIndex`. Identified two enhancement tiers: (1) surface the for_each instance key from `model.Address` for dynamic `each.value` references — zero API changes; (2) enrich `ResourceChangeModel` with `AttributeReferences` and extract the resource-level reference (e.g., `azuread_group.platform_engineers`) for display — requires new property. Documented both scenarios and expected output.
+- **Artifacts Produced:**
+  - `docs/issues/575-azuread-group-member-empty-summary/analysis.md` — new "Enhanced Context Investigation" section appended
+- **Problems Encountered:** None.
+
 ### Developer
 - **Date:** 2025-01-27
 - **Summary:** Implemented fixes for both root causes identified in the analysis. Fix 1: Updated `BuildGroupMemberSummaryHtml` to show `"(known after apply)"` when `groupId` is empty, and added `JsonStateReader.PropertyExists()` helper to distinguish absent `member_object_id` (don't show arrow) from null/unknown `member_object_id` (show `→ (known after apply)`). Fix 2: Updated `BuildAttributeChanges` to consult `change.AfterUnknown` — attributes with null after-values AND `after_unknown=true` are now displayed as `"(known after apply)"` instead of being skipped. Extracted `IsKeyComputedAfterApply` and `DetermineAfterDisplay` helpers to stay within cyclomatic complexity limits.

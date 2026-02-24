@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 
 namespace Oocx.TfPlan2Md.MarkdownGeneration;
 
@@ -108,6 +109,44 @@ public static partial class ScribanHelpers
         }
 
         return FormatAttributeValue(attributeName, value, providerName, ValueFormatContext.Table, iconProviderRegistry);
+    }
+
+    /// <summary>
+    /// Formats a resource's own identity attribute (id) for table context.
+    /// Unlike <see cref="FormatAttributeValueTableWithRegistry"/>, this method skips the Azure
+    /// resource ID contextual expansion (e.g., "Foo in resource group Bar of subscription Baz")
+    /// for the <c>id</c> attribute, because that expansion is only meaningful when referencing
+    /// another resource — not for the resource's own identity.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </summary>
+    /// <param name="attributeName">The attribute name driving semantic formatting.</param>
+    /// <param name="value">The raw attribute value.</param>
+    /// <param name="providerName">The Terraform provider name for provider-aware fallbacks.</param>
+    /// <param name="valueFormatterRegistry">Optional value formatter registry.</param>
+    /// <param name="iconProviderRegistry">Optional icon provider registry.</param>
+    /// <returns>Formatted value suitable for markdown tables without Azure resource ID expansion for id.</returns>
+    internal static string FormatOwnAttributeValueTableWithRegistry(
+        string? attributeName,
+        string? value,
+        string? providerName,
+        ValueFormatterRegistry? valueFormatterRegistry,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        // For the resource's own id attribute, skip the provider-aware Azure resource ID expansion
+        // (which is only meaningful for references to other resources, not own identity).
+        if (attributeName?.Equals("id", StringComparison.OrdinalIgnoreCase) == true
+            && IsAzurermProvider(providerName)
+            && AzureScopeParser.IsAzureResourceId(value))
+        {
+            return FormatCodeTable(value.Trim());
+        }
+
+        return FormatAttributeValueTableWithRegistry(attributeName, value, providerName, valueFormatterRegistry, iconProviderRegistry);
     }
 
     /// <summary>

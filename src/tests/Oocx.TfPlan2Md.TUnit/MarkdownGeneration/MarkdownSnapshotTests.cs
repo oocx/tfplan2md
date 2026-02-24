@@ -302,6 +302,32 @@ public class MarkdownSnapshotTests
     }
 
     /// <summary>
+    /// Verifies that resource identity attributes (id, name) do not receive the full
+    /// "readable display name" expansion (e.g., "Foo in resource group Bar of subscription Baz").
+    /// Only semantic icon decoration is applied; the id attribute shows as plain code.
+    /// Related issue: docs/issues/100-readable-display-name-identity-attrs/analysis.md.
+    /// </summary>
+    [Test]
+    public async Task Snapshot_IdentityAttributesDisplay_MatchesBaseline()
+    {
+        var json = File.ReadAllText("TestData/identity-attributes-display.json");
+        var plan = _parser.Parse(json);
+        var providerRegistry = CreateProviderRegistry();
+        var model = new ReportModelBuilder(
+            metadataProvider: TestMetadataProvider.Instance,
+            providerRegistry: providerRegistry).Build(plan);
+        var renderer = new MarkdownRenderer(providerRegistry: providerRegistry);
+
+        var markdown = renderer.Render(model);
+
+        // id must NOT contain "in resource group" or "of subscription" — only plain code
+        await Assert.That(markdown).DoesNotContain("in resource group");
+        await Assert.That(markdown).DoesNotContain("of subscription");
+        SnapshotTestAssertions.AssertNoEmojiFollowedByRegularSpace(markdown, "identity-attributes-display.md");
+        SnapshotTestAssertions.AssertMatchesSnapshot("identity-attributes-display.md", markdown);
+    }
+
+    /// <summary>
     /// Creates a ProviderRegistry with AzureRM module for testing.
     /// </summary>
     private static ProviderRegistry CreateProviderRegistry(

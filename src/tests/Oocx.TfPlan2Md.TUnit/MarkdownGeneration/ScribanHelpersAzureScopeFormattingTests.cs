@@ -17,10 +17,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         var result = ScribanHelpers.FormatAzureScopeForTable(scope);
 
-        result.Should().Contain("rg1");
-        result.Should().Contain("subscription");
-        result.Should().Contain("🔑");
-        result.Should().Contain("sub1");
+        result.Should().Be("`📁\u00A0rg1` in subscription `🔑\u00A0sub1`");
 
         await Task.CompletedTask;
     }
@@ -32,11 +29,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         var result = ScribanHelpers.FormatAzureScopeForTable(scope);
 
-        result.Should().Contain("Microsoft.KeyVault/vaults");
-        result.Should().Contain("kv1");
-        result.Should().Contain("rg1");
-        result.Should().Contain("🔑");
-        result.Should().Contain("sub1");
+        result.Should().Be("Microsoft.KeyVault/vaults `🆔\u00A0kv1` in resource group `📁\u00A0rg1` of subscription `🔑\u00A0sub1`");
 
         await Task.CompletedTask;
     }
@@ -48,10 +41,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         var result = ScribanHelpers.FormatAzureScopeForTable(scope);
 
-        result.Should().Contain("vault");
-        result.Should().Contain("Microsoft.KeyVault/vaults");
-        result.Should().Contain("🔑");
-        result.Should().Contain("sub-only");
+        result.Should().Be("Microsoft.KeyVault/vaults `🆔\u00A0vault` in subscription `🔑\u00A0sub-only`");
 
         await Task.CompletedTask;
     }
@@ -63,9 +53,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         var result = ScribanHelpers.FormatAzureScopeForTable(scope);
 
-        result.Should().Contain("subscription");
-        result.Should().Contain("🔑");
-        result.Should().Contain("sub-123");
+        result.Should().Be("subscription `🔑\u00A0sub-123`");
 
         await Task.CompletedTask;
     }
@@ -77,10 +65,7 @@ public class ScribanHelpersAzureScopeFormattingTests
 
         var result = ScribanHelpers.FormatAzureScopeForTable(scope);
 
-        result.Should().Contain("mgmt");
-        result.Should().Contain("Management Group");
-        result.Should().Contain("🗂️");
-        result.Should().Contain("`");
+        result.Should().Be("`🗂️\u00A0mgmt (Management Group)`");
 
         await Task.CompletedTask;
     }

@@ -30,6 +30,12 @@
   - `docs/features.md` — corrected inaccurate statement ("Null or unknown attributes are omitted") to reflect that attributes in `after_unknown` are now shown as `(known after apply)` rather than silently dropped
 - **Problems Encountered:** None
 
+### Code Reviewer
+- **Date:** 2025-07-15
+- **Summary:** Reviewed the fix for `azuread_group_member` empty rendering. All acceptance criteria implemented and tested. 1237 non-Docker tests pass. Snapshot changes are justified and `SNAPSHOT_UPDATE_OK` is present. Approved with two minor notes: (1) release-notes test method name mismatch (documentation inaccuracy only) and (2) pre-existing `(sensitive)` in Before column for attributes absent from `before` is now newly visible for `primary_access_key`.
+- **Artifacts Produced:** `docs/issues/575-azuread-group-member-empty-rendering/code-review.md`
+- **Problems Encountered:** markdownlint error on `artifacts/comprehensive-demo.md:710` (MD024 duplicate heading) — confirmed pre-existing, not introduced by this fix.
+
 ### Issue Analyst
 - **Date:** 2025-07-15
 - **Summary:** Investigated why `azuread_group_member` resources render with an empty attribute table when all values are "known after apply". Identified the root cause in `BuildAttributeChanges` — it only looks at `change.After` and ignores `change.AfterUnknown`. When `change.After` is `null` (all attributes computed), no keys are found, and the table is empty.

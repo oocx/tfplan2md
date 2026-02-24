@@ -115,6 +115,28 @@ public class AzureEntityMapperTests
         result.Should().Be("`🗂️\u00A0Core`");
     }
 
+    [Test]
+    public void AzureEntityMapper_GetSubscriptionName_ReturnsMappedDisplayName()
+    {
+        var mapper = CreateMapper(
+            subscriptions: [new MappingEntry(SubscriptionId, "Production")],
+            managementGroups: [],
+            tenants: []);
+
+        mapper.GetSubscriptionName(SubscriptionId).Should().Be("Production");
+    }
+
+    [Test]
+    public void AzureEntityMapper_GetSubscriptionName_FallsBackToRawId()
+    {
+        var mapper = CreateMapper(
+            subscriptions: [],
+            managementGroups: [],
+            tenants: []);
+
+        mapper.GetSubscriptionName(SubscriptionId).Should().Be(SubscriptionId);
+    }
+
     private static AzureEntityMapper CreateMapper(
         IReadOnlyList<MappingEntry> subscriptions,
         IReadOnlyList<MappingEntry> managementGroups,

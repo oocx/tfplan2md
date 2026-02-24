@@ -82,25 +82,31 @@ internal sealed class AzureEntityMapper
     /// Gets the subscription name without ID suffix when a mapping is available.
     /// </summary>
     /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the subscription.</param>
     /// <returns>
     /// The display name when a mapping exists, or the raw subscription ID as a fallback.
+    /// Returns <see cref="string.Empty"/> when <paramref name="subscriptionId"/> is null or whitespace.
     /// Unlike <see cref="GetSubscriptionDisplayName"/>, no "(id)" suffix is appended.
     /// </returns>
     /// <remarks>
     /// Use this method in summary contexts where showing the subscription name alone
     /// (without the subscription ID) is preferred when a human-readable name is available.
-    /// Related feature: docs/features/improve-summary-for-role-assignments/specification.md.
+    /// Related issue: docs/issues/574-subscription-name-in-role-assignment-summary/analysis.md.
     /// </remarks>
-    internal string? GetSubscriptionName(string? subscriptionId)
+    internal string GetSubscriptionName(string? subscriptionId, string? resourceAddress = null)
     {
         if (string.IsNullOrWhiteSpace(subscriptionId))
         {
-            return subscriptionId;
+            return string.Empty;
         }
 
-        return _subscriptions.TryGetValue(subscriptionId, out var displayName)
-            ? displayName
-            : subscriptionId;
+        if (_subscriptions.TryGetValue(subscriptionId, out var displayName))
+        {
+            return displayName;
+        }
+
+        RecordFailure(FailedResolutionType.Subscription, subscriptionId, resourceAddress);
+        return subscriptionId;
     }
 
     /// <summary>

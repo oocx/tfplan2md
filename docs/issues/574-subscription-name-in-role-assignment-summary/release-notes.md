@@ -34,11 +34,13 @@ The table `scope` attribute continues to show the full `🔑 Production (sub-123
 
 ## 🧪 Test coverage
 
-Added 3 new unit tests:
+Added 5 new unit tests:
 
 1. **`Build_WhenSubscriptionScopeAndMappingProvided_UsesMappedNameInSummary`** — verifies the summary shows the display name when a subscription mapping exists
 2. **`Build_WhenSubscriptionScopeAndNoMapping_UsesIdInSummary`** — verifies fallback to raw ID when no mapping is configured
 3. **`Build_WhenSubscriptionScopeAndNoScopeFormatter_UsesIdInSummary`** — verifies fallback to raw ID when no scope formatter is provided
+4. **`AzureEntityMapper_GetSubscriptionName_ReturnsMappedDisplayName`** — verifies `AzureEntityMapper.GetSubscriptionName` returns just the display name (no ID suffix) when a mapping exists
+5. **`AzureEntityMapper_GetSubscriptionName_FallsBackToRawId`** — verifies `AzureEntityMapper.GetSubscriptionName` returns the raw ID when no mapping is found
 
 Added 2 subscription-level entries to the snapshot test data (`role-assignments.json`) and regenerated the snapshot:
 

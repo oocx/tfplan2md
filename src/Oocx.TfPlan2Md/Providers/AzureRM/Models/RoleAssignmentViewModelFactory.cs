@@ -260,11 +260,7 @@ internal static class RoleAssignmentViewModelFactory
         if (scope.Level == ScopeLevel.Subscription)
         {
             var subscriptionId = scope.SubscriptionId ?? scope.SummaryName;
-            var subscriptionName = scopeFormatter?.GetSubscriptionName(subscriptionId);
-            var subscriptionDisplay = (!string.IsNullOrWhiteSpace(subscriptionName)
-                && !string.Equals(subscriptionName, subscriptionId, StringComparison.OrdinalIgnoreCase))
-                ? subscriptionName
-                : subscriptionId;
+            var subscriptionDisplay = scopeFormatter?.GetSubscriptionName(subscriptionId, resourceAddress) ?? subscriptionId;
             return $"subscription {FormatAttributeValueSummary("subscription_id", subscriptionDisplay, null)}";
         }
 

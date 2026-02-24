@@ -83,16 +83,17 @@ internal sealed class EnrichedAzureScopeFormatter
     /// Resolves the subscription name without ID suffix for summary contexts.
     /// </summary>
     /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <param name="resourceAddress">The Terraform resource address referencing the subscription.</param>
     /// <returns>
     /// The display name when a mapping exists, or the raw subscription ID as a fallback.
     /// Unlike <see cref="GetSubscriptionDisplayName"/>, no "(id)" suffix is appended.
     /// </returns>
     /// <remarks>
-    /// Related feature: docs/features/improve-summary-for-role-assignments/specification.md.
+    /// Related issue: docs/issues/574-subscription-name-in-role-assignment-summary/analysis.md.
     /// </remarks>
-    internal string? GetSubscriptionName(string? subscriptionId)
+    internal string GetSubscriptionName(string? subscriptionId, string? resourceAddress = null)
     {
-        return _entityMapper.GetSubscriptionName(subscriptionId);
+        return _entityMapper.GetSubscriptionName(subscriptionId, resourceAddress);
     }
 
     /// <summary>

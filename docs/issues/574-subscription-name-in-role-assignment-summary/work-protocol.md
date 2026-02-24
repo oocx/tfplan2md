@@ -47,3 +47,15 @@
   3. `GetSubscriptionName` returns `string?` instead of `string` (inconsistent with all other mapper methods)
   4. No direct unit test for `AzureEntityMapper.GetSubscriptionName` in `AzureEntityMapperTests.cs`
 - **Problems Encountered:** Docker `apk add` network failure (CI environment issue, unrelated to code); pre-existing markdownlint MD024 error in `artifacts/comprehensive-demo.md` (not introduced by this branch)
+
+
+### Developer (Rework)
+- **Date:** 2026-02-24
+- **Summary:** Addressed all four minor issues identified in the code review. Fixed XML doc comment paths, added `resourceAddress` parameter and `RecordFailure()` diagnostic call to `GetSubscriptionName`, changed return type from `string?` to `string` (returning `string.Empty` for null/empty input), updated `EnrichedAzureScopeFormatter.GetSubscriptionName` to match, simplified `BuildScopeSummary` call site (S1 suggestion), and added 2 direct unit tests for `AzureEntityMapper.GetSubscriptionName`.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/AzureEntityMapper.cs` — Fixed XML doc path, added `resourceAddress` param, `RecordFailure()` call, changed return type to `string`
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs` — Fixed XML doc path, updated `GetSubscriptionName` signature to accept and forward `resourceAddress`, changed return type to `string`
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/RoleAssignmentViewModelFactory.cs` — Simplified `BuildScopeSummary` subscription-scope block (passes `resourceAddress`, removes redundant guard logic)
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Platforms/Azure/AzureEntityMapperTests.cs` — Added `AzureEntityMapper_GetSubscriptionName_ReturnsMappedDisplayName` and `AzureEntityMapper_GetSubscriptionName_FallsBackToRawId`
+- **Test Results:** `AzureEntityMapperTests` 10/10 pass; `RoleAssignmentViewModelFactoryTests` 10/10 pass
+- **Problems Encountered:** None

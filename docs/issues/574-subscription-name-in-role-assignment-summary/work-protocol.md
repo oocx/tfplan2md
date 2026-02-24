@@ -25,3 +25,11 @@
 - **Summary:** Investigated the `azurerm_role_assignment` summary generation for subscription-level scopes. Identified the exact code location where subscription IDs are displayed in summary text without consulting the scope formatter for a display name. Documented root cause, affected components, suggested fix approach, and tests that need to be added/updated.
 - **Artifacts Produced:** `docs/issues/574-subscription-name-in-role-assignment-summary/analysis.md`
 - **Problems Encountered:** None
+
+
+### Technical Writer
+- **Date:** 2026-02-24
+- **Summary:** Reviewed the implementation and created release notes for the fix. Verified that `README.md` and `docs/features.md` do not require updates — the existing role assignment feature description remains accurate, and this is a bug fix to existing behavior rather than a new feature. No contradictions found in existing documentation.
+- **Artifacts Produced:**
+  - `docs/issues/574-subscription-name-in-role-assignment-summary/release-notes.md` — New release notes documenting the bug fix, behavior change, and test coverage
+- **Problems Encountered:** None

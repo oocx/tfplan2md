@@ -45,7 +45,7 @@ public class ScribanHelpersAzureMetadataTests
         result.Should().NotBeNull();
         result!["name"].Should().Be("Reader");
         result["id"].Should().Be("acdd72a7-3385-48ef-bd42-f606fba81ae7");
-        result["full_name"].Should().BeOfType<string>().Which.Should().Contain("Reader");
+        result["full_name"].Should().Be("Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)");
         await Task.CompletedTask;
     }
 

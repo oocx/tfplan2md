@@ -59,10 +59,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue(null, "{\"a\":1,\"b\":[1,2]}", SimpleDiffFormat);
 
-        result.Should().StartWith("```json\n");
-        result.Should().Contain("\n  \"a\": 1");
-        result.Should().Contain("\n  \"b\": [");
-        result.Should().EndWith("```");
+        result.Should().Be("```json\n{\n  \"a\": 1,\n  \"b\": [\n    1,\n    2\n  ]\n}\n```");
     }
 
     [Test]
@@ -70,9 +67,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue(null, "<root><child>value</child></root>", SimpleDiffFormat);
 
-        result.Should().StartWith("```xml\n");
-        result.Should().Contain("\n  <child>value</child>");
-        result.Should().EndWith("```");
+        result.Should().Be("```xml\n<root>\n  <child>value</child>\n</root>\n```");
     }
 
     [Test]
@@ -106,9 +101,7 @@ public class ScribanHelpersLargeValueTests
     {
         var result = FormatLargeValue("{\"a\":1}", "{\"a\":2}", SimpleDiffFormat);
 
-        result.Should().StartWith("```diff\n");
-        result.Should().Contain("-   \"a\": 1");
-        result.Should().Contain("+   \"a\": 2");
+        result.Should().Be("```diff\n- {\n-   \"a\": 1\n- }\n+ {\n+   \"a\": 2\n+ }\n```");
     }
 
     [Test]

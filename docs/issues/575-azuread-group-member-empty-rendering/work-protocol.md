@@ -9,6 +9,19 @@
 
 <!-- Each agent appends their entry below when they complete their work. -->
 
+### Developer
+- **Date:** 2025-07-15
+- **Summary:** Implemented the fix for the `azuread_group_member` empty rendering bug. Updated `BuildAttributeChanges` in `ReportModelBuilder.ResourceChanges.cs` to include attributes from `change.AfterUnknown` in the attribute table, displaying them as `(known after apply)`. Added a test fixture and snapshot test for the all-unknown case. Updated all affected snapshots and demo artifacts.
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs` — core fix
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/azuread-group-member-all-unknown-plan.json` — new test fixture
+  - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AzureAdSnapshotTests.cs` — new snapshot test
+  - `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/azuread-group-member-all-unknown.md` — new snapshot baseline
+  - Multiple existing snapshots updated with `(known after apply)` rows
+  - All demo artifacts regenerated
+- **Test Results:** 1233/1233 non-Docker tests pass (0 skipped)
+- **Problems Encountered:** The `update-test-snapshots.sh` script doesn't cover `EphemeralSnapshotTests`, so `ephemeral-open.md` had to be manually regenerated (it has a `null_resource` with `after_unknown: {id: true}`).
+
 ### Issue Analyst
 - **Date:** 2025-07-15
 - **Summary:** Investigated why `azuread_group_member` resources render with an empty attribute table when all values are "known after apply". Identified the root cause in `BuildAttributeChanges` — it only looks at `change.After` and ignores `change.AfterUnknown`. When `change.After` is `null` (all attributes computed), no keys are found, and the table is empty.

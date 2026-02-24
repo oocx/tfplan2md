@@ -79,6 +79,15 @@ internal partial class ReportModelBuilder
     }
 
     /// <summary>
+    /// The display string used for attributes whose final value will only be known after Terraform applies the plan.
+    /// Matches the format used by <c>terraform show</c> for consistency.
+    /// </summary>
+    /// <remarks>
+    /// Related issue: docs/issues/575-azuread-group-member-empty-rendering/analysis.md.
+    /// </remarks>
+    private const string KnownAfterApplyDisplay = "(known after apply)";
+
+    /// <summary>
     /// Builds attribute changes for a resource, filtering unchanged values when configured.
     /// </summary>
     /// <param name="change">The resource change containing before and after state.</param>
@@ -87,16 +96,29 @@ internal partial class ReportModelBuilder
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
+    /// <para>
+    /// Attributes marked as "known after apply" in <c>after_unknown</c> are included using
+    /// <see cref="KnownAfterApplyDisplay"/> as their display value, even when <c>after</c> is
+    /// <see langword="null"/>. This covers resources like <c>azuread_group_member</c> where all
+    /// attribute values are computed at apply time.
+    /// </para>
     /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-rendering/analysis.md.
     /// </remarks>
     private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
         var afterDict = ConvertToFlatDictionary(change.After);
+        var afterUnknownDict = ConvertToFlatDictionary(change.AfterUnknown);
         var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
         var afterSensitiveDict = ConvertToFlatDictionary(change.AfterSensitive);
 
-        var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order();
+        // Include keys from after_unknown so attributes that are computed at apply time
+        // are not silently omitted when `after` is null or contains null values.
+        var allKeys = beforeDict.Keys
+            .Union(afterDict.Keys)
+            .Union(afterUnknownDict.Keys)
+            .Order();
 
         var changes = new List<AttributeChangeModel>();
 
@@ -105,11 +127,31 @@ internal partial class ReportModelBuilder
             beforeDict.TryGetValue(key, out var beforeValue);
             afterDict.TryGetValue(key, out var afterValue);
 
+            // An attribute is "known after apply" when after_unknown contains a "true" entry for it.
+            var isUnknown = afterUnknownDict.TryGetValue(key, out var unknownFlag)
+                && string.Equals(unknownFlag, "true", StringComparison.OrdinalIgnoreCase);
+
             var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
             var beforeDisplay = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue;
-            var afterDisplay = isSensitive && !_showSensitive ? "(sensitive)" : afterValue;
 
-            var valuesEqual = string.Equals(beforeValue, afterValue, StringComparison.Ordinal);
+            // Unknown attributes override the after display value regardless of sensitivity.
+            string? afterDisplay;
+            if (isUnknown)
+            {
+                afterDisplay = KnownAfterApplyDisplay;
+            }
+            else if (isSensitive && !_showSensitive)
+            {
+                afterDisplay = "(sensitive)";
+            }
+            else
+            {
+                afterDisplay = afterValue;
+            }
+
+            // Treat "known after apply" as a meaningful change so it is never filtered out by
+            // the unchanged-values check, even when before is also null (e.g., create actions).
+            var valuesEqual = !isUnknown && string.Equals(beforeValue, afterValue, StringComparison.Ordinal);
 
             if (!_showUnchangedValues && valuesEqual)
             {

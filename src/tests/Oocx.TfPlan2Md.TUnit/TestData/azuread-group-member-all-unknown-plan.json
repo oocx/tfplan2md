@@ -1,0 +1,93 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "variables": {},
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group_member.user_groups[\"team-example - user@example.de\"]",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "user_groups",
+          "provider_name": "registry.terraform.io/hashicorp/azuread",
+          "schema_version": 0,
+          "values": {
+            "group_object_id": null,
+            "member_object_id": null,
+            "timeouts": null
+          }
+        },
+        {
+          "address": "azuread_group_member.user_groups[\"team-example - user2@example.de\"]",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "user_groups",
+          "provider_name": "registry.terraform.io/hashicorp/azuread",
+          "schema_version": 0,
+          "values": {
+            "group_object_id": null,
+            "member_object_id": null,
+            "timeouts": null
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "azuread_group_member.user_groups[\"team-example - user@example.de\"]",
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "user_groups",
+      "index": "team-example - user@example.de",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": null,
+        "after_unknown": {
+          "group_object_id": true,
+          "id": true,
+          "member_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.user_groups[\"team-example - user2@example.de\"]",
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "user_groups",
+      "index": "team-example - user2@example.de",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": null,
+        "after_unknown": {
+          "group_object_id": true,
+          "id": true,
+          "member_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group_member.user_groups",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "user_groups",
+          "provider_config_key": "azuread",
+          "schema_version": 0
+        }
+      ]
+    }
+  }
+}

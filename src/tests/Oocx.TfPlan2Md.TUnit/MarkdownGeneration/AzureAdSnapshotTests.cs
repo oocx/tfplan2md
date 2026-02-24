@@ -63,6 +63,17 @@ public class AzureAdSnapshotTests
     }
 
     /// <summary>
+    /// Verifies that azuread_group_member resources where all attributes are "known after apply"
+    /// render an attribute table with "(known after apply)" values rather than an empty table.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-rendering/analysis.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMember_AllAttributesUnknown_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-member-all-unknown-plan.json", "azuread-group-member-all-unknown.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure AD plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

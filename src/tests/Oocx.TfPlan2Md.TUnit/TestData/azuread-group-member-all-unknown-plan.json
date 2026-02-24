@@ -1,0 +1,30 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group_member.all_unknown",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "all_unknown",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": null,
+          "id": null
+        },
+        "after_unknown": {
+          "group_object_id": true,
+          "member_object_id": true,
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

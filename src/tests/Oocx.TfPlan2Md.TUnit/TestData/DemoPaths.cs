@@ -46,6 +46,13 @@ public static class DemoPaths
     public static string AzureAdGroupMemberPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-member-plan.json");
 
     /// <summary>
+    /// Gets the path to the Azure AD group member all-unknown test plan JSON file.
+    /// Used to verify rendering when both group_object_id and member_object_id are computed (known after apply).
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    public static string AzureAdGroupMemberAllUnknownPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-member-all-unknown-plan.json");
+
+    /// <summary>
     /// Gets the path to the Azure AD group test plan JSON file.
     /// </summary>
     public static string AzureAdGroupPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-plan.json");

@@ -35,11 +35,66 @@ public class AzureAdGroupMemberTemplateTests
         section.Should().NotContain("→");
     }
 
+    /// <summary>
+    /// Verifies that when both group_object_id and member_object_id are unknown at plan time,
+    /// the summary shows "(known after apply)" for both IDs.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Create_WithAllUnknownAttributes_ShowsKnownAfterApplySummary()
+    {
+        var markdown = RenderAllUnknown();
+        var section = ExtractSection(markdown, "azuread_group_member.all_unknown");
+
+        section.Should().Contain("(known after apply)");
+        section.Should().Contain("→");
+    }
+
+    /// <summary>
+    /// Verifies that when both group_object_id and member_object_id are unknown at plan time,
+    /// the attributes table includes both attributes with "(known after apply)" values.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Create_WithAllUnknownAttributes_ShowsAttributeTable()
+    {
+        var markdown = RenderAllUnknown();
+        var section = ExtractSection(markdown, "azuread_group_member.all_unknown");
+
+        section.Should().Contain("group_object_id");
+        section.Should().Contain("member_object_id");
+        section.Should().NotContain("_No attribute changes._");
+    }
+
     private string Render()
     {
         var mappingResult = AzureMappingFileLoader.Load(DemoPaths.AzureAdPrincipalMappingPath, diagnosticContext: null);
         var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
         var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdGroupMemberPlanPath));
+
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureADModule());
+
+        var builder = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+        return renderer.Render(model);
+    }
+
+    /// <summary>
+    /// Renders the all-unknown group member plan (both IDs are computed at plan time).
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    /// <returns>The rendered markdown output.</returns>
+    private string RenderAllUnknown()
+    {
+        var mappingResult = AzureMappingFileLoader.Load(DemoPaths.AzureAdPrincipalMappingPath, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdGroupMemberAllUnknownPlanPath));
 
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new AzureADModule());

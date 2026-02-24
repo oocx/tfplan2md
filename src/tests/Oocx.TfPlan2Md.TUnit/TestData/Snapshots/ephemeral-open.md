@@ -44,6 +44,8 @@ _No attribute changes._
 <summary>➕ null_resource <b><code>app_config</code></b></summary>
 <br>
 
-_No attribute changes._
+| Attribute | Value |
+| ----------- | ------- |
+| id | `(known after apply)` |
 
 </details>

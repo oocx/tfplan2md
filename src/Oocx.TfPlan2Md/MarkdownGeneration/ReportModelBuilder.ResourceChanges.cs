@@ -87,15 +87,31 @@ internal partial class ReportModelBuilder
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
+    /// Attributes flagged in <c>after_unknown</c> are treated as "known after apply" and displayed
+    /// with that label rather than being skipped as unchanged (null == null).
     /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
     /// </remarks>
     private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
         var afterDict = ConvertToFlatDictionary(change.After);
+        var afterUnknownDict = ConvertToFlatDictionary(change.AfterUnknown);
         var beforeSensitiveDict = ConvertToFlatDictionary(change.BeforeSensitive);
         var afterSensitiveDict = ConvertToFlatDictionary(change.AfterSensitive);
 
+        // When after_unknown is the JSON literal `true` (whole resource unknown), the flattener
+        // stores it under the empty-string key. In that case all attributes in the plan are computed.
+        var wholeResourceUnknown = afterUnknownDict.TryGetValue("", out var rootVal)
+            && string.Equals(rootVal, "true", StringComparison.OrdinalIgnoreCase);
+
+        // Only iterate keys present in before/after state. Attributes that appear exclusively in
+        // after_unknown (e.g., server-assigned id, object_id) but are absent from the after object
+        // are provider-computed outputs — not user-configured inputs — and are intentionally omitted.
+        // Attributes that ARE in after as JSON null with a corresponding after_unknown=true flag
+        // (the "known after apply" pattern for user-configured references) are included because
+        // afterDict already contains them with null values.
+        // NOTE: afterUnknownDict.Keys is deliberately NOT unioned here; see the comment above.
         var allKeys = beforeDict.Keys.Union(afterDict.Keys).Order();
 
         var changes = new List<AttributeChangeModel>();
@@ -105,13 +121,19 @@ internal partial class ReportModelBuilder
             beforeDict.TryGetValue(key, out var beforeValue);
             afterDict.TryGetValue(key, out var afterValue);
 
+            // An attribute is "known after apply" when either the whole resource is unknown,
+            // or the specific attribute is listed in after_unknown with value true.
+            var isComputedAfterApply = IsKeyComputedAfterApply(key, afterUnknownDict, wholeResourceUnknown);
+
             var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
             var beforeDisplay = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue;
-            var afterDisplay = isSensitive && !_showSensitive ? "(sensitive)" : afterValue;
+            var afterDisplay = DetermineAfterDisplay(afterValue, isSensitive, _showSensitive, isComputedAfterApply);
 
             var valuesEqual = string.Equals(beforeValue, afterValue, StringComparison.Ordinal);
 
-            if (!_showUnchangedValues && valuesEqual)
+            // Computed (known-after-apply) attributes must never be skipped even when both the
+            // raw before and after values are null, which would otherwise satisfy valuesEqual.
+            if (!_showUnchangedValues && valuesEqual && !isComputedAfterApply)
             {
                 continue;
             }
@@ -130,6 +152,64 @@ internal partial class ReportModelBuilder
         }
 
         return changes;
+    }
+
+    /// <summary>
+    /// Determines whether a specific attribute key is "known after apply" based on the
+    /// flattened <c>after_unknown</c> dictionary and the whole-resource-unknown flag.
+    /// </summary>
+    /// <param name="key">The attribute key to check.</param>
+    /// <param name="afterUnknownDict">Flattened dictionary from <c>after_unknown</c>.</param>
+    /// <param name="wholeResourceUnknown">True when the entire resource is unknown (after_unknown = true).</param>
+    /// <returns>True if the attribute is known after apply.</returns>
+    /// <remarks>
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </remarks>
+    private static bool IsKeyComputedAfterApply(
+        string key,
+        Dictionary<string, string?> afterUnknownDict,
+        bool wholeResourceUnknown)
+    {
+        if (wholeResourceUnknown)
+        {
+            return true;
+        }
+
+        return afterUnknownDict.TryGetValue(key, out var unknownVal)
+            && string.Equals(unknownVal, "true", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Determines the display value for the after-state of an attribute, applying sensitivity masking
+    /// and "known after apply" substitution as appropriate.
+    /// </summary>
+    /// <param name="afterValue">The raw after value from the plan.</param>
+    /// <param name="isSensitive">Whether the attribute is marked sensitive.</param>
+    /// <param name="showSensitive">Whether sensitive values should be revealed.</param>
+    /// <param name="isComputedAfterApply">Whether the attribute is known after apply.</param>
+    /// <returns>The display string for rendering.</returns>
+    /// <remarks>
+    /// Sensitivity takes priority over computed status: an attribute that is both sensitive and
+    /// computed is displayed as "(sensitive)" so existing state is not inadvertently revealed.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </remarks>
+    private static string? DetermineAfterDisplay(
+        string? afterValue,
+        bool isSensitive,
+        bool showSensitive,
+        bool isComputedAfterApply)
+    {
+        if (isSensitive && !showSensitive)
+        {
+            return "(sensitive)";
+        }
+
+        if (isComputedAfterApply)
+        {
+            return "(known after apply)";
+        }
+
+        return afterValue;
     }
 
     /// <summary>

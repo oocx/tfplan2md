@@ -39,6 +39,26 @@ internal static class JsonStateReader
     }
 
     /// <summary>
+    /// Checks whether a property exists in the JSON state object, regardless of its value kind.
+    /// Distinguishes between a missing property (returns false) and a present null property (returns true).
+    /// Used to detect "known after apply" attributes where the property is present but null in the plan's
+    /// <c>after</c> object (with the corresponding <c>after_unknown</c> flag set to true).
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    /// <param name="state">The JSON state object.</param>
+    /// <param name="propertyName">The property to check.</param>
+    /// <returns>True if the property exists in the JSON object, false if absent or state is not an object.</returns>
+    internal static bool PropertyExists(object? state, string propertyName)
+    {
+        if (state is not JsonElement element || element.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        return element.TryGetProperty(propertyName, out _);
+    }
+
+    /// <summary>
     /// Gets string values from an array property on the JSON state object.
     /// </summary>
     /// <param name="state">The JSON state object.</param>

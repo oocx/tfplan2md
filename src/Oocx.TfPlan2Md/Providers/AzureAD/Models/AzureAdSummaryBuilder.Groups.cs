@@ -163,14 +163,26 @@ internal static partial class AzureAdSummaryBuilder
         var groupId = JsonStateReader.GetStringProperty(state, "group_object_id") ?? string.Empty;
         var memberId = JsonStateReader.GetStringProperty(state, "member_object_id") ?? string.Empty;
 
-        var groupName = principalMapper.GetName(groupId, GroupMemberType, model.Address) ?? groupId;
-        var groupIsMapped = groupName != string.Empty && groupName != groupId;
+        // When groupId is empty, the group_object_id is unknown at plan time (known after apply).
+        // Fall back to a descriptive placeholder rather than rendering an empty summary.
+        // Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+        string groupSummary;
+        if (string.IsNullOrEmpty(groupId))
+        {
+            groupSummary = FormatCodeSummary("(known after apply)");
+        }
+        else
+        {
+            var groupName = principalMapper.GetName(groupId, GroupMemberType, model.Address) ?? groupId;
+            var groupIsMapped = groupName != string.Empty && groupName != groupId;
 
-        var groupSummary = groupIsMapped
-            ? BuildPrincipalSummary(model, "group_name", groupName, groupId, iconProviderRegistry)
-            : FormatCodeSummary(groupId);
+            groupSummary = groupIsMapped
+                ? BuildPrincipalSummary(model, "group_name", groupName, groupId, iconProviderRegistry)
+                : FormatCodeSummary(groupId);
+        }
 
         var summaryText = groupSummary;
+
         if (!string.IsNullOrEmpty(memberId))
         {
             var memberType = principalMapper.TryGetPrincipalType(memberId, out var resolvedType)
@@ -184,6 +196,14 @@ internal static partial class AzureAdSummaryBuilder
                 : FormatCodeSummary(memberId);
 
             summaryText = $"{summaryText} {MemberArrow} {memberSummary}";
+        }
+        else if (JsonStateReader.PropertyExists(state, "member_object_id"))
+        {
+            // member_object_id property is present in the plan but its value is null — the attribute
+            // is "known after apply". Distinguish from the case where member_object_id is simply absent
+            // (e.g., partially-defined resources), which should not render an arrow.
+            // Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+            summaryText = $"{summaryText} {MemberArrow} {FormatCodeSummary("(known after apply)")}";
         }
 
         return BuildSummaryHtml(model, summaryText);

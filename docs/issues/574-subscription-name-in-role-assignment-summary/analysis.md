@@ -13,7 +13,7 @@ azurerm_role_assignment additional_subscriptions["Azure Local-Contributor"] —
 **Expected output (when mapped):**
 ```
 azurerm_role_assignment additional_subscriptions["Azure Local-Contributor"] —
-💻 principal-name → 🛡️ Contributor on subscription My Subscription Name
+💻 principal-name → 🛡️ Contributor on subscription 🔑 My Subscription Name
 ```
 
 ## Steps to Reproduce
@@ -37,7 +37,7 @@ azurerm_role_assignment additional_subscriptions["Azure Local-Contributor"] —
 
 When a subscription ID is found in the mapping/principals config, the summary text for subscription-level scoped role assignments should show only the subscription **display name** (e.g., `🔑 Production`) instead of the raw ID (e.g., `🔑 12345678-...`).
 
-The table `scope` attribute already correctly shows `🔑 Production (12345678-...)` (name + ID) — the fix is specifically for the **summary text** (the `<summary>` element), which should show just the name.
+The table `scope` attribute already correctly shows `🔑 Production (12345678-...)` (name + ID) — the fix is specifically for the **summary text** (the `<summary>` element), which should show just the name with the 🔑 icon.
 
 ## Actual Behavior
 

@@ -79,6 +79,31 @@ internal sealed class AzureEntityMapper
     }
 
     /// <summary>
+    /// Gets the subscription name without ID suffix when a mapping is available.
+    /// </summary>
+    /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <returns>
+    /// The display name when a mapping exists, or the raw subscription ID as a fallback.
+    /// Unlike <see cref="GetSubscriptionDisplayName"/>, no "(id)" suffix is appended.
+    /// </returns>
+    /// <remarks>
+    /// Use this method in summary contexts where showing the subscription name alone
+    /// (without the subscription ID) is preferred when a human-readable name is available.
+    /// Related feature: docs/features/improve-summary-for-role-assignments/specification.md.
+    /// </remarks>
+    internal string? GetSubscriptionName(string? subscriptionId)
+    {
+        if (string.IsNullOrWhiteSpace(subscriptionId))
+        {
+            return subscriptionId;
+        }
+
+        return _subscriptions.TryGetValue(subscriptionId, out var displayName)
+            ? displayName
+            : subscriptionId;
+    }
+
+    /// <summary>
     /// Gets the management group display name when available.
     /// </summary>
     /// <param name="managementGroupId">The management group identifier.</param>

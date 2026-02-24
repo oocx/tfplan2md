@@ -80,6 +80,22 @@ internal sealed class EnrichedAzureScopeFormatter
     }
 
     /// <summary>
+    /// Resolves the subscription name without ID suffix for summary contexts.
+    /// </summary>
+    /// <param name="subscriptionId">The subscription identifier.</param>
+    /// <returns>
+    /// The display name when a mapping exists, or the raw subscription ID as a fallback.
+    /// Unlike <see cref="GetSubscriptionDisplayName"/>, no "(id)" suffix is appended.
+    /// </returns>
+    /// <remarks>
+    /// Related feature: docs/features/improve-summary-for-role-assignments/specification.md.
+    /// </remarks>
+    internal string? GetSubscriptionName(string? subscriptionId)
+    {
+        return _entityMapper.GetSubscriptionName(subscriptionId);
+    }
+
+    /// <summary>
     /// Formats an already-parsed scope with display name enrichment.
     /// </summary>
     /// <param name="scopeInfo">The parsed scope information.</param>

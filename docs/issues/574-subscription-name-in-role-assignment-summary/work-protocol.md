@@ -7,7 +7,18 @@
 
 ## Agent Work Log
 
-<!-- Each agent appends their entry below when they complete their work. -->
+### Developer
+- **Date:** 2026-02-24
+- **Summary:** Implemented the fix to show subscription name instead of raw subscription ID in `azurerm_role_assignment` summary when a subscription mapping is available. When a display name is mapped, the summary uses just the name without the 🔑 icon. Falls back to the raw subscription ID with 🔑 icon when no mapping exists (backward-compatible).
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/AzureEntityMapper.cs` — Added `GetSubscriptionName()` method
+  - `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs` — Added `GetSubscriptionName()` delegating method
+  - `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/RoleAssignmentViewModelFactory.cs` — Updated `BuildScopeSummary()` for subscription scope
+  - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/RoleAssignmentViewModelFactoryTests.cs` — Added 3 new tests
+  - `docs/issues/574-subscription-name-in-role-assignment-summary/analysis.md` — Fixed incorrect expected output example
+- **Test Results:** 1230 tests passed (0 failed, 0 skipped, Docker tests excluded)
+- **Problems Encountered:** None
+
 
 ### Issue Analyst
 - **Date:** 2026-02-24

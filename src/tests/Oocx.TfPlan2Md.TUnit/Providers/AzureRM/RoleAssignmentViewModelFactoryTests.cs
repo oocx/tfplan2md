@@ -293,6 +293,116 @@ public class RoleAssignmentViewModelFactoryTests
     }
 
     /// <summary>
+    /// Verifies the summary uses the subscription name (no 🔑 icon) when a mapping exists.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenSubscriptionScopeAndNameMapped_SummaryShowsNameWithoutKeyIcon()
+    {
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/12345678-1234-1234-1234-123456789012",
+                "role_definition_id": "role-id",
+                "role_definition_name": "Contributor",
+                "principal_id": "principal-1",
+                "principal_type": "ServicePrincipal"
+            }
+            """).RootElement;
+
+        var change = CreateChange(before: null, after: after, actions: ["create"]);
+        var subscriptions = new List<MappingEntry>
+        {
+            new("12345678-1234-1234-1234-123456789012", "My Production Subscription")
+        };
+        var entityMapper = new AzureEntityMapper(subscriptions, [], []);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+
+        var viewModel = RoleAssignmentViewModelFactory.Build(
+            change,
+            action: "create",
+            attributeChanges: [],
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: scopeFormatter);
+
+        // Summary should show the human-readable name, not the raw UUID
+        viewModel.SummaryText.Should().Contain("My Production Subscription");
+        viewModel.SummaryText.Should().Contain("subscription");
+        // The raw subscription UUID should NOT appear in the summary when a name is mapped
+        viewModel.SummaryText.Should().NotContain("12345678-1234-1234-1234-123456789012");
+        // The 🔑 icon is for raw subscription IDs; it should NOT appear when a name is shown
+        viewModel.SummaryText.Should().NotContain("🔑");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies the summary falls back to the raw subscription ID with the 🔑 icon when no name mapping exists.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenSubscriptionScopeAndNotMapped_SummaryShowsIdWithKeyIcon()
+    {
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/sub-unmapped-id",
+                "role_definition_id": "role-id",
+                "role_definition_name": "Contributor",
+                "principal_id": "principal-1",
+                "principal_type": "ServicePrincipal"
+            }
+            """).RootElement;
+
+        var change = CreateChange(before: null, after: after, actions: ["create"]);
+        // No subscription mapping provided
+        var entityMapper = new AzureEntityMapper([], [], []);
+        var scopeFormatter = new EnrichedAzureScopeFormatter(entityMapper);
+
+        var viewModel = RoleAssignmentViewModelFactory.Build(
+            change,
+            action: "create",
+            attributeChanges: [],
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: scopeFormatter);
+
+        // Summary should contain the raw ID and the 🔑 icon (backward-compatible behavior)
+        viewModel.SummaryText.Should().Contain("sub-unmapped-id");
+        viewModel.SummaryText.Should().Contain("subscription");
+        viewModel.SummaryText.Should().Contain("🔑");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies the summary shows raw subscription ID with 🔑 icon when no scope formatter is provided.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenSubscriptionScopeAndNoScopeFormatter_SummaryShowsIdWithKeyIcon()
+    {
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/sub-id",
+                "role_definition_id": "role-id",
+                "role_definition_name": "Contributor",
+                "principal_id": "principal-1",
+                "principal_type": "User"
+            }
+            """).RootElement;
+
+        var change = CreateChange(before: null, after: after, actions: ["create"]);
+
+        var viewModel = RoleAssignmentViewModelFactory.Build(
+            change,
+            action: "create",
+            attributeChanges: [],
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
+
+        viewModel.SummaryText.Should().Contain("sub-id");
+        viewModel.SummaryText.Should().Contain("subscription");
+        viewModel.SummaryText.Should().Contain("🔑");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Creates a resource change model for tests.
     /// </summary>
     /// <param name="before">Before state JSON.</param>

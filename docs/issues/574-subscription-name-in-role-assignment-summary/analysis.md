@@ -13,7 +13,7 @@ azurerm_role_assignment additional_subscriptions["Azure Local-Contributor"] —
 **Expected output (when mapped):**
 ```
 azurerm_role_assignment additional_subscriptions["Azure Local-Contributor"] —
-💻 principal-name → 🛡️ Contributor on subscription 🔑 My Subscription Name
+💻 principal-name → 🛡️ Contributor on subscription My Subscription Name
 ```
 
 ## Steps to Reproduce

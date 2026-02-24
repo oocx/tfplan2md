@@ -260,6 +260,16 @@ internal static class RoleAssignmentViewModelFactory
         if (scope.Level == ScopeLevel.Subscription)
         {
             var subscriptionId = scope.SubscriptionId ?? scope.SummaryName;
+            // When a human-readable name is available, show just the name without the 🔑 icon.
+            // The 🔑 icon is added by FormatAttributeValueSummary("subscription_id", ...) because
+            // it treats subscription_id as a raw GUID; a display name doesn't need that treatment.
+            var subscriptionName = scopeFormatter?.GetSubscriptionName(subscriptionId);
+            if (!string.IsNullOrWhiteSpace(subscriptionName)
+                && !string.Equals(subscriptionName, subscriptionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return $"subscription {FormatCodeSummary(subscriptionName)}";
+            }
+
             return $"subscription {FormatAttributeValueSummary("subscription_id", subscriptionId, null)}";
         }
 

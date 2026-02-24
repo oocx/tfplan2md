@@ -41,3 +41,9 @@
 - **Summary:** Investigated why `azuread_group_member` resources render with an empty attribute table when all values are "known after apply". Identified the root cause in `BuildAttributeChanges` — it only looks at `change.After` and ignores `change.AfterUnknown`. When `change.After` is `null` (all attributes computed), no keys are found, and the table is empty.
 - **Artifacts Produced:** `docs/issues/575-azuread-group-member-empty-rendering/analysis.md`, `docs/issues/575-azuread-group-member-empty-rendering/work-protocol.md`
 - **Problems Encountered:** None
+
+### Requirements Engineer
+- **Date:** 2025-07-16
+- **Summary:** Gathered and documented requirements for the enhancement to show Terraform expression references (e.g., `each.value.group_object_id`, `azuread_group.my_group.object_id`) instead of the generic `(known after apply)` placeholder. The feature reads the `expressions.references` array from the `configuration` block of the Terraform plan JSON and surfaces the most informative reference per attribute using a defined priority ordering. Documented reference-selection logic, display format (`→ reference`), fallback behaviour, name-mapping integration (optional), and module-level scope boundary.
+- **Artifacts Produced:** `docs/issues/575-azuread-group-member-empty-rendering/specification-references.md`
+- **Problems Encountered:** The existing test fixture (`azuread-group-member-all-unknown-plan.json`) does not include `expressions` in the `configuration` block, so a new or extended fixture will be needed to test the new behaviour. Also noted that module-level expression parsing (resources inside child modules with `module_calls` nesting) is out of scope for the initial implementation and should be handled in a follow-on feature.

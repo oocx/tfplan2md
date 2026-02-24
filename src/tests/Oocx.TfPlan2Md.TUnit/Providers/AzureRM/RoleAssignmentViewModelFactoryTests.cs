@@ -293,10 +293,10 @@ public class RoleAssignmentViewModelFactoryTests
     }
 
     /// <summary>
-    /// Verifies the summary uses the subscription name (no 🔑 icon) when a mapping exists.
+    /// Verifies the summary uses the subscription name with the 🔑 icon when a mapping exists.
     /// </summary>
     [Test]
-    public async Task Build_WhenSubscriptionScopeAndNameMapped_SummaryShowsNameWithoutKeyIcon()
+    public async Task Build_WhenSubscriptionScopeAndNameMapped_SummaryShowsNameWithKeyIcon()
     {
         var after = JsonDocument.Parse("""
             {
@@ -328,8 +328,8 @@ public class RoleAssignmentViewModelFactoryTests
         viewModel.SummaryText.Should().Contain("subscription");
         // The raw subscription UUID should NOT appear in the summary when a name is mapped
         viewModel.SummaryText.Should().NotContain("12345678-1234-1234-1234-123456789012");
-        // The 🔑 icon is for raw subscription IDs; it should NOT appear when a name is shown
-        viewModel.SummaryText.Should().NotContain("🔑");
+        // The 🔑 icon should appear even when a name is shown
+        viewModel.SummaryText.Should().Contain("🔑");
 
         await Task.CompletedTask;
     }

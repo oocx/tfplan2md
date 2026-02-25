@@ -1,0 +1,3 @@
+Experiment 2: Subagent using only git commit (no push)
+Created by: developer-coding-agent subagent
+Method: git add + git commit (no push)

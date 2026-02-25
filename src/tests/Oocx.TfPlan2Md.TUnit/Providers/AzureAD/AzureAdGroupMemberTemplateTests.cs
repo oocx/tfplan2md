@@ -110,6 +110,78 @@ public class AzureAdGroupMemberTemplateTests
     }
 
     /// <summary>
+    /// Verifies that when both IDs are computed but the plan contains a configuration block with
+    /// static resource references, the summary shows those resource names instead of "(known after apply)".
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Create_WithStaticConfigurationReferences_ShowsResourceNames()
+    {
+        var markdown = RenderStaticRef();
+        var section = ExtractSection(markdown, "azuread_group_member.platform_admin_member");
+
+        section.Should().Contain("azuread_group.platform_engineers");
+        section.Should().Contain("azuread_user.admin");
+        section.Should().Contain("→");
+        section.Should().NotContain("(known after apply)");
+    }
+
+    /// <summary>
+    /// Verifies that when both IDs are computed and only dynamic (each.value) references exist,
+    /// the summary shows the for_each instance key as context instead of "(known after apply)".
+    /// The instance key often contains meaningful information (e.g., group name and user email).
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Create_WithForEachStringKey_ShowsInstanceKeyAsContext()
+    {
+        var markdown = RenderForEachUnknown();
+
+        // The instance key "team-example - user@example.de" should appear in the output
+        // as context for both the group and member references
+        markdown.Should().Contain("team-example - user@example.de");
+        markdown.Should().NotContain("(known after apply) →");
+    }
+
+    private string RenderStaticRef()
+    {
+        var mappingResult = AzureMappingFileLoader.Load(DemoPaths.AzureAdPrincipalMappingPath, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdGroupMemberStaticRefPlanPath));
+
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureADModule());
+
+        var builder = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+        return renderer.Render(model);
+    }
+
+    private string RenderForEachUnknown()
+    {
+        var mappingResult = AzureMappingFileLoader.Load(DemoPaths.AzureAdPrincipalMappingPath, diagnosticContext: null);
+        var principalMapper = new PrincipalMapper(mappingResult.Principals, mappingResult.PrincipalTypes);
+        var plan = _parser.Parse(File.ReadAllText(DemoPaths.AzureAdGroupMemberForEachUnknownPlanPath));
+
+        var providerRegistry = new ProviderRegistry();
+        providerRegistry.RegisterProvider(new AzureADModule());
+
+        var builder = new ReportModelBuilder(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+        var model = builder.Build(plan);
+        var renderer = new MarkdownRenderer(
+            principalMapper: principalMapper,
+            providerRegistry: providerRegistry);
+        return renderer.Render(model);
+    }
+
+    /// <summary>
     /// Extracts a resource section from markdown based on the resource address.
     /// </summary>
     /// <param name="markdown">The full markdown document.</param>

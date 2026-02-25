@@ -53,6 +53,21 @@ public static class DemoPaths
     public static string AzureAdGroupMemberAllUnknownPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-member-all-unknown-plan.json");
 
     /// <summary>
+    /// Gets the path to the Azure AD group member test plan with a configuration block containing static resource references.
+    /// Used to verify that the summary shows the source resource name (e.g., azuread_group.platform_engineers) instead of
+    /// "(known after apply)" when both IDs are computed but configuration references are available.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    public static string AzureAdGroupMemberStaticRefPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-member-static-ref-plan.json");
+
+    /// <summary>
+    /// Gets the path to the Azure AD group member for_each test plan with dynamic (each.value) references.
+    /// Used to verify that the summary shows the for_each instance key when only dynamic references exist.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    public static string AzureAdGroupMemberForEachUnknownPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-member-foreach-unknown-plan.json");
+
+    /// <summary>
     /// Gets the path to the Azure AD group test plan JSON file.
     /// </summary>
     public static string AzureAdGroupPlanPath => Path.Combine(RepositoryRoot, "src", "tests", "Oocx.TfPlan2Md.TUnit", "TestData", "azuread-group-plan.json");

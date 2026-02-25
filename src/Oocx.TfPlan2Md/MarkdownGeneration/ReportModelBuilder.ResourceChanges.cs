@@ -33,6 +33,7 @@ internal partial class ReportModelBuilder
         var importId = string.IsNullOrWhiteSpace(rc.Change.Importing?.Id) ? null : rc.Change.Importing?.Id;
         var movedFromAddress = string.IsNullOrWhiteSpace(rc.PreviousAddress) ? null : rc.PreviousAddress;
         var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null || movedFromAddress is not null);
+        var attributeReferences = BuildAttributeReferences(rc.Address);
 
         var model = new ResourceChangeModel
         {
@@ -52,6 +53,7 @@ internal partial class ReportModelBuilder
             ImportId = importId,
             MovedFromAddress = movedFromAddress,
             IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied,
+            AttributeReferences = attributeReferences,
             ResourceChange = rc // Store for mapper access
         };
 
@@ -317,4 +319,25 @@ internal partial class ReportModelBuilder
         UnknownAction => "⚠️",
         _ => ActionIcons.NoOp
     };
+
+    /// <summary>
+    /// Builds a dictionary of attribute references for a resource, looked up from the configuration
+    /// reference index. The address is normalized by removing instance keys before lookup.
+    /// </summary>
+    /// <param name="address">The full resource address including any instance key.</param>
+    /// <returns>A dictionary mapping attribute names to their referenced addresses, or null when no references exist.</returns>
+    private Dictionary<string, IReadOnlyList<string>>? BuildAttributeReferences(string address)
+    {
+        if (_configurationReferenceIndex.Count == 0)
+        {
+            return null;
+        }
+
+        var normalizedAddress = NormalizeResourceAddressForConfigurationLookup(address);
+        var result = _configurationReferenceIndex
+            .Where(kvp => StringComparer.OrdinalIgnoreCase.Equals(kvp.Key.Address, normalizedAddress))
+            .ToDictionary(kvp => kvp.Key.Attribute, kvp => kvp.Value, StringComparer.OrdinalIgnoreCase);
+
+        return result.Count > 0 ? result : null;
+    }
 }

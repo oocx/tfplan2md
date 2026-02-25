@@ -162,52 +162,175 @@ internal static partial class AzureAdSummaryBuilder
     {
         var groupId = JsonStateReader.GetStringProperty(state, "group_object_id") ?? string.Empty;
         var memberId = JsonStateReader.GetStringProperty(state, "member_object_id") ?? string.Empty;
+        var instanceKey = ExtractInstanceKey(model.Address);
 
-        // When groupId is empty, the group_object_id is unknown at plan time (known after apply).
-        // Fall back to a descriptive placeholder rather than rendering an empty summary.
-        // Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
-        string groupSummary;
-        if (string.IsNullOrEmpty(groupId))
-        {
-            groupSummary = FormatCodeSummary("(known after apply)");
-        }
-        else
-        {
-            var groupName = principalMapper.GetName(groupId, GroupMemberType, model.Address) ?? groupId;
-            var groupIsMapped = groupName != string.Empty && groupName != groupId;
-
-            groupSummary = groupIsMapped
-                ? BuildPrincipalSummary(model, "group_name", groupName, groupId, iconProviderRegistry)
-                : FormatCodeSummary(groupId);
-        }
-
+        var groupSummary = BuildGroupSummary(model, groupId, instanceKey, principalMapper, iconProviderRegistry);
         var summaryText = groupSummary;
 
         if (!string.IsNullOrEmpty(memberId))
         {
-            var memberType = principalMapper.TryGetPrincipalType(memberId, out var resolvedType)
-                ? resolvedType ?? string.Empty
-                : string.Empty;
-            var memberName = principalMapper.GetName(memberId, memberType, model.Address) ?? memberId;
-            var memberIsMapped = memberName != string.Empty && memberName != memberId;
-
-            var memberSummary = memberIsMapped
-                ? BuildPrincipalSummary(model, "member_type", memberName, memberId, iconProviderRegistry, memberType)
-                : FormatCodeSummary(memberId);
-
-            summaryText = $"{summaryText} {MemberArrow} {memberSummary}";
+            summaryText = $"{summaryText} {MemberArrow} {BuildMemberSummary(model, memberId, principalMapper, iconProviderRegistry)}";
         }
         else if (JsonStateReader.PropertyExists(state, "member_object_id"))
         {
-            // member_object_id property is present in the plan but its value is null — the attribute
-            // is "known after apply". Distinguish from the case where member_object_id is simply absent
-            // (e.g., partially-defined resources), which should not render an arrow.
+            // member_object_id is present in the plan but null — the attribute is "known after apply".
+            // Try to find the source resource reference for better context.
             // Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
-            summaryText = $"{summaryText} {MemberArrow} {FormatCodeSummary("(known after apply)")}";
+            var memberRef = FindResourceReference(model.AttributeReferences, "member_object_id", instanceKey);
+            summaryText = $"{summaryText} {MemberArrow} {FormatCodeSummary(memberRef ?? "(known after apply)")}";
         }
 
         return BuildSummaryHtml(model, summaryText);
     }
+
+    private static string BuildGroupSummary(
+        ResourceChangeModel model,
+        string groupId,
+        string? instanceKey,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        if (string.IsNullOrEmpty(groupId))
+        {
+            // group_object_id is unknown at plan time — use configuration reference for context.
+            // Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+            var groupRef = FindResourceReference(model.AttributeReferences, "group_object_id", instanceKey);
+            return FormatCodeSummary(groupRef ?? "(known after apply)");
+        }
+
+        var groupName = principalMapper.GetName(groupId, GroupMemberType, model.Address) ?? groupId;
+        var groupIsMapped = groupName != string.Empty && groupName != groupId;
+        return groupIsMapped
+            ? BuildPrincipalSummary(model, "group_name", groupName, groupId, iconProviderRegistry)
+            : FormatCodeSummary(groupId);
+    }
+
+    private static string BuildMemberSummary(
+        ResourceChangeModel model,
+        string memberId,
+        IPrincipalMapper principalMapper,
+        IconProviderRegistry? iconProviderRegistry)
+    {
+        var memberType = principalMapper.TryGetPrincipalType(memberId, out var resolvedType)
+            ? resolvedType ?? string.Empty
+            : string.Empty;
+        var memberName = principalMapper.GetName(memberId, memberType, model.Address) ?? memberId;
+        var memberIsMapped = memberName != string.Empty && memberName != memberId;
+        return memberIsMapped
+            ? BuildPrincipalSummary(model, "member_type", memberName, memberId, iconProviderRegistry, memberType)
+            : FormatCodeSummary(memberId);
+    }
+
+    /// <summary>
+    /// Extracts the for_each or count instance key from a resource address.
+    /// For example, <c>azuread_group_member.members[0]</c> → <c>"0"</c>,
+    /// <c>azuread_group_member.user_groups["team - user@example.de"]</c> → <c>"team - user@example.de"</c>.
+    /// Returns null when the address has no instance key.
+    /// </summary>
+    private static string? ExtractInstanceKey(string address)
+    {
+        if (!address.EndsWith(']'))
+        {
+            return null;
+        }
+
+        var bracketIndex = address.LastIndexOf('[');
+        if (bracketIndex < 0)
+        {
+            return null;
+        }
+
+        var raw = address[(bracketIndex + 1)..^1];
+        // Strip surrounding quotes from string keys like ["team-example - user@example.de"]
+        if (raw.Length >= 2 && raw.StartsWith('"') && raw.EndsWith('"'))
+        {
+            raw = raw[1..^1];
+        }
+
+        return string.IsNullOrWhiteSpace(raw) ? null : raw;
+    }
+
+    /// <summary>
+    /// Finds the most useful reference string for a computed (null) attribute using
+    /// the configuration-level expression references stored on the model.
+    /// </summary>
+    /// <remarks>
+    /// Preference order:
+    /// 1. A static resource reference (e.g., <c>azuread_group.team</c>) — optionally combined
+    ///    with a numeric instance key to give <c>azuread_group.team[0]</c>.
+    /// 2. A string instance key from a for_each map (e.g., <c>"team-example - user@example.de"</c>)
+    ///    when only dynamic <c>each.value.*</c> references exist.
+    /// 3. Null — caller falls back to "(known after apply)".
+    /// </remarks>
+    /// <param name="attributeReferences">The attribute references from the model.</param>
+    /// <param name="attributeName">The attribute to look up (e.g., "group_object_id").</param>
+    /// <param name="instanceKey">The for_each/count instance key extracted from the resource address.</param>
+    /// <returns>A display string, or null when no useful reference is available.</returns>
+    private static string? FindResourceReference(
+        IReadOnlyDictionary<string, IReadOnlyList<string>>? attributeReferences,
+        string attributeName,
+        string? instanceKey)
+    {
+        if (attributeReferences is null || !attributeReferences.TryGetValue(attributeName, out var refs))
+        {
+            // No configuration references at all — fall back to instance key (string only) for context
+            return instanceKey is not null && !IsNumericKey(instanceKey)
+                ? $"\"{instanceKey}\""
+                : null;
+        }
+
+        // Look for a static resource-level reference (type.name), filtering out dynamic references
+        // like each.*, var.*, local.*, data.*, path.*, count.*, self.*
+        var staticRef = refs.FirstOrDefault(IsStaticResourceReference);
+
+        if (staticRef is not null)
+        {
+            // If the instance key is numeric (count-based), combine: resourceRef[index]
+            // This handles cases like member_object_id = azuread_user.users[count.index].object_id
+            // where instance 0 means azuread_user.users[0].
+            if (instanceKey is not null && IsNumericKey(instanceKey))
+            {
+                return $"{staticRef}[{instanceKey}]";
+            }
+
+            return staticRef;
+        }
+
+        // Only dynamic references (each.value.*, etc.) — use the string instance key as context
+        // since it often contains meaningful information (e.g., the group name and user email).
+        return instanceKey is not null && !IsNumericKey(instanceKey)
+            ? $"\"{instanceKey}\""
+            : null;
+    }
+
+    /// <summary>
+    /// Returns true when the reference is a static resource reference (type.name or module path)
+    /// rather than a dynamic expression like each.value.*, var.*, etc.
+    /// </summary>
+    private static bool IsStaticResourceReference(string reference)
+    {
+        // Dynamic prefixes are never useful as display labels
+        if (reference.StartsWith("each.", StringComparison.OrdinalIgnoreCase) ||
+            reference.StartsWith("var.", StringComparison.OrdinalIgnoreCase) ||
+            reference.StartsWith("local.", StringComparison.OrdinalIgnoreCase) ||
+            reference.StartsWith("path.", StringComparison.OrdinalIgnoreCase) ||
+            reference.StartsWith("count.", StringComparison.OrdinalIgnoreCase) ||
+            reference.StartsWith("self.", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var parts = reference.Split('.');
+        // Acceptable formats: type.name (2 parts) or module.mod.type.name (4 parts)
+        // Strip any trailing [index] from the last segment before counting
+        return parts.Length == 2 || (parts.Length == 4 && parts[0].Equals("module", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Returns true when the instance key string is a numeric (count-based) index.
+    /// </summary>
+    private static bool IsNumericKey(string key) =>
+        int.TryParse(key, out _);
 
     /// <summary>
     /// Builds a member count summary string that uses non-breaking spaces after icons.

@@ -137,6 +137,14 @@ public class ResourceChangeModel
     public object? AfterSensitive { get; init; }
 
     /// <summary>
+    /// Gets the configuration references for attributes of this resource, populated from the
+    /// Terraform plan's configuration block. Key: attribute name; Value: list of reference addresses.
+    /// Used by provider-specific summary builders to show source resource references for computed attributes.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<string>>? AttributeReferences { get; init; }
+
+    /// <summary>
     /// Gets or sets the original resource change from parsing.
     /// Used by resource model mappers to create provider-specific view models.
     /// Internal only - not exposed to templates.

@@ -63,6 +63,39 @@ public class AzureAdSnapshotTests
     }
 
     /// <summary>
+    /// Verifies that an azuread_group_member with no configuration block and both IDs unknown renders
+    /// the "(known after apply)" fallback in the summary and in the attribute table.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMember_AllUnknown_NoConfig_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-member-all-unknown-plan.json", "azuread-group-member-all-unknown.md");
+    }
+
+    /// <summary>
+    /// Verifies that an azuread_group_member whose attributes have static resource references in the
+    /// configuration block shows those resource names (e.g. azuread_group.platform_engineers) in the summary.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMember_StaticRef_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-member-static-ref-plan.json", "azuread-group-member-static-ref.md");
+    }
+
+    /// <summary>
+    /// Verifies that an azuread_group_member using for_each with dynamic (each.value.*) references
+    /// shows the for_each instance key as context in the summary.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-summary/analysis.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMember_ForEachUnknown_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-member-foreach-unknown-plan.json", "azuread-group-member-foreach-unknown.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure AD plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

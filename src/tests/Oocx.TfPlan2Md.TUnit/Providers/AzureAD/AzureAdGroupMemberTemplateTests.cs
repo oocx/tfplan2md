@@ -123,7 +123,9 @@ public class AzureAdGroupMemberTemplateTests
         section.Should().Contain("azuread_group.platform_engineers");
         section.Should().Contain("azuread_user.admin");
         section.Should().Contain("→");
-        section.Should().NotContain("(known after apply)");
+        // The summary line shows resource references; the attribute table correctly shows
+        // "(known after apply)" for the actual null values. Verify the summary specifically:
+        section.Should().Contain("<code>azuread_group.platform_engineers</code> → <code>azuread_user.admin</code>");
     }
 
     /// <summary>

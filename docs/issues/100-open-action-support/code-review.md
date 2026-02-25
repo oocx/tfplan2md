@@ -61,7 +61,7 @@ The code implementation is excellent and production-ready. The blocker issue is 
 
 **1. Missing Developer Agent Entry in Work Protocol**
 
-**Location:** `docs/issues/573-open-action-support/work-protocol.md`
+**Location:** `docs/issues/100-open-action-support/work-protocol.md`
 
 **Issue:** The Work Protocol is missing a required Developer agent log entry. According to docs/agents.md § Required Agents by Workflow Type, bug fix workflows require:
 - Issue Analyst ✅ (analysis.md exists)
@@ -246,7 +246,7 @@ The implementation perfectly follows the existing pattern:
 
 ### Work Protocol Status
 
-**File:** `docs/issues/573-open-action-support/work-protocol.md`
+**File:** `docs/issues/100-open-action-support/work-protocol.md`
 
 **Current entries:**
 - Technical Writer ✅ (release notes creation)
@@ -271,7 +271,7 @@ For bug fix workflows, global documentation updates are required only if the fix
 
 ## Next Steps
 
-1. **Maintainer:** Add missing Developer agent entry to `docs/issues/573-open-action-support/work-protocol.md`
+1. **Maintainer:** Add missing Developer agent entry to `docs/issues/100-open-action-support/work-protocol.md`
 2. **Code Reviewer (me):** Re-verify work protocol is complete
 3. **Release Manager:** Proceed with release after work protocol is complete
 

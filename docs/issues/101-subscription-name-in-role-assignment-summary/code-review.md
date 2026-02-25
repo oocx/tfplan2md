@@ -1,8 +1,8 @@
-# Code Review: Subscription Name in Role Assignment Summary (Issue #574)
+# Code Review: Subscription Name in Role Assignment Summary (Issue #101)
 
 ## Summary
 
-Reviewed the fix for issue #574: when an `azurerm_role_assignment` has a subscription-level scope,
+Reviewed the fix for issue #101: when an `azurerm_role_assignment` has a subscription-level scope,
 the `<summary>` line now shows the mapped subscription display name instead of the raw subscription
 ID, with backward-compatible fallback to the raw ID when no mapping exists.
 
@@ -83,8 +83,8 @@ None.
 **1. Incorrect `Related feature` comment path in `GetSubscriptionName` XML docs**
 
 - **Files:** `src/Oocx.TfPlan2Md/Platforms/Azure/AzureEntityMapper.cs:92` and `src/Oocx.TfPlan2Md/Platforms/Azure/EnrichedAzureScopeFormatter.cs:91`
-- **Problem:** Both `GetSubscriptionName` XML doc `<remarks>` reference `docs/features/improve-summary-for-role-assignments/specification.md`, which does not exist. This is a bug fix tracked in `docs/issues/574-subscription-name-in-role-assignment-summary/`, not a features folder.
-- **Fix:** Change to `docs/issues/574-subscription-name-in-role-assignment-summary/analysis.md` (the actual work item document).
+- **Problem:** Both `GetSubscriptionName` XML doc `<remarks>` reference `docs/features/improve-summary-for-role-assignments/specification.md`, which does not exist. This is a bug fix tracked in `docs/issues/101-subscription-name-in-role-assignment-summary/`, not a features folder.
+- **Fix:** Change to `docs/issues/101-subscription-name-in-role-assignment-summary/analysis.md` (the actual work item document).
 
 **2. `GetSubscriptionName` does not record diagnostic failures**
 

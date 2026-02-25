@@ -376,17 +376,18 @@ azuread_group_member user_groups — "team-example - user@example.de" → "team-
 
 ---
 
-### TC-22: Scenario 8 — Whole-Resource Unknown Does Not Show `_No attribute changes._`
+### TC-22: Scenario 8 — Whole-Resource Unknown Shows Note Instead of Placeholder
 
 **Type:** Integration (snapshot)  
 **File:** `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderComputedAttributeTests.cs`  
 **Test data file:** `TestData/known-after-apply-scenario-8.json`
 
-**Description:** `null_resource` with `after: null` and `after_unknown: true` (root boolean). No attribute rows can be materialized, but `_No attribute changes._` placeholder is NOT shown (Scenario 8).
+**Description:** `null_resource` with `after: null` and `after_unknown: true` (root boolean). No attribute rows can be materialized. `_No attribute changes._` must NOT be shown; instead the note `_(all values known after apply)_` must be shown (Maintainer decision, 2026-02-25).
 
 **Plan shape:** `after: null`, `after_unknown: true`.
 
 **Expected:** Rendered section does NOT contain `_No attribute changes._`.  
+**Expected:** Rendered section contains `_(all values known after apply)_`.  
 **Expected:** No attribute table rows present.
 
 ---
@@ -493,7 +494,7 @@ New test data JSON files required (each matching one spec scenario):
 | Numeric instance key on child resource with no static ref | Numeric key is NOT used alone as a label | TC-16 |
 | Child resource `ChildReferenceAttribute` is computed | Renders standalone, not nested | TC-23 |
 | Sensitive+computed attribute — explicit before value never surfaced | Before = `(sensitive)`, After = `🔒(known after apply)` | TC-19, TC-20 |
-| Whole-resource unknown (`after: null`, `after_unknown: true`) | No rows, no `_No attribute changes._` | TC-22 |
+| Whole-resource unknown (`after: null`, `after_unknown: true`) | No rows; `_(all values known after apply)_` shown instead of `_No attribute changes._` | TC-22 |
 
 ---
 
@@ -511,13 +512,13 @@ No new dependencies from `MarkdownGeneration` to `Providers` are introduced. The
 
 ## Open Questions / Flagged Items
 
-### OQ-01 — Scenario 8: What exactly is rendered when there are zero attribute rows and whole-resource unknown is true?
+### ~~OQ-01~~ — RESOLVED (2026-02-25)
 
-The specification states `_No attribute changes._` must NOT be shown. It also notes that "Future iterations may add a `(all values known after apply)` note". Currently, the spec says "render without an attribute table body" — no rows and no placeholder. 
+**Question:** For Scenario 8 (whole-resource unknown, zero attribute rows), should the template show nothing or a replacement note?
 
-**Impact on testing:** TC-22 currently asserts only the absence of `_No attribute changes._`. If the developer chooses to add a `(all values known after apply)` note, TC-22 must be extended to also verify its presence. This requires a decision before writing snapshot assertions.
+**Maintainer decision:** Show `_(all values known after apply)_` as a replacement for `_No attribute changes._`.
 
-**Recommended action:** Confirm with the Maintainer whether the current iteration should show any note for the whole-resource-unknown case, or simply render nothing.
+**Impact on TC-22:** Updated above — TC-22 now asserts the presence of `_(all values known after apply)_` and the absence of `_No attribute changes._`.
 
 ### OQ-02 — Existing `azuread-group-members-known-after-apply-plan.json` Coverage
 

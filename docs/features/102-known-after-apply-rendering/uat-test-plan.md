@@ -171,9 +171,9 @@ The `id` row appears because it is present in `after` as `null`. This demonstrat
 
 **What to look for:**
 
-The resource block renders as a create entry. No attribute table rows are present.
+The resource block renders as a create entry with the note `_(all values known after apply)_`. No attribute table rows are present.
 
-**Critical check:** `_No attribute changes._` must NOT appear for this resource.
+**Critical check:** `_No attribute changes._` must NOT appear for this resource. The note `_(all values known after apply)_` must appear instead.
 
 **Before this feature:** `_No attribute changes._` was shown, misleadingly suggesting the resource had no configuration.
 
@@ -198,7 +198,7 @@ In the **comprehensive demo** (second comment, labeled "🔄 Regression Test"):
 - [ ] `azurerm_resource_group.demo` attribute table includes `id` row with `(known after apply)`
 - [ ] `azurerm_storage_account.data` shows `🔒(known after apply)` in After column for `primary_access_key`
 - [ ] `azurerm_storage_account.data` Before column for `primary_access_key` shows `(sensitive)`, NOT the actual value
-- [ ] `null_resource.app_config` does NOT show `_No attribute changes._`
+- [ ] `null_resource.app_config` does NOT show `_No attribute changes._`; shows `_(all values known after apply)_` instead
 - [ ] All items render correctly in GitHub Markdown
 - [ ] All items render correctly in Azure DevOps Markdown
 - [ ] Regression: no unintended changes in the comprehensive demo

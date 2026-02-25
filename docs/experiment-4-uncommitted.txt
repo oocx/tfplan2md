@@ -1,0 +1,3 @@
+Experiment 4: Subagent creates tracked file but does NOT commit
+Created by: developer-coding-agent subagent
+Method: create tracked file only, no git add, no git commit

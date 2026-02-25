@@ -57,3 +57,15 @@
 - **Artifacts Produced:** `src/tests/Oocx.TfPlan2Md.TUnit/TestData/known-after-apply-all-scenarios-plan.json`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/KnownAfterApplySnapshotTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/known-after-apply-all-scenarios.md`, `docs/features/102-known-after-apply-rendering/work-protocol.md`
 - **Problems Encountered:** None. Initial snapshot generation failed as expected on first run due to missing baseline; resolved by syncing the generated snapshot file into the tracked snapshots directory and re-running tests.
 
+### Technical Writer
+- **Date:** 2026-02-25
+- **Summary:** Reviewed the completed implementation against existing documentation. Added a new `## Known-After-Apply Rendering` section to `docs/features.md` covering: computed attributes in tables with `(known after apply)` placeholders, reference labels sourced from configuration expressions, the `🔒(known after apply)` format for sensitive+computed attributes, whole-resource unknown (`_(all values known after apply)_`), and fixed AzureAD group member summary lines. Corrected a now-stale sentence in the `### Attribute Tables` subsection that stated unknown attributes were omitted. Added a `🔮 Known-after-apply visibility` bullet to `README.md` features list.
+- **Artifacts Produced:** `docs/features.md` (updated), `README.md` (updated), `docs/features/102-known-after-apply-rendering/work-protocol.md` (updated)
+- **Problems Encountered:** None.
+
+### Code Reviewer
+- **Date:** 2026-02-25
+- **Summary:** Reviewed all implementation tasks (T1–T6), spec compliance across all 9 scenarios, test coverage, snapshot diffs, and documentation. Found three Blockers: (1) `SNAPSHOT_UPDATE_OK` token absent from all feature branch commits despite 3 snapshot files changed; (2) required UAT artifact `uat-plan.md` missing; (3) Technical Writer's documentation edits (`docs/features.md`, `README.md`, `work-protocol.md`) are uncommitted. Also found one Minor issue: garbled emoji (`U+FFFD`) on two lines in `README.md`. Core implementation is correct and well-tested; all 1270 tests pass; coverage thresholds met.
+- **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/code-review.md`
+- **Problems Encountered:** Docker NativeAOT build takes >5 minutes; build was not fully confirmed. All test-based verification passed.
+

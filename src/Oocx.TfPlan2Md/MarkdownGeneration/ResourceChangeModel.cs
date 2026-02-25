@@ -142,4 +142,17 @@ public class ResourceChangeModel
     /// Internal only - not exposed to templates.
     /// </summary>
     internal Parsing.ResourceChange? ResourceChange { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether Terraform marked the whole resource as unknown after apply.
+    /// Related feature: docs/features/102-known-after-apply-rendering/specification.md.
+    /// </summary>
+    public bool HasWholeResourceUnknownAfterApply { get; set; }
+
+    /// <summary>
+    /// Gets or sets configuration references grouped by top-level attribute name.
+    /// Related feature: docs/features/102-known-after-apply-rendering/specification.md.
+    /// </summary>
+    internal IReadOnlyDictionary<string, IReadOnlyList<string>> ConfigurationReferences { get; set; } =
+        new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
 }

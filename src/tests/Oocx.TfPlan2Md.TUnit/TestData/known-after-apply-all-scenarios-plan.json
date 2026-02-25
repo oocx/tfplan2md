@@ -1,0 +1,241 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group_member.all_unknown",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "all_unknown",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "group_object_id": null, "member_object_id": null, "id": null },
+        "after_unknown": { "group_object_id": true, "member_object_id": true, "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_admin_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_admin_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "group_object_id": null, "member_object_id": null, "id": null },
+        "after_unknown": { "group_object_id": true, "member_object_id": true, "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.user_groups[\"team-example - user@example.de\"]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "user_groups",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "group_object_id": null, "member_object_id": null, "id": null },
+        "after_unknown": { "group_object_id": true, "member_object_id": true, "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_reader_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_reader_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "group_object_id": null, "member_object_id": "user-201", "id": null },
+        "after_unknown": { "group_object_id": true, "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.members[0]",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "members",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "group_object_id": null, "member_object_id": null, "id": null },
+        "after_unknown": { "group_object_id": true, "member_object_id": true, "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_resource_group.demo_with_id",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "demo_with_id",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "id": null, "location": "eastus", "name": "rg-demo" },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_resource_group.demo_without_id",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "demo_without_id",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "location": "eastus", "name": "rg-demo-no-id" },
+        "after_unknown": { "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.data",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "data",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": { "account_replication_type": "LRS", "primary_access_key": "abc123" },
+        "after": { "account_replication_type": "GRS", "primary_access_key": null },
+        "after_unknown": { "primary_access_key": true },
+        "before_sensitive": { "primary_access_key": true },
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "null_resource.app_config",
+      "module_address": null,
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "app_config",
+      "provider_name": "registry.terraform.io/hashicorp/null",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": null,
+        "after_unknown": true,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_virtual_network.hub",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "hub",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "name": "hub-vnet", "location": "eastus" },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_subnet.app",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "name": "app-subnet", "virtual_network_name": null, "address_prefixes": ["10.0.1.0/24"] },
+        "after_unknown": { "virtual_network_name": true },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group_member.platform_admin_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_admin_member",
+          "expressions": {
+            "group_object_id": {
+              "references": ["azuread_group.platform_engineers.object_id", "azuread_group.platform_engineers"]
+            },
+            "member_object_id": {
+              "references": ["azuread_user.admin.object_id", "azuread_user.admin"]
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.user_groups",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "user_groups",
+          "expressions": {
+            "group_object_id": {
+              "references": ["each.value.group_object_id", "each.value"]
+            },
+            "member_object_id": {
+              "references": ["each.value.user_object_id", "each.value"]
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.platform_reader_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_reader_member",
+          "expressions": {
+            "group_object_id": {
+              "references": ["azuread_group.platform_engineers.object_id", "azuread_group.platform_engineers"]
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.members",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "members",
+          "expressions": {
+            "group_object_id": {
+              "references": ["azuread_group.admins.object_id", "azuread_group.admins"]
+            },
+            "member_object_id": {
+              "references": ["count.index", "var.users"]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -32,3 +32,28 @@
 - **Summary:** Produced comprehensive test plan and UAT test plan from the specification and architecture. Mapped all 16 success criteria and 9 scenarios to 27 test cases across three new test files. Defined unit tests for `AfterUnknownHelper` (TC-01–TC-04) and `ReferenceSelector` (TC-05–TC-11), integration/snapshot tests for all 9 specification scenarios (TC-12–TC-23), and regression guards (TC-25–TC-27). Created UAT plan JSON covering 6 representative scenarios and a UAT validation checklist. Flagged one open question (OQ-01: whether to show any text for the Scenario 8 whole-resource-unknown case when there are zero attribute rows).
 - **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/test-plan.md`, `docs/features/102-known-after-apply-rendering/uat-test-plan.md`, `docs/features/102-known-after-apply-rendering/uat-plan.json`
 - **Problems Encountered:** Minor gap in specification — Scenario 8 states `_No attribute changes._` must not appear, but does not specify whether any alternative text should be shown. Flagged as OQ-01; a Maintainer decision is needed before snapshot assertions for TC-22 can be finalised.
+
+### Task Planner
+- **Date:** 2026-02-25
+- **Summary:** Created a detailed task plan for implementing the 'Known-After-Apply' rendering feature. The plan consists of 6 tasks covering foundational helpers, core model-building updates, provider-specific enhancements for AzureAD, template updates for whole-resource unknown scenarios, and a full suite of integration tests. Ensured that all 9 scenarios from the test plan are covered by the tasks.
+- **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/tasks.md`
+- **Problems Encountered:** None. The task breakdown followed logically from the architecture and test plan.
+
+### Developer
+- **Date:** 2026-02-25
+- **Summary:** Implemented Task 1 (Unknown-After-Apply Detection Helper) using test-first flow. Added `AfterUnknownHelper` to parse flattened keys and navigate `after_unknown` trees across objects and arrays, including subtree/root boolean unknown handling. Added unit tests for TC-01 to TC-04 covering whole-resource, nested, array, subtree, null, and malformed cases.
+- **Artifacts Produced:** `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/AfterUnknownHelper.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AfterUnknownHelperTests.cs`, `docs/features/102-known-after-apply-rendering/tasks.md`, `docs/features/102-known-after-apply-rendering/work-protocol.md`
+- **Problems Encountered:** Initial static analysis reported method cognitive complexity in key parsing; resolved by refactoring parsing into smaller private helper methods without behavior changes.
+
+### Developer
+- **Date:** 2026-02-25
+- **Summary:** Implemented Tasks 2-6 end-to-end without pause: added `ReferenceSelector`; enhanced `ResourceChangeModel` and `ReportModelBuilder` for computed `after_unknown` rendering and reference labels; updated AzureAD group-member summaries for computed IDs; updated `_resource.sbn` whole-resource unknown note behavior; and added integration tests for computed scenarios across markdown generation and AzureAD provider output.
+- **Artifacts Produced:** `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ReferenceSelector.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReferenceSelectorTests.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/ResourceChangeModel.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs`, `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_resource.sbn`, `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.Groups.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderComputedAttributeTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdGroupMemberComputedTests.cs`, `docs/features/102-known-after-apply-rendering/tasks.md`, `docs/features/102-known-after-apply-rendering/work-protocol.md`
+- **Problems Encountered:** Encountered analyzer and AOT/trimming constraints during helper/model test integration and one failing whole-resource unknown scenario. Resolved by refactoring helper parsing, tightening serialization fallback behavior, and wiring `has_whole_resource_unknown_after_apply` into `AotScriptObjectMapper` so the template condition is visible during rendering.
+
+### Developer
+- **Date:** 2026-02-25
+- **Summary:** Added a dedicated combined snapshot test that covers all 9 scenarios from the feature specification in one rendered report. Created a new fixture plan containing Scenario 1-9 inputs (including configuration references, sensitive+computed update, whole-resource unknown boolean, and parent-child standalone behavior for computed child references), added a snapshot test using AzureAD + AzureRM provider registries, and generated the new baseline snapshot.
+- **Artifacts Produced:** `src/tests/Oocx.TfPlan2Md.TUnit/TestData/known-after-apply-all-scenarios-plan.json`, `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/KnownAfterApplySnapshotTests.cs`, `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Snapshots/known-after-apply-all-scenarios.md`, `docs/features/102-known-after-apply-rendering/work-protocol.md`
+- **Problems Encountered:** None. Initial snapshot generation failed as expected on first run due to missing baseline; resolved by syncing the generated snapshot file into the tracked snapshots directory and re-running tests.
+

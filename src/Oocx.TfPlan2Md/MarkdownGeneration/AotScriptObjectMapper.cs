@@ -231,6 +231,7 @@ internal static class AotScriptObjectMapper
         obj["import_id"] = change.ImportId;
         obj["moved_from_address"] = change.MovedFromAddress;
         obj["is_refactoring_already_applied"] = change.IsRefactoringAlreadyApplied;
+        obj["has_whole_resource_unknown_after_apply"] = change.HasWholeResourceUnknownAfterApply;
 
         // Sensitivity maps for provider templates to mask sensitive values
         // Related issue: docs/issues/098-sensitive-info-exposure/analysis.md

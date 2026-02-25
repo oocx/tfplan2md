@@ -16,12 +16,12 @@ See [specification.md](specification.md), [architecture.md](architecture.md), [t
 Implement a static helper that navigates the `after_unknown` tree in the plan JSON to detect if a specific attribute or the whole resource is unknown after apply.
 
 **Acceptance Criteria:**
-- [ ] Create `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/AfterUnknownHelper.cs`.
-- [ ] Implement `IsWholeResourceUnknownAfterApply(object? afterUnknown)`.
-- [ ] Implement `IsAttributeUnknownAfterApply(object? afterUnknown, string flattenedKey)`.
-- [ ] Path navigation supports both objects and arrays.
-- [ ] Create `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AfterUnknownHelperTests.cs`.
-- [ ] All unit tests pass (TC-01, TC-02, TC-03, TC-04).
+- [x] Create `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/AfterUnknownHelper.cs`.
+- [x] Implement `IsWholeResourceUnknownAfterApply(object? afterUnknown)`.
+- [x] Implement `IsAttributeUnknownAfterApply(object? afterUnknown, string flattenedKey)`.
+- [x] Path navigation supports both objects and arrays.
+- [x] Create `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AfterUnknownHelperTests.cs`.
+- [x] All unit tests pass (TC-01, TC-02, TC-03, TC-04).
 
 **Dependencies:** None
 
@@ -35,12 +35,12 @@ Implement a static helper that navigates the `after_unknown` tree in the plan JS
 Implement a static helper that selects the best reference label from a list of Terraform references, following the priority order: Static > EachValueAttr > Var/Local > fallback.
 
 **Acceptance Criteria:**
-- [ ] Create `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ReferenceSelector.cs`.
-- [ ] Implement `SelectBestReference(IReadOnlyList<string> references)`.
-- [ ] Implement `SelectResourceLevelReference(IReadOnlyList<string> references)`.
-- [ ] Correctly strips trailing `.attribute` for resource-level labels.
-- [ ] Create `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReferenceSelectorTests.cs`.
-- [ ] All unit tests pass (TC-05 to TC-11).
+- [x] Create `src/Oocx.TfPlan2Md/MarkdownGeneration/Helpers/ReferenceSelector.cs`.
+- [x] Implement `SelectBestReference(IReadOnlyList<string> references)`.
+- [x] Implement `SelectResourceLevelReference(IReadOnlyList<string> references)`.
+- [x] Correctly strips trailing `.attribute` for resource-level labels.
+- [x] Create `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReferenceSelectorTests.cs`.
+- [x] All unit tests pass (TC-05 to TC-11).
 
 **Dependencies:** None
 
@@ -54,11 +54,11 @@ Implement a static helper that selects the best reference label from a list of T
 Update the model-building layer to detect unknown attributes and populate them with a display label.
 
 **Acceptance Criteria:**
-- [ ] Add `HasWholeResourceUnknownAfterApply` (bool) and `ConfigurationReferences` (internal map) to `ResourceChangeModel`.
-- [ ] Update `ReportModelBuilder.ResourceChanges.cs:BuildAttributeChanges` to detect unknown attributes (using `AfterUnknownHelper`).
-- [ ] Set `After` to `(known after apply)` or `(known after apply: reference)` (using `ReferenceSelector`) for unknown attributes.
-- [ ] Special handling for sensitive+computed attributes: `🔒(known after apply)`.
-- [ ] Ensure unknown attributes on updates are included in the change count (`ChangedAttributesSummary`).
+- [x] Add `HasWholeResourceUnknownAfterApply` (bool) and `ConfigurationReferences` (internal map) to `ResourceChangeModel`.
+- [x] Update `ReportModelBuilder.ResourceChanges.cs:BuildAttributeChanges` to detect unknown attributes (using `AfterUnknownHelper`).
+- [x] Set `After` to `(known after apply)` or `(known after apply: reference)` (using `ReferenceSelector`) for unknown attributes.
+- [x] Special handling for sensitive+computed attributes: `🔒(known after apply)`.
+- [x] Ensure unknown attributes on updates are included in the change count (`ChangedAttributesSummary`).
 
 **Dependencies:** Task 1, Task 2
 
@@ -72,10 +72,10 @@ Update the model-building layer to detect unknown attributes and populate them w
 Update the AzureAD provider logic to handle computed IDs in the summary line using configuration references.
 
 **Acceptance Criteria:**
-- [ ] Update `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.Groups.cs`.
-- [ ] If `group_object_id` or `member_object_id` is null/empty, check `ConfigurationReferences` for a resource-level label.
-- [ ] Log instance keys for `for_each` resources when a static reference label is also found.
-- [ ] Fall back to string instance keys if no static reference exists.
+- [x] Update `src/Oocx.TfPlan2Md/Providers/AzureAD/Models/AzureAdSummaryBuilder.Groups.cs`.
+- [x] If `group_object_id` or `member_object_id` is null/empty, check `ConfigurationReferences` for a resource-level label.
+- [x] Log instance keys for `for_each` resources when a static reference label is also found.
+- [x] Fall back to string instance keys if no static reference exists.
 
 **Dependencies:** Task 3
 
@@ -89,9 +89,9 @@ Update the AzureAD provider logic to handle computed IDs in the summary line usi
 Modify the resource template to show a specific note for whole-resource unknown instead of the default placeholder.
 
 **Acceptance Criteria:**
-- [ ] Update `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_resource.sbn`.
-- [ ] If `change.has_whole_resource_unknown_after_apply`, suppress `_No attribute changes._`.
-- [ ] Show `_(all values known after apply)_` note for whole-resource unknown.
+- [x] Update `src/Oocx.TfPlan2Md/MarkdownGeneration/Templates/_resource.sbn`.
+- [x] If `change.has_whole_resource_unknown_after_apply`, suppress `_No attribute changes._`.
+- [x] Show `_(all values known after apply)_` note for whole-resource unknown.
 
 **Dependencies:** Task 3
 
@@ -105,11 +105,11 @@ Modify the resource template to show a specific note for whole-resource unknown 
 Implement the full suite of integration tests defined in the test plan to ensure all scenarios are covered.
 
 **Acceptance Criteria:**
-- [ ] Create `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderComputedAttributeTests.cs`.
-- [ ] Implement TC-17 to TC-26.
-- [ ] Create `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdGroupMemberComputedTests.cs`.
-- [ ] Implement TC-12 to TC-16.
-- [ ] Verify TC-27: Existing snapshots pass (with intentional updates if needed).
+- [x] Create `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderComputedAttributeTests.cs`.
+- [x] Implement TC-17 to TC-26.
+- [x] Create `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureAD/AzureAdGroupMemberComputedTests.cs`.
+- [x] Implement TC-12 to TC-16.
+- [x] Verify TC-27: Existing snapshots pass (with intentional updates if needed).
 
 **Dependencies:** Task 4, Task 5
 

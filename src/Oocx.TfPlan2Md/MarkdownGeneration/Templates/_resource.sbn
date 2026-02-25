@@ -60,7 +60,11 @@
 {{ end }}
 
 {{ if small_attrs.size == 0 && large_attrs.size == 0 && (change.tags_badges == null || change.tags_badges == "") }}
+{{ if change.has_whole_resource_unknown_after_apply }}
+_(all values known after apply)_
+{{ else }}
 _No attribute changes._
+{{ end }}
 {{ end }}
 
 {{ include "_child_resources.sbn" }}

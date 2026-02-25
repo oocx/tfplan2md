@@ -1,0 +1,91 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group_member.admin",
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "admin",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": null
+        },
+        "after_unknown": {
+          "group_object_id": true,
+          "id": true,
+          "member_object_id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.reader",
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "reader",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-200"
+        },
+        "after_unknown": {
+          "group_object_id": true,
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group_member.admin",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "admin",
+          "provider_config_key": "azuread",
+          "schema_version": 0,
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.engineering.object_id",
+                "azuread_group.engineering"
+              ]
+            },
+            "member_object_id": {
+              "references": [
+                "var.admin_user_id"
+              ]
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.reader",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "reader",
+          "provider_config_key": "azuread",
+          "schema_version": 0,
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "local.engineering_group_id"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

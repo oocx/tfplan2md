@@ -74,6 +74,20 @@ public class AzureAdSnapshotTests
     }
 
     /// <summary>
+    /// Verifies that "known after apply" attributes display the most useful configuration
+    /// reference available: direct resource reference (&gt; resource ref), var.* reference,
+    /// local.* reference, and computed-only fallback to "(known after apply)".
+    /// Also verifies mixed rendering where one attribute has a known literal value alongside
+    /// unknown attributes.
+    /// Related issue: docs/issues/575-azuread-group-member-empty-rendering/analysis.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzureAd_GroupMember_VariedRefs_MatchesBaseline()
+    {
+        AssertAzureAdSnapshot("azuread-group-member-varied-refs-plan.json", "azuread-group-member-varied-refs.md");
+    }
+
+    /// <summary>
     /// Renders a markdown report from an Azure AD plan test data file.
     /// Related feature: docs/features/061-extensible-provider-registry/specification.md.
     /// </summary>

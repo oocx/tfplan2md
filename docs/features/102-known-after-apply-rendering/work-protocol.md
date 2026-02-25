@@ -75,3 +75,9 @@
 - **Artifacts Produced:** `README.md` (emoji fix), `docs/features/102-known-after-apply-rendering/uat-plan.md` (generated), `docs/features/102-known-after-apply-rendering/work-protocol.md` (updated)
 - **Problems Encountered:** None during implementation; pending policy action is to include `SNAPSHOT_UPDATE_OK` in a commit message covering intentional snapshot changes.
 
+
+### UAT Tester
+- **Date:** 2026-02-26
+- **Summary:** Ran UAT on both GitHub and Azure DevOps. All 6 feature scenarios and regression test passed. Created GitHub PR #111 and Azure DevOps PR #102 using `uat-plan.md` as the feature artifact with the comprehensive demo as regression. Maintainer confirmed pass in chat. Both PRs cleaned up after decision.
+- **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/uat-report.md`
+- **Problems Encountered:** Comprehensive demo artifacts were outdated (generated before feature source files were committed); regenerated via `scripts/generate-demo-artifacts.sh` and committed before UAT. Azure DevOps PAT not set in local env; resolved by obtaining a token via `az account get-access-token`.

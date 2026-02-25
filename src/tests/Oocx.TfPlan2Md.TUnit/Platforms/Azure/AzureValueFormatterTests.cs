@@ -127,8 +127,7 @@ public class AzureValueFormatterTests
 
         var formatted = registry.TryFormat(context);
 
-        formatted.Should().Contain("🛡️");
-        formatted.Should().Contain("Reader");
+        formatted.Should().Be("`🛡️\u00A0Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)`");
     }
 
     /// <summary>

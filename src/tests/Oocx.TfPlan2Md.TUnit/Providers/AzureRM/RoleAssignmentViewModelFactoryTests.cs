@@ -233,8 +233,7 @@ public class RoleAssignmentViewModelFactoryTests
                 scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
-            principal.After.Should().Contain("user@example.com");
-            principal.After.Should().Contain("user-123");
+            principal.After.Should().Be("`user@example.com` [`user-123`]");
             principal.After.Should().NotContain("👤");
             principal.After.Should().NotContain("(User)");
             viewModel.SummaryText.Should().NotContain("👤");

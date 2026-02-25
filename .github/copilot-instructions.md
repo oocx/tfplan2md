@@ -36,22 +36,24 @@ For project-specific instructions, refer to the `docs/spec.md` file in the repos
 
 **If you are running as a GitHub Copilot coding agent** (assigned issues via `@copilot`, PR coding agent on `copilot/*` branches), you **MUST** use the `report_progress` tool for all commits and pushes. **Manual `git push` commands will fail.**
 
+**Exception — subagents spawned via `task` tool**: `report_progress` is NOT available to subagents. They must use `git commit` instead (see below).
+
 ### Why Manual Git Commands Fail
 
 GitHub Copilot coding agents run in a GitHub Actions environment without personal git credentials. Manual `git push` commands fail authentication and result in empty PRs where work is committed locally but never appears in the PR.
 
-### Using report_progress Tool (REQUIRED)
+### Using report_progress Tool (Primary Agent Only)
 
-The `report_progress` tool is **mandatory for all GitHub Copilot coding agents** because it:
+The `report_progress` tool is **available only to the primary/top-level coding agent** (not to subagents spawned via `task`). It:
 - Handles `git add`, `git commit`, and `git push` automatically with proper authentication
 - Uses GitHub Actions `GITHUB_TOKEN` for push operations
 - Updates the PR description with progress tracking
-- Ensures changes are visible in the PR
+- Pushes ALL accumulated local commits (including commits made by subagents)
 
-**Always use `report_progress` instead of manual git commands:**
+**Always use `report_progress` instead of manual git commands (primary agent):**
 
 ```typescript
-// ✅ CORRECT - Use report_progress tool
+// ✅ CORRECT - Use report_progress tool (primary agent)
 report_progress({
   commitMessage: "feat: implement user authentication",
   prDescription: `
@@ -71,7 +73,20 @@ git commit -m "feat: implement user authentication"
 git push origin HEAD  // ← This will fail authentication
 ```
 
-**When to call report_progress:**
+### Subagents (Spawned via `task` Tool)
+
+Subagents **cannot** call `report_progress` — the tool is not available in their context. They must commit with `git commit`:
+
+```bash
+# ✅ CORRECT - Subagent commits changes locally
+git add <changed files>
+git commit -m "type: description of changes"
+# Do NOT run git push — it will fail with HTTP 403
+```
+
+The commits accumulate in the local branch. When the **parent agent** later calls `report_progress`, ALL local commits (including subagent commits) are pushed to the remote PR branch.
+
+**When to call report_progress (primary agent):**
 - After completing a meaningful unit of work
 - When you want to save progress and ensure it's in the PR
 - Before asking for feedback or clarification

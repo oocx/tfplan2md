@@ -29,7 +29,7 @@ internal partial class ReportModelBuilder
     {
         var action = DetermineAction(rc.Change.Actions);
         var actionSymbol = GetActionSymbol(action);
-        var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName);
+        var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName, rc.Address);
         var importId = string.IsNullOrWhiteSpace(rc.Change.Importing?.Id) ? null : rc.Change.Importing?.Id;
         var movedFromAddress = string.IsNullOrWhiteSpace(rc.PreviousAddress) ? null : rc.PreviousAddress;
         var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null || movedFromAddress is not null);
@@ -92,20 +92,22 @@ internal partial class ReportModelBuilder
     /// </summary>
     /// <param name="change">The resource change containing before and after state.</param>
     /// <param name="providerName">The provider name for the resource (e.g., "azurerm", "aws").</param>
+    /// <param name="resourceAddress">The full resource address used to look up configuration references.</param>
     /// <returns>Attribute changes prepared for rendering.</returns>
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
     /// <para>
     /// Attributes marked as "known after apply" in <c>after_unknown</c> are included using
-    /// <see cref="KnownAfterApplyDisplay"/> as their display value, even when <c>after</c> is
-    /// <see langword="null"/>. This covers resources like <c>azuread_group_member</c> where all
-    /// attribute values are computed at apply time.
+    /// the most specific configuration reference available (e.g., <c>→ azuread_group.admins.id</c>)
+    /// when the plan's configuration block contains expressions for the attribute; otherwise falls
+    /// back to <see cref="KnownAfterApplyDisplay"/>. This covers resources like
+    /// <c>azuread_group_member</c> where all attribute values are computed at apply time.
     /// </para>
     /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// Related issue: docs/issues/575-azuread-group-member-empty-rendering/analysis.md.
     /// </remarks>
-    private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
+    private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName, string? resourceAddress = null)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
         var afterDict = ConvertToFlatDictionary(change.After);
@@ -138,7 +140,7 @@ internal partial class ReportModelBuilder
             string? afterDisplay;
             if (isUnknown)
             {
-                afterDisplay = KnownAfterApplyDisplay;
+                afterDisplay = ResolveUnknownDisplay(resourceAddress, key);
             }
             else if (isSensitive && !_showSensitive)
             {
@@ -172,6 +174,96 @@ internal partial class ReportModelBuilder
         }
 
         return changes;
+    }
+
+    /// <summary>
+    /// Resolves the display string for an attribute that is "known after apply".
+    /// Uses the configuration reference index to show the actual source reference (e.g.,
+    /// <c>→ azuread_group.admins.id</c> or <c>→ each.value.group_object_id</c>) when available,
+    /// falling back to <see cref="KnownAfterApplyDisplay"/> otherwise.
+    /// </summary>
+    /// <param name="resourceAddress">The full resource instance address (instance key stripped internally).</param>
+    /// <param name="attribute">The attribute name to look up.</param>
+    /// <returns>A reference display string or the generic known-after-apply placeholder.</returns>
+    private string ResolveUnknownDisplay(string? resourceAddress, string attribute)
+    {
+        if (resourceAddress is not null)
+        {
+            var baseAddress = StripInstanceKey(resourceAddress);
+            if (_configurationReferenceIndex.TryGetValue((baseAddress, attribute), out var references))
+            {
+                var best = SelectBestReference(references);
+                if (best is not null)
+                {
+                    return $"→ {best}";
+                }
+            }
+        }
+
+        return KnownAfterApplyDisplay;
+    }
+
+    /// <summary>
+    /// Strips the instance key suffix from a resource address so it matches the configuration block address.
+    /// For example, <c>azuread_group_member.users["alice"]</c> becomes <c>azuread_group_member.users</c>.
+    /// </summary>
+    /// <param name="address">The full resource address, potentially including an instance key.</param>
+    /// <returns>The base address without instance key.</returns>
+    private static string StripInstanceKey(string address)
+    {
+        var bracketIndex = address.IndexOf('[', StringComparison.Ordinal);
+        return bracketIndex >= 0 ? address[..bracketIndex] : address;
+    }
+
+    /// <summary>
+    /// Selects the most useful reference from a list of Terraform expression references.
+    /// Prioritises full resource references (e.g., <c>azuread_group.admins.id</c>) over
+    /// <c>each.value.*</c>, then <c>var.*</c>/<c>local.*</c>, skipping bare meta-arguments
+    /// such as <c>each.key</c> and <c>each.value</c>.
+    /// </summary>
+    /// <param name="references">The candidate references from the configuration expression.</param>
+    /// <returns>The best reference string, or <see langword="null"/> when none are useful.</returns>
+    private static string? SelectBestReference(IReadOnlyList<string> references)
+    {
+        // Skip bare meta-arguments that carry no useful information
+        static bool IsUseless(string r) =>
+            r is "each.key" or "each.value" or "self" or "count.index";
+
+        var useful = references.Where(r => !IsUseless(r)).ToList();
+        if (useful.Count == 0)
+        {
+            return null;
+        }
+
+        // Prefer full resource/data references (type.name.attribute format, not meta-arguments)
+        var resourceRef = useful.Find(r =>
+            !r.StartsWith("each.", StringComparison.Ordinal) &&
+            !r.StartsWith("var.", StringComparison.Ordinal) &&
+            !r.StartsWith("local.", StringComparison.Ordinal) &&
+            !r.StartsWith("path.", StringComparison.Ordinal) &&
+            r.Contains('.', StringComparison.Ordinal));
+        if (resourceRef is not null)
+        {
+            return resourceRef;
+        }
+
+        // Second choice: each.value.attribute (conveys the attribute name)
+        var eachValueRef = useful.Find(r => r.StartsWith("each.value.", StringComparison.Ordinal));
+        if (eachValueRef is not null)
+        {
+            return eachValueRef;
+        }
+
+        // Third choice: var.something or local.something
+        var varOrLocalRef = useful.Find(r =>
+            r.StartsWith("var.", StringComparison.Ordinal) ||
+            r.StartsWith("local.", StringComparison.Ordinal));
+        if (varOrLocalRef is not null)
+        {
+            return varOrLocalRef;
+        }
+
+        return useful[0];
     }
 
     /// <summary>

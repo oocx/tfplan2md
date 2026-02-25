@@ -85,7 +85,23 @@
           "type": "azuread_group_member",
           "name": "user_groups",
           "provider_config_key": "azuread",
-          "schema_version": 0
+          "schema_version": 0,
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "each.value.group_object_id",
+                "each.key",
+                "var.user_groups_members"
+              ]
+            },
+            "member_object_id": {
+              "references": [
+                "each.value.user_object_id",
+                "each.key",
+                "var.user_groups_members"
+              ]
+            }
+          }
         }
       ]
     }

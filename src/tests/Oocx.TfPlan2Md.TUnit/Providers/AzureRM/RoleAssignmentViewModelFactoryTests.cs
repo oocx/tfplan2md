@@ -43,9 +43,7 @@ public class RoleAssignmentViewModelFactoryTests
             principalMapper: new NullPrincipalMapper(),
             scopeFormatter: null);
 
-        viewModel.SummaryText.Should().Contain("remove");
-        viewModel.SummaryText.Should().Contain("🛡️");
-        viewModel.SummaryText.Should().Contain("subscription");
+        viewModel.SummaryText.Should().Be("remove <code>🛡️\u00A0Contributor</code> on subscription <code>🔑\u00A0sub-id</code> from <code>👤\u00A0principal-1</code>");
         viewModel.SmallAttributes.Should().Contain(item => item.Name == "scope");
 
         await Task.CompletedTask;
@@ -77,8 +75,7 @@ public class RoleAssignmentViewModelFactoryTests
             principalMapper: new NullPrincipalMapper(),
             scopeFormatter: null);
 
-        viewModel.SummaryText.Should().Contain("recreate as");
-        viewModel.SummaryText.Should().Contain("👥");
+        viewModel.SummaryText.Should().Be("recreate as <code>👥\u00A0principal-1</code> → <code>🛡️\u00A0Contributor</code> on subscription <code>🔑\u00A0sub-id</code>");
 
         await Task.CompletedTask;
     }
@@ -148,8 +145,7 @@ public class RoleAssignmentViewModelFactoryTests
             scopeFormatter: null);
 
         var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
-        principal.After.Should().Contain("👤");
-        principal.After.Should().Contain("principal-1");
+        principal.After.Should().Be("`👤\u00A0principal-1 (User)` [`principal-1`]");
 
         await Task.CompletedTask;
     }
@@ -191,9 +187,7 @@ public class RoleAssignmentViewModelFactoryTests
                 scopeFormatter: null);
 
             var principal = viewModel.SmallAttributes.Single(item => item.Name == "principal_id");
-            principal.After.Should().Contain("👤");
-            principal.After.Should().Contain("(User)");
-            principal.After.Should().Contain("user-123");
+            principal.After.Should().Be("`👤\u00A0user@example.com (User)` [`user-123`]");
             viewModel.SummaryText.Should().Contain("👤");
         }
         finally
@@ -285,9 +279,7 @@ public class RoleAssignmentViewModelFactoryTests
             scopeFormatter: scopeFormatter);
 
         var scope = viewModel.SmallAttributes.Single(item => item.Name == "scope");
-        scope.After.Should().Contain("Production");
-        scope.After.Should().Contain("12345678-1234-1234-1234-123456789012");
-        scope.After.Should().Contain("🔑");
+        scope.After.Should().Be("`📁\u00A0rg-demo` in subscription `🔑\u00A0Production (12345678-1234-1234-1234-123456789012)`");
 
         await Task.CompletedTask;
     }
@@ -323,13 +315,8 @@ public class RoleAssignmentViewModelFactoryTests
             principalMapper: new NullPrincipalMapper(),
             scopeFormatter: scopeFormatter);
 
-        // Summary should show the human-readable name, not the raw UUID
-        viewModel.SummaryText.Should().Contain("My Production Subscription");
-        viewModel.SummaryText.Should().Contain("subscription");
-        // The raw subscription UUID should NOT appear in the summary when a name is mapped
-        viewModel.SummaryText.Should().NotContain("12345678-1234-1234-1234-123456789012");
-        // The 🔑 icon should appear even when a name is shown
-        viewModel.SummaryText.Should().Contain("🔑");
+        // Summary shows the human-readable name with 🔑 icon (UUID is absent since name is mapped)
+        viewModel.SummaryText.Should().Be("<code>💻\u00A0principal-1</code> → <code>🛡️\u00A0Contributor</code> on subscription <code>🔑\u00A0My Production Subscription</code>");
 
         await Task.CompletedTask;
     }
@@ -362,10 +349,8 @@ public class RoleAssignmentViewModelFactoryTests
             principalMapper: new NullPrincipalMapper(),
             scopeFormatter: scopeFormatter);
 
-        // Summary should contain the raw ID and the 🔑 icon (backward-compatible behavior)
-        viewModel.SummaryText.Should().Contain("sub-unmapped-id");
-        viewModel.SummaryText.Should().Contain("subscription");
-        viewModel.SummaryText.Should().Contain("🔑");
+        // Summary shows the raw ID and the 🔑 icon (backward-compatible behavior)
+        viewModel.SummaryText.Should().Be("<code>💻\u00A0principal-1</code> → <code>🛡️\u00A0Contributor</code> on subscription <code>🔑\u00A0sub-unmapped-id</code>");
 
         await Task.CompletedTask;
     }
@@ -395,9 +380,7 @@ public class RoleAssignmentViewModelFactoryTests
             principalMapper: new NullPrincipalMapper(),
             scopeFormatter: null);
 
-        viewModel.SummaryText.Should().Contain("sub-id");
-        viewModel.SummaryText.Should().Contain("subscription");
-        viewModel.SummaryText.Should().Contain("🔑");
+        viewModel.SummaryText.Should().Be("<code>👤\u00A0principal-1</code> → <code>🛡️\u00A0Contributor</code> on subscription <code>🔑\u00A0sub-id</code>");
 
         await Task.CompletedTask;
     }

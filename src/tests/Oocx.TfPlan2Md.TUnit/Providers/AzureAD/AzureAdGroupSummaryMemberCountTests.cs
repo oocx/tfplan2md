@@ -32,9 +32,7 @@ public class AzureAdGroupSummaryMemberCountTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert
-        group.SummaryHtml.Should().Contain("2 👤");  // 2 users
-        group.SummaryHtml.Should().Contain("1 👥");  // 1 group
-        group.SummaryHtml.Should().Contain("0 💻");  // 0 service principals
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>engineering</code></b> \u2014 <code>👥\u00A0Engineering Team</code> | <code>2 👤\u00A01 👥\u00A00 💻</code> | ➕\u00A03 members");
     }
 
     /// <summary>
@@ -51,9 +49,7 @@ public class AzureAdGroupSummaryMemberCountTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert - Summary should show counts from merged child resources
-        group.SummaryHtml.Should().Contain("2 👤");  // 2 users
-        group.SummaryHtml.Should().Contain("1 👥");  // 1 group
-        group.SummaryHtml.Should().Contain("0 💻");  // 0 service principals
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>engineering</code></b> \u2014 <code>👥\u00A0Engineering Team</code> | <code>2 👤\u00A01 👥\u00A00 💻</code> | ➕\u00A03 members");
 
         // Verify child resources were merged
         group.ChildResourceGroups.Should().ContainSingle();
@@ -75,9 +71,7 @@ public class AzureAdGroupSummaryMemberCountTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert - Summary should show combined counts from both inline and separate members
-        group.SummaryHtml.Should().Contain("3 👤");  // 3 users (2 inline + 1 separate)
-        group.SummaryHtml.Should().Contain("1 👥");  // 1 group (inline)
-        group.SummaryHtml.Should().Contain("1 💻");  // 1 service principal (separate)
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>engineering</code></b> \u2014 <code>👥\u00A0Engineering Team</code> | <code>3 👤\u00A01 👥\u00A01 💻</code> | ➕\u00A05 members");
 
         // Verify child resources were merged
         group.ChildResourceGroups.Should().ContainSingle();
@@ -99,9 +93,7 @@ public class AzureAdGroupSummaryMemberCountTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert - Summary should show 0 counts for groups with no members
-        group.SummaryHtml.Should().Contain("0 👤");
-        group.SummaryHtml.Should().Contain("0 👥");
-        group.SummaryHtml.Should().Contain("0 💻");
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>empty</code></b> \u2014 <code>👥\u00A0Empty Team</code> | <code>0 👤\u00A00 👥\u00A00 💻</code>");
         group.ChildResourceGroups.Should().BeEmpty();
     }
 

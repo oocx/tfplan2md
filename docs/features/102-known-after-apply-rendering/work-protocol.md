@@ -69,3 +69,9 @@
 - **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/code-review.md`
 - **Problems Encountered:** Docker NativeAOT build takes >5 minutes; build was not fully confirmed. All test-based verification passed.
 
+### Developer (rework after failed code review)
+- **Date:** 2026-02-26
+- **Summary:** Addressed code-review follow-up items by fixing garbled Unicode replacement characters in README feature bullets, generating the missing required UAT artifact from `uat-plan.json`, and preparing documentation/work-protocol updates for re-review. Snapshot-token blocker remains a commit-message policy item that must be satisfied when committing these rework changes.
+- **Artifacts Produced:** `README.md` (emoji fix), `docs/features/102-known-after-apply-rendering/uat-plan.md` (generated), `docs/features/102-known-after-apply-rendering/work-protocol.md` (updated)
+- **Problems Encountered:** None during implementation; pending policy action is to include `SNAPSHOT_UPDATE_OK` in a commit message covering intentional snapshot changes.
+

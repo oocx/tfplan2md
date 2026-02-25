@@ -1,2 +1,0 @@
-Cross-directory commit test.
-Both files committed together from architect-coding-agent subagent.

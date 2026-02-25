@@ -220,28 +220,28 @@ Parent agent (workflow orchestrator, etc.):
 
 ---
 
-## Incorrect Pattern (Current Documentation)
+## Incorrect Pattern (Original Documentation — Now Fixed)
 
-The current `coding-agent-workflow` skill incorrectly states:
+The original `coding-agent-workflow` skill incorrectly stated:
 > "You MUST call `report_progress` before completing"
 
-This should be changed to:
+This has been corrected to:
 > "You MUST use `git commit` to commit your changes before completing"
 
 ---
 
 ## Implications for the `coding-agent-workflow` Skill
 
-The skill at `.github/skills/coding-agent-workflow/SKILL.md` needs the following correction:
+The skill at `.github/skills/coding-agent-workflow/SKILL.md` has been corrected as follows:
 
-**Current (incorrect):**
+**Was (incorrect):**
 > CRITICAL — Delegated agents: When running as a delegated agent (via task tool), you
 > MUST still call report_progress. Your commits are added to the orchestrator's local
 > branch (not pushed to the remote PR directly). The orchestrator will push your commits
 > using their own report_progress call. If you skip report_progress, your file changes
 > remain uncommitted and will be lost.
 
-**Should be:**
+**Now (correct):**
 > CRITICAL — Delegated agents: When running as a delegated agent (via task tool),
 > report_progress is NOT available. You MUST use git commit to commit your changes.
 > Use: `git add <changed files> && git commit -m "type: description"`.
@@ -253,14 +253,14 @@ The skill at `.github/skills/coding-agent-workflow/SKILL.md` needs the following
 
 ## Recommendations
 
-1. **Update `coding-agent-workflow` skill** to correctly state that subagents must use
-   `git commit` (not `report_progress`).
+1. ✅ **Update `coding-agent-workflow` skill** to correctly state that subagents must use
+   `git commit` (not `report_progress`). — **Done.**
 
 2. **Update agent instructions** (e.g., `developer-coding-agent.agent.md`) to include
    explicit `git commit` steps.
 
-3. **Update the custom instructions** in `.github/copilot-instructions.md` to clarify
-   the distinction between `report_progress` (parent only) and `git commit` (subagents).
+3. ✅ **Update the custom instructions** in `.github/copilot-instructions.md` to clarify
+   the distinction between `report_progress` (parent only) and `git commit` (subagents). — **Done.**
 
 4. **Consider a note** that `report_progress` in the parent will pick up uncommitted
    tracked files via `git add .` — this can act as a safety net but should not be
@@ -268,12 +268,88 @@ The skill at `.github/skills/coding-agent-workflow/SKILL.md` needs the following
 
 ---
 
+## Validation (10-Run Reliability Test)
+
+After the skill was updated with the correct `git commit` instructions, a second round of 10
+experiments was run to confirm that the new instructions are followed reliably across multiple
+agent types and commit scenarios.
+
+### Protocol
+
+Each subagent was instructed to:
+1. Read the updated `coding-agent-workflow` SKILL.md and confirm the commit procedure
+2. Perform a real task (creating/editing files)
+3. Commit using `git add <files> && git commit -m "..."` (the correct subagent method)
+4. Report whether `report_progress` appeared in their tool list
+5. Show `git log --oneline -3`
+
+After all 10 runs, the parent called `report_progress` once to push all 11+ accumulated
+commits (including one nested sub-subagent commit from run 10).
+
+### Results
+
+| Run | Agent Type | Variant | Commit SHA | report_progress available? | Success? |
+|-----|-----------|---------|-----------|---------------------------|---------|
+| 01 | developer-coding-agent | basic create | cdfe385 | No | ✅ |
+| 02 | technical-writer-coding-agent | basic create | 7e18aea | No | ✅ |
+| 03 | code-reviewer-coding-agent | basic create | 828896e | No | ✅ |
+| 04 | developer-coding-agent | multi-file (edit + create) | c1eae75 | No | ✅ |
+| 05 | general-purpose | general purpose agent type | b8d0081 | No | ✅ |
+| 06 | developer-coding-agent | multi-step work (read 2 files first) | e231a95 | No | ✅ |
+| 07 | task | bash-only agent | 2a94e6c | No | ✅ |
+| 08 | workflow-engineer-coding-agent | workflow engineer type | 371ba59 | No | ✅ |
+| 09 | architect-coding-agent | multi-directory commit | f6437a2 | No | ✅ |
+| 10 (outer) | developer-coding-agent | spawns nested subagent | 30e4e66 | No | ✅ |
+| 10 (nested) | developer-coding-agent | nested sub-subagent | 7f5d5e1 | No | ✅ |
+
+**Result: 11/11 commits succeeded (100% reliability)**
+
+All subagents:
+- Correctly read the skill and identified `git commit` as the required method
+- Confirmed `report_progress` was NOT in their tool list
+- Successfully committed their changes using `git add` + `git commit`
+- Noted that nested subagents are equally constrained (same tool context rules)
+
+### Key Observations from Validation
+
+1. **Consistent across all agent types**: `developer`, `technical-writer`, `code-reviewer`,
+   `general-purpose`, `task`, `workflow-engineer`, and `architect` agents all behaved identically.
+
+2. **Consistent tool context**: Every single subagent confirmed `report_progress` is absent
+   from their tool list — there is no ambiguity.
+
+3. **Nested subagents work the same way**: A subagent spawning another subagent (run 10)
+   results in the same behaviour — `report_progress` unavailable, `git commit` works.
+
+4. **Multi-file and multi-directory commits work**: Runs 4 and 9 confirmed that committing
+   multiple files across directories in a single commit works correctly.
+
+5. **Multi-step work before commit is reliable**: Run 6 confirmed that doing substantial
+   preparatory work (reading files, reasoning) before committing does not disrupt the commit.
+
+6. **All commits reach the remote via one `report_progress` call**: The parent's single
+   `report_progress` pushed all 11+ accumulated local commits from the 10 runs at once,
+   confirming the "accumulate locally, push once" pattern works at scale.
+
+### Conclusion
+
+The updated skill instructions are **100% reliable** across all tested agent types, commit
+patterns, and nesting levels. The root cause of the original "work often lost" problem is
+confirmed to be the incorrect instruction to call `report_progress` in subagents. With the
+corrected `git commit` instruction, all 11 subagent commits succeeded without exception.
+
+---
+
 ## Appendix: Environment Details
 
 - **Repository:** oocx/tfplan2md
 - **Branch:** copilot/experiment-subagent-commit-push
-- **Experiment date:** 2026-02-25
-- **Agent type used for subagents:** developer-coding-agent
+- **Initial experiment date:** 2026-02-25
+- **Validation date:** 2026-02-25
+- **Agent types used for subagents:** developer-coding-agent, technical-writer-coding-agent,
+  code-reviewer-coding-agent, general-purpose, task, workflow-engineer-coding-agent,
+  architect-coding-agent
 - **Shared filesystem:** Yes (all agents operate on `/home/runner/work/tfplan2md/tfplan2md`)
 - **Git credentials in subagent context:** None (push fails with HTTP 403)
-- **report_progress availability in subagent:** None (tool not in subagent's tool list)
+- **report_progress availability in subagent:** None (tool not in subagent's tool list) —
+  confirmed independently by all 11 subagent invocations

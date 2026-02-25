@@ -40,36 +40,33 @@ This skill is automatically loaded by all coding agents. It defines the core wor
    - **The orchestrator will forward your questions** to the maintainer and resume you with answers
    - **Wait for the orchestrator to re-invoke you** with the maintainer's answer
    - **You MUST use `edit`/`create` tools to apply all file changes** - do not just describe changes; actually apply them
-   - **You MUST call `report_progress` before completing** - this commits your changes to the local branch so the orchestrator can push them (see step 4)
+   - **You MUST use `git commit` to commit your changes** — `report_progress` is NOT available to subagents; use `git add <files> && git commit -m "type: message"` instead (see step 4 for details)
 
 3. **Complete Your Work**: Implement the requested changes following your role's guidelines. **Use `edit`/`create` tools to apply all file modifications** — never just describe or list changes without applying them.
 
-4. **Report Progress with `report_progress` Tool (REQUIRED)**: Use the `report_progress` tool to commit and push your changes. **This tool is mandatory for all coding agents** because:
-   - It handles `git add`, `git commit`, and `git push` operations automatically with proper authentication
-   - Manual `git push` commands fail in the GitHub Actions environment (no personal credentials)
-   - It updates the PR description with progress tracking
-   
-   **Call `report_progress` with:**
-   - `commitMessage`: Conventional commit message (e.g., "feat: add feature X", "fix: correct issue Y")
-   - `prDescription`: Markdown checklist showing completed and remaining work
-   
-   **Example:**
-   ```
-   report_progress(
-     commitMessage="feat: implement user authentication",
-     prDescription="""
-     ## Implementation Progress
-     
-     - [x] Add authentication service
-     - [x] Add login endpoint with tests
-     - [x] Add JWT token generation
-     - [ ] Add authorization middleware
-     - [ ] Update documentation
-     """
-   )
-   ```
-   
-   **CRITICAL — Delegated agents**: When running as a delegated agent (via `task` tool), you **MUST still call `report_progress`**. Your commits are added to the orchestrator's local branch (not pushed to the remote PR directly). The orchestrator will push your commits using their own `report_progress` call. If you skip `report_progress`, your file changes remain uncommitted and **will be lost**.
+4. **Commit and Push Changes**:
+
+   - **Primary agent** (running the top-level PR): Use the `report_progress` tool. It handles `git add`, `git commit`, and `git push` automatically with the GitHub Actions token. Manual `git push` fails (no personal credentials). Call it with:
+     - `commitMessage`: Conventional commit message (e.g., "feat: add feature X")
+     - `prDescription`: Markdown checklist showing completed and remaining work
+
+     ```
+     report_progress(
+       commitMessage="feat: implement user authentication",
+       prDescription="""
+       - [x] Add authentication service
+       - [ ] Add authorization middleware
+       """
+     )
+     ```
+
+   - **Delegated subagent** (spawned via `task` tool): **`report_progress` is NOT available** — it exists only in the primary agent's tool context. Use `git commit` instead:
+     ```bash
+     git add <changed files>
+     git commit -m "type: description of changes"
+     # Do NOT run git push — it will fail with HTTP 403
+     ```
+     Your commits accumulate in the local branch. When the parent agent calls `report_progress`, ALL local commits (including yours) are pushed to the remote PR branch.
 
 5. **Create Summary Comment (After Progress Reported)**: Post a PR comment with:
    - **Summary**: Brief description of what you completed
@@ -97,8 +94,9 @@ This skill is automatically loaded by all coding agents. It defines the core wor
 ## Key Principles
 
 - **GitHub creates branches/PRs automatically** - never attempt to create them yourself
-- **Always use `report_progress`** for commits and pushes - never use manual `git push` commands
-- **Always call `report_progress` before completing** - even when running as a delegated agent; uncommitted changes will be lost
+- **`report_progress` is only available to the primary agent** - subagents spawned via `task` tool must use `git commit` instead
+- **Always use `report_progress`** for commits and pushes (primary agent) - never use manual `git push` commands
+- **Subagents MUST `git commit` before completing** - uncommitted changes will be lost if only in memory; the parent's `report_progress` can pick up uncommitted files via `git add .` but this is a fallback, not the primary mechanism
 - **Always use `edit`/`create` tools** to apply file changes - never just describe changes in your response without applying them
 - **Respect execution context** - behave differently when delegated vs primary agent
 - **Communicate clearly** - provide complete summaries with status and next steps

@@ -26,3 +26,9 @@
 - **Summary:** Created a comprehensive test plan mapping all 7 acceptance criteria to 14 test cases across three test files. Followed the `ReportModelBuilderUnchangedValuesTests.cs` and `CliParserTests.cs` patterns exactly. Specified a new test data file `azurerm-case-only-ids-plan.json` covering casing-only changes, mixed changes, null before/after, numeric changes, and unchanged (ordinal-equal) attributes. Created a UAT test plan for the user-facing rendering change, requiring a feature-specific `uat-plan.json` / `uat-plan.md` pair for the Developer to produce.
 - **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/test-plan.md`, `docs/features/103-azure-id-case-insensitive-filter/uat-test-plan.md`
 - **Problems Encountered:** None
+
+### Task Planner
+- **Date:** 2025-07-14
+- **Summary:** Read specification, architecture, and test plan documents. Inspected existing source files for context (`CliParser.cs`, `HelpTextProvider.cs`, `ReportModelBuilder.cs`, `ReportModelBuilder.ResourceChanges.cs`, `ReportModel.cs`, `AotScriptObjectMapper.cs`, `CompositionRoot.cs`) to verify exact change locations. Produced 11 developer tasks ordered by dependency (test data → CLI layer → model → filter logic → propagation → wiring → tests → docs), each with precise file paths, acceptance criteria, and code snippets from the architecture document.
+- **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/tasks.md`
+- **Problems Encountered:** None

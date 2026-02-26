@@ -12,7 +12,12 @@ internal sealed class HtmlScreenshotCapturer
 {
     private const string InstallHint = "playwright install chromium --with-deps";
     private const int ScreenshotRetryAttempts = 2;
-    private static readonly string[] ChromiumLaunchArgs = ["--disable-dev-shm-usage"];
+    // --disable-dev-shm-usage: prevents crashes when /dev/shm is small (containers, CI).
+    // --disable-gpu: disables GPU hardware acceleration; required in headless environments
+    //   where no GPU is available, otherwise ScreenshotAsync hangs waiting for GPU render.
+    // --no-sandbox: suppresses Chrome sandbox in environments without user namespaces.
+    private static readonly string[] ChromiumLaunchArgs =
+        ["--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox"];
     private static readonly JsonSerializerOptions SummarySerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -128,7 +133,10 @@ internal sealed class HtmlScreenshotCapturer
         var options = new PageScreenshotOptions
         {
             Path = settings.OutputPath,
-            FullPage = clip is null && settings.FullPage,
+            // When a clip target is used, enable full-page rendering so that elements
+            // below the initial viewport are included in the rendered output and the
+            // clip rectangle coordinates are valid for the complete document.
+            FullPage = clip is not null || settings.FullPage,
         };
 
         if (settings.Format == ScreenshotFormat.Jpeg)

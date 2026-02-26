@@ -28,6 +28,19 @@ MARKDOWN_FILE=""
 PLAN_FILE=""
 OUTPUT_PREFIX=""
 SELECTOR=""
+
+# run_screenshotter: wraps dotnet run with xvfb-run when available.
+# Playwright's new headless Chromium requires a compositor context to render screenshots.
+# xvfb-run provides a virtual framebuffer that satisfies this requirement in
+# server/CI environments where the primary display (:0) may not be accessible.
+run_screenshotter() {
+    if command -v xvfb-run &>/dev/null; then
+        xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" dotnet run "$@"
+    else
+        dotnet run "$@"
+    fi
+}
+
 TARGET_RESOURCE_ID=""
 OPEN_DETAILS_SELECTOR="details"
 
@@ -276,25 +289,25 @@ for TARGET in "${TARGETS[@]}"; do
     FULL_DARK_2X="$REPO_ROOT/website/assets/screenshots/${OUTPUT_PREFIX}-full-${TARGET}-dark@2x.png"
     
     echo "  Generating targeted screenshot (light, 1x)..."
-    dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
+    run_screenshotter --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_LIGHT" \
         --output "$FULL_LIGHT" \
         --width "$WIDTH" "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     echo "  Generating targeted screenshot (light, 2x)..."
-    dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
+    run_screenshotter --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_LIGHT" \
         --output "$FULL_LIGHT_2X" \
         --width "$WIDTH" --device-scale-factor 2 "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     echo "  Generating targeted screenshot (dark, 1x)..."
-    dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
+    run_screenshotter --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_DARK" \
         --output "$FULL_DARK" \
         --width "$WIDTH" "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"
     
     echo "  Generating targeted screenshot (dark, 2x)..."
-    dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
+    run_screenshotter --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_DARK" \
         --output "$FULL_DARK_2X" \
         --width "$WIDTH" --device-scale-factor 2 "${TARGET_ARGS[@]}" "${OPEN_DETAILS_ARGS[@]}"

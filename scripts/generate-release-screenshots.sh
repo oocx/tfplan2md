@@ -28,6 +28,19 @@ SELECTOR=""
 TARGET_RESOURCE_ID=""
 OPEN_DETAILS_SELECTOR="details"
 
+# run_screenshotter: wraps dotnet run with xvfb-run when available.
+# Playwright's new headless Chromium requires a compositor context to render screenshots.
+# xvfb-run provides a virtual framebuffer that satisfies this requirement in
+# server/CI environments where the primary display (:0) may not be accessible.
+run_screenshotter() {
+    if command -v xvfb-run &>/dev/null; then
+        xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" dotnet run "$@"
+    else
+        dotnet run "$@"
+    fi
+}
+
+
 # Display usage information
 show_help() {
     cat <<EOF
@@ -232,7 +245,7 @@ for attempt in $(seq 1 $MAX_RETRIES); do
         sleep $RETRY_DELAY
     fi
     
-    if dotnet run --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
+    if run_screenshotter --project "$REPO_ROOT/src/tools/Oocx.TfPlan2Md.ScreenshotGenerator" -- \
         --input "$HTML_FILE" \
         --output "$OUTPUT_FILE" \
         --width "$WIDTH" \

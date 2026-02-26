@@ -30,5 +30,5 @@ No changes
 {{ end }}
 
 {{ if ignore_azure_id_case_changes && filtered_resource_count > 0 }}
-> ℹ️ {{ filtered_resource_count }} resource{{ if filtered_resource_count > 1 }}s{{ end }} with only filtered changes (e.g. Azure resource ID casing differences) {{ if filtered_resource_count > 1 }}are{{ else }}is{{ end }} not shown. Run without `--ignore-azure-id-case-changes` to see all changes.
+> ℹ️ {{ filtered_resource_count }} resource{{ if filtered_resource_count > 1 }}s{{ end }} with only filtered changes (e.g. Azure resource ID casing differences) {{ if filtered_resource_count > 1 }}are{{ else }}is{{ end }} not shown. Use `--no-ignore-azure-id-case-changes` to see all changes.
 {{ end }}

@@ -248,6 +248,9 @@ internal static class CliParser
                 case "--ignore-azure-id-case-changes":
                     ignoreAzureIdCaseChanges = true;
                     break;
+                case "--no-ignore-azure-id-case-changes":
+                    ignoreAzureIdCaseChanges = false;
+                    break;
                 case "--hide-metadata":
                     hideMetadata = true;
                     break;

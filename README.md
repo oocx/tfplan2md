@@ -55,6 +55,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🔮 **Known-after-apply visibility** - Computed attributes (`after_unknown`) are shown in reports with `(known after apply)` labels, including configuration references (e.g., `azuread_group.admins`) when available, instead of being silently omitted
 - 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps build definitions and variable groups, Azure AD resources, and inline parent-child tables for memberships and Azure network resources)
 - 📚 **Azure API documentation links** - Reliable links to Microsoft Learn REST API documentation for 92 Azure resource types (AzAPI provider)
+- 🔇 **Case-insensitive Azure ID filter** - `--ignore-case-changes` suppresses Azure resource ID attribute changes that differ only in casing (ARM API quirk), reducing noise in reports
 
 ## Installation
 

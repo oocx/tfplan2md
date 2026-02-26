@@ -64,6 +64,12 @@
   - Updated: all demo artifacts (version/timestamp bump)
 - **Problems Encountered:** (1) Sonar rule S3267 required loop in `AttributeChangeFilterRegistry` to use LINQ, then S6605 required `List<T>.Exists()` instead of `.Any()`. (2) `/providers/Microsoft.Authorization/roleDefinitions/XYZ` is not recognized as an Azure resource ID by `AzureScopeParser` — required updating test data to use subscription-scoped role definition ID paths.
 
+### Technical Writer
+- **Date:** 2025-07-14
+- **Summary:** Reviewed the implementation (CliParser.cs, HelpTextProvider.cs, README.md) against the specification. Found that the Developer had already added a comprehensive `--ignore-case-changes` section to README.md (CLI options table entry + dedicated `#### Case-Insensitive Azure Resource ID Filter` section). Verified the documentation is accurate and consistent with the specification. Added a new feature bullet to the README.md Features list (`🔇 **Case-insensitive Azure ID filter**`) and added a new `## Case-Insensitive Azure Resource ID Filter` section to `docs/features.md` before "Future Considerations", following the same format as adjacent features (status badge, description, usage, example, scope/limitations, and cross-reference link). No contradictions found between documentation files.
+- **Artifacts Produced:** Updated `README.md` (new Features list bullet), updated `docs/features.md` (new feature section for Feature 103)
+- **Problems Encountered:** None.
+
 ### Release Manager
 - **Date:** 2026-02-26
 - **Summary:** Assessed PR #564 for release readiness. Found **multiple blockers** that prevent merging:

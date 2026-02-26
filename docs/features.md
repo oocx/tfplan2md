@@ -2945,6 +2945,43 @@ Output values automatically benefit from existing display name mappings — for 
 
 See [docs/features/097-terraform-outputs/](features/097-terraform-outputs/) for specification, architecture, and implementation details.
 
+## Case-Insensitive Azure Resource ID Filter
+
+**Status:** ✅ Implemented (Feature 103)
+
+The Azure Resource Manager (ARM) API occasionally returns resource IDs with inconsistent capitalisation on successive reads — for example, `/subscriptions/ABC123/resourceGroups/my-rg` versus `/subscriptions/abc123/resourceGroups/my-rg`. Terraform detects these as changes, and tfplan2md faithfully reports them. These casing-only differences have no real infrastructure impact but can create noise for reviewers.
+
+The `--ignore-case-changes` flag suppresses attribute change rows where both the before and after values are **Azure resource IDs** (subscription, resource group, full resource, or management group scope) that differ only in letter casing. The flag is disabled by default so existing behaviour is preserved.
+
+### Usage
+
+```bash
+# Suppress Azure resource ID casing-only changes
+tfplan2md plan.json --ignore-case-changes > plan.md
+```
+
+### Example
+
+Given a Terraform plan with these changes on an `azurerm_role_assignment`:
+
+| Attribute | Before | After |
+|-----------|--------|-------|
+| `scope` | `/subscriptions/ABC123/resourceGroups/my-rg` | `/subscriptions/abc123/resourceGroups/my-rg` |
+| `role_definition_id` | `/subscriptions/ABC123/providers/Microsoft.Authorization/roleDefinitions/…` | `/subscriptions/abc123/providers/…` |
+| `display_name` | `My App` | `My Application` |
+
+With `--ignore-case-changes`, only the `display_name` row is shown — the two Azure resource ID casing rows are suppressed.
+
+### Scope and Limitations
+
+- Only **Azure resource ID** attribute values are subject to the filter. Plain display names, numeric values, boolean values, and null values are never suppressed.
+- The filter applies to `azurerm` resources only. Resources from other providers (e.g., `azapi`, `aws`) are unaffected.
+- Rows suppressed by `--ignore-case-changes` remain hidden **even when `--show-unchanged-values` is also active** — casing-only Azure ID changes take precedence.
+- The resource entry itself still appears in the report even if all its attribute change rows are suppressed.
+- Plan summary counts (resources to add, change, destroy) are not affected.
+
+See [docs/features/103-azure-id-case-insensitive-filter/](features/103-azure-id-case-insensitive-filter/) for specification, architecture, and implementation details.
+
 ## Future Considerations
 
 The following features may be added in future versions:

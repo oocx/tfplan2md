@@ -60,6 +60,7 @@ internal static class AotScriptObjectMapper
         scriptObject["module_changes"] = MapModuleChanges(model.ModuleChanges, model.ShowSensitive, mapperRegistry);
         scriptObject["refactoring_operations"] = MapRefactoringOperations(model.RefactoringOperations);
         scriptObject["global_outputs"] = MapOutputChanges(model.GlobalOutputs);
+        scriptObject["filtered_resource_count"] = model.FilteredResourceCount;
 
         return scriptObject;
     }

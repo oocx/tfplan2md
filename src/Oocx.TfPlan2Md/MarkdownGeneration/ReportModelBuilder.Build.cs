@@ -46,11 +46,14 @@ internal partial class ReportModelBuilder
         // No-op resources have no meaningful changes to display and including them
         // can cause the template to exceed Scriban's iteration limit of 1000
         // Exception: Preserve no-op parents that have children with actual changes (not just no-op children)
+        var afterNoOpFilter = allChanges
+            .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null || HasChildrenWithChanges(c))
+            .ToList();
+
         // Also filter out update/unknown resources where all attribute changes were suppressed
         // (e.g., by --ignore-case-changes) and there is nothing else meaningful to display.
         // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md
-        var displayChanges = allChanges
-            .Where(c => c.Action != NoOpAction || c.CodeAnalysisFindings.Count > 0 || c.ImportId is not null || c.MovedFromAddress is not null || HasChildrenWithChanges(c))
+        var displayChanges = afterNoOpFilter
             .Where(c => c.Action is not (UpdateAction or UnknownAction)
                 || c.AttributeChanges.Count > 0
                 || c.CodeAnalysisFindings.Count > 0
@@ -59,6 +62,8 @@ internal partial class ReportModelBuilder
                 || c.HasWholeResourceUnknownAfterApply
                 || HasChildrenWithChanges(c))
             .ToList();
+
+        var filteredResourceCount = afterNoOpFilter.Count - displayChanges.Count;
 
         // SonarAnalyzer S3267: Cannot simplify with LINQ - this loop mutates existing objects
         // Justification: This loop modifies ModuleAddress property for null values, not filtering
@@ -132,7 +137,8 @@ internal partial class ReportModelBuilder
             RenderTarget = renderTarget,
             DetailsDisplayMode = _detailsDisplayMode,
             RefactoringOperations = refactoringOperations,
-            GlobalOutputs = globalOutputs
+            GlobalOutputs = globalOutputs,
+            FilteredResourceCount = filteredResourceCount
         };
     }
 

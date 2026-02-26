@@ -125,4 +125,11 @@ internal class ReportModel
     /// Related feature: docs/features/097-terraform-outputs/specification.md.
     /// </summary>
     public IReadOnlyList<OutputChangeModel> GlobalOutputs { get; init; } = Array.Empty<OutputChangeModel>();
+
+    /// <summary>
+    /// Gets the number of resources suppressed from rendering because all their attribute changes
+    /// were filtered out (e.g., by <c>--ignore-case-changes</c>) and they have no other notable content.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    public int FilteredResourceCount { get; init; }
 }

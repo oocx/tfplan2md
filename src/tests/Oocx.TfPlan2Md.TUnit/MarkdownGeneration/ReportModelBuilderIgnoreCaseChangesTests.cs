@@ -399,4 +399,72 @@ public class ReportModelBuilderIgnoreCaseChangesTests
 
         await Task.CompletedTask;
     }
+
+    // -------------------------------------------------------------------------
+    // TC-17: FilteredResourceCount reflects the number of suppressed resources.
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// TC-17: ignoreCaseChanges: true → FilteredResourceCount is non-zero when resources are suppressed.
+    /// </summary>
+    [Test]
+    public async Task Build_IgnoreCaseChangesTrue_FilteredResourceCountIsNonZero()
+    {
+        // Arrange
+        var plan = _parser.Parse(_planJson);
+        var builder = CreateBuilder(ignoreCaseChanges: true);
+
+        // Act
+        var model = builder.Build(plan);
+
+        // Assert
+        model.FilteredResourceCount.Should().BeGreaterThan(0,
+            "at least one resource (casing_only) should be suppressed and counted");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// TC-18: ignoreCaseChanges: false → FilteredResourceCount may be non-zero if update resources
+    /// have no attribute changes (e.g., all-equal values), but the note must not appear in that case.
+    /// </summary>
+    [Test]
+    public async Task Build_IgnoreCaseChangesFalse_FilteredResourceCountNotShownInNote()
+    {
+        // Arrange
+        var plan = _parser.Parse(_planJson);
+        var builder = CreateBuilder(ignoreCaseChanges: false);
+
+        // Act
+        var model = builder.Build(plan);
+        var scriptObject = AotScriptObjectMapper.MapReportModel(model);
+
+        // Assert: the Scriban condition (ignore_case_changes && filtered_resource_count > 0)
+        // evaluates to false, so the note must not appear.
+        scriptObject["ignore_case_changes"].Should().Be(false,
+            "ignore_case_changes must be false so the filter note is suppressed");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// TC-19: Scriban variable filtered_resource_count reflects FilteredResourceCount.
+    /// </summary>
+    [Test]
+    public async Task Render_IgnoreCaseChangesTrue_FilteredResourceCountInScribanObject()
+    {
+        // Arrange
+        var plan = _parser.Parse(_planJson);
+        var builder = CreateBuilder(ignoreCaseChanges: true);
+        var model = builder.Build(plan);
+
+        // Act
+        var scriptObject = AotScriptObjectMapper.MapReportModel(model);
+
+        // Assert
+        ((int)scriptObject["filtered_resource_count"]).Should().Be(model.FilteredResourceCount,
+            "the Scriban variable 'filtered_resource_count' must match the model property");
+
+        await Task.CompletedTask;
+    }
 }

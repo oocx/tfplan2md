@@ -10,23 +10,33 @@ This feature introduces a new CLI flag (`--ignore-case-changes`) that, when enab
 
 - **Eliminate casing noise from Azure plans**: Users working with `azurerm` resources want to review only genuine changes and not be distracted by spurious ID casing differences (e.g., `/subscriptions/ABC…` vs `/subscriptions/abc…`) that have no real infrastructure impact.
 - **Opt-in control**: Users who need to audit every string difference, including casing, should not be affected unless they choose otherwise.
-- **Consistent application**: The filter should apply uniformly across all attribute change tables in the report, not just for specific resource types.
+- **Targeted application**: The filter applies specifically to Azure resource ID attributes in azurerm resources — plain display names and non-Azure-ID strings are never suppressed.
 
 ## Scope
 
 ### In Scope
 
 - A new CLI flag `--ignore-case-changes` that enables the case-insensitive attribute change filter.
-- When the flag is active, attribute change rows where `before` and `after` are equal under case-insensitive string comparison are suppressed (treated as unchanged and hidden from the table).
+- When the flag is active, attribute change rows where `before` and `after` values are
+  **Azure resource IDs** (detected by the Azure platform helper `AzureScopeParser.IsAzureResourceId()`,
+  which recognises subscription paths (`/subscriptions/...`), resource group paths, full resource
+  paths, and management group paths (`/providers/Microsoft.Management/managementGroups/...`))
+  and are equal under case-insensitive comparison are suppressed.
+- The filter is implemented in **Azure provider-specific code** (`Providers/AzureRM/`) via a new
+  `IAttributeChangeFilter` extension point — it does NOT modify the core pipeline beyond adding
+  a call to the filter registry.
 - The flag interacts correctly with the existing `--show-unchanged-values` flag: rows suppressed by `--ignore-case-changes` are considered "effectively unchanged" and are **not** shown even when `--show-unchanged-values` is active.
-- The filter applies to all attribute change tables produced by any template (built-in and custom).
+- The filter applies to all azurerm attribute change tables.
 - Help text documents the new flag.
 
 ### Out of Scope
 
-- Locale-aware or Unicode-normalizing case comparison (simple ASCII/ordinal case-insensitive comparison is sufficient).
-- Filtering of non-string attribute types (numbers, booleans, objects); only string values are compared case-insensitively.
-- Automatic detection of the azurerm provider or Azure resource IDs — the filter is a blanket opt-in applied to all attributes across all providers.
+- Locale-aware or Unicode-normalizing case comparison (simple ordinal case-insensitive comparison is sufficient).
+- Filtering of non-Azure-ID string attributes: only attribute values that parse as a valid Azure
+  resource ID (subscription, resource group, resource, or management group scope) are subject
+  to the filter. Plain display-name strings, boolean or numeric values are unaffected.
+- Filtering for non-azurerm providers (e.g., `azapi` or `aws`). Other providers may register
+  their own `IAttributeChangeFilter` implementation in the future; that is out of scope here.
 - Suppressing the resource entry itself when all attribute changes are filtered out; the resource still appears in the report, but its attribute change table will have fewer (or no) rows.
 - Filtering of values in the plan summary counts (the resource-level summary lines and counts remain unaffected by this flag).
 
@@ -89,16 +99,23 @@ When `--ignore-case-changes` is active, rows suppressed by casing are treated as
 
 - [ ] CLI flag `--ignore-case-changes` is implemented and appears in help text.
 - [ ] When the flag is absent, report output is identical to current behavior (no regression).
-- [ ] When the flag is present, attribute change rows where before and after values are equal under case-insensitive string comparison are suppressed.
-- [ ] Non-string attribute values (numbers, booleans, nulls) are not affected by the filter.
+- [ ] When the flag is present, attribute change rows for **azurerm resources** where both the
+  before and after values are Azure resource IDs (per `AzureScopeParser.IsAzureResourceId()`)
+  and are equal under case-insensitive comparison are suppressed.
+- [ ] Non-Azure-ID attribute values (plain names, numeric, boolean, null) are NOT suppressed by
+  this filter regardless of the flag.
 - [ ] Rows suppressed by `--ignore-case-changes` remain hidden even when `--show-unchanged-values` is also passed.
-- [ ] The filter is applied consistently across all attribute change tables in the report (all resource types, all providers, built-in and custom templates).
-- [ ] Template authors can access the flag value to implement the filter in custom templates.
+- [ ] The filter logic lives entirely in `Providers/AzureRM/` (and `Platforms/Azure/` for ID
+  detection); **no Azure-specific logic is present** in `MarkdownGeneration/`.
+- [ ] Template authors can access the flag value via the `ignore_case_changes` Scriban variable
+  if they need to customise rendering.
 - [ ] Behavior is covered by automated tests, including:
-  - A test with only casing-only changes (all rows suppressed).
-  - A test with mixed changes (some casing-only, some real).
+  - A test with only Azure ID casing-only changes (all rows suppressed).
+  - A test with mixed changes (some Azure ID casing-only, some genuine).
+  - A test with a non-Azure-ID string that differs only in case (NOT suppressed).
   - A test confirming no regression when the flag is absent.
-  - A test confirming casing-only rows are still hidden when both `--ignore-case-changes` and `--show-unchanged-values` are active.
+  - A test confirming Azure ID casing-only rows are still hidden when both `--ignore-case-changes` and `--show-unchanged-values` are active.
+  - A test confirming that non-azurerm provider resources are NOT filtered.
 - [ ] README and usage documentation are updated to describe the new flag.
 
 ## Open Questions

@@ -2,187 +2,301 @@
 
 ## Status
 
-No architectural changes required. This feature extends the existing CLI flag + filtering pattern established by the `--show-unchanged-values` flag (feature 014).
+Revised (2025-07-14): The initial design placed the filter logic in the core pipeline
+(`BuildAttributeChanges()`). This revision moves the filter logic into Azure platform-specific
+code, with the core providing only a new `IAttributeChangeFilter` extension point.
+
+> **Critical constraint (from maintainer):** The case-insensitive filter MUST only apply to
+> Azure resource ID attributes and MUST be implemented in Azure platform-specific code under
+> `src/Oocx.TfPlan2Md/Providers/AzureRM/` and `src/Oocx.TfPlan2Md/Platforms/Azure/`.
+> It MUST NOT be placed in `MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs` as a
+> blanket string comparison.
 
 ## Analysis
 
-The codebase already has a clear, well-established pattern for CLI flags that influence attribute-change filtering:
+### Existing Pattern: `IValueFormatter` / `ValueFormatterRegistry`
 
-1. **CLI parsing** — `CliOptions` record + `CliParser.Parse()` in `src/Oocx.TfPlan2Md/CLI/CliParser.cs`
-2. **Filtering** — `ReportModelBuilder.BuildAttributeChanges()` in `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs`
-3. **Model propagation** — `ReportModel` property + `AotScriptObjectMapper` Scriban variable in `src/Oocx.TfPlan2Md/MarkdownGeneration/`
-4. **Composition wiring** — `CompositionRoot.CreateReportModelBuilder()` in `src/Oocx.TfPlan2Md/CompositionRoot.cs`
-5. **Help text** — `HelpTextProvider.GetHelpText()` in `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs`
+The codebase already has a clean extension point for provider-specific attribute value handling:
 
-The `--ignore-case-changes` flag maps perfectly onto this existing pipeline. No new architectural patterns are needed.
+- **`IValueFormatter`** (`MarkdownGeneration/Services/`) — interface that each provider implements
+- **`ValueFormatterRegistry`** (`MarkdownGeneration/Services/`) — core registry that stores
+  `(MatchPattern, IValueFormatter)` pairs and dispatches based on provider/resource/attribute/value
+- **`AzureResourceIdFormatter`** (`MarkdownGeneration/Services/`) — implements `IValueFormatter`
+  for the azurerm provider; calls `AzureScopeParser.IsAzureResourceId()` to detect Azure IDs
+- **`AzureRmValueFormatterRegistration`** (`Providers/AzureRM/`) — registers the formatter
+  for the `(^azurerm$|.*/azurerm$)` provider pattern
+- **`IProviderModule.RegisterValueFormatters()`** — each module's hook, with default no-op in
+  the interface
 
-## Filter Placement Decision
+Azure resource ID *detection* is already centralised in `AzureScopeParser.IsAzureResourceId()`
+(`Platforms/Azure/`), which parses the scope string and returns `true` when it resolves to a
+known Azure scope level (subscription, resource group, resource, management group).
 
-The filter is applied at **model-building time** inside `BuildAttributeChanges()`, immediately after the existing `valuesEqual` check. This is the correct location because:
+### Key Insight
 
-- It is consistent with the existing `_showUnchangedValues` filter — both filters suppress rows before the model is passed to templates.
-- It operates on **raw (unmasked) values** (`beforeValue` / `afterValue` from the flat dictionary), not display values. This matches the existing sensitive-masking pattern and avoids false positives from "(sensitive)" mask strings.
-- Rows filtered here simply never appear in `AttributeChanges`, so the filter applies uniformly to all templates (built-in and custom) automatically.
-- The `ReportModel.IgnoreCaseChanges` property (see below) exposes the flag to templates that need to customise their rendering (e.g., show a tooltip or banner).
+The same `IValueFormatter` / `ValueFormatterRegistry` pattern can be mirrored for *filtering*:
+a new `IAttributeChangeFilter` / `AttributeChangeFilterRegistry` extension point in the core,
+with the Azure-specific implementation living entirely in `Providers/AzureRM/`.
 
-### Filter Logic
+The core's `BuildAttributeChanges()` method changes minimally: it gains a single call to the
+filter registry when `_ignoreCaseChanges` is active. It does **not** contain any Azure-specific
+logic or regex patterns.
 
-After computing `valuesEqual` (ordinal comparison), an additional `isCasingOnlyChange` flag is computed:
+## Architecture Decision
+
+### New Extension Point: `IAttributeChangeFilter` + `AttributeChangeFilterRegistry`
+
+A new pair of types is added to `MarkdownGeneration/Services/`, mirroring the existing
+`IValueFormatter` / `ValueFormatterRegistry` pattern:
+
+**`AttributeChangeFilterContext`** — carries the full context needed for a filter decision:
 
 ```text
-isCasingOnlyChange = _ignoreCaseChanges
-    AND beforeValue is not null
-    AND afterValue is not null
-    AND string.Equals(beforeValue, afterValue, StringComparison.OrdinalIgnoreCase)
-    AND NOT valuesEqual
+ProviderName  : string?   (e.g. "registry.terraform.io/hashicorp/azurerm")
+AttributeName : string?   (e.g. "scope", "role_definition_id")
+BeforeValue   : string?   (raw value from the plan's "before" state)
+AfterValue    : string?   (raw value from the plan's "after" state)
 ```
 
-Row suppression conditions (evaluated in order):
-1. If `isCasingOnlyChange` → **always skip** (takes precedence over `--show-unchanged-values`)
-2. Else if `!_showUnchangedValues && valuesEqual` → skip (existing behaviour, unchanged)
-3. Otherwise → include row
+**`IAttributeChangeFilter`** — single method:
 
-This satisfies the spec requirement: _"rows suppressed by `--ignore-case-changes` remain hidden even when `--show-unchanged-values` is also passed."_
-
-### Non-String Values
-
-After `ConvertToFlatDictionary`, all plan values are represented as `string?`. In practice:
-- JSON numbers (e.g., `42`) and booleans (`true`/`false`) are always lowercase in Terraform plan output — they will already be ordinally equal (`valuesEqual = true`) and filtered by the existing unchanged-values check, or shown regardless.
-- The `isCasingOnlyChange` condition requires `NOT valuesEqual`, so it only triggers when ordinal comparison fails. A number like `42` will never change case. Boolean `true`/`false` won't differ in casing in legitimate Terraform output.
-- For null values: either `beforeValue` or `afterValue` being null causes `isCasingOnlyChange = false`, so the row is shown normally.
-
-The spec's "non-string values are not subject to the filter" constraint is therefore satisfied automatically without needing type-level checks.
-
-## Implementation Guidance
-
-This feature follows the same file-by-file pattern as the `--show-unchanged-values` feature (feature 014). The following components require changes:
-
-### 1. `src/Oocx.TfPlan2Md/CLI/CliParser.cs`
-
-**CliOptions record**: Add property:
-```csharp
-/// <summary>
-/// Gets a value indicating whether attribute change rows where before and after values
-/// differ only in casing are suppressed.
-/// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
-/// </summary>
-public bool IgnoreCaseChanges { get; init; }
+```text
+bool ShouldSuppress(AttributeChangeFilterContext context)
 ```
 
-**CliParser.Parse()**: Add switch case:
-```csharp
-case "--ignore-case-changes":
-    ignoreCaseChanges = true;
-    break;
+Returns `true` to suppress the attribute change row (hide it from the report).
+
+**`AttributeChangeFilterRegistry`** — list of `IAttributeChangeFilter` instances:
+
+```text
+Register(IAttributeChangeFilter filter)
+bool ShouldSuppress(AttributeChangeFilterContext context)
+  → iterates all registered filters; returns true if any returns true
 ```
 
-Return object initialisation: add `IgnoreCaseChanges = ignoreCaseChanges`.
+> **Design note:** Unlike `ValueFormatterRegistry`, the filter registry does not use
+> `MatchPattern` for routing. Each filter's `ShouldSuppress()` implementation is responsible
+> for self-selecting based on its own criteria (e.g., provider name, value pattern). This avoids
+> the ambiguity of which value (before or after) to pass to the `MatchPattern` value dimension,
+> and is sufficient given the small number of expected filters.
 
-### 2. `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs`
+### Azure-Specific Filter: `AzureResourceIdCaseChangeFilter`
 
-Add entry to the `options` array, positioned after `--show-unchanged-values`:
-```csharp
-("--ignore-case-changes", "Suppress attribute changes where before/after values differ only in casing."),
+New class in **`src/Oocx.TfPlan2Md/Providers/AzureRM/AzureResourceIdCaseChangeFilter.cs`**:
+
+```text
+Implements: IAttributeChangeFilter
+
+ShouldSuppress(context):
+  1. Return false if BeforeValue or AfterValue is null.
+  2. Return false if the provider is not azurerm
+       (check: providerName matches regex "(^azurerm$|.*/azurerm$)").
+  3. Return false if NEITHER BeforeValue NOR AfterValue is an Azure resource ID
+       (check: AzureScopeParser.IsAzureResourceId(BeforeValue)
+            || AzureScopeParser.IsAzureResourceId(AfterValue)).
+  4. Return false if values are ordinally equal (already handled by valuesEqual check).
+  5. Return true if string.Equals(BeforeValue, AfterValue, OrdinalIgnoreCase).
+     (casing-only change on an Azure resource ID — suppress it)
 ```
 
-### 3. `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs`
+The Azure resource ID detection uses the **already-existing**
+`AzureScopeParser.IsAzureResourceId()` from `Platforms/Azure/AzureScopeParser.cs`. No new
+detection logic is introduced in the core pipeline.
 
-Add constructor parameter (after `showUnchangedValues`):
-```csharp
-bool ignoreCaseChanges = false,
-```
+### Registration via `IProviderModule`
 
-Add backing field:
-```csharp
-private readonly bool _ignoreCaseChanges = ignoreCaseChanges;
-```
+A new method is added to `IProviderModule` (with a default no-op body to keep all existing
+provider modules compatible):
 
-Update the constructor XML doc comment to reference this parameter.
-
-### 4. `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs`
-
-In `BuildAttributeChanges()`, after the `valuesEqual` computation and before the existing skip check, add:
-
-```csharp
-var isCasingOnlyChange = _ignoreCaseChanges
-    && beforeValue is not null
-    && afterValue is not null
-    && !valuesEqual
-    && string.Equals(beforeValue, afterValue, StringComparison.OrdinalIgnoreCase);
-
-if (isCasingOnlyChange)
+```text
+void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry)
 {
-    continue;
+    // Default no-op
+}
+```
+
+`AzureRMModule` overrides this method and registers the filter:
+
+```text
+public void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry)
+{
+    registry.Register(new AzureResourceIdCaseChangeFilter());
+}
+```
+
+`ProviderRegistry` gains a matching bulk-registration method (consistent with the existing
+`RegisterAllValueFormatters`, `RegisterAllIconProviders`, etc. pattern):
+
+```text
+public void RegisterAllAttributeChangeFilters(AttributeChangeFilterRegistry registry)
+{
+    foreach (var provider in _providers)
+        provider.RegisterAttributeChangeFilters(registry);
+}
+```
+
+### Core Change: `BuildAttributeChanges()` (Minimal)
+
+The only change to the core pipeline is a single guard clause that delegates entirely to the
+registry. The core does **not** know about Azure, Azure resource IDs, or casing rules:
+
+```text
+After the valuesEqual computation, before the existing _showUnchangedValues check:
+
+if (_ignoreCaseChanges
+    && !valuesEqual
+    && _attributeChangeFilterRegistry.ShouldSuppress(
+           new AttributeChangeFilterContext(providerName, key, beforeValue, afterValue)))
+{
+    continue;   // Azure ID casing-only change — suppress row
 }
 
 if (!_showUnchangedValues && valuesEqual)
 {
-    continue;
+    continue;   // unchanged value — suppress row (existing behaviour, unchanged)
 }
 ```
 
-Replace the existing single `if (!_showUnchangedValues && valuesEqual) continue;` with the above two-guard pattern.
+This satisfies the spec requirement that casing-only rows remain hidden even when
+`--show-unchanged-values` is also passed (the Azure ID filter guard comes first).
 
-### 5. `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs`
+### Non-Azure-ID Attributes
 
-Add property:
-```csharp
-/// <summary>
-/// Gets a value indicating whether attribute change rows where before and after values
-/// differ only in casing are suppressed.
-/// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
-/// </summary>
-public required bool IgnoreCaseChanges { get; init; }
-```
+Attributes whose values are not Azure resource IDs (plain strings, numbers, booleans) are
+never matched by `AzureResourceIdCaseChangeFilter` because `IsAzureResourceId()` returns false.
+They continue to use the existing `valuesEqual` logic unchanged.
 
-### 6. `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs`
+## Filter Placement: Why Not in `BuildAttributeChanges()` Directly
 
-In `Build()`, add to the `return new ReportModel { ... }` initialiser:
-```csharp
-IgnoreCaseChanges = _ignoreCaseChanges,
-```
+| Approach | Pros | Cons |
+|---|---|---|
+| **Original**: blanket `isCasingOnlyChange` in core `BuildAttributeChanges()` | Simplest code change | Filters ALL string attributes regardless of type; Azure logic bleeds into core |
+| **Revised**: `IAttributeChangeFilter` registry + `AzureResourceIdCaseChangeFilter` | Azure logic isolated in provider code; extensible to other providers; matches existing `IValueFormatter` pattern | Slightly more files |
 
-### 7. `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs`
+The revised approach is chosen because it respects the architectural boundary (provider-specific
+logic stays in `Providers/`) and uses the exact same extension-point pattern already established
+for `IValueFormatter`.
 
-Add mapping alongside the existing `show_unchanged_values` entry:
-```csharp
-scriptObject["ignore_case_changes"] = model.IgnoreCaseChanges;
-```
+## Implementation Guidance
 
-### 8. `src/Oocx.TfPlan2Md/CompositionRoot.cs`
+### New files to create
 
-In `CreateReportModelBuilder()`, pass the new option:
-```csharp
-ignoreCaseChanges: options.IgnoreCaseChanges,
-```
+| File | Purpose |
+|------|---------|
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/AttributeChangeFilterContext.cs` | Context record for filter decisions |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/IAttributeChangeFilter.cs` | Filter interface |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/AttributeChangeFilterRegistry.cs` | Registry holding all registered filters |
+| `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureResourceIdCaseChangeFilter.cs` | Azure-specific filter implementation |
 
-## Components Affected
+### Files to modify
 
-| File | Change Type |
-|------|-------------|
-| `src/Oocx.TfPlan2Md/CLI/CliParser.cs` | Add `IgnoreCaseChanges` property + parser case |
-| `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs` | Add help entry for `--ignore-case-changes` |
-| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs` | Add constructor param + backing field |
-| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs` | Add `isCasingOnlyChange` guard in `BuildAttributeChanges()` |
-| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` | Add `IgnoreCaseChanges` property |
+| File | Change |
+|------|--------|
+| `src/Oocx.TfPlan2Md/Providers/IProviderModule.cs` | Add `RegisterAttributeChangeFilters()` with default no-op |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/Services/ProviderRegistry.cs` | Add `RegisterAllAttributeChangeFilters()` |
+| `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRMModule.cs` | Override `RegisterAttributeChangeFilters()` |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs` | Add `_ignoreCaseChanges` field + `_attributeChangeFilterRegistry` dependency |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs` | Add Azure ID filter guard before existing `valuesEqual` guard |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` | Add `IgnoreCaseChanges` property (for template access) |
 | `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs` | Populate `IgnoreCaseChanges` in returned model |
 | `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs` | Expose `ignore_case_changes` to Scriban templates |
-| `src/Oocx.TfPlan2Md/CompositionRoot.cs` | Pass `IgnoreCaseChanges` to `ReportModelBuilder` |
+| `src/Oocx.TfPlan2Md/CLI/CliParser.cs` | Add `IgnoreCaseChanges` property + parser switch case |
+| `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs` | Add help entry for `--ignore-case-changes` |
+| `src/Oocx.TfPlan2Md/CompositionRoot.cs` | Create `AttributeChangeFilterRegistry`, wire it up, pass `IgnoreCaseChanges` |
 
-No changes are required to templates, providers, or any other layer. The filter is provider-agnostic and applies transparently to all resource types.
+### `AttributeChangeFilterContext` record
+
+```csharp
+internal sealed record AttributeChangeFilterContext(
+    string? ProviderName,
+    string? AttributeName,
+    string? BeforeValue,
+    string? AfterValue);
+```
+
+### `AzureResourceIdCaseChangeFilter` logic summary
+
+```csharp
+// In Providers/AzureRM/AzureResourceIdCaseChangeFilter.cs
+internal sealed class AzureResourceIdCaseChangeFilter : IAttributeChangeFilter
+{
+    // Matches both the short provider name "azurerm" and the fully-qualified Terraform
+    // registry path such as "registry.terraform.io/hashicorp/azurerm".
+    private static readonly Regex AzureRmProviderPattern =
+        new(@"(^azurerm$|.*/azurerm$)", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+
+    public bool ShouldSuppress(AttributeChangeFilterContext context)
+    {
+        if (context.BeforeValue is null || context.AfterValue is null) return false;
+        if (!AzureRmProviderPattern.IsMatch(context.ProviderName ?? string.Empty)) return false;
+        if (!AzureScopeParser.IsAzureResourceId(context.BeforeValue)
+            && !AzureScopeParser.IsAzureResourceId(context.AfterValue)) return false;
+        // suppress only when the difference is casing-only
+        return string.Equals(context.BeforeValue, context.AfterValue, StringComparison.OrdinalIgnoreCase);
+        // Note: valuesEqual (ordinal) is already false at this point (checked by caller)
+    }
+}
+```
+
+### `CompositionRoot` wiring
+
+Add a new helper method:
+
+```csharp
+internal AttributeChangeFilterRegistry CreateAttributeChangeFilterRegistry(ProviderRegistry providerRegistry)
+{
+    var registry = new AttributeChangeFilterRegistry();
+    providerRegistry.RegisterAllAttributeChangeFilters(registry);
+    return registry;
+}
+```
+
+Pass `ignoreCaseChanges: options.IgnoreCaseChanges` and `attributeChangeFilterRegistry` to
+`ReportModelBuilder` constructor.
+
+### `ReportModelBuilder` constructor additions
+
+```csharp
+bool ignoreCaseChanges = false,
+AttributeChangeFilterRegistry? attributeChangeFilterRegistry = null,
+```
+
+Backing fields:
+
+```csharp
+private readonly bool _ignoreCaseChanges = ignoreCaseChanges;
+private readonly AttributeChangeFilterRegistry _attributeChangeFilterRegistry =
+    attributeChangeFilterRegistry ?? new AttributeChangeFilterRegistry();
+```
 
 ## Test Guidance
 
-Tests should follow the pattern in `ReportModelBuilderUnchangedValuesTests.cs`. Recommended new test class: `ReportModelBuilderIgnoreCaseChangesTests.cs`.
+### Unit tests
 
-Required test cases (from spec success criteria):
-1. **Flag absent (no regression)** — `BuildAttributeChanges` with `ignoreCaseChanges: false` includes all rows regardless of casing.
-2. **All rows casing-only** — All attribute change rows are suppressed when `ignoreCaseChanges: true`.
-3. **Mixed changes** — Only casing-only rows are suppressed; genuine changes remain.
-4. **Interaction with `--show-unchanged-values`** — Casing-only rows are still hidden when both `ignoreCaseChanges: true` and `showUnchangedValues: true`.
+Follow the pattern in `ReportModelBuilderUnchangedValuesTests.cs`. Recommended new test class:
+`ReportModelBuilderIgnoreCaseChangesTests.cs`.
 
-Also update `CliParserTests.cs` to verify `--ignore-case-changes` sets `IgnoreCaseChanges = true`.
+Test cases:
+1. **Flag absent (no regression)** — rows with Azure ID casing difference are shown.
+2. **Azure ID casing-only, flag active** — rows are suppressed.
+3. **Non-Azure-ID casing change, flag active** — rows are NOT suppressed (e.g., `"MyApp"` vs `"myapp"`).
+4. **Mixed changes** — only Azure ID casing rows suppressed; genuine changes remain.
+5. **Null before/after** — not suppressed regardless of flag.
+6. **Interaction with `--show-unchanged-values`** — Azure ID casing rows still hidden when both flags active.
+7. **Non-azurerm provider** — Azure ID-shaped values in another provider are NOT suppressed.
+
+Also test `AzureResourceIdCaseChangeFilter` in isolation, and update `CliParserTests.cs` to
+verify `--ignore-case-changes` sets `IgnoreCaseChanges = true`.
+
+### Test data file
+
+`src/tests/Oocx.TfPlan2Md.TUnit/TestData/azurerm-case-only-ids-plan.json` should include:
+- `azurerm_role_assignment` with `scope` and `role_definition_id` that differ only in casing
+- Same resource with a `display_name` that has a genuine content change
+- Resources with null before/after values
 
 ## ADR Reference
 
-No new ADR is required. This feature applies the same design as ADR-006 (Pure DI) and the established CLI flag pattern for filter options.
+No new ADR is required. This feature extends the existing `IValueFormatter` / `ValueFormatterRegistry`
+extension-point pattern (feature 061) and the CLI flag pattern established by feature 014.
+Architectural boundaries are enforced per ADR-007.

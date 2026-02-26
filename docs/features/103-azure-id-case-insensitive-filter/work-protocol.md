@@ -27,8 +27,14 @@
 - **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/test-plan.md`, `docs/features/103-azure-id-case-insensitive-filter/uat-test-plan.md`
 - **Problems Encountered:** None
 
+### Architect (Revision)
+- **Date:** 2025-07-14
+- **Summary:** Revised architecture based on maintainer requirement that the filter must (1) only apply to Azure resource ID attributes and (2) be implemented in Azure platform-specific code. The previous design (blanket `isCasingOnlyChange` in core `BuildAttributeChanges()`) was replaced with a new `IAttributeChangeFilter` / `AttributeChangeFilterRegistry` extension point (mirroring the existing `IValueFormatter` / `ValueFormatterRegistry` pattern). The Azure-specific logic now lives entirely in `Providers/AzureRM/AzureResourceIdCaseChangeFilter.cs`, using the existing `AzureScopeParser.IsAzureResourceId()` from `Platforms/Azure/`. The core pipeline only gains a single delegate call to the filter registry — no Azure knowledge in `MarkdownGeneration/`. The specification was also updated to reflect the revised scope (only Azure resource IDs filtered, only azurerm provider, not a blanket string filter). The `IProviderModule` interface gains a new `RegisterAttributeChangeFilters()` method with a default no-op. Updated success criteria now require tests for non-Azure-ID strings and non-azurerm provider resources.
+- **Artifacts Produced:** Updated `docs/features/103-azure-id-case-insensitive-filter/architecture.md`, updated `docs/features/103-azure-id-case-insensitive-filter/specification.md`
+- **Problems Encountered:** None — the `IValueFormatter` / `ValueFormatterRegistry` pattern was a direct model for the new extension point.
+
 ### Task Planner
 - **Date:** 2025-07-14
 - **Summary:** Read specification, architecture, and test plan documents. Inspected existing source files for context (`CliParser.cs`, `HelpTextProvider.cs`, `ReportModelBuilder.cs`, `ReportModelBuilder.ResourceChanges.cs`, `ReportModel.cs`, `AotScriptObjectMapper.cs`, `CompositionRoot.cs`) to verify exact change locations. Produced 11 developer tasks ordered by dependency (test data → CLI layer → model → filter logic → propagation → wiring → tests → docs), each with precise file paths, acceptance criteria, and code snippets from the architecture document.
 - **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/tasks.md`
-- **Problems Encountered:** None
+- **Problems Encountered:** None. **Note:** Tasks.md was produced against the original architecture and will need to be updated by the Task Planner to reflect the revised design (new `IAttributeChangeFilter` extension point + Azure-specific `AzureResourceIdCaseChangeFilter` class).

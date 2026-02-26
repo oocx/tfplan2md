@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "./scripts/hooks/deny-unauthorized-subagents.sh",
+        "cwd": ".",
+        "timeoutSec": 10,
+        "comment": "Deny task-tool invocations of generic agents (explore, task, general-purpose) from the Workflow Orchestrator"
+      }
+    ]
+  }
+}

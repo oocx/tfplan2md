@@ -93,7 +93,7 @@ public class AzureAdGroupSummaryMemberCountTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert - Summary should show 0 counts for groups with no members
-        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>empty</code></b> \u2014 <code>👥\u00A0Empty Team</code> | <code>0 👤\u00A00 👥\u00A00 💻</code>");
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>empty</code></b> \u2014 <code>👥\u00A0Empty Team</code> | <code>0 👤\u00A00 👥\u00A00 💻\u00A00 ❓</code>");
         group.ChildResourceGroups.Should().BeEmpty();
     }
 

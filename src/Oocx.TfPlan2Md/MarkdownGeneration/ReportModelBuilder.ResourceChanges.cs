@@ -137,7 +137,7 @@ internal partial class ReportModelBuilder
             if (_ignoreCaseChanges
                 && !valuesEqual
                 && _attributeChangeFilterRegistry.ShouldSuppress(
-                       new Services.AttributeChangeFilterContext(providerName, key, beforeDisplay, afterDisplay)))
+                       new Services.AttributeChangeFilterContext(providerName, key, beforeValue, afterValue)))
             {
                 continue;
             }

@@ -4,7 +4,7 @@
 
 The Azure Resource Manager (azurerm) provider occasionally reports resource attribute changes where the before and after values are identical except for letter casing. This is a known quirk of the Azure ARM API, which sometimes returns resource IDs (and occasionally other string attributes) with different capitalization on successive reads. Terraform detects these as changes, and tfplan2md faithfully reports them in the generated report — causing noise for reviewers who need to focus on real infrastructure changes.
 
-This feature introduces a new CLI flag (`--ignore-azure-id-case-changes`) that, when enabled, suppresses attribute change rows where the before and after values are equal under case-insensitive comparison. The filter is disabled by default to preserve the existing behavior for all users.
+This feature introduces a new CLI flag (`--ignore-azure-id-case-changes`) that, when enabled, suppresses attribute change rows where the before and after values are equal under case-insensitive comparison. The filter is enabled by default, suppressing Azure ID casing noise from reports automatically.
 
 ## User Goals
 

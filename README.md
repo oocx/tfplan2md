@@ -55,7 +55,7 @@ Terraform plans are notoriously difficult to review in pull requests:
 - 🔮 **Known-after-apply visibility** - Computed attributes (`after_unknown`) are shown in reports with `(known after apply)` labels, including configuration references (e.g., `azuread_group.admins`) when available, instead of being silently omitted
 - 🔧 **Specialized templates** - Custom rendering for complex resources (Azure Firewall rules, NSG rules, Azure DevOps build definitions and variable groups, Azure AD resources, and inline parent-child tables for memberships and Azure network resources)
 - 📚 **Azure API documentation links** - Reliable links to Microsoft Learn REST API documentation for 92 Azure resource types (AzAPI provider)
-- 🔇 **Case-insensitive Azure ID filter** - `--ignore-azure-id-case-changes` suppresses Azure resource ID attribute changes that differ only in casing (ARM API quirk), reducing noise in reports
+- 🔇 **Case-insensitive Azure ID filter** - Azure resource ID attribute changes that differ only in casing (ARM API quirk) are suppressed by default (`--ignore-azure-id-case-changes`), reducing noise in reports
 
 ## Installation
 
@@ -314,10 +314,10 @@ Users can always manually expand or collapse details blocks by clicking the summ
 
 The Azure ARM API occasionally returns resource IDs with different capitalisation on successive reads (for example, `/subscriptions/ABC123/resourceGroups/my-rg` versus `/subscriptions/abc123/resourceGroups/my-rg`). Terraform detects these as changes, and tfplan2md faithfully reports them — which can create noise for reviewers who need to focus on real infrastructure changes.
 
-Use `--ignore-azure-id-case-changes` to suppress attribute change rows where both the before and after values are Azure resource IDs that differ only in letter casing:
+This filtering is **enabled by default**. The `--ignore-azure-id-case-changes` flag explicitly requests this behaviour (same as the default). To see all changes including Azure ID casing differences, this feature currently requires a custom template or running an older version.
 
 ```bash
-# Suppress Azure ID casing noise
+# Suppress Azure ID casing noise (default behaviour, flag is optional)
 tfplan2md plan.json --ignore-azure-id-case-changes
 ```
 
@@ -329,7 +329,7 @@ tfplan2md plan.json --ignore-azure-id-case-changes
 | `role_definition_id` | `/subscriptions/ABC123/providers/Microsoft.Authorization/roleDefinitions/…` | `/subscriptions/abc123/providers/…` |
 | `display_name` | `My App` | `My Application` |
 
-Without the flag, all three rows appear. With `--ignore-azure-id-case-changes`, only the `display_name` row is shown — the two Azure ID casing rows are suppressed.
+By default (with `--ignore-azure-id-case-changes`), only the `display_name` row is shown — the two Azure ID casing rows are suppressed.
 
 **Important notes:**
 

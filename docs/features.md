@@ -2951,7 +2951,7 @@ See [docs/features/097-terraform-outputs/](features/097-terraform-outputs/) for 
 
 The Azure Resource Manager (ARM) API occasionally returns resource IDs with inconsistent capitalisation on successive reads — for example, `/subscriptions/ABC123/resourceGroups/my-rg` versus `/subscriptions/abc123/resourceGroups/my-rg`. Terraform detects these as changes, and tfplan2md faithfully reports them. These casing-only differences have no real infrastructure impact but can create noise for reviewers.
 
-The `--ignore-azure-id-case-changes` flag suppresses attribute change rows where both the before and after values are **Azure resource IDs** (subscription, resource group, full resource, or management group scope) that differ only in letter casing. The flag is disabled by default so existing behaviour is preserved.
+The `--ignore-azure-id-case-changes` flag suppresses attribute change rows where both the before and after values are **Azure resource IDs** (subscription, resource group, full resource, or management group scope) that differ only in letter casing. The filter is enabled by default. Pass `--ignore-azure-id-case-changes` to make the behaviour explicit (same as default).
 
 ### Usage
 

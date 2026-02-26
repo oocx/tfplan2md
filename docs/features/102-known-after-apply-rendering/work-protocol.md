@@ -81,3 +81,9 @@
 - **Summary:** Ran UAT on both GitHub and Azure DevOps. All 6 feature scenarios and regression test passed. Created GitHub PR #111 and Azure DevOps PR #102 using `uat-plan.md` as the feature artifact with the comprehensive demo as regression. Maintainer confirmed pass in chat. Both PRs cleaned up after decision.
 - **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/uat-report.md`
 - **Problems Encountered:** Comprehensive demo artifacts were outdated (generated before feature source files were committed); regenerated via `scripts/generate-demo-artifacts.sh` and committed before UAT. Azure DevOps PAT not set in local env; resolved by obtaining a token via `az account get-access-token`.
+
+### Release Manager
+- **Date:** 2026-02-26
+- **Summary:** Verified all pre-release checklist items: code review approved (after Developer rework), UAT passed on both GitHub and Azure DevOps, all required agents logged in work protocol (Requirements Engineer, Architect ×2, Quality Engineer, Task Planner, Developer ×3, Technical Writer, Code Reviewer, UAT Tester). `SNAPSHOT_UPDATE_OK` token confirmed present in commit `313ea2ae`. Commit `baed762b feat: implement known-after-apply rendering scenarios` is the sole user-facing change — all other branch commits are docs/test/chore. Screenshot generation skipped (Playwright timeout in this environment; no CDN-free fallback worked in time). Created release notes and will commit + PR.
+- **Artifacts Produced:** `docs/features/102-known-after-apply-rendering/release-notes.md`, `docs/features/102-known-after-apply-rendering/work-protocol.md` (updated)
+- **Problems Encountered:** Playwright-based screenshot generation timed out on page screenshot even with CDN-free azdo HTML. System Chrome (v143) worked but `--virtual-time-budget` only captures viewport; full-page or selector-based crops not feasible without a PDF-to-PNG converter (ghostscript not installed). Screenshots omitted from release notes.

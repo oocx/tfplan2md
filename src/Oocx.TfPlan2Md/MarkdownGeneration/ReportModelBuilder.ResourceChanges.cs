@@ -24,12 +24,16 @@ internal partial class ReportModelBuilder
     private const string ReplaceAction = "replace";
     private const string UnknownAction = "unknown";
     private const string NoOpAction = "no-op";
+    private const string SensitiveMask = "(sensitive)";
 
     private ResourceChangeModel BuildResourceChangeModel(ResourceChange rc)
     {
         var action = DetermineAction(rc.Change.Actions);
         var actionSymbol = GetActionSymbol(action);
-        var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName);
+        var normalizedAddress = NormalizeResourceAddressForReferenceLookup(rc.Address);
+        var configurationReferences = BuildConfigurationReferencesForResource(normalizedAddress);
+        var hasWholeResourceUnknownAfterApply = AfterUnknownHelper.IsWholeResourceUnknownAfterApply(rc.Change.AfterUnknown);
+        var attributeChanges = BuildAttributeChanges(rc.Change, rc.ProviderName, configurationReferences);
         var importId = string.IsNullOrWhiteSpace(rc.Change.Importing?.Id) ? null : rc.Change.Importing?.Id;
         var movedFromAddress = string.IsNullOrWhiteSpace(rc.PreviousAddress) ? null : rc.PreviousAddress;
         var isRefactoringAlreadyApplied = action == NoOpAction && (importId is not null || movedFromAddress is not null);
@@ -52,6 +56,8 @@ internal partial class ReportModelBuilder
             ImportId = importId,
             MovedFromAddress = movedFromAddress,
             IsRefactoringAlreadyApplied = isRefactoringAlreadyApplied,
+            HasWholeResourceUnknownAfterApply = hasWholeResourceUnknownAfterApply,
+            ConfigurationReferences = configurationReferences,
             ResourceChange = rc // Store for mapper access
         };
 
@@ -83,13 +89,17 @@ internal partial class ReportModelBuilder
     /// </summary>
     /// <param name="change">The resource change containing before and after state.</param>
     /// <param name="providerName">The provider name for the resource (e.g., "azurerm", "aws").</param>
+    /// <param name="configurationReferences">Configuration references grouped by top-level attribute.</param>
     /// <returns>Attribute changes prepared for rendering.</returns>
     /// <remarks>
     /// Compares raw values before masking to avoid dropping masked sensitive creates that would
     /// otherwise appear unchanged (e.g., "(sensitive)" versus a real value).
     /// Related feature: docs/features/014-unchanged-values-cli-option/specification.md.
     /// </remarks>
-    private List<AttributeChangeModel> BuildAttributeChanges(Change change, string providerName)
+    private List<AttributeChangeModel> BuildAttributeChanges(
+        Change change,
+        string providerName,
+        IReadOnlyDictionary<string, IReadOnlyList<string>> configurationReferences)
     {
         var beforeDict = ConvertToFlatDictionary(change.Before);
         var afterDict = ConvertToFlatDictionary(change.After);
@@ -106,10 +116,18 @@ internal partial class ReportModelBuilder
             afterDict.TryGetValue(key, out var afterValue);
 
             var isSensitive = IsSensitiveAttribute(key, beforeSensitiveDict, afterSensitiveDict);
-            var beforeDisplay = isSensitive && !_showSensitive ? "(sensitive)" : beforeValue;
-            var afterDisplay = isSensitive && !_showSensitive ? "(sensitive)" : afterValue;
-
+            var beforeDisplay = isSensitive && !_showSensitive ? SensitiveMask : beforeValue;
+            var afterDisplay = isSensitive && !_showSensitive ? SensitiveMask : afterValue;
             var valuesEqual = string.Equals(beforeValue, afterValue, StringComparison.Ordinal);
+
+            ApplyComputedKnownAfterApplyOverride(
+                change,
+                configurationReferences,
+                key,
+                isSensitive,
+                ref beforeDisplay,
+                ref afterDisplay,
+                ref valuesEqual);
 
             if (!_showUnchangedValues && valuesEqual)
             {
@@ -130,6 +148,149 @@ internal partial class ReportModelBuilder
         }
 
         return changes;
+    }
+
+    /// <summary>
+    /// Applies known-after-apply display overrides for computed attributes.
+    /// </summary>
+    /// <param name="change">Terraform change object.</param>
+    /// <param name="configurationReferences">Configuration references grouped by top-level attribute.</param>
+    /// <param name="key">Flattened attribute key.</param>
+    /// <param name="isSensitive">Whether the attribute is sensitive.</param>
+    /// <param name="beforeDisplay">The display before value to update when needed.</param>
+    /// <param name="afterDisplay">The display after value to update.</param>
+    /// <param name="valuesEqual">Equality flag to update when value should be forced as changed.</param>
+    private static void ApplyComputedKnownAfterApplyOverride(
+        Change change,
+        IReadOnlyDictionary<string, IReadOnlyList<string>> configurationReferences,
+        string key,
+        bool isSensitive,
+        ref string? beforeDisplay,
+        ref string? afterDisplay,
+        ref bool valuesEqual)
+    {
+        var isUnknownAfterApply = afterDisplay is null || string.Equals(afterDisplay, SensitiveMask, StringComparison.Ordinal);
+        isUnknownAfterApply = isUnknownAfterApply
+            && AfterUnknownHelper.IsAttributeUnknownAfterApply(change.AfterUnknown, key);
+        if (!isUnknownAfterApply)
+        {
+            return;
+        }
+
+        var displayLabel = ResolveKnownAfterApplyLabel(configurationReferences, key);
+        if (isSensitive)
+        {
+            beforeDisplay = SensitiveMask;
+            afterDisplay = $"🔒{displayLabel}";
+        }
+        else
+        {
+            afterDisplay = displayLabel;
+        }
+
+        valuesEqual = false;
+    }
+
+    /// <summary>
+    /// Builds a reference map for a single resource by grouping configuration references by attribute.
+    /// </summary>
+    /// <param name="normalizedAddress">Normalized resource address without instance key.</param>
+    /// <returns>Attribute-to-references map for the resource.</returns>
+    private Dictionary<string, IReadOnlyList<string>> BuildConfigurationReferencesForResource(string normalizedAddress)
+    {
+        if (string.IsNullOrWhiteSpace(normalizedAddress) || _configurationReferenceIndex.Count == 0)
+        {
+            return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        var grouped = _configurationReferenceIndex
+            .Where(entry => string.Equals(entry.Key.Address, normalizedAddress, StringComparison.OrdinalIgnoreCase))
+            .ToDictionary(
+                entry => entry.Key.Attribute,
+                entry => entry.Value,
+                StringComparer.OrdinalIgnoreCase);
+
+        return grouped;
+    }
+
+    /// <summary>
+    /// Resolves the display label for a computed known-after-apply attribute.
+    /// </summary>
+    /// <param name="configurationReferences">Configuration references grouped by top-level attribute.</param>
+    /// <param name="flattenedKey">Flattened attribute key.</param>
+    /// <returns>A formatted known-after-apply label with optional reference context.</returns>
+    private static string ResolveKnownAfterApplyLabel(
+        IReadOnlyDictionary<string, IReadOnlyList<string>> configurationReferences,
+        string flattenedKey)
+    {
+        var topLevelAttribute = GetTopLevelAttributeName(flattenedKey);
+        if (!string.IsNullOrWhiteSpace(topLevelAttribute)
+            && configurationReferences.TryGetValue(topLevelAttribute, out var references)
+            && references.Count > 0)
+        {
+            var selectedReference = ReferenceSelector.SelectBestReference(references);
+            if (!string.IsNullOrWhiteSpace(selectedReference))
+            {
+                return $"(known after apply: {selectedReference})";
+            }
+        }
+
+        return "(known after apply)";
+    }
+
+    /// <summary>
+    /// Extracts the top-level attribute name from a flattened key.
+    /// </summary>
+    /// <param name="flattenedKey">Flattened key such as <c>tags.env</c> or <c>rules[0].priority</c>.</param>
+    /// <returns>The top-level attribute name.</returns>
+    private static string GetTopLevelAttributeName(string flattenedKey)
+    {
+        if (string.IsNullOrWhiteSpace(flattenedKey))
+        {
+            return string.Empty;
+        }
+
+        var dotIndex = flattenedKey.IndexOf('.');
+        var bracketIndex = flattenedKey.IndexOf('[');
+
+        if (dotIndex < 0 && bracketIndex < 0)
+        {
+            return flattenedKey;
+        }
+
+        if (dotIndex < 0)
+        {
+            return flattenedKey[..bracketIndex];
+        }
+
+        if (bracketIndex < 0)
+        {
+            return flattenedKey[..dotIndex];
+        }
+
+        var endIndex = Math.Min(dotIndex, bracketIndex);
+        return flattenedKey[..endIndex];
+    }
+
+    /// <summary>
+    /// Normalizes resource addresses for configuration lookups by removing instance keys.
+    /// </summary>
+    /// <param name="address">The resource address to normalize.</param>
+    /// <returns>The normalized address without instance keys.</returns>
+    private static string NormalizeResourceAddressForReferenceLookup(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return string.Empty;
+        }
+
+        if (!address.EndsWith(']'))
+        {
+            return address;
+        }
+
+        var bracketIndex = address.LastIndexOf('[');
+        return bracketIndex < 0 ? address : address[..bracketIndex];
     }
 
     /// <summary>

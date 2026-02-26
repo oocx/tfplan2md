@@ -1,6 +1,6 @@
 # Work Protocol
 
-This file tracks the workflow for issue #573.
+This file tracks the workflow for issue #100.
 
 ---
 
@@ -20,7 +20,7 @@ Investigated the unknown action warning for ephemeral resources in OpenTofu/Terr
 
 #### Artifacts Produced
 
-- `docs/issues/573-open-action-support/analysis.md` - Complete technical analysis with implementation guidance
+- `docs/issues/100-open-action-support/analysis.md` - Complete technical analysis with implementation guidance
 
 #### Approach
 
@@ -106,7 +106,7 @@ Created comprehensive release notes documenting the fix for OpenTofu/Terraform e
 
 ### Artifacts Produced
 
-- `docs/issues/573-open-action-support/release-notes.md` - User-facing release notes following project conventions
+- `docs/issues/100-open-action-support/release-notes.md` - User-facing release notes following project conventions
 
 ### Approach
 
@@ -147,7 +147,7 @@ Conducted comprehensive code review of the implementation. The code is **product
 
 ### Artifacts Produced
 
-- `docs/issues/573-open-action-support/code-review.md` - Comprehensive code review report
+- `docs/issues/100-open-action-support/code-review.md` - Comprehensive code review report
 
 ### Key Findings
 
@@ -214,7 +214,7 @@ Verified PR readiness and prepared for maintainer review:
 
 1. ✅ Confirmed branch `copilot/handle-opentf-plan-action-open` exists
 2. ✅ Verified 5 commits present (analysis, implementation, release notes, code review, work protocol)
-3. ✅ Confirmed release notes exist at `docs/issues/573-open-action-support/release-notes.md`
+3. ✅ Confirmed release notes exist at `docs/issues/100-open-action-support/release-notes.md`
 4. ✅ Verified code review status: APPROVED (5/5 stars)
 5. ✅ Checked work protocol: All required agents logged (Issue Analyst, Developer, Technical Writer, Code Reviewer, Release Manager)
 6. ⚠️ CI workflows show "action_required" - normal for Copilot PRs, requires maintainer approval
@@ -315,7 +315,7 @@ None - PR is in excellent shape and ready for maintainer review.
 
 #### Summary
 
-Analyzed the complete bug fix workflow for OpenTofu ephemeral resource `open` action support (issue #573). This workflow demonstrated **exemplary execution** with:
+Analyzed the complete bug fix workflow for OpenTofu ephemeral resource `open` action support (issue #100). This workflow demonstrated **exemplary execution** with:
 - 100% success rate across all 6 agent tasks (zero retries, zero rework)
 - Perfect code quality (5/5 stars from Code Reviewer, zero defects)
 - Complete documentation trail (1024 lines of docs for 121 lines of code/tests)
@@ -326,7 +326,7 @@ Analyzed the complete bug fix workflow for OpenTofu ephemeral resource `open` ac
 
 #### Artifacts Produced
 
-- `docs/issues/573-open-action-support/retrospective.md` - Comprehensive retrospective report with analysis, metrics, and improvement opportunities
+- `docs/issues/100-open-action-support/retrospective.md` - Comprehensive retrospective report with analysis, metrics, and improvement opportunities
 
 #### Analysis Approach
 
@@ -411,4 +411,4 @@ None - this workflow represents an exemplary execution of the bug fix process. T
 ---
 
 **Retrospective completed:** 2026-02-23  
-**Report location:** `docs/issues/573-open-action-support/retrospective.md`
+**Report location:** `docs/issues/100-open-action-support/retrospective.md`

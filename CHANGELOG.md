@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.30.0"></a>
+## [1.30.0](https://github.com/oocx/tfplan2md/compare/v1.29.0...v1.30.0) (2026-02-26)
+
+### ✨ Features
+
+* implement known-after-apply rendering scenarios ([e111267](https://github.com/oocx/tfplan2md/commit/e111267b4eec2bc22c10e37724c491a2c0213842))
+
+### 📚 Documentation
+
+* 10-run validation confirms 100% subagent git commit reliability ([ec26e4d](https://github.com/oocx/tfplan2md/commit/ec26e4d86165fbf63a3fa69c70db396cf593a6cf))
+* add architecture for known-after-apply rendering ([64b6f8c](https://github.com/oocx/tfplan2md/commit/64b6f8c04ec36cb9a051ed40b6bf511974e532ae))
+* add code review for known-after-apply rendering ([92af0cd](https://github.com/oocx/tfplan2md/commit/92af0cdb5f4e2a5441c2789436e7f8fa765041d7))
+* add feature specification for 575-known-after-apply-rendering ([006ba78](https://github.com/oocx/tfplan2md/commit/006ba7892411ba98d7bd560a8b503b8fec8fa3b6))
+* add known-after-apply docs and uat artifact ([cf5654c](https://github.com/oocx/tfplan2md/commit/cf5654c66a8a77e9f1da9036ccff2c1d7ff05e1e))
+* add release notes for known-after-apply rendering (feature 102) ([e326e29](https://github.com/oocx/tfplan2md/commit/e326e29607f5f5c9d2a633e1a4080d49a52c636d))
+* add tasks for known-after-apply rendering ([7a949a1](https://github.com/oocx/tfplan2md/commit/7a949a131dddcc0eea550cef2bc6b8b5e92b8818))
+* add test plan and UAT test plan for known-after-apply rendering ([90d85d6](https://github.com/oocx/tfplan2md/commit/90d85d6b1fbd707d9bf45e1429be6c360dfa71dc))
+* add UAT report for known-after-apply rendering ([8ac51d3](https://github.com/oocx/tfplan2md/commit/8ac51d372076b9f476a236c4bb868507ee9618cd))
+* regenerate demo artifacts and examples ([6a5b748](https://github.com/oocx/tfplan2md/commit/6a5b7485d45d96ce473959fbf9461e7bf8b7ea4a))
+* renumber issues 573→100, 574→101, feature 575→102 ([86520fe](https://github.com/oocx/tfplan2md/commit/86520fe8fef5cec2b667252a55ec6e63c5a102be))
+* resolve OQ-01 - whole-resource-unknown shows note instead of placeholder ([2cf1982](https://github.com/oocx/tfplan2md/commit/2cf1982f4a4aa0c933a94042d34743f81de36355))
+* subagent commit/push research report and skill corrections ([2847df0](https://github.com/oocx/tfplan2md/commit/2847df08419a9c59a39a291993464f853a86c406))
+* update issue references from [#573](https://github.com/oocx/tfplan2md/issues/573) to [#100](https://github.com/oocx/tfplan2md/issues/100) in work protocol and code review documents ([eb494b5](https://github.com/oocx/tfplan2md/commit/eb494b54744109c1f91bedb06336f641daf3b557))
+* update work protocol with UAT Tester entry for feature 102 ([6aa7b25](https://github.com/oocx/tfplan2md/commit/6aa7b25e61853050168fb7c48976421750e1e0c8))
+
 <a name="1.29.0"></a>
 ## [1.29.0](https://github.com/oocx/tfplan2md/compare/v1.28.0...v1.29.0) (2026-02-24)
 

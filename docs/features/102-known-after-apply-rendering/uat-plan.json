@@ -1,0 +1,219 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.14.0",
+  "resource_changes": [
+    {
+      "address": "azuread_group_member.all_unknown",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "all_unknown",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": null,
+          "id": null
+        },
+        "after_unknown": {
+          "group_object_id": true,
+          "member_object_id": true,
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_admin_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_admin_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": null,
+          "id": null
+        },
+        "after_unknown": {
+          "group_object_id": true,
+          "member_object_id": true,
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azuread_group_member.platform_reader_member",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azuread_group_member",
+      "name": "platform_reader_member",
+      "provider_name": "registry.terraform.io/hashicorp/azuread",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "group_object_id": null,
+          "member_object_id": "user-201",
+          "id": null
+        },
+        "after_unknown": {
+          "group_object_id": true,
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_resource_group.demo",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "demo",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "id": null,
+          "location": "eastus",
+          "name": "rg-demo",
+          "tags": {}
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.data",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "data",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "account_replication_type": "LRS",
+          "name": "stdata",
+          "primary_access_key": "abc123"
+        },
+        "after": {
+          "account_replication_type": "GRS",
+          "name": "stdata",
+          "primary_access_key": null
+        },
+        "after_unknown": {
+          "primary_access_key": true
+        },
+        "before_sensitive": {
+          "primary_access_key": true
+        },
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "null_resource.app_config",
+      "module_address": null,
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "app_config",
+      "provider_name": "registry.terraform.io/hashicorp/null",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": null,
+        "after_unknown": true,
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "azuread_group_member.platform_admin_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_admin_member",
+          "provider_config_key": "azuread",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.platform_engineers.object_id",
+                "azuread_group.platform_engineers"
+              ]
+            },
+            "member_object_id": {
+              "references": [
+                "azuread_user.admin.object_id",
+                "azuread_user.admin"
+              ]
+            }
+          }
+        },
+        {
+          "address": "azuread_group_member.platform_reader_member",
+          "mode": "managed",
+          "type": "azuread_group_member",
+          "name": "platform_reader_member",
+          "provider_config_key": "azuread",
+          "expressions": {
+            "group_object_id": {
+              "references": [
+                "azuread_group.platform_engineers.object_id",
+                "azuread_group.platform_engineers"
+              ]
+            },
+            "member_object_id": {
+              "constant_value": "user-201"
+            }
+          }
+        },
+        {
+          "address": "azurerm_resource_group.demo",
+          "mode": "managed",
+          "type": "azurerm_resource_group",
+          "name": "demo",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "location": {
+              "constant_value": "eastus"
+            },
+            "name": {
+              "constant_value": "rg-demo"
+            }
+          }
+        },
+        {
+          "address": "azurerm_storage_account.data",
+          "mode": "managed",
+          "type": "azurerm_storage_account",
+          "name": "data",
+          "provider_config_key": "azurerm",
+          "expressions": {
+            "account_replication_type": {
+              "constant_value": "GRS"
+            },
+            "name": {
+              "constant_value": "stdata"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

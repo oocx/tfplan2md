@@ -1,7 +1,7 @@
 # Retrospective: OpenTofu Ephemeral Resource `open` Action Support
 
 **Date:** 2026-02-23  
-**Type:** Bug Fix (Issue #573)  
+**Type:** Bug Fix (Issue #100)  
 **Branch:** `copilot/handle-opentf-plan-action-open`  
 **PR:** #550
 

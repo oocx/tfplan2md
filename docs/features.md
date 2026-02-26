@@ -856,7 +856,75 @@ Attribute tables in the default template now vary by the resource change action 
 - Use `--show-unchanged-values` flag to display all attributes including unchanged ones
 - This filtering applies to all attribute change tables regardless of which template is used
 
-Null or unknown attributes are omitted from the tables to avoid meaningless rows, and sensitive attributes are masked unless `--show-sensitive` is used.
+Attributes where both the before and after values are null (and the attribute is not computed) are omitted from the tables to avoid meaningless rows. Sensitive attributes are masked unless `--show-sensitive` is used. Computed attributes (marked `after_unknown` in the plan) are shown with a `(known after apply)` placeholder — see [Known-After-Apply Rendering](#known-after-apply-rendering) below.
+
+## Known-After-Apply Rendering
+
+**Status:** ✅ Implemented (Feature 102)
+
+When Terraform cannot determine an attribute's final value until apply time (for example, because it depends on a resource that doesn't exist yet), plans encode this as `after_unknown: true`. Previously, tfplan2md silently dropped these attributes from reports. Now they are surfaced correctly.
+
+### Computed Attributes in Tables
+
+Attributes marked as computed in the plan JSON are shown in attribute tables with a `(known after apply)` placeholder:
+
+```markdown
+| Attribute | Value |
+|-----------|-------|
+| group_object_id | `(known after apply)` |
+| id | `(known after apply)` |
+```
+
+When the Terraform configuration contains a resolvable reference (for example `group_object_id = azuread_group.admins.object_id`), the reference is shown alongside the placeholder:
+
+```markdown
+| Attribute | Value |
+|-----------|-------|
+| group_object_id | `(known after apply: azuread_group.platform_engineers)` |
+| member_object_id | `(known after apply: azuread_user.admin)` |
+```
+
+**Reference priority** (most to least specific):
+1. Static resource reference — `type.name` (e.g., `azuread_group.platform_engineers`)
+2. `each.value.attribute` — conveys the for-each source attribute (e.g., `each.value.group_object_id`)
+3. `var.something` or `local.something` — identifies the variable source
+4. `(known after apply)` — used when no resolvable reference is found
+
+### Sensitive and Computed Attributes
+
+When an attribute is **both sensitive and computed** (for example, a secret that will be rotated on apply), the After column shows:
+
+```markdown
+| Attribute | Before | After |
+|-----------|--------|-------|
+| primary_access_key | `(sensitive)` | `🔒(known after apply)` |
+```
+
+The 🔒 lock icon indicates the before value was sensitive, making key rotations and secret regeneration clearly visible in PR reviews.
+
+### Whole-Resource Unknown
+
+When an entire new resource has all attribute values resolved only after apply (the plan has `after_unknown: true` at the root level rather than per-attribute), the resource block shows:
+
+```markdown
+_(all values known after apply)_
+```
+
+instead of the default `_No attribute changes._` placeholder.
+
+### AzureAD Group Member Summaries
+
+AzureAD group member resources (`azuread_group_member`) display a meaningful summary line even when both `group_object_id` and `member_object_id` are computed. Configuration references are used to construct a readable label:
+
+**Before (blank summary):**
+```
+➕ azuread_group_member `platform_admin_member` — `` → ``
+```
+
+**After (with references):**
+```
+➕ azuread_group_member `platform_admin_member` — `azuread_group.platform_engineers` → `azuread_user.admin`
+```
 
 ## Large Attribute Value Display
 

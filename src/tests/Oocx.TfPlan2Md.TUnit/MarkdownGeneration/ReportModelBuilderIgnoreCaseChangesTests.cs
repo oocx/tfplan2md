@@ -81,14 +81,14 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     }
 
     // -------------------------------------------------------------------------
-    // TC-02: Flag active + all-casing resource → AttributeChanges is empty.
+    // TC-02: Flag active + all-casing resource → resource is suppressed entirely.
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// TC-02: ignoreCaseChanges: true on resource with only Azure ID casing differences → empty AttributeChanges.
+    /// TC-02: ignoreCaseChanges: true on resource with only Azure ID casing differences → resource not rendered.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_AllAzureIdCasingOnly_AttributeChangesEmpty()
+    public async Task Build_IgnoreCaseChangesTrue_AllAzureIdCasingOnly_ResourceSuppressed()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -98,9 +98,9 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         var model = builder.Build(plan);
 
         // Assert
-        var resource = model.Changes.First(c => c.Address == "azurerm_role_assignment.casing_only");
-        resource.AttributeChanges.Should().BeEmpty(
-            "all attribute changes are Azure ID casing-only and should be suppressed");
+        var resource = model.Changes.FirstOrDefault(c => c.Address == "azurerm_role_assignment.casing_only");
+        resource.Should().BeNull(
+            "a resource whose only changes are Azure ID casing differences should be completely suppressed from display");
 
         await Task.CompletedTask;
     }
@@ -233,10 +233,10 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         // Act
         var model = builder.Build(plan);
 
-        // Assert: casing-only rows are still suppressed
-        var casingOnly = model.Changes.First(c => c.Address == "azurerm_role_assignment.casing_only");
-        casingOnly.AttributeChanges.Should().BeEmpty(
-            "Azure ID casing rows must remain suppressed even with --show-unchanged-values active");
+        // Assert: casing-only resource is suppressed entirely (not rendered at all)
+        var casingOnly = model.Changes.FirstOrDefault(c => c.Address == "azurerm_role_assignment.casing_only");
+        casingOnly.Should().BeNull(
+            "resource with only Azure ID casing changes must be suppressed from display even with --show-unchanged-values active");
 
         // Assert: genuine change is retained
         var mixed = model.Changes.First(c => c.Address == "azurerm_role_assignment.mixed_changes");

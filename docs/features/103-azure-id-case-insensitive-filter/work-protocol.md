@@ -80,3 +80,14 @@
   5. **A Copilot workflow ("Addressing comment on PR #564") is still in-progress** — triggered by `@copilot Continue` comment; must complete before new CI runs can be approved.
 - **Artifacts Produced:** Updated `work-protocol.md` with this release manager entry.
 - **Problems Encountered:** Release is **blocked** pending Technical Writer, Code Reviewer, CI approval, and PR draft-to-ready conversion. See release summary report for next steps.
+
+### Code Reviewer
+- **Date:** 2026-02-26
+- **Summary:** Completed full code review of feature 103. Found and fixed one Blocker and two Major issues directly:
+  1. **B-01 (Blocker, Fixed):** `RoleAssignmentViewModelFactory.Build` bypassed the case-change filter via its `BuildDefaultAttributes()` fallback for update/replace actions with all-filtered attribute changes. Fixed by scoping the fallback to actions other than `update`/`replace`. Added `UpdateAction` and `ReplaceAction` constants. Added 2 regression tests.
+  2. **M-01 (Major, Fixed):** UAT plan artifacts (`uat-plan.json`, `uat-plan.md`) required by the UAT test plan were missing. Created both with azurerm_role_assignment resources demonstrating correct suppression behavior.
+  3. **M-02 (Major, Fixed):** `docs/architecture.md` was not updated to reflect the new `IAttributeChangeFilter`/`AttributeChangeFilterRegistry` extension point. Updated file tree, table, and `IProviderModule` code snippet.
+  4. Two minor issues noted in the review report but not fixed: help text brevity (m-02) and display vs raw values in filter context (m-01).
+  All 1,299 tests pass. Markdownlint clean. CodeQL: 0 alerts.
+- **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/code-review.md`, `docs/features/103-azure-id-case-insensitive-filter/uat-plan.json`, `docs/features/103-azure-id-case-insensitive-filter/uat-plan.md`, updated `docs/architecture.md`, updated `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/RoleAssignmentViewModelFactory.cs`, updated `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/RoleAssignmentViewModelFactoryTests.cs`
+- **Problems Encountered:** B-01 rendering bug was not caught by unit tests (they test model-level `AttributeChanges`, not rendered output). Factory's `BuildDefaultAttributes()` fallback semantics changed to be action-aware.

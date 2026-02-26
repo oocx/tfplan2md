@@ -1,0 +1,57 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "variables": {},
+  "resource_changes": [
+    {
+      "address": "azurerm_role_assignment.app_contributor",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "app_contributor",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "scope": "/subscriptions/ABC123DEF-0000-0000-0000-000000000000/resourceGroups/my-app-rg",
+          "role_definition_id": "/subscriptions/ABC123DEF-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/B24988AC-6180-42A0-AB88-20F7382DD24C",
+          "principal_id": "aaaa0000-bb11-cc22-dd33-eeeeeeeeeeee"
+        },
+        "after": {
+          "scope": "/subscriptions/abc123def-0000-0000-0000-000000000000/resourceGroups/my-app-rg",
+          "role_definition_id": "/subscriptions/abc123def-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "principal_id": "aaaa0000-bb11-cc22-dd33-eeeeeeeeeeee"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.storage_reader",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "storage_reader",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "scope": "/subscriptions/ABC123DEF-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Storage/storageAccounts/myStorageAccount",
+          "role_definition_id": "/subscriptions/ABC123DEF-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/2A2B9908-6EA1-4AE2-8E65-A410DF84E7D1",
+          "principal_id": "bbbb0000-cc11-dd22-ee33-ffffffffffff",
+          "description": "Storage Reader access"
+        },
+        "after": {
+          "scope": "/subscriptions/abc123def-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Storage/storageAccounts/myStorageAccount",
+          "role_definition_id": "/subscriptions/abc123def-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/2a2b9908-6ea1-4ae2-8e65-a410df84e7d1",
+          "principal_id": "bbbb0000-cc11-dd22-ee33-ffffffffffff",
+          "description": "Storage Reader access for application team"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    }
+  ]
+}

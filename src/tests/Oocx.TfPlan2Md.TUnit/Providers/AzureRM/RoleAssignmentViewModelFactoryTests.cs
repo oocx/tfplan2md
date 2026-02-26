@@ -355,6 +355,84 @@ public class RoleAssignmentViewModelFactoryTests
     }
 
     /// <summary>
+    /// Verifies that when the update action has an empty attribute changes list (all filtered by
+    /// --ignore-case-changes), the SmallAttributes list is empty — not re-populated from defaults.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenUpdateActionAndEmptyAttributeChanges_SmallAttributesIsEmpty()
+    {
+        var before = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/ABC123/resourceGroups/my-rg",
+                "role_definition_id": "/subscriptions/ABC123/providers/Microsoft.Authorization/roleDefinitions/XYZ",
+                "principal_id": "principal-1"
+            }
+            """).RootElement;
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/abc123/resourceGroups/my-rg",
+                "role_definition_id": "/subscriptions/abc123/providers/Microsoft.Authorization/roleDefinitions/xyz",
+                "principal_id": "principal-1"
+            }
+            """).RootElement;
+
+        var change = CreateChange(before: before, after: after, actions: ["update"]);
+
+        // Simulate: all attribute changes were filtered by --ignore-case-changes
+        var viewModel = RoleAssignmentViewModelFactory.Build(
+            change,
+            action: "update",
+            attributeChanges: [], // intentionally empty — all filtered
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
+
+        viewModel.SmallAttributes.Should().BeEmpty(
+            "an empty attributeChanges list for update action means all changes were filtered; " +
+            "BuildDefaultAttributes() must not be called");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies that when the replace action has an empty attribute changes list (all filtered),
+    /// the SmallAttributes list is also empty.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    [Test]
+    public async Task Build_WhenReplaceActionAndEmptyAttributeChanges_SmallAttributesIsEmpty()
+    {
+        var before = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/ABC123/resourceGroups/my-rg",
+                "role_definition_id": "/subscriptions/ABC123/providers/Microsoft.Authorization/roleDefinitions/XYZ"
+            }
+            """).RootElement;
+        var after = JsonDocument.Parse("""
+            {
+                "scope": "/subscriptions/abc123/resourceGroups/my-rg",
+                "role_definition_id": "/subscriptions/abc123/providers/Microsoft.Authorization/roleDefinitions/xyz"
+            }
+            """).RootElement;
+
+        var change = CreateChange(before: before, after: after, actions: ["create", "delete"]);
+
+        // Simulate: all attribute changes were filtered by --ignore-case-changes
+        var viewModel = RoleAssignmentViewModelFactory.Build(
+            change,
+            action: "replace",
+            attributeChanges: [], // intentionally empty — all filtered
+            principalMapper: new NullPrincipalMapper(),
+            scopeFormatter: null);
+
+        viewModel.SmallAttributes.Should().BeEmpty(
+            "an empty attributeChanges list for replace action means all changes were filtered; " +
+            "BuildDefaultAttributes() must not be called");
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Verifies the summary shows raw subscription ID with 🔑 icon when no scope formatter is provided.
     /// </summary>
     [Test]

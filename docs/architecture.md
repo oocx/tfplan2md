@@ -258,6 +258,8 @@ tfplan2md/
 │   │   ├── ValueFormatterRegistry.cs  # Pattern-matched value formatting
 │   │   ├── IconProviderRegistry.cs    # Pattern-matched icon resolution
 │   │   ├── ResourceModelMapperRegistry.cs  # View model enrichment
+│   │   ├── AttributeChangeFilterRegistry.cs  # Attribute change row suppression
+│   │   ├── IAttributeChangeFilter.cs, AttributeChangeFilterContext.cs
 │   │   ├── PatternMatchingRegistry.cs  # Generic specificity-based resolver
 │   │   ├── IValueFormatter.cs, IIconProvider.cs, IResourceModelMapper.cs
 │   │   ├── FileBasedIconProvider.cs, StaticIconProvider.cs
@@ -470,7 +472,7 @@ This ensures templates are maintainable and extensible by users without C# knowl
 | `Models/` | Core model types: view model factories, parent-child relationships, child resources, code analysis report models, formatted values |
 | `Summaries/` | Resource summary generation: builders, mappings, path formatters |
 | `Helpers/` | JSON flattening, HTML summary builder, and `ScribanHelpers/` (19 partial files with 27+ Scriban functions) |
-| `Services/` | Service registries: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`, `ResourceModelMapperRegistry`, `PatternMatchingRegistry<T>` |
+| `Services/` | Service registries: `ProviderRegistry`, `ValueFormatterRegistry`, `IconProviderRegistry`, `ResourceModelMapperRegistry`, `AttributeChangeFilterRegistry`, `PatternMatchingRegistry<T>` |
 | `Templates/` | Embedded Scriban templates: `default.sbn`, `summary.sbn`, `_resource.sbn`, `_header.sbn`, `_summary.sbn`, `_child_resources.sbn`, and 4 code analysis partials |
 
 **Template Resolution Flow:**
@@ -725,6 +727,7 @@ public interface IProviderModule
     void RegisterIconProviders(IconProviderRegistry registry) { }
     void RegisterParentChildRelationships(IParentChildRelationshipRegistry registry) { }
     void RegisterResourceModelMappers(ResourceModelMapperRegistry registry) { }
+    void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry) { }
     void RegisterPostMergeCallbacks(Action<IReadOnlyList<ResourceChangeModel>> callback) { }
 }
 ```

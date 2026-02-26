@@ -24,6 +24,19 @@ internal static class RoleAssignmentViewModelFactory
     private const string DeleteAction = "delete";
 
     /// <summary>
+    /// Terraform action name for update operations.
+    /// For update (and replace) actions, an empty <c>attributeChanges</c> list indicates
+    /// that all changes were suppressed by a filter (e.g., --ignore-case-changes).
+    /// </summary>
+    private const string UpdateAction = "update";
+
+    /// <summary>
+    /// Terraform action name for replace (destroy-then-recreate) operations.
+    /// Like update, an empty list here means all changes were filtered.
+    /// </summary>
+    private const string ReplaceAction = "replace";
+
+    /// <summary>
     /// Attribute name for scope values.
     /// </summary>
     private const string ScopeAttribute = "scope";
@@ -111,7 +124,15 @@ internal static class RoleAssignmentViewModelFactory
 
         var summaryText = BuildSummaryText(action, activeScope, activeRole, activePrincipal, scopeFormatter, change.Address);
 
-        var allAttributes = attributeChanges.Count > 0
+        // Use BuildDefaultAttributes() only when no pre-built attribute list is provided,
+        // UNLESS the action is update or replace. For update/replace, an empty list means
+        // all changes were suppressed by a filter (e.g., --ignore-case-changes) — in that
+        // case the attribute table should be empty, not re-populated from raw resource data.
+        // For create, delete, no-op, and other actions the empty-list fallback is preserved.
+        // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+        var allAttributes = (attributeChanges.Count > 0
+                             || action == UpdateAction
+                             || action == ReplaceAction)
             ? attributeChanges
             : BuildDefaultAttributes();
 

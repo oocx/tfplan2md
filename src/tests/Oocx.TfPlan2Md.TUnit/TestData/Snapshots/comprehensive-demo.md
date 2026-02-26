@@ -615,4 +615,4 @@ line3: end
 | 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-1234-1234-1234-123456789012` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |
 
-> ℹ️ 1 resource with only filtered changes (e.g. Azure resource ID casing differences) is not shown. Run without `--ignore-azure-id-case-changes` to see all changes.
+> ℹ️ 1 resource with only filtered changes (e.g. Azure resource ID casing differences) is not shown. Use `--no-ignore-azure-id-case-changes` to see all changes.

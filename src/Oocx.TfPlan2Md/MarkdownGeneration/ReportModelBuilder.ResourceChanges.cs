@@ -134,7 +134,7 @@ internal partial class ReportModelBuilder
             // This guard comes BEFORE the valuesEqual check so that Azure ID casing rows remain
             // hidden even when --show-unchanged-values is active.
             // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
-            if (_ignoreCaseChanges
+            if (_ignoreAzureIdCaseChanges
                 && !valuesEqual
                 && _attributeChangeFilterRegistry.ShouldSuppress(
                        new Services.AttributeChangeFilterContext(providerName, key, beforeValue, afterValue)))

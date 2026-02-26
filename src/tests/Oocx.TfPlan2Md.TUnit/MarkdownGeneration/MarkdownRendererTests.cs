@@ -846,7 +846,7 @@ public class MarkdownRendererTests
             RenderTarget = RenderTarget.AzureDevOps,
             DetailsDisplayMode = Oocx.TfPlan2Md.RenderTargets.DetailsDisplayMode.Auto,
             RefactoringOperations = [],
-            IgnoreCaseChanges = false
+            IgnoreAzureIdCaseChanges = false
         };
         var tempFile = Path.GetTempFileName();
         File.WriteAllText(tempFile, "{{ invalid template syntax }}{{");

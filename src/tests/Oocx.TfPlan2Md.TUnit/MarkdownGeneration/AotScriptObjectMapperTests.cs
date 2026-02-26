@@ -204,7 +204,7 @@ public class AotScriptObjectMapperTests
             Timestamp = "",
             ReportTitle = "Test",
             ShowUnchangedValues = false,
-            IgnoreCaseChanges = false,
+            IgnoreAzureIdCaseChanges = false,
             ShowSensitive = showSensitive,
             RenderTarget = RenderTargets.RenderTarget.GitHub,
             DetailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto,

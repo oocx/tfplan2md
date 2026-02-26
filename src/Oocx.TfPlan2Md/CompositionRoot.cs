@@ -249,7 +249,7 @@ internal sealed class CompositionRoot(CliOptions options)
             codeAnalysisInput: codeAnalysisInput,
             iconProviderRegistry: iconProviderRegistry,
             detailsDisplayMode: options.DetailsDisplayMode,
-            ignoreCaseChanges: options.IgnoreCaseChanges,
+            ignoreAzureIdCaseChanges: options.IgnoreAzureIdCaseChanges,
             attributeChangeFilterRegistry: CreateAttributeChangeFilterRegistry(providerRegistry));
     }
 

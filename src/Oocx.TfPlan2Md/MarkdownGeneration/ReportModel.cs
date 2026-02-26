@@ -92,7 +92,7 @@ internal class ReportModel
     /// are Azure resource IDs that differ only in casing are suppressed.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
-    public required bool IgnoreCaseChanges { get; init; }
+    public required bool IgnoreAzureIdCaseChanges { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether sensitive values should be shown in plaintext instead of masked.
@@ -128,7 +128,7 @@ internal class ReportModel
 
     /// <summary>
     /// Gets the number of resources suppressed from rendering because all their attribute changes
-    /// were filtered out (e.g., by <c>--ignore-case-changes</c>) and they have no other notable content.
+    /// were filtered out (e.g., by <c>--ignore-azure-id-case-changes</c>) and they have no other notable content.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
     public int FilteredResourceCount { get; init; }

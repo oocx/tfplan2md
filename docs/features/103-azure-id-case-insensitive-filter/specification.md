@@ -4,7 +4,7 @@
 
 The Azure Resource Manager (azurerm) provider occasionally reports resource attribute changes where the before and after values are identical except for letter casing. This is a known quirk of the Azure ARM API, which sometimes returns resource IDs (and occasionally other string attributes) with different capitalization on successive reads. Terraform detects these as changes, and tfplan2md faithfully reports them in the generated report — causing noise for reviewers who need to focus on real infrastructure changes.
 
-This feature introduces a new CLI flag (`--ignore-case-changes`) that, when enabled, suppresses attribute change rows where the before and after values are equal under case-insensitive comparison. The filter is disabled by default to preserve the existing behavior for all users.
+This feature introduces a new CLI flag (`--ignore-azure-id-case-changes`) that, when enabled, suppresses attribute change rows where the before and after values are equal under case-insensitive comparison. The filter is disabled by default to preserve the existing behavior for all users.
 
 ## User Goals
 
@@ -16,7 +16,7 @@ This feature introduces a new CLI flag (`--ignore-case-changes`) that, when enab
 
 ### In Scope
 
-- A new CLI flag `--ignore-case-changes` that enables the case-insensitive attribute change filter.
+- A new CLI flag `--ignore-azure-id-case-changes` that enables the case-insensitive attribute change filter.
 - When the flag is active, attribute change rows where `before` and `after` values are
   **Azure resource IDs** (detected by the Azure platform helper `AzureScopeParser.IsAzureResourceId()`,
   which recognises subscription paths (`/subscriptions/...`), resource group paths, full resource
@@ -25,7 +25,7 @@ This feature introduces a new CLI flag (`--ignore-case-changes`) that, when enab
 - The filter is implemented in **Azure provider-specific code** (`Providers/AzureRM/`) via a new
   `IAttributeChangeFilter` extension point — it does NOT modify the core pipeline beyond adding
   a call to the filter registry.
-- The flag interacts correctly with the existing `--show-unchanged-values` flag: rows suppressed by `--ignore-case-changes` are considered "effectively unchanged" and are **not** shown even when `--show-unchanged-values` is active.
+- The flag interacts correctly with the existing `--show-unchanged-values` flag: rows suppressed by `--ignore-azure-id-case-changes` are considered "effectively unchanged" and are **not** shown even when `--show-unchanged-values` is active.
 - The filter applies to all azurerm attribute change tables.
 - Help text documents the new flag.
 
@@ -52,7 +52,7 @@ Result: All attribute change rows are included, including rows where before/afte
 
 **Enable case-insensitive filter**:
 ```bash
-tfplan2md plan.json --ignore-case-changes > report.md
+tfplan2md plan.json --ignore-azure-id-case-changes > report.md
 ```
 Result: Attribute change rows where before and after values are equal under case-insensitive comparison are suppressed.
 
@@ -76,7 +76,7 @@ Given a Terraform plan that reports the following changes on an `azurerm_role_as
 | role_definition_id | `/providers/Microsoft.Authorization/roleDefinitions/XYZ` | `/providers/Microsoft.Authorization/roleDefinitions/xyz` |
 | display_name | `My App` | `My Application` |
 
-**With `--ignore-case-changes` (casing-only rows suppressed)**:
+**With `--ignore-azure-id-case-changes` (casing-only rows suppressed)**:
 
 | Attribute | Before | After |
 |-----------|--------|-------|
@@ -86,7 +86,7 @@ The `scope` and `role_definition_id` rows are suppressed because their before/af
 
 ### Interaction with `--show-unchanged-values`
 
-When `--ignore-case-changes` is active, rows suppressed by casing are treated as "effectively unchanged" and remain hidden even if `--show-unchanged-values` is also passed. This means `--ignore-case-changes` takes precedence over `--show-unchanged-values` for casing-only rows.
+When `--ignore-azure-id-case-changes` is active, rows suppressed by casing are treated as "effectively unchanged" and remain hidden even if `--show-unchanged-values` is also passed. This means `--ignore-azure-id-case-changes` takes precedence over `--show-unchanged-values` for casing-only rows.
 
 ### Edge Cases
 
@@ -97,24 +97,24 @@ When `--ignore-case-changes` is active, rows suppressed by casing are treated as
 
 ## Success Criteria
 
-- [ ] CLI flag `--ignore-case-changes` is implemented and appears in help text.
+- [ ] CLI flag `--ignore-azure-id-case-changes` is implemented and appears in help text.
 - [ ] When the flag is absent, report output is identical to current behavior (no regression).
 - [ ] When the flag is present, attribute change rows for **azurerm resources** where both the
   before and after values are Azure resource IDs (per `AzureScopeParser.IsAzureResourceId()`)
   and are equal under case-insensitive comparison are suppressed.
 - [ ] Non-Azure-ID attribute values (plain names, numeric, boolean, null) are NOT suppressed by
   this filter regardless of the flag.
-- [ ] Rows suppressed by `--ignore-case-changes` remain hidden even when `--show-unchanged-values` is also passed.
+- [ ] Rows suppressed by `--ignore-azure-id-case-changes` remain hidden even when `--show-unchanged-values` is also passed.
 - [ ] The filter logic lives entirely in `Providers/AzureRM/` (and `Platforms/Azure/` for ID
   detection); **no Azure-specific logic is present** in `MarkdownGeneration/`.
-- [ ] Template authors can access the flag value via the `ignore_case_changes` Scriban variable
+- [ ] Template authors can access the flag value via the `ignore_azure_id_case_changes` Scriban variable
   if they need to customise rendering.
 - [ ] Behavior is covered by automated tests, including:
   - A test with only Azure ID casing-only changes (all rows suppressed).
   - A test with mixed changes (some Azure ID casing-only, some genuine).
   - A test with a non-Azure-ID string that differs only in case (NOT suppressed).
   - A test confirming no regression when the flag is absent.
-  - A test confirming Azure ID casing-only rows are still hidden when both `--ignore-case-changes` and `--show-unchanged-values` are active.
+  - A test confirming Azure ID casing-only rows are still hidden when both `--ignore-azure-id-case-changes` and `--show-unchanged-values` are active.
   - A test confirming that non-azurerm provider resources are NOT filtered.
 - [ ] README and usage documentation are updated to describe the new flag.
 

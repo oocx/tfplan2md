@@ -51,10 +51,12 @@ internal partial class ReportModelBuilder
             .ToList();
 
         // Also filter out update/unknown resources where all attribute changes were suppressed
-        // (e.g., by --ignore-case-changes) and there is nothing else meaningful to display.
+        // by --ignore-azure-id-case-changes and there is nothing else meaningful to display.
+        // Only applies when casing filter is active; when disabled no additional suppression occurs.
         // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md
         var displayChanges = afterNoOpFilter
-            .Where(c => c.Action is not (UpdateAction or UnknownAction)
+            .Where(c => !_ignoreAzureIdCaseChanges
+                || c.Action is not (UpdateAction or UnknownAction)
                 || c.AttributeChanges.Count > 0
                 || c.CodeAnalysisFindings.Count > 0
                 || c.ImportId is not null
@@ -132,7 +134,7 @@ internal partial class ReportModelBuilder
             Summary = summary,
             CodeAnalysis = codeAnalysisReport,
             ShowUnchangedValues = _showUnchangedValues,
-            IgnoreCaseChanges = _ignoreCaseChanges,
+            IgnoreAzureIdCaseChanges = _ignoreAzureIdCaseChanges,
             ShowSensitive = _showSensitive,
             RenderTarget = renderTarget,
             DetailsDisplayMode = _detailsDisplayMode,

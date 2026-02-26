@@ -78,17 +78,17 @@ public class HelpTextProviderTests
     }
 
     /// <summary>
-    /// TC-10: Help text includes the --ignore-case-changes option with a description that mentions casing.
+    /// TC-10: Help text includes the --ignore-azure-id-case-changes option with a description that mentions casing.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
     [Test]
-    public void GetHelpText_IncludesIgnoreCaseChangesOption()
+    public void GetHelpText_IncludesIgnoreAzureIdCaseChangesOption()
     {
         // Arrange & Act
         var help = HelpTextProvider.GetHelpText();
 
         // Assert
-        help.Should().Contain("--ignore-case-changes",
+        help.Should().Contain("--ignore-azure-id-case-changes",
             "the flag should appear in the help text");
         help.Should().Contain("casing",
             "the description should reference casing");

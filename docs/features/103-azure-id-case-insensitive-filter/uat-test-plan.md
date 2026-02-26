@@ -2,7 +2,7 @@
 
 ## Goal
 
-Verify that the `--ignore-case-changes` flag correctly suppresses casing-only attribute rows in the rendered markdown output, as seen in GitHub and Azure DevOps PR comments.
+Verify that the `--ignore-azure-id-case-changes` flag correctly suppresses casing-only attribute rows in the rendered markdown output, as seen in GitHub and Azure DevOps PR comments.
 
 ---
 
@@ -20,7 +20,7 @@ Verify that the `--ignore-case-changes` flag correctly suppresses casing-only at
 
 - **MUST be a real Terraform plan JSON** containing `azurerm_role_assignment` or similar resources with attributes where before/after values differ only in casing (uppercase vs lowercase Azure resource IDs).
 - **MUST include a mixed-changes resource** — one where some attributes have casing-only differences and at least one has a genuine value change.
-- **MUST be rendered with `--ignore-case-changes`** so the output shows casing rows suppressed.
+- **MUST be rendered with `--ignore-azure-id-case-changes`** so the output shows casing rows suppressed.
 - **Rationale:** The plan must produce visible before/after casing differences to demonstrate the filter in action. A `--show-unchanged-values` baseline comparison (without the flag) is also useful to show what was previously visible.
 - **Key Resources:**
   1. A resource with only casing-only attribute changes (to demonstrate complete suppression)
@@ -34,7 +34,7 @@ Verify that the `--ignore-case-changes` flag correctly suppresses casing-only at
 ```bash
 # Generate the rendered output from the plan (with the new flag)
 tfplan2md docs/features/103-azure-id-case-insensitive-filter/uat-plan.json \
-  --ignore-case-changes \
+  --ignore-azure-id-case-changes \
   > docs/features/103-azure-id-case-insensitive-filter/uat-plan.md
 ```
 
@@ -53,7 +53,7 @@ tfplan2md docs/features/103-azure-id-case-insensitive-filter/uat-plan.json \
 ## Test Steps
 
 1. Developer creates `uat-plan.json` following the requirements in this document.
-2. Developer runs `tfplan2md` with `--ignore-case-changes` to generate `uat-plan.md`.
+2. Developer runs `tfplan2md` with `--ignore-azure-id-case-changes` to generate `uat-plan.md`.
 3. Code Reviewer validates that both `uat-plan.json` and `uat-plan.md` exist and are complete.
 4. UAT Tester uses `uat-plan.md` as the PR body / comment for testing.
 5. UAT posts **two** separate PR comments:
@@ -86,14 +86,14 @@ In the **feature-specific report** (first comment, labeled "🎯 Feature Test"):
 
 **Expected Outcome:**
 
-- When `--ignore-case-changes` is active, the attribute table for the casing-only resource shows zero rows.
-- When `--ignore-case-changes` is active, the attribute table for the mixed-changes resource shows only non-casing changes.
+- When `--ignore-azure-id-case-changes` is active, the attribute table for the casing-only resource shows zero rows.
+- When `--ignore-azure-id-case-changes` is active, the attribute table for the mixed-changes resource shows only non-casing changes.
 - Both resources still appear in the resource change summary (plan-level counts are unaffected).
 
 **Before/After Context:**
 
-- **Before (without `--ignore-case-changes`):** Both the casing-only and the genuine change rows appear side-by-side in the attribute table, making it hard for reviewers to identify real changes.
-- **After (with `--ignore-case-changes`):** Only genuine infrastructure changes appear in the attribute table; casing noise from the Azure ARM API is invisible.
+- **Before (without `--ignore-azure-id-case-changes`):** Both the casing-only and the genuine change rows appear side-by-side in the attribute table, making it hard for reviewers to identify real changes.
+- **After (with `--ignore-azure-id-case-changes`):** Only genuine infrastructure changes appear in the attribute table; casing noise from the Azure ARM API is invisible.
 
 ---
 

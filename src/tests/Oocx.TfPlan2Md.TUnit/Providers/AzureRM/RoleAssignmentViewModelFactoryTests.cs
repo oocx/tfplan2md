@@ -356,7 +356,7 @@ public class RoleAssignmentViewModelFactoryTests
 
     /// <summary>
     /// Verifies that when the update action has an empty attribute changes list (all filtered by
-    /// --ignore-case-changes), the SmallAttributes list is empty — not re-populated from defaults.
+    /// --ignore-azure-id-case-changes), the SmallAttributes list is empty — not re-populated from defaults.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
     [Test]
@@ -379,7 +379,7 @@ public class RoleAssignmentViewModelFactoryTests
 
         var change = CreateChange(before: before, after: after, actions: ["update"]);
 
-        // Simulate: all attribute changes were filtered by --ignore-case-changes
+        // Simulate: all attribute changes were filtered by --ignore-azure-id-case-changes
         var viewModel = RoleAssignmentViewModelFactory.Build(
             change,
             action: "update",
@@ -417,7 +417,7 @@ public class RoleAssignmentViewModelFactoryTests
 
         var change = CreateChange(before: before, after: after, actions: ["create", "delete"]);
 
-        // Simulate: all attribute changes were filtered by --ignore-case-changes
+        // Simulate: all attribute changes were filtered by --ignore-azure-id-case-changes
         var viewModel = RoleAssignmentViewModelFactory.Build(
             change,
             action: "replace",

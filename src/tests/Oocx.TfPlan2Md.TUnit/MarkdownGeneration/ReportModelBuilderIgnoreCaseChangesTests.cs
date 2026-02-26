@@ -10,7 +10,7 @@ using TUnit.Core;
 namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 
 /// <summary>
-/// Integration tests for the <c>--ignore-case-changes</c> feature in <see cref="ReportModelBuilder"/>.
+/// Integration tests for the <c>--ignore-azure-id-case-changes</c> feature in <see cref="ReportModelBuilder"/>.
 /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
 /// </summary>
 /// <remarks>
@@ -25,7 +25,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// - <c>random_string.non_azurerm</c>: Azure-ID-shaped value in a non-azurerm provider.
 /// </remarks>
 [Category("Unit")]
-public class ReportModelBuilderIgnoreCaseChangesTests
+public class ReportModelBuilderIgnoreAzureIdCaseChangesTests
 {
     private readonly TerraformPlanParser _parser = new();
     private readonly string _planJson = File.ReadAllText("TestData/azurerm-case-only-ids-plan.json");
@@ -46,7 +46,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         azureRmModule.RegisterAttributeChangeFilters(filterRegistry);
 
         return new ReportModelBuilder(
-            ignoreCaseChanges: ignoreCaseChanges,
+            ignoreAzureIdCaseChanges: ignoreCaseChanges,
             showUnchangedValues: showUnchangedValues,
             attributeChangeFilterRegistry: filterRegistry);
     }
@@ -59,7 +59,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-01: ignoreCaseChanges: false → Azure ID casing-only rows are present in AttributeChanges.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesFalse_IncludesCasingOnlyRows()
+    public async Task Build_IgnoreAzureIdCaseChangesFalse_IncludesCasingOnlyRows()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -88,7 +88,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-02: ignoreCaseChanges: true on resource with only Azure ID casing differences → resource not rendered.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_AllAzureIdCasingOnly_ResourceSuppressed()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_AllAzureIdCasingOnly_ResourceSuppressed()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -113,7 +113,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-03: ignoreCaseChanges: true on mixed resource → display_name present, scope absent.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_MixedChanges_RetainsGenuineChanges()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_MixedChanges_RetainsGenuineChanges()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -142,7 +142,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-04: Null before value → tenant_id row is present even with flag active.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_NullBeforeValue_RowIsShown()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_NullBeforeValue_RowIsShown()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -169,7 +169,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-05: Null after value → tenant_id row is present.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_NullAfterValue_RowIsShown()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_NullAfterValue_RowIsShown()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -196,7 +196,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-06: Numeric attribute change → soft_delete_retention_days row is present.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_NumericAttributeChange_RowIsShown()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_NumericAttributeChange_RowIsShown()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -216,7 +216,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     }
 
     // -------------------------------------------------------------------------
-    // TC-07: --ignore-case-changes + --show-unchanged-values interaction.
+    // TC-07: --ignore-azure-id-case-changes + --show-unchanged-values interaction.
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -224,7 +224,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// ordinal-equal rows present; genuine changes present.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_AndShowUnchangedValues_CasingRowsStillSuppressed()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_AndShowUnchangedValues_CasingRowsStillSuppressed()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -252,14 +252,14 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     }
 
     // -------------------------------------------------------------------------
-    // TC-11: Model.IgnoreCaseChanges reflects flag value.
+    // TC-11: Model.IgnoreAzureIdCaseChanges reflects flag value.
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// TC-11: Default build (no flag) → model.IgnoreCaseChanges is false.
+    /// TC-11: Default build (no flag) → model.IgnoreAzureIdCaseChanges is true (default is on).
     /// </summary>
     [Test]
-    public async Task Build_Default_IgnoreCaseChangesFalseInModel()
+    public async Task Build_Default_IgnoreAzureIdCaseChangesTrueInModel()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -269,17 +269,17 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         var model = builder.Build(plan);
 
         // Assert
-        model.IgnoreCaseChanges.Should().BeFalse(
-            "default builder should have IgnoreCaseChanges = false");
+        model.IgnoreAzureIdCaseChanges.Should().BeTrue(
+            "default builder should have IgnoreAzureIdCaseChanges = true");
 
         await Task.CompletedTask;
     }
 
     /// <summary>
-    /// TC-12: ignoreCaseChanges: true → model.IgnoreCaseChanges is true.
+    /// TC-12: ignoreCaseChanges: true → model.IgnoreAzureIdCaseChanges is true.
     /// </summary>
     [Test]
-    public async Task Build_WithIgnoreCaseChangesTrue_ModelReflectsFlag()
+    public async Task Build_WithIgnoreAzureIdCaseChangesTrue_ModelReflectsFlag()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -289,7 +289,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         var model = builder.Build(plan);
 
         // Assert
-        model.IgnoreCaseChanges.Should().BeTrue(
+        model.IgnoreAzureIdCaseChanges.Should().BeTrue(
             "model should reflect the flag value set in the builder");
 
         await Task.CompletedTask;
@@ -303,7 +303,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-13: Ordinal-equal value in azurerm_key_vault.unchanged absent when showUnchangedValues: false.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_OrdinallyEqualValues_BehavesLikeUnchanged()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_OrdinallyEqualValues_BehavesLikeUnchanged()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -326,14 +326,14 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     }
 
     // -------------------------------------------------------------------------
-    // TC-14: Scriban variable ignore_case_changes is true when flag active.
+    // TC-14: Scriban variable ignore_azure_id_case_changes is true when flag active.
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// TC-14: Scriban template {{ ignore_case_changes }} renders "true" when flag is active.
+    /// TC-14: Scriban template {{ ignore_azure_id_case_changes }} renders "true" when flag is active.
     /// </summary>
     [Test]
-    public async Task Render_IgnoreCaseChangesTrue_ScribanVariableIsTrue()
+    public async Task Render_IgnoreAzureIdCaseChangesTrue_ScribanVariableIsTrue()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -344,8 +344,8 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         var scriptObject = AotScriptObjectMapper.MapReportModel(model);
 
         // Assert
-        scriptObject["ignore_case_changes"].Should().Be(true,
-            "the Scriban variable 'ignore_case_changes' must be true when flag is active");
+        scriptObject["ignore_azure_id_case_changes"].Should().Be(true,
+            "the Scriban variable 'ignore_azure_id_case_changes' must be true when flag is active");
 
         await Task.CompletedTask;
     }
@@ -358,7 +358,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-15: display_name "MyApp" → "myapp" (non-Azure-ID, casing-only) → row is shown.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_NonAzureIdStringCasingChange_RowIsShown()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_NonAzureIdStringCasingChange_RowIsShown()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -383,7 +383,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-16: random_string.non_azurerm has Azure-ID-shaped values but a non-azurerm provider → row shown.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_NonAzureRmProvider_RowIsShown()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_NonAzureRmProvider_RowIsShown()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -408,7 +408,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-17: ignoreCaseChanges: true → FilteredResourceCount is non-zero when resources are suppressed.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesTrue_FilteredResourceCountIsNonZero()
+    public async Task Build_IgnoreAzureIdCaseChangesTrue_FilteredResourceCountIsNonZero()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -429,7 +429,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// have no attribute changes (e.g., all-equal values), but the note must not appear in that case.
     /// </summary>
     [Test]
-    public async Task Build_IgnoreCaseChangesFalse_FilteredResourceCountNotShownInNote()
+    public async Task Build_IgnoreAzureIdCaseChangesFalse_FilteredResourceCountNotShownInNote()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);
@@ -439,10 +439,10 @@ public class ReportModelBuilderIgnoreCaseChangesTests
         var model = builder.Build(plan);
         var scriptObject = AotScriptObjectMapper.MapReportModel(model);
 
-        // Assert: the Scriban condition (ignore_case_changes && filtered_resource_count > 0)
+        // Assert: the Scriban condition (ignore_azure_id_case_changes && filtered_resource_count > 0)
         // evaluates to false, so the note must not appear.
-        scriptObject["ignore_case_changes"].Should().Be(false,
-            "ignore_case_changes must be false so the filter note is suppressed");
+        scriptObject["ignore_azure_id_case_changes"].Should().Be(false,
+            "ignore_azure_id_case_changes must be false so the filter note is suppressed");
 
         await Task.CompletedTask;
     }
@@ -451,7 +451,7 @@ public class ReportModelBuilderIgnoreCaseChangesTests
     /// TC-19: Scriban variable filtered_resource_count reflects FilteredResourceCount.
     /// </summary>
     [Test]
-    public async Task Render_IgnoreCaseChangesTrue_FilteredResourceCountInScribanObject()
+    public async Task Render_IgnoreAzureIdCaseChangesTrue_FilteredResourceCountInScribanObject()
     {
         // Arrange
         var plan = _parser.Parse(_planJson);

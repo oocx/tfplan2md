@@ -30,7 +30,7 @@ public static class HelpTextProvider
             ("--code-analysis-minimum-level <level>", "Minimum severity to display (critical, high, medium, low, informational)."),
             ("--fail-on-static-code-analysis-errors <level>", "Exit with code 10 when findings at or above this level exist."),
             ("--show-unchanged-values", "Include unchanged attribute values in tables."),
-            ("--ignore-case-changes", "Suppress attribute changes where before/after values differ only in casing."),
+            ("--ignore-azure-id-case-changes", "Suppress attribute changes where before/after values differ only in casing (default: on)."),
             ("--hide-metadata", "Hide tfplan2md version/commit/timestamp metadata in the header."),
             ("--show-sensitive", "Show sensitive values unmasked."),
             ("--debug", "Append diagnostic information to the report."),

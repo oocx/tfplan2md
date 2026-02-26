@@ -2,7 +2,7 @@
 
 ## Overview
 
-Implements the `--ignore-case-changes` CLI flag (feature 103) that suppresses attribute change rows where before and after values are **Azure resource IDs** that differ only in letter casing. This eliminates Azure ARM API ID-casing noise from Terraform plan reports.
+Implements the `--ignore-azure-id-case-changes` CLI flag (feature 103) that suppresses attribute change rows where before and after values are **Azure resource IDs** that differ only in letter casing. This eliminates Azure ARM API ID-casing noise from Terraform plan reports.
 
 The implementation uses a new `IAttributeChangeFilter` / `AttributeChangeFilterRegistry` extension point in the core (mirroring the existing `IValueFormatter` / `ValueFormatterRegistry` pattern). The Azure-specific filter logic lives entirely in `Providers/AzureRM/AzureResourceIdCaseChangeFilter.cs`. The core pipeline gains only a single delegate call to the filter registry — no Azure knowledge in `MarkdownGeneration/`.
 
@@ -45,12 +45,12 @@ Follow the structure of an existing test data file in `src/tests/Oocx.TfPlan2Md.
 
 ---
 
-### Task 2: Add `IgnoreCaseChanges` to `CliOptions` record and `CliParser.Parse()`
+### Task 2: Add `IgnoreAzureIdCaseChanges` to `CliOptions` record and `CliParser.Parse()`
 
 **Priority:** High
 
 **Description:**
-Extend the CLI layer to recognise the `--ignore-case-changes` flag and store its value in the parsed options object. This is the entry point for the entire feature.
+Extend the CLI layer to recognise the `--ignore-azure-id-case-changes` flag and store its value in the parsed options object. This is the entry point for the entire feature.
 
 **File to modify:**
 `src/Oocx.TfPlan2Md/CLI/CliParser.cs`
@@ -63,29 +63,29 @@ Extend the CLI layer to recognise the `--ignore-case-changes` flag and store its
   /// are Azure resource IDs that differ only in casing are suppressed.
   /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
   /// </summary>
-  public bool IgnoreCaseChanges { get; init; }
+  public bool IgnoreAzureIdCaseChanges { get; init; }
   ```
 - [x] `CliParser.Parse()` declares a local `var ignoreCaseChanges = false;` alongside the other boolean locals.
 - [x] The `switch` statement inside `Parse()` has a new case after `"--show-unchanged-values"`:
   ```csharp
-  case "--ignore-case-changes":
+  case "--ignore-azure-id-case-changes":
       ignoreCaseChanges = true;
       break;
   ```
-- [x] The `return new CliOptions { ... }` initializer includes `IgnoreCaseChanges = ignoreCaseChanges`.
+- [x] The `return new CliOptions { ... }` initializer includes `IgnoreAzureIdCaseChanges = ignoreCaseChanges`.
 - [x] Passing an unknown flag still throws `CliParseException` (default case untouched).
-- [x] Default value of `IgnoreCaseChanges` is `false` (no flag → unchanged behavior).
+- [x] Default value of `IgnoreAzureIdCaseChanges` is `false` (no flag → unchanged behavior).
 
 **Dependencies:** None
 
 ---
 
-### Task 3: Add `--ignore-case-changes` to `HelpTextProvider`
+### Task 3: Add `--ignore-azure-id-case-changes` to `HelpTextProvider`
 
 **Priority:** High
 
 **Description:**
-Add an entry for `--ignore-case-changes` in the options array so it appears in the CLI help output.
+Add an entry for `--ignore-azure-id-case-changes` in the options array so it appears in the CLI help output.
 
 **File to modify:**
 `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs`
@@ -93,16 +93,16 @@ Add an entry for `--ignore-case-changes` in the options array so it appears in t
 **Acceptance Criteria:**
 - [x] A new tuple is added to the `options` array after the `"--show-unchanged-values"` entry:
   ```csharp
-  ("--ignore-case-changes", "Suppress attribute changes where before/after values differ only in casing."),
+  ("--ignore-azure-id-case-changes", "Suppress attribute changes where before/after values differ only in casing."),
   ```
-- [x] `HelpTextProvider.GetHelpText()` output contains the string `"--ignore-case-changes"`.
+- [x] `HelpTextProvider.GetHelpText()` output contains the string `"--ignore-azure-id-case-changes"`.
 - [x] `HelpTextProvider.GetHelpText()` output contains the word `"casing"` (description references casing).
 
 **Dependencies:** None
 
 ---
 
-### Task 4: Add `IgnoreCaseChanges` property to `ReportModel`
+### Task 4: Add `IgnoreAzureIdCaseChanges` property to `ReportModel`
 
 **Priority:** High
 
@@ -120,7 +120,7 @@ Add the flag value to the report data model so templates can read it.
   /// are Azure resource IDs that differ only in casing are suppressed.
   /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
   /// </summary>
-  public required bool IgnoreCaseChanges { get; init; }
+  public required bool IgnoreAzureIdCaseChanges { get; init; }
   ```
 - [x] Property is `required` and `bool`, consistent with `ShowUnchangedValues` and `HideMetadata`.
 
@@ -327,12 +327,12 @@ Add a single delegate call to the filter registry inside `BuildAttributeChanges(
 
 ---
 
-### Task 11: Populate `IgnoreCaseChanges` in `ReportModelBuilder.Build.cs`
+### Task 11: Populate `IgnoreAzureIdCaseChanges` in `ReportModelBuilder.Build.cs`
 
 **Priority:** High
 
 **Description:**
-Set the `IgnoreCaseChanges` property on the `ReportModel` returned from `Build()`.
+Set the `IgnoreAzureIdCaseChanges` property on the `ReportModel` returned from `Build()`.
 
 **File to modify:**
 `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs`
@@ -340,21 +340,21 @@ Set the `IgnoreCaseChanges` property on the `ReportModel` returned from `Build()
 **Acceptance Criteria:**
 - [x] Inside the `return new ReportModel { ... }` initializer in `Build()`, add:
   ```csharp
-  IgnoreCaseChanges = _ignoreCaseChanges,
+  IgnoreAzureIdCaseChanges = _ignoreCaseChanges,
   ```
   Positioned near the other boolean flag properties (`ShowUnchangedValues`, `ShowSensitive`, `HideMetadata`).
-- [x] The project compiles without error (the `required` `IgnoreCaseChanges` property on `ReportModel` is now satisfied).
+- [x] The project compiles without error (the `required` `IgnoreAzureIdCaseChanges` property on `ReportModel` is now satisfied).
 
-**Dependencies:** Task 4 (`IgnoreCaseChanges` on `ReportModel`), Task 9 (`_ignoreCaseChanges` backing field)
+**Dependencies:** Task 4 (`IgnoreAzureIdCaseChanges` on `ReportModel`), Task 9 (`_ignoreCaseChanges` backing field)
 
 ---
 
-### Task 12: Expose `ignore_case_changes` as a Scriban template variable
+### Task 12: Expose `ignore_azure_id_case_changes` as a Scriban template variable
 
 **Priority:** High
 
 **Description:**
-Map `ReportModel.IgnoreCaseChanges` to the Scriban script object so custom templates can conditionally use it.
+Map `ReportModel.IgnoreAzureIdCaseChanges` to the Scriban script object so custom templates can conditionally use it.
 
 **File to modify:**
 `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs`
@@ -362,16 +362,16 @@ Map `ReportModel.IgnoreCaseChanges` to the Scriban script object so custom templ
 **Acceptance Criteria:**
 - [x] In `MapReportModel()`, add after the `show_unchanged_values` entry:
   ```csharp
-  scriptObject["ignore_case_changes"] = model.IgnoreCaseChanges;
+  scriptObject["ignore_azure_id_case_changes"] = model.IgnoreAzureIdCaseChanges;
   ```
-- [x] The key is `"ignore_case_changes"` (snake_case, matching `show_unchanged_values`, `show_sensitive`, etc.).
-- [x] A Scriban template using `{{ ignore_case_changes }}` renders `"true"` when the flag is active.
+- [x] The key is `"ignore_azure_id_case_changes"` (snake_case, matching `show_unchanged_values`, `show_sensitive`, etc.).
+- [x] A Scriban template using `{{ ignore_azure_id_case_changes }}` renders `"true"` when the flag is active.
 
 **Dependencies:** Task 4, Task 11
 
 ---
 
-### Task 13: Wire up `AttributeChangeFilterRegistry` and `IgnoreCaseChanges` in `CompositionRoot.cs`
+### Task 13: Wire up `AttributeChangeFilterRegistry` and `IgnoreAzureIdCaseChanges` in `CompositionRoot.cs`
 
 **Priority:** High
 
@@ -394,13 +394,13 @@ Create the `AttributeChangeFilterRegistry`, populate it via `ProviderRegistry.Re
   (Consistent with the existing `CreateValueFormatterRegistry` helper pattern.)
 - [x] `CreateReportModelBuilder()` calls `CreateAttributeChangeFilterRegistry(providerRegistry)` and passes the result to the `ReportModelBuilder` constructor:
   ```csharp
-  ignoreCaseChanges: options.IgnoreCaseChanges,
+  ignoreCaseChanges: options.IgnoreAzureIdCaseChanges,
   attributeChangeFilterRegistry: CreateAttributeChangeFilterRegistry(providerRegistry),
   ```
   Both named arguments positioned after `showUnchangedValues: options.ShowUnchangedValues`.
-- [x] The full CLI pipeline (`tfplan2md plan.json --ignore-case-changes`) correctly propagates the flag through to `BuildAttributeChanges()` with the Azure filter registered.
+- [x] The full CLI pipeline (`tfplan2md plan.json --ignore-azure-id-case-changes`) correctly propagates the flag through to `BuildAttributeChanges()` with the Azure filter registered.
 
-**Dependencies:** Task 2 (`CliOptions.IgnoreCaseChanges`), Task 6 (`RegisterAllAttributeChangeFilters()`), Task 8 (`AzureRMModule` registration), Task 9 (`ReportModelBuilder` constructor parameters)
+**Dependencies:** Task 2 (`CliOptions.IgnoreAzureIdCaseChanges`), Task 6 (`RegisterAllAttributeChangeFilters()`), Task 8 (`AzureRMModule` registration), Task 9 (`ReportModelBuilder` constructor parameters)
 
 ---
 
@@ -412,7 +412,7 @@ Create the `AttributeChangeFilterRegistry`, populate it via `ProviderRegistry.Re
 Implement all 24 test cases defined in the revised test plan. Create three new test files and update two existing files.
 
 **Files to create:**
-- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderIgnoreCaseChangesTests.cs`
+- `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/ReportModelBuilderIgnoreAzureIdCaseChangesTests.cs`
 - `src/tests/Oocx.TfPlan2Md.TUnit/Providers/AzureRM/AzureResourceIdCaseChangeFilterTests.cs`
 - `src/tests/Oocx.TfPlan2Md.TUnit/MarkdownGeneration/AttributeChangeFilterRegistryTests.cs`
 
@@ -422,20 +422,20 @@ Implement all 24 test cases defined in the revised test plan. Create three new t
 
 **Acceptance Criteria:**
 
-*`ReportModelBuilderIgnoreCaseChangesTests.cs` — integration tests (TC-01 through TC-16):*
-- [x] **TC-01** `Build_IgnoreCaseChangesFalse_IncludesCasingOnlyRows` — `ignoreCaseChanges: false` → Azure ID casing-only rows present in `AttributeChanges`.
-- [x] **TC-02** `Build_IgnoreCaseChangesTrue_AllAzureIdCasingOnly_AttributeChangesEmpty` — `ignoreCaseChanges: true` on `azurerm_role_assignment.casing_only` → `AttributeChanges.Count == 0`.
-- [x] **TC-03** `Build_IgnoreCaseChangesTrue_MixedChanges_RetainsGenuineChanges` — `ignoreCaseChanges: true` on `azurerm_role_assignment.mixed_changes` → `display_name` present, `scope` absent.
-- [x] **TC-04** `Build_IgnoreCaseChangesTrue_NullBeforeValue_RowIsShown` — `azurerm_key_vault.null_before` → `tenant_id` row present (not suppressed).
-- [x] **TC-05** `Build_IgnoreCaseChangesTrue_NullAfterValue_RowIsShown` — `azurerm_key_vault.null_after` → `tenant_id` row present (not suppressed).
-- [x] **TC-06** `Build_IgnoreCaseChangesTrue_NumericAttributeChange_RowIsShown` — `azurerm_key_vault.numeric_change` → `soft_delete_retention_days` row present.
-- [x] **TC-07** `Build_IgnoreCaseChangesTrue_AndShowUnchangedValues_CasingRowsStillSuppressed` — `ignoreCaseChanges: true, showUnchangedValues: true` → Azure ID casing-only rows absent; ordinal-equal rows present; genuine changes present.
-- [x] **TC-11** `Build_Default_IgnoreCaseChangesFalseInModel` — `model.IgnoreCaseChanges.Should().BeFalse()` when no `ignoreCaseChanges` arg.
-- [x] **TC-12** `Build_WithIgnoreCaseChangesTrue_ModelReflectsFlag` — `model.IgnoreCaseChanges.Should().BeTrue()`.
-- [x] **TC-13** `Build_IgnoreCaseChangesTrue_OrdinallyEqualValues_BehavesLikeUnchanged` — ordinal-equal row in `azurerm_key_vault.unchanged` absent when `showUnchangedValues: false`.
-- [x] **TC-14** `Render_IgnoreCaseChangesTrue_ScribanVariableIsTrue` — Scriban template `{{ ignore_case_changes }}` renders `"true"` when flag is active.
-- [x] **TC-15** `Build_IgnoreCaseChangesTrue_NonAzureIdStringCasingChange_RowIsShown` — `azurerm_role_assignment.display_name_casing` → non-Azure-ID casing-only `display_name` row is present (NOT suppressed).
-- [x] **TC-16** `Build_IgnoreCaseChangesTrue_NonAzureRmProvider_RowIsShown` — `random_string.non_azurerm` → row with Azure-ID-shaped values is present for non-azurerm provider (NOT filtered).
+*`ReportModelBuilderIgnoreAzureIdCaseChangesTests.cs` — integration tests (TC-01 through TC-16):*
+- [x] **TC-01** `Build_IgnoreAzureIdCaseChangesFalse_IncludesCasingOnlyRows` — `ignoreCaseChanges: false` → Azure ID casing-only rows present in `AttributeChanges`.
+- [x] **TC-02** `Build_IgnoreAzureIdCaseChangesTrue_AllAzureIdCasingOnly_AttributeChangesEmpty` — `ignoreCaseChanges: true` on `azurerm_role_assignment.casing_only` → `AttributeChanges.Count == 0`.
+- [x] **TC-03** `Build_IgnoreAzureIdCaseChangesTrue_MixedChanges_RetainsGenuineChanges` — `ignoreCaseChanges: true` on `azurerm_role_assignment.mixed_changes` → `display_name` present, `scope` absent.
+- [x] **TC-04** `Build_IgnoreAzureIdCaseChangesTrue_NullBeforeValue_RowIsShown` — `azurerm_key_vault.null_before` → `tenant_id` row present (not suppressed).
+- [x] **TC-05** `Build_IgnoreAzureIdCaseChangesTrue_NullAfterValue_RowIsShown` — `azurerm_key_vault.null_after` → `tenant_id` row present (not suppressed).
+- [x] **TC-06** `Build_IgnoreAzureIdCaseChangesTrue_NumericAttributeChange_RowIsShown` — `azurerm_key_vault.numeric_change` → `soft_delete_retention_days` row present.
+- [x] **TC-07** `Build_IgnoreAzureIdCaseChangesTrue_AndShowUnchangedValues_CasingRowsStillSuppressed` — `ignoreCaseChanges: true, showUnchangedValues: true` → Azure ID casing-only rows absent; ordinal-equal rows present; genuine changes present.
+- [x] **TC-11** `Build_Default_IgnoreAzureIdCaseChangesFalseInModel` — `model.IgnoreAzureIdCaseChanges.Should().BeFalse()` when no `ignoreCaseChanges` arg.
+- [x] **TC-12** `Build_WithIgnoreAzureIdCaseChangesTrue_ModelReflectsFlag` — `model.IgnoreAzureIdCaseChanges.Should().BeTrue()`.
+- [x] **TC-13** `Build_IgnoreAzureIdCaseChangesTrue_OrdinallyEqualValues_BehavesLikeUnchanged` — ordinal-equal row in `azurerm_key_vault.unchanged` absent when `showUnchangedValues: false`.
+- [x] **TC-14** `Render_IgnoreAzureIdCaseChangesTrue_ScribanVariableIsTrue` — Scriban template `{{ ignore_azure_id_case_changes }}` renders `"true"` when flag is active.
+- [x] **TC-15** `Build_IgnoreAzureIdCaseChangesTrue_NonAzureIdStringCasingChange_RowIsShown` — `azurerm_role_assignment.display_name_casing` → non-Azure-ID casing-only `display_name` row is present (NOT suppressed).
+- [x] **TC-16** `Build_IgnoreAzureIdCaseChangesTrue_NonAzureRmProvider_RowIsShown` — `random_string.non_azurerm` → row with Azure-ID-shaped values is present for non-azurerm provider (NOT filtered).
 
 *`AzureResourceIdCaseChangeFilterTests.cs` — filter unit tests (TC-17 through TC-21):*
 - [x] **TC-17** `ShouldSuppress_AzureIdCasingOnlyChange_ReturnsTrue` — fully-qualified azurerm provider, `scope` Azure ID differing only in casing → returns `true`. Parameterised variant: short provider name `"azurerm"` also returns `true`.
@@ -450,15 +450,15 @@ Implement all 24 test cases defined in the revised test plan. Create three new t
 - [x] **TC-24** `ShouldSuppress_AllFiltersReturnFalse_ReturnsFalse` — two stubs both returning `false` → registry returns `false`.
 
 *Updates to `CliParserTests.cs`:*
-- [x] **TC-08** `Parse_IgnoreCaseChangesFlag_SetsIgnoreCaseChangesTrue` — `CliParser.Parse(["--ignore-case-changes"]).IgnoreCaseChanges.Should().BeTrue()`.
-- [x] **TC-09** Existing `Parse_NoArgs_ReturnsDefaultOptions` gains assertion: `options.IgnoreCaseChanges.Should().BeFalse()`.
+- [x] **TC-08** `Parse_IgnoreAzureIdCaseChangesFlag_SetsIgnoreAzureIdCaseChangesTrue` — `CliParser.Parse(["--ignore-azure-id-case-changes"]).IgnoreAzureIdCaseChanges.Should().BeTrue()`.
+- [x] **TC-09** Existing `Parse_NoArgs_ReturnsDefaultOptions` gains assertion: `options.IgnoreAzureIdCaseChanges.Should().BeFalse()`.
 
 *Updates to `HelpTextProviderTests.cs`:*
-- [x] **TC-10** `GetHelpText_IncludesIgnoreCaseChangesOption` — `help.Should().Contain("--ignore-case-changes")` and `help.Should().Contain("casing")`.
+- [x] **TC-10** `GetHelpText_IncludesIgnoreAzureIdCaseChangesOption` — `help.Should().Contain("--ignore-azure-id-case-changes")` and `help.Should().Contain("casing")`.
 
 *General test quality:*
 - [x] All new tests follow the TUnit test pattern used in `ReportModelBuilderUnchangedValuesTests.cs` (attribute-based test runner, `Should()` fluent assertions).
-- [x] Integration tests (`ReportModelBuilderIgnoreCaseChangesTests.cs`) load `azurerm-case-only-ids-plan.json` from the `TestData` folder, consistent with adjacent test classes.
+- [x] Integration tests (`ReportModelBuilderIgnoreAzureIdCaseChangesTests.cs`) load `azurerm-case-only-ids-plan.json` from the `TestData` folder, consistent with adjacent test classes.
 - [x] Isolation tests for `AzureResourceIdCaseChangeFilter` and `AttributeChangeFilterRegistry` use inline values only — no JSON file dependency.
 - [x] All 24 test cases pass (green) with no test framework errors.
 
@@ -471,16 +471,16 @@ Implement all 24 test cases defined in the revised test plan. Create three new t
 **Priority:** Medium
 
 **Description:**
-Document the `--ignore-case-changes` flag in the README so users discover it alongside existing flags.
+Document the `--ignore-azure-id-case-changes` flag in the README so users discover it alongside existing flags.
 
 **File to modify:**
 `README.md`
 
 **Acceptance Criteria:**
-- [x] `--ignore-case-changes` is listed in the CLI options table / reference section alongside `--show-unchanged-values`.
+- [x] `--ignore-azure-id-case-changes` is listed in the CLI options table / reference section alongside `--show-unchanged-values`.
 - [x] The description explains that it suppresses attribute change rows where before/after are Azure resource IDs that differ only in casing, and mentions Azure ARM API ID-casing noise as the motivating use case.
 - [x] The interaction with `--show-unchanged-values` (casing-only Azure ID rows remain hidden even when `--show-unchanged-values` is active) is noted.
-- [x] At least one usage example is provided (e.g., `tfplan2md plan.json --ignore-case-changes`).
+- [x] At least one usage example is provided (e.g., `tfplan2md plan.json --ignore-azure-id-case-changes`).
 - [x] The description clarifies that non-Azure-ID attribute values (plain names, numbers, booleans) are unaffected.
 - [x] No existing documentation is removed or broken.
 

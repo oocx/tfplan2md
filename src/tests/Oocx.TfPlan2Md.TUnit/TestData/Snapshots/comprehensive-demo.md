@@ -493,14 +493,6 @@ _No attribute changes._
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
-<summary>🔄 azurerm_role_management_policy <b><code>ops</code></b> — <code>🛡️ Reader</code> in <code>🗂️ Tenant Contoso Corp (mg-root) root</code></summary>
-<br>
-
-_No attribute changes._
-
-</details>
-
-<details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">
 <summary>➕ azurerm_key_vault <b><code>main</code></b> — <code>🆔 kv-tfplan2md</code> in <code>📁 rg-tfplan2md-demo</code> <code>🌍 eastus</code></summary>
 <br>
 
@@ -622,3 +614,5 @@ line3: end
 | --------- | -------- | ------- | ------ |
 | 📥 Import | azurerm_resource_group `rg-imported-existing` | ID: `📁 rg-imported-existing` in subscription `🔑 12345678-1234-1234-1234-123456789012` | ✅ Ready |
 | 🔀 Move | azurerm_virtual_network `vnet-legacy` | From: `module.legacy.azurerm_virtual_network.main` | ⚠️ Already moved |
+
+> ℹ️ 1 resource with only filtered changes (e.g. Azure resource ID casing differences) is not shown. Run without `--ignore-azure-id-case-changes` to see all changes.

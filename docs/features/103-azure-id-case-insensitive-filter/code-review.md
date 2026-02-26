@@ -2,7 +2,7 @@
 
 ## Summary
 
-This review covers the implementation of the `--ignore-case-changes` CLI flag, which suppresses
+This review covers the implementation of the `--ignore-azure-id-case-changes` CLI flag, which suppresses
 Azure resource ID attribute changes where before/after values differ only in casing. The feature
 adds a new `IAttributeChangeFilter`/`AttributeChangeFilterRegistry` extension point (mirroring
 `IValueFormatter`/`ValueFormatterRegistry`) with Azure-specific logic in `Providers/AzureRM/`.
@@ -27,13 +27,13 @@ after fixes.
 
 | Acceptance Criterion | Implemented | Tested | Notes |
 |---------------------|-------------|--------|-------|
-| CLI flag `--ignore-case-changes` in help text | ✅ | ✅ TC-08, TC-10 | `CliParser.cs`, `HelpTextProvider.cs` |
+| CLI flag `--ignore-azure-id-case-changes` in help text | ✅ | ✅ TC-08, TC-10 | `CliParser.cs`, `HelpTextProvider.cs` |
 | Flag absent → no regression | ✅ | ✅ TC-01 | `ignoreCaseChanges = false` default |
 | azurerm + Azure resource ID + casing-only → suppressed | ✅* | ✅ TC-02, TC-03, TC-17 | *Bug fixed — see below |
 | Non-Azure-ID attributes NOT suppressed | ✅ | ✅ TC-15, TC-18 | `IsAzureResourceId()` guard |
-| `--ignore-case-changes` takes precedence over `--show-unchanged-values` | ✅ | ✅ TC-07 | Guard order in `BuildAttributeChanges()` |
+| `--ignore-azure-id-case-changes` takes precedence over `--show-unchanged-values` | ✅ | ✅ TC-07 | Guard order in `BuildAttributeChanges()` |
 | Filter logic in `Providers/AzureRM/` only | ✅ | — | `AzureResourceIdCaseChangeFilter.cs` |
-| `ignore_case_changes` Scriban variable | ✅ | ✅ TC-14 | `AotScriptObjectMapper` + `ReportModel` |
+| `ignore_azure_id_case_changes` Scriban variable | ✅ | ✅ TC-14 | `AotScriptObjectMapper` + `ReportModel` |
 | Non-azurerm provider NOT filtered | ✅ | ✅ TC-16, TC-19 | Provider regex guard |
 | README updated | ✅ | — | New section `#case-insensitive-azure-resource-id-filter` |
 
@@ -78,7 +78,7 @@ after fixes.
 
 **File:** `src/Oocx.TfPlan2Md/Providers/AzureRM/Models/RoleAssignmentViewModelFactory.cs`
 
-**Problem:** When `--ignore-case-changes` filters all attribute changes for an
+**Problem:** When `--ignore-azure-id-case-changes` filters all attribute changes for an
 `azurerm_role_assignment` resource, `attributeChanges` is empty (`Count == 0`). The factory's
 existing fallback:
 
@@ -92,7 +92,7 @@ var allAttributes = attributeChanges.Count > 0
 called `FormatRoleValue()` with the raw `ResourceChange` JSON — **bypassing the filter entirely**.
 The rendered output would show the casing-only rows that were supposed to be suppressed.
 
-**Verified:** Running `tfplan2md uat-plan.json --ignore-case-changes` before the fix showed
+**Verified:** Running `tfplan2md uat-plan.json --ignore-azure-id-case-changes` before the fix showed
 the `scope` and `role_definition_id` rows still appearing for `azurerm_role_assignment.app_contributor`
 despite both values differing only in casing.
 
@@ -138,7 +138,7 @@ artifacts" but the UAT plan artifacts were not created.
 - `app_contributor`: all attribute changes are Azure ID casing-only → all suppressed
 - `storage_reader`: mixed changes (casing-only scope + genuine description change)
 
-Generated `uat-plan.md` using `tfplan2md uat-plan.json --ignore-case-changes`. The rendered
+Generated `uat-plan.md` using `tfplan2md uat-plan.json --ignore-azure-id-case-changes`. The rendered
 output correctly demonstrates:
 - `app_contributor` appears with no attribute table rows (all suppressed)
 - `storage_reader` shows only the `description` change (casing rows suppressed)
@@ -198,10 +198,10 @@ necessarily brief. Not fixed; acceptable as-is.
 
 The existing tests check `resource.AttributeChanges` (model level) but not the rendered markdown
 output. This means the B-01 bug was not caught by tests. A snapshot or integration test that
-renders an `azurerm_role_assignment` resource with `--ignore-case-changes` and verifies the
+renders an `azurerm_role_assignment` resource with `--ignore-azure-id-case-changes` and verifies the
 attribute table is empty would provide deeper regression protection.
 
-#### S-02 — No test for sensitive attribute interaction with `--ignore-case-changes`
+#### S-02 — No test for sensitive attribute interaction with `--ignore-azure-id-case-changes`
 
 There is no test verifying that a sensitive Azure resource ID attribute with a casing-only change
 is NOT suppressed (because its display value is `"(sensitive)"`, not an Azure resource ID).

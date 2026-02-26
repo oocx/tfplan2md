@@ -38,24 +38,24 @@ public class CliParserTests
         options.ShowHelp.Should().BeFalse();
         options.ShowVersion.Should().BeFalse();
         options.HideMetadata.Should().BeFalse();
-        options.IgnoreCaseChanges.Should().BeFalse();
+        options.IgnoreAzureIdCaseChanges.Should().BeTrue();
     }
 
     /// <summary>
-    /// TC-08: --ignore-case-changes flag sets IgnoreCaseChanges to true.
+    /// TC-08: --ignore-azure-id-case-changes flag sets IgnoreAzureIdCaseChanges to true.
     /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
     /// </summary>
     [Test]
-    public void Parse_IgnoreCaseChangesFlag_SetsIgnoreCaseChangesTrue()
+    public void Parse_IgnoreAzureIdCaseChangesFlag_SetsIgnoreAzureIdCaseChangesTrue()
     {
         // Arrange
-        var args = new[] { "--ignore-case-changes" };
+        var args = new[] { "--ignore-azure-id-case-changes" };
 
         // Act
         var options = CliParser.Parse(args);
 
         // Assert
-        options.IgnoreCaseChanges.Should().BeTrue();
+        options.IgnoreAzureIdCaseChanges.Should().BeTrue();
     }
 
     [Test]

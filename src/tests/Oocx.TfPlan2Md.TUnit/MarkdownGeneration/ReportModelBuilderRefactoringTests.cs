@@ -254,7 +254,11 @@ public class ReportModelBuilderRefactoringTests
                     new Change(["future-action"]))
             });
 
-        var builder = new ReportModelBuilder();
+        // ignoreCaseChanges: false so the display filter does not suppress this resource.
+        // When the casing filter is enabled (default), resources with no attribute changes
+        // and an update/unknown action are filtered out. This test verifies the classification
+        // of the unknown action itself, so the casing filter must be disabled.
+        var builder = new ReportModelBuilder(ignoreAzureIdCaseChanges: false);
 
         var model = builder.Build(plan);
 

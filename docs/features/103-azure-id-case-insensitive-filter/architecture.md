@@ -197,12 +197,12 @@ for `IValueFormatter`.
 | `src/Oocx.TfPlan2Md/Providers/AzureRM/AzureRMModule.cs` | Override `RegisterAttributeChangeFilters()` |
 | `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.cs` | Add `_ignoreCaseChanges` field + `_attributeChangeFilterRegistry` dependency |
 | `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs` | Add Azure ID filter guard before existing `valuesEqual` guard |
-| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` | Add `IgnoreCaseChanges` property (for template access) |
-| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs` | Populate `IgnoreCaseChanges` in returned model |
-| `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs` | Expose `ignore_case_changes` to Scriban templates |
-| `src/Oocx.TfPlan2Md/CLI/CliParser.cs` | Add `IgnoreCaseChanges` property + parser switch case |
-| `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs` | Add help entry for `--ignore-case-changes` |
-| `src/Oocx.TfPlan2Md/CompositionRoot.cs` | Create `AttributeChangeFilterRegistry`, wire it up, pass `IgnoreCaseChanges` |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModel.cs` | Add `IgnoreAzureIdCaseChanges` property (for template access) |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.Build.cs` | Populate `IgnoreAzureIdCaseChanges` in returned model |
+| `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs` | Expose `ignore_azure_id_case_changes` to Scriban templates |
+| `src/Oocx.TfPlan2Md/CLI/CliParser.cs` | Add `IgnoreAzureIdCaseChanges` property + parser switch case |
+| `src/Oocx.TfPlan2Md/CLI/HelpTextProvider.cs` | Add help entry for `--ignore-azure-id-case-changes` |
+| `src/Oocx.TfPlan2Md/CompositionRoot.cs` | Create `AttributeChangeFilterRegistry`, wire it up, pass `IgnoreAzureIdCaseChanges` |
 
 ### `AttributeChangeFilterContext` record
 
@@ -251,7 +251,7 @@ internal AttributeChangeFilterRegistry CreateAttributeChangeFilterRegistry(Provi
 }
 ```
 
-Pass `ignoreCaseChanges: options.IgnoreCaseChanges` and `attributeChangeFilterRegistry` to
+Pass `ignoreCaseChanges: options.IgnoreAzureIdCaseChanges` and `attributeChangeFilterRegistry` to
 `ReportModelBuilder` constructor.
 
 ### `ReportModelBuilder` constructor additions
@@ -274,7 +274,7 @@ private readonly AttributeChangeFilterRegistry _attributeChangeFilterRegistry =
 ### Unit tests
 
 Follow the pattern in `ReportModelBuilderUnchangedValuesTests.cs`. Recommended new test class:
-`ReportModelBuilderIgnoreCaseChangesTests.cs`.
+`ReportModelBuilderIgnoreAzureIdCaseChangesTests.cs`.
 
 Test cases:
 1. **Flag absent (no regression)** — rows with Azure ID casing difference are shown.
@@ -286,7 +286,7 @@ Test cases:
 7. **Non-azurerm provider** — Azure ID-shaped values in another provider are NOT suppressed.
 
 Also test `AzureResourceIdCaseChangeFilter` in isolation, and update `CliParserTests.cs` to
-verify `--ignore-case-changes` sets `IgnoreCaseChanges = true`.
+verify `--ignore-azure-id-case-changes` sets `IgnoreAzureIdCaseChanges = true`.
 
 ### Test data file
 

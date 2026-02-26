@@ -2,22 +2,24 @@
 
 The Azure Resource Manager API occasionally returns resource IDs with inconsistent casing
 (e.g., `/subscriptions/ABC123` vs `/subscriptions/abc123`). This causes Terraform to report
-false attribute changes that are not real infrastructure changes. This release adds an opt-in
-flag to suppress these noise changes.
+false attribute changes that are not real infrastructure changes. This release suppresses these
+noise changes by default.
 
 ## ✨ Features
 
-- **New `--ignore-azure-id-case-changes` flag.** When enabled, attribute changes where both the before
+- **`--ignore-azure-id-case-changes` (enabled by default).** Attribute changes where both the before
   and after values are Azure resource IDs (paths starting with `/subscriptions/`,
   `/providers/`, `/tenants/`, or `/managementGroups/`) and differ only in casing are silently
-  suppressed from the report. The flag is disabled by default to avoid any change in existing
-  behaviour.
+  suppressed from the report. Use `--no-ignore-azure-id-case-changes` to see all changes.
 
 ## ▶️ Getting started
 
 ```bash
-# Suppress Azure resource ID casing-only changes
-tfplan2md plan.json --ignore-azure-id-case-changes > plan.md
+# Azure resource ID casing-only changes are suppressed by default
+tfplan2md plan.json > plan.md
+
+# Opt out to see all changes including Azure resource ID casing differences
+tfplan2md plan.json --no-ignore-azure-id-case-changes > plan.md
 ```
 
 ## 🔗 Commits

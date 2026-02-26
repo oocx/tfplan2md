@@ -20,3 +20,9 @@
 - **Summary:** Analyzed the feature specification against the existing codebase. Determined that no new architectural patterns are required — the feature follows the same pipeline as the existing `--show-unchanged-values` flag (feature 014) exactly. Documented the filter placement decision (model-building time in `BuildAttributeChanges()`), the two-guard pattern for `isCasingOnlyChange` vs `valuesEqual`, the non-string value analysis (numbers/booleans are handled automatically), and the full component change list across 8 files.
 - **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/architecture.md`
 - **Problems Encountered:** None
+
+### Quality Engineer
+- **Date:** 2025-07-14
+- **Summary:** Created a comprehensive test plan mapping all 7 acceptance criteria to 14 test cases across three test files. Followed the `ReportModelBuilderUnchangedValuesTests.cs` and `CliParserTests.cs` patterns exactly. Specified a new test data file `azurerm-case-only-ids-plan.json` covering casing-only changes, mixed changes, null before/after, numeric changes, and unchanged (ordinal-equal) attributes. Created a UAT test plan for the user-facing rendering change, requiring a feature-specific `uat-plan.json` / `uat-plan.md` pair for the Developer to produce.
+- **Artifacts Produced:** `docs/features/103-azure-id-case-insensitive-filter/test-plan.md`, `docs/features/103-azure-id-case-insensitive-filter/uat-test-plan.md`
+- **Problems Encountered:** None

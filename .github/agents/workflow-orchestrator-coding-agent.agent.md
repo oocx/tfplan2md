@@ -76,6 +76,7 @@ task({
 
 ### Anti-Patterns (NEVER DO)
 
+> **Policy enforced by hook**: Calls to the `task` tool with `agent_type` set to `explore`, `task`, or `general-purpose` are automatically **blocked** by the repository's `preToolUse` hook (`.github/hooks/deny-unauthorized-subagents.json`). The hook returns a `deny` decision and repeats this instruction. Use only custom agents listed above.
 
 ## Boundaries
 

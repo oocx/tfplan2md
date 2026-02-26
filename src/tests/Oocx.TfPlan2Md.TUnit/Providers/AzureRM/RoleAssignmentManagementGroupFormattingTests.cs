@@ -46,10 +46,7 @@ public class RoleAssignmentManagementGroupFormattingTests
             principalMapper: new NullPrincipalMapper(),
             scopeFormatter: scopeFormatter);
 
-        viewModel.SummaryText.Should().Contain("management group");
-        viewModel.SummaryText.Should().Contain("🗂️");
-        viewModel.SummaryText.Should().Contain("<code>");
-        viewModel.SummaryText.Should().Contain("Core Platform");
+        viewModel.SummaryText.Should().Be("<code>👤\u00A0principal-1</code> → <code>🛡️\u00A0Reader</code> on management group <code>🗂️\u00A0Core Platform</code>");
 
         await Task.CompletedTask;
     }
@@ -85,10 +82,7 @@ public class RoleAssignmentManagementGroupFormattingTests
             scopeFormatter: scopeFormatter);
 
         var scope = viewModel.SmallAttributes.Single(item => item.Name == "scope");
-        scope.After.Should().Contain("🗂️");
-        scope.After.Should().Contain("Core Platform");
-        scope.After.Should().Contain("Management Group");
-        scope.After.Should().Contain("`");
+        scope.After.Should().Be("`🗂️\u00A0Core Platform (Management Group)`");
 
         await Task.CompletedTask;
     }

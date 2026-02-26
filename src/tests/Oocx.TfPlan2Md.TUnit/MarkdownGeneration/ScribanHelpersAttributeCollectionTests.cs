@@ -12,6 +12,7 @@ namespace Oocx.TfPlan2Md.Tests.MarkdownGeneration;
 /// </summary>
 public class ScribanHelpersAttributeCollectionTests
 {
+    private static readonly string[] ExpectedAttributes = ["name", "keep", "added"];
     [SuppressMessage("Major Code Smell", "S3011", Justification = "Validating helper exported to Scriban via reflection only available through private method.")]
     [Test]
     public async Task CollectAttributes_MergesKeysAndSkipsNulls()
@@ -35,10 +36,7 @@ public class ScribanHelpersAttributeCollectionTests
         var result = (ScriptArray?)collectMethod!.Invoke(null, new object?[] { before, after });
 
         result.Should().NotBeNull();
-        result!.Should().Contain("name");
-        result.Should().Contain("keep");
-        result.Should().Contain("added");
-        result.Should().NotContain("null");
+        result!.Should().BeEquivalentTo(ExpectedAttributes);
 
         await Task.CompletedTask;
     }

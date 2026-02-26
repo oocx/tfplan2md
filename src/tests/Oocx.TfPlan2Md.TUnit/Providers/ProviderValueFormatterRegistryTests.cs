@@ -148,8 +148,7 @@ public class ProviderValueFormatterRegistryTests
 
         var formatted = registry.TryFormat(context);
 
-        formatted.Should().Contain("Reader");
-        formatted.Should().Contain("acdd72a7-3385-48ef-bd42-f606fba81ae7");
+        formatted.Should().Be("`🛡️\u00A0Reader (acdd72a7-3385-48ef-bd42-f606fba81ae7)`");
     }
 
     /// <summary>

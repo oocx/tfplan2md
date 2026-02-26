@@ -71,9 +71,7 @@ public class AzureAdGroupSummaryRebuilderTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert
-        group.SummaryHtml.Should().Contain("1 👤", "summary should show correct user count");
-        group.SummaryHtml.Should().Contain("0 👥", "summary should show correct group count");
-        group.SummaryHtml.Should().Contain("0 💻", "summary should show correct service principal count");
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>test</code></b> \u2014 <code>👥\u00A0Test Group</code> | <code>1 👤\u00A00 👥\u00A00 💻</code> | ➕\u00A01 members");
     }
 
     /// <summary>
@@ -294,9 +292,7 @@ public class AzureAdGroupSummaryRebuilderTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert
-        group.SummaryHtml.Should().Contain("1 👤", "summary should show 1 user");
-        group.SummaryHtml.Should().Contain("1 👥", "summary should show 1 group");
-        group.SummaryHtml.Should().Contain("1 💻", "summary should show 1 service principal");
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>mixed</code></b> \u2014 <code>👥\u00A0Mixed Group</code> | <code>1 👤\u00A01 👥\u00A01 💻</code> | ➕\u00A03 members");
     }
 
     /// <summary>
@@ -353,10 +349,7 @@ public class AzureAdGroupSummaryRebuilderTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert
-        group.SummaryHtml.Should().Contain("0 👤", "summary should show 0 users");
-        group.SummaryHtml.Should().Contain("0 👥", "summary should show 0 groups");
-        group.SummaryHtml.Should().Contain("0 💻", "summary should show 0 service principals");
-        group.SummaryHtml.Should().Contain("1 ❓", "summary should show 1 unknown member");
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>test</code></b> \u2014 <code>👥\u00A0Group with Unknown</code> | <code>0 👤\u00A00 👥\u00A00 💻\u00A01 ❓</code> | ➕\u00A01 members");
     }
 
     /// <summary>
@@ -373,8 +366,7 @@ public class AzureAdGroupSummaryRebuilderTests
         var group = model.Changes.Should().ContainSingle(c => c.Type == "azuread_group").Subject;
 
         // Assert
-        group.SummaryHtml.Should().Contain("Test Group", "summary should preserve display name");
-        group.SummaryHtml.Should().Contain("—", "summary should preserve separator");
+        group.SummaryHtml.Should().Be("➕\u00A0azuread_group <b><code>test</code></b> \u2014 <code>👥\u00A0Test Group</code> | <code>1 👤\u00A00 👥\u00A00 💻</code> | ➕\u00A01 members", "summary should preserve display name and separator");
     }
 
     /// <summary>

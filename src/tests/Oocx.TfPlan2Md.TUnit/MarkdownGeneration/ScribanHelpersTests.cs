@@ -281,7 +281,7 @@ public class ScribanHelpersTests
         // Act & Assert
         Action act = () => DiffArray(beforeJson, afterJson, "name");
         act.Should().Throw<ScribanHelperException>()
-            .Which.Message.Should().Contain("missing required key property 'name'").And.Contain("index 0").And.Contain("'after'");
+            .Which.Message.Should().Be("Item at index 0 in 'after' array is missing required key property 'name'.");
     }
 
     [Test]

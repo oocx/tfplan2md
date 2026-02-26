@@ -90,8 +90,6 @@ public class ScribanHelpersAzdoTests
 
         // Assert
         result.Should().Be($"Platform Team [{longDescriptor}]");
-        result.Should().Contain(longDescriptor); // Verify full descriptor preserved
-        result.Length.Should().BeGreaterThan(100); // Verify not truncated
     }
 
     /// <summary>

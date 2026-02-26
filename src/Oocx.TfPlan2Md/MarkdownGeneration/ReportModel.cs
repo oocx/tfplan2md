@@ -88,6 +88,13 @@ internal class ReportModel
     public required bool ShowUnchangedValues { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether attribute change rows where before and after values
+    /// are Azure resource IDs that differ only in casing are suppressed.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    public required bool IgnoreCaseChanges { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether sensitive values should be shown in plaintext instead of masked.
     /// When <c>false</c> (default), provider templates replace sensitive values with "(sensitive)".
     /// Related issue: docs/issues/098-sensitive-info-exposure/analysis.md.

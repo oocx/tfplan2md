@@ -1,0 +1,174 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.0",
+  "variables": {},
+  "resource_changes": [
+    {
+      "address": "azurerm_role_assignment.casing_only",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "casing_only",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "scope": "/subscriptions/ABC123/resourceGroups/my-rg",
+          "role_definition_id": "/subscriptions/ABC123/providers/Microsoft.Authorization/roleDefinitions/XYZ"
+        },
+        "after": {
+          "scope": "/subscriptions/abc123/resourceGroups/my-rg",
+          "role_definition_id": "/subscriptions/abc123/providers/Microsoft.Authorization/roleDefinitions/xyz"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.mixed_changes",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "mixed_changes",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "scope": "/subscriptions/ABC123/resourceGroups/my-rg",
+          "display_name": "My App"
+        },
+        "after": {
+          "scope": "/subscriptions/abc123/resourceGroups/my-rg",
+          "display_name": "My Application"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_key_vault.null_before",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "null_before",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "tenant_id": null
+        },
+        "after": {
+          "tenant_id": "tenant-abc"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_key_vault.null_after",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "null_after",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "tenant_id": "tenant-abc"
+        },
+        "after": {
+          "tenant_id": null
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_key_vault.numeric_change",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "numeric_change",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "soft_delete_retention_days": 7
+        },
+        "after": {
+          "soft_delete_retention_days": 14
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_key_vault.unchanged",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_key_vault",
+      "name": "unchanged",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "my-vault"
+        },
+        "after": {
+          "name": "my-vault"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "azurerm_role_assignment.display_name_casing",
+      "module_address": null,
+      "mode": "managed",
+      "type": "azurerm_role_assignment",
+      "name": "display_name_casing",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "display_name": "MyApp"
+        },
+        "after": {
+          "display_name": "myapp"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "random_string.non_azurerm",
+      "module_address": null,
+      "mode": "managed",
+      "type": "random_string",
+      "name": "non_azurerm",
+      "provider_name": "registry.terraform.io/hashicorp/random",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "result": "/subscriptions/ABC123/resourceGroups/my-rg"
+        },
+        "after": {
+          "result": "/subscriptions/abc123/resourceGroups/my-rg"
+        },
+        "after_unknown": {},
+        "before_sensitive": false,
+        "after_sensitive": false
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {}
+  }
+}

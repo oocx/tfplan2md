@@ -82,6 +82,13 @@ internal record CliOptions
     public bool HideMetadata { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether attribute change rows where before and after values
+    /// are Azure resource IDs that differ only in casing are suppressed.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    public bool IgnoreCaseChanges { get; init; }
+
+    /// <summary>
     /// Gets the target platform for markdown rendering.
     /// Related feature: docs/features/047-provider-code-separation/specification.md.
     /// </summary>
@@ -131,6 +138,7 @@ internal static class CliParser
         var showVersion = false;
         var showUnchangedValues = false;
         var hideMetadata = false;
+        var ignoreCaseChanges = false;
         var renderTarget = RenderTarget.AzureDevOps; // Default to Azure DevOps (inline-diff)
         var debug = false;
         var detailsDisplayMode = DetailsDisplayMode.Auto; // Default to Auto (current behavior)
@@ -237,6 +245,9 @@ internal static class CliParser
                 case "--show-unchanged-values":
                     showUnchangedValues = true;
                     break;
+                case "--ignore-case-changes":
+                    ignoreCaseChanges = true;
+                    break;
                 case "--hide-metadata":
                     hideMetadata = true;
                     break;
@@ -292,6 +303,7 @@ internal static class CliParser
             PrincipalMappingFile = principalMappingFile,
             ShowUnchangedValues = showUnchangedValues,
             HideMetadata = hideMetadata,
+            IgnoreCaseChanges = ignoreCaseChanges,
             RenderTarget = renderTarget,
             ReportTitle = reportTitle,
             Debug = debug,

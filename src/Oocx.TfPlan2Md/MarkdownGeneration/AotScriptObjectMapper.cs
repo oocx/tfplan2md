@@ -38,6 +38,7 @@ internal static class AotScriptObjectMapper
         scriptObject["timestamp"] = model.Timestamp;
         scriptObject["report_title"] = model.ReportTitle;
         scriptObject["show_unchanged_values"] = model.ShowUnchangedValues;
+        scriptObject["ignore_case_changes"] = model.IgnoreCaseChanges;
         scriptObject["show_sensitive"] = model.ShowSensitive;
         scriptObject["large_value_format"] = model.RenderTarget == RenderTargets.RenderTarget.GitHub ? "simple-diff" : "inline-diff";
 

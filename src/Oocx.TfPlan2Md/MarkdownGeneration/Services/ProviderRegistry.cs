@@ -130,4 +130,22 @@ internal sealed class ProviderRegistry
             provider.RegisterPostMergeCallbacks(builder);
         }
     }
+
+    /// <summary>
+    /// Registers all provider-specific attribute change filters.
+    /// </summary>
+    /// <param name="registry">The attribute change filter registry to register into.</param>
+    /// <remarks>
+    /// Mirrors the existing <see cref="RegisterAllValueFormatters"/> pattern.
+    /// Each provider may register zero or more filters; providers without overrides use
+    /// the default no-op implementation on <see cref="IProviderModule"/>.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </remarks>
+    public void RegisterAllAttributeChangeFilters(AttributeChangeFilterRegistry registry)
+    {
+        foreach (var provider in _providers)
+        {
+            provider.RegisterAttributeChangeFilters(registry);
+        }
+    }
 }

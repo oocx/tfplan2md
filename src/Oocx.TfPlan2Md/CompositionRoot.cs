@@ -197,6 +197,19 @@ internal sealed class CompositionRoot(CliOptions options)
     }
 
     /// <summary>
+    /// Creates the attribute change filter registry and populates it with all provider filters.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    /// <param name="providerRegistry">The provider registry containing registered modules.</param>
+    /// <returns>A configured attribute change filter registry.</returns>
+    internal AttributeChangeFilterRegistry CreateAttributeChangeFilterRegistry(ProviderRegistry providerRegistry)
+    {
+        var registry = new AttributeChangeFilterRegistry();
+        providerRegistry.RegisterAllAttributeChangeFilters(registry);
+        return registry;
+    }
+
+    /// <summary>
     /// Creates the icon provider registry and populates it with all provider icon definitions.
     /// </summary>
     /// <param name="providerRegistry">The provider registry containing registered modules.</param>
@@ -235,7 +248,9 @@ internal sealed class CompositionRoot(CliOptions options)
             providerRegistry: providerRegistry,
             codeAnalysisInput: codeAnalysisInput,
             iconProviderRegistry: iconProviderRegistry,
-            detailsDisplayMode: options.DetailsDisplayMode);
+            detailsDisplayMode: options.DetailsDisplayMode,
+            ignoreCaseChanges: options.IgnoreCaseChanges,
+            attributeChangeFilterRegistry: CreateAttributeChangeFilterRegistry(providerRegistry));
     }
 
     /// <summary>

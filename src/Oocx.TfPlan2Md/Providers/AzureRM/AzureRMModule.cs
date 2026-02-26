@@ -110,6 +110,21 @@ internal sealed class AzureRMModule : IProviderModule
     }
 
     /// <summary>
+    /// Registers the AzureRM attribute change filter that suppresses Azure resource ID
+    /// casing-only differences.
+    /// </summary>
+    /// <param name="registry">The attribute change filter registry to register with.</param>
+    /// <remarks>
+    /// The <see cref="AzureResourceIdCaseChangeFilter"/> is always registered here; the filter
+    /// is only consulted by the core pipeline when <c>--ignore-case-changes</c> is active.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </remarks>
+    public void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry)
+    {
+        registry.Register(new AzureResourceIdCaseChangeFilter());
+    }
+
+    /// <summary>
     /// Registers AzureRM parent-child relationships for inline rendering.
     /// </summary>
     /// <param name="registry">The parent-child relationship registry to register with.</param>

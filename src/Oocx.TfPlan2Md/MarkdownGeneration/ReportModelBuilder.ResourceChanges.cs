@@ -129,6 +129,19 @@ internal partial class ReportModelBuilder
                 ref afterDisplay,
                 ref valuesEqual);
 
+            // Azure ID casing-only filter: suppress rows where the registry indicates the change
+            // is purely a casing difference (e.g., azurerm resource ID capitalisation noise).
+            // This guard comes BEFORE the valuesEqual check so that Azure ID casing rows remain
+            // hidden even when --show-unchanged-values is active.
+            // Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+            if (_ignoreCaseChanges
+                && !valuesEqual
+                && _attributeChangeFilterRegistry.ShouldSuppress(
+                       new Services.AttributeChangeFilterContext(providerName, key, beforeDisplay, afterDisplay)))
+            {
+                continue;
+            }
+
             if (!_showUnchangedValues && valuesEqual)
             {
                 continue;

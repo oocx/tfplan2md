@@ -86,6 +86,21 @@ internal interface IProviderModule
     }
 
     /// <summary>
+    /// Registers provider-specific attribute change filters.
+    /// </summary>
+    /// <param name="registry">The attribute change filter registry to register into.</param>
+    /// <remarks>
+    /// Filters allow providers to suppress attribute change rows based on their own criteria
+    /// (e.g., Azure resource ID casing-only changes). The default no-op keeps all existing
+    /// provider modules source-compatible without changes.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </remarks>
+    void RegisterAttributeChangeFilters(AttributeChangeFilterRegistry registry)
+    {
+        // Default no-op keeps existing provider modules compatible.
+    }
+
+    /// <summary>
     /// Registers provider-specific callbacks to be invoked after parent-child merging.
     /// </summary>
     /// <param name="builder">The report model builder to register callbacks with.</param>

@@ -39,6 +39,8 @@ internal delegate void ParentPostMergeCallback(
 /// <param name="codeAnalysisInput">Optional code analysis inputs to integrate into the report.</param>
 /// <param name="iconProviderRegistry">Optional registry of icon providers used during rendering.</param>
 /// <param name="detailsDisplayMode">Display mode for resource details blocks.</param>
+/// <param name="ignoreCaseChanges">Whether attribute change rows where before/after are Azure resource IDs differing only in casing are suppressed.</param>
+/// <param name="attributeChangeFilterRegistry">Optional registry of attribute change filters; defaults to an empty registry.</param>
 /// <remarks>
 /// Related features: docs/features/020-custom-report-title/specification.md and docs/features/014-unchanged-values-cli-option/specification.md.
 /// </remarks>
@@ -54,7 +56,9 @@ internal partial class ReportModelBuilder(
     Services.ProviderRegistry? providerRegistry = null,
     CodeAnalysisInput? codeAnalysisInput = null,
     MarkdownGeneration.Services.IconProviderRegistry? iconProviderRegistry = null,
-    RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto)
+    RenderTargets.DetailsDisplayMode detailsDisplayMode = RenderTargets.DetailsDisplayMode.Auto,
+    bool ignoreCaseChanges = false,
+    Services.AttributeChangeFilterRegistry? attributeChangeFilterRegistry = null)
 {
     /// <summary>
     /// Indicates whether sensitive values should be rendered without masking.
@@ -65,6 +69,21 @@ internal partial class ReportModelBuilder(
     /// Indicates whether unchanged attribute values should be included in output tables.
     /// </summary>
     private readonly bool _showUnchangedValues = showUnchangedValues;
+
+    /// <summary>
+    /// Indicates whether attribute change rows where before/after are Azure resource IDs
+    /// differing only in casing should be suppressed.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    private readonly bool _ignoreCaseChanges = ignoreCaseChanges;
+
+    /// <summary>
+    /// Registry of attribute change filters consulted when <see cref="_ignoreCaseChanges"/> is active.
+    /// Defaults to an empty registry (never suppresses anything) when not supplied.
+    /// Related feature: docs/features/103-azure-id-case-insensitive-filter/specification.md.
+    /// </summary>
+    private readonly Services.AttributeChangeFilterRegistry _attributeChangeFilterRegistry =
+        attributeChangeFilterRegistry ?? new Services.AttributeChangeFilterRegistry();
 
     /// <summary>
     /// Strategy for building resource summaries used in the report.

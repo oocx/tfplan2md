@@ -20,7 +20,9 @@ public static partial class ScribanHelpers
     /// Thread-local cache for <see cref="BuildLineDiff"/> results.
     /// Eliminates double LCS computation when the template first counts changed lines
     /// (via <c>LargeAttributesSummary</c>) and then renders the diff (via <c>FormatLargeValue</c>).
-    /// The cache is cleared after each render pass via <see cref="ClearLineDiffCache"/>.
+    /// Uses <c>[ThreadStatic]</c> because Scriban templates execute single-threaded per render
+    /// pass, and this avoids thread-safety issues if multiple renders run concurrently on
+    /// different threads. The cache is cleared after each render pass via <see cref="ClearLineDiffCache"/>.
     /// </summary>
     [ThreadStatic]
     private static Dictionary<(string Before, string After), List<DiffEntry>>? _lineDiffCache;

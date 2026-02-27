@@ -9,6 +9,14 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration;
 public static partial class ScribanHelpers
 {
     /// <summary>
+    /// Maximum number of cells in the LCS matrix before falling back to a simple diff.
+    /// Prevents O(m×n) blowup when comparing large values (e.g., minified JSON policies).
+    /// A 10 million cell limit allows ~3,162×3,162 line or character comparisons while keeping
+    /// computation under ~40 MB memory and completing in well under a second.
+    /// </summary>
+    private const long MaxLcsMatrixCells = 10_000_000;
+
+    /// <summary>
     /// Builds a line-level diff between two string arrays using LCS pairing.
     /// </summary>
     /// <param name="before">Original lines.</param>
@@ -58,6 +66,8 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Computes longest common subsequence pairs for two line arrays.
+    /// Falls back to an empty result when the input exceeds <see cref="MaxLcsMatrixCells"/>
+    /// to prevent excessive memory allocation and computation time.
     /// </summary>
     /// <param name="before">Original lines.</param>
     /// <param name="after">Updated lines.</param>
@@ -66,6 +76,12 @@ public static partial class ScribanHelpers
     {
         var m = before.Length;
         var n = after.Length;
+
+        if ((long)m * n > MaxLcsMatrixCells)
+        {
+            return [];
+        }
+
         var lengths = new int[m + 1, n + 1];
 
         for (var i = m - 1; i >= 0; i--)
@@ -109,6 +125,8 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Computes longest common subsequence pairs for two single-line strings.
+    /// Falls back to an empty result when the input exceeds <see cref="MaxLcsMatrixCells"/>
+    /// to prevent excessive memory allocation and computation time.
     /// </summary>
     /// <param name="before">Original string.</param>
     /// <param name="after">Updated string.</param>
@@ -117,6 +135,12 @@ public static partial class ScribanHelpers
     {
         var m = before.Length;
         var n = after.Length;
+
+        if ((long)m * n > MaxLcsMatrixCells)
+        {
+            return [];
+        }
+
         var lengths = new int[m + 1, n + 1];
 
         for (var i = m - 1; i >= 0; i--)

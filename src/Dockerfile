@@ -27,6 +27,12 @@ COPY --from=base /lib/ld-musl-x86_64.so.1 /lib/
 COPY --from=base /usr/lib/libgcc_s.so.1 /usr/lib/
 COPY --from=base /usr/lib/libstdc++.so.6 /usr/lib/
 
+LABEL org.opencontainers.image.source="https://github.com/oocx/tfplan2md" \
+      org.opencontainers.image.url="https://github.com/oocx/tfplan2md" \
+      org.opencontainers.image.title="tfplan2md" \
+      org.opencontainers.image.description="Convert Terraform plan JSON to readable Markdown" \
+      org.opencontainers.image.licenses="MIT"
+
 WORKDIR /app
 COPY --from=build /app/publish/ .
 COPY --from=build /workspace/examples/comprehensive-demo /examples/comprehensive-demo

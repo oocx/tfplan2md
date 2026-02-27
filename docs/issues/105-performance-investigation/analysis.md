@@ -386,30 +386,277 @@ With AzureDevOps render target (default):
 Even a more conservative scenario with fewer large values but many resources can easily reach
 minutes to tens of minutes due to the quadratic growth.
 
-## Suggested Fix Approach
+## Proposed Fixes and User-Facing Impact
 
-### Priority 1: Fix the AzureDevOps FormatDiff Bypass (Findings 1 + 8)
+### Finding 1: LCS Algorithm — O(m×n) Time and Space (🔴 CRITICAL)
 
-Change `AzureDevOpsDiffFormatter.FormatDiff()` to NOT use `FormatLargeValue` for short/simple
-values. For single-line values where both before and after are short (e.g., < 100 chars),
-use simple `+/-` notation like the GitHub formatter does. Only invoke the full LCS pipeline
-for genuinely multi-line or large values.
+**Already fixed** in this PR via `MaxLcsMatrixCells` guard (10M cells) in `DiffComputation.cs`.
 
-### Priority 2: Cache LCS Results (Finding 2)
+**Proposed Fix:** Add a size guard at the top of both `ComputeLcsPairs` overloads. When
+`(long)m * n > MaxLcsMatrixCells`, return an empty pair list immediately. The existing
+diff-rendering code already handles empty pairs gracefully — all lines/characters are treated
+as changed (no common subsequence detected).
 
-The `LargeAttributesSummary` function calls `BuildLineDiff` for counting, then the template
-calls `format_large_value` which calls it again. Cache the diff result or merge the summary
-computation into the rendering pass.
+```csharp
+if ((long)m * n > MaxLcsMatrixCells)
+{
+    return [];
+}
+```
 
-### Priority 3: Optimize Configuration Reference Lookup (Finding 5)
+**User-Facing Impact:** For attribute values where before×after exceeds ~3,162 characters each
+(the square root of 10M), users will see the entire before value in red and the entire after
+value in green, instead of the fine-grained character-level highlighting that shows exactly
+which characters within each line changed. The diff is still correct — it just shows a
+"whole-value" replacement instead of a character-level diff. For the vast majority of attributes
+(short values like names, IDs, booleans), there is zero change in output. The tool will
+complete in seconds instead of 20+ minutes for plans with large JSON policies.
 
-Build a secondary index keyed by normalized address so that
-`BuildConfigurationReferencesForResource` uses `TryGetValue` instead of `.Where()`.
+---
 
-### Priority 4: Use HashSet-based removal (Finding 3)
+### Finding 2: Double LCS Computation for Large Value Summaries (🟡 MEDIUM)
 
-Replace `foreach (var child in removedChildren) { allChanges.Remove(child); }` with
-`allChanges.RemoveAll(c => removedChildren.Contains(c))` for a single O(n) pass.
+**Proposed Fix:** Replace the `CountChangedLines` method in `LargeValueSummary.cs` with a
+lightweight heuristic that avoids LCS entirely. Instead of computing a full diff to count
+changed lines, use symmetric set difference: count lines present in `before` but not `after`
+(removed) plus lines in `after` but not `before` (added). This is O(n) with a `HashSet`
+and produces a close approximation of the true changed-line count without the LCS cost.
+
+```csharp
+private static int CountChangedLines(string before, string after)
+{
+    var beforeLines = SplitLines(before);
+    var afterLines = SplitLines(after);
+    var beforeSet = new HashSet<string>(beforeLines, StringComparer.Ordinal);
+    var afterSet = new HashSet<string>(afterLines, StringComparer.Ordinal);
+    var removed = beforeLines.Count(l => !afterSet.Contains(l));
+    var added = afterLines.Count(l => !beforeSet.Contains(l));
+    return removed + added;
+}
+```
+
+**User-Facing Impact:** The summary line shown above each large attribute (e.g.
+`"Large values: policy (42 lines, 8 changes)"`) may report slightly different change counts
+for values where lines are reordered rather than added/removed. For example, if two lines
+swap positions, the current LCS approach reports 0 changes (they're both still present),
+while the set-based approach also reports 0. The difference only appears when duplicate lines
+exist — a rare edge case in real Terraform values. In practice, users will see identical or
+near-identical summary text, but the tool will skip one full O(m×n) computation per large
+attribute.
+
+---
+
+### Finding 3: `allChanges.Remove(child)` Inside Loop — O(c×n) (🟡 MEDIUM)
+
+**Proposed Fix:** Collect all children to remove into a `HashSet<ResourceChangeModel>`, then
+use `List.RemoveAll()` for a single O(n) pass:
+
+```csharp
+var removedSet = new HashSet<ResourceChangeModel>(removedChildren);
+allChanges.RemoveAll(removedSet.Contains);
+```
+
+**User-Facing Impact:** None visible. The output is identical — the same child resources are
+removed from the top-level list and merged under their parents. The fix eliminates an
+O(c×n) list scan that becomes noticeable with 100+ parent-child merges across 200+ resources.
+On typical plans (< 50 resources), the improvement is negligible; on large plans it saves
+a few milliseconds.
+
+---
+
+### Finding 4: `FindIndex` Inside LINQ Chain — O(g×n) (🟢 LOW)
+
+**Proposed Fix:** Pre-compute a first-index lookup dictionary before the LINQ chain:
+
+```csharp
+var firstIndexByModule = new Dictionary<string, int>(StringComparer.Ordinal);
+for (var i = 0; i < displayChanges.Count; i++)
+{
+    var key = displayChanges[i].ModuleAddress ?? string.Empty;
+    firstIndexByModule.TryAdd(key, i);
+}
+
+var moduleGroups = displayChanges
+    .GroupBy(c => c.ModuleAddress ?? string.Empty)
+    .Select(g => new
+    {
+        Key = g.Key,
+        Changes = g.ToList(),
+        FirstIndex = firstIndexByModule[g.Key]  // O(1) lookup
+    })
+    ...
+```
+
+**User-Facing Impact:** None visible. Module groups in the output appear in the same order.
+The fix replaces an O(g×n) scan with O(n) pre-computation + O(1) lookups. With typical
+plans having < 10 modules, the improvement is unmeasurable — this is a code quality fix
+rather than a performance fix.
+
+---
+
+### Finding 5: `BuildConfigurationReferencesForResource` — Linear Scan (🟡 MEDIUM)
+
+**Proposed Fix:** Build a secondary index at the same time as `_configurationReferenceIndex`,
+keyed by normalized address only (grouping all attributes for that address):
+
+```csharp
+// In ReportModelBuilder.cs, alongside _configurationReferenceIndex:
+private IReadOnlyDictionary<string, Dictionary<string, IReadOnlyList<string>>>
+    _configurationReferencesByAddress = ...;
+
+// In Build():
+_configurationReferencesByAddress = _configurationReferenceIndex
+    .GroupBy(e => e.Key.Address, StringComparer.OrdinalIgnoreCase)
+    .ToDictionary(
+        g => g.Key,
+        g => g.ToDictionary(e => e.Key.Attribute, e => e.Value, StringComparer.OrdinalIgnoreCase),
+        StringComparer.OrdinalIgnoreCase);
+
+// In BuildConfigurationReferencesForResource():
+if (_configurationReferencesByAddress.TryGetValue(normalizedAddress, out var refs))
+    return refs;
+return new Dictionary<string, IReadOnlyList<string>>();
+```
+
+**User-Facing Impact:** None visible. The `(known after apply)` and `→ reference` labels on
+attributes are identical. The fix turns an O(R × I) scan (200 resources × 2,000 references
+= 400K comparisons) into O(R) dictionary lookups. On large plans with many configuration
+references, this eliminates a measurable overhead.
+
+---
+
+### Finding 6: Regex Post-Processing of Rendered Output (🟢 LOW)
+
+**Proposed Fix:** Compile the five regex patterns into static `Regex` instances with
+`RegexOptions.Compiled` so the regex engine avoids re-interpreting the pattern on each call.
+Additionally, combine the two table-related regexes (blank line collapse + indentation removal)
+into a single pass using `StringBuilder`-based line processing:
+
+```csharp
+private static readonly Regex BlankLineInTableRegex = new(
+    @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)",
+    RegexOptions.Compiled, TimeSpan.FromSeconds(2));
+
+// In Render():
+rendered = BlankLineInTableRegex.Replace(rendered, "\n");
+```
+
+**User-Facing Impact:** None visible. The rendered markdown output is identical. The fix
+reduces regex overhead on large outputs (500KB+) by ~2-3x through compiled patterns and
+avoids creating intermediate string copies. In practice this saves at most 1-2 seconds on
+very large plans. The existing `TimeSpan` timeouts already prevent any catastrophic scenario.
+
+---
+
+### Finding 7: `ConvertToFlatDictionary` Called Multiple Times Per Resource (🟢 LOW)
+
+**Proposed Fix:** Cache the flattened dictionaries per `(JsonElement, purpose)` key. Since
+`BuildResourceChangeModel` calls `ConvertToFlatDictionary` four times for the same resource
+(before, after, beforeSensitive, afterSensitive), introduce a local cache within
+`BuildResourceChangeModel`:
+
+```csharp
+var flattenCache = new Dictionary<JsonElement, Dictionary<string, string?>>();
+Dictionary<string, string?> CachedFlatten(JsonElement? element) {
+    if (element is null) return new();
+    if (flattenCache.TryGetValue(element.Value, out var cached)) return cached;
+    var result = ConvertToFlatDictionary(element);
+    flattenCache[element.Value] = result;
+    return result;
+}
+```
+
+**User-Facing Impact:** None visible. The attribute values in the output are identical. The
+fix eliminates 2-4 redundant JSON tree walks per resource. For 200 resources with 100
+attributes each, this saves ~40K-80K dictionary operations — a few milliseconds total. This
+is a code hygiene improvement rather than a performance fix.
+
+---
+
+### Finding 8: AzureDevOps FormatDiff Calls FormatLargeValue for ALL Changed Attributes (🔴 CRITICAL)
+
+**Proposed Fix:** Add a fast path in `AzureDevOpsDiffFormatter.FormatDiff()` for simple
+single-line values. When both `before` and `after` are short (e.g., < 200 characters) and
+contain no newlines, bypass the full `FormatLargeValue` → LCS pipeline and instead render
+a simple styled diff using direct string comparison:
+
+```csharp
+public string FormatDiff(string? before, string? after)
+{
+    var beforeValue = before ?? string.Empty;
+    var afterValue = after ?? string.Empty;
+
+    if (string.IsNullOrEmpty(beforeValue) && string.IsNullOrEmpty(afterValue))
+        return string.Empty;
+
+    if (string.Equals(beforeValue, afterValue, StringComparison.Ordinal))
+        return WrapInlineCode(EscapeMarkdown(afterValue));
+
+    // Fast path: short single-line values don't need LCS character-level diffing
+    if (!beforeValue.Contains('\n') && !afterValue.Contains('\n')
+        && beforeValue.Length < 200 && afterValue.Length < 200)
+    {
+        return WrapInlineDiffCode(
+            $"<span style=\"background-color:#fff5f5;color:#d73a49;\">- {EscapeHtml(beforeValue)}</span><br>"
+            + $"<span style=\"background-color:#f0fff4;color:#28a745;\">+ {EscapeHtml(afterValue)}</span>");
+    }
+
+    // Full LCS pipeline for multi-line or large values
+    return WrapInlineDiffCode(BuildInlineDiffTable(beforeValue, afterValue));
+}
+```
+
+**User-Facing Impact:** For simple attribute changes (e.g., `name: "old" → "new"`,
+`sku: "Standard" → "Premium"`), users will see the old value in red and new value in green
+as two separate lines instead of character-level highlighting that shows exactly which
+characters within the value changed. For example, changing `"Standard_LRS"` to `"Premium_LRS"`
+would previously highlight just the `Standard`→`Premium` portion; with the fast path, the
+entire old and new values are shown in their respective colors. This trade-off eliminates
+the most impactful performance bottleneck — the 6,000 unnecessary LCS computations per plan
+— while preserving full character-level diffs for multi-line values (JSON policies, scripts)
+where fine-grained highlighting is most valuable.
+
+---
+
+### Finding 9: JSON/XML Parsing Attempts on Non-Structured Values (🟢 LOW)
+
+**Proposed Fix:** Add a cheap pre-filter before attempting JSON/XML parsing. Check the first
+non-whitespace character — JSON values start with `{` or `[`, XML with `<`. Skip the
+`JsonDocument.Parse()` / `XDocument.Parse()` call entirely when the value doesn't start
+with these characters:
+
+```csharp
+private static bool TryFormatStructuredContent(string value, out string formatted, out string? language)
+{
+    var trimmed = value.AsSpan().TrimStart();
+    if (trimmed.Length > 0 && (trimmed[0] == '{' || trimmed[0] == '['))
+    {
+        if (TryFormatJson(value, out formatted))
+        {
+            language = "json";
+            return true;
+        }
+    }
+
+    if (trimmed.Length > 0 && trimmed[0] == '<')
+    {
+        if (TryFormatXml(value, out formatted))
+        {
+            language = "xml";
+            return true;
+        }
+    }
+
+    language = null;
+    formatted = string.Empty;
+    return false;
+}
+```
+
+**User-Facing Impact:** None visible. Values that are actually JSON or XML will still be
+detected and pretty-printed. The fix eliminates ~6,000 exception throws per plan (one per
+non-JSON, non-XML attribute) saving ~6-60ms. This is imperceptible to users but is good
+defensive coding — avoiding exceptions for expected control flow.
 
 ## Related Tests
 

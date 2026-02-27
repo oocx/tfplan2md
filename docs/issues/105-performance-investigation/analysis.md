@@ -357,17 +357,20 @@ of ~1-10μs per attribute. With 6,000 attributes, this is 6-60ms — negligible.
 
 ## Summary Table
 
-| # | Finding | Location | Complexity | Severity |
-|---|---------|----------|------------|----------|
-| 1 | LCS algorithm (line + char levels) | DiffComputation.cs | O(m×n) per attribute | 🔴 CRITICAL |
-| 8 | AzDevOps FormatDiff calls LCS for ALL attrs | AzureDevOpsDiffFormatter.cs | O(R×A×m×n) | 🔴 CRITICAL |
-| 2 | Double LCS for summary counting | LargeValueSummary.cs | 2× LCS cost | 🟡 MEDIUM |
-| 3 | List.Remove in loop | ReportModelBuilder.ParentChildMerging.cs | O(c×n) | 🟡 MEDIUM |
-| 5 | Linear config reference scan | ReportModelBuilder.ResourceChanges.cs | O(R×I) | 🟡 MEDIUM |
-| 4 | FindIndex in LINQ chain | ReportModelBuilder.Build.cs | O(g×n) | 🟢 LOW |
-| 6 | Regex post-processing | MarkdownRenderer.cs | 5× full-string passes | 🟢 LOW |
-| 7 | Repeated JSON flattening | Multiple files | O(n) per call | 🟢 LOW |
-| 9 | JSON/XML parse attempts | LargeValues.cs | Exception cost | 🟢 LOW |
+| # | Finding | Location | Proposed Fix | User-Visible Change |
+|---|---------|----------|--------------|---------------------|
+| 1 | LCS O(m×n) blowup | DiffComputation.cs | ✅ Already fixed — `MaxLcsMatrixCells` guard | Large values show whole-value diff instead of char-level highlighting |
+| 2 | Double LCS for summaries | LargeValueSummary.cs | Cache `BuildLineDiff` result for reuse | None — identical output |
+| 3 | O(c×n) list removal | ReportModelBuilder.ParentChildMerging.cs | `HashSet` + `RemoveAll` single pass | None — identical output |
+| 4 | O(g×n) FindIndex | ReportModelBuilder.Build.cs | Pre-compute first-index dictionary | None — identical output |
+| 5 | Linear config ref scan | ReportModelBuilder.ResourceChanges.cs | Secondary index keyed by address | None — identical output |
+| 6 | 5× regex on full output | MarkdownRenderer.cs | Compiled `Regex` instances | None — identical output |
+| 7 | Repeated JSON flattening | Multiple files | Local flatten cache per resource | None — identical output |
+| 8 | AzDevOps LCS for ALL attrs | AzureDevOpsDiffFormatter.cs | Fast path for values < 50 chars + JSON/XML heuristics | Simple short attrs show whole-value red/green instead of char-level diff |
+| 9 | JSON/XML parse exceptions | LargeValues.cs | Subsumed by Finding 8 (heuristic pre-filter) | None — identical output |
+
+Findings 1+8 are the root cause. Finding 1 is already fixed; Finding 8 would have the most
+additional impact. Finding 2 (caching) eliminates the double LCS cost with zero output change.
 
 ## Could This Cause 20-Minute Runtimes?
 
@@ -416,33 +419,53 @@ complete in seconds instead of 20+ minutes for plans with large JSON policies.
 
 ### Finding 2: Double LCS Computation for Large Value Summaries (🟡 MEDIUM)
 
-**Proposed Fix:** Replace the `CountChangedLines` method in `LargeValueSummary.cs` with a
-lightweight heuristic that avoids LCS entirely. Instead of computing a full diff to count
-changed lines, use symmetric set difference: count lines present in `before` but not `after`
-(removed) plus lines in `after` but not `before` (added). This is O(n) with a `HashSet`
-and produces a close approximation of the true changed-line count without the LCS cost.
+**Proposed Fix:** Cache the `BuildLineDiff` result so that the second call reuses it.
+
+The template calls `large_attributes_summary(large_attrs)` first (which calls
+`CountChangedLines` → `BuildLineDiff` → `ComputeLcsPairs`), then calls
+`format_large_value(attr.before, attr.after, ...)` per attribute (which calls
+`BuildInlineDiff` → `BuildLineDiff` → `ComputeLcsPairs` again with potentially the same
+inputs). By caching at the `BuildLineDiff` level, the second call returns instantly.
 
 ```csharp
-private static int CountChangedLines(string before, string after)
+[ThreadStatic]
+private static Dictionary<(string, string), List<DiffEntry>>? _lineDiffCache;
+
+private static List<DiffEntry> BuildLineDiff(string[] before, string[] after)
 {
-    var beforeLines = SplitLines(before);
-    var afterLines = SplitLines(after);
-    var beforeSet = new HashSet<string>(beforeLines, StringComparer.Ordinal);
-    var afterSet = new HashSet<string>(afterLines, StringComparer.Ordinal);
-    var removed = beforeLines.Count(l => !afterSet.Contains(l));
-    var added = afterLines.Count(l => !beforeSet.Contains(l));
-    return removed + added;
+    var key = (string.Join('\n', before), string.Join('\n', after));
+    _lineDiffCache ??= new();
+    if (_lineDiffCache.TryGetValue(key, out var cached))
+    {
+        return cached;
+    }
+
+    var pairs = ComputeLcsPairs(before, after);
+    // ... existing diff logic ...
+    _lineDiffCache[key] = result;
+    return result;
 }
 ```
 
-**User-Facing Impact:** The summary line shown above each large attribute (e.g.
-`"Large values: policy (42 lines, 8 changes)"`) may report slightly different change counts
-for values where lines are reordered rather than added/removed. For example, if two lines
-swap positions, the current LCS approach reports 0 changes (they're both still present),
-while the set-based approach also reports 0. The difference only appears when duplicate lines
-exist — a rare edge case in real Terraform values. In practice, users will see identical or
-near-identical summary text, but the tool will skip one full O(m×n) computation per large
-attribute.
+**Note:** The cache needs lifecycle management — clear it after each render pass to avoid
+unbounded growth. A `[ThreadStatic]` dictionary works because Scriban templates execute
+single-threaded per render. The cache should be cleared in `MarkdownRenderer.Render()` after
+template execution completes.
+
+**Important caveat:** `CountChangedLines` operates on the raw `before`/`after` strings, while
+`BuildInlineDiff` operates on values after `NormalizeStructuredValue()` (which pretty-prints
+JSON/XML). For JSON/XML values, the inputs differ so the cache will miss. However:
+- For non-JSON/XML values (the majority of large attributes), raw == normalized → cache hit
+- For JSON/XML values, the `MaxLcsMatrixCells` guard (Finding 1) already limits the cost
+- The cache still eliminates the double computation for the most common case
+
+**Alternative considered — set-based counting (O(n)):** Replace `CountChangedLines` with
+symmetric set difference using `HashSet<string>`. This avoids LCS entirely but may produce
+slightly different change counts for values with duplicate lines. The caching approach is
+preferred because it preserves exact output while eliminating redundant computation.
+
+**User-Facing Impact:** None — identical output. The same LCS diff is computed once and reused
+for both counting and rendering.
 
 ---
 
@@ -576,9 +599,18 @@ is a code hygiene improvement rather than a performance fix.
 ### Finding 8: AzureDevOps FormatDiff Calls FormatLargeValue for ALL Changed Attributes (🔴 CRITICAL)
 
 **Proposed Fix:** Add a fast path in `AzureDevOpsDiffFormatter.FormatDiff()` for simple
-single-line values. When both `before` and `after` are short (e.g., < 200 characters) and
-contain no newlines, bypass the full `FormatLargeValue` → LCS pipeline and instead render
-a simple styled diff using direct string comparison:
+single-line values, and add structural heuristics before attempting JSON/XML parsing.
+
+1. **Fast path (< 50 chars, single-line):** When both `before` and `after` are short
+   (< 50 characters) and contain no newlines, bypass the full `FormatLargeValue` → LCS
+   pipeline and render a simple styled diff using direct string comparison.
+
+2. **JSON/XML pre-filter heuristics:** Before calling `JsonDocument.Parse()` or
+   `XDocument.Parse()`, check whether the value structurally looks like JSON or XML:
+   - JSON: must contain both `{` and `}` (or `[` and `]`)
+   - XML: must contain both `<` and `>`
+   This avoids exception-throwing parse attempts on plain string values (combining
+   the intent of Finding 9 into this fix).
 
 ```csharp
 public string FormatDiff(string? before, string? after)
@@ -594,7 +626,7 @@ public string FormatDiff(string? before, string? after)
 
     // Fast path: short single-line values don't need LCS character-level diffing
     if (!beforeValue.Contains('\n') && !afterValue.Contains('\n')
-        && beforeValue.Length < 200 && afterValue.Length < 200)
+        && beforeValue.Length < 50 && afterValue.Length < 50)
     {
         return WrapInlineDiffCode(
             $"<span style=\"background-color:#fff5f5;color:#d73a49;\">- {EscapeHtml(beforeValue)}</span><br>"
@@ -604,32 +636,15 @@ public string FormatDiff(string? before, string? after)
     // Full LCS pipeline for multi-line or large values
     return WrapInlineDiffCode(BuildInlineDiffTable(beforeValue, afterValue));
 }
-```
 
-**User-Facing Impact:** For simple attribute changes (e.g., `name: "old" → "new"`,
-`sku: "Standard" → "Premium"`), users will see the old value in red and new value in green
-as two separate lines instead of character-level highlighting that shows exactly which
-characters within the value changed. For example, changing `"Standard_LRS"` to `"Premium_LRS"`
-would previously highlight just the `Standard`→`Premium` portion; with the fast path, the
-entire old and new values are shown in their respective colors. This trade-off eliminates
-the most impactful performance bottleneck — the 6,000 unnecessary LCS computations per plan
-— while preserving full character-level diffs for multi-line values (JSON policies, scripts)
-where fine-grained highlighting is most valuable.
-
----
-
-### Finding 9: JSON/XML Parsing Attempts on Non-Structured Values (🟢 LOW)
-
-**Proposed Fix:** Add a cheap pre-filter before attempting JSON/XML parsing. Check the first
-non-whitespace character — JSON values start with `{` or `[`, XML with `<`. Skip the
-`JsonDocument.Parse()` / `XDocument.Parse()` call entirely when the value doesn't start
-with these characters:
-
-```csharp
+// In LargeValues.cs — pre-filter before parse attempts:
 private static bool TryFormatStructuredContent(string value, out string formatted, out string? language)
 {
     var trimmed = value.AsSpan().TrimStart();
-    if (trimmed.Length > 0 && (trimmed[0] == '{' || trimmed[0] == '['))
+
+    // JSON heuristic: must contain { and } (objects) or [ and ] (arrays)
+    if ((value.Contains('{') && value.Contains('}'))
+        || (value.Contains('[') && value.Contains(']')))
     {
         if (TryFormatJson(value, out formatted))
         {
@@ -638,7 +653,8 @@ private static bool TryFormatStructuredContent(string value, out string formatte
         }
     }
 
-    if (trimmed.Length > 0 && trimmed[0] == '<')
+    // XML heuristic: must contain < and >
+    if (value.Contains('<') && value.Contains('>'))
     {
         if (TryFormatXml(value, out formatted))
         {
@@ -653,10 +669,29 @@ private static bool TryFormatStructuredContent(string value, out string formatte
 }
 ```
 
+**User-Facing Impact:** For simple attribute changes shorter than 50 characters (e.g.,
+`name: "old" → "new"`, `sku: "Standard" → "Premium"`, `enabled: true → false`), users will
+see the old value in red and new value in green as whole lines instead of character-level
+highlighting. Attributes longer than 50 chars or multi-line values still get full
+character-level diffs. The 50-char cutoff captures the vast majority of simple scalar
+attributes (names, IDs, booleans, enums, short strings) while preserving fine-grained diffs
+for values where character-level highlighting adds the most value. The JSON/XML heuristics
+eliminate ~6,000 unnecessary exception throws per plan with no visible output change.
+
+---
+
+### Finding 9: JSON/XML Parsing Attempts on Non-Structured Values (🟢 LOW)
+
+**Proposed Fix:** Subsumed by Finding 8. The JSON/XML pre-filter heuristics (check for
+`{`/`}` before JSON parse, `<`/`>` before XML parse) are included in the Finding 8 fix.
+The heuristic guards both the `TryFormatStructuredContent` path in `LargeValues.cs` and
+the `FormatDiff` path in `AzureDevOpsDiffFormatter.cs`.
+
 **User-Facing Impact:** None visible. Values that are actually JSON or XML will still be
-detected and pretty-printed. The fix eliminates ~6,000 exception throws per plan (one per
-non-JSON, non-XML attribute) saving ~6-60ms. This is imperceptible to users but is good
-defensive coding — avoiding exceptions for expected control flow.
+detected and pretty-printed — the heuristic only skips values that clearly cannot parse.
+The fix eliminates ~6,000 exception throws per plan (one per non-JSON, non-XML attribute)
+saving ~6-60ms. This is imperceptible to users but is good defensive coding — avoiding
+exceptions for expected control flow.
 
 ## Related Tests
 

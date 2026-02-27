@@ -42,8 +42,8 @@ public class AzureDevOpsDiffFormatterTests
 
         // Short single-line values use the fast path: whole-value red/green (no char-level highlighting)
         result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
-        result.Should().Contain("background-color:#fff5f5"); // Removed line background
-        result.Should().Contain("background-color:#f0fff4"); // Added line background
+        result.Should().Contain("background-color: #fff5f5"); // Removed line background
+        result.Should().Contain("background-color: #f0fff4"); // Added line background
         result.Should().Contain("- "); // Has minus prefix
         result.Should().Contain("+ "); // Has plus prefix
         result.Should().Contain("foo");
@@ -62,8 +62,8 @@ public class AzureDevOpsDiffFormatterTests
 
         // Short single-line values use the fast path: whole-value red/green (no char-level highlighting)
         result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
-        result.Should().Contain("background-color:#fff5f5"); // Removed line background
-        result.Should().Contain("background-color:#f0fff4"); // Added line background
+        result.Should().Contain("background-color: #fff5f5"); // Removed line background
+        result.Should().Contain("background-color: #f0fff4"); // Added line background
         result.Should().Contain("- a|b");
         result.Should().Contain("+ a|c");
         result.Should().Contain("<br>");

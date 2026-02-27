@@ -43,8 +43,8 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
             && beforeValue.Length < FastPathMaxLength && afterValue.Length < FastPathMaxLength)
         {
             return WrapInlineDiffCode(
-                $"<span style=\"background-color:#fff5f5;color:#d73a49;\">- {HtmlEncode(beforeValue)}</span><br>"
-                + $"<span style=\"background-color:#f0fff4;color:#28a745;\">+ {HtmlEncode(afterValue)}</span>");
+                $"<span style=\"background-color: #fff5f5; color: #d73a49;\">- {HtmlEncode(beforeValue)}</span><br>"
+                + $"<span style=\"background-color: #f0fff4; color: #28a745;\">+ {HtmlEncode(afterValue)}</span>");
         }
 
         // Full LCS pipeline for multi-line or large values

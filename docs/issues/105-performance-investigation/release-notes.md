@@ -1,30 +1,27 @@
-# Performance: fix 20-minute hangs on plans with large attribute values
+# Performance: improve diff computation for edge cases with large attribute values
 
-This release fixes a critical performance issue where tfplan2md could run for 20+ minutes
-(instead of sub-second) when processing Terraform plans containing large attribute values
-such as minified JSON IAM policies. The root cause was an unbounded O(m×n) LCS
-(Longest Common Subsequence) matrix computation that scaled quadratically with value length.
+This release improves performance when processing Terraform plans that contain large
+attribute values (such as minified JSON IAM policies) or a high number of changed attributes.
+Several algorithmic improvements reduce worst-case complexity and add fast paths for common
+short-value comparisons.
 
-## 🐛 Bug fixes
+## ⚡ Performance improvements
 
-### Fixed O(m×n) LCS blowup causing 20-minute hangs
+### Added LCS matrix size guard for large attribute values
 
-**Problem:** Processing plans with large attribute values (e.g., a 50K-character minified
-JSON policy) caused tfplan2md to hang for 20+ minutes. The character-level diff algorithm
-allocated and filled a matrix proportional to `m × n` — for a 50K-char value, that's
-2.5 billion iterations. The Azure DevOps diff formatter routed ALL changed attributes through
-this path, so a plan with even a few large policies would trigger the blowup.
+**Problem:** The character-level diff algorithm used an O(m×n) LCS (Longest Common
+Subsequence) matrix that could become very expensive for large attribute values. For example,
+comparing two 50K-character values would require 2.5 billion matrix iterations.
 
-**Fix:** Added a `MaxLcsMatrixCells` guard (10 million cells, ~3,162×3,162 element limit).
-When both values exceed this threshold, the tool gracefully degrades to a whole-value diff
-(red/green) instead of attempting a character-level diff. No data is lost — the full before
-and after values are still shown.
+**Fix:** Added a `MaxLcsMatrixCells` guard (10 million cells). When both values exceed this
+threshold, the tool gracefully degrades to a whole-value diff (red/green) instead of
+attempting a character-level diff. No data is lost — the full before and after values are
+still shown.
 
 **User-visible change:** Very large attribute values (where `before.Length × after.Length`
 exceeds 10M) now display as whole-value red/green diff instead of character-level highlighting.
-This trade-off is intentional: a fast, readable diff is better than a 20-minute hang.
 
-### Eliminated double LCS computation for large value summaries
+### Cached LCS results to eliminate double computation for large value summaries
 
 **Problem:** When rendering a large value summary (the collapsed `<summary>` line),
 `BuildLineDiff` was called twice with the same inputs — once for the summary and once for
@@ -34,14 +31,14 @@ the expanded content — because the Scriban template invoked both helpers indep
 blocks after each render pass. The second call hits the cache instead of recomputing the
 full LCS. This is purely an internal optimization with no output change.
 
-### Fixed O(c×n) list removal in parent–child merging
+### Improved list removal in parent–child merging from O(c×n) to O(n)
 
 **Problem:** `ReportModelBuilder.ParentChildMerging` used a loop of `List.Remove()` calls
 to remove merged children — each `Remove()` scans the full list, giving O(c×n) cost.
 
 **Fix:** Replaced with a `HashSet` lookup and a single `RemoveAll()` pass. No output change.
 
-### Fixed O(g×n) FindIndex in module group ordering
+### Improved module group ordering from O(g×n) to O(g)
 
 **Problem:** When ordering resource change groups by their original plan position,
 `FindIndex` was called inside a LINQ chain for each group — scanning the full changes list
@@ -50,7 +47,7 @@ each time.
 **Fix:** Pre-computed a `firstIndexByModule` dictionary in a single O(n) pass, replacing
 O(g×n) `FindIndex` calls with O(1) dictionary lookups. No output change.
 
-### Fixed linear configuration reference scan
+### Improved configuration reference lookup from O(n) to O(1)
 
 **Problem:** Looking up configuration references by resource address scanned the full
 reference list linearly for every resource.

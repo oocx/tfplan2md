@@ -14,6 +14,12 @@ namespace Oocx.TfPlan2Md.RenderTargets.AzureDevOps;
 /// </remarks>
 internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
 {
+    /// <summary>
+    /// Maximum length for the short single-line fast path.
+    /// Values shorter than this bypass the full LCS pipeline.
+    /// </summary>
+    private const int FastPathMaxLength = 50;
+
     /// <inheritdoc />
     public string FormatDiff(string? before, string? after)
     {
@@ -32,7 +38,16 @@ internal sealed class AzureDevOpsDiffFormatter : IDiffFormatter
             return WrapInlineCode(EscapeMarkdown(afterValue));
         }
 
-        // Build inline diff with HTML styling
+        // Fast path: short single-line values don't need LCS character-level diffing
+        if (!beforeValue.Contains('\n') && !afterValue.Contains('\n')
+            && beforeValue.Length < FastPathMaxLength && afterValue.Length < FastPathMaxLength)
+        {
+            return WrapInlineDiffCode(
+                $"<span style=\"background-color:#fff5f5;color:#d73a49;\">- {HtmlEncode(beforeValue)}</span><br>"
+                + $"<span style=\"background-color:#f0fff4;color:#28a745;\">+ {HtmlEncode(afterValue)}</span>");
+        }
+
+        // Full LCS pipeline for multi-line or large values
         return WrapInlineDiffCode(BuildInlineDiffTable(beforeValue, afterValue));
     }
 

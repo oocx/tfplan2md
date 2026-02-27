@@ -156,6 +156,13 @@ internal partial class ReportModelBuilder(
         new Dictionary<(string Address, string Attribute), IReadOnlyList<string>>();
 
     /// <summary>
+    /// Secondary index for configuration references grouped by normalized address.
+    /// Enables O(1) lookup per resource instead of O(I) linear scan over all entries.
+    /// </summary>
+    private Dictionary<string, Dictionary<string, IReadOnlyList<string>>> _configurationReferencesByAddress =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
     /// Collection of callbacks to invoke after parent-child merging completes.
     /// Populated lazily on first use to avoid initialization order issues.
     /// </summary>

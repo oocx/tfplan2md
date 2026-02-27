@@ -25,6 +25,31 @@ internal class MarkdownRenderer
             "summary"
         };
 
+    /// <summary>Compiled regex to collapse blank lines between table rows.</summary>
+    private static readonly Regex BlankLineInTableRegex = new(
+        @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)",
+        RegexOptions.Compiled, TimeSpan.FromSeconds(2));
+
+    /// <summary>Compiled regex to remove indentation from table rows.</summary>
+    private static readonly Regex IndentedTableRowRegex = new(
+        @"\n[ \t]+(\|)",
+        RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+
+    /// <summary>Compiled regex to collapse runs of multiple blank lines.</summary>
+    private static readonly Regex MultipleBlankLinesRegex = new(
+        @"\n([ \t]*\n){2,}",
+        RegexOptions.Compiled | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
+
+    /// <summary>Compiled regex to ensure a blank line before headings.</summary>
+    private static readonly Regex BlankLineBeforeHeadingRegex = new(
+        @"([^\n])\n(#{1,6}\s)",
+        RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+
+    /// <summary>Compiled regex to ensure a blank line after headings.</summary>
+    private static readonly Regex BlankLineAfterHeadingRegex = new(
+        @"(#{1,6}\s.+)\n(?!\n)",
+        RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+
     private readonly Platforms.Azure.IPrincipalMapper _principalMapper;
     private readonly ScribanTemplateLoader _templateLoader;
     private readonly TemplateResolver _templateResolver;
@@ -358,18 +383,19 @@ internal class MarkdownRenderer
         {
             var rendered = template.Render(context);
             // Collapse blank lines between table rows (which breaks tables)
-            rendered = Regex.Replace(rendered, @"(?<=\|[^\n]*)\n\s*\n(?=[ \t]*\|)", "\n", RegexOptions.None, TimeSpan.FromSeconds(2));
+            rendered = BlankLineInTableRegex.Replace(rendered, "\n");
             // Remove indentation from table rows (which causes them to be treated as code blocks)
-            // MA0023: Uses numbered group $1 in replacement - ExplicitCapture would break this
-#pragma warning disable MA0023
-            rendered = Regex.Replace(rendered, @"\n[ \t]+(\|)", "\n$1", RegexOptions.None, TimeSpan.FromSeconds(1));
-#pragma warning restore MA0023
+            rendered = IndentedTableRowRegex.Replace(rendered, "\n$1");
             rendered = NormalizeHeadingSpacing(rendered);
             return rendered;
         }
         catch (Scriban.Syntax.ScriptRuntimeException ex)
         {
             throw new MarkdownRenderException($"Error rendering template: {ex.Message}", ex);
+        }
+        finally
+        {
+            ScribanHelpers.ClearLineDiffCache();
         }
     }
 
@@ -401,6 +427,10 @@ internal class MarkdownRenderer
         catch (Scriban.Syntax.ScriptRuntimeException ex)
         {
             throw new MarkdownRenderException($"Error rendering template: {ex.Message}", ex);
+        }
+        finally
+        {
+            ScribanHelpers.ClearLineDiffCache();
         }
     }
 
@@ -439,20 +469,13 @@ internal class MarkdownRenderer
     private static string NormalizeHeadingSpacing(string markdown)
     {
         // Collapse runs of multiple blank lines (including whitespace-only lines) to a single blank line.
-        markdown = Regex.Replace(markdown, @"\n([ \t]*\n){2,}", "\n\n", RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
+        markdown = MultipleBlankLinesRegex.Replace(markdown, "\n\n");
 
         // Ensure exactly one blank line before any heading that follows non-blank content.
-        // Match: newline, optional horizontal whitespace, non-whitespace content, newline(s), then heading.
-        // If there's already a blank line (\n\n or more), the heading is fine.
-        // Only add a blank line when there's exactly one newline before the heading.
-        // MA0023: Uses numbered groups $1 and $2 in replacement - ExplicitCapture would break this
-#pragma warning disable MA0023
-        markdown = Regex.Replace(markdown, @"([^\n])\n(#{1,6}\s)", "$1\n\n$2", RegexOptions.None, TimeSpan.FromSeconds(1));
+        markdown = BlankLineBeforeHeadingRegex.Replace(markdown, "$1\n\n$2");
 
         // Ensure a blank line after headings when the following line is not already blank.
-        // MA0023: Uses numbered group $1 in replacement - ExplicitCapture would break this
-        markdown = Regex.Replace(markdown, @"(#{1,6}\s.+)\n(?!\n)", "$1\n\n", RegexOptions.None, TimeSpan.FromSeconds(1));
-#pragma warning restore MA0023
+        markdown = BlankLineAfterHeadingRegex.Replace(markdown, "$1\n\n");
 
         // Remove trailing blank lines while keeping a single newline at EOF for POSIX tools.
         markdown = markdown.TrimEnd();

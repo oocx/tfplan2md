@@ -206,24 +206,23 @@ internal partial class ReportModelBuilder
 
     /// <summary>
     /// Builds a reference map for a single resource by grouping configuration references by attribute.
+    /// Uses the pre-computed secondary index for O(1) lookup instead of linear scanning.
     /// </summary>
     /// <param name="normalizedAddress">Normalized resource address without instance key.</param>
     /// <returns>Attribute-to-references map for the resource.</returns>
     private Dictionary<string, IReadOnlyList<string>> BuildConfigurationReferencesForResource(string normalizedAddress)
     {
-        if (string.IsNullOrWhiteSpace(normalizedAddress) || _configurationReferenceIndex.Count == 0)
+        if (string.IsNullOrWhiteSpace(normalizedAddress) || _configurationReferencesByAddress.Count == 0)
         {
             return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
         }
 
-        var grouped = _configurationReferenceIndex
-            .Where(entry => string.Equals(entry.Key.Address, normalizedAddress, StringComparison.OrdinalIgnoreCase))
-            .ToDictionary(
-                entry => entry.Key.Attribute,
-                entry => entry.Value,
-                StringComparer.OrdinalIgnoreCase);
+        if (_configurationReferencesByAddress.TryGetValue(normalizedAddress, out var refs))
+        {
+            return refs;
+        }
 
-        return grouped;
+        return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>

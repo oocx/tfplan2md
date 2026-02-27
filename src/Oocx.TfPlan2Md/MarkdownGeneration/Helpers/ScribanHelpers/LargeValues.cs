@@ -74,6 +74,7 @@ public static partial class ScribanHelpers
 
     /// <summary>
     /// Attempts to parse JSON or XML content and return a formatted version and language marker.
+    /// Uses structural heuristics to skip parse attempts on values that clearly aren't JSON or XML.
     /// Related feature: docs/features/051-display-enhancements/specification.md.
     /// </summary>
     /// <param name="value">Raw input content.</param>
@@ -82,13 +83,18 @@ public static partial class ScribanHelpers
     /// <returns>True when the content was parsed as JSON or XML; otherwise false.</returns>
     private static bool TryFormatStructuredContent(string value, out string formatted, out string? language)
     {
-        if (TryFormatJson(value, out formatted))
+        // JSON heuristic: must contain { and } (objects) or [ and ] (arrays)
+        if (((value.Contains('{') && value.Contains('}'))
+            || (value.Contains('[') && value.Contains(']')))
+            && TryFormatJson(value, out formatted))
         {
             language = "json";
             return true;
         }
 
-        if (TryFormatXml(value, out formatted))
+        // XML heuristic: must contain < and >
+        if (value.Contains('<') && value.Contains('>')
+            && TryFormatXml(value, out formatted))
         {
             language = "xml";
             return true;

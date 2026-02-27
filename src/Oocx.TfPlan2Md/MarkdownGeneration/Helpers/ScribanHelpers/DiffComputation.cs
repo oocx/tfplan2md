@@ -17,13 +17,39 @@ public static partial class ScribanHelpers
     private const long MaxLcsMatrixCells = 10_000_000;
 
     /// <summary>
+    /// Thread-local cache for <see cref="BuildLineDiff"/> results.
+    /// Eliminates double LCS computation when the template first counts changed lines
+    /// (via <c>LargeAttributesSummary</c>) and then renders the diff (via <c>FormatLargeValue</c>).
+    /// The cache is cleared after each render pass via <see cref="ClearLineDiffCache"/>.
+    /// </summary>
+    [ThreadStatic]
+    private static Dictionary<(string Before, string After), List<DiffEntry>>? _lineDiffCache;
+
+    /// <summary>
+    /// Clears the <see cref="BuildLineDiff"/> result cache.
+    /// Must be called after each render pass to prevent unbounded memory growth.
+    /// </summary>
+    internal static void ClearLineDiffCache()
+    {
+        _lineDiffCache?.Clear();
+    }
+
+    /// <summary>
     /// Builds a line-level diff between two string arrays using LCS pairing.
+    /// Results are cached so that repeated calls with the same inputs return instantly.
     /// </summary>
     /// <param name="before">Original lines.</param>
     /// <param name="after">Updated lines.</param>
     /// <returns>Ordered list of diff entries.</returns>
     private static List<DiffEntry> BuildLineDiff(string[] before, string[] after)
     {
+        var cacheKey = (string.Join('\n', before), string.Join('\n', after));
+        _lineDiffCache ??= new Dictionary<(string, string), List<DiffEntry>>();
+        if (_lineDiffCache.TryGetValue(cacheKey, out var cached))
+        {
+            return cached;
+        }
+
         var pairs = ComputeLcsPairs(before, after);
         var result = new List<DiffEntry>();
 
@@ -61,6 +87,7 @@ public static partial class ScribanHelpers
             afterIndex++;
         }
 
+        _lineDiffCache[cacheKey] = result;
         return result;
     }
 

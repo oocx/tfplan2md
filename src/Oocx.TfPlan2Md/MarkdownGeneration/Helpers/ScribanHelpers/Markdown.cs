@@ -110,7 +110,7 @@ public static partial class ScribanHelpers
     /// </summary>
     /// <param name="value">Value to encode.</param>
     /// <returns>HTML-encoded string.</returns>
-    private static string HtmlEncode(string value)
+    internal static string HtmlEncode(string value)
     {
         var sb = new StringBuilder(value.Length + (value.Length / 10));
 

@@ -103,10 +103,8 @@ internal partial class ReportModelBuilder
             UpdateParentSummaryWithChildCounts(parent);
         }
 
-        foreach (var child in removedChildren)
-        {
-            allChanges.Remove(child);
-        }
+        var removedSet = new HashSet<ResourceChangeModel>(removedChildren);
+        allChanges.RemoveAll(removedSet.Contains);
 
         // Invoke provider-specific post-merge callbacks
         InvokePostMergeCallbacks(allChanges);

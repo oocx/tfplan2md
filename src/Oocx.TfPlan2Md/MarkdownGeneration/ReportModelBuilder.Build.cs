@@ -22,6 +22,14 @@ internal partial class ReportModelBuilder
     {
         _configurationReferenceIndex = ConfigurationReferenceResolver.BuildReferenceIndex(plan.Configuration);
 
+        // Build secondary index grouped by address for O(1) lookups per resource
+        _configurationReferencesByAddress = _configurationReferenceIndex
+            .GroupBy(e => e.Key.Address, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(
+                g => g.Key,
+                g => g.ToDictionary(e => e.Key.Attribute, e => e.Value, StringComparer.OrdinalIgnoreCase),
+                StringComparer.OrdinalIgnoreCase);
+
         // Build all resource change models first (for summary counting)
         var allChanges = plan.ResourceChanges
             .Select(BuildResourceChangeModel)
@@ -178,13 +186,21 @@ internal partial class ReportModelBuilder
         List<ResourceChangeModel> displayChanges,
         Dictionary<string, IReadOnlyList<OutputChangeModel>> outputsByModule)
     {
+        // Pre-compute first-index lookup to avoid O(g×n) FindIndex calls in LINQ chain
+        var firstIndexByModule = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (var i = 0; i < displayChanges.Count; i++)
+        {
+            var key = displayChanges[i].ModuleAddress ?? string.Empty;
+            firstIndexByModule.TryAdd(key, i);
+        }
+
         var moduleGroups = displayChanges
             .GroupBy(c => c.ModuleAddress ?? string.Empty)
             .Select(g => new
             {
                 Key = g.Key,
                 Changes = g.ToList(),
-                FirstIndex = displayChanges.FindIndex(c => (c.ModuleAddress ?? string.Empty) == g.Key)
+                FirstIndex = firstIndexByModule[g.Key]
             })
             .OrderBy(g => g.Key == string.Empty ? 0 : 1)
             .ThenBy(g => g.FirstIndex)

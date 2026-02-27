@@ -40,12 +40,10 @@ public class AzureDevOpsDiffFormatterTests
 
         var result = formatter.FormatDiff("foo", "bar");
 
-        // Should generate HTML with styled spans and character-level highlighting
+        // Short single-line values use the fast path: whole-value red/green (no char-level highlighting)
         result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
-        result.Should().Contain("background-color: #fff5f5"); // Removed line background
-        result.Should().Contain("background-color: #f0fff4"); // Added line background
-        result.Should().Contain("background-color: #ffc0c0"); // Removed char background (all chars different)
-        result.Should().Contain("background-color: #acf2bd"); // Added char background (all chars different)
+        result.Should().Contain("background-color:#fff5f5"); // Removed line background
+        result.Should().Contain("background-color:#f0fff4"); // Added line background
         result.Should().Contain("- "); // Has minus prefix
         result.Should().Contain("+ "); // Has plus prefix
         result.Should().Contain("foo");
@@ -62,16 +60,34 @@ public class AzureDevOpsDiffFormatterTests
 
         var result = formatter.FormatDiff("a|b", "a|c");
 
-        // Should generate HTML with styled spans and character-level highlighting
+        // Short single-line values use the fast path: whole-value red/green (no char-level highlighting)
+        result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
+        result.Should().Contain("background-color:#fff5f5"); // Removed line background
+        result.Should().Contain("background-color:#f0fff4"); // Added line background
+        result.Should().Contain("- a|b");
+        result.Should().Contain("+ a|c");
+        result.Should().Contain("<br>");
+
+        await Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task FormatDiff_WhenLongValuesDiffer_UsesCharLevelDiff()
+    {
+        var formatter = new AzureDevOpsDiffFormatter();
+
+        // Use values > 50 chars to bypass the fast path and exercise character-level diff
+        var before = "This is a very long value that exceeds the fast path threshold for short values";
+        var after = "This is a very long value that exceeds the FAST path threshold for short values";
+
+        var result = formatter.FormatDiff(before, after);
+
+        // Long values should use the full LCS pipeline with character-level highlighting
         result.Should().Contain("<code style=\"display:block; white-space:normal; padding:0; margin:0;\">");
         result.Should().Contain("background-color: #fff5f5"); // Removed line background
         result.Should().Contain("background-color: #f0fff4"); // Added line background
-        // Character-level diff highlighting (b vs c)
         result.Should().Contain("background-color: #ffc0c0"); // Removed char background
         result.Should().Contain("background-color: #acf2bd"); // Added char background
-        result.Should().Contain("- a|");
-        result.Should().Contain("+ a|");
-        result.Should().Contain("<br>");
 
         await Task.CompletedTask;
     }

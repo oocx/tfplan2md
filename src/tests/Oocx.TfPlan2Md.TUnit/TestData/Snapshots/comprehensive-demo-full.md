@@ -236,10 +236,6 @@ _No attribute changes._
 |-------|-------|-------|-------|-------|
 | [0] | `🆔 app` | `myregistry.azurecr.io/myapp:latest` | `0.5` | `1Gi` |
 
-#### Output Values
-
-_Output values are not known until after apply._
-
 </details>
 
 <details style="margin-bottom:12px; border:1px solid rgb(var(--palette-neutral-10, 153, 153, 153)); padding:12px;">

@@ -55,6 +55,7 @@
           },
           "output": {
             "state": "Running",
+            "linkedWorkspaceId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-logs/providers/Microsoft.OperationalInsights/workspaces/log-workspace-old",
             "sku": {
               "name": "Basic",
               "tier": "Basic",
@@ -76,6 +77,7 @@
           },
           "output": {
             "state": "Stopped",
+            "linkedWorkspaceId": "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg-logs/providers/Microsoft.OperationalInsights/workspaces/log-workspace-new",
             "sku": {
               "name": "Standard",
               "tier": "Standard",

@@ -20,32 +20,40 @@ This artifact MUST be real tfplan2md output, not synthetic or simulated.
 **Rendered Output Path:** `docs/features/106-azapi-output-values/uat-plan.md`
 
 **Plan Requirements:**
+
 - **MUST be a real Terraform plan JSON** that exercises the Output Values feature
-- **MUST include all key output rendering scenarios:** create (unknown), update (changed),
-  delete (before only)
-- **MUST include a grouped output example** (output with a `properties` sub-object having ≥3
-  fields to trigger Feature 034 grouping)
+- **MUST include all key output rendering scenarios:** create (unknown → no section), update
+  (changed), delete (before only)
+- **MUST include a grouped output example** (output with a sub-object having ≥3 fields to
+  trigger Feature 034 grouping)
 - **MUST include a sensitive output field** in at least one resource
+- **MUST include an Azure resource ID in output values** to demonstrate display name mapping
+  (Azure resource ID → human-readable description)
 - **Rationale:** A single multi-resource plan allows the UAT Tester to verify all key
   output scenarios in one PR comment, reducing review effort while ensuring completeness.
 - **Key Resources to include:**
   1. `azapi_resource.automation_create` — create action, `after_unknown.output = true`
-     (shows "known after apply" notice)
+     (output section is **absent** — no section shown when all values are unknown)
   2. `azapi_resource.automation_update` — update action, before/after output with grouped
-     `properties` sub-object (shows grouped output table)
+     `sku` sub-object (shows grouped output table) and `linkedWorkspaceId` Azure resource ID
+     (shows display name mapping)
   3. `azapi_resource.sql_delete` — delete action, before output with a sensitive field
      (shows delete-mode table with sensitivity masking)
 - **Coverage:**
-  - "Known after apply" notice for creates
-  - Before/After update table with Feature 034 grouping
+  - No Output Values section for creates when output is unknown (section suppressed entirely)
+  - Before/After update table with Feature 034 grouping (`sku` sub-section)
+  - Azure resource ID display name mapping (`linkedWorkspaceId` formatted as workspace description)
   - Before-only delete table
   - Sensitivity masking in output values
   - Section heading "Output Values" clearly distinct from "Body Changes"
 
 **Example Creation Command:**
+
 ```bash
 # After the Developer implements the feature and builds the binary:
-tfplan2md docs/features/106-azapi-output-values/uat-plan.json \
+tfplan2md \
+  --principals examples/comprehensive-demo/demo-principals.json \
+  docs/features/106-azapi-output-values/uat-plan.json \
   > docs/features/106-azapi-output-values/uat-plan.md
 ```
 
@@ -54,6 +62,7 @@ tfplan2md docs/features/106-azapi-output-values/uat-plan.json \
 **Purpose:** Ensure no unintended side effects in other areas.
 
 **Artifact Path:**
+
 - GitHub: `artifacts/comprehensive-demo-simple-diff.md`
 - Azure DevOps: `artifacts/comprehensive-demo.md`
 
@@ -86,36 +95,42 @@ In the **feature-specific report** (first comment, labelled "🎯 Feature Test")
 
 ### Resource 1 — `azapi_resource.automation_create` (create, output unknown)
 
-**Expected:** An `#### Output Values` heading appears after the `#### Body Changes` section
-(or after the top-level attributes table), followed by the italic text:
-
-> *Output values are not known until after apply.*
+**Expected:** **No** `#### Output Values` section appears. When all output values are unknown
+after apply, the section is suppressed entirely — there is no heading and no notice text.
 
 **Verify:**
-- The heading `#### Output Values` is present and distinct from `#### Body Changes`
-- No table rows appear under it — only the notice text
-- The notice text is in italics
+
+- The `#### Output Values` heading is **completely absent** for this resource
+- The resource block ends after the `#### Body` section
+- This behavior confirms that the section is only shown when there is actual data to display
 
 ---
 
-### Resource 2 — `azapi_resource.automation_update` (update, grouped output)
+### Resource 2 — `azapi_resource.automation_update` (update, grouped output + display names)
 
-**Expected:** An `#### Output Values` heading appears after the body section, followed by
-a `###### \`properties\`` sub-section (from Feature 034 grouping), containing a Before/After
-table with 3+ rows.
+**Expected:** An `#### Output Values` heading appears after the body section, containing:
+
+- A flat table row for `linkedWorkspaceId` showing the Azure resource ID formatted as a
+  human-readable workspace description (display name mapping)
+- A flat table row for `state` showing Before/After values
+- A `###### \`sku\`` H6 sub-section (from Feature 034 grouping) with a Before/After table
 
 **Verify:**
+
 - The `#### Output Values` heading appears after `#### Body Changes`
-- A `###### \`properties\`` H6 sub-heading is rendered inside the Output Values section
-- The table under it has `| Property | Before | After |` columns
-- Values from `automationHybridServiceUrl`, `state`, and `sku.name` appear as rows
-- Data values are formatted as inline code (e.g., `` `Ok` ``, not plain `Ok`)
+- The `linkedWorkspaceId` row shows the Azure resource ID as a human-readable description
+  (e.g., `Log Analytics Workspace` `🆔 log-workspace-old` in resource group...) — NOT the
+  raw `/subscriptions/.../providers/...` path — demonstrating display name mapping
+- A `###### \`sku\`` H6 sub-heading is rendered inside the Output Values section
+- The table under `sku` has `| Property | Before | After |` columns with 3 rows
+- Data values are formatted as inline code (e.g., `` `Running` ``, not plain `Running`)
 - No output values appear in the `#### Body Changes` section (clear separation)
 
 **Before/After Context:**
 Previously, the `output` attribute was completely invisible in the report. Users had to
 read the raw Terraform plan JSON to find API response values. After this feature, the
-rendered report shows these values in a clearly labelled, grouped table.
+rendered report shows these values in a clearly labelled, grouped table with display name
+formatting applied to Azure resource IDs.
 
 ---
 
@@ -125,6 +140,7 @@ rendered report shows these values in a clearly labelled, grouped table.
 `(sensitive)` because the field is marked sensitive in `before_sensitive.output`.
 
 **Verify:**
+
 - The `#### Output Values` heading appears
 - The table has only `| Property | Before |` columns (single-column delete mode)
 - The sensitive field (e.g. `apiKey`) displays `(sensitive)` rather than the actual value
@@ -137,6 +153,7 @@ rendered report shows these values in a clearly labelled, grouped table.
 In the **comprehensive demo** (second comment, labelled "🔄 Regression Test"):
 
 **Verify:**
+
 - Resources without an `output` attribute do not show an "Output Values" section —
   the section heading must be completely absent for those resources
 - Existing body rendering (grouping, sensitivity, large values) is unchanged

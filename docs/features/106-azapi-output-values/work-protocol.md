@@ -14,7 +14,7 @@
 | Quality Engineer | ✅ Required | ✅ Done |
 | Task Planner | ✅ Required | ✅ Done |
 | Developer | ✅ Required | ✅ Done |
-| Technical Writer | ✅ Required | ⏳ Pending |
+| Technical Writer | ✅ Required | ✅ Done |
 | Code Reviewer | ✅ Required | ⏳ Pending |
 | UAT Tester | ⚠️ If user-facing | ⏳ Pending |
 | Release Manager | ✅ Required | ⏳ Pending |
@@ -22,7 +22,20 @@
 
 ## Agent Work Log
 
-<!-- Each agent appends their entry below when they complete their work. -->
+### Technical Writer
+- **Date:** 2025-07-14
+- **Summary:** Updated `docs/features.md` to document Feature 106 (azapi output values). Added a
+  new top-level section "azapi Output Values (Feature 106)" describing the Output Values section,
+  what is shown, and rendering quality. Updated the supported resources table to note the output
+  values section for both `azapi_resource` and `azapi_update_resource`. Extended the Key Features
+  lists for both azapi resource types. Added an Output Values subsection under `azapi_resource`
+  with example output. Updated `work-protocol.md` status.
+- **Artifacts Produced:**
+  - `docs/features.md` (updated)
+  - `docs/features/106-azapi-output-values/work-protocol.md` (updated)
+- **Problems Encountered:** None.
+
+
 
 ### Quality Engineer
 - **Date:** 2025-07-14

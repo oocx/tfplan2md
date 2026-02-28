@@ -13,7 +13,7 @@
 | Architect | ✅ Required | ✅ Done |
 | Quality Engineer | ✅ Required | ✅ Done |
 | Task Planner | ✅ Required | ✅ Done |
-| Developer | ✅ Required | ⏳ Pending |
+| Developer | ✅ Required | ✅ Done |
 | Technical Writer | ✅ Required | ⏳ Pending |
 | Code Reviewer | ✅ Required | ⏳ Pending |
 | UAT Tester | ⚠️ If user-facing | ⏳ Pending |
@@ -67,7 +67,49 @@
   - `docs/features/106-azapi-output-values/architecture.md`
 - **Problems Encountered:** None.
 
-### Task Planner
+### Developer
+- **Date:** 2025-07-14
+- **Summary:** Implemented Feature 106 - Separate table for azapi output values.
+
+  **Architecture correction:** The architecture stated "No C# changes required," but
+  `after_unknown` was not exposed to Scriban templates. Added 3 minimal C# changes:
+  `AfterUnknown` property on `ResourceChangeModel`, set it in `ReportModelBuilder`, and
+  map it to `change.after_unknown` in `AotScriptObjectMapper`.
+
+  **Template implementation:** Created a shared partial template `_output_values.sbn`
+  that handles all create/replace/update/delete scenarios plus the "known after apply"
+  notice. Both `resource.sbn` and `update_resource.sbn` use `{{ include "_output_values" }}`
+  to stay within the 100-line template limit.
+
+  **Test data corrections:**
+  - TC-08 (sensitive): Updated before/after to differ (`Ok`→`Active`) so the resource
+    renders (identical values would have been filtered as no-change).
+  - TC-09 (grouped): Used `sku` sub-object instead of `properties` sub-object because
+    the grouping algorithm strips `properties.` prefix, preventing grouping.
+
+  **Regression:** Existing `azapi-create.md` and `azapi-create-complete.md` snapshots
+  were updated because their plan data already had `after_unknown.output = true`; the
+  feature now correctly renders the output-unknown notice for these plans.
+
+  **All 1303 non-Docker tests pass. 0 failures. 0 skipped.**
+
+- **Artifacts Produced:**
+  - `src/Oocx.TfPlan2Md/Providers/AzApi/Templates/azapi/_output_values.sbn`
+  - Updated `src/Oocx.TfPlan2Md/Providers/AzApi/Templates/azapi/resource.sbn`
+  - Updated `src/Oocx.TfPlan2Md/Providers/AzApi/Templates/azapi/update_resource.sbn`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ResourceChangeModel.cs` (+ `AfterUnknown`)
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/ReportModelBuilder.ResourceChanges.cs`
+  - `src/Oocx.TfPlan2Md/MarkdownGeneration/AotScriptObjectMapper.cs`
+  - 6 new test data JSON files in `TestData/`
+  - 6 new snapshot test methods in `AzapiSnapshotTests.cs`
+  - 8 snapshot changes (6 new + 2 updated existing)
+
+- **Problems Encountered:**
+  1. Architecture stated "no C# changes required" but `after_unknown` was not mapped.
+  2. Template line limit (100) exceeded after inline output block; refactored to partial.
+  3. TC-08 test data had identical before/after causing no-change filtering.
+  4. TC-09 test data used `properties` sub-object which is stripped by the grouping algorithm.
+
 - **Date:** 2025-07-14
 - **Summary:** Reviewed the feature specification, architecture, and test plan. Explored the
   existing azapi template files (`resource.sbn`, `update_resource.sbn`), test data JSON

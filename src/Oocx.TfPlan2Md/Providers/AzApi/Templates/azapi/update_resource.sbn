@@ -57,29 +57,7 @@
 {{~ end ~}}
 {{~ end ~}}
 
-{{~ # Output Values rendering ~}}
-{{~ has_before_output = change.before_json && change.before_json.output ~}}
-{{~ has_after_output = change.after_json && change.after_json.output ~}}
-{{~ if has_before_output || has_after_output ~}}
-{{~ if change.action == "update" ~}}
-{{~ if has_before_output && has_after_output ~}}
-{{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}
-{{~ after_sensitive_output = change.after_sensitive ? change.after_sensitive.output : null ~}}
-{{ render_azapi_body change.after_json.output "Output Values" "update" change.before_json.output before_sensitive_output after_sensitive_output false "inline-diff" show_sensitive }}
-{{~ else if has_after_output ~}}
-{{~ after_sensitive_output = change.after_sensitive ? change.after_sensitive.output : null ~}}
-{{ render_azapi_body change.after_json.output "Output Values" "create" null null after_sensitive_output false "inline-diff" show_sensitive }}
-{{~ else if has_before_output ~}}
-{{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}
-{{ render_azapi_body change.before_json.output "Output Values" "delete" null before_sensitive_output null false "inline-diff" show_sensitive }}
-{{~ end ~}}
-{{~ else if change.action == "delete" ~}}
-{{~ if has_before_output ~}}
-{{~ before_sensitive_output = change.before_sensitive ? change.before_sensitive.output : null ~}}
-{{ render_azapi_body change.before_json.output "Output Values" "delete" null before_sensitive_output null false "inline-diff" show_sensitive }}
-{{~ end ~}}
-{{~ end ~}}
-{{~ end ~}}
+{{ include "_output_values" }}
 
 {{ include "/_code_analysis_findings.sbn" }}
 

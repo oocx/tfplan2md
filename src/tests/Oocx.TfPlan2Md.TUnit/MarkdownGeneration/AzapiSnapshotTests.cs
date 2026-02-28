@@ -203,6 +203,71 @@ public class AzapiSnapshotTests
         AssertAzapiSnapshot("azapi-update-resource-delete-plan.json", "azapi-update-resource-delete.md");
     }
 
+    // -----------------------------------------------------------------------
+    // Feature 106: Separate table for azapi output values
+    // Related feature: docs/features/106-azapi-output-values/specification.md
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a create action with unknown output shows the known-after-apply notice.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputCreateUnknown_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-create-unknown-plan.json", "azapi-output-create-unknown.md");
+    }
+
+    /// <summary>
+    /// Verifies that a create action with output present renders an Output Values table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputCreatePresent_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-create-present-plan.json", "azapi-output-create-present.md");
+    }
+
+    /// <summary>
+    /// Verifies that an update action with both before and after output renders a Before/After Output Values table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputUpdate_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-update-plan.json", "azapi-output-update.md");
+    }
+
+    /// <summary>
+    /// Verifies that sensitive output fields are masked with (sensitive) in the Output Values table.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputSensitive_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-sensitive-plan.json", "azapi-output-sensitive.md");
+    }
+
+    /// <summary>
+    /// Verifies that nested output objects trigger Feature 034 attribute grouping in the Output Values section.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiOutputGrouped_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-output-grouped-plan.json", "azapi-output-grouped.md");
+    }
+
+    /// <summary>
+    /// Verifies that azapi_update_resource renders output values in a dedicated Output Values section.
+    /// Related feature: docs/features/106-azapi-output-values/specification.md.
+    /// </summary>
+    [Test]
+    public void Snapshot_AzapiUpdateResourceOutput_MatchesBaseline()
+    {
+        AssertAzapiSnapshot("azapi-update-resource-output-plan.json", "azapi-update-resource-output.md");
+    }
+
     /// <summary>
     /// Renders a markdown report from an AzAPI plan test data file.
     /// </summary>

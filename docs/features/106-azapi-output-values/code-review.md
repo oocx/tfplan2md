@@ -1,4 +1,4 @@
-# Code Review: Separate Table for azapi Output Values (Feature 106)
+# Code Review: Separate Table for azapi Output Values (Feature 106) — Re-Review
 
 ## Summary
 
@@ -365,3 +365,132 @@ The following items must be addressed by the Developer before re-review:
 
 10. **Address M-1**: Update `docs/architecture.md` to include `after_unknown`, `before_sensitive`,
     and `after_sensitive` in the template property listing.
+
+---
+
+## Re-Review (Round 2)
+
+**Re-Review Date:** 2025-07-14
+
+**Re-Reviewer:** Code Reviewer agent
+
+### What Was Addressed
+
+The developer fixed **B-1 through B-7** and **M-1** from the original review. Full details in
+`work-protocol.md` (Developer Rework entry). Key changes verified:
+
+| Blocker | Status | Verification |
+|---------|--------|--------------|
+| B-1: Missing `#### Output Values` heading for "known after apply" | ✅ Fixed | `_output_values.sbn` lines 17–21 emit heading before notice |
+| B-2: Replace + before output + after unknown missing before table | ✅ Fixed | Template lines 12–16 call `render_azapi_body` in delete mode then emits notice |
+| B-3: TC-04 (update-unchanged) missing | ✅ Fixed | `azapi-output-update-unchanged-plan.json` + snapshot + test method present |
+| B-4: TC-05 (delete) missing | ✅ Fixed | `azapi-output-delete-plan.json` + snapshot + test method present |
+| B-5: TC-06 (replace-unknown) missing | ✅ Fixed | `azapi-output-replace-unknown-plan.json` + snapshot + test method present |
+| B-6: TC-10 (large-value) missing | ✅ Fixed | `azapi-output-large-value-plan.json` + snapshot + test method present; 216-char URL exceeds 200-char threshold |
+| B-7: No `SNAPSHOT_UPDATE_OK` token | ✅ Fixed | Commit `1af40bb` message contains `SNAPSHOT_UPDATE_OK` |
+| M-1: `docs/architecture.md` missing `after_unknown` etc. | ✅ Fixed | Three new entries present: `after_unknown`, `before_sensitive`, `after_sensitive` |
+
+---
+
+### Re-Review Verification Results
+
+| Check | Result |
+|-------|--------|
+| Tests (full suite) | ✅ **1318 passed, 0 failed** |
+| Build | ✅ Success |
+| Comprehensive demo generation | ✅ Generated |
+| Comprehensive demo markdownlint | ❌ **1 error** (MD024 at line 665 — pre-existing duplicate heading, still unfixed) |
+| UAT artifacts (`uat-plan.json`, `uat-plan.md`) | ❌ **Missing** — neither file exists |
+| `SNAPSHOT_UPDATE_OK` in commit message | ✅ Commit `1af40bb` |
+
+---
+
+### Snapshot Correctness Verification
+
+Snapshots for all four new test cases were manually inspected:
+
+| Snapshot | Correct? | Notes |
+|----------|----------|-------|
+| `azapi-output-create-unknown.md` | ✅ | `#### Output Values` heading + italic notice present |
+| `azapi-output-delete.md` | ✅ | Delete-mode single-column table (`\| Property \| Value \|`), consistent with existing body delete behavior |
+| `azapi-output-replace-unknown.md` | ✅ | `#### Output Values` heading, before-output table (delete mode), then notice — B-2 fully resolved |
+| `azapi-output-update-unchanged.md` | ✅ | Section appears (not omitted); shows `*No body changes detected*` — inherits `render_azapi_body` message |
+| `azapi-output-large-value.md` | ✅ | Large value (216 chars > 200 threshold) uses `<pre>`/`<code>` diff block; normal-length field in regular table |
+
+Note on TC-04 (`update-unchanged`): The snapshot shows `*No body changes detected*` rather than
+a table with identical Before/After values. This is the existing `render_azapi_body` behaviour
+when before and after are byte-for-byte identical. The message says "body" rather than
+"output values" — this is a pre-existing quirk inherited from the shared renderer, not a
+regression introduced by this feature. The section is correctly rendered (not omitted).
+
+Note on TC-09 (grouped): The test uses a `sku` sub-object rather than `properties` as described
+in the test plan, because the grouping algorithm strips the `properties.` prefix. The developer
+documented this deviation. The snapshot correctly demonstrates Feature 034 grouping with a
+`###### \`sku\`` subsection.
+
+---
+
+### Re-Review Decision
+
+**Status:** ❌ **Changes Requested**
+
+Two original blockers remain unresolved:
+
+**B-8 (still open): Missing UAT artifacts**
+
+`docs/features/106-azapi-output-values/uat-plan.json` and
+`docs/features/106-azapi-output-values/uat-plan.md` do not exist. The UAT test plan
+(`uat-test-plan.md`) explicitly requires both files to exist before UAT can run.
+
+Per the review checklist:
+> UAT Plan Artifacts (REQUIRED for features with UAT test plans):
+> - `uat-plan.json` exists
+> - `uat-plan.md` exists and is up-to-date
+
+The UAT test plan specifies three resources:
+1. `azapi_resource.automation_create` — create, `after_unknown.output = true`
+2. `azapi_resource.automation_update` — update, grouped `properties` output
+3. `azapi_resource.sql_delete` — delete, sensitive output field
+
+---
+
+**B-9 (still open): Markdownlint failure in `artifacts/comprehensive-demo.md`**
+
+Running `scripts/markdownlint.sh artifacts/comprehensive-demo.md` still produces:
+
+```
+artifacts/comprehensive-demo.md:665 error MD024/no-duplicate-heading Multiple headings
+with the same content [Context: "📦 Module: `module.network`"]
+```
+
+The heading `### 📦 Module: \`module.network\`` appears in both the "Resource Changes" section
+(line 348) and the "Other Findings" section (line 665). This is a pre-existing issue not
+introduced by Feature 106, but the review process requires the comprehensive demo to pass
+markdownlint before approval.
+
+Additionally, the azapi resource in `examples/comprehensive-demo/plan.json` has no `output`
+attribute and `after_unknown.output` is absent, so Feature 106 is not exercised in the
+comprehensive demo at all.
+
+---
+
+### Remaining Fixes Required
+
+1. **Fix B-8:** Create `docs/features/106-azapi-output-values/uat-plan.json` containing the
+   three resources specified in `uat-test-plan.md`, then generate
+   `docs/features/106-azapi-output-values/uat-plan.md` by running:
+   ```bash
+   dotnet run --project src/Oocx.TfPlan2Md/Oocx.TfPlan2Md.csproj -- \
+     docs/features/106-azapi-output-values/uat-plan.json \
+     --output docs/features/106-azapi-output-values/uat-plan.md
+   ```
+
+2. **Fix B-9:** Two sub-tasks:
+   a. Add `after_unknown.output = true` to the existing `azapi_resource.container_app` entry in
+      `examples/comprehensive-demo/plan.json` (so the feature is exercised in the demo).
+   b. Fix the MD024 duplicate heading — the "Other Findings" section uses the same H3 heading
+      as "Resource Changes" for the same module name. The simplest fix is to update the
+      `markdownlint.json` config to add `"siblings_only": true` for MD024, which allows the same
+      heading in different document sections. Regenerate and commit `artifacts/comprehensive-demo.md`.
+
+After both fixes: all tests must still pass (1318+) and markdownlint must report 0 errors.

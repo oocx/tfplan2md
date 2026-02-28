@@ -22,8 +22,27 @@
 
 ## Agent Work Log
 
-### Code Reviewer
+### Code Reviewer (Re-Review)
 - **Date:** 2025-07-14
+- **Summary:** Re-reviewed Feature 106 after Developer rework. Verified all 8 items fixed in
+  round 1 (B-1 through B-7, M-1): `#### Output Values` heading now present for known-after-apply
+  case, replace action now renders before output in delete mode then notice, TC-04/TC-05/TC-06/TC-10
+  tests all implemented with correct snapshots (1318 tests pass), SNAPSHOT_UPDATE_OK token present
+  in commit `1af40bb`, and `docs/architecture.md` updated. However, **two original blockers remain
+  unresolved**:
+  1. **B-8:** `uat-plan.json` and `uat-plan.md` are still missing (UAT artifacts required by UAT
+     test plan).
+  2. **B-9:** `artifacts/comprehensive-demo.md` still fails markdownlint with MD024 duplicate heading
+     (`### 📦 Module: \`module.network\`` at both line 348 and line 665); azapi resource in
+     `examples/comprehensive-demo/plan.json` has no `output` attribute so Feature 106 is not
+     exercised in the comprehensive demo.
+- **Decision:** Changes Requested — handed off to Developer to fix B-8 and B-9.
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/code-review.md` (Re-Review section appended)
+  - `docs/features/106-azapi-output-values/work-protocol.md` (updated)
+- **Problems Encountered:** None.
+
+
 - **Summary:** Reviewed the implementation of Feature 106 (Separate Table for azapi Output
   Values). All 1314 tests pass. However, the review identified **9 Blockers** and **1 Major**
   issue that must be resolved before approval. Key findings:

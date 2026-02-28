@@ -251,3 +251,35 @@
   3. Non-deterministic snapshot issue: script regenerated large value snapshot from old binary
      before new test data was used. Resolved by manually deleting the stale snapshot and
      copying the freshly generated one.
+
+### Developer (B-8a and B-8b Fix)
+- **Date:** 2025-07-14
+- **Summary:** Fixed the two remaining UAT plan artifact issues identified by Code Reviewer (Round 3).
+
+  **B-8a (grouped output):** Updated `automation_update` resource in `uat-plan.json` to use a
+  `sku` sub-object in the `output` field (before: `{state, sku:{name, tier, capacity:1}}`;
+  after: `{state, sku:{name, tier, capacity:0}}`). This triggers the Feature 034 grouping
+  algorithm, producing a `###### \`sku\`` sub-section in the rendered output — exactly what
+  the UAT test plan requires.
+
+  **B-8b (MD024 duplicate siblings):** Distributed the three azapi resources across different
+  modules so each module section contains only one `#### Output Values` heading:
+  - `automation_create` stays in root module (no `module_address`)
+  - `automation_update` moved to `module.automation` (address: `module.automation.azapi_resource.automation_update`)
+  - `sql_delete` moved to `module.sql` (address: `module.sql.azapi_resource.sql_delete`)
+
+  **MD012 trailing blank lines:** The regenerated `uat-plan.md` had a double trailing newline
+  (`</details>\n\n`) that markdownlint flagged as MD012 (consecutive blank lines at "line 119").
+  Post-processed the file to strip excess trailing newlines, leaving exactly one.
+
+  **Verification:**
+  - `uat-plan.md` passes markdownlint with 0 errors
+  - `artifacts/comprehensive-demo.md` still passes markdownlint with 0 errors
+  - Full test suite: 1318 passed, 0 failed, 0 skipped
+
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/uat-plan.json` (updated)
+  - `docs/features/106-azapi-output-values/uat-plan.md` (regenerated)
+- **Problems Encountered:**
+  1. Generated file ended with `\n\n` causing MD012 at a virtual line 119 (beyond visible content).
+     Fixed by stripping trailing blank lines after generation.

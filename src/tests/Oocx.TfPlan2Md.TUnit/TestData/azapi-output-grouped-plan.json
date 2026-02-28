@@ -23,10 +23,11 @@
             }
           },
           "output": {
-            "properties": {
-              "automationHybridServiceUrl": "https://eus-jobruntimedata-prod-su1.azure-automation.net/accounts/old",
-              "state": "Ok",
-              "publicNetworkAccess": "Enabled"
+            "state": "Ok",
+            "sku": {
+              "name": "Basic",
+              "tier": "Free",
+              "capacity": 0
             }
           }
         },
@@ -43,10 +44,11 @@
             }
           },
           "output": {
-            "properties": {
-              "automationHybridServiceUrl": "https://eus-jobruntimedata-prod-su1.azure-automation.net/accounts/new",
-              "state": "Updating",
-              "publicNetworkAccess": "Enabled"
+            "state": "Updating",
+            "sku": {
+              "name": "Standard",
+              "tier": "Free",
+              "capacity": 0
             }
           }
         },

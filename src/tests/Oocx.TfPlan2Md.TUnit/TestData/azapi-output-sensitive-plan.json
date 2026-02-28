@@ -24,7 +24,7 @@
           },
           "output": {
             "state": "Ok",
-            "apiKey": "somekey"
+            "apiKey": "abc123"
           }
         },
         "after": {
@@ -40,8 +40,8 @@
             }
           },
           "output": {
-            "state": "Ok",
-            "apiKey": "somekey"
+            "state": "Active",
+            "apiKey": "xyz789"
           }
         },
         "after_unknown": {},

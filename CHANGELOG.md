@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<a name="1.31.2"></a>
+## [1.31.2](https://github.com/oocx/tfplan2md/compare/v1.31.1...v1.31.2) (2026-02-28)
+
+### 🐛 Bug Fixes
+
+* change OutputChange.AfterUnknown from bool to object? ([8ab23d4](https://github.com/oocx/tfplan2md/commit/8ab23d41de1b4fd3b2db3149ef539b8c02051001))
+
+### 📚 Documentation
+
+* add code review report and complete work protocol for issue [#106](https://github.com/oocx/tfplan2md/issues/106) ([df5e14b](https://github.com/oocx/tfplan2md/commit/df5e14b8b92138542b16918166ca9fa0de731e29))
+* add issue analysis for OutputChange after_unknown type mismatch ([#106](https://github.com/oocx/tfplan2md/issues/106)) ([b85b239](https://github.com/oocx/tfplan2md/commit/b85b2399f012078c88e2812763f4ae65087a818e))
+* add release notes for OutputChange.AfterUnknown fix ([ae7d2e9](https://github.com/oocx/tfplan2md/commit/ae7d2e90d31464f489ba2b7b6855d48ae30ba599))
+
 <a name="1.31.1"></a>
 ## [1.31.1](https://github.com/oocx/tfplan2md/compare/v1.31.0...v1.31.1) (2026-02-27)
 

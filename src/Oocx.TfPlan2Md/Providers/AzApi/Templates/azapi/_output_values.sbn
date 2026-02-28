@@ -1,7 +1,7 @@
 {{~## Partial: Output Values rendering for azapi_resource and azapi_update_resource.
      Renders a dedicated "Output Values" section when the Terraform plan includes
      `output` data in before/after JSON. When output is entirely unknown (create/replace
-     without before output), no section is rendered — there is nothing to show.
+     without before or after output data), no section is rendered — there is nothing to show.
      Related feature: docs/features/106-azapi-output-values/specification.md.
 ~}}
 {{~ has_before_output = change.before_json && change.before_json.output ~}}

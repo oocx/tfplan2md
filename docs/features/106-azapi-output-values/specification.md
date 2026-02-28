@@ -34,8 +34,10 @@ body attributes.
   and `after_sensitive.output`
 - Apply large-value handling to output values (same as body)
 - Support all change actions: create, update, delete, and replace
-- Handle the case where output is unknown at plan time (e.g. `after_unknown.output = true` during
-  creates) — display a "known after apply" placeholder instead of a table
+- Handle the case where output is entirely unknown at plan time (e.g. `after_unknown.output = true`
+  during a create with no before output) — the Output Values section is suppressed entirely (no
+  heading or content rendered); for a replace with before output present, the before output renders
+  in delete mode followed by a "known after apply" notice
 - Output section is only shown when an output value is present or known-after-apply; it is omitted
   entirely when output is absent in both before and after states
 - Applies to both `azapi_resource` and `azapi_update_resource` templates
@@ -81,11 +83,7 @@ table format. For a create action with no known output yet, a brief notice is sh
 
 **Example: Create (output unknown at plan time)**
 
-```markdown
-###### Output Values
-
-*Output values are not known until after apply.*
-```
+*(Output Values section is omitted entirely — no heading or notice is rendered)*
 
 **Example: Update (output has before and after values)**
 
@@ -123,7 +121,7 @@ table format. For a create action with no known output yet, a brief notice is sh
 
 | Action | Before Output | After Output | Rendered As |
 |--------|--------------|--------------|-------------|
-| Create | absent | unknown (`after_unknown.output = true`) | "known after apply" notice |
+| Create | absent | unknown (`after_unknown.output = true`) | output section absent (suppressed) |
 | Create | absent | present (pre-populated) | After table only |
 | Update | present | present | Before / After table |
 | Delete | present | absent | Before table only |
@@ -154,8 +152,10 @@ behaviour already used for body attributes.
 - [ ] `output` values from `azapi_update_resource` are rendered in a dedicated **Output Values**
       section after the body section
 - [ ] The Output Values section heading clearly distinguishes output from body (input) attributes
-- [ ] When `after_unknown.output = true` (create/replace), a "known after apply" notice is shown
-      instead of a table
+- [ ] When `after_unknown.output = true` during a create (no before output), the Output Values
+      section is suppressed entirely (no heading or content rendered)
+- [ ] When `after_unknown.output = true` during a replace with before output present, the before
+      output renders in delete mode followed by a "known after apply" notice
 - [ ] When output is absent in both before and after states, the Output Values section is omitted
       entirely
 - [ ] Feature 034 attribute grouping and array rendering applies to output values, producing

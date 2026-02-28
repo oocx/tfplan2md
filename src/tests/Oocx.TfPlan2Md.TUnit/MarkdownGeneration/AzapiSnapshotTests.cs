@@ -209,7 +209,8 @@ public class AzapiSnapshotTests
     // -----------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that a create action with unknown output shows the known-after-apply notice.
+    /// Verifies that a create action with unknown output suppresses the Output Values section entirely
+    /// (no heading or notice rendered, because there is no before or after output data available).
     /// Related feature: docs/features/106-azapi-output-values/specification.md.
     /// </summary>
     [Test]

@@ -24,7 +24,7 @@ All automated tests follow the existing snapshot pattern used in `AzapiSnapshotT
 | `output` rendered for `azapi_resource` | TC-01, TC-02, TC-03, TC-05, TC-06 | Snapshot |
 | `output` rendered for `azapi_update_resource` | TC-11 | Snapshot |
 | Section heading clearly labelled "Output Values" | TC-02, TC-03, TC-05 | Snapshot |
-| `after_unknown.output = true` → "known after apply" notice | TC-01 | Snapshot |
+| `after_unknown.output = true` → Output Values section suppressed entirely | TC-01 | Snapshot |
 | Output absent → section omitted entirely | TC-07 | Snapshot (regression) |
 | Feature 034 grouping applies to output values | TC-09 | Snapshot |
 | Sensitivity masking on output values | TC-08 | Snapshot |
@@ -48,8 +48,9 @@ All automated tests follow the existing snapshot pattern used in `AzapiSnapshotT
 
 **Description:**
 An `azapi_resource` create action where `after_unknown.output = true` (normal for creates
-before apply). No output table should appear; instead a brief italic notice is rendered
-under an `#### Output Values` heading.
+before apply). No output data is available and none is expected after apply at plan time,
+so the entire Output Values section must be absent from the rendered markdown — no heading
+and no notice are rendered.
 
 **Test Data File:** `azapi-output-create-unknown-plan.json`
 
@@ -61,10 +62,11 @@ under an `#### Output Values` heading.
 - No `output` key in `change.after`
 
 **Expected Snapshot Output:**
-```markdown
-#### Output Values
+The rendered markdown contains no `#### Output Values` heading and no "known after apply"
+notice. The Output Values section is suppressed entirely.
 
-*Output values are not known until after apply.*
+```markdown
+(no Output Values section rendered)
 ```
 
 **Snapshot File:** `azapi-output-create-unknown.md`
@@ -429,7 +431,7 @@ Corresponding approved snapshots in `src/tests/Oocx.TfPlan2Md.TUnit/TestData/Sna
 
 | Scenario | Expected Behavior | Test Case |
 |----------|-------------------|-----------|
-| `after_unknown.output = true` on create | "known after apply" notice, no table | TC-01 |
+| `after_unknown.output = true` on create | Output Values section absent (suppressed entirely) | TC-01 |
 | `after_unknown.output = true` on replace with before present | Before table (delete mode) + notice | TC-06 |
 | Output absent (both before and after) | No `#### Output Values` heading rendered | TC-07 / TC-12 |
 | Output identical before and after (no-diff) | Section renders; table shows identical Before/After | TC-04 |

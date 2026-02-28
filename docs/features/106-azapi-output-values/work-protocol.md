@@ -11,7 +11,7 @@
 |-------|----------|--------|
 | Requirements Engineer | ✅ Required | ✅ Done |
 | Architect | ✅ Required | ✅ Done |
-| Quality Engineer | ✅ Required | ⏳ Pending |
+| Quality Engineer | ✅ Required | ✅ Done |
 | Task Planner | ✅ Required | ⏳ Pending |
 | Developer | ✅ Required | ⏳ Pending |
 | Technical Writer | ✅ Required | ⏳ Pending |
@@ -23,6 +23,20 @@
 ## Agent Work Log
 
 <!-- Each agent appends their entry below when they complete their work. -->
+
+### Quality Engineer
+- **Date:** 2025-07-14
+- **Summary:** Reviewed the feature specification and architecture, explored existing azapi
+  snapshot test patterns, and produced a comprehensive test plan covering all 10 scenarios
+  identified by the Architect: create-unknown, create-present, update-changed,
+  update-unchanged, delete, replace-unknown, no-output (regression), sensitive output,
+  grouped output, and large output value. Also created a UAT test plan defining a
+  three-resource feature plan covering the "known after apply" notice, grouped update
+  output, and sensitive delete output. Mapped all 11 acceptance criteria to test cases.
+- **Artifacts Produced:**
+  - `docs/features/106-azapi-output-values/test-plan.md`
+  - `docs/features/106-azapi-output-values/uat-test-plan.md`
+- **Problems Encountered:** None.
 
 ### Requirements Engineer
 - **Date:** 2025-07-14

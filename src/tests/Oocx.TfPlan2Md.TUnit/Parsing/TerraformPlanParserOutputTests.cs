@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AwesomeAssertions;
+using Oocx.TfPlan2Md.MarkdownGeneration.Helpers;
 using Oocx.TfPlan2Md.Parsing;
 using TUnit.Core;
 
@@ -41,7 +42,8 @@ public class TerraformPlanParserOutputTests
         createdOutput.Actions.Should().ContainSingle().Which.Should().Be("create");
         ((JsonElement)createdOutput.After!).GetString().Should().Be("new-value-123");
         createdOutput.Before.Should().BeNull();
-        createdOutput.AfterUnknown.Should().BeFalse();
+        createdOutput.AfterUnknown.Should().BeOfType<JsonElement>()
+            .Which.ValueKind.Should().Be(JsonValueKind.False);
     }
 
     [Test]
@@ -101,7 +103,8 @@ public class TerraformPlanParserOutputTests
 
         // Assert
         var computedOutput = plan.OutputChanges!["resource_id"];
-        computedOutput.AfterUnknown.Should().BeTrue();
+        computedOutput.AfterUnknown.Should().BeOfType<JsonElement>()
+            .Which.ValueKind.Should().Be(JsonValueKind.True);
         computedOutput.After.Should().BeNull();
     }
 
@@ -116,5 +119,25 @@ public class TerraformPlanParserOutputTests
 
         // Assert
         plan.OutputChanges.Should().BeNull();
+    }
+
+    [Test]
+    public void Parse_OutputChange_WithAfterUnknownObject_ParsesSuccessfully()
+    {
+        // Regression test: after_unknown can be an object {} instead of a plain boolean.
+        // See: https://developer.hashicorp.com/terraform/internals/json-format
+        // Arrange
+        var json = File.ReadAllText("TestData/outputs-after-unknown-object-plan.json");
+
+        // Act
+        var plan = _parser.Parse(json);
+
+        // Assert - parsing should succeed without exception
+        plan.OutputChanges.Should().NotBeNull();
+        var output = plan.OutputChanges!["cross_direct_wif"];
+        output.AfterUnknown.Should().BeOfType<JsonElement>()
+            .Which.ValueKind.Should().Be(JsonValueKind.Object);
+        // The helper should treat an empty object as "not entirely unknown"
+        AfterUnknownHelper.IsWholeResourceUnknownAfterApply(output.AfterUnknown).Should().BeFalse();
     }
 }
